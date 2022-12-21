@@ -215,7 +215,7 @@
     <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)libextern\wxWidgets-master\include;$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -223,7 +223,7 @@
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)libextern\wxWidgets-master\include;$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">

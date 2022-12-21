@@ -21,6 +21,7 @@
 #include <ImageLoadingFormat.h>
 #include "PicturePanel.h"
 #include <effect_id.h>
+#include <wx/filename.h>
 #include "ParamInit.h"
 using namespace Regards::Picture;
 using namespace Regards::Internet;
@@ -167,6 +168,19 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	if (webBrowser == nullptr)
 	{
+#if wxUSE_WEBVIEW_EDGE
+		// Check if a fixed version of edge is present in
+		// $executable_path/edge_fixed and use it
+		wxFileName edgeFixedDir(wxStandardPaths::Get().GetExecutablePath());
+		edgeFixedDir.SetFullName("");
+		edgeFixedDir.AppendDir("edge_fixed");
+		if (edgeFixedDir.DirExists())
+		{
+			wxWebViewEdge::MSWSetBrowserExecutableDir(edgeFixedDir.GetFullPath());
+			wxLogMessage("Using fixed edge version");
+		}
+#endif
+
 		webBrowser = wxWebView::New(this, wxID_ANY);
 		webBrowser->Show(false);
 

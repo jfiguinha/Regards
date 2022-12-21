@@ -695,7 +695,14 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 					bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 				}
 				else
-					tempImage = bitmap;
+				{
+					transitionEnd = false;
+					bitmap->Flip();
+					bitmapWindow->ShrinkImage();
+					bitmapWindow->SetTransitionBitmap(bitmap);
+					tempImage = nullptr;
+				}
+
 			}
 		}
 		else

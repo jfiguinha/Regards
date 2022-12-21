@@ -2,6 +2,12 @@
 #include <FileGeolocation.h>
 #include "ToolbarInfos.h"
 #include "ModificationManager.h"
+#if wxUSE_WEBVIEW_IE
+#include "wx/msw/webview_ie.h"
+#endif
+#if wxUSE_WEBVIEW_EDGE
+#include "wx/msw/webview_edge.h"
+#endif
 #include <wx/webview.h>
 #include <wx/animate.h>
 #include "CriteriaWindow.h"

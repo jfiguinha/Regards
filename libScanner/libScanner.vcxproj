@@ -224,7 +224,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)libextern\qpdf-master\include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)libextern\wxWidgets-master\include;$(SolutionDir)libextern\qpdf-master\include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -232,7 +232,7 @@
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)libextern\wxWidgets-master\include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
