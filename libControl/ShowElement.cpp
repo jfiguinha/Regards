@@ -658,21 +658,26 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			GetAngleAndFlipFromExif(exif, angle, flipH, flipV);
 			//bitmap->SetOrientation(exif);
 		}
-
+		int numEffect = 0;
+		bool firstPicture = false;
+		if (!bitmapWindow->IsPictureLoad())
+			firstPicture = true;
 		
 		//bitmapWindow->FixArrowNavigation(true);
 		bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
-		int numEffect = 0;
+		
 
 		if (isDiaporama)
 			numEffect = configRegards->GetDiaporamaTransitionEffect();
 		else if (configRegards != nullptr)
 			numEffect = configRegards->GetEffect();
 
-		
 
 		if (numEffect != 0)
 		{
+			if(firstPicture)
+				bitmap->Flip();
+
 			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;

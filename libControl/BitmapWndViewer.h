@@ -62,6 +62,7 @@ namespace Regards
 			wxPoint GetMousePosition();
 			void CalculCenterPositionPicture() override;
 
+			bool IsPictureLoad();
 			void OnTransition(wxTimerEvent& event);
 			void OnClick(wxTimerEvent& event);
 

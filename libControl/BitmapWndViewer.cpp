@@ -212,6 +212,13 @@ void CBitmapWndViewer::PrintPicture()
 	}
 }
 
+bool CBitmapWndViewer::IsPictureLoad()
+{
+	if (source != nullptr)
+		return true;
+	return false;
+}
+
 CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainViewerId,
                                    const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface)
 	: CBitmapWndRender(slider, mainViewerId, theme)
@@ -478,11 +485,17 @@ void CBitmapWndViewer::OnFiltreCancel()
 
 void CBitmapWndViewer::ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV)
 {
-	this->angle += angle;
-	this->angle = this->angle % 360;
+	if(angle != 0 || flipH != 0 || flipV != 0)
+	{
+		this->angle += angle;
+		this->angle = this->angle % 360;
 
-	flipHorizontal = flipH;
-	flipVertical = flipV;
+		flipHorizontal = flipH;
+		flipVertical = flipV;
+
+		this->ShrinkImage();
+	}
+
 }
 
 wxPoint CBitmapWndViewer::GetMousePosition()

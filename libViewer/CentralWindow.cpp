@@ -690,6 +690,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 				{
 
 					_loadingPicture->SetFilename(pictureToLoad);
+					//_loadingPicture->Flip();
 					CBitmapReturn * bitmapReturn = new CBitmapReturn();
 					bitmapReturn->myThread = nullptr;
 					bitmapReturn->isThumbnail = true;
