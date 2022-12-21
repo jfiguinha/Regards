@@ -9,7 +9,6 @@ vcpkg install libraw:arm64-windows --recurse
 vcpkg install jasper:arm64-windows --recurse
 vcpkg install exiv2[video,xmp]:arm64-windows --recurse
 vcpkg install dav1d:arm64-windows --recurse
-vcpkg install wxWidgets:arm64-windows --recurse
 vcpkg install opencv[contrib,ipp,openmp,opengl,ffmpeg]:arm64-windows --recurse
 vcpkg install freeimage:arm64-windows --recurse
 vcpkg install aom:arm64-windows --recurse
