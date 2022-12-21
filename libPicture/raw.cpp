@@ -94,6 +94,7 @@ bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoad
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
 		//image->Flip();
 		imageLoadingFormat->SetPicture(image);
+		imageLoadingFormat->Flip();
 		isOk = true;
 	}
 
