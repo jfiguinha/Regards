@@ -1385,7 +1385,7 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 		//crop.copyTo(cvImage);
 		//cvImage = cvImage(rectGlobal);
 
-		if (angle == 90)
+		if (angle == 270)
 		{
 			if (flipV && flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
@@ -1395,7 +1395,7 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
 
 		}
-		else if (angle == 270)
+		else if (angle == 90)
 		{
 			if (flipV && flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);

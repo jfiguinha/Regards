@@ -109,6 +109,7 @@ namespace Regards
 			void OnAfterOpenVideo() override;
 			void OnPositionVideo(const int64_t& position) override;
 			void RepeatVideo();
+			int GetAngleAndFlipFromExif(const int& exif, int& angle, int& flipH, int& flipV);
 
 		private:
 			void OnIdle(wxIdleEvent& evt) override;

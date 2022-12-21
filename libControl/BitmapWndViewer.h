@@ -68,7 +68,7 @@ namespace Regards
 			void OnTimer(wxTimerEvent& event) override;
 
 			vector<int> GetListTimer() override;
-			
+			void ApplyPicturePosition(const int &angle,const int& flipH, const int& flipV);
 
 		private:
 			bool IsOpenCLCompatible();

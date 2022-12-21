@@ -476,6 +476,15 @@ void CBitmapWndViewer::OnFiltreCancel()
 	RemoveListener();
 }
 
+void CBitmapWndViewer::ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV)
+{
+	this->angle += angle;
+	this->angle = this->angle % 360;
+
+	flipHorizontal = flipH;
+	flipVertical = flipV;
+}
+
 wxPoint CBitmapWndViewer::GetMousePosition()
 {
 	wxPoint pt;

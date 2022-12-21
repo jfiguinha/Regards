@@ -517,6 +517,97 @@ void CShowElement::IsNextPicture(const bool& value)
 	bitmapWindow->SetNextPictureMove(value);
 }
 
+int CShowElement::GetAngleAndFlipFromExif(const int &exif, int& angle, int& flipH, int& flipV)
+{
+	switch (exif)
+	{
+	case 0:
+		angle = 0;
+		flipH = 0;
+		flipV = 0;
+		break;
+	case 1:
+		angle = 0;
+		flipH = 1;
+		flipV = 0;
+		break;
+	case 2:
+		angle = 0;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 3:
+		angle = 0;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 4:
+		angle = 90;
+		flipH = 0;
+		flipV = 0;
+		break;
+	case 5:
+		angle = 90;
+		flipH = 1;
+		flipV = 0;
+		break;
+	case 6:
+		angle = 90;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 7:
+		angle = 90;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 8:
+		angle = 180;
+		flipH = 0;
+		flipV = 0;
+		break;
+	case 9:
+		angle = 180;
+		flipH = 1;
+		flipV = 0;
+		break;
+	case 10:
+		angle = 180;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 11:
+		angle = 180;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 12:
+		angle = 270;
+		flipH = 0;
+		flipV = 0;
+		break;
+	case 13:
+		angle = 270;
+		flipH = 1;
+		flipV = 0;
+		break;
+	case 14:
+		angle = 270;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 15:
+		angle = 270;
+		flipH = 1;
+		flipV = 1;
+		break;
+	}
+
+
+
+	return 0;
+}
+
 bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail)
 {
 	isVideo = false;
@@ -553,13 +644,19 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 	
 	if (bitmapWindow != nullptr)
 	{
+		int angle = 0;
+		int flipH = 0;
+		int flipV = 0;
+
 		CSqlPhotos sqlPhotos;
 		int exif = sqlPhotos.GetPhotoExif(filename);
 
 
    		if (!isThumbnail && exif > 0)
 		{
-			bitmap->SetOrientation(exif);
+
+			GetAngleAndFlipFromExif(exif, angle, flipH, flipV);
+			//bitmap->SetOrientation(exif);
 		}
 
 		
@@ -590,13 +687,17 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 				{
 					bitmapWindow->StopTransition();
 					bitmapWindow->SetBitmap(bitmap, false);
+					bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 				}
 				else
 					tempImage = bitmap;
 			}
 		}
 		else
+		{
 			bitmapWindow->SetBitmap(bitmap, false);
+			bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
+		}
 
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());

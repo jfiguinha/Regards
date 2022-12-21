@@ -46,6 +46,10 @@ bool CSqlPhotos::UpdatePhotoExif(const wxString& filepath, const int64_t& exif)
 {
 	wxString fullpath = filepath;
 	fullpath.Replace("'", "''");
+	int numIndex = GetPhotoExif(filepath);
+	if (numIndex == -1)
+		return InsertPhotoExif(filepath, exif);
+
 	return (ExecuteRequestWithNoResult("UPDATE PHOTO_EXIF SET Exif = " + to_string(exif) + " WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 
 }
@@ -106,44 +110,41 @@ void CSqlPhotos::GetPhotoCriteriaByCategorie(CriteriaVector * criteriaVector, co
 int CSqlPhotos::GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV)
 {
 	if (angle == 0 && flipH == 0 && flipV == 0)
-		return 1;
+		return 0;
 	if (angle == 0 && flipH == 1 && flipV == 0)
-		return 2;
-
-	if (angle == 180 && flipH == 0 && flipV == 0)
-		return 3;
-	if (angle == 180 && flipH == 1 && flipV == 0)
-		return 4;
-
-	if (angle == 90 && flipH == 0 && flipV == 0)
-		return 5;
-	if (angle == 90 && flipH == 1 && flipV == 0)
-		return 6;
-
-	if (angle == 270 && flipH == 0 && flipV == 0)
-		return 7;
-	if (angle == 270 && flipH == 1 && flipV == 0)
-		return 8;
-
+		return 1;
 	if (angle == 0 && flipH == 0 && flipV == 1)
-		return 4;
+		return 2;
 	if (angle == 0 && flipH == 1 && flipV == 1)
 		return 3;
 
-	if (angle == 180 && flipH == 0 && flipV == 1)
-		return 2;
-	if (angle == 180 && flipH == 1 && flipV == 1)
-		return 1;
-
+	if (angle == 90 && flipH == 0 && flipV == 0)
+		return 4;
+	if (angle == 90 && flipH == 1 && flipV == 0)
+		return 5;
 	if (angle == 90 && flipH == 0 && flipV == 1)
 		return 6;
 	if (angle == 90 && flipH == 1 && flipV == 1)
 		return 7;
 
-	if (angle == 270 && flipH == 0 && flipV == 1)
+	if (angle == 180 && flipH == 0 && flipV == 0)
 		return 8;
+	if (angle == 180 && flipH == 1 && flipV == 0)
+		return 9;
+	if (angle == 180 && flipH == 0 && flipV == 1)
+		return 10;
+	if (angle == 180 && flipH == 1 && flipV == 1)
+		return 11;
+
+	if (angle == 270 && flipH == 0 && flipV == 0)
+		return 12;
+	if (angle == 270 && flipH == 1 && flipV == 0)
+		return 13;
+	if (angle == 270 && flipH == 0 && flipV == 1)
+		return 14;
 	if (angle == 270 && flipH == 1 && flipV == 1)
-		return 5;
+		return 15;
+
 
 	return 0;
 }

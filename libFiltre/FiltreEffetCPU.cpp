@@ -1267,7 +1267,7 @@ cv::Mat CFiltreEffetCPU::Interpolation(const cv::Mat & inputData, const int& wid
 		inputData(rectGlobal).copyTo(cvImage);
 		//crop.copyTo(cvImage);
 
-		if (angle == 90)
+		if (angle == 270)
 		{
 			if (flipV && flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
@@ -1277,7 +1277,7 @@ cv::Mat CFiltreEffetCPU::Interpolation(const cv::Mat & inputData, const int& wid
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
 
 		}
-		else if (angle == 270)
+		else if (angle == 90)
 		{
 			if (flipV && flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
