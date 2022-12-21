@@ -16,7 +16,7 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <LoadingResource.h>
-
+#include <wx/webview.h>
 #include <LibResource.h>
 #include <FileUtility.h>
 #include <ParamInit.h>
@@ -137,6 +137,10 @@ bool MyApp::OnInit()
 	if (!wxApp::OnInit())
 		return false;
 
+	if (wxWebView::IsBackendAvailable(wxWebViewBackendEdge))
+	{
+		printf("toto");
+	}
 
 #ifdef __APPLE__
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
