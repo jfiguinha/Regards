@@ -272,7 +272,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			auto thumbnail = new CImageVideoThumbnail();
 			sqlThumbnailVideo.GetPictureThumbnail(szFileName, i, thumbnail);
 			thumbnail->percent = (static_cast<float>(i) / static_cast<float>(nbResult)) * 100.0f;
-			thumbnail->timePosition = i;
+			//thumbnail->timePosition = i;
 
 			float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 			auto thumbnailData = new CThumbnailDataStorage(szFileName);

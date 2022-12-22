@@ -727,10 +727,10 @@ void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 		eventFileSysTimer->Stop();
 		if (mainWindow != nullptr)
 		{
-			if (!mainWindow->IsVideo())
-			{
-				eventFileSysTimer->Start(1000);
-			}
+			//if (!mainWindow->IsVideo())
+			//{
+			eventFileSysTimer->Start(1000);
+			//}
 		}
 	}
 
