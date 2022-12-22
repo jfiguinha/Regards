@@ -42,7 +42,7 @@ void CThumbnailVideo::ProcessThumbnail(void* param)
 				auto thumbnail = new CImageVideoThumbnail();
 				sqlThumbnailVideo.GetPictureThumbnail(video->filename, i, thumbnail);
 				thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
-				thumbnail->timePosition = i;
+				//thumbnail->timePosition = i;
 				//thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
 
 				if (!thumbnail->image.IsOk())
