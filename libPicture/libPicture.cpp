@@ -87,6 +87,7 @@ using namespace Regards::exiv2;
 #include <J2kOption.h>
 #include <JxrOption.h>
 #include <PDFOption.h>
+#include <SqlPhotos.h>
 #include <CompressionOption.h>
 #include <opencv2/core/core.hpp>
 #include "RegardsPDF.h"
@@ -98,7 +99,7 @@ using namespace Regards::exiv2;
 //using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::Video;
-
+using namespace Regards::Sqlite;
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
@@ -529,6 +530,23 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
                              const int& quality)
 {
 	int iFormat = 0;
+
+	CSqlPhotos photos;
+	int exif = photos.GetPhotoExif(fileName);
+	if (exif != -1)
+	{
+		int angle = 0;
+		int flipH = 0;
+		int flipV = 0;
+		photos.GetAngleAndFlip(exif, angle, flipH, flipV);
+
+		bitmap->SetRotation(angle);
+		if (flipV)
+			bitmap->Flip();
+		if (flipH)
+			bitmap->Mirror();
+	}
+	
 
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	iFormat = TestImageFormat(fileName, false);
