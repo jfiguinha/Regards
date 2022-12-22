@@ -202,7 +202,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)libextern\wxWidgets-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -229,7 +229,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)libextern\wxWidgets-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
