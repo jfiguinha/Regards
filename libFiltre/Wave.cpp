@@ -10,27 +10,21 @@ using namespace Regards::FiltreEffet;
 CWaveFilter::CWaveFilter(): _waveWidth(0), _waveHeight(0), _weHaveWaves(false), _scale(0)
 {
 	_activeBuffer = 0;
-	_waves = nullptr;
 }
 
 
 CWaveFilter::~CWaveFilter()
 {
-	if(_waves != nullptr)
-		delete[] _waves;
 }
 
 void CWaveFilter::ProcessEffect(cv::Mat& image, int x, int y, short height, int radius, int scale)
 {
-	if (_waves != nullptr)
-		delete[] _waves;
+	_waves.clear();
 
 	_scale = 2;
 	_waveWidth = image.size().width >> _scale;
 	_waveHeight = image.size().height >> _scale;
 	int size = _waveWidth * _waveWidth * _waveHeight * 2;
-	_waves = new short[size+1];
-	memset(_waves, 0, size * sizeof(short));
 
 	int realX = (int)((x / (double)image.size().width)*_waveWidth);
 	int realY = (int)((y / (double)image.size().height)*_waveHeight);
@@ -169,12 +163,22 @@ void CWaveFilter::PutDrop(int x, int y, short height, int radius)
 	}
 }
 
+int CWaveFilter::CalculPosition(int x, int y, int buffer)
+{
+	return (x * _waveWidth + y) + (buffer * _waveWidth * _waveWidth * _waveHeight);
+}
+
 void CWaveFilter::SetWaveData(int x, int y, int buffer, short data)
 {
-	_waves[(x * _waveWidth + y) + (buffer * _waveWidth * _waveWidth * _waveHeight)] = data;
+	_waves[CalculPosition(x, y, buffer)] = data;
 }
 
 short CWaveFilter::GetWaveData(int x, int y, int buffer)
 {
-	return _waves[(x * _waveWidth + y) + (buffer * _waveWidth * _waveWidth * _waveHeight)];
+	int position = CalculPosition(x, y, buffer);
+	std::map<int, short>::iterator it;
+	it = _waves.find(position);
+	if (it != _waves.end())
+		return _waves[position];
+	return 0;
 }

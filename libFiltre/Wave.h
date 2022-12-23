@@ -23,7 +23,8 @@ namespace Regards
 			int _waveHeight;
 			bool _weHaveWaves;
 			int _scale;
-			short * _waves;
+			int CalculPosition(int x, int y, int buffer);
+			map<int, short> _waves;
 			int _activeBuffer;
 		};
 	}
