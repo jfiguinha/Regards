@@ -125,7 +125,7 @@ __kernel void Convert(__global uint *output, const __global uchar *inputY, const
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x +  y * widthOut;
+	int position = x +  (heightOut - y - 1) * widthOut;
 	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
 	{
 		float4 color = GetColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch, colorRange, colorSpace); 

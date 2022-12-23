@@ -192,8 +192,9 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
-			pictureFrame = openclEffectYUV->GetMatrix(true);
-			pictureFrame.copyTo(bitmap);
+			bitmap = openclEffectYUV->GetMatrix(true);
+			cv::flip(bitmap, bitmap, 0);
+
 
 		}
 		muBitmap.unlock();
@@ -1798,7 +1799,7 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 		top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false);
 }
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
@@ -1811,6 +1812,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
+	inverted = false;
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
