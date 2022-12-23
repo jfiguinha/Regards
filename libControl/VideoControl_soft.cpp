@@ -195,30 +195,19 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 			bitmap = openclEffectYUV->GetMatrix(true);
 		}
 		muBitmap.unlock();
-
-		if (!bitmap.empty())
-		{
-			CPictureUtility::ApplyRotation(bitmap, angle);
-		}
 	}
 	else
 	{
 		muBitmap.lock();
-		if(angle == 90 || angle == 270)
-			cv::flip(pictureFrame, bitmap, 0);
-		else
-			pictureFrame.copyTo(bitmap);
-		//
+		pictureFrame.copyTo(bitmap);
 		muBitmap.unlock();
-
-		if (!bitmap.empty())
-		{
-			CPictureUtility::ApplyRotation(bitmap, 360 - angle);
-		}
 	}
 
 
-
+	if (!bitmap.empty())
+	{
+		CPictureUtility::ApplyRotation(bitmap, angle);
+	}
 	return bitmap;
 }
 
@@ -1915,8 +1904,8 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 	int widthOutput = 0;
 	int heightOutput = 0;
 	inverted = true;
-	if (angle == 90 || angle == 270)
-		inverted = false;
+	//if (angle == 90 || angle == 270)
+	//	inverted = false;
 
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
