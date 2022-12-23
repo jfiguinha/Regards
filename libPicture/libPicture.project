@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libPicture" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="pdf">
-    <File Name="RegardsPDF.h"/>
-    <File Name="RegardsPDF.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -30,6 +26,10 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="pdf">
+    <File Name="RegardsPDF.h"/>
+    <File Name="RegardsPDF.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
     <File Name="VideoPlayer.cpp"/>
     <File Name="VideoPlayer.h"/>
@@ -37,6 +37,16 @@
     <File Name="videothumb.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="VideoDiaporama">
+    <File Name="ThumbnailDiaporama.h"/>
+    <File Name="ThumbnailDiaporama.cpp"/>
+    <VirtualDirectory Name="PostEffect">
+      <File Name="DiaporamaTransition.h"/>
+      <File Name="DiaporamaTransition.cpp"/>
+      <File Name="DiaporamaMove.h"/>
+      <File Name="DiaporamaMove.cpp"/>
+      <File Name="DiaporamaFusion.h"/>
+      <File Name="DiaporamaFusion.cpp"/>
+    </VirtualDirectory>
     <File Name="ThumbnailVideoExport.h"/>
     <File Name="ThumbnailVideoExport.cpp"/>
   </VirtualDirectory>
