@@ -193,11 +193,13 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			bitmap = openclEffectYUV->GetMatrix(true);
-			cv::flip(bitmap, bitmap, 0);
-
-
 		}
 		muBitmap.unlock();
+
+		if (!bitmap.empty())
+		{
+			CPictureUtility::ApplyRotation(bitmap, angle);
+		}
 	}
 	else
 	{
@@ -208,14 +210,15 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 			pictureFrame.copyTo(bitmap);
 		//
 		muBitmap.unlock();
-		
+
+		if (!bitmap.empty())
+		{
+			CPictureUtility::ApplyRotation(bitmap, 360 - angle);
+		}
 	}
 
 
-	if (!bitmap.empty())
-	{
-		CPictureUtility::ApplyRotation(bitmap, 360 - angle);
-	}
+
 	return bitmap;
 }
 
@@ -659,10 +662,12 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 	wxCommandEvent event(EVENT_VIDEOROTATION);
 	event.SetExtraLong(rotation);
 	wxPostEvent(parentRender, event);
+	angle = 360 - rotation;
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
+	/*
 	long rotation = event.GetExtraLong();
 	if (rotation == 90)
 		angle = 90;
@@ -679,6 +684,7 @@ void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 	muVideoEffect.lock();
 	videoEffectParameter.rotation = rotation;
 	muVideoEffect.unlock();
+	*/
 }
 
 void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
@@ -1721,9 +1727,8 @@ void CVideoControlSoft::SetZoomIndex(const int& pos)
 }
 
 
-void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
-	int& heightInterpolationSize, int& left, int& top,
-	const bool& invert)
+void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize, int& left, int& top,
+	const bool& invertY, const bool &invertX)
 {
 	
 #ifndef WIN32
@@ -1765,14 +1770,24 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 
 	heightInterpolationSize = parentRender->GetSize().GetHeight() * scale_factor - (top * 2);
 
-	rc.x = max(xValue, 0);
-	if (!invert)
+	
+
+	if (!invertX)
+	{
+		int widthmax = widthOutput - (parentRender->GetSize().GetWidth() * scale_factor) - xValue;
+		rc.x = max(widthmax, 0);
+	}
+	else
+		rc.x = max(xValue, 0);
+
+	if (!invertY)
 	{
 		int heightmax = heightOutput - (parentRender->GetSize().GetHeight() * scale_factor) - yValue;
 		rc.y = max(heightmax, 0);
 	}
 	else
 		rc.y = max(yValue, 0);
+
 	rc.width = widthOutput;
 	rc.height = heightOutput;
 }
@@ -1803,7 +1818,10 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 		top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+	if (angle == 90 || angle == 270)
+		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false, false);
+	else
+		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true, true);
 }
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
@@ -1816,7 +1834,9 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
-	inverted = false;
+	inverted = true;
+	//if (angle == 90 || angle == 270)
+	//	inverted = false;
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 

@@ -170,7 +170,7 @@ protected:
 	int GetSoundVolume();
 	float GetZoomRatio();
 	void CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize,
-		int& left, int& top, const bool& invert);
+		int& left, int& top, const bool& invertY, const bool& invertX);
 	void CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc);
 
 	int GetSrcBitmapWidth();
