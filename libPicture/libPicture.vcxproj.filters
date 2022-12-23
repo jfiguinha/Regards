@@ -112,6 +112,18 @@
     <ClCompile Include="RegardsPDF.cpp">
       <Filter>pdf</Filter>
     </ClCompile>
+    <ClCompile Include="DiaporamaFusion.cpp">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailDiaporama.cpp">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="DiaporamaMove.cpp">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="DiaporamaTransition.cpp">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -246,6 +258,18 @@
     <ClInclude Include="RegardsPDF.h">
       <Filter>pdf</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailDiaporama.h">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DiaporamaFusion.h">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DiaporamaMove.h">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DiaporamaTransition.h">
+      <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -283,6 +307,9 @@
     </Filter>
     <Filter Include="pdf">
       <UniqueIdentifier>{ce966178-15a0-4d77-ae95-7ecd65075539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThumbnailVideoGenerator\PostEffect">
+      <UniqueIdentifier>{0de571a8-a667-4b06-aca9-424fb418f961}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

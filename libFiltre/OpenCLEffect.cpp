@@ -483,11 +483,11 @@ int COpenCLEffect::Rotate90()
 {
 	if (preview && !paramOutput.empty())
 	{
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
 	}
 	else
 	{
-		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
+		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
 	}
 	return 0;
 }
@@ -509,11 +509,11 @@ int COpenCLEffect::Rotate270()
 {
 	if (preview && !paramOutput.empty())
 	{
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
 	}
 	else
 	{
-		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
+		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
 	}
 	return 0;
 }

@@ -585,6 +585,9 @@
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
+    <ClInclude Include="DiaporamaFusion.h" />
+    <ClInclude Include="DiaporamaMove.h" />
+    <ClInclude Include="DiaporamaTransition.h" />
     <ClInclude Include="ExrOption.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
@@ -615,6 +618,7 @@
     <ClInclude Include="StreamInfo.h" />
     <ClInclude Include="ThumbnailData.h" />
     <ClInclude Include="ThumbnailDataStorage.h" />
+    <ClInclude Include="ThumbnailDiaporama.h" />
     <ClInclude Include="ThumbnailVideoExport.h" />
     <ClInclude Include="TiffOption.h" />
     <ClInclude Include="VideoPlayer.h" />
@@ -636,6 +640,9 @@
     <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
+    <ClCompile Include="DiaporamaFusion.cpp" />
+    <ClCompile Include="DiaporamaMove.cpp" />
+    <ClCompile Include="DiaporamaTransition.cpp" />
     <ClCompile Include="ExrOption.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="Heic.cpp" />
@@ -661,6 +668,7 @@
     <ClCompile Include="ScaleThumbnail.cpp" />
     <ClCompile Include="ThumbnailData.cpp" />
     <ClCompile Include="ThumbnailDataStorage.cpp" />
+    <ClCompile Include="ThumbnailDiaporama.cpp" />
     <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
     <ClCompile Include="VideoPlayer.cpp" />

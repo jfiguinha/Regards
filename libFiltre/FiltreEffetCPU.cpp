@@ -2107,9 +2107,9 @@ void CFiltreEffetCPU::RotateMatrix(const int& angle, Mat& src)
 int CFiltreEffetCPU::Rotate90()
 {
 	if (preview)
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
 	else
-		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
+		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
 
 	return 0;
 }
@@ -2130,9 +2130,9 @@ int CFiltreEffetCPU::Rotate180()
 int CFiltreEffetCPU::Rotate270()
 {
 	if (preview)
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
 	else
-		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
+		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
 	
 	return 0;
 }
