@@ -21,7 +21,7 @@
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
 #include <WindowUtility.h>
-
+#include <picture_utility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
@@ -1637,6 +1637,13 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 		cv::Mat bitmap = filtreEffet->GetMat();
+
+		if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
+		{
+			float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput, heightOutput);
+			cv::resize(bitmap, bitmap, cv::Size(bitmap.size().width * percent, bitmap.size().height * percent));
+		}
+			
 
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 		if (glTexture != nullptr)

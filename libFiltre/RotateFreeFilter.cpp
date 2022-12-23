@@ -108,18 +108,30 @@ bool CRotateFreeFilter::IsSourcePreview()
 
 void CRotateFreeFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
+  /*
     if (effectParameter != nullptr && !source.empty())
     {
         CFreeRotateEffectParameter* rotate = (CFreeRotateEffectParameter*)effectParameter;
         filtreEffet->RotateFree(rotate->angle);
     }
+    */
 
 }
 
 
 void CRotateFreeFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
+    if (effectParameter != nullptr && !source.empty())
+    {
+        CFreeRotateEffectParameter* rotate = (CFreeRotateEffectParameter*)effectParameter;
+        filtreEffet->RotateFree(rotate->angle);
+        /*
+        cv::Mat preview = filtreEffet->GetBitmap(false);
+        widthOutput = preview.size().width;
+        heightOutput = preview.size().height;
+        */
 
+    }
 }
 
 CImageLoadingFormat* CRotateFreeFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)

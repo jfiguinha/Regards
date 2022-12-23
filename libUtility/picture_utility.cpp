@@ -20,6 +20,35 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 }
 
 
+
+float CPictureUtility::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth, const int& screenHeight)
+{
+
+	if (pictureWidth == 0 && pictureHeight == 0)
+		return 1.0f;
+
+	float new_ratio;
+
+	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
+
+	if (pictureWidth > pictureHeight)
+		new_ratio = static_cast<float>(screenWidth) / static_cast<float>(pictureWidth);
+	else
+		new_ratio = static_cast<float>(screenHeight) / static_cast<float>(pictureHeight);
+
+	if ((pictureHeight * new_ratio) > screenHeight)
+	{
+		new_ratio = static_cast<float>(screenHeight) / static_cast<float>(pictureHeight);
+	}
+	if ((pictureWidth * new_ratio) > screenWidth)
+	{
+		new_ratio = static_cast<float>(screenWidth) / static_cast<float>(pictureWidth);
+	}
+
+	return new_ratio;
+}
+
+
 void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 {
 	if (_image.empty())

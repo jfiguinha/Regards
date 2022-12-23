@@ -166,7 +166,6 @@ protected:
 	GLTexture* DisplayTexture(GLTexture* glTexture);
 	void StopVideoThread(wxCommandEvent& event);
 	float CalculRatio(const int& pictureWidth, const int& pictureHeight);
-	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
 	void SetSoundVolume(const int& soundVolume);
 	int GetSoundVolume();
 	float GetZoomRatio();

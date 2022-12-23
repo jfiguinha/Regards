@@ -470,39 +470,13 @@ void CVideoControlSoft::ChangeVideoFormat()
 }
 
 
-float CVideoControlSoft::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
-{
-	
-	if (pictureWidth == 0 && pictureHeight == 0)
-		return 1.0f;
-
-	float new_ratio;
-
-	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
-
-	if (pictureWidth > pictureHeight)
-		new_ratio = static_cast<float>(parentRender->GetSize().GetWidth()) / static_cast<float>(pictureWidth);
-	else
-		new_ratio = static_cast<float>(parentRender->GetSize().GetHeight()) / static_cast<float>(pictureHeight);
-
-	if ((pictureHeight * new_ratio) > parentRender->GetSize().GetHeight())
-	{
-		new_ratio = static_cast<float>(parentRender->GetSize().GetHeight()) / static_cast<float>(pictureHeight);
-	}
-	if ((pictureWidth * new_ratio) > parentRender->GetSize().GetWidth())
-	{
-		new_ratio = static_cast<float>(parentRender->GetSize().GetWidth()) / static_cast<float>(pictureWidth);
-	}
-
-	return new_ratio;
-}
 
 float CVideoControlSoft::GetZoomRatio()
 {
 	float zoom;
 	if (shrinkVideo)
 	{
-		zoom = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+		zoom = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(), parentRender->GetSize().GetWidth(), parentRender->GetSize().GetHeight());
 	}
 	else
 	{
@@ -516,8 +490,7 @@ float CVideoControlSoft::GetZoomRatio()
 float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
 	
-
-	float newRatio = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	float newRatio = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(), parentRender->GetSize().GetWidth(), parentRender->GetSize().GetHeight());
 	int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
 	printf("Ratio %f \n", newRatio);

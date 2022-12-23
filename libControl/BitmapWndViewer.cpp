@@ -188,6 +188,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 			{
 				filtreEffet->SetPreviewMode(false);
 				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+				updateFilter = false;
 				bitmapwidth = filtreEffet->GetWidth();
 				bitmapheight = filtreEffet->GetHeight();
 			}

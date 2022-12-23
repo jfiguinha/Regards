@@ -2041,11 +2041,11 @@ int CFiltreEffetCPU::RotateFree(const double& angle, const int& widthOut, const 
 
 	warpAffine(image, out, rot, bbox.size());
 
-	
+
 	if (preview)
 		out.copyTo(paramOutput);
 	else
-		out.copyTo(input);
+		out.copyTo(image);
 
 	rot.release();
 
