@@ -446,6 +446,12 @@ void CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)
     }   
     needToRefresh = true;
 	process_end = true;
+    
+#ifdef __WXGTK__
+    //cout << "CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)" << endl;
+    wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+    wxQueueEvent(this, eventRefresh);
+#endif
 }
 
 void CThumbnailVideo::ResizeThumbnail()

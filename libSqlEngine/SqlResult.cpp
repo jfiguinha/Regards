@@ -60,7 +60,7 @@ wxString CSqlResult::ColumnDataText(const int & clmNum)
     int32_t num_bytes = sqlite3_column_bytes(pRes, clmNum);
     memcpy(buf, sqlite3_column_text(pRes, clmNum), num_bytes);
     buf[num_bytes] = '\0';
-    cout << "ColumnDataText buf " << buf << endl;
+    //cout << "ColumnDataText buf " << buf << endl;
      wxString utf8 =  wxString::FromUTF8(buf);
     /*
     string data = string(buf);
