@@ -200,16 +200,16 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 	}
 	else
 	{
-		cv::Mat bitmap;
 		muBitmap.lock();
-		pictureFrame.copyTo(bitmap);
+		cv::flip(pictureFrame, bitmap, 0);
 		muBitmap.unlock();
+		
 	}
 
 
 	if (!bitmap.empty())
 	{
-		CPictureUtility::ApplyRotation(bitmap, angle);
+		CPictureUtility::ApplyRotation(bitmap, 360 - angle);
 	}
 	return bitmap;
 }
@@ -1559,8 +1559,8 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
 		&convertedFrameBuffer, &linesize);
 
-	//bitmapData->VertFlipBuf();
 
+	cv::flip(bitmapData, bitmapData, 0);
 	return bitmapData;
 }
 
@@ -1896,7 +1896,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
-	inverted = true;
+	inverted = false;
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -1925,7 +1925,6 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 	{
 		ApplyOpenCVEffect(bitmapOut);
 	}
-
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	if (glTexture != nullptr)
