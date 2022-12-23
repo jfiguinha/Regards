@@ -643,6 +643,7 @@
     <ClInclude Include="TreatmentData.h" />
     <ClInclude Include="ViewerFrame.h" />
     <ClInclude Include="WaitingWindow.h" />
+    <ClInclude Include="window_mode_id.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">

@@ -177,6 +177,9 @@
     <ClInclude Include="ThumbnailViewerPicture.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
+    <ClInclude Include="window_mode_id.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">

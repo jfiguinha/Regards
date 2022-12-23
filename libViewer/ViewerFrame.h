@@ -34,6 +34,10 @@ namespace Regards
 			ID_CATEGORYDETECTION = 14,
 			ID_ASSOCIATE = 15,
 			ID_ExternalProgram = 16,
+			ID_WINDOWFACE = 17,
+			ID_WINDOWFOLDER = 18,
+			ID_WINDOWVIEWER = 19,
+			ID_WINDOWPICTURE = 20,
 			ID_VIDEO = 1018,
 			ID_AUDIO = 1019,
 			ID_SUBTITLE = 1020,
@@ -105,6 +109,13 @@ namespace Regards
 			void OnTimerLoadPicture(wxTimerEvent& event);
 			void OnTimerEndLoadPicture(wxTimerEvent& event);
 			bool CheckDatabase(FolderCatalogVector & folderList);
+
+			void OnWindowFace(wxCommandEvent& event);
+			void OnWindowFolder(wxCommandEvent& event);
+			void OnWindowViewer(wxCommandEvent& event);
+			void OnWindowPicture(wxCommandEvent& event);
+
+
 		wxDECLARE_EVENT_TABLE();
 
 

@@ -28,6 +28,7 @@
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
 #include <wx/stdpaths.h>
+#include "window_mode_id.h"
 #include <wx/busyinfo.h>
 using namespace std;
 using namespace Regards::Print;
@@ -180,8 +181,24 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxString labelFile = CLibResource::LoadStringFromResource(L"labelFile", 1); //L"&File";
 	wxString labelParameter = CLibResource::LoadStringFromResource(L"labelParameter", 1); //L"&Parameter";
 	wxString labelSizeIcon = CLibResource::LoadStringFromResource(L"labelSizeIcon", 1); //L"&Icon Size";
+	wxString labelWindow = CLibResource::LoadStringFromResource(L"labelWindow", 1); //L"&Icon Size";
 	wxString labelThumbnail = CLibResource::LoadStringFromResource(L"labelThumbnail", 1); //L"&Thumbnail";
 	wxString labelHelp = CLibResource::LoadStringFromResource(L"labelHelp", 1); //L"&Help";
+
+	auto menuWindow = new wxMenu;
+	wxString labelWindowFace = CLibResource::LoadStringFromResource(L"labelWindowFace", 1);
+	wxString labelWindowFaceLink = CLibResource::LoadStringFromResource(L"labelWindowFaceLink", 1);
+	wxString labelWindowFolder = CLibResource::LoadStringFromResource(L"labelWindowFolder", 1);
+	wxString labelWindowFolderLink = CLibResource::LoadStringFromResource(L"labelWindowFolderLink", 1);
+	wxString labelWindowViewer = CLibResource::LoadStringFromResource(L"labelWindowViewer", 1);
+	wxString labelWindowViewerLink = CLibResource::LoadStringFromResource(L"labelWindowViewerLink", 1);
+	wxString labelWindowPicture = CLibResource::LoadStringFromResource(L"labelWindowPicture", 1);
+	wxString labelWindowPictureLink = CLibResource::LoadStringFromResource(L"labelWindowPictureLink", 1);
+
+	menuWindow->Append(ID_WINDOWFACE, labelWindowFaceLink, labelWindowFace);
+	menuWindow->Append(ID_WINDOWFOLDER, labelWindowFolderLink, labelWindowFolder);
+	menuWindow->Append(ID_WINDOWVIEWER, labelWindowViewerLink, labelWindowViewer);
+	menuWindow->Append(ID_WINDOWPICTURE, labelWindowPictureLink, labelWindowPicture);
 
 	auto menuSizeIcon = new wxMenu;
 	menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
@@ -208,6 +225,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	auto menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuSizeIcon, labelSizeIcon);
+	menuBar->Append(menuWindow, labelWindow);
 	menuBar->Append(menuHelp, labelHelp);
 	wxFrameBase::SetMenuBar(menuBar);
 
@@ -600,11 +618,88 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				}
 			}
 			break;
+
+
+
+		case WXK_F2:
+			{
+				wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+				OnWindowFace(event);
+			}
+			break;
+
+		case WXK_F3:
+			{
+				wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+				OnWindowFolder(event);
+			}
+			break;
+
+		case WXK_F4:
+			{
+				wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+				OnWindowViewer(event);
+			}
+			break;
+
+		case WXK_F6:
+			{
+				wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+				OnWindowPicture(event);
+			}
+			break;
+
 		default: ;
 		}
 	}
 	event.Skip();
 }
+
+void CViewerFrame::OnWindowFace(wxCommandEvent& event)
+{
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (central != nullptr)
+	{
+		wxCommandEvent _event(wxEVENT_SETMODEVIEWER);
+		_event.SetInt(WINDOW_FACE);
+		wxPostEvent(central, _event);
+	}
+
+}
+
+void CViewerFrame::OnWindowFolder(wxCommandEvent& event)
+{
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (central != nullptr)
+	{
+		wxCommandEvent _event(wxEVENT_SETMODEVIEWER);
+		_event.SetInt(WINDOW_EXPLORER);
+		wxPostEvent(central, _event);
+	}
+}
+
+void CViewerFrame::OnWindowViewer(wxCommandEvent& event)
+{
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (central != nullptr)
+	{
+		wxCommandEvent _event(wxEVENT_SETMODEVIEWER);
+		_event.SetInt(WINDOW_VIEWER);
+		wxPostEvent(central, _event);
+	}
+}
+
+void CViewerFrame::OnWindowPicture(wxCommandEvent& event)
+{
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (central != nullptr)
+	{
+		wxCommandEvent _event(wxEVENT_SETMODEVIEWER);
+		_event.SetInt(WINDOW_PICTURE);
+		wxPostEvent(central, _event);
+	}
+}
+
 
 void CViewerFrame::SetFullscreen()
 {
@@ -861,6 +956,7 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 	}
 }
 
+
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 {
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
@@ -909,6 +1005,14 @@ void CViewerFrame::OnPageMargins(wxCommandEvent& WXUNUSED(event))
 }
 #endif
 
+/*
+
+			ID_WINDOWFACE = 17,
+			ID_WINDOWFOLDER = 18,
+			ID_WINDOWVIEWER = 19,
+			ID_WINDOWPICTURE = 20,
+*/
+
 wxBEGIN_EVENT_TABLE(CViewerFrame, wxFrame)
 	EVT_MENU(ID_Hello, CViewerFrame::OnHello)
 	EVT_MENU(wxID_HELP, CViewerFrame::OnHelp)
@@ -916,6 +1020,11 @@ wxBEGIN_EVENT_TABLE(CViewerFrame, wxFrame)
 	EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 	EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
 	EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
+
+	EVT_MENU(ID_WINDOWFACE, CViewerFrame::OnWindowFace)
+	EVT_MENU(ID_WINDOWFOLDER, CViewerFrame::OnWindowFolder)
+	EVT_MENU(ID_WINDOWVIEWER, CViewerFrame::OnWindowViewer)
+	EVT_MENU(ID_WINDOWPICTURE, CViewerFrame::OnWindowPicture)
 	//EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 	EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
 	EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)

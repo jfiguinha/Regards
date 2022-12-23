@@ -45,10 +45,7 @@ using namespace Regards::FiltreEffet;
 
 #define wxEVENT_ENDLOADPICTURE 1001
 
-#define WINDOW_FACE 2
-#define WINDOW_EXPLORER 3
-#define WINDOW_VIEWER 1
-#define WINDOW_PICTURE 4
+#include "window_mode_id.h"
 
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
