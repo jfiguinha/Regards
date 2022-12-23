@@ -202,7 +202,11 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 	else
 	{
 		muBitmap.lock();
-		cv::flip(pictureFrame, bitmap, 0);
+		if(angle == 90 || angle == 270)
+			cv::flip(pictureFrame, bitmap, 0);
+		else
+			pictureFrame.copyTo(bitmap);
+		//
 		muBitmap.unlock();
 		
 	}
@@ -1561,7 +1565,7 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 		&convertedFrameBuffer, &linesize);
 
 
-	cv::flip(bitmapData, bitmapData, 0);
+	//cv::flip(bitmapData, bitmapData, 0);
 	return bitmapData;
 }
 
@@ -1799,7 +1803,7 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 		top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false);
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 }
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
@@ -1890,6 +1894,10 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 {
 	int widthOutput = 0;
 	int heightOutput = 0;
+	inverted = true;
+	if (angle == 90 || angle == 270)
+		inverted = false;
+
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
@@ -1898,7 +1906,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
-	inverted = false;
+
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -1939,7 +1947,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 
 void CVideoControlSoft::Rotate90()
 {
-	angle += 270;
+	angle += 90;
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
@@ -1947,7 +1955,7 @@ void CVideoControlSoft::Rotate90()
 
 void CVideoControlSoft::Rotate270()
 {
-	angle += 90;
+	angle += 270;
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
