@@ -1908,9 +1908,11 @@ cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture)
 {
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+	/*
 #ifdef WIN32
 	cv::Mat _bitmap;
-	/*
+	int format = TestImageFormat(fileName);
+
 	if(isThumbnail)
 		_bitmap = wic->GetThumbnailMetadata(CConvertUtility::ConvertToStdString(fileName));
 	else if (numPicture == 0)
@@ -1920,15 +1922,15 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		if(nbFrame == GetNbImage(fileName))
 			_bitmap = wic->GetPicture(CConvertUtility::ConvertToStdString(fileName), numPicture);
 	}
-	*/
+
 	if (_bitmap.empty())
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else
     {
 		bitmap->SetPicture(_bitmap);
-        ApplyOrientation(fileName, true, bitmap);
+		if(format != HEIC && format != AVIF)
+			ApplyOrientation(fileName, true, bitmap);
     }
-/*
 #elif defined(__APPLE__)
     int width = 0;
     int height = 0;
@@ -1945,10 +1947,10 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
     }
     else
         LoadPicture(fileName, isThumbnail, numPicture, bitmap);
-*/
 #else
+*/
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
-#endif
+//#endif
 	return bitmap;
 }
 
