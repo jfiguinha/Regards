@@ -93,6 +93,7 @@ int CDiaporamaTransition::ExecuteProcess(const wxString& outfile, vector<wxStrin
 	{
 		//int iStart = i * nbFrameByPicture;
 		cv::Mat mat;
+		src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 		ExecuteEffect(mat, src_bitmap, nbFrameByPicture, width, height, effect);
 		if (endProcess)
 			break;
