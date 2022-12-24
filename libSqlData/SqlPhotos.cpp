@@ -153,52 +153,85 @@ void CSqlPhotos::GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, in
 {
 	switch (exif)
 	{
+	case 0:
+		angle = 0;
+		flipH = 0;
+		flipV = 0;
+		break;
 	case 1:
 		angle = 0;
-		flipH = 0;
+		flipH = 1;
 		flipV = 0;
 		break;
-
 	case 2:
 		angle = 0;
-		flipH = 1;
-		flipV = 0;
+		flipH = 0;
+		flipV = 1;
 		break;
-
 	case 3:
-		angle = 180;
+		angle = 0;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 4:
+		angle = 90;
 		flipH = 0;
 		flipV = 0;
 		break;
-
-	case 4:
-		angle = 180;
-		flipH = 1;
-		flipV = 0;
-		break;
-
 	case 5:
 		angle = 90;
-		flipH = 0;
+		flipH = 1;
 		flipV = 0;
 		break;
-
 	case 6:
 		angle = 90;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 7:
+		angle = 90;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 8:
+		angle = 180;
+		flipH = 0;
+		flipV = 0;
+		break;
+	case 9:
+		angle = 180;
 		flipH = 1;
 		flipV = 0;
 		break;
-
-	case 7:
+	case 10:
+		angle = 180;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 11:
+		angle = 180;
+		flipH = 1;
+		flipV = 1;
+		break;
+	case 12:
 		angle = 270;
 		flipH = 0;
 		flipV = 0;
 		break;
-
-	case 8:
+	case 13:
 		angle = 270;
 		flipH = 1;
 		flipV = 0;
+		break;
+	case 14:
+		angle = 270;
+		flipH = 0;
+		flipV = 1;
+		break;
+	case 15:
+		angle = 270;
+		flipH = 1;
+		flipV = 1;
 		break;
 	}
 }

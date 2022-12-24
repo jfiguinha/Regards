@@ -649,9 +649,11 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 
 void CVideoControlSoft::SetRotation(const int& rotation)
 {
+	/*
 	wxCommandEvent event(EVENT_VIDEOROTATION);
 	event.SetExtraLong(rotation);
 	wxPostEvent(parentRender, event);
+	*/
 	if (rotation == 90)
 		angle = 270;
 	else if (rotation == -90)
@@ -664,6 +666,19 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 		angle = 90;
 	else if (rotation == 270)
 		angle = 90;
+
+	CSqlPhotos sqlPhotos;
+	int exif = sqlPhotos.GetPhotoExif(filename);
+	if (exif != -1)
+	{
+		int _flipH = 0;
+		int _flipV = 0;
+		CSqlPhotos::GetAngleAndFlip(exif, angle, _flipH, _flipV);
+		if (_flipH)
+			flipH = true;
+		if (_flipV)
+			flipV = true;
+	}
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
@@ -1011,18 +1026,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 		firstMovie = false;
 		parentRender->Refresh();
 
-		CSqlPhotos sqlPhotos;
-		int exif = sqlPhotos.GetPhotoExif(filename);
-		if (exif != -1)
-		{
-			int _flipH = 0;
-			int _flipV = 0;
-			CSqlPhotos::GetAngleAndFlip(exif, angle, _flipH, _flipV);
-			if (_flipH)
-				flipH = true;
-			if (_flipV)
-				flipV = true;
-		}
+
 
 
 	}
@@ -1044,7 +1048,6 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		videoStart = true;
 		fpsTimer->Start(1000);
 		ShrinkVideo();
-
 
 		wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
@@ -1991,7 +1994,7 @@ void CVideoControlSoft::Rotate90()
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
-	sqlPhotos.InsertPhotoExif(filename, exif);
+	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
 void CVideoControlSoft::Rotate270()
@@ -2003,7 +2006,7 @@ void CVideoControlSoft::Rotate270()
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
-	sqlPhotos.InsertPhotoExif(filename, exif);
+	sqlPhotos.UpdatePhotoExif(filename, exif);
 		
 }
 
@@ -2015,7 +2018,7 @@ void CVideoControlSoft::FlipVertical()
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
-	sqlPhotos.InsertPhotoExif(filename, exif);
+	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
 void CVideoControlSoft::FlipHorizontal()
@@ -2026,7 +2029,7 @@ void CVideoControlSoft::FlipHorizontal()
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
-	sqlPhotos.InsertPhotoExif(filename, exif);
+	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
 bool CVideoControlSoft::IsCPUContext()
