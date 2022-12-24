@@ -19,12 +19,13 @@
 #include <ConvertUtility.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
-
+#include <SqlPhotos.h>
 #include <RegardsConfigParam.h>
 #include <MediaInfo.h>
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
 using namespace Regards::OpenCV;
+using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
 
 #define TIMER_FPS 0x10001
@@ -651,7 +652,18 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 	wxCommandEvent event(EVENT_VIDEOROTATION);
 	event.SetExtraLong(rotation);
 	wxPostEvent(parentRender, event);
-	angle = 360 - rotation;
+	if (rotation == 90)
+		angle = 270;
+	else if (rotation == -90)
+		angle = 270;
+	else if (rotation == -180)
+		angle = 180;
+	else if (rotation == 180)
+		angle = 180;
+	else if (rotation == -270)
+		angle = 90;
+	else if (rotation == 270)
+		angle = 90;
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
@@ -948,6 +960,8 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
 	if (videoEnd || stopVideo)
 	{
+
+
 		if (thumbnailVideo != nullptr)
 			delete thumbnailVideo;
 
@@ -996,6 +1010,19 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		firstMovie = false;
 		parentRender->Refresh();
+
+		CSqlPhotos sqlPhotos;
+		int exif = sqlPhotos.GetPhotoExif(filename);
+		if (exif != -1)
+		{
+			int _flipH = 0;
+			int _flipV = 0;
+			CSqlPhotos::GetAngleAndFlip(exif, angle, _flipH, _flipV);
+			if (_flipH)
+				flipH = true;
+			if (_flipV)
+				flipV = true;
+		}
 
 
 	}
@@ -1807,10 +1834,11 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 		top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
-	if (angle == 90 || angle == 270)
-		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false, false);
-	else
-		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true, true);
+	//if (angle == 90 || angle == 270)
+	//	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false, false);
+	//else
+		
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true, true);
 }
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
@@ -1960,6 +1988,10 @@ void CVideoControlSoft::Rotate90()
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
+
+	CSqlPhotos sqlPhotos;
+	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	sqlPhotos.InsertPhotoExif(filename, exif);
 }
 
 void CVideoControlSoft::Rotate270()
@@ -1968,6 +2000,11 @@ void CVideoControlSoft::Rotate270()
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
+
+	CSqlPhotos sqlPhotos;
+	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	sqlPhotos.InsertPhotoExif(filename, exif);
+		
 }
 
 void CVideoControlSoft::FlipVertical()
@@ -1975,6 +2012,10 @@ void CVideoControlSoft::FlipVertical()
 	flipV = !flipV;
 	if (pause)
 		needToRefresh = true;
+
+	CSqlPhotos sqlPhotos;
+	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	sqlPhotos.InsertPhotoExif(filename, exif);
 }
 
 void CVideoControlSoft::FlipHorizontal()
@@ -1982,6 +2023,10 @@ void CVideoControlSoft::FlipHorizontal()
 	flipH = !flipH;
 	if (pause)
 		needToRefresh = true;
+
+	CSqlPhotos sqlPhotos;
+	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	sqlPhotos.InsertPhotoExif(filename, exif);
 }
 
 bool CVideoControlSoft::IsCPUContext()

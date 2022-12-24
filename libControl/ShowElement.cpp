@@ -655,7 +655,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
    		if (!isThumbnail && exif > 0)
 		{
 
-			GetAngleAndFlipFromExif(exif, angle, flipH, flipV);
+			CSqlPhotos::GetAngleAndFlip(exif, angle, flipH, flipV);
 			//bitmap->SetOrientation(exif);
 		}
 		int numEffect = 0;

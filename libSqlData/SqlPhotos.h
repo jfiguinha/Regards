@@ -27,8 +27,8 @@ namespace Regards
 			bool UpdatePhotoExif(const wxString& filepath, const int64_t& exif);
 			wxString GetPhotoPath(const int64_t &numPhoto);
 
-			void GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV);
-			int GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV);
+			static void GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV);
+			static int GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV);
 
 			bool DeletePhoto(const int64_t &numPhoto);
 			void DeletePhotoSearch();

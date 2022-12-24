@@ -63,7 +63,7 @@ cv::Rect CFiltreEffetCPUImpl::CalculRect(int widthIn, int heightIn, int widthOut
 		posX = srcx;
 		posY = srcy;
 
-		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
 	}
 	else if (angle == 180)
 	{
@@ -78,7 +78,8 @@ cv::Rect CFiltreEffetCPUImpl::CalculRect(int widthIn, int heightIn, int widthOut
 		posX = srcx;
 		posY = srcy;
 
-		posY = heightIn - posY - 1;
+		posX = widthIn - posX - 1;
+		
 	}
 
 	if (angle == 90 || angle == 270)
