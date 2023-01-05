@@ -48,6 +48,7 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
+#include <tbb/tbbmalloc_proxy.h>
 #endif
 
 #ifndef __WXGTK__

@@ -165,8 +165,14 @@ bool CSqlLibExplorer::InitDatabase(const wxString& lpFilename)
 	else
 	{
 		OpenConnection(lpFilename, false, load_inmemory);
-		ExecuteSQLWithNoResult("VACUUM;");
+		//ExecuteSQLWithNoResult("VACUUM;");
 		hr = ExecuteSQLWithNoResult("PRAGMA auto_vacuum = FULL;");
+		hr = ExecuteSQLWithNoResult("PRAGMA journal_mode = WAL;");
+		hr = ExecuteSQLWithNoResult("PRAGMA synchronous = normal;");
+		hr = ExecuteSQLWithNoResult("PRAGMA temp_store = memory;");
+		hr = ExecuteSQLWithNoResult("PRAGMA mmap_size = 30000000000;");
+		hr = ExecuteSQLWithNoResult("PRAGMA page_size = 32768;");
+		hr = ExecuteSQLWithNoResult("pragma optimize;");
 	}
 
 	return (hr != -1);
