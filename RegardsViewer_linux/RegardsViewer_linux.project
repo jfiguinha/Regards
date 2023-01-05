@@ -255,6 +255,7 @@
         <Library Value="tesseract"/>
         <Library Value="leptonica"/>
         <Library Value="tbb"/>
+        <Library Value="tbbmalloc_proxy"/>
         <Library Value="aom"/>
         <Library Value="webp"/>
         <Library Value="webpdemux"/>
