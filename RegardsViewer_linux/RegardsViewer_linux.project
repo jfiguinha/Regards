@@ -184,7 +184,6 @@
         <Library Value="Dialog"/>
         <Library Value="Window"/>
         <Library Value="Utility"/>
-        <Library Value="sqlite3"/>
         <Library Value="heif"/>
         <Library Value="heif_static"/>
         <Library Value="liblibde265"/>

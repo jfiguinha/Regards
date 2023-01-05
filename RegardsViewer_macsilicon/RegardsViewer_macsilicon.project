@@ -184,7 +184,6 @@
         <Library Value="Window"/>
         <Library Value="RegardsGL"/>
         <Library Value="Dialog"/>
-        <Library Value="Sqlite3"/>
         <Library Value="Utility"/>
         <Library Value="mediainfo"/>
         <Library Value="Theme"/>

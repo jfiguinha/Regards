@@ -186,7 +186,6 @@
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Dialog"/>
-        <Library Value="Sqlite3"/>
         <Library Value="Compress"/>
         <Library Value="Utility"/>
         <Library Value="mediainfo"/>

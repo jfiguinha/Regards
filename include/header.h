@@ -48,8 +48,11 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
+#ifndef __APPLE__
 #include <tbb/tbbmalloc_proxy.h>
 #endif
+#endif
+
 
 #ifndef __WXGTK__
 #include <epoxy/gl.h>
