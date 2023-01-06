@@ -271,7 +271,7 @@ uint8_t * ReadToPNGPicture(uint8_t * buf, size_t buf_len, size_t * buf_out, int 
 
 	bpg_decoder_close(img);
 
-	buf_out = mempng.size;
+	*buf_out = mempng.size;
 
 	return mempng.buffer;
 }
