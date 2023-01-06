@@ -820,7 +820,6 @@ struct mytask
 cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 {
 
-	
 	struct PictureEncoder
 	{
 		x265Frame* frame = nullptr;
@@ -1027,7 +1026,8 @@ END:
 	Reader::Destroy(reader);
 	
 
-/*
+	/*
+
 	cv::Mat picture;
 	try
 	{
@@ -1049,16 +1049,20 @@ END:
 
 		int stride = 0;
 		const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-		memcpy(picture.data, data, stride);
+		memcpy(picture.data, data, stride * height);
 
 		heif_image_release(img);
 		heif_image_handle_release(handle);
 		heif_context_free(ctx);
 
+
+		cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+
 	}
 	catch (const heif::Error& err) {
 		std::cerr << err.get_message() << "\n";
 	}
+
 	*/
 	return picture;
 }
