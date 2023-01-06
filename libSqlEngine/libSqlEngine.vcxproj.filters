@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{c5b352af-48f9-47dd-85fa-8e511d9946a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{81d14a85-755e-4f50-b658-330b77e084dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +39,12 @@
     <ClInclude Include="SqlLibResource.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="sqlite3.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite3ext.h">
+      <Filter>lib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlEngine.cpp">
@@ -52,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlite3.c">
+      <Filter>lib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
