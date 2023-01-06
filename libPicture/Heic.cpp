@@ -118,22 +118,31 @@ cv::Mat GetRGBPicture(const de265_image* img)
 	{
 	case de265_chroma_420:
 		{
-			auto _y = new uint8_t[frame_width * frame_height];
-			auto _cb = new uint8_t[frame_width * frame_height / 4];
-			auto _cr = new uint8_t[frame_width * frame_height / 4];
-			picture.create(frame_height, frame_width, CV_8UC4);
+
 
 			if (stride == frame_width && chroma_stride == frame_width / 2)
 			{
 				// fast copy
-
+				/*
 				memcpy(_y, yOrigin, frame_width * frame_height);
 				memcpy(_cb, cbOrigin, frame_width * frame_height / 4);
 				memcpy(_cr, crOrigin, frame_width * frame_height / 4);
+				*/
+
+				cv::Mat mSrc_YUV420(cv::Size(frame_width, frame_height + frame_height / 2), CV_8UC1);
+				memcpy(mSrc_YUV420.data, yOrigin, frame_width * frame_height);
+				memcpy(mSrc_YUV420.data + (frame_width * frame_height), cbOrigin, frame_width * frame_height / 4);
+				memcpy(mSrc_YUV420.data + (frame_width * frame_height + frame_width * frame_height / 4), crOrigin, frame_width * frame_height / 4);
+				cv::cvtColor(mSrc_YUV420, picture, cv::COLOR_YUV2RGB_I420);
+				//cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
 			}
 			else
 			{
 				// copy line by line, because sizes are different
+				auto _y = new uint8_t[frame_width * frame_height];
+				auto _cb = new uint8_t[frame_width * frame_height / 4];
+				auto _cr = new uint8_t[frame_width * frame_height / 4];
+				picture.create(frame_height, frame_width, CV_8UC4);
 
 				for (auto y = 0; y < frame_height; y++)
 				{
@@ -145,11 +154,13 @@ cv::Mat GetRGBPicture(const de265_image* img)
 					memcpy(_cb + y * frame_width / 2, cbOrigin + chroma_stride * y, frame_width / 2);
 					memcpy(_cr + y * frame_width / 2, crOrigin + chroma_stride * y, frame_width / 2);
 				}
+
+				yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
+				delete[] _y;
+				delete[] _cb;
+				delete[] _cr;
 			}
-			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
-			delete[] _y;
-			delete[] _cb;
-			delete[] _cr;
+
 		}
 		break;
 	case de265_chroma_422:
