@@ -1637,17 +1637,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	bool notThumbnail = false;
 #ifdef WIN32
 
-	
-	cv::Mat bmp = wic->GetThumbnailMetadata(fileName.ToStdString());
-	if (!bmp.empty())
-	{
-		CMetadataExiv2 pictureMetadata(fileName);
-		imageLoading = new CImageLoadingFormat();
-		imageLoading->SetPicture(bmp);
-		imageLoading->SetFilename(fileName);
-		imageLoading->SetOrientation(pictureMetadata.GetOrientation());
-		return imageLoading;
-	}
 	HDC screen = GetDC(nullptr);
 	RECT rcClip;
 	GetClipBox(screen, &rcClip);
@@ -1908,49 +1897,7 @@ cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture)
 {
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
-	/*
-#ifdef WIN32
-	cv::Mat _bitmap;
-	int format = TestImageFormat(fileName);
-
-	if(isThumbnail)
-		_bitmap = wic->GetThumbnailMetadata(CConvertUtility::ConvertToStdString(fileName));
-	else if (numPicture == 0)
-	{
-		bool error = true;
-		int nbFrame = wic->GetNbFrame(CConvertUtility::ConvertToStdString(fileName), error);
-		if(nbFrame == GetNbImage(fileName))
-			_bitmap = wic->GetPicture(CConvertUtility::ConvertToStdString(fileName), numPicture);
-	}
-
-	if (_bitmap.empty())
-		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
-	else
-    {
-		bitmap->SetPicture(_bitmap);
-		if(format != HEIC && format != AVIF)
-			ApplyOrientation(fileName, true, bitmap);
-    }
-#elif defined(__APPLE__)
-    int width = 0;
-    int height = 0;
-    unsigned char * data = readimage->ReadImage(fileName,width,height);
-    if(width != 0 && data != nullptr && height != 0 && !isThumbnail)
-    {
-        cv::Mat mat(height, width, CV_8UC4, data);
-        CRegardsBitmap * _bitmap = new CRegardsBitmap();
-        _bitmap->SetMatrix(mat);
-        _bitmap->VertFlipBuf();
-        _bitmap->ConvertToBgr();
-        bitmap->SetPicture(_bitmap);
-        ApplyOrientation(fileName, true, bitmap);
-    }
-    else
-        LoadPicture(fileName, isThumbnail, numPicture, bitmap);
-#else
-*/
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
-//#endif
 	return bitmap;
 }
 

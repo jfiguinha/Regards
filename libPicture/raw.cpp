@@ -17,6 +17,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	CImageLoadingFormat* picture;
 	int type = 0;
+	int orientation = CRegardsRaw::GetOrientation(CConvertUtility::ConvertToStdString(fileName));
 	DataStorage* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
 	if (memFile != nullptr)
 	{
@@ -29,9 +30,9 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
 			picture->SetPicture(jpegImage);
 			picture->SetFilename(fileName);
-			CPictureMetadataExiv metadata(fileName);
-			int orientation = metadata.GetOrientation();
-			picture->SetOrientation(orientation);
+			//CPictureMetadataExiv metadata(fileName);
+			//orientation = metadata.GetOrientation();
+			
 
 		}
 		else
@@ -52,7 +53,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 		picture->SetFilename(fileName);
 	}
 
-
+	picture->RotateExif_withoutflip(orientation);
 	return picture;
 }
 

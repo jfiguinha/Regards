@@ -234,6 +234,58 @@ From exiftool documentation
 8 = Rotate 270 CW
 
 */
+void CImageLoadingFormat::RotateExif_withoutflip(const int& orientation)
+{
+	if (!IsOk())
+		return;
+
+	switch (orientation)
+	{
+	case 1: // top left side
+		cv::flip(_image, _image, 0);
+		break;
+	case 2: // top right side
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
+		break;
+	case 3: // bottom right side
+		cv::flip(_image, _image, 1);
+		break;
+	case 4: // bottom left side
+		break;
+	case 5: //left side top
+		this->Rotate90();
+		break;
+	case 6: // right side top
+		this->Rotate90();
+		cv::flip(_image, _image, 1);
+		break;
+	case 7: // right side bottom
+		this->Rotate90();
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
+		break;
+	case 8: // left side bottom
+		this->Rotate90();
+		cv::flip(_image, _image, 0);
+		break;
+	default:;
+	}
+}
+
+/*
+From exiftool documentation
+
+1 = Horizontal (normal)
+2 = Mirror horizontal
+3 = Rotate 180
+4 = Mirror vertical
+5 = Mirror horizontal and rotate 270 CW
+6 = Rotate 90 CW
+7 = Mirror horizontal and rotate 90 CW
+8 = Rotate 270 CW
+
+*/
 void CImageLoadingFormat::RotateExif(const int& orientation)
 {
 	if (!IsOk())

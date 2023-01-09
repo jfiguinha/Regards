@@ -103,3 +103,17 @@ void CRegardsRaw::GetDimensions(const string& fileName, int& width, int& height)
 	}
 	delete RawProcessor;
 }
+
+int CRegardsRaw::GetOrientation(const string& fileName)
+{
+	// step one: Open file
+	int flip = 0;
+	auto RawProcessor = new LibRaw;
+	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
+	{
+		flip = RawProcessor->imgdata.sizes.flip;
+		//RawProcessor.recycle();
+	}
+	delete RawProcessor;
+	return flip;
+}

@@ -10,6 +10,7 @@ public:
 	~CImageLoadingFormat();
 	//void SaveToJpeg(const wxString& filename);
 	cv::Mat GetOpenCVPicture();
+	void RotateExif_withoutflip(const int& orientation);
 	CImageLoadingFormat* GetPage(const int& numPage);
 	int GetNbPage();
 	int Resize(const int& width, const int& height, const int& method);
