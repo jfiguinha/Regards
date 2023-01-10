@@ -4,6 +4,7 @@
 #include <DecodeRawParameter.h>
 #include <ImageLoadingFormat.h>
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
+#undef __FREEIMAGE__
 #include <ximage.h>
 using namespace Regards::Filter;
 
