@@ -41,6 +41,7 @@
 
 
 
+
 #ifdef LIBBPG
 #if defined(WIN32)
 #include <DllBpg.h>
@@ -2213,7 +2214,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 
 		case PNM:
-		case PNG:
 		case WEBP:
 		case BMP:
 		case PPM:
@@ -2236,6 +2236,29 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 		}
 		break;
+
+		case PNG:
+		{
+			try
+			{
+
+				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(fileName), cv::IMREAD_COLOR);
+				if (!matPicture.empty())
+				{
+					bitmap->SetFilename(fileName);
+					bitmap->SetPicture(matPicture);
+				}
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
+		}
+		break;
+
+
 
 		case TIFF:
 		{

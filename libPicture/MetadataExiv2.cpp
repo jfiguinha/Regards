@@ -11,9 +11,11 @@
 #include "Heic.h"
 #include "ConvertUtility.h"
 
+#include <libexif/exif-data.h>
 
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
+
 
 CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 {
@@ -51,6 +53,26 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 			metaExiv = new CPictureMetadataExiv(buffer, size);
 		}
 	}
+	/*
+	else if (type == PNG)
+	{
+		unsigned char* buf;
+		unsigned int len;
+		ExifData* d;
+		d = exif_data_new_from_file(CConvertUtility::ConvertToUTF8(filename));
+		if (!d) {
+			fprintf(stderr, "Could not load data from '%s'!\n", CConvertUtility::ConvertToUTF8(filename));
+			return;
+		}
+		exif_data_save_data(d, &buf, &len);
+		exif_data_unref(d);
+
+		metaExiv = new CPictureMetadataExiv(buf, len);
+
+
+		free(buf);
+
+	}*/
 	else
 		metaExiv = new CPictureMetadataExiv(filename);
 }
