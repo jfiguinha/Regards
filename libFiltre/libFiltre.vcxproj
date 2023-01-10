@@ -573,7 +573,6 @@
     <ClInclude Include="CropFilter.h" />
     <ClInclude Include="DecodeRaw.h" />
     <ClInclude Include="DecodeRawParameter.h" />
-    <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="FilterData.h" />
     <ClInclude Include="FilterWindowParam.h" />
@@ -653,7 +652,6 @@
     <ClCompile Include="Crop.cpp" />
     <ClCompile Include="CropFilter.cpp" />
     <ClCompile Include="DecodeRaw.cpp" />
-    <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="FilterData.cpp" />
     <ClCompile Include="FilterWindowParam.cpp" />

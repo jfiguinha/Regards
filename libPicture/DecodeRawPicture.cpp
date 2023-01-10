@@ -110,7 +110,7 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 		memcpy(&rawProcessor->imgdata.params, &localData->params,  sizeof(rawProcessor->imgdata.params));
 	}
 	//rawProcessor->imgdata.params.user_flip = 2;
-	rawProcessor->imgdata.params.use_rawspeed = 1;
+	//rawProcessor->imgdata.params.use_rawspeed = 1;
 	
 	try
 	{

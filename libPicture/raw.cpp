@@ -68,7 +68,7 @@ bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoad
 		result = rawProcessor->unpack();
 	}
 
-	rawProcessor->imgdata.params.use_rawspeed = 1;
+	//rawProcessor->imgdata.params.use_rawspeed = 1;
 	rawProcessor->imgdata.params.use_camera_wb = 1;
 
 	try

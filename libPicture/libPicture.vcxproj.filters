@@ -124,6 +124,9 @@
     <ClCompile Include="DiaporamaTransition.cpp">
       <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="DecodeRawPicture.cpp">
+      <Filter>libraw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -269,6 +272,12 @@
     </ClInclude>
     <ClInclude Include="DiaporamaTransition.h">
       <Filter>ThumbnailVideoGenerator\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DecodeRawPicture.h">
+      <Filter>libraw</Filter>
+    </ClInclude>
+    <ClInclude Include="DecodeRawParameter.h">
+      <Filter>libraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

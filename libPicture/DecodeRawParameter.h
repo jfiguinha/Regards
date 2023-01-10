@@ -1,5 +1,5 @@
 #pragma once
-#include "EffectParameter.h"
+#include <EffectParameter.h>
 
 class CDecodeRawParameter : public CEffectParameter
 {
