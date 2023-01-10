@@ -344,13 +344,14 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
       <OpenMP>GenerateParallelCode</OpenMP>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

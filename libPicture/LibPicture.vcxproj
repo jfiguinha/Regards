@@ -88,6 +88,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseInteloneTBB>true</UseInteloneTBB>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -276,7 +277,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>HAVE_PID_T;FFMPEG;LIBRAW_NODLL;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;_CRT_SECURE_NO_WARNINGS;LIBRAW;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POINTERHOLDER_TRANSITION;HAVE_PID_T;FFMPEG;LIBRAW_NODLL;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;_CRT_SECURE_NO_WARNINGS;LIBRAW;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
@@ -289,6 +290,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

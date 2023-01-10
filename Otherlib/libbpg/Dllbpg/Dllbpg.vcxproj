@@ -282,6 +282,7 @@
       <AdditionalIncludeDirectories>../../../libextern/libpng;.;..\;../libbpg;../libgetopt;../;../../../libextern/x265_2.5/source;../../../libextern/x265_2.5/build/msys/8bit;../../../libextern/dlib-19.4/dlib/external/zlib;../../../libextern/dlib-19.4/dlib/external/libpng</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
