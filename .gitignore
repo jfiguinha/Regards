@@ -157,3 +157,8 @@
 /include/x64/Release
 /InsertResource/x64/Release
 /libFiltreInterface/x64/Release
+/InsertResource/x64/Debug
+/include/x64/Debug
+/GPUCache
+/RegardsViewer/package/RegardsViewer2Setup.exe
+/RegardsViewer/VTune Profiler Results/RegardsViewer
