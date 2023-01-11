@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Tiff">
+      <UniqueIdentifier>{c7554daf-d08f-45d6-852c-0dba45d1bd3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Decompressors">
+      <UniqueIdentifier>{321da086-c0e8-42d8-abc1-a91484454ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{18273ac7-b3aa-49dc-9c28-262e6c3c3884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Decoders">
+      <UniqueIdentifier>{a9b61ba2-6fd5-46bd-873f-365c26485ed9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CameraMetadata">
+      <UniqueIdentifier>{766dcea8-a099-4c14-897f-ba22d58d9aca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RawImage">
+      <UniqueIdentifier>{f91bb9a5-ee88-410e-b241-8b41024ef93b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Tools">
+      <UniqueIdentifier>{c5d41388-aa27-4bf7-900d-ebd8a44f4b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Decompressors">
+      <UniqueIdentifier>{ef373e87-f2f8-4e6b-9c61-b47dbffeeec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Decoders">
+      <UniqueIdentifier>{b57a8cd9-8463-4f74-8d78-45d17ef3ae96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CameraMetadata">
+      <UniqueIdentifier>{dbb77621-0440-45d2-827a-057acf8cdcbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tiff">
+      <UniqueIdentifier>{53d63ee2-6957-47d0-bfa3-c2d5b30b93f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffEntry.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffEntryBE.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffIFD.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffIFDBE.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffParser.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffParserException.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffParserHeaderless.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="TiffParserOlympus.cpp">
+      <Filter>Source Files\Tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="DngDecoderSlices.cpp">
+      <Filter>Source Files\Decompressors</Filter>
+    </ClCompile>
+    <ClCompile Include="LJpegDecompressor.cpp">
+      <Filter>Source Files\Decompressors</Filter>
+    </ClCompile>
+    <ClCompile Include="LJpegPlain.cpp">
+      <Filter>Source Files\Decompressors</Filter>
+    </ClCompile>
+    <ClCompile Include="NikonDecompressor.cpp">
+      <Filter>Source Files\Decompressors</Filter>
+    </ClCompile>
+    <ClCompile Include="PentaxDecompressor.cpp">
+      <Filter>Source Files\Decompressors</Filter>
+    </ClCompile>
+    <ClCompile Include="BitPumpJPEG.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="BitPumpMSB.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="BitPumpMSB32.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="BitPumpPlain.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteStream.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteStreamSwap.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="DngOpcodes.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="FileIOException.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="FileMap.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReader.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="IOException.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ARWDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="Cr2Decoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="DngDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="NefDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="OrfDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="PefDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="RawDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="RawDecoderException.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="RawParser.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="Rw2Decoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="SrwDecoder.cpp">
+      <Filter>Source Files\Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackArea.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMetaData.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMetadataException.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSensorInfo.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorFilterArray.cpp">
+      <Filter>Source Files\CameraMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="RawImage.cpp">
+      <Filter>Source Files\RawImage</Filter>
+    </ClCompile>
+    <ClCompile Include="RawImageDataFloat.cpp">
+      <Filter>Source Files\RawImage</Filter>
+    </ClCompile>
+    <ClCompile Include="RawImageDataU16.cpp">
+      <Filter>Source Files\RawImage</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RawImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BitPumpJPEG.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="BitPumpMSB.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="BitPumpMSB32.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="BitPumpPlain.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteStream.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteStreamSwap.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="DngOpcodes.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="FileIOException.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="FileMap.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="IOException.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="DngDecoderSlices.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="LJpegDecompressor.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="LJpegPlain.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="NikonDecompressor.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="PentaxDecompressor.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="rawstudio-plugin-api.h">
+      <Filter>Header Files\Decompressors</Filter>
+    </ClInclude>
+    <ClInclude Include="ARWDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="Cr2Decoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="DngDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="NefDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="OrfDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="PefDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="RawDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="RawDecoderException.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="RawParser.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="Rw2Decoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="SrwDecoder.h">
+      <Filter>Header Files\Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackArea.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMetaData.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMetadataException.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSensorInfo.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorFilterArray.h">
+      <Filter>Header Files\CameraMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffEntry.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffEntryBE.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffIFD.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffIFDBE.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffParser.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffParserException.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffParserHeaderless.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffParserOlympus.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="TiffTag.h">
+      <Filter>Header Files\Tiff</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
