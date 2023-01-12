@@ -162,3 +162,10 @@
 /GPUCache
 /RegardsViewer/package/RegardsViewer2Setup.exe
 /RegardsViewer/VTune Profiler Results/RegardsViewer
+/libextern/rawspeed-1.0/.vs/RawSpeed
+/libextern/rawspeed-1.0/RawSpeed/x64/Debug
+/libextern/rawspeed-1.0/RawSpeed/x64/Release
+/libextern/rawspeed-3.0/.ci
+/libextern/rawspeed-3.0/.github
+/libextern/rawspeed-3.0/RawSpeed3/x64/Release
+/libextern/vcpkg/.github

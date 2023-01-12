@@ -34,7 +34,9 @@
 #include <cstdio>  // for size_t
 #include <string>  // for string
 
-namespace rawspeed::md5 {
+namespace rawspeed {
+
+namespace md5 {
 
 using md5_state = std::array<uint32_t, 4>;
 
@@ -51,4 +53,6 @@ std::string hash_to_string(const md5_state& hash);
 // computes hash of the buffer message with length len and returns it as string
 std::string md5_hash(const uint8_t* message, size_t len);
 
-} // namespace rawspeed::md5
+} // namespace md5
+
+} // namespace rawspeed

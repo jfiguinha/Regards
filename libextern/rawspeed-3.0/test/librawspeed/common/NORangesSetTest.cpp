@@ -34,86 +34,52 @@ TEST_P(TwoRangesTest, NORangesSetDataSelfTest) {
   {
     NORangesSet<Range<int>> s;
 
-    auto res = s.insert(r0);
-    ASSERT_TRUE(res);
+    auto res = s.emplace(r0);
+    ASSERT_TRUE(res.second);
 
     // can not insert same element twice
-    res = s.insert(r0);
-    ASSERT_FALSE(res);
+    res = s.emplace(r0);
+    ASSERT_FALSE(res.second);
   }
   {
     NORangesSet<Range<int>> s;
 
-    auto res = s.insert(r1);
-    ASSERT_TRUE(res);
+    auto res = s.emplace(r1);
+    ASSERT_TRUE(res.second);
 
     // can not insert same element twice
-    res = s.insert(r1);
-    ASSERT_FALSE(res);
+    res = s.emplace(r1);
+    ASSERT_FALSE(res.second);
   }
 }
 
 TEST_P(TwoRangesTest, NORangesSetDataTest) {
   {
     NORangesSet<Range<int>> s;
-    auto res = s.insert(r0);
-    ASSERT_TRUE(res);
+    auto res = s.emplace(r0);
+    ASSERT_TRUE(res.second);
 
-    res = s.insert(r1);
+    res = s.emplace(r1);
     // if the ranges overlap, we should fail to insert the second range
     if (AllOverlapped.find(GetParam()) != AllOverlapped.end()) {
-      ASSERT_FALSE(res);
+      ASSERT_FALSE(res.second);
     } else {
-      ASSERT_TRUE(res);
+      ASSERT_TRUE(res.second);
     }
   }
   {
     NORangesSet<Range<int>> s;
-    auto res = s.insert(r1);
-    ASSERT_TRUE(res);
+    auto res = s.emplace(r1);
+    ASSERT_TRUE(res.second);
 
-    res = s.insert(r0);
+    res = s.emplace(r0);
     // if the ranges overlap, we should fail to insert the second range
     if (AllOverlapped.find(GetParam()) != AllOverlapped.end()) {
-      ASSERT_FALSE(res);
+      ASSERT_FALSE(res.second);
     } else {
-      ASSERT_TRUE(res);
+      ASSERT_TRUE(res.second);
     }
   }
-}
-
-using threeRangesType = std::tuple<int, unsigned, int, unsigned, int, unsigned>;
-class ThreeRangesTest : public ::testing::TestWithParam<threeRangesType> {
-protected:
-  ThreeRangesTest() = default;
-  virtual void SetUp() {
-    r0 = Range<int>(std::get<0>(GetParam()), std::get<1>(GetParam()));
-    r1 = Range<int>(std::get<2>(GetParam()), std::get<3>(GetParam()));
-    r2 = Range<int>(std::get<4>(GetParam()), std::get<5>(GetParam()));
-  }
-
-  Range<int> r0;
-  Range<int> r1;
-  Range<int> r2;
-};
-INSTANTIATE_TEST_CASE_P(
-    Unsigned, ThreeRangesTest,
-    testing::Combine(testing::Range(0, 3), testing::Range(0U, 3U),
-                     testing::Range(0, 3), testing::Range(0U, 3U),
-                     testing::Range(0, 3), testing::Range(0U, 3U)));
-
-TEST_P(ThreeRangesTest, NORangesSetDataTest) {
-  NORangesSet<Range<int>> s;
-  auto res = s.insert(r0);
-  ASSERT_TRUE(res);
-
-  res = s.insert(r1);
-  ASSERT_EQ(res, !RangesOverlap(r1, r0));
-  if (!res)
-    return; // If we already have overlap don't proceed further.
-
-  res = s.insert(r2);
-  ASSERT_EQ(res, !RangesOverlap(r0, r2) && !RangesOverlap(r1, r2));
 }
 
 } // namespace rawspeed_test

@@ -1,7 +1,7 @@
 /*
     RawSpeed - RAW file decoder.
 
-    Copyright (C) 2017 Roman Lebedev
+    Copyright (C) 2018 Roman Lebedev
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -20,12 +20,34 @@
 
 #pragma once
 
-#include "common/RawImage.h"           // for RawImage
-#include "metadata/ColorFilterArray.h" // for ColorFilterArray
+#include <cassert> // for assert
+#include <utility> // IWYU pragma: keep
 
 namespace rawspeed {
-class ByteStream;
-} // namespace rawspeed
 
-rawspeed::RawImage CreateRawImage(rawspeed::ByteStream* bs);
-rawspeed::ColorFilterArray CreateCFA(rawspeed::ByteStream* bs);
+template <class T> class Optional final {
+  T data;
+  bool hasData = false;
+
+public:
+  Optional() = default;
+
+  explicit Optional(T RHS) : data(RHS), hasData(true) {}
+
+  Optional& operator=(T RHS) {
+    Optional tmp(RHS);
+    *this = std::move(tmp);
+    return *this;
+  }
+
+  bool hasValue() const { return hasData; }
+
+  void reset() { hasData = false; }
+
+  T getValue() const {
+    assert(hasValue());
+    return data;
+  }
+};
+
+} // namespace rawspeed

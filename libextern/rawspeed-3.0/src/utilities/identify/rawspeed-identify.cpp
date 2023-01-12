@@ -36,7 +36,9 @@
 #include <Windows.h>
 #endif
 
-namespace rawspeed::identify {
+namespace rawspeed {
+
+namespace identify {
 
 std::string find_cameras_xml(const char* argv0);
 
@@ -105,17 +107,18 @@ std::string find_cameras_xml(const char *argv0) {
   return found_camfile;
 }
 
-} // namespace rawspeed::identify
+} // namespace identify
 
-using rawspeed::Buffer;
+} // namespace rawspeed
+
 using rawspeed::CameraMetaData;
 using rawspeed::FileReader;
-using rawspeed::iPoint2D;
-using rawspeed::RawImage;
 using rawspeed::RawParser;
-using rawspeed::RawspeedException;
-using rawspeed::TYPE_FLOAT32;
+using rawspeed::RawImage;
+using rawspeed::iPoint2D;
 using rawspeed::TYPE_USHORT16;
+using rawspeed::TYPE_FLOAT32;
+using rawspeed::RawspeedException;
 using rawspeed::identify::find_cameras_xml;
 
 int main(int argc, char* argv[]) { // NOLINT
@@ -168,9 +171,9 @@ int main(int argc, char* argv[]) { // NOLINT
 
     FileReader f(imageFileName);
 
-    std::unique_ptr<const Buffer> m(f.readFile());
+    auto m(f.readFile());
 
-    RawParser t(*m);
+    RawParser t(m.get());
 
     auto d(t.getDecoder(meta.get()));
 
@@ -241,7 +244,7 @@ int main(int argc, char* argv[]) { // NOLINT
 
     double sum = 0.0F;
 #ifdef HAVE_OPENMP
-#pragma omp parallel for default(none) firstprivate(dimUncropped, raw, bpp) schedule(static) reduction(+ : sum)
+#pragma omp parallel for default(none) OMPFIRSTPRIVATECLAUSE(dimUncropped, raw, bpp) schedule(static) reduction(+ : sum)
 #endif
     for (int y = 0; y < dimUncropped.y; ++y) {
       uint8_t* const data = (*raw)->getDataUncropped(0, y);
@@ -257,7 +260,7 @@ int main(int argc, char* argv[]) { // NOLINT
       sum = 0.0F;
 
 #ifdef HAVE_OPENMP
-#pragma omp parallel for default(none) firstprivate(dimUncropped, raw, cpp) schedule(static) reduction(+ : sum)
+#pragma omp parallel for default(none) OMPFIRSTPRIVATECLAUSE(dimUncropped, raw, cpp) schedule(static) reduction(+ : sum)
 #endif
       for (int y = 0; y < dimUncropped.y; ++y) {
         auto* const data =
@@ -274,7 +277,7 @@ int main(int argc, char* argv[]) { // NOLINT
       sum = 0.0F;
 
 #ifdef HAVE_OPENMP
-#pragma omp parallel for default(none) firstprivate(dimUncropped, raw, cpp) schedule(static) reduction(+ : sum)
+#pragma omp parallel for default(none) OMPFIRSTPRIVATECLAUSE(dimUncropped, raw, cpp) schedule(static) reduction(+ : sum)
 #endif
       for (int y = 0; y < dimUncropped.y; ++y) {
         auto* const data =
