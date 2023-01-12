@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/generic/dirctrlg.h
-// Purpose:     wxRegardsDirCtrl class
+// Purpose:      wxGenericDirCtrl class
 //              Builds on wxDirCtrl class written by Robert Roebling for the
 //              wxFile application, modified by Harm van der Heijden.
 //              Further modified for Windows.
@@ -41,7 +41,7 @@ class WXDLLIMPEXP_DIRECTORYCTRL wxTextCtrl;
 class WXDLLIMPEXP_DIRECTORYCTRL wxHashTable;
 
 //-----------------------------------------------------------------------------
-// Extra styles for wxRegardsDirCtrl
+// Extra styles for  wxGenericDirCtrl
 //-----------------------------------------------------------------------------
 
 enum
@@ -88,11 +88,11 @@ public:
 
 class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl;
 
-class WXDLLIMPEXP_DIRECTORYCTRL wxRegardsDirCtrl: public wxControl
+class WXDLLIMPEXP_DIRECTORYCTRL  wxGenericDirCtrl: public wxControl
 {
 public:
-    wxRegardsDirCtrl();
-    wxRegardsDirCtrl(wxWindow *parent, wxWindowID id = wxID_ANY,
+     wxGenericDirCtrl();
+     wxGenericDirCtrl(wxWindow *parent, wxWindowID id = wxID_ANY,
               const wxString &dir = wxDirDialogDefaultFolderStr,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
@@ -116,7 +116,7 @@ public:
 
     virtual void Init();
 
-    virtual ~wxRegardsDirCtrl();
+    virtual ~ wxGenericDirCtrl();
 
     void OnExpandItem(wxTreeEvent &event );
     void OnCollapseItem(wxTreeEvent &event );
@@ -223,8 +223,8 @@ private:
 	vector<wxString> m_selectedPath;
 private:
     wxDECLARE_EVENT_TABLE();
-    wxDECLARE_DYNAMIC_CLASS(wxRegardsDirCtrl);
-    wxDECLARE_NO_COPY_CLASS(wxRegardsDirCtrl);
+    wxDECLARE_DYNAMIC_CLASS( wxGenericDirCtrl);
+    wxDECLARE_NO_COPY_CLASS( wxGenericDirCtrl);
 };
 
 wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_DIRECTORYCTRL, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent );
@@ -244,7 +244,7 @@ class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl: public wxChoice
 {
 public:
     wxDirFilterListCtrl() { Init(); }
-    wxDirFilterListCtrl(wxRegardsDirCtrl* parent, wxWindowID id = wxID_ANY,
+    wxDirFilterListCtrl( wxGenericDirCtrl* parent, wxWindowID id = wxID_ANY,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = 0)
@@ -253,7 +253,7 @@ public:
         Create(parent, id, pos, size, style);
     }
 
-    bool Create(wxRegardsDirCtrl* parent, wxWindowID id = wxID_ANY,
+    bool Create( wxGenericDirCtrl* parent, wxWindowID id = wxID_ANY,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = 0);
@@ -269,7 +269,7 @@ public:
     void OnSelFilter(wxCommandEvent& event);
 
 protected:
-    wxRegardsDirCtrl*    m_dirCtrl;
+     wxGenericDirCtrl*    m_dirCtrl;
 
     wxDECLARE_EVENT_TABLE();
     wxDECLARE_CLASS(wxDirFilterListCtrl);
@@ -277,7 +277,7 @@ protected:
 };
 
 #if !defined(__WXMSW__) && !defined(__WXMAC__)
-    #define wxDirCtrl wxRegardsDirCtrl
+    #define wxDirCtrl  wxGenericDirCtrl
 #endif
 
 // Symbols for accessing individual controls

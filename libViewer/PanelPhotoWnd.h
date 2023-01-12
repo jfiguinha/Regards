@@ -7,7 +7,7 @@ using namespace std;
 using namespace Regards::Window;
 //using namespace Regards::Control;
 
-class wxRegardsDirCtrl;
+class  wxGenericDirCtrl;
 
 namespace Regards
 {
@@ -33,7 +33,7 @@ namespace Regards
 			wxString AddFolder(const wxString& folder, const bool& showDialog = true);
 
 			CCategoryFolderWindow* categoryFolderWnd;
-			wxRegardsDirCtrl* folderWnd;
+			 wxGenericDirCtrl* folderWnd;
 			CToolbarPhoto* photoToolbar;
 		};
 	}
