@@ -43,7 +43,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	if (viewerTheme != nullptr)
 	{
 		CThemeTree themeTree;
-		folderWnd = new wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition,
+		folderWnd = new wxRegardsDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition,
 		                                 wxDefaultSize, wxDIRCTRL_DIR_ONLY);
 		if (folderWnd->GetTreeCtrl() != nullptr)
 		{

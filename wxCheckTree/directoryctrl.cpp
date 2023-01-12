@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        src/generic/dirctrlg.cpp
-// Purpose:     wxGenericDirCtrl
+// Purpose:     wxRegardsDirCtrl
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
@@ -169,7 +169,7 @@ size_t wxGetAvailableDrives(wxArrayString &paths, wxArrayString &names, wxArrayI
     names.Add(wxT("/"));
     icon_ids.Add(wxFileIconsTable::computer);
 #else
-    #error "Unsupported platform in wxGenericDirCtrl!"
+    #error "Unsupported platform in wxRegardsDirCtrl!"
 #endif
     wxASSERT_MSG( (paths.GetCount() == names.GetCount()), wxT("The number of paths and their human readable names should be equal in number."));
     wxASSERT_MSG( (paths.GetCount() == icon_ids.GetCount()), wxT("Wrong number of icons for available drives."));
@@ -309,23 +309,23 @@ bool wxDirItemData::HasFiles(const wxString& WXUNUSED(spec)) const
 }
 
 #ifndef __WXGTK__
-wxBEGIN_EVENT_TABLE(wxGenericDirCtrl, wxControl)
-  EVT_TREE_ITEM_EXPANDING     (wxID_TREECTRL, wxGenericDirCtrl::OnExpandItem)
-  EVT_TREE_ITEM_COLLAPSED     (wxID_TREECTRL, wxGenericDirCtrl::OnCollapseItem)
-  EVT_TREE_BEGIN_LABEL_EDIT   (wxID_TREECTRL, wxGenericDirCtrl::OnBeginEditItem)
-  EVT_TREE_END_LABEL_EDIT     (wxID_TREECTRL, wxGenericDirCtrl::OnEndEditItem)
-  EVT_TREE_SEL_CHANGED        (wxID_TREECTRL, wxGenericDirCtrl::OnTreeSelChange)
-  EVT_TREE_ITEM_ACTIVATED     (wxID_TREECTRL, wxGenericDirCtrl::OnItemActivated)
-  EVT_SIZE                    (wxGenericDirCtrl::OnSize)
+wxBEGIN_EVENT_TABLE(wxRegardsDirCtrl, wxControl)
+  EVT_TREE_ITEM_EXPANDING     (wxID_TREECTRL, wxRegardsDirCtrl::OnExpandItem)
+  EVT_TREE_ITEM_COLLAPSED     (wxID_TREECTRL, wxRegardsDirCtrl::OnCollapseItem)
+  EVT_TREE_BEGIN_LABEL_EDIT   (wxID_TREECTRL, wxRegardsDirCtrl::OnBeginEditItem)
+  EVT_TREE_END_LABEL_EDIT     (wxID_TREECTRL, wxRegardsDirCtrl::OnEndEditItem)
+  EVT_TREE_SEL_CHANGED        (wxID_TREECTRL, wxRegardsDirCtrl::OnTreeSelChange)
+  EVT_TREE_ITEM_ACTIVATED     (wxID_TREECTRL, wxRegardsDirCtrl::OnItemActivated)
+  EVT_SIZE                    (wxRegardsDirCtrl::OnSize)
 wxEND_EVENT_TABLE()
 #endif
 
-wxGenericDirCtrl::wxGenericDirCtrl(void)
+wxRegardsDirCtrl::wxRegardsDirCtrl(void)
 {
     Init();
 }
 
-void wxGenericDirCtrl::ExpandRoot()
+void wxRegardsDirCtrl::ExpandRoot()
 {
     ExpandDir(m_rootId); // automatically expand first level
 
@@ -347,7 +347,13 @@ void wxGenericDirCtrl::ExpandRoot()
  * */
 }
 
-bool wxGenericDirCtrl::Create(wxWindow *parent,
+wxClassInfo* wxRegardsDirCtrl::GetClassInfo() const
+{
+    return &wxObject::ms_classInfo;
+}
+
+
+bool wxRegardsDirCtrl::Create(wxWindow *parent,
                               wxWindowID treeid,
                               const wxString& dir,
                               const wxPoint& pos,
@@ -365,13 +371,13 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
 
     long treeStyle = wxTR_HAS_BUTTONS;
 #ifdef __WXGTK__ 
-    Connect(wxEVT_TREE_ITEM_EXPANDING, wxTreeEventHandler(wxGenericDirCtrl::OnExpandItem));
-    Connect(wxEVT_TREE_ITEM_COLLAPSED, wxTreeEventHandler(wxGenericDirCtrl::OnCollapseItem));
-    Connect(wxEVT_TREE_BEGIN_LABEL_EDIT, wxTreeEventHandler(wxGenericDirCtrl::OnBeginEditItem));
-    Connect(wxEVT_TREE_END_LABEL_EDIT, wxTreeEventHandler(wxGenericDirCtrl::OnEndEditItem));
-    Connect(wxEVT_TREE_SEL_CHANGED, wxTreeEventHandler(wxGenericDirCtrl::OnTreeSelChange));
-    Connect(wxEVT_TREE_ITEM_ACTIVATED, wxTreeEventHandler(wxGenericDirCtrl::OnItemActivated));
-    Connect(wxEVT_SIZE, wxSizeEventHandler(wxGenericDirCtrl::OnSize));
+    Connect(wxEVT_TREE_ITEM_EXPANDING, wxTreeEventHandler(wxRegardsDirCtrl::OnExpandItem));
+    Connect(wxEVT_TREE_ITEM_COLLAPSED, wxTreeEventHandler(wxRegardsDirCtrl::OnCollapseItem));
+    Connect(wxEVT_TREE_BEGIN_LABEL_EDIT, wxTreeEventHandler(wxRegardsDirCtrl::OnBeginEditItem));
+    Connect(wxEVT_TREE_END_LABEL_EDIT, wxTreeEventHandler(wxRegardsDirCtrl::OnEndEditItem));
+    Connect(wxEVT_TREE_SEL_CHANGED, wxTreeEventHandler(wxRegardsDirCtrl::OnTreeSelChange));
+    Connect(wxEVT_TREE_ITEM_ACTIVATED, wxTreeEventHandler(wxRegardsDirCtrl::OnItemActivated));
+    Connect(wxEVT_SIZE, wxSizeEventHandler(wxRegardsDirCtrl::OnSize));
 #endif
 
    // treeStyle |= wxTR_HIDE_ROOT;
@@ -445,11 +451,11 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     return true;
 }
 
-wxGenericDirCtrl::~wxGenericDirCtrl()
+wxRegardsDirCtrl::~wxRegardsDirCtrl()
 {
 }
 
-void wxGenericDirCtrl::Init()
+void wxRegardsDirCtrl::Init()
 {
     m_showHidden = false;
     m_currentFilter = 0;
@@ -458,12 +464,12 @@ void wxGenericDirCtrl::Init()
     m_filterListCtrl = NULL;
 }
 
-wxCheckTree * wxGenericDirCtrl::CreateTreeCtrl(wxWindow *parent, wxWindowID treeid, const wxPoint& pos, const wxSize& size, long treeStyle)
+wxCheckTree * wxRegardsDirCtrl::CreateTreeCtrl(wxWindow *parent, wxWindowID treeid, const wxPoint& pos, const wxSize& size, long treeStyle)
 {
 	return new wxCheckTree(parent, treeid, pos, size, treeStyle);
 }
 
-void wxGenericDirCtrl::ShowHidden( bool show )
+void wxRegardsDirCtrl::ShowHidden( bool show )
 {
     if ( m_showHidden == show )
         return;
@@ -489,7 +495,7 @@ void wxGenericDirCtrl::ShowHidden( bool show )
 }
 
 const wxTreeItemId
-wxGenericDirCtrl::AddSection(const wxString& path, const wxTreeItemId& parent, const wxString& name, int imageId)
+wxRegardsDirCtrl::AddSection(const wxString& path, const wxTreeItemId& parent, const wxString& name, int imageId)
 {
     wxDirItemData *dir_item = new wxDirItemData(path,name,true);
 
@@ -500,7 +506,7 @@ wxGenericDirCtrl::AddSection(const wxString& path, const wxTreeItemId& parent, c
     return treeid;
 }
 
-void wxGenericDirCtrl::SetupSections()
+void wxRegardsDirCtrl::SetupSections()
 {
     wxArrayString paths, names;
     wxArrayInt icons;
@@ -538,7 +544,7 @@ void wxGenericDirCtrl::SetupSections()
 #endif
 }
 
-void wxGenericDirCtrl::SetFocus()
+void wxRegardsDirCtrl::SetFocus()
 {
     // we don't need focus ourselves, give it to the tree so that the user
     // could navigate it
@@ -546,7 +552,7 @@ void wxGenericDirCtrl::SetFocus()
         m_treeCtrl->SetFocus();
 }
 
-void wxGenericDirCtrl::OnBeginEditItem(wxTreeEvent &event)
+void wxRegardsDirCtrl::OnBeginEditItem(wxTreeEvent &event)
 {
     // don't rename the main entry "Sections"
     if (event.GetItem() == m_rootId)
@@ -563,7 +569,7 @@ void wxGenericDirCtrl::OnBeginEditItem(wxTreeEvent &event)
     }
 }
 
-void wxGenericDirCtrl::OnEndEditItem(wxTreeEvent &event)
+void wxRegardsDirCtrl::OnEndEditItem(wxTreeEvent &event)
 {
     if (event.IsEditCancelled())
         return;
@@ -610,7 +616,7 @@ void wxGenericDirCtrl::OnEndEditItem(wxTreeEvent &event)
     }
 }
 
-void wxGenericDirCtrl::OnTreeSelChange(wxTreeEvent &event)
+void wxRegardsDirCtrl::OnTreeSelChange(wxTreeEvent &event)
 {
     wxTreeEvent changedEvent(wxEVT_DIRCTRL_SELECTIONCHANGED, GetId());
 
@@ -624,7 +630,7 @@ void wxGenericDirCtrl::OnTreeSelChange(wxTreeEvent &event)
         event.Skip();
 }
 
-void wxGenericDirCtrl::OnItemActivated(wxTreeEvent &event)
+void wxRegardsDirCtrl::OnItemActivated(wxTreeEvent &event)
 {
     wxTreeItemId treeid = event.GetItem();
     const wxDirItemData *data = GetItemData(treeid);
@@ -650,7 +656,7 @@ void wxGenericDirCtrl::OnItemActivated(wxTreeEvent &event)
     }
 }
 
-void wxGenericDirCtrl::OnExpandItem(wxTreeEvent &event)
+void wxRegardsDirCtrl::OnExpandItem(wxTreeEvent &event)
 {
     wxTreeItemId parentId = event.GetItem();
 
@@ -663,12 +669,12 @@ void wxGenericDirCtrl::OnExpandItem(wxTreeEvent &event)
     ExpandDir(parentId);
 }
 
-void wxGenericDirCtrl::OnCollapseItem(wxTreeEvent &event )
+void wxRegardsDirCtrl::OnCollapseItem(wxTreeEvent &event )
 {
     CollapseDir(event.GetItem());
 }
 
-void wxGenericDirCtrl::CollapseDir(wxTreeItemId parentId)
+void wxRegardsDirCtrl::CollapseDir(wxTreeItemId parentId)
 {
     wxTreeItemId child;
 
@@ -685,7 +691,7 @@ void wxGenericDirCtrl::CollapseDir(wxTreeItemId parentId)
     m_treeCtrl->Thaw();
 }
 
-void wxGenericDirCtrl::PopulateNode(wxTreeItemId parentId)
+void wxRegardsDirCtrl::PopulateNode(wxTreeItemId parentId)
 {
     wxDirItemData *data = GetItemData(parentId);
 
@@ -846,19 +852,19 @@ void wxGenericDirCtrl::PopulateNode(wxTreeItemId parentId)
     }
 }
 
-void wxGenericDirCtrl::ExpandDir(wxTreeItemId parentId)
+void wxRegardsDirCtrl::ExpandDir(wxTreeItemId parentId)
 {
     // ExpandDir() will not actually expand the tree node, just populate it
     PopulateNode(parentId);
 }
 
-void wxGenericDirCtrl::ReCreateTree()
+void wxRegardsDirCtrl::ReCreateTree()
 {
     CollapseDir(m_treeCtrl->GetRootItem());
     ExpandRoot();
 }
 
-void wxGenericDirCtrl::CollapseTree()
+void wxRegardsDirCtrl::CollapseTree()
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId child = m_treeCtrl->GetFirstChild(m_rootId, cookie);
@@ -872,7 +878,7 @@ void wxGenericDirCtrl::CollapseTree()
 // Find the child that matches the first part of 'path'.
 // E.g. if a child path is "/usr" and 'path' is "/usr/include"
 // then the child for /usr is returned.
-wxTreeItemId wxGenericDirCtrl::FindChild(wxTreeItemId parentId, const wxString& path, bool& done)
+wxTreeItemId wxRegardsDirCtrl::FindChild(wxTreeItemId parentId, const wxString& path, bool& done)
 {
     wxString path2(path);
 
@@ -927,7 +933,7 @@ wxTreeItemId wxGenericDirCtrl::FindChild(wxTreeItemId parentId, const wxString& 
 
 // Try to expand as much of the given path as possible,
 // and select the given tree item.
-bool wxGenericDirCtrl::ExpandPath(const wxString& path)
+bool wxRegardsDirCtrl::ExpandPath(const wxString& path)
 {
     bool done = false;
     wxTreeItemId treeid = FindChild(m_rootId, path, done);
@@ -983,7 +989,7 @@ bool wxGenericDirCtrl::ExpandPath(const wxString& path)
 }
 
 
-bool wxGenericDirCtrl::CollapsePath(const wxString& path)
+bool wxRegardsDirCtrl::CollapsePath(const wxString& path)
 {
     bool done           = false;
     wxTreeItemId treeid     = FindChild(m_rootId, path, done);
@@ -1008,12 +1014,12 @@ bool wxGenericDirCtrl::CollapsePath(const wxString& path)
     return true;
 }
 
-wxDirItemData* wxGenericDirCtrl::GetItemData(wxTreeItemId itemId)
+wxDirItemData* wxRegardsDirCtrl::GetItemData(wxTreeItemId itemId)
 {
     return static_cast<wxDirItemData*>(m_treeCtrl->GetItemData(itemId));
 }
 
-wxString wxGenericDirCtrl::GetPath(wxTreeItemId itemId) const
+wxString wxRegardsDirCtrl::GetPath(wxTreeItemId itemId) const
 {
     const wxDirItemData*
         data = static_cast<wxDirItemData*>(m_treeCtrl->GetItemData(itemId));
@@ -1021,9 +1027,9 @@ wxString wxGenericDirCtrl::GetPath(wxTreeItemId itemId) const
     return data->m_path;
 }
 
-wxString wxGenericDirCtrl::GetPath() const
+wxString wxRegardsDirCtrl::GetPath() const
 {
-    printf("wxGenericDirCtrl GetPath\n");
+    printf("wxRegardsDirCtrl GetPath\n");
     
     // Allow calling GetPath() in multiple selection from OnSelFilter
     if (m_treeCtrl->HasFlag(wxTR_MULTIPLE))
@@ -1044,7 +1050,7 @@ wxString wxGenericDirCtrl::GetPath() const
 
     wxTreeItemId treeid = m_treeCtrl->GetSelection();
     
-    //printf("wxGenericDirCtrl GetSelection %d\n",treeid);
+    //printf("wxRegardsDirCtrl GetSelection %d\n",treeid);
     
     if (treeid)
     {
@@ -1054,7 +1060,7 @@ wxString wxGenericDirCtrl::GetPath() const
         return wxEmptyString;
 }
 
-void wxGenericDirCtrl::GetPaths(wxArrayString& paths) const
+void wxRegardsDirCtrl::GetPaths(wxArrayString& paths) const
 {
     paths.clear();
 
@@ -1067,7 +1073,7 @@ void wxGenericDirCtrl::GetPaths(wxArrayString& paths) const
     }
 }
 
-wxString wxGenericDirCtrl::GetFilePath() const
+wxString wxRegardsDirCtrl::GetFilePath() const
 {
     wxTreeItemId treeid = m_treeCtrl->GetSelection();
     if (treeid)
@@ -1082,7 +1088,7 @@ wxString wxGenericDirCtrl::GetFilePath() const
         return wxEmptyString;
 }
 
-void wxGenericDirCtrl::GetFilePaths(wxArrayString& paths) const
+void wxRegardsDirCtrl::GetFilePaths(wxArrayString& paths) const
 {
     paths.clear();
 
@@ -1097,7 +1103,7 @@ void wxGenericDirCtrl::GetFilePaths(wxArrayString& paths) const
     }
 }
 
-void wxGenericDirCtrl::SetPath(const wxString& path)
+void wxRegardsDirCtrl::SetPath(const wxString& path)
 {
 	m_selectedPath.push_back(path);
     m_defaultPath = path;
@@ -1105,19 +1111,19 @@ void wxGenericDirCtrl::SetPath(const wxString& path)
         ExpandPath(path);
 }
 
-void wxGenericDirCtrl::AddPath(const wxString& path)
+void wxRegardsDirCtrl::AddPath(const wxString& path)
 {
 	m_selectedPath.push_back(path);
 }
 
-void wxGenericDirCtrl::RemovePath(const wxString& path)
+void wxRegardsDirCtrl::RemovePath(const wxString& path)
 {
 	std::vector<wxString>::iterator position = std::find(m_selectedPath.begin(), m_selectedPath.end(), path);
 	if (position != m_selectedPath.end()) // == myVector.end() means the element was not found
 		m_selectedPath.erase(position);
 }
 
-void wxGenericDirCtrl::SelectPath(const wxString& path, bool select)
+void wxRegardsDirCtrl::SelectPath(const wxString& path, bool select)
 {
     bool done = false;
     wxTreeItemId treeid = FindChild(m_rootId, path, done);
@@ -1137,7 +1143,7 @@ void wxGenericDirCtrl::SelectPath(const wxString& path, bool select)
     }
 }
 
-void wxGenericDirCtrl::SelectPaths(const wxArrayString& paths)
+void wxRegardsDirCtrl::SelectPaths(const wxArrayString& paths)
 {
     if ( HasFlag(wxDIRCTRL_MULTIPLE) )
     {
@@ -1149,14 +1155,14 @@ void wxGenericDirCtrl::SelectPaths(const wxArrayString& paths)
     }
 }
 
-void wxGenericDirCtrl::UnselectAll()
+void wxRegardsDirCtrl::UnselectAll()
 {
     m_treeCtrl->UnselectAll();
 }
 
 // Not used
 #if 0
-void wxGenericDirCtrl::FindChildFiles(wxTreeItemId treeid, int dirFlags, wxArrayString& filenames)
+void wxRegardsDirCtrl::FindChildFiles(wxTreeItemId treeid, int dirFlags, wxArrayString& filenames)
 {
     wxDirItemData *data = (wxDirItemData *) m_treeCtrl->GetItemData(treeid);
 
@@ -1197,7 +1203,7 @@ void wxGenericDirCtrl::FindChildFiles(wxTreeItemId treeid, int dirFlags, wxArray
 }
 #endif
 
-void wxGenericDirCtrl::SetFilterIndex(int n)
+void wxRegardsDirCtrl::SetFilterIndex(int n)
 {
     m_currentFilter = n;
 
@@ -1212,7 +1218,7 @@ void wxGenericDirCtrl::SetFilterIndex(int n)
 #endif
 }
 
-void wxGenericDirCtrl::SetFilter(const wxString& filter)
+void wxRegardsDirCtrl::SetFilter(const wxString& filter)
 {
     m_filter = filter;
 
@@ -1240,7 +1246,7 @@ void wxGenericDirCtrl::SetFilter(const wxString& filter)
 }
 
 // Extract description and actual filter from overall filter string
-bool wxGenericDirCtrl::ExtractWildcard(const wxString& filterStr, int n, wxString& filter, wxString& description)
+bool wxRegardsDirCtrl::ExtractWildcard(const wxString& filterStr, int n, wxString& filter, wxString& description)
 {
     wxArrayString filters, descriptions;
     int count = wxParseCommonDialogsFilter(filterStr, descriptions, filters);
@@ -1255,7 +1261,7 @@ bool wxGenericDirCtrl::ExtractWildcard(const wxString& filterStr, int n, wxStrin
 }
 
 
-void wxGenericDirCtrl::DoResize()
+void wxRegardsDirCtrl::DoResize()
 {
     wxSize sz = GetClientSize();
     int verticalSpacing = 3;
@@ -1278,12 +1284,12 @@ void wxGenericDirCtrl::DoResize()
 }
 
 
-void wxGenericDirCtrl::OnSize(wxSizeEvent& WXUNUSED(event))
+void wxRegardsDirCtrl::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     DoResize();
 }
 
-wxTreeItemId wxGenericDirCtrl::AppendItem (const wxTreeItemId & parent,
+wxTreeItemId wxRegardsDirCtrl::AppendItem (const wxTreeItemId & parent,
                                            const wxString & text,
                                            int image, int selectedImage,
                                            wxTreeItemData * data)
@@ -1319,7 +1325,7 @@ wxEND_EVENT_TABLE()
 
 #endif
 
-bool wxDirFilterListCtrl::Create(wxGenericDirCtrl* parent,
+bool wxDirFilterListCtrl::Create(wxRegardsDirCtrl* parent,
                                  wxWindowID treeid,
                                  const wxPoint& pos,
                                  const wxSize& size,

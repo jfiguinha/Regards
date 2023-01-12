@@ -1163,7 +1163,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 
 	if (preprocess_thumbnail)
 	{
-		if (value == 1 && nbProcess < nbProcesseur)
+		if (value == 1 && nbProcess < (nbProcesseur + 2))
 		{
 			if (pBitmapIcone != nullptr)
 			{
