@@ -98,8 +98,6 @@
       <File Name="BilateralEffectParameter.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="raw">
-      <File Name="DecodeRawPicture.h"/>
-      <File Name="DecodeRawPicture.cpp"/>
       <File Name="DecodeRaw.h"/>
       <File Name="DecodeRaw.cpp"/>
     </VirtualDirectory>

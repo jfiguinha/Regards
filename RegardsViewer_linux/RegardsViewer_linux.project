@@ -255,6 +255,7 @@
         <Library Value="tesseract"/>
         <Library Value="leptonica"/>
         <Library Value="tbb"/>
+        <Library Value="tbbmalloc"/>
         <Library Value="tbbmalloc_proxy"/>
         <Library Value="aom"/>
         <Library Value="webp"/>
@@ -468,7 +469,9 @@
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libirng.so ./Debug</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libimf.so ./Debug</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libintlc.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp $$HOME/intel/oneapi/tbb/latest/lib/intel64/gcc4.8/libtbb.so.12 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc.* ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc_proxy.* ./Debug</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
@@ -551,11 +554,13 @@
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc.* ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc_proxy.* ./Release</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libsvml.so ./Release</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libirng.so ./Release</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libimf.so ./Release</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libintlc.so.5 ./Release</Command>
-        <Command Enabled="yes">cp $$HOME/intel/oneapi/tbb/latest/lib/intel64/gcc4.8/libtbb.so.12 ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
