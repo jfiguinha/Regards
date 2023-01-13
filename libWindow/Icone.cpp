@@ -750,6 +750,12 @@ namespace
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage * src, int width, int height)
 {
+	/*
+	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
+	cv::resize(matrix, matrix, cv::Size(width, height));
+	return wxImage(width, height, matrix.data, true);
+	*/
+
 	// This function implements a Bicubic B-Spline algorithm for resampling.
 	// This method is certainly a little slower than wxImage's default pixel
 	// replication method, however for most reasonably sized images not being
