@@ -169,3 +169,8 @@
 /libextern/rawspeed-3.0/.github
 /libextern/rawspeed-3.0/RawSpeed3/x64/Release
 /libextern/vcpkg/.github
+/libextern/LibRaw-0.21.1/autom4te.cache
+/libextern/LibRaw-0.21.1/buildfiles/debug-x86_64
+/libextern/LibRaw-0.21.1/buildfiles/release-x86_64
+/libextern/LibRaw-0.21.1/buildfiles/x64
+/libextern/rawspeed-3.0/RawSpeed3/.vs/RawSpeed3/v17

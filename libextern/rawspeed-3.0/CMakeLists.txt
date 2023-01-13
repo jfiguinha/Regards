@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.10.0)
 
 cmake_policy(SET CMP0011 NEW)
 cmake_policy(SET CMP0025 NEW)
@@ -17,6 +17,7 @@ endif(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 project(rawspeed CXX)
 
 include(FeatureSummary)
+include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
 set(RAWSPEED_SOURCE_DIR "${PROJECT_SOURCE_DIR}" CACHE PATH "" FORCE)
@@ -49,7 +50,25 @@ else()
   set(RAWSPEED_USE_LIBCXX OFF CACHE BOOL "(Clang only) Build using libc++ as the standard library." FORCE)
 endif()
 
-option(RAWSPEED_ENABLE_DEBUG_INFO "Whether to generate debug info or not." ON)
+set(CMAKE_REQUIRED_FLAGS_ORIG "${CMAKE_REQUIRED_FLAGS}")
+set(CMAKE_REQUIRED_FLAGS "-c -std=c++14 -g")
+# see https://bugs.llvm.org/show_bug.cgi?id=16091
+# see https://reviews.llvm.org/rL221704
+CHECK_CXX_SOURCE_COMPILES(
+"struct foo {
+  static auto func();
+};
+
+foo f;
+
+auto foo::func() {
+  return 1;
+}"
+  RAWSPEED_CXX_DEBUG_INFO_FOR_AUTO_IS_SUPPORTED
+)
+set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_ORIG}")
+
+option(RAWSPEED_ENABLE_DEBUG_INFO "Whether to generate debug info or not." ${RAWSPEED_CXX_DEBUG_INFO_FOR_AUTO_IS_SUPPORTED})
 
 option(RAWSPEED_ENABLE_WERROR "Stop and fail the build, if a compiler warning is triggered." ON)
 
@@ -92,7 +111,7 @@ endif()
 option(USE_XMLLINT "Run xmllint to test if data/cameras.xml is valid" ON)
 option(USE_IWYU "Run iwyu tool when compiling sources" OFF)
 option(USE_CLANG_TIDY "Run clang-tidy tool when compiling sources" OFF)
-option(BUILD_TESTING "Build the testing tree." OFF)
+option(BUILD_TESTING "Build the testing tree." ON)
 if(BUILD_TESTING)
   option(ALLOW_DOWNLOADING_GOOGLETEST "If googletest src tree is not found in location specified by GOOGLETEST_PATH, do fetch the archive from internet" OFF)
 else()
@@ -195,7 +214,7 @@ add_custom_target(tests ALL)
 include(compiler-warnings)
 
 if(RAWSPEED_ENABLE_WERROR)
-  CHECK_CXX_COMPILER_FLAG_AND_ENABLE_IT("-Werror")
+  set_directory_properties(PROPERTIES COMPILE_OPTIONS "-Werror")
 endif()
 
 if(BUILD_BENCHMARKING)
