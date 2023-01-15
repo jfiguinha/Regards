@@ -114,7 +114,6 @@ public:
 	bool GetIsOpenCLOpenGLInteropSupport();
 	void SetIsOpenCLOpenGLInteropSupport(const int& openCLOpenGLInteropSupport);
 
-
 protected:
 	void LoadParameter() override;
 	void SaveParameter() override;

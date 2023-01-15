@@ -13,17 +13,17 @@ namespace Regards
 		{
 		public:
 			CSqlFindFacePhoto();
-			~CSqlFindFacePhoto();
+			~CSqlFindFacePhoto() override;
 			std::vector<wxString> GetPhotoListNotProcess();
 			std::vector<int> GetListFaceToRecognize();
 			std::vector<CFaceName> GetListFaceName();
-			std::vector<CFaceName> GetListFaceNum(const wxString & photopath);
-			std::vector<CFaceName> GetListFaceName(const wxString &photoPath);
+			std::vector<CFaceName> GetListFaceNum(const wxString& photopath);
+			std::vector<CFaceName> GetListFaceName(const wxString& photoPath);
 			std::vector<CFaceName> GetListFaceNameSelectable();
-			std::vector<CFaceFilePath> GetListPhotoFace(const int &numFace, const double &pertinence = 0.0);
+			std::vector<CFaceFilePath> GetListPhotoFace(const int& numFace, const double& pertinence = 0.0);
 
 		private:
-			int TraitementResult(CSqlResult * sqlResult);
+			int TraitementResult(CSqlResult* sqlResult) override;
 			std::vector<wxString> listPhoto;
 			std::vector<CFaceName> listFaceName;
 			std::vector<CFaceFilePath> listFace;

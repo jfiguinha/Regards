@@ -12,7 +12,6 @@ public:
 	void SetLibelle(const wxString& libelle);
 	wxString GetLibelle();
 
-
 private:
 	int numCatalog;
 	wxString libelle;

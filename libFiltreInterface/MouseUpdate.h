@@ -9,20 +9,14 @@ class CImageLoadingFormat;
 class CFiltreEffet;
 class IBitmapDisplay;
 
-namespace Regards
+namespace Regards::FiltreEffet
 {
-	namespace FiltreEffet
-	{
-		class CDraw;
-	}
+	class CDraw;
 }
 
-namespace Regards
+namespace Regards::OpenGL
 {
-	namespace OpenGL
-	{
-		class CRenderOpenGL;
-	}
+	class CRenderOpenGL;
 }
 
 using namespace Regards::FiltreEffet;
@@ -31,9 +25,12 @@ using namespace Regards::OpenGL;
 class IMouseUpdate
 {
 public:
-	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing) = 0;
-	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int& widthOutput, int& heightOutput) = 0;
-	virtual void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing) = 0;
+	virtual CImageLoadingFormat* ApplyMouseMoveEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+	                                                  CDraw* dessing) = 0;
+	virtual void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+	                                CFiltreEffet* filtreEffet, CDraw* dessing, int& widthOutput, int& heightOutput) = 0;
+	virtual void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+	                                      CFiltreEffet* filtreEffet, CDraw* dessing) = 0;
 	virtual bool IsSourcePreview() = 0;
 	virtual void CancelPreview(IBitmapDisplay* bitmapViewer) = 0;
 	virtual bool NeedToShrink() { return false; };

@@ -41,13 +41,14 @@ namespace Regards
 			void RefreshPane() override;
 			void FacialRecognitionReload();
 			int ImageSuivante();
-			wxString GetFilename(const int & numItem);
+			wxString GetFilename(const int& numItem);
 			int ImagePrecedente();
 			int GetNumItem();
+
 		private:
 			static void FacialDetectionRecognition(void* param);
 
-			void OnIdle(wxIdleEvent& evt);
+			void OnIdle(wxIdleEvent& evt) override;
 			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);

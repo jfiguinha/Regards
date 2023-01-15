@@ -20,13 +20,12 @@ namespace Regards
 
 			static void BeginTransaction();
 			static void CommitTransection();
-		
+
 		protected:
-
-
 			bool useTransaction;
 			CSqlLib* _sqlLibTransaction;
 			wxString databaseName;
+
 		private:
 			virtual int TraitementResult(CSqlResult* sqlResult) = 0;
 		};

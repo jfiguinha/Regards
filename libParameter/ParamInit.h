@@ -11,6 +11,7 @@ public:
 	static CRegardsConfigParam* getInstance();
 	static void Initialize(CRegardsConfigParam* param);
 	static bool IsConfigFileExist();
+
 private:
 	static CRegardsConfigParam* _singleton;
 };

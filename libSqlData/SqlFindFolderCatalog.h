@@ -12,17 +12,15 @@ namespace Regards
 		{
 		public:
 			CSqlFindFolderCatalog();
-			~CSqlFindFolderCatalog();
-			bool GetFolderCatalog(FolderCatalogVector * catalogfolderVector, const int &numCatalog);
-			int GetNbFolderCatalog(const int &numCatalog);
+			~CSqlFindFolderCatalog() override;
+			bool GetFolderCatalog(FolderCatalogVector* catalogfolderVector, const int& numCatalog);
+			int GetNbFolderCatalog(const int& numCatalog);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
-			FolderCatalogVector * m_catalogFolderVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			FolderCatalogVector* m_catalogFolderVector;
 			int nbCatalog;
 			int typeRequest;
 		};
 	}
 }
-

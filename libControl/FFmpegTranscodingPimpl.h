@@ -19,12 +19,9 @@ extern "C" {
 
 #include <VideoStabilization.h>
 
-namespace Regards
+namespace Regards::Video
 {
-	namespace Video
-	{
-		class CVideoPlayer;
-	}
+	class CVideoPlayer;
 }
 
 

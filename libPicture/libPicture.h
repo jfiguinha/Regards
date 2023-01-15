@@ -28,45 +28,48 @@ namespace Regards
 
 		class CLibPicture
 		{
-
 		public:
-
 			CLibPicture();
 			virtual ~CLibPicture();
 
-			void LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture, CImageLoadingFormat * bitmap);
-			bool TestIsVideoValid(const wxString & szFileName);
-			void DefineSVGSize(const int &width, const int &height);
-			bool HasThumbnail(const wxString &filename);
-			int GetNbImage(const  wxString & szFileName);
-			uint32_t GetFrameDelay(const  wxString & szFileName);
-			static int TestImageFormat(const wxString & szFileName, const bool &reading = true);
-			bool TestIsVideo(const wxString & szFileName);
-			bool TestIsPDF(const wxString & szFileName);
-			bool TestIsPicture(const wxString & szFileName);
-			bool TestIsAnimation(const wxString & szFileName);
-			int GetPictureDimensions(const  wxString & fileName, int & width, int & height, int & rotation);
-			CImageLoadingFormat * LoadPicture(const  wxString & szFileName, const bool &isThumbnail = false, const int &numPicture = 0);
-			int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap);
-			int SavePicture(const wxString & fileNameIn, const wxString & fileNameOut);
+			void LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture,
+			                 CImageLoadingFormat* bitmap);
+			bool TestIsVideoValid(const wxString& szFileName);
+			void DefineSVGSize(const int& width, const int& height);
+			bool HasThumbnail(const wxString& filename);
+			int GetNbImage(const wxString& szFileName);
+			uint32_t GetFrameDelay(const wxString& szFileName);
+			static int TestImageFormat(const wxString& szFileName, const bool& reading = true);
+			bool TestIsVideo(const wxString& szFileName);
+			bool TestIsPDF(const wxString& szFileName);
+			bool TestIsPicture(const wxString& szFileName);
+			bool TestIsAnimation(const wxString& szFileName);
+			int GetPictureDimensions(const wxString& fileName, int& width, int& height, int& rotation);
+			CImageLoadingFormat* LoadPicture(const wxString& szFileName, const bool& isThumbnail = false,
+			                                 const int& numPicture = 0);
+			int SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap);
+			int SavePicture(const wxString& fileNameIn, const wxString& fileNameOut);
 			//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
-			vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size);
-			CImageLoadingFormat * LoadThumbnail(const  wxString & szFileName, const bool &fromExifOnly = false);
+			vector<CImageVideoThumbnail*> LoadDefaultVideoThumbnail(const wxString& szFileName, const int& size);
+			CImageLoadingFormat* LoadThumbnail(const wxString& szFileName, const bool& fromExifOnly = false);
 			//vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg);
-			void LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg, const bool &isThumbnail);
+			void LoadAllVideoThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
+			                           const bool& compressJpeg, const bool& isThumbnail);
 
-			CImageLoadingFormat * LoadVideoThumbnail(const  wxString & szFileName, const int &percent, int &timePosition);
+			CImageLoadingFormat* LoadVideoThumbnail(const wxString& szFileName, const int& percent, int& timePosition);
 
 			//CRegardsBitmap * LoadThumbnailFromBuffer(uint8_t * data, size_t size, const char * ext, const int &orientation);
-			bool TestIsExifCompatible(const wxString &filename);
-			int SavePictureOption(const int &format, int &option, int &quality);
-			int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap, const int &option, const int &quality);
+			bool TestIsExifCompatible(const wxString& filename);
+			int SavePictureOption(const int& format, int& option, int& quality);
+			int SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap, const int& option,
+			                const int& quality);
 			//CPictureData * LoadPictureData(const wxString &filename, bool &pictureOK);
 			//-----------------------------------------------------------------------
 			//Fonction de conversion
 			//-----------------------------------------------------------------------
 			static cv::Mat mat_from_wx(const wxImage& wx);
-			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
+			static float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& width,
+			                                const int& height);
 
 			static void Initx265Decoder();
 			static void Uninitx265Decoder();
@@ -83,21 +86,24 @@ namespace Regards
 			static void UnloadBpgDll();
 #endif
 #endif
-			static CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
-			CImageLoadingFormat * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+			static CImageLoadingFormat* GetCancelPhoto(const wxString& szFileName, const int& widthThumbnail = 0,
+			                                           const int& heightThumbnail = 0);
+			CImageLoadingFormat* LoadPictureToBGRA(const wxString& filename, bool& pictureOK,
+			                                       const int& resizeWidth = 0, const int& resizeHeight = 0);
 			static int TestExtension(const wxString& ext);
+
 		private:
-
-
 			cv::Mat LoadFromFreeImage(const char* filename);
-			bool PictureDimensionFreeImage(const char* filename, int &width, int &height);
-			void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail);
+			bool PictureDimensionFreeImage(const char* filename, int& width, int& height);
+			void LoadwxImageThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
+			                          const int& bitmapType, const int& width, const int& height,
+			                          const bool& compressJpeg, const bool& isThumbnail);
 
 			//-----------------------------------------------------------------------------
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
-			
-            void ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap);
+
+			void ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap);
 
 			int svgWidth;
 			int svgHeight;
@@ -106,18 +112,16 @@ namespace Regards
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
 #else
-			static void * lib_handle;
+			static void* lib_handle;
 #endif
 #endif
 			map<wxString, bool> fileValid;
 #ifdef WIN32
-			Regards::Picture::CWic* wic = nullptr;
+			CWic* wic = nullptr;
 #endif
 #ifdef __APPLE__
 			CReadMacOSImage * readimage = nullptr;
 #endif
 		};
-
 	}
 }
-

@@ -11,7 +11,8 @@
 using namespace Regards::Scanner;
 using namespace Regards::Window;
 
-COcrLabelWnd::COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int idWindow)
+COcrLabelWnd::COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
+                           const CThemeTree& themeTree, int idWindow)
 	: CTreeWithScrollbar("COcrLabelWnd", parent, id, themeScroll, themeTree)
 {
 	this->idWindow = idWindow;
@@ -22,16 +23,15 @@ COcrLabelWnd::COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBa
 
 COcrLabelWnd::~COcrLabelWnd(void)
 {
-    if(ocrLabelOld != nullptr)
-        delete(ocrLabelOld);
- 
+	if (ocrLabelOld != nullptr)
+		delete(ocrLabelOld);
 }
 
 void COcrLabelWnd::Init()
 {
 	if (ocrLabelOld != nullptr)
 	{
-		COcrLabel * ocrLabel = new COcrLabel(treeWindow, idWindow);
+		auto ocrLabel = new COcrLabel(treeWindow, idWindow);
 		ocrLabel->Init();
 		treeWindow->SetTreeControl(ocrLabel);
 		delete(ocrLabelOld);
@@ -39,14 +39,14 @@ void COcrLabelWnd::Init()
 	}
 }
 
-void COcrLabelWnd::Update(vector<ChOcrElement *> &labelList)
+void COcrLabelWnd::Update(vector<ChOcrElement*>& labelList)
 {
-    if (ocrLabelOld != nullptr)
-    {
-		COcrLabel * ocrLabel = new COcrLabel(treeWindow, idWindow);
+	if (ocrLabelOld != nullptr)
+	{
+		auto ocrLabel = new COcrLabel(treeWindow, idWindow);
 		ocrLabel->Init(labelList);
 		treeWindow->SetTreeControl(ocrLabel);
-        delete(ocrLabelOld);
+		delete(ocrLabelOld);
 		ocrLabelOld = ocrLabel;
-    }
+	}
 }

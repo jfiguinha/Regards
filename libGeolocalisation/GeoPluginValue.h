@@ -6,31 +6,31 @@ public:
 	CGeoPluginValue();
 	~CGeoPluginValue();
 
-	void SetPlace(const wxString &place);
+	void SetPlace(const wxString& place);
 	wxString GetPlace();
 
-	void SetCountryCode(const wxString &countryCode);
+	void SetCountryCode(const wxString& countryCode);
 	wxString GetCountryCode();
 
-	void SetRegion(const wxString &region);
+	void SetRegion(const wxString& region);
 	wxString GetRegion();
 
-	void SetLatitude(const wxString &latitude);
+	void SetLatitude(const wxString& latitude);
 	wxString GetLatitude();
 
-	void SetLongitude(const wxString &longitude);
+	void SetLongitude(const wxString& longitude);
 	wxString GetLongitude();
 
-	void SetDistanceMiles(const wxString &distanceMiles);
+	void SetDistanceMiles(const wxString& distanceMiles);
 	wxString GetDistanceMiles();
 
-	void SetDistanceKm(const wxString &distanceKm);
+	void SetDistanceKm(const wxString& distanceKm);
 	wxString GetDistanceKm();
 
-	void SetDirectionAngle(const wxString &directionAngle);
+	void SetDirectionAngle(const wxString& directionAngle);
 	wxString GetDirectionAngle();
 
-	void SetDirectionHeadling(const wxString &directionHeadling);
+	void SetDirectionHeadling(const wxString& directionHeadling);
 	wxString GetDirectionHeadling();
 
 private:
@@ -45,4 +45,4 @@ private:
 	wxString directionHeadling;
 };
 
-typedef std::vector<CGeoPluginValue> GeoPluginVector;
+using GeoPluginVector = std::vector<CGeoPluginValue>;

@@ -12,25 +12,24 @@
 
 namespace Regards
 {
-    namespace Sqlite
-    {
+	namespace Sqlite
+	{
 		class CSqlResult;
 
-        class CSqlGps : public CSqlExecuteRequest
-        {
-        public:
-            CSqlGps(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);
-            ~CSqlGps();
-            bool InsertGps(const wxString & filepath, const wxString &latitude, const wxString &longitude);
-            bool UpdateGps(const wxString & filepath, const wxString &latitude, const wxString &longitude);
-            bool DeleteGps(const wxString & filepath);
-            void GetGps(PhotoGpsVector * photogpsVector, const wxString & filepath);
+		class CSqlGps : public CSqlExecuteRequest
+		{
+		public:
+			CSqlGps(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
+			~CSqlGps() override;
+			bool InsertGps(const wxString& filepath, const wxString& latitude, const wxString& longitude);
+			bool UpdateGps(const wxString& filepath, const wxString& latitude, const wxString& longitude);
+			bool DeleteGps(const wxString& filepath);
+			void GetGps(PhotoGpsVector* photogpsVector, const wxString& filepath);
 
-        private:
-            
-            int TraitementResult(CSqlResult * sqlResult);
-            int typeResult;
-            PhotoGpsVector * photogpsVector;
-        };
-    }
+		private:
+			int TraitementResult(CSqlResult* sqlResult) override;
+			int typeResult;
+			PhotoGpsVector* photogpsVector;
+		};
+	}
 }

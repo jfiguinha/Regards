@@ -27,23 +27,23 @@ using namespace Regards::Internet;
 #define IDM_NEWVERSION 163
 #define IDM_EXPORT_DIAPORAMA 164
 
-CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
-	: CToolbarWindow(parent,id,theme, vertical)
+CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	int faceDetection = 0;
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
 	wxString export_diaporama = CLibResource::LoadStringFromResource(L"LBLEXPORTDIAPORAMA", 1);
-	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
+	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE", 1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
 	wxString lblPrint = CLibResource::LoadStringFromResource(L"LBLPRINT", 1);
 
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		faceDetection = regardsParam->GetFaceDetection();
 	}
-	
+
 
 	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 
@@ -70,58 +70,58 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 
 	if (faceDetection)
 	{
-		CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
+		auto thumbnailFace = new CToolbarButton(themeToolbar.button);
 		thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
 		thumbnailFace->SetLibelle(lblListFace);
 		thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
 		navElement.push_back(thumbnailFace);
 	}
 
-	CToolbarButton * explorer = new CToolbarButton(themeToolbar.button);
+	auto explorer = new CToolbarButton(themeToolbar.button);
 	explorer->SetButtonResourceId(L"IDB_SEARCH");
 	explorer->SetLibelle(lblExplorerMode);
 	explorer->SetCommandId(IDM_EXPLORERMODE);
 	navElement.push_back(explorer);
-    
-	CToolbarButton * viewer = new CToolbarButton(themeToolbar.button);
+
+	auto viewer = new CToolbarButton(themeToolbar.button);
 	viewer->SetButtonResourceId(L"IDB_THUMBNAILPNG");
 	viewer->SetLibelle(lblViewerMode);
 	viewer->SetCommandId(IDM_VIEWERMODE);
 	navElement.push_back(viewer);
 
-	CToolbarButton * picture = new CToolbarButton(themeToolbar.button);
+	auto picture = new CToolbarButton(themeToolbar.button);
 	picture->SetButtonResourceId(L"IDB_PHOTOVIEWERPNG");
 	picture->SetLibelle(lblPictureMode);
 	picture->SetCommandId(IDM_PICTUREMODE);
 	navElement.push_back(picture);
 
-	CToolbarButton* scanner = new CToolbarButton(themeToolbar.button);
+	auto scanner = new CToolbarButton(themeToolbar.button);
 	scanner->SetButtonResourceId(L"IDB_SCANNER");
 	scanner->SetLibelle(lblScanner);
 	scanner->SetCommandId(IDM_SCANNER);
 	navElement.push_back(scanner);
 
-	CToolbarButton * print = new CToolbarButton(themeToolbar.button);
+	auto print = new CToolbarButton(themeToolbar.button);
 	print->SetButtonResourceId(L"IDB_PRINTERPNG");
 	print->SetLibelle(lblPrint);
 	print->SetCommandId(IDM_PRINT);
 	navElement.push_back(print);
 
 
-	CToolbarButton * editor = new CToolbarButton(themeToolbar.button);
+	auto editor = new CToolbarButton(themeToolbar.button);
 	editor->SetButtonResourceId(L"IDB_OPEN");
 	editor->SetLibelle(lblEditor);
 	editor->SetCommandId(IDM_EDIT);
 	navElement.push_back(editor);
-	
-	CToolbarButton *export_button = new CToolbarButton(themeToolbar.button);
+
+	auto export_button = new CToolbarButton(themeToolbar.button);
 	export_button->SetButtonResourceId("IDB_EXPORT");
 	export_button->SetLibelle(export_label);
 	export_button->SetCommandId(IDM_EXPORT);
 	export_button->SetLibelleTooltip(export_label);
 	navElement.push_back(export_button);
 
-	CToolbarButton* export_diaporama_button = new CToolbarButton(themeToolbar.button);
+	auto export_diaporama_button = new CToolbarButton(themeToolbar.button);
 	export_diaporama_button->SetButtonResourceId("IDB_MOVIE");
 	export_diaporama_button->SetLibelle(export_diaporama);
 	export_diaporama_button->SetCommandId(IDM_EXPORT_DIAPORAMA);
@@ -130,14 +130,14 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 
 	if (NewVersionAvailable())
 	{
-		CToolbarButton* imageNewVersion = new CToolbarButton(themeToolbar.button);
+		auto imageNewVersion = new CToolbarButton(themeToolbar.button);
 		imageNewVersion->SetButtonResourceId(L"IDB_REFRESH");
 		imageNewVersion->SetLibelle(lblNewVersion);
 		imageNewVersion->SetCommandId(IDM_NEWVERSION);
 		navElement.push_back(imageNewVersion);
 	}
 
-	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
+	auto imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);
 	imageFirst->SetCommandId(IDM_QUITTER);
@@ -188,17 +188,16 @@ bool CToolbar::NewVersionAvailable()
 		}
 	}
 	return false;
-
 }
-void CToolbar::EventManager(const int &id)
+
+void CToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
-                
 	case IDM_WINDOWSEARCH:
 		{
 			wxWindow* central = this->FindWindowById(PHOTOSEEARCHPANEL);
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWPANE);
+			auto event = new wxCommandEvent(wxEVENT_SHOWPANE);
 			wxQueueEvent(central, event);
 		}
 		break;
@@ -206,28 +205,28 @@ void CToolbar::EventManager(const int &id)
 	case IDM_SHOWINFOS:
 		{
 			wxWindow* central = this->FindWindowById(PANELCLICKINFOSWNDID);
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWPANE);
+			auto event = new wxCommandEvent(wxEVENT_SHOWPANE);
 			wxQueueEvent(central, event);
 		}
 		break;
 
 	case IDM_PRINT:
-	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_PRINT);
-		wxQueueEvent(central, event);
-	}
-	break;
-            
-    case IDM_VIEWERMODE:
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_PRINT);
+			wxQueueEvent(central, event);
+		}
+		break;
+
+	case IDM_VIEWERMODE:
 		{
 			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
 			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 			event.SetInt(1);
 			wxPostEvent(central, event);
 		}
-	    break;
-                
+		break;
+
 #ifndef __NOFACE_DETECTION__
 	case IDM_THUMBNAILFACE:
 		{
@@ -248,54 +247,54 @@ void CToolbar::EventManager(const int &id)
 		break;
 
 	case IDM_PICTUREMODE:
-	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
-		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-		event.SetInt(4);
-		wxPostEvent(central, event);
-	}
-	break;
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(4);
+			wxPostEvent(central, event);
+		}
+		break;
 
 	case IDM_SCANNER:
-	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWSCANNER);
-		wxQueueEvent(central, event);
-		break;
-	}
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_SHOWSCANNER);
+			wxQueueEvent(central, event);
+			break;
+		}
 
 	case IDM_EDIT:
-	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EDITFILE);
-		wxQueueEvent(central, event);
-		break;
-	}
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_EDITFILE);
+			wxQueueEvent(central, event);
+			break;
+		}
 
 	case IDM_EXPORT:
-	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXPORTFILE);
-		wxQueueEvent(central, event);
-		break;
-	}
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_EXPORTFILE);
+			wxQueueEvent(central, event);
+			break;
+		}
 
 	case IDM_EXPORT_DIAPORAMA:
-	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXPORTDIAPORAMA);
-		wxQueueEvent(central, event);
-		break;
-	}
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_EXPORTDIAPORAMA);
+			wxQueueEvent(central, event);
+			break;
+		}
 
 	case IDM_QUITTER:
 		{
 			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
+			auto event = new wxCommandEvent(wxEVT_EXIT);
 			wxQueueEvent(central, event);
 		}
 		break;
-		
+
 	case IDM_NEWVERSION:
 		{
 			wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);

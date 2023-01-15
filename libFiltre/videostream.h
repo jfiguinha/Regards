@@ -3,17 +3,14 @@
 #include <StreamInfo.h>
 using namespace std;
 
-namespace Regards
+namespace Regards::Video
 {
-	namespace Video
+	class CVideoStream
 	{
-		class CVideoStream
-		{
-		public:
-			CVideoStream();
-			~CVideoStream();
+	public:
+		CVideoStream();
+		~CVideoStream();
 
-			static vector<CStreamInfo> GetVideoStream(const wxString& fileName);
-		};
-	}
+		static vector<CStreamInfo> GetVideoStream(const wxString& fileName);
+	};
 }

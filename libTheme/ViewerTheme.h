@@ -22,7 +22,6 @@ namespace Regards
 			void GetBitmapInfosTheme(CThemeBitmapInfos* theme);
 			void GetThumbnailToolbarZoomTheme(CThemeToolBarZoom& theme);
 
-
 		private:
 			void LoadTheme() override;
 			void SaveTheme() override;

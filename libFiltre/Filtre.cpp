@@ -152,7 +152,7 @@ void CNoise::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, c
 {
 	//int pos = GetPosition(x, y);
 	//uint8_t alpha = pBitsSrc.data[pos + 3];
-	float n = Noise2d(static_cast<int>(x), static_cast<int>(y));
+	float n = Noise2d(x, y);
 
 	int r = pBitsSrc.at<cv::Vec3b>(y, x)[0] + n;
 	int g = pBitsSrc.at<cv::Vec3b>(y, x)[1] + n;

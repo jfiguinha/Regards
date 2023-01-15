@@ -12,18 +12,20 @@ namespace Regards
 		{
 		public:
 			CSqlFindCriteria();
-			~CSqlFindCriteria();
-			bool SearchUniqueCriteria(CriteriaVector * criteriaVector, const int64_t & numFolder, const int64_t &numCatalog);
-			bool SearchCriteria(CriteriaVector * criteriaVector, const int64_t & numCategorie, const int64_t &numCatalog);
-			bool SearchCriteriaAlone(CriteriaVector * criteriaVector);
-			bool SearchCriteria(CriteriaVector * criteriaVector, const wxString &key, const int64_t &numCategorie, const int64_t &numCatalog);
-			bool SearchCriteria(CriteriaVector * criteriaVector, const int64_t & numPhoto);
-			bool SearchCriteria(CriteriaVector * criteriaVector, const int64_t & numCategorie, const int64_t &numCatalog, const int64_t &numFolder);
-		private:
+			~CSqlFindCriteria() override;
+			bool SearchUniqueCriteria(CriteriaVector* criteriaVector, const int64_t& numFolder,
+			                          const int64_t& numCatalog);
+			bool SearchCriteria(CriteriaVector* criteriaVector, const int64_t& numCategorie, const int64_t& numCatalog);
+			bool SearchCriteriaAlone(CriteriaVector* criteriaVector);
+			bool SearchCriteria(CriteriaVector* criteriaVector, const wxString& key, const int64_t& numCategorie,
+			                    const int64_t& numCatalog);
+			bool SearchCriteria(CriteriaVector* criteriaVector, const int64_t& numPhoto);
+			bool SearchCriteria(CriteriaVector* criteriaVector, const int64_t& numCategorie, const int64_t& numCatalog,
+			                    const int64_t& numFolder);
 
-			int TraitementResult(CSqlResult * sqlResult);
-			CriteriaVector * m_criteriaVector;
+		private:
+			int TraitementResult(CSqlResult* sqlResult) override;
+			CriteriaVector* m_criteriaVector;
 		};
 	}
 }
-

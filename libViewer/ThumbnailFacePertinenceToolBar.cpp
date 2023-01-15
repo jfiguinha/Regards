@@ -15,37 +15,37 @@ using namespace Regards::Viewer;
 #define WM_CALENDAR 1025
 #define WM_GEOLOCALISE 1026
 
-CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* parent, wxWindowID id,
+                                                                 const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
-    wxString pertinence = CLibResource::LoadStringFromResource(L"LBLPERTINENCELEVEL",1);//L"History";
-    wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON",1);
-    wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF",1);
+	wxString pertinence = CLibResource::LoadStringFromResource(L"LBLPERTINENCELEVEL", 1); //L"History";
+	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
+	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
 
-	
-	CToolbarTexte * toolbarText = new CToolbarTexte(themeToolbar.texte);
+
+	auto toolbarText = new CToolbarTexte(themeToolbar.texte);
 	toolbarText->SetLibelle(pertinence);
 	toolbarText->SetInactif();
-    toolbarText->SetLibelleTooltip(pertinence);
+	toolbarText->SetLibelleTooltip(pertinence);
 	navElement.push_back(toolbarText);
-	
-	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
+
+	auto moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId(L"IDB_MINUS");
 	moins->SetCommandId(WM_ZOOMOUT);
-    moins->SetLibelleTooltip(zoomoff);
+	moins->SetLibelleTooltip(zoomoff);
 	navElement.push_back(moins);
 
-    //themeToolbar.slider.colorBack.Set(51, 54, 62);
+	//themeToolbar.slider.colorBack.Set(51, 54, 62);
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 
-	CToolbarButton * plus = new CToolbarButton(themeToolbar.button);
+	auto plus = new CToolbarButton(themeToolbar.button);
 	plus->SetButtonResourceId(L"IDB_PLUS");
 	plus->SetCommandId(WM_ZOOMON);
-    plus->SetLibelleTooltip(zoomon);
+	plus->SetLibelleTooltip(zoomon);
 	navElement.push_back(plus);
-
 }
 
 CThumbnailFacePertinenceToolBar::~CThumbnailFacePertinenceToolBar()
@@ -67,9 +67,7 @@ void CThumbnailFacePertinenceToolBar::ZoomOn()
 			needToRefresh = true;
 			OnChangeValue();
 		}
-
 	}
-	
 }
 
 void CThumbnailFacePertinenceToolBar::ZoomOff()
@@ -87,9 +85,7 @@ void CThumbnailFacePertinenceToolBar::ZoomOff()
 			needToRefresh = true;
 			OnChangeValue();
 		}
-
 	}
-	
 }
 
 void CThumbnailFacePertinenceToolBar::SetTabValue(vector<int> value)
@@ -98,47 +94,46 @@ void CThumbnailFacePertinenceToolBar::SetTabValue(vector<int> value)
 		slide->SetTabValue(value);
 }
 
-void CThumbnailFacePertinenceToolBar::SetTrackBarPosition(const int &iPos)
+void CThumbnailFacePertinenceToolBar::SetTrackBarPosition(const int& iPos)
 {
 	int positionTrackBar = iPos;
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-        needToRefresh = true;
+		needToRefresh = true;
 	}
 }
 
-void CThumbnailFacePertinenceToolBar::SlidePosChange(const int &position, const wxString &key)
+void CThumbnailFacePertinenceToolBar::SlidePosChange(const int& position, const wxString& key)
 {
 	OnChangeValue();
 }
 
-void  CThumbnailFacePertinenceToolBar::OnChangeValue()
+void CThumbnailFacePertinenceToolBar::OnChangeValue()
 {
-	CMainParam * viewerParam = CMainParamInit::getInstance();
-	if(viewerParam != nullptr)
+	CMainParam* viewerParam = CMainParamInit::getInstance();
+	if (viewerParam != nullptr)
 	{
 		viewerParam->SetPertinenceValue(slide->GetPositionValue());
 	}
 
 #ifndef __NOFACE_DETECTION__
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
+	auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
+	if (listFace != nullptr)
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
 #endif
-	wxWindow * mainWindow = this->FindWindowById(LISTFACEID);
-	if(mainWindow != nullptr)
+	wxWindow* mainWindow = this->FindWindowById(LISTFACEID);
+	if (mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	
 }
 
-void CThumbnailFacePertinenceToolBar::ZoomPos(const int &position)
+void CThumbnailFacePertinenceToolBar::ZoomPos(const int& position)
 {
 	/*
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
@@ -152,10 +147,10 @@ void CThumbnailFacePertinenceToolBar::ZoomPos(const int &position)
 	OnChangeValue();
 }
 
-void CThumbnailFacePertinenceToolBar::EventManager(const int &id)
+void CThumbnailFacePertinenceToolBar::EventManager(const int& id)
 {
 	switch (id)
-	{              
+	{
 	case WM_ZOOMON:
 		ZoomOn();
 		break;
@@ -163,7 +158,6 @@ void CThumbnailFacePertinenceToolBar::EventManager(const int &id)
 	case WM_ZOOMOUT:
 		ZoomOff();
 		break;
-
 	}
 }
 #endif

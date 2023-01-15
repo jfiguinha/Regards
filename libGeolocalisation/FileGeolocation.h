@@ -13,35 +13,37 @@ namespace Regards
 		class CFileGeolocation
 		{
 		public:
+			CFileGeolocation(const wxString& urlServer);
 
-			CFileGeolocation(const wxString &urlServer);
-			~CFileGeolocation(void){};
-			CFileGeolocation(const CFileGeolocation &filegeo);
-			
+			~CFileGeolocation(void)
+			{
+			};
+			CFileGeolocation(const CFileGeolocation& filegeo);
+
 			wxString GetUrlServer();
-			
-            void SetThumbnail(const bool &isThumbnail)
-            {
-                this->isThumbnail = isThumbnail;
-            }
-			
-			void SetFile(const wxString & filename, const wxString &libNotGeo);
+
+			void SetThumbnail(const bool& isThumbnail)
+			{
+				this->isThumbnail = isThumbnail;
+			}
+
+			void SetFile(const wxString& filename, const wxString& libNotGeo);
 			wxString GetLatitude();
 			wxString GetLongitude();
-            float GetFLatitude();
-            float GetFLongitude();
+			float GetFLatitude();
+			float GetFLongitude();
 			bool HasGps();
 			bool HasDateTime();
 			wxString GetGpsInformation();
 			wxString GetDateTimeInfos();
-			wxString GetFilename();          
-            void Geolocalize();
-			bool Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto);
-           // void RefreshData();
-            wxString GenerateGeolocalisationString(const wxString &countryCode, const wxString & region, const wxString &place);
-            
+			wxString GetFilename();
+			void Geolocalize();
+			bool Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto);
+			// void RefreshData();
+			wxString GenerateGeolocalisationString(const wxString& countryCode, const wxString& region,
+			                                       const wxString& place);
+
 		private:
-           
 			void ImportCountry();
 			wxString dateTimeInfos;
 			bool hasGps;
@@ -52,13 +54,11 @@ namespace Regards
 			float flongitude;
 			wxString infoGpsLocalisation;
 			wxString filename;
-            bool isThumbnail;
+			bool isThumbnail;
 
-            //wxString gpsInfos;
-            wxString urlServer;
+			//wxString gpsInfos;
+			wxString urlServer;
 			static CountryVector countryVector;
-			
 		};
-
 	}
 }

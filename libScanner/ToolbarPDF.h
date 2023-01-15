@@ -4,20 +4,15 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 
-namespace Regards
+namespace Regards::Scanner
 {
-	namespace Scanner
+	class CToolbarPDF : public CToolbarWindow
 	{
-		class CToolbarPDF : public CToolbarWindow
-		{
-		public:
-			CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			~CToolbarPDF();
+	public:
+		CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+		~CToolbarPDF() override;
 
-		private:
-
-			void EventManager(const int &id);
-
-		};
-	}
+	private:
+		void EventManager(const int& id) override;
+	};
 }

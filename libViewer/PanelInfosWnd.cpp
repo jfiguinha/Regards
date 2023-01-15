@@ -397,10 +397,10 @@ void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 void CPanelInfosWnd::OnFiltreCancel()
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERID));
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(BITMAPWINDOWVIEWERID));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
 	if (bitmapViewer != nullptr)
@@ -463,7 +463,7 @@ void CPanelInfosWnd::HistoryUpdate()
 		auto bitmapViewer = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (bitmapViewer != nullptr)
 		{
-			CImageLoadingFormat * bitmap = bitmapViewer->GetBitmap(true);
+			CImageLoadingFormat* bitmap = bitmapViewer->GetBitmap(true);
 			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
 		}
 	}

@@ -730,7 +730,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 		{
 			if (!infoFile.changeFilename)
 			{
-				wxFileName name = wxFileName(filename);
+				auto name = wxFileName(filename);
 				file = CConvertUtility::GeneratePath(outputFolder, name.GetName());
 			}
 			else
@@ -802,7 +802,6 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 
 				if (infoFile.outputFormat != 0)
 				{
-
 					vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
 					wxString ext = listExtension.at(infoFile.outputFormat - 1).Lower();
 					int format = CLibPicture::TestExtension(ext.substr(1, ext.size() - 1));
@@ -975,6 +974,6 @@ void CListPicture::Resize()
 	if (windowManager != nullptr)
 	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
-        needToRefresh = true;
+		needToRefresh = true;
 	}
 }

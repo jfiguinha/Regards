@@ -13,20 +13,19 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
 
-CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail, const bool& testValidity)
+CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                   const bool& testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {
-
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
-//	preprocess_thumbnail = false;
+	//	preprocess_thumbnail = false;
 }
 
 
 CThumbnailFolder::~CThumbnailFolder(void)
 {
-
 }
 
 vector<wxString> CThumbnailFolder::GetFileList()
@@ -51,7 +50,8 @@ void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
 	}
 }
 
-void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector, int& nbElement)
+void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector,
+                                       int& nbElement)
 {
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -102,10 +102,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 
 	if (typeLocal == SHOW_ALL)
 	{
-		
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
 		AddSeparatorBar(iconeListLocal, libellePhoto, photoVector, i);
-
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
@@ -128,7 +126,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 		dataDay.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 
-	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -166,8 +163,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    
-    needToRefresh = true;
+
+	needToRefresh = true;
 }
 
 void CThumbnailFolder::Init(const int& typeAffichage)
@@ -215,10 +212,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
-
 	}
 
-	
 
 	lockIconeList.lock();
 	CIconeList* oldIconeList = iconeList;
@@ -240,7 +235,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 }
 
 
-bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)   /* Définit une fonction. */
+bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
+/* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -277,7 +273,6 @@ CInfosSeparationBar* CThumbnailFolder::FindSeparatorElement(const int& xPos, con
 		}
 	}
 	return nullptr;
-
 }
 
 
@@ -351,7 +346,8 @@ void CThumbnailFolder::ResizeThumbnail()
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 				pBitmapIcone->SetWindowPos(x, y);
 
-				x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
+				x += themeThumbnail.themeIcone.GetWidth();
+				nbElementX++;
 				if (nbElementX == nbElementByRow)
 				{
 					nbElementX = 0;
@@ -360,7 +356,6 @@ void CThumbnailFolder::ResizeThumbnail()
 					y += themeThumbnail.themeIcone.GetHeight();
 				}
 			}
-
 		}
 
 		if (nbElementX != 0)
@@ -370,7 +365,6 @@ void CThumbnailFolder::ResizeThumbnail()
 			nbElementY++;
 			y += themeThumbnail.themeIcone.GetHeight();
 		}
-
 	}
 
 	widthThumbnail = GetWindowWidth();
@@ -379,7 +373,7 @@ void CThumbnailFolder::ResizeThumbnail()
 	UpdateScroll();
 }
 
-bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent)   /* Définit une fonction. */
+bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -406,7 +400,6 @@ CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
-
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
 		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
@@ -425,8 +418,8 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 				int top = rc.y - posHauteur;
 				int bottom = rc.y + rc.height - posHauteur;
 
-//				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+				//				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 			}
 		}
 	}
@@ -473,7 +466,6 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 			if (sizeX > thumbnailSizeX)
 				thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 			thumbnailSizeY += nbElementEnY * themeThumbnail.themeIcone.GetHeight() + infosSeparationBar->GetHeight();
-
 		}
 		else
 			break;

@@ -70,17 +70,19 @@ void CxImage::OverflowCoordinates(float& x, float& y, const OverflowMethod ofMet
 		break;
 	case OM_WRAP:
 		//wrap coordinates
-		x = static_cast<float>(fmod(x, (float)head.biWidth));
-		y = static_cast<float>(fmod(y, (float)head.biHeight));
+		x = static_cast<float>(fmod(x, static_cast<float>(head.biWidth)));
+		y = static_cast<float>(fmod(y, static_cast<float>(head.biHeight)));
 		if (x < 0) x = head.biWidth + x;
 		if (y < 0) y = head.biHeight + y;
 		break;
 	case OM_MIRROR:
 		//mirror pixels near border
-		if (x < 0) x = static_cast<float>(fmod(-x, (float)head.biWidth));
-		else if (x >= head.biWidth) x = head.biWidth - (static_cast<float>(fmod(x, (float)head.biWidth)) + 1);
-		if (y < 0) y = static_cast<float>(fmod(-y, (float)head.biHeight));
-		else if (y >= head.biHeight) y = head.biHeight - (static_cast<float>(fmod(y, (float)head.biHeight)) + 1);
+		if (x < 0) x = static_cast<float>(fmod(-x, static_cast<float>(head.biWidth)));
+		else if (x >= head.biWidth) x = head.biWidth - (static_cast<float>(fmod(x, static_cast<float>(head.biWidth))) +
+			1);
+		if (y < 0) y = static_cast<float>(fmod(-y, static_cast<float>(head.biHeight)));
+		else if (y >= head.biHeight) y = head.biHeight - (static_cast<float>(fmod(y, static_cast<float>(head.biHeight)))
+			+ 1);
 		break;
 	default:
 		return;

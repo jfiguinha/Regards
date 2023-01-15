@@ -100,7 +100,7 @@ void CAnimationToolbar::AnimationStop()
 		auto event = new wxCommandEvent(wxEVENT_ANIMATIONSTOP);
 		wxQueueEvent(mainWindow, event);
 
-        needToRefresh = true;
+		needToRefresh = true;
 	}
 }
 

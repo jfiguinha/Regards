@@ -41,6 +41,6 @@ private:
 	wxImage frameOut;
 	int oldnumFrame = -1;
 	bool useOpenCV = false;
-	Regards::Video::CVideoPlayer * videoCapture = nullptr;
+	Regards::Video::CVideoPlayer* videoCapture = nullptr;
 	cv::VideoCapture* videoCaptureCV = nullptr;
 };

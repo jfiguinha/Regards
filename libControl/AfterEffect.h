@@ -5,12 +5,9 @@ class CImageLoadingFormat;
 class CEffectParameter;
 class IBitmapDisplay;
 
-namespace Regards
+namespace Regards::OpenGL
 {
-	namespace OpenGL
-	{
-		class GLTexture;
-	}
+	class GLTexture;
 }
 
 using namespace Regards::OpenGL;

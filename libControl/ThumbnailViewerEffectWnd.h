@@ -11,26 +11,23 @@
 #include <ScrollbarWnd.h>
 using namespace Regards::Control;
 
-namespace Regards
+namespace Regards::Control
 {
-	namespace Control
+	class CThumbnailViewerEffectWnd : public CWindowMain
 	{
-		class CThumbnailViewerEffectWnd : public CWindowMain
-		{
-		public:
-			CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
-			                          const CThemeScrollBar& themeScroll, const CThemeThumbnail& themeThumbnail,
-			                          int panelInfosId, bool checkValidity);
-			~CThumbnailViewerEffectWnd(void) override;
+	public:
+		CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
+		                          const CThemeScrollBar& themeScroll, const CThemeThumbnail& themeThumbnail,
+		                          int panelInfosId, bool checkValidity);
+		~CThumbnailViewerEffectWnd(void) override;
 
-			void UpdateScreenRatio() override;
-			void Resize() override;
-			wxString GetFilename();
-			void SetFile(const wxString& filename);
+		void UpdateScreenRatio() override;
+		void Resize() override;
+		wxString GetFilename();
+		void SetFile(const wxString& filename);
 
-		private:
-			CScrollbarWnd* thumbnailEffectScroll;
-			CThumbnailViewerEffect* thumbnailEffect;
-		};
-	}
+	private:
+		CScrollbarWnd* thumbnailEffectScroll;
+		CThumbnailViewerEffect* thumbnailEffect;
+	};
 }

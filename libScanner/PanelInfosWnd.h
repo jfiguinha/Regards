@@ -31,35 +31,34 @@ namespace Regards
 		{
 		public:
 			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
-			~CPanelInfosWnd();
-			void OnFiltreOk(const int &numFiltre);
+			~CPanelInfosWnd() override;
+			void OnFiltreOk(const int& numFiltre);
 			void OnFiltreCancel();
 			void SetFile(wxString filename);
 			wxString GetFilename();
-			
-			void ShowFiltre(const wxString &title);
-			CFiltreEffect * GetFilterWindow(int &numFiltre);
+
+			void ShowFiltre(const wxString& title);
+			CFiltreEffect* GetFilterWindow(int& numFiltre);
 
 		protected:
 			void ApplyEffect(wxCommandEvent& event);
 			void ShowFiltreEvent(wxCommandEvent& event);
 			void InfosUpdate();
-			void LoadInfo();
-			void DisplayURL(const wxString &url);
+			void LoadInfo() override;
+			void DisplayURL(const wxString& url);
 			void EffectUpdate();
 			void HistoryUpdate();
 
-			CInfoEffectWnd * historyEffectWnd;
-			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
-			CFiltreEffectScrollWnd * filtreEffectWnd;
+			CInfoEffectWnd* historyEffectWnd;
+			CThumbnailViewerEffectWnd* thumbnailEffectWnd;
+			CFiltreEffectScrollWnd* filtreEffectWnd;
 
-			CInfosFileWnd * infosFileWnd;
-			CToolbarInfos * infosToolbar;
-			COcrWnd * ocrWnd;
+			CInfosFileWnd* infosFileWnd;
+			CToolbarInfos* infosToolbar;
+			COcrWnd* ocrWnd;
 			wxString _filename;
-            wxString url;
-			wxWebView * webBrowser = nullptr;
+			wxString url;
+			wxWebView* webBrowser = nullptr;
 		};
-
 	}
 }

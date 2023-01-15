@@ -412,8 +412,8 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 {
-	CSqlFaceThumbnail * face_thumbnail = (CSqlFaceThumbnail *)numSelect->GetData();
-	if(face_thumbnail != nullptr)
+	auto face_thumbnail = static_cast<CSqlFaceThumbnail*>(numSelect->GetData());
+	if (face_thumbnail != nullptr)
 	{
 		CSqlFacePhoto facePhoto;
 		facePhoto.DeleteNumFace(face_thumbnail->GetNumFace());
@@ -426,8 +426,6 @@ void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 
 		init();
 	}
-
-
 }
 
 void CThumbnailFace::ResizeThumbnail()

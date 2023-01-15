@@ -7,42 +7,39 @@ using namespace std;
 class CTreeElementTriangle;
 class CTreeElementTexte;
 
-namespace Regards
+namespace Regards::Control
 {
-	namespace Control
+	class CInfosFileWnd;
+
+	class CThreadLoadInfos
 	{
-		class CInfosFileWnd;
-
-		class CThreadLoadInfos
+	public:
+		CThreadLoadInfos()
 		{
-		public:
-			CThreadLoadInfos()
-			{
-				panelInfos = nullptr;
-				infosFileWnd = nullptr;
-				threadLoadInfos = nullptr;
-			}
+			panelInfos = nullptr;
+			infosFileWnd = nullptr;
+			threadLoadInfos = nullptr;
+		}
 
-			CInfosFileWnd* panelInfos;
-			CInfosFile* infosFileWnd;
-			wxString filename;
-			thread* threadLoadInfos;
-		};
+		CInfosFileWnd* panelInfos;
+		CInfosFile* infosFileWnd;
+		wxString filename;
+		thread* threadLoadInfos;
+	};
 
-		class CInfosFileWnd : public CTreeWithScrollbar
-		{
-		public:
-			CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& theme);
-			~CInfosFileWnd(void) override;
-			void InfosUpdate(const wxString& filename);
+	class CInfosFileWnd : public CTreeWithScrollbar
+	{
+	public:
+		CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& theme);
+		~CInfosFileWnd(void) override;
+		void InfosUpdate(const wxString& filename);
 
-		private:
-			void UpdateTreeInfosEvent(wxCommandEvent& event);
-			static void GenerateTreeInfos(CThreadLoadInfos* threadInfos);
+	private:
+		void UpdateTreeInfosEvent(wxCommandEvent& event);
+		static void GenerateTreeInfos(CThreadLoadInfos* threadInfos);
 
-			CInfosFile* infosFile;
-			CInfosFile* oldInfosFileControl;
-			wxString filename;
-		};
-	}
+		CInfosFile* infosFile;
+		CInfosFile* oldInfosFileControl;
+		wxString filename;
+	};
 }

@@ -94,7 +94,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
 	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
 {
-
 	mainWindow = nullptr;
 	fullscreen = false;
 	onExit = false;
@@ -264,7 +263,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	}
 
 	mainInterface->HideAbout();
-	
+
 	Connect(TIMER_LOADPICTUREEND, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerEndLoadPicture), nullptr, this);
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
@@ -273,7 +272,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
 	wxBusyInfo wait("Please wait, Database is checking ...");
-	
+
 	bool folderChange = false;
 
 	//Test de la validité des répertoires
@@ -292,8 +291,6 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 	}
 
 
-
-
 	//Test de la validité des fichiers
 	PhotosVector photoList;
 	CSqlThumbnail sqlThumbnail;
@@ -310,7 +307,7 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 	}
 
 	//Thumbnail Photo Verification
-	
+
 	vector<int> listPhoto = sqlThumbnail.GetAllPhotoThumbnail();
 	for (int numPhoto : listPhoto)
 	{
@@ -331,7 +328,7 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 			sqlFacePhoto.EraseFace(numPhoto);
 		}
 	}
-	
+
 	if (folderChange)
 	{
 		auto viewerParam = CMainParamInit::getInstance();
@@ -522,7 +519,7 @@ void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 		endLoadPictureTimer->Stop();
 
 	endLoadPictureTimer->Start(1000, true);
-	
+
 	//if (repeatEvent)
 	//	loadPictureTimer->Start(200, true);
 	//else
@@ -541,7 +538,7 @@ void CViewerFrame::OnPictureEndLoading(wxCommandEvent& event)
 
 void CViewerFrame::OnKeyUp(wxKeyEvent& event)
 {
-	if(loadPictureTimer->IsRunning())
+	if (loadPictureTimer->IsRunning())
 		loadPictureTimer->Stop();
 }
 
@@ -566,7 +563,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 			{
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTURENEXT;
-				if(pictureEndLoading)
+				if (pictureEndLoading)
 					loadPictureTimer->Start(200, true);
 				pictureEndLoading = false;
 				/*
@@ -605,7 +602,6 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = false;
 				eventToLoop = wxEVENT_PICTUREFIRST;
 				loadPictureTimer->Start(0, true);
-
 			}
 			break;
 
@@ -618,7 +614,6 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				}
 			}
 			break;
-
 
 
 		case WXK_F2:
@@ -664,7 +659,6 @@ void CViewerFrame::OnWindowFace(wxCommandEvent& event)
 		_event.SetInt(WINDOW_FACE);
 		wxPostEvent(central, _event);
 	}
-
 }
 
 void CViewerFrame::OnWindowFolder(wxCommandEvent& event)
@@ -817,7 +811,7 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 
 void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 {
-	if(eventFileSysTimer != nullptr)
+	if (eventFileSysTimer != nullptr)
 	{
 		eventFileSysTimer->Stop();
 		if (mainWindow != nullptr)
@@ -828,7 +822,6 @@ void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 			//}
 		}
 	}
-
 }
 
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
@@ -878,7 +871,7 @@ void CViewerFrame::OnHello(wxCommandEvent& event)
 	wxLogMessage("Hello world from wxWidgets!");
 }
 
-void CViewerFrame::PrintImagePreview(CImageLoadingFormat * imageToPrint)
+void CViewerFrame::PrintImagePreview(CImageLoadingFormat* imageToPrint)
 {
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
@@ -1014,21 +1007,21 @@ void CViewerFrame::OnPageMargins(wxCommandEvent& WXUNUSED(event))
 */
 
 wxBEGIN_EVENT_TABLE(CViewerFrame, wxFrame)
-	EVT_MENU(ID_Hello, CViewerFrame::OnHello)
-	EVT_MENU(wxID_HELP, CViewerFrame::OnHelp)
-	EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
-	EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
-	EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
-	EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
+		EVT_MENU(ID_Hello, CViewerFrame::OnHello)
+		EVT_MENU(wxID_HELP, CViewerFrame::OnHelp)
+		EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
+		EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
+		EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
+		EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 
-	EVT_MENU(ID_WINDOWFACE, CViewerFrame::OnWindowFace)
-	EVT_MENU(ID_WINDOWFOLDER, CViewerFrame::OnWindowFolder)
-	EVT_MENU(ID_WINDOWVIEWER, CViewerFrame::OnWindowViewer)
-	EVT_MENU(ID_WINDOWPICTURE, CViewerFrame::OnWindowPicture)
-	//EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
-	EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
-	EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
-	EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
+		EVT_MENU(ID_WINDOWFACE, CViewerFrame::OnWindowFace)
+		EVT_MENU(ID_WINDOWFOLDER, CViewerFrame::OnWindowFolder)
+		EVT_MENU(ID_WINDOWVIEWER, CViewerFrame::OnWindowViewer)
+		EVT_MENU(ID_WINDOWPICTURE, CViewerFrame::OnWindowPicture)
+		//EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
+		EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
+		EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
+		EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
 #ifdef __WXMAC__
 	EVT_MENU(WXPRINT_PAGE_MARGINS, CViewerFrame::OnPageMargins)
 #endif

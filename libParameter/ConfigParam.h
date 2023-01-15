@@ -13,7 +13,6 @@ public:
 	bool OpenFile(const wxString& configFile);
 	bool SaveFile();
 
-
 protected:
 	virtual void LoadParameter()
 	{

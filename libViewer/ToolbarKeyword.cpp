@@ -13,20 +13,20 @@ using namespace Regards::Sqlite;
 #define WM_REMOVEKEYWORD 1024
 
 
-CToolbarKeyword::CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CToolbarKeyword::CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
-    wxString addkeyword = CLibResource::LoadStringFromResource(L"LBLADDKEYWORD",1);//L"History";
-    //wxString removekeyword = CLibResource::LoadStringFromResource(L"LBLREMOVEKEYWORD",1);
+	wxString addkeyword = CLibResource::LoadStringFromResource(L"LBLADDKEYWORD", 1); //L"History";
+	//wxString removekeyword = CLibResource::LoadStringFromResource(L"LBLREMOVEKEYWORD",1);
 
-	CToolbarButton * add = new CToolbarButton(themeToolbar.button);
+	auto add = new CToolbarButton(themeToolbar.button);
 	add->SetButtonResourceId(L"IDB_PLUS");
 	add->SetCommandId(WM_ADDKEYWORD);
 	add->SetLibelleTooltip(addkeyword);
 	navElement.push_back(add);
 
-	CToolbarTexte * libelle = new CToolbarTexte(themeToolbar.texte);
+	auto libelle = new CToolbarTexte(themeToolbar.texte);
 	libelle->SetLibelle(addkeyword);
 	libelle->SetCommandId(WM_ADDKEYWORD);
 	libelle->SetLibelleTooltip(addkeyword);
@@ -39,8 +39,6 @@ CToolbarKeyword::CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeTo
     moins->SetLibelleTooltip(removekeyword);
 	navElement.push_back(moins);
 	*/
-
-
 }
 
 CToolbarKeyword::~CToolbarKeyword()
@@ -48,11 +46,11 @@ CToolbarKeyword::~CToolbarKeyword()
 }
 
 
-void CToolbarKeyword::EventManager(const int &id)
+void CToolbarKeyword::EventManager(const int& id)
 {
 	switch (id)
 	{
-		case WM_ADDKEYWORD:
+	case WM_ADDKEYWORD:
 		{
 			/*
 			wxTextEntryDialog dlg(this, wxT("New Keyword : \n"),
@@ -64,7 +62,7 @@ void CToolbarKeyword::EventManager(const int &id)
 			*/
 			bool isNew = false;
 			// We can be certain that this string contains letters only.
-			wxString value = "New Keyword";// dlg.GetValue();
+			wxString value = "New Keyword"; // dlg.GetValue();
 			CSqlCriteria sqlCriteria;
 			int lastId = sqlCriteria.GetCriteriaId() + 1;
 			value = value + " " + to_string(lastId);
@@ -72,30 +70,30 @@ void CToolbarKeyword::EventManager(const int &id)
 
 			if (isNew)
 			{
-				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-				wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 				wxQueueEvent(mainWnd, eventChange);
-					
-				wxWindow * keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
-				wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+
+				wxWindow* keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
+				auto eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
 				wxQueueEvent(keyword, eventRefresh);
 			}
 			//}
 		}
 		break;
 
-		case WM_REMOVEKEYWORD:
+	case WM_REMOVEKEYWORD:
 		{
 			KeywordDialogBox keywordDialog(this);
 			keywordDialog.ShowModal();
 			if (keywordDialog.IsOk())
 			{
-				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-				wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 				wxQueueEvent(mainWnd, eventChange);
 
-				wxWindow * keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
-				wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+				wxWindow* keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
+				auto eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
 				wxQueueEvent(keyword, eventRefresh);
 			}
 		}

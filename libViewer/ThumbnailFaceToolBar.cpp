@@ -12,42 +12,42 @@ using namespace Regards::Viewer;
 #define WM_CALENDAR 1025
 #define WM_GEOLOCALISE 1026
 
-CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+                                             const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
-    wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL",1);//L"History";
-    wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON",1);
-    wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF",1);
-    wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY",1);
+	wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL", 1); //L"History";
+	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
+	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
+	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY", 1);
 
-	CToolbarButton * copy = new CToolbarButton(themeToolbar.button);
+	auto copy = new CToolbarButton(themeToolbar.button);
 	copy->SetButtonResourceId(L"IDB_MULTIPLESELECT");
 	copy->SetCommandId(WM_COPY);
 	copy->SetLibelleTooltip(copy_label);
 	navElement.push_back(copy);
 
-	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
+	auto moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId(L"IDB_ZOOMMOINS");
 	moins->SetCommandId(WM_ZOOMOUT);
-    moins->SetLibelleTooltip(zoomoff);
+	moins->SetLibelleTooltip(zoomoff);
 	navElement.push_back(moins);
 
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 
-	CToolbarButton * plus = new CToolbarButton(themeToolbar.button);
+	auto plus = new CToolbarButton(themeToolbar.button);
 	plus->SetButtonResourceId(L"IDB_ZOOMPLUS");
 	plus->SetCommandId(WM_ZOOMON);
-    plus->SetLibelleTooltip(zoomon);
+	plus->SetLibelleTooltip(zoomon);
 	navElement.push_back(plus);
 
-	CToolbarButton* refreshButton = new CToolbarButton(themeToolbar.button);
+	auto refreshButton = new CToolbarButton(themeToolbar.button);
 	refreshButton->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
 	refreshButton->SetCommandId(WM_REFRESH);
 	refreshButton->SetLibelleTooltip(refresh);
 	navElement.push_back(refreshButton);
-
 }
 
 CThumbnailFaceToolBar::~CThumbnailFaceToolBar()
@@ -66,9 +66,8 @@ bool CThumbnailFaceToolBar::ZoomOn()
 		}
 		SetTrackBarPosition(dwPos);
 		needToRefresh = true;
-		
 	}
-    return true;
+	return true;
 }
 
 bool CThumbnailFaceToolBar::ZoomOff()
@@ -83,9 +82,8 @@ bool CThumbnailFaceToolBar::ZoomOff()
 		}
 		SetTrackBarPosition(dwPos);
 		needToRefresh = true;
-		
 	}
-    return true;
+	return true;
 }
 
 void CThumbnailFaceToolBar::SetTabValue(vector<int> value)
@@ -94,7 +92,7 @@ void CThumbnailFaceToolBar::SetTabValue(vector<int> value)
 		slide->SetTabValue(value);
 }
 
-void CThumbnailFaceToolBar::SetTrackBarPosition(const int &iPos)
+void CThumbnailFaceToolBar::SetTrackBarPosition(const int& iPos)
 {
 	int positionTrackBar = iPos;
 	if (slide != nullptr)
@@ -104,9 +102,9 @@ void CThumbnailFaceToolBar::SetTrackBarPosition(const int &iPos)
 	}
 }
 
-void CThumbnailFaceToolBar::SlidePosChange(const int &position, const wxString &key)
+void CThumbnailFaceToolBar::SlidePosChange(const int& position, const wxString& key)
 {
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+	auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
 	if (listFace != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
@@ -115,9 +113,9 @@ void CThumbnailFaceToolBar::SlidePosChange(const int &position, const wxString &
 	}
 }
 
-void CThumbnailFaceToolBar::ZoomPos(const int &position)
+void CThumbnailFaceToolBar::ZoomPos(const int& position)
 {
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+	auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
 	if (listFace != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
@@ -126,9 +124,9 @@ void CThumbnailFaceToolBar::ZoomPos(const int &position)
 	}
 }
 
-void CThumbnailFaceToolBar::EventManager(const int &id)
+void CThumbnailFaceToolBar::EventManager(const int& id)
 {
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+	auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
 	if (listFace != nullptr)
 	{
 		switch (id)
@@ -142,13 +140,13 @@ void CThumbnailFaceToolBar::EventManager(const int &id)
 				}
 			}
 			break;
-               
+
 		case WM_ZOOMON:
 			{
 				if (ZoomOn() && listFace != nullptr)
 				{
 					wxCommandEvent evt(wxEVENT_THUMBNAILZOOMON);
-						listFace->GetEventHandler()->AddPendingEvent(evt);
+					listFace->GetEventHandler()->AddPendingEvent(evt);
 				}
 			}
 

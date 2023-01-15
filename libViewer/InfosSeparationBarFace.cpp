@@ -137,7 +137,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 		GetWidth() != theme.GetCheckboxWidth()))
 	{
 		bitmapDelete = CLibResource::CreatePictureFromSVG("IDB_DELETE", theme.GetCheckboxWidth(),
-			theme.GetCheckboxHeight());
+		                                                  theme.GetCheckboxHeight());
 		bitmapDelete = bitmapDelete.ConvertToDisabled();
 	}
 

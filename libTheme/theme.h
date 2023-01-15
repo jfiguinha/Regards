@@ -6,77 +6,74 @@ using namespace rapidxml;
 class CThemeXml
 {
 public:
+	CThemeXml()
+	{
+	};
 
-    CThemeXml(){
-        
-    }; 
-    virtual ~CThemeXml(){
-        
-    };
-	virtual void LoadXML(xml_node<> * root_node) = 0;
-	virtual void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition) = 0;
+	virtual ~CThemeXml()
+	{
+	};
+	virtual void LoadXML(xml_node<>* root_node) = 0;
+	virtual void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) = 0;
 
-    float CalculRatioX();
-    float CalculRatioY();
-    int CalculElementSizeForScreen(const int &elementSize, const bool &width = true);
-    
+	float CalculRatioX();
+	float CalculRatioY();
+	int CalculElementSizeForScreen(const int& elementSize, const bool& width = true);
+
 protected:
 	// create a node
-	xml_node<>*  node(xml_document<> & doc, const wxString & name, const wxString & content = "");
+	xml_node<>* node(xml_document<>& doc, const wxString& name, const wxString& content = "");
 
 	// allocate the given string from xml document memory
 	// to ensure that it says alive for the duration of xml
 	// operations
-	const char* stralloc(xml_document<> & doc, const wxString & str);
+	const char* stralloc(xml_document<>& doc, const wxString& str);
 };
 
 class CTheme : public CThemeXml
 {
 public:
-
 	CTheme();
-	virtual ~CTheme();
+	~CTheme() override;
 
-	virtual void LoadXML(xml_node<> * root_node) override;
+	void LoadXML(xml_node<>* root_node) override;
 
-	virtual void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition) override;
-    
-    
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
+
 
 	CTheme& operator=(const CTheme& other);
 
 	wxColour colorBack;
-
 };
 
 class CThemeBitmapWindow : public CTheme
 {
 public:
-
 	CThemeBitmapWindow();
-	~CThemeBitmapWindow();
+	~CThemeBitmapWindow() override;
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeBitmapWindow& operator=(const CThemeBitmapWindow& other);
 
 	wxColour colorFullscreen;
 	wxColour colorScreen;
-
 };
 
 class CThemeFolder : public CTheme
 {
 public:
-
 	CThemeFolder();
-	~CThemeFolder(){};
 
-	void LoadXML(xml_node<> * root_node);
+	~CThemeFolder() override
+	{
+	};
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeFolder& operator=(const CThemeFolder& other);
 
@@ -92,91 +89,93 @@ class CThemeFont : public CTheme
 {
 public:
 	CThemeFont();
-	~CThemeFont(){};
+
+	~CThemeFont() override
+	{
+	};
 
 	CThemeFont& operator=(const CThemeFont& other);
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
-    int GetBold()
-    {
-        return bold;
-    }
-    
-    void SetBold(const int & bold)
-    {
-        this->bold = bold;
-    }
-    
-    int GetPositionFont()
-    {
-        return positionFont;
-    }
-    
-    void SetPositionFont(const int & positionFont)
-    {
-        this->positionFont = positionFont;
-    }
-    
-    wxColour GetColorFont()
-    {
-        return colorFont;
-    }
-    
-    void SetColorFont(const wxColour & colorFont)
-    {
-        this->colorFont = colorFont;
-    }
-    
-    wxString GetFontName()
-    {
-        return fontName;
-    }
-    
-    void SetFontName(const wxString &fontName)
-    {
-        this->fontName = fontName;
-    }
-    
-    int GetFontRealSize()
-    {
-        return fontSize;
-    }    
-    
-    int GetFontSize()
-    {
-        return CalculElementSizeForScreen(fontSize);
-    }
-    
-    void SetFontSize(const int & fontSize)
-    {
-        this->fontSize = fontSize;
-    }
-    
-    int GetFontMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetFontMarge(const int & marge)
-    {
-        this->marge = marge;
-    }
-    
-    int GetFontQuality()
-    {
-        return fontQuality;
-    }
-    
-    void SetFontQuality(const int & fontQuality)
-    {
-        this->fontQuality = fontQuality;
-    }
-    
+	int GetBold()
+	{
+		return bold;
+	}
+
+	void SetBold(const int& bold)
+	{
+		this->bold = bold;
+	}
+
+	int GetPositionFont()
+	{
+		return positionFont;
+	}
+
+	void SetPositionFont(const int& positionFont)
+	{
+		this->positionFont = positionFont;
+	}
+
+	wxColour GetColorFont()
+	{
+		return colorFont;
+	}
+
+	void SetColorFont(const wxColour& colorFont)
+	{
+		this->colorFont = colorFont;
+	}
+
+	wxString GetFontName()
+	{
+		return fontName;
+	}
+
+	void SetFontName(const wxString& fontName)
+	{
+		this->fontName = fontName;
+	}
+
+	int GetFontRealSize()
+	{
+		return fontSize;
+	}
+
+	int GetFontSize()
+	{
+		return CalculElementSizeForScreen(fontSize);
+	}
+
+	void SetFontSize(const int& fontSize)
+	{
+		this->fontSize = fontSize;
+	}
+
+	int GetFontMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetFontMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	int GetFontQuality()
+	{
+		return fontQuality;
+	}
+
+	void SetFontQuality(const int& fontQuality)
+	{
+		this->fontQuality = fontQuality;
+	}
+
 private:
-    
 	int bold;
 	int positionFont;
 	wxColour colorFont;
@@ -191,43 +190,43 @@ class CThemeTreeElement : public CThemeXml
 public:
 	CThemeTreeElement();
 
-	virtual ~CThemeTreeElement()
+	~CThemeTreeElement() override
 	{
 	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeElement& operator=(const CThemeTreeElement& other);
-	
-    int GetWidth()
-    {
-        return CalculElementSizeForScreen(width);
-        //return width;
-    }
-    
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-        //return height;
-    }
-    
-    void SetWidth(const int &width)
-    {
-        this->width = width;
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-	
-    wxColour color;
+
+	int GetWidth()
+	{
+		return CalculElementSizeForScreen(width);
+		//return width;
+	}
+
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+		//return height;
+	}
+
+	void SetWidth(const int& width)
+	{
+		this->width = width;
+	}
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	wxColour color;
 
 protected:
-    int width;
-    int height;
+	int width;
+	int height;
 };
 
 class CThemeTreeTriangle : public CThemeTreeElement
@@ -235,50 +234,47 @@ class CThemeTreeTriangle : public CThemeTreeElement
 public:
 	CThemeTreeTriangle();
 
-	~CThemeTreeTriangle()
+	~CThemeTreeTriangle() override
 	{
 	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeTriangle& operator=(const CThemeTreeTriangle& other);
 
-    int GetElementWidth()
-    {
-        return CalculElementSizeForScreen(elementWidth);
-    }
-    
-    int GetElementHeight()
-    {
-        return CalculElementSizeForScreen(elementHeight, false);
-    }
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
-    
-    void SetElementWidth(const int &width)
-    {
-        this->elementWidth = width;
-    }
-    
-    void SetElementHeight(const int &elementHeight)
-    {
-        this->elementHeight = height;
-    }
-    
-    
-    
+	int GetElementWidth()
+	{
+		return CalculElementSizeForScreen(elementWidth);
+	}
+
+	int GetElementHeight()
+	{
+		return CalculElementSizeForScreen(elementHeight, false);
+	}
+
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	void SetElementWidth(const int& width)
+	{
+		this->elementWidth = width;
+	}
+
+	void SetElementHeight(const int& elementHeight)
+	{
+		this->elementHeight = height;
+	}
+
 private:
-    
 	int elementHeight;
 	int elementWidth;
 	int marge;
@@ -289,55 +285,55 @@ class CThemeTreeDelete : public CThemeTreeElement
 public:
 	CThemeTreeDelete();
 
-	~CThemeTreeDelete(){};
+	~CThemeTreeDelete() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeDelete& operator=(const CThemeTreeDelete& other);
 
-    int GetCroixWidth()
-    {
-        return CalculElementSizeForScreen(croixWidth);
-    }
-    
-    int GetCroixHeight()
-    {
-        return CalculElementSizeForScreen(croixHeight, false);
-    }
-    
-   
-    void SetCroixWidth(const int &width)
-    {
-        this->croixWidth = width;
-    }
-    
-    void SetCroixHeight(const int &elementHeight)
-    {
-        this->croixHeight = height;
-    }
-    
-    wxColour crossColor;
+	int GetCroixWidth()
+	{
+		return CalculElementSizeForScreen(croixWidth);
+	}
+
+	int GetCroixHeight()
+	{
+		return CalculElementSizeForScreen(croixHeight, false);
+	}
+
+
+	void SetCroixWidth(const int& width)
+	{
+		this->croixWidth = width;
+	}
+
+	void SetCroixHeight(const int& elementHeight)
+	{
+		this->croixHeight = height;
+	}
+
+	wxColour crossColor;
 	wxColour colorBackActif;
-    int position;
-    
+	int position;
+
 private:
-    
 	int croixWidth;
 	int croixHeight;
-	
 };
 
 class CThemeTreeSlide : public CThemeTreeElement
 {
 public:
 	CThemeTreeSlide();
-	~CThemeTreeSlide();
+	~CThemeTreeSlide() override;
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeSlide& operator=(const CThemeTreeSlide& other);
 
@@ -345,48 +341,47 @@ public:
 
 	wxColour rectanglePast;
 	wxColour rectangleNext;
-    
-    float GetRatio()
-    {
-        return CalculRatioX();
-    }
-    
-    int GetElementWidth()
-    {
-        return CalculElementSizeForScreen(elementWidth);
-    }
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge, false);
-    }
-    
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
-   
-    void SetElementWidth(const int &width)
-    {
-        this->elementWidth = width;
-    }
-    
-    int GetButtonWidth()
-    {
-        return CalculElementSizeForScreen(buttonWidth);
-    }
-    
-    int GetButtonHeight()
-    {
-        return CalculElementSizeForScreen(buttonHeight);
-    }
-    
+
+	float GetRatio()
+	{
+		return CalculRatioX();
+	}
+
+	int GetElementWidth()
+	{
+		return CalculElementSizeForScreen(elementWidth);
+	}
+
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge, false);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	void SetElementWidth(const int& width)
+	{
+		this->elementWidth = width;
+	}
+
+	int GetButtonWidth()
+	{
+		return CalculElementSizeForScreen(buttonWidth);
+	}
+
+	int GetButtonHeight()
+	{
+		return CalculElementSizeForScreen(buttonHeight);
+	}
+
 private:
-    
-    int buttonWidth;
-    int buttonHeight;
-    int marge;
-    int elementWidth;
+	int buttonWidth;
+	int buttonHeight;
+	int marge;
+	int elementWidth;
 };
 
 class CThemeTreeTexte : public CThemeTreeElement
@@ -394,15 +389,15 @@ class CThemeTreeTexte : public CThemeTreeElement
 public:
 	CThemeTreeTexte();
 
-	~CThemeTreeTexte()
+	~CThemeTreeTexte() override
 	{
 	};
 
 	CThemeTreeTexte& operator=(const CThemeTreeTexte& other);
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeFont font;
 };
@@ -412,78 +407,81 @@ class CThemeTreeCheckBox : public CThemeTreeElement
 public:
 	CThemeTreeCheckBox()
 	{
-        margeX = 3;
-        margeY = 3;
+		margeX = 3;
+		margeY = 3;
 		elementWidth = width = 15;
 		elementHeight = height = 15;
-	    checkBoxWidth = 14;
+		checkBoxWidth = 14;
 		checkBoxHeight = 14;
 	};
-	~CThemeTreeCheckBox(){};
 
-	void LoadXML(xml_node<> * root_node);
+	~CThemeTreeCheckBox() override
+	{
+	};
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeCheckBox& operator=(const CThemeTreeCheckBox& other);
-    
-    int GetCheckBoxWidth()
-    {
-        return CalculElementSizeForScreen(checkBoxWidth);
-    }
-    
-    int GetCheckBoxHeight()
-    {
-        return CalculElementSizeForScreen(checkBoxHeight, false);
-    }
 
-    int GetMargeX()
-    {
-        return CalculElementSizeForScreen(margeX);
-    }
-    
-    int GetMargeY()
-    {
-        return CalculElementSizeForScreen(margeY);
-    }
-    
-    void SetMargeX(int marge)
-    {
-        margeX = marge;
-    }
-    
-    void SetMargeY(int marge)
-    {
-        margeY = marge;
-    }
-    
-    int GetElementWidth()
-    {
-        return CalculElementSizeForScreen(elementWidth);
-    }
-    
-    int GetElementHeight()
-    {
-        return CalculElementSizeForScreen(elementHeight, false);
-    }
-    
-    void SetElementWidth(const int &width)
-    {
-        this->elementWidth = width;
-    }
-    
-    void SetElementHeight(const int &elementHeight)
-    {
-        this->elementHeight = height;
-    }
-    
+	int GetCheckBoxWidth()
+	{
+		return CalculElementSizeForScreen(checkBoxWidth);
+	}
+
+	int GetCheckBoxHeight()
+	{
+		return CalculElementSizeForScreen(checkBoxHeight, false);
+	}
+
+	int GetMargeX()
+	{
+		return CalculElementSizeForScreen(margeX);
+	}
+
+	int GetMargeY()
+	{
+		return CalculElementSizeForScreen(margeY);
+	}
+
+	void SetMargeX(int marge)
+	{
+		margeX = marge;
+	}
+
+	void SetMargeY(int marge)
+	{
+		margeY = marge;
+	}
+
+	int GetElementWidth()
+	{
+		return CalculElementSizeForScreen(elementWidth);
+	}
+
+	int GetElementHeight()
+	{
+		return CalculElementSizeForScreen(elementHeight, false);
+	}
+
+	void SetElementWidth(const int& width)
+	{
+		this->elementWidth = width;
+	}
+
+	void SetElementHeight(const int& elementHeight)
+	{
+		this->elementHeight = height;
+	}
+
 private:
 	int elementHeight;
 	int elementWidth;
-    int margeX;
-    int margeY;
-    int checkBoxWidth;
-    int checkBoxHeight;
+	int margeX;
+	int margeY;
+	int checkBoxWidth;
+	int checkBoxHeight;
 };
 
 class CThemeTreeListBox : public CThemeTreeElement
@@ -501,54 +499,55 @@ public:
 		buttonHeight = 17;
 		marge = 4;
 	};
-	~CThemeTreeListBox(){};
+
+	~CThemeTreeListBox() override
+	{
+	};
 
 	CThemeFont font;
 
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
 
 	int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge, false);
-    }
+	{
+		return CalculElementSizeForScreen(marge, false);
+	}
 
-    int GetButtonWidth()
-    {
-        return CalculElementSizeForScreen(buttonWidth);
-    }
-    
-    int GetButtonHeight()
-    {
-        return CalculElementSizeForScreen(buttonHeight);
-    }
+	int GetButtonWidth()
+	{
+		return CalculElementSizeForScreen(buttonWidth);
+	}
 
-	void LoadXML(xml_node<> * root_node);
+	int GetButtonHeight()
+	{
+		return CalculElementSizeForScreen(buttonHeight);
+	}
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTreeListBox& operator=(const CThemeTreeListBox& other);
-    
-   
-    int GetElementWidth()
-    {
-        return CalculElementSizeForScreen(elementWidth);
-    }
-    
-    void SetElementWidth(const int &width)
-    {
-        this->elementWidth = width;
-    }
 
-    
+
+	int GetElementWidth()
+	{
+		return CalculElementSizeForScreen(elementWidth);
+	}
+
+	void SetElementWidth(const int& width)
+	{
+		this->elementWidth = width;
+	}
+
 private:
-
-    int buttonWidth;
-    int buttonHeight;
-    int marge;
-    int elementWidth;
+	int buttonWidth;
+	int buttonHeight;
+	int marge;
+	int elementWidth;
 };
 
 class CThemeTree : public CTheme
@@ -569,45 +568,45 @@ public:
 		rowWidth = 20;
 	}
 
-	~CThemeTree()
+	~CThemeTree() override
 	{
 	}
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeTree& operator=(const CThemeTree& other);
-    
-    int GetRowWidth()
-    {
-        return CalculElementSizeForScreen(rowWidth);
-    }
-    
-    int GetRowHeight()
-    {
-        return CalculElementSizeForScreen(rowHeight, false);
-    }
-    
-    int GetMargeX()
-    {
-        return CalculElementSizeForScreen(margeX);
-    }
-    
-    void SetMargeX(const int &marge)
-    {
-        this->margeX = marge;
-    }
-    
-    void SetRowWidth(const int &width)
-    {
-        this->rowWidth = width;
-    }
-    
-    void SetRowHeight(const int &elementHeight)
-    {
-        this->rowHeight = elementHeight;
-    }
+
+	int GetRowWidth()
+	{
+		return CalculElementSizeForScreen(rowWidth);
+	}
+
+	int GetRowHeight()
+	{
+		return CalculElementSizeForScreen(rowHeight, false);
+	}
+
+	int GetMargeX()
+	{
+		return CalculElementSizeForScreen(margeX);
+	}
+
+	void SetMargeX(const int& marge)
+	{
+		this->margeX = marge;
+	}
+
+	void SetRowWidth(const int& width)
+	{
+		this->rowWidth = width;
+	}
+
+	void SetRowHeight(const int& elementHeight)
+	{
+		this->rowHeight = elementHeight;
+	}
 
 	CThemeTreeTriangle themeTriangle;
 	CThemeTreeDelete themeDelete;
@@ -618,8 +617,8 @@ public:
 	wxColour bgColorOne;
 	wxColour bgColorTwo;
 	wxColour bgColorActif;
-    wxColour bgColorBackground;
-    
+	wxColour bgColorBackground;
+
 private:
 	int rowHeight;
 	int rowWidth;
@@ -639,58 +638,61 @@ public:
 		colorBarActif = wxColour(128, 128, 128);
 		marge = 2;
 	};
-	~CThemeScrollBar()
+
+	~CThemeScrollBar() override
 	{
 	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeScrollBar& operator=(const CThemeScrollBar& other);
 
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
-    
-    int GetRectangleSize()
-    {
-        return CalculElementSizeForScreen(rectangleSize);
-    }
-    
-    void SetRectangleSize(const int &rectangleSize)
-    {
-        this->rectangleSize = rectangleSize;
-    }
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	int GetRectangleSize()
+	{
+		return CalculElementSizeForScreen(rectangleSize);
+	}
+
+	void SetRectangleSize(const int& rectangleSize)
+	{
+		this->rectangleSize = rectangleSize;
+	}
 
 	wxColour colorBar;
 	wxColour colorTriangle;
 	wxColour colorBarActif;
 	wxColour colorTriangleActif;
-    
+
 private:
-    int rectangleSize;
-    int marge;
+	int rectangleSize;
+	int marge;
 };
 
 class CThemeFastDrawBar : public CTheme
 {
 public:
-    CThemeFastDrawBar();
+	CThemeFastDrawBar();
 
-	~CThemeFastDrawBar(){};
+	~CThemeFastDrawBar() override
+	{
+	};
 
 	CThemeFastDrawBar& operator=(const CThemeFastDrawBar& other);
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	wxColour firstColor;
 	wxColour secondColor;
@@ -700,13 +702,15 @@ public:
 class CThemeSeparationBar : public CTheme
 {
 public:
-    CThemeSeparationBar();
+	CThemeSeparationBar();
 
-	~CThemeSeparationBar(){};
+	~CThemeSeparationBar() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeSeparationBar& operator=(const CThemeSeparationBar& other);
 
@@ -721,11 +725,14 @@ public:
 	CThemeSplitter()
 	{
 	};
-	~CThemeSplitter(){};
 
-	void LoadXML(xml_node<> * root_node);
+	~CThemeSplitter() override
+	{
+	};
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeSplitter& operator=(const CThemeSplitter& other);
 
@@ -738,63 +745,65 @@ class CThemeTitleBar : public CTheme
 public:
 	CThemeTitleBar();
 
-	~CThemeTitleBar(){}
+	~CThemeTitleBar() override
+	{
+	}
 
-	void LoadXML(xml_node<> * root_node);
-	
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
-	
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
+
 	CThemeTitleBar& operator=(const CThemeTitleBar& other);
 
 	CThemeFont font;
 
 	wxColour colorCross;
-    
-    int GetCroixWidth()
-    {
-        return CalculElementSizeForScreen(croixWidth);
-    }
-    
-    int GetCroixHeight()
-    {
-        return CalculElementSizeForScreen(croixHeight, false);
-    }
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
-    
-    void SetCroixWidth(const int &width)
-    {
-        this->croixWidth = width;
-    }
-    
-    void SetCroixHeight(const int &elementHeight)
-    {
-        this->croixHeight = height;
-    }
-    
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-       
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
+
+	int GetCroixWidth()
+	{
+		return CalculElementSizeForScreen(croixWidth);
+	}
+
+	int GetCroixHeight()
+	{
+		return CalculElementSizeForScreen(croixHeight, false);
+	}
+
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	void SetCroixWidth(const int& width)
+	{
+		this->croixWidth = width;
+	}
+
+	void SetCroixHeight(const int& elementHeight)
+	{
+		this->croixHeight = height;
+	}
+
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
 private:
-    int height;
-    int marge;
-    int croixWidth;
-    int croixHeight;
+	int height;
+	int marge;
+	int croixWidth;
+	int croixHeight;
 };
 
 class CThemePane : public CTheme
@@ -804,26 +813,29 @@ public:
 	{
 		height = 20;
 	}
-	~CThemePane(){}
-    
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
 
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
+	~CThemePane() override
+	{
+	}
 
-	void LoadXML(xml_node<> * root_node);
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
-	
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
+
 	CThemePane& operator=(const CThemePane& other);
 
 	CThemeTitleBar themeTitle;
-    
+
 private:
 	int height;
 };
@@ -831,162 +843,158 @@ private:
 class CThemeSlider : public CTheme
 {
 public:
-
 	CThemeSlider();
 
-	virtual ~CThemeSlider();
+	~CThemeSlider() override;
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeSlider& operator=(const CThemeSlider& other);
 
 	CThemeFont font;
 	wxColour rectanglePast;
 	wxColour rectangleNext;
-    wxColor colorActifReplacement;
-    wxColor colorInactifReplacement;
+	wxColor colorActifReplacement;
+	wxColor colorInactifReplacement;
 	wxBitmap bitmapBackground;
 	bool isColorBackground;
-    
 
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
-    int GetWidth()
-    {
-        return CalculElementSizeForScreen(width);
-    }
-    
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-    
-    void SetWidth(const int &width)
-    {
-        this->width = width;
-    }
-    
-    int GetRectangleHeight()
-    {
-        return CalculElementSizeForScreen(rectangleHeight, false);
-    }
-    
-    void SetRectangleHeight(const int &rectangleHeight)
-    {
-        this->rectangleHeight = rectangleHeight;
-    }
-    
-    float GetRatio()
-    {
-        return CalculRatioX();
-    }
-    
-    int GetButtonWidth()
-    {
-        return CalculElementSizeForScreen(buttonWidth);
-    }
-    
-    int GetButtonHeight()
-    {
-        return CalculElementSizeForScreen(buttonHeight, false);
-    }
-    
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	int GetWidth()
+	{
+		return CalculElementSizeForScreen(width);
+	}
+
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
+
+	void SetWidth(const int& width)
+	{
+		this->width = width;
+	}
+
+	int GetRectangleHeight()
+	{
+		return CalculElementSizeForScreen(rectangleHeight, false);
+	}
+
+	void SetRectangleHeight(const int& rectangleHeight)
+	{
+		this->rectangleHeight = rectangleHeight;
+	}
+
+	float GetRatio()
+	{
+		return CalculRatioX();
+	}
+
+	int GetButtonWidth()
+	{
+		return CalculElementSizeForScreen(buttonWidth);
+	}
+
+	int GetButtonHeight()
+	{
+		return CalculElementSizeForScreen(buttonHeight, false);
+	}
+
 private:
-    int buttonWidth;
-    int buttonHeight;
-    int rectangleHeight;
-    int width;
-    int height;
+	int buttonWidth;
+	int buttonHeight;
+	int rectangleHeight;
+	int width;
+	int height;
 };
 
 class CThemeSliderVideo : public CThemeSlider
 {
 public:
-    
-    CThemeSliderVideo();
-    
-    ~CThemeSliderVideo();
-    
-    void LoadXML(xml_node<> * root_node);
-    
-    void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
-    
-    CThemeSliderVideo& operator=(const CThemeSliderVideo& other);
-    
-    int GetButtonPlayWidth()
-    {
-        return CalculElementSizeForScreen(buttonPlayWidth);
-    }
-    
-    int GetButtonPlayHeight()
-    {
-        return CalculElementSizeForScreen(buttonPlayHeight, false);
-    }
-    
-    int GetButtonPauseWidth()
-    {
-        return CalculElementSizeForScreen(buttonPauseWidth);
-    }
-    
-    int GetButtonPauseHeight()
-    {
-        return CalculElementSizeForScreen(buttonPauseHeight, false);
-    }
-    
-    int GetButtonVolumeUpWidth()
-    {
-        return CalculElementSizeForScreen(buttonVolumeUpWidth);
-    }
-    
-    int GetButtonVolumeUpHeight()
-    {
-        return CalculElementSizeForScreen(buttonVolumeUpHeight, false);
-    }
-    
-    int GetButtonVolumeDownWidth()
-    {
-        return CalculElementSizeForScreen(buttonVolumeDownWidth);
-    }
-    
-    int GetButtonVolumeDownHeight()
-    {
-        return CalculElementSizeForScreen(buttonVolumeDownHeight, false);
-    }
+	CThemeSliderVideo();
 
-    int GetButtonSpeakerWidth()
-    {
-        return CalculElementSizeForScreen(buttonSpeakerWidth);
-    }
-    
-    int GetButtonSpeakerHeight()
-    {
-        return CalculElementSizeForScreen(buttonSpeakerHeight, false);
-    }
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
+	~CThemeSliderVideo() override;
+
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
+
+	CThemeSliderVideo& operator=(const CThemeSliderVideo& other);
+
+	int GetButtonPlayWidth()
+	{
+		return CalculElementSizeForScreen(buttonPlayWidth);
+	}
+
+	int GetButtonPlayHeight()
+	{
+		return CalculElementSizeForScreen(buttonPlayHeight, false);
+	}
+
+	int GetButtonPauseWidth()
+	{
+		return CalculElementSizeForScreen(buttonPauseWidth);
+	}
+
+	int GetButtonPauseHeight()
+	{
+		return CalculElementSizeForScreen(buttonPauseHeight, false);
+	}
+
+	int GetButtonVolumeUpWidth()
+	{
+		return CalculElementSizeForScreen(buttonVolumeUpWidth);
+	}
+
+	int GetButtonVolumeUpHeight()
+	{
+		return CalculElementSizeForScreen(buttonVolumeUpHeight, false);
+	}
+
+	int GetButtonVolumeDownWidth()
+	{
+		return CalculElementSizeForScreen(buttonVolumeDownWidth);
+	}
+
+	int GetButtonVolumeDownHeight()
+	{
+		return CalculElementSizeForScreen(buttonVolumeDownHeight, false);
+	}
+
+	int GetButtonSpeakerWidth()
+	{
+		return CalculElementSizeForScreen(buttonSpeakerWidth);
+	}
+
+	int GetButtonSpeakerHeight()
+	{
+		return CalculElementSizeForScreen(buttonSpeakerHeight, false);
+	}
+
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
 private:
-    
-    int buttonPlayWidth;
-    int buttonPlayHeight;
-    int buttonPauseWidth;
-    int buttonPauseHeight;
-    int buttonVolumeUpWidth;
-    int buttonVolumeUpHeight;
-    int buttonVolumeDownWidth;
-    int buttonVolumeDownHeight;
-    int buttonSpeakerWidth;
-    int buttonSpeakerHeight;
-    int marge;
+	int buttonPlayWidth;
+	int buttonPlayHeight;
+	int buttonPauseWidth;
+	int buttonPauseHeight;
+	int buttonVolumeUpWidth;
+	int buttonVolumeUpHeight;
+	int buttonVolumeDownWidth;
+	int buttonVolumeDownHeight;
+	int buttonSpeakerWidth;
+	int buttonSpeakerHeight;
+	int marge;
 };
 
 class CThemeBitmapInfos : public CTheme
@@ -994,51 +1002,52 @@ class CThemeBitmapInfos : public CTheme
 public:
 	CThemeBitmapInfos();
 
-	~CThemeBitmapInfos(){};
+	~CThemeBitmapInfos() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
-	
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
+
 	CThemeBitmapInfos& operator=(const CThemeBitmapInfos& other);
 
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
-	CThemeFont themeFont;
-    
-    
-    void SetCheckboxWidth(const int &width)
-    {
-        this->checkboxWidth = width;
-    }
-    
-    void SetCheckboxHeight(const int &height)
-    {
-        this->checkboxHeight = height;
-    }
-    
-    int GetCheckboxWidth()
-    {
-        return CalculElementSizeForScreen(checkboxWidth);
-    }
-    
-    int GetCheckboxHeight()
-    {
-        return CalculElementSizeForScreen(checkboxHeight,false);
-    }
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
 
-    
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	CThemeFont themeFont;
+
+
+	void SetCheckboxWidth(const int& width)
+	{
+		this->checkboxWidth = width;
+	}
+
+	void SetCheckboxHeight(const int& height)
+	{
+		this->checkboxHeight = height;
+	}
+
+	int GetCheckboxWidth()
+	{
+		return CalculElementSizeForScreen(checkboxWidth);
+	}
+
+	int GetCheckboxHeight()
+	{
+		return CalculElementSizeForScreen(checkboxHeight, false);
+	}
+
 private:
-    int checkboxWidth;
-    int checkboxHeight;
+	int checkboxWidth;
+	int checkboxHeight;
 	int height;
 };
 
@@ -1047,74 +1056,76 @@ class CThemeIcone : public CTheme
 public:
 	CThemeIcone();
 
-	~CThemeIcone(){};
+	~CThemeIcone() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeIcone& operator=(const CThemeIcone& other);
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetMarge(const int & marge)
-    {
-        this->marge = marge;
-    }
 
-    const int GetWidth()
-    {
-        return CalculElementSizeForScreen(width);
-    }
-    
-    const int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-    
-    const int GetRealWidth()
-    {
-        return width;
-    }
-    
-    const int GetRealHeight()
-    {
-        return height;
-    }
-    
-    void SetWidth(const int &width)
-    {
-        this->width = width;
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
-    void SetCheckboxWidth(const int &width)
-    {
-        this->checkboxWidth = width;
-    }
-    
-    void SetCheckboxHeight(const int &height)
-    {
-        this->checkboxHeight = height;
-    }
-    
-    int GetCheckboxWidth()
-    {
-        return CalculElementSizeForScreen(checkboxWidth);
-    }
-    
-    int GetCheckboxHeight()
-    {
-        return CalculElementSizeForScreen(checkboxHeight,false);
-    }
-    
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
+	const int GetWidth()
+	{
+		return CalculElementSizeForScreen(width);
+	}
+
+	const int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
+
+	const int GetRealWidth()
+	{
+		return width;
+	}
+
+	const int GetRealHeight()
+	{
+		return height;
+	}
+
+	void SetWidth(const int& width)
+	{
+		this->width = width;
+	}
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	void SetCheckboxWidth(const int& width)
+	{
+		this->checkboxWidth = width;
+	}
+
+	void SetCheckboxHeight(const int& height)
+	{
+		this->checkboxHeight = height;
+	}
+
+	int GetCheckboxWidth()
+	{
+		return CalculElementSizeForScreen(checkboxWidth);
+	}
+
+	int GetCheckboxHeight()
+	{
+		return CalculElementSizeForScreen(checkboxHeight, false);
+	}
+
 	CThemeFont font;
 	int showOnlyThumbnail;
 
@@ -1123,60 +1134,58 @@ public:
 	wxColour colorBottom;
 	wxColour colorSelectTop;
 	wxColour colorSelectBottom;
-    
+
 private:
-    int width;
-    int height;
-    int marge;
-    int checkboxWidth;
-    int checkboxHeight;
+	int width;
+	int height;
+	int marge;
+	int checkboxWidth;
+	int checkboxHeight;
 };
 
 class CThemeInfosSeparationBar : public CTheme
 {
 public:
-
 	CThemeInfosSeparationBar();
 
-	~CThemeInfosSeparationBar()
+	~CThemeInfosSeparationBar() override
 	{
-
 	}
-    
-    const int & GetHeight()
-    {
-        calculHeight = CalculElementSizeForScreen(height, false);
-        return calculHeight;
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
-    int GetCheckboxHeight()
-    {
-        return CalculElementSizeForScreen(checkboxHeight, false);
-    }
-    
-    int GetCheckboxWidth()
-    {
-        return CalculElementSizeForScreen(checkboxWidth);
-    }
-    
-    void SetCheckboxHeight(const int &checkboxHeight)
-    {
-        this->checkboxHeight = checkboxHeight;
-    }
-    
-    void SetCheckboxWidth(const int &checkboxWidth)
-    {
-        this->checkboxWidth = checkboxWidth;
-    }
 
-	void LoadXML(xml_node<> * root_node);
+	const int& GetHeight()
+	{
+		calculHeight = CalculElementSizeForScreen(height, false);
+		return calculHeight;
+	}
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	int GetCheckboxHeight()
+	{
+		return CalculElementSizeForScreen(checkboxHeight, false);
+	}
+
+	int GetCheckboxWidth()
+	{
+		return CalculElementSizeForScreen(checkboxWidth);
+	}
+
+	void SetCheckboxHeight(const int& checkboxHeight)
+	{
+		this->checkboxHeight = checkboxHeight;
+	}
+
+	void SetCheckboxWidth(const int& checkboxWidth)
+	{
+		this->checkboxWidth = checkboxWidth;
+	}
+
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeInfosSeparationBar& operator=(const CThemeInfosSeparationBar& other);
 
@@ -1184,24 +1193,26 @@ public:
 
 	wxColour colorTop;
 	wxColour colorBottom;
-    
+
 private:
-    
-    int checkboxHeight;
-    int checkboxWidth;
-    int height;
-    int calculHeight;
+	int checkboxHeight;
+	int checkboxWidth;
+	int height;
+	int calculHeight;
 };
 
 class CThemeThumbnail : public CTheme
 {
 public:
 	CThemeThumbnail();
-	~CThemeThumbnail(){};
 
-	void LoadXML(xml_node<> * root_node);
+	~CThemeThumbnail() override
+	{
+	};
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeThumbnail& operator=(const CThemeThumbnail& other);
 
@@ -1212,155 +1223,158 @@ public:
 class CThemeToolBarZoom : public CTheme
 {
 public:
-
 	CThemeToolBarZoom();
 
-	~CThemeToolBarZoom()
+	~CThemeToolBarZoom() override
 	{
-
 	}
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeToolBarZoom& operator=(const CThemeToolBarZoom& other);
 
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
-    int GetCheckboxHeight()
-    {
-        return CalculElementSizeForScreen(checkboxHeight, false);
-    }
-    
-    int GetCheckboxWidth()
-    {
-        return CalculElementSizeForScreen(checkboxWidth);
-    }
-    
-    void SetCheckboxHeight(const int &checkboxHeight)
-    {
-        this->checkboxHeight = checkboxHeight;
-    }
-    
-    void SetCheckboxWidth(const int &checkboxWidth)
-    {
-        this->checkboxWidth = checkboxWidth;
-    }
-    
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
+	int GetCheckboxHeight()
+	{
+		return CalculElementSizeForScreen(checkboxHeight, false);
+	}
+
+	int GetCheckboxWidth()
+	{
+		return CalculElementSizeForScreen(checkboxWidth);
+	}
+
+	void SetCheckboxHeight(const int& checkboxHeight)
+	{
+		this->checkboxHeight = checkboxHeight;
+	}
+
+	void SetCheckboxWidth(const int& checkboxWidth)
+	{
+		this->checkboxWidth = checkboxWidth;
+	}
+
 	CThemeFont font;
 	CThemeFont fontActif;
-    
+
 private:
 	int height;
-    int checkboxHeight;
-    int checkboxWidth;
+	int checkboxHeight;
+	int checkboxWidth;
 };
 
 
 class CThemeToolbarElement : public CThemeXml
 {
 public:
-	CThemeToolbarElement(){};
-	virtual ~CThemeToolbarElement(){};
+	CThemeToolbarElement()
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	~CThemeToolbarElement() override
+	{
+	};
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void LoadXML(xml_node<>* root_node) override;
+
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeToolbarElement& operator=(const CThemeToolbarElement& other);
 
-    int GetTailleX()
-    {
-        return CalculElementSizeForScreen(tailleX);
-    }
-    
-    int GetRealTailleX()
-    {
-        return tailleX;
-    }
-    
-    void SetTailleX(const int &tailleX)
-    {
-        this->tailleX = tailleX;
-    }
-    
-    int GetTailleY()
-    {
-        return CalculElementSizeForScreen(tailleY, false);
-    }
-    
-    int GetRealTailleY()
-    {
-        return tailleY;
-    }
-    
-    void SetTailleY(const int &tailleY)
-    {
-        this->tailleY = tailleY;
-    }
-    
+	int GetTailleX()
+	{
+		return CalculElementSizeForScreen(tailleX);
+	}
+
+	int GetRealTailleX()
+	{
+		return tailleX;
+	}
+
+	void SetTailleX(const int& tailleX)
+	{
+		this->tailleX = tailleX;
+	}
+
+	int GetTailleY()
+	{
+		return CalculElementSizeForScreen(tailleY, false);
+	}
+
+	int GetRealTailleY()
+	{
+		return tailleY;
+	}
+
+	void SetTailleY(const int& tailleY)
+	{
+		this->tailleY = tailleY;
+	}
+
 protected:
-    
 	int tailleX;
 	int tailleY;
 };
 
 class CThemeToolbarButton : public CThemeToolbarElement
 {
-
 public:
 	CThemeToolbarButton();
 
-	~CThemeToolbarButton(){};
+	~CThemeToolbarButton() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeToolbarButton& operator=(const CThemeToolbarButton& other);
 
-    
-    int GetRectangleSize()
-    {
-        return CalculElementSizeForScreen(rectangleSize);
-    }
-    
-    void SetRectangleSize(const int &rectangleSize)
-    {
-        this->rectangleSize = rectangleSize;
-    }
-    
-    int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge);
-    }
-    
-    void SetMarge(const int & marge)
-    {
-        this->marge = marge;
-    }
-    
+
+	int GetRectangleSize()
+	{
+		return CalculElementSizeForScreen(rectangleSize);
+	}
+
+	void SetRectangleSize(const int& rectangleSize)
+	{
+		this->rectangleSize = rectangleSize;
+	}
+
+	int GetMarge()
+	{
+		return CalculElementSizeForScreen(marge);
+	}
+
+	void SetMarge(const int& marge)
+	{
+		this->marge = marge;
+	}
+
 	CThemeFont font;
 	wxColour lineColorTop;
 	wxColour lineColorBottom;
 	wxColour actifTop;
 	wxColour actifBottom;
-    wxColour colorActifReplacement;
-    wxColour replaceColor;
-    int showButtonOnly;
-    
+	wxColour colorActifReplacement;
+	wxColour replaceColor;
+	int showButtonOnly;
+
 private:
 	int rectangleSize;
-	
+
 	int marge;
 };
 
@@ -1369,24 +1383,26 @@ class CThemeToolbarTexte : public CThemeToolbarElement
 public:
 	CThemeToolbarTexte();
 
-	~CThemeToolbarTexte(){};
+	~CThemeToolbarTexte() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeToolbarTexte& operator=(const CThemeToolbarTexte& other);
 
-    int GetRectangleSize()
-    {
-        return CalculElementSizeForScreen(rectangleSize);
-    }
-    
-    void SetRectangleSize(const int &rectangleSize)
-    {
-        this->rectangleSize = rectangleSize;
-    }
-    
+	int GetRectangleSize()
+	{
+		return CalculElementSizeForScreen(rectangleSize);
+	}
+
+	void SetRectangleSize(const int& rectangleSize)
+	{
+		this->rectangleSize = rectangleSize;
+	}
+
 	CThemeFont font;
 	CThemeFont fontActif;
 	wxColour colorBack;
@@ -1394,7 +1410,7 @@ public:
 	wxColour actifBottom;
 	wxColour rectTop;
 	wxColour rectBottom;
-    
+
 private:
 	int rectangleSize;
 };
@@ -1404,86 +1420,86 @@ class CThemeToolbar : public CTheme
 public:
 	CThemeToolbar();
 
-	~CThemeToolbar(){};
+	~CThemeToolbar() override
+	{
+	};
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeToolbar& operator=(const CThemeToolbar& other);
 
 	wxColour colorTop;
 	wxColour colorBottom;
-    wxColour replaceColor;
+	wxColour replaceColor;
 
 	int position;
 
 	CThemeToolbarButton button;
 	CThemeToolbarTexte texte;
 	CThemeSlider slider;
-    
-    int GetMargeX()
-    {
-        return CalculElementSizeForScreen(margeX);
-    }
-    
-    void SetMargeX(const int & margeX)
-    {
-        this->margeX = margeX;
-    }
-    
-    int GetMargeY()
-    {
-        return CalculElementSizeForScreen(margeY, false);
-    }
-    
-    void SetMargeY(const int & margeY)
-    {
-        this->margeY = margeY;
-    }
-    
-    int GetWidth()
-    {
-        return CalculElementSizeForScreen(width);
-    }
-    
-    int GetHeight()
-    {
-        return CalculElementSizeForScreen(height, false);
-    }
-    
-    void SetWidth(const int &width)
-    {
-        this->width = width;
-    }
-    
-    void SetHeight(const int &height)
-    {
-        this->height = height;
-    }
-    
+
+	int GetMargeX()
+	{
+		return CalculElementSizeForScreen(margeX);
+	}
+
+	void SetMargeX(const int& margeX)
+	{
+		this->margeX = margeX;
+	}
+
+	int GetMargeY()
+	{
+		return CalculElementSizeForScreen(margeY, false);
+	}
+
+	void SetMargeY(const int& margeY)
+	{
+		this->margeY = margeY;
+	}
+
+	int GetWidth()
+	{
+		return CalculElementSizeForScreen(width);
+	}
+
+	int GetHeight()
+	{
+		return CalculElementSizeForScreen(height, false);
+	}
+
+	void SetWidth(const int& width)
+	{
+		this->width = width;
+	}
+
+	void SetHeight(const int& height)
+	{
+		this->height = height;
+	}
+
 private:
-    int height;
-    int width;
-    int margeX;
-    int margeY;
+	int height;
+	int width;
+	int margeX;
+	int margeY;
 };
 
 
 class CThemeIntroLogo : public CTheme
 {
 public:
-
 	CThemeIntroLogo();
 
-	~CThemeIntroLogo()
+	~CThemeIntroLogo() override
 	{
-
 	}
 
-	void LoadXML(xml_node<> * root_node);
+	void LoadXML(xml_node<>* root_node) override;
 
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	void SaveXML(xml_document<>& doc, xml_node<>* sectionPosition) override;
 
 	CThemeIntroLogo& operator=(const CThemeIntroLogo& other);
 

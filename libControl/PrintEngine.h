@@ -17,21 +17,18 @@
 #include "wx/osx/printdlg.h"
 #endif
 
-namespace Regards
+namespace Regards::Print
 {
-	namespace Print
+	class CPrintEngine
 	{
-		class CPrintEngine
-		{
-		public:
-			static void Initialize();
-			static void Kill();
-			static wxPrintData* GetPrintData();
-			static wxPageSetupDialogData* GetPageSetupDialogData();
+	public:
+		static void Initialize();
+		static void Kill();
+		static wxPrintData* GetPrintData();
+		static wxPageSetupDialogData* GetPageSetupDialogData();
 
-		private:
-			static wxPrintData* g_printData;
-			static wxPageSetupDialogData* g_pageSetupData;
-		};
-	}
+	private:
+		static wxPrintData* g_printData;
+		static wxPageSetupDialogData* g_pageSetupData;
+	};
 }

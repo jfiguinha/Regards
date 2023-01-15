@@ -26,7 +26,6 @@
 class CVideoEffectParameter : public CEffectParameter
 {
 public:
-	
 	CVideoEffectParameter(): streamAudioIndex(0), streamVideoIndex(0), streamSubtitleIndex(0)
 	{
 		vector<float> zoom{1.0f, 1.33f, 1.66f, 1.85f, 2.35f};
@@ -86,10 +85,10 @@ public:
 			if (tabZoom[i] == 1.0f)
 				zoomSelect = i;
 		}
-
 	}
 	;
-	~CVideoEffectParameter()
+
+	~CVideoEffectParameter() override
 	{
 	};
 
@@ -112,27 +111,27 @@ public:
 	//Color Boost
 	float color_boost[4];
 
-	int	  SharpenEnable;
-	int   MedianEnable;
-	int	  denoiseEnable;
-	int	  ColorBoostEnable;
-	int	  BicubicEnable;
-    //int   enableOpenCL;
-	int	  rotation;
-	int	  bandcEnable;
-	int	  showFPS;
-	int   effectEnable;
-	int	  grayEnable;
-	int	  sepiaEnable;
-	int	  vhsEnable;
-	int   enableSubtitle;
-	int   streamAudioIndex;
-	int   streamVideoIndex;
-	int   streamSubtitleIndex;
-	int   streamAudioUpdate;
-	int   streamVideoUpdate;
-	int   streamSubtitleUpdate;
-	int	  filmgrainenable;	
+	int SharpenEnable;
+	int MedianEnable;
+	int denoiseEnable;
+	int ColorBoostEnable;
+	int BicubicEnable;
+	//int   enableOpenCL;
+	int rotation;
+	int bandcEnable;
+	int showFPS;
+	int effectEnable;
+	int grayEnable;
+	int sepiaEnable;
+	int vhsEnable;
+	int enableSubtitle;
+	int streamAudioIndex;
+	int streamVideoIndex;
+	int streamSubtitleIndex;
+	int streamAudioUpdate;
+	int streamVideoUpdate;
+	int streamSubtitleUpdate;
+	int filmgrainenable;
 	vector<float> tabRatio;
 	vector<float> tabZoom;
 	int ratioSelect = 4;
@@ -149,4 +148,3 @@ public:
 	int h = 3;
 	int hColor = 3;
 };
-

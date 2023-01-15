@@ -15,6 +15,7 @@ namespace Regards
 			static CMainTheme* getInstance();
 			static void Initialize(CMainTheme* param);
 			static void SaveTheme();
+
 		private:
 			static CMainTheme* _singleton;
 		};

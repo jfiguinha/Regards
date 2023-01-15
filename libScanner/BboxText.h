@@ -14,8 +14,9 @@ public:
 	{
 		itemClass = "ocr_graphic";
 	}
+
 	int numImage;
-	CImageLoadingFormat * picture;
+	CImageLoadingFormat* picture;
 	wxRect rect;
 };
 
@@ -38,7 +39,7 @@ public:
 		itemClass = "ocr_line";
 		fontBold = false;
 		fontItalic = false;
-		fontSize = 10; 
+		fontSize = 10;
 		fontFamily = "Times";
 	}
 

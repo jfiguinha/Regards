@@ -2,23 +2,20 @@
 #include <InfosSeparationBar.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Control
 {
-	namespace Control
+	class CInfosSeparationBarEffect : public CInfosSeparationBar
 	{
-		class CInfosSeparationBarEffect : public CInfosSeparationBar
+	public:
+		CInfosSeparationBarEffect(const CThemeInfosSeparationBar& theme)
+			: CInfosSeparationBar(theme)
 		{
-		public:
-			CInfosSeparationBarEffect(const CThemeInfosSeparationBar& theme)
-				: CInfosSeparationBar(theme)
-			{
-			};
-
-			~CInfosSeparationBarEffect(void) override
-			{
-			};
-
-			void AddPhotoToList(const int& numElement);
 		};
-	}
+
+		~CInfosSeparationBarEffect(void) override
+		{
+		};
+
+		void AddPhotoToList(const int& numElement);
+	};
 }

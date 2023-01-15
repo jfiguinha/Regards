@@ -609,7 +609,7 @@ static void nsvg__roundJoin(NSVGrasterizer* r, NSVGpoint* left, NSVGpoint* right
 	if (da < NSVG_PI) da += NSVG_PI * 2;
 	if (da > NSVG_PI) da -= NSVG_PI * 2;
 
-	n = static_cast<int>(ceilf((nsvg__absf(da) / NSVG_PI) * (float)ncap));
+	n = static_cast<int>(ceilf((nsvg__absf(da) / NSVG_PI) * static_cast<float>(ncap)));
 	if (n < 2) n = 2;
 	if (n > ncap) n = ncap;
 

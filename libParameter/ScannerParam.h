@@ -12,26 +12,26 @@ namespace Regards
 		{
 		public:
 			CMainParam();
-			virtual ~CMainParam();
+			~CMainParam() override;
 
-			void SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant);
-			void SetPositionWindow(const wxRect &rc);
-			void SetPositionSplitter(const int &position);
-			void SetShowThumbnail(const bool &show);
-			void SetShowVideoThumbnail(const bool &show);
-			void SetShowInfos(const bool &infos);
-			void SetShowFilter(const bool &infos);
-			void SetPertinenceValue(const double &value);
+			void SetOptionDiaporama(const bool& fullscreen, const int& effect, const int& delai, const bool& enAvant);
+			void SetPositionWindow(const wxRect& rc);
+			void SetPositionSplitter(const int& position);
+			void SetShowThumbnail(const bool& show);
+			void SetShowVideoThumbnail(const bool& show);
+			void SetShowInfos(const bool& infos);
+			void SetShowFilter(const bool& infos);
+			void SetPertinenceValue(const double& value);
 
 			double GetPertinenceValue();
-			void GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant);
-			void GetPositionWindow(wxRect &rc);
-			void GetPositionSplitter(int &position);
-			void GetShowThumbnail(bool &show);
-			void GetShowVideoThumbnail(bool &show);
-			void GetShowInfos(bool &infos);
-			void GetShowFilter(bool &infos);
-			void GetCheckIsUpdate(bool &infos);
+			void GetOptionDiaporama(bool& fullscreen, int& effect, int& delai, bool& enAvant);
+			void GetPositionWindow(wxRect& rc);
+			void GetPositionSplitter(int& position);
+			void GetShowThumbnail(bool& show);
+			void GetShowVideoThumbnail(bool& show);
+			void GetShowInfos(bool& infos);
+			void GetShowFilter(bool& infos);
+			void GetCheckIsUpdate(bool& infos);
 			int GetDefaultPositionPreviewFace();
 
 			bool GetFullscreenDiaporamaOption();
@@ -39,57 +39,56 @@ namespace Regards
 			int GetDelaiDiaporamaOption();
 
 			wxString GetLastFolder();
-			void SetLastFolder(const wxString &folder);
+			void SetLastFolder(const wxString& folder);
 
-			void SetShowFolder(const bool &infos);
-			void GetShowFolder(bool &infos);
+			void SetShowFolder(const bool& infos);
+			void GetShowFolder(bool& infos);
 
-			void SetShowFace(const bool &infos);
-			void GetShowFace(bool &infos);
-            
-            wxString GetLastSqlRequest();
-            void SetLastSqlRequest(const wxString &sqlRequest);
+			void SetShowFace(const bool& infos);
+			void GetShowFace(bool& infos);
 
-			void SetCatalogCriteria(const wxString &state);
+			wxString GetLastSqlRequest();
+			void SetLastSqlRequest(const wxString& sqlRequest);
+
+			void SetCatalogCriteria(const wxString& state);
 			wxString GetCatalogCriteria();
 
-			void SetCatalogOpenTriangle(const wxString &state);
+			void SetCatalogOpenTriangle(const wxString& state);
 			wxString GetCatalogOpenTriangle();
 
 			int GetPositionCriteriaPreview();
-			void SetPositionCriteriaPreview(const int &pos);
+			void SetPositionCriteriaPreview(const int& pos);
 
 			bool IsThumbnailBottom();
-			void SetThumbnailBottom(const bool &isBottom);
+			void SetThumbnailBottom(const bool& isBottom);
 
-			void SetPositionPreviewThumbnail(const int &pos);
+			void SetPositionPreviewThumbnail(const int& pos);
 			int GetPositionPreviewThumbnail();
 
-			void SetPositionCriteriaFolder(const int &pos);
-			int GetPositionCriteriaFolder();	
-			void SetCheckIsUpdate(const bool &infos);
+			void SetPositionCriteriaFolder(const int& pos);
+			int GetPositionCriteriaFolder();
+			void SetCheckIsUpdate(const bool& infos);
 
 			bool GetCheckThumbnailValidity();
 
 			int GetPositionPreviewFace();
-			void SetPositionPreviewFace(const int &pos);
+			void SetPositionPreviewFace(const int& pos);
 
 		private:
-
-			void LoadParameter();
-			void SaveParameter();
+			void LoadParameter() override;
+			void SaveParameter() override;
 
 			//Loading 
-			void GetDiaporamaParameter(xml_node<> * diaporama_node);
-			void GetWindowParameter(xml_node<> * window_node);
-			wxRect GetWindowPositionParameter(xml_node<> * position_node);
-			void GetPositionParameter(xml_node<> * position_node);
-			void GetCriteriaParameter(xml_node<> * position_node);
+			void GetDiaporamaParameter(xml_node<>* diaporama_node);
+			void GetWindowParameter(xml_node<>* window_node);
+			wxRect GetWindowPositionParameter(xml_node<>* position_node);
+			void GetPositionParameter(xml_node<>* position_node);
+			void GetCriteriaParameter(xml_node<>* position_node);
 
 			//Saving
 			void SetDiaporamaParameter(xml_node<>* sectionDiaporama);
 			void SetWindowParameter(xml_node<>* sectionWindow);
-			void SetWindowPositionParameter(xml_node<> * sectionWindowPosition, const wxRect &rc);
+			void SetWindowPositionParameter(xml_node<>* sectionWindowPosition, const wxRect& rc);
 			void SetPositionParameter(xml_node<>* sectionPosition);
 			void SetCriteriaParameter(xml_node<>* section);
 
@@ -109,7 +108,7 @@ namespace Regards
 			wxString criteriaTriangleList;
 			int positionCriteriaPreview;
 			bool showFilter;
-            wxString sqlRequest;
+			wxString sqlRequest;
 			bool showFolder;
 			bool isThumbnailBottom;
 			int positionPreviewThumbnail;

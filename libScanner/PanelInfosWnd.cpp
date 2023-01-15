@@ -24,7 +24,7 @@ using namespace Regards::Control;
 #define WM_UPDATEINFOS 1
 
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
-	: CTabWindow("CPanelInfosWnd",parent, id)
+	: CTabWindow("CPanelInfosWnd", parent, id)
 {
 	infosFileWnd = nullptr;
 	infosToolbar = nullptr;
@@ -36,7 +36,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	//Effect Parameter
 	modificationManager = nullptr;
 	url = "http://www.google.fr";
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	wxString folder = CFileUtility::GetDocumentFolderPath();
 
@@ -49,28 +49,27 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
-        CThemeScrollBar themeScroll;
-        viewerTheme->GetScrollTheme(&themeScroll);
-        
-        CThemeTree theme;
-        viewerTheme->GetTreeTheme(&theme);
-        
-        infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeTree theme;
+		viewerTheme->GetTreeTheme(&theme);
+
+		infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
 		ocrWnd = new COcrWnd(this, SCANNER_OCRPAGE);
 
 		infosFileWnd->Show(true);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->SetWindow(infosFileWnd);
-		tabInfosFile->SetId(WM_INFOS);
-        listWindow.push_back(tabInfosFile);
 
-		CTabWindowData * tabOcr = new CTabWindowData();
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(infosFileWnd);
+		tabInfosFile->SetId(WM_INFOS);
+		listWindow.push_back(tabInfosFile);
+
+		auto tabOcr = new CTabWindowData();
 		tabOcr->SetWindow(ocrWnd);
 		tabOcr->SetId(WM_OCR);
 		listWindow.push_back(tabOcr);
-
-	}   
+	}
 
 	if (viewerTheme != nullptr)
 	{
@@ -83,7 +82,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERIDPDF);
 		filtreEffectWnd->Show(false);
 
-		CTabWindowData * tabInfosFile = new CTabWindowData();
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(filtreEffectWnd);
 		tabInfosFile->SetId(WM_EFFECTPARAMETER);
 		listWindow.push_back(tabInfosFile);
@@ -99,7 +98,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERIDPDF);
 		historyEffectWnd->Show(false);
 
-		CTabWindowData * tabInfosFile = new CTabWindowData();
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(historyEffectWnd);
 		tabInfosFile->SetId(WM_HISTORY);
 		listWindow.push_back(tabInfosFile);
@@ -118,19 +117,19 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		CMainParam * config = CMainParamInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
 			checkValidity = config->GetCheckThumbnailValidity();
 
-		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDSCANNERID, checkValidity);
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail,
+		                                                   PANELINFOSWNDSCANNERID, checkValidity);
 
 		thumbnailEffectWnd->Show(false);
 
-		CTabWindowData * tabInfosFileEffect = new CTabWindowData();
+		auto tabInfosFileEffect = new CTabWindowData();
 		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
 		tabInfosFileEffect->SetId(WM_EFFECT);
 		listWindow.push_back(tabInfosFileEffect);
-
 	}
 
 	if (webBrowser == nullptr)
@@ -145,15 +144,15 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		listWindow.push_back(tabInfosFile);
 		*/
 	}
-	
+
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetInfosToolbarTheme(&theme);
 		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this, false);
 	}
-    
-    toolbarWindow = infosToolbar;
+
+	toolbarWindow = infosToolbar;
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
 }
@@ -165,7 +164,7 @@ void CPanelInfosWnd::HistoryUpdate()
 	if (bitmapViewer != nullptr)
 	{
 		CImageLoadingFormat* bitmap = bitmapViewer->GetBitmap(true);
-		if(bitmap != nullptr)
+		if (bitmap != nullptr)
 		{
 			wxString filename = bitmap->GetFilename();
 			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
@@ -189,14 +188,14 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, _filename, false, PANELINFOSWNDSCANNERID, PDFWINDOWID);
 }
 
-void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
+void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 {
 	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ClickShowButton(WM_EFFECT);
 	infosToolbar->SetEffectParameterInactif();
 }
 
-CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
+CFiltreEffect* CPanelInfosWnd::GetFilterWindow(int& numFiltre)
 {
 	if (filtreEffectWnd != nullptr)
 	{
@@ -209,7 +208,7 @@ CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	auto bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 
 	if (bitmapViewer != nullptr)
 	{
@@ -230,7 +229,7 @@ void CPanelInfosWnd::EffectUpdate()
 	}
 }
 
-void CPanelInfosWnd::ShowFiltre(const wxString &title)
+void CPanelInfosWnd::ShowFiltre(const wxString& title)
 {
 	HideAllWindow();
 	infosToolbar->SetEffectParameterPush();
@@ -249,7 +248,7 @@ wxString CPanelInfosWnd::GetFilename()
 
 CPanelInfosWnd::~CPanelInfosWnd()
 {
-	delete(infosFileWnd);  
+	delete(infosFileWnd);
 	delete(ocrWnd);
 	delete(infosToolbar);
 	delete(historyEffectWnd);
@@ -273,7 +272,6 @@ void CPanelInfosWnd::SetFile(wxString filename)
 
 		LoadInfo();
 	}
-    
 }
 
 void CPanelInfosWnd::LoadInfo()
@@ -284,7 +282,7 @@ void CPanelInfosWnd::LoadInfo()
 		{
 		case WM_INFOS:
 			InfosUpdate();
-            infosToolbar->SetInfosPush();
+			infosToolbar->SetInfosPush();
 			break;
 
 		case WM_OCR:
@@ -303,21 +301,21 @@ void CPanelInfosWnd::LoadInfo()
 			thumbnailEffectWnd->Refresh();
 			break;
 		case WM_HTMLEDITOR:
-		{
-			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-			wxString newUrl = "file:///" + resourcePath + "/ckeditor4.html";
-			if (url != newUrl)
-				DisplayURL(newUrl);
-			url = newUrl;
-			infosToolbar->SetEditorPush();
-		}
-		break;
+			{
+				wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+				wxString newUrl = "file:///" + resourcePath + "/ckeditor4.html";
+				if (url != newUrl)
+					DisplayURL(newUrl);
+				url = newUrl;
+				infosToolbar->SetEditorPush();
+			}
+			break;
 		default: ;
 		}
 	}
 }
 
-void CPanelInfosWnd::DisplayURL(const wxString &url)
+void CPanelInfosWnd::DisplayURL(const wxString& url)
 {
 	webBrowser->LoadURL(url);
 	Resize();
@@ -325,6 +323,6 @@ void CPanelInfosWnd::DisplayURL(const wxString &url)
 
 void CPanelInfosWnd::InfosUpdate()
 {
-    if(infosFileWnd != nullptr)
-        infosFileWnd->InfosUpdate(_filename);
+	if (infosFileWnd != nullptr)
+		infosFileWnd->InfosUpdate(_filename);
 }

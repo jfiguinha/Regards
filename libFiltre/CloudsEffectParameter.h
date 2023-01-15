@@ -15,7 +15,10 @@ public:
 		frequence = 65;
 		octave = 8;
 	};
-	~CCloudsEffectParameter(){};
+
+	~CCloudsEffectParameter() override
+	{
+	};
 
 	CRgbaquad colorFront;
 	CRgbaquad colorBack;
@@ -25,4 +28,3 @@ public:
 	int frequence;
 	int transparency;
 };
-

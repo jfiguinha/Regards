@@ -4,7 +4,8 @@
 #include <window_id.h>
 using namespace Regards::Viewer;
 
-CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                             const bool& testValidity)
 	: CThumbnailVideo(parent, id, themeThumbnail, testValidity)
 {
 	filename = L"";
@@ -15,12 +16,11 @@ CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, co
 
 CThumbnailViewerVideo::~CThumbnailViewerVideo(void)
 {
-
 }
 
-void CThumbnailViewerVideo::OnPictureClick(CThumbnailData * data)
+void CThumbnailViewerVideo::OnPictureClick(CThumbnailData* data)
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr && data != nullptr)
 	{
 #ifdef FFMPEG

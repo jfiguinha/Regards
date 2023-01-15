@@ -5,7 +5,8 @@ using namespace Regards::Window;
 using namespace Regards::Scanner;
 
 
-CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+                             CToolbarInterface* toolbarInterface, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical), editorParam(nullptr)
 {
 	infos = nullptr;
@@ -61,7 +62,7 @@ CToolbarInfos::~CToolbarInfos()
 
 void CToolbarInfos::SetInfosPush()
 {
-    infos->SetPush(true);
+	infos->SetPush(true);
 }
 
 void CToolbarInfos::SetOcrPush()
@@ -101,7 +102,7 @@ void CToolbarInfos::SetEffectParameterInactif()
 	needToRefresh = true;
 }
 
-void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
+void CToolbarInfos::SetEffectParameterActif(const wxString& libelle)
 {
 	if (libelle != "")
 	{
@@ -124,30 +125,26 @@ void CToolbarInfos::SetOcrActif()
 void CToolbarInfos::SetInfosActif()
 {
 	//infos->SetActif();
-    infos->SetVisible(true);
+	infos->SetVisible(true);
 	toolbarInterface->ClickShowButton(WM_INFOS);
 }
 
 void CToolbarInfos::Resize()
 {
-	int nbElement = (int)navElement.size();
+	int nbElement = static_cast<int>(navElement.size());
 	themeToolbar.texte.SetTailleX(GetWindowWidth() / nbElement);
 
-	for (CToolbarElement * nav : navElement)
+	for (CToolbarElement* nav : navElement)
 	{
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
 	needToRefresh = true;
 }
 
-void CToolbarInfos::EventManager(const int &id)
+void CToolbarInfos::EventManager(const int& id)
 {
 	if (toolbarInterface != nullptr)
 	{
 		toolbarInterface->ClickShowButton(id);
 	}
 }
-
-
-
-

@@ -1,4 +1,3 @@
-
 #define SPECIAL_EFFECT 1
 #define COLOR_EFFECT 2
 #define CONVOLUTION_EFFECT 3

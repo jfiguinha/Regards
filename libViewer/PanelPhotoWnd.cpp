@@ -16,12 +16,9 @@
 #include "SqlFolderCatalog.h"
 #include "SQLRemoveData.h"
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
-	{
-		class CListFace;
-	}
+	class CListFace;
 }
 
 using namespace Regards::Sqlite;
@@ -43,7 +40,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	if (viewerTheme != nullptr)
 	{
 		CThemeTree themeTree;
-		folderWnd = new  wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition,
+		folderWnd = new wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition,
 		                                 wxDefaultSize, wxDIRCTRL_DIR_ONLY);
 		if (folderWnd->GetTreeCtrl() != nullptr)
 		{
@@ -169,7 +166,7 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 			treeitem = folderWnd->GetTreeCtrl()->GetSelection();
 			folderWnd->GetTreeCtrl()->Check(treeitem);
 		}
-		
+
 		delete folder;
 	}
 }
@@ -253,9 +250,8 @@ void CPanelPhotoWnd::LoadInfo()
 
 //Add and Remove Folder Management
 
-wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialog)
+wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool& showDialog)
 {
-	
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString localFilename = "";
 	wxString msg = "In progress ...";
@@ -300,7 +296,6 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialo
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	
 
 	return localFilename;
 }
@@ -309,7 +304,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialo
 void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
-	
+
 	wxBusyInfo wait("Please wait, working...", windowMain);
 	if (!folder.IsEmpty())
 	{

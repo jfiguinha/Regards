@@ -35,6 +35,7 @@ namespace Regards
 			                    const wxString& key) override
 			{
 			};
+
 		protected:
 			void SaveState();
 			void LoadState();

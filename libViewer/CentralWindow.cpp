@@ -256,7 +256,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
-
 }
 
 
@@ -293,7 +292,7 @@ void CCentralWindow::OnPictureLast(wxCommandEvent& event)
 void CCentralWindow::OnTimerDiaporama(wxTimerEvent& event)
 {
 	printf("OnTimerDiaporama \n");
-	
+
 	ImageSuivante();
 }
 
@@ -445,7 +444,7 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 			}
 		}
 		else if (windowMode == WINDOW_FACE)
-		{	
+		{
 			numItem = listFace->ImageSuivante();
 			localFilename = listFace->GetFilename(numItem);
 		}
@@ -571,7 +570,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 	return localFilename;
 }
 
-int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
+int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 {
 	//return RefreshPicture(filename);
 	int numLocalItem = 0;
@@ -622,7 +621,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		bool errorPhoto = false;
 		bool needToLoadPicture = false;
 		wxString pictureToLoad = filename;
-		
+
 		if (wxFileExists(filename))
 		{
 			CLibPicture libPicture;
@@ -637,7 +636,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 			{
 				StopMusic();
 				SetVideo(filename);
-		}
+			}
 			else if (libPicture.TestIsVideo(filename) && !isVideoValid)
 			{
 				//CImageLoadingFormat* bitmap = libPicture.GetCancelPhoto(filename);
@@ -665,15 +664,15 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		{
 			errorPhoto = true;
 		}
-		
-		if(errorPhoto)
+
+		if (errorPhoto)
 		{
 			pictureToLoad = CPictureUtility::GetPhotoCancel();
 			needToLoadPicture = true;
 			StartLoadingPicture();
 		}
 
-		if(needToLoadPicture)
+		if (needToLoadPicture)
 		{
 			isPicture = true;
 			//--------------------------------------------------------------------------------
@@ -685,10 +684,9 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 				CImageLoadingFormat* _loadingPicture = sqlThumbnail.GetPictureThumbnail(pictureToLoad);
 				if (_loadingPicture != nullptr && _loadingPicture->IsOk())
 				{
-
 					_loadingPicture->SetFilename(pictureToLoad);
 					//_loadingPicture->Flip();
-					CBitmapReturn * bitmapReturn = new CBitmapReturn();
+					CBitmapReturn* bitmapReturn = new CBitmapReturn();
 					bitmapReturn->myThread = nullptr;
 					bitmapReturn->isThumbnail = true;
 					bitmapReturn->bitmap = _loadingPicture;
@@ -711,7 +709,6 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 				pictureData->myThread = threadloadPicture;
 				processLoadPicture = true;
 			}
-			
 		}
 	}
 
@@ -740,8 +737,6 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 	}
 	else if (windowMode == WINDOW_FACE)
 	{
-
-
 		if (listFace != nullptr)
 		{
 			outItem = listFace->GetNumItem();
@@ -796,7 +791,7 @@ void CCentralWindow::ShowToolbar()
 		{
 			windowManager->ShowWindow(Pos::wxRIGHT);
 		}
-		
+
 		windowManager->HideWindow(Pos::wxCENTRAL);
 		windowManager->ShowWindow(Pos::wxCENTRAL);
 	}
@@ -818,7 +813,7 @@ void CCentralWindow::ShowToolbar()
 	}
 }
 
-void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw)
+void CCentralWindow::ShowPicture(CBitmapReturn* pictureData, const int& redraw)
 {
 	processLoadPicture = false;
 	bool isPictureToShow = false;
@@ -836,12 +831,12 @@ void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw
 			//SetPicture(pictureData->bitmap, pictureData->isThumbnail);
 			if (pictureData->bitmap != nullptr && pictureData->bitmap->IsOk())
 			{
-
 				//Send Infos about Picture
 				{
 					auto pictureInfos = new CPictureInfosMessage();
 					pictureInfos->filename = filename;
-					pictureInfos->infos = to_string(pictureData->bitmap->GetWidth()) + "x" + to_string(pictureData->bitmap->GetHeight());
+					pictureInfos->infos = to_string(pictureData->bitmap->GetWidth()) + "x" + to_string(
+						pictureData->bitmap->GetHeight());
 
 					wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 					wxCommandEvent evt(wxEVENT_INFOS);
@@ -914,23 +909,22 @@ void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw
 	{
 		LoadPicture(filename, true);
 	}
-
 }
 
 void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 {
-	CBitmapReturn * pictureData = static_cast<CBitmapReturn*>(event.GetClientData());
+	CBitmapReturn* pictureData = static_cast<CBitmapReturn*>(event.GetClientData());
 	if (pictureData != nullptr)
 	{
 		int redraw = event.GetInt();
-		if(isPicture)
+		if (isPicture)
 			ShowPicture(pictureData, redraw);
 		else
 		{
 			delete pictureData->bitmap;
 			pictureData->bitmap = nullptr;
 		}
-		
+
 		if (pictureData->myThread != nullptr)
 		{
 			delete pictureData->myThread;
@@ -1037,7 +1031,6 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 
 void CCentralWindow::StartDiaporamaMessage(wxCommandEvent& event)
 {
-	
 	CMainParam* viewerParam = CMainParamInit::getInstance();
 	const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 	diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
@@ -1045,7 +1038,6 @@ void CCentralWindow::StartDiaporamaMessage(wxCommandEvent& event)
 
 void CCentralWindow::StopAnimationEvent(wxCommandEvent& event)
 {
-	
 	if (isDiaporama)
 	{
 		CMainParam* viewerParam = CMainParamInit::getInstance();
@@ -1105,7 +1097,7 @@ void CCentralWindow::Resize()
 
 	if (windowManager != nullptr)
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-	
+
 	/*
 	if (updateRightPanel)
 	{
@@ -1142,7 +1134,6 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 
 	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
-		
 		CLibPicture libPicture;
 		const int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
@@ -1164,7 +1155,7 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 		}
 		//SetBitmap(image, false, true);
 	}
-	
+
 	previewWindow->IsNextPicture(isNext);
 
 	if (image != nullptr && image->IsOk())
@@ -1203,7 +1194,6 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 			delete image;
 		image = nullptr;
 	}
-
 }
 
 
@@ -1480,7 +1470,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 			panelInfosClick->Show(true);
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
-				windowManager->ShowWindow(Pos::wxLEFT);			
+				windowManager->ShowWindow(Pos::wxLEFT);
 
 			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
 				windowManager->HideWindow(Pos::wxBOTTOM);
@@ -1620,7 +1610,6 @@ bool CCentralWindow::ScreenMode()
 
 bool CCentralWindow::GetProcessEnd()
 {
-	
 	StopAnimation();
 
 	if (diaporamaTimer->IsRunning())
@@ -1756,7 +1745,7 @@ void CCentralWindow::SetVideo(const wxString& path)
 	{
 		thumbnailVideo->SetFilename(filename);
 		CVideoPlayer videoPlayer(filename);
-		if(videoPlayer.GetDuration()  > 20)
+		if (videoPlayer.GetDuration() > 20)
 			thumbnailVideo->SetFile(filename, 20);
 		else
 			thumbnailVideo->SetFile(filename, videoPlayer.GetDuration());
@@ -1776,7 +1765,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 {
 	CLibPicture libPicture;
 	CImageLoadingFormat* bitmap = libPicture.LoadPicture(pictureData->picture);
-	
+
 	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
 	{
 		if (bitmap != nullptr)
@@ -1824,7 +1813,6 @@ void CCentralWindow::OnStopAudio(wxCommandEvent& event)
 
 void CCentralWindow::StartMusic()
 {
-	
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	wxString musicDiaporama = "";
 

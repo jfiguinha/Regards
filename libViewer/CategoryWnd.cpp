@@ -558,7 +558,6 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
 		}
 	}
 	oldsqlRequest = sqlRequest;
-
 }
 
 
@@ -892,7 +891,7 @@ bool CCategoryWnd::GetTriangleState(const wxString& exifKey, const wxString& key
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool CCategoryWnd::GetCheckState(const wxString& exifKey, const wxString& key, const int &numCategorie)
+bool CCategoryWnd::GetCheckState(const wxString& exifKey, const wxString& key, const int& numCategorie)
 {
 	const wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateValue.find(localkey);

@@ -11,25 +11,21 @@ namespace Regards
 		{
 		public:
 			CMainTheme();
-			virtual ~CMainTheme();
+			~CMainTheme() override;
 
-			void GetInfosToolbarTheme(CThemeToolbar * theme);
-			void GetFiltreToolbarTheme(CThemeToolbar * theme);
-			void GetPreviewToolbarTheme(CThemeToolbar * theme);
+			void GetInfosToolbarTheme(CThemeToolbar* theme);
+			void GetFiltreToolbarTheme(CThemeToolbar* theme);
+			void GetPreviewToolbarTheme(CThemeToolbar* theme);
 			void GetThumbnailFaceToolbarTheme(CThemeToolbar& theme);
 			void GetMainToolbarTheme(CThemeToolbar* theme);
 			void GetThumbnailToolbarTheme(CThemeToolbar& theme);
-			void GetBitmapInfosTheme(CThemeBitmapInfos * theme);
-			void GetThumbnailToolbarZoomTheme(CThemeToolBarZoom &theme);
-			
-
-
+			void GetBitmapInfosTheme(CThemeBitmapInfos* theme);
+			void GetThumbnailToolbarZoomTheme(CThemeToolBarZoom& theme);
 
 		private:
-
-			void LoadTheme();
-			void SaveTheme();
-			void InitTheme();
+			void LoadTheme() override;
+			void SaveTheme() override;
+			void InitTheme() override;
 
 
 			//--------------------------------------------------------------
@@ -37,7 +33,7 @@ namespace Regards
 			void InitViewerToolbar();
 			void InitPreviewToolbar();
 			void InitFiltreToolbar();
-			
+
 			void InitBitmapInfos();
 			void InitFolderTheme();
 			void InitThumbnailToolbarZoomTheme();
@@ -56,10 +52,8 @@ namespace Regards
 
 			CThemeBitmapInfos themeBitmapInfos;
 			CThemeFolder themeFolder;
-			
+
 			CThemeToolBarZoom themeThumbnailToolbarZoom;
-
-
 		};
 	}
 }

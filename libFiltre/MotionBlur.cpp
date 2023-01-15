@@ -27,8 +27,8 @@ vector<wxPoint> CMotionBlur::GetOffsetKernel(int width, const double& angle)
 	for (auto i = 0; i < width; i++)
 	{
 		wxPoint pt;
-		pt.x = static_cast<int>((double)(i * x) / sqrt((double)x * x + y * y));
-		pt.y = static_cast<int>((double)(i * y) / sqrt((double)x * x + y * y));
+		pt.x = static_cast<int>(static_cast<double>(i * x) / sqrt(static_cast<double>(x) * x + y * y));
+		pt.y = static_cast<int>(static_cast<double>(i * y) / sqrt(static_cast<double>(x) * x + y * y));
 		offsets.push_back(pt);
 	}
 

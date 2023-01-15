@@ -7,12 +7,9 @@
 //
 
 #pragma once
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
-	{
-		class CTreeElementValue;
-	}
+	class CTreeElementValue;
 }
 
 using namespace Regards::Window;
@@ -20,6 +17,9 @@ using namespace Regards::Window;
 class IFiltreEffectInterface
 {
 public:
-    virtual ~IFiltreEffectInterface(){};
-    virtual void AddTreeInfos(const wxString &exifKey, CTreeElementValue * position, void * value, const int & typeValue = 1, const int &type = 1) = 0;
+	virtual ~IFiltreEffectInterface()
+	{
+	};
+	virtual void AddTreeInfos(const wxString& exifKey, CTreeElementValue* position, void* value,
+	                          const int& typeValue = 1, const int& type = 1) = 0;
 };

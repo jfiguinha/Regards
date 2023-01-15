@@ -10,20 +10,18 @@ namespace Regards
 		class CSqlPhotoGPS : public CSqlExecuteRequest
 		{
 		public:
-			CSqlPhotoGPS(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);
-			~CSqlPhotoGPS();
-			bool InsertPhoto(const int &numPhoto, const wxString & filepath, const int & numFolderId);
-			bool DeletePhoto(const int64_t &numPhoto);
-			int GetFirstPhoto(int & numPhoto, wxString & filepath, int & numFolderId);
+			CSqlPhotoGPS(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
+			~CSqlPhotoGPS() override;
+			bool InsertPhoto(const int& numPhoto, const wxString& filepath, const int& numFolderId);
+			bool DeletePhoto(const int64_t& numPhoto);
+			int GetFirstPhoto(int& numPhoto, wxString& filepath, int& numFolderId);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
+			int TraitementResult(CSqlResult* sqlResult) override;
 			int numPhoto;
-            int numFolderId;
-            wxString filepath;
-            int nbResult;
+			int numFolderId;
+			wxString filepath;
+			int nbResult;
 		};
 	}
 }
-

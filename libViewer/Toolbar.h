@@ -4,20 +4,16 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CToolbar : public CToolbarWindow
 	{
-		class CToolbar : public CToolbarWindow
-		{
-		public:
-			CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			~CToolbar();
+	public:
+		CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+		~CToolbar() override;
 
-		private:
-
-			void EventManager(const int &id);
-			bool NewVersionAvailable();
-		};
-	}
+	private:
+		void EventManager(const int& id) override;
+		bool NewVersionAvailable();
+	};
 }

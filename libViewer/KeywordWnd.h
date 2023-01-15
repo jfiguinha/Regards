@@ -28,47 +28,48 @@ namespace Regards
 	{
 		class CMainParam;
 
-		class CKeywordWnd : public Regards::Window::CTreeControl
+		class CKeywordWnd : public CTreeControl
 		{
 		public:
-			CKeywordWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
-			~CKeywordWnd();
-			void Init(const wxString &filename);
-			void UpdateScreenRatio();
-			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
-		
+			CKeywordWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl);
+			~CKeywordWnd() override;
+			void Init(const wxString& filename);
+			void UpdateScreenRatio() override;
+
+			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
+			                    const wxString& key) override
+			{
+			};
+
 		protected:
 			void Resize();
-			void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
+			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+			                    const int& posLargeur, const int& posHauteur) override;
 
 		private:
-
-
-			tree<CTreeData *>::iterator FindChild(tree<CTreeData *>::iterator parent, const wxString &catlibelle);
+			tree<CTreeData*>::iterator FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle);
 
 			//Draw Tree
 			void CreateElement();
-			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
-			void UpdateElement(const bool &init = false);
-			void UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, const bool &init);
-			void InitKeyWordCategorie(tree<CTreeData *>::iterator parent, int numParent);
+			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
+			void UpdateElement(const bool& init = false);
+			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init);
+			void InitKeyWordCategorie(tree<CTreeData*>::iterator parent, int numParent);
 			//Gestion des check box
-			bool GetCheckState(const wxString &exifKey, const wxString &key);
-			bool GetTriangleState(const wxString &exifKey, const wxString &key);
+			bool GetCheckState(const wxString& exifKey, const wxString& key);
+			bool GetTriangleState(const wxString& exifKey, const wxString& key);
 
 			//Variable
 			int numCatalog;
 			int idElement;
 			int yPos;
-            wxString sqlRequest;
-			CTreeDataCategory * treeDataModify;
+			wxString sqlRequest;
+			CTreeDataCategory* treeDataModify;
 			wxString stateValue;
 			wxString stateTriangleValue;
 			int widthPosition;
-			CWindowMain * windowMain;
+			CWindowMain* windowMain;
 			int numPhotoId;
 		};
-
-
 	}
 }

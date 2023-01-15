@@ -29,6 +29,7 @@ namespace Regards
 			void DisableSaveButton();
 			void EnableScreenButton();
 			void DisableScreenButton();
+
 		private:
 			void DiaporamaStart();
 			void DiaporamaStop();

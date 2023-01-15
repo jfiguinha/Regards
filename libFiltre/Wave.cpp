@@ -26,8 +26,8 @@ void CWaveFilter::ProcessEffect(cv::Mat& image, int x, int y, short height, int 
 	_waveHeight = image.size().height >> _scale;
 	int size = _waveWidth * _waveWidth * _waveHeight * 2;
 
-	int realX = static_cast<int>((x / (double)image.size().width) * _waveWidth);
-	int realY = static_cast<int>((y / (double)image.size().height) * _waveHeight);
+	int realX = static_cast<int>((x / static_cast<double>(image.size().width)) * _waveWidth);
+	int realY = static_cast<int>((y / static_cast<double>(image.size().height)) * _waveHeight);
 
 	PutDrop(realX, realY, height, radius);
 

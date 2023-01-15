@@ -12,72 +12,71 @@ using namespace Regards::Viewer;
 #define WM_GEOLOCALISE 1026
 #define WM_INDEX 1027
 
-CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	wxString index = CLibResource::LoadStringFromResource(L"LBLINDEXPHOTO", 1);
-    wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL",1);//L"History";
-	wxString delete_label = CLibResource::LoadStringFromResource(L"LBLDELETE",1);//L"History";
-	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY",1);//L"Effect";
-	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);//L"Effect";
-    wxString geo_label = CLibResource::LoadStringFromResource(L"LBLGEOLOCALISE", 1);
-    wxString date_label = CLibResource::LoadStringFromResource(L"LBLCALENDAR", 1);
-    wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON",1);
-    wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF",1);
+	wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL", 1); //L"History";
+	wxString delete_label = CLibResource::LoadStringFromResource(L"LBLDELETE", 1); //L"History";
+	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY", 1); //L"Effect";
+	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1); //L"Effect";
+	wxString geo_label = CLibResource::LoadStringFromResource(L"LBLGEOLOCALISE", 1);
+	wxString date_label = CLibResource::LoadStringFromResource(L"LBLCALENDAR", 1);
+	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
+	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
 
-	CToolbarButton * indexButton = new CToolbarButton(themeToolbar.button);
+	auto indexButton = new CToolbarButton(themeToolbar.button);
 	indexButton->SetButtonResourceId(L"IDB_PHOTOINDEX");
 	indexButton->SetCommandId(WM_INDEX);
 	indexButton->SetLibelleTooltip(index);
 	navElement.push_back(indexButton);
-    
-	CToolbarButton * exportButton = new CToolbarButton(themeToolbar.button);
+
+	auto exportButton = new CToolbarButton(themeToolbar.button);
 	exportButton->SetButtonResourceId(L"IDB_EXPORT");
 	exportButton->SetCommandId(WM_EXPORT);
 	exportButton->SetLibelleTooltip(export_label);
 	navElement.push_back(exportButton);
 
-    CToolbarButton * dateButton = new CToolbarButton(themeToolbar.button);
-    dateButton->SetButtonResourceId(L"IDB_CALENDAR");
-    dateButton->SetCommandId(WM_CALENDAR);
-    dateButton->SetLibelleTooltip(date_label);
-    navElement.push_back(dateButton);
+	auto dateButton = new CToolbarButton(themeToolbar.button);
+	dateButton->SetButtonResourceId(L"IDB_CALENDAR");
+	dateButton->SetCommandId(WM_CALENDAR);
+	dateButton->SetLibelleTooltip(date_label);
+	navElement.push_back(dateButton);
 
-    CToolbarButton * geoButton = new CToolbarButton(themeToolbar.button);
-    geoButton->SetButtonResourceId(L"IDB_MAPLOCATION");
-    geoButton->SetCommandId(WM_GEOLOCALISE);
-    geoButton->SetLibelleTooltip(geo_label);
-    navElement.push_back(geoButton);
+	auto geoButton = new CToolbarButton(themeToolbar.button);
+	geoButton->SetButtonResourceId(L"IDB_MAPLOCATION");
+	geoButton->SetCommandId(WM_GEOLOCALISE);
+	geoButton->SetLibelleTooltip(geo_label);
+	navElement.push_back(geoButton);
 
-	CToolbarButton * deleteButton = new CToolbarButton(themeToolbar.button);
+	auto deleteButton = new CToolbarButton(themeToolbar.button);
 	deleteButton->SetButtonResourceId(L"IDB_DELETE");
 	deleteButton->SetCommandId(WM_CLEAR);
 	deleteButton->SetLibelleTooltip(delete_label);
 	navElement.push_back(deleteButton);
-    
 
-	CToolbarButton * copy = new CToolbarButton(themeToolbar.button);
+
+	auto copy = new CToolbarButton(themeToolbar.button);
 	copy->SetButtonResourceId(L"IDB_MULTIPLESELECT");
 	copy->SetCommandId(WM_COPY);
 	copy->SetLibelleTooltip(copy_label);
 	navElement.push_back(copy);
 
-	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
+	auto moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId(L"IDB_ZOOMMOINS");
 	moins->SetCommandId(WM_ZOOMOUT);
-    moins->SetLibelleTooltip(zoomoff);
+	moins->SetLibelleTooltip(zoomoff);
 	navElement.push_back(moins);
 
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 
-	CToolbarButton * plus = new CToolbarButton(themeToolbar.button);
+	auto plus = new CToolbarButton(themeToolbar.button);
 	plus->SetButtonResourceId(L"IDB_ZOOMPLUS");
 	plus->SetCommandId(WM_ZOOMON);
-    plus->SetLibelleTooltip(zoomon);
+	plus->SetLibelleTooltip(zoomon);
 	navElement.push_back(plus);
-
 }
 
 CThumbnailToolBar::~CThumbnailToolBar()
@@ -122,19 +121,19 @@ void CThumbnailToolBar::SetTabValue(vector<int> value)
 		slide->SetTabValue(value);
 }
 
-void CThumbnailToolBar::SetTrackBarPosition(const int &iPos)
+void CThumbnailToolBar::SetTrackBarPosition(const int& iPos)
 {
 	int positionTrackBar = iPos;
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-        needToRefresh = true;
+		needToRefresh = true;
 	}
 }
 
-void CThumbnailToolBar::SlidePosChange(const int &position, const wxString &key)
+void CThumbnailToolBar::SlidePosChange(const int& position, const wxString& key)
 {
-	CListPicture * listPicture = (CListPicture *)this->FindWindowById(LISTPICTUREID);
+	auto listPicture = static_cast<CListPicture*>(this->FindWindowById(LISTPICTUREID));
 	if (listPicture != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
@@ -143,9 +142,9 @@ void CThumbnailToolBar::SlidePosChange(const int &position, const wxString &key)
 	}
 }
 
-void CThumbnailToolBar::ZoomPos(const int &position)
+void CThumbnailToolBar::ZoomPos(const int& position)
 {
-	CListPicture * listPicture = (CListPicture *)this->FindWindowById(LISTPICTUREID);
+	auto listPicture = static_cast<CListPicture*>(this->FindWindowById(LISTPICTUREID));
 	if (listPicture != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
@@ -154,14 +153,13 @@ void CThumbnailToolBar::ZoomPos(const int &position)
 	}
 }
 
-void CThumbnailToolBar::EventManager(const int &id)
+void CThumbnailToolBar::EventManager(const int& id)
 {
-	CListPicture * listPicture = (CListPicture *)this->FindWindowById(LISTPICTUREID);
+	auto listPicture = static_cast<CListPicture*>(this->FindWindowById(LISTPICTUREID));
 	if (listPicture != nullptr)
 	{
 		switch (id)
 		{
-               
 		case WM_ZOOMON:
 			ZoomOn();
 			if (listPicture != nullptr)
@@ -211,23 +209,22 @@ void CThumbnailToolBar::EventManager(const int &id)
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
-        
-        case WM_CALENDAR:
+
+		case WM_CALENDAR:
 			if (listPicture != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_CHANGEDATEFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
-            break;
-                
-        case WM_GEOLOCALISE:
+			break;
+
+		case WM_GEOLOCALISE:
 			if (listPicture != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_GEOLOCALIZEFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
-            break;
-
+			break;
 		}
 	}
 }

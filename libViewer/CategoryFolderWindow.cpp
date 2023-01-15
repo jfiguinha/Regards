@@ -192,7 +192,6 @@ wxString CCategoryFolderWindow::GetWaitingMessage()
 
 void CCategoryFolderWindow::ProcessIdle()
 {
-	
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
 	int nbPhotos;
@@ -315,11 +314,11 @@ void CCategoryFolderWindow::ProcessIdle()
 
 void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 {
-    if(needToRefresh)
-    {
-        this->Refresh();
-        needToRefresh = false;
-    }  
+	if (needToRefresh)
+	{
+		this->Refresh();
+		needToRefresh = false;
+	}
 
 	if (endProgram)
 	{

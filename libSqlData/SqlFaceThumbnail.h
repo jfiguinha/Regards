@@ -6,10 +6,10 @@ class CImageLoadingFormat;
 class CSqlFaceThumbnail : public CThumbnailData
 {
 public:
-	CSqlFaceThumbnail(const wxString & filename,const int & numFace);
-	virtual ~CSqlFaceThumbnail(void);
+	CSqlFaceThumbnail(const wxString& filename, const int& numFace);
+	~CSqlFaceThumbnail(void) override;
 
-	int GetType()
+	int GetType() override
 	{
 		return 4;
 	}
@@ -24,11 +24,9 @@ public:
 		return numFace;
 	}
 
-	wxImage GetwxImage();
+	wxImage GetwxImage() override;
 
 private:
-
-	bool TestBitmap();
+	bool TestBitmap() override;
 	int numFace;
-
 };

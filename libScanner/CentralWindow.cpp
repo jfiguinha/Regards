@@ -22,7 +22,7 @@ using namespace Regards::Picture;
 #define OPENFILE 0
 #define ADDFILE 1
 
-CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame)
+CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame* frame)
 	: CWindowMain("CentralWindow", parent, id)
 {
 	//CMainTheme * viewerTheme = new CMainTheme();
@@ -30,7 +30,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 #ifdef __SCANNER_PROGRAM__
 	Regards::Scanner::CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 #else
-	Regards::Viewer::CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 #endif
 	CThemeSplitter theme;
 	viewerTheme->GetSplitterTheme(&theme);
@@ -56,23 +56,21 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	Connect(wxEVENT_SAVE, wxCommandEventHandler(CCentralWindow::OnSave));
 	Connect(wxEVENT_ADDPAGE, wxCommandEventHandler(CCentralWindow::OnAddPage));
 	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CCentralWindow::OnDeletePage));
-    Connect(wxEVENT_SCANNER, wxCommandEventHandler(CCentralWindow::OnScan));
+	Connect(wxEVENT_SCANNER, wxCommandEventHandler(CCentralWindow::OnScan));
 	Connect(wxEVENT_EXTRACT, wxCommandEventHandler(CCentralWindow::OnExtractPage));
 	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CCentralWindow::OnOpenFile));
 }
 
 void CCentralWindow::OnScan(wxCommandEvent& event)
 {
-    if(frame != nullptr)
-    {
-    	wxString pdfFile = frame->ScanPage();
-        if (pdfFile != "")
-        {
-            LoadFile(pdfFile);
-        }
-    }
-
-
+	if (frame != nullptr)
+	{
+		wxString pdfFile = frame->ScanPage();
+		if (pdfFile != "")
+		{
+			LoadFile(pdfFile);
+		}
+	}
 }
 
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
@@ -86,14 +84,13 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 			wxString fileExtract = CRegardsPDF::ExtractPage(filename, listPage);
 
 			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
-				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			                            "PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			if (saveFileDialog.ShowModal() == wxID_CANCEL)
-				return;     // the user changed idea...
+				return; // the user changed idea...
 
 			wxString newfilename = saveFileDialog.GetPath();
 			wxCopyFile(fileExtract, newfilename);
 		}
-
 	}
 	else
 	{
@@ -115,7 +112,6 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 			CRegardsPDF::RemovePage(filename, listPage);
 			LoadFile(filename);
 		}
-
 	}
 	else
 	{
@@ -126,7 +122,7 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 }
 
 
-int CCentralWindow::OnOpen(const int &type)
+int CCentralWindow::OnOpen(const int& type)
 {
 	wxArrayString list;
 	list.push_back("Scan");
@@ -138,7 +134,8 @@ int CCentralWindow::OnOpen(const int &type)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -155,7 +152,6 @@ int CCentralWindow::OnOpen(const int &type)
 
 		if (wxFileExists(filename))
 			wxRemoveFile(filename);
-
 	}
 
 	wxString file = "";
@@ -164,17 +160,17 @@ int CCentralWindow::OnOpen(const int &type)
 	{
 		switch (numSelect)
 		{
-			case 0:
+		case 0:
 			{
 				file = frame->ScanPage();
 				break;
 			}
-			case 1:
+		case 1:
 			{
 				file = LoadFile();
 				break;
 			}
-			case 2:
+		case 2:
 			{
 				wxArrayString listFile = CSavePicture::LoadMultiplePicture();
 				file = ProcessLoadFiles(listFile);
@@ -197,7 +193,6 @@ int CCentralWindow::OnOpen(const int &type)
 					listPage.push_back(i);
 				CRegardsPDF::AddPage(file, filename, listPage, position);
 				position += nbPage;
-
 			}
 		}
 		else
@@ -206,7 +201,6 @@ int CCentralWindow::OnOpen(const int &type)
 
 			if (wxFileExists(file))
 				wxCopyFile(file, filename);
-
 		}
 
 		if (wxFileExists(filename))
@@ -237,7 +231,6 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 
 void CCentralWindow::OnSave(wxCommandEvent& event)
 {
-
 	if (filename != "")
 	{
 		wxString tempFolder = CFileUtility::GetDocumentFolderPath();
@@ -259,9 +252,9 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
-			"PDF Files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		                            "PDF Files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;     // the user changed idea...
+			return; // the user changed idea...
 
 		wxString newfilename = saveFileDialog.GetPath();
 		wxCopyFile(filename, newfilename);
@@ -269,7 +262,6 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
 		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
 		wxMessageBox(savecompleted, infos);
-
 	}
 	else
 	{
@@ -280,7 +272,7 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 }
 
 
-int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameOutput)
+int CCentralWindow::LoadPictureFile(wxArrayString& listFile, wxString filenameOutput)
 {
 	int nbPage = 0;
 	CLibPicture libPicture;
@@ -289,66 +281,67 @@ int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameO
 
 	if (listFile.size() > 0)
 	{
-			int i = 0;
-			int option = 0;
-			int quality = 0;
-			//int iformat = libPicture.TestImageFormat(listFile[0]);
+		int i = 0;
+		int option = 0;
+		int quality = 0;
+		//int iformat = libPicture.TestImageFormat(listFile[0]);
 
-			wxString documentPath = CFileUtility::GetDocumentFolderPath();
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
-			libPicture.SavePictureOption(PDF, option, quality);
+		libPicture.SavePictureOption(PDF, option, quality);
 
-			wxProgressDialog dialog("Add File to PDF", "Filename", listFile.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		wxProgressDialog dialog("Add File to PDF", "Filename", listFile.size(), this,
+		                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
-			// Create a PDF document, add a page, and put the image on it.
-			wxPdfDocument oPdfDocument;
+		// Create a PDF document, add a page, and put the image on it.
+		wxPdfDocument oPdfDocument;
 
-			for (wxString filename : listFile)
+		for (wxString filename : listFile)
+		{
+			wxString message = "Add File : " + filename;
+
+			if (false == dialog.Update(i++, message))
+				break;
+
+			if (libPicture.GetNbImage(filename) > 1)
 			{
-				wxString message = "Add File : " + filename;
-
-				if (false == dialog.Update(i++, message))
-					break;
-
-				if (libPicture.GetNbImage(filename) > 1)
+				CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Add"));
+				if (selectFile.ShowModal() == wxID_OK)
 				{
-					CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Add"));
-					if (selectFile.ShowModal() == wxID_OK)
+					vector<int> listPage = selectFile.GetSelectItem();
+					for (int numpage = 0; numpage < listPage.size(); numpage++)
 					{
-						vector<int> listPage = selectFile.GetSelectItem();
-						for (int numpage = 0; numpage < listPage.size(); numpage++)
-						{
-
-							CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, listPage[numpage]);
-							CRegardsPDF::AddPdfPage(&oPdfDocument, imageLoadingFormat, option, quality, numpage);
-							nbPage++;
-							delete imageLoadingFormat;
-						}
+						CImageLoadingFormat* imageLoadingFormat = libPicture.LoadPicture(
+							filename, false, listPage[numpage]);
+						CRegardsPDF::AddPdfPage(&oPdfDocument, imageLoadingFormat, option, quality, numpage);
+						nbPage++;
+						delete imageLoadingFormat;
 					}
 				}
-				else
-				{
-					CImageLoadingFormat * imageFormat = libPicture.LoadPicture(filename);
-					CRegardsPDF::AddPdfPage(&oPdfDocument, imageFormat, option, quality, i);
-					nbPage++;
-					delete imageFormat;
-				}
 			}
+			else
+			{
+				CImageLoadingFormat* imageFormat = libPicture.LoadPicture(filename);
+				CRegardsPDF::AddPdfPage(&oPdfDocument, imageFormat, option, quality, i);
+				nbPage++;
+				delete imageFormat;
+			}
+		}
 
-			oPdfDocument.Close();
-			oPdfDocument.SaveAsFile(filenameOutput);
-
+		oPdfDocument.Close();
+		oPdfDocument.SaveAsFile(filenameOutput);
 	}
 	return nbPage;
 }
 
-wxString CCentralWindow::ProcessLoadFiles(wxArrayString & listFile)
+wxString CCentralWindow::ProcessLoadFiles(wxArrayString& listFile)
 {
 	wxString temporyFile = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -365,7 +358,6 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString & listFile)
 
 		if (wxFileExists(temporyFile))
 			wxRemoveFile(temporyFile);
-
 	}
 
 	CLibPicture libPicture;
@@ -392,8 +384,6 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString & listFile)
 	}
 
 	return temporyFile;
-
-
 }
 
 void CCentralWindow::OnOpenFile(wxCommandEvent& event)
@@ -422,8 +412,6 @@ void CCentralWindow::OnExit(wxCommandEvent& event)
 }
 
 
-
-
 wxString CCentralWindow::LoadFile()
 {
 	wxString file = CSavePicture::LoadPicture();
@@ -431,18 +419,17 @@ wxString CCentralWindow::LoadFile()
 	listFile.push_back(file);
 
 	return ProcessLoadFiles(listFile);
-
 }
 
-wxString CCentralWindow::LoadFile(const wxString &filename)
+wxString CCentralWindow::LoadFile(const wxString& filename)
 {
-    this->filename = filename;
+	this->filename = filename;
 	if (previewWindow != nullptr)
 		previewWindow->LoadFile(filename);
 	return previewWindow->GetFilename();
 }
 
-CImageLoadingFormat * CCentralWindow::GetImage()
+CImageLoadingFormat* CCentralWindow::GetImage()
 {
 	if (previewWindow != nullptr)
 		return previewWindow->GetImage();
@@ -458,7 +445,6 @@ wxString CCentralWindow::GetFilename()
 
 void CCentralWindow::OnSize(wxSizeEvent& event)
 {
-
 	width = event.GetSize().GetWidth();
 	height = event.GetSize().GetHeight();
 	RedrawBarPos();
@@ -482,9 +468,8 @@ CCentralWindow::~CCentralWindow()
 	if (previewWindow != nullptr)
 		delete previewWindow;
 
-	if(toolbarPDF != nullptr)
+	if (toolbarPDF != nullptr)
 		delete(toolbarPDF);
-
 }
 
 void CCentralWindow::UpdateScreenRatio()

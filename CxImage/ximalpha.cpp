@@ -118,8 +118,9 @@ void CxImage::AlphaInvert()
  */
 bool CxImage::AlphaCopy(CxImage& from)
 {
-	if (from.pAlpha == nullptr || head.biWidth != from.head.biWidth || head.biHeight != from.head.biHeight) return
-		false;
+	if (from.pAlpha == nullptr || head.biWidth != from.head.biWidth || head.biHeight != from.head.biHeight)
+		return
+			false;
 	if (pAlpha == nullptr) pAlpha = static_cast<uint8_t*>(malloc(head.biWidth * head.biHeight));
 	if (pAlpha == nullptr) return false;
 	memcpy(pAlpha, from.pAlpha, head.biWidth * head.biHeight);

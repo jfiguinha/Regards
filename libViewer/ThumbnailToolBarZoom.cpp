@@ -6,8 +6,8 @@
 #include "MainWindow.h"
 using namespace Regards::Viewer;
 
-CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, const CThemeToolBarZoom &theme)
-	: CWindowMain("CThumbnailToolBarZoom",parent, id)
+CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, const CThemeToolBarZoom& theme)
+	: CWindowMain("CThumbnailToolBarZoom", parent, id)
 {
 	typeAffichage = 0;
 	positionPrevious = wxRect(0, 0, 0, 0);
@@ -23,7 +23,6 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnailToolBarZoom::on_paint));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnailToolBarZoom::OnLButtonDown));
-
 }
 
 int CThumbnailToolBarZoom::GetHeight()
@@ -42,7 +41,8 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	if ((positionPrevious.x < xPos && xPos < (positionPrevious.x + positionPrevious.width)) && (positionPrevious.y < yPos && yPos < (positionPrevious.y + positionPrevious.height)))
+	if ((positionPrevious.x < xPos && xPos < (positionPrevious.x + positionPrevious.width)) && (positionPrevious.y <
+		yPos && yPos < (positionPrevious.y + positionPrevious.height)))
 	{
 		//Draw Actif Previous
 		switch (typeAffichage)
@@ -56,7 +56,8 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 			break;
 		}
 	}
-	else if ((positionNext.x < xPos && xPos < (positionNext.x + positionNext.width)) && (positionNext.y < yPos && yPos < (positionNext.y + positionNext.height)))
+	else if ((positionNext.x < xPos && xPos < (positionNext.x + positionNext.width)) && (positionNext.y < yPos && yPos <
+		(positionNext.y + positionNext.height)))
 	{
 		//Draw Actif Previous
 		switch (typeAffichage)
@@ -70,8 +71,8 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 			break;
 		}
 	}
-	
-	wxWindow * mainWindow = (CMainWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+
+	wxWindow* mainWindow = static_cast<CMainWindow*>(this->FindWindowById(CENTRALVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_CHANGETYPEAFFICHAGE);
@@ -81,7 +82,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 	needToRefresh = true;
 }
 
-void CThumbnailToolBarZoom::DrawPreviousElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont)
+void CThumbnailToolBarZoom::DrawPreviousElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
 	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 
@@ -95,7 +96,7 @@ void CThumbnailToolBarZoom::DrawPreviousElement(wxDC * dc, const wxString &libel
 	positionPrevious.height = GetWindowHeight();
 }
 
-void CThumbnailToolBarZoom::DrawNextElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont)
+void CThumbnailToolBarZoom::DrawNextElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
 	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 	int posY = (GetWindowHeight() - element.y) / 2;
@@ -109,7 +110,7 @@ void CThumbnailToolBarZoom::DrawNextElement(wxDC * dc, const wxString &libelle, 
 	positionNext.height = GetWindowHeight();
 }
 
-void CThumbnailToolBarZoom::DrawElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont)
+void CThumbnailToolBarZoom::DrawElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
 	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 	int posY = (GetWindowHeight() - element.y) / 2;
@@ -119,11 +120,11 @@ void CThumbnailToolBarZoom::DrawElement(wxDC * dc, const wxString &libelle, cons
 
 void CThumbnailToolBarZoom::UpdateScreenRatio()
 {
-    this->Resize();
+	this->Resize();
 }
 
 
-void CThumbnailToolBarZoom::Draw(wxDC * dc)
+void CThumbnailToolBarZoom::Draw(wxDC* dc)
 {
 	FillRect(dc, GetWindowRect(), themeToolbarZoom.colorBack);
 
@@ -157,17 +158,16 @@ void CThumbnailToolBarZoom::Draw(wxDC * dc)
 		DrawElement(dc, byLocalisation, themeToolbarZoom.font);
 		break;
 	}
-
 }
 
 
 void CThumbnailToolBarZoom::on_paint(wxPaintEvent& event)
 {
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
-    
+
 	wxPaintDC dc(this);
 	Draw(&dc);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "SqlExecuteRequest.h"
+
 namespace Regards
 {
 	namespace Sqlite
@@ -10,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlCatalog();
-			~CSqlCatalog();
+			~CSqlCatalog() override;
 			bool InsertCatalog(const wxString& libelle);
 			bool UpdateCatalog(const int64_t& numCatalog, const wxString& libelle);
 			int64_t GetCatalogId(const wxString& libelle);
@@ -18,7 +19,6 @@ namespace Regards
 			wxString GetCatalogLibelle(const int64_t& numCatalog);
 
 		private:
-
 			int TraitementResult(CSqlResult* sqlResult) override;
 
 			wxString libelle;

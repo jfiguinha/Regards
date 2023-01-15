@@ -61,7 +61,6 @@ namespace Regards
 			void StopDiaporamaMode();
 			void UpdateInfos();
 
-
 		protected:
 			void ShowScreenButton(wxCommandEvent& event);
 			void DisableScreenButton(wxCommandEvent& event);

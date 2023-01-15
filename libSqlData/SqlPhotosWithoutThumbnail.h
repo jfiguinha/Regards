@@ -11,21 +11,21 @@ namespace Regards
 		{
 		public:
 			CSqlPhotosWithoutThumbnail();
-			~CSqlPhotosWithoutThumbnail();
-			void GetPhotoList(vector<wxString> * photoList);
-			void InsertPhotoPriority(const wxString & photoPath);
-			void InsertProcessStart(const wxString & photoPath);
+			~CSqlPhotosWithoutThumbnail() override;
+			void GetPhotoList(vector<wxString>* photoList);
+			void InsertPhotoPriority(const wxString& photoPath);
+			void InsertProcessStart(const wxString& photoPath);
 			void GeneratePhotoList();
 			void UpdatePhotoList();
 			void UpdateVideoList();
-		private:
 
-			bool IsPathFind(const wxString & photo);
-            
-			int TraitementResult(CSqlResult * sqlResult);
+		private:
+			bool IsPathFind(const wxString& photo);
+
+			int TraitementResult(CSqlResult* sqlResult) override;
 			int typeResult;
 			int priority;
-			vector<wxString> *  photoList;
+			vector<wxString>* photoList;
 			wxString fullpath;
 		};
 	}

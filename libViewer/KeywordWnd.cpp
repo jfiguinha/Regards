@@ -19,9 +19,9 @@ using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::Window;
 
-CKeywordWnd::CKeywordWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
+CKeywordWnd::CKeywordWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl)
 {
-    sqlRequest = "";
+	sqlRequest = "";
 	treeDataModify = nullptr;
 	widthPosition = 0;
 
@@ -41,16 +41,15 @@ CKeywordWnd::CKeywordWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElem
 
 CKeywordWnd::~CKeywordWnd()
 {
-
 }
 
-void CKeywordWnd::Init(const wxString & filename)
+void CKeywordWnd::Init(const wxString& filename)
 {
 	CSqlFindCatalog sqlCatalog;
 	CatalogVector catalogVector;
 	CriteriaVector criteriaVector;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator top;
+	tree<CTreeData*>::iterator child;
 	CSqlPhotos photos;
 	top = tr.begin();
 
@@ -62,7 +61,7 @@ void CKeywordWnd::Init(const wxString & filename)
 
 	for (CPhotoCatalog catalog : catalogVector)
 	{
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		numCatalog = catalog.GetNumCatalog();
 		treeData->SetNumElement(idElement);
 		treeData->SetIdElement(-1);
@@ -95,19 +94,18 @@ void CKeywordWnd::Init(const wxString & filename)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CKeywordWnd::InitKeyWordCategorie(tree<CTreeData *>::iterator parent, int numParent)
+void CKeywordWnd::InitKeyWordCategorie(tree<CTreeData*>::iterator parent, int numParent)
 {
-
 	//Récupération des catégories principales
 	CSqlFindCriteria sqlCriteria;
 	CriteriaVector criteriaVector;
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator child;
 	sqlCriteria.SearchCriteria(&criteriaVector, 7, 1);
 
 	for (CriteriaVector::iterator fit = criteriaVector.begin(); fit != criteriaVector.end(); fit++)
 	{
 		idElement++;
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		treeData->SetNumElement(idElement);
 		treeData->SetNumCatalog(numCatalog);
 		treeData->SetIdElement(-1);
@@ -126,10 +124,10 @@ void CKeywordWnd::InitKeyWordCategorie(tree<CTreeData *>::iterator parent, int n
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-tree<CTreeData *>::iterator CKeywordWnd::FindChild(tree<CTreeData *>::iterator parent, const wxString &catlibelle)
+tree<CTreeData*>::iterator CKeywordWnd::FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle)
 {
-	tree<CTreeData *>::sibling_iterator itOld;
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator itOld;
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	itOld = it;
 
@@ -137,7 +135,7 @@ tree<CTreeData *>::iterator CKeywordWnd::FindChild(tree<CTreeData *>::iterator p
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 		if (data->GetExifKey() > catlibelle)
 		{
 			return itOld;
@@ -153,18 +151,19 @@ tree<CTreeData *>::iterator CKeywordWnd::FindChild(tree<CTreeData *>::iterator p
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+void CKeywordWnd::ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+                                 const int& posLargeur, const int& posHauteur)
 {
 	//CTreeElement * treeElement = element->GetTreeElement();
 
 	if (element->GetType() == ELEMENT_CHECKBOX)
 	{
 		CSqlPhotoCriteria photoCriteria;
-		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
-		CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)element->GetTreeElement();
+		CTreeDataCategory* treeData = (CTreeDataCategory*)element->GetTreeData();
+		CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)element->GetTreeElement();
 
 		checkBox->SetCheckState(!checkBox->GetCheckState());
-		
+
 		int numCategorie = treeData->GetNumCategorie();
 		if (checkBox->GetCheckState())
 		{
@@ -179,7 +178,7 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 	}
 	else if (element->GetType() == ELEMENT_TRIANGLE)
 	{
-		CTreeElementTriangle * triangle = (CTreeElementTriangle *)element->GetTreeElement();
+		CTreeElementTriangle* triangle = (CTreeElementTriangle*)element->GetTreeElement();
 		triangle->ClickElement(window, x, y);
 
 		UpdateElement();
@@ -188,7 +187,7 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 	else if (element->GetType() == ELEMENT_DELETE)
 	{
 		//CTreeElementDelete * deleteElement = (CTreeElementDelete *)element->GetTreeElement();
-		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
+		CTreeDataCategory* treeData = (CTreeDataCategory*)element->GetTreeData();
 
 		wxMessageDialog dialog(nullptr, _("Do you want to delete this criteria ?"), _("Confirmation"), wxOK | wxCANCEL);
 		int returnValue = dialog.ShowModal();
@@ -204,27 +203,26 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 			sqlPhotoCriteria.DeleteCriteria(numCriteria);
 			sqlCriteria.DeleteCriteria(numCriteria, 7);
 
-			wxWindow * mainWnd = window->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxWindow* mainWnd = window->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent* eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 			wxQueueEvent(mainWnd, eventChange);
 
-			wxWindow * keyword = window->FindWindowById(KEYWORDCRITERIAWINDOWID);
-			wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+			wxWindow* keyword = window->FindWindowById(KEYWORDCRITERIAWINDOWID);
+			wxCommandEvent* eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
 			wxQueueEvent(keyword, eventRefresh);
 
 			UpdateElement();
 			eventControl->UpdateTreeControl();
 		}
-
 	}
 	else if (element->GetType() == ELEMENT_TEXTE)
 	{
 		//CTreeElementTexte * texte = (CTreeElementTexte *)element->GetTreeElement();
-		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
+		CTreeDataCategory* treeData = (CTreeDataCategory*)element->GetTreeData();
 
 		wxTextEntryDialog dlg(nullptr, wxT("Update Keyword : \n"),
-			wxT("Update keyword"),
-			treeData->GetKey(), wxOK | wxCANCEL);
+		                      wxT("Update keyword"),
+		                      treeData->GetKey(), wxOK | wxCANCEL);
 		if (dlg.ShowModal() == wxID_OK)
 		{
 			//bool isNew = false;
@@ -233,34 +231,32 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 			CSqlCriteria sqlCriteria;
 			sqlCriteria.UpdateCriteria(1, treeData->GetNumCategorie(), value);
 
-			wxWindow * mainWnd = window->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxWindow* mainWnd = window->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent* eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 			wxQueueEvent(mainWnd, eventChange);
 
-			wxWindow * keyword = window->FindWindowById(KEYWORDCRITERIAWINDOWID);
-			wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+			wxWindow* keyword = window->FindWindowById(KEYWORDCRITERIAWINDOWID);
+			wxCommandEvent* eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
 			wxQueueEvent(keyword, eventRefresh);
 		}
 
 		UpdateElement();
 		eventControl->UpdateTreeControl();
-
 	}
 }
 
 
-
 void CKeywordWnd::UpdateScreenRatio()
 {
-    printf("CKeywordWnd::UpdateScreenRatio() \n");
-    UpdateElement();
-    eventControl->UpdateTreeControl();
+	printf("CKeywordWnd::UpdateScreenRatio() \n");
+	UpdateElement();
+	eventControl->UpdateTreeControl();
 }
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool CKeywordWnd::GetTriangleState(const wxString &exifKey, const wxString &key)
+bool CKeywordWnd::GetTriangleState(const wxString& exifKey, const wxString& key)
 {
 	wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateTriangleValue.find(localkey);
@@ -278,7 +274,7 @@ bool CKeywordWnd::GetTriangleState(const wxString &exifKey, const wxString &key)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool CKeywordWnd::GetCheckState(const wxString &exifKey, const wxString &key)
+bool CKeywordWnd::GetCheckState(const wxString& exifKey, const wxString& key)
 {
 	wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateValue.find(localkey);
@@ -302,21 +298,21 @@ void CKeywordWnd::Resize()
 //
 //------------------------------------------------------------------------------
 
-void CKeywordWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
+void CKeywordWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
-	CPositionElement *  posElement = nullptr;
-	CTreeElementTexte * treeElementTexte = nullptr;
-	CTreeElementDelete * treeElementDelete = nullptr;
-	CTreeElementCheckBox * treeElementCheck = nullptr;
+	CPositionElement* posElement = nullptr;
+	CTreeElementTexte* treeElementTexte = nullptr;
+	CTreeElementDelete* treeElementDelete = nullptr;
+	CTreeElementCheckBox* treeElementCheck = nullptr;
 	//CTreeElementTriangle * treeElementTriangle = nullptr;
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		if (profondeur == 1 && (data->GetValue().size() > 0 || it.number_of_children() == 0))
 		{
 			int xPosInit = widthPosition * (profondeur + 1);
@@ -324,23 +320,28 @@ void CKeywordWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 			//xPos += posElement->GetWidth() + themeTree.GetMargeX();
 			//xPos = windowMain->GetWidth() / 2;
-			
+
 
 			bool check = GetCheckState(data->GetExifKey(), data->GetKey());
 			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 			xPos = windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX();
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
+			                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
 			//xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
 			xPos = xPosInit + treeElementCheck->GetWidth() + themeTree.GetMargeX();
 			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
+			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
 
 			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 
 			treeElementDelete = CreateDeleteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight());
 			treeElementDelete->SetVisible(true);
-			posElement = CreatePositionElement(windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete->GetWidth() - themeTree.GetMargeX(), yPos, nbRow, 0, treeElementDelete->GetWidth(), treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
+			posElement = CreatePositionElement(
+				windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete->
+				GetWidth() - themeTree.GetMargeX(), yPos, nbRow, 0, treeElementDelete->GetWidth(),
+				treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
 
 			//xPos += treeElementDelete->GetWidth() + themeTree.GetMargeX();
 
@@ -350,7 +351,6 @@ void CKeywordWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 				rowWidth[0] = widthElement;
 		}
 		it++;
-
 	}
 }
 
@@ -359,31 +359,36 @@ void CKeywordWnd::CreateElement()
 {
 	vectorPosElement.clear();
 	vectorPosElementDynamic.clear();
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 	widthPosition = 0;
 
-	while (it != itend) {
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+	while (it != itend)
+	{
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
 			//CTreeElementCheckBox * treeElementCheck = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CPositionElement * posElement = nullptr;
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CPositionElement* posElement = nullptr;
 			bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
 			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
+			                                   data);
 
 			widthPosition = xPos + posElement->GetWidth();
 
 			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
+			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+			                                   false);
 
 			widthElement += xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
@@ -394,57 +399,57 @@ void CKeywordWnd::CreateElement()
 			CreateChildTree(it);
 		}
 		it++;
-
 	}
 }
 
 
-
-void CKeywordWnd::UpdateElement(const bool &init)
+void CKeywordWnd::UpdateElement(const bool& init)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 	widthPosition = 0;
 
-	for (CPositionElement * value : vectorPosElement)
+	for (CPositionElement* value : vectorPosElement)
 	{
 		if (value != nullptr)
 		{
-			CTreeElement * treeElement = value->GetTreeElement();
+			CTreeElement* treeElement = value->GetTreeElement();
 			treeElement->SetVisible(false);
 		}
 	}
 
 	bool isVisible = true;
 
-	while (it != itend) {
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+	while (it != itend)
+	{
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
 			//CTreeElementCheckBox * treeElementCheck = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CPositionElement * posElement = GetElement(data, ELEMENT_TRIANGLE);
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
 				bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
 				treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
 				treeElementTriangle->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+				                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
+				                                   treeElementTriangle, data);
 			}
 			else
 			{
-				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
+				treeElementTriangle = (CTreeElementTriangle*)posElement->GetTreeElement();
 				treeElementTriangle->SetVisible(isVisible);
-               treeElementTriangle->SetElementPos(xPos,yPos);
+				treeElementTriangle->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
-
 			}
 
 			widthPosition = xPos + posElement->GetWidth();
@@ -454,15 +459,18 @@ void CKeywordWnd::UpdateElement(const bool &init)
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+				treeElementTexte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
+				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+				                                   false);
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
-                treeElementTexte->SetElementPos(xPos,yPos);
+				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -478,15 +486,12 @@ void CKeywordWnd::UpdateElement(const bool &init)
 				UpdateChildTree(it, init);
 		}
 		it++;
-
 	}
-
-	
 }
 
-void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, const bool &init)
+void CKeywordWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 
@@ -494,19 +499,18 @@ void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, c
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		if (profondeur == 1 && (data->GetValue().size() > 0 || it.number_of_children() == 0))
 		{
 			int xPosInit = widthPosition * (profondeur + 1);
 			int xPos = xPosInit;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			
+			CTreeElementTexte* treeElementTexte = nullptr;
 
-			
+
 			//xPos += posElement->GetWidth() + themeTree.GetMargeX();
-			
-			CTreeElementCheckBox * treeElementCheck = nullptr;
-			CPositionElement *  posElement = GetElement(data, ELEMENT_CHECKBOX);
+
+			CTreeElementCheckBox* treeElementCheck = nullptr;
+			CPositionElement* posElement = GetElement(data, ELEMENT_CHECKBOX);
 
 			if (posElement == nullptr)
 			{
@@ -514,13 +518,15 @@ void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, c
 				treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 				treeElementCheck->SetVisible(isVisible);
 				xPos = xPosInit;
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
+				                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck,
+				                                   data);
 			}
 			else
 			{
-				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
+				treeElementCheck = (CTreeElementCheckBox*)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
-				treeElementCheck->SetElementPos(xPos,yPos);
+				treeElementCheck->SetElementPos(xPos, yPos);
 				xPos = xPosInit;
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
@@ -531,14 +537,17 @@ void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, c
 			if (posElement == nullptr)
 			{
 				xPos = xPosInit + treeElementCheck->GetWidth() + themeTree.GetMargeX();
-				treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+				treeElementTexte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
+				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte,
+				                                   data);
 			}
 			else
 			{
 				xPos = xPosInit + treeElementCheck->GetWidth() + themeTree.GetMargeX();
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
 				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
@@ -546,20 +555,24 @@ void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, c
 			}
 			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 
-			CTreeElementDelete * treeElementDelete = nullptr;
+			CTreeElementDelete* treeElementDelete = nullptr;
 			posElement = GetElement(data, ELEMENT_DELETE);
 			if (posElement == nullptr)
 			{
-				xPos = windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete->GetWidth() - themeTree.GetMargeX();
+				xPos = windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete
+					->GetWidth() - themeTree.GetMargeX();
 				treeElementDelete = CreateDeleteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight());
 				treeElementDelete->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementDelete->GetWidth(), treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementDelete->GetWidth(),
+				                                   treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete,
+				                                   data);
 			}
 			else
 			{
-				treeElementDelete = (CTreeElementDelete *)posElement->GetTreeElement();
+				treeElementDelete = (CTreeElementDelete*)posElement->GetTreeElement();
 				treeElementDelete->SetVisible(isVisible);
-				xPos = windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete->GetWidth() - themeTree.GetMargeX();
+				xPos = windowMain->GetWidth() - treeElementCheck->GetWidth() - themeTree.GetMargeX() - treeElementDelete
+					->GetWidth() - themeTree.GetMargeX();
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -571,10 +584,7 @@ void CKeywordWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, c
 			nbRow++;
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
-
-		
 		}
 		it++;
-
 	}
 }

@@ -16,15 +16,15 @@ public:
 	CThemeParam();
 	virtual ~CThemeParam();
 
-	bool OpenFile(const wxString &themeFile);
+	bool OpenFile(const wxString& themeFile);
 	bool SaveFile();
 
-	void GetVideoControlTheme(CTheme * theme);
-	void GetVideoSliderTheme(CThemeSlider * theme);
-	void GetVideoToolbarTheme(CThemeToolbar * theme);
+	void GetVideoControlTheme(CTheme* theme);
+	void GetVideoSliderTheme(CThemeSlider* theme);
+	void GetVideoToolbarTheme(CThemeToolbar* theme);
 
-	void GetBitmapWindowTheme(CThemeBitmapWindow * theme);
-	void GetBitmapToolbarTheme(CThemeToolbar * theme);
+	void GetBitmapWindowTheme(CThemeBitmapWindow* theme);
+	void GetBitmapToolbarTheme(CThemeToolbar* theme);
 
 	//Default Theme
 	void GetScrollTheme(CThemeScrollBar* theme);
@@ -35,7 +35,6 @@ public:
 	void GetThumbnailTheme(CThemeThumbnail* theme);
 
 protected:
-
 	void InitVideoToolbar();
 	void InitVideoSlider();
 	void InitVideoControl();
@@ -52,19 +51,27 @@ protected:
 	void InitClickToolbarTheme();
 	void InitThumbnail();
 
-	virtual void LoadTheme(){};
-	virtual void SaveTheme(){};
-	virtual void InitTheme(){};
+	virtual void LoadTheme()
+	{
+	};
 
-	const char* stralloc(const wxString & str);
-	xml_node<>*  node(const wxString & name, const wxString & content = "");
+	virtual void SaveTheme()
+	{
+	};
+
+	virtual void InitTheme()
+	{
+	};
+
+	const char* stralloc(const wxString& str);
+	xml_node<>* node(const wxString& name, const wxString& content = "");
 
 	xml_document<> doc;
 	wxString filename;
 
 	CTheme themeVideoControl;
 	CThemeToolbar themeVideoToolbar;
-	CThemeSlider  themeSliderVideo;
+	CThemeSlider themeSliderVideo;
 
 	CThemeBitmapWindow themeBitmapWindow;
 	CThemeToolbar themeBitmapToolbar;
@@ -77,6 +84,4 @@ protected:
 	CThemeSplitter themeSplitter;
 	CThemeToolbar themeClickToolbar;
 	CThemeThumbnail themeThumbnail;
-
 };
-

@@ -14,21 +14,18 @@ struct HSB
 	long Brightness;
 };
 
-namespace Regards
+namespace Regards::FiltreEffet
 {
-	namespace FiltreEffet
+	class CColor
 	{
-		class CColor
-		{
-		public:
-			CColor();
-			virtual ~CColor();
+	public:
+		CColor();
+		virtual ~CColor();
 
 
-			static CRgbaquad RGBtoYUV(const CRgbaquad& color);
-			static CRgbaquad YUVtoRGB(const CRgbaquad& lYUVColor);
-			static int HSBToRGB(HSB& HSBValue, CRgbaquad& rgb);
-			static int RGBToHSB(HSB& HSBValue, CRgbaquad& rgb);
-		};
-	}
+		static CRgbaquad RGBtoYUV(const CRgbaquad& color);
+		static CRgbaquad YUVtoRGB(const CRgbaquad& lYUVColor);
+		static int HSBToRGB(HSB& HSBValue, CRgbaquad& rgb);
+		static int RGBToHSB(HSB& HSBValue, CRgbaquad& rgb);
+	};
 }

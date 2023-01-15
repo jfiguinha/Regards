@@ -15,7 +15,6 @@ public:
 	void SetFolderPath(const wxString& folderPath);
 	wxString GetFolderPath();
 
-
 private:
 	int numFolder;
 	int numCatalog;

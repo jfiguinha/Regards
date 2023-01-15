@@ -460,7 +460,7 @@ CRotateByShear<CPxl>::Rotate45(
 		else
 		{
 			// Negative angle
-			dShear = (static_cast<float>(static_cast<int>(u) - sDst1.y) + 0.5) * dTan;
+			dShear = (static_cast<float>(u - sDst1.y) + 0.5) * dTan;
 		}
 		int iShear = static_cast<int>(floor(dShear));
 		HorizSkew(pSrc,

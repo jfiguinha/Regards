@@ -2,7 +2,6 @@
 #include "KeywordWndToolbar.h"
 
 
-
 #include "KeywordManagementWindow.h"
 #include "ToolbarKeyword.h"
 #include "MainTheme.h"
@@ -50,7 +49,6 @@ void CKeywordWndToolbar::Init(const wxString& filename)
 
 void CKeywordWndToolbar::UpdateScreenRatio()
 {
-	
 	toolbarKeyword->UpdateScreenRatio();
 	keywordWnd->UpdateScreenRatio();
 	this->Resize();
@@ -58,8 +56,6 @@ void CKeywordWndToolbar::UpdateScreenRatio()
 
 void CKeywordWndToolbar::Resize()
 {
-	
-
 	wxRect rcAffichageBitmap;
 	rcAffichageBitmap.x = 0;
 	rcAffichageBitmap.y = toolbarKeyword->GetNavigatorHeight();

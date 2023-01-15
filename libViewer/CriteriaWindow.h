@@ -26,7 +26,6 @@ namespace Regards
 			void SetFile(const wxString& filename);
 			void UpdateScreenRatio() override;
 
-
 		private:
 			CCriteriaTreeWnd* criteriaTreeWnd;
 			CKeywordWndToolbar* keywordWnd = nullptr;

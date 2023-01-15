@@ -34,4 +34,3 @@ public:
 	int timePosition;
 	wxString filename;
 };
-

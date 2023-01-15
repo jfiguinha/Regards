@@ -6,22 +6,19 @@ namespace cv
 	class Mat;
 }
 
-namespace Regards
+namespace Regards::OpenCV
 {
-	namespace OpenCV
+	class CImagePanorama
 	{
-		class CImagePanorama
+	public:
+		CImagePanorama()
 		{
-		public:
-			CImagePanorama()
-			{
-			}
+		}
 
-			~CImagePanorama()
-			{
-			}
+		~CImagePanorama()
+		{
+		}
 
-			static cv::Mat CreatePanorama(const cv::Mat& image_left, const cv::Mat& image_right);
-		};
-	}
+		static cv::Mat CreatePanorama(const cv::Mat& image_left, const cv::Mat& image_right);
+	};
 }

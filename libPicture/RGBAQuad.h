@@ -22,9 +22,9 @@ public:
 
 	~CRgbaquad();
 
-	static int GetPosition(cv::Mat * bitmapMatrix, const int& x, const int& y);
+	static int GetPosition(cv::Mat* bitmapMatrix, const int& x, const int& y);
 
-	static CRgbaquad* GetPtColorValue(cv::Mat * bitmapMatrix, const int& x, const int& y);
+	static CRgbaquad* GetPtColorValue(cv::Mat* bitmapMatrix, const int& x, const int& y);
 
 	static CRgbaquad GetColorValue(cv::Mat* bitmapMatrix, const int& x, const int& y);
 
@@ -96,8 +96,8 @@ public:
 	uint8_t GetBlue() const;
 
 	uint8_t GetAlpha() const;
-    
-    int GetIntensity() const;
+
+	int GetIntensity() const;
 
 private:
 	std::vector<wxString> Split(const wxString& s, char seperator);

@@ -9,39 +9,36 @@ using namespace Regards::Control;
 #define SHOW_BYDAY 3
 #define SHOW_BYLOCALISATION 4
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CMainFrame;
+
+	class CThumbnailViewerPicture : public CThumbnailVertical
 	{
-		class CMainFrame;
+	public:
+		CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
+		                        const CThemeThumbnail& themeThumbnail, const bool& testValidity);
+		~CThumbnailViewerPicture(void) override;
+		void Init(const int& typeAffichage = SHOW_ALL);
+		void SetListeFile();
+		vector<wxString> GetFileList();
 
-		class CThumbnailViewerPicture : public CThumbnailVertical
+		int GetHeight() override
 		{
-		public:
-			CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
-			virtual ~CThumbnailViewerPicture(void);
-			void Init(const int &typeAffichage = SHOW_ALL);
-			void SetListeFile();
-			vector<wxString> GetFileList();
-			int GetHeight()
-			{
-				return GetIconeHeight();
-			}
+			return GetIconeHeight();
+		}
 
-		protected:
-			void ResizeThumbnail();
-			void ResizeThumbnailWithoutVScroll();
-		private:
+	protected:
+		void ResizeThumbnail() override;
+		void ResizeThumbnailWithoutVScroll();
 
-			void OnPictureClick(CThumbnailData * data);
-			CIcone * FindElement(const int &xPos, const int &yPos);
-			void RenderIconeWithoutVScroll(wxDC * deviceContext);
-	
+	private:
+		void OnPictureClick(CThumbnailData* data) override;
+		CIcone* FindElement(const int& xPos, const int& yPos) override;
+		void RenderIconeWithoutVScroll(wxDC* deviceContext) override;
 
-			int widthThumbnail;
-			int heightThumbnail;
-		};
-	}
+
+		int widthThumbnail;
+		int heightThumbnail;
+	};
 }
-
-

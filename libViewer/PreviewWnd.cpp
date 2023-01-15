@@ -61,7 +61,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 	}
 
-	showElement = new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme, true);
+	showElement = new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this,
+	                               viewerTheme, true);
 
 
 	isVideo = false;
@@ -226,7 +227,7 @@ void CPreviewWnd::Resize()
 					bitmapInfosHeight = 0;
 
 				showElement->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width,
-					rcAffichageBitmap.height - bitmapInfosHeight);
+				                     rcAffichageBitmap.height - bitmapInfosHeight);
 			}
 			else
 			{
@@ -238,28 +239,28 @@ void CPreviewWnd::Resize()
 					bitmapInfosHeight = 0;
 
 				showElement->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width,
-					rcAffichageBitmap.height - bitmapInfosHeight);
+				                     rcAffichageBitmap.height - bitmapInfosHeight);
 			}
 
 			if (filtreToolbar->IsShown())
 			{
 				filtreToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width,
-					toolbarHeightSize);
+				                       toolbarHeightSize);
 			}
 			else
 			{
 				if (animationToolbar->IsShown())
 				{
 					animationToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width,
-						toolbarAnimationHeightSize);
+					                          toolbarAnimationHeightSize);
 					animationToolbar->Refresh();
 					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height + toolbarAnimationHeightSize,
-						rcAffichageBitmap.width, toolbarHeightSize);
+					                        rcAffichageBitmap.width, toolbarHeightSize);
 				}
 				else
 				{
 					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width,
-						toolbarHeightSize);
+					                        toolbarHeightSize);
 				}
 			}
 
@@ -269,7 +270,6 @@ void CPreviewWnd::Resize()
 
 
 	showElement->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-
 }
 
 void CPreviewWnd::SetDiaporamaMode()

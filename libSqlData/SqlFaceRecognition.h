@@ -11,17 +11,17 @@ namespace Regards
 		{
 		public:
 			CSqlFaceRecognition();
-			~CSqlFaceRecognition();
+			~CSqlFaceRecognition() override;
 			bool InsertFaceRecognition(int numFace, int numFaceCompatible);
 			bool UpdateFaceRecognition(int OldnumFaceCompatible, int NewnumFaceCompatible);
 			bool MoveFaceRecognition(int numFace, int NewnumFaceCompatible);
 			std::vector<int> GetUniqueFace();
 			bool DeleteFaceRecognitionDatabase();
 			bool DeleteFaceRecognitionDatabase(int numFace);
-			int GetCompatibleFace(const int & numFace);
-		private:
+			int GetCompatibleFace(const int& numFace);
 
-			int TraitementResult(CSqlResult * sqlResult);
+		private:
+			int TraitementResult(CSqlResult* sqlResult) override;
 			std::vector<int> listFace;
 			int faceCompatible;
 			int type;

@@ -13,7 +13,7 @@ public:
 		return 1;
 	}
 
-	void RemoveBitmap();
+	void RemoveBitmap() override;
 	void SetBitmap(wxImage bitmap) override;
 	wxImage GetwxImage() override;
 

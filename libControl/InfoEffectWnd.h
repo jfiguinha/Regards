@@ -13,26 +13,23 @@ using namespace Regards::Window;
 
 class CImageLoadingFormat;
 
-namespace Regards
+namespace Regards::Control
 {
-	namespace Control
+	class CInfoEffectWnd : public CTreeWithScrollbar
 	{
-		class CInfoEffectWnd : public CTreeWithScrollbar
-		{
-		public:
-			CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
-			               const CThemeTree& themeTree, int bitmap_window_id);
-			~CInfoEffectWnd(void) override;
+	public:
+		CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
+		               const CThemeTree& themeTree, int bitmap_window_id);
+		~CInfoEffectWnd(void) override;
 
-			void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
-			void HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
-			                   CModificationManager* modificationManager);
+		void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
+		void HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
+		                   CModificationManager* modificationManager);
 
-		private:
-			CInfoEffect* historyEffectOld;
-			int bitmapWindowId;
-			//const wxWindowID id_;
-			//const CThemeScrollBar& theme_scroll_;
-		};
-	}
+	private:
+		CInfoEffect* historyEffectOld;
+		int bitmapWindowId;
+		//const wxWindowID id_;
+		//const CThemeScrollBar& theme_scroll_;
+	};
 }

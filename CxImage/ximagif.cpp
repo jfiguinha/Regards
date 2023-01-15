@@ -285,8 +285,9 @@ bool CxImageGIF::Decode(CxFile* fp)
 						//force full image decoding
 						info.nFrame = info.nNumFrames - 1;
 						//build the RGB image
-						if (imaRGB == nullptr) imaRGB = new CxImage(dscgif.scrwidth, dscgif.scrheight, 24,
-						                                            CXIMAGE_FORMAT_GIF);
+						if (imaRGB == nullptr)
+							imaRGB = new CxImage(dscgif.scrwidth, dscgif.scrheight, 24,
+							                     CXIMAGE_FORMAT_GIF);
 						//copy the partial image into the full RGB image
 						for (int32_t y = 0; y < image.h; y++)
 						{

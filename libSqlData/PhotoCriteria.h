@@ -12,7 +12,6 @@ public:
 	void SetCriteriaId(const int& numCriteriaId);
 	int GetCriteriaId();
 
-
 private:
 	int numPhotoId;
 	int numCriteriaId;

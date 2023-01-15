@@ -5,47 +5,41 @@
 using namespace Regards::Window;
 
 
-namespace Regards
+namespace Regards::Scanner
 {
-	namespace Scanner
+	class CToolbarInfos : public CToolbarWindow
 	{
+	public:
+		CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface,
+		              const bool& vertical);
+		~CToolbarInfos() override;
+		void SetInfosActif();
+		void SetInfosPush();
+		void SetOcrPush();
+		void SetOcrActif();
 
-		class CToolbarInfos : public CToolbarWindow
-		{
-		public:
-			CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
-			~CToolbarInfos();
-			void SetInfosActif();
-            void SetInfosPush();
-			void SetOcrPush();
-			void SetOcrActif();
+		void SetEffectParameterInactif();
+		void SetEffectParameterActif(const wxString& libelle);
 
-			void SetEffectParameterInactif();
-			void SetEffectParameterActif(const wxString &libelle);
+		void SetEffectActif();
+		void SetEffectInactif();
 
-			void SetEffectActif();
-			void SetEffectInactif();
+		void SetEffectPush();
+		void SetEffectParameterPush();
 
-			void SetEffectPush();
-			void SetEffectParameterPush();
+		void SetHistoryPush();
+		void SetEditorPush();
 
-			void SetHistoryPush();
-			void SetEditorPush();
+	private:
+		void Resize() override;
+		void EventManager(const int& id) override;
 
-		private:
-
-			virtual void Resize();
-			void EventManager(const int &id);
-
-			CToolbarInterface * toolbarInterface;
-			CToolbarTexte * infos;
-			CToolbarTexte * ocrText;
-			CToolbarTexte * history;
-			CToolbarTexte * effect;
-			CToolbarTexte * editorParam;
-			CToolbarTexte * effectParameter;
-		};
-
-
-	}
+		CToolbarInterface* toolbarInterface;
+		CToolbarTexte* infos;
+		CToolbarTexte* ocrText;
+		CToolbarTexte* history;
+		CToolbarTexte* effect;
+		CToolbarTexte* editorParam;
+		CToolbarTexte* effectParameter;
+	};
 }

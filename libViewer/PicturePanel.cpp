@@ -30,7 +30,8 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 }
 
 
-void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont)
+void CPicturePanel::CalculateHistogram(cv::Mat& pBitmap, cv::Mat& histogram, const int& colorChoice,
+                                       const wxColour& colorBgnd, const wxColour& colorFont)
 {
 	cv::Mat hist;
 	cv::Mat src;
@@ -41,10 +42,10 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 
 	if (colorChoice == 0)
 	{
-		cv::cvtColor(image, src, cv::COLOR_BGRA2GRAY);
+		cvtColor(image, src, cv::COLOR_BGRA2GRAY);
 		int histSize = 256;
-		float range[] = { 0, 256 }; //the upper boundary is exclusive
-		const float* histRange = { range };
+		float range[] = {0, 256}; //the upper boundary is exclusive
+		const float* histRange = {range};
 		bool uniform = true, accumulate = false;
 
 		calcHist(&src, 1, nullptr, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
@@ -54,8 +55,8 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 		for (int i = 1; i < histSize; i++)
 		{
 			line(histImage, cv::Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
-				cv::Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
-				color, 2, 8, 0);
+			     cv::Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
+			     color, 2, 8, 0);
 		}
 	}
 	else
@@ -64,8 +65,8 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 		vector<cv::Mat> bgr_planes;
 		split(src, bgr_planes);
 		int histSize = 256;
-		float range[] = { 0, 256 }; //the upper boundary is exclusive
-		const float* histRange = { range };
+		float range[] = {0, 256}; //the upper boundary is exclusive
+		const float* histRange = {range};
 		bool uniform = true, accumulate = false;
 
 		if (colorChoice == 1)
@@ -88,8 +89,8 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 		for (int i = 1; i < histSize; i++)
 		{
 			line(histImage, cv::Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
-				cv::Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
-				color, 2, 8, 0);
+			     cv::Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
+			     color, 2, 8, 0);
 		}
 
 		bgr_planes[0].release();
@@ -103,7 +104,7 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 	axes.SetBackgroundColor(cv::Scalar(colorBgnd.Blue(), colorBgnd.Green(), colorBgnd.Red()));
 	axes.SetTextColor(cv::Scalar(colorFont.Blue(), colorFont.Green(), colorFont.Red()));
 	axes.create<CvPlot::Series>(hist)
-		.setColor(color);
+	    .setColor(color);
 	//axes.Set
 
 
@@ -118,7 +119,8 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 	histImage.release();
 }
 
-void CPicturePanel::NormalizeHistogram(cv::Mat&  pictureData, const int& colorChoice, const int& minValue, const int& maxValue)
+void CPicturePanel::NormalizeHistogram(cv::Mat& pictureData, const int& colorChoice, const int& minValue,
+                                       const int& maxValue)
 {
 	int min = 0;
 	int max = 255;
@@ -129,7 +131,7 @@ void CPicturePanel::NormalizeHistogram(cv::Mat&  pictureData, const int& colorCh
 	{
 		for (int x = 0; x < pictureData.size().width; x++)
 		{
-			CRgbaquad color = CRgbaquad::GetColorValue(&mat,x,y); // pictureData->GetColorValue(x, y);
+			CRgbaquad color = CRgbaquad::GetColorValue(&mat, x, y); // pictureData->GetColorValue(x, y);
 			if (colorChoice == 0)
 			{
 				color.SetRed((color.GetRed() - min) * (maxValue - minValue) / (max - min) + minValue);
@@ -171,7 +173,7 @@ void CPicturePanel::CreateHistogram()
 	const int height = newh - ch_h - (marged * 4);
 
 	if (histogram.empty())
-		histogram = cv::Mat(height,width,CV_8UC4);
+		histogram = cv::Mat(height, width,CV_8UC4);
 
 	if (width != histogram.size().width || height != histogram.size().height)
 	{
@@ -236,5 +238,4 @@ void CPicturePanel::on_paint(wxPaintEvent& event)
 	CreateHistogram();
 
 	dc.DrawBitmap(image, marged, marged * 2 + ch_h, false);
-
 }

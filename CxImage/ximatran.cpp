@@ -173,12 +173,14 @@ bool CxImage::GrayScale()
 					if (head.biBitCount == 4)
 					{
 						uint8_t pos = static_cast<uint8_t>(4 * (1 - x % 2));
-						iDst[x] = ppal[static_cast<uint8_t>((iSrc[x >> 1] & ((uint8_t)0x0F << pos)) >> pos)].rgbBlue;
+						iDst[x] = ppal[static_cast<uint8_t>((iSrc[x >> 1] & (static_cast<uint8_t>(0x0F) << pos)) >>
+							pos)].rgbBlue;
 					}
 					else
 					{
 						uint8_t pos = static_cast<uint8_t>(7 - x % 8);
-						iDst[x] = ppal[static_cast<uint8_t>((iSrc[x >> 3] & ((uint8_t)0x01 << pos)) >> pos)].rgbBlue;
+						iDst[x] = ppal[static_cast<uint8_t>((iSrc[x >> 3] & (static_cast<uint8_t>(0x01) << pos)) >>
+							pos)].rgbBlue;
 					}
 				}
 			}
@@ -1365,7 +1367,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
 						else
 						{
 							// source pixel is splitted for 2 dest pixels
-							nWeightX = static_cast<int32_t>(((float)x - fEndX) * ACCURACY);
+							nWeightX = static_cast<int32_t>((static_cast<float>(x) - fEndX) * ACCURACY);
 							for (j = 0; j < 3; j++)
 							{
 								naAccu[i] += (ACCURACY - nWeightX) * (*pSource);
@@ -1379,7 +1381,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
 				else
 				{
 					// source row is splitted for 2 dest rows       
-					nWeightY = static_cast<int32_t>(((float)y - fEndY) * ACCURACY);
+					nWeightY = static_cast<int32_t>((static_cast<float>(y) - fEndY) * ACCURACY);
 					for (x = 0; x < head.biWidth; x++)
 					{
 						if (static_cast<float>(x) < fEndX)
@@ -1394,7 +1396,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
 						else
 						{
 							// source pixel is splitted for 4 dest pixels
-							nWeightX = static_cast<int32_t>(((float)x - fEndX) * ACCURACY);
+							nWeightX = static_cast<int32_t>((static_cast<float>(x) - fEndX) * ACCURACY);
 							for (j = 0; j < 3; j++)
 							{
 								naAccu[i] += ((ACCURACY - nWeightY) * (ACCURACY - nWeightX)) * (*pSource) / ACCURACY;
@@ -2424,8 +2426,9 @@ bool CxImage::CropRotatedRectangle(int32_t topx, int32_t topy, int32_t width, in
 		return Crop(topx, topy, topx + width, topy + height, iDst);
 
 	startx = min(topx, topx - (int32_t)(sin_angle*(double)height));
-	endx = topx + static_cast<int32_t>(cos_angle * (double)width);
-	endy = topy + static_cast<int32_t>(cos_angle * (double)height + sin_angle * (double)width);
+	endx = topx + static_cast<int32_t>(cos_angle * static_cast<double>(width));
+	endy = topy + static_cast<int32_t>(cos_angle * static_cast<double>(height) + sin_angle * static_cast<double>(
+		width));
 	// check: corners of the rectangle must be inside
 	if (IsInside(startx, topy) == false ||
 		IsInside(endx, endy) == false)
@@ -2874,8 +2877,9 @@ bool CxImage::CircleTransform(int32_t type, int32_t rmax, float Koeff)
 	xmid = static_cast<int32_t>(tmp.GetWidth() / 2);
 	ymid = static_cast<int32_t>(tmp.GetHeight() / 2);
 
-	if (!rmax) rmax = static_cast<int32_t>(
-		sqrt((float)((xmid - xmin) * (xmid - xmin) + (ymid - ymin) * (ymid - ymin))));
+	if (!rmax)
+		rmax = static_cast<int32_t>(
+			sqrt(static_cast<float>((xmid - xmin) * (xmid - xmin) + (ymid - ymin) * (ymid - ymin))));
 	if (Koeff == 0.0f) Koeff = 1.0f;
 
 	for (int32_t y = ymin; y < ymax; y++)

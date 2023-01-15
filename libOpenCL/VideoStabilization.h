@@ -25,12 +25,13 @@ namespace Regards
 			void AddFrame(const cv::UMat& pictureData);
 			void BufferFrame(const cv::UMat& pBitmap);
 			cv::UMat CorrectFrame(cv::UMat& pictureData);
-			
+
 
 			void Init();
 			int GetNbFrame();
 			int GetNbFrameBuffer();
 			void SetNbFrameBuffer(const int& nbFrame);
+
 		private:
 			COpenCVStabilizationPimpl_* pimpl;
 			int nbFrame = 0;

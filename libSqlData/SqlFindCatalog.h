@@ -14,13 +14,11 @@ namespace Regards
 			CSqlFindCatalog();
 			~CSqlFindCatalog() override;
 
-			bool GetCatalog(CatalogVector * catalogVector);
+			bool GetCatalog(CatalogVector* catalogVector);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult) override;
-			CatalogVector * m_catalogVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			CatalogVector* m_catalogVector;
 		};
 	}
 }
-

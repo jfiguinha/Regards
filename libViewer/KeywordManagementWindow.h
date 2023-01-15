@@ -6,26 +6,23 @@ using namespace Regards::Window;
 class CFindPhotoCriteria;
 class CFolderCatalog;
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CKeywordWnd;
+	class CMainParam;
+
+	class CKeywordManagementWindow : public CTreeWithScrollbar
 	{
-		class CKeywordWnd;
-		class CMainParam;
+	public:
+		CKeywordManagementWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer,
+		                         const CThemeScrollBar& themeScroll, const CThemeTree& theme);
+		~CKeywordManagementWindow() override;
 
-		class CKeywordManagementWindow : public CTreeWithScrollbar
-		{
-		public:
-			CKeywordManagementWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer, const CThemeScrollBar & themeScroll, const CThemeTree & theme);
-			~CKeywordManagementWindow();
+		void Init(const wxString& filename);
 
-			void Init(const wxString & filename);
-
-		private:
-			void UpdateKeyword(wxCommandEvent& event);
-			CKeywordWnd * keywordWndOld;
-			wxString filename;
-		};
-	}
+	private:
+		void UpdateKeyword(wxCommandEvent& event);
+		CKeywordWnd* keywordWndOld;
+		wxString filename;
+	};
 }
-

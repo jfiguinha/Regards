@@ -10,21 +10,19 @@
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Scanner
 {
-    namespace Scanner
-    {
-        class COcrLabelWnd : public CTreeWithScrollbar
-        {
-        public:
-			COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int idWindow);
-            ~COcrLabelWnd(void);
-			void Init();
-            void Update(vector<ChOcrElement *> &labelList);
-            
-        private:
-			int idWindow;
-            COcrLabel * ocrLabelOld;
-        };
-    }
+	class COcrLabelWnd : public CTreeWithScrollbar
+	{
+	public:
+		COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& themeTree,
+		             int idWindow);
+		~COcrLabelWnd(void) override;
+		void Init();
+		void Update(vector<ChOcrElement*>& labelList);
+
+	private:
+		int idWindow;
+		COcrLabel* ocrLabelOld;
+	};
 }

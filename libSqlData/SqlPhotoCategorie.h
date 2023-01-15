@@ -13,14 +13,12 @@ namespace Regards
 		public:
 			CSqlPhotoCategorie();
 			~CSqlPhotoCategorie() override;
-			bool LoadPhotoCategorie(PhotoCategorieVector * photoCategorieVector, const int &numLangue);
+			bool LoadPhotoCategorie(PhotoCategorieVector* photoCategorieVector, const int& numLangue);
 
 		private:
+			int TraitementResult(CSqlResult* sqlResult) override;
 
-			int TraitementResult(CSqlResult * sqlResult);
-
-			PhotoCategorieVector * m_PhotoCategorieVector;
+			PhotoCategorieVector* m_PhotoCategorieVector;
 		};
 	}
 }
-

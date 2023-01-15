@@ -3,29 +3,24 @@
 using namespace Regards::Window;
 
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CKeywordManagementWindow;
+	class CToolbarKeyword;
+
+	class CKeywordWndToolbar : public CWindowMain
 	{
-		class CKeywordManagementWindow;
-		class CToolbarKeyword;
+	public:
+		CKeywordWndToolbar(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
+		~CKeywordWndToolbar() override;
 
-		class CKeywordWndToolbar : public CWindowMain
-		{
-		public:
-			CKeywordWndToolbar(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
-			~CKeywordWndToolbar();
-			
-			void UpdateScreenRatio();
-			void Init(const wxString & filename);
-			void Resize();
+		void UpdateScreenRatio() override;
+		void Init(const wxString& filename);
+		void Resize() override;
 
-		private:
-			
-			CToolbarKeyword * toolbarKeyword;
-			CKeywordManagementWindow * keywordWnd;
-			wxString filename;
-		};
-	}
+	private:
+		CToolbarKeyword* toolbarKeyword;
+		CKeywordManagementWindow* keywordWnd;
+		wxString filename;
+	};
 }
-

@@ -71,8 +71,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	std::vector<int> value = { 60, 70, 80, 90, 100 };
-	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
+	std::vector<int> value = {60, 70, 80, 90, 100};
+	std::vector<int> valueZoom = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600};
 
 	int positionTab = 3;
 	if (config != nullptr)
@@ -116,7 +116,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY,
-			false);
+		                         false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -140,7 +140,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFacePertinenceToolbar->SetTabValue(value);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(),
-			rect, wxID_ANY, false);
+		                         rect, wxID_ANY, false);
 
 		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
@@ -165,7 +165,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
-
 
 
 	processIdle = true;
@@ -416,7 +415,7 @@ void CListFace::FacialRecognitionReload()
 		fastDetection = config->GetFastDetectionFace();
 		nbProcesseur = config->GetFaceProcess();
 	}
-		
+
 
 	if (nbProcessFaceRecognition < nbProcesseur)
 	{
@@ -425,7 +424,7 @@ void CListFace::FacialRecognitionReload()
 		CSqlFindFacePhoto facePhoto;
 		std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
 		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
-			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
 		int i = 0;
 		for (int numFace : listFace)
@@ -481,7 +480,7 @@ void CListFace::FacialRecognition(void* param)
 		fastDetection = config->GetFastDetectionFace();
 		faceVideoDetection = config->GetFaceVideoDetection();
 	}
-		
+
 
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
@@ -526,7 +525,7 @@ void CListFace::FacialRecognition(void* param)
 	}
 	else
 	{
-		CImageLoadingFormat * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
+		CImageLoadingFormat* pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 		if (pictureOK && pictureData != nullptr)
 		{
 			/*
@@ -574,7 +573,6 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 
 bool CListFace::GetProcessEnd()
 {
-	
 	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
 	return true;
@@ -599,7 +597,7 @@ void CListFace::ProcessIdle()
 		path->thread = new thread(LoadResource, path);
 		return;
 	}
-	else if (isLoadingResource)
+	if (isLoadingResource)
 	{
 		processIdle = true;
 		return;

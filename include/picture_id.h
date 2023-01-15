@@ -1,4 +1,3 @@
-
 #define JPEG 1
 #define BMP 2
 #define TIFF 3

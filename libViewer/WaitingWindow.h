@@ -3,28 +3,25 @@
 #include <wx/animate.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CWaitingWindow : public CWindowMain
 	{
-		class CWaitingWindow : public CWindowMain
-		{
-		public:
-			CWaitingWindow(wxWindow* parent, wxWindowID id);
+	public:
+		CWaitingWindow(wxWindow* parent, wxWindowID id);
 
-			~CWaitingWindow() override;
+		~CWaitingWindow() override;
 
-			void UpdateScreenRatio() override;
+		void UpdateScreenRatio() override;
 
-			void Resize() override;
+		void Resize() override;
 
-			void SetTexte(const wxString& libelle);
+		void SetTexte(const wxString& libelle);
 
-		private:
-			void on_paint(wxPaintEvent& event);
+	private:
+		void on_paint(wxPaintEvent& event);
 
-			wxAnimationCtrl* m_animationCtrl;
-			wxString textToShow;
-		};
-	}
+		wxAnimationCtrl* m_animationCtrl;
+		wxString textToShow;
+	};
 }

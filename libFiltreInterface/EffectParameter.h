@@ -1,13 +1,15 @@
 #pragma once
 
-class CEffectParameter 
+class CEffectParameter
 {
 public:
-	 CEffectParameter()
-	 {
-	 };
-	virtual ~CEffectParameter(){};
+	CEffectParameter()
+	{
+	};
+
+	virtual ~CEffectParameter()
+	{
+	};
 
 	bool updateEffect = false;
 };
-

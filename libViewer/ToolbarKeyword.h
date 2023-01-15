@@ -2,22 +2,19 @@
 #include <ToolbarWindow.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Viewer
 {
-	namespace Viewer
+	class CToolbarKeyword : public CToolbarWindow
 	{
-		class CToolbarKeyword : public CToolbarWindow
+	public:
+		CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+		~CToolbarKeyword() override;
+
+		void ClickButton(const int& id)
 		{
-		public:
-			CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			virtual ~CToolbarKeyword();
-
-			void ClickButton(const int &id){};
-
-		private:
-
-			void EventManager(const int &id);
-
 		};
-	}
+
+	private:
+		void EventManager(const int& id) override;
+	};
 }
