@@ -1,6 +1,6 @@
 #include <header.h>
 #include "DecodeRaw.h"
-#include "DecodeRawParameter.h"
+#include <DecodeRawParameter.h>
 
 #include <LibResource.h>
 #include <FilterData.h>
