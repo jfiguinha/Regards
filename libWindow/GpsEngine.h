@@ -2,33 +2,30 @@
 #include <WindowMain.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CListOfWindow
 	{
-		class CListOfWindow
-		{
-		public:
-			CListOfWindow();
+	public:
+		CListOfWindow();
 
-			void AddWindow(CWindowMain* windowMain);
-			void SendMessageToWindow(const wxString& filename, const int& typeData);
+		void AddWindow(CWindowMain* windowMain);
+		void SendMessageToWindow(const wxString& filename, const int& typeData);
 
-		private:
-			WindowMainVector listOfWinListener;
-		};
+	private:
+		WindowMainVector listOfWinListener;
+	};
 
-		class CGpsEngine
-		{
-		public:
-			CGpsEngine();
-			virtual ~CGpsEngine();
-			static CListOfWindow* getInstance();
-			static void Initialize();
-			static void kill();
+	class CGpsEngine
+	{
+	public:
+		CGpsEngine();
+		virtual ~CGpsEngine();
+		static CListOfWindow* getInstance();
+		static void Initialize();
+		static void kill();
 
-		private:
-			static CListOfWindow* listofWindow;
-		};
-	}
+	private:
+		static CListOfWindow* listofWindow;
+	};
 }

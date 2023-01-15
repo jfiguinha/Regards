@@ -1,30 +1,26 @@
 #pragma once
 #include "TreeData.h"
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeDataLink : public CTreeData
 	{
+	public:
+		CTreeDataLink(void);
+		~CTreeDataLink(void);
 
-		class CTreeDataLink : public CTreeData
-		{
-		public:
-			CTreeDataLink(void);
-			~CTreeDataLink(void);
+		void SetId(const int& id);
+		int GetId();
 
-			void SetId(const int & id);
-			int GetId();
+		void SetLinkType(const int& type);
+		int GetLinkType();
 
-			void SetLinkType(const int & type);
-			int GetLinkType();
+		void SetLinkPath(const wxString& value);
+		wxString GetLinkPath();
 
-			void SetLinkPath(const wxString & value);
-			wxString GetLinkPath();
-
-		protected:
-			wxString linkPath;
-			int linktype;
-			int id;
-		};
-	}
+	protected:
+		wxString linkPath;
+		int linktype;
+		int id;
+	};
 }

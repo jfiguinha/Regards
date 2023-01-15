@@ -30,6 +30,7 @@ namespace Regards
 	{
 		class CThumbnailVideo;
 	}
+
 	namespace OpenCV
 	{
 		class COpenCVStabilization;
@@ -41,7 +42,7 @@ class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInt
 public:
 	CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
-	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop);
+	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) override;
 	void SetParent(wxWindow* parent) override;
 	void ReloadResource();
 	bool IsPause();
@@ -75,7 +76,7 @@ public:
 	int getWidth() override;
 	int getHeight() override;
 
-	void SetSubtitulePicture(cv::Mat & picture);
+	void SetSubtitulePicture(cv::Mat& picture) override;
 	void DeleteSubtitulePicture() override;
 
 	bool GetPausedValue();
@@ -90,28 +91,32 @@ public:
 	void FlipHorizontal();
 	void PlayFirstMovie(const bool& firstMovie);
 
-	virtual void OnIdle(wxIdleEvent& evt) override;
-	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
-	virtual void OnPaint2D(wxWindow* gdi) override;
-	virtual void OnMouseMove(wxMouseEvent& event) override;
-	virtual void OnLButtonDown(wxMouseEvent& event) override;
-	virtual void OnRButtonDown(wxMouseEvent& event) override;
-	virtual void OnLButtonUp(wxMouseEvent& event) override;
-	virtual void OnLDoubleClick(wxMouseEvent& event) override {};
-	virtual void OnMouseWheel(wxMouseEvent& event) override {};
-	virtual void OnKeyDown(wxKeyEvent& event) override;
-	virtual void OnKeyUp(wxKeyEvent& event) override;
+	void OnIdle(wxIdleEvent& evt) override;
+	void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
+	void OnPaint2D(wxWindow* gdi) override;
+	void OnMouseMove(wxMouseEvent& event) override;
+	void OnLButtonDown(wxMouseEvent& event) override;
+	void OnRButtonDown(wxMouseEvent& event) override;
+	void OnLButtonUp(wxMouseEvent& event) override;
 
-	virtual void OnTimer(wxTimerEvent& event) override;
-	virtual void OnCommand(wxCommandEvent& event) override;
-	virtual vector<int> GetListTimer() override;
-	virtual vector<int> GetListCommand() override;
-	virtual void SetEndProgram(const bool& endProgram) override;
-	virtual int UpdateResized() override;
+	void OnLDoubleClick(wxMouseEvent& event) override
+	{
+	};
 
+	void OnMouseWheel(wxMouseEvent& event) override
+	{
+	};
+	void OnKeyDown(wxKeyEvent& event) override;
+	void OnKeyUp(wxKeyEvent& event) override;
+
+	void OnTimer(wxTimerEvent& event) override;
+	void OnCommand(wxCommandEvent& event) override;
+	vector<int> GetListTimer() override;
+	vector<int> GetListCommand() override;
+	void SetEndProgram(const bool& endProgram) override;
+	int UpdateResized() override;
 
 protected:
-
 	void OnSetPosition(wxCommandEvent& event);
 	void OnLeftPosition(wxCommandEvent& event);
 	void OnTopPosition(wxCommandEvent& event);
@@ -170,7 +175,7 @@ protected:
 	int GetSoundVolume();
 	float GetZoomRatio();
 	void CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize,
-		int& left, int& top, const bool& invertY, const bool& invertX);
+	                                    int& left, int& top, const bool& invertY, const bool& invertX);
 	void CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc);
 
 	int GetSrcBitmapWidth();
@@ -256,7 +261,7 @@ protected:
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
-	CThumbnailVideo * thumbnailVideo;
+	CThumbnailVideo* thumbnailVideo;
 	bool thumbnailFromBitmap = false;
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
@@ -267,7 +272,7 @@ protected:
 	bool needToRefresh = false;
 	bool inverted = true;
 	cv::Mat previousFrame;
-	COpenCVStabilization * openCVStabilization = nullptr;
+	COpenCVStabilization* openCVStabilization = nullptr;
 	SwsContext* localContext = nullptr;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;

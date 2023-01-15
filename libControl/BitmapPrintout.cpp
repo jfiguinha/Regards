@@ -125,7 +125,6 @@ void CBitmapPrintout::DrawPicture(const int& pageNum)
 	wxImage _local = image->GetwxImage();
 	dc->DrawBitmap(_local, 0, 0);
 	delete image;
-
 }
 
 

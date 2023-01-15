@@ -28,6 +28,7 @@ namespace Regards
 			};
 			bool RenderTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source, IBitmapDisplay* bmpViewer,
 			                   CRenderBitmapOpenGL* renderOpenGL, const float& scale_factor, const int& etape) override;
+
 		private:
 			void GenerateTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source,
 			                     IBitmapDisplay* bmpViewer);

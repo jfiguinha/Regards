@@ -8,27 +8,25 @@
 
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CMapDialogBox;
+
+	class CMapSelect
 	{
-		class CMapDialogBox;
+	public:
+		CMapSelect();
+		~CMapSelect();
 
-		class CMapSelect
-		{
-		public:
-			CMapSelect();
-			~CMapSelect();
+		wxString SelectNewMapLocalisation(wxWindow* window, const wxString& url);
+		wxString GetLatitude();
+		wxString GetLongitude();
+		double GetLatitudeNumber();
+		double GetLongitudeNumber();
 
-			wxString SelectNewMapLocalisation(wxWindow* window, const wxString& url);
-			wxString GetLatitude();
-			wxString GetLongitude();
-			double GetLatitudeNumber();
-			double GetLongitudeNumber();
-		private:
-			CMapDialogBox* mapDialog = nullptr;
-			wxString latitude;
-			wxString longitude;
-		};
-	}
+	private:
+		CMapDialogBox* mapDialog = nullptr;
+		wxString latitude;
+		wxString longitude;
+	};
 }

@@ -2,19 +2,16 @@
 #include <ToolbarWindow.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Scanner
 {
-	namespace Scanner
+	class CValidationToolbar : public CToolbarWindow
 	{
-		class CValidationToolbar : public CToolbarWindow
-		{
-		public:
-			CValidationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
-			~CValidationToolbar() override;
+	public:
+		CValidationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+		~CValidationToolbar() override;
 
-		private:
-			void EventManager(const int& id) override;
-			wxWindow* parent;
-		};
-	}
+	private:
+		void EventManager(const int& id) override;
+		wxWindow* parent;
+	};
 }

@@ -103,7 +103,7 @@ int CffmpegToBitmap::GetThumbnailHeight()
 	return videoFrameOutputHeight;
 }
 
-int CffmpegToBitmap::GetConvert(cv::Mat & bitmap, AVFrame* src_frame, const int& thumbnailWidth,
+int CffmpegToBitmap::GetConvert(cv::Mat& bitmap, AVFrame* src_frame, const int& thumbnailWidth,
                                 const int& thumbnailHeight)
 {
 	if (!bitmap.empty())
@@ -115,7 +115,7 @@ int CffmpegToBitmap::GetConvert(cv::Mat & bitmap, AVFrame* src_frame, const int&
 		videoFrameOutputWidth = thumbnailWidth;
 		videoFrameOutputHeight = thumbnailHeight;
 		sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-			        &convertedFrameBuffer, &linesize);
+		          &convertedFrameBuffer, &linesize);
 
 		return 1;
 	}
@@ -125,7 +125,7 @@ int CffmpegToBitmap::GetConvert(cv::Mat & bitmap, AVFrame* src_frame, const int&
 cv::Mat CffmpegToBitmap::GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat bitmap;
-	if(thumbnailWidth != 0 && thumbnailHeight != 0)
+	if (thumbnailWidth != 0 && thumbnailHeight != 0)
 		bitmap = cv::Mat(thumbnailHeight, thumbnailWidth, CV_8UC4);
 	else
 		bitmap = cv::Mat(src_frame->height, src_frame->width, CV_8UC4);
@@ -153,6 +153,6 @@ cv::Mat CffmpegToBitmap::GetConvert(AVFrame* src_frame)
 	int linesize = src_frame->width * 4;
 
 	sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-		&convertedFrameBuffer, &linesize);
+	          &convertedFrameBuffer, &linesize);
 	return bitmap;
 }

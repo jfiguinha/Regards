@@ -2,13 +2,13 @@
 #define CONFIGREGARDS_H
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(ConfigRegards)
-	#include <wx/stattext.h>
-	#include <wx/radiobox.h>
-	#include <wx/statbox.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(ConfigRegards)
+#include <wx/stattext.h>
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(ConfigRegards)
 #include <wx/spinctrl.h>
@@ -46,7 +46,7 @@ public:
 	wxRadioBox* rbAutoRotate;
 	wxRadioBox* rbContrastCorrection;
 
-	
+
 	wxRadioBox* rbUSESUPERDNN;
 	wxComboBox* cbUSESUPERDNNFILTER;
 
@@ -54,7 +54,7 @@ public:
 	wxComboBox* rbInterpolation;
 
 
-    wxRadioBox* rbOpenCLOpenGLInterop;
+	wxRadioBox* rbOpenCLOpenGLInterop;
 	wxComboBox* rbVideoEncoderHard;
 	wxComboBox* rbVideoDecoderHard;
 
@@ -85,7 +85,7 @@ private:
 	void OnBtnCancelClick(wxCommandEvent& event);
 	//*)
 	bool isOk;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

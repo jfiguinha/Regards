@@ -452,7 +452,8 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
 				tree_element_texte->SetVisible(is_visible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
-				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte,
+				                                   data,
 				                                   false);
 			}
 
@@ -472,7 +473,7 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				else
 				{
 					tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					                                      data->GetValue());
+					                                        data->GetValue());
 					tree_element_texte->SetVisible(is_visible);
 					posElement = CreatePositionElement(xPos, yPos, nbRow, 1, tree_element_texte->GetWidth(),
 					                                   tree_element_texte->GetHeight(), ELEMENT_TEXTEVALUE,

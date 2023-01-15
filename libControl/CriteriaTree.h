@@ -33,6 +33,7 @@ namespace Regards
 			                    const wxString& key) override
 			{
 			};
+
 		private:
 			void MouseOver(wxDC* dc, CPositionElement* element, const int& x, const int& y, const int& posLargeur,
 			               const int& posHauteur, bool& update) override;

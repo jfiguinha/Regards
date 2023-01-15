@@ -33,7 +33,7 @@ private:
 	//(*Handlers(PertinenceValue)
 	//*)
 	bool isOk;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

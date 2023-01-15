@@ -27,6 +27,7 @@ namespace Regards
 			void Resize() override;
 			wxString GetFilename();
 			void SetFile(const wxString& filename);
+
 		private:
 			CScrollbarWnd* thumbnailEffectScroll;
 			CThumbnailViewerEffect* thumbnailEffect;

@@ -14,6 +14,7 @@ public:
 	void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
 	void Init(CImageLoadingFormat* bitmap);
 	wxString GetModificationLibelle(const unsigned int& numModification);
+
 private:
 	wxString GetFilenameWithModification(const unsigned int& numModification);
 	void EraseData();

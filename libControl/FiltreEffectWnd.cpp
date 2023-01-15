@@ -41,16 +41,15 @@ CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
 
 	if (effectParameter != nullptr)
 		delete(effectParameter);
-
 }
 
 void CFiltreEffectScrollWnd::OnFiltreCancel()
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
 	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
@@ -70,10 +69,10 @@ void CFiltreEffectScrollWnd::OnFiltreOk(const int& numFiltre, CInfoEffectWnd* hi
 {
 	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 	if (filtreEffectOld != nullptr && bitmapViewer != nullptr)
 	{
@@ -122,10 +121,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	if (!isVideo)
 	{
 		CBitmapWndViewer* bitmapViewer = nullptr;
-		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
+		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(bitmapWindowId));
 		if (bitmapWindow != nullptr)
 		{
-			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+			bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		}
 
 		if (bitmapViewer != nullptr)
@@ -160,14 +159,14 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						if (effectParameter != nullptr)
 							delete(effectParameter);
 
-	
+
 						effectParameter = CFiltreData::GetEffectParameter(numItem);
 
 
 						bitmapViewer->SetBitmapPreviewEffect(numItem);
 
 						bitmap = bitmapViewer->GetBitmap(true);
-						
+
 						filtreEffect->Init(effectParameter, bitmap->GetOpenCVPicture(), filename, numItem);
 
 						if (previewWindow != nullptr)
@@ -202,7 +201,6 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						historyEffectWnd->AddModification(imageLoad, CFiltreData::GetFilterLabel(numItem));
 						if (imageLoad != nullptr)
 							bitmapViewer->SetBitmap(imageLoad, true);
-
 					}
 					break;
 				}

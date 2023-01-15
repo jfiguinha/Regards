@@ -25,8 +25,7 @@
 using namespace std;
 
 
-extern "C"
-{
+extern "C" {
 #include "libavutil/avstring.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/pixdesc.h"
@@ -148,10 +147,8 @@ extern "C"
 class CFFmfcPimpl
 {
 public:
-
-
-
-	enum HWAccelID {
+	enum HWAccelID
+	{
 		HWACCEL_NONE = 0,
 		HWACCEL_AUTO,
 		HWACCEL_GENERIC,
@@ -159,20 +156,23 @@ public:
 		HWACCEL_QSV,
 	};
 
-	typedef struct HWAccel {
+	using HWAccel = struct HWAccel
+	{
 		const char* name;
 		int (*init)(AVCodecContext* s);
 		enum HWAccelID id;
 		enum AVPixelFormat pix_fmt;
-	} HWAccel;
+	};
 
-	typedef struct HWDevice {
+	using HWDevice = struct HWDevice
+	{
 		const char* name;
 		enum AVHWDeviceType type;
 		AVBufferRef* device_ref;
-	} HWDevice;
+	};
 
-	typedef struct PacketQueue {
+	using PacketQueue = struct PacketQueue
+	{
 		AVFifoBuffer* pkt_list;
 		int nb_packets;
 		int size;
@@ -181,43 +181,56 @@ public:
 		int serial;
 		SDL_mutex* mutex;
 		SDL_cond* cond;
-	} PacketQueue;
+	};
 
-	typedef struct VideoPicture {
-		double pts;                                  ///< presentation time stamp for this picture
-		int64_t pos;                                 ///< byte position in file
+	using VideoPicture = struct VideoPicture
+	{
+		double pts; ///< presentation time stamp for this picture
+		int64_t pos; ///< byte position in file
 		int skip;
 		int width, height; /* source height & width */
 		AVRational sample_aspect_ratio;
 		int allocated;
 		int reallocate;
-	} VideoPicture;
+	};
 
-	typedef struct SubPicture {
+	using SubPicture = struct SubPicture
+	{
 		double pts; /* presentation time stamp for this picture */
 		AVSubtitle sub;
-	} SubPicture;
+	};
 
-	typedef struct AudioParams {
+	using AudioParams = struct AudioParams
+	{
 		int freq;
 		int channels;
 		int64_t channel_layout;
 		enum AVSampleFormat fmt;
 		int frame_size;
 		int bytes_per_sec;
-	} AudioParams;
+	};
 
-	enum {
-		AV_SYNC_AUDIO_MASTER, /* default choice */
+	enum
+	{
+		AV_SYNC_AUDIO_MASTER,
+		/* default choice */
 		AV_SYNC_VIDEO_MASTER,
-		AV_SYNC_EXTERNAL_CLOCK, /* synchronize to an external clock */
-	};
-	//ÊÓÆµÏÔÊ¾·½Ê½
-	enum V_Show_Mode {
-		SHOW_MODE_YUV = 0, SHOW_MODE_Y, SHOW_MODE_U, SHOW_MODE_V, SHOW_MODE_RGB24
+		AV_SYNC_EXTERNAL_CLOCK,
+		/* synchronize to an external clock */
 	};
 
-	typedef struct Decoder {
+	//ÊÓÆµÏÔÊ¾·½Ê½
+	enum V_Show_Mode
+	{
+		SHOW_MODE_YUV = 0,
+		SHOW_MODE_Y,
+		SHOW_MODE_U,
+		SHOW_MODE_V,
+		SHOW_MODE_RGB24
+	};
+
+	using Decoder = struct Decoder
+	{
 		AVPacket* pkt;
 		PacketQueue* queue;
 		AVCodecContext* avctx;
@@ -230,16 +243,17 @@ public:
 		int64_t next_pts;
 		AVRational next_pts_tb;
 		SDL_Thread* decoder_tid;
-	} Decoder;
+	};
 
 	/* Common struct for handling all types of decoded data and allocated render buffers. */
-	typedef struct Frame {
+	using Frame = struct Frame
+	{
 		AVFrame* frame;
 		AVSubtitle sub;
 		int serial;
-		double pts;           /* presentation timestamp for the frame */
-		double duration;      /* estimated duration of the frame */
-		int64_t pos;          /* byte position of the frame in the input file */
+		double pts; /* presentation timestamp for the frame */
+		double duration; /* estimated duration of the frame */
+		int64_t pos; /* byte position of the frame in the input file */
 		int width;
 		int height;
 		int format;
@@ -247,20 +261,22 @@ public:
 		AVRational sample_aspect_ratio;
 		int uploaded;
 		int flip_v;
-	} Frame;
+	};
 
-	typedef struct Clock {
-		double pts;           /* clock base */
-		double pts_drift;     /* clock base minus time at which we updated the clock */
+	using Clock = struct Clock
+	{
+		double pts; /* clock base */
+		double pts_drift; /* clock base minus time at which we updated the clock */
 		double last_updated;
 		double speed;
-		int serial;           /* clock is based on a packet with this serial */
+		int serial; /* clock is based on a packet with this serial */
 		int paused;
-		int* queue_serial;    /* pointer to the current packet queue serial, used for obsolete clock detection */
-	} Clock;
+		int* queue_serial; /* pointer to the current packet queue serial, used for obsolete clock detection */
+	};
 
 
-	typedef struct FrameQueue {
+	using FrameQueue = struct FrameQueue
+	{
 		Frame queue[FRAME_QUEUE_SIZE];
 		int rindex;
 		int windex;
@@ -271,10 +287,10 @@ public:
 		SDL_mutex* mutex;
 		SDL_cond* cond;
 		PacketQueue* pktq;
-	} FrameQueue;
+	};
 
-	typedef struct VideoState {
-
+	using VideoState = struct VideoState
+	{
 		int refresh = 0;
 		std::thread* refresh_tid = nullptr;
 		SDL_Thread* read_tid;
@@ -325,17 +341,22 @@ public:
 		int audio_write_buf_size;
 		int audio_volume;
 		int muted;
-        AudioParams audio_src;
+		AudioParams audio_src;
 #if CONFIG_AVFILTER
         AudioParams audio_filter_src;
 #endif
-        AudioParams audio_tgt;
-        SwrContext* swr_ctx;
+		AudioParams audio_tgt;
+		SwrContext* swr_ctx;
 		int frame_drops_early;
 		int frame_drops_late;
 
-		enum ShowMode {
-			SHOW_MODE_NONE = -1, SHOW_MODE_VIDEO = 0, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB
+		enum ShowMode
+		{
+			SHOW_MODE_NONE = -1,
+			SHOW_MODE_VIDEO = 0,
+			SHOW_MODE_WAVES,
+			SHOW_MODE_RDFT,
+			SHOW_MODE_NB
 		} show_mode;
 
 		int16_t sample_array[SAMPLE_ARRAY_SIZE];
@@ -357,7 +378,8 @@ public:
 		int video_stream;
 		AVStream* video_st;
 		PacketQueue videoq;
-		double max_frame_duration;      // maximum duration of a frame - above this, we consider the jump a timestamp discontinuity
+		double max_frame_duration;
+		// maximum duration of a frame - above this, we consider the jump a timestamp discontinuity
 		struct SwsContext* img_convert_ctx;
 		struct SwsContext* sub_convert_ctx;
 		int eof;
@@ -369,7 +391,7 @@ public:
 
 		SDL_cond* continue_read_thread;
 
-		CFFmfcPimpl * _pimpl;
+		CFFmfcPimpl* _pimpl;
 
 
 		/* hwaccel options */
@@ -381,27 +403,32 @@ public:
 		/* hwaccel context */
 		void* hwaccel_ctx;
 		void (*hwaccel_uninit)(AVCodecContext* s);
-		int  (*hwaccel_get_buffer)(AVCodecContext* s, AVFrame* frame, int flags);
-		int  (*hwaccel_retrieve_data)(AVCodecContext* s, AVFrame* frame);
+		int (*hwaccel_get_buffer)(AVCodecContext* s, AVFrame* frame, int flags);
+		int (*hwaccel_retrieve_data)(AVCodecContext* s, AVFrame* frame);
 		AVPixelFormat hwaccel_pix_fmt;
 		AVPixelFormat hwaccel_retrieved_pix_fmt;
 		AVBufferRef* hw_frames_ctx;
 		AVCodecContext* avctx;
 		AVCodec* codec;
-	} VideoState;
-
-
-
-
-	enum ShowMode {
-		SHOW_MODE_NONE = -1, SHOW_MODE_VIDEO = 0, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB
 	};
+
+
+	enum ShowMode
+	{
+		SHOW_MODE_NONE = -1,
+		SHOW_MODE_VIDEO = 0,
+		SHOW_MODE_WAVES,
+		SHOW_MODE_RDFT,
+		SHOW_MODE_NB
+	};
+
 	//Ö¸ÏòMFC´°¿ÚµÄÖ¸Õë
 
-	typedef struct MyAVPacketList {
+	using MyAVPacketList = struct MyAVPacketList
+	{
 		AVPacket* pkt;
 		int serial;
-	} MyAVPacketList;
+	};
 
 
 	CFFmfcPimpl()
@@ -410,7 +437,6 @@ public:
 
 	~CFFmfcPimpl()
 	{
-
 	}
 
 
@@ -444,7 +470,7 @@ public:
 
 	void frame_queue_next(FrameQueue* f);
 
-	double  get_rotation(AVStream* st);
+	double get_rotation(AVStream* st);
 
 	/* return the number of undisplayed frames in the queue */
 	int frame_queue_nb_remaining(FrameQueue* f);
@@ -455,27 +481,27 @@ public:
 	int decoder_start(Decoder* d, int (*fn)(void*), const char* thread_name, void* arg);
 
 	int get_master_sync_type(VideoState* is);
-	
-	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
+
+	int hw_decoder_init(AVCodecContext* ctx, enum AVHWDeviceType type);
 
 	static int get_buffer(AVCodecContext* s, AVFrame* frame, int flags);
 	//Calcul du pourcentage
 	void StopStream();
 	int percentageToDb(int p, int maxValue);
-	int packet_queue_put_private(PacketQueue *q, AVPacket *pkt);
-	int packet_queue_put(PacketQueue *q, AVPacket *pkt);
+	int packet_queue_put_private(PacketQueue* q, AVPacket* pkt);
+	int packet_queue_put(PacketQueue* q, AVPacket* pkt);
 
 	/* packet queue handling */
-	int packet_queue_init(PacketQueue *q);
-	void packet_queue_flush(PacketQueue *q);
+	int packet_queue_init(PacketQueue* q);
+	void packet_queue_flush(PacketQueue* q);
 
-	void packet_queue_destroy(PacketQueue *q);
+	void packet_queue_destroy(PacketQueue* q);
 
-	void packet_queue_abort(PacketQueue *q);
+	void packet_queue_abort(PacketQueue* q);
 
-	void packet_queue_start(PacketQueue *q);
+	void packet_queue_start(PacketQueue* q);
 
-	enum AVPixelFormat find_fmt_by_hw_type(const enum AVHWDeviceType type);
+	enum AVPixelFormat find_fmt_by_hw_type(enum AVHWDeviceType type);
 
 	int packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index);
 
@@ -486,16 +512,16 @@ public:
 	/* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
 	int packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int* serial);
 
-	static void free_subpicture(SubPicture *sp);
+	static void free_subpicture(SubPicture* sp);
 
-	void stream_close(VideoState *is);
+	void stream_close(VideoState* is);
 
-	void do_exit(VideoState *is);
+	void do_exit(VideoState* is);
 
 	/* display the current picture, if any */
-	void video_display(VideoState *is);
+	void video_display(VideoState* is);
 
-	void CopyFrameToDest(AVFrame * frame);
+	void CopyFrameToDest(AVFrame* frame);
 
 	/* get the current audio clock value */
 	//double get_audio_clock(VideoState *is);
@@ -507,20 +533,20 @@ public:
 	//double get_external_clock(VideoState *is);
 
 	/* get the current master clock value */
-	double get_master_clock(VideoState *is);
+	double get_master_clock(VideoState* is);
 	/* seek in the stream */
-	void stream_seek(VideoState *is, int64_t pos, int64_t rel, int seek_by_bytes);
+	void stream_seek(VideoState* is, int64_t pos, int64_t rel, int seek_by_bytes);
 
-	VideoState * stream_open(const char *filename, AVInputFormat *iformat);
+	VideoState* stream_open(const char* filename, AVInputFormat* iformat);
 
 	/* pause or resume the video */
-	void stream_toggle_pause(VideoState *is);
+	void stream_toggle_pause(VideoState* is);
 
-	void toggle_pause(VideoState *is);
+	void toggle_pause(VideoState* is);
 
-	void toggle_play(VideoState *is);
+	void toggle_play(VideoState* is);
 
-	double compute_target_delay(double delay, VideoState *is);
+	double compute_target_delay(double delay, VideoState* is);
 
 	void check_external_clock_speed(VideoState* is);
 
@@ -545,57 +571,58 @@ public:
 
 	//½âÂëÊÓÆµ
 	static int audio_thread(void* arg);
-	static int video_thread(void *arg);
-	static int subtitle_thread(void *arg);
+	static int video_thread(void* arg);
+	static int subtitle_thread(void* arg);
 	//static int refresh_thread(void *opaque);
 	/* prepare a new audio buffer */
-	static void sdl_audio_callback(void *opaque, Uint8 *stream, int len);
+	static void sdl_audio_callback(void* opaque, Uint8* stream, int len);
 
 	//²¥·ÅÒôÆµµÄÊ±ºòSDLµÄÏÔÊ¾
 	/* copy samples for viewing in editor window */
-	void update_sample_display(VideoState *is, short *samples, int samples_size);
+	void update_sample_display(VideoState* is, short* samples, int samples_size);
 
 	/* return the wanted number of samples to get better sync if sync_type is video
 	* or external master clock */
-	int synchronize_audio(VideoState *is, int nb_samples);
+	int synchronize_audio(VideoState* is, int nb_samples);
 
 	/* decode one audio frame and returns its uncompressed size */
-	int audio_decode_frame(VideoState *is);
-	   
-	int audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, AudioParams *audio_hw_params);
+	int audio_decode_frame(VideoState* is);
+
+	int audio_open(void* opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate,
+	               AudioParams* audio_hw_params);
 
 #ifndef CMDUTILS
 
-	int check_stream_specifier(AVFormatContext *s, AVStream *st, const char *spec);
+	int check_stream_specifier(AVFormatContext* s, AVStream* st, const char* spec);
 
-	AVDictionary *filter_codec_opts(AVDictionary *opts, enum AVCodecID codec_id,
-		AVFormatContext *s, AVStream *st, AVCodec *codec);
+	AVDictionary* filter_codec_opts(AVDictionary* opts, enum AVCodecID codec_id,
+	                                AVFormatContext* s, AVStream* st, AVCodec* codec);
 
 	void uninit_opts(void);
 
-	AVDictionary **setup_find_stream_info_opts(AVFormatContext *s,
-		AVDictionary *codec_opts);
-	
+	AVDictionary** setup_find_stream_info_opts(AVFormatContext* s,
+	                                           AVDictionary* codec_opts);
+
 #endif
 
-	const char *getExt(const char *fspec);
+	const char* getExt(const char* fspec);
 
 	/* open a given stream. Return 0 if OK */
 	//´ò¿ªÒ»¸öStream£¬ÊÓÆµ»òÒôÆµ
-	int stream_component_open(VideoState *is, int stream_index);
+	int stream_component_open(VideoState* is, int stream_index);
 
-	void stream_component_close(VideoState *is, int stream_index);
+	void stream_component_close(VideoState* is, int stream_index);
 
-	static int decode_interrupt_cb(void *ctx);
+	static int decode_interrupt_cb(void* ctx);
 
-	int is_realtime(AVFormatContext *s, char * filename);
-	
+	int is_realtime(AVFormatContext* s, char* filename);
+
 	/* this thread gets the stream from the disk or the network */
 	//½âÂëÏß³Ì£¬»ñµÃÊÓÒôÆµPacket²¢·ÅÈë¶ÓÁÐ
-	static int read_thread(void *arg);
+	static int read_thread(void* arg);
 
 	//ÒÔÏÂ¼¸¸öº¯Êý¶¼ÊÇ´¦Àíevent_loop()ÖÐµÄ¸÷ÖÖ²Ù×÷µÄ
-	void stream_cycle_channel(VideoState *is, int codec_type);
+	void stream_cycle_channel(VideoState* is, int codec_type);
 
 	int decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame, AVSubtitle* sub);
 	int decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond);
@@ -603,13 +630,13 @@ public:
 	//-------------------------------------------------------------------------------
 	//
 	//-------------------------------------------------------------------------------
-	void stream_change_stream(VideoState *is, int codec_type, int newIndex);
+	void stream_change_stream(VideoState* is, int codec_type, int newIndex);
 
-	void step_to_next_frame(VideoState *is);
+	void step_to_next_frame(VideoState* is);
 
-	AVFrame * CopyFrame(AVFrame * frame);
+	AVFrame* CopyFrame(AVFrame* frame);
 
-	AVBufferRef* hw_device_ctx = NULL;
+	AVBufferRef* hw_device_ctx = nullptr;
 	static enum AVPixelFormat hw_pix_fmt;
 
 	//SOUND Volume
@@ -618,17 +645,17 @@ public:
 	int volume = 100;
 	SDL_AudioDeviceID audio_dev;
 	//CffplaymfcDlg * dlg;
-	static CVideoControlInterface * dlg;
-	VideoState *g_is = nullptr;
+	static CVideoControlInterface* dlg;
+	VideoState* g_is = nullptr;
 	/* options specified by the user */
-	AVInputFormat *file_iformat = nullptr;
+	AVInputFormat* file_iformat = nullptr;
 
 	int screen_width = 0;
 	int screen_height = 0;
 	int audio_disable = 0;
 	int disable_framedelay = 0;
 	int video_disable = 0;
-	int wanted_stream[AVMEDIA_TYPE_NB] = { -1,-1,0,-1,0 };
+	int wanted_stream[AVMEDIA_TYPE_NB] = {-1, -1, 0, -1, 0};
 	int seek_by_bytes = 0;
 	int display_disable = 0;
 	int show_status = 0;
@@ -653,18 +680,17 @@ public:
 	int framedrop = -1;
 	int infinite_buffer = -1;
 	//enum ShowMode show_mode = SHOW_MODE_NONE;
-	const char *audio_codec_name = 0;
-	const char *subtitle_codec_name = 0;
-	const char *video_codec_name = 0;
+	const char* audio_codec_name = nullptr;
+	const char* subtitle_codec_name = nullptr;
+	const char* video_codec_name = nullptr;
 	int rdftspeed = 20;
 
-	wxWindow * parent = nullptr;
+	wxWindow* parent = nullptr;
 	/* current context */
 	int64_t audio_callback_time = 0;
 
 	AVPacket flush_pkt;
 
-	
 
 	int seek_bar_pos = 0;
 	int64_t time_position = 0;
@@ -681,9 +707,9 @@ public:
 	int packet_index = 0;
 	int videoOutputMode = 24;
 	bool first = true;
-	AVFrame * dst = av_frame_alloc();
+	AVFrame* dst = av_frame_alloc();
 	SwsContext* scaleContext = nullptr;
-       
+
 #ifdef WIN32
 	wxString acceleratorHardware = "d3d11va";
 #elif defined(__APPLE__)
@@ -698,14 +724,15 @@ public:
 #ifndef CMDUTILS
 	AVDictionary *format_opts = nullptr, *codec_opts = nullptr;
 #endif
-	const char* wanted_stream_spec[AVMEDIA_TYPE_NB] = { 0 };
+	const char* wanted_stream_spec[AVMEDIA_TYPE_NB] = {nullptr};
 
 
-//------------------------------------------------------------------------
-//Hardware Accelerator
-//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	//Hardware Accelerator
+	//------------------------------------------------------------------------
 
 	static int hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input);
 	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
-	bool TestHardware(const wxString& acceleratorHardware, AVHWDeviceType& type, AVCodecContext* avct, AVCodec* codec, AVDictionary * & opts, VideoState* is, AVStream* video);
+	bool TestHardware(const wxString& acceleratorHardware, AVHWDeviceType& type, AVCodecContext* avct, AVCodec* codec,
+	                  AVDictionary* & opts, VideoState* is, AVStream* video);
 };

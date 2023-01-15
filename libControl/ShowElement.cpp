@@ -49,7 +49,6 @@ public:
 
 	~CThreadRotate()
 	{
-
 	};
 
 	bool isReady;
@@ -59,7 +58,6 @@ public:
 	std::thread* thread;
 	wxWindow* mainWindow;
 };
-
 
 
 void CShowElement::SetFullscreen(const bool& fullscreen)
@@ -72,21 +70,21 @@ void CShowElement::UpdateScreenRatio()
 {
 	//if (!isVideo)
 	//{
-		scrollbar->UpdateScreenRatio();
-		pictureToolbar->UpdateScreenRatio();
-		bitmapWindowRender->UpdateScreenRatio();
+	scrollbar->UpdateScreenRatio();
+	pictureToolbar->UpdateScreenRatio();
+	bitmapWindowRender->UpdateScreenRatio();
 	//}
 	//else
 	//{
-		slideToolbar->UpdateScreenRatio();
-		videoSlider->UpdateScreenRatio();
+	slideToolbar->UpdateScreenRatio();
+	videoSlider->UpdateScreenRatio();
 	//}
 	this->Resize();
 }
 
 void CShowElement::ReloadResource()
 {
-	if(!isVideo)
+	if (!isVideo)
 		bitmapWindow->ReloadResource();
 	else
 		videoWindow->ReloadResource();
@@ -94,8 +92,8 @@ void CShowElement::ReloadResource()
 
 
 CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-                         wxWindowID mainViewerId, CBitmapInterface* bitmapInterface, CThemeParam* config,
-                         const bool& exportPicture)
+                           wxWindowID mainViewerId, CBitmapInterface* bitmapInterface, CThemeParam* config,
+                           const bool& exportPicture)
 	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
@@ -117,7 +115,9 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	CThemeScrollBar themeScroll;
 	CThemeToolbar themeToolbar;
 	std::vector<int> value = {
-		1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
+		1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200,
+		1600
+	};
 
 	this->bitmapInterface = bitmapInterface;
 
@@ -452,12 +452,10 @@ void CShowElement::TransitionEnd()
 
 void CShowElement::OnIdle(wxIdleEvent& evt)
 {
+	if (refreshSlider && videoSlider->IsShown())
+		videoSlider->Refresh();
 
-    if (refreshSlider && videoSlider->IsShown())
-        videoSlider->Refresh();
-        
-    refreshSlider = false;
-
+	refreshSlider = false;
 }
 
 //---------------------------------------------------------------------------------------
@@ -517,7 +515,7 @@ void CShowElement::IsNextPicture(const bool& value)
 	bitmapWindow->SetNextPictureMove(value);
 }
 
-int CShowElement::GetAngleAndFlipFromExif(const int &exif, int& angle, int& flipH, int& flipV)
+int CShowElement::GetAngleAndFlipFromExif(const int& exif, int& angle, int& flipH, int& flipV)
 {
 	switch (exif)
 	{
@@ -604,7 +602,6 @@ int CShowElement::GetAngleAndFlipFromExif(const int &exif, int& angle, int& flip
 	}
 
 
-
 	return 0;
 }
 
@@ -641,7 +638,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		}
 	}
 	filename = bitmap->GetFilename();
-	
+
 	if (bitmapWindow != nullptr)
 	{
 		int angle = 0;
@@ -652,9 +649,8 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		int exif = sqlPhotos.GetPhotoExif(filename);
 
 
-   		if (!isThumbnail && exif > 0)
+		if (!isThumbnail && exif > 0)
 		{
-
 			CSqlPhotos::GetAngleAndFlip(exif, angle, flipH, flipV);
 			//bitmap->SetOrientation(exif);
 		}
@@ -662,10 +658,10 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		bool firstPicture = false;
 		if (!bitmapWindow->IsPictureLoad())
 			firstPicture = true;
-		
+
 		//bitmapWindow->FixArrowNavigation(true);
 		bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
-		
+
 
 		if (isDiaporama)
 			numEffect = configRegards->GetDiaporamaTransitionEffect();
@@ -675,7 +671,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 
 		if (numEffect != 0)
 		{
-			if(firstPicture)
+			if (firstPicture)
 				bitmap->Flip();
 
 			if (isThumbnail || isDiaporama)
@@ -702,7 +698,6 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 					bitmapWindow->SetTransitionBitmap(bitmap);
 					tempImage = nullptr;
 				}
-
 			}
 		}
 		else
@@ -799,7 +794,6 @@ void CShowElement::FlipHorizontal()
 }
 
 
-
 void CShowElement::OnValueShrinkChange(wxCommandEvent& event)
 {
 	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
@@ -809,7 +803,6 @@ bool CShowElement::IsPause()
 {
 	return videoWindow->IsPause();
 }
-
 
 
 void CShowElement::OnClose(wxCommandEvent& event)
@@ -842,7 +835,7 @@ void CShowElement::OnSave(wxCommandEvent& event)
 	if (videoWindow != nullptr)
 	{
 		bool isFromBuffer = false;
-		cv::Mat bitmap= videoWindow->SavePicture(isFromBuffer);
+		cv::Mat bitmap = videoWindow->SavePicture(isFromBuffer);
 		auto imageLoading = new CImageLoadingFormat();
 		/*
 		if (!isFromBuffer)
@@ -870,7 +863,6 @@ void CShowElement::SavePicture()
 		if (bitmapWindow != nullptr)
 			bitmapWindow->SavePicture();
 	}
-
 }
 
 void CShowElement::OnShrink(wxCommandEvent& event)
@@ -962,21 +954,20 @@ void CShowElement::ClickButton(const int& id)
 		videoWindow->ChangeVideoFormat();
 		this->Resize();
 		break;
-	default:;
-		/*
-	case VOLUMEUPBUTTONID:
-		videoWindow->VolumeUp();
-		videoSlider->SetVolumePos(videoWindow->GetVolume());
-		break;
-	case VOLUMEDOWNBUTTONID:
-		videoWindow->VolumeDown();
-		videoSlider->SetVolumePos(videoWindow->GetVolume());
-		break;
-		*/
+	default: ;
+	/*
+case VOLUMEUPBUTTONID:
+	videoWindow->VolumeUp();
+	videoSlider->SetVolumePos(videoWindow->GetVolume());
+	break;
+case VOLUMEDOWNBUTTONID:
+	videoWindow->VolumeDown();
+	videoSlider->SetVolumePos(videoWindow->GetVolume());
+	break;
+	*/
 	}
 
 	refreshSlider = true;
-
 }
 
 CShowElement::~CShowElement()
@@ -1005,7 +996,7 @@ void CShowElement::SetDiaporamaMode()
 void CShowElement::SetNormalMode()
 {
 	isDiaporama = false;
-	if(isVideo)
+	if (isVideo)
 		videoWindow->DiaporamaMode(false);
 	else
 		bitmapWindow->SetNormalMode();
@@ -1013,7 +1004,7 @@ void CShowElement::SetNormalMode()
 }
 
 void CShowElement::SetStreamInfo(vector<CStreamInfo>& listAudio, vector<CStreamInfo>& listVideo,
-	vector<CStreamInfo>& listSubtitle)
+                                 vector<CStreamInfo>& listSubtitle)
 {
 	listStream.clear();
 	for (int i = 0; i < listAudio.size(); i++)
@@ -1072,7 +1063,6 @@ void CShowElement::OnVideoStop()
 	}
 
 	refreshSlider = true;
-
 }
 
 
@@ -1115,9 +1105,7 @@ void CShowElement::OnAfterOpenVideo()
 	ShowSlider(false);
 	PlayVideo();
 	refreshSlider = true;
-
 }
-
 
 
 void CShowElement::OnPositionVideo(const int64_t& position)
@@ -1130,16 +1118,16 @@ void CShowElement::OnPositionVideo(const int64_t& position)
 		int videoPos = position / 1000;
 		//if (videoPos != videoPosOld)
 		//{
-			wxWindow* viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-			if (viewerWindow != nullptr)
-			{
-				wxCommandEvent event(VIDEO_UPDATE_ID);
-				event.SetExtraLong(videoPos);
-				viewerWindow->GetEventHandler()->AddPendingEvent(event);
-			}
-			videoPosOld = videoPos;
-            
-        refreshSlider = true;
+		wxWindow* viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (viewerWindow != nullptr)
+		{
+			wxCommandEvent event(VIDEO_UPDATE_ID);
+			event.SetExtraLong(videoPos);
+			viewerWindow->GetEventHandler()->AddPendingEvent(event);
+		}
+		videoPosOld = videoPos;
+
+		refreshSlider = true;
 	}
 }
 
@@ -1153,7 +1141,6 @@ void CShowElement::SetPosition(const int64_t& timePosition)
 		evt.SetExtraLong(timePosition);
 		bitmapWindowRender->GetEventHandler()->AddPendingEvent(evt);
 	}
-
 }
 
 void CShowElement::SetTimePosition(const int64_t& timePosition)
@@ -1186,7 +1173,6 @@ void CShowElement::InitControl()
 
 bool CShowElement::SetVideo(const wxString& filename, const int& rotation, const bool& play)
 {
-
 	isVideo = true;
 	pictureToolbar->Show(false);
 	slideToolbar->Show(true);
@@ -1207,7 +1193,6 @@ bool CShowElement::SetVideo(const wxString& filename, const int& rotation, const
 }
 
 
-
 void CShowElement::StopVideo(wxString photoName)
 {
 	play = false;
@@ -1215,7 +1200,6 @@ void CShowElement::StopVideo(wxString photoName)
 	videoSlider->SetPastSecondTime(0);
 	videoWindow->OnStop(photoName);
 	refreshSlider = true;
-
 }
 
 void CShowElement::ShowSliderToolbar(const bool& show)
@@ -1238,7 +1222,6 @@ void CShowElement::ShowSlider(const bool& show)
 	if (play)
 		ShowSliderToolbar(true);
 }
-
 
 
 void CShowElement::PlayVideo()
@@ -1274,7 +1257,7 @@ void CShowElement::HideToolbar()
 				slideToolbar->Show(false);
 		}
 	}
-		
+
 	showToolbar = false;
 	if (pictureToolbar != nullptr)
 	{
@@ -1302,12 +1285,8 @@ bool CShowElement::IsToolbarMouseOver()
 
 		return false;
 	}
-	else
-	{
+	if (pictureToolbar != nullptr)
+		return pictureToolbar->IsMouseOver();
 
-		if (pictureToolbar != nullptr)
-			return pictureToolbar->IsMouseOver();
-
-		return false;
-	}
+	return false;
 }

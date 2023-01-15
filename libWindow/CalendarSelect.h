@@ -8,24 +8,21 @@
 
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CCalendarSelect
 	{
-		class CCalendarSelect
-		{
-		public:
-			CCalendarSelect();
-			~CCalendarSelect();
+	public:
+		CCalendarSelect();
+		~CCalendarSelect();
 
-			bool SelectNewDate(wxWindow* window, const wxDateTime& dateSelect);
-			bool SelectNewDate(wxWindow* window, const wxString& dataInfos);
-			wxDateTime GetSelectDate();
-			wxString GetSelectStringDate();
+		bool SelectNewDate(wxWindow* window, const wxDateTime& dateSelect);
+		bool SelectNewDate(wxWindow* window, const wxString& dataInfos);
+		wxDateTime GetSelectDate();
+		wxString GetSelectStringDate();
 
-		private:
-			wxDateTime dt;
-			wxString updateDate;
-		};
-	}
+	private:
+		wxDateTime dt;
+		wxString updateDate;
+	};
 }

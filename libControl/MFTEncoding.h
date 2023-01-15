@@ -21,18 +21,16 @@ class CRegardsBitmap;
 class CMFTEncoding
 {
 public:
-
-
 	CMFTEncoding();
 	~CMFTEncoding();
 	cv::Mat GetFrameOutput();
-	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption);
-	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
-
+	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time,
+	                   CVideoOptionCompress* videoCompressOption);
+	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress,
+	               CVideoOptionCompress* videoCompressOption);
 
 private:
 	CMFTEncodingPimp* pimpl = nullptr;
-	
 };
 
 #endif

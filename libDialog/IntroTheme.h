@@ -1,29 +1,26 @@
 #pragma once
 #include <ThemeParam.h>
 
-namespace Regards
+namespace Regards::Introduction
 {
-	namespace Introduction
+	class CIntroTheme final : public CThemeParam
 	{
-		class CIntroTheme final : public CThemeParam
+	public:
+		CIntroTheme();
+
+		~CIntroTheme() override;
+
+		void GetAboutTexteTheme(CThemeIntroLogo* theme) const;
+
+	private:
+		void LoadTheme() override
 		{
-		public:
-			CIntroTheme();
+		}
 
-			~CIntroTheme() override;
+		void SaveTheme() override
+		{
+		}
 
-			void GetAboutTexteTheme(CThemeIntroLogo* theme) const;
-
-		private:
-			void LoadTheme() override
-			{
-			}
-
-			void SaveTheme() override
-			{
-			}
-
-			CThemeIntroLogo themeIntroLogo;
-		};
-	}
+		CThemeIntroLogo themeIntroLogo;
+	};
 }

@@ -2,45 +2,41 @@
 #include "TreeElement.h"
 #include "TreeElementDelete.h"
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementTriangle : public CTreeElement
 	{
-		class CTreeElementTriangle : public CTreeElement
+	public:
+		CTreeElementTriangle();
+		~CTreeElementTriangle() override;
+
+		void SetOpen(const bool& open);
+		bool GetOpen();
+		void DrawElement(wxDC* deviceContextc, const int& x, const int& y) override;
+		void ClickElement(wxWindow* window, const int& x, const int& y) override;
+		void SetTheme(CThemeTreeTriangle* theme);
+
+		void SetZoneSize(const int& width, const int& height) override
 		{
-		public:
-			CTreeElementTriangle();
-			~CTreeElementTriangle() override;
+			themeTriangle.SetWidth(width);
+			themeTriangle.SetHeight(height);
+		}
 
-			void SetOpen(const bool& open);
-			bool GetOpen();
-			void DrawElement(wxDC* deviceContextc, const int& x, const int& y) override;
-			void ClickElement(wxWindow* window, const int& x, const int& y) override;
-			void SetTheme(CThemeTreeTriangle* theme);
+		int GetWidth() override
+		{
+			return themeTriangle.GetWidth();
+		}
 
-			void SetZoneSize(const int& width, const int& height) override
-			{
-				themeTriangle.SetWidth(width);
-				themeTriangle.SetHeight(height);
-			}
+		int GetHeight() override
+		{
+			return themeTriangle.GetHeight();
+		}
 
-			int GetWidth() override
-			{
-				return themeTriangle.GetWidth();
-			}
+	private:
+		void DrawTriangleClose(wxDC* deviceContext, const int& x, const int& y);
+		void DrawTriangleOpen(wxDC* deviceContext, const int& x, const int& y);
 
-			int GetHeight() override
-			{
-				return themeTriangle.GetHeight();
-			}
-
-
-		private:
-			void DrawTriangleClose(wxDC* deviceContext, const int& x, const int& y);
-			void DrawTriangleOpen(wxDC* deviceContext, const int& x, const int& y);
-
-			bool open;
-			CThemeTreeTriangle themeTriangle;
-		};
-	}
+		bool open;
+		CThemeTreeTriangle themeTriangle;
+	};
 }

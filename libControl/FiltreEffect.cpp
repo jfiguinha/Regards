@@ -65,7 +65,7 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, cv::Mat source, cons
 	if (!isVideo)
 	{
 		if (bitmapWindow != nullptr)
-			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+			bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
 	this->filtre = filtre;
@@ -112,7 +112,7 @@ void CFiltreEffect::UpdateMousePosition()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
 	if (bitmapViewer != nullptr)
@@ -128,7 +128,7 @@ CImageLoadingFormat* CFiltreEffect::ApplyEffect()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
 	if (filterEffect != nullptr)
@@ -259,7 +259,7 @@ void CFiltreEffect::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			                                                         data->GetKey());
 			treeElementTexte->SetVisible(isVisible);
 			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                   ELEMENT_TEXTE, treeElementTexte, data, false);
+			                                    ELEMENT_TEXTE, treeElementTexte, data, false);
 
 			int widthElementColumn1 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 
@@ -268,33 +268,37 @@ void CFiltreEffect::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				xPos = themeTree.GetMargeX();
 				if (data->GetType() == TYPE_SLIDE)
 				{
-					CTreeElementSlide* treeElementSlide = CreateSlideElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					                                                         data->GetInitValue(), data->GetVectorValue(),
-					                                                         data->GetExifKey());
+					CTreeElementSlide* treeElementSlide = CreateSlideElement(
+						themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+						data->GetInitValue(), data->GetVectorValue(),
+						data->GetExifKey());
 					treeElementSlide->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_SLIDE, treeElementSlide, data);
+					                                    themeTree.GetRowHeight(), ELEMENT_SLIDE, treeElementSlide,
+					                                    data);
 					widthElementColumn2 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 				}
 				else if (data->GetType() == TYPE_CHECKBOX)
 				{
-					CTreeElementCheckBox* treeElementCheckbox = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					CTreeElementCheckBox* treeElementCheckbox = CreateCheckBoxElement(
+						themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 						data->GetBoolValue());
 					treeElementCheckbox->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_CHECKBOX, treeElementCheckbox,
-					                                   data);
+					                                    themeTree.GetRowHeight(), ELEMENT_CHECKBOX, treeElementCheckbox,
+					                                    data);
 					widthElementColumn2 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 				}
 				else if (data->GetType() == TYPE_LISTBOX)
 				{
-					CTreeElementListBox* treeElementListbox = CreateListBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					CTreeElementListBox* treeElementListbox = CreateListBoxElement(
+						themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 						data->GetMetadataValue(), data->GetIndex(),
 						data->GetExifKey());
 					treeElementListbox->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_LISTBOX, treeElementListbox,
-					                                   data);
+					                                    themeTree.GetRowHeight(), ELEMENT_LISTBOX, treeElementListbox,
+					                                    data);
 					widthElementColumn2 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 				}
 			}
@@ -315,18 +319,19 @@ void CFiltreEffect::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		{
 			int xPos = widthPosition * profondeur;
 
-			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                                                  true);
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+				themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				true);
 			treeElementTriangle->SetVisible(isVisible);
 			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                   ELEMENT_TRIANGLE, treeElementTriangle, data);
+			                                    ELEMENT_TRIANGLE, treeElementTriangle, data);
 
 			xPos += pos_element->GetWidth() + themeTree.GetMargeX();
 			CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 			                                                         data->GetKey());
 			treeElementTexte->SetVisible(isVisible);
 			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                   ELEMENT_TEXTE, treeElementTexte, data, false);
+			                                    ELEMENT_TEXTE, treeElementTexte, data, false);
 
 
 			int widthElement = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
@@ -371,20 +376,21 @@ void CFiltreEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			}
 			else
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(),
-				                                   themeTree.GetRowHeight(), ELEMENT_TEXTE, treeElementTexte, data,
-				                                   false);
+				                                    themeTree.GetRowHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+				                                    false);
 			}
 			const int widthElementColumn1 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 
 			if (data->HasValue() > 0)
 			{
-				CTreeElementListBox * tree_element_list_box;
-				CTreeElementCheckBox * tree_element_check;
-				CTreeElementSlide * tree_element_slide;
+				CTreeElementListBox* tree_element_list_box;
+				CTreeElementCheckBox* tree_element_check;
+				CTreeElementSlide* tree_element_slide;
 				xPos = themeTree.GetMargeX();
 				if (data->GetType() == TYPE_SLIDE)
 					pos_element = GetElement(data, ELEMENT_SLIDE);
@@ -420,30 +426,32 @@ void CFiltreEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				else if (data->GetType() == TYPE_SLIDE)
 				{
 					tree_element_slide = CreateSlideElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					                                      data->GetInitValue(), data->GetVectorValue(),
-					                                      data->GetExifKey());
+					                                        data->GetInitValue(), data->GetVectorValue(),
+					                                        data->GetExifKey());
 					tree_element_slide->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_SLIDE, tree_element_slide, data);
+					                                    themeTree.GetRowHeight(), ELEMENT_SLIDE, tree_element_slide,
+					                                    data);
 				}
 				else if (data->GetType() == TYPE_CHECKBOX)
 				{
 					tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					                                         data->GetBoolValue());
+					                                           data->GetBoolValue());
 					tree_element_check->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_CHECKBOX, tree_element_check,
-					                                   data);
+					                                    themeTree.GetRowHeight(), ELEMENT_CHECKBOX, tree_element_check,
+					                                    data);
 				}
 				else if (data->GetType() == TYPE_LISTBOX)
 				{
 					tree_element_list_box = CreateListBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					                                          data->GetMetadataValue(), data->GetIndex(),
-					                                          data->GetExifKey());
+					                                             data->GetMetadataValue(), data->GetIndex(),
+					                                             data->GetExifKey());
 					tree_element_list_box->SetVisible(isVisible);
 					pos_element = CreatePositionElement(xPos, yPos, nbRow, 1, themeTree.GetRowWidth(),
-					                                   themeTree.GetRowHeight(), ELEMENT_LISTBOX, tree_element_list_box,
-					                                   data);
+					                                    themeTree.GetRowHeight(), ELEMENT_LISTBOX,
+					                                    tree_element_list_box,
+					                                    data);
 				}
 
 				widthElementColumn2 = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
@@ -479,8 +487,8 @@ void CFiltreEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
 				tree_element_triangle->SetVisible(isVisible);
 				pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(),
-				                                   themeTree.GetRowHeight(), ELEMENT_TRIANGLE, tree_element_triangle,
-				                                   data);
+				                                    themeTree.GetRowHeight(), ELEMENT_TRIANGLE, tree_element_triangle,
+				                                    data);
 			}
 
 			xPos += pos_element->GetWidth() + themeTree.GetMargeX();
@@ -498,8 +506,8 @@ void CFiltreEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				                                           data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(),
-				                                   themeTree.GetRowHeight(), ELEMENT_TEXTE, treeElementTexte, data,
-				                                   false);
+				                                    themeTree.GetRowHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+				                                    false);
 			}
 
 			const int widthElement = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
@@ -578,8 +586,9 @@ void CFiltreEffect::UpdateElement()
 			}
 			else
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, themeTree.GetRowWidth(),
 				                                   themeTree.GetRowHeight(), ELEMENT_TEXTE, treeElementTexte, data,

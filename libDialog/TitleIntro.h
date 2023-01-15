@@ -2,25 +2,22 @@
 #include <WindowMain.h>
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Introduction
 {
-	namespace Introduction
+	class CTitleIntro : public CWindowMain
 	{
-		class CTitleIntro : public CWindowMain
-		{
-		public:
-			CTitleIntro(wxWindow* parent, wxWindowID id, const CThemeIntroLogo& theme);
-			~CTitleIntro() override;
+	public:
+		CTitleIntro(wxWindow* parent, wxWindowID id, const CThemeIntroLogo& theme);
+		~CTitleIntro() override;
 
-			void SetTitle(const wxString& title);
-			int GetHeight() override;
-			void UpdateScreenRatio() override;
+		void SetTitle(const wxString& title);
+		int GetHeight() override;
+		void UpdateScreenRatio() override;
 
-		private:
-			void on_paint(wxPaintEvent& event);
+	private:
+		void on_paint(wxPaintEvent& event);
 
-			wxString title;
-			CThemeIntroLogo themeFont;
-		};
-	}
+		wxString title;
+		CThemeIntroLogo themeFont;
+	};
 }

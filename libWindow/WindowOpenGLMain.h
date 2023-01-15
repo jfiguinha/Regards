@@ -11,16 +11,14 @@ extern int args[];
 using namespace std;
 
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CWindowOpenGLMain : public wxGLCanvas, public CMasterWindow
 	{
-		class CWindowOpenGLMain : public wxGLCanvas, public CMasterWindow
+	public:
+		CWindowOpenGLMain(wxString name, wxWindow* parent, wxWindowID id)
+			: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 		{
-		public:
-			CWindowOpenGLMain(wxString name, wxWindow* parent, wxWindowID id)
-				: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
-			{
 #ifdef __WXGTK__
 #if wxCHECK_VERSION(3, 1, 2)
                 scaleFactor = 1.0f;
@@ -28,63 +26,61 @@ namespace Regards
                 scaleFactor = GetContentScaleFactor();
 #endif
 #else
-				scaleFactor = 1.0f;
+			scaleFactor = 1.0f;
 #endif
-				this->name = name;
-				Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowOpenGLMain::OnRefresh));
-				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowOpenGLMain::OnSize));
-				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowOpenGLMain::OnEraseBackground));
-				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED,
-				        wxCommandEventHandler(CWindowOpenGLMain::OnProcessIdleEnd));
-			}
+			this->name = name;
+			Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowOpenGLMain::OnRefresh));
+			Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowOpenGLMain::OnSize));
+			Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowOpenGLMain::OnEraseBackground));
+			Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED,
+			        wxCommandEventHandler(CWindowOpenGLMain::OnProcessIdleEnd));
+		}
 
-			~CWindowOpenGLMain() override
-			{
-			}
+		~CWindowOpenGLMain() override
+		{
+		}
 
-			virtual void OnRefresh(wxCommandEvent& event)  
-			{
-				this->Refresh();
-				this->Update();
-			}
+		virtual void OnRefresh(wxCommandEvent& event)
+		{
+			this->Refresh();
+			this->Update();
+		}
 
-			void PushThreadIdleEvent() override
-			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_IDLETHREADING);
-				GetEventHandler()->AddPendingEvent(evt);
-			}
+		void PushThreadIdleEvent() override
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_IDLETHREADING);
+			GetEventHandler()->AddPendingEvent(evt);
+		}
 
-			virtual void OnProcessIdleEnd(wxCommandEvent& event)
-			{
-				this->ProcessOnIdleEndEvent(event);
-			}
+		virtual void OnProcessIdleEnd(wxCommandEvent& event)
+		{
+			this->ProcessOnIdleEndEvent(event);
+		}
 
-			virtual void OnEraseBackground(wxEraseEvent& event)
-			{
-			};
-
-			virtual void OnSize(wxSizeEvent& event)
-			{
-				this->ProcessOnSizeEvent(event);
-				//this->Refresh();
-				//this->Update();
-			}
-
-			wxString GetWaitingMessage() override
-			{
-				return "Window waiting : " + to_string(this->GetId());
-			}
-            
-            virtual void IdleFunction()
-            {
-                
-            }
-
-			virtual void ForceRefresh()
-			{
-				this->Refresh();
-				this->Update();
-			}
+		virtual void OnEraseBackground(wxEraseEvent& event)
+		{
 		};
-	}
+
+		virtual void OnSize(wxSizeEvent& event)
+		{
+			this->ProcessOnSizeEvent(event);
+			//this->Refresh();
+			//this->Update();
+		}
+
+		wxString GetWaitingMessage() override
+		{
+			return "Window waiting : " + to_string(this->GetId());
+		}
+
+		void IdleFunction() override
+		{
+		}
+
+		virtual void ForceRefresh()
+		{
+			this->Refresh();
+			this->Update();
+		}
+	};
 }

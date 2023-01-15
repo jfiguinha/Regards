@@ -7,7 +7,8 @@ using namespace Regards::Control;
 
 CThumbnailVertical::CThumbnailVertical(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                        const bool& testValidity)
-	: CThumbnail(parent, id, themeThumbnail, testValidity), test_validity_(testValidity), theme_thumbnail_(themeThumbnail), id_(id)
+	: CThumbnail(parent, id, themeThumbnail, testValidity), test_validity_(testValidity),
+	  theme_thumbnail_(themeThumbnail), id_(id)
 {
 	noVscroll = false;
 }

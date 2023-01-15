@@ -6,8 +6,8 @@ using namespace Regards::OpenGL;
 class IBitmapRenderInterface
 {
 public:
-	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL) = 0;
-	virtual void OnPaint2D(wxWindow * gdi) = 0;
+	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) = 0;
+	virtual void OnPaint2D(wxWindow* gdi) = 0;
 	virtual void OnMouseMove(wxMouseEvent& event) = 0;
 	virtual void OnLButtonDown(wxMouseEvent& event) = 0;
 	virtual void OnRButtonDown(wxMouseEvent& event) = 0;

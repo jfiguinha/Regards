@@ -3,56 +3,50 @@
 #include "TreeElementListBox.h"
 
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementCheckBox : public CTreeElement
 	{
-		class CTreeElementCheckBox : public CTreeElement
+	public:
+		CTreeElementCheckBox();
+		~CTreeElementCheckBox() override;
+
+		void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
+		void ClickElement(wxWindow* window, const int& x, const int& y) override;
+		void SetCheckState(const bool& check);
+		bool GetCheckState();
+		void SetTheme(CThemeTreeCheckBox* theme);
+
+		CTreeElementCheckBox& operator=(const CTreeElementCheckBox& other);
+
+		void SetZoneSize(const int& width, const int& height) override
 		{
-		public:
-			CTreeElementCheckBox();
-			virtual ~CTreeElementCheckBox();
-
-			void DrawElement(wxDC * deviceContext, const int &x, const int &y);
-			void ClickElement(wxWindow * window, const int &x, const int &y);
-			void SetCheckState(const bool &check);
-			bool GetCheckState();
-			void SetTheme(CThemeTreeCheckBox * theme);
-
-			CTreeElementCheckBox& operator=(const CTreeElementCheckBox &other);
-
-			void SetZoneSize(const int &width, const int &height)
-			{
-				themeTreeCheckBox.SetWidth(width);
-				themeTreeCheckBox.SetHeight(height);
-			}
+			themeTreeCheckBox.SetWidth(width);
+			themeTreeCheckBox.SetHeight(height);
+		}
 
 
-			void SetBackgroundColor(const wxColour &color)
-			{
-				themeTreeCheckBox.color = color;
-			}
+		void SetBackgroundColor(const wxColour& color) override
+		{
+			themeTreeCheckBox.color = color;
+		}
 
-			int GetWidth()
-			{
-				return themeTreeCheckBox.GetWidth();
-			}
+		int GetWidth() override
+		{
+			return themeTreeCheckBox.GetWidth();
+		}
 
-			int GetHeight()
-			{
-				return themeTreeCheckBox.GetHeight();
-			}
+		int GetHeight() override
+		{
+			return themeTreeCheckBox.GetHeight();
+		}
 
+	private:
+		void DrawBitmap(wxDC* deviceContext, const int& xPos, const int& yPos);
+		bool checked;
 
-		private:
-
-			void DrawBitmap(wxDC * deviceContext, const int &xPos, const int &yPos);
-			bool checked;
-
-			wxBitmap checkOn;
-			wxBitmap checkOff;
-			CThemeTreeCheckBox themeTreeCheckBox;
-		};
-	}
+		wxBitmap checkOn;
+		wxBitmap checkOff;
+		CThemeTreeCheckBox themeTreeCheckBox;
+	};
 }
-	

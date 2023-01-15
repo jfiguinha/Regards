@@ -121,23 +121,23 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
+			auto mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4,
+			                   cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
 			bitmapNext.SetPicture(mat);
-			CImageLoadingFormat * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
 			{
 				bitmapNext.InsertBitmap(bitmapOut, out.x, out.y);
 				//bitmapNext.Flip();
 			}
 			delete bitmapOut;
-			
+
 			if (pictureNext == nullptr)
 				pictureNext = new GLTexture();
-                
-             mat = bitmapNext.GetOpenCVPicture();
+
+			mat = bitmapNext.GetOpenCVPicture();
 			pictureNext->SetData(mat);
 		}
-
 	}
 	{
 		CImageLoadingFormat bitmapFirst;
@@ -145,7 +145,8 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
+			auto mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4,
+			                   cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
 			bitmapFirst.SetPicture(mat);
 			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
@@ -156,8 +157,8 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 			delete bitmapOut;
 			if (pictureFirst == nullptr)
 				pictureFirst = new GLTexture();
-                
-             mat = bitmapFirst.GetOpenCVPicture();
+
+			mat = bitmapFirst.GetOpenCVPicture();
 			pictureFirst->SetData(mat);
 		}
 	}

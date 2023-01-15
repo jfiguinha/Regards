@@ -22,6 +22,7 @@ namespace Regards
 	{
 		class CBitmapWnd3D;
 	}
+
 	namespace Video
 	{
 		class CSlideToolbar;
@@ -31,12 +32,12 @@ namespace Regards
 	{
 		class CBitmapWndViewer;
 
-		class CShowElement : public CWindowMain, public CSliderInterface, public Video::IVideoInterface, public IFiltreUpdate
+		class CShowElement : public CWindowMain, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
 		{
 		public:
 			CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
-			            CBitmapInterface* bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam* config,
-			            const bool& exportPicture);
+			             CBitmapInterface* bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam* config,
+			             const bool& exportPicture);
 			~CShowElement() override;
 			void IsNextPicture(const bool& value);
 			void HideToolbar();
@@ -98,7 +99,7 @@ namespace Regards
 			void ChangeAudio(const int& langue);
 
 			void SetStreamInfo(vector<CStreamInfo>& listAudio, vector<CStreamInfo>& listVideo,
-				vector<CStreamInfo>& listSubtitle) override;
+			                   vector<CStreamInfo>& listSubtitle) override;
 
 		protected:
 			//Interface Video
@@ -158,8 +159,8 @@ namespace Regards
 			void ShowSliderToolbar(const bool& show);
 			void ShowSlider(const bool& show);
 			void InitControl();
-			Video::CSlideToolbar* slideToolbar;
-			Video::CSliderVideo* videoSlider;
+			CSlideToolbar* slideToolbar;
+			CSliderVideo* videoSlider;
 			CVideoControlSoft* videoWindow;
 			CWindowMain* windowMain;
 			bool showToolbarSup = false;
@@ -172,8 +173,8 @@ namespace Regards
 			int64_t videoTotalTime = 0;
 			vector<CStreamInfo> listStream;
 			std::vector<int> sound_value;
-		
-            bool refreshSlider = false;
+
+			bool refreshSlider = false;
 			bool isVideo = false;
 		};
 	}

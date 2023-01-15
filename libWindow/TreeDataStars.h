@@ -2,19 +2,17 @@
 #include "TreeData.h"
 using namespace std;
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeDataStars : public CTreeData
 	{
-		class CTreeDataStars : public CTreeData
-		{
-		public:
-			CTreeDataStars(void);
-			~CTreeDataStars(void);
-			void SetNumPhotoId(const int& numPhotoId);
-			int GetNumPhotoId();
-		protected:
-			int numPhotoId;
-		};
-	}
+	public:
+		CTreeDataStars(void);
+		~CTreeDataStars(void);
+		void SetNumPhotoId(const int& numPhotoId);
+		int GetNumPhotoId();
+
+	protected:
+		int numPhotoId;
+	};
 }

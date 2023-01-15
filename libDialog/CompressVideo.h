@@ -1,11 +1,11 @@
 #pragma once
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(TiffOption)
-	#include <wx/checklst.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
+//(*HeadersPCH(TiffOption)
+#include <wx/checklst.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
 
-	//*)
+//*)
 #endif
 //(*Headers(TiffOption)
 //*)
@@ -27,8 +27,9 @@ public:
 	//wxPanel * panel;
 	bool IsOk();
 	void SetPos(const int& max, const int& pos);
-	void SetBitmap(cv::Mat & bmp);
+	void SetBitmap(cv::Mat& bmp);
 	void SetTextProgression(const wxString& texte, const int& type = 0);
+
 protected:
 	//(*Identifiers(TiffOption)
 	//*)
@@ -46,5 +47,5 @@ private:
 	int rotation = 0;
 	wxImage scale;
 	std::mutex muBitmap;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };

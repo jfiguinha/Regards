@@ -34,8 +34,9 @@ namespace Regards
 		class CBitmapWndViewer : public CBitmapWndRender, public IFiltreUpdate
 		{
 		public:
-			CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainViewerId, const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface);
-			~CBitmapWndViewer() ;
+			CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainViewerId, const CThemeBitmapWindow& theme,
+			                 CBitmapInterface* bitmapInterface);
+			~CBitmapWndViewer() override;
 			void SetParent(wxWindow* parent) override;
 			CEffectParameter* GetParameter() override;
 			void SetListener(IMouseUpdate* mouseUpdate);
@@ -69,7 +70,7 @@ namespace Regards
 			void OnTimer(wxTimerEvent& event) override;
 
 			vector<int> GetListTimer() override;
-			void ApplyPicturePosition(const int &angle,const int& flipH, const int& flipV);
+			void ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV);
 
 		private:
 			bool IsOpenCLCompatible();
@@ -99,7 +100,7 @@ namespace Regards
 			void AfterSetBitmap() override;
 			void EndTransition();
 
-			virtual void BeforeInterpolationBitmap() override;
+			void BeforeInterpolationBitmap() override;
 
 			wxCursor hCursorCross;
 			CDraw* m_cDessin;

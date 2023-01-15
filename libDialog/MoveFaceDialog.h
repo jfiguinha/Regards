@@ -3,12 +3,12 @@
 
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(OpenCLDialog)
-	#include <wx/stattext.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	#include <wx/combobox.h>
-	//*)
+//(*HeadersPCH(OpenCLDialog)
+#include <wx/stattext.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
+//*)
 #endif
 //(*Headers(OpenCLDialog)
 //*)
@@ -44,7 +44,7 @@ private:
 
 	bool isOk;
 	wxString selectItem;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

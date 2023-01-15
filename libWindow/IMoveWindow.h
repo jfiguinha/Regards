@@ -1,20 +1,18 @@
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CSeparationBar;
+
+	class IMoveWindow
 	{
-		class CSeparationBar;
-	}
+	public:
+		virtual ~IMoveWindow() = default;
+		virtual void SetNewPosition(CSeparationBar* separationBar) = 0;
+		virtual bool OnLButtonDown() = 0;
+		virtual void OnLButtonUp() = 0;
+	};
+
 }
 
 
-
-class IMoveWindow
-{
-public:
-	virtual ~IMoveWindow() = default;
-	virtual void SetNewPosition(Regards::Window::CSeparationBar* separationBar) = 0;
-	virtual bool OnLButtonDown() = 0;
-	virtual void OnLButtonUp() = 0;
-};

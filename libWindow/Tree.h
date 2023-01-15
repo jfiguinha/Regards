@@ -91,7 +91,6 @@ public:
 		//			str << boost::stacktrace::stack
 		//			stacktrace=str.str();
 	};
-
 };
 
 template <class T, class tree_node_allocator = std::allocator<tree_node_<T>>>
@@ -99,6 +98,7 @@ class tree
 {
 protected:
 	using tree_node = tree_node_<T>;
+
 public:
 	/// Value of the data stored at a node.
 	using value_type = T;
@@ -125,6 +125,7 @@ public:
 	class iterator_base
 	{
 #endif
+
 	public:
 		using value_type = T;
 		using pointer = T*;
@@ -149,6 +150,7 @@ public:
 		sibling_iterator end() const;
 
 		tree_node* node;
+
 	protected:
 		bool skip_current_children_;
 	};
@@ -261,6 +263,7 @@ public:
 		tree_node* range_first() const;
 		tree_node* range_last() const;
 		tree_node* parent_;
+
 	private:
 		void set_parent_();
 	};
@@ -282,6 +285,7 @@ public:
 		leaf_iterator operator--(int);
 		leaf_iterator& operator+=(unsigned int);
 		leaf_iterator& operator-=(unsigned int);
+
 	private:
 		tree_node* top_node;
 	};
@@ -2599,7 +2603,7 @@ typename tree<T, tree_node_allocator>::iterator tree<T, tree_node_allocator>::lo
 	do
 	{
 		walk = parent(walk);
-		if (parents.find(walk) != parents.end()) break;
+		if (parents.contains(walk)) break;
 	}
 	while (walk.node->parent);
 
@@ -3306,7 +3310,6 @@ typename tree<T, tree_node_allocator>::fixed_depth_iterator& tree<
 		}
 	}
 	return *this;
-	
 }
 
 template <class T, class tree_node_allocator>

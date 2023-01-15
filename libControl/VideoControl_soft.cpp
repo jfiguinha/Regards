@@ -77,6 +77,7 @@ vector<int> CVideoControlSoft::GetListTimer()
 	list.push_back(TIMER_PLAYSTART);
 	return list;
 }
+
 vector<int> CVideoControlSoft::GetListCommand()
 {
 	vector<int> list;
@@ -222,7 +223,6 @@ bool CVideoControlSoft::IsFFmpegDecode()
 //-----------------------------------------------------------------
 void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 {
-	
 	parentRender->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -238,7 +238,6 @@ void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 {
-	
 	if (event.LeftDClick())
 		return;
 
@@ -257,8 +256,6 @@ void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 //------------------------------------------------------------------------------------
 void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 {
-	
-
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -291,7 +288,7 @@ void CVideoControlSoft::TestMaxX()
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 
-	
+
 	int xValue = posLargeurMax;
 
 	if (posLargeur >= xValue)
@@ -310,7 +307,7 @@ void CVideoControlSoft::TestMaxY()
 	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
 
-	
+
 	int yValue = posHauteurMax;
 
 	if (posHauteur >= yValue)
@@ -394,7 +391,7 @@ void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
 	case WXK_CONTROL:
 		controlKeyPush = false;
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -468,13 +465,14 @@ void CVideoControlSoft::ChangeVideoFormat()
 }
 
 
-
 float CVideoControlSoft::GetZoomRatio()
 {
 	float zoom;
 	if (shrinkVideo)
 	{
-		zoom = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(), parentRender->GetSize().GetWidth(), parentRender->GetSize().GetHeight());
+		zoom = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(),
+		                                           parentRender->GetSize().GetWidth(),
+		                                           parentRender->GetSize().GetHeight());
 	}
 	else
 	{
@@ -487,8 +485,9 @@ float CVideoControlSoft::GetZoomRatio()
 
 float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
-	
-	float newRatio = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(), parentRender->GetSize().GetWidth(), parentRender->GetSize().GetHeight());
+	float newRatio = CPictureUtility::CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight(),
+	                                                     parentRender->GetSize().GetWidth(),
+	                                                     parentRender->GetSize().GetHeight());
 	int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
 	printf("Ratio %f \n", newRatio);
@@ -520,8 +519,6 @@ float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& picture
 
 void CVideoControlSoft::ShrinkVideo()
 {
-	
-
 	CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
 	//Calcul position largeur et hauteur initial
@@ -632,18 +629,18 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 
 	case WXK_NUMPAD_ADD:
 	case WXK_ADD:
-	{
-		this->ZoomOn();
-	}
-	break;
+		{
+			this->ZoomOn();
+		}
+		break;
 
 	case WXK_NUMPAD_SUBTRACT:
 	case WXK_SUBTRACT:
-	{
-		this->ZoomOut();
-	}
-	break;
-	default:;
+		{
+			this->ZoomOut();
+		}
+		break;
+	default: ;
 	}
 }
 
@@ -840,7 +837,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
 	ffmfc->SetFile(this, filename,
-		IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
+	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
@@ -867,7 +864,6 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 		videoEnd = true;
 	}
-
 }
 
 
@@ -935,10 +931,9 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
 	localContext = nullptr;
-
 }
 
-void CVideoControlSoft::SetSubtitulePicture(cv::Mat & picture)
+void CVideoControlSoft::SetSubtitulePicture(cv::Mat& picture)
 {
 	muSubtitle.lock();
 	picture.copyTo(pictureSubtitle);
@@ -966,7 +961,7 @@ void CVideoControlSoft::PlayFirstMovie(const bool& firstMovie)
 	this->firstMovie = firstMovie;
 }
 
-void  CVideoControlSoft::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
+void CVideoControlSoft::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
 {
 	this->openclOpenGLInterop = openclOpenGLInterop;
 }
@@ -975,8 +970,6 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
 	if (videoEnd || stopVideo)
 	{
-
-
 		if (thumbnailVideo != nullptr)
 			delete thumbnailVideo;
 
@@ -1025,10 +1018,6 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		firstMovie = false;
 		parentRender->Refresh();
-
-
-
-
 	}
 	else if (movie != filename)
 	{
@@ -1299,8 +1288,6 @@ float CVideoControlSoft::GetHauteurMax()
 
 void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 {
-	
-
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
@@ -1338,7 +1325,6 @@ void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 
 int CVideoControlSoft::GetBitmapWidth()
 {
-	
 	//int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
@@ -1357,7 +1343,6 @@ int CVideoControlSoft::GetBitmapHeight()
 
 int CVideoControlSoft::GetSrcBitmapWidth()
 {
-	
 	int localAngle = angle;
 	float ratioSelect = GetMovieRatio();
 	float _widthVideo = widthVideo;
@@ -1375,7 +1360,6 @@ int CVideoControlSoft::GetSrcBitmapWidth()
 
 int CVideoControlSoft::GetSrcBitmapHeight()
 {
-	
 	float ratioSelect = GetMovieRatio();
 	float _widthVideo = widthVideo;
 	float _heightVideo = heightVideo;
@@ -1396,7 +1380,6 @@ int CVideoControlSoft::GetSrcBitmapHeight()
 //-----------------------------------------------------------------
 void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 {
-	
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
@@ -1409,7 +1392,6 @@ void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 //-----------------------------------------------------------------
 void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 {
-	
 	mouseBlock = false;
 	wxSetCursor(wxCursor(wxCURSOR_ARROW));
 	if (parentRender->HasCapture())
@@ -1418,8 +1400,6 @@ void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 
 void CVideoControlSoft::CalculCenterPicture()
 {
-	
-
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
@@ -1587,7 +1567,7 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-		&convertedFrameBuffer, &linesize);
+	          &convertedFrameBuffer, &linesize);
 
 
 	//cv::flip(bitmapData, bitmapData, 0);
@@ -1634,7 +1614,8 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 		floatRect.right = 1.0f;
 		floatRect.top = 0;
 		floatRect.bottom = 1.0f;
-		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, videoPosition / 100, inverted);
+		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, videoPosition / 100,
+		                                     inverted);
 		muVideoEffect.unlock();
 	}
 
@@ -1721,7 +1702,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int 
 	rect->height = FFMAX(height, 1);
 }
 
-GLTexture* CVideoControlSoft::RenderToTexture(cv::Mat & bitmap)
+GLTexture* CVideoControlSoft::RenderToTexture(cv::Mat& bitmap)
 {
 	auto glTexture = new GLTexture();
 	glTexture->SetData(bitmap);
@@ -1746,10 +1727,10 @@ void CVideoControlSoft::SetZoomIndex(const int& pos)
 }
 
 
-void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize, int& left, int& top,
-	const bool& invertY, const bool &invertX)
+void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
+                                                       int& heightInterpolationSize, int& left, int& top,
+                                                       const bool& invertY, const bool& invertX)
 {
-	
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else
@@ -1789,7 +1770,6 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 
 	heightInterpolationSize = parentRender->GetSize().GetHeight() * scale_factor - (top * 2);
 
-	
 
 	if (!invertX)
 	{
@@ -1840,7 +1820,7 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 	//if (angle == 90 || angle == 270)
 	//	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false, false);
 	//else
-		
+
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true, true);
 }
 
@@ -1877,7 +1857,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation, (int)GetZoomRatio() * 100);
+	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+	                                       (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -1887,11 +1868,10 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	cv::UMat data = openclEffect->GetUMat(false);
-	if(!glTexture->SetData(data))
-        openclOpenGLInterop = false;
+	if (!glTexture->SetData(data))
+		openclOpenGLInterop = false;
 
-	
-	
+
 	return glTexture;
 }
 
@@ -1930,7 +1910,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 }
 
 
-GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
+GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 {
 	int widthOutput = 0;
 	int heightOutput = 0;
@@ -1953,12 +1933,12 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
 
-
 	cv::Mat cvImage;
 
 	cv::cvtColor(pictureFrame, cvImage, cv::COLOR_BGRA2BGR);
 
-	cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, angle, (int)GetZoomRatio() * 100);
+	cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
+	                                                   flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -1980,7 +1960,6 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 	if (glTexture != nullptr)
 	{
 		glTexture->SetData(bitmapOut);
-
 	}
 	return glTexture;
 }
@@ -2007,7 +1986,6 @@ void CVideoControlSoft::Rotate270()
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
 	sqlPhotos.UpdatePhotoExif(filename, exif);
-		
 }
 
 void CVideoControlSoft::FlipVertical()
@@ -2108,7 +2086,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			if (colorRange == "Limited")
 				isLimited = 1;
 
-			if(colorSpace == "BT.601")
+			if (colorSpace == "BT.601")
 			{
 				_colorSpace = 1;
 			}
@@ -2121,22 +2099,25 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				_colorSpace = 3;
 			}
 
-            cv::ocl::OpenCLExecutionContext::getCurrent().bind();
+			cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
 			AVFrame* tmp_frame = src_frame;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
 				muBitmap.lock();
-				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				                         tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				                         tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
-
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
-
 				muBitmap.lock();
-				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				                            tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+				                            tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				                            tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
 			}
 		}
@@ -2161,7 +2142,6 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			glTexture = RenderToTexture(openclEffectYUV);
-
 		}
 		muBitmap.unlock();
 

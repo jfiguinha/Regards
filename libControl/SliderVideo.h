@@ -37,11 +37,9 @@ namespace Regards
 
 			void UpdateScreenRatio() override;
 
-
 		protected:
 			//Slider Event
 			CSliderInterface* sliderEvent;
-
 
 		private:
 			void OnMouseMove(wxMouseEvent& event);
@@ -75,7 +73,8 @@ namespace Regards
 			void InsertScreenFormatButton(const int& xStart, wxDC* context);
 			void InsertRepeatButton(const int& xStart, wxDC* context);
 
-			void InsertButton(const int& xStart, wxDC* context, wxRect& position, wxImage& button, const bool& isActif, const wxString& pictureName);
+			void InsertButton(const int& xStart, wxDC* context, wxRect& position, wxImage& button, const bool& isActif,
+			                  const wxString& pictureName);
 
 			wxImage buttonRepeat;
 			wxImage buttonPlay;

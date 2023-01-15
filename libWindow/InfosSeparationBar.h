@@ -6,73 +6,70 @@ class CRegardsBitmap;
 class CThumbnailData;
 
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CInfosSeparationBar
 	{
-		class CInfosSeparationBar
+	public:
+		CInfosSeparationBar(const CThemeInfosSeparationBar& theme);
+		virtual ~CInfosSeparationBar(void);
+
+		inline bool operator==(const CInfosSeparationBar& n1);
+
+		const wxString& GetTitle()
 		{
-		public:
-			CInfosSeparationBar(const CThemeInfosSeparationBar& theme);
-			virtual ~CInfosSeparationBar(void);
+			return title;
+		}
 
-			inline bool operator==(const CInfosSeparationBar& n1);
-
-			const wxString& GetTitle()
-			{
-				return title;
-			}
-
-			void Clear();
-			void SetTitle(const wxString& title);
-			void SetWindowPos(const int& x, const int& y);
-			void SetWidth(const int& width);
-			virtual void OnClick(const int& x, const int& y);
-			int GetXPos();
-			int GetYPos();
-			const int& GetWidth();
-			const int& GetHeight();
-			wxRect GetPos();
-			void Render(wxDC* dc, const int& posLargeur, const int& posHauteur);
+		void Clear();
+		void SetTitle(const wxString& title);
+		void SetWindowPos(const int& x, const int& y);
+		void SetWidth(const int& width);
+		virtual void OnClick(const int& x, const int& y);
+		int GetXPos();
+		int GetYPos();
+		const int& GetWidth();
+		const int& GetHeight();
+		wxRect GetPos();
+		void Render(wxDC* dc, const int& posLargeur, const int& posHauteur);
 
 
-			vector<int> listElement;
+		vector<int> listElement;
 
-		protected:
-			virtual void RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur);
-			void RenderTitle(wxDC* dc);
+	protected:
+		virtual void RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur);
+		void RenderTitle(wxDC* dc);
 
-			int _xPos;
-			int _yPos;
-			int width;
+		int _xPos;
+		int _yPos;
+		int width;
 
-			CThemeInfosSeparationBar theme;
+		CThemeInfosSeparationBar theme;
 
-			wxString title;
-			wxRect titleRectPos;
-		};
+		wxString title;
+		wxRect titleRectPos;
+	};
 
-		class CItemPosSeparationBar
+	class CItemPosSeparationBar
+	{
+	public:
+		CItemPosSeparationBar(int x, int y) : xPos(x), yPos(y)
 		{
-		public:
-			CItemPosSeparationBar(int x, int y) : xPos(x), yPos(y)
+		}
+
+		bool operator()(CInfosSeparationBar* separatorBar)
+		{
+			wxRect rc = separatorBar->GetPos();
+			if ((rc.x < xPos && xPos < (rc.x + rc.width)) && (rc.y < yPos && yPos < (rc.height + rc.y)))
 			{
+				return true;
 			}
+			return false;
+		}
 
-			bool operator()(CInfosSeparationBar* separatorBar)
-			{
-				wxRect rc = separatorBar->GetPos();
-				if ((rc.x < xPos && xPos < (rc.x + rc.width)) && (rc.y < yPos && yPos < (rc.height + rc.y)))
-				{
-					return true;
-				}
-				return false;
-			}
+		int xPos;
+		int yPos;
+	};
 
-			int xPos;
-			int yPos;
-		};
-
-		using InfosSeparationBarVector = std::vector<CInfosSeparationBar*>;
-	}
+	using InfosSeparationBarVector = std::vector<CInfosSeparationBar*>;
 }

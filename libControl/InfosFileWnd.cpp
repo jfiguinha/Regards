@@ -24,16 +24,12 @@ CInfosFileWnd::CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScroll
 
 CInfosFileWnd::~CInfosFileWnd(void)
 {
-	
-
 	if (oldInfosFileControl != nullptr)
 		delete(oldInfosFileControl);
 }
 
 void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 {
-	
-
 	auto threadInfos = static_cast<CThreadLoadInfos*>(event.GetClientData());
 	// if(threadInfos->filename == filename)
 	{
@@ -52,13 +48,10 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 	threadInfos->threadLoadInfos->join();
 	delete threadInfos->threadLoadInfos;
 	delete threadInfos;
-
 }
 
 void CInfosFileWnd::InfosUpdate(const wxString& filename)
 {
-	
-
 	if (filename != this->filename)
 	{
 		this->filename = filename;
@@ -77,8 +70,6 @@ void CInfosFileWnd::InfosUpdate(const wxString& filename)
 
 void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos* threadInfos)
 {
-	
-
 	CInfosFile* infosFileWnd = threadInfos->infosFileWnd;
 	infosFileWnd->SetFile(threadInfos->filename);
 

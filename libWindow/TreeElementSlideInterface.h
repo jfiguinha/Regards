@@ -3,20 +3,20 @@
 #include <TreeElementValue.h>
 
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementSlideInterface
 	{
-
-
-		class CTreeElementSlideInterface
+	public:
+		CTreeElementSlideInterface()
 		{
-		public:
-			CTreeElementSlideInterface(){};
-			virtual ~CTreeElementSlideInterface(){};
-
-			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key) = 0;
 		};
-	}
-}
 
+		virtual ~CTreeElementSlideInterface()
+		{
+		};
+
+		virtual void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
+		                            const wxString& key) = 0;
+	};
+}

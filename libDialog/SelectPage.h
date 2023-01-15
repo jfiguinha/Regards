@@ -6,13 +6,13 @@ using namespace Regards::Scanner;
 class CSelectFileDlg : public wxDialog
 {
 public:
-	CSelectFileDlg(wxWindow *parent, wxWindowID id,
-		const wxString &filename,
-		const wxString &title,
-		const wxPoint &pos = wxDefaultPosition,
-		const wxSize &size = wxSize(500, 400),
-		const long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-	~CSelectFileDlg();
+	CSelectFileDlg(wxWindow* parent, wxWindowID id,
+	               const wxString& filename,
+	               const wxString& title,
+	               const wxPoint& pos = wxDefaultPosition,
+	               const wxSize& size = wxSize(500, 400),
+	               long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+	~CSelectFileDlg() override;
 	vector<int> GetSelectItem();
 
 protected:
@@ -22,7 +22,7 @@ protected:
 	void OnOk(wxCommandEvent& event);
 	void OnCancel(wxCommandEvent& event);
 
-	CThumbnailSelection * thumbnailFileSelection;
+	CThumbnailSelection* thumbnailFileSelection;
 	const wxString& filename_;
 	const wxString& title_;
 	const wxPoint& pos_;

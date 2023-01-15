@@ -117,15 +117,14 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 	{
 		mouseUpdate->CancelPreview(this);
 		updateFilter = true;
-		if(source != nullptr)
+		if (source != nullptr)
 		{
 			bitmapwidth = source->GetWidth();
 			bitmapheight = source->GetHeight();
 			ShrinkImage();
 		}
-
 	}
-	
+
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 
@@ -142,7 +141,7 @@ void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
 {
 	this->effectParameter = effectParameter;
 	updateFilter = true;
-	if(mouseUpdate != nullptr)
+	if (mouseUpdate != nullptr)
 	{
 		if (mouseUpdate->IsSourcePreview())
 		{
@@ -195,7 +194,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 
 			if (mouseUpdate->NeedToShrink())
 				ShrinkImage();
-			
+
 			wxEndBusyCursor();
 		}
 	}
@@ -203,7 +202,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 
 void CBitmapWndViewer::PrintPicture()
 {
-	CImageLoadingFormat * bitmap = GetBitmap(true);
+	CImageLoadingFormat* bitmap = GetBitmap(true);
 	wxWindow* mainWindow = wxWindow::FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
@@ -224,9 +223,6 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
                                    const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface)
 	: CBitmapWndRender(slider, mainViewerId, theme)
 {
-	
-
-
 	mouseUpdate = nullptr;
 	etape = 0;
 	preview = 0;
@@ -245,24 +241,22 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
 	oldMouse.y = 0;
 	m_cDessin = nullptr;
 	afterEffect = nullptr;
-
-
 }
 
 void CBitmapWndViewer::SetParent(wxWindow* parent)
 {
 	parentRender = parent;
-    
+
 	//
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	const double scale_factor = 1.0f;
 #endif
-    
+
 	transitionTimer = new wxTimer(parentRender, TIMER_TRANSITION);
 	clickTimer = new wxTimer(parentRender, TIMER_CLICK);
-    
+
 	arrowPrevious.x = 0;
 	arrowPrevious.y = 0;
 	arrowPrevious.width = 32 * scale_factor;
@@ -294,6 +288,7 @@ vector<int> CBitmapWndViewer::GetListTimer()
 	listTimer.push_back(TIMER_CLICK);
 	return listTimer;
 }
+
 //parentRender->Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, parentRender);
 //parentRender->Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnClick), nullptr, parentRender);
 
@@ -338,8 +333,6 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 
 CBitmapWndViewer::~CBitmapWndViewer()
 {
-	
-	
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
 
@@ -374,7 +367,7 @@ void CBitmapWndViewer::ExportPicture()
 
 void CBitmapWndViewer::SavePicture()
 {
-	CImageLoadingFormat * imageLoading = GetBitmap(true);
+	CImageLoadingFormat* imageLoading = GetBitmap(true);
 	CSavePicture::SavePicture(nullptr, imageLoading, filename);
 	if (imageLoading != nullptr)
 		delete imageLoading;
@@ -486,7 +479,7 @@ void CBitmapWndViewer::OnFiltreCancel()
 
 void CBitmapWndViewer::ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV)
 {
-	if(angle != 0 || flipH != 0 || flipV != 0)
+	if (angle != 0 || flipH != 0 || flipV != 0)
 	{
 		this->angle += angle;
 		this->angle = this->angle % 360;
@@ -496,7 +489,6 @@ void CBitmapWndViewer::ApplyPicturePosition(const int& angle, const int& flipH, 
 
 		this->ShrinkImage();
 	}
-
 }
 
 wxPoint CBitmapWndViewer::GetMousePosition()
@@ -622,9 +614,6 @@ void CBitmapWndViewer::MouseRelease(const int& xPos, const int& yPos)
 
 void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 {
-
-
-    
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = GetHPos();
@@ -632,7 +621,7 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 
 		int x = (xPos - xPosImage);
 		int y = (yPos - yPosImage);
-        m_cDessin->SetScaleFactor(scale_factor);
+		m_cDessin->SetScaleFactor(scale_factor);
 
 		invertColor = true;
 		mouseBlock = true;
@@ -644,7 +633,7 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 		int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
 		int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
-    
+
 		printf("MouseClick xPos : %d xPosImage : %d \n", xPos, yPos);
 		printf("Arrow yPos : %d yPosImage : %d Arrow Width : %d \n", yPosTop, yPosBottom, arrowPrevious.GetWidth());
 
@@ -719,7 +708,7 @@ void CBitmapWndViewer::AfterRender()
 		if (isDiaporama && numEffect == 0)
 		{
 			startTransition = false;
-				//bitmapInterface->TransitionEnd();
+			//bitmapInterface->TransitionEnd();
 		}
 
 		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)
@@ -795,14 +784,13 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 {
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
-		
 		int hpos = GetHPos();
 		int vpos = GetVPos();
 
 		int x = (xPos - xPosImage);
 		int y = (yPos - yPosImage);
-        
-        m_cDessin->SetScaleFactor(scale_factor);
+
+		m_cDessin->SetScaleFactor(scale_factor);
 
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
@@ -833,7 +821,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 			else if ((xPos > (GetWidth() * scale_factor - arrowNext.GetWidth()) && (yPos > yPosTop && yPos <
 				yPosBottom)))
 			{
-					wxSetCursor(wxCursor(wxCURSOR_HAND));
+				wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 			else
 			{

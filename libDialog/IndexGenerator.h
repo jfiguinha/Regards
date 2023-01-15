@@ -50,7 +50,7 @@ private:
 	void OnbtOkClick(wxCommandEvent& event);
 	void OnbtCancelClick(wxCommandEvent& event);
 	void OnbtColorClick(wxCommandEvent& event);
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 
 	wxColour colour;
 };

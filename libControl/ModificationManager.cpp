@@ -17,7 +17,7 @@ CModificationManager::CModificationManager(const wxString& folder)
 #endif
 }
 
-void CModificationManager::Init(CImageLoadingFormat * bitmap)
+void CModificationManager::Init(CImageLoadingFormat* bitmap)
 {
 	if (!wxDir::Exists(folder))
 	{
@@ -105,9 +105,9 @@ CImageLoadingFormat* CModificationManager::GetModification(const unsigned int& n
 	//return history.GetPhoto(numModification);
 	wxString filename = GetFilenameWithModification(numModification);
 
-	CImageLoadingFormat* bitmap = new CImageLoadingFormat();
+	auto bitmap = new CImageLoadingFormat();
 	bitmap->ReadFile(filename);
-	if(numModification > 0)
+	if (numModification > 0)
 		bitmap->SetOrientation(0);
 	else
 		bitmap->SetOrientation(orientation);

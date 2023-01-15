@@ -2,52 +2,47 @@
 #include "TreeElement.h"
 #include "TreeElementDelete.h"
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementStar : public CTreeElement
 	{
-		class CTreeElementStar : public CTreeElement
+	public:
+		CTreeElementStar();
+		~CTreeElementStar() override;
+
+		void SetValue(const int& value);
+		int GetValue();
+		void DrawElement(wxDC* deviceContextc, const int& x, const int& y) override;
+		void ClickElement(wxWindow* window, const int& x, const int& y) override;
+		void SetTheme(CThemeTreeTriangle* theme);
+		void SetNumPhoto(const int& numPhotoId);
+
+		void SetZoneSize(const int& width, const int& height) override
 		{
-		public:
-			CTreeElementStar();
-			~CTreeElementStar() override;
+			themeTriangle.SetWidth(width);
+			themeTriangle.SetHeight(height);
+		}
 
-			void SetValue(const int& value);
-			int GetValue();
-			void DrawElement(wxDC* deviceContextc, const int& x, const int& y) override;
-			void ClickElement(wxWindow* window, const int& x, const int& y) override;
-			void SetTheme(CThemeTreeTriangle* theme);
-			void SetNumPhoto(const int& numPhotoId);
+		int GetWidth() override
+		{
+			return themeTriangle.GetWidth();
+		}
 
-			void SetZoneSize(const int& width, const int& height) override
-			{
-				themeTriangle.SetWidth(width);
-				themeTriangle.SetHeight(height);
-			}
+		int GetHeight() override
+		{
+			return themeTriangle.GetHeight();
+		}
 
-			int GetWidth() override
-			{
-				return themeTriangle.GetWidth();
-			}
+	private:
+		void CreateStar();
+		void DrawStar(wxDC* deviceContext, const int& x, const int& y);
 
-			int GetHeight() override
-			{
-				return themeTriangle.GetHeight();
-			}
-
-
-		private:
-			
-			void CreateStar();
-			void DrawStar(wxDC* deviceContext, const int& x, const int& y);
-
-			int value;
-			CThemeTreeTriangle themeTriangle;
-			wxImage starEmpty;
-			wxImage starYellow;
-			int localx;
-			int localy;
-			int numPhotoId;
-		};
-	}
+		int value;
+		CThemeTreeTriangle themeTriangle;
+		wxImage starEmpty;
+		wxImage starYellow;
+		int localx;
+		int localy;
+		int numPhotoId;
+	};
 }

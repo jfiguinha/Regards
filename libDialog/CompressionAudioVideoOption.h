@@ -3,23 +3,20 @@
 #define USE_PREVIEW_INTEGRATE
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(TiffOption)
-	#include <wx/checklst.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(TiffOption)
+#include <wx/checklst.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 
 #include <wx/timectrl.h>
 #include <wx/spinctrl.h>
 #include <wx/dateevt.h>
 
-namespace Regards
+namespace Regards::Control
 {
-	namespace Control
-	{
-		class CShowPreview;
-	}
+	class CShowPreview;
 }
 
 using namespace Regards::Control;
@@ -33,12 +30,9 @@ class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
 
-namespace Regards
+namespace Regards::Video
 {
-	namespace Video
-	{
-		class CThumbnailVideo;
-	}
+	class CThumbnailVideo;
 }
 
 class CompressionAudioVideoOption : public wxDialog
@@ -146,7 +140,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	Regards::Video::CThumbnailVideo * ffmpegTranscoding = nullptr;
+	Regards::Video::CThumbnailVideo* ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif
@@ -158,5 +152,5 @@ private:
 	//bool skipEvent = false;
 	//bool previewShow = false;
 	CShowPreview* showBitmapWindow;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };

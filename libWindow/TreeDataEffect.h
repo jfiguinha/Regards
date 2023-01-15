@@ -3,38 +3,35 @@
 #include "Metadata.h"
 
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementValue;
+
+	class CTreeDataEffect : public CTreeData
 	{
-		class CTreeElementValue;
+	public:
+		CTreeDataEffect(void);
+		~CTreeDataEffect(void);
 
-		class CTreeDataEffect : public CTreeData
-		{
-		public:
-			CTreeDataEffect(void);
-			~CTreeDataEffect(void);
+		void SetIndex(const int& value);
+		int GetIndex();
 
-			void SetIndex(const int& value);
-			int GetIndex();
+		void SetInitValue(CTreeElementValue* position);
+		CTreeElementValue* GetInitValue();
 
-			void SetInitValue(CTreeElementValue* position);
-			CTreeElementValue* GetInitValue();
+		void SetValue(void* value, const int& typeValue);
+		vector<CTreeElementValue*>* GetVectorValue();
+		vector<CMetadata> GetMetadataValue();
+		bool GetBoolValue();
 
-			void SetValue(void* value, const int& typeValue);
-			vector<CTreeElementValue*>* GetVectorValue();
-			vector<CMetadata> GetMetadataValue();
-			bool GetBoolValue();
+		bool HasValue();
 
-			bool HasValue();
-
-		protected:
-			int index;
-			vector<CTreeElementValue*> tabValue;
-			vector<CMetadata> tabMetadata;
-			bool boolvalue;
-			CTreeElementValue* position;
-			bool hasValue;
-		};
-	}
+	protected:
+		int index;
+		vector<CTreeElementValue*> tabValue;
+		vector<CMetadata> tabMetadata;
+		bool boolvalue;
+		CTreeElementValue* position;
+		bool hasValue;
+	};
 }

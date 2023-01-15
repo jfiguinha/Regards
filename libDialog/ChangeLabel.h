@@ -37,5 +37,5 @@ private:
 
 	bool isOk;
 	wxString labelFaceName;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };

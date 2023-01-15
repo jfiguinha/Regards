@@ -33,6 +33,7 @@ namespace Regards
 			void ChangeZoomOutPos(const int& position);
 			void ChangeZoomInPos(const int& position);
 			void ClickButton(const int& id) override;
+
 		private:
 			void EventManager(const int& id) override;
 			CToolbarButton* speaker;

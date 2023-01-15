@@ -41,7 +41,7 @@ namespace Regards
 			CBitmapPrintout(cv::Mat image, const wxString& title = wxT("My picture"))
 				: wxPrintout(title)
 			{
-				image.copyTo(m_bitmap );
+				image.copyTo(m_bitmap);
 				typeImage = 2;
 				m_picture = nullptr;
 			}

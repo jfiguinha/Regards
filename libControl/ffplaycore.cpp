@@ -3,6 +3,7 @@
 #include <window_id.h>
 #include <fstream>
 #include <ConvertUtility.h>
+
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
@@ -116,11 +117,13 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 	{
 		pos = _pimpl->get_master_clock(cur_stream);
 		if (isnan(pos))
-			pos = (double)cur_stream->seek_pos / AV_TIME_BASE;
+			pos = static_cast<double>(cur_stream->seek_pos) / AV_TIME_BASE;
 		pos += incr;
-		if (cur_stream->ic->start_time != AV_NOPTS_VALUE && pos < cur_stream->ic->start_time / (double)AV_TIME_BASE)
-			pos = cur_stream->ic->start_time / (double)AV_TIME_BASE;
-		_pimpl->stream_seek(cur_stream, (int64_t)(pos * AV_TIME_BASE), (int64_t)(incr * AV_TIME_BASE), 0);
+		if (cur_stream->ic->start_time != AV_NOPTS_VALUE && pos < cur_stream->ic->start_time / static_cast<double>(
+			AV_TIME_BASE))
+			pos = cur_stream->ic->start_time / static_cast<double>(AV_TIME_BASE);
+		_pimpl->stream_seek(cur_stream, static_cast<int64_t>(pos * AV_TIME_BASE),
+		                    static_cast<int64_t>(incr * AV_TIME_BASE), 0);
 	}
 }
 
@@ -138,13 +141,13 @@ void CFFmfc::PositionEvent(wxCommandEvent& event)
 	{
 		//if (*ts > 0)
 		//{
-			if (_pimpl->g_is->ic != nullptr)
-			{
-				if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
-					*ts += _pimpl->g_is->ic->start_time;
-				_pimpl->stream_seek(cur_stream, *ts, 0, 0);
-				_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
-			}
+		if (_pimpl->g_is->ic != nullptr)
+		{
+			if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
+				*ts += _pimpl->g_is->ic->start_time;
+			_pimpl->stream_seek(cur_stream, *ts, 0, 0);
+			_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
+		}
 		//}
 		delete ts;
 	}
@@ -460,7 +463,7 @@ wxString CFFmfc::Getfilename()
 //½âÂëÖ÷º¯Êý
 //Main function
 //#define __MINGW32__
-int CFFmfc::SetFile(CVideoControlInterface* control, const wxString & filename, const wxString& acceleratorHardware,
+int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
 	//Save volume infos;

@@ -1,62 +1,58 @@
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CSeparationBar;
+	class CMasterWindow;
+	class CPanelWithClickToolbar;
+	class CWindowMain;
+	class CWindowOpenGLMain;
+
+	enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT };
+
+	class CSeparationBarToAdd
 	{
-		class CSeparationBar;
-		class CMasterWindow;
-		class CPanelWithClickToolbar;
-		class CWindowMain;
-		class CWindowOpenGLMain;
+	public:
+		wxRect rect;
+		CSeparationBar* separationBar;
+		int separationBarId;
+		bool isHorizontal;
+		int posBar;
+		int size;
+	};
 
-		enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT };
+	class CWindowToAdd
+	{
+	public:
+		CWindowToAdd();
+		wxWindow* GetWindow();
 
-		class CSeparationBarToAdd
-		{
-		public:
-			wxRect rect;
-			CSeparationBar * separationBar;
-			int separationBarId;
-			bool isHorizontal;
-			int posBar;
-			int size;
-		};
+		CMasterWindow* GetMasterWindowPt();
 
-		class CWindowToAdd
-		{
-		public:
+		CPanelWithClickToolbar* GetPanel();
 
-			CWindowToAdd();
-			wxWindow * GetWindow();
+		void SetWindow(CWindowMain* window, bool isPanel);
 
-			CMasterWindow * GetMasterWindowPt();
+		void SetWindow(CWindowOpenGLMain* window, bool isPanel);
 
-			CPanelWithClickToolbar * GetPanel();
+		wxRect rect;
+		wxRect rect_old;
+		Pos position;
+		int size;
+		int size_old;
+		bool fixe;
+		bool fixe_old;
+		int id;
+		bool isTop;
+		bool isHide;
+		bool isPanel;
+		int diffWidth = 0;
+		int diffHeight = 0;
 
-			void SetWindow(CWindowMain * window, bool isPanel);
+		CSeparationBarToAdd* separationBar;
 
-			void SetWindow(CWindowOpenGLMain * window, bool isPanel);
-	
-			wxRect rect;
-			wxRect rect_old;
-			Pos position;
-			int size;
-			int size_old;
-			bool fixe;
-			bool fixe_old;
-			int id;
-			bool isTop;
-			bool isHide;
-			bool isPanel;
-			int diffWidth = 0;
-			int diffHeight = 0;
-
-			CSeparationBarToAdd * separationBar;
-
-		private:
-			CWindowMain * window;
-			CWindowOpenGLMain * windowOpengl;
-		};
-	}
+	private:
+		CWindowMain* window;
+		CWindowOpenGLMain* windowOpengl;
+	};
 }

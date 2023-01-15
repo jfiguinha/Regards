@@ -74,13 +74,12 @@ public:
 	CFFmpegTranscodingPimpl();
 	~CFFmpegTranscodingPimpl();
 
-	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption);
-	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
-
-	
+	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time,
+	                   CVideoOptionCompress* videoCompressOption);
+	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress,
+	               CVideoOptionCompress* videoCompressOption);
 
 private:
-
 	double get_rotation(AVStream* st);
 
 	void EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile);
@@ -99,7 +98,8 @@ private:
 
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
 
-	AVCodecContext* OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, wxString encoderName);
+	AVCodecContext* OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo,
+	                                  wxString encoderName);
 	void SetParamFromVideoCodec(AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx);
 	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, const wxString& encoderName);
 	AVCodecID GetCodecID(AVMediaType codec_type) const;
@@ -111,7 +111,7 @@ private:
 
 	int EncodeFrame(const int& stream_index, int& positionMovie, const bool& isVideo, const bool& write);
 	int filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress,
-		const int& isvideo, const bool& write);
+	                              const int& isvideo, const bool& write);
 	int flush_encoder(unsigned int stream_index);
 	void Release();
 	void SetFrameData(AVFrame* src_frame, CompressVideo* m_dlgProgress);
@@ -162,7 +162,7 @@ private:
 	wxString outputFile;
 	std::map<int, int> streamCorrespondant;
 
-	Regards::OpenCV::COpenCVStabilization* openCVStabilization = nullptr;
+	COpenCVStabilization* openCVStabilization = nullptr;
 	int nbFrame = 0;
 
 	int framerate = 30;

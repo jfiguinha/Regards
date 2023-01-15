@@ -231,18 +231,18 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			thumbnailData->SetNumPhotoId(numEffect);
 			switch (numEffect)
 			{
-				/*
-			case IDM_FILTER_BM3D:
-				{
-					CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_FILTRE_BM3D");
-					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
-					infosSeparationConvolutionEffect->AddPhotoToList(numElement);
-					CImageLoadingFormat image;
-					image.SetPicture(pBitmap, true);
-					thumbnailData->SetBitmap(&image);
-					break;
-				}
-				*/
+			/*
+		case IDM_FILTER_BM3D:
+			{
+				CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_FILTRE_BM3D");
+				thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
+				infosSeparationConvolutionEffect->AddPhotoToList(numElement);
+				CImageLoadingFormat image;
+				image.SetPicture(pBitmap, true);
+				thumbnailData->SetBitmap(&image);
+				break;
+			}
+			*/
 
 			case IDM_REDEYE:
 				{
@@ -272,9 +272,9 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 				thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 				infosSeparationSpecialEffect->AddPhotoToList(numElement);
 				break;
-                
-            case IDM_FILTRELENSCORRECTION:
-                thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
+
+			case IDM_FILTRELENSCORRECTION:
+				thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 				infosSeparationSpecialEffect->AddPhotoToList(numElement);
 				break;
 
@@ -306,388 +306,391 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 					break;
 				default: ;
 
-					/*
-                case HDR_EFFECT:
-                    infosSeparationHDREffect->AddPhotoToList(numElement);
-                    break;
-					*/
+				/*
+	        case HDR_EFFECT:
+	            infosSeparationHDREffect->AddPhotoToList(numElement);
+	            break;
+				*/
 				}
 				break;
-			}
-			thumbnailData->SetNumPhotoId(numEffect);
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
-		}
-
-
-		if(format == 4)
-		{
-			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
-			int numElement = iconeListLocal->GetNbElement();
-			auto thumbnailData = new CThumbnailDataStorage(filename);
-			wxImage image = loadingResource.LoadImageResource("IDB_BLACKROOM");
-			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
-			blackRoom->AddPhotoToList(numElement);
-
-			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
-
-			thumbnailData->SetBitmap(image);
-
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
-		}
-	}
-
-
-	lockIconeList.lock();
-	oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-	lockIconeList.unlock();
-
-	nbElementInIconeList = iconeList->GetNbElement();
-
-	EraseThumbnailList(oldIconeList);
-
-	threadDataProcess = true;
-	processIdle = true;
-
-	UpdateScroll();
-	needToRefresh = true;
-}
-
-void CThumbnailEffect::LoadPicture(void* param)
-{
-	auto threadLoadingBitmap = static_cast<CThreadBitmapEffect*>(param);
-	if (threadLoadingBitmap == nullptr)
-		return;
-
-	bool deleteData = false;
-	//CImageLoadingFormat thumbnail; 
-	CSqlThumbnail sqlThumbnail;
-	auto colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(),
-	                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(),
-	                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-	CImageLoadingFormat* thumbnail;
-
-	if (threadLoadingBitmap->imageLoading == nullptr)
-	{
-		deleteData = true;
-		thumbnail = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
-	}
-	else
-		thumbnail = threadLoadingBitmap->imageLoading;
-
-
-	if (thumbnail != nullptr)
-	{
-		//thumbnail.SetPicture(bitmap);  
-		auto color_quad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(),
-		                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(),
-		                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-		auto filtre = new CFiltreEffet(color_quad, false, thumbnail);
-
-		switch (threadLoadingBitmap->photoId)
-		{
-		case IDM_WAVE_EFFECT:
-			filtre->WaveFilter(20, 20, thumbnail->GetHeight() / 2, 2, 20);
-			break;
-
-		case IDM_FILTRELENSFLARE:
-			filtre->LensFlare(20, 20, 20, 1, 20, 45, 20);
-			break;
-
-		default:
-			{
-				CEffectParameter* effect = CFiltreData::GetDefaultEffectParameter(
-					threadLoadingBitmap->thumbnailData->GetNumPhotoId());
-				filtre->RenderEffect(threadLoadingBitmap->thumbnailData->GetNumPhotoId(), effect);
-				if (effect != nullptr)
-					delete effect;
-			}
-			break;
-		}
-
-		threadLoadingBitmap->picture = filtre->GetBitmap(true);
-		delete filtre;
-	}
-
-	if (deleteData)
-		delete thumbnail;
-
-	auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
-	event->SetClientData(threadLoadingBitmap);
-	wxQueueEvent(threadLoadingBitmap->thumbnail, event);
-}
-
-void CThumbnailEffect::ProcessIdle()
-{
-	
-	printf("CThumbnailEffect::ProcessIdle() \n");
-	//int nbProcesseur = thread::hardware_concurrency();
-	int nbProcesseur = 1;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		nbProcesseur = config->GetThumbnailProcess();
-
-	if (isAllProcess)
-	{
-		processIdle = false;
-		return;
-	}
-
-	while (nbProcess < nbProcesseur)
-	{
-		for (auto i = 0; i < nbElementInIconeList; i++)
-		{
-			CIcone* icone = iconeList->GetElement(i);
-			if (icone != nullptr)
-			{
-				CThumbnailData* pThumbnailData = icone->GetData();
-				if (pThumbnailData != nullptr)
-				{
-					bool isLoad = pThumbnailData->IsLoad();
-					bool isProcess = pThumbnailData->IsProcess();
-					if (!isLoad && !isProcess)
-					{
-						auto pLoadBitmap = new CThreadBitmapEffect();
-						pLoadBitmap->thumbnail = this;
-						pLoadBitmap->thumbnailData = static_cast<CThumbnailDataStorage*>(pThumbnailData);
-						pLoadBitmap->filepath = filename;
-						pLoadBitmap->filename = pThumbnailData->GetFilename();
-						pLoadBitmap->numIcone = i;
-						pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
-						pLoadBitmap->imageLoading = imageLoading;
-						pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
-						nbProcess++;
-						pThumbnailData->SetIsProcess(true);
-					}
 				}
-			}
-		}
-	}
-	//Test si tout a été fait
-	isAllProcess = true;
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			bool isLoad = false;
-			bool isProcess = false;
-			CThumbnailData* pThumbnailData = icone->GetData();
-			if (pThumbnailData != nullptr)
-			{
-				isLoad = pThumbnailData->IsLoad();
-				isProcess = pThumbnailData->IsProcess();
-			}
-
-			if (!isLoad && !isProcess)
-			{
-				isAllProcess = false;
-			}
-		}
-		if (!isAllProcess)
-			break;
-	}
-}
-
-void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
-{
-	nbProcess--;
-
-	auto threadLoadingBitmap = static_cast<CThreadBitmapEffect*>(event.GetClientData());
-	if (threadLoadingBitmap == nullptr)
-	{
-		return;
-	}
+				thumbnailData->SetNumPhotoId(numEffect);
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				iconeListLocal->AddElement(pBitmapIcone);
+				}
 
 
-	if (threadDataProcess != false && threadLoadingBitmap != nullptr)
-	{
-		if (filename == threadLoadingBitmap->filepath)
-		{
-			if (!threadLoadingBitmap->picture.empty())
-			{
-				if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
-					return;
-
-				CIcone* icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
-				if (icone != nullptr)
+				if (format == 4)
 				{
-					bool needToRefresh = false;
-					CThumbnailData* pThumbnailData = icone->GetData();
-					if (pThumbnailData->GetFilename() == threadLoadingBitmap->filename && icone != nullptr && pThumbnailData != nullptr)
+					CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
+					int numElement = iconeListLocal->GetNbElement();
+					auto thumbnailData = new CThumbnailDataStorage(filename);
+					wxImage image = loadingResource.LoadImageResource("IDB_BLACKROOM");
+					thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
+					blackRoom->AddPhotoToList(numElement);
+
+					thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
+
+					thumbnailData->SetBitmap(image);
+
+					auto pBitmapIcone = new CIcone();
+					pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+					pBitmapIcone->SetData(thumbnailData);
+					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+					iconeListLocal->AddElement(pBitmapIcone);
+				}
+				}
+
+
+				lockIconeList.lock();
+				oldIconeList = iconeList;
+				iconeList = iconeListLocal;
+				lockIconeList.unlock();
+
+				nbElementInIconeList = iconeList->GetNbElement();
+
+				EraseThumbnailList(oldIconeList);
+
+				threadDataProcess = true;
+				processIdle = true;
+
+				UpdateScroll();
+				needToRefresh = true;
+				}
+
+				void CThumbnailEffect::LoadPicture(void* param)
+				{
+					auto threadLoadingBitmap = static_cast<CThreadBitmapEffect*>(param);
+					if (threadLoadingBitmap == nullptr)
+						return;
+
+					bool deleteData = false;
+					//CImageLoadingFormat thumbnail; 
+					CSqlThumbnail sqlThumbnail;
+					auto colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(),
+					                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(),
+					                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
+					CImageLoadingFormat* thumbnail;
+
+					if (threadLoadingBitmap->imageLoading == nullptr)
 					{
-						pThumbnailData->SetIsProcess(false);
-						CImageLoadingFormat image;
-						image.SetPicture(threadLoadingBitmap->picture);
-						pThumbnailData->SetBitmap(image.GetwxImage());
-						pThumbnailData->SetIsLoading(false);
-						if (!render)
+						deleteData = true;
+						thumbnail = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
+					}
+					else
+						thumbnail = threadLoadingBitmap->imageLoading;
+
+
+					if (thumbnail != nullptr)
+					{
+						//thumbnail.SetPicture(bitmap);  
+						auto color_quad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(),
+						                            threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(),
+						                            threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
+						auto filtre = new CFiltreEffet(color_quad, false, thumbnail);
+
+						switch (threadLoadingBitmap->photoId)
 						{
-							needToRefresh = true;
+						case IDM_WAVE_EFFECT:
+							filtre->WaveFilter(20, 20, thumbnail->GetHeight() / 2, 2, 20);
+							break;
+
+						case IDM_FILTRELENSFLARE:
+							filtre->LensFlare(20, 20, 20, 1, 20, 45, 20);
+							break;
+
+						default:
+							{
+								CEffectParameter* effect = CFiltreData::GetDefaultEffectParameter(
+									threadLoadingBitmap->thumbnailData->GetNumPhotoId());
+								filtre->RenderEffect(threadLoadingBitmap->thumbnailData->GetNumPhotoId(), effect);
+								if (effect != nullptr)
+									delete effect;
+							}
+							break;
+						}
+
+						threadLoadingBitmap->picture = filtre->GetBitmap(true);
+						delete filtre;
+					}
+
+					if (deleteData)
+						delete thumbnail;
+
+					auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
+					event->SetClientData(threadLoadingBitmap);
+					wxQueueEvent(threadLoadingBitmap->thumbnail, event);
+				}
+
+				void CThumbnailEffect::ProcessIdle()
+				{
+					printf("CThumbnailEffect::ProcessIdle() \n");
+					//int nbProcesseur = thread::hardware_concurrency();
+					int nbProcesseur = 1;
+					CRegardsConfigParam* config = CParamInit::getInstance();
+					if (config != nullptr)
+						nbProcesseur = config->GetThumbnailProcess();
+
+					if (isAllProcess)
+					{
+						processIdle = false;
+						return;
+					}
+
+					while (nbProcess < nbProcesseur)
+					{
+						for (auto i = 0; i < nbElementInIconeList; i++)
+						{
+							CIcone* icone = iconeList->GetElement(i);
+							if (icone != nullptr)
+							{
+								CThumbnailData* pThumbnailData = icone->GetData();
+								if (pThumbnailData != nullptr)
+								{
+									bool isLoad = pThumbnailData->IsLoad();
+									bool isProcess = pThumbnailData->IsProcess();
+									if (!isLoad && !isProcess)
+									{
+										auto pLoadBitmap = new CThreadBitmapEffect();
+										pLoadBitmap->thumbnail = this;
+										pLoadBitmap->thumbnailData = static_cast<CThumbnailDataStorage*>(
+											pThumbnailData);
+										pLoadBitmap->filepath = filename;
+										pLoadBitmap->filename = pThumbnailData->GetFilename();
+										pLoadBitmap->numIcone = i;
+										pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
+										pLoadBitmap->imageLoading = imageLoading;
+										pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+										nbProcess++;
+										pThumbnailData->SetIsProcess(true);
+									}
+								}
+							}
 						}
 					}
-					if (needToRefresh)
-						needToRefresh = true;
+					//Test si tout a été fait
+					isAllProcess = true;
+					for (int i = 0; i < nbElementInIconeList; i++)
+					{
+						CIcone* icone = iconeList->GetElement(i);
+						if (icone != nullptr)
+						{
+							bool isLoad = false;
+							bool isProcess = false;
+							CThumbnailData* pThumbnailData = icone->GetData();
+							if (pThumbnailData != nullptr)
+							{
+								isLoad = pThumbnailData->IsLoad();
+								isProcess = pThumbnailData->IsProcess();
+							}
+
+							if (!isLoad && !isProcess)
+							{
+								isAllProcess = false;
+							}
+						}
+						if (!isAllProcess)
+							break;
+					}
 				}
-			}
-		}
-	}
 
-	if (threadLoadingBitmap->_thread != nullptr)
-	{
-		if (threadLoadingBitmap->_thread->joinable())
-			threadLoadingBitmap->_thread->join();
-
-		delete threadLoadingBitmap->_thread;
-
-		threadLoadingBitmap->_thread = nullptr;
-	}
-
-
-	if (threadLoadingBitmap != nullptr)
-	{
-		delete threadLoadingBitmap;
-		threadLoadingBitmap = nullptr;
-	}
-}
-
-void CThumbnailEffect::RenderIcone(wxDC* deviceContext)
-{
-	int x = -posLargeur;
-	int y = -posHauteur;
-
-	int nbElementX = 0;
-	int nbElementY = 0;
-
-	int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
-		nbElementByRow++;
-
-	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
-
-	//Calcul du width max
-	for (int i = 0; i < listSeparator.size(); i++)
-	{
-		//int nbElement = infosSeparationBar->listElement.size();
-
-		int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
-			elementByRow++;
-
-		if (nbElementByRow < elementByRow)
-			nbElementByRow = elementByRow;
-	}
-
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
-	{
-		//int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
-
-		infosSeparationBar->SetWidth(controlWidth);
-		infosSeparationBar->SetWindowPos(x, y);
-		infosSeparationBar->Render(deviceContext, 0, 0);
-
-		y += barseparationHeight;
-
-		for (int numElement : infosSeparationBar->listElement)
-		{
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
-			if (pBitmapIcone != nullptr)
-			{
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetWindowPos(x, y);
-				pBitmapIcone->SetSizeIcone(themeThumbnail.themeIcone.GetRealWidth(),
-				                           themeThumbnail.themeIcone.GetRealHeight());
-
-				//if visible
-				int left = x;
-				int right = x + themeThumbnail.themeIcone.GetWidth();
-				int top = y;
-				int bottom = y + themeThumbnail.themeIcone.GetHeight();
-
-				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
-
-
-				x += themeThumbnail.themeIcone.GetWidth();
-				nbElementX++;
-				if (nbElementX == nbElementByRow)
+				void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 				{
-					nbElementX = 0;
-					x = -posLargeur;
-					nbElementY++;
-					y += themeThumbnail.themeIcone.GetHeight();
+					nbProcess--;
+
+					auto threadLoadingBitmap = static_cast<CThreadBitmapEffect*>(event.GetClientData());
+					if (threadLoadingBitmap == nullptr)
+					{
+						return;
+					}
+
+
+					if (threadDataProcess != false && threadLoadingBitmap != nullptr)
+					{
+						if (filename == threadLoadingBitmap->filepath)
+						{
+							if (!threadLoadingBitmap->picture.empty())
+							{
+								if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
+									return;
+
+								CIcone* icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
+								if (icone != nullptr)
+								{
+									bool needToRefresh = false;
+									CThumbnailData* pThumbnailData = icone->GetData();
+									if (pThumbnailData->GetFilename() == threadLoadingBitmap->filename && icone !=
+										nullptr
+										&& pThumbnailData != nullptr)
+									{
+										pThumbnailData->SetIsProcess(false);
+										CImageLoadingFormat image;
+										image.SetPicture(threadLoadingBitmap->picture);
+										pThumbnailData->SetBitmap(image.GetwxImage());
+										pThumbnailData->SetIsLoading(false);
+										if (!render)
+										{
+											needToRefresh = true;
+										}
+									}
+									if (needToRefresh)
+										needToRefresh = true;
+								}
+							}
+						}
+					}
+
+					if (threadLoadingBitmap->_thread != nullptr)
+					{
+						if (threadLoadingBitmap->_thread->joinable())
+							threadLoadingBitmap->_thread->join();
+
+						delete threadLoadingBitmap->_thread;
+
+						threadLoadingBitmap->_thread = nullptr;
+					}
+
+
+					if (threadLoadingBitmap != nullptr)
+					{
+						delete threadLoadingBitmap;
+						threadLoadingBitmap = nullptr;
+					}
 				}
-			}
-		}
 
-		if (nbElementX != 0)
-		{
-			nbElementX = 0;
-			x = -posLargeur;
-			nbElementY++;
-			y += themeThumbnail.themeIcone.GetHeight();
-		}
-	}
-}
+				void CThumbnailEffect::RenderIcone(wxDC* deviceContext)
+				{
+					int x = -posLargeur;
+					int y = -posHauteur;
+
+					int nbElementX = 0;
+					int nbElementY = 0;
+
+					int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+					if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+						nbElementByRow++;
+
+					int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
+
+					//Calcul du width max
+					for (int i = 0; i < listSeparator.size(); i++)
+					{
+						//int nbElement = infosSeparationBar->listElement.size();
+
+						int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+						if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+							elementByRow++;
+
+						if (nbElementByRow < elementByRow)
+							nbElementByRow = elementByRow;
+					}
+
+					for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+					{
+						//int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
+
+						infosSeparationBar->SetWidth(controlWidth);
+						infosSeparationBar->SetWindowPos(x, y);
+						infosSeparationBar->Render(deviceContext, 0, 0);
+
+						y += barseparationHeight;
+
+						for (int numElement : infosSeparationBar->listElement)
+						{
+							CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+							if (pBitmapIcone != nullptr)
+							{
+								pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+								pBitmapIcone->SetWindowPos(x, y);
+								pBitmapIcone->SetSizeIcone(themeThumbnail.themeIcone.GetRealWidth(),
+								                           themeThumbnail.themeIcone.GetRealHeight());
+
+								//if visible
+								int left = x;
+								int right = x + themeThumbnail.themeIcone.GetWidth();
+								int top = y;
+								int bottom = y + themeThumbnail.themeIcone.GetHeight();
+
+								if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+									RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
 
 
-void CThumbnailEffect::UpdateScroll()
-{
-	//bool update = false;
-	thumbnailSizeX = 0;
-	thumbnailSizeY = 0;
-	if (GetWindowWidth() <= 0)
-		return;
+								x += themeThumbnail.themeIcone.GetWidth();
+								nbElementX++;
+								if (nbElementX == nbElementByRow)
+								{
+									nbElementX = 0;
+									x = -posLargeur;
+									nbElementY++;
+									y += themeThumbnail.themeIcone.GetHeight();
+								}
+							}
+						}
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
-	{
-		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
+						if (nbElementX != 0)
+						{
+							nbElementX = 0;
+							x = -posLargeur;
+							nbElementY++;
+							y += themeThumbnail.themeIcone.GetHeight();
+						}
+					}
+				}
 
-		int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
-			nbElementByRow++;
 
-		int nbElementEnY = static_cast<int>(infosSeparationBar->listElement.size()) / nbElementByRow;
-		if (nbElementEnY * nbElementByRow < infosSeparationBar->listElement.size())
-			nbElementEnY++;
+				void CThumbnailEffect::UpdateScroll()
+				{
+					//bool update = false;
+					thumbnailSizeX = 0;
+					thumbnailSizeY = 0;
+					if (GetWindowWidth() <= 0)
+						return;
 
-		if (nbElement < nbElementByRow)
-			nbElementByRow = nbElement;
+					for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+					{
+						int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 
-		int sizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
-		if (sizeX > thumbnailSizeX)
-			thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
-		thumbnailSizeY += nbElementEnY * themeThumbnail.themeIcone.GetHeight() + infosSeparationBar->GetHeight();
-	}
+						int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+						if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+							nbElementByRow++;
 
-	//int nbElement = pIconeList.size();
-	wxWindow* parent = this->GetParent();
+						int nbElementEnY = static_cast<int>(infosSeparationBar->listElement.size()) / nbElementByRow;
+						if (nbElementEnY * nbElementByRow < infosSeparationBar->listElement.size())
+							nbElementEnY++;
 
-	if (parent != nullptr)
-	{
-		auto controlSize = new CControlSize();
-		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
-		controlSize->controlWidth = thumbnailSizeX;
-		controlSize->controlHeight = thumbnailSizeY;
-		evt.SetClientData(controlSize);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
+						if (nbElement < nbElementByRow)
+							nbElementByRow = nbElement;
 
-	if (parent != nullptr)
-	{
-		auto size = new wxSize();
-		wxCommandEvent evt(wxEVENT_SETPOSITION);
-		size->x = posLargeur;
-		size->y = posHauteur;
-		evt.SetClientData(size);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
+						int sizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
+						if (sizeX > thumbnailSizeX)
+							thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
+						thumbnailSizeY += nbElementEnY * themeThumbnail.themeIcone.GetHeight() + infosSeparationBar->
+							GetHeight();
+					}
+
+					//int nbElement = pIconeList.size();
+					wxWindow* parent = this->GetParent();
+
+					if (parent != nullptr)
+					{
+						auto controlSize = new CControlSize();
+						wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+						controlSize->controlWidth = thumbnailSizeX;
+						controlSize->controlHeight = thumbnailSizeY;
+						evt.SetClientData(controlSize);
+						parent->GetEventHandler()->AddPendingEvent(evt);
+					}
+
+					if (parent != nullptr)
+					{
+						auto size = new wxSize();
+						wxCommandEvent evt(wxEVENT_SETPOSITION);
+						size->x = posLargeur;
+						size->y = posHauteur;
+						evt.SetClientData(size);
+						parent->GetEventHandler()->AddPendingEvent(evt);
+					}
+				}

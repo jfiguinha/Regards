@@ -4,13 +4,17 @@
 class IBitmapWnd
 {
 public:
-	IBitmapWnd() {};
-	~IBitmapWnd() {};
+	IBitmapWnd()
+	{
+	};
+
+	~IBitmapWnd()
+	{
+	};
 
 	virtual void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) = 0;
 
 	virtual void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender) = 0;
 
 	virtual IBitmapRenderInterface* GetWndPt() = 0;
-
 };

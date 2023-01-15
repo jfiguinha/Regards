@@ -8,26 +8,24 @@ using namespace Regards::Window;
 class CImageLoadingFormat;
 
 
-namespace Regards
+namespace Regards::Scanner
 {
-	namespace Scanner
+	class CThumbnailSelection : public CWindowMain
 	{
-		class CThumbnailSelection : public CWindowMain
-		{
-		public:
-			CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename);
-			~CThumbnailSelection() override;
-			vector<int> GetSelectItem();
-			void UpdateScreenRatio() override;
-		private:
-			void RedrawBarPos();
-			void OnSize(wxSizeEvent& event) override;
+	public:
+		CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename);
+		~CThumbnailSelection() override;
+		vector<int> GetSelectItem();
+		void UpdateScreenRatio() override;
 
-			CScrollbarWnd* thumbscrollbar;
-			CThumbnailFileSelection* thumbnailFileSelection;
-			CValidationToolbar* validationToolbar;
-			int width;
-			int height;
-		};
-	}
+	private:
+		void RedrawBarPos();
+		void OnSize(wxSizeEvent& event) override;
+
+		CScrollbarWnd* thumbscrollbar;
+		CThumbnailFileSelection* thumbnailFileSelection;
+		CValidationToolbar* validationToolbar;
+		int width;
+		int height;
+	};
 }

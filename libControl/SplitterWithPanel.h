@@ -21,7 +21,7 @@ namespace Regards
 			CSplitterWithPanel(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme,
 			                   const CThemeToolbar& themeInfosToolbar, const bool& horizontal);
 			~CSplitterWithPanel() override;
-			void SetHorizontal(const bool& horizontal);
+			void SetHorizontal(const bool& horizontal) override;
 			void UpdateScreenRatio() override;
 			void ClickShowButton(const int& id);
 			void ClosePane(const int& id);

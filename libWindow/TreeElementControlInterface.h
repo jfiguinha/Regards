@@ -1,23 +1,20 @@
 #pragma once
 #include "TreeElement.h"
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeElementControlInterface
 	{
-		class CTreeElementControlInterface
+	public:
+		CTreeElementControlInterface()
 		{
-		public:
-			CTreeElementControlInterface()
-			{
-			};
-
-			virtual ~CTreeElementControlInterface()
-			{
-			};
-
-			//virtual void UpdateElement(CTreeElement * treeElement) = 0;
-			virtual void UpdateTreeControl() = 0;
 		};
-	}
+
+		virtual ~CTreeElementControlInterface()
+		{
+		};
+
+		//virtual void UpdateElement(CTreeElement * treeElement) = 0;
+		virtual void UpdateTreeControl() = 0;
+	};
 }

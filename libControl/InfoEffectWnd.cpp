@@ -32,7 +32,8 @@ void CInfoEffectWnd::AddModification(CImageLoadingFormat* bitmap, const wxString
 		historyEffectOld->AddModification(bitmap, libelle);
 }
 
-void CInfoEffectWnd::HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
+void CInfoEffectWnd::HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename,
+                                   const wxString& historyLibelle,
                                    CModificationManager* modificationManager)
 {
 	if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)

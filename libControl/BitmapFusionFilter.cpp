@@ -38,22 +38,22 @@ int CBitmapFusionFilter::GetTypeFilter()
 }
 
 CImageLoadingFormat* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
-                                                                        IBitmapDisplay* bmpViewer)
+                                                                             IBitmapDisplay* bmpViewer)
 {
-	CImageLoadingFormat* picture = new CImageLoadingFormat();
+	auto picture = new CImageLoadingFormat();
 	const float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
 	const int widthOutput = nextPicture->GetWidth() * newRatio;
 	const int heightOutput = nextPicture->GetHeight() * newRatio;
 
 	cv::Mat _out;
-	cv::resize(nextPicture->GetOpenCVPicture(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
+	resize(nextPicture->GetOpenCVPicture(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
 	picture->SetPicture(_out);
 	out.width = widthOutput;
 	out.height = heightOutput;
 	out.x = (bmpViewer->GetWidth() - widthOutput) / 2;
 	out.y = (bmpViewer->GetHeight() - heightOutput) / 2;
 
-	
+
 	return picture;
 }
 
@@ -71,7 +71,7 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay*
 
 void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
 {
-	CImageLoadingFormat * temp = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+	CImageLoadingFormat* temp = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 	if (temp != nullptr)
 	{
 		GenerateTexture(temp);
@@ -102,7 +102,7 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 		                                        out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 }
 
-void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat * bitmap)
+void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat* bitmap)
 {
 	if (pictureNext == nullptr)
 		pictureNext = new GLTexture();

@@ -223,7 +223,8 @@ void CSliderVideo::InsertPlayButton(wxDC* context)
 }
 
 
-void CSliderVideo::InsertButton(const int& xStart, wxDC* context, wxRect & position, wxImage & button, const bool &isActif, const wxString & pictureName)
+void CSliderVideo::InsertButton(const int& xStart, wxDC* context, wxRect& position, wxImage& button,
+                                const bool& isActif, const wxString& pictureName)
 {
 	int yPos = themeSlider.GetButtonVolumeUpHeight(); //buttonVolumeUp.GetHeight();
 	wxImage bmp;
@@ -232,7 +233,7 @@ void CSliderVideo::InsertButton(const int& xStart, wxDC* context, wxRect & posit
 		GetHeight() != themeSlider.GetButtonVolumeUpHeight()))
 	{
 		button = CLibResource::CreatePictureFromSVG(pictureName, themeSlider.GetButtonVolumeUpWidth(),
-			themeSlider.GetButtonVolumeUpHeight());
+		                                            themeSlider.GetButtonVolumeUpHeight());
 	}
 	bmp = button;
 
@@ -241,11 +242,11 @@ void CSliderVideo::InsertButton(const int& xStart, wxDC* context, wxRect & posit
 	{
 		bmp = bmp.ConvertToGreyscale();
 		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-			colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
+		            colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
 	}
 	else
 		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+		            colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
 	if (bmp.IsOk())
 	{
@@ -294,7 +295,7 @@ void CSliderVideo::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
-		
+
 		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
@@ -308,7 +309,7 @@ void CSliderVideo::Draw(wxDC* context)
 		positionSlider.x = themeSlider.GetMarge() + timePastSize + themeSlider.GetMarge() + themeSlider.
 			GetButtonPlayWidth();
 		positionSlider.width = (GetWindowWidth() - (volumeSize + themeSlider.GetMarge()) - (totalTimeSize + themeSlider.
-				GetMarge())) - ((themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge()) * 4) - positionSlider.x;
+			GetMarge())) - ((themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge()) * 4) - positionSlider.x;
 		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
 		DrawShapeElement(&sourceDCContext, positionSlider);
@@ -347,7 +348,8 @@ void CSliderVideo::CalculPositionButton()
 	if (secondTotalTime > 0)
 	{
 		float pourcentage = secondTimePast / secondTotalTime;
-		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
+		CalculPositionButton(
+			positionSlider.x + static_cast<int>(static_cast<float>(positionSlider.width) * pourcentage));
 	}
 	else
 	{
@@ -452,7 +454,7 @@ void CSliderVideo::OnMouseMove(wxMouseEvent& event)
 			buttonScreenActif = false;
 		}
 	}
-    needToRefresh = true;
+	needToRefresh = true;
 }
 
 void CSliderVideo::OnMouseLeave(wxMouseEvent& event)

@@ -1,11 +1,9 @@
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
-	{
-		class CTreeData;
-		class CTreeElement;
+	class CTreeData;
+	class CTreeElement;
 
 #define ELEMENT_TRIANGLE 1
 #define ELEMENT_TEXTE 2
@@ -18,72 +16,71 @@ namespace Regards
 #define ELEMENT_LISTBOX 9
 #define ELEMENT_STAR 10
 
-		class CPositionElement
+	class CPositionElement
+	{
+	public:
+		CPositionElement() : treeData(nullptr), treeElement(nullptr)
 		{
-		public:
-			CPositionElement() : treeData(nullptr), treeElement(nullptr)
-			{
-				x = 0;
-				y = 0;
-				width = 0;
-				height = 0;
-				type = 0;
-				numColumn = 0;
-				numRow = 0;
-			}
+			x = 0;
+			y = 0;
+			width = 0;
+			height = 0;
+			type = 0;
+			numColumn = 0;
+			numRow = 0;
+		}
 
-			~CPositionElement();
+		~CPositionElement();
 
-			int GetType();
-			void SetType(const int& type);
+		int GetType();
+		void SetType(const int& type);
 
-			int GetX();
-			void SetX(const int& x);
+		int GetX();
+		void SetX(const int& x);
 
-			int GetY();
-			void SetY(const int& y);
+		int GetY();
+		void SetY(const int& y);
 
-			int GetWidth();
-			void SetWidth(const int& width);
+		int GetWidth();
+		void SetWidth(const int& width);
 
-			int GetHeight();
-			void SetHeight(const int& height);
+		int GetHeight();
+		void SetHeight(const int& height);
 
-			int GetRow();
-			void SetRow(const int& row);
+		int GetRow();
+		void SetRow(const int& row);
 
-			int GetColumn();
-			void SetColumn(const int& column);
+		int GetColumn();
+		void SetColumn(const int& column);
 
-			void SetColorBackground(const wxColour& colorBackground);
-			wxColour GetColorBackground();
+		void SetColorBackground(const wxColour& colorBackground);
+		wxColour GetColorBackground();
 
-			CTreeData* GetTreeData();
-			void SetTreeData(CTreeData* treeData);
+		CTreeData* GetTreeData();
+		void SetTreeData(CTreeData* treeData);
 
-			CTreeElement* GetTreeElement();
-			void SetTreeElement(CTreeElement* treeElement);
+		CTreeElement* GetTreeElement();
+		void SetTreeElement(CTreeElement* treeElement);
 
-			void DrawElement(wxDC* deviceContext, const int& xStartElement, const int& xposLargeur, const int& posHauteur);
-			void DrawElement(wxDC* deviceContext);
+		void DrawElement(wxDC* deviceContext, const int& xStartElement, const int& xposLargeur, const int& posHauteur);
+		void DrawElement(wxDC* deviceContext);
 
-			void SetValue(const int& x, const int& y, const int& numColumn, const int& numRow, const int& width,
-				const int& height, const int& type, CTreeElement* treeElement, CTreeData* treeData);
+		void SetValue(const int& x, const int& y, const int& numColumn, const int& numRow, const int& width,
+		              const int& height, const int& type, CTreeElement* treeElement, CTreeData* treeData);
 
-		private:
-			int type;
-			int x;
-			int y;
-			int width;
-			int height;
-			int numColumn;
-			int numRow;
-			CTreeData* treeData;
-			CTreeElement* treeElement;
-			wxColour colorBackground;
-		};
+	private:
+		int type;
+		int x;
+		int y;
+		int width;
+		int height;
+		int numColumn;
+		int numRow;
+		CTreeData* treeData;
+		CTreeElement* treeElement;
+		wxColour colorBackground;
+	};
 
 
-		using PositionElementVector = tbb::concurrent_vector<CPositionElement*>;
-	}
+	using PositionElementVector = tbb::concurrent_vector<CPositionElement*>;
 }

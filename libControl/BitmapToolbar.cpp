@@ -85,11 +85,10 @@ void CBitmapToolbar::ZoomPos(const int& position)
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer =(CBitmapWndViewer*)bitmapWindow->GetWndPt();
-		if(wndViewer != nullptr)
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
+		if (wndViewer != nullptr)
 			wndViewer->SetRatioPos(position);
 	}
-		
 }
 
 void CBitmapToolbar::ZoomOn()
@@ -97,7 +96,7 @@ void CBitmapToolbar::ZoomOn()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 			wndViewer->ZoomOn();
 	}
@@ -111,7 +110,7 @@ void CBitmapToolbar::ChangeZoomInPos()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
@@ -119,8 +118,6 @@ void CBitmapToolbar::ChangeZoomInPos()
 				dwPos = slide->GetNbValue() - 1;
 			SetTrackBarPosition(dwPos);
 		}
-
-
 	}
 }
 
@@ -129,7 +126,7 @@ void CBitmapToolbar::ChangeZoomOutPos()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
@@ -146,7 +143,7 @@ void CBitmapToolbar::ZoomOut()
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 			wndViewer->ZoomOut();
 	}
@@ -171,7 +168,6 @@ void CBitmapToolbar::SetTrackBarPosition(const int& iPos)
 	{
 		slide->SetPosition(positionTrackBar);
 		needToRefresh = true;
-
 	}
 }
 
@@ -180,7 +176,7 @@ void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 			wndViewer->SetZoomPosition(position);
 	}
@@ -192,7 +188,7 @@ void CBitmapToolbar::EventManager(const int& id)
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		auto wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 		if (wndViewer != nullptr)
 		{
 			switch (id)
@@ -205,13 +201,13 @@ void CBitmapToolbar::EventManager(const int& id)
 				break;
 
 			case WM_EXPORT:
-			{
-				if (exportPicture)
-					wndViewer->ExportPicture();
-				else
-					wndViewer->SavePicture();
-				break;
-			}
+				{
+					if (exportPicture)
+						wndViewer->ExportPicture();
+					else
+						wndViewer->SavePicture();
+					break;
+				}
 			case WM_EMAIL:
 				wndViewer->SendEmail();
 				break;
@@ -222,9 +218,8 @@ void CBitmapToolbar::EventManager(const int& id)
 			case WM_ZOOMON:
 				ZoomOn();
 				break;
-			default:;
+			default: ;
 			}
 		}
-
 	}
 }

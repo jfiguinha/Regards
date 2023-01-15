@@ -23,16 +23,15 @@ CFFmpegTranscoding::CFFmpegTranscoding() :
 
 CFFmpegTranscoding::~CFFmpegTranscoding()
 {
-
 }
 
 wxString CFFmpegTranscoding::GetOutputFilename()
 {
-
 	return output;
 }
 
-int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& output, const int& position, CVideoOptionCompress* videoCompressOption)
+int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& output, const int& position,
+                                    CVideoOptionCompress* videoCompressOption)
 {
 #ifdef WIN32_MFT
 	CMFTEncoding mftEncoding;
@@ -43,7 +42,7 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 	}
 #else
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
-	int ret =  ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
+	int ret = ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
 	if (!ffmpegtranscoding.GetFrameOutput().empty())
 	{
 		data = ffmpegtranscoding.GetFrameOutput();
@@ -97,7 +96,7 @@ void CFFmpegTranscoding::EncodeFileThread(void* data)
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
 
 	int ret = ffmpegtranscoding.EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output,
-	                                             ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
+	                                       ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
 	if (ret < 0)
 	{
 		wxString errorConversion = CLibResource::LoadStringFromResource("LBLERRORCONVERSION", 1);

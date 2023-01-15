@@ -5,19 +5,16 @@
 
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Introduction
 {
-	namespace Introduction
+	class CMyCentralWindowIntro : public CTreeWithScrollbar
 	{
-		class CMyCentralWindowIntro : public CTreeWithScrollbar
-		{
-		public:
-			CMyCentralWindowIntro(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
-			                      const CThemeTree& theme);
-			~CMyCentralWindowIntro() override;
+	public:
+		CMyCentralWindowIntro(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
+		                      const CThemeTree& theme);
+		~CMyCentralWindowIntro() override;
 
-		private:
-			CInfoAbout* infoAbout;
-		};
-	}
+	private:
+		CInfoAbout* infoAbout;
+	};
 }
