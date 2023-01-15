@@ -23,7 +23,7 @@ void LibRaw::cubic_spline(const int *x_, const int *y_, const int len)
   float **A, *b, *c, *d, *x, *y;
   int i, j;
 
-  A = (float **)calloc(((2 * len + 4) * sizeof **A + sizeof *A), 2 * len);
+  A = static_cast<float **>(calloc(((2 * len + 4) * sizeof **A + sizeof *A), 2 * len));
   if (!A)
     return;
   A[0] = (float *)(A + 2 * len);
@@ -65,7 +65,7 @@ void LibRaw::cubic_spline(const int *x_, const int *y_, const int len)
   }
   for (i = 0; i < 0x10000; i++)
   {
-    float x_out = (float)(i / 65535.0);
+    float x_out = static_cast<float>(i / 65535.0);
     float y_out = 0;
     for (j = 0; j < len - 1; j++)
     {
@@ -75,17 +75,18 @@ void LibRaw::cubic_spline(const int *x_, const int *y_, const int len)
         y_out = y[j] +
                 ((y[j + 1] - y[j]) / d[j] -
                  (2 * d[j] * c[j] + c[j + 1] * d[j]) / 6) *
-                    v +
+                v +
                 (c[j] * 0.5) * v * v +
                 ((c[j + 1] - c[j]) / (6 * d[j])) * v * v * v;
       }
     }
     curve[i] = y_out < 0.0
-                   ? 0
-                   : (y_out >= 1.0 ? 65535 : (ushort)(y_out * 65535.0 + 0.5));
+                 ? 0
+                 : (y_out >= 1.0 ? 65535 : static_cast<ushort>(y_out * 65535.0 + 0.5));
   }
   free(A);
 }
+
 void LibRaw::gamma_curve(double pwr, double ts, int mode, int imax)
 {
   int i;
@@ -125,15 +126,20 @@ void LibRaw::gamma_curve(double pwr, double ts, int mode, int imax)
   for (i = 0; i < 0x10000; i++)
   {
     curve[i] = 0xffff;
-    if ((r = (double)i / imax) < 1)
+    if ((r = static_cast<double>(i) / imax) < 1)
       curve[i] =
           0x10000 *
-          (mode ? (r < g[3] ? r * g[1]
-                            : (g[0] ? pow(r, g[0]) * (1 + g[4]) - g[4]
-                                    : log(r) * g[2] + 1))
-                : (r < g[2] ? r / g[1]
-                            : (g[0] ? pow((r + g[4]) / (1 + g[4]), 1 / g[0])
-                                    : exp((r - 1) / g[2]))));
+          (mode
+             ? (r < g[3]
+                  ? r * g[1]
+                  : (g[0]
+                       ? pow(r, g[0]) * (1 + g[4]) - g[4]
+                       : log(r) * g[2] + 1))
+             : (r < g[2]
+                  ? r / g[1]
+                  : (g[0]
+                       ? pow((r + g[4]) / (1 + g[4]), 1 / g[0])
+                       : exp((r - 1) / g[2]))));
   }
 }
 

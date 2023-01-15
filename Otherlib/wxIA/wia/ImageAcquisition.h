@@ -7,11 +7,11 @@
 #endif //MAX_GUID_STRING_LEN
 
 
-typedef HRESULT(CALLBACK *PFNPROGRESSCALLBACK)(
-	LONG   lStatus,
-	LONG   lPercentComplete,
-	PVOID  pParam
-	);
+using PFNPROGRESSCALLBACK = HRESULT(CALLBACK *)(
+	LONG lStatus,
+	LONG lPercentComplete,
+	PVOID pParam
+);
 
 template <class T>
 class CComPtrArray
@@ -25,9 +25,9 @@ public:
 
 	explicit CComPtrArray(int nCount)
 	{
-		m_pArray = (T **)CoTaskMemAlloc(nCount * sizeof(T *));
+		m_pArray = static_cast<T**>(CoTaskMemAlloc(nCount * sizeof(T*)));
 
-		m_nCount = m_pArray == NULL ? 0 : nCount;
+		m_nCount = m_pArray == nullptr ? 0 : nCount;
 
 		for (int i = 0; i < m_nCount; ++i)
 		{
@@ -45,7 +45,7 @@ public:
 		Clear();
 	}
 
-	CComPtrArray &operator =(const CComPtrArray& rhs)
+	CComPtrArray& operator =(const CComPtrArray& rhs)
 	{
 		if (this != &rhs)
 		{
@@ -56,29 +56,29 @@ public:
 		return *this;
 	}
 
-	operator T **()
+	operator T**()
 	{
 		return m_pArray;
 	}
 
 	bool operator!()
 	{
-		return m_pArray == NULL;
+		return m_pArray == nullptr;
 	}
 
-	T ***operator&()
+	T*** operator&()
 	{
 		return &m_pArray;
 	}
 
-	LONG &Count()
+	LONG& Count()
 	{
 		return m_nCount;
 	}
 
 	void Clear()
 	{
-		if (m_pArray != NULL)
+		if (m_pArray != nullptr)
 		{
 			for (int i = 0; i < m_nCount; ++i)
 			{
@@ -100,11 +100,11 @@ public:
 		m_pArray = NULL;
 		m_nCount = 0;
 
-		if (rhs.m_pArray != NULL)
+		if (rhs.m_pArray != nullptr)
 		{
-			m_pArray = (T**)CoTaskMemAlloc(rhs.m_nCount * sizeof(T *));
+			m_pArray = static_cast<T**>(CoTaskMemAlloc(rhs.m_nCount * sizeof(T*)));
 
-			if (m_pArray != NULL)
+			if (m_pArray != nullptr)
 			{
 				m_nCount = rhs.m_nCount;
 
@@ -122,43 +122,37 @@ public:
 	}
 
 private:
-	T    **m_pArray;
-	LONG  m_nCount;
+	T** m_pArray;
+	LONG m_nCount;
 };
 
 
-
-
-
 HRESULT ReadPropertyLong(
-	IWiaPropertyStorage *pWiaPropertyStorage,
-	const PROPSPEC      *pPropSpec,
-	LONG                *plResult
+	IWiaPropertyStorage* pWiaPropertyStorage,
+	const PROPSPEC* pPropSpec,
+	LONG* plResult
 );
-
 
 
 HRESULT
 ReadPropertyGuid(
-	IWiaPropertyStorage *pWiaPropertyStorage,
-	const PROPSPEC      *pPropSpec,
-	GUID                *pguidResult
+	IWiaPropertyStorage* pWiaPropertyStorage,
+	const PROPSPEC* pPropSpec,
+	GUID* pguidResult
 );
 
 
 HRESULT
 WiaGetImage(
-	HWND                 hWndParent,
-	LONG                 lDeviceType,
-	LONG                 lFlags,
-	LONG                 lIntent,
-	IWiaDevMgr          *pSuppliedWiaDevMgr,
-	IWiaItem            *pSuppliedItemRoot,
-	PFNPROGRESSCALLBACK  pfnProgressCallback,
-	PVOID                pProgressCallbackParam,
-	GUID                *pguidFormat,
-	LONG                *plCount,
-	IStream             ***pppStream
+	HWND hWndParent,
+	LONG lDeviceType,
+	LONG lFlags,
+	LONG lIntent,
+	IWiaDevMgr* pSuppliedWiaDevMgr,
+	IWiaItem* pSuppliedItemRoot,
+	PFNPROGRESSCALLBACK pfnProgressCallback,
+	PVOID pProgressCallbackParam,
+	GUID* pguidFormat,
+	LONG* plCount,
+	IStream*** pppStream
 );
-
-

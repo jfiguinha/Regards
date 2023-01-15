@@ -27,7 +27,7 @@ int LibRaw::dcraw_ppm_tiff_writer(const char *filename)
 
   if (!filename)
     return ENOENT;
-  FILE *f = NULL;
+  FILE *f = nullptr;
   if (!strcmp(filename, "-"))
   {
 #ifdef LIBRAW_WIN32_CALLS
@@ -46,28 +46,28 @@ int LibRaw::dcraw_ppm_tiff_writer(const char *filename)
     if (!libraw_internal_data.output_data.histogram)
     {
       libraw_internal_data.output_data.histogram =
-          (int(*)[LIBRAW_HISTOGRAM_SIZE])malloc(
-              sizeof(*libraw_internal_data.output_data.histogram) * 4);
+          static_cast<int(*)[0x2000]>(malloc(
+              sizeof(*libraw_internal_data.output_data.histogram) * 4));
     }
     libraw_internal_data.internal_data.output = f;
     write_ppm_tiff();
     SET_PROC_FLAG(LIBRAW_PROGRESS_FLIP);
-    libraw_internal_data.internal_data.output = NULL;
+    libraw_internal_data.internal_data.output = nullptr;
     if (strcmp(filename, "-"))
       fclose(f);
     return 0;
   }
-  catch (const LibRaw_exceptions& err)
+  catch (const LibRaw_exceptions &err)
   {
     if (strcmp(filename, "-"))
       fclose(f);
     EXCEPTION_HANDLER(err);
   }
-  catch (const std::bad_alloc&)
+  catch (const std::bad_alloc &)
   {
-      if (strcmp(filename, "-"))
-          fclose(f);
-      EXCEPTION_HANDLER(LIBRAW_EXCEPTION_ALLOC);
+    if (strcmp(filename, "-"))
+      fclose(f);
+    EXCEPTION_HANDLER(LIBRAW_EXCEPTION_ALLOC);
   }
 
 }

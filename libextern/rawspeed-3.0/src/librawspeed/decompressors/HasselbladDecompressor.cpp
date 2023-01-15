@@ -35,7 +35,7 @@ namespace rawspeed {
 
 HasselbladDecompressor::HasselbladDecompressor(const ByteStream& bs,
                                                const RawImage& img)
-    : AbstractLJpegDecompressor(bs, img) {
+  : AbstractLJpegDecompressor(bs, img) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -89,15 +89,14 @@ void HasselbladDecompressor::decodeScan() {
       p2 += getBits(bitStream, len2);
       // NOTE: this is rather unusual and weird, but appears to be correct.
       // clampBits(p, 16) results in completely garbled images.
-      out(row, col) = uint16_t(p1);
-      out(row, col + 1) = uint16_t(p2);
+      out(row, col) = static_cast<uint16_t>(p1);
+      out(row, col + 1) = static_cast<uint16_t>(p2);
     }
   }
   input.skipBytes(bitStream.getStreamPosition());
 }
 
-void HasselbladDecompressor::decode(int pixelBaseOffset_)
-{
+void HasselbladDecompressor::decode(int pixelBaseOffset_) {
   pixelBaseOffset = pixelBaseOffset_;
 
   if (pixelBaseOffset < -65536 || pixelBaseOffset > 65535)

@@ -44,7 +44,7 @@ public:
     CodeSymbol() = default;
 
     CodeSymbol(uint16_t code_, uint8_t code_len_)
-        : code(code_), code_len(code_len_) {
+      : code(code_), code_len(code_len_) {
       assert(code_len > 0);
       assert(code_len <= 16);
       assert(code <= ((1U << code_len) - 1U));
@@ -76,7 +76,7 @@ protected:
   bool fullDecode = true;
   bool fixDNGBug16 = false;
 
-  [[nodiscard]] inline size_t __attribute__((pure))
+  [[nodiscard]] size_t __attribute__((pure))
   maxCodePlusDiffLength() const {
     return nCodesPerLength.size() - 1 +
            *(std::max_element(codeValues.cbegin(), codeValues.cend()));
@@ -88,7 +88,7 @@ protected:
   // (there are always 0 codes of length 0)
   std::vector<unsigned int> nCodesPerLength; // index is length of code
 
-  [[nodiscard]] inline unsigned int __attribute__((pure))
+  [[nodiscard]] unsigned int __attribute__((pure))
   maxCodesCount() const {
     return std::accumulate(nCodesPerLength.begin(), nCodesPerLength.end(), 0U);
   }
@@ -123,11 +123,11 @@ protected:
     };
 #endif
     assert(std::adjacent_find(symbols.cbegin(), symbols.cend(),
-                              [&symbolSort](const CodeSymbol& lhs,
-                                            const CodeSymbol& rhs) -> bool {
-                                return !symbolSort(lhs, rhs);
-                              }) == symbols.cend() &&
-           "all code symbols are globally ordered");
+          [&symbolSort](const CodeSymbol& lhs,
+            const CodeSymbol& rhs) -> bool {
+          return !symbolSort(lhs, rhs);
+          }) == symbols.cend() &&
+        "all code symbols are globally ordered");
 
     // No two symbols should have the same prefix (high bytes)
     // Only analyze the lower triangular matrix, excluding diagonal
@@ -240,8 +240,8 @@ public:
   }
 
   template <typename BIT_STREAM, bool FULL_DECODE>
-  inline int processSymbol(BIT_STREAM& bs, CodeSymbol symbol,
-                           int codeValue) const {
+  int processSymbol(BIT_STREAM& bs, CodeSymbol symbol,
+                    int codeValue) const {
     assert(symbol.code_len >= 0 && symbol.code_len <= 16);
 
     // If we were only looking for symbol's code value, then just return it.
@@ -265,7 +265,7 @@ public:
 
   // Figure F.12 – Extending the sign bit of a decoded value in V
   // WARNING: this is *not* your normal 2's complement sign extension!
-  inline static int __attribute__((const)) extend(uint32_t diff, uint32_t len) {
+  static int __attribute__((const)) extend(uint32_t diff, uint32_t len) {
     assert(len > 0);
     auto ret = static_cast<int32_t>(diff);
     if ((diff & (1 << (len - 1))) == 0)

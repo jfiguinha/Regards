@@ -45,7 +45,7 @@ void MefDecoder::checkImageDimensions() {
 }
 
 RawImage MefDecoder::decodeRawInternal() {
-  SimpleTiffDecoder::prepareForRawDecoding();
+  prepareForRawDecoding();
 
   UncompressedDecompressor u(
       ByteStream(DataBuffer(mFile.getSubView(off), Endianness::little)), mRaw);

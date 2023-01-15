@@ -17,7 +17,7 @@
 
 #define _ARR_SZ(a) (sizeof(a)/sizeof(a[0]))
 
-static const int _tagtype_dataunit_bytes [19] = {
+static const int _tagtype_dataunit_bytes[19] = {
     1, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8, 4, 2, 8, 8, 8, 8
 };
 
@@ -25,87 +25,90 @@ libraw_static_table_t LibRaw::tagtype_dataunit_bytes(_tagtype_dataunit_bytes, _A
 
 int libraw_tagtype_dataunit_bytes(int tagtype)
 {
-    return _tagtype_dataunit_bytes[((unsigned)tagtype <= _ARR_SZ(_tagtype_dataunit_bytes)) ? tagtype : 0];
+  return _tagtype_dataunit_bytes[(static_cast<unsigned>(tagtype) <= _ARR_SZ(_tagtype_dataunit_bytes)) ? tagtype : 0];
 }
 
 
 static const int _Canon_wbi2std[] = { // Canon WB index to standard indexes
-//      std. number                wbi - Canon number
-    LIBRAW_WBI_Auto,             // 0
-    LIBRAW_WBI_Daylight,         // 1
-    LIBRAW_WBI_Cloudy,           // 2
-    LIBRAW_WBI_Tungsten,         // 3
-    LIBRAW_WBI_Fluorescent,      // 4
-    LIBRAW_WBI_Flash,            // 5
-    LIBRAW_WBI_Custom,           // 6
-    LIBRAW_WBI_BW,               // 7
-    LIBRAW_WBI_Shade,            // 8
-    LIBRAW_WBI_Kelvin,           // 9
-    LIBRAW_WBI_PC_Set1,          // 10
-    LIBRAW_WBI_PC_Set2,          // 11
-    LIBRAW_WBI_PC_Set3,          // 12
-    LIBRAW_WBI_Unknown,          // 13, unlucky number "13", not used
-    LIBRAW_WBI_FluorescentHigh,  // 14
-    LIBRAW_WBI_Custom1,          // 15
-    LIBRAW_WBI_Custom2,          // 16
-    LIBRAW_WBI_Underwater,       // 17, last one for older PowerShot models
-    LIBRAW_WBI_Custom3,          // 18
-    LIBRAW_WBI_Custom4,          // 19
-    LIBRAW_WBI_PC_Set4,          // 20
-    LIBRAW_WBI_PC_Set5,          // 21
-    LIBRAW_WBI_Unknown,          // 22
-    LIBRAW_WBI_Auto1             // 23
+    //      std. number                wbi - Canon number
+    LIBRAW_WBI_Auto,            // 0
+    LIBRAW_WBI_Daylight,        // 1
+    LIBRAW_WBI_Cloudy,          // 2
+    LIBRAW_WBI_Tungsten,        // 3
+    LIBRAW_WBI_Fluorescent,     // 4
+    LIBRAW_WBI_Flash,           // 5
+    LIBRAW_WBI_Custom,          // 6
+    LIBRAW_WBI_BW,              // 7
+    LIBRAW_WBI_Shade,           // 8
+    LIBRAW_WBI_Kelvin,          // 9
+    LIBRAW_WBI_PC_Set1,         // 10
+    LIBRAW_WBI_PC_Set2,         // 11
+    LIBRAW_WBI_PC_Set3,         // 12
+    LIBRAW_WBI_Unknown,         // 13, unlucky number "13", not used
+    LIBRAW_WBI_FluorescentHigh, // 14
+    LIBRAW_WBI_Custom1,         // 15
+    LIBRAW_WBI_Custom2,         // 16
+    LIBRAW_WBI_Underwater,      // 17, last one for older PowerShot models
+    LIBRAW_WBI_Custom3,         // 18
+    LIBRAW_WBI_Custom4,         // 19
+    LIBRAW_WBI_PC_Set4,         // 20
+    LIBRAW_WBI_PC_Set5,         // 21
+    LIBRAW_WBI_Unknown,         // 22
+    LIBRAW_WBI_Auto1            // 23
 };
 
 libraw_static_table_t LibRaw::Canon_wbi2std(_Canon_wbi2std, _ARR_SZ(_Canon_wbi2std));
 
 static const int _Canon_KeyIsZero_Len2048_linenums_2_StdWBi[] = { // Appendix A: G2, S30, S40; G3, G5, S45, S50
-  LIBRAW_WBI_Custom1,
-  LIBRAW_WBI_Custom2,
-  LIBRAW_WBI_Daylight,
-  LIBRAW_WBI_Cloudy,
-  LIBRAW_WBI_Tungsten,
-  LIBRAW_WBI_Fluorescent,
-  LIBRAW_WBI_Unknown, // ? FluorescentHigh, Shade, Custom, Kelvin
-  LIBRAW_WBI_Flash
+    LIBRAW_WBI_Custom1,
+    LIBRAW_WBI_Custom2,
+    LIBRAW_WBI_Daylight,
+    LIBRAW_WBI_Cloudy,
+    LIBRAW_WBI_Tungsten,
+    LIBRAW_WBI_Fluorescent,
+    LIBRAW_WBI_Unknown, // ? FluorescentHigh, Shade, Custom, Kelvin
+    LIBRAW_WBI_Flash
 };
 
 libraw_static_table_t LibRaw::Canon_KeyIsZero_Len2048_linenums_2_StdWBi(_Canon_KeyIsZero_Len2048_linenums_2_StdWBi,
-    _ARR_SZ(_Canon_KeyIsZero_Len2048_linenums_2_StdWBi));
+                                                                        _ARR_SZ(
+                                                                            _Canon_KeyIsZero_Len2048_linenums_2_StdWBi));
 
 static const int _Canon_KeyIs0x0410_Len3072_linenums_2_StdWBi[] = { // G6, S60, S70; offset +16
-  LIBRAW_WBI_Custom1,
-  LIBRAW_WBI_Custom2,
-  LIBRAW_WBI_Daylight,
-  LIBRAW_WBI_Cloudy,
-  LIBRAW_WBI_Tungsten,
-  LIBRAW_WBI_Fluorescent,
-  LIBRAW_WBI_FluorescentHigh, // LIBRAW_WBI_Unknown, // ? FluorescentHigh, Shade, Custom, Kelvin
-  LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Underwater, // LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Flash
+    LIBRAW_WBI_Custom1,
+    LIBRAW_WBI_Custom2,
+    LIBRAW_WBI_Daylight,
+    LIBRAW_WBI_Cloudy,
+    LIBRAW_WBI_Tungsten,
+    LIBRAW_WBI_Fluorescent,
+    LIBRAW_WBI_FluorescentHigh, // LIBRAW_WBI_Unknown, // ? FluorescentHigh, Shade, Custom, Kelvin
+    LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Underwater, // LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Flash
 };
 
 libraw_static_table_t LibRaw::Canon_KeyIs0x0410_Len3072_linenums_2_StdWBi(_Canon_KeyIs0x0410_Len3072_linenums_2_StdWBi,
-    _ARR_SZ(_Canon_KeyIs0x0410_Len3072_linenums_2_StdWBi));
+                                                                          _ARR_SZ(
+                                                                              _Canon_KeyIs0x0410_Len3072_linenums_2_StdWBi));
 
 static const int _Canon_KeyIs0x0410_Len2048_linenums_2_StdWBi[] = { // Pro1; offset +8
-  LIBRAW_WBI_Custom1,
-  LIBRAW_WBI_Custom2,
-  LIBRAW_WBI_Daylight,
-  LIBRAW_WBI_Cloudy,
-  LIBRAW_WBI_Tungsten,
-  LIBRAW_WBI_Fluorescent,
-  LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Flash, // LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Unknown,
-  LIBRAW_WBI_Unknown // LIBRAW_WBI_Flash
+    LIBRAW_WBI_Custom1,
+    LIBRAW_WBI_Custom2,
+    LIBRAW_WBI_Daylight,
+    LIBRAW_WBI_Cloudy,
+    LIBRAW_WBI_Tungsten,
+    LIBRAW_WBI_Fluorescent,
+    LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Flash, // LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Unknown,
+    LIBRAW_WBI_Unknown // LIBRAW_WBI_Flash
 };
 
 libraw_static_table_t LibRaw::Canon_KeyIs0x0410_Len2048_linenums_2_StdWBi(_Canon_KeyIs0x0410_Len2048_linenums_2_StdWBi,
-    _ARR_SZ(_Canon_KeyIs0x0410_Len2048_linenums_2_StdWBi));
+                                                                          _ARR_SZ(
+                                                                              _Canon_KeyIs0x0410_Len2048_linenums_2_StdWBi));
 
 static const int _Canon_G9_linenums_2_StdWBi[] = {
     LIBRAW_WBI_Auto,
@@ -119,7 +122,8 @@ static const int _Canon_G9_linenums_2_StdWBi[] = {
     LIBRAW_WBI_Custom1,
     LIBRAW_WBI_Custom2
 };
-libraw_static_table_t LibRaw::Canon_G9_linenums_2_StdWBi(_Canon_G9_linenums_2_StdWBi, _ARR_SZ(_Canon_G9_linenums_2_StdWBi));
+libraw_static_table_t LibRaw::Canon_G9_linenums_2_StdWBi(_Canon_G9_linenums_2_StdWBi,
+                                                         _ARR_SZ(_Canon_G9_linenums_2_StdWBi));
 
 static const int _Canon_D30_linenums_2_StdWBi[] = {
     LIBRAW_WBI_Daylight,
@@ -129,11 +133,12 @@ static const int _Canon_D30_linenums_2_StdWBi[] = {
     LIBRAW_WBI_Flash,
     LIBRAW_WBI_Custom
 };
-libraw_static_table_t LibRaw::Canon_D30_linenums_2_StdWBi(_Canon_D30_linenums_2_StdWBi, _ARR_SZ(_Canon_D30_linenums_2_StdWBi));
+libraw_static_table_t LibRaw::Canon_D30_linenums_2_StdWBi(_Canon_D30_linenums_2_StdWBi,
+                                                          _ARR_SZ(_Canon_D30_linenums_2_StdWBi));
 
 static const int _Fuji_wb_list1[] = {
     LIBRAW_WBI_FineWeather, LIBRAW_WBI_Shade, LIBRAW_WBI_FL_D,
-    LIBRAW_WBI_FL_N,        LIBRAW_WBI_FL_W,  LIBRAW_WBI_Tungsten
+    LIBRAW_WBI_FL_N, LIBRAW_WBI_FL_W, LIBRAW_WBI_Tungsten
 
 };
 libraw_static_table_t LibRaw::Fuji_wb_list1(_Fuji_wb_list1, _ARR_SZ(_Fuji_wb_list1));
@@ -146,33 +151,33 @@ static const int _FujiCCT_K[31] = {
 libraw_static_table_t LibRaw::FujiCCT_K(_FujiCCT_K, _ARR_SZ(_FujiCCT_K));
 
 static const int _Fuji_wb_list2[] = {
-    LIBRAW_WBI_Auto,  0,  LIBRAW_WBI_Custom,   6,  LIBRAW_WBI_FineWeather, 1,
-    LIBRAW_WBI_Shade, 8,  LIBRAW_WBI_FL_D,     10, LIBRAW_WBI_FL_N,        11,
-    LIBRAW_WBI_FL_W,  12, LIBRAW_WBI_Tungsten, 2,  LIBRAW_WBI_Underwater,  35,
-    LIBRAW_WBI_Ill_A, 82, LIBRAW_WBI_D65,      83
+    LIBRAW_WBI_Auto, 0, LIBRAW_WBI_Custom, 6, LIBRAW_WBI_FineWeather, 1,
+    LIBRAW_WBI_Shade, 8, LIBRAW_WBI_FL_D, 10, LIBRAW_WBI_FL_N, 11,
+    LIBRAW_WBI_FL_W, 12, LIBRAW_WBI_Tungsten, 2, LIBRAW_WBI_Underwater, 35,
+    LIBRAW_WBI_Ill_A, 82, LIBRAW_WBI_D65, 83
 };
 libraw_static_table_t LibRaw::Fuji_wb_list2(_Fuji_wb_list2, _ARR_SZ(_Fuji_wb_list2));
 
 static const int _Pentax_wb_list1[] = {
     LIBRAW_WBI_Daylight, LIBRAW_WBI_Shade,
-    LIBRAW_WBI_Cloudy,   LIBRAW_WBI_Tungsten,
-    LIBRAW_WBI_FL_D,     LIBRAW_WBI_FL_N,
-    LIBRAW_WBI_FL_W,     LIBRAW_WBI_Flash
+    LIBRAW_WBI_Cloudy, LIBRAW_WBI_Tungsten,
+    LIBRAW_WBI_FL_D, LIBRAW_WBI_FL_N,
+    LIBRAW_WBI_FL_W, LIBRAW_WBI_Flash
 };
 libraw_static_table_t LibRaw::Pentax_wb_list1(_Pentax_wb_list1, _ARR_SZ(_Pentax_wb_list1));
 
 static const int _Pentax_wb_list2[] = {
     LIBRAW_WBI_Daylight, LIBRAW_WBI_Shade, LIBRAW_WBI_Cloudy,
-    LIBRAW_WBI_Tungsten, LIBRAW_WBI_FL_D,  LIBRAW_WBI_FL_N,
-    LIBRAW_WBI_FL_W,     LIBRAW_WBI_Flash, LIBRAW_WBI_FL_L
+    LIBRAW_WBI_Tungsten, LIBRAW_WBI_FL_D, LIBRAW_WBI_FL_N,
+    LIBRAW_WBI_FL_W, LIBRAW_WBI_Flash, LIBRAW_WBI_FL_L
 };
 libraw_static_table_t LibRaw::Pentax_wb_list2(_Pentax_wb_list2, _ARR_SZ(_Pentax_wb_list2));
 
 
 static const int _Oly_wb_list1[] = {
-    LIBRAW_WBI_Shade,    LIBRAW_WBI_Cloudy, LIBRAW_WBI_FineWeather,
+    LIBRAW_WBI_Shade, LIBRAW_WBI_Cloudy, LIBRAW_WBI_FineWeather,
     LIBRAW_WBI_Tungsten, LIBRAW_WBI_Sunset, LIBRAW_WBI_FL_D,
-    LIBRAW_WBI_FL_N,     LIBRAW_WBI_FL_W,   LIBRAW_WBI_FL_WW
+    LIBRAW_WBI_FL_N, LIBRAW_WBI_FL_W, LIBRAW_WBI_FL_WW
 };
 libraw_static_table_t LibRaw::Oly_wb_list1(_Oly_wb_list1, _ARR_SZ(_Oly_wb_list1));
 

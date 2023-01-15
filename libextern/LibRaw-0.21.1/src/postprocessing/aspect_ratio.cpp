@@ -34,11 +34,11 @@ void LibRaw::fuji_rotate()
   high = (height - fuji_width) / step;
 
   // All real fuji/rotated images are small, so check against max_raw_memory_mb here is safe
-  if (INT64(wide) * INT64(high) * INT64(sizeof(*img))    >
-      INT64(imgdata.rawparams.max_raw_memory_mb) * INT64(1024 * 1024))
+  if (static_cast<INT64>(wide) * static_cast<INT64>(high) * static_cast<INT64>(sizeof(*img)) >
+      static_cast<INT64>(imgdata.rawparams.max_raw_memory_mb) * static_cast<INT64>(1024 * 1024))
     throw LIBRAW_EXCEPTION_TOOBIG;
 
-  img = (ushort(*)[4])calloc(high, wide * sizeof *img);
+  img = static_cast<ushort(*)[4]>(calloc(high, wide * sizeof *img));
 
   RUN_CALLBACK(LIBRAW_PROGRESS_FUJI_ROTATE, 0, 2);
 
@@ -47,7 +47,7 @@ void LibRaw::fuji_rotate()
     {
       ur = r = fuji_width + (row - col) * step;
       uc = c = (row + col) * step;
-      if (ur > (unsigned)height - 2 || uc > (unsigned)width - 2)
+      if (ur > static_cast<unsigned>(height) - 2 || uc > static_cast<unsigned>(width) - 2)
         continue;
       fr = r - ur;
       fc = c - uc;
@@ -78,7 +78,7 @@ void LibRaw::stretch()
   if (pixel_aspect < 1)
   {
     newdim = height / pixel_aspect + 0.5;
-    img = (ushort(*)[4])calloc(width, newdim * sizeof *img);
+    img = static_cast<ushort(*)[4]>(calloc(width, newdim * sizeof *img));
     for (rc = row = 0; row < newdim; row++, rc += pixel_aspect)
     {
       frac = rc - (c = rc);
@@ -86,15 +86,16 @@ void LibRaw::stretch()
       if (c + 1 < height)
         pix1 += width * 4;
       for (col = 0; col < width; col++, pix0 += 4, pix1 += 4)
-        FORCC img[row * width + col][c] =
-            pix0[c] * (1 - frac) + pix1[c] * frac + 0.5;
+        FORCC
+          img[row * width + col][c] =
+              pix0[c] * (1 - frac) + pix1[c] * frac + 0.5;
     }
     height = newdim;
   }
   else
   {
     newdim = width * pixel_aspect + 0.5;
-    img = (ushort(*)[4])calloc(height, newdim * sizeof *img);
+    img = static_cast<ushort(*)[4]>(calloc(height, newdim * sizeof *img));
     for (rc = col = 0; col < newdim; col++, rc += 1 / pixel_aspect)
     {
       frac = rc - (c = rc);
@@ -102,8 +103,9 @@ void LibRaw::stretch()
       if (c + 1 < width)
         pix1 += 4;
       for (row = 0; row < height; row++, pix0 += width * 4, pix1 += width * 4)
-        FORCC img[row * newdim + col][c] =
-            pix0[c] * (1 - frac) + pix1[c] * frac + 0.5;
+        FORCC
+          img[row * newdim + col][c] =
+              pix0[c] * (1 - frac) + pix1[c] * frac + 0.5;
     }
     width = newdim;
   }

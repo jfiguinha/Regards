@@ -42,8 +42,7 @@ namespace rawspeed {
  * It intentionally supports only read/const access to the underlying memory.
  *
  *************************************************************************/
-class Buffer
-{
+class Buffer {
 public:
   using size_type = uint32_t;
 
@@ -76,7 +75,7 @@ public:
   // creates buffer from owning unique_ptr
   Buffer(std::unique_ptr<uint8_t, decltype(&alignedFree)> data_,
          size_type size_)
-      : size(size_) {
+    : size(size_) {
     if (!size)
       ThrowIOE("Buffer has zero size?");
 
@@ -94,18 +93,19 @@ public:
 
   // Data already allocated
   explicit Buffer(const uint8_t* data_, size_type size_)
-      : data(data_), size(size_) {
+    : data(data_), size(size_) {
     assert(!ASan::RegionIsPoisoned(data, size));
   }
 
   // creates a (non-owning) copy / view of rhs
-  Buffer(const Buffer& rhs) : data(rhs.data), size(rhs.size) {
+  Buffer(const Buffer& rhs)
+    : data(rhs.data), size(rhs.size) {
     assert(!ASan::RegionIsPoisoned(data, size));
   }
 
   // Move data and ownership from rhs to this
   Buffer(Buffer&& rhs) noexcept
-      : data(rhs.data), size(rhs.size), isOwner(rhs.isOwner) {
+    : data(rhs.data), size(rhs.size), isOwner(rhs.isOwner) {
     assert(!ASan::RegionIsPoisoned(data, size));
     rhs.isOwner = false;
   }
@@ -187,6 +187,7 @@ public:
     assert(!ASan::RegionIsPoisoned(data, 0));
     return data;
   }
+
   [[nodiscard]] const uint8_t* end() const {
     assert(data);
     assert(!ASan::RegionIsPoisoned(data, size));
@@ -195,7 +196,7 @@ public:
 
   // get memory of type T from byte offset 'offset + sizeof(T)*index' and swap byte order if required
   template <typename T>
-  [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] inline T
+  [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] T
   get(bool inNativeByteOrder, size_type offset, size_type index = 0) const {
     return getByteSwapped<T>(
         getData(offset + index * static_cast<size_type>(sizeof(T)),
@@ -203,20 +204,19 @@ public:
         !inNativeByteOrder);
   }
 
-  [[nodiscard]] inline size_type getSize() const {
+  [[nodiscard]] size_type getSize() const {
     assert(!ASan::RegionIsPoisoned(data, size));
     return size;
   }
 
-  [[nodiscard]] inline bool isValid(size_type offset,
-                                    size_type count = 1) const {
+  [[nodiscard]] bool isValid(size_type offset,
+                             size_type count = 1) const {
     return static_cast<uint64_t>(offset) + count <= static_cast<uint64_t>(size);
   }
 };
 
 // WARNING: both buffers must belong to the same allocation, else this is UB!
-inline bool operator<(const Buffer& lhs, const Buffer& rhs) 
-{
+inline bool operator<(const Buffer& lhs, const Buffer& rhs) {
   return std::pair(lhs.begin(), lhs.end()) < std::pair(rhs.begin(), rhs.end());
 }
 
@@ -234,12 +234,13 @@ public:
   DataBuffer() = default;
 
   explicit DataBuffer(const Buffer& data_, Endianness endianness_)
-      : Buffer(data_), endianness(endianness_) {}
+    : Buffer(data_), endianness(endianness_) {
+  }
 
   // get memory of type T from byte offset 'offset + sizeof(T)*index' and swap
   // byte order if required
   template <typename T>
-  [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] inline T
+  [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] [[nodiscard]] T
   get(size_type offset, size_type index = 0) const {
     assert(Endianness::unknown != endianness);
     assert(Endianness::little == endianness || Endianness::big == endianness);
@@ -247,9 +248,9 @@ public:
     return Buffer::get<T>(getHostEndianness() == endianness, offset, index);
   }
 
-  [[nodiscard]] inline Endianness getByteOrder() const { return endianness; }
+  [[nodiscard]] Endianness getByteOrder() const { return endianness; }
 
-  inline Endianness setByteOrder(Endianness endianness_) {
+  Endianness setByteOrder(Endianness endianness_) {
     std::swap(endianness, endianness_);
     return endianness_;
   }

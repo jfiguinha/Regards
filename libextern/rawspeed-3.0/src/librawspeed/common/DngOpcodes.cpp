@@ -61,12 +61,12 @@ public:
 
 // ****************************************************************************
 
-class DngOpcodes::FixBadPixelsConstant final : public DngOpcodes::DngOpcode {
+class DngOpcodes::FixBadPixelsConstant final : public DngOpcode {
   uint32_t value;
 
 public:
   explicit FixBadPixelsConstant(const RawImage& ri, ByteStream& bs)
-      : value(bs.getU32()) {
+    : value(bs.getU32()) {
     bs.getU32(); // Bayer Phase not used
   }
 
@@ -95,14 +95,15 @@ public:
 
 // ****************************************************************************
 
-class DngOpcodes::ROIOpcode : public DngOpcodes::DngOpcode {
+class DngOpcodes::ROIOpcode : public DngOpcode {
   iRectangle2D roi;
 
 protected:
   explicit ROIOpcode(const RawImage& ri, ByteStream& bs, bool minusOne) {
     const iRectangle2D fullImage =
-        minusOne ? iRectangle2D(0, 0, ri->dim.x - 1, ri->dim.y - 1)
-                 : iRectangle2D(0, 0, ri->dim.x, ri->dim.y);
+        minusOne
+          ? iRectangle2D(0, 0, ri->dim.x - 1, ri->dim.y - 1)
+          : iRectangle2D(0, 0, ri->dim.x, ri->dim.y);
 
     uint32_t top = bs.getU32();
     uint32_t left = bs.getU32();
@@ -136,13 +137,14 @@ protected:
 class DngOpcodes::DummyROIOpcode final : public ROIOpcode {
 public:
   explicit DummyROIOpcode(const RawImage& ri, ByteStream& bs)
-      : ROIOpcode(ri, bs, true) {}
+    : ROIOpcode(ri, bs, true) {
+  }
 
   [[nodiscard]] const iRectangle2D& __attribute__((pure)) getRoi() const {
     return ROIOpcode::getRoi();
   }
 
-  [[noreturn]] void apply(const RawImage& ri) final {
+  [[noreturn]] void apply(const RawImage& ri) override {
     // NOLINTNEXTLINE: https://bugs.llvm.org/show_bug.cgi?id=50532
     assert(false && "You should not be calling this.");
     __builtin_unreachable();
@@ -151,7 +153,7 @@ public:
 
 // ****************************************************************************
 
-class DngOpcodes::FixBadPixelsList final : public DngOpcodes::DngOpcode {
+class DngOpcodes::FixBadPixelsList final : public DngOpcode {
   std::vector<uint32_t> badPixels;
 
 public:
@@ -211,7 +213,8 @@ public:
 class DngOpcodes::TrimBounds final : public ROIOpcode {
 public:
   explicit TrimBounds(const RawImage& ri, ByteStream& bs)
-      : ROIOpcode(ri, bs, false) {}
+    : ROIOpcode(ri, bs, false) {
+  }
 
   void apply(const RawImage& ri) override { ri->subFrame(getRoi()); }
 };
@@ -226,7 +229,7 @@ class DngOpcodes::PixelOpcode : public ROIOpcode {
 
 protected:
   explicit PixelOpcode(const RawImage& ri, ByteStream& bs)
-      : ROIOpcode(ri, bs, false), firstPlane(bs.getU32()), planes(bs.getU32()) {
+    : ROIOpcode(ri, bs, false), firstPlane(bs.getU32()), planes(bs.getU32()) {
 
     if (planes == 0 || firstPlane > ri->getCpp() || planes > ri->getCpp() ||
         firstPlane + planes > ri->getCpp()) {
@@ -271,7 +274,8 @@ protected:
   vector<uint16_t> lookup;
 
   explicit LookupOpcode(const RawImage& ri, ByteStream& bs)
-      : PixelOpcode(ri, bs), lookup(65536) {}
+    : PixelOpcode(ri, bs), lookup(65536) {
+  }
 
   void setup(const RawImage& ri) override {
     PixelOpcode::setup(ri);
@@ -289,7 +293,8 @@ protected:
 
 class DngOpcodes::TableMap final : public LookupOpcode {
 public:
-  explicit TableMap(const RawImage& ri, ByteStream& bs) : LookupOpcode(ri, bs) {
+  explicit TableMap(const RawImage& ri, ByteStream& bs)
+    : LookupOpcode(ri, bs) {
     auto count = bs.getU32();
 
     if (count == 0 || count > 65536)
@@ -308,7 +313,7 @@ public:
 class DngOpcodes::PolynomialMap final : public LookupOpcode {
 public:
   explicit PolynomialMap(const RawImage& ri, ByteStream& bs)
-      : LookupOpcode(ri, bs) {
+    : LookupOpcode(ri, bs) {
     vector<double> polynomial;
 
     const auto polynomial_size = bs.getU32() + 1UL;
@@ -336,15 +341,17 @@ public:
 class DngOpcodes::DeltaRowOrColBase : public PixelOpcode {
 public:
   struct SelectX {
-    static inline uint32_t select(uint32_t x, uint32_t /*y*/) { return x; }
+    static uint32_t select(uint32_t x, uint32_t /*y*/) { return x; }
   };
 
   struct SelectY {
-    static inline uint32_t select(uint32_t /*x*/, uint32_t y) { return y; }
+    static uint32_t select(uint32_t /*x*/, uint32_t y) { return y; }
   };
 
 protected:
-  DeltaRowOrColBase(const RawImage& ri, ByteStream& bs) : PixelOpcode(ri, bs) {}
+  DeltaRowOrColBase(const RawImage& ri, ByteStream& bs)
+    : PixelOpcode(ri, bs) {
+  }
 };
 
 template <typename S>
@@ -374,7 +381,7 @@ protected:
   virtual bool valueIsOk(float value) = 0;
 
   DeltaRowOrCol(const RawImage& ri, ByteStream& bs, float f2iScale_)
-      : DeltaRowOrColBase(ri, bs), f2iScale(f2iScale_) {
+    : DeltaRowOrColBase(ri, bs), f2iScale(f2iScale_) {
     const auto deltaF_count = bs.getU32();
     (void)bs.check(deltaF_count, 4);
 
@@ -409,13 +416,14 @@ class DngOpcodes::OffsetPerRowOrCol final : public DeltaRowOrCol<S> {
   // by f2iScale before applying, we need to divide by f2iScale here.
   const double absLimit;
 
-  bool valueIsOk(float value) final { return std::abs(value) <= absLimit; }
+  bool valueIsOk(float value) override { return std::abs(value) <= absLimit; }
 
 public:
   explicit OffsetPerRowOrCol(const RawImage& ri, ByteStream& bs)
-      : DeltaRowOrCol<S>(ri, bs, 65535.0F),
-        absLimit(double(std::numeric_limits<uint16_t>::max()) /
-                 this->f2iScale) {}
+    : DeltaRowOrCol<S>(ri, bs, 65535.0F),
+      absLimit(static_cast<double>(std::numeric_limits<uint16_t>::max()) /
+               this->f2iScale) {
+  }
 
   void apply(const RawImage& ri) override {
     if (ri->getDataType() == TYPE_USHORT16) {
@@ -440,20 +448,22 @@ class DngOpcodes::ScalePerRowOrCol final : public DeltaRowOrCol<S> {
   // signed integer space, so the new value can not be larger than 2^31,
   // else we'd have signed integer overflow. Since the offset is multiplied
   // by f2iScale before applying, we need to divide by f2iScale here.
-  static constexpr const double minLimit = 0.0;
+  static constexpr double minLimit = 0.0;
   static constexpr int rounding = 512;
   const double maxLimit;
 
-  bool valueIsOk(float value) final {
+  bool valueIsOk(float value) override {
     return value >= minLimit && value <= maxLimit;
   }
 
 public:
   explicit ScalePerRowOrCol(const RawImage& ri, ByteStream& bs)
-      : DeltaRowOrCol<S>(ri, bs, 1024.0F),
-        maxLimit((double(std::numeric_limits<int>::max() - rounding) /
-                  double(std::numeric_limits<uint16_t>::max())) /
-                 this->f2iScale) {}
+    : DeltaRowOrCol<S>(ri, bs, 1024.0F),
+      maxLimit(
+          (static_cast<double>(std::numeric_limits<int>::max() - rounding) /
+           static_cast<double>(std::numeric_limits<uint16_t>::max())) /
+          this->f2iScale) {
+  }
 
   void apply(const RawImage& ri) override {
     if (ri->getDataType() == TYPE_USHORT16) {
@@ -553,42 +563,42 @@ DngOpcodes::constructor(const RawImage& ri, ByteStream& bs) {
 // ALL opcodes specified in DNG Specification MUST be listed here.
 // however, some of them might not be implemented.
 const std::map<uint32_t, std::pair<const char*, DngOpcodes::constructor_t>>
-    DngOpcodes::Map = {
-        {1U, make_pair("WarpRectilinear", nullptr)},
-        {2U, make_pair("WarpFisheye", nullptr)},
-        {3U, make_pair("FixVignetteRadial", nullptr)},
-        {4U,
-         make_pair("FixBadPixelsConstant",
-                   &DngOpcodes::constructor<DngOpcodes::FixBadPixelsConstant>)},
-        {5U, make_pair("FixBadPixelsList",
-                       &DngOpcodes::constructor<DngOpcodes::FixBadPixelsList>)},
-        {6U, make_pair("TrimBounds",
-                       &DngOpcodes::constructor<DngOpcodes::TrimBounds>)},
-        {7U,
-         make_pair("MapTable", &DngOpcodes::constructor<DngOpcodes::TableMap>)},
-        {8U, make_pair("MapPolynomial",
-                       &DngOpcodes::constructor<DngOpcodes::PolynomialMap>)},
-        {9U, make_pair("GainMap", nullptr)},
-        {10U,
-         make_pair(
-             "DeltaPerRow",
-             &DngOpcodes::constructor<
-                 DngOpcodes::OffsetPerRowOrCol<DeltaRowOrColBase::SelectY>>)},
-        {11U,
-         make_pair(
-             "DeltaPerColumn",
-             &DngOpcodes::constructor<
-                 DngOpcodes::OffsetPerRowOrCol<DeltaRowOrColBase::SelectX>>)},
-        {12U,
-         make_pair(
-             "ScalePerRow",
-             &DngOpcodes::constructor<
-                 DngOpcodes::ScalePerRowOrCol<DeltaRowOrColBase::SelectY>>)},
-        {13U,
-         make_pair(
-             "ScalePerColumn",
-             &DngOpcodes::constructor<
-                 DngOpcodes::ScalePerRowOrCol<DeltaRowOrColBase::SelectX>>)},
+DngOpcodes::Map = {
+    {1U, make_pair("WarpRectilinear", nullptr)},
+    {2U, make_pair("WarpFisheye", nullptr)},
+    {3U, make_pair("FixVignetteRadial", nullptr)},
+    {4U,
+     make_pair("FixBadPixelsConstant",
+               &DngOpcodes::constructor<FixBadPixelsConstant>)},
+    {5U, make_pair("FixBadPixelsList",
+                   &DngOpcodes::constructor<FixBadPixelsList>)},
+    {6U, make_pair("TrimBounds",
+                   &DngOpcodes::constructor<TrimBounds>)},
+    {7U,
+     make_pair("MapTable", &DngOpcodes::constructor<TableMap>)},
+    {8U, make_pair("MapPolynomial",
+                   &DngOpcodes::constructor<PolynomialMap>)},
+    {9U, make_pair("GainMap", nullptr)},
+    {10U,
+     make_pair(
+         "DeltaPerRow",
+         &DngOpcodes::constructor<
+           OffsetPerRowOrCol<DeltaRowOrColBase::SelectY>>)},
+    {11U,
+     make_pair(
+         "DeltaPerColumn",
+         &DngOpcodes::constructor<
+           OffsetPerRowOrCol<DeltaRowOrColBase::SelectX>>)},
+    {12U,
+     make_pair(
+         "ScalePerRow",
+         &DngOpcodes::constructor<
+           ScalePerRowOrCol<DeltaRowOrColBase::SelectY>>)},
+    {13U,
+     make_pair(
+         "ScalePerColumn",
+         &DngOpcodes::constructor<
+           ScalePerRowOrCol<DeltaRowOrColBase::SelectX>>)},
 
 };
 

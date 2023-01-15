@@ -32,7 +32,10 @@ class RawDecoder;
 
 class RawParser {
 public:
-  explicit RawParser(const Buffer& inputData) : mInput(inputData) {}
+  explicit RawParser(const Buffer& inputData)
+    : mInput(inputData) {
+  }
+
   virtual ~RawParser() = default;
 
   virtual std::unique_ptr<RawDecoder>

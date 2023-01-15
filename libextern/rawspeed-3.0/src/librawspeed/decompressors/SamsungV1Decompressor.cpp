@@ -42,7 +42,7 @@ struct SamsungV1Decompressor::encTableItem {
 
 SamsungV1Decompressor::SamsungV1Decompressor(const RawImage& image,
                                              const ByteStream& bs_, int bit)
-    : AbstractSamsungDecompressor(image), bs(bs_) {
+  : AbstractSamsungDecompressor(image), bs(bs_) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -88,19 +88,19 @@ void SamsungV1Decompressor::decompress() {
   // The table has 14 entries because the difference can have between 0 (no
   // difference) and 13 bits (differences between 12 bits numbers can need 13)
   static const std::array<std::array<uint8_t, 2>, 14> tab = {{{3, 4},
-                                                              {3, 7},
-                                                              {2, 6},
-                                                              {2, 5},
-                                                              {4, 3},
-                                                              {6, 0},
-                                                              {7, 9},
-                                                              {8, 10},
-                                                              {9, 11},
-                                                              {10, 12},
-                                                              {10, 13},
-                                                              {5, 1},
-                                                              {4, 8},
-                                                              {4, 2}}};
+    {3, 7},
+    {2, 6},
+    {2, 5},
+    {4, 3},
+    {6, 0},
+    {7, 9},
+    {8, 10},
+    {9, 11},
+    {10, 12},
+    {10, 13},
+    {5, 1},
+    {4, 8},
+    {4, 2}}};
   std::vector<encTableItem> tbl(1024);
 
   // We generate a 1024 entry table (to be addressed by reading 10 bits) by

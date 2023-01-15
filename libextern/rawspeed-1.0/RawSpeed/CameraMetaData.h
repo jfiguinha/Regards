@@ -27,25 +27,25 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class CameraMetaData
+namespace RawSpeed
 {
-public:
-  CameraMetaData();
-  CameraMetaData(const char *docname);
-  virtual ~CameraMetaData(void);
-  xmlDocPtr doc;
-  xmlParserCtxtPtr ctxt; /* the parser context */
-  map<string,Camera*> cameras;
-  Camera* getCamera(string make, string model, string mode);
-  bool hasCamera(string make, string model, string mode);
-  void disableMake(string make);
-  void disableCamera(string make, string model);
-protected:
-  void addCamera(Camera* cam);
-};
+	class CameraMetaData
+	{
+	public:
+		CameraMetaData();
+		CameraMetaData(const char* docname);
+		virtual ~CameraMetaData(void);
+		xmlDocPtr doc;
+		xmlParserCtxtPtr ctxt; /* the parser context */
+		map<string, Camera*> cameras;
+		Camera* getCamera(string make, string model, string mode);
+		bool hasCamera(string make, string model, string mode);
+		void disableMake(string make);
+		void disableCamera(string make, string model);
 
+	protected:
+		void addCamera(Camera* cam);
+	};
 } // namespace RawSpeed
 
 #endif

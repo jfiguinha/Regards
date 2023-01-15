@@ -36,8 +36,8 @@
 namespace rawspeed {
 
 AbstractLJpegDecompressor::AbstractLJpegDecompressor(ByteStream bs,
-                                                     const RawImage& img)
-    : input(std::move(bs)), mRaw(img) {
+  const RawImage& img)
+  : input(std::move(bs)), mRaw(img) {
   input.setByteOrder(Endianness::big);
 
   if (mRaw->dim.x == 0 || mRaw->dim.y == 0)
@@ -76,8 +76,8 @@ void AbstractLJpegDecompressor::decode() {
     case M_DHT:
       if (FoundMarkers.SOS)
         ThrowRDE("Found second DHT marker after SOS");
-      // there can be more than one DHT markers.
-      // FIXME: do we really want to reparse and use the last one?
+    // there can be more than one DHT markers.
+    // FIXME: do we really want to reparse and use the last one?
       parseDHT(data);
       FoundMarkers.DHT = true;
       break;
@@ -86,7 +86,7 @@ void AbstractLJpegDecompressor::decode() {
         ThrowRDE("Found second SOF marker after SOS");
       if (FoundMarkers.SOF)
         ThrowRDE("Found second SOF marker");
-      // SOF is not required to be after DHT
+    // SOF is not required to be after DHT
       parseSOF(data, &frame);
       FoundMarkers.SOF = true;
       break;
@@ -158,7 +158,7 @@ void AbstractLJpegDecompressor::parseSOF(ByteStream sofInput, SOFInfo* sof) {
   }
 
   if (static_cast<int>(sof->compInfo[0].superH) !=
-          mRaw->metadata.subsampling.x ||
+      mRaw->metadata.subsampling.x ||
       static_cast<int>(sof->compInfo[0].superV) != mRaw->metadata.subsampling.y)
     ThrowRDE("LJpeg's subsampling does not match image's subsampling.");
 

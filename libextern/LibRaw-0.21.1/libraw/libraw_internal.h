@@ -34,26 +34,32 @@ public:
     unsigned bitbuf;
     int vbits, reset;
   } getbits;
+
   struct
   {
     UINT64 bitbuf;
     int vbits;
 
   } ph1_bits;
+
   struct
   {
     unsigned pad[128], p;
   } sony_decrypt;
+
   struct
   {
     uchar buf[0x4002];
     int vpos, padding;
   } pana_data;
+
   uchar jpeg_buffer[4096];
+
   struct
   {
     float cbrt[0x10000], xyz_cam[3][4];
   } ahd_data;
+
   void init()
   {
     getbits.bitbuf = 0;
@@ -81,12 +87,12 @@ public:
 };
 #endif /* __cplusplus */
 
-typedef struct
+using internal_data_t = struct
 {
 #ifndef __cplusplus
   struct
 #endif
-      LibRaw_abstract_datastream *input;
+  LibRaw_abstract_datastream *input;
   FILE *output;
   int input_internal;
   char *meta_data;
@@ -94,16 +100,17 @@ typedef struct
   INT64 toffset;
   unsigned pana_black[4];
 
-} internal_data_t;
+};
 
 #define LIBRAW_HISTOGRAM_SIZE 0x2000
-typedef struct
+
+using output_data_t = struct
 {
   int (*histogram)[LIBRAW_HISTOGRAM_SIZE];
   unsigned *oprof;
-} output_data_t;
+};
 
-typedef struct
+using identify_data_t = struct
 {
   unsigned olympus_exif_cfa;
   unsigned long long unique_id;
@@ -111,17 +118,17 @@ typedef struct
   unsigned tiff_nifds;
   int tiff_flip;
   int metadata_blocks;
-} identify_data_t;
+};
 
-typedef struct
+using crx_sample_to_chunk_t = struct
 {
   uint32_t first;
   uint32_t count;
   uint32_t id;
-} crx_sample_to_chunk_t;
+};
 
 // contents of tag CMP1 for relevant track in CR3 file
-typedef struct
+using crx_data_header_t = struct
 {
   int32_t version;
   int32_t f_width;
@@ -140,17 +147,17 @@ typedef struct
   // Not from header, but from datastream
   uint32_t MediaSize;
   INT64 MediaOffset;
-  uint32_t MediaType; /* 1 -> /C/RAW, 2-> JPEG, 3-> CTMD metadata*/
-  crx_sample_to_chunk_t * stsc_data; /* samples to chunk */
+  uint32_t MediaType;               /* 1 -> /C/RAW, 2-> JPEG, 3-> CTMD metadata*/
+  crx_sample_to_chunk_t *stsc_data; /* samples to chunk */
   uint32_t stsc_count;
   uint32_t sample_count;
   uint32_t sample_size; /* zero if not fixed sample size */
   int32_t *sample_sizes;
   uint32_t chunk_count;
-  INT64  *chunk_offsets;
-} crx_data_header_t;
+  INT64 *chunk_offsets;
+};
 
-typedef struct
+using unpacker_data_t = struct
 {
   short order;
   ushort sraw_mul[4], cr2_slice[3];
@@ -190,18 +197,19 @@ typedef struct
   unsigned is_pana_raw;
   unsigned is_PentaxRicohMakernotes; /* =1 for Ricoh software by Pentax, Camera DNG */
 
-  unsigned dng_frames[LIBRAW_IFD_MAXCOUNT*2]; /* bits: 0-7: shot_select, 8-15: IFD#, 16-31: low 16 bit of newsubfile type */
+  unsigned dng_frames[LIBRAW_IFD_MAXCOUNT * 2];
+  /* bits: 0-7: shot_select, 8-15: IFD#, 16-31: low 16 bit of newsubfile type */
   unsigned short raw_stride;
-} unpacker_data_t;
+};
 
-typedef struct
+using libraw_internal_data_t = struct
 {
   internal_data_t internal_data;
   libraw_internal_output_params_t internal_output_params;
   output_data_t output_data;
   identify_data_t identify_data;
   unpacker_data_t unpacker_data;
-} libraw_internal_data_t;
+};
 
 struct decode
 {
@@ -217,7 +225,7 @@ struct tiff_ifd_t
   int *strip_offsets, strip_offsets_count;
   int *strip_byte_counts, strip_byte_counts_count;
   unsigned t_filters;
-  int t_vwidth, t_vheight, t_lm,t_tm;
+  int t_vwidth, t_vheight, t_lm, t_tm;
   int t_fuji_width;
   float t_shutter;
   /* Per-IFD DNG fields */
@@ -239,7 +247,9 @@ struct libraw_tiff_tag
 {
   ushort tag, type;
   int count;
-  union {
+
+  union
+  {
     char c[4];
     short s[2];
     int i;

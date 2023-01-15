@@ -22,6 +22,7 @@
 
 namespace rawspeed {
 
-class AbstractDecompressor {};
+class AbstractDecompressor {
+};
 
 } // namespace rawspeed

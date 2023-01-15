@@ -26,40 +26,44 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class Cr2Decoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  Cr2Decoder(TiffIFD *rootIFD, FileMap* file);
-  virtual RawImage decodeRawInternal();
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-  virtual ~Cr2Decoder(void);
-protected:
-  int sraw_coeffs[3];
+	class Cr2Decoder :
+		public RawDecoder
+	{
+	public:
+		Cr2Decoder(TiffIFD* rootIFD, FileMap* file);
+		RawImage decodeRawInternal() override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
+		~Cr2Decoder(void) override;
 
-  void sRawInterpolate();
-  int getHue();
-  void interpolate_420(int w, int h, int start_h , int end_h);
-  void interpolate_422(int w, int h, int start_h , int end_h);
-  void interpolate_422_old(int w, int h, int start_h , int end_h);
-  void interpolate_420_new(int w, int h, int start_h , int end_h);
-  void interpolate_422_new(int w, int h, int start_h , int end_h);
-  TiffIFD *mRootIFD;
-};
+	protected:
+		int sraw_coeffs[3];
 
-class Cr2Slice {
-public:
-  Cr2Slice() { w = h = offset = count = 0;};
-  ~Cr2Slice() {};
-  uint32 w;
-  uint32 h;
-  uint32 offset;
-  uint32 count;
-};
+		void sRawInterpolate();
+		int getHue();
+		void interpolate_420(int w, int h, int start_h, int end_h);
+		void interpolate_422(int w, int h, int start_h, int end_h);
+		void interpolate_422_old(int w, int h, int start_h, int end_h);
+		void interpolate_420_new(int w, int h, int start_h, int end_h);
+		void interpolate_422_new(int w, int h, int start_h, int end_h);
+		TiffIFD* mRootIFD;
+	};
 
+	class Cr2Slice
+	{
+	public:
+		Cr2Slice() { w = h = offset = count = 0; };
+
+		~Cr2Slice()
+		{
+		};
+		uint32 w;
+		uint32 h;
+		uint32 offset;
+		uint32 count;
+	};
 } // namespace RawSpeed
 #endif

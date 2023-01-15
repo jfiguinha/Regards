@@ -26,21 +26,20 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class PefDecoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  PefDecoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~PefDecoder(void);
-  virtual RawImage decodeRawInternal();
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-  TiffIFD *mRootIFD;
-};
-
+	class PefDecoder :
+		public RawDecoder
+	{
+	public:
+		PefDecoder(TiffIFD* rootIFD, FileMap* file);
+		~PefDecoder(void) override;
+		RawImage decodeRawInternal() override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
+		TiffIFD* mRootIFD;
+	};
 } // namespace RawSpeed
 
 #endif

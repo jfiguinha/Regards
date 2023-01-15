@@ -55,6 +55,7 @@ struct RLV {
   uint16_t count;    //!< Run length
   uint16_t value;    //!< Run value (unsigned)
 };
+
 #define RLVTABLE(n)                                                            \
   struct {                                                                     \
     const uint32_t length;                                                     \
@@ -93,7 +94,7 @@ const std::array<RLV, table17.length> decompandedTable17 = []() {
   return d;
 }();
 
-inline bool readValue(bool& storage) {
+bool readValue(bool& storage) {
   bool value;
 
 #ifdef HAVE_OPENMP
@@ -127,9 +128,9 @@ bool VC5Decompressor::Wavelet::allBandsValid() const {
 
 namespace {
 template <typename LowGetter>
-static inline auto convolute(int row, int col, std::array<int, 4> muls,
-                             const Array2DRef<const int16_t> high,
-                             LowGetter lowGetter, int DescaleShift = 0) {
+auto convolute(int row, int col, std::array<int, 4> muls,
+               const Array2DRef<const int16_t> high,
+               LowGetter lowGetter, int DescaleShift = 0) {
   auto highCombined = muls[0] * high(row, col);
   auto lowsCombined = [muls, lowGetter]() {
     int lows = 0;
@@ -196,7 +197,7 @@ VC5Decompressor::BandData VC5Decompressor::Wavelet::reconstructPass(
   };
 
 #pragma GCC diagnostic push
-// See https://bugs.llvm.org/show_bug.cgi?id=51666
+  // See https://bugs.llvm.org/show_bug.cgi?id=51666
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #ifdef HAVE_OPENMP
 #pragma omp taskloop default(none) firstprivate(dst, process) num_tasks(       \
@@ -232,13 +233,13 @@ VC5Decompressor::BandData VC5Decompressor::Wavelet::combineLowHighPass(
                                     high.height);
 
   auto process = [low, high, descaleShift, clampUint, dst](auto segment,
-                                                           int row, int col) {
+    int row, int col) {
     using SegmentTy = decltype(segment);
     auto lowGetter = [&row, &col, low](int delta) {
       return low(row, col + SegmentTy::coord_shift + delta);
     };
     auto convolution = [&row, &col, high, lowGetter,
-                        descaleShift](std::array<int, 4> muls) {
+          descaleShift](std::array<int, 4> muls) {
       return convolute(row, col, muls, high, lowGetter, descaleShift);
     };
 
@@ -280,7 +281,7 @@ VC5Decompressor::BandData VC5Decompressor::Wavelet::combineLowHighPass(
 }
 
 void VC5Decompressor::Wavelet::ReconstructableBand::
-    createLowpassReconstructionTask(bool& exceptionThrown) noexcept {
+createLowpassReconstructionTask(bool& exceptionThrown) noexcept {
   auto& highlow = wavelet.bands[2]->data;
   auto& lowlow = wavelet.bands[0]->data;
   auto& lowpass = intermediates.lowpass;
@@ -296,17 +297,17 @@ void VC5Decompressor::Wavelet::ReconstructableBand::
     // Proceed only if decoding did not fail.
     if (!readValue(exceptionThrown)) {
       assert(highlow.has_value() && lowlow.has_value() &&
-             "Failed to produce precursor bands?");
+          "Failed to produce precursor bands?");
       // Reconstruct the "immediates", the actual low pass ...
       assert(!lowpass.has_value() && "Combined this precursor band already?");
       lowpass.emplace(
-          Wavelet::reconstructPass(highlow->description, lowlow->description));
+          reconstructPass(highlow->description, lowlow->description));
     }
   }
 }
 
 void VC5Decompressor::Wavelet::ReconstructableBand::
-    createHighpassReconstructionTask(bool& exceptionThrown) noexcept {
+createHighpassReconstructionTask(bool& exceptionThrown) noexcept {
   auto& highhigh = wavelet.bands[3]->data;
   auto& lowhigh = wavelet.bands[1]->data;
   auto& highpass = intermediates.highpass;
@@ -322,16 +323,16 @@ void VC5Decompressor::Wavelet::ReconstructableBand::
     // Proceed only if decoding did not fail.
     if (!readValue(exceptionThrown)) {
       assert(highhigh.has_value() && lowhigh.has_value() &&
-             "Failed to produce precursor bands?");
+          "Failed to produce precursor bands?");
       assert(!highpass.has_value() && "Combined this precursor band already?");
-      highpass.emplace(Wavelet::reconstructPass(highhigh->description,
-                                                lowhigh->description));
+      highpass.emplace(reconstructPass(highhigh->description,
+                                       lowhigh->description));
     }
   }
 }
 
 void VC5Decompressor::Wavelet::ReconstructableBand::
-    createLowHighPassCombiningTask(bool& exceptionThrown) noexcept {
+createLowHighPassCombiningTask(bool& exceptionThrown) noexcept {
   auto& lowpass = intermediates.lowpass;
   auto& highpass = intermediates.highpass;
   auto& reconstructedLowpass = data;
@@ -352,13 +353,13 @@ void VC5Decompressor::Wavelet::ReconstructableBand::
     // Proceed only if decoding did not fail.
     if (!readValue(exceptionThrown)) {
       assert(lowpass.has_value() && highpass.has_value() &&
-             "Failed to combine precursor bands?");
+          "Failed to combine precursor bands?");
       assert(!data.has_value() && "Reconstructed this band already?");
 
       int16_t descaleShift = (wavelet.prescale == 2 ? 2 : 0);
 
       // And finally, combine the low pass, and high pass.
-      reconstructedLowpass.emplace(Wavelet::combineLowHighPass(
+      reconstructedLowpass.emplace(combineLowHighPass(
           lowpass->description, highpass->description, descaleShift, clampUint,
           finalWavelet));
     }
@@ -374,17 +375,17 @@ void VC5Decompressor::Wavelet::ReconstructableBand::createDecodingTasks(
 }
 
 VC5Decompressor::VC5Decompressor(ByteStream bs, const RawImage& img)
-    : mRaw(img), mBs(std::move(bs)) {
+  : mRaw(img), mBs(std::move(bs)) {
   if (!mRaw->dim.hasPositiveArea())
     ThrowRDE("Bad image dimensions.");
 
   if (mRaw->dim.x % mVC5.patternWidth != 0)
     ThrowRDE("Width %u is not a multiple of %u", mRaw->dim.x,
-             mVC5.patternWidth);
+           mVC5.patternWidth);
 
   if (mRaw->dim.y % mVC5.patternHeight != 0)
     ThrowRDE("Height %u is not a multiple of %u", mRaw->dim.y,
-             mVC5.patternHeight);
+           mVC5.patternHeight);
 
   // Initialize wavelet sizes.
   for (Channel& channel : channels) {
@@ -398,11 +399,12 @@ VC5Decompressor::VC5Decompressor(ByteStream bs, const RawImage& img)
       wavelet.height = waveletHeight;
 
       wavelet.bands.resize(Wavelet::maxBands);
-         //(&wavelet == channel.wavelets.begin()) ? 1 : Wavelet::maxBands);
+      //(&wavelet == channel.wavelets.begin()) ? 1 : Wavelet::maxBands);
     }
   }
 
-  if (img->whitePoint <= 0 || img->whitePoint > int(((1U << 16U) - 1U)))
+  if (img->whitePoint <= 0 || img->whitePoint > static_cast<int>(
+        (1U << 16U) - 1U))
     ThrowRDE("Bad white level %i", img->whitePoint);
 
   outputBits = 0;
@@ -423,7 +425,9 @@ void VC5Decompressor::initVC5LogTable() {
 
         auto normalizeI = [tableSize](auto x) { return x / (tableSize - 1.0); };
         auto denormalizeY = [maxVal = std::numeric_limits<uint16_t>::max()](
-                                auto y) { return maxVal * y; };
+            auto y) {
+          return maxVal * y;
+        };
         // Adjust for output whitelevel bitdepth.
         auto rescaleY = [outputBits](auto y) {
           auto scale = 16 - outputBits;
@@ -523,13 +527,14 @@ void VC5Decompressor::parseVC5() {
             extractHighBits(val, 2 * iWavelet, /*effectiveBitwidth=*/14) & 0x03;
       }
       break;
-    default: { // A chunk.
+    default: {
+      // A chunk.
       unsigned int chunkSize = 0;
       if (matches(tag, VC5Tag::LARGE_CHUNK)) {
         chunkSize = static_cast<unsigned int>(
-            ((static_cast<std::underlying_type<VC5Tag>::type>(tag) & 0xff)
-             << 16) |
-            (val & 0xffff));
+          ((static_cast<std::underlying_type_t<VC5Tag>>(tag) & 0xff)
+           << 16) |
+          (val & 0xffff));
       } else if (matches(tag, VC5Tag::SMALL_CHUNK)) {
         chunkSize = (val & 0xffff);
       }
@@ -590,7 +595,7 @@ void VC5Decompressor::Wavelet::AbstractDecodeableBand::createDecodingTasks(
 #ifdef HAVE_OPENMP
 #pragma omp atomic write
 #endif
-      exceptionThrown = true;
+        exceptionThrown = true;
       }
     }
   }
@@ -599,8 +604,8 @@ void VC5Decompressor::Wavelet::AbstractDecodeableBand::createDecodingTasks(
 VC5Decompressor::Wavelet::LowPassBand::LowPassBand(Wavelet& wavelet_,
                                                    ByteStream bs_,
                                                    uint16_t lowpassPrecision_)
-    : AbstractDecodeableBand(wavelet_, std::move(bs_)),
-      lowpassPrecision(lowpassPrecision_) {
+  : AbstractDecodeableBand(wavelet_, std::move(bs_)),
+    lowpassPrecision(lowpassPrecision_) {
   // Low-pass band is a uncompressed version of the image, hugely downscaled.
   // It consists of width * height pixels, `lowpassPrecision` each.
   // We can easily check that we have sufficient amount of bits to decode it.
@@ -641,14 +646,16 @@ VC5Decompressor::Wavelet::HighPassBand::decode() const {
     }
 
   public:
-    DeRLVer(const ByteStream& bs, int16_t quant_) : bits(bs), quant(quant_) {}
+    DeRLVer(const ByteStream& bs, int16_t quant_)
+      : bits(bs), quant(quant_) {
+    }
 
     void verifyIsAtEnd() {
       if (numPixelsLeft != 0)
         ThrowRDE("Not all pixels consumed?");
       decodeNextPixelGroup();
       static_assert(decompand(MARKER_BAND_END) == MARKER_BAND_END,
-                    "passthrough");
+        "passthrough");
       if (pixelValue != MARKER_BAND_END || numPixelsLeft != 0)
         ThrowRDE("EndOfBand marker not found");
     }
@@ -733,13 +740,13 @@ void VC5Decompressor::parseLargeCodeblock(const ByteStream& bs) {
     if (!mVC5.lowpassPrecision.has_value())
       ThrowRDE("Did not see VC5Tag::LowpassPrecision yet");
     dstBand = std::make_unique<Wavelet::LowPassBand>(wavelet, bs,
-                                                     *mVC5.lowpassPrecision);
+      *mVC5.lowpassPrecision);
     mVC5.lowpassPrecision.reset();
   } else {
     if (!mVC5.quantization.has_value())
       ThrowRDE("Did not see VC5Tag::Quantization yet");
     dstBand = std::make_unique<Wavelet::HighPassBand>(wavelet, bs,
-                                                      *mVC5.quantization);
+      *mVC5.quantization);
     mVC5.quantization.reset();
   }
   wavelet.setBandValid(band);
@@ -766,7 +773,7 @@ void VC5Decompressor::createWaveletBandDecodingTasks(
     for (int bandId = 0; bandId != numBandsInCurrentWavelet; ++bandId) {
       for (const auto& channel : channels) {
         channel.wavelets[waveletLevel].bands[bandId]->createDecodingTasks(
-            static_cast<ErrorLog&>(*mRaw), exceptionThrown);
+            *mRaw, exceptionThrown);
       }
     }
   }
@@ -806,9 +813,8 @@ void VC5Decompressor::decode(unsigned int offsetX, unsigned int offsetY,
     assert(exceptionThrown);
     ThrowRDE("Too many errors encountered. Giving up. First Error:\n%s",
              firstErr.c_str());
-  } else {
-    assert(!exceptionThrown);
   }
+  assert(!exceptionThrown);
 }
 
 void VC5Decompressor::combineFinalLowpassBands() const noexcept {
@@ -818,10 +824,10 @@ void VC5Decompressor::combineFinalLowpassBands() const noexcept {
   const int height = out.height / 2;
 
   assert(channels[0].wavelets[0].bands[0]->data.has_value() &&
-         channels[1].wavelets[0].bands[0]->data.has_value() &&
-         channels[2].wavelets[0].bands[0]->data.has_value() &&
-         channels[3].wavelets[0].bands[0]->data.has_value() &&
-         "Failed to reconstruct all final lowpass bands?");
+      channels[1].wavelets[0].bands[0]->data.has_value() &&
+      channels[2].wavelets[0].bands[0]->data.has_value() &&
+      channels[3].wavelets[0].bands[0]->data.has_value() &&
+      "Failed to reconstruct all final lowpass bands?");
 
   const Array2DRef<const int16_t> lowbands0 =
       channels[0].wavelets[0].bands[0]->data->description;

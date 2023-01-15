@@ -25,5 +25,3 @@
 
     http://www.klauspost.com
 */
-
-

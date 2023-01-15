@@ -39,7 +39,7 @@ int LibRaw::subtract_black_internal()
       int dmax = 0;
       if (C.cblack[4] && C.cblack[5])
       {
-        for (unsigned q = 0; q < (unsigned)size; q++)
+        for (unsigned q = 0; q < static_cast<unsigned>(size); q++)
         {
           for (unsigned c = 0; c < 4; c++)
           {
@@ -48,20 +48,22 @@ int LibRaw::subtract_black_internal()
                             q % S.iwidth % C.cblack[5]];
             val -= cblk[c];
             imgdata.image[q][c] = CLIP(val);
-            if (dmax < val) dmax = val;
+            if (dmax < val)
+              dmax = val;
           }
         }
       }
       else
       {
-        for (unsigned q = 0; q < (unsigned)size; q++)
+        for (unsigned q = 0; q < static_cast<unsigned>(size); q++)
         {
           for (unsigned c = 0; c < 4; c++)
           {
             int val = imgdata.image[q][c];
             val -= cblk[c];
             imgdata.image[q][c] = CLIP(val);
-            if (dmax < val) dmax = val;
+            if (dmax < val)
+              dmax = val;
           }
         }
       }
@@ -75,7 +77,7 @@ int LibRaw::subtract_black_internal()
       // Nothing to Do, maximum is already calculated, black level is 0, so no
       // change only calculate channel maximum;
       int idx;
-      ushort *p = (ushort *)imgdata.image;
+      auto p = (ushort *)imgdata.image;
       int dmax = 0;
       for (idx = 0; idx < S.iheight * S.iwidth * 4; idx++)
         if (dmax < p[idx])
@@ -84,7 +86,7 @@ int LibRaw::subtract_black_internal()
     }
     return 0;
   }
-  catch (const LibRaw_exceptions& err)
+  catch (const LibRaw_exceptions &err)
   {
     EXCEPTION_HANDLER(err);
   }

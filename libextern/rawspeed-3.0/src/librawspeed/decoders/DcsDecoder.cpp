@@ -52,10 +52,11 @@ void DcsDecoder::checkImageDimensions() {
 }
 
 RawImage DcsDecoder::decodeRawInternal() {
-  SimpleTiffDecoder::prepareForRawDecoding();
+  prepareForRawDecoding();
 
-  TiffEntry *linearization = mRootIFD->getEntryRecursive(GRAYRESPONSECURVE);
-  if (!linearization || linearization->count != 256 || linearization->type != TIFF_SHORT)
+  TiffEntry* linearization = mRootIFD->getEntryRecursive(GRAYRESPONSECURVE);
+  if (!linearization || linearization->count != 256 || linearization->type !=
+      TIFF_SHORT)
     ThrowRDE("Couldn't find the linearization table");
 
   assert(linearization != nullptr);

@@ -34,7 +34,7 @@ using std::copy_n;
 namespace rawspeed {
 
 LJpegDecompressor::LJpegDecompressor(const ByteStream& bs, const RawImage& img)
-    : AbstractLJpegDecompressor(bs, img) {
+  : AbstractLJpegDecompressor(bs, img) {
   if (mRaw->getDataType() != TYPE_USHORT16)
     ThrowRDE("Unexpected data type (%u)", mRaw->getDataType());
 
@@ -86,8 +86,7 @@ void LJpegDecompressor::decode(uint32_t offsetX, uint32_t offsetY,
   AbstractLJpegDecompressor::decode();
 }
 
-void LJpegDecompressor::decodeScan()
-{
+void LJpegDecompressor::decodeScan() {
   assert(frame.cps > 0);
 
   if (predictorMode != 1)
@@ -199,7 +198,8 @@ template <int N_COMP, bool WeirdWidth> void LJpegDecompressor::decodeN() {
     // For x, we first process all full pixel blocks within the image buffer ...
     for (; col < N_COMP * fullBlocks; col += N_COMP) {
       for (int i = 0; i != N_COMP; ++i) {
-        pred[i] = uint16_t(pred[i] + ht[i]->decodeDifference(bitStream));
+        pred[i] = static_cast<uint16_t>(
+          pred[i] + ht[i]->decodeDifference(bitStream));
         img(row, col + i) = pred[i];
       }
     }
@@ -208,14 +208,15 @@ template <int N_COMP, bool WeirdWidth> void LJpegDecompressor::decodeN() {
     if /*constexpr*/ (WeirdWidth) {
       // FIXME: evaluate i-cache implications due to this being compile-time.
       static_assert(N_COMP > 1 || !WeirdWidth,
-                    "can't want part of 1-pixel-wide block");
+        "can't want part of 1-pixel-wide block");
       // Some rather esoteric DNG's have odd dimensions, e.g. width % 2 = 1.
       // We may end up needing just part of last N_COMP pixels.
       assert(trailingPixels > 0);
       assert(trailingPixels < N_COMP);
       unsigned c = 0;
       for (; c < trailingPixels; ++c) {
-        pred[c] = uint16_t(pred[c] + ht[c]->decodeDifference(bitStream));
+        pred[c] = static_cast<uint16_t>(
+          pred[c] + ht[c]->decodeDifference(bitStream));
         img(row, col + c) = pred[c];
       }
       // Discard the rest of the block.
@@ -228,7 +229,8 @@ template <int N_COMP, bool WeirdWidth> void LJpegDecompressor::decodeN() {
 
     // ... and discard the rest.
     for (; col < N_COMP * frame.w; col += N_COMP) {
-      for (int i = 0; i != N_COMP; ++i) ht[i]->decodeDifference(bitStream);
+      for (int i = 0; i != N_COMP; ++i)
+        ht[i]->decodeDifference(bitStream);
     }
   }
 }

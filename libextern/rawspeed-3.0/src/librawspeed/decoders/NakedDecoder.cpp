@@ -40,7 +40,8 @@ namespace rawspeed {
 class CameraMetaData;
 
 NakedDecoder::NakedDecoder(const Buffer& file, const Camera* c)
-    : RawDecoder(file), cam(c) {}
+  : RawDecoder(file), cam(c) {
+}
 
 const map<string, BitOrder> NakedDecoder::order2enum = {
     {"plain", BitOrder_LSB},
@@ -72,7 +73,7 @@ void NakedDecoder::parseHints() {
   if (filesize == 0 || offset >= filesize)
     ThrowRDE("%s %s: no image data found", make, model);
 
-  bits = cHints.get("bits", (filesize-offset)*8/width/height);
+  bits = cHints.get("bits", (filesize - offset) * 8 / width / height);
   if (bits == 0)
     ThrowRDE("%s %s: image bpp is invalid: %u", make, model, bits);
 

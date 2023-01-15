@@ -36,7 +36,9 @@
 
 namespace rawspeed {
 
-FileWriter::FileWriter(const char *_filename) : mFilename(_filename) {}
+FileWriter::FileWriter(const char* _filename)
+  : mFilename(_filename) {
+}
 
 void FileWriter::writeFile(Buffer& filemap, uint32_t size) {
   if (size > filemap.getSize())
@@ -58,7 +60,7 @@ void FileWriter::writeFile(Buffer& filemap, uint32_t size) {
 
 #else // __unix__
   auto wFileName = widenFileName(mFilename);
-  HANDLE file_h;  // File handle
+  HANDLE file_h; // File handle
   file_h =
       CreateFileW(wFileName.data(), GENERIC_WRITE, FILE_SHARE_WRITE, nullptr,
                   CREATE_ALWAYS, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);

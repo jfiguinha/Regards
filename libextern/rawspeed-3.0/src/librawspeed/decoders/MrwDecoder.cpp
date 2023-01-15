@@ -38,7 +38,8 @@ namespace rawspeed {
 
 class CameraMetaData;
 
-MrwDecoder::MrwDecoder(const Buffer& file) : RawDecoder(file) { parseHeader(); }
+MrwDecoder::MrwDecoder(const Buffer& file)
+  : RawDecoder(file) { parseHeader(); }
 
 int MrwDecoder::isMRW(const Buffer& input) {
   static const std::array<char, 4> magic = {{0x00, 'M', 'R', 'M'}};
@@ -79,7 +80,8 @@ void MrwDecoder::parseHeader() {
     const auto origPos = bs.getPosition();
 
     switch (tag) {
-    case 0x505244: {            // PRD
+    case 0x505244: {
+      // PRD
       foundPRD = true;
       bs.skipBytes(8);          // Version Number
       raw_height = bs.getU16(); // CCD Size Y
@@ -90,8 +92,8 @@ void MrwDecoder::parseHeader() {
                  raw_height);
       }
 
-      bs.skipBytes(2);          // Image Size Y
-      bs.skipBytes(2);          // Image Size X
+      bs.skipBytes(2); // Image Size Y
+      bs.skipBytes(2); // Image Size X
 
       bpp = bs.getByte(); // DataSize
       if (12 != bpp && 16 != bpp)
@@ -124,12 +126,12 @@ void MrwDecoder::parseHeader() {
     case 0x574247:     // WBG
       bs.skipBytes(4); // 4 factors
       static_assert(4 == (sizeof(wb_coeffs) / sizeof(wb_coeffs[0])),
-                    "wrong coeff count");
+        "wrong coeff count");
       for (auto& wb_coeff : wb_coeffs)
         wb_coeff = static_cast<float>(bs.getU16()); // gain
 
-      // FIXME?
-      // Gf = Gr / 2^(6+F)
+    // FIXME?
+    // Gf = Gr / 2^(6+F)
       break;
     default:
       // unknown block, let's just ignore

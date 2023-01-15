@@ -34,7 +34,7 @@ void LibRaw::smal_decode_segment(unsigned seg[2][2], int holes)
 
   fseek(ifp, seg[0][1] + 1, SEEK_SET);
   getbits(-1);
-  if (seg[1][0] > unsigned(raw_width * raw_height))
+  if (seg[1][0] > static_cast<unsigned>(raw_width * raw_height))
     seg[1][0] = raw_width * raw_height;
   for (pix = seg[0][0]; pix < seg[1][0]; pix++)
   {
@@ -56,14 +56,12 @@ void LibRaw::smal_decode_segment(unsigned seg[2][2], int holes)
         carry = nbits - 8;
       }
       count = ((((data - range + 1) & 0xffff) << 2) - 1) / (high >> 4);
-      for (bin = 0; hist[s][bin + 5] > count; bin++)
-        ;
+      for (bin = 0; hist[s][bin + 5] > count; bin++);
       low = hist[s][bin + 5] * (high >> 4) >> 2;
       if (bin)
         high = hist[s][bin + 4] * (high >> 4) >> 2;
       high -= low;
-      for (nbits = 0; high << nbits < 128; nbits++)
-        ;
+      for (nbits = 0; high << nbits < 128; nbits++);
       range = (range + low) << nbits;
       high <<= nbits;
       next = hist[s][1];
@@ -90,7 +88,7 @@ void LibRaw::smal_decode_segment(unsigned seg[2][2], int holes)
       diff = diff ? -diff : 0x80;
     if (ftell(ifp) + 12 >= seg[1][1])
       diff = 0;
-    if (pix >= unsigned(raw_width * raw_height))
+    if (pix >= static_cast<unsigned>(raw_width * raw_height))
       throw LIBRAW_EXCEPTION_IO_CORRUPT;
     raw_image[pix] = pred[pix & 1] += diff;
     if (!(pix & 1) && HOLE(pix / raw_width))
@@ -163,7 +161,7 @@ void LibRaw::smal_v9_load_raw()
 
   fseek(ifp, 67, SEEK_SET);
   offset = get4();
-  nseg = (uchar)fgetc(ifp);
+  nseg = static_cast<uchar>(fgetc(ifp));
   fseek(ifp, offset, SEEK_SET);
   for (i = 0; i < nseg * 2; i++)
     ((unsigned *)seg)[i] = get4() + data_offset * (i & 1);

@@ -43,8 +43,8 @@ public:
 
   Cr2Slicing(uint16_t numSlices_, uint16_t sliceWidth_,
              uint16_t lastSliceWidth_)
-      : numSlices(numSlices_), sliceWidth(sliceWidth_),
-        lastSliceWidth(lastSliceWidth_) {
+    : numSlices(numSlices_), sliceWidth(sliceWidth_),
+      lastSliceWidth(lastSliceWidth_) {
     if (numSlices < 1)
       ThrowRDE("Bad slice count: %u", numSlices);
   }
@@ -69,12 +69,11 @@ public:
   }
 };
 
-class Cr2Decompressor final : public AbstractLJpegDecompressor
-{
+class Cr2Decompressor final : public AbstractLJpegDecompressor {
   Cr2Slicing slicing;
 
   void decodeScan() override;
-  template<int N_COMP, int X_S_F, int Y_S_F> void decodeN_X_Y();
+  template <int N_COMP, int X_S_F, int Y_S_F> void decodeN_X_Y();
 
 public:
   Cr2Decompressor(const ByteStream& bs, const RawImage& img);

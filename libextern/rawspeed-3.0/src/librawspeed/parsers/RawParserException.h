@@ -29,7 +29,8 @@ class RawParserException : public RawspeedException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   RawParserException(const char* msg)
-      : RawspeedException(msg) {}
+    : RawspeedException(msg) {
+  }
 };
 
 #define ThrowRPE(...)                                                          \

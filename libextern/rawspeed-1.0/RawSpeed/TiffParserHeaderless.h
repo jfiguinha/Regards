@@ -24,18 +24,17 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class TiffParserHeaderless :
-  public TiffParser
+namespace RawSpeed
 {
-public:
-  TiffParserHeaderless(FileMap* input, Endianness _end);
-  virtual ~TiffParserHeaderless(void);
-  void parseData(uint32 firstIfdOffset);
-  virtual void parseData();
-};
-
+	class TiffParserHeaderless :
+		public TiffParser
+	{
+	public:
+		TiffParserHeaderless(FileMap* input, Endianness _end);
+		~TiffParserHeaderless(void) override;
+		void parseData(uint32 firstIfdOffset);
+		void parseData() override;
+	};
 } // namespace RawSpeed
 
 #endif

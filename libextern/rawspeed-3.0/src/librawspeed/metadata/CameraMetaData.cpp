@@ -40,7 +40,7 @@ using std::string;
 namespace rawspeed {
 
 #ifdef HAVE_PUGIXML
-CameraMetaData::CameraMetaData(const char *docname) {
+CameraMetaData::CameraMetaData(const char* docname) {
   xml_document doc;
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -52,7 +52,8 @@ CameraMetaData::CameraMetaData(const char *docname) {
   if (!result) {
     ThrowCME(
         "XML Document \"%s\" could not be parsed successfully. Error was: %s in %s",
-        docname, result.description(), doc.child("node").attribute("attr").value());
+        docname, result.description(),
+        doc.child("node").attribute("attr").value());
   }
 
   for (xml_node camera : doc.child("Cameras").children("Camera")) {
@@ -167,14 +168,14 @@ const Camera* CameraMetaData::addCamera(std::unique_ptr<Camera> cam) {
   return cameras[id].get();
 }
 
-void CameraMetaData::disableMake(const string &make) {
+void CameraMetaData::disableMake(const string& make) {
   for (const auto& cam : cameras) {
     if (cam.second->make == make)
       cam.second->supported = false;
   }
 }
 
-void CameraMetaData::disableCamera(const string &make, const string &model) {
+void CameraMetaData::disableCamera(const string& make, const string& model) {
   for (const auto& cam : cameras) {
     if (cam.second->make == make && cam.second->model == model)
       cam.second->supported = false;

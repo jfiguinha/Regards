@@ -22,29 +22,29 @@ void LibRaw::convert_to_rgb()
 {
   float out_cam[3][4];
   double num, inverse[3][3];
-  static const double(*out_rgb[])[3] = {
-      LibRaw_constants::rgb_rgb,  LibRaw_constants::adobe_rgb,
+  static const double (*out_rgb[])[3] = {
+      LibRaw_constants::rgb_rgb, LibRaw_constants::adobe_rgb,
       LibRaw_constants::wide_rgb, LibRaw_constants::prophoto_rgb,
-      LibRaw_constants::xyz_rgb,  LibRaw_constants::aces_rgb,
-      LibRaw_constants::dcip3d65_rgb,  LibRaw_constants::rec2020_rgb};
-  static const char *name[] = {"sRGB",          "Adobe RGB (1998)",
+      LibRaw_constants::xyz_rgb, LibRaw_constants::aces_rgb,
+      LibRaw_constants::dcip3d65_rgb, LibRaw_constants::rec2020_rgb};
+  static const char *name[] = {"sRGB", "Adobe RGB (1998)",
                                "WideGamut D65", "ProPhoto D65",
-                               "XYZ",           "ACES",
-                               "DCI-P3 D65",    "Rec. 2020"};
+                               "XYZ", "ACES",
+                               "DCI-P3 D65", "Rec. 2020"};
   static const unsigned phead[] = {
-      1024, 0, 0x2100000,  0x6d6e7472, 0x52474220, 0x58595a20, 0,
-      0,    0, 0x61637370, 0,          0,          0x6e6f6e65, 0,
-      0,    0, 0,          0xf6d6,     0x10000,    0xd32d};
-  unsigned pbody[] = {10,         0x63707274, 0,  36, /* cprt */
-                      0x64657363, 0,          60,     /* desc, len is strlen(longest_string) + 12 */
-                      0x77747074, 0,          20,     /* wtpt */
-                      0x626b7074, 0,          20,     /* bkpt */
-                      0x72545243, 0,          14,     /* rTRC */
-                      0x67545243, 0,          14,     /* gTRC */
-                      0x62545243, 0,          14,     /* bTRC */
-                      0x7258595a, 0,          20,     /* rXYZ */
-                      0x6758595a, 0,          20,     /* gXYZ */
-                      0x6258595a, 0,          20};    /* bXYZ */
+      1024, 0, 0x2100000, 0x6d6e7472, 0x52474220, 0x58595a20, 0,
+      0, 0, 0x61637370, 0, 0, 0x6e6f6e65, 0,
+      0, 0, 0, 0xf6d6, 0x10000, 0xd32d};
+  unsigned pbody[] = {10, 0x63707274, 0, 36, /* cprt */
+                      0x64657363, 0, 60,     /* desc, len is strlen(longest_string) + 12 */
+                      0x77747074, 0, 20,     /* wtpt */
+                      0x626b7074, 0, 20,     /* bkpt */
+                      0x72545243, 0, 14,     /* rTRC */
+                      0x67545243, 0, 14,     /* gTRC */
+                      0x62545243, 0, 14,     /* bTRC */
+                      0x7258595a, 0, 20,     /* rXYZ */
+                      0x6758595a, 0, 20,     /* gXYZ */
+                      0x6258595a, 0, 20};    /* bXYZ */
   static const unsigned pwhite[] = {0xf351, 0x10000, 0x116cc};
   unsigned pcurve[] = {0x63757276, 0, 1, 0x1000000};
 
@@ -55,31 +55,32 @@ void LibRaw::convert_to_rgb()
   raw_color |= colors == 1 || output_color < 1 || output_color > 8;
   if (!raw_color)
   {
-	size_t prof_desc_len;
-	std::vector<char> prof_desc;
+    size_t prof_desc_len;
+    std::vector<char> prof_desc;
     int i, j, k;
-    prof_desc_len = snprintf(NULL, 0, "%s gamma %g toe slope %g", name[output_color - 1],
+    prof_desc_len = snprintf(nullptr, 0, "%s gamma %g toe slope %g", name[output_color - 1],
                              floorf(1000.f / gamm[0] + .5f) / 1000.f, floorf(gamm[1] * 1000.0f + .5f) / 1000.f) +
                     1;
     prof_desc.resize(prof_desc_len);
-    sprintf(prof_desc.data(), "%s gamma %g toe slope %g", name[output_color - 1], floorf(1000.f / gamm[0] + .5f) / 1000.f,
+    sprintf(prof_desc.data(), "%s gamma %g toe slope %g", name[output_color - 1],
+            floorf(1000.f / gamm[0] + .5f) / 1000.f,
             floorf(gamm[1] * 1000.0f + .5f) / 1000.f);
 
-	oprof = (unsigned *)calloc(phead[0], 1);
+    oprof = static_cast<unsigned *>(calloc(phead[0], 1));
     memcpy(oprof, phead, sizeof phead);
     if (output_color == 5)
       oprof[4] = oprof[5];
     oprof[0] = 132 + 12 * pbody[0];
-    for (i = 0; i < (int)pbody[0]; i++)
+    for (i = 0; i < static_cast<int>(pbody[0]); i++)
     {
       oprof[oprof[0] / 4] = i ? (i > 1 ? 0x58595a20 : 0x64657363) : 0x74657874;
       pbody[i * 3 + 2] = oprof[0];
       oprof[0] += (pbody[i * 3 + 3] + 3) & -4;
     }
     memcpy(oprof + 32, pbody, sizeof pbody);
-    oprof[pbody[5] / 4 + 2] = unsigned(prof_desc_len + 1);
+    oprof[pbody[5] / 4 + 2] = static_cast<unsigned>(prof_desc_len + 1);
     memcpy((char *)oprof + pbody[8] + 8, pwhite, sizeof pwhite);
-    pcurve[3] = (short)(256 / gamm[5] + 0.5) << 16;
+    pcurve[3] = static_cast<short>(256 / gamm[5] + 0.5) << 16;
     for (i = 4; i < 7; i++)
       memcpy((char *)oprof + pbody[i * 3 + 2], pcurve, sizeof pcurve);
     pseudoinverse((double(*)[3])out_rgb[output_color - 1], inverse, 3);
@@ -90,11 +91,11 @@ void LibRaw::convert_to_rgb()
           num += LibRaw_constants::xyzd50_srgb[i][k] * inverse[j][k];
         oprof[pbody[j * 3 + 23] / 4 + i + 2] = num * 0x10000 + 0.5;
       }
-    for (i = 0; i < (int)phead[0] / 4; i++)
+    for (i = 0; i < static_cast<int>(phead[0]) / 4; i++)
       oprof[i] = htonl(oprof[i]);
     strcpy((char *)oprof + pbody[2] + 8, "auto-generated by dcraw");
     if (pbody[5] + 12 + prof_desc.size() < phead[0])
-		strcpy((char *)oprof + pbody[5] + 12, prof_desc.data());
+      strcpy((char *)oprof + pbody[5] + 12, prof_desc.data());
     for (i = 0; i < 3; i++)
       for (j = 0; j < colors; j++)
         for (out_cam[i][j] = k = 0; k < 3; k++)
@@ -114,17 +115,17 @@ void LibRaw::scale_colors()
   int val;
   double dsum[8], dmin, dmax;
   float scale_mul[4], fr, fc;
-  ushort *img = 0, *pix;
+  ushort *img = nullptr, *pix;
 
   RUN_CALLBACK(LIBRAW_PROGRESS_SCALE_COLORS, 0, 2);
 
   if (user_mul[0])
     memcpy(pre_mul, user_mul, sizeof pre_mul);
-  if (use_auto_wb || (use_camera_wb && 
-      (cam_mul[0] < -0.5  // LibRaw 0.19 and older: fallback to auto only if cam_mul[0] is set to -1
-          || (cam_mul[0] <= 0.00001f  // New default: fallback to auto if no cam_mul parsed from metadata
-              && !(imgdata.rawparams.options & LIBRAW_RAWOPTIONS_CAMERAWB_FALLBACK_TO_DAYLIGHT))
-          )))
+  if (use_auto_wb || (use_camera_wb &&
+                      (cam_mul[0] < -0.5 // LibRaw 0.19 and older: fallback to auto only if cam_mul[0] is set to -1
+                       || (cam_mul[0] <= 0.00001f // New default: fallback to auto if no cam_mul parsed from metadata
+                           && !(imgdata.rawparams.options & LIBRAW_RAWOPTIONS_CAMERAWB_FALLBACK_TO_DAYLIGHT))
+                      )))
   {
     memset(dsum, 0, sizeof dsum);
     bottom = MIN(greybox[1] + greybox[3], height);
@@ -144,7 +145,7 @@ void LibRaw::scale_colors()
               }
               else
                 val = image[y * width + x][c];
-              if (val > (int)maximum - 25)
+              if (val > static_cast<int>(maximum) - 25)
                 goto skip_block;
               if ((val -= cblack[c]) < 0)
                 val = 0;
@@ -153,10 +154,13 @@ void LibRaw::scale_colors()
               if (filters)
                 break;
             }
-        FORC(8) dsum[c] += sum[c];
+        FORC(8)
+          dsum[c] += sum[c];
       skip_block:;
       }
-    FORC4 if (dsum[c]) pre_mul[c] = dsum[c + 4] / dsum[c];
+    FORC4
+      if (dsum[c])
+        pre_mul[c] = dsum[c + 4] / dsum[c];
   }
   if (use_camera_wb && cam_mul[0] > 0.00001f)
   {
@@ -175,7 +179,8 @@ void LibRaw::scale_colors()
       pre_mul[0] = pre_mul[1] = pre_mul[2] = pre_mul[3] = 1.0;
     }
     else if (sum[0] && sum[1] && sum[2] && sum[3])
-      FORC4 pre_mul[c] = (float)sum[c + 4] / sum[c];
+      FORC4
+        pre_mul[c] = static_cast<float>(sum[c + 4]) / sum[c];
     else if (cam_mul[0] > 0.00001f && cam_mul[2] > 0.00001f)
       memcpy(pre_mul, cam_mul, sizeof pre_mul);
     else
@@ -207,14 +212,17 @@ void LibRaw::scale_colors()
   if (!highlight)
     dmax = dmin;
   if (dmax > 0.00001 && maximum > 0)
-    FORC4 scale_mul[c] = (pre_mul[c] /= dmax) * 65535.0 / maximum;
+    FORC4
+      scale_mul[c] = (pre_mul[c] /= dmax) * 65535.0 / maximum;
   else
-    FORC4 scale_mul[c] = 1.0;
+    FORC4
+      scale_mul[c] = 1.0;
 
   if (filters > 1000 && (cblack[4] + 1) / 2 == 1 && (cblack[5] + 1) / 2 == 1)
   {
-    FORC4 cblack[FC(c / 2, c % 2)] +=
-        cblack[6 + c / 2 % cblack[4] * cblack[5] + c % 2 % cblack[5]];
+    FORC4
+      cblack[FC(c / 2, c % 2)] +=
+          cblack[6 + c / 2 % cblack[4] * cblack[5] + c % 2 % cblack[5]];
     cblack[4] = cblack[5] = 0;
   }
   size = iheight * iwidth;
@@ -225,19 +233,19 @@ void LibRaw::scale_colors()
     {
       if (aber[c] == 1)
         continue;
-      img = (ushort *)malloc(size * sizeof *img);
+      img = static_cast<ushort *>(malloc(size * sizeof *img));
       for (i = 0; i < size; i++)
         img[i] = image[i][c];
       for (row = 0; row < iheight; row++)
       {
         ur = fr = (row - iheight * 0.5) * aber[c] + iheight * 0.5;
-        if (ur > (unsigned)iheight - 2)
+        if (ur > static_cast<unsigned>(iheight) - 2)
           continue;
         fr -= ur;
         for (col = 0; col < iwidth; col++)
         {
           uc = fc = (col - iwidth * 0.5) * aber[c] + iwidth * 0.5;
-          if (uc > (unsigned)iwidth - 2)
+          if (uc > static_cast<unsigned>(iwidth) - 2)
             continue;
           fc -= uc;
           pix = img + ur * iwidth + uc;
@@ -259,7 +267,7 @@ void LibRaw::green_matching()
   double m1, m2, c1, c2;
   int o1_1, o1_2, o1_3, o1_4;
   int o2_1, o2_2, o2_3, o2_4;
-  ushort(*img)[4];
+  ushort (*img)[4];
   const int margin = 3;
   int oj = 2, oi = 2;
   float f;
@@ -273,7 +281,7 @@ void LibRaw::green_matching()
   if (FC(oj, oi) != 3)
     oj--;
 
-  img = (ushort(*)[4])calloc(height * width, sizeof *image);
+  img = static_cast<ushort(*)[4]>(calloc(height * width, sizeof *image));
   memcpy(img, image, height * width * sizeof *image);
 
   for (j = oj; j < height - margin; j += 2)

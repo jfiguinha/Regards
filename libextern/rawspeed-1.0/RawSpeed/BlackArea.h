@@ -22,18 +22,17 @@
 
     http://www.klauspost.com
 */
-namespace RawSpeed {
-
-class BlackArea
+namespace RawSpeed
 {
-public:
-  BlackArea(int offset, int size, bool isVertical);
-  virtual ~BlackArea(void);
-  uint32 offset; // Offset in bayer pixels.
-  uint32 size;   // Size in bayer pixels.
-  bool isVertical;  // Otherwise horizontal
-};
-
+	class BlackArea
+	{
+	public:
+		BlackArea(int offset, int size, bool isVertical);
+		virtual ~BlackArea(void);
+		uint32 offset; // Offset in bayer pixels.
+		uint32 size; // Size in bayer pixels.
+		bool isVertical; // Otherwise horizontal
+	};
 } // namespace RawSpeed
 
 #endif

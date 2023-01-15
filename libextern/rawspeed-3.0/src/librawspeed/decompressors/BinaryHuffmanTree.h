@@ -31,7 +31,8 @@ template <typename T>
 class BinaryHuffmanTree final /* : public BinarySearchTree */ {
 public:
   // User-provided default constructor to appease clang-3.5
-  BinaryHuffmanTree() {} // NOLINT hicpp-use-equals-default
+  BinaryHuffmanTree() {
+  } // NOLINT hicpp-use-equals-default
 
   struct Branch;
   struct Leaf;
@@ -80,7 +81,9 @@ public:
 
     Leaf() = default;
 
-    explicit Leaf(T value_) : value(value_) {}
+    explicit Leaf(T value_)
+      : value(value_) {
+    }
   };
 
   std::unique_ptr<Node> root;
@@ -214,7 +217,7 @@ BinaryHuffmanTree<T>::getAllVacantNodesAtDepth(int depth) {
     return {};
 
   // We will have at most two nodes per each branch on the previous depth.
-  std::vector<std::unique_ptr<BinaryHuffmanTree<T>::Node>*> nodes;
+  std::vector<std::unique_ptr<Node>*> nodes;
   nodes.reserve(2U * prevBranches.size());
 
   for (const auto& prevBranch : prevBranches) {

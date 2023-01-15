@@ -31,13 +31,14 @@ class CameraMetaData;
 
 class Buffer;
 
-class Cr2Decoder final : public AbstractTiffDecoder
-{
+class Cr2Decoder final : public AbstractTiffDecoder {
 public:
   static bool isAppropriateDecoder(const TiffRootIFD* rootIFD,
                                    const Buffer& file);
+
   Cr2Decoder(TiffRootIFDOwner&& root, const Buffer& file)
-      : AbstractTiffDecoder(move(root), file) {}
+    : AbstractTiffDecoder(move(root), file) {
+  }
 
   RawImage decodeRawInternal() override;
   void checkSupportInternal(const CameraMetaData* meta) override;

@@ -22,7 +22,7 @@ inline uint32_t abs32(int32_t x)
 {
   // Branchless version.
   uint32_t sm = x >> 31;
-  return (uint32_t) ((x + sm) ^ sm);
+  return x + sm ^ sm;
 }
 
 inline uint32_t min32(uint32_t x, uint32_t y)
@@ -48,7 +48,7 @@ int unsigned_cmp(const void *a, const void *b)
   return *(unsigned *)a > *(unsigned *)b ? 1 : (*(unsigned *)a < *(unsigned *)b ? -1 : 0);
 }
 
-int LibRaw::p1rawc(unsigned row, unsigned col, unsigned& count)
+int LibRaw::p1rawc(unsigned row, unsigned col, unsigned &count)
 {
   return (row < raw_height && col < raw_width) ? (++count, RAW(row, col)) : 0;
 }
@@ -64,11 +64,11 @@ int LibRaw::p1raw(unsigned row, unsigned col)
 void LibRaw::phase_one_fix_col_pixel_avg(unsigned row, unsigned col)
 {
   static const int8_t dir[3][8][2] = {
-  { {-2,-2}, {-2, 2}, {2,-2}, {2, 2}, { 0, 0}, { 0, 0}, {0, 0}, {0, 0} },
-  { {-2,-4}, {-4,-2}, {2,-4}, {4,-2}, {-2, 4}, {-4, 2}, {2, 4}, {4, 2} },
-  { {-4,-4}, {-4, 4}, {4,-4}, {4, 4}, { 0, 0}, { 0, 0}, {0, 0}, {0, 0} } };
+      {{-2, -2}, {-2, 2}, {2, -2}, {2, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+      {{-2, -4}, {-4, -2}, {2, -4}, {4, -2}, {-2, 4}, {-4, 2}, {2, 4}, {4, 2}},
+      {{-4, -4}, {-4, 4}, {4, -4}, {4, 4}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}};
 
-  for (int set=0; set < 3; ++set)
+  for (int set = 0; set < 3; ++set)
   {
     uint32_t total = 0;
     uint32_t count = 0;
@@ -77,12 +77,12 @@ void LibRaw::phase_one_fix_col_pixel_avg(unsigned row, unsigned col)
       if (!dir[set][i][0] && !dir[set][i][1])
         break;
 
-      total += p1rawc(row+dir[set][i][0], col+dir[set][i][1], count);
+      total += p1rawc(row + dir[set][i][0], col + dir[set][i][1], count);
     }
 
     if (count)
     {
-      RAW(row,col) = (uint16_t)((total + (count >> 1)) / count);
+      RAW(row, col) = static_cast<uint16_t>((total + (count >> 1)) / count);
       break;
     }
   }
@@ -92,40 +92,40 @@ void LibRaw::phase_one_fix_col_pixel_avg(unsigned row, unsigned col)
 void LibRaw::phase_one_fix_pixel_grad(unsigned row, unsigned col)
 {
   static const int8_t grad_sets[7][12][2] = {
-    { {-4,-2}, { 4, 2}, {-3,-1}, { 1, 1}, {-1,-1}, { 3, 1}, 
-      {-4,-1}, { 0, 1}, {-2,-1}, { 2, 1}, { 0,-1}, { 4, 1} },
-    { {-2,-2}, { 2, 2}, {-3,-1}, {-1, 1}, {-1,-1}, { 1, 1}, 
-      { 1,-1}, { 3, 1}, {-2,-1}, { 0, 1}, { 0,-1}, { 2, 1} },
-    { {-2,-4}, { 2, 4}, {-1,-3}, { 1, 1}, {-1,-1}, { 1, 3}, 
-      {-2,-1}, { 0, 3}, {-1,-2}, { 1, 2}, { 0,-3}, { 2, 1} },
-    { { 0,-2}, { 0, 2}, {-1,-1}, {-1, 1}, { 1,-1}, { 1, 1}, 
-      {-1,-2}, {-1, 2}, { 0,-1}, { 0,-1}, { 1,-2}, { 1, 2} },
-    { {-2, 4}, { 2,-4}, {-1, 3}, { 1,-1}, {-1, 1}, { 1,-3}, 
-      {-2, 1}, { 0,-3}, {-1, 2}, { 1,-2}, { 0, 3}, { 2,-1} },
-    { {-2, 2}, { 2,-2}, {-3, 1}, {-1,-1}, {-1, 1}, { 1,-1}, 
-      { 1, 1}, { 3,-1}, {-2, 1}, { 0,-1}, { 0, 1}, { 2,-1} },
-    { {-4, 2}, { 4,-2}, {-3, 1}, { 1,-1}, {-1, 1}, { 3,-1}, 
-      {-4, 1}, { 0,-1}, {-2, 1}, { 2,-1}, { 0, 1}, { 4,-1} } };
+      {{-4, -2}, {4, 2}, {-3, -1}, {1, 1}, {-1, -1}, {3, 1},
+       {-4, -1}, {0, 1}, {-2, -1}, {2, 1}, {0, -1}, {4, 1}},
+      {{-2, -2}, {2, 2}, {-3, -1}, {-1, 1}, {-1, -1}, {1, 1},
+       {1, -1}, {3, 1}, {-2, -1}, {0, 1}, {0, -1}, {2, 1}},
+      {{-2, -4}, {2, 4}, {-1, -3}, {1, 1}, {-1, -1}, {1, 3},
+       {-2, -1}, {0, 3}, {-1, -2}, {1, 2}, {0, -3}, {2, 1}},
+      {{0, -2}, {0, 2}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},
+       {-1, -2}, {-1, 2}, {0, -1}, {0, -1}, {1, -2}, {1, 2}},
+      {{-2, 4}, {2, -4}, {-1, 3}, {1, -1}, {-1, 1}, {1, -3},
+       {-2, 1}, {0, -3}, {-1, 2}, {1, -2}, {0, 3}, {2, -1}},
+      {{-2, 2}, {2, -2}, {-3, 1}, {-1, -1}, {-1, 1}, {1, -1},
+       {1, 1}, {3, -1}, {-2, 1}, {0, -1}, {0, 1}, {2, -1}},
+      {{-4, 2}, {4, -2}, {-3, 1}, {1, -1}, {-1, 1}, {3, -1},
+       {-4, 1}, {0, -1}, {-2, 1}, {2, -1}, {0, 1}, {4, -1}}};
 
   uint32_t est[7], grad[7];
-  uint32_t lower = min32(p1raw(row,col-2), p1raw(row, col+2));
-  uint32_t upper = max32(p1raw(row,col-2), p1raw(row, col+2));
+  uint32_t lower = min32(p1raw(row, col - 2), p1raw(row, col + 2));
+  uint32_t upper = max32(p1raw(row, col - 2), p1raw(row, col + 2));
   uint32_t minGrad = 0xFFFFFFFF;
-  for (int i = 0; i<7; ++i)
+  for (int i = 0; i < 7; ++i)
   {
-    est[i] = p1raw(row+grad_sets[i][0][0], col+grad_sets[i][0][1]) +
-             p1raw(row+grad_sets[i][1][0], col+grad_sets[i][1][1]);
+    est[i] = p1raw(row + grad_sets[i][0][0], col + grad_sets[i][0][1]) +
+             p1raw(row + grad_sets[i][1][0], col + grad_sets[i][1][1]);
     grad[i] = 0;
-    for (int j=0; j<12; j+=2)
-      grad[i] += abs32(p1raw(row+grad_sets[i][j][0], col+grad_sets[i][j][1]) -
-                       p1raw(row+grad_sets[i][j+1][0], col+grad_sets[i][j+1][1]));
+    for (int j = 0; j < 12; j += 2)
+      grad[i] += abs32(p1raw(row + grad_sets[i][j][0], col + grad_sets[i][j][1]) -
+                       p1raw(row + grad_sets[i][j + 1][0], col + grad_sets[i][j + 1][1]));
     minGrad = min32(minGrad, grad[i]);
   }
 
   uint32_t limit = (minGrad * 3) >> 1;
   uint32_t total = 0;
   uint32_t count = 0;
-  for (int i = 0; i<7; ++i)
+  for (int i = 0; i < 7; ++i)
     if (grad[i] <= limit)
     {
       total += est[i];
@@ -145,12 +145,12 @@ void LibRaw::phase_one_flat_field(int is_float, int nc)
     return;
   wide = head[2] / head[4] + (head[2] % head[4] != 0);
   high = head[3] / head[5] + (head[3] % head[5] != 0);
-  mrow = (float *)calloc(nc * wide, sizeof *mrow);
+  mrow = static_cast<float *>(calloc(nc * wide, sizeof *mrow));
   for (y = 0; y < high; y++)
   {
     checkCancel();
     for (x = 0; x < wide; x++)
-      for (c = 0; c < (unsigned)nc; c += 2)
+      for (c = 0; c < static_cast<unsigned>(nc); c += 2)
       {
         num = is_float ? getreal(LIBRAW_EXIFTAG_TYPE_FLOAT) : get2() / 32768.0;
         if (y == 0)
@@ -162,19 +162,19 @@ void LibRaw::phase_one_flat_field(int is_float, int nc)
       continue;
     rend = head[1] + y * head[5];
     for (row = rend - head[5];
-         row < raw_height && row < rend && row < unsigned(head[1] + head[3] - head[5]);
+         row < raw_height && row < rend && row < static_cast<unsigned>(head[1] + head[3] - head[5]);
          row++)
     {
       for (x = 1; x < wide; x++)
       {
-        for (c = 0; c < (unsigned)nc; c += 2)
+        for (c = 0; c < static_cast<unsigned>(nc); c += 2)
         {
           mult[c] = mrow[c * wide + x - 1];
           mult[c + 1] = (mrow[c * wide + x] - mult[c]) / head[4];
         }
         cend = head[0] + x * head[4];
         for (col = cend - head[4];
-             col < raw_width && col < cend && col < unsigned(head[0] + head[2] - head[4]);
+             col < raw_width && col < cend && col < static_cast<unsigned>(head[0] + head[2] - head[4]);
              col++)
         {
           c = nc > 2 ? FC(row - top_margin, col - left_margin) : 0;
@@ -183,12 +183,12 @@ void LibRaw::phase_one_flat_field(int is_float, int nc)
             c = RAW(row, col) * mult[c];
             RAW(row, col) = LIM(c, 0, 65535);
           }
-          for (c = 0; c < (unsigned)nc; c += 2)
+          for (c = 0; c < static_cast<unsigned>(nc); c += 2)
             mult[c] += mult[c + 1];
         }
       }
       for (x = 0; x < wide; x++)
-        for (c = 0; c < (unsigned)nc; c += 2)
+        for (c = 0; c < static_cast<unsigned>(nc); c += 2)
           mrow[c * wide + x] += mrow[(c + 1) * wide + x];
     }
   }
@@ -203,10 +203,11 @@ int LibRaw::phase_one_correct()
   int val[4], dev[4], max;
 #endif
   int head[9], diff, mindiff = INT_MAX, off_412 = 0;
-  /* static */ const signed char dir[12][2] = {
-      {-1, -1}, {-1, 1}, {1, -1},  {1, 1},  {-2, 0}, {0, -2},
-      {0, 2},   {2, 0},  {-2, -2}, {-2, 2}, {2, -2}, {2, 2}};
-  float poly[8], num, cfrac, frac, mult[2], *yval[2] = {NULL, NULL};
+  /* static */
+  const signed char dir[12][2] = {
+      {-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-2, 0}, {0, -2},
+      {0, 2}, {2, 0}, {-2, -2}, {-2, 2}, {2, -2}, {2, 2}};
+  float poly[8], num, cfrac, frac, mult[2], *yval[2] = {nullptr, nullptr};
   ushort *xval[2];
   int qmult_applied = 0, qlin_applied = 0;
   std::vector<unsigned> badCols;
@@ -231,15 +232,16 @@ int LibRaw::phase_one_correct()
       save = ftell(ifp);
       fseek(ifp, meta_offset + data, SEEK_SET);
 #if 1
-	  if (ifp->eof())
-	  {
-		  // skip bad or unknown tag
-		  fseek(ifp, save, SEEK_SET);
-		  continue;
-	  }
+      if (ifp->eof())
+      {
+        // skip bad or unknown tag
+        fseek(ifp, save, SEEK_SET);
+        continue;
+      }
 #endif
       if (tag == 0x0400)
-      { /* Sensor defects */
+      {
+        /* Sensor defects */
         while ((len -= 8) >= 0)
         {
           col = get2();
@@ -283,7 +285,8 @@ int LibRaw::phase_one_correct()
             badCols.push_back(col);
 #endif
           else if (type == 129)
-          { /* Bad pixel */
+          {
+            /* Bad pixel */
             if (row >= raw_height)
               continue;
             j = (FC(row - top_margin, col - left_margin) != 1) * 4;
@@ -296,7 +299,8 @@ int LibRaw::phase_one_correct()
         }
       }
       else if (tag == 0x0419)
-      { /* Polynomial curve - output calibraion */
+      {
+        /* Polynomial curve - output calibraion */
         for (get4(), i = 0; i < 8; i++)
           poly[i] = getreal(LIBRAW_EXIFTAG_TYPE_FLOAT);
         poly[3] += (ph1.tag_210 - poly[7]) * poly[6] + 1;
@@ -308,7 +312,8 @@ int LibRaw::phase_one_correct()
         goto apply; /* apply to right half */
       }
       else if (tag == 0x041a)
-      { /* Polynomial curve */
+      {
+        /* Polynomial curve */
         for (i = 0; i < 4; i++)
           poly[i] = getreal(LIBRAW_EXIFTAG_TYPE_FLOAT);
         for (i = 0; i < 0x10000; i++)
@@ -326,7 +331,8 @@ int LibRaw::phase_one_correct()
         }
       }
       else if (tag == 0x0401)
-      { /* All-color flat fields - luma calibration*/
+      {
+        /* All-color flat fields - luma calibration*/
         phase_one_flat_field(1, 2);
       }
       else if (tag == 0x0416 || tag == 0x0410)
@@ -335,7 +341,8 @@ int LibRaw::phase_one_correct()
         phase_one_flat_field(0, 2);
       }
       else if (tag == 0x040b)
-      { /* Red+blue flat field - croma calibration */
+      {
+        /* Red+blue flat field - croma calibration */
         phase_one_flat_field(0, 4);
       }
       else if (tag == 0x0412)
@@ -349,7 +356,8 @@ int LibRaw::phase_one_correct()
         }
       }
       else if (tag == 0x041f && !qlin_applied)
-      { /* Quadrant linearization */
+      {
+        /* Quadrant linearization */
         ushort lc[2][2][16], ref[16];
         int qr, qc;
         for (qr = 0; qr < 2; qr++)
@@ -375,16 +383,16 @@ int LibRaw::phase_one_correct()
               cf[1 + i] = ref[i];
             }
             cx[0] = cf[0] = 0;
-            cx[17] = cf[17] = ((unsigned int)ref[15] * 65535) / lc[qr][qc][15];
+            cx[17] = cf[17] = (static_cast<unsigned int>(ref[15]) * 65535) / lc[qr][qc][15];
             cf[18] = cx[18] = 65535;
             cubic_spline(cx, cf, 19);
 
             for (row = (qr ? ph1.split_row : 0);
-                 row < unsigned(qr ? raw_height : ph1.split_row); row++)
+                 row < static_cast<unsigned>(qr ? raw_height : ph1.split_row); row++)
             {
               checkCancel();
               for (col = (qc ? ph1.split_col : 0);
-                   col < unsigned(qc ? raw_width : ph1.split_col); col++)
+                   col < static_cast<unsigned>(qc ? raw_width : ph1.split_col); col++)
                 RAW(row, col) = curve[RAW(row, col)];
             }
           }
@@ -392,7 +400,8 @@ int LibRaw::phase_one_correct()
         qlin_applied = 1;
       }
       else if (tag == 0x041e && !qmult_applied)
-      { /* Quadrant multipliers - output calibraion */
+      {
+        /* Quadrant multipliers - output calibraion */
         float qmult[2][2] = {{1, 1}, {1, 1}};
         get4();
         get4();
@@ -418,7 +427,7 @@ int LibRaw::phase_one_correct()
           checkCancel();
           for (col = 0; col < raw_width; col++)
           {
-            i = qmult[row >= (unsigned)ph1.split_row][col >= (unsigned)ph1.split_col] *
+            i = qmult[row >= static_cast<unsigned>(ph1.split_row)][col >= static_cast<unsigned>(ph1.split_col)] *
                 RAW(row, col);
             RAW(row, col) = LIM(i, 0, 65535);
           }
@@ -426,7 +435,8 @@ int LibRaw::phase_one_correct()
         qmult_applied = 1;
       }
       else if (tag == 0x0431 && !qmult_applied)
-      { /* Quadrant combined - four tile gain calibration */
+      {
+        /* Quadrant combined - four tile gain calibration */
         ushort lc[2][2][7], ref[7];
         int qr, qc;
         for (i = 0; i < 7; i++)
@@ -443,17 +453,17 @@ int LibRaw::phase_one_correct()
             for (i = 0; i < 7; i++)
             {
               cx[1 + i] = ref[i];
-              cf[1 + i] = ((unsigned)ref[i] * lc[qr][qc][i]) / 10000;
+              cf[1 + i] = (static_cast<unsigned>(ref[i]) * lc[qr][qc][i]) / 10000;
             }
             cx[0] = cf[0] = 0;
             cx[8] = cf[8] = 65535;
             cubic_spline(cx, cf, 9);
             for (row = (qr ? ph1.split_row : 0);
-                 row < unsigned(qr ? raw_height : ph1.split_row); row++)
+                 row < static_cast<unsigned>(qr ? raw_height : ph1.split_row); row++)
             {
               checkCancel();
               for (col = (qc ? ph1.split_col : 0);
-                   col < unsigned(qc ? raw_width : ph1.split_col); col++)
+                   col < static_cast<unsigned>(qc ? raw_width : ph1.split_col); col++)
                 RAW(row, col) = curve[RAW(row, col)];
             }
           }
@@ -467,14 +477,14 @@ int LibRaw::phase_one_correct()
     {
       qsort(badCols.data(), badCols.size(), sizeof(unsigned), unsigned_cmp);
       bool prevIsolated = true;
-      for (i = 0; i < (int)badCols.size(); ++i)
+      for (i = 0; i < static_cast<int>(badCols.size()); ++i)
       {
-        bool nextIsolated = i == ((int)(badCols.size()-1)) || badCols[i+1]>badCols[i]+4;
+        bool nextIsolated = i == static_cast<int>(badCols.size() - 1) || badCols[i + 1] > badCols[i] + 4;
         for (row = 0; row < raw_height; ++row)
           if (prevIsolated && nextIsolated)
-            phase_one_fix_pixel_grad(row,badCols[i]);
+            phase_one_fix_pixel_grad(row, badCols[i]);
           else
-            phase_one_fix_col_pixel_avg(row,badCols[i]);
+            phase_one_fix_col_pixel_avg(row, badCols[i]);
         prevIsolated = nextIsolated;
       }
     }
@@ -483,10 +493,10 @@ int LibRaw::phase_one_correct()
       fseek(ifp, off_412, SEEK_SET);
       for (i = 0; i < 9; i++)
         head[i] = get4() & 0x7fff;
-      yval[0] = (float *)calloc(head[1] * head[3] + head[2] * head[4], 6);
-      yval[1] = (float *)(yval[0] + head[1] * head[3]);
+      yval[0] = static_cast<float *>(calloc(head[1] * head[3] + head[2] * head[4], 6));
+      yval[1] = yval[0] + head[1] * head[3];
       xval[0] = (ushort *)(yval[1] + head[2] * head[4]);
-      xval[1] = (ushort *)(xval[0] + head[1] * head[3]);
+      xval[1] = xval[0] + head[1] * head[3];
       get2();
       for (i = 0; i < 2; i++)
         for (j = 0; j < head[i + 1] * head[i + 3]; j++)
@@ -499,7 +509,7 @@ int LibRaw::phase_one_correct()
         checkCancel();
         for (col = 0; col < raw_width; col++)
         {
-          cfrac = (float)col * head[3] / raw_width;
+          cfrac = static_cast<float>(col) * head[3] / raw_width;
           cfrac -= cip = cfrac;
           num = RAW(row, col) * 0.5;
           for (i = cip; i < cip + 2; i++)
@@ -508,8 +518,8 @@ int LibRaw::phase_one_correct()
               if (num < xval[0][k = head[1] * i + j])
                 break;
             frac = (j == 0 || j == head[1])
-                       ? 0
-                       : (xval[0][k] - num) / (xval[0][k] - xval[0][k - 1]);
+                     ? 0
+                     : (xval[0][k] - num) / (xval[0][k] - xval[0][k - 1]);
             mult[i - cip] = yval[0][k - 1] * frac + yval[0][k] * (1 - frac);
           }
           i = ((mult[0] * (1 - cfrac) + mult[1] * cfrac) * row + num) * 2;
@@ -540,9 +550,9 @@ void LibRaw::phase_one_load_raw()
   if (ph1.black_col || ph1.black_row)
   {
     imgdata.rawdata.ph1_cblack =
-        (short(*)[2])calloc(raw_height * 2, sizeof(ushort));
+        static_cast<short(*)[2]>(calloc(raw_height * 2, sizeof(ushort)));
     imgdata.rawdata.ph1_rblack =
-        (short(*)[2])calloc(raw_width * 2, sizeof(ushort));
+        static_cast<short(*)[2]>(calloc(raw_width * 2, sizeof(ushort)));
     if (ph1.black_col)
     {
       fseek(ifp, ph1.black_col, SEEK_SET);
@@ -590,7 +600,7 @@ unsigned LibRaw::ph1_bithuff(int nbits, ushort *huff)
   if (huff)
   {
     vbits -= huff[c] >> 8;
-    return (uchar)huff[c];
+    return static_cast<uchar>(huff[c]);
   }
   vbits -= nbits;
   return c;
@@ -605,11 +615,11 @@ void LibRaw::phase_one_load_raw_c()
   static const int length[] = {8, 7, 6, 9, 11, 10, 5, 12, 14, 13};
   int *offset, len[2], pred[2], row, col, i, j;
   ushort *pixel;
-  short(*c_black)[2], (*r_black)[2];
+  short (*c_black)[2], (*r_black)[2];
   if (ph1.format == 6)
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
 
-  pixel = (ushort *)calloc(raw_width * 3 + raw_height * 4, 2);
+  pixel = static_cast<ushort *>(calloc(raw_width * 3 + raw_height * 4, 2));
   offset = (int *)(pixel + raw_width);
   fseek(ifp, strip_offset, SEEK_SET);
   for (row = 0; row < raw_height; row++)
@@ -627,12 +637,12 @@ void LibRaw::phase_one_load_raw_c()
   if (ph1.black_col || ph1.black_row)
   {
     imgdata.rawdata.ph1_cblack =
-        (short(*)[2])calloc(raw_height * 2, sizeof(ushort));
-    memmove(imgdata.rawdata.ph1_cblack, (ushort *)c_black[0],
+        static_cast<short(*)[2]>(calloc(raw_height * 2, sizeof(ushort)));
+    memmove(imgdata.rawdata.ph1_cblack, c_black[0],
             raw_height * 2 * sizeof(ushort));
     imgdata.rawdata.ph1_rblack =
-        (short(*)[2])calloc(raw_width * 2, sizeof(ushort));
-    memmove(imgdata.rawdata.ph1_rblack, (ushort *)r_black[0],
+        static_cast<short(*)[2]>(calloc(raw_width * 2, sizeof(ushort)));
+    memmove(imgdata.rawdata.ph1_rblack, r_black[0],
             raw_width * 2 * sizeof(ushort));
   }
 
@@ -653,8 +663,7 @@ void LibRaw::phase_one_load_raw_c()
         else if ((col & 7) == 0)
           for (i = 0; i < 2; i++)
           {
-            for (j = 0; j < 5 && !ph1_bits(1); j++)
-              ;
+            for (j = 0; j < 5 && !ph1_bits(1); j++);
             if (j--)
               len[i] = length[j * 2 + ph1_bits(1)];
           }
@@ -686,8 +695,8 @@ void LibRaw::phase_one_load_raw_c()
 void LibRaw::hasselblad_load_raw()
 {
   struct jhead jh;
-  int shot, row, col, *back[5]={0,0,0,0,0},
- 	 len[2], diff[12], pred, sh, f, c;
+  int shot, row, col, *back[5] = {nullptr, nullptr, nullptr, nullptr, nullptr},
+      len[2], diff[12], pred, sh, f, c;
   unsigned s;
   unsigned upix, urow, ucol;
   ushort *ip;
@@ -698,19 +707,22 @@ void LibRaw::hasselblad_load_raw()
   ph1_bits(-1);
   try
   {
-    back[4] = (int *)calloc(raw_width, 3 * sizeof **back);
-    FORC3 back[c] = back[4] + c * raw_width;
+    back[4] = static_cast<int *>(calloc(raw_width, 3 * sizeof **back));
+    FORC3
+      back[c] = back[4] + c * raw_width;
     cblack[6] >>= sh = tiff_samples > 1;
     shot = LIM(shot_select, 1, tiff_samples) - 1;
     for (row = 0; row < raw_height; row++)
     {
       checkCancel();
-      FORC4 back[(c + 3) & 3] = back[c];
+      FORC4
+        back[(c + 3) & 3] = back[c];
       for (col = 0; col < raw_width; col += 2)
       {
         for (s = 0; s < tiff_samples * 2; s += 2)
         {
-          FORC(2) len[c] = ph1_huff(jh.huff[0]);
+          FORC(2)
+            len[c] = ph1_huff(jh.huff[0]);
           FORC(2)
           {
             diff[s + c] = ph1_bits(len[c]);
@@ -720,7 +732,7 @@ void LibRaw::hasselblad_load_raw()
               diff[s + c] = -32768;
           }
         }
-        for (s = col; s < unsigned(col + 2); s++)
+        for (s = col; s < static_cast<unsigned>(col + 2); s++)
         {
           pred = 0x8000 + load_flags;
           if (col)
@@ -755,12 +767,12 @@ void LibRaw::hasselblad_load_raw()
   }
   catch (...)
   {
-    if(back[4])
-    	free(back[4]);
+    if (back[4])
+      free(back[4]);
     ljpeg_end(&jh);
     throw;
   }
-  if(back[4])
+  if (back[4])
     free(back[4]);
   ljpeg_end(&jh);
   if (image)
@@ -769,35 +781,35 @@ void LibRaw::hasselblad_load_raw()
 
 void LibRaw::leaf_hdr_load_raw()
 {
-  ushort *pixel = 0;
+  ushort *pixel = nullptr;
   unsigned tile = 0, r, c, row, col;
 
   if (!filters || !raw_image)
   {
     if (!image)
       throw LIBRAW_EXCEPTION_IO_CORRUPT;
-    pixel = (ushort *)calloc(raw_width, sizeof *pixel);
+    pixel = static_cast<ushort *>(calloc(raw_width, sizeof *pixel));
   }
   try
   {
     FORC(tiff_samples)
-    for (r = 0; r < raw_height; r++)
-    {
-      checkCancel();
-      if (r % tile_length == 0)
+      for (r = 0; r < raw_height; r++)
       {
-        fseek(ifp, data_offset + 4 * tile++, SEEK_SET);
-        fseek(ifp, get4(), SEEK_SET);
+        checkCancel();
+        if (r % tile_length == 0)
+        {
+          fseek(ifp, data_offset + 4 * tile++, SEEK_SET);
+          fseek(ifp, get4(), SEEK_SET);
+        }
+        if (filters && c != shot_select)
+          continue;
+        if (filters && raw_image)
+          pixel = raw_image + r * raw_width;
+        read_shorts(pixel, raw_width);
+        if (!filters && image && (row = r - top_margin) < height)
+          for (col = 0; col < width && col + left_margin < raw_width; col++)
+            image[row * width + col][c] = pixel[col + left_margin];
       }
-      if (filters && c != shot_select)
-        continue;
-      if (filters && raw_image)
-        pixel = raw_image + r * raw_width;
-      read_shorts(pixel, raw_width);
-      if (!filters && image && (row = r - top_margin) < height)
-        for (col = 0; col < width && col + left_margin < raw_width; col++)
-          image[row * width + col][c] = pixel[col + left_margin];
-    }
   }
   catch (...)
   {
@@ -828,7 +840,7 @@ for Fuji DBP for GX680, aka DX-2000
   tile_width = raw_width / nTiles;
 
   ushort *tile;
-  tile = (ushort *)calloc(raw_height, tile_width * 2);
+  tile = static_cast<ushort *>(calloc(raw_height, tile_width * 2));
 
   for (tile_n = 0; tile_n < nTiles; tile_n++)
   {
@@ -858,7 +870,7 @@ void LibRaw::sinar_4shot_load_raw()
   }
   if (!image)
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
-  pixel = (ushort *)calloc(raw_width, sizeof *pixel);
+  pixel = static_cast<ushort *>(calloc(raw_width, sizeof *pixel));
   try
   {
     for (shot = 0; shot < 4; shot++)
@@ -895,14 +907,14 @@ void LibRaw::imacon_full_load_raw()
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
   int row, col;
 
-  unsigned short *buf =
-      (unsigned short *)malloc(width * 3 * sizeof(unsigned short));
+  auto buf =
+      static_cast<unsigned short *>(malloc(width * 3 * sizeof(unsigned short)));
 
   for (row = 0; row < height; row++)
   {
     checkCancel();
     read_shorts(buf, width * 3);
-    unsigned short(*rowp)[4] = &image[row * width];
+    unsigned short (*rowp)[4] = &image[row * width];
     for (col = 0; col < width; col++)
     {
       rowp[col][0] = buf[col * 3];

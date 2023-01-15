@@ -49,7 +49,7 @@ void LibRaw::cielab(ushort rgb[3], short lab[3])
       for (j = 0; j < colors; j++)
         for (xyz_cam[i][j] = k = 0; k < 3; k++)
           xyz_cam[i][j] += LibRaw_constants::xyz_rgb[i][k] * rgb_cam[k][j] /
-                           LibRaw_constants::d65_white[i];
+              LibRaw_constants::d65_white[i];
     return;
   }
   xyz[0] = xyz[1] = xyz[2] = 0.5;
@@ -76,7 +76,7 @@ void LibRaw::ahd_interpolate_green_h_and_v(
 {
   int row, col;
   int c, val;
-  ushort(*pix)[4];
+  ushort (*pix)[4];
   const int rowlimit = MIN(top + LIBRAW_AHD_TILE, height - 2);
   const int collimit = MIN(left + LIBRAW_AHD_TILE, width - 2);
 
@@ -98,15 +98,16 @@ void LibRaw::ahd_interpolate_green_h_and_v(
     }
   }
 }
+
 void LibRaw::ahd_interpolate_r_and_b_in_rgb_and_convert_to_cielab(
     int top, int left, ushort (*inout_rgb)[LIBRAW_AHD_TILE][3],
     short (*out_lab)[LIBRAW_AHD_TILE][3])
 {
   unsigned row, col;
   int c, val;
-  ushort(*pix)[4];
-  ushort(*rix)[3];
-  short(*lix)[3];
+  ushort (*pix)[4];
+  ushort (*rix)[3];
+  short (*lix)[3];
   const unsigned num_pix_per_row = 4 * width;
   const unsigned rowlimit = MIN(top + LIBRAW_AHD_TILE - 1, height - 3);
   const unsigned collimit = MIN(left + LIBRAW_AHD_TILE - 1, width - 3);
@@ -160,6 +161,7 @@ void LibRaw::ahd_interpolate_r_and_b_in_rgb_and_convert_to_cielab(
     }
   }
 }
+
 void LibRaw::ahd_interpolate_r_and_b_and_convert_to_cielab(
     int top, int left, ushort (*inout_rgb)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3],
     short (*out_lab)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3])
@@ -180,15 +182,15 @@ void LibRaw::ahd_interpolate_build_homogeneity_map(
   int tr;
   int direction;
   int i;
-  short(*lix)[3];
-  short(*lixs[2])[3];
+  short (*lix)[3];
+  short (*lixs[2])[3];
   short *adjacent_lix;
   unsigned ldiff[2][4], abdiff[2][4], leps, abeps;
   static const int dir[4] = {-1, 1, -LIBRAW_AHD_TILE, LIBRAW_AHD_TILE};
   const int rowlimit = MIN(top + LIBRAW_AHD_TILE - 2, height - 4);
   const int collimit = MIN(left + LIBRAW_AHD_TILE - 2, width - 4);
   int homogeneity;
-  char(*homogeneity_map_p)[2];
+  char (*homogeneity_map_p)[2];
 
   memset(out_homogeneity_map, 0, 2 * LIBRAW_AHD_TILE * LIBRAW_AHD_TILE);
 
@@ -234,6 +236,7 @@ void LibRaw::ahd_interpolate_build_homogeneity_map(
     }
   }
 }
+
 void LibRaw::ahd_interpolate_combine_homogeneous_pixels(
     int top, int left, ushort (*rgb)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3],
     char (*homogeneity_map)[LIBRAW_AHD_TILE][2])
@@ -247,8 +250,8 @@ void LibRaw::ahd_interpolate_combine_homogeneous_pixels(
   const int rowlimit = MIN(top + LIBRAW_AHD_TILE - 3, height - 5);
   const int collimit = MIN(left + LIBRAW_AHD_TILE - 3, width - 5);
 
-  ushort(*pix)[4];
-  ushort(*rix[2])[3];
+  ushort (*pix)[4];
+  ushort (*rix[2])[3];
 
   for (row = top + 3; row < rowlimit; row++)
   {
@@ -290,66 +293,67 @@ void LibRaw::ahd_interpolate_combine_homogeneous_pixels(
     }
   }
 }
+
 void LibRaw::ahd_interpolate()
 {
-    int terminate_flag = 0;
-    cielab(0, 0);
-    border_interpolate(5);
+  int terminate_flag = 0;
+  cielab(nullptr, nullptr);
+  border_interpolate(5);
 
 #ifdef LIBRAW_USE_OPENMP
-    int buffer_count = omp_get_max_threads();
+  int buffer_count = omp_get_max_threads();
 #else
     int buffer_count = 1;
 #endif
 
-    size_t buffer_size = 26 * LIBRAW_AHD_TILE * LIBRAW_AHD_TILE; /* 1664 kB */
-    char** buffers = malloc_omp_buffers(buffer_count, buffer_size);
+  size_t buffer_size = 26 * LIBRAW_AHD_TILE * LIBRAW_AHD_TILE; /* 1664 kB */
+  char **buffers = malloc_omp_buffers(buffer_count, buffer_size);
 
 #ifdef LIBRAW_USE_OPENMP
 #pragma omp parallel for schedule(dynamic) default(none) shared(terminate_flag) firstprivate(buffers)
 #endif
-    for (int top = 2; top < height - 5; top += LIBRAW_AHD_TILE - 6)
-    {
+  for (int top = 2; top < height - 5; top += LIBRAW_AHD_TILE - 6)
+  {
 #ifdef LIBRAW_USE_OPENMP
-        if (0 == omp_get_thread_num())
+    if (0 == omp_get_thread_num())
 #endif
-            if (callbacks.progress_cb)
-            {
-                int rr = (*callbacks.progress_cb)(callbacks.progresscb_data,
-                    LIBRAW_PROGRESS_INTERPOLATE,
-                    top - 2, height - 7);
-                if (rr)
-                    terminate_flag = 1;
-            }
+      if (callbacks.progress_cb)
+      {
+        int rr = (*callbacks.progress_cb)(callbacks.progresscb_data,
+                                          LIBRAW_PROGRESS_INTERPOLATE,
+                                          top - 2, height - 7);
+        if (rr)
+          terminate_flag = 1;
+      }
 
 #if defined(LIBRAW_USE_OPENMP)
-        char* buffer = buffers[omp_get_thread_num()];
+    char *buffer = buffers[omp_get_thread_num()];
 #else
         char* buffer = buffers[0];
 #endif
 
-        ushort(*rgb)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3];
-        short(*lab)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3];
-        char(*homo)[LIBRAW_AHD_TILE][2];
+    ushort (*rgb)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3];
+    short (*lab)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3];
+    char (*homo)[LIBRAW_AHD_TILE][2];
 
-        rgb = (ushort(*)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3])buffer;
-        lab = (short(*)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3])(
-            buffer + 12 * LIBRAW_AHD_TILE * LIBRAW_AHD_TILE);
-        homo = (char(*)[LIBRAW_AHD_TILE][2])(buffer + 24 * LIBRAW_AHD_TILE *
-            LIBRAW_AHD_TILE);
+    rgb = (ushort(*)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3])buffer;
+    lab = (short(*)[LIBRAW_AHD_TILE][LIBRAW_AHD_TILE][3])(
+      buffer + 12 * LIBRAW_AHD_TILE * LIBRAW_AHD_TILE);
+    homo = (char(*)[LIBRAW_AHD_TILE][2])(buffer + 24 * LIBRAW_AHD_TILE *
+                                         LIBRAW_AHD_TILE);
 
-        for (int left = 2; !terminate_flag && (left < width - 5);
-            left += LIBRAW_AHD_TILE - 6)
-        {
-            ahd_interpolate_green_h_and_v(top, left, rgb);
-            ahd_interpolate_r_and_b_and_convert_to_cielab(top, left, rgb, lab);
-            ahd_interpolate_build_homogeneity_map(top, left, lab, homo);
-            ahd_interpolate_combine_homogeneous_pixels(top, left, rgb, homo);
-        }
+    for (int left = 2; !terminate_flag && (left < width - 5);
+         left += LIBRAW_AHD_TILE - 6)
+    {
+      ahd_interpolate_green_h_and_v(top, left, rgb);
+      ahd_interpolate_r_and_b_and_convert_to_cielab(top, left, rgb, lab);
+      ahd_interpolate_build_homogeneity_map(top, left, lab, homo);
+      ahd_interpolate_combine_homogeneous_pixels(top, left, rgb, homo);
     }
+  }
 
-    free_omp_buffers(buffers, buffer_count);
+  free_omp_buffers(buffers, buffer_count);
 
-    if (terminate_flag)
-        throw LIBRAW_EXCEPTION_CANCELLED_BY_CALLBACK;
+  if (terminate_flag)
+    throw LIBRAW_EXCEPTION_CANCELLED_BY_CALLBACK;
 }

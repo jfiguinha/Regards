@@ -26,12 +26,13 @@ namespace rawspeed {
 
 class Buffer;
 
-class FileReader
-{
+class FileReader {
   const char* fileName;
 
 public:
-  explicit FileReader(const char* fileName_) : fileName(fileName_) {}
+  explicit FileReader(const char* fileName_)
+    : fileName(fileName_) {
+  }
 
   std::unique_ptr<const Buffer> readFile();
 };

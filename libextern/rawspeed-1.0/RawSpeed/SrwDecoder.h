@@ -28,23 +28,23 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class SrwDecoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  SrwDecoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~SrwDecoder(void);
-  virtual RawImage decodeRawInternal();
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-private:
-  void decodeCompressed( TiffIFD* raw);
-  TiffIFD *mRootIFD;
-};
+	class SrwDecoder :
+		public RawDecoder
+	{
+	public:
+		SrwDecoder(TiffIFD* rootIFD, FileMap* file);
+		~SrwDecoder(void) override;
+		RawImage decodeRawInternal() override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
 
+	private:
+		void decodeCompressed(TiffIFD* raw);
+		TiffIFD* mRootIFD;
+	};
 } // namespace RawSpeed
 
 #endif

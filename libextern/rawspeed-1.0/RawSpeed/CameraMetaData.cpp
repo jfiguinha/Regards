@@ -22,118 +22,139 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-CameraMetaData::CameraMetaData() {
-  doc = NULL;
-  ctxt = NULL;
-}
-
-CameraMetaData::CameraMetaData(const char *docname) {
-  ctxt = xmlNewParserCtxt();
-  if (ctxt == NULL) {
-    ThrowCME("CameraMetaData:Could not initialize context.");
-  }
-
-  xmlResetLastError();
-  doc = xmlCtxtReadFile(ctxt, docname, NULL, XML_PARSE_DTDVALID);
-
-  if (doc == NULL) {
-      ThrowCME("CameraMetaData: XML Document could not be parsed successfully. Error was: %s", ctxt->lastError.message);
-  }
-
-  if (ctxt->valid == 0) {
-    if (ctxt->lastError.code == 0x5e) {
-      printf("CameraMetaData: Unable to locate DTD, attempting to ignore.");
-    } else {
-      ThrowCME("CameraMetaData: XML file does not validate. DTD Error was: %s", ctxt->lastError.message);
-    }
-  }
-
-  xmlNodePtr cur;
-  cur = xmlDocGetRootElement(doc);
-  if (xmlStrcmp(cur->name, (const xmlChar *) "Cameras")) {
-    ThrowCME("CameraMetaData: XML document of the wrong type, root node is not cameras.");
-    return;
-  }
-
-  cur = cur->xmlChildrenNode;
-  while (cur != NULL) {
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"Camera"))) {
-      Camera *camera = new Camera(doc, cur);
-      addCamera(camera);
-
-      // Create cameras for aliases.
-      for (uint32 i = 0; i < camera->aliases.size(); i++) {
-        addCamera(new Camera(camera, i));
-      }
-    }
-    cur = cur->next;
-  }
-  if (doc)
-    xmlFreeDoc(doc);
-  doc = 0;
-  if (ctxt)
-    xmlFreeParserCtxt(ctxt);
-  ctxt = 0;
-}
-
-CameraMetaData::~CameraMetaData(void) {
-  map<string, Camera*>::iterator i = cameras.begin();
-  for (; i != cameras.end(); ++i) {
-    delete((*i).second);
-  }
-  if (doc)
-    xmlFreeDoc(doc);
-  doc = 0;
-  if (ctxt)
-    xmlFreeParserCtxt(ctxt);
-  ctxt = 0;
-}
-
-Camera* CameraMetaData::getCamera(string make, string model, string mode) {
-  string id = string(make).append(model).append(mode);
-  if (cameras.end() == cameras.find(id))
-    return NULL;
-  return cameras[id];
-}
-
-bool CameraMetaData::hasCamera(string make, string model, string mode) {
-  string id = string(make).append(model).append(mode);
-  if (cameras.end() == cameras.find(id))
-    return FALSE;
-  return TRUE;
-}
-
-void CameraMetaData::addCamera( Camera* cam )
+namespace RawSpeed
 {
-  string id = string(cam->make).append(cam->model).append(cam->mode);
-  if (cameras.end() != cameras.find(id))
-    printf("CameraMetaData: Duplicate entry found for camera: %s %s, Skipping!\n", cam->make.c_str(), cam->model.c_str());
-  else
-    cameras[id] = cam;
-}
+	CameraMetaData::CameraMetaData()
+	{
+		doc = nullptr;
+		ctxt = nullptr;
+	}
 
-void CameraMetaData::disableMake( string make )
-{
-  map<string, Camera*>::iterator i = cameras.begin();
-  for (; i != cameras.end(); ++i) {
-    Camera* cam = (*i).second;
-    if (0 == cam->make.compare(make)) {
-      cam->supported = FALSE;
-    }
-  }
-}
+	CameraMetaData::CameraMetaData(const char* docname)
+	{
+		ctxt = xmlNewParserCtxt();
+		if (ctxt == nullptr)
+		{
+			ThrowCME("CameraMetaData:Could not initialize context.");
+		}
 
-void CameraMetaData::disableCamera( string make, string model )
-{
-  map<string, Camera*>::iterator i = cameras.begin();
-  for (; i != cameras.end(); ++i) {
-    Camera* cam = (*i).second;
-    if (0 == cam->make.compare(make) && 0 == cam->model.compare(model)) {
-      cam->supported = FALSE;
-    }
-  }
-}
+		xmlResetLastError();
+		doc = xmlCtxtReadFile(ctxt, docname, nullptr, XML_PARSE_DTDVALID);
 
+		if (doc == nullptr)
+		{
+			ThrowCME("CameraMetaData: XML Document could not be parsed successfully. Error was: %s",
+			         ctxt->lastError.message);
+		}
+
+		if (ctxt->valid == 0)
+		{
+			if (ctxt->lastError.code == 0x5e)
+			{
+				printf("CameraMetaData: Unable to locate DTD, attempting to ignore.");
+			}
+			else
+			{
+				ThrowCME("CameraMetaData: XML file does not validate. DTD Error was: %s", ctxt->lastError.message);
+			}
+		}
+
+		xmlNodePtr cur;
+		cur = xmlDocGetRootElement(doc);
+		if (xmlStrcmp(cur->name, (const xmlChar*)"Cameras"))
+		{
+			ThrowCME("CameraMetaData: XML document of the wrong type, root node is not cameras.");
+			return;
+		}
+
+		cur = cur->xmlChildrenNode;
+		while (cur != nullptr)
+		{
+			if ((!xmlStrcmp(cur->name, (const xmlChar*)"Camera")))
+			{
+				auto camera = new Camera(doc, cur);
+				addCamera(camera);
+
+				// Create cameras for aliases.
+				for (uint32 i = 0; i < camera->aliases.size(); i++)
+				{
+					addCamera(new Camera(camera, i));
+				}
+			}
+			cur = cur->next;
+		}
+		if (doc)
+			xmlFreeDoc(doc);
+		doc = nullptr;
+		if (ctxt)
+			xmlFreeParserCtxt(ctxt);
+		ctxt = nullptr;
+	}
+
+	CameraMetaData::~CameraMetaData(void)
+	{
+		auto i = cameras.begin();
+		for (; i != cameras.end(); ++i)
+		{
+			delete((*i).second);
+		}
+		if (doc)
+			xmlFreeDoc(doc);
+		doc = nullptr;
+		if (ctxt)
+			xmlFreeParserCtxt(ctxt);
+		ctxt = nullptr;
+	}
+
+	Camera* CameraMetaData::getCamera(string make, string model, string mode)
+	{
+		string id = string(make).append(model).append(mode);
+		if (cameras.end() == cameras.find(id))
+			return nullptr;
+		return cameras[id];
+	}
+
+	bool CameraMetaData::hasCamera(string make, string model, string mode)
+	{
+		string id = string(make).append(model).append(mode);
+		if (cameras.end() == cameras.find(id))
+			return FALSE;
+		return TRUE;
+	}
+
+	void CameraMetaData::addCamera(Camera* cam)
+	{
+		string id = string(cam->make).append(cam->model).append(cam->mode);
+		if (cameras.end() != cameras.find(id))
+			printf("CameraMetaData: Duplicate entry found for camera: %s %s, Skipping!\n", cam->make.c_str(),
+			       cam->model.c_str());
+		else
+			cameras[id] = cam;
+	}
+
+	void CameraMetaData::disableMake(string make)
+	{
+		auto i = cameras.begin();
+		for (; i != cameras.end(); ++i)
+		{
+			Camera* cam = (*i).second;
+			if (0 == cam->make.compare(make))
+			{
+				cam->supported = FALSE;
+			}
+		}
+	}
+
+	void CameraMetaData::disableCamera(string make, string model)
+	{
+		auto i = cameras.begin();
+		for (; i != cameras.end(); ++i)
+		{
+			Camera* cam = (*i).second;
+			if (0 == cam->make.compare(make) && 0 == cam->model.compare(model))
+			{
+				cam->supported = FALSE;
+			}
+		}
+	}
 } // namespace RawSpeed

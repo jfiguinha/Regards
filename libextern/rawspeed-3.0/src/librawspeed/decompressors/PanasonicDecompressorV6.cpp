@@ -86,13 +86,13 @@ struct pana_cs6_page_decoder {
 
 PanasonicDecompressorV6::PanasonicDecompressorV6(const RawImage& img,
                                                  const ByteStream& input_)
-    : mRaw(img) {
+  : mRaw(img) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
 
   if (!mRaw->dim.hasPositiveArea() ||
-      mRaw->dim.x % PanasonicDecompressorV6::PixelsPerBlock != 0) {
+      mRaw->dim.x % PixelsPerBlock != 0) {
     ThrowRDE("Unexpected image dimensions found: (%i; %i)", mRaw->dim.x,
              mRaw->dim.y);
   }
@@ -118,13 +118,13 @@ PanasonicDecompressorV6::decompressBlock(ByteStream& rowInput, int row,
   const Array2DRef<uint16_t> out(mRaw->getU16DataAsUncroppedArray2DRef());
 
   pana_cs6_page_decoder page(
-      rowInput.getStream(PanasonicDecompressorV6::BytesPerBlock));
+      rowInput.getStream(BytesPerBlock));
 
   std::array<unsigned, 2> oddeven = {0, 0};
   std::array<unsigned, 2> nonzero = {0, 0};
   unsigned pmul = 0;
   unsigned pixel_base = 0;
-  for (int pix = 0; pix < PanasonicDecompressorV6::PixelsPerBlock;
+  for (int pix = 0; pix < PixelsPerBlock;
        pix++, col++) {
     if (pix % 3 == 2) {
       uint16_t base = page.nextpixel();
@@ -150,7 +150,7 @@ PanasonicDecompressorV6::decompressBlock(ByteStream& rowInput, int row,
     if (spix <= 0xffff)
       out(row, col) = spix & 0xffff;
     else {
-      epixel = static_cast<int>(epixel + 0x7ffffff1) >> 0x1f;
+      epixel = epixel + 0x7ffffff1 >> 0x1f;
       out(row, col) = epixel & 0x3fff;
     }
   }
@@ -160,12 +160,12 @@ PanasonicDecompressorV6::decompressBlock(ByteStream& rowInput, int row,
 void PanasonicDecompressorV6::decompressRow(int row) const noexcept {
   assert(mRaw->dim.x % PanasonicDecompressorV6::PixelsPerBlock == 0);
   const int blocksperrow =
-      mRaw->dim.x / PanasonicDecompressorV6::PixelsPerBlock;
-  const int bytesPerRow = PanasonicDecompressorV6::BytesPerBlock * blocksperrow;
+      mRaw->dim.x / PixelsPerBlock;
+  const int bytesPerRow = BytesPerBlock * blocksperrow;
 
   ByteStream rowInput = input.getSubStream(bytesPerRow * row, bytesPerRow);
   for (int rblock = 0, col = 0; rblock < blocksperrow;
-       rblock++, col += PanasonicDecompressorV6::PixelsPerBlock)
+       rblock++, col += PixelsPerBlock)
     decompressBlock(rowInput, row, col);
 }
 
@@ -175,8 +175,9 @@ void PanasonicDecompressorV6::decompress() const {
     schedule(static) default(none)
 #endif
   for (int row = 0; row < mRaw->dim.y;
-       ++row) { // NOLINT(openmp-exception-escape): we know no exceptions will
-                // be thrown.
+       ++row) {
+    // NOLINT(openmp-exception-escape): we know no exceptions will
+    // be thrown.
     decompressRow(row);
   }
 }

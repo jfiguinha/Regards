@@ -62,8 +62,8 @@ RawImage PefDecoder::decodeRawInternal() {
   if (65535 != compression)
     ThrowRDE("Unsupported compression");
 
-  TiffEntry *offsets = raw->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(STRIPBYTECOUNTS);
 
   if (offsets->count != 1) {
     ThrowRDE("Multiple Strips found: %u", offsets->count);
@@ -103,7 +103,7 @@ RawImage PefDecoder::decodeRawInternal() {
 
 void PefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   int iso = 0;
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
 
   if (mRootIFD->hasEntryRecursive(ISOSPEEDRATINGS))
     iso = mRootIFD->getEntryRecursive(ISOSPEEDRATINGS)->getU32();

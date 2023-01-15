@@ -26,162 +26,168 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class RawImage;
-class RawImageData;
-typedef enum {TYPE_USHORT16, TYPE_FLOAT32} RawImageType;
-
-class RawImageWorker {
-public:
-  typedef enum {SCALE_VALUES, FIX_BAD_PIXELS} RawImageWorkerTask;
-  RawImageWorker(RawImageData *img, RawImageWorkerTask task, int start_y, int end_y);
-  void startThread();
-  void waitForThread();
-  void performTask();
-protected:
-  pthread_t threadid;
-  RawImageData* data;
-  RawImageWorkerTask task;
-  int start_y;
-  int end_y;
-};
-
-class RawImageData
+namespace RawSpeed
 {
-  friend class RawImageWorker;
-public:
-  virtual ~RawImageData(void);
-  uint32 getCpp() const { return cpp; }
-  uint32 getBpp() const { return bpp; }
-  void setCpp(uint32 val);
-  virtual void createData();
-  virtual void destroyData();
-  void blitFrom(const RawImage src, iPoint2D srcPos, iPoint2D size, iPoint2D destPos);
-  RawSpeed::RawImageType getDataType() const { return dataType; }
-  uchar8* getData();
-  uchar8* getData(uint32 x, uint32 y);    // Not super fast, but safe. Don't use per pixel.
-  uchar8* getDataUncropped(uint32 x, uint32 y);
-  virtual void subFrame( iRectangle2D cropped );
-  iPoint2D getUncroppedDim();
-  iPoint2D getCropOffset();
-  virtual void scaleBlackWhite() = 0;
-  virtual void calculateBlackAreas() = 0;
-  virtual void transferBadPixelsToMap();
-  virtual void fixBadPixels();
-  void expandBorder(iRectangle2D validData);
+	class RawImage;
+	class RawImageData;
 
-  bool isAllocated() {return !!data;}
-  void createBadPixelMap();
-  iPoint2D dim;
-  uint32 pitch;
-  bool isCFA;
-  ColorFilterArray cfa;
-  int blackLevel;
-  int blackLevelSeparate[4];
-  int whitePoint;
-  vector<BlackArea> blackAreas;
-  iPoint2D subsampling;
-  string mode;
-  int isoSpeed;
-  /* Vector containing silent errors that occurred doing decoding, that may have lead to */
-  /* an incomplete image. */
-  vector<const char*> errors;
-  pthread_mutex_t errMutex;   // Mutex for above
-  void setError(const char* err);
-  /* Vector containing the positions of bad pixels */
-  /* Format is x | (y << 16), so maximum pixel position is 65535 */
-  vector<uint32> mBadPixelPositions;    // Positions of zeroes that must be interpolated
-  pthread_mutex_t mBadPixelMutex;   // Mutex for above, must be used if more than 1 thread is accessing vector
-  uchar8 *mBadPixelMap;
-  uint32 mBadPixelMapPitch;
+	using RawImageType = enum { TYPE_USHORT16, TYPE_FLOAT32 };
 
-protected:
-  RawImageType dataType;
-  RawImageData(void);
-  RawImageData(iPoint2D dim, uint32 bpp, uint32 cpp=1);
-  virtual void scaleValues(int start_y, int end_y) = 0;
-  virtual void fixBadPixel( uint32 x, uint32 y, int component = 0) = 0;
-  void fixBadPixelsThread(int start_y, int end_y);
-  void startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped );
-  uint32 dataRefCount;
-  uchar8* data;
-  uint32 cpp;      // Components per pixel
-  uint32 bpp;      // Bytes per pixel.
-  friend class RawImage;
-  pthread_mutex_t mymutex;
-  iPoint2D mOffset;
-  iPoint2D uncropped_dim;
-};
+	class RawImageWorker
+	{
+	public:
+		using RawImageWorkerTask = enum { SCALE_VALUES, FIX_BAD_PIXELS };
+		RawImageWorker(RawImageData* img, RawImageWorkerTask task, int start_y, int end_y);
+		void startThread();
+		void waitForThread();
+		void performTask();
 
-class RawImageDataU16 : public RawImageData
-{
-public:
-  virtual void scaleBlackWhite();
-  virtual void calculateBlackAreas();
+	protected:
+		pthread_t threadid;
+		RawImageData* data;
+		RawImageWorkerTask task;
+		int start_y;
+		int end_y;
+	};
 
-protected:
-  virtual void scaleValues(int start_y, int end_y);
-  virtual void fixBadPixel( uint32 x, uint32 y, int component = 0);
+	class RawImageData
+	{
+		friend class RawImageWorker;
 
-  RawImageDataU16(void);
-  RawImageDataU16(iPoint2D dim, uint32 cpp=1);
-  friend class RawImage;
-};
+	public:
+		virtual ~RawImageData(void);
+		uint32 getCpp() const { return cpp; }
+		uint32 getBpp() const { return bpp; }
+		void setCpp(uint32 val);
+		virtual void createData();
+		virtual void destroyData();
+		void blitFrom(RawImage src, iPoint2D srcPos, iPoint2D size, iPoint2D destPos);
+		RawImageType getDataType() const { return dataType; }
+		uchar8* getData();
+		uchar8* getData(uint32 x, uint32 y); // Not super fast, but safe. Don't use per pixel.
+		uchar8* getDataUncropped(uint32 x, uint32 y);
+		virtual void subFrame(iRectangle2D cropped);
+		iPoint2D getUncroppedDim();
+		iPoint2D getCropOffset();
+		virtual void scaleBlackWhite() = 0;
+		virtual void calculateBlackAreas() = 0;
+		virtual void transferBadPixelsToMap();
+		virtual void fixBadPixels();
+		void expandBorder(iRectangle2D validData);
 
-class RawImageDataFloat : public RawImageData
-{
-public:
-  virtual void scaleBlackWhite();
-  virtual void calculateBlackAreas();
+		bool isAllocated() { return !!data; }
+		void createBadPixelMap();
+		iPoint2D dim;
+		uint32 pitch;
+		bool isCFA;
+		ColorFilterArray cfa;
+		int blackLevel;
+		int blackLevelSeparate[4];
+		int whitePoint;
+		vector<BlackArea> blackAreas;
+		iPoint2D subsampling;
+		string mode;
+		int isoSpeed;
+		/* Vector containing silent errors that occurred doing decoding, that may have lead to */
+		/* an incomplete image. */
+		vector<const char*> errors;
+		pthread_mutex_t errMutex; // Mutex for above
+		void setError(const char* err);
+		/* Vector containing the positions of bad pixels */
+		/* Format is x | (y << 16), so maximum pixel position is 65535 */
+		vector<uint32> mBadPixelPositions; // Positions of zeroes that must be interpolated
+		pthread_mutex_t mBadPixelMutex; // Mutex for above, must be used if more than 1 thread is accessing vector
+		uchar8* mBadPixelMap;
+		uint32 mBadPixelMapPitch;
 
-protected:
-  virtual void scaleValues(int start_y, int end_y);
-  virtual void fixBadPixel( uint32 x, uint32 y, int component = 0);
-  RawImageDataFloat(void);
-  RawImageDataFloat(iPoint2D dim, uint32 cpp=1);
-  friend class RawImage;
-};
+	protected:
+		RawImageType dataType;
+		RawImageData(void);
+		RawImageData(iPoint2D dim, uint32 bpp, uint32 cpp = 1);
+		virtual void scaleValues(int start_y, int end_y) = 0;
+		virtual void fixBadPixel(uint32 x, uint32 y, int component = 0) = 0;
+		void fixBadPixelsThread(int start_y, int end_y);
+		void startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped);
+		uint32 dataRefCount;
+		uchar8* data;
+		uint32 cpp; // Components per pixel
+		uint32 bpp; // Bytes per pixel.
+		friend class RawImage;
+		pthread_mutex_t mymutex;
+		iPoint2D mOffset;
+		iPoint2D uncropped_dim;
+	};
 
- class RawImage {
- public:
-   static RawImage create(RawImageType type = TYPE_USHORT16);
-   static RawImage create(iPoint2D dim, RawImageType type = TYPE_USHORT16, uint32 componentsPerPixel = 1);
-   RawImageData* operator-> ();
-   RawImageData& operator* ();
-   RawImage(RawImageData* p);  // p must not be NULL
-  ~RawImage();
-   RawImage(const RawImage& p);
-   RawImage& operator= (const RawImage& p);
+	class RawImageDataU16 : public RawImageData
+	{
+	public:
+		void scaleBlackWhite() override;
+		void calculateBlackAreas() override;
 
- private:
-   RawImageData* p_;    // p_ is never NULL
- };
+	protected:
+		void scaleValues(int start_y, int end_y) override;
+		void fixBadPixel(uint32 x, uint32 y, int component = 0) override;
 
-inline RawImage RawImage::create(RawImageType type)  { 
-  switch (type)
-  {
-    case TYPE_USHORT16:
-      return new RawImageDataU16();
-    case TYPE_FLOAT32:
-      return new RawImageDataFloat();
-    default:
-      printf("RawImage::create: Unknown Image type!\n");
-  }
-  return NULL; 
-}
+		RawImageDataU16(void);
+		RawImageDataU16(iPoint2D dim, uint32 cpp = 1);
+		friend class RawImage;
+	};
 
-inline RawImage RawImage::create(iPoint2D dim, RawImageType type, uint32 componentsPerPixel)
-{   
-  switch (type) {
-    case TYPE_USHORT16:
-      return new RawImageDataU16(dim, componentsPerPixel);
-    default:
-      printf("RawImage::create: Unknown Image type!\n");
-  }
-  return NULL; 
-}
+	class RawImageDataFloat : public RawImageData
+	{
+	public:
+		void scaleBlackWhite() override;
+		void calculateBlackAreas() override;
 
+	protected:
+		void scaleValues(int start_y, int end_y) override;
+		void fixBadPixel(uint32 x, uint32 y, int component = 0) override;
+		RawImageDataFloat(void);
+		RawImageDataFloat(iPoint2D dim, uint32 cpp = 1);
+		friend class RawImage;
+	};
+
+	class RawImage
+	{
+	public:
+		static RawImage create(RawImageType type = TYPE_USHORT16);
+		static RawImage create(iPoint2D dim, RawImageType type = TYPE_USHORT16, uint32 componentsPerPixel = 1);
+		RawImageData* operator->();
+		RawImageData& operator*();
+		RawImage(RawImageData* p); // p must not be NULL
+		~RawImage();
+		RawImage(const RawImage& p);
+		RawImage& operator=(const RawImage& p);
+
+	private:
+		RawImageData* p_; // p_ is never NULL
+	};
+
+	inline RawImage RawImage::create(RawImageType type)
+	{
+		switch (type)
+		{
+		case TYPE_USHORT16:
+			return new RawImageDataU16();
+		case TYPE_FLOAT32:
+			return new RawImageDataFloat();
+		default:
+			printf("RawImage::create: Unknown Image type!\n");
+		}
+		return nullptr;
+	}
+
+	inline RawImage RawImage::create(iPoint2D dim, RawImageType type, uint32 componentsPerPixel)
+	{
+		switch (type)
+		{
+		case TYPE_USHORT16:
+			return new RawImageDataU16(dim, componentsPerPixel);
+		default:
+			printf("RawImage::create: Unknown Image type!\n");
+		}
+		return nullptr;
+	}
 } // namespace RawSpeed
 
 #endif

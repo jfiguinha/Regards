@@ -22,55 +22,64 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-FileMap::FileMap(uint32 _size) : size(_size) {
-  if (!size)
-    throw FileIOException("Filemap of 0 bytes not possible");
-  data = (uchar8*)_aligned_malloc(size + 16, 16);
-  if (!data) {
-    throw FileIOException("Not enough memory to open file.");
-  }
-  mOwnAlloc = true;
-}
-
-FileMap::FileMap(uchar8* _data, uint32 _size): data(_data), size(_size) {
-  mOwnAlloc = false;
-}
-
-
-FileMap::~FileMap(void) {
-  if (data && mOwnAlloc) {
-    _aligned_free(data);
-  }
-  data = 0;
-  size = 0;
-}
-
-FileMap* FileMap::clone() {
-  FileMap *new_map = new FileMap(size);
-  memcpy(new_map->data, data, size);
-  return new_map;
-}
-
-FileMap* FileMap::cloneRandomSize() {
-  uint32 new_size = (rand() | (rand() << 15)) % size;
-  FileMap *new_map = new FileMap(new_size);
-  memcpy(new_map->data, data, new_size);
-  return new_map;
-}
-
-void FileMap::corrupt(int errors) {
-  for (int i = 0; i < errors; i++) {
-    uint32 pos = (rand() | (rand() << 15)) % size;
-    data[pos] = rand() & 0xff;
-  }
-}
-
-const uchar8* FileMap::getData( uint32 offset )
+namespace RawSpeed
 {
-  if (offset >= size)
-    throw IOException("FileMap: Attempting to read out of file.");
-  return &data[offset];
-}
+	FileMap::FileMap(uint32 _size) : size(_size)
+	{
+		if (!size)
+			throw FileIOException("Filemap of 0 bytes not possible");
+		data = static_cast<uchar8*>(_aligned_malloc(size + 16, 16));
+		if (!data)
+		{
+			throw FileIOException("Not enough memory to open file.");
+		}
+		mOwnAlloc = true;
+	}
+
+	FileMap::FileMap(uchar8* _data, uint32 _size): data(_data), size(_size)
+	{
+		mOwnAlloc = false;
+	}
+
+
+	FileMap::~FileMap(void)
+	{
+		if (data && mOwnAlloc)
+		{
+			_aligned_free(data);
+		}
+		data = nullptr;
+		size = 0;
+	}
+
+	FileMap* FileMap::clone()
+	{
+		auto new_map = new FileMap(size);
+		memcpy(new_map->data, data, size);
+		return new_map;
+	}
+
+	FileMap* FileMap::cloneRandomSize()
+	{
+		uint32 new_size = (rand() | (rand() << 15)) % size;
+		auto new_map = new FileMap(new_size);
+		memcpy(new_map->data, data, new_size);
+		return new_map;
+	}
+
+	void FileMap::corrupt(int errors)
+	{
+		for (int i = 0; i < errors; i++)
+		{
+			uint32 pos = (rand() | (rand() << 15)) % size;
+			data[pos] = rand() & 0xff;
+		}
+	}
+
+	const uchar8* FileMap::getData(uint32 offset)
+	{
+		if (offset >= size)
+			throw IOException("FileMap: Attempting to read out of file.");
+		return &data[offset];
+	}
 } // namespace RawSpeed

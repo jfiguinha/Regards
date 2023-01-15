@@ -109,7 +109,7 @@ void UncompressedDecompressor::decode16BitFP(const iPoint2D& size,
   w *= cpp;
   for (; y < h; y++) {
     auto* dest = reinterpret_cast<uint32_t*>(
-        &data[offset.x * sizeof(uint32_t) * cpp + y * outPitch]);
+      &data[offset.x * sizeof(uint32_t) * cpp + y * outPitch]);
     for (uint32_t x = 0; x < w; x++) {
       uint16_t b = bits.getBits(16);
       dest[x] = fp16ToFloat(b);
@@ -134,7 +134,7 @@ void UncompressedDecompressor::decode24BitFP(const iPoint2D& size,
   w *= cpp;
   for (; y < h; y++) {
     auto* dest = reinterpret_cast<uint32_t*>(
-        &data[offset.x * sizeof(uint32_t) * cpp + y * outPitch]);
+      &data[offset.x * sizeof(uint32_t) * cpp + y * outPitch]);
     for (uint32_t x = 0; x < w; x++) {
       uint32_t b = bits.getBits(24);
       dest[x] = fp24ToFloat(b);
@@ -224,7 +224,7 @@ void UncompressedDecompressor::readUncompressedRaw(const iPoint2D& size,
     w *= cpp;
     for (; y < h; y++) {
       auto* dest = reinterpret_cast<uint16_t*>(
-          &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
+        &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
       for (uint32_t x = 0; x < w; x++) {
         uint32_t b = bits.getBits(bitPerPixel);
         dest[x] = b;
@@ -236,7 +236,7 @@ void UncompressedDecompressor::readUncompressedRaw(const iPoint2D& size,
     w *= cpp;
     for (; y < h; y++) {
       auto* dest = reinterpret_cast<uint16_t*>(
-          &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
+        &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
       for (uint32_t x = 0; x < w; x++) {
         uint32_t b = bits.getBits(bitPerPixel);
         dest[x] = b;
@@ -248,7 +248,7 @@ void UncompressedDecompressor::readUncompressedRaw(const iPoint2D& size,
     w *= cpp;
     for (; y < h; y++) {
       auto* dest = reinterpret_cast<uint16_t*>(
-          &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
+        &data[offset.x * sizeof(uint16_t) * cpp + y * outPitch]);
       for (uint32_t x = 0; x < w; x++) {
         uint32_t b = bits.getBits(bitPerPixel);
         dest[x] = b;
@@ -271,7 +271,7 @@ void UncompressedDecompressor::readUncompressedRaw(const iPoint2D& size,
     w *= cpp;
     for (; y < h; y++) {
       auto* dest = reinterpret_cast<uint16_t*>(
-          &data[offset.x * sizeof(uint16_t) + y * outPitch]);
+        &data[offset.x * sizeof(uint16_t) + y * outPitch]);
       for (uint32_t x = 0; x < w; x++) {
         uint32_t b = bits.getBits(bitPerPixel);
         dest[x] = b;
@@ -302,20 +302,20 @@ void UncompressedDecompressor::decode8BitRaw(uint32_t w, uint32_t h) {
 }
 
 template void UncompressedDecompressor::decode8BitRaw<false>(uint32_t w,
-                                                             uint32_t h);
+  uint32_t h);
 template void UncompressedDecompressor::decode8BitRaw<true>(uint32_t w,
-                                                            uint32_t h);
+  uint32_t h);
 
 template <Endianness e, bool interlaced, bool skips>
 void UncompressedDecompressor::decode12BitRaw(uint32_t w, uint32_t h) {
-  static constexpr const auto bits = 12;
+  static constexpr auto bits = 12;
 
   static_assert(e == Endianness::little || e == Endianness::big,
-                "unknown endianness");
+    "unknown endianness");
 
-  static constexpr const auto shift = 16 - bits;
-  static constexpr const auto pack = 8 - shift;
-  static constexpr const auto mask = (1 << pack) - 1;
+  static constexpr auto shift = 16 - bits;
+  static constexpr auto pack = 8 - shift;
+  static constexpr auto mask = (1 << pack) - 1;
 
   static_assert(bits == 12 && pack == 4, "wrong pack");
 
@@ -360,7 +360,7 @@ void UncompressedDecompressor::decode12BitRaw(uint32_t w, uint32_t h) {
       process(x + 1, true, g1, g2);
 
       if (skips && ((x % 10) == 8))
-        in++;
+        ++in;
     }
   }
   input.skipBytes(input.getRemainSize());
@@ -384,7 +384,7 @@ UncompressedDecompressor::decode12BitRaw<Endianness::big, false, true>(
 
 template <Endianness e>
 void UncompressedDecompressor::decode12BitRawUnpackedLeftAligned(uint32_t w,
-                                                                 uint32_t h) {
+  uint32_t h) {
   static_assert(e == Endianness::big, "unknown endianness");
 
   sanityCheck(w, &h, 2);
@@ -413,10 +413,10 @@ template <int bits, Endianness e>
 void UncompressedDecompressor::decodeRawUnpacked(uint32_t w, uint32_t h) {
   static_assert(bits == 12 || bits == 14 || bits == 16, "unhandled bitdepth");
   static_assert(e == Endianness::little || e == Endianness::big,
-                "unknown endianness");
+    "unknown endianness");
 
-  static constexpr const auto shift = 16 - bits;
-  static constexpr const auto mask = (1 << (8 - shift)) - 1;
+  static constexpr auto shift = 16 - bits;
+  static constexpr auto mask = (1 << (8 - shift)) - 1;
 
   static_assert((bits == 12 && mask == 0x0f) || bits != 12, "wrong mask");
   static_assert((bits == 14 && mask == 0x3f) || bits != 14, "wrong mask");
@@ -444,18 +444,18 @@ void UncompressedDecompressor::decodeRawUnpacked(uint32_t w, uint32_t h) {
 
 template void
 UncompressedDecompressor::decodeRawUnpacked<12, Endianness::little>(uint32_t w,
-                                                                    uint32_t h);
+  uint32_t h);
 template void
 UncompressedDecompressor::decodeRawUnpacked<12, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 template void
 UncompressedDecompressor::decodeRawUnpacked<14, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 template void
 UncompressedDecompressor::decodeRawUnpacked<16, Endianness::little>(uint32_t w,
-                                                                    uint32_t h);
+  uint32_t h);
 template void
 UncompressedDecompressor::decodeRawUnpacked<16, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 
 } // namespace rawspeed

@@ -50,7 +50,10 @@ enum RawImageType { TYPE_USHORT16, TYPE_FLOAT32 };
 class RawImageWorker {
 public:
   enum RawImageWorkerTask {
-    SCALE_VALUES = 1, FIX_BAD_PIXELS = 2, APPLY_LOOKUP = 3 | 0x1000, FULL_IMAGE = 0x1000
+    SCALE_VALUES = 1,
+    FIX_BAD_PIXELS = 2,
+    APPLY_LOOKUP = 3 | 0x1000,
+    FULL_IMAGE = 0x1000
   };
 
 private:
@@ -96,6 +99,7 @@ public:
 
 class RawImageData : public ErrorLog {
   friend class RawImageWorker;
+
 public:
   virtual ~RawImageData();
   [[nodiscard]] uint32_t getCpp() const { return cpp; }
@@ -109,7 +113,7 @@ public:
   void destroyData();
   void blitFrom(const RawImage& src, const iPoint2D& srcPos,
                 const iPoint2D& size, const iPoint2D& destPos);
-  [[nodiscard]] rawspeed::RawImageType getDataType() const { return dataType; }
+  [[nodiscard]] RawImageType getDataType() const { return dataType; }
   [[nodiscard]] inline Array2DRef<uint16_t>
   getU16DataAsUncroppedArray2DRef() const noexcept;
   [[nodiscard]] inline CroppedArray2DRef<uint16_t>
@@ -135,7 +139,7 @@ public:
   void setTable(const std::vector<uint16_t>& table_, bool dither);
   void setTable(std::unique_ptr<TableLookUp> t);
 
-  bool isAllocated() {return !!data;}
+  bool isAllocated() { return !!data; }
   void createBadPixelMap();
   iPoint2D dim;
   int pitch = 0;
@@ -162,7 +166,7 @@ public:
   ImageMetaData metadata;
 
   Mutex mBadPixelMutex; // Mutex for 'mBadPixelPositions, must be used if more
-                        // than 1 thread is accessing vector
+  // than 1 thread is accessing vector
 
 private:
   uint32_t dataRefCount GUARDED_BY(mymutex) = 0;
@@ -175,7 +179,7 @@ protected:
   virtual void doLookup(int start_y, int end_y) = 0;
   virtual void fixBadPixel(uint32_t x, uint32_t y, int component = 0) = 0;
   void fixBadPixelsThread(int start_y, int end_y);
-  void startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped );
+  void startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped);
   uint8_t* data = nullptr;
   int cpp = 1; // Components per pixel
   int bpp = 0; // Bytes per pixel.
@@ -221,35 +225,35 @@ protected:
   friend class RawImage;
 };
 
- class RawImage {
- public:
-   static RawImage create(RawImageType type = TYPE_USHORT16);
-   static RawImage create(const iPoint2D& dim,
-                          RawImageType type = TYPE_USHORT16,
-                          uint32_t componentsPerPixel = 1);
-   RawImageData* operator->() const { return p_; }
-   RawImageData& operator*() const { return *p_; }
-   explicit RawImage(RawImageData* p); // p must not be NULL
-   ~RawImage();
-   RawImage(const RawImage& p);
-   RawImage& operator=(const RawImage& p) noexcept;
-   RawImage& operator=(RawImage&& p) noexcept;
+class RawImage {
+public:
+  static RawImage create(RawImageType type = TYPE_USHORT16);
+  static RawImage create(const iPoint2D& dim,
+                         RawImageType type = TYPE_USHORT16,
+                         uint32_t componentsPerPixel = 1);
+  RawImageData* operator->() const { return p_; }
+  RawImageData& operator*() const { return *p_; }
+  explicit RawImage(RawImageData* p); // p must not be NULL
+  ~RawImage();
+  RawImage(const RawImage& p);
+  RawImage& operator=(const RawImage& p) noexcept;
+  RawImage& operator=(RawImage&& p) noexcept;
 
-   RawImageData* get() { return p_; }
- private:
-   RawImageData* p_;    // p_ is never NULL
- };
+  RawImageData* get() { return p_; }
 
-inline RawImage RawImage::create(RawImageType type)  {
-  switch (type)
-  {
-    case TYPE_USHORT16:
-      return RawImage(new RawImageDataU16());
-    case TYPE_FLOAT32:
-      return RawImage(new RawImageDataFloat());
-    default:
-      writeLog(DEBUG_PRIO_ERROR, "RawImage::create: Unknown Image type!");
-      __builtin_unreachable();
+private:
+  RawImageData* p_; // p_ is never NULL
+};
+
+inline RawImage RawImage::create(RawImageType type) {
+  switch (type) {
+  case TYPE_USHORT16:
+    return RawImage(new RawImageDataU16());
+  case TYPE_FLOAT32:
+    return RawImage(new RawImageDataFloat());
+  default:
+    writeLog(DEBUG_PRIO_ERROR, "RawImage::create: Unknown Image type!");
+    __builtin_unreachable();
 
   }
 }
@@ -270,7 +274,7 @@ inline RawImage RawImage::create(const iPoint2D& dim, RawImageType type,
 inline Array2DRef<uint16_t>
 RawImageData::getU16DataAsUncroppedArray2DRef() const noexcept {
   assert(dataType == TYPE_USHORT16 &&
-         "Attempting to access floating-point buffer as uint16_t.");
+      "Attempting to access floating-point buffer as uint16_t.");
   assert(data && "Data not yet allocated.");
   return {reinterpret_cast<uint16_t*>(data), cpp * uncropped_dim.x,
           uncropped_dim.y, static_cast<int>(pitch / sizeof(uint16_t))};
@@ -301,7 +305,7 @@ inline void RawImageDataU16::setWithLookUp(uint16_t value, uint8_t* dst,
     uint32_t r = *random;
 
     uint32_t pix = base + ((delta * (r & 2047) + 1024) >> 12);
-    *random = 15700 *(r & 65535) + (r >> 16);
+    *random = 15700 * (r & 65535) + (r >> 16);
     *dest = pix;
     return;
   }
@@ -316,7 +320,7 @@ class RawImageCurveGuard final {
 public:
   RawImageCurveGuard(RawImage* raw, const std::vector<uint16_t>& curve_,
                      bool uncorrectedRawValues_)
-      : mRaw(raw), curve(curve_), uncorrectedRawValues(uncorrectedRawValues_) {
+    : mRaw(raw), curve(curve_), uncorrectedRawValues(uncorrectedRawValues_) {
     if (uncorrectedRawValues)
       return;
 

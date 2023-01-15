@@ -37,6 +37,7 @@ struct DHT
   ushort channel_maximum[3];
   float channel_minimum[3];
   LibRaw &libraw;
+
   enum
   {
     HVSH = 1,
@@ -51,14 +52,17 @@ struct DHT
     RULDSH = RULD | DIASH,
     HOT = 64
   };
-  static inline float Thot(void) throw() { return 64.0f; }
-  static inline float Tg(void) throw() { return 256.0f; }
-  static inline float T(void) throw() { return 1.4f; }
+
+  static float Thot(void) throw() { return 64.0f; }
+  static float Tg(void) throw() { return 256.0f; }
+  static float T(void) throw() { return 1.4f; }
   char *ndir;
-  inline int nr_offset(int row, int col) throw()
+
+  int nr_offset(int row, int col) throw()
   {
     return (row * nr_width + col);
   }
+
   int get_hv_grb(int x, int y, int kc)
   {
     float hv1 = 2 * nraw[nr_offset(y - 1, x)][1] /
@@ -95,6 +99,7 @@ struct DHT
     char d = dh < dv ? (e > Tg() ? HORSH : HOR) : (e > Tg() ? VERSH : VER);
     return d;
   }
+
   int get_hv_rbg(int x, int y, int hc)
   {
     float hv1 = 2 * nraw[nr_offset(y - 1, x)][hc ^ 2] /
@@ -109,9 +114,9 @@ struct DHT
     kv *= kv;
     kv *= kv;
     float dv = kv * calc_dist(nraw[nr_offset(y - 3, x)][hc ^ 2] *
-                                  nraw[nr_offset(y + 3, x)][hc ^ 2],
+                              nraw[nr_offset(y + 3, x)][hc ^ 2],
                               nraw[nr_offset(y - 1, x)][hc ^ 2] *
-                                  nraw[nr_offset(y + 1, x)][hc ^ 2]);
+                              nraw[nr_offset(y + 1, x)][hc ^ 2]);
     float hh1 = 2 * nraw[nr_offset(y, x - 1)][hc] /
                 (nraw[nr_offset(y, x - 2)][1] + nraw[nr_offset(y, x)][1]);
     float hh2 = 2 * nraw[nr_offset(y, x + 1)][hc] /
@@ -125,12 +130,13 @@ struct DHT
     kh *= kh;
     float dh =
         kh * calc_dist(
-                 nraw[nr_offset(y, x - 3)][hc] * nraw[nr_offset(y, x + 3)][hc],
-                 nraw[nr_offset(y, x - 1)][hc] * nraw[nr_offset(y, x + 1)][hc]);
+            nraw[nr_offset(y, x - 3)][hc] * nraw[nr_offset(y, x + 3)][hc],
+            nraw[nr_offset(y, x - 1)][hc] * nraw[nr_offset(y, x + 1)][hc]);
     float e = calc_dist(dh, dv);
     char d = dh < dv ? (e > Tg() ? HORSH : HOR) : (e > Tg() ? VERSH : VER);
     return d;
   }
+
   int get_diag_grb(int x, int y, int kc)
   {
     float hlu =
@@ -140,18 +146,19 @@ struct DHT
     float dlurd =
         calc_dist(hlu, hrd) *
         calc_dist(nraw[nr_offset(y - 1, x - 1)][1] *
-                      nraw[nr_offset(y + 1, x + 1)][1],
+                  nraw[nr_offset(y + 1, x + 1)][1],
                   nraw[nr_offset(y, x)][1] * nraw[nr_offset(y, x)][1]);
     float druld =
         calc_dist(hlu, hrd) *
         calc_dist(nraw[nr_offset(y - 1, x + 1)][1] *
-                      nraw[nr_offset(y + 1, x - 1)][1],
+                  nraw[nr_offset(y + 1, x - 1)][1],
                   nraw[nr_offset(y, x)][1] * nraw[nr_offset(y, x)][1]);
     float e = calc_dist(dlurd, druld);
     char d =
         druld < dlurd ? (e > T() ? RULDSH : RULD) : (e > T() ? LURDSH : LURD);
     return d;
   }
+
   int get_diag_rbg(int x, int y, int /* hc */)
   {
     float dlurd = calc_dist(
@@ -165,18 +172,21 @@ struct DHT
         druld < dlurd ? (e > T() ? RULDSH : RULD) : (e > T() ? LURDSH : LURD);
     return d;
   }
-  static inline float scale_over(float ec, float base)
+
+  static float scale_over(float ec, float base)
   {
     float s = base * .4;
     float o = ec - base;
     return base + sqrt(s * (o + s)) - s;
   }
-  static inline float scale_under(float ec, float base)
+
+  static float scale_under(float ec, float base)
   {
     float s = base * .6;
     float o = base - ec;
     return base - sqrt(s * (o + s)) + s;
   }
+
   ~DHT();
   DHT(LibRaw &_libraw);
   void copy_to_image();
@@ -199,7 +209,7 @@ struct DHT
   void restore_hots();
 };
 
-typedef float float3[3];
+using float3 = float[3];
 
 /*
  * информация о цветах копируется во float в общем то с одной целью -- чтобы
@@ -213,13 +223,14 @@ typedef float float3[3];
  * получился 0 при округлении, иначе проблема при интерпретации синих и красных.
  *
  */
-DHT::DHT(LibRaw &_libraw) : libraw(_libraw)
+DHT::DHT(LibRaw &_libraw)
+  : libraw(_libraw)
 {
   nr_height = libraw.imgdata.sizes.iheight + nr_topmargin * 2;
   nr_width = libraw.imgdata.sizes.iwidth + nr_leftmargin * 2;
-  nraw = (float3 *)malloc(nr_height * nr_width * sizeof(float3));
+  nraw = static_cast<float3 *>(malloc(nr_height * nr_width * sizeof(float3)));
   int iwidth = libraw.imgdata.sizes.iwidth;
-  ndir = (char *)calloc(nr_height * nr_width, 1);
+  ndir = static_cast<char *>(calloc(nr_height * nr_width, 1));
   channel_maximum[0] = channel_maximum[1] = channel_maximum[2] = 0;
   channel_minimum[0] = libraw.imgdata.image[0][0];
   channel_minimum[1] = libraw.imgdata.image[0][1];
@@ -246,7 +257,7 @@ DHT::DHT(LibRaw &_libraw) : libraw(_libraw)
           channel_maximum[l] = c;
         if (channel_minimum[l] > c)
           channel_minimum[l] = c;
-        nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)][l] = (float)c;
+        nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)][l] = static_cast<float>(c);
       }
     }
   }
@@ -294,10 +305,11 @@ void DHT::hide_hots()
         float avg = 0;
         for (int k = -2; k < 3; k += 2)
           for (int m = -2; m < 3; m += 2)
+          {
             if (m == 0 && k == 0)
               continue;
-            else
-              avg += nraw[nr_offset(y + k, x + m)][kc];
+            avg += nraw[nr_offset(y + k, x + m)][kc];
+          }
         avg /= 8;
         //				float dev = 0;
         //				for (int k = -2; k < 3; k += 2)
@@ -355,10 +367,11 @@ void DHT::hide_hots()
         float avg = 0;
         for (int k = -2; k < 3; k += 2)
           for (int m = -2; m < 3; m += 2)
+          {
             if (k == 0 && m == 0)
               continue;
-            else
-              avg += nraw[nr_offset(y + k, x + m)][1];
+            avg += nraw[nr_offset(y + k, x + m)][1];
+          }
         avg /= 8;
         //				float dev = 0;
         //				for (int k = -2; k < 3; k += 2)
@@ -429,18 +442,18 @@ void DHT::make_diag_dirs()
   {
     make_diag_dline(i);
   }
-//#if defined(LIBRAW_USE_OPENMP)
-//#pragma omp parallel for schedule(guided)
-//#endif
-//	for (int i = 0; i < libraw.imgdata.sizes.iheight; ++i) {
-//		refine_diag_dirs(i, i & 1);
-//	}
-//#if defined(LIBRAW_USE_OPENMP)
-//#pragma omp parallel for schedule(guided)
-//#endif
-//	for (int i = 0; i < libraw.imgdata.sizes.iheight; ++i) {
-//		refine_diag_dirs(i, (i & 1) ^ 1);
-//	}
+  //#if defined(LIBRAW_USE_OPENMP)
+  //#pragma omp parallel for schedule(guided)
+  //#endif
+  //	for (int i = 0; i < libraw.imgdata.sizes.iheight; ++i) {
+  //		refine_diag_dirs(i, i & 1);
+  //	}
+  //#if defined(LIBRAW_USE_OPENMP)
+  //#pragma omp parallel for schedule(guided)
+  //#endif
+  //	for (int i = 0; i < libraw.imgdata.sizes.iheight; ++i) {
+  //		refine_diag_dirs(i, (i & 1) ^ 1);
+  //	}
 #if defined(LIBRAW_USE_OPENMP)
 #pragma omp parallel for schedule(guided)
 #endif
@@ -498,10 +511,10 @@ void DHT::refine_hv_dirs(int i, int js)
         (ndir[nr_offset(y - 1, x)] & HOR) + (ndir[nr_offset(y + 1, x)] & HOR) +
         (ndir[nr_offset(y, x - 1)] & HOR) + (ndir[nr_offset(y, x + 1)] & HOR);
     bool codir = (ndir[nr_offset(y, x)] & VER)
-                     ? ((ndir[nr_offset(y - 1, x)] & VER) ||
-                        (ndir[nr_offset(y + 1, x)] & VER))
-                     : ((ndir[nr_offset(y, x - 1)] & HOR) ||
-                        (ndir[nr_offset(y, x + 1)] & HOR));
+                   ? ((ndir[nr_offset(y - 1, x)] & VER) ||
+                      (ndir[nr_offset(y + 1, x)] & VER))
+                   : ((ndir[nr_offset(y, x - 1)] & HOR) ||
+                      (ndir[nr_offset(y, x + 1)] & HOR));
     nv /= VER;
     nh /= HOR;
     if ((ndir[nr_offset(y, x)] & VER) && (nh > 2 && !codir))
@@ -546,6 +559,7 @@ void DHT::refine_ihv_dirs(int i)
     }
   }
 }
+
 void DHT::make_hv_dline(int i)
 {
   int iwidth = libraw.imgdata.sizes.iwidth;
@@ -624,10 +638,10 @@ void DHT::refine_diag_dirs(int i, int js)
              (ndir[nr_offset(y + 1, x - 1)] & RULD) +
              (ndir[nr_offset(y + 1, x + 1)] & RULD);
     bool codir = (ndir[nr_offset(y, x)] & LURD)
-                     ? ((ndir[nr_offset(y - 1, x - 1)] & LURD) ||
-                        (ndir[nr_offset(y + 1, x + 1)] & LURD))
-                     : ((ndir[nr_offset(y - 1, x + 1)] & RULD) ||
-                        (ndir[nr_offset(y + 1, x - 1)] & RULD));
+                   ? ((ndir[nr_offset(y - 1, x - 1)] & LURD) ||
+                      (ndir[nr_offset(y + 1, x + 1)] & LURD))
+                   : ((ndir[nr_offset(y - 1, x + 1)] & RULD) ||
+                      (ndir[nr_offset(y + 1, x - 1)] & RULD));
     nv /= LURD;
     nh /= RULD;
     if ((ndir[nr_offset(y, x)] & LURD) && (nh > 4 && !codir))
@@ -781,7 +795,7 @@ void DHT::illustrate_dline(int i)
     int x = j + nr_leftmargin;
     int y = i + nr_topmargin;
     nraw[nr_offset(y, x)][0] = nraw[nr_offset(y, x)][1] =
-        nraw[nr_offset(y, x)][2] = 0.5;
+                               nraw[nr_offset(y, x)][2] = 0.5;
     int l = ndir[nr_offset(y, x)] & 8;
     // l >>= 3; // WTF?
     l = 1;
@@ -842,9 +856,9 @@ void DHT::make_rbdiag(int i)
     float eg;
     eg = nraw[nr_offset(y, x)][1] *
          (g1 * nraw[nr_offset(y + dy, x + dx)][cl] /
-              nraw[nr_offset(y + dy, x + dx)][1] +
+          nraw[nr_offset(y + dy, x + dx)][1] +
           g2 * nraw[nr_offset(y + dy2, x + dx2)][cl] /
-              nraw[nr_offset(y + dy2, x + dx2)][1]) /
+          nraw[nr_offset(y + dy2, x + dx2)][1]) /
          (g1 + g2);
     float min, max;
     min = MIN(nraw[nr_offset(y + dy, x + dx)][cl],
@@ -905,15 +919,15 @@ void DHT::make_rbhv(int i)
     float eg_r, eg_b;
     eg_r = nraw[nr_offset(y, x)][1] *
            (g1 * nraw[nr_offset(y + dy, x + dx)][0] /
-                nraw[nr_offset(y + dy, x + dx)][1] +
+            nraw[nr_offset(y + dy, x + dx)][1] +
             g2 * nraw[nr_offset(y + dy2, x + dx2)][0] /
-                nraw[nr_offset(y + dy2, x + dx2)][1]) /
+            nraw[nr_offset(y + dy2, x + dx2)][1]) /
            (g1 + g2);
     eg_b = nraw[nr_offset(y, x)][1] *
            (g1 * nraw[nr_offset(y + dy, x + dx)][2] /
-                nraw[nr_offset(y + dy, x + dx)][1] +
+            nraw[nr_offset(y + dy, x + dx)][1] +
             g2 * nraw[nr_offset(y + dy2, x + dx2)][2] /
-                nraw[nr_offset(y + dy2, x + dx2)][1]) /
+            nraw[nr_offset(y + dy2, x + dx2)][1]) /
            (g1 + g2);
     float min_r, max_r;
     min_r = MIN(nraw[nr_offset(y + dy, x + dx)][0],
@@ -990,15 +1004,15 @@ void DHT::copy_to_image()
     for (int j = 0; j < iwidth; ++j)
     {
       libraw.imgdata.image[i * iwidth + j][0] =
-          (unsigned short)(nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)]
-                               [0]);
+          static_cast<unsigned short>(nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)]
+            [0]);
       libraw.imgdata.image[i * iwidth + j][2] =
-          (unsigned short)(nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)]
-                               [2]);
+          static_cast<unsigned short>(nraw[nr_offset(i + nr_topmargin, j + nr_leftmargin)]
+            [2]);
       libraw.imgdata.image[i * iwidth + j][1] =
           libraw.imgdata.image[i * iwidth + j][3] =
-              (unsigned short)(nraw[nr_offset(i + nr_topmargin,
-                                              j + nr_leftmargin)][1]);
+          static_cast<unsigned short>(nraw[nr_offset(i + nr_topmargin,
+                                                     j + nr_leftmargin)][1]);
     }
   }
 }
@@ -1011,15 +1025,15 @@ DHT::~DHT()
 
 void LibRaw::dht_interpolate()
 {
-	if (imgdata.idata.filters != 0x16161616
-		&& imgdata.idata.filters != 0x61616161
-		&& imgdata.idata.filters != 0x49494949
-		&& imgdata.idata.filters != 0x94949494
-		)
-	{
-		ahd_interpolate();
-		return;
-	}
+  if (imgdata.idata.filters != 0x16161616
+      && imgdata.idata.filters != 0x61616161
+      && imgdata.idata.filters != 0x49494949
+      && imgdata.idata.filters != 0x94949494
+  )
+  {
+    ahd_interpolate();
+    return;
+  }
   DHT dht(*this);
   dht.hide_hots();
   dht.make_hv_dirs();

@@ -39,15 +39,18 @@ void LibRaw::tiff_set(struct tiff_hdr *th, ushort *ntag, ushort tag,
   tt = (struct libraw_tiff_tag *)(ntag + 1) + (*ntag)++;
   tt->val.i = val;
   if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_BYTE) && count <= 4)
-    FORC(4) tt->val.c[c] = val >> (c << 3);
+    FORC(4)
+      tt->val.c[c] = val >> (c << 3);
   else if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_ASCII))
   {
-    count = int(strnlen((char *)th + val, count - 1)) + 1;
+    count = static_cast<int>(strnlen((char *)th + val, count - 1)) + 1;
     if (count <= 4)
-      FORC(4) tt->val.c[c] = ((char *)th)[val + c];
+      FORC(4)
+        tt->val.c[c] = ((char *)th)[val + c];
   }
   else if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_SHORT) && count <= 2)
-    FORC(2) tt->val.s[c] = val >> (c << 4);
+    FORC(2)
+      tt->val.s[c] = val >> (c << 4);
   tt->count = count;
   tt->type = type;
   tt->tag = tag;
@@ -66,7 +69,8 @@ void LibRaw::tiff_head(struct tiff_hdr *th, int full)
   th->ifd = 10;
   th->rat[0] = th->rat[2] = 300;
   th->rat[1] = th->rat[3] = 1;
-  FORC(6) th->rat[4 + c] = 1000000;
+  FORC(6)
+    th->rat[4 + c] = 1000000;
   th->rat[4] *= shutter;
   th->rat[6] *= aperture;
   th->rat[8] *= focal_len;
@@ -86,7 +90,8 @@ void LibRaw::tiff_head(struct tiff_hdr *th, int full)
     tiff_set(th, &th->ntag, 258, 3, colors, output_bps);
     if (colors > 2)
       th->tag[th->ntag - 1].val.i = TOFF(th->bps);
-    FORC4 th->bps[c] = output_bps;
+    FORC4
+      th->bps[c] = output_bps;
     tiff_set(th, &th->ntag, 259, 3, 1, 1);
     tiff_set(th, &th->ntag, 262, 3, 1, 1 + (colors > 1));
   }
@@ -121,8 +126,8 @@ void LibRaw::tiff_head(struct tiff_hdr *th, int full)
   tiff_set(th, &th->nexif, 37386, 5, 1, TOFF(th->rat[8]));
   if (gpsdata[1])
   {
-    uchar latref[4] = { (uchar)(gpsdata[29]),0,0,0 },
-          lonref[4] = { (uchar)(gpsdata[30]),0,0,0 };
+    uchar latref[4] = {static_cast<uchar>((gpsdata[29])), 0, 0, 0},
+          lonref[4] = {static_cast<uchar>((gpsdata[30])), 0, 0, 0};
     tiff_set(th, &th->ntag, 34853, 4, 1, TOFF(th->ngps));
     tiff_set(th, &th->ngps, 0, 1, 4, 0x202);
     tiff_set(th, &th->ngps, 1, 2, 2, TOFF(latref));
@@ -154,92 +159,95 @@ void LibRaw::jpeg_thumb_writer(FILE *tfp, char *t_humb, int t_humb_length)
   }
   fwrite(t_humb + 2, 1, t_humb_length - 2, tfp);
 }
+
 void LibRaw::write_ppm_tiff()
 {
-    try
+  try
+  {
+    struct tiff_hdr th;
+    ushort *ppm2;
+    int c, row, col, soff, rstep, cstep;
+    int perc, val, total, t_white = 0x2000;
+
+    perc = width * height * auto_bright_thr;
+
+    if (fuji_width)
+      perc /= 2;
+    if (!((highlight & ~2) || no_auto_bright))
+      for (t_white = c = 0; c < colors; c++)
+      {
+        for (val = 0x2000, total = 0; --val > 32;)
+          if ((total += histogram[c][val]) > perc)
+            break;
+        if (t_white < val)
+          t_white = val;
+      }
+    gamma_curve(gamm[0], gamm[1], 2, (t_white << 3) / bright);
+    iheight = height;
+    iwidth = width;
+    if (flip & 4)
+      SWAP(height, width);
+
+    std::vector<uchar> ppm(width * colors * output_bps / 8);
+    ppm2 = (ushort *)ppm.data();
+    if (output_tiff)
     {
-        struct tiff_hdr th;
-        ushort *ppm2;
-        int c, row, col, soff, rstep, cstep;
-        int perc, val, total, t_white = 0x2000;
-
-        perc = width * height * auto_bright_thr;
-
-        if (fuji_width)
-            perc /= 2;
-        if (!((highlight & ~2) || no_auto_bright))
-            for (t_white = c = 0; c < colors; c++)
-            {
-                for (val = 0x2000, total = 0; --val > 32;)
-                    if ((total += histogram[c][val]) > perc)
-                        break;
-                if (t_white < val)
-                    t_white = val;
-            }
-        gamma_curve(gamm[0], gamm[1], 2, (t_white << 3) / bright);
-        iheight = height;
-        iwidth = width;
-        if (flip & 4)
-            SWAP(height, width);
-
-        std::vector<uchar> ppm(width * colors * output_bps / 8);
-        ppm2 = (ushort *)ppm.data();
-        if (output_tiff)
-        {
-            tiff_head(&th, 1);
-            fwrite(&th, sizeof th, 1, ofp);
-            if (oprof)
-                fwrite(oprof, ntohl(oprof[0]), 1, ofp);
-        }
-        else if (colors > 3)
-	{
-	    if(imgdata.params.output_flags & LIBRAW_OUTPUT_FLAGS_PPMMETA)
-	      fprintf(ofp,
-              "P7\n# EXPTIME=%0.5f\n# TIMESTAMP=%d\n# ISOSPEED=%d\n"
-              "# APERTURE=%0.1f\n# FOCALLEN=%0.1f\n# MAKE=%s\n# MODEL=%s\n"
-              "WIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
-              shutter, (int)timestamp, (int)iso_speed,aperture, 
-	      focal_len, make, model,
-	      width, height, colors, (1 << output_bps) - 1, cdesc);
-	    else
-            fprintf(
-                ofp,
-                "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
+      tiff_head(&th, 1);
+      fwrite(&th, sizeof th, 1, ofp);
+      if (oprof)
+        fwrite(oprof, ntohl(oprof[0]), 1, ofp);
+    }
+    else if (colors > 3)
+    {
+      if (imgdata.params.output_flags & LIBRAW_OUTPUT_FLAGS_PPMMETA)
+        fprintf(ofp,
+                "P7\n# EXPTIME=%0.5f\n# TIMESTAMP=%d\n# ISOSPEED=%d\n"
+                "# APERTURE=%0.1f\n# FOCALLEN=%0.1f\n# MAKE=%s\n# MODEL=%s\n"
+                "WIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
+                shutter, static_cast<int>(timestamp), static_cast<int>(iso_speed),aperture,
+                focal_len, make, model,
                 width, height, colors, (1 << output_bps) - 1, cdesc);
-	}
-        else
-	{
-	    if(imgdata.params.output_flags & LIBRAW_OUTPUT_FLAGS_PPMMETA)
-	    	fprintf(ofp, "P%d\n# EXPTIME=%0.5f\n# TIMESTAMP=%d\n"
-		"# ISOSPEED=%d\n# APERTURE=%0.1f\n# FOCALLEN=%0.1f\n"
-		"# MAKE=%s\n# MODEL=%s\n%d %d\n%d\n",
-                colors/2+5,
-		shutter, (int)timestamp, (int)iso_speed,aperture,focal_len,
-		make,model,
-		width, height, (1 << output_bps)-1);
-	    else
-             fprintf(ofp, "P%d\n%d %d\n%d\n", colors / 2 + 5, width, height,
-            (1 << output_bps) - 1);
-        }
-        soff = flip_index(0, 0);
-        cstep = flip_index(0, 1) - soff;
-        rstep = flip_index(1, 0) - flip_index(0, width);
-        for (row = 0; row < height; row++, soff += rstep)
-        {
-            for (col = 0; col < width; col++, soff += cstep)
-                if (output_bps == 8)
-                    FORCC ppm[col * colors + c] = curve[image[soff][c]] >> 8;
-                else
-                    FORCC ppm2[col * colors + c] = curve[image[soff][c]];
-            if (output_bps == 16 && !output_tiff && htons(0x55aa) != 0x55aa)
-                libraw_swab(ppm2, width * colors * 2);
-            fwrite(ppm.data(), colors * output_bps / 8, width, ofp);
-        }
+      else
+        fprintf(
+            ofp,
+            "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
+            width, height, colors, (1 << output_bps) - 1, cdesc);
     }
-    catch (...)
+    else
     {
-      throw LIBRAW_EXCEPTION_ALLOC; // rethrow
+      if (imgdata.params.output_flags & LIBRAW_OUTPUT_FLAGS_PPMMETA)
+        fprintf(ofp, "P%d\n# EXPTIME=%0.5f\n# TIMESTAMP=%d\n"
+                "# ISOSPEED=%d\n# APERTURE=%0.1f\n# FOCALLEN=%0.1f\n"
+                "# MAKE=%s\n# MODEL=%s\n%d %d\n%d\n",
+                colors / 2 + 5,
+                shutter, static_cast<int>(timestamp), static_cast<int>(iso_speed),aperture,focal_len,
+                make,model,
+                width, height, (1 << output_bps) - 1);
+      else
+        fprintf(ofp, "P%d\n%d %d\n%d\n", colors / 2 + 5, width, height,
+                (1 << output_bps) - 1);
     }
+    soff = flip_index(0, 0);
+    cstep = flip_index(0, 1) - soff;
+    rstep = flip_index(1, 0) - flip_index(0, width);
+    for (row = 0; row < height; row++, soff += rstep)
+    {
+      for (col = 0; col < width; col++, soff += cstep)
+        if (output_bps == 8)
+          FORCC
+            ppm[col * colors + c] = curve[image[soff][c]] >> 8;
+        else
+          FORCC
+            ppm2[col * colors + c] = curve[image[soff][c]];
+      if (output_bps == 16 && !output_tiff && htons(0x55aa) != 0x55aa)
+        libraw_swab(ppm2, width * colors * 2);
+      fwrite(ppm.data(), colors * output_bps / 8, width, ofp);
+    }
+  }
+  catch (...)
+  {
+    throw LIBRAW_EXCEPTION_ALLOC; // rethrow
+  }
 }
 #if 0
 void LibRaw::ppm_thumb()

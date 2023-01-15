@@ -30,7 +30,9 @@ protected:
   RawImage mRaw;
 
 public:
-  explicit AbstractSamsungDecompressor(const RawImage& raw) : mRaw(raw) {}
+  explicit AbstractSamsungDecompressor(const RawImage& raw)
+    : mRaw(raw) {
+  }
 };
 
 } // namespace rawspeed

@@ -51,7 +51,6 @@ it under the terms of the one of two licenses as you choose:
 #endif
 
 
-
 /* LibRaw uses own memory pool management, with LIBRAW_MSIZE (512)
 entries. It is enough for parsing/decoding non-damaged files, but
 may overflow on specially crafted files (eg. with many string values
@@ -119,26 +118,28 @@ enum LibRaw_As_Shot_WB_Applied_codes
 };
 
 #define tagtypeIs(typex) (type == typex)
-enum LibRaw_ExifTagTypes {
-  LIBRAW_EXIFTAG_TYPE_UNKNOWN   =  0,
-  LIBRAW_EXIFTAG_TYPE_BYTE      =  1,
-  LIBRAW_EXIFTAG_TYPE_ASCII     =  2,
-  LIBRAW_EXIFTAG_TYPE_SHORT     =  3,
-  LIBRAW_EXIFTAG_TYPE_LONG      =  4,
-  LIBRAW_EXIFTAG_TYPE_RATIONAL  =  5,
-  LIBRAW_EXIFTAG_TYPE_SBYTE     =  6,
-  LIBRAW_EXIFTAG_TYPE_UNDEFINED =  7,
-  LIBRAW_EXIFTAG_TYPE_SSHORT    =  8,
-  LIBRAW_EXIFTAG_TYPE_SLONG     =  9,
+
+enum LibRaw_ExifTagTypes
+{
+  LIBRAW_EXIFTAG_TYPE_UNKNOWN = 0,
+  LIBRAW_EXIFTAG_TYPE_BYTE = 1,
+  LIBRAW_EXIFTAG_TYPE_ASCII = 2,
+  LIBRAW_EXIFTAG_TYPE_SHORT = 3,
+  LIBRAW_EXIFTAG_TYPE_LONG = 4,
+  LIBRAW_EXIFTAG_TYPE_RATIONAL = 5,
+  LIBRAW_EXIFTAG_TYPE_SBYTE = 6,
+  LIBRAW_EXIFTAG_TYPE_UNDEFINED = 7,
+  LIBRAW_EXIFTAG_TYPE_SSHORT = 8,
+  LIBRAW_EXIFTAG_TYPE_SLONG = 9,
   LIBRAW_EXIFTAG_TYPE_SRATIONAL = 10,
-  LIBRAW_EXIFTAG_TYPE_FLOAT     = 11,
-  LIBRAW_EXIFTAG_TYPE_DOUBLE    = 12,
-  LIBRAW_EXIFTAG_TYPE_IFD       = 13,
-  LIBRAW_EXIFTAG_TYPE_UNICODE   = 14,
-  LIBRAW_EXIFTAG_TYPE_COMPLEX   = 15,
-  LIBRAW_EXIFTAG_TYPE_LONG8     = 16,
-  LIBRAW_EXIFTAG_TYPE_SLONG8    = 17,
-  LIBRAW_EXIFTAG_TYPE_IFD8      = 18
+  LIBRAW_EXIFTAG_TYPE_FLOAT = 11,
+  LIBRAW_EXIFTAG_TYPE_DOUBLE = 12,
+  LIBRAW_EXIFTAG_TYPE_IFD = 13,
+  LIBRAW_EXIFTAG_TYPE_UNICODE = 14,
+  LIBRAW_EXIFTAG_TYPE_COMPLEX = 15,
+  LIBRAW_EXIFTAG_TYPE_LONG8 = 16,
+  LIBRAW_EXIFTAG_TYPE_SLONG8 = 17,
+  LIBRAW_EXIFTAG_TYPE_IFD8 = 18
 };
 
 #define LIBRAW_EXIFTOOLTAGTYPE_int8u       LIBRAW_EXIFTAG_TYPE_BYTE
@@ -165,7 +166,7 @@ enum LibRaw_ExifTagTypes {
 
 enum LibRaw_whitebalance_code
 {
-// clang-format off
+  // clang-format off
   /*
       EXIF light sources
       12 = FL-D; Daylight fluorescent (D 5700K – 7100K) (F1,F5)
@@ -174,7 +175,7 @@ enum LibRaw_whitebalance_code
       15 = FL-WW; White fluorescent (WW 3200K – 3700K) (F3, residential)
       16 = FL-L; Soft/Warm white fluorescent (L 2600K - 3250K) (F4, kitchen, bath)
   */
-//clang-format on
+  //clang-format on
   LIBRAW_WBI_Unknown = 0,
   LIBRAW_WBI_Daylight = 1,
   LIBRAW_WBI_Fluorescent = 2,
@@ -242,42 +243,45 @@ enum LibRaw_dng_processing
   LIBRAW_DNG_XTRANS = 8,
   LIBRAW_DNG_OTHER = 16,
   LIBRAW_DNG_8BIT = 32,
-  /*LIBRAW_DNG_LARGERANGE=64,*/ /* more than 16 bit integer */
+  /*LIBRAW_DNG_LARGERANGE=64,*/
+  /* more than 16 bit integer */
   LIBRAW_DNG_ALL =
-      LIBRAW_DNG_FLOAT | LIBRAW_DNG_LINEAR | LIBRAW_DNG_DEFLATE | LIBRAW_DNG_XTRANS |
-      LIBRAW_DNG_8BIT | LIBRAW_DNG_OTHER /* |LIBRAW_DNG_LARGERANGE */,
+  LIBRAW_DNG_FLOAT | LIBRAW_DNG_LINEAR | LIBRAW_DNG_DEFLATE | LIBRAW_DNG_XTRANS |
+  LIBRAW_DNG_8BIT | LIBRAW_DNG_OTHER /* |LIBRAW_DNG_LARGERANGE */,
   LIBRAW_DNG_DEFAULT = LIBRAW_DNG_FLOAT | LIBRAW_DNG_LINEAR |
                        LIBRAW_DNG_DEFLATE | LIBRAW_DNG_8BIT
 };
 
 enum LibRaw_output_flags
 {
-    LIBRAW_OUTPUT_FLAGS_NONE = 0,
-    LIBRAW_OUTPUT_FLAGS_PPMMETA = 1
+  LIBRAW_OUTPUT_FLAGS_NONE = 0,
+  LIBRAW_OUTPUT_FLAGS_PPMMETA = 1
 };
 
 enum LibRaw_runtime_capabilities
 {
   LIBRAW_CAPS_RAWSPEED = 1,
-  LIBRAW_CAPS_DNGSDK = 1<<1,
-  LIBRAW_CAPS_GPRSDK = 1<<2,
-  LIBRAW_CAPS_UNICODEPATHS = 1<<3,
-  LIBRAW_CAPS_X3FTOOLS = 1<<4,
-  LIBRAW_CAPS_RPI6BY9 = 1<<5,
-  LIBRAW_CAPS_ZLIB = 1<<6,
-  LIBRAW_CAPS_JPEG = 1<<7,
-  LIBRAW_CAPS_RAWSPEED3 = 1<<8,
-  LIBRAW_CAPS_RAWSPEED_BITS = 1<<9,
+  LIBRAW_CAPS_DNGSDK = 1 << 1,
+  LIBRAW_CAPS_GPRSDK = 1 << 2,
+  LIBRAW_CAPS_UNICODEPATHS = 1 << 3,
+  LIBRAW_CAPS_X3FTOOLS = 1 << 4,
+  LIBRAW_CAPS_RPI6BY9 = 1 << 5,
+  LIBRAW_CAPS_ZLIB = 1 << 6,
+  LIBRAW_CAPS_JPEG = 1 << 7,
+  LIBRAW_CAPS_RAWSPEED3 = 1 << 8,
+  LIBRAW_CAPS_RAWSPEED_BITS = 1 << 9,
 };
 
-enum LibRaw_colorspace {
+enum LibRaw_colorspace
+{
   LIBRAW_COLORSPACE_NotFound = 0,
   LIBRAW_COLORSPACE_sRGB,
   LIBRAW_COLORSPACE_AdobeRGB,
   LIBRAW_COLORSPACE_WideGamutRGB,
   LIBRAW_COLORSPACE_ProPhotoRGB,
   LIBRAW_COLORSPACE_ICC,
-  LIBRAW_COLORSPACE_Uncalibrated, // Tag 0x0001 InteropIndex containing "R03" + LIBRAW_COLORSPACE_Uncalibrated = Adobe RGB
+  LIBRAW_COLORSPACE_Uncalibrated,
+  // Tag 0x0001 InteropIndex containing "R03" + LIBRAW_COLORSPACE_Uncalibrated = Adobe RGB
   LIBRAW_COLORSPACE_CameraLinearUniWB,
   LIBRAW_COLORSPACE_CameraLinear,
   LIBRAW_COLORSPACE_CameraGammaUniWB,
@@ -377,31 +381,46 @@ enum LibRaw_camera_mounts
 {
   LIBRAW_MOUNT_Unknown = 0,
   LIBRAW_MOUNT_Alpa,
-  LIBRAW_MOUNT_C,              /* C-mount */
+  LIBRAW_MOUNT_C,
+  /* C-mount */
   LIBRAW_MOUNT_Canon_EF_M,
   LIBRAW_MOUNT_Canon_EF_S,
   LIBRAW_MOUNT_Canon_EF,
   LIBRAW_MOUNT_Canon_RF,
   LIBRAW_MOUNT_Contax_N,
   LIBRAW_MOUNT_Contax645,
-  LIBRAW_MOUNT_FT,             /* original 4/3 */
-  LIBRAW_MOUNT_mFT,            /* micro 4/3 */
-  LIBRAW_MOUNT_Fuji_GF,        /* Fujifilm GFX cameras, G mount */
-  LIBRAW_MOUNT_Fuji_GX,        /* Fujifilm GX680 */
+  LIBRAW_MOUNT_FT,
+  /* original 4/3 */
+  LIBRAW_MOUNT_mFT,
+  /* micro 4/3 */
+  LIBRAW_MOUNT_Fuji_GF,
+  /* Fujifilm GFX cameras, G mount */
+  LIBRAW_MOUNT_Fuji_GX,
+  /* Fujifilm GX680 */
   LIBRAW_MOUNT_Fuji_X,
-  LIBRAW_MOUNT_Hasselblad_H,   /* Hasselblad Hn cameras, HC & HCD lenses */
+  LIBRAW_MOUNT_Hasselblad_H,
+  /* Hasselblad Hn cameras, HC & HCD lenses */
   LIBRAW_MOUNT_Hasselblad_V,
-  LIBRAW_MOUNT_Hasselblad_XCD, /* Hasselblad Xn cameras, XCD lenses */
-  LIBRAW_MOUNT_Leica_M,        /* Leica rangefinder bayonet */
-  LIBRAW_MOUNT_Leica_R,        /* Leica SLRs, 'R' for reflex */
-  LIBRAW_MOUNT_Leica_S,        /* LIBRAW_FORMAT_LeicaS 'MF' */
-  LIBRAW_MOUNT_Leica_SL,       /* lens, mounts on 'L' throat, FF */
-  LIBRAW_MOUNT_Leica_TL,       /* lens, mounts on 'L' throat, APS-C */
-  LIBRAW_MOUNT_LPS_L,          /* Leica/Panasonic/Sigma camera mount, takes L, SL and TL lenses */
-  LIBRAW_MOUNT_Mamiya67,       /* Mamiya RB67, RZ67 */
+  LIBRAW_MOUNT_Hasselblad_XCD,
+  /* Hasselblad Xn cameras, XCD lenses */
+  LIBRAW_MOUNT_Leica_M,
+  /* Leica rangefinder bayonet */
+  LIBRAW_MOUNT_Leica_R,
+  /* Leica SLRs, 'R' for reflex */
+  LIBRAW_MOUNT_Leica_S,
+  /* LIBRAW_FORMAT_LeicaS 'MF' */
+  LIBRAW_MOUNT_Leica_SL,
+  /* lens, mounts on 'L' throat, FF */
+  LIBRAW_MOUNT_Leica_TL,
+  /* lens, mounts on 'L' throat, APS-C */
+  LIBRAW_MOUNT_LPS_L,
+  /* Leica/Panasonic/Sigma camera mount, takes L, SL and TL lenses */
+  LIBRAW_MOUNT_Mamiya67,
+  /* Mamiya RB67, RZ67 */
   LIBRAW_MOUNT_Mamiya645,
   LIBRAW_MOUNT_Minolta_A,
-  LIBRAW_MOUNT_Nikon_CX,       /* used in 'Nikon 1' series */
+  LIBRAW_MOUNT_Nikon_CX,
+  /* used in 'Nikon 1' series */
   LIBRAW_MOUNT_Nikon_F,
   LIBRAW_MOUNT_Nikon_Z,
   LIBRAW_MOUNT_PhaseOne_iXM_MV,
@@ -411,7 +430,8 @@ enum LibRaw_camera_mounts
   LIBRAW_MOUNT_Pentax_K,
   LIBRAW_MOUNT_Pentax_Q,
   LIBRAW_MOUNT_RicohModule,
-  LIBRAW_MOUNT_Rollei_bayonet, /* Rollei Hy-6: Leaf AFi, Sinar Hy6- models */
+  LIBRAW_MOUNT_Rollei_bayonet,
+  /* Rollei Hy-6: Leaf AFi, Sinar Hy6- models */
   LIBRAW_MOUNT_Samsung_NX_M,
   LIBRAW_MOUNT_Samsung_NX,
   LIBRAW_MOUNT_Sigma_X3F,
@@ -419,7 +439,8 @@ enum LibRaw_camera_mounts
   LIBRAW_MOUNT_LF,
   LIBRAW_MOUNT_DigitalBack,
   LIBRAW_MOUNT_FixedLens,
-  LIBRAW_MOUNT_IL_UM,          /* Interchangeable lens, mount unknown */
+  LIBRAW_MOUNT_IL_UM,
+  /* Interchangeable lens, mount unknown */
   LIBRAW_MOUNT_TheLastOne
 };
 
@@ -431,22 +452,32 @@ enum LibRaw_camera_formats
   LIBRAW_FORMAT_MF,
   LIBRAW_FORMAT_APSH,
   LIBRAW_FORMAT_1INCH,
-  LIBRAW_FORMAT_1div2p3INCH,  /* 1/2.3" */
-  LIBRAW_FORMAT_1div1p7INCH,  /* 1/1.7" */
-  LIBRAW_FORMAT_FT,           /* sensor size in FT & mFT cameras */
-  LIBRAW_FORMAT_CROP645,      /* 44x33mm */
-  LIBRAW_FORMAT_LeicaS,       /* 'MF' Leicas */
+  LIBRAW_FORMAT_1div2p3INCH,
+  /* 1/2.3" */
+  LIBRAW_FORMAT_1div1p7INCH,
+  /* 1/1.7" */
+  LIBRAW_FORMAT_FT,
+  /* sensor size in FT & mFT cameras */
+  LIBRAW_FORMAT_CROP645,
+  /* 44x33mm */
+  LIBRAW_FORMAT_LeicaS,
+  /* 'MF' Leicas */
   LIBRAW_FORMAT_645,
   LIBRAW_FORMAT_66,
   LIBRAW_FORMAT_69,
   LIBRAW_FORMAT_LF,
   LIBRAW_FORMAT_Leica_DMR,
   LIBRAW_FORMAT_67,
-  LIBRAW_FORMAT_SigmaAPSC,    /* DP1, DP2, SD15, SD14, SD10, SD9 */
-  LIBRAW_FORMAT_SigmaMerrill, /* SD1,  'SD1 Merrill',  'DP1 Merrill',  'DP2 Merrill' */
-  LIBRAW_FORMAT_SigmaAPSH,    /* 'sd Quattro H' */
-  LIBRAW_FORMAT_3648,         /* DALSA FTF4052C (Mamiya ZD) */
-  LIBRAW_FORMAT_68,           /* Fujifilm GX680 */
+  LIBRAW_FORMAT_SigmaAPSC,
+  /* DP1, DP2, SD15, SD14, SD10, SD9 */
+  LIBRAW_FORMAT_SigmaMerrill,
+  /* SD1,  'SD1 Merrill',  'DP1 Merrill',  'DP2 Merrill' */
+  LIBRAW_FORMAT_SigmaAPSH,
+  /* 'sd Quattro H' */
+  LIBRAW_FORMAT_3648,
+  /* DALSA FTF4052C (Mamiya ZD) */
+  LIBRAW_FORMAT_68,
+  /* Fujifilm GX680 */
   LIBRAW_FORMAT_TheLastOne
 };
 
@@ -454,12 +485,14 @@ enum LibRawImageAspects
 {
   LIBRAW_IMAGE_ASPECT_UNKNOWN = 0,
   LIBRAW_IMAGE_ASPECT_OTHER = 1,
-  LIBRAW_IMAGE_ASPECT_MINIMAL_REAL_ASPECT_VALUE = 99, /* 1:10*/
-  LIBRAW_IMAGE_ASPECT_MAXIMAL_REAL_ASPECT_VALUE = 10000, /* 10: 1*/
+  LIBRAW_IMAGE_ASPECT_MINIMAL_REAL_ASPECT_VALUE = 99,
+  /* 1:10*/
+  LIBRAW_IMAGE_ASPECT_MAXIMAL_REAL_ASPECT_VALUE = 10000,
+  /* 10: 1*/
   // Value:  width / height * 1000
-  LIBRAW_IMAGE_ASPECT_3to2 =  (1000 * 3)/2,
-  LIBRAW_IMAGE_ASPECT_1to1 =  1000,
-  LIBRAW_IMAGE_ASPECT_4to3 =  (1000 * 4)/ 3,
+  LIBRAW_IMAGE_ASPECT_3to2 = (1000 * 3) / 2,
+  LIBRAW_IMAGE_ASPECT_1to1 = 1000,
+  LIBRAW_IMAGE_ASPECT_4to3 = (1000 * 4) / 3,
   LIBRAW_IMAGE_ASPECT_16to9 = (1000 * 16) / 9,
   //LIBRAW_IMAGE_ASPECT_6to6, // what is the difference with 1:1 ?
   LIBRAW_IMAGE_ASPECT_5to4 = (1000 * 5) / 4,
@@ -477,7 +510,8 @@ enum LibRaw_lens_focal_types
   LIBRAW_FT_ZOOM_LENS_VARIABLE_APERTURE = 4
 };
 
-enum LibRaw_Canon_RecordModes {
+enum LibRaw_Canon_RecordModes
+{
   LIBRAW_Canon_RecordMode_UNDEFINED = 0,
   LIBRAW_Canon_RecordMode_JPEG,
   LIBRAW_Canon_RecordMode_CRW_THM,
@@ -500,27 +534,28 @@ enum LibRaw_Canon_RecordModes {
 enum LibRaw_minolta_storagemethods
 {
   LIBRAW_MINOLTA_UNPACKED = 0x52,
-  LIBRAW_MINOLTA_PACKED   = 0x59
+  LIBRAW_MINOLTA_PACKED = 0x59
 };
 
 enum LibRaw_minolta_bayerpatterns
 {
-  LIBRAW_MINOLTA_RGGB   = 0x01,
+  LIBRAW_MINOLTA_RGGB = 0x01,
   LIBRAW_MINOLTA_G2BRG1 = 0x04
 };
 
 enum LibRaw_sony_cameratypes
 {
-  LIBRAW_SONY_DSC  = 1,
+  LIBRAW_SONY_DSC = 1,
   LIBRAW_SONY_DSLR = 2,
-  LIBRAW_SONY_NEX  = 3,
-  LIBRAW_SONY_SLT  = 4,
+  LIBRAW_SONY_NEX = 3,
+  LIBRAW_SONY_SLT = 4,
   LIBRAW_SONY_ILCE = 5,
   LIBRAW_SONY_ILCA = 6,
   LIBRAW_SONY_CameraType_UNKNOWN = 0xffff
 };
 
-enum LibRaw_Sony_0x2010_Type {
+enum LibRaw_Sony_0x2010_Type
+{
   LIBRAW_SONY_Tag2010None = 0,
   LIBRAW_SONY_Tag2010a,
   LIBRAW_SONY_Tag2010b,
@@ -532,7 +567,9 @@ enum LibRaw_Sony_0x2010_Type {
   LIBRAW_SONY_Tag2010h,
   LIBRAW_SONY_Tag2010i
 };
-enum LibRaw_Sony_0x9050_Type {
+
+enum LibRaw_Sony_0x9050_Type
+{
   LIBRAW_SONY_Tag9050None = 0,
   LIBRAW_SONY_Tag9050a,
   LIBRAW_SONY_Tag9050b,
@@ -541,16 +578,16 @@ enum LibRaw_Sony_0x9050_Type {
 
 enum LIBRAW_SONY_FOCUSMODEmodes
 {
-  LIBRAW_SONY_FOCUSMODE_MF     = 0,
-  LIBRAW_SONY_FOCUSMODE_AF_S   = 2,
-  LIBRAW_SONY_FOCUSMODE_AF_C   = 3,
-  LIBRAW_SONY_FOCUSMODE_AF_A   = 4,
-  LIBRAW_SONY_FOCUSMODE_DMF    = 6,
-  LIBRAW_SONY_FOCUSMODE_AF_D   = 7,
-  LIBRAW_SONY_FOCUSMODE_AF           = 101,
+  LIBRAW_SONY_FOCUSMODE_MF = 0,
+  LIBRAW_SONY_FOCUSMODE_AF_S = 2,
+  LIBRAW_SONY_FOCUSMODE_AF_C = 3,
+  LIBRAW_SONY_FOCUSMODE_AF_A = 4,
+  LIBRAW_SONY_FOCUSMODE_DMF = 6,
+  LIBRAW_SONY_FOCUSMODE_AF_D = 7,
+  LIBRAW_SONY_FOCUSMODE_AF = 101,
   LIBRAW_SONY_FOCUSMODE_PERMANENT_AF = 104,
-  LIBRAW_SONY_FOCUSMODE_SEMI_MF      = 105,
-  LIBRAW_SONY_FOCUSMODE_UNKNOWN      = -1
+  LIBRAW_SONY_FOCUSMODE_SEMI_MF = 105,
+  LIBRAW_SONY_FOCUSMODE_UNKNOWN = -1
 };
 
 enum LibRaw_KodakSensors
@@ -571,7 +608,8 @@ enum LibRaw_KodakSensors
   LIBRAW_Kodak_M11 = 13
 };
 
-enum LibRaw_HasselbladFormatCodes {
+enum LibRaw_HasselbladFormatCodes
+{
   LIBRAW_HF_Unknown = 0,
   LIBRAW_HF_3FR,
   LIBRAW_HF_FFF,
@@ -583,31 +621,31 @@ enum LibRaw_HasselbladFormatCodes {
 
 enum LibRaw_rawspecial_t
 {
-    LIBRAW_RAWSPECIAL_SONYARW2_NONE = 0,
-    LIBRAW_RAWSPECIAL_SONYARW2_BASEONLY = 1,
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTAONLY = 1 << 1,
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTAZEROBASE = 1 << 2,
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTATOVALUE = 1 << 3,
-    LIBRAW_RAWSPECIAL_SONYARW2_ALLFLAGS =
-    LIBRAW_RAWSPECIAL_SONYARW2_BASEONLY +
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTAONLY +
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTAZEROBASE +
-    LIBRAW_RAWSPECIAL_SONYARW2_DELTATOVALUE,
-    LIBRAW_RAWSPECIAL_NODP2Q_INTERPOLATERG = 1<<4,
-    LIBRAW_RAWSPECIAL_NODP2Q_INTERPOLATEAF = 1 << 5,
-    LIBRAW_RAWSPECIAL_SRAW_NO_RGB = 1 << 6,
-    LIBRAW_RAWSPECIAL_SRAW_NO_INTERPOLATE = 1 << 7
+  LIBRAW_RAWSPECIAL_SONYARW2_NONE = 0,
+  LIBRAW_RAWSPECIAL_SONYARW2_BASEONLY = 1,
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTAONLY = 1 << 1,
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTAZEROBASE = 1 << 2,
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTATOVALUE = 1 << 3,
+  LIBRAW_RAWSPECIAL_SONYARW2_ALLFLAGS =
+  LIBRAW_RAWSPECIAL_SONYARW2_BASEONLY +
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTAONLY +
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTAZEROBASE +
+  LIBRAW_RAWSPECIAL_SONYARW2_DELTATOVALUE,
+  LIBRAW_RAWSPECIAL_NODP2Q_INTERPOLATERG = 1 << 4,
+  LIBRAW_RAWSPECIAL_NODP2Q_INTERPOLATEAF = 1 << 5,
+  LIBRAW_RAWSPECIAL_SRAW_NO_RGB = 1 << 6,
+  LIBRAW_RAWSPECIAL_SRAW_NO_INTERPOLATE = 1 << 7
 };
 
 enum LibRaw_rawspeed_bits_t
 {
-    LIBRAW_RAWSPEEDV1_USE = 1,
-    LIBRAW_RAWSPEEDV1_FAILONUNKNOWN = 1 << 1,
-    LIBRAW_RAWSPEEDV1_IGNOREERRORS = 1 << 2,
-    /*  bits 3-7 are reserved*/
-    LIBRAW_RAWSPEEDV3_USE = 1 << 8,
-    LIBRAW_RAWSPEEDV3_FAILONUNKNOWN = 1 << 9,
-    LIBRAW_RAWSPEEDV3_IGNOREERRORS = 1 << 10,
+  LIBRAW_RAWSPEEDV1_USE = 1,
+  LIBRAW_RAWSPEEDV1_FAILONUNKNOWN = 1 << 1,
+  LIBRAW_RAWSPEEDV1_IGNOREERRORS = 1 << 2,
+  /*  bits 3-7 are reserved*/
+  LIBRAW_RAWSPEEDV3_USE = 1 << 8,
+  LIBRAW_RAWSPEEDV3_FAILONUNKNOWN = 1 << 9,
+  LIBRAW_RAWSPEEDV3_IGNOREERRORS = 1 << 10,
 };
 
 enum LibRaw_processing_options
@@ -616,7 +654,7 @@ enum LibRaw_processing_options
   LIBRAW_RAWOPTIONS_CONVERTFLOAT_TO_INT = 1 << 1,
   LIBRAW_RAWOPTIONS_ARQ_SKIP_CHANNEL_SWAP = 1 << 2,
   LIBRAW_RAWOPTIONS_NO_ROTATE_FOR_KODAK_THUMBNAILS = 1 << 3,
-//  LIBRAW_RAWOPTIONS_USE_DNG_DEFAULT_CROP = 1 << 4,
+  //  LIBRAW_RAWOPTIONS_USE_DNG_DEFAULT_CROP = 1 << 4,
   LIBRAW_RAWOPTIONS_USE_PPM16_THUMBS = 1 << 5,
   LIBRAW_RAWOPTIONS_DONT_CHECK_DNG_ILLUMINANT = 1 << 6,
   LIBRAW_RAWOPTIONS_DNGSDK_ZEROCOPY = 1 << 7,
@@ -650,7 +688,7 @@ enum LibRaw_decoder_flags
   LIBRAW_DECODER_3CHANNEL = 1 << 11,
   LIBRAW_DECODER_SINAR4SHOT = 1 << 11,
   LIBRAW_DECODER_FLATDATA = 1 << 12,
-  LIBRAW_DECODER_FLAT_BG2_SWAPPED = 1<<13,
+  LIBRAW_DECODER_FLAT_BG2_SWAPPED = 1 << 13,
   LIBRAW_DECODER_UNSUPPORTED_FORMAT = 1 << 14,
   LIBRAW_DECODER_NOTSET = 1 << 15,
   LIBRAW_DECODER_TRYRAWSPEED3 = 1 << 16
@@ -750,6 +788,7 @@ enum LibRaw_progress
   LIBRAW_PROGRESS_TRESERVED1 = 1 << 29,
   LIBRAW_PROGRESS_TRESERVED2 = 1 << 30
 };
+
 #define LIBRAW_PROGRESS_THUMB_MASK 0x0fffffff
 
 enum LibRaw_errors
@@ -777,16 +816,16 @@ enum LibRaw_errors
 
 enum LibRaw_internal_thumbnail_formats
 {
-    LIBRAW_INTERNAL_THUMBNAIL_UNKNOWN = 0,
-    LIBRAW_INTERNAL_THUMBNAIL_KODAK_THUMB = 1,
-    LIBRAW_INTERNAL_THUMBNAIL_KODAK_YCBCR = 2,
-    LIBRAW_INTERNAL_THUMBNAIL_KODAK_RGB = 3,
-    LIBRAW_INTERNAL_THUMBNAIL_JPEG = 4,
-    LIBRAW_INTERNAL_THUMBNAIL_LAYER,
-    LIBRAW_INTERNAL_THUMBNAIL_ROLLEI,
-    LIBRAW_INTERNAL_THUMBNAIL_PPM,
-    LIBRAW_INTERNAL_THUMBNAIL_PPM16,
-    LIBRAW_INTERNAL_THUMBNAIL_X3F,
+  LIBRAW_INTERNAL_THUMBNAIL_UNKNOWN = 0,
+  LIBRAW_INTERNAL_THUMBNAIL_KODAK_THUMB = 1,
+  LIBRAW_INTERNAL_THUMBNAIL_KODAK_YCBCR = 2,
+  LIBRAW_INTERNAL_THUMBNAIL_KODAK_RGB = 3,
+  LIBRAW_INTERNAL_THUMBNAIL_JPEG = 4,
+  LIBRAW_INTERNAL_THUMBNAIL_LAYER,
+  LIBRAW_INTERNAL_THUMBNAIL_ROLLEI,
+  LIBRAW_INTERNAL_THUMBNAIL_PPM,
+  LIBRAW_INTERNAL_THUMBNAIL_PPM16,
+  LIBRAW_INTERNAL_THUMBNAIL_X3F,
 };
 
 

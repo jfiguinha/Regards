@@ -38,7 +38,7 @@ namespace rawspeed {
 // section "Algorithm for computing natural cubic splines"
 
 template <typename T = uint16_t,
-          typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+          typename = std::enable_if_t<std::is_arithmetic_v<T>>>
 class Spline final {
 public:
   using value_type = T;
@@ -102,24 +102,24 @@ private:
     segments.pop_back();
 
     assert(static_cast<typename decltype(segments)::size_type>(num_segments) ==
-           segments.size());
+        segments.size());
   }
 
 public:
   explicit Spline(const std::vector<iPoint2D>& control_points) {
     assert(control_points.size() >= 2 &&
-           "Need at least two points to interpolate between");
+        "Need at least two points to interpolate between");
 
     // Expect the X coords of the curve to start/end at the extreme values
     assert(control_points.front().x == 0);
     assert(control_points.back().x == 65535);
 
     assert(std::adjacent_find(
-               control_points.cbegin(), control_points.cend(),
-               [](const iPoint2D& lhs, const iPoint2D& rhs) -> bool {
-                 return std::greater_equal<>()(lhs.x, rhs.x);
-               }) == control_points.cend() &&
-           "The X coordinates must all be strictly increasing");
+          control_points.cbegin(), control_points.cend(),
+          [](const iPoint2D& lhs, const iPoint2D& rhs) -> bool {
+          return std::greater_equal<>()(lhs.x, rhs.x);
+          }) == control_points.cend() &&
+        "The X coordinates must all be strictly increasing");
 
 #ifndef NDEBUG
     if (!std::is_floating_point<value_type>::value) {
@@ -160,11 +160,13 @@ public:
 
         double interpolated = s.a + s.b * diff + s.c * diff_2 + s.d * diff_3;
 
-        if (!std::is_floating_point<value_type>::value) {
+        if (!std::is_floating_point_v<value_type>) {
           interpolated = std::max(
-              interpolated, double(std::numeric_limits<value_type>::min()));
+              interpolated,
+              static_cast<double>(std::numeric_limits<value_type>::min()));
           interpolated = std::min(
-              interpolated, double(std::numeric_limits<value_type>::max()));
+              interpolated,
+              static_cast<double>(std::numeric_limits<value_type>::max()));
         }
 
         curve[x] = interpolated;

@@ -119,7 +119,7 @@ CameraMetaDataLR *make_camera_metadata()
 
 #endif
 
-int LibRaw::set_rawspeed_camerafile(char * filename)
+int LibRaw::set_rawspeed_camerafile(char *filename)
 {
 #ifdef USE_RAWSPEED
   try
@@ -139,7 +139,7 @@ int LibRaw::set_rawspeed_camerafile(char * filename)
     return -1;
   }
 #else
-    (void)filename;
+  (void)filename;
 #endif
   return 0;
 }
@@ -152,7 +152,9 @@ void LibRaw::fix_after_rawspeed(int /*bl*/)
     C.maximum = 0x3ff0;
 }
 #else
-void LibRaw::fix_after_rawspeed(int) {}
+void LibRaw::fix_after_rawspeed(int)
+{
+}
 #endif
 
 int LibRaw::try_rawspeed()

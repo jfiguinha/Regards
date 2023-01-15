@@ -5,15 +5,15 @@
 #include "comptr.h"
 
 
-typedef HRESULT(CALLBACK *PFNPROGRESSCALLBACK)(
-	LONG   lStatus,
-	LONG   lPercentComplete,
-	PVOID  pParam
-	);
+using PFNPROGRESSCALLBACK = HRESULT(CALLBACK *)(
+	LONG lStatus,
+	LONG lPercentComplete,
+	PVOID pParam
+);
 
 //DataClass
 
-class DataClasses :public IWiaEventCallback
+class DataClasses : public IWiaEventCallback
 {
 public:
 	DataClasses();
@@ -21,23 +21,22 @@ public:
 	LONG getNumDevices();
 
 
-	STDMETHOD(QueryInterface)(REFIID iid, LPVOID *ppvObj);
-	STDMETHOD_(ULONG, AddRef)();
-	STDMETHOD_(ULONG, Release)();
+	STDMETHOD(QueryInterface)(REFIID iid, LPVOID* ppvObj) override;
+	STDMETHOD_(ULONG, AddRef)() override;
+	STDMETHOD_(ULONG, Release)() override;
 
 	// IWiaEventCallback interface
 
 	STDMETHOD(ImageEventCallback)(
 		LPCGUID pEventGuid,
-		BSTR    bstrEventDescription,
-		BSTR    bstrDeviceID,
-		BSTR    bstrDeviceDescription,
-		DWORD   dwDeviceType,
-		BSTR    bstrFullItemName,
-		ULONG  *pulEventType,
-		ULONG   ulReserved
-		);
-
+		BSTR bstrEventDescription,
+		BSTR bstrDeviceID,
+		BSTR bstrDeviceDescription,
+		DWORD dwDeviceType,
+		BSTR bstrFullItemName,
+		ULONG* pulEventType,
+		ULONG ulReserved
+	) override;
 
 
 	HRESULT Register();
@@ -45,13 +44,13 @@ public:
 	ULONG GetNumDevices() const;
 
 private:
-	LONG               m_cRef;
-	ULONG              m_nNumDevices;
-	ComPtr<IUnknown>  m_pConnectEventObject;
-	ComPtr<IUnknown>  m_pDisconnectEventObject;
+	LONG m_cRef;
+	ULONG m_nNumDevices;
+	ComPtr<IUnknown> m_pConnectEventObject;
+	ComPtr<IUnknown> m_pDisconnectEventObject;
 	HRESULT WiaGetNumDevices(
-		IWiaDevMgr *pSuppliedWiaDevMgr,
-		ULONG      *pulNumDevices
+		IWiaDevMgr* pSuppliedWiaDevMgr,
+		ULONG* pulNumDevices
 	);
 	ComPtr<IWiaDevMgr> pWiaDevMgr;
 };
@@ -64,30 +63,30 @@ class CDataCallback : public IWiaDataCallback
 {
 public:
 	CDataCallback(
-		PFNPROGRESSCALLBACK  pfnProgressCallback,
-		PVOID                pProgressCallbackParam,
-		LONG                *plCount,
-		IStream             ***pppStream
+		PFNPROGRESSCALLBACK pfnProgressCallback,
+		PVOID pProgressCallbackParam,
+		LONG* plCount,
+		IStream*** pppStream
 	);
 
 	// IUnknown interface
 
-	STDMETHOD(QueryInterface)(REFIID iid, LPVOID *ppvObj);
-	STDMETHOD_(ULONG, AddRef)();
-	STDMETHOD_(ULONG, Release)();
+	STDMETHOD(QueryInterface)(REFIID iid, LPVOID* ppvObj) override;
+	STDMETHOD_(ULONG, AddRef)() override;
+	STDMETHOD_(ULONG, Release)() override;
 
 	// IWiaDataCallback interface
 
-	STDMETHOD(BandedDataCallback) (
-		LONG  lReason,
-		LONG  lStatus,
-		LONG  lPercentComplete,
-		LONG  lOffset,
-		LONG  lLength,
-		LONG  lReserved,
-		LONG  lResLength,
+	STDMETHOD(BandedDataCallback)(
+		LONG lReason,
+		LONG lStatus,
+		LONG lPercentComplete,
+		LONG lOffset,
+		LONG lLength,
+		LONG lReserved,
+		LONG lResLength,
 		PBYTE pbBuffer
-		);
+	) override;
 
 	// CDataCallback methods
 
@@ -96,20 +95,17 @@ private:
 	HRESULT CopyToBuffer(ULONG nOffset, LPCVOID pBuffer, ULONG nSize);
 	HRESULT StoreBuffer();
 
-
-
-
 private:
 	LONG m_cRef;
 
-	BOOL              m_bBMP;
-	LONG              m_nHeaderSize;
-	LONG              m_nDataSize;
-	ComPtr<IStream>  m_pStream;
+	BOOL m_bBMP;
+	LONG m_nHeaderSize;
+	LONG m_nDataSize;
+	ComPtr<IStream> m_pStream;
 
-	PFNPROGRESSCALLBACK  m_pfnProgressCallback;
-	PVOID                m_pProgressCallbackParam;
+	PFNPROGRESSCALLBACK m_pfnProgressCallback;
+	PVOID m_pProgressCallbackParam;
 
-	LONG    *m_plCount;
-	IStream ***m_pppStream;
+	LONG* m_plCount;
+	IStream*** m_pppStream;
 };

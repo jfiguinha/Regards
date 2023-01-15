@@ -22,15 +22,17 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	TiffParserHeaderless::TiffParserHeaderless(FileMap* input, Endianness _end) :
+		TiffParser(input)
+	{
+		tiff_endian = _end;
+	}
 
-TiffParserHeaderless::TiffParserHeaderless(FileMap* input, Endianness _end) :
-    TiffParser(input) {
-  tiff_endian = _end;
-}
-
-TiffParserHeaderless::~TiffParserHeaderless(void) {
-}
+	TiffParserHeaderless::~TiffParserHeaderless(void)
+	{
+	}
 
 #ifdef CHECKSIZE
 #undef CHECKSIZE
@@ -42,30 +44,33 @@ TiffParserHeaderless::~TiffParserHeaderless(void) {
 #define CHECKSIZE(A) if (A > mInput->getSize()) throw TiffParserException("Error reading Headerless TIFF structure. File Corrupt")
 #define CHECKPTR(A) if ((int)A >= ((int)(mInput->data) + size))) throw TiffParserException("Error reading Headerless TIFF structure. File Corrupt")
 
-void TiffParserHeaderless::parseData() {
-  parseData(0);
-}
+	void TiffParserHeaderless::parseData()
+	{
+		parseData(0);
+	}
 
-void TiffParserHeaderless::parseData(uint32 firstIfdOffset) {
-  if (mInput->getSize() < 12)
-    throw TiffParserException("Not a TIFF file (size too small)");
+	void TiffParserHeaderless::parseData(uint32 firstIfdOffset)
+	{
+		if (mInput->getSize() < 12)
+			throw TiffParserException("Not a TIFF file (size too small)");
 
-  if (tiff_endian == host_endian)
-    mRootIFD = new TiffIFD();
-  else
-    mRootIFD = new TiffIFDBE();
+		if (tiff_endian == host_endian)
+			mRootIFD = new TiffIFD();
+		else
+			mRootIFD = new TiffIFDBE();
 
-  uint32 nextIFD = firstIfdOffset;
-  do {
-    CHECKSIZE(nextIFD);
+		uint32 nextIFD = firstIfdOffset;
+		do
+		{
+			CHECKSIZE(nextIFD);
 
-    if (tiff_endian == host_endian)
-      mRootIFD->mSubIFD.push_back(new TiffIFD(mInput, nextIFD));
-    else
-      mRootIFD->mSubIFD.push_back(new TiffIFDBE(mInput, nextIFD));
+			if (tiff_endian == host_endian)
+				mRootIFD->mSubIFD.push_back(new TiffIFD(mInput, nextIFD));
+			else
+				mRootIFD->mSubIFD.push_back(new TiffIFDBE(mInput, nextIFD));
 
-    nextIFD = mRootIFD->mSubIFD.back()->getNextIFD();
-  } while (nextIFD);
-}
-
+			nextIFD = mRootIFD->mSubIFD.back()->getNextIFD();
+		}
+		while (nextIFD);
+	}
 } // namespace RawSpeed

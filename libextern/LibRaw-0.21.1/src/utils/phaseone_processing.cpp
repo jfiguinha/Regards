@@ -21,12 +21,13 @@
 void LibRaw::phase_one_allocate_tempbuffer()
 {
   // Allocate temp raw_image buffer
-  imgdata.rawdata.raw_image = (ushort *)malloc(S.raw_pitch * S.raw_height);
+  imgdata.rawdata.raw_image = static_cast<ushort *>(malloc(S.raw_pitch * S.raw_height));
 }
+
 void LibRaw::phase_one_free_tempbuffer()
 {
   free(imgdata.rawdata.raw_image);
-  imgdata.rawdata.raw_image = (ushort *)imgdata.rawdata.raw_alloc;
+  imgdata.rawdata.raw_image = static_cast<ushort *>(imgdata.rawdata.raw_alloc);
 }
 
 int LibRaw::phase_one_subtract_black(ushort *src, ushort *dest)
@@ -47,7 +48,7 @@ int LibRaw::phase_one_subtract_black(ushort *src, ushort *dest)
           for (int col = 0; col < S.raw_width; col++)
           {
             int idx = row * S.raw_width + col;
-            int val = int(src[idx]) - bl;
+            int val = static_cast<int>(src[idx]) - bl;
             dest[idx] = val > 0 ? val : 0;
           }
         }
@@ -62,13 +63,13 @@ int LibRaw::phase_one_subtract_black(ushort *src, ushort *dest)
           {
             int idx = row * S.raw_width + col;
             int val =
-                int(src[idx]) - bl +
+                static_cast<int>(src[idx]) - bl +
                 imgdata.rawdata
-                    .ph1_cblack[row][col >= imgdata.rawdata.color.phase_one_data
-                                                .split_col] +
+                       .ph1_cblack[row][col >= imgdata.rawdata.color.phase_one_data
+                                                      .split_col] +
                 imgdata.rawdata
-                    .ph1_rblack[col][row >= imgdata.rawdata.color.phase_one_data
-                                                .split_row];
+                       .ph1_rblack[col][row >= imgdata.rawdata.color.phase_one_data
+                                                      .split_row];
             dest[idx] = val > 0 ? val : 0;
           }
         }
@@ -94,7 +95,7 @@ int LibRaw::phase_one_subtract_black(ushort *src, ushort *dest)
     }
     return 0;
   }
-  catch (const LibRaw_exceptions& )
+  catch (const LibRaw_exceptions &)
   {
     return LIBRAW_CANCELLED_BY_CALLBACK;
   }

@@ -26,7 +26,8 @@ void LibRaw::packed_tiled_dng_load_raw()
   try
   {
     int ntiles = 1 + (raw_width) / tile_width;
-    if ((unsigned)ntiles * tile_width > raw_width * 2u) throw LIBRAW_EXCEPTION_ALLOC;
+    if (static_cast<unsigned>(ntiles) * tile_width > raw_width * 2u)
+      throw LIBRAW_EXCEPTION_ALLOC;
     pixel.resize(tile_width * ntiles * tiff_samples);
   }
   catch (...)
@@ -35,32 +36,32 @@ void LibRaw::packed_tiled_dng_load_raw()
   }
   try
   {
-      unsigned trow = 0, tcol = 0;
-      INT64 save;
-      while (trow < raw_height)
-      {
-        checkCancel();
-        save = ftell(ifp);
-        if (tile_length < INT_MAX)
-          fseek(ifp, get4(), SEEK_SET);
+    unsigned trow = 0, tcol = 0;
+    INT64 save;
+    while (trow < raw_height)
+    {
+      checkCancel();
+      save = ftell(ifp);
+      if (tile_length < INT_MAX)
+        fseek(ifp, get4(), SEEK_SET);
 
-        for (row = 0; row < tile_length && (row + trow) < raw_height; row++)
+      for (row = 0; row < tile_length && (row + trow) < raw_height; row++)
+      {
+        if (tiff_bps == 16)
+          read_shorts(pixel.data(), tile_width * tiff_samples);
+        else
         {
-          if (tiff_bps == 16)
-            read_shorts(pixel.data(), tile_width * tiff_samples);
-          else
-          {
-            getbits(-1);
-            for (col = 0; col < tile_width * tiff_samples; col++)
-              pixel[col] = getbits(tiff_bps);
-          }
-          for (rp = pixel.data(), col = 0; col < tile_width; col++)
-            adobe_copy_pixel(trow+row, tcol+col, &rp);
+          getbits(-1);
+          for (col = 0; col < tile_width * tiff_samples; col++)
+            pixel[col] = getbits(tiff_bps);
         }
-        fseek(ifp, save + 4, SEEK_SET);
-        if ((tcol += tile_width) >= raw_width)
-          trow += tile_length + (tcol = 0);
+        for (rp = pixel.data(), col = 0; col < tile_width; col++)
+          adobe_copy_pixel(trow + row, tcol + col, &rp);
       }
+      fseek(ifp, save + 4, SEEK_SET);
+      if ((tcol += tile_width) >= raw_width)
+        trow += tile_length + (tcol = 0);
+    }
   }
   catch (...)
   {
@@ -69,7 +70,6 @@ void LibRaw::packed_tiled_dng_load_raw()
   }
   shot_select = ss;
 }
-
 
 
 void LibRaw::sony_ljpeg_load_raw()
@@ -88,11 +88,11 @@ void LibRaw::sony_ljpeg_load_raw()
       break;
     try
     {
-      for (row = jrow = 0; jrow < (unsigned)jh.high; jrow++, row += 2)
+      for (row = jrow = 0; jrow < static_cast<unsigned>(jh.high); jrow++, row += 2)
       {
         checkCancel();
-        ushort(*rowp)[4] = (ushort(*)[4])ljpeg_row(jrow, &jh);
-        for (col = jcol = 0; jcol < (unsigned)jh.wide; jcol++, col += 2)
+        auto rowp = (ushort(*)[4])ljpeg_row(jrow, &jh);
+        for (col = jcol = 0; jcol < static_cast<unsigned>(jh.wide); jcol++, col += 2)
         {
           RAW(trow + row, tcol + col) = rowp[jcol][0];
           RAW(trow + row, tcol + col + 1) = rowp[jcol][1];
@@ -115,7 +115,7 @@ void LibRaw::sony_ljpeg_load_raw()
 
 void LibRaw::nikon_he_load_raw_placeholder()
 {
-    throw LIBRAW_EXCEPTION_UNSUPPORTED_FORMAT;
+  throw LIBRAW_EXCEPTION_UNSUPPORTED_FORMAT;
 }
 
 void LibRaw::nikon_coolscan_load_raw()
@@ -125,13 +125,13 @@ void LibRaw::nikon_coolscan_load_raw()
   if (clrs == 3 && !image)
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
 
-  if(clrs == 1 && !raw_image)
+  if (clrs == 1 && !raw_image)
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
 
   int bypp = tiff_bps <= 8 ? 1 : 2;
   int bufsize = width * clrs * bypp;
-  unsigned char *buf = (unsigned char *)malloc(bufsize);
-  unsigned short *ubuf = (unsigned short *)buf;
+  auto buf = static_cast<unsigned char *>(malloc(bufsize));
+  auto ubuf = (unsigned short *)buf;
 
   if (tiff_bps <= 8)
     gamma_curve(1.0 / imgdata.rawparams.coolscan_nef_gamma, 0., 1, 255);
@@ -140,67 +140,68 @@ void LibRaw::nikon_coolscan_load_raw()
   fseek(ifp, data_offset, SEEK_SET);
   for (int row = 0; row < raw_height; row++)
   {
-      if(tiff_bps <=8)
-        fread(buf, 1, bufsize, ifp);
-      else
-          read_shorts(ubuf,width*clrs);
+    if (tiff_bps <= 8)
+      fread(buf, 1, bufsize, ifp);
+    else
+      read_shorts(ubuf,width * clrs);
 
-    unsigned short(*ip)[4] = (unsigned short(*)[4])image + row * width;
-    unsigned short *rp =  raw_image + row * raw_width;
+    unsigned short (*ip)[4] = image + row * width;
+    unsigned short *rp = raw_image + row * raw_width;
 
     if (is_NikonTransfer == 2)
-    { // it is also (tiff_bps == 8)
-        if (clrs == 3)
+    {
+      // it is also (tiff_bps == 8)
+      if (clrs == 3)
+      {
+        for (int col = 0; col < width; col++)
         {
-          for (int col = 0; col < width; col++)
-          {
-            ip[col][0] = ((float)curve[buf[col * 3]]) / 255.0f;
-            ip[col][1] = ((float)curve[buf[col * 3 + 1]]) / 255.0f;
-            ip[col][2] = ((float)curve[buf[col * 3 + 2]]) / 255.0f;
-            ip[col][3] = 0;
-          }
+          ip[col][0] = static_cast<float>(curve[buf[col * 3]]) / 255.0f;
+          ip[col][1] = static_cast<float>(curve[buf[col * 3 + 1]]) / 255.0f;
+          ip[col][2] = static_cast<float>(curve[buf[col * 3 + 2]]) / 255.0f;
+          ip[col][3] = 0;
         }
-        else
-        {
-          for (int col = 0; col < width; col++)
-            rp[col] = ((float)curve[buf[col]]) / 255.0f;
-        }
+      }
+      else
+      {
+        for (int col = 0; col < width; col++)
+          rp[col] = static_cast<float>(curve[buf[col]]) / 255.0f;
+      }
     }
     else if (tiff_bps <= 8)
     {
-        if (clrs == 3)
+      if (clrs == 3)
+      {
+        for (int col = 0; col < width; col++)
         {
-          for (int col = 0; col < width; col++)
-          {
-            ip[col][0] = curve[buf[col * 3]];
-            ip[col][1] = curve[buf[col * 3 + 1]];
-            ip[col][2] = curve[buf[col * 3 + 2]];
-            ip[col][3] = 0;
-          }
+          ip[col][0] = curve[buf[col * 3]];
+          ip[col][1] = curve[buf[col * 3 + 1]];
+          ip[col][2] = curve[buf[col * 3 + 2]];
+          ip[col][3] = 0;
         }
-        else
-        {
-          for (int col = 0; col < width; col++)
-            rp[col] = curve[buf[col]];
-        }
+      }
+      else
+      {
+        for (int col = 0; col < width; col++)
+          rp[col] = curve[buf[col]];
+      }
     }
     else
     {
-        if (clrs == 3)
+      if (clrs == 3)
+      {
+        for (int col = 0; col < width; col++)
         {
-          for (int col = 0; col < width; col++)
-          {
-            ip[col][0] = curve[ubuf[col * 3]];
-            ip[col][1] = curve[ubuf[col * 3 + 1]];
-            ip[col][2] = curve[ubuf[col * 3 + 2]];
-            ip[col][3] = 0;
-          }
+          ip[col][0] = curve[ubuf[col * 3]];
+          ip[col][1] = curve[ubuf[col * 3 + 1]];
+          ip[col][2] = curve[ubuf[col * 3 + 2]];
+          ip[col][3] = 0;
         }
-        else
-        {
-          for (int col = 0; col < width; col++)
-            rp[col] = curve[ubuf[col]];
-        }
+      }
+      else
+      {
+        for (int col = 0; col < width; col++)
+          rp[col] = curve[ubuf[col]];
+      }
     }
   }
   free(buf);
@@ -217,9 +218,11 @@ void LibRaw::broadcom_load_raw()
   {
     if (fread(data.data() + raw_stride, 1, raw_stride, ifp) < raw_stride)
       derror();
-    FORC(raw_stride) data[c] = data[raw_stride + (c ^ rev)];
+    FORC(raw_stride)
+      data[c] = data[raw_stride + (c ^ rev)];
     for (dp = data.data(), col = 0; col < raw_width; dp += 5, col += 4)
-      FORC4 RAW(row, col + c) = (dp[c] << 2) | (dp[4] >> (c << 1) & 3);
+      FORC4
+        RAW(row, col + c) = (dp[c] << 2) | (dp[4] >> (c << 1) & 3);
   }
 }
 
@@ -229,13 +232,14 @@ void LibRaw::android_tight_load_raw()
   int bwide, row, col, c;
 
   bwide = -(-5 * raw_width >> 5) << 3;
-  data = (uchar *)malloc(bwide);
+  data = static_cast<uchar *>(malloc(bwide));
   for (row = 0; row < raw_height; row++)
   {
     if (fread(data, 1, bwide, ifp) < bwide)
       derror();
     for (dp = data, col = 0; col < raw_width; dp += 5, col += 4)
-      FORC4 RAW(row, col + c) = (dp[c] << 2) | (dp[4] >> (c << 1) & 3);
+      FORC4
+        RAW(row, col + c) = (dp[c] << 2) | (dp[4] >> (c << 1) & 3);
   }
   free(data);
 }
@@ -247,15 +251,17 @@ void LibRaw::android_loose_load_raw()
   UINT64 bitbuf = 0;
 
   bwide = (raw_width + 5) / 6 << 3;
-  data = (uchar *)malloc(bwide);
+  data = static_cast<uchar *>(malloc(bwide));
   for (row = 0; row < raw_height; row++)
   {
     if (fread(data, 1, bwide, ifp) < bwide)
       derror();
     for (dp = data, col = 0; col < raw_width; dp += 8, col += 6)
     {
-      FORC(8) bitbuf = (bitbuf << 8) | dp[c ^ 7];
-      FORC(6) RAW(row, col + c) = (bitbuf >> c * 10) & 0x3ff;
+      FORC(8)
+        bitbuf = (bitbuf << 8) | dp[c ^ 7];
+      FORC(6)
+        RAW(row, col + c) = (bitbuf >> c * 10) & 0x3ff;
     }
   }
   free(data);
@@ -264,16 +270,15 @@ void LibRaw::android_loose_load_raw()
 void LibRaw::unpacked_load_raw_reversed()
 {
   int row, col, bits = 0;
-  while (1 << ++bits < (int)maximum)
-    ;
+  while (1 << ++bits < static_cast<int>(maximum));
   for (row = raw_height - 1; row >= 0; row--)
   {
     checkCancel();
     read_shorts(&raw_image[row * raw_width], raw_width);
     for (col = 0; col < raw_width; col++)
       if ((RAW(row, col) >>= load_flags) >> bits &&
-          (unsigned)(row - top_margin) < height &&
-          (unsigned)(col - left_margin) < width)
+          static_cast<unsigned>(row - top_margin) < height &&
+          static_cast<unsigned>(col - left_margin) < width)
         derror();
   }
 }

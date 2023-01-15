@@ -41,7 +41,9 @@ using std::string;
 
 namespace rawspeed {
 
-CiffParser::CiffParser(const Buffer& inputData) : RawParser(inputData) {}
+CiffParser::CiffParser(const Buffer& inputData)
+  : RawParser(inputData) {
+}
 
 void CiffParser::parseData() {
   ByteStream bs(DataBuffer(mInput, Endianness::little));

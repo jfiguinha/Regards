@@ -49,7 +49,8 @@ void TiffIFD::parseIFDEntry(NORangesSet<Buffer>* ifds, ByteStream& bs) {
 
   try {
     t = std::make_unique<TiffEntry>(this, bs);
-  } catch (IOException&) { // Ignore unparsable entry
+  } catch (IOException&) {
+    // Ignore unparsable entry
     // fix probably broken position due to interruption by exception
     // i.e. setting it to the next entry.
     bs.setPosition(origPos + 12);
@@ -83,12 +84,14 @@ void TiffIFD::parseIFDEntry(NORangesSet<Buffer>* ifds, ByteStream& bs) {
     default:
       add(move(t));
     }
-  } catch (RawspeedException&) { // Unparsable private data are added as entries
+  } catch (RawspeedException&) {
+    // Unparsable private data are added as entries
     add(move(t));
   }
 }
 
-TiffIFD::TiffIFD(TiffIFD* parent_) : parent(parent_) {
+TiffIFD::TiffIFD(TiffIFD* parent_)
+  : parent(parent_) {
   recursivelyCheckSubIFDs(1);
   // If we are good (can add this IFD without violating the limits),
   // we are still here. However, due to the way we add parsed sub-IFD's (lazy),
@@ -98,7 +101,7 @@ TiffIFD::TiffIFD(TiffIFD* parent_) : parent(parent_) {
 
 TiffIFD::TiffIFD(TiffIFD* parent_, NORangesSet<Buffer>* ifds,
                  const DataBuffer& data, uint32_t offset)
-    : TiffIFD(parent_) {
+  : TiffIFD(parent_) {
   // see TiffParser::parse: UINT32_MAX is used to mark the "virtual" top level
   // TiffRootIFD in a tiff file
   if (offset == UINT32_MAX)
@@ -134,7 +137,7 @@ TiffRootIFDOwner TiffIFD::parseMakerNote(NORangesSet<Buffer>* ifds,
   // go up the IFD tree and try to find the MAKE entry on each level.
   // we can not go all the way to the top first because this partial tree
   // is not yet added to the TiffRootIFD.
-  TiffIFD* p = this;
+  auto p = this;
   TiffEntry* makeEntry;
   do {
     makeEntry = p->getEntryRecursive(MAKE);
@@ -172,9 +175,11 @@ TiffRootIFDOwner TiffIFD::parseMakerNote(NORangesSet<Buffer>* ifds,
     // see http://www.ozhiker.com/electronics/pjmt/jpeg_info/nikon_mn.html
     bs.skipBytes(10);
     setup(true, 8, 0, "Nikon makernote");
-  } else if (bs.hasPrefix("OLYMPUS", 7)) { // new Olympus
+  } else if (bs.hasPrefix("OLYMPUS", 7)) {
+    // new Olympus
     setup(true, 12);
-  } else if (bs.hasPrefix("OLYMP", 5)) {   // old Olympus
+  } else if (bs.hasPrefix("OLYMP", 5)) {
+    // old Olympus
     setup(true, 8);
   } else if (bs.hasPrefix("EPSON", 5)) {
     setup(false, 8);
@@ -226,7 +231,7 @@ TiffEntry* __attribute__((pure)) TiffIFD::getEntryRecursive(TiffTag tag) const {
     return i->second.get();
   }
   for (const auto& j : subIFDs) {
-    TiffEntry *entry = j->getEntryRecursive(tag);
+    TiffEntry* entry = j->getEntryRecursive(tag);
     if (entry)
       return entry;
   }
@@ -248,22 +253,22 @@ void TiffIFD::checkSubIFDs(int headroom) const {
   int count = headroom + subIFDCount;
   if (!headroom)
     assert(count <= TiffIFD::Limits::SubIFDCount);
-  else if (count > TiffIFD::Limits::SubIFDCount)
+  else if (count > Limits::SubIFDCount)
     ThrowTPE("TIFF IFD has %u SubIFDs", count);
 
   count = headroom + subIFDCountRecursive;
   if (!headroom)
     assert(count <= TiffIFD::Limits::RecursiveSubIFDCount);
-  else if (count > TiffIFD::Limits::RecursiveSubIFDCount)
+  else if (count > Limits::RecursiveSubIFDCount)
     ThrowTPE("TIFF IFD file has %u SubIFDs (recursively)", count);
 }
 
 void TiffIFD::recursivelyCheckSubIFDs(int headroom) const {
   int depth = 0;
-  for (const TiffIFD* p = this; p != nullptr;) {
+  for (auto p = this; p != nullptr;) {
     if (!headroom)
       assert(depth <= TiffIFD::Limits::Depth);
-    else if (depth > TiffIFD::Limits::Depth)
+    else if (depth > Limits::Depth)
       ThrowTPE("TiffIFD cascading overflow, found %u level IFD", depth);
 
     p->checkSubIFDs(headroom);
@@ -295,8 +300,7 @@ TiffEntry* TiffIFD::getEntry(TiffTag tag) const {
   return i->second.get();
 }
 
-TiffID TiffRootIFD::getID() const
-{
+TiffID TiffRootIFD::getID() const {
   TiffID id;
   auto* makeE = getEntryRecursive(MAKE);
   auto* modelE = getEntryRecursive(MODEL);

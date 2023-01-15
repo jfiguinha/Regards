@@ -35,17 +35,17 @@ namespace rawspeed {
 
 // coverity[+alloc]
 void* alignedMalloc(size_t size, size_t alignment)
-    __attribute__((malloc, warn_unused_result, alloc_size(1), alloc_align(2),
-                   deprecated("use alignedMalloc<alignment>(size)")));
+__attribute__((malloc, warn_unused_result, alloc_size(1), alloc_align(2),
+  deprecated("use alignedMalloc<alignment>(size)")));
 
 template <typename T, size_t alignment>
 // coverity[+alloc]
-inline T* __attribute__((malloc, warn_unused_result, alloc_size(1)))
+T* __attribute__((malloc, warn_unused_result, alloc_size(1)))
 alignedMalloc(size_t size) {
   static_assert(alignment >= alignof(T), "insufficient alignment");
   static_assert(isPowerOfTwo(alignment), "not power-of-two");
   static_assert(isAligned(alignment, sizeof(void*)),
-                "not multiple of sizeof(void*)");
+    "not multiple of sizeof(void*)");
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   return reinterpret_cast<T*>(alignedMalloc(size, alignment));
@@ -55,7 +55,7 @@ alignedMalloc(size_t size) {
 
 template <typename T, size_t alignment, bool doRoundUp = false>
 // coverity[+alloc]
-inline T* __attribute__((malloc, warn_unused_result))
+T* __attribute__((malloc, warn_unused_result))
 alignedMallocArray(size_t nmemb, size_t size) {
   // Check for size_t overflow
   if (size && nmemb > SIZE_MAX / size)
@@ -71,7 +71,7 @@ alignedMallocArray(size_t nmemb, size_t size) {
 
 template <typename T, size_t alignment, typename T2, bool doRoundUp = false>
 // coverity[+alloc]
-inline T* __attribute__((malloc, warn_unused_result))
+T* __attribute__((malloc, warn_unused_result))
 alignedMallocArray(size_t nmemb) {
   static_assert(sizeof(T), "???");
   static_assert(sizeof(T2), "???");

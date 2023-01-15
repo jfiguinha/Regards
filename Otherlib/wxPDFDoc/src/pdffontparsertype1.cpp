@@ -1226,7 +1226,7 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
 	int italicAngle = 0;
 	if (hdr.italic != 0 || fontNameLower.Find(wxS("italic")) != wxNOT_FOUND)
 	{
-		italicAngle = static_cast<int>(ext.slant / 10);
+		italicAngle = ext.slant / 10;
 		// -12.00 - this is a typical value
 	}
 	fd.SetItalicAngle(italicAngle);

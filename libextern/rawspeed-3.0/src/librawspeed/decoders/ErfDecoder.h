@@ -38,8 +38,10 @@ class ErfDecoder final : public SimpleTiffDecoder {
 public:
   static bool isAppropriateDecoder(const TiffRootIFD* rootIFD,
                                    const Buffer& file);
+
   ErfDecoder(TiffRootIFDOwner&& root, const Buffer& file)
-      : SimpleTiffDecoder(move(root), file) {}
+    : SimpleTiffDecoder(move(root), file) {
+  }
 
   RawImage decodeRawInternal() override;
   void decodeMetaDataInternal(const CameraMetaData* meta) override;

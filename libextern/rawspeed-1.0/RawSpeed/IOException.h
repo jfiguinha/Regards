@@ -25,18 +25,17 @@
 #define IOEXCEPTION_H
 
 
-namespace RawSpeed {
-
-void ThrowIOE(const char* fmt, ...);
-
-
-class IOException : public std::runtime_error
+namespace RawSpeed
 {
-public:
-  IOException(const char* _msg);
-  IOException(const string _msg);
-};
+	void ThrowIOE(const char* fmt, ...);
 
+
+	class IOException : public std::runtime_error
+	{
+	public:
+		IOException(const char* _msg);
+		IOException(string _msg);
+	};
 } // namespace RawSpeed
 
 #endif

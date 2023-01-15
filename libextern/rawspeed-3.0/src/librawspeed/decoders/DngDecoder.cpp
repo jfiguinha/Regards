@@ -61,16 +61,18 @@ DngDecoder::isAppropriateDecoder(const TiffRootIFD* rootIFD,
 }
 
 DngDecoder::DngDecoder(TiffRootIFDOwner&& rootIFD, const Buffer& file)
-    : AbstractTiffDecoder(move(rootIFD), file) {
+  : AbstractTiffDecoder(move(rootIFD), file) {
   if (!mRootIFD->hasEntryRecursive(DNGVERSION))
     ThrowRDE("DNG, but version tag is missing. Will not guess.");
 
   const uint8_t* v = mRootIFD->getEntryRecursive(DNGVERSION)->getData(4);
 
   if (v[0] != 1)
-    ThrowRDE("Not a supported DNG image format: v%u.%u.%u.%u", (int)v[0], (int)v[1], (int)v[2], (int)v[3]);
-//  if (v[1] > 4)
-//    ThrowRDE("Not a supported DNG image format: v%u.%u.%u.%u", (int)v[0], (int)v[1], (int)v[2], (int)v[3]);
+    ThrowRDE("Not a supported DNG image format: v%u.%u.%u.%u",
+           static_cast<int>(v[0]), static_cast<int>(v[1]),
+           static_cast<int>(v[2]), static_cast<int>(v[3]));
+  //  if (v[1] > 4)
+  //    ThrowRDE("Not a supported DNG image format: v%u.%u.%u.%u", (int)v[0], (int)v[1], (int)v[2], (int)v[3]);
 
   // Prior to v1.1.xxx  fix LJPEG encoding bug
   mFixLjpeg = (v[0] <= 1) && (v[1] < 1);
@@ -167,7 +169,7 @@ void DngDecoder::parseCFA(const TiffIFD* raw) {
   mRaw->cfa.setSize(cfaSize);
 
   static const map<uint32_t, CFAColor> int2enum = {
-      {0, CFA_RED},     {1, CFA_GREEN},  {2, CFA_BLUE},  {3, CFA_CYAN},
+      {0, CFA_RED}, {1, CFA_GREEN}, {2, CFA_BLUE}, {3, CFA_CYAN},
       {4, CFA_MAGENTA}, {5, CFA_YELLOW}, {6, CFA_WHITE},
   };
 
@@ -198,9 +200,9 @@ void DngDecoder::parseCFA(const TiffIFD* raw) {
 
   const auto aa = active_area->getFloatArray(2);
   if (std::any_of(aa.cbegin(), aa.cend(), [](const auto v) {
-        return v < std::numeric_limits<iPoint2D::value_type>::min() ||
-               v > std::numeric_limits<iPoint2D::value_type>::max();
-      }))
+    return v < std::numeric_limits<iPoint2D::value_type>::min() ||
+           v > std::numeric_limits<iPoint2D::value_type>::max();
+  }))
     ThrowRDE("Error decoding active area");
 
   mRaw->cfa.shiftLeft(aa[1]);
@@ -253,8 +255,8 @@ DngTilingDescription DngDecoder::getTilingDescription(const TiffIFD* raw) {
   }
 
   uint32_t yPerSlice = raw->hasEntry(ROWSPERSTRIP)
-                           ? raw->getEntry(ROWSPERSTRIP)->getU32()
-                           : mRaw->dim.y;
+                         ? raw->getEntry(ROWSPERSTRIP)->getU32()
+                         : mRaw->dim.y;
 
   if (yPerSlice == 0 || yPerSlice > static_cast<uint32_t>(mRaw->dim.y) ||
       roundUpDivision(mRaw->dim.y, yPerSlice) != counts->count) {
@@ -268,11 +270,12 @@ DngTilingDescription DngDecoder::getTilingDescription(const TiffIFD* raw) {
 void DngDecoder::decodeData(const TiffIFD* raw, uint32_t sample_format) {
   if (compression == 8 && sample_format != 3) {
     ThrowRDE("Only float format is supported for "
-             "deflate-compressed data.");
-  } else if ((compression == 7 || compression == 0x884c) &&
-             sample_format != 1) {
+        "deflate-compressed data.");
+  }
+  if ((compression == 7 || compression == 0x884c) &&
+      sample_format != 1) {
     ThrowRDE("Only 16 bit unsigned data supported for "
-             "JPEG-compressed data.");
+        "JPEG-compressed data.");
   }
 
   uint32_t predictor = ~0U;
@@ -296,7 +299,8 @@ void DngDecoder::decodeData(const TiffIFD* raw, uint32_t sample_format) {
   if (raw->hasEntry(TILEOFFSETS)) {
     offsets = raw->getEntry(TILEOFFSETS);
     counts = raw->getEntry(TILEBYTECOUNTS);
-  } else { // Strips
+  } else {
+    // Strips
     offsets = raw->getEntry(STRIPOFFSETS);
     counts = raw->getEntry(STRIPBYTECOUNTS);
   }
@@ -420,7 +424,7 @@ RawImage DngDecoder::decodeRawInternal() {
 void DngDecoder::handleMetadata(const TiffIFD* raw) {
   // Crop
   if (raw->hasEntry(ACTIVEAREA)) {
-    TiffEntry *active_area = raw->getEntry(ACTIVEAREA);
+    TiffEntry* active_area = raw->getEntry(ACTIVEAREA);
     if (active_area->count != 4)
       ThrowRDE("active area has %d values instead of 4", active_area->count);
 
@@ -449,15 +453,15 @@ void DngDecoder::handleMetadata(const TiffIFD* raw) {
 
   if (raw->hasEntry(DEFAULTCROPORIGIN) && raw->hasEntry(DEFAULTCROPSIZE)) {
     iRectangle2D cropped(0, 0, mRaw->dim.x, mRaw->dim.y);
-    TiffEntry *origin_entry = raw->getEntry(DEFAULTCROPORIGIN);
-    TiffEntry *size_entry = raw->getEntry(DEFAULTCROPSIZE);
+    TiffEntry* origin_entry = raw->getEntry(DEFAULTCROPORIGIN);
+    TiffEntry* size_entry = raw->getEntry(DEFAULTCROPSIZE);
 
     /* Read crop position (sometimes is rational so use float) */
     const auto tl = origin_entry->getFloatArray(2);
     if (std::any_of(tl.cbegin(), tl.cend(), [](const auto v) {
-          return v < std::numeric_limits<iPoint2D::value_type>::min() ||
-                 v > std::numeric_limits<iPoint2D::value_type>::max();
-        }))
+      return v < std::numeric_limits<iPoint2D::value_type>::min() ||
+             v > std::numeric_limits<iPoint2D::value_type>::max();
+    }))
       ThrowRDE("Error decoding default crop origin");
 
     iPoint2D cropOrigin(tl[0], tl[1]);
@@ -469,9 +473,9 @@ void DngDecoder::handleMetadata(const TiffIFD* raw) {
     /* Read size (sometimes is rational so use float) */
     const auto sz = size_entry->getFloatArray(2);
     if (std::any_of(sz.cbegin(), sz.cend(), [](const auto v) {
-          return v < std::numeric_limits<iPoint2D::value_type>::min() ||
-                 v > std::numeric_limits<iPoint2D::value_type>::max();
-        }))
+      return v < std::numeric_limits<iPoint2D::value_type>::min() ||
+             v > std::numeric_limits<iPoint2D::value_type>::max();
+    }))
       ThrowRDE("Error decoding default crop size");
 
     iPoint2D size(sz[0], sz[1]);
@@ -506,7 +510,7 @@ void DngDecoder::handleMetadata(const TiffIFD* raw) {
   // Linearization
   if (raw->hasEntry(LINEARIZATIONTABLE) &&
       raw->getEntry(LINEARIZATIONTABLE)->count > 0) {
-    TiffEntry *lintable = raw->getEntry(LINEARIZATIONTABLE);
+    TiffEntry* lintable = raw->getEntry(LINEARIZATIONTABLE);
     auto table = lintable->getU16Array(lintable->count);
     RawImageCurveGuard curveHandler(&mRaw, table, uncorrectedRawValues);
     if (!uncorrectedRawValues)
@@ -522,7 +526,7 @@ void DngDecoder::handleMetadata(const TiffIFD* raw) {
   }
 
   if (raw->hasEntry(WHITELEVEL)) {
-    TiffEntry *whitelevel = raw->getEntry(WHITELEVEL);
+    TiffEntry* whitelevel = raw->getEntry(WHITELEVEL);
     if (whitelevel->isInt())
       mRaw->whitePoint = whitelevel->getU32();
   }
@@ -547,14 +551,16 @@ void DngDecoder::handleMetadata(const TiffIFD* raw) {
     mRaw->blackAreas.clear();
     mRaw->blackLevel = 0;
     mRaw->blackLevelSeparate[0] = mRaw->blackLevelSeparate[1] =
-        mRaw->blackLevelSeparate[2] = mRaw->blackLevelSeparate[3] = 0;
+                                  mRaw->blackLevelSeparate[2] =
+                                  mRaw->blackLevelSeparate[3] = 0;
     mRaw->whitePoint = 65535;
   }
 }
 
 void DngDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   if (mRootIFD->hasEntryRecursive(ISOSPEEDRATINGS))
-    mRaw->metadata.isoSpeed = mRootIFD->getEntryRecursive(ISOSPEEDRATINGS)->getU32();
+    mRaw->metadata.isoSpeed = mRootIFD->getEntryRecursive(ISOSPEEDRATINGS)->
+                                        getU32();
 
   TiffID id;
 
@@ -584,7 +590,8 @@ void DngDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     mRaw->metadata.canonical_make = id.make;
     mRaw->metadata.canonical_model = mRaw->metadata.canonical_alias = id.model;
     if (mRootIFD->hasEntryRecursive(UNIQUECAMERAMODEL)) {
-      mRaw->metadata.canonical_id = mRootIFD->getEntryRecursive(UNIQUECAMERAMODEL)->getString();
+      mRaw->metadata.canonical_id = mRootIFD->getEntryRecursive(
+          UNIQUECAMERAMODEL)->getString();
     } else {
       mRaw->metadata.canonical_id = id.make + " " + id.model;
     }
@@ -619,10 +626,12 @@ void DngDecoder::checkSupportInternal(const CameraMetaData* meta) {
   // We set this, since DNG's are not explicitly added.
   failOnUnknown = false;
 
-  if (!(mRootIFD->hasEntryRecursive(MAKE) && mRootIFD->hasEntryRecursive(MODEL))) {
+  if (!(mRootIFD->hasEntryRecursive(MAKE) && mRootIFD->
+        hasEntryRecursive(MODEL))) {
     // Check "Unique Camera Model" instead, uses this for both make + model.
     if (mRootIFD->hasEntryRecursive(UNIQUECAMERAMODEL)) {
-      string unique = mRootIFD->getEntryRecursive(UNIQUECAMERAMODEL)->getString();
+      string unique = mRootIFD->getEntryRecursive(UNIQUECAMERAMODEL)->
+                                getString();
       checkCameraSupported(meta, {unique, unique}, "dng");
       return;
     }
@@ -635,7 +644,7 @@ void DngDecoder::checkSupportInternal(const CameraMetaData* meta) {
 
 /* Decodes DNG masked areas into blackareas in the image */
 bool DngDecoder::decodeMaskedAreas(const TiffIFD* raw) {
-  TiffEntry *masked = raw->getEntry(MASKEDAREAS);
+  TiffEntry* masked = raw->getEntry(MASKEDAREAS);
 
   if (masked->type != TIFF_SHORT && masked->type != TIFF_LONG)
     return false;
@@ -645,15 +654,15 @@ bool DngDecoder::decodeMaskedAreas(const TiffIFD* raw) {
     return false;
 
   /* Since we may both have short or int, copy it to int array. */
-  auto rects = masked->getU32Array(nrects*4);
+  auto rects = masked->getU32Array(nrects * 4);
 
   const iRectangle2D fullImage(0, 0, mRaw->getUncroppedDim().x,
                                mRaw->getUncroppedDim().y);
   const iPoint2D top = mRaw->getCropOffset();
 
   for (uint32_t i = 0; i < nrects; i++) {
-    iPoint2D topleft = iPoint2D(rects[i * 4UL + 1UL], rects[i * 4UL]);
-    iPoint2D bottomright = iPoint2D(rects[i * 4UL + 3UL], rects[i * 4UL + 2UL]);
+    auto topleft = iPoint2D(rects[i * 4UL + 1UL], rects[i * 4UL]);
+    auto bottomright = iPoint2D(rects[i * 4UL + 3UL], rects[i * 4UL + 2UL]);
 
     if (!(fullImage.isPointInsideInclusive(topleft) &&
           fullImage.isPointInsideInclusive(bottomright) &&
@@ -675,9 +684,9 @@ bool DngDecoder::decodeMaskedAreas(const TiffIFD* raw) {
 }
 
 bool DngDecoder::decodeBlackLevels(const TiffIFD* raw) {
-  iPoint2D blackdim(1,1);
+  iPoint2D blackdim(1, 1);
   if (raw->hasEntry(BLACKLEVELREPEATDIM)) {
-    TiffEntry *bleveldim = raw->getEntry(BLACKLEVELREPEATDIM);
+    TiffEntry* bleveldim = raw->getEntry(BLACKLEVELREPEATDIM);
     if (bleveldim->count != 2)
       return false;
     blackdim = iPoint2D(bleveldim->getU32(0), bleveldim->getU32(1));
@@ -708,7 +717,7 @@ bool DngDecoder::decodeBlackLevels(const TiffIFD* raw) {
 
     for (int y = 0; y < 2; y++) {
       for (int x = 0; x < 2; x++)
-        mRaw->blackLevelSeparate[y*2+x] = value;
+        mRaw->blackLevelSeparate[y * 2 + x] = value;
     }
   } else {
     for (int y = 0; y < 2; y++) {
@@ -726,12 +735,12 @@ bool DngDecoder::decodeBlackLevels(const TiffIFD* raw) {
 
   // DNG Spec says we must add black in deltav and deltah
   if (raw->hasEntry(BLACKLEVELDELTAV)) {
-    TiffEntry *blackleveldeltav = raw->getEntry(BLACKLEVELDELTAV);
+    TiffEntry* blackleveldeltav = raw->getEntry(BLACKLEVELDELTAV);
     if (static_cast<int>(blackleveldeltav->count) < mRaw->dim.y)
       ThrowRDE("BLACKLEVELDELTAV array is too small");
     std::array<float, 2> black_sum = {{}};
     for (int i = 0; i < mRaw->dim.y; i++)
-      black_sum[i&1] += blackleveldeltav->getFloat(i);
+      black_sum[i & 1] += blackleveldeltav->getFloat(i);
 
     for (int i = 0; i < 4; i++) {
       const float value =
@@ -746,13 +755,13 @@ bool DngDecoder::decodeBlackLevels(const TiffIFD* raw) {
     }
   }
 
-  if (raw->hasEntry(BLACKLEVELDELTAH)){
-    TiffEntry *blackleveldeltah = raw->getEntry(BLACKLEVELDELTAH);
+  if (raw->hasEntry(BLACKLEVELDELTAH)) {
+    TiffEntry* blackleveldeltah = raw->getEntry(BLACKLEVELDELTAH);
     if (static_cast<int>(blackleveldeltah->count) < mRaw->dim.x)
       ThrowRDE("BLACKLEVELDELTAH array is too small");
     std::array<float, 2> black_sum = {{}};
     for (int i = 0; i < mRaw->dim.x; i++)
-      black_sum[i&1] += blackleveldeltah->getFloat(i);
+      black_sum[i & 1] += blackleveldeltah->getFloat(i);
 
     for (int i = 0; i < 4; i++) {
       const float value =

@@ -41,8 +41,8 @@ int LibRaw::dcraw_process(void)
         !O.bad_pixels && !O.dark_frame && is_bayer && !IO.zero_is_bad;
 
     int rc = raw2image_ex(subtract_inline); // allocate imgdata.image and copy data!
-	if (rc != LIBRAW_SUCCESS)
-		return rc;
+    if (rc != LIBRAW_SUCCESS)
+      return rc;
 
     // Adjust sizes
 
@@ -96,7 +96,7 @@ int LibRaw::dcraw_process(void)
         for (int q = 0; q < S.height * S.width; q++)
         {
           for (int c = 0; c < 4; c++)
-            if ((short)imgdata.image[q][c] < 0)
+            if (static_cast<short>(imgdata.image[q][c]) < 0)
               imgdata.image[q][c] = 0;
         }
       }
@@ -218,8 +218,8 @@ int LibRaw::dcraw_process(void)
     if (!libraw_internal_data.output_data.histogram)
     {
       libraw_internal_data.output_data.histogram =
-          (int(*)[LIBRAW_HISTOGRAM_SIZE])malloc(
-              sizeof(*libraw_internal_data.output_data.histogram) * 4);
+          static_cast<int(*)[0x2000]>(malloc(
+              sizeof(*libraw_internal_data.output_data.histogram) * 4));
     }
 #ifndef NO_LCMS
     if (O.camera_profile)
@@ -247,12 +247,12 @@ int LibRaw::dcraw_process(void)
 
     return 0;
   }
-  catch (const std::bad_alloc&)
+  catch (const std::bad_alloc &)
   {
-      recycle();
-      return LIBRAW_UNSUFFICIENT_MEMORY;
+    recycle();
+    return LIBRAW_UNSUFFICIENT_MEMORY;
   }
-  catch (const LibRaw_exceptions& err)
+  catch (const LibRaw_exceptions &err)
   {
     EXCEPTION_HANDLER(err);
   }

@@ -70,17 +70,21 @@ inline Endianness getHostEndianness() {
 inline int16_t getByteSwapped(int16_t v) {
   return static_cast<int16_t>(BSWAP16(static_cast<uint16_t>(v)));
 }
+
 inline uint16_t getByteSwapped(uint16_t v) {
-  return static_cast<uint16_t>(BSWAP16(v));
+  return BSWAP16(v);
 }
+
 inline int32_t getByteSwapped(int32_t v) {
   return static_cast<int32_t>(BSWAP32(static_cast<uint32_t>(v)));
 }
+
 inline uint32_t getByteSwapped(uint32_t v) {
   return static_cast<uint32_t>(BSWAP32(v));
 }
+
 inline uint64_t getByteSwapped(uint64_t v) {
-  return BSWAP64(static_cast<uint64_t>(v));
+  return BSWAP64(v);
 }
 
 // the float/double versions use two memcpy which guarantee strict aliasing
@@ -92,6 +96,7 @@ inline float getByteSwapped(float f) {
   memcpy(&f, &i, sizeof(i));
   return f;
 }
+
 inline double getByteSwapped(double d) {
   uint64_t i;
   memcpy(&i, &d, sizeof(i));
@@ -100,7 +105,7 @@ inline double getByteSwapped(double d) {
   return d;
 }
 
-template <typename T> inline T getByteSwapped(const void* data, bool bswap) {
+template <typename T> T getByteSwapped(const void* data, bool bswap) {
   T ret;
   // all interesting compilers optimize this memcpy into a single move
   // this is the most effective way to load some bytes without running into
@@ -116,11 +121,11 @@ template <typename T> inline T getByteSwapped(const void* data, bool bswap) {
 // Note: these functions should be avoided if higher level access from
 // Buffer/DataBuffer classes is available.
 
-template <typename T> inline T getBE(const void* data) {
+template <typename T> T getBE(const void* data) {
   return getByteSwapped<T>(data, getHostEndianness() == Endianness::little);
 }
 
-template <typename T> inline T getLE(const void* data) {
+template <typename T> T getLE(const void* data) {
   return getByteSwapped<T>(data, getHostEndianness() == Endianness::big);
 }
 

@@ -42,10 +42,10 @@ private:
 
 public:
   template <typename F,
-            typename = std::enable_if<std::is_convertible<
-                F, std::function<value_type(
-                       typename decltype(table)::size_type,
-                       typename decltype(table)::size_type)>>::value>>
+            typename = std::enable_if<std::is_convertible_v<
+              F, std::function<value_type(
+                  typename decltype(table)::size_type,
+                  typename decltype(table)::size_type)>>>>
   explicit SimpleLUT(F&& f) {
     const auto fullTableSize = 1U << TableBitWidth;
     table.reserve(fullTableSize);
@@ -58,7 +58,7 @@ public:
     assert(table.size() == fullTableSize);
   }
 
-  inline value_type operator[](int x) const {
+  value_type operator[](int x) const {
     unsigned clampedX = clampBits(x, TableBitWidth);
     return table[clampedX];
   }

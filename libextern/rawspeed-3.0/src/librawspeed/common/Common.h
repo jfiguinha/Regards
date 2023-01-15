@@ -42,7 +42,7 @@ enum DEBUG_PRIO {
 };
 
 void writeLog(DEBUG_PRIO priority, const char* format, ...)
-    __attribute__((format(printf, 2, 3)));
+__attribute__((format(printf, 2, 3)));
 
 inline void copyPixels(uint8_t* dest, int dstPitch, const uint8_t* src,
                        int srcPitch, int rowSize, int height) {
@@ -58,11 +58,11 @@ inline void copyPixels(uint8_t* dest, int dstPitch, const uint8_t* src,
 }
 
 // only works for positive values and zero
-template <typename T> inline constexpr bool isPowerOfTwo(T val) {
-  return (val & (~val+1)) == val;
+template <typename T> constexpr bool isPowerOfTwo(T val) {
+  return (val & (~val + 1)) == val;
 }
 
-constexpr inline size_t __attribute__((const))
+constexpr size_t __attribute__((const))
 roundToMultiple(size_t value, size_t multiple, bool roundDown) {
   if ((multiple == 0) || (value % multiple == 0))
     return value;
@@ -74,34 +74,34 @@ roundToMultiple(size_t value, size_t multiple, bool roundDown) {
   return roundedDown + multiple;
 }
 
-constexpr inline size_t __attribute__((const))
+constexpr size_t __attribute__((const))
 roundDown(size_t value, size_t multiple) {
   return roundToMultiple(value, multiple, /*roundDown=*/true);
 }
 
-constexpr inline size_t __attribute__((const))
+constexpr size_t __attribute__((const))
 roundUp(size_t value, size_t multiple) {
   return roundToMultiple(value, multiple, /*roundDown=*/false);
 }
 
-constexpr inline size_t __attribute__((const))
+constexpr size_t __attribute__((const))
 roundUpDivision(size_t value, size_t div) {
   return (value != 0) ? (1 + ((value - 1) / div)) : 0;
 }
 
 template <class T>
-inline constexpr __attribute__((const)) bool
+constexpr __attribute__((const)) bool
 isAligned(T value, size_t multiple,
-          typename std::enable_if<std::is_pointer<T>::value>::type* /*unused*/ =
+          std::enable_if_t<std::is_pointer_v<T>>* /*unused*/ =
               nullptr) {
   return (multiple == 0) ||
          (reinterpret_cast<std::uintptr_t>(value) % multiple == 0);
 }
 
 template <class T>
-inline constexpr __attribute__((const)) bool isAligned(
+constexpr __attribute__((const)) bool isAligned(
     T value, size_t multiple,
-    typename std::enable_if<!std::is_pointer<T>::value>::type* /*unused*/ =
+    std::enable_if_t<!std::is_pointer_v<T>>* /*unused*/ =
         nullptr) {
   return (multiple == 0) ||
          (static_cast<std::uintptr_t>(value) % multiple == 0);
@@ -114,15 +114,15 @@ isIn(const T value, const std::initializer_list<T2>& list) {
                      [value](const T2& t) { return t == value; });
 }
 
-template <class T> inline constexpr unsigned bitwidth(T unused = {}) {
+template <class T> constexpr unsigned bitwidth(T unused = {}) {
   return CHAR_BIT * sizeof(T);
 }
 
 // Clamps the given unsigned value to the range 0 .. 2^n-1, with n <= 16
 template <class T>
-inline constexpr __attribute__((const)) uint16_t clampBits(
+constexpr __attribute__((const)) uint16_t clampBits(
     T value, unsigned int nBits,
-    typename std::enable_if<std::is_unsigned<T>::value>::type* /*unused*/ =
+    std::enable_if_t<std::is_unsigned_v<T>>* /*unused*/ =
         nullptr) {
   // We expect to produce uint16_t.
   assert(nBits <= 16);
@@ -135,32 +135,32 @@ inline constexpr __attribute__((const)) uint16_t clampBits(
 
 // Clamps the given signed value to the range 0 .. 2^n-1, with n <= 16
 template <typename T>
-inline constexpr uint16_t __attribute__((const))
+constexpr uint16_t __attribute__((const))
 clampBits(T value, unsigned int nBits,
-          typename std::enable_if<std::is_signed<T>::value>::type* /*unused*/ =
+          std::enable_if_t<std::is_signed_v<T>>* /*unused*/ =
               nullptr) {
   // If the value is negative, clamp it to zero.
   value = std::max(value, T(0));
   // Now, let the unsigned case clamp to the upper limit.
-  using UnsignedT = typename std::make_unsigned<T>::type;
+  using UnsignedT = std::make_unsigned_t<T>;
   return clampBits<UnsignedT>(value, nBits);
 }
 
 template <typename T>
-inline constexpr bool __attribute__((const))
+constexpr bool __attribute__((const))
 isIntN(T value, unsigned int nBits,
-       typename std::enable_if<std::is_arithmetic<T>::value>::type* /*unused*/ =
+       std::enable_if_t<std::is_arithmetic_v<T>>* /*unused*/ =
            nullptr) {
   assert(nBits < bitwidth<T>() && "Check must not be tautological.");
-  using UnsignedT = typename std::make_unsigned<T>::type;
+  using UnsignedT = std::make_unsigned_t<T>;
   const auto highBits = static_cast<UnsignedT>(value) >> nBits;
   return highBits == 0;
 }
 
 template <class T>
-inline constexpr __attribute__((const)) T extractHighBits(
+constexpr __attribute__((const)) T extractHighBits(
     T value, unsigned nBits, unsigned effectiveBitwidth = bitwidth<T>(),
-    typename std::enable_if<std::is_unsigned<T>::value>::type* /*unused*/ =
+    std::enable_if_t<std::is_unsigned_v<T>>* /*unused*/ =
         nullptr) {
   assert(effectiveBitwidth <= bitwidth<T>());
   assert(nBits <= effectiveBitwidth);
@@ -170,20 +170,19 @@ inline constexpr __attribute__((const)) T extractHighBits(
 }
 
 template <typename T>
-inline constexpr typename std::make_signed<T>::type __attribute__((const))
+constexpr std::make_signed_t<T> __attribute__((const))
 signExtend(
     T value, unsigned int nBits,
-    typename std::enable_if<std::is_unsigned<T>::value>::type* /*unused*/ =
+    std::enable_if_t<std::is_unsigned_v<T>>* /*unused*/ =
         nullptr) {
   assert(nBits != 0 && "Only valid for non-zero bit count.");
   const T SpareSignBits = bitwidth<T>() - nBits;
-  using SignedT = typename std::make_signed<T>::type;
+  using SignedT = std::make_signed_t<T>;
   return static_cast<SignedT>(value << SpareSignBits) >> SpareSignBits;
 }
 
 // Trim both leading and trailing spaces from the string
-inline std::string trimSpaces(const std::string& str)
-{
+inline std::string trimSpaces(const std::string& str) {
   // Find the first character position after excluding leading blank spaces
   size_t startpos = str.find_first_not_of(" \t");
 
@@ -198,8 +197,7 @@ inline std::string trimSpaces(const std::string& str)
 }
 
 inline std::vector<std::string> splitString(const std::string& input,
-                                            char c = ' ')
-{
+                                            char c = ' ') {
   std::vector<std::string> result;
   const char* str = input.c_str();
 
@@ -223,11 +221,15 @@ inline std::vector<std::string> splitString(const std::string& input,
 }
 
 enum BitOrder {
-  BitOrder_LSB,   /* Memory order */
-  BitOrder_MSB,   /* Input is added to stack byte by byte, and output is lifted
-                     from top */
-  BitOrder_MSB16, /* Same as above, but 16 bits at the time */
-  BitOrder_MSB32, /* Same as above, but 32 bits at the time */
+  BitOrder_LSB,
+  /* Memory order */
+  BitOrder_MSB,
+  /* Input is added to stack byte by byte, and output is lifted
+                      from top */
+  BitOrder_MSB16,
+  /* Same as above, but 16 bits at the time */
+  BitOrder_MSB32,
+  /* Same as above, but 32 bits at the time */
 };
 
 } // namespace rawspeed

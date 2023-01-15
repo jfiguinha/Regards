@@ -57,7 +57,8 @@ class UncompressedDecompressor final : public AbstractDecompressor {
 
 public:
   UncompressedDecompressor(ByteStream input_, const RawImage& img)
-      : input(std::move(input_)), mRaw(img) {}
+    : input(std::move(input_)), mRaw(img) {
+  }
 
   /* Helper function for decoders, that will unpack uncompressed image data */
   /* input: Input image, positioned at first pixel */
@@ -91,9 +92,9 @@ public:
 };
 
 extern template void UncompressedDecompressor::decode8BitRaw<false>(uint32_t w,
-                                                                    uint32_t h);
+  uint32_t h);
 extern template void UncompressedDecompressor::decode8BitRaw<true>(uint32_t w,
-                                                                   uint32_t h);
+  uint32_t h);
 
 extern template void
 UncompressedDecompressor::decode12BitRaw<Endianness::little, false, false>(
@@ -117,18 +118,18 @@ UncompressedDecompressor::decode12BitRawUnpackedLeftAligned<Endianness::big>(
 
 extern template void
 UncompressedDecompressor::decodeRawUnpacked<12, Endianness::little>(uint32_t w,
-                                                                    uint32_t h);
+  uint32_t h);
 extern template void
 UncompressedDecompressor::decodeRawUnpacked<12, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 extern template void
 UncompressedDecompressor::decodeRawUnpacked<14, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 extern template void
 UncompressedDecompressor::decodeRawUnpacked<16, Endianness::little>(uint32_t w,
-                                                                    uint32_t h);
+  uint32_t h);
 extern template void
 UncompressedDecompressor::decodeRawUnpacked<16, Endianness::big>(uint32_t w,
-                                                                 uint32_t h);
+  uint32_t h);
 
 } // namespace rawspeed

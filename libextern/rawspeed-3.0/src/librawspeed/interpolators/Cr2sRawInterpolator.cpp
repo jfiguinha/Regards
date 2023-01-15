@@ -37,14 +37,14 @@ struct Cr2sRawInterpolator::YCbCr final {
   int Cb = 0;
   int Cr = 0;
 
-  inline static void LoadY(YCbCr* p, const uint16_t* data) {
+  static void LoadY(YCbCr* p, const uint16_t* data) {
     assert(p);
     assert(data);
 
     p->Y = data[0];
   }
 
-  inline static void LoadCbCr(YCbCr* p, const uint16_t* data) {
+  static void LoadCbCr(YCbCr* p, const uint16_t* data) {
     assert(p);
     assert(data);
 
@@ -52,7 +52,7 @@ struct Cr2sRawInterpolator::YCbCr final {
     p->Cr = data[1];
   }
 
-  inline static void CopyCbCr(YCbCr* p, const YCbCr& pSrc) {
+  static void CopyCbCr(YCbCr* p, const YCbCr& pSrc) {
     assert(p);
 
     p->Cb = pSrc.Cb;
@@ -61,30 +61,30 @@ struct Cr2sRawInterpolator::YCbCr final {
 
   YCbCr() = default;
 
-  inline void signExtend() {
+  void signExtend() {
     Cb -= 16384;
     Cr -= 16384;
   }
 
-  inline void applyHue(int hue_) {
+  void applyHue(int hue_) {
     Cb += hue_;
     Cr += hue_;
   }
 
-  inline void process(int hue_) {
+  void process(int hue_) {
     signExtend();
     applyHue(hue_);
   }
 
-  inline void interpolateCbCr(const YCbCr& p0, const YCbCr& p2) {
+  void interpolateCbCr(const YCbCr& p0, const YCbCr& p2) {
     // Y is already good, need to interpolate Cb and Cr
     // FIXME: dcraw does +1 before >> 1
     Cb = (p0.Cb + p2.Cb) >> 1;
     Cr = (p0.Cr + p2.Cr) >> 1;
   }
 
-  inline void interpolateCbCr(const YCbCr& p0, const YCbCr& p1, const YCbCr& p2,
-                              const YCbCr& p3) {
+  void interpolateCbCr(const YCbCr& p0, const YCbCr& p1, const YCbCr& p2,
+                       const YCbCr& p3) {
     // Y is already good, need to interpolate Cb and Cr
     // FIXME: dcraw does +1 before >> 1
     Cb = (p0.Cb + p1.Cb + p2.Cb + p3.Cb) >> 2;
@@ -120,7 +120,7 @@ template <int version> void Cr2sRawInterpolator::interpolate_422_row(int row) {
     for (int Pixel = 0; Pixel < PixelsPerMCU; ++Pixel) {
       YUV_TO_RGB<version>(MCU[Pixel],
                           &out(row, OutputComponentsPerMCU * MCUIdx +
-                                        ComponentsPerPixel * Pixel));
+                                    ComponentsPerPixel * Pixel));
     }
   };
 
@@ -210,7 +210,7 @@ template <int version> void Cr2sRawInterpolator::interpolate_420_row(int row) {
       for (int MCUCol = 0; MCUCol < X_S_F; ++MCUCol) {
         YCbCr::LoadY(&MCU[MCURow][MCUCol],
                      &input(Row, InputComponentsPerMCU * MCUIdx +
-                                     X_S_F * MCURow + MCUCol));
+                                 X_S_F * MCURow + MCUCol));
       }
     }
     YCbCr::LoadCbCr(&MCU[0][0],
@@ -218,13 +218,13 @@ template <int version> void Cr2sRawInterpolator::interpolate_420_row(int row) {
     return MCU;
   };
   auto StoreMCU = [&](const MCUTy& MCU, int MCUIdx, int Row)
-      __attribute__((always_inline)) {
+  __attribute__((always_inline)) {
     for (int MCURow = 0; MCURow < Y_S_F; ++MCURow) {
       for (int MCUCol = 0; MCUCol < X_S_F; ++MCUCol) {
         YUV_TO_RGB<version>(
             MCU[MCURow][MCUCol],
             &out(2 * Row + MCURow, ((OutputComponentsPerMCU * MCUIdx) / Y_S_F) +
-                                       ComponentsPerPixel * MCUCol));
+                                   ComponentsPerPixel * MCUCol));
       }
     }
   };
@@ -361,7 +361,7 @@ template <int version> void Cr2sRawInterpolator::interpolate_420() {
       for (int MCUCol = 0; MCUCol < X_S_F; ++MCUCol) {
         YCbCr::LoadY(&MCU[MCURow][MCUCol],
                      &input(Row, InputComponentsPerMCU * MCUIdx +
-                                     X_S_F * MCURow + MCUCol));
+                                 X_S_F * MCURow + MCUCol));
       }
     }
     YCbCr::LoadCbCr(&MCU[0][0],
@@ -369,13 +369,13 @@ template <int version> void Cr2sRawInterpolator::interpolate_420() {
     return MCU;
   };
   auto StoreMCU = [&](const MCUTy& MCU, int MCUIdx, int Row)
-      __attribute__((always_inline)) {
+  __attribute__((always_inline)) {
     for (int MCURow = 0; MCURow < Y_S_F; ++MCURow) {
       for (int MCUCol = 0; MCUCol < X_S_F; ++MCUCol) {
         YUV_TO_RGB<version>(
             MCU[MCURow][MCUCol],
             &out(2 * Row + MCURow, ((OutputComponentsPerMCU * MCUIdx) / Y_S_F) +
-                                       ComponentsPerPixel * MCUCol));
+                                   ComponentsPerPixel * MCUCol));
       }
     }
   };

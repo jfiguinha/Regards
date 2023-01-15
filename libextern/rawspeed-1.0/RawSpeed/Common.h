@@ -23,12 +23,12 @@
 #define COMMON_H
 
 
-#if !defined(__unix__) && !defined(__APPLE__) && !defined(__MINGW32__) 
+#if !defined(__unix__) && !defined(__APPLE__) && !defined(__MINGW32__)
 #include <intrin.h>
 #pragma intrinsic(_ReturnAddress)
 #define MIN(a,b) min(a,b)
 #define MAX(a,b) max(a,b)
-typedef unsigned __int64 uint64;
+using uint64 = unsigned __int64;
 #else // On linux
 #define _ASSERTE(a) void(a)
 #define _RPT0(a,b) 
@@ -62,71 +62,82 @@ typedef char* LPCWSTR;
 int rawspeed_get_number_of_processor_cores();
 
 
-namespace RawSpeed {
-
-typedef signed char char8;
-typedef unsigned char uchar8;
-typedef unsigned int uint32;
-typedef signed int int32;
-typedef unsigned short ushort16;
-
-typedef enum Endianness {
-  big, little, unknown
-} Endianness;
-
-
-inline void BitBlt(uchar8* dstp, int dst_pitch, const uchar8* srcp, int src_pitch, int row_size, int height) {
-  if (height == 1 || (dst_pitch == src_pitch && src_pitch == row_size)) {
-    memcpy(dstp, srcp, row_size*height);
-    return;
-  }
-  for (int y=height; y>0; --y) {
-    memcpy(dstp, srcp, row_size);
-    dstp += dst_pitch;
-    srcp += src_pitch;
-  }
-}
-inline bool isPowerOfTwo (int val) {
-  return (val & (~val+1)) == val;
-}
-
-inline int lmin(int p0, int p1) {
-  return p1 + ((p0 - p1) & ((p0 - p1) >> 31));
-}
-inline int lmax(int p0, int p1) {
-  return p0 - ((p0 - p1) & ((p0 - p1) >> 31));
-}
-
-inline uint32 getThreadCount()
+namespace RawSpeed
 {
+	using char8 = signed char;
+	using uchar8 = unsigned char;
+	using uint32 = unsigned int;
+	using int32 = signed int;
+	using ushort16 = unsigned short;
+
+	using Endianness = enum Endianness
+	{
+		big,
+		little,
+		unknown
+	};
+
+
+	inline void BitBlt(uchar8* dstp, int dst_pitch, const uchar8* srcp, int src_pitch, int row_size, int height)
+	{
+		if (height == 1 || (dst_pitch == src_pitch && src_pitch == row_size))
+		{
+			memcpy(dstp, srcp, row_size * height);
+			return;
+		}
+		for (int y = height; y > 0; --y)
+		{
+			memcpy(dstp, srcp, row_size);
+			dstp += dst_pitch;
+			srcp += src_pitch;
+		}
+	}
+
+	inline bool isPowerOfTwo(int val)
+	{
+		return (val & (~val + 1)) == val;
+	}
+
+	inline int lmin(int p0, int p1)
+	{
+		return p1 + ((p0 - p1) & ((p0 - p1) >> 31));
+	}
+
+	inline int lmax(int p0, int p1)
+	{
+		return p0 - ((p0 - p1) & ((p0 - p1) >> 31));
+	}
+
+	inline uint32 getThreadCount()
+	{
 #ifdef WIN32
-  return pthread_num_processors_np();
+		return pthread_num_processors_np();
 #else
   return rawspeed_get_number_of_processor_cores();
 #endif
-}
+	}
 
-inline Endianness getHostEndianness() {
+	inline Endianness getHostEndianness()
+	{
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
   return little;
 #elif defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
   return big;
 #else
-  ushort16 testvar = 0xfeff; 
-  uint32 firstbyte = ((uchar8 *)&testvar)[0];
-  if (firstbyte == 0xff)
-    return little;
-  else if (firstbyte == 0xfe)
-    return big;
-  else
-    _ASSERTE(FALSE);
+		ushort16 testvar = 0xfeff;
+		uint32 firstbyte = ((uchar8*)&testvar)[0];
+		if (firstbyte == 0xff)
+			return little;
+		if (firstbyte == 0xfe)
+			return big;
+		_ASSERTE(FALSE);
 
-  // Return something to make compilers happy
-  return unknown;
+		// Return something to make compilers happy
+		return unknown;
 #endif
-}
+	}
 
-#if defined(__GNUC__) && (PIPE_CC_GCC_VERSION >= 403) && defined(__BYTE_ORDER__) 
+#if defined(__GNUC__) && (PIPE_CC_GCC_VERSION >= 403) && defined(__BYTE_ORDER__)
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ && __alignof__ (int) == 1
 #define LE_PLATFORM_HAS_BSWAP
 #define PLATFORM_BSWAP32(A) __builtin_bswap32(A)
@@ -139,56 +150,70 @@ inline Endianness getHostEndianness() {
 #define PLATFORM_BSWAP32(A) _byteswap_ulong(A)
 #endif
 
-inline uint32 clampbits(int x, uint32 n) { 
-  uint32 _y_temp; 
-  if( (_y_temp=x>>n) ) 
-    x = ~_y_temp >> (32-n); 
-  return x;
-}
+	inline uint32 clampbits(int x, uint32 n)
+	{
+		uint32 _y_temp;
+		if ((_y_temp = x >> n))
+			x = ~_y_temp >> (32 - n);
+		return x;
+	}
 
-/* This is faster - at least when compiled on visual studio 32 bits */
-inline int other_abs(int x) { int const mask = x >> 31; return (x + mask) ^ mask;}
+	/* This is faster - at least when compiled on visual studio 32 bits */
+	inline int other_abs(int x)
+	{
+		const int mask = x >> 31;
+		return (x + mask) ^ mask;
+	}
 
-/* Remove all spaces at the end of a string */
+	/* Remove all spaces at the end of a string */
 
-inline void TrimSpaces(string& str) {
-  // Trim Both leading and trailing spaces
-  size_t startpos = str.find_first_not_of(" \t"); // Find the first character position after excluding leading blank spaces
-  size_t endpos = str.find_last_not_of(" \t"); // Find the first character position from reverse af
+	inline void TrimSpaces(string& str)
+	{
+		// Trim Both leading and trailing spaces
+		size_t startpos = str.find_first_not_of(" \t");
+		// Find the first character position after excluding leading blank spaces
+		size_t endpos = str.find_last_not_of(" \t"); // Find the first character position from reverse af
 
-  // if all spaces or empty return an empty string
-  if ((string::npos == startpos) || (string::npos == endpos)) {
-    str = "";
-  } else
-    str = str.substr(startpos, endpos - startpos + 1);
-}
+		// if all spaces or empty return an empty string
+		if ((string::npos == startpos) || (string::npos == endpos))
+		{
+			str = "";
+		}
+		else
+			str = str.substr(startpos, endpos - startpos + 1);
+	}
 
 
-inline vector<string> split_string(string input, char c = ' ') {
-  vector<string> result;
-  const char *str = input.c_str();
+	inline vector<string> split_string(string input, char c = ' ')
+	{
+		vector<string> result;
+		const char* str = input.c_str();
 
-  while(1) {
-    const char *begin = str;
+		while (true)
+		{
+			const char* begin = str;
 
-    while(*str != c && *str)
-      str++;
+			while (*str != c && *str)
+				str++;
 
-    result.push_back(string(begin, str));
+			result.push_back(string(begin, str));
 
-    if(0 == *str++)
-      break;
-  }
+			if (0 == *str++)
+				break;
+		}
 
-  return result;
-}
+		return result;
+	}
 
-typedef enum {
-  BitOrder_Plain,  /* Memory order */
-  BitOrder_Jpeg,   /* Input is added to stack byte by byte, and output is lifted from top */
-  BitOrder_Jpeg32, /* Same as above, but 32 bits at the time */
-} BitOrder;
-
+	using BitOrder = enum
+	{
+		BitOrder_Plain,
+		/* Memory order */
+		BitOrder_Jpeg,
+		/* Input is added to stack byte by byte, and output is lifted from top */
+		BitOrder_Jpeg32,
+		/* Same as above, but 32 bits at the time */
+	};
 } // namespace RawSpeed
 
 #endif

@@ -37,14 +37,14 @@ namespace rawspeed {
 // 16 entries of codes per bit length
 // 13 entries of code values
 const std::array<std::array<std::array<uint8_t, 16>, 2>, 1>
-    PentaxDecompressor::pentax_tree = {{
-        {{{0, 2, 3, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
-          {3, 4, 2, 5, 1, 6, 0, 7, 8, 9, 10, 11, 12}}},
-    }};
+PentaxDecompressor::pentax_tree = {{
+    {{{0, 2, 3, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
+      {3, 4, 2, 5, 1, 6, 0, 7, 8, 9, 10, 11, 12}}},
+}};
 
 PentaxDecompressor::PentaxDecompressor(const RawImage& img,
                                        ByteStream* metaData)
-    : mRaw(img), ht(SetupHuffmanTable(metaData)) {
+  : mRaw(img), ht(SetupHuffmanTable(metaData)) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");

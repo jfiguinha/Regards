@@ -17,25 +17,27 @@
 void LibRaw::Kodak_KDC_WBtags(int wb, int wbi)
 {
   int c;
-  FORC3 icWBC[wb][c] = get4();
+  FORC3
+    icWBC[wb][c] = get4();
   icWBC[wb][3] = icWBC[wb][1];
   if (wbi == wb)
-    FORC4 cam_mul[c] = icWBC[wb][c];
-  return;
+    FORC4
+      cam_mul[c] = icWBC[wb][c];
 }
 
 void LibRaw::Kodak_DCR_WBtags(int wb, unsigned type, int wbi)
 {
   float mul[3] = {1.0f, 1.0f, 1.0f}, num, mul2;
   int c;
-  FORC3 mul[c] = (num = getreal(type)) <= 0.001f ? 1.0f : num;
+  FORC3
+    mul[c] = (num = getreal(type)) <= 0.001f ? 1.0f : num;
   icWBC[wb][1] = icWBC[wb][3] = mul[1];
   mul2 = mul[1] * mul[1];
   icWBC[wb][0] = mul2 / mul[0];
   icWBC[wb][2] = mul2 / mul[2];
   if (wbi == wb)
-    FORC4 cam_mul[c] = icWBC[wb][c];
-  return;
+    FORC4
+      cam_mul[c] = icWBC[wb][c];
 }
 
 short LibRaw::KodakIllumMatrix(unsigned type, float *romm_camIllum)
@@ -44,10 +46,10 @@ short LibRaw::KodakIllumMatrix(unsigned type, float *romm_camIllum)
   if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_SRATIONAL))
   {
     for (j = 0; j < 9; j++)
-      ((float *)romm_camIllum)[j] = getreal(type);
+      romm_camIllum[j] = getreal(type);
     return 1;
   }
-  else if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_SLONG))
+  if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_SLONG))
   {
     FORC3
     {
@@ -61,8 +63,10 @@ short LibRaw::KodakIllumMatrix(unsigned type, float *romm_camIllum)
     if ((romm_camScale[0] > 0x1fff) && (romm_camScale[1] > 0x1fff) &&
         (romm_camScale[2] > 0x1fff))
     {
-      FORC3 for (j = 0; j < 3; j++)((float *)romm_camIllum)[c * 3 + j] =
-          ((float)romm_camTemp[c * 3 + j]) / ((float)romm_camScale[c]);
+      FORC3
+        for (j = 0; j < 3; j++)
+          romm_camIllum[c * 3 + j] =
+              static_cast<float>(romm_camTemp[c * 3 + j]) / static_cast<float>(romm_camScale[c]);
       return 1;
     }
   }
@@ -144,7 +148,8 @@ void LibRaw::parse_kodak_ifd(int base)
     }
 
     else if (tag == 0x03f1)
-    { // 1009 Kodak TextualInfo
+    {
+      // 1009 Kodak TextualInfo
       if (len > 0)
       {
         char kti[1024];
@@ -158,61 +163,61 @@ void LibRaw::parse_kodak_ifd(int base)
         char *last = 0;
         pkti = strtok_r(kti, "\x0a", &last);
 #endif
-        while (pkti != NULL)
+        while (pkti != nullptr)
         {
           c = 12;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Camera body:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Camera body:", c)))
           {
-            while ((pkti[c] == ' ') && (c < (int)strlen(pkti)))
+            while ((pkti[c] == ' ') && (c < static_cast<int>(strlen(pkti))))
             {
               c++;
             }
             strcpy(ilm.body, pkti + c);
           }
           c = 5;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Lens:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Lens:", c)))
           {
             ilm.CurFocal = atoi(pkti + c);
           }
           c = 9;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Aperture:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Aperture:", c)))
           {
-            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < (int)strlen(pkti)))
+            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < static_cast<int>(strlen(pkti))))
             {
               c++;
             }
             ilm.CurAp = atof(pkti + c);
           }
           c = 10;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "ISO Speed:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "ISO Speed:", c)))
           {
             iso_speed = atoi(pkti + c);
           }
           c = 13;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Focal Length:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Focal Length:", c)))
           {
             ilm.CurFocal = atoi(pkti + c);
           }
           c = 13;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Max Aperture:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Max Aperture:", c)))
           {
-            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < (int)strlen(pkti)))
+            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < static_cast<int>(strlen(pkti))))
             {
               c++;
             }
             ilm.MaxAp4CurFocal = atof(pkti + c);
           }
           c = 13;
-          if (((int)strlen(pkti) > c) && (!strncasecmp(pkti, "Min Aperture:", c)))
+          if ((static_cast<int>(strlen(pkti)) > c) && (!strncasecmp(pkti, "Min Aperture:", c)))
           {
-            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < (int)strlen(pkti)))
+            while (((pkti[c] == ' ') || (pkti[c] == 'f')) && (c < static_cast<int>(strlen(pkti))))
             {
               c++;
             }
             ilm.MinAp4CurFocal = atof(pkti + c);
           }
 #ifdef LIBRAW_WIN32_CALLS
-          pkti = strtok(NULL, "\x0a");
+          pkti = strtok(nullptr, "\x0a");
 #else
           pkti = strtok_r(NULL, "\x0a", &last);
 #endif
@@ -230,9 +235,11 @@ void LibRaw::parse_kodak_ifd(int base)
         wbi = wbtag_dcr[wbi];
     }
     else if (tag == 0x03fd && len == 72) // 1021
-    {                                    /* WB set in software */
+    {
+      /* WB set in software */
       fseek(ifp, 40, SEEK_CUR);
-      FORC3 cam_mul[c] = 2048.0 / fMAX(1.0f, get2());
+      FORC3
+        cam_mul[c] = 2048.0 / fMAX(1.0f, get2());
       wbi = -2;
     }
 
@@ -268,19 +275,21 @@ void LibRaw::parse_kodak_ifd(int base)
     {
       imKodak.val018percent = get2();
       imgdata.color.linear_max[0] = imgdata.color.linear_max[1] =
-          imgdata.color.linear_max[2] = imgdata.color.linear_max[3] =
-              (int)(((float)imKodak.val018percent) / 18.0f * 170.0f);
+                                    imgdata.color.linear_max[2] = imgdata.color.linear_max[3] =
+                                                                  static_cast<int>(
+                                                                    static_cast<float>(imKodak.val018percent) / 18.0f *
+                                                                    170.0f);
     }
     else if (tag == 0x0e93) // 3731
       imgdata.color.linear_max[0] = imgdata.color.linear_max[1] =
-          imgdata.color.linear_max[2] = imgdata.color.linear_max[3] =
-              imKodak.val170percent = get2();
+                                    imgdata.color.linear_max[2] = imgdata.color.linear_max[3] =
+                                                                  imKodak.val170percent = get2();
     else if (tag == 0x0e94) // 3732
       imKodak.val100percent = get2();
-    /*
-        else if (tag == 0x1784)    // 6020
-          iso_speed = getint(type);
-    */
+      /*
+          else if (tag == 0x1784)    // 6020
+            iso_speed = getint(type);
+      */
     else if (tag == 0xfa00) // 64000
       stmread(imgdata.shootinginfo.BodySerial, len, ifp);
     else if (tag == 0xfa0d) // 64013
@@ -293,14 +302,14 @@ void LibRaw::parse_kodak_ifd(int base)
       width = getint(type);
     else if (tag == 0xfa14) // 64020
       height = (getint(type) + 1) & -2;
-    /*
-          height = getint(type);
-
-        else if (tag == 0xfa16)  // 64022
-          raw_width = get2();
-        else if (tag == 0xfa17)  // 64023
-          raw_height = get2();
-    */
+      /*
+            height = getint(type);
+  
+          else if (tag == 0xfa16)  // 64022
+            raw_width = get2();
+          else if (tag == 0xfa17)  // 64023
+            raw_height = get2();
+      */
     else if (tag == 0xfa18) // 64024
     {
       imKodak.offset_left = getint(LIBRAW_EXIFTAG_TYPE_SSHORT);

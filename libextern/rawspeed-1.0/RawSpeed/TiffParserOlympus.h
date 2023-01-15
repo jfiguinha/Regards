@@ -24,17 +24,16 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class TiffParserOlympus :
-  public TiffParser
+namespace RawSpeed
 {
-public:
-  TiffParserOlympus(FileMap* input);
-  virtual void parseData();
-  virtual ~TiffParserOlympus(void);
-};
-
+	class TiffParserOlympus :
+		public TiffParser
+	{
+	public:
+		TiffParserOlympus(FileMap* input);
+		void parseData() override;
+		~TiffParserOlympus(void) override;
+	};
 } // namespace RawSpeed
 
 #endif

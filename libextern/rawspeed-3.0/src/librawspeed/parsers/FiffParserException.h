@@ -30,7 +30,8 @@ class FiffParserException final : public RawParserException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   FiffParserException(const char* msg)
-      : RawParserException(msg) {}
+    : RawParserException(msg) {
+  }
 };
 
 #define ThrowFPE(...)                                                          \

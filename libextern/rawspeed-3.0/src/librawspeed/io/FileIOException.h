@@ -31,7 +31,8 @@ class FileIOException final : public RawDecoderException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   FileIOException(const char* msg)
-      : RawDecoderException(msg) {}
+    : RawDecoderException(msg) {
+  }
 };
 
 #define ThrowFIE(...)                                                          \

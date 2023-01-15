@@ -37,8 +37,9 @@ void LibRaw::parseAdobePanoMakernote()
   PrivateMknLength = get4();
 
   if ((PrivateMknLength > 4) && (PrivateMknLength < 10240000) &&
-      (PrivateMknBuf = (uchar *)malloc(PrivateMknLength + 1024)))
-  { // 1024b for safety
+      (PrivateMknBuf = static_cast<uchar *>(malloc(PrivateMknLength + 1024))))
+  {
+    // 1024b for safety
     fread(PrivateMknBuf, PrivateMknLength, 1, ifp);
     PrivateOrder = sget2(PrivateMknBuf);
     PrivateEntries = sget2(PrivateMknBuf + 2);
@@ -63,11 +64,11 @@ void LibRaw::parseAdobePanoMakernote()
         continue;
 
       PrivateTagBytes = PrivateTagCount *
-          tagtype_dataunit_bytes[(PrivateTagType <= LIBRAW_EXIFTAG_TYPE_IFD8) ? PrivateTagType : 0];
-      if(PrivateTagBytes > 10240000u)
+                        tagtype_dataunit_bytes[(PrivateTagType <= LIBRAW_EXIFTAG_TYPE_IFD8) ? PrivateTagType : 0];
+      if (PrivateTagBytes > 10240000u)
       {
-         free(PrivateMknBuf);
-         return;
+        free(PrivateMknBuf);
+        return;
       }
       if (PrivateTagID == 0x0002)
       {
@@ -121,7 +122,7 @@ void LibRaw::parseAdobePanoMakernote()
             CHECKSPACE(6);
             icWBC[tWB][0] = sget2(PrivateMknBuf + posPrivateMknBuf + 2);
             icWBC[tWB][1] = icWBC[tWB][3] =
-                sget2(PrivateMknBuf + posPrivateMknBuf + 4);
+                            sget2(PrivateMknBuf + posPrivateMknBuf + 4);
             icWBC[tWB][2] = sget2(PrivateMknBuf + posPrivateMknBuf + 6);
           }
           posPrivateMknBuf += 8;

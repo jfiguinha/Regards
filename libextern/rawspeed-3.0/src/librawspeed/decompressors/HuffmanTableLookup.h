@@ -100,24 +100,24 @@ public:
   }
 
   template <typename BIT_STREAM>
-  inline int decodeCodeValue(BIT_STREAM& bs) const {
+  int decodeCodeValue(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(!fullDecode);
     return decode<BIT_STREAM, false>(bs);
   }
 
   template <typename BIT_STREAM>
-  inline int decodeDifference(BIT_STREAM& bs) const {
+  int decodeDifference(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(fullDecode);
     return decode<BIT_STREAM, true>(bs);
   }
 
 protected:
   template <typename BIT_STREAM>
-  inline std::pair<CodeSymbol, int /*codeValue*/>
+  std::pair<CodeSymbol, int /*codeValue*/>
   finishReadingPartialSymbol(BIT_STREAM& bs, CodeSymbol partial) const {
     while (partial.code_len < maxCodeOL.size() &&
            (0xFFFFFFFF == maxCodeOL[partial.code_len] ||
@@ -132,7 +132,7 @@ protected:
          partial.code > maxCodeOL[partial.code_len]) ||
         partial.code < codeOffsetOL[partial.code_len])
       ThrowRDE("bad Huffman code: %u (len: %u)", partial.code,
-               partial.code_len);
+             partial.code_len);
 
     int codeValue = codeValues[partial.code - codeOffsetOL[partial.code_len]];
 
@@ -140,7 +140,7 @@ protected:
   }
 
   template <typename BIT_STREAM>
-  inline std::pair<CodeSymbol, int /*codeValue*/>
+  std::pair<CodeSymbol, int /*codeValue*/>
   readSymbol(BIT_STREAM& bs) const {
     // Start from completely unknown symbol.
     CodeSymbol partial;
@@ -156,9 +156,9 @@ public:
   // one to return the fully decoded diff.
   // All ifs depending on this bool will be optimized out by the compiler
   template <typename BIT_STREAM, bool FULL_DECODE>
-  inline int decode(BIT_STREAM& bs) const {
+  int decode(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(FULL_DECODE == fullDecode);
     bs.fill(32);
 

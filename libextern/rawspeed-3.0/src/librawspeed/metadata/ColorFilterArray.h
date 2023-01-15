@@ -38,13 +38,13 @@ enum CFAColor : uint8_t {
   CFA_YELLOW = 5,
   CFA_WHITE = 6,
   CFA_FUJI_GREEN = 7,
-  CFA_END, // keep it last!
+  CFA_END,
+  // keep it last!
   CFA_UNKNOWN = 255,
 
 };
 
-class ColorFilterArray
-{
+class ColorFilterArray {
   std::vector<CFAColor> cfa;
   iPoint2D size;
 

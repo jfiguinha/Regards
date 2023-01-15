@@ -43,7 +43,8 @@ class DeflateDecompressor final : public AbstractDecompressor {
 public:
   DeflateDecompressor(ByteStream bs, const RawImage& img, int predictor_,
                       int bps_)
-      : input(std::move(bs)), mRaw(img), predictor(predictor_), bps(bps_) {}
+    : input(std::move(bs)), mRaw(img), predictor(predictor_), bps(bps_) {
+  }
 
   void decode(std::unique_ptr<unsigned char[]>* uBuffer, // NOLINT
               iPoint2D maxDim, iPoint2D dim, iPoint2D off);

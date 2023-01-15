@@ -67,10 +67,11 @@ RawImage NefDecoder::decodeRawInternal() {
   const auto* raw = mRootIFD->getIFDWithTag(CFAPATTERN);
   auto compression = raw->getEntry(COMPRESSION)->getU32();
 
-  TiffEntry *offsets = raw->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(STRIPBYTECOUNTS);
 
-  if (mRootIFD->getEntryRecursive(MODEL)->getString() == "NIKON D100 ") { /**Sigh**/
+  if (mRootIFD->getEntryRecursive(MODEL)->getString() == "NIKON D100 ") {
+    /**Sigh**/
     if (!mFile.isValid(offsets->getU32()))
       ThrowRDE("Image data outside of file.");
     if (!D100IsCompressed(offsets->getU32())) {
@@ -112,7 +113,7 @@ RawImage NefDecoder::decodeRawInternal() {
 
   raw = mRootIFD->getIFDWithTag(static_cast<TiffTag>(0x8c));
 
-  TiffEntry *meta;
+  TiffEntry* meta;
   if (raw->hasEntry(static_cast<TiffTag>(0x96))) {
     meta = raw->getEntry(static_cast<TiffTag>(0x96));
   } else {
@@ -164,7 +165,8 @@ bool NefDecoder::NEFIsUncompressed(const TiffIFD* raw) {
   // Now, there can be three situations.
 
   // We might have not enough input to produce the requested image size.
-  const uint64_t avaliableInputBits = uint64_t(8) * avaliableInputBytes;
+  const uint64_t avaliableInputBits =
+      static_cast<uint64_t>(8) * avaliableInputBytes;
   const auto avaliablePixels = avaliableInputBits / bitPerPixel; // round down!
   if (avaliablePixels < requiredPixels)
     return false;
@@ -205,8 +207,8 @@ bool NefDecoder::NEFIsUncompressedRGB(const TiffIFD* raw) {
 
 void NefDecoder::DecodeUncompressed() {
   const auto* raw = getIFDWithLargestImage(CFAPATTERN);
-  TiffEntry *offsets = raw->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(STRIPBYTECOUNTS);
   uint32_t yPerSlice = raw->getEntry(ROWSPERSTRIP)->getU32();
   uint32_t width = raw->getEntry(IMAGEWIDTH)->getU32();
   uint32_t height = raw->getEntry(IMAGELENGTH)->getU32();
@@ -261,7 +263,7 @@ void NefDecoder::DecodeUncompressed() {
   assert(slices.size() == counts->count);
 
   mRaw->createData();
-  if (bitPerPixel == 14 && width*slices[0].h*2 == slices[0].count)
+  if (bitPerPixel == 14 && width * slices[0].h * 2 == slices[0].count)
     bitPerPixel = 16; // D3 & D810
 
   bitPerPixel = hints.get("real_bpp", bitPerPixel);
@@ -339,7 +341,7 @@ void NefDecoder::readCoolpixSplitRaw(ByteStream input, const iPoint2D& size,
     ++row;
   }
   assert(even.getRemainingSize() == 0 && odd.getRemainingSize() == 0 &&
-         "Should have run out of input");
+      "Should have run out of input");
 }
 
 void NefDecoder::DecodeD100Uncompressed() {
@@ -411,7 +413,7 @@ string NefDecoder::getMode() {
   return mode.str();
 }
 
-string NefDecoder::getExtendedMode(const string &mode) {
+string NefDecoder::getExtendedMode(const string& mode) {
   ostringstream extended_mode;
 
   const auto* ifd = mRootIFD->getIFDWithTag(CFAPATTERN);
@@ -472,7 +474,7 @@ const std::array<uint8_t, 256> NefDecoder::keymap = {
 
 void NefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   int iso = 0;
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
 
   int white = mRaw->whitePoint;
   int black = mRaw->blackLevel;
@@ -506,7 +508,8 @@ void NefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
         mRaw->metadata.wbCoeffs[0] = static_cast<float>(wb->getU16(36));
         mRaw->metadata.wbCoeffs[2] = static_cast<float>(wb->getU16(37));
         mRaw->metadata.wbCoeffs[1] = static_cast<float>(wb->getU16(38));
-      } else if (version == 0x103 && wb->count >= 26 && wb->type == TIFF_UNDEFINED) {
+      } else if (version == 0x103 && wb->count >= 26 && wb->type ==
+                 TIFF_UNDEFINED) {
         mRaw->metadata.wbCoeffs[0] = static_cast<float>(wb->getU16(10));
         mRaw->metadata.wbCoeffs[1] = static_cast<float>(wb->getU16(11));
         mRaw->metadata.wbCoeffs[2] = static_cast<float>(wb->getU16(12));
@@ -517,15 +520,15 @@ void NefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
         // Get the serial number
         string serial =
             mRootIFD->getEntryRecursive(static_cast<TiffTag>(0x001d))
-                ->getString();
+                    ->getString();
         if (serial.length() > 9)
           ThrowRDE("Serial number is too long (%zu)", serial.length());
         uint32_t serialno = 0;
         for (unsigned char c : serial) {
           if (c >= '0' && c <= '9')
-            serialno = serialno*10 + c-'0';
+            serialno = serialno * 10 + c - '0';
           else
-            serialno = serialno*10 + c%10;
+            serialno = serialno * 10 + c % 10;
         }
 
         // Get the decryption key
@@ -544,7 +547,7 @@ void NefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
 
         std::array<uint8_t, 14 + 8> buf;
         for (unsigned char& i : buf) {
-          cj = uint8_t(cj + ci * ck); // modulo arithmetics.
+          cj = static_cast<uint8_t>(cj + ci * ck); // modulo arithmetics.
           i = bs.getByte() ^ cj;
           ck++;
         }
@@ -587,8 +590,8 @@ void NefDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   }
 
   if (hints.has("nikon_wb_adjustment")) {
-    mRaw->metadata.wbCoeffs[0] *= 256/527.0;
-    mRaw->metadata.wbCoeffs[2] *= 256/317.0;
+    mRaw->metadata.wbCoeffs[0] *= 256 / 527.0;
+    mRaw->metadata.wbCoeffs[2] *= 256 / 317.0;
   }
 
   auto id = mRootIFD->getID();
@@ -645,7 +648,7 @@ void NefDecoder::DecodeNikonSNef(const ByteStream& input) {
   auto curve = gammaCurve(1 / 2.4, 12.92, 1, 4095);
 
   // Scale output values to 16 bits.
-  for (int i = 0 ; i < 4096; i++) {
+  for (int i = 0; i < 4096; i++) {
     curve[i] = clampBits(static_cast<int>(curve[i]) << 2, 16);
   }
 
@@ -669,7 +672,7 @@ void NefDecoder::DecodeNikonSNef(const ByteStream& input) {
       uint32_t g5 = in[4];
       uint32_t g6 = in[5];
 
-      in+=6;
+      in += 6;
       auto y1 = static_cast<float>(g1 | ((g2 & 0x0f) << 8));
       auto y2 = static_cast<float>((g2 >> 4) | (g3 << 4));
       auto cb = static_cast<float>(g4 | ((g5 & 0x0f) << 8));
@@ -720,6 +723,7 @@ void NefDecoder::DecodeNikonSNef(const ByteStream& input) {
 
 // From:  dcraw.c -- Dave Coffin's raw photo decoder
 #define SQR(x) ((x)*(x))
+
 std::vector<uint16_t> NefDecoder::gammaCurve(double pwr, double ts, int mode,
                                              int imax) {
   std::vector<uint16_t> curve(65536);
@@ -732,9 +736,9 @@ std::vector<uint16_t> NefDecoder::gammaCurve(double pwr, double ts, int mode,
   g[1] = ts;
   g[2] = g[3] = g[4] = 0;
   bnd[g[1] >= 1] = 1;
-  if (g[1] && (g[1]-1)*(g[0]-1) <= 0) {
-    for (i=0; i < 48; i++) {
-      g[2] = (bnd[0] + bnd[1])/2;
+  if (g[1] && (g[1] - 1) * (g[0] - 1) <= 0) {
+    for (i = 0; i < 48; i++) {
+      g[2] = (bnd[0] + bnd[1]) / 2;
       if (g[0])
         bnd[(pow(g[2] / g[1], -g[0]) - 1) / g[0] - 1 / g[2] > -1] = g[2];
       else
@@ -759,17 +763,22 @@ std::vector<uint16_t> NefDecoder::gammaCurve(double pwr, double ts, int mode,
 
   mode--;
 
-  for (i=0; i < 0x10000; i++) {
+  for (i = 0; i < 0x10000; i++) {
     curve[i] = 0xffff;
     if ((r = static_cast<double>(i) / imax) < 1) {
       curve[i] = static_cast<uint16_t>(
-          0x10000 *
-          (mode ? (r < g[3] ? r * g[1]
-                            : (g[0] ? pow(r, g[0]) * (1 + g[4]) - g[4]
-                                    : log(r) * g[2] + 1))
-                : (r < g[2] ? r / g[1]
-                            : (g[0] ? pow((r + g[4]) / (1 + g[4]), 1 / g[0])
-                                    : exp((r - 1) / g[2])))));
+        0x10000 *
+        (mode
+           ? (r < g[3]
+                ? r * g[1]
+                : (g[0]
+                     ? pow(r, g[0]) * (1 + g[4]) - g[4]
+                     : log(r) * g[2] + 1))
+           : (r < g[2]
+                ? r / g[1]
+                : (g[0]
+                     ? pow((r + g[4]) / (1 + g[4]), 1 / g[0])
+                     : exp((r - 1) / g[2])))));
     }
   }
 

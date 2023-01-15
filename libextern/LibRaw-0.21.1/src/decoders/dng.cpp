@@ -20,8 +20,8 @@
 
 void LibRaw::vc5_dng_load_raw_placeholder()
 {
-    // placeholder only, real decoding implemented in GPR SDK
-    throw LIBRAW_EXCEPTION_DECODE_RAW;
+  // placeholder only, real decoding implemented in GPR SDK
+  throw LIBRAW_EXCEPTION_DECODE_RAW;
 }
 
 void LibRaw::adobe_copy_pixel(unsigned row, unsigned col, ushort **rp)
@@ -40,12 +40,13 @@ void LibRaw::adobe_copy_pixel(unsigned row, unsigned col, ushort **rp)
   {
     if (row < raw_height && col < raw_width)
       FORC(int(tiff_samples))
-    image[row * raw_width + col][c] = curve[(*rp)[c]];
+        image[row * raw_width + col][c] = curve[(*rp)[c]];
     *rp += tiff_samples;
   }
   if (tiff_samples == 2 && shot_select)
     (*rp)--;
 }
+
 void LibRaw::lossless_dng_load_raw()
 {
   unsigned trow = 0, tcol = 0, jwide, jrow, jcol, row, col, i, j;
@@ -54,7 +55,7 @@ void LibRaw::lossless_dng_load_raw()
   ushort *rp;
 
   int ss = shot_select;
-  shot_select = libraw_internal_data.unpacker_data.dng_frames[LIM(ss,0,(LIBRAW_IFD_MAXCOUNT*2-1))] & 0xff;
+  shot_select = libraw_internal_data.unpacker_data.dng_frames[LIM(ss, 0, (LIBRAW_IFD_MAXCOUNT*2-1))] & 0xff;
 
   while (trow < raw_height)
   {
@@ -68,8 +69,8 @@ void LibRaw::lossless_dng_load_raw()
     if (filters)
       jwide *= jh.clrs;
 
-    if(filters && (tiff_samples == 2)) // Fuji Super CCD
-        jwide /= 2;
+    if (filters && (tiff_samples == 2)) // Fuji Super CCD
+      jwide /= 2;
     try
     {
       switch (jh.algo)
@@ -77,10 +78,10 @@ void LibRaw::lossless_dng_load_raw()
       case 0xc1:
         jh.vpred[0] = 16384;
         getbits(-1);
-        for (jrow = 0; jrow + 7 < (unsigned)jh.high; jrow += 8)
+        for (jrow = 0; jrow + 7 < static_cast<unsigned>(jh.high); jrow += 8)
         {
           checkCancel();
-          for (jcol = 0; jcol + 7 < (unsigned)jh.wide; jcol += 8)
+          for (jcol = 0; jcol + 7 < static_cast<unsigned>(jh.wide); jcol += 8)
           {
             ljpeg_idct(&jh);
             rp = jh.idct;
@@ -93,7 +94,7 @@ void LibRaw::lossless_dng_load_raw()
         }
         break;
       case 0xc3:
-        for (row = col = jrow = 0; jrow < (unsigned)jh.high; jrow++)
+        for (row = col = jrow = 0; jrow < static_cast<unsigned>(jh.high); jrow++)
         {
           checkCancel();
           rp = ljpeg_row(jrow, &jh);
@@ -135,14 +136,14 @@ void LibRaw::packed_dng_load_raw()
 
   if (tile_length < INT_MAX)
   {
-      packed_tiled_dng_load_raw();
-      return;
+    packed_tiled_dng_load_raw();
+    return;
   }
 
   int ss = shot_select;
-  shot_select = libraw_internal_data.unpacker_data.dng_frames[LIM(ss,0,(LIBRAW_IFD_MAXCOUNT*2-1))] & 0xff;
+  shot_select = libraw_internal_data.unpacker_data.dng_frames[LIM(ss, 0, (LIBRAW_IFD_MAXCOUNT*2-1))] & 0xff;
 
-  pixel = (ushort *)calloc(raw_width, tiff_samples * sizeof *pixel);
+  pixel = static_cast<ushort *>(calloc(raw_width, tiff_samples * sizeof *pixel));
   try
   {
     for (row = 0; row < raw_height; row++)
@@ -184,7 +185,7 @@ void LibRaw::lossy_dng_load_raw()
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
   struct jpeg_decompress_struct cinfo;
   JSAMPARRAY buf;
-  JSAMPLE(*pixel)[3];
+  JSAMPLE (*pixel)[3];
   unsigned sorder = order, ntags, opcode, deg, i, j, c;
   unsigned trow = 0, tcol = 0, row, col;
   INT64 save = data_offset - 4;
@@ -217,8 +218,8 @@ void LibRaw::lossy_dng_load_raw()
       for (i = 0; i < 256; i++)
       {
         for (tot = j = 0; j <= deg; j++)
-          tot += coeff[j] * pow(i / 255.0, (int)j);
-        cur[c][i] = (ushort)(tot * 0xffff);
+          tot += coeff[j] * pow(i / 255.0, static_cast<int>(j));
+        cur[c][i] = static_cast<ushort>(tot * 0xffff);
       }
     }
     order = sorder;
@@ -226,7 +227,8 @@ void LibRaw::lossy_dng_load_raw()
   else
   {
     gamma_curve(1 / 2.4, 12.92, 1, 255);
-    FORC3 memcpy(cur[c], curve, sizeof cur[0]);
+    FORC3
+      memcpy(cur[c], curve, sizeof cur[0]);
   }
 
   struct jpeg_error_mgr pub;
@@ -259,7 +261,8 @@ void LibRaw::lossy_dng_load_raw()
         pixel = (JSAMPLE(*)[3])buf[0];
         for (col = 0; col < cinfo.output_width && tcol + col < width; col++)
         {
-          FORC3 image[row * width + tcol + col][c] = cur[c][pixel[col][c]];
+          FORC3
+            image[row * width + tcol + col][c] = cur[c][pixel[col][c]];
         }
       }
     }

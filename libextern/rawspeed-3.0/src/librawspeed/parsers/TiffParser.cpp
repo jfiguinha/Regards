@@ -56,10 +56,12 @@ using std::string;
 
 namespace rawspeed {
 
-TiffParser::TiffParser(const Buffer& file) : RawParser(file) {}
+TiffParser::TiffParser(const Buffer& file)
+  : RawParser(file) {
+}
 
 std::unique_ptr<RawDecoder> TiffParser::getDecoder(const CameraMetaData* meta) {
-  return TiffParser::makeDecoder(TiffParser::parse(nullptr, mInput), mInput);
+  return makeDecoder(parse(nullptr, mInput), mInput);
 }
 
 TiffRootIFDOwner TiffParser::parse(TiffIFD* parent, const Buffer& data) {
@@ -68,10 +70,11 @@ TiffRootIFDOwner TiffParser::parse(TiffIFD* parent, const Buffer& data) {
   bs.skipBytes(2);
 
   uint16_t magic = bs.getU16();
-  if (magic != 42 && magic != 0x4f52 && magic != 0x5352 && magic != 0x55) // ORF has 0x4f52/0x5352, RW2 0x55 - Brilliant!
+  if (magic != 42 && magic != 0x4f52 && magic != 0x5352 && magic != 0x55)
+    // ORF has 0x4f52/0x5352, RW2 0x55 - Brilliant!
     ThrowTPE("Not a TIFF file (magic 42)");
 
-  TiffRootIFDOwner root = std::make_unique<TiffRootIFD>(
+  auto root = std::make_unique<TiffRootIFD>(
       parent, nullptr, bs,
       UINT32_MAX); // tell TiffIFD constructor not to parse bs as IFD
 
@@ -123,24 +126,24 @@ std::unique_ptr<RawDecoder> TiffParser::constructor(TiffRootIFDOwner&& root,
 
 const std::array<std::pair<TiffParser::checker_t, TiffParser::constructor_t>,
                  16>
-    TiffParser::Map = {{
-        DECODER(DngDecoder),
-        DECODER(MosDecoder),
-        DECODER(IiqDecoder),
-        DECODER(Cr2Decoder),
-        DECODER(NefDecoder),
-        DECODER(OrfDecoder),
-        DECODER(ArwDecoder),
-        DECODER(PefDecoder),
-        DECODER(Rw2Decoder),
-        DECODER(SrwDecoder),
-        DECODER(MefDecoder),
-        DECODER(DcrDecoder),
-        DECODER(DcsDecoder),
-        DECODER(KdcDecoder),
-        DECODER(ErfDecoder),
-        DECODER(ThreefrDecoder),
+TiffParser::Map = {{
+    DECODER(DngDecoder),
+    DECODER(MosDecoder),
+    DECODER(IiqDecoder),
+    DECODER(Cr2Decoder),
+    DECODER(NefDecoder),
+    DECODER(OrfDecoder),
+    DECODER(ArwDecoder),
+    DECODER(PefDecoder),
+    DECODER(Rw2Decoder),
+    DECODER(SrwDecoder),
+    DECODER(MefDecoder),
+    DECODER(DcrDecoder),
+    DECODER(DcsDecoder),
+    DECODER(KdcDecoder),
+    DECODER(ErfDecoder),
+    DECODER(ThreefrDecoder),
 
-    }};
+}};
 
 } // namespace rawspeed

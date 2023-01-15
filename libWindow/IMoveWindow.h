@@ -12,7 +12,4 @@ namespace Regards::Window
 		virtual bool OnLButtonDown() = 0;
 		virtual void OnLButtonUp() = 0;
 	};
-
 }
-
-

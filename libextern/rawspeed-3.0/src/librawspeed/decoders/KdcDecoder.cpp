@@ -57,7 +57,8 @@ Buffer KdcDecoder::getInputBuffer() {
     ThrowRDE("Couldn't find the KDC offset");
 
   assert(offset != nullptr);
-  uint64_t off = uint64_t(offset->getU32(4)) + uint64_t(offset->getU32(12));
+  uint64_t off = static_cast<uint64_t>(offset->getU32(4)) + static_cast<
+                   uint64_t>(offset->getU32(12));
   if (off > std::numeric_limits<uint32_t>::max())
     ThrowRDE("Offset is too large.");
 
@@ -110,7 +111,7 @@ RawImage KdcDecoder::decodeRawInternal() {
 
   mRaw->dim = iPoint2D(width, height);
 
-  const Buffer inputBuffer = KdcDecoder::getInputBuffer();
+  const Buffer inputBuffer = getInputBuffer();
 
   mRaw->createData();
 
@@ -127,7 +128,7 @@ void KdcDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
 
   // Try the kodak hidden IFD for WB
   if (mRootIFD->hasEntryRecursive(KODAK_IFD2)) {
-    TiffEntry *ifdoffset = mRootIFD->getEntryRecursive(KODAK_IFD2);
+    TiffEntry* ifdoffset = mRootIFD->getEntryRecursive(KODAK_IFD2);
     try {
       NORangesSet<Buffer> ifds;
 
@@ -135,21 +136,21 @@ void KdcDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
                            ifdoffset->getU32());
 
       if (kodakifd.hasEntryRecursive(KODAK_KDC_WB)) {
-        TiffEntry *wb = kodakifd.getEntryRecursive(KODAK_KDC_WB);
+        TiffEntry* wb = kodakifd.getEntryRecursive(KODAK_KDC_WB);
         if (wb->count == 3) {
           mRaw->metadata.wbCoeffs[0] = wb->getFloat(0);
           mRaw->metadata.wbCoeffs[1] = wb->getFloat(1);
           mRaw->metadata.wbCoeffs[2] = wb->getFloat(2);
         }
       }
-    } catch (TiffParserException &e) {
+    } catch (TiffParserException& e) {
       mRaw->setError(e.what());
     }
   }
 
   // Use the normal WB if available
   if (mRootIFD->hasEntryRecursive(KODAKWB)) {
-    TiffEntry *wb = mRootIFD->getEntryRecursive(KODAKWB);
+    TiffEntry* wb = mRootIFD->getEntryRecursive(KODAKWB);
     if (wb->count == 734 || wb->count == 1502) {
       mRaw->metadata.wbCoeffs[0] =
           static_cast<float>(((static_cast<uint16_t>(wb->getByte(148))) << 8) |

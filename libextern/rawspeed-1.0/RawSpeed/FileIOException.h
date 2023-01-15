@@ -25,16 +25,15 @@
 #define FILE_IOEXCEPTION_H
 
 
-namespace RawSpeed {
-
-void ThrowFIE(const char* fmt, ...);
-
-class FileIOException: public RawDecoderException
+namespace RawSpeed
 {
-public:
-  FileIOException(const string);
-};
+	void ThrowFIE(const char* fmt, ...);
 
+	class FileIOException : public RawDecoderException
+	{
+	public:
+		FileIOException(string);
+	};
 } // namespace RawSpeed
 
 #endif

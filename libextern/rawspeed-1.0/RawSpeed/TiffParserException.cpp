@@ -27,20 +27,21 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	TiffParserException::TiffParserException(const string _msg) : runtime_error(_msg)
+	{
+		_RPT1(0, "TIFF Exception: %s\n", _msg.c_str());
+	};
 
-TiffParserException::TiffParserException(const string _msg) : runtime_error(_msg) {
-  _RPT1(0, "TIFF Exception: %s\n", _msg.c_str());
-};
-
-void ThrowTPE(const char* fmt, ...) {
-  va_list val;
-  va_start(val, fmt);
-  char buf[8192];
-  vsprintf_s(buf, 8192, fmt, val);
-  va_end(val);
-  _RPT1(0, "EXCEPTION: %s\n", buf);
-  throw TiffParserException(buf);
-}
-
+	void ThrowTPE(const char* fmt, ...)
+	{
+		va_list val;
+		va_start(val, fmt);
+		char buf[8192];
+		vsprintf_s(buf, 8192, fmt, val);
+		va_end(val);
+		_RPT1(0, "EXCEPTION: %s\n", buf);
+		throw TiffParserException(buf);
+	}
 } // namespace RawSpeed

@@ -32,7 +32,8 @@ class CiffParserException final : public RawParserException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   CiffParserException(const char* msg)
-      : RawParserException(msg) {}
+    : RawParserException(msg) {
+  }
 };
 
 #define ThrowCPE(...)                                                          \

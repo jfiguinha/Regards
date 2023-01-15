@@ -42,12 +42,11 @@ class xml_node;
 
 namespace rawspeed {
 
-class Hints
-{
+class Hints {
   std::map<std::string, std::string> data;
+
 public:
-  void add(const std::string& key, const std::string& value)
-  {
+  void add(const std::string& key, const std::string& value) {
     data.insert({key, value});
   }
 
@@ -73,8 +72,7 @@ public:
   }
 };
 
-class Camera
-{
+class Camera {
 public:
 #ifdef HAVE_PUGIXML
   explicit Camera(const pugi::xml_node& camera);
@@ -99,20 +97,21 @@ public:
   std::vector<CameraSensorInfo> sensorInfo;
   int decoderVersion;
   Hints hints;
+
 protected:
   static const std::map<char, CFAColor> char2enum;
   static const std::map<std::string, CFAColor> str2enum;
 
 #ifdef HAVE_PUGIXML
-  void parseCFA(const pugi::xml_node &node);
-  void parseCrop(const pugi::xml_node &node);
-  void parseBlackAreas(const pugi::xml_node &node);
-  void parseAliases(const pugi::xml_node &node);
-  void parseHints(const pugi::xml_node &node);
-  void parseID(const pugi::xml_node &node);
-  void parseSensor(const pugi::xml_node &node);
+  void parseCFA(const pugi::xml_node& node);
+  void parseCrop(const pugi::xml_node& node);
+  void parseBlackAreas(const pugi::xml_node& node);
+  void parseAliases(const pugi::xml_node& node);
+  void parseHints(const pugi::xml_node& node);
+  void parseID(const pugi::xml_node& node);
+  void parseSensor(const pugi::xml_node& node);
 
-  void parseCameraChild(const pugi::xml_node &node);
+  void parseCameraChild(const pugi::xml_node& node);
 #endif
 };
 

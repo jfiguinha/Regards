@@ -26,7 +26,8 @@ static void cleargps(libraw_gps_info_t *q)
   q->altref = q->latref = q->longref = q->gpsstatus = q->gpsparsed = 0;
 }
 
-LibRaw::LibRaw(unsigned int flags) : memmgr(1024)
+LibRaw::LibRaw(unsigned int flags)
+  : memmgr(1024)
 {
   double aber[4] = {1, 1, 1, 1};
   double gamm[6] = {0.45, 4.5, 0, 0, 0, 0};
@@ -38,12 +39,12 @@ LibRaw::LibRaw(unsigned int flags) : memmgr(1024)
   ZERO(libraw_internal_data);
   ZERO(callbacks);
 
-  _rawspeed_camerameta = _rawspeed_decoder = NULL;
-  _rawspeed3_handle = NULL;
-  dnghost = NULL;
-  dngnegative = NULL;
-  dngimage = NULL;
-  _x3f_data = NULL;
+  _rawspeed_camerameta = _rawspeed_decoder = nullptr;
+  _rawspeed3_handle = nullptr;
+  dnghost = nullptr;
+  dngnegative = nullptr;
+  dngimage = nullptr;
+  _x3f_data = nullptr;
 
 #ifdef USE_RAWSPEED
   CameraMetaDataLR *camerameta =
@@ -52,16 +53,18 @@ LibRaw::LibRaw(unsigned int flags) : memmgr(1024)
   _rawspeed_camerameta = static_cast<void *>(camerameta);
 #endif
   callbacks.data_cb = (flags & LIBRAW_OPTIONS_NO_DATAERR_CALLBACK)
-                          ? NULL
-                          : &default_data_callback;
-  callbacks.exif_cb = NULL; // no default callback
-  callbacks.pre_identify_cb = NULL;
-  callbacks.post_identify_cb = NULL;
+                        ? nullptr
+                        : &default_data_callback;
+  callbacks.exif_cb = nullptr; // no default callback
+  callbacks.pre_identify_cb = nullptr;
+  callbacks.post_identify_cb = nullptr;
   callbacks.pre_subtractblack_cb = callbacks.pre_scalecolors_cb =
-      callbacks.pre_preinterpolate_cb = callbacks.pre_interpolate_cb =
-          callbacks.interpolate_bayer_cb = callbacks.interpolate_xtrans_cb =
-              callbacks.post_interpolate_cb = callbacks.pre_converttorgb_cb =
-                  callbacks.post_converttorgb_cb = NULL;
+                                   callbacks.pre_preinterpolate_cb = callbacks.pre_interpolate_cb =
+                                                                     callbacks.interpolate_bayer_cb =
+                                                                     callbacks.interpolate_xtrans_cb =
+                                                                     callbacks.post_interpolate_cb =
+                                                                     callbacks.pre_converttorgb_cb =
+                                                                     callbacks.post_converttorgb_cb = nullptr;
 
   memmove(&imgdata.params.aber, &aber, sizeof(aber));
   memmove(&imgdata.params.gamm, &gamm, sizeof(gamm));
@@ -73,7 +76,7 @@ LibRaw::LibRaw(unsigned int flags) : memmgr(1024)
   imgdata.params.user_flip = -1;
   imgdata.params.user_black = -1;
   imgdata.params.user_cblack[0] = imgdata.params.user_cblack[1] =
-      imgdata.params.user_cblack[2] = imgdata.params.user_cblack[3] = -1000001;
+                                  imgdata.params.user_cblack[2] = imgdata.params.user_cblack[3] = -1000001;
   imgdata.params.user_sat = -1;
   imgdata.params.user_qual = -1;
   imgdata.params.output_color = 1;
@@ -86,19 +89,20 @@ LibRaw::LibRaw(unsigned int flags) : memmgr(1024)
   imgdata.rawparams.use_dngsdk = LIBRAW_DNG_DEFAULT;
   imgdata.params.no_auto_scale = 0;
   imgdata.params.no_interpolation = 0;
-  imgdata.rawparams.specials = 0; /* was inverted : LIBRAW_PROCESSING_DP2Q_INTERPOLATERG |      LIBRAW_PROCESSING_DP2Q_INTERPOLATEAF; */
+  imgdata.rawparams.specials = 0;
+  /* was inverted : LIBRAW_PROCESSING_DP2Q_INTERPOLATERG |      LIBRAW_PROCESSING_DP2Q_INTERPOLATEAF; */
   imgdata.rawparams.options = LIBRAW_RAWOPTIONS_CONVERTFLOAT_TO_INT;
   imgdata.rawparams.sony_arw2_posterization_thr = 0;
   imgdata.rawparams.max_raw_memory_mb = LIBRAW_MAX_ALLOC_MB_DEFAULT;
   imgdata.params.green_matching = 0;
-  imgdata.rawparams.custom_camera_strings = 0;
+  imgdata.rawparams.custom_camera_strings = nullptr;
   imgdata.rawparams.coolscan_nef_gamma = 1.0f;
   imgdata.parent_class = this;
   imgdata.progress_flags = 0;
   imgdata.color.dng_levels.baseline_exposure = -999.f;
   imgdata.color.dng_levels.LinearResponseLimit = 1.0f;
   MN.hasselblad.nIFD_CM[0] =
-    MN.hasselblad.nIFD_CM[1] = -1;
+      MN.hasselblad.nIFD_CM[1] = -1;
   MN.kodak.ISOCalibrationGain = 1.0f;
   _exitflag = 0;
   tls = new LibRaw_TLS;
@@ -111,8 +115,8 @@ LibRaw::~LibRaw()
   delete tls;
 #ifdef USE_RAWSPEED3
   if (_rawspeed3_handle)
-      rawspeed3_close(_rawspeed3_handle);
-  _rawspeed3_handle = NULL;
+    rawspeed3_close(_rawspeed3_handle);
+  _rawspeed3_handle = nullptr;
 #endif
 
 #ifdef USE_RAWSPEED
@@ -145,7 +149,7 @@ void LibRaw::recycle()
 
   // explicit cleanup of afdata allocations; entire array is zeroed below
   for (int i = 0; i < LIBRAW_AFDATA_MAXCOUNT; i++)
-      FREE(MN.common.afdata[i].AFInfoData);
+    FREE(MN.common.afdata[i].AFInfoData);
 
   FREE(imgdata.thumbnail.thumb);
   FREE(libraw_internal_data.internal_data.meta_data);
@@ -163,7 +167,7 @@ void LibRaw::recycle()
 
   ZERO(imgdata.sizes);
   imgdata.sizes.raw_inset_crops[0].cleft = imgdata.sizes.raw_inset_crops[1].cleft = 0xffff;
-  imgdata.sizes.raw_inset_crops[0].ctop  = imgdata.sizes.raw_inset_crops[1].ctop = 0xffff;
+  imgdata.sizes.raw_inset_crops[0].ctop = imgdata.sizes.raw_inset_crops[1].ctop = 0xffff;
 
   ZERO(imgdata.idata);
   ZERO(imgdata.color);
@@ -191,11 +195,12 @@ void LibRaw::recycle()
   imgdata.color.dng_levels.LinearResponseLimit = 1.f;
   imgdata.color.dng_color[0].illuminant =
       imgdata.color.dng_color[1].illuminant = LIBRAW_WBI_None;
-  for (int i = 0; i < 4; i++) imgdata.color.dng_levels.analogbalance[i] = 1.0f;
+  for (int i = 0; i < 4; i++)
+    imgdata.color.dng_levels.analogbalance[i] = 1.0f;
 
   MN.canon.DefaultCropAbsolute.l = -1;
   MN.canon.DefaultCropAbsolute.t = -1;
-  MN.canon.AutoLightingOptimizer =  3; // 'off' value
+  MN.canon.AutoLightingOptimizer = 3; // 'off' value
 
   MN.fuji.WB_Preset = 0xffff;
   MN.fuji.ExpoMidPointShift = -999.f;
@@ -211,7 +216,8 @@ void LibRaw::recycle()
   MN.fuji.FocusSettings = 0xffffffff;
   MN.fuji.AF_C_Settings = 0xffffffff;
   MN.fuji.FocusWarning = 0xffff;
-  for (int i = 0; i < 3; i++) MN.fuji.ImageStabilization[i] = 0xffff;
+  for (int i = 0; i < 3; i++)
+    MN.fuji.ImageStabilization[i] = 0xffff;
   MN.fuji.DriveMode = -1;
   MN.fuji.ImageCount = -1;
   MN.fuji.AutoBracketing = -1;
@@ -229,11 +235,12 @@ void LibRaw::recycle()
   MN.nikon.SensorHighSpeedCrop.ctop = 0xffff;
 
   MN.olympus.FocusMode[0] = 0xffff;
-  MN.olympus.AutoFocus    = 0xffff;
-  MN.olympus.AFPoint      = 0xffff;
-  MN.olympus.AFResult     = 0xffff;
-  MN.olympus.AFFineTune   = 0xff;
-  for (int i = 0; i < 3; i++) {
+  MN.olympus.AutoFocus = 0xffff;
+  MN.olympus.AFPoint = 0xffff;
+  MN.olympus.AFResult = 0xffff;
+  MN.olympus.AFFineTune = 0xff;
+  for (int i = 0; i < 3; i++)
+  {
     MN.olympus.AFFineTuneAdj[i] = -32768;
     MN.olympus.SpecialMode[i] = 0xffffffff;
   }
@@ -242,13 +249,14 @@ void LibRaw::recycle()
   MN.olympus.FocusStepInfinity = 0xffff;
   MN.olympus.FocusStepNear = 0xffff;
   MN.olympus.FocusDistance = -999.0;
-  for (int i = 0; i < 4; i++) MN.olympus.AspectFrame[i] = 0xffff;
+  for (int i = 0; i < 4; i++)
+    MN.olympus.AspectFrame[i] = 0xffff;
   MN.olympus.StackedImage[0] = 0xffffffff;
 
   MN.panasonic.LensManufacturer = 0xffffffff;
 
   MN.pentax.FocusMode[0] =
-    MN.pentax.FocusMode[1] = 0xffff;
+      MN.pentax.FocusMode[1] = 0xffff;
   MN.pentax.AFPointSelected[1] = 0xffff;
   MN.pentax.AFPointSelected_Area = 0xffff;
   MN.pentax.AFPointsInFocus = 0xffffffff;
@@ -305,7 +313,7 @@ void LibRaw::recycle()
 #endif
 #ifdef USE_RAWSPEED3
   if (_rawspeed3_handle)
-      rawspeed3_release(_rawspeed3_handle);
+    rawspeed3_release(_rawspeed3_handle);
 #endif
 #ifdef USE_DNGSDK
   if (dngnegative)
@@ -334,7 +342,7 @@ void LibRaw::recycle()
   libraw_internal_data.unpacker_data.thumb_format = LIBRAW_INTERNAL_THUMBNAIL_UNKNOWN;
   imgdata.progress_flags = 0;
 
-  load_raw =  0;
+  load_raw = nullptr;
 
   tls->init();
 }

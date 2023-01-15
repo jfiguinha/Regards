@@ -52,7 +52,7 @@ void ErfDecoder::checkImageDimensions() {
 }
 
 RawImage ErfDecoder::decodeRawInternal() {
-  SimpleTiffDecoder::prepareForRawDecoding();
+  prepareForRawDecoding();
 
   UncompressedDecompressor u(
       ByteStream(DataBuffer(mFile.getSubView(off, c2), Endianness::little)),
@@ -67,7 +67,7 @@ void ErfDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   setMetaData(meta, "", 0);
 
   if (mRootIFD->hasEntryRecursive(EPSONWB)) {
-    TiffEntry *wb = mRootIFD->getEntryRecursive(EPSONWB);
+    TiffEntry* wb = mRootIFD->getEntryRecursive(EPSONWB);
     if (wb->count == 256) {
       // Magic values taken directly from dcraw
       mRaw->metadata.wbCoeffs[0] = static_cast<float>(wb->getU16(24)) * 508.0F *

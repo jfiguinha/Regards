@@ -34,7 +34,7 @@ void LibRaw::canon_600_fixed_wb(int temp)
     if (*mul[hi] >= temp)
       break;
   if (lo != hi)
-    frac = (float)(temp - *mul[lo]) / (*mul[hi] - *mul[lo]);
+    frac = static_cast<float>(temp - *mul[lo]) / (*mul[hi] - *mul[lo]);
   for (i = 1; i < 5; i++)
     pre_mul[i - 1] = 1 / (frac * mul[hi][i] + (1 - frac) * mul[lo][i]);
 }
@@ -72,8 +72,9 @@ int LibRaw::canon_600_color(int ratio[2], int mar)
       clipped = 1;
     }
   }
-  target = flash_used || ratio[1] < 197 ? -38 - (398 * ratio[1] >> 10)
-                                        : -123 + (48 * ratio[1] >> 10);
+  target = flash_used || ratio[1] < 197
+             ? -38 - (398 * ratio[1] >> 10)
+             : -123 + (48 * ratio[1] >> 10);
   if (target - mar <= ratio[0] && target + 20 >= ratio[0] && !clipped)
     return 0;
   miss = target - ratio[0];
@@ -93,7 +94,7 @@ void LibRaw::canon_600_auto_wb()
   int test[8], total[2][8], ratio[2][2], stat[2];
 
   memset(&total, 0, sizeof total);
-  i = int(canon_ev + 0.5);
+  i = static_cast<int>(canon_ev + 0.5);
   if (i < 10)
     mar = 150;
   else if (i > 12)
@@ -137,8 +138,8 @@ void LibRaw::canon_600_auto_wb()
   {
     st = count[0] * 200 < count[1];
     for (i = 0; i < 4; i++)
-		if (total[st][i] + total[st][i + 4])
-			pre_mul[i] = 1.0f / (total[st][i] + total[st][i + 4]);
+      if (total[st][i] + total[st][i + 4])
+        pre_mul[i] = 1.0f / (total[st][i] + total[st][i + 4]);
   }
 }
 
@@ -169,7 +170,8 @@ void LibRaw::canon_600_coeff()
   if (flash_used)
     t = 5;
   for (raw_color = i = 0; i < 3; i++)
-    FORCC rgb_cam[i][c] = float(table[t][i * 4 + c]) / 1024.f;
+    FORCC
+      rgb_cam[i][c] = static_cast<float>(table[t][i * 4 + c]) / 1024.f;
 }
 
 void LibRaw::canon_600_load_raw()

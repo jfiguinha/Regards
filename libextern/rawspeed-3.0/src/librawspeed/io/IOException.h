@@ -30,7 +30,8 @@ class IOException final : public RawspeedException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   IOException(const char* msg)
-      : RawspeedException(msg) {}
+    : RawspeedException(msg) {
+  }
 };
 
 #define ThrowIOE(...) ThrowExceptionHelper(rawspeed::IOException, __VA_ARGS__)

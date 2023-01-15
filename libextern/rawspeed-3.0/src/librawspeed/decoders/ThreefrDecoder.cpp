@@ -71,7 +71,7 @@ RawImage ThreefrDecoder::decodeRawInternal() {
 }
 
 void ThreefrDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
 
   setMetaData(meta, "", 0);
 
@@ -89,7 +89,7 @@ void ThreefrDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
 
   // Fetch the white balance
   if (mRootIFD->hasEntryRecursive(ASSHOTNEUTRAL)) {
-    TiffEntry *wb = mRootIFD->getEntryRecursive(ASSHOTNEUTRAL);
+    TiffEntry* wb = mRootIFD->getEntryRecursive(ASSHOTNEUTRAL);
     if (wb->count == 3) {
       for (uint32_t i = 0; i < 3; i++) {
         const float div = wb->getFloat(i);

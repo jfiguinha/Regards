@@ -20,7 +20,7 @@
 
 void LibRaw::pre_interpolate()
 {
-  ushort(*img)[4];
+  ushort (*img)[4];
   int row, col, c;
   RUN_CALLBACK(LIBRAW_PROGRESS_PRE_INTERPOLATE, 0, 2);
   if (shrink)
@@ -47,7 +47,7 @@ void LibRaw::pre_interpolate()
     }
     else
     {
-      img = (ushort(*)[4])calloc(height, width * sizeof *img);
+      img = static_cast<ushort(*)[4]>(calloc(height, width * sizeof *img));
       for (row = 0; row < height; row++)
         for (col = 0; col < width; col++)
         {
@@ -85,7 +85,8 @@ void LibRaw::border_interpolate(int border)
   for (row = 0; row < height; row++)
     for (col = 0; col < width; col++)
     {
-      if (col == (unsigned)border && row >= (unsigned)border && row < (unsigned)(height - border))
+      if (col == static_cast<unsigned>(border) && row >= static_cast<unsigned>(border) && row < static_cast<unsigned>((
+            height - border)))
         col = width - border;
       memset(sum, 0, sizeof sum);
       for (y = row - 1; y != row + 2; y++)
@@ -97,8 +98,10 @@ void LibRaw::border_interpolate(int border)
             sum[f + 4]++;
           }
       f = fcol(row, col);
-      FORC(unsigned(colors)) if (c != f && sum[c + 4]) image[row * width + col][c] =
-          sum[c] / sum[c + 4];
+      FORC(unsigned(colors))
+        if (c != f && sum[c + 4])
+          image[row * width + col][c] =
+              sum[c] / sum[c + 4];
     }
 }
 
@@ -127,7 +130,7 @@ void LibRaw::lin_interpolate_loop(int *code, int size)
 void LibRaw::lin_interpolate()
 {
   std::vector<int> code_buffer(16 * 16 * 32);
-  int* code = &code_buffer[0], size = 16, *ip, sum[4];
+  int *code = &code_buffer[0], size = 16, *ip, sum[4];
   int f, c, x, y, row, col, shift, color;
 
   RUN_CALLBACK(LIBRAW_PROGRESS_INTERPOLATE, 0, 3);
@@ -155,11 +158,11 @@ void LibRaw::lin_interpolate()
         }
       code[(row * 16 + col) * 32] = (ip - (code + ((row * 16) + col) * 32)) / 3;
       FORCC
-      if (c != f)
-      {
-        *ip++ = c;
-        *ip++ = sum[c] > 0 ? 256 / sum[c] : 0;
-      }
+        if (c != f)
+        {
+          *ip++ = c;
+          *ip++ = sum[c] > 0 ? 256 / sum[c] : 0;
+        }
     }
   RUN_CALLBACK(LIBRAW_PROGRESS_INTERPOLATE, 1, 3);
   lin_interpolate_loop(code, size);
@@ -180,35 +183,35 @@ void LibRaw::lin_interpolate()
 void LibRaw::vng_interpolate()
 {
   static const signed char *cp,
-      terms[] =
-          {-2, -2, +0,   -1, 0,  0x01, -2, -2, +0,   +0, 1,  0x01, -2, -1, -1,
-           +0, 0,  0x01, -2, -1, +0,   -1, 0,  0x02, -2, -1, +0,   +0, 0,  0x03,
-           -2, -1, +0,   +1, 1,  0x01, -2, +0, +0,   -1, 0,  0x06, -2, +0, +0,
-           +0, 1,  0x02, -2, +0, +0,   +1, 0,  0x03, -2, +1, -1,   +0, 0,  0x04,
-           -2, +1, +0,   -1, 1,  0x04, -2, +1, +0,   +0, 0,  0x06, -2, +1, +0,
-           +1, 0,  0x02, -2, +2, +0,   +0, 1,  0x04, -2, +2, +0,   +1, 0,  0x04,
-           -1, -2, -1,   +0, 0,  -128, -1, -2, +0,   -1, 0,  0x01, -1, -2, +1,
-           -1, 0,  0x01, -1, -2, +1,   +0, 1,  0x01, -1, -1, -1,   +1, 0,  -120,
-           -1, -1, +1,   -2, 0,  0x40, -1, -1, +1,   -1, 0,  0x22, -1, -1, +1,
-           +0, 0,  0x33, -1, -1, +1,   +1, 1,  0x11, -1, +0, -1,   +2, 0,  0x08,
-           -1, +0, +0,   -1, 0,  0x44, -1, +0, +0,   +1, 0,  0x11, -1, +0, +1,
-           -2, 1,  0x40, -1, +0, +1,   -1, 0,  0x66, -1, +0, +1,   +0, 1,  0x22,
-           -1, +0, +1,   +1, 0,  0x33, -1, +0, +1,   +2, 1,  0x10, -1, +1, +1,
-           -1, 1,  0x44, -1, +1, +1,   +0, 0,  0x66, -1, +1, +1,   +1, 0,  0x22,
-           -1, +1, +1,   +2, 0,  0x10, -1, +2, +0,   +1, 0,  0x04, -1, +2, +1,
-           +0, 1,  0x04, -1, +2, +1,   +1, 0,  0x04, +0, -2, +0,   +0, 1,  -128,
-           +0, -1, +0,   +1, 1,  -120, +0, -1, +1,   -2, 0,  0x40, +0, -1, +1,
-           +0, 0,  0x11, +0, -1, +2,   -2, 0,  0x40, +0, -1, +2,   -1, 0,  0x20,
-           +0, -1, +2,   +0, 0,  0x30, +0, -1, +2,   +1, 1,  0x10, +0, +0, +0,
-           +2, 1,  0x08, +0, +0, +2,   -2, 1,  0x40, +0, +0, +2,   -1, 0,  0x60,
-           +0, +0, +2,   +0, 1,  0x20, +0, +0, +2,   +1, 0,  0x30, +0, +0, +2,
-           +2, 1,  0x10, +0, +1, +1,   +0, 0,  0x44, +0, +1, +1,   +2, 0,  0x10,
-           +0, +1, +2,   -1, 1,  0x40, +0, +1, +2,   +0, 0,  0x60, +0, +1, +2,
-           +1, 0,  0x20, +0, +1, +2,   +2, 0,  0x10, +1, -2, +1,   +0, 0,  -128,
-           +1, -1, +1,   +1, 0,  -120, +1, +0, +1,   +2, 0,  0x08, +1, +0, +2,
-           -1, 0,  0x40, +1, +0, +2,   +1, 0,  0x10},
-      chood[] = {-1, -1, -1, 0, -1, +1, 0, +1, +1, +1, +1, 0, +1, -1, 0, -1};
-  ushort(*brow[5])[4], *pix;
+                           terms[] =
+                           {-2, -2, +0, -1, 0, 0x01, -2, -2, +0, +0, 1, 0x01, -2, -1, -1,
+                            +0, 0, 0x01, -2, -1, +0, -1, 0, 0x02, -2, -1, +0, +0, 0, 0x03,
+                            -2, -1, +0, +1, 1, 0x01, -2, +0, +0, -1, 0, 0x06, -2, +0, +0,
+                            +0, 1, 0x02, -2, +0, +0, +1, 0, 0x03, -2, +1, -1, +0, 0, 0x04,
+                            -2, +1, +0, -1, 1, 0x04, -2, +1, +0, +0, 0, 0x06, -2, +1, +0,
+                            +1, 0, 0x02, -2, +2, +0, +0, 1, 0x04, -2, +2, +0, +1, 0, 0x04,
+                            -1, -2, -1, +0, 0, -128, -1, -2, +0, -1, 0, 0x01, -1, -2, +1,
+                            -1, 0, 0x01, -1, -2, +1, +0, 1, 0x01, -1, -1, -1, +1, 0, -120,
+                            -1, -1, +1, -2, 0, 0x40, -1, -1, +1, -1, 0, 0x22, -1, -1, +1,
+                            +0, 0, 0x33, -1, -1, +1, +1, 1, 0x11, -1, +0, -1, +2, 0, 0x08,
+                            -1, +0, +0, -1, 0, 0x44, -1, +0, +0, +1, 0, 0x11, -1, +0, +1,
+                            -2, 1, 0x40, -1, +0, +1, -1, 0, 0x66, -1, +0, +1, +0, 1, 0x22,
+                            -1, +0, +1, +1, 0, 0x33, -1, +0, +1, +2, 1, 0x10, -1, +1, +1,
+                            -1, 1, 0x44, -1, +1, +1, +0, 0, 0x66, -1, +1, +1, +1, 0, 0x22,
+                            -1, +1, +1, +2, 0, 0x10, -1, +2, +0, +1, 0, 0x04, -1, +2, +1,
+                            +0, 1, 0x04, -1, +2, +1, +1, 0, 0x04, +0, -2, +0, +0, 1, -128,
+                            +0, -1, +0, +1, 1, -120, +0, -1, +1, -2, 0, 0x40, +0, -1, +1,
+                            +0, 0, 0x11, +0, -1, +2, -2, 0, 0x40, +0, -1, +2, -1, 0, 0x20,
+                            +0, -1, +2, +0, 0, 0x30, +0, -1, +2, +1, 1, 0x10, +0, +0, +0,
+                            +2, 1, 0x08, +0, +0, +2, -2, 1, 0x40, +0, +0, +2, -1, 0, 0x60,
+                            +0, +0, +2, +0, 1, 0x20, +0, +0, +2, +1, 0, 0x30, +0, +0, +2,
+                            +2, 1, 0x10, +0, +1, +1, +0, 0, 0x44, +0, +1, +1, +2, 0, 0x10,
+                            +0, +1, +2, -1, 1, 0x40, +0, +1, +2, +0, 0, 0x60, +0, +1, +2,
+                            +1, 0, 0x20, +0, +1, +2, +2, 0, 0x10, +1, -2, +1, +0, 0, -128,
+                            +1, -1, +1, +1, 0, -120, +1, +0, +1, +2, 0, 0x08, +1, +0, +2,
+                            -1, 0, 0x40, +1, +0, +2, +1, 0, 0x10},
+                           chood[] = {-1, -1, -1, 0, -1, +1, 0, +1, +1, +1, +1, 0, +1, -1, 0, -1};
+  ushort (*brow[5])[4], *pix;
   int prow = 8, pcol = 2, *ip, *code[16][16], gval[8], gmin, gmax, sum[4];
   int row, col, x, y, x1, x2, y1, y2, t, weight, grads, color, diag;
   int g, diff, thold, num, c;
@@ -219,7 +222,7 @@ void LibRaw::vng_interpolate()
     prow = pcol = 16;
   if (filters == 9)
     prow = pcol = 6;
-  ip = (int *)calloc(prow * pcol, 1280);
+  ip = static_cast<int *>(calloc(prow * pcol, 1280));
   for (row = 0; row < prow; row++) /* Precalculate for VNG */
     for (col = 0; col < pcol; col++)
     {
@@ -235,8 +238,9 @@ void LibRaw::vng_interpolate()
         color = fcol(row + y1 + 144, col + x1 + 144);
         if (fcol(row + y2 + 144, col + x2 + 144) != color)
           continue;
-        diag = (fcol(row, col + 1) == color && fcol(row + 1, col) == color) ? 2
-                                                                            : 1;
+        diag = (fcol(row, col + 1) == color && fcol(row + 1, col) == color)
+                 ? 2
+                 : 1;
         if (abs(y1 - y2) == diag && abs(x1 - x2) == diag)
           continue;
         *ip++ = (y1 * width + x1) * 4 + color;
@@ -261,21 +265,23 @@ void LibRaw::vng_interpolate()
           *ip++ = 0;
       }
     }
-  brow[4] = (ushort(*)[4])calloc(width * 3, sizeof **brow);
+  brow[4] = static_cast<ushort(*)[4]>(calloc(width * 3, sizeof **brow));
   for (row = 0; row < 3; row++)
     brow[row] = brow[4] + row * width;
   for (row = 2; row < height - 2; row++)
-  { /* Do VNG interpolation */
+  {
+    /* Do VNG interpolation */
     if (!((row - 2) % 256))
       RUN_CALLBACK(LIBRAW_PROGRESS_INTERPOLATE, (row - 2) / 256 + 1,
-                   ((height - 3) / 256) + 1);
+                 ((height - 3) / 256) + 1);
     for (col = 2; col < width - 2; col++)
     {
       pix = image[row * width + col];
       ip = code[row % prow][col % pcol];
       memset(gval, 0, sizeof gval);
       while ((g = ip[0]) != INT_MAX)
-      { /* Calculate gradients */
+      {
+        /* Calculate gradients */
         diff = ABS(pix[g] - pix[ip[1]]) << ip[2];
         gval[ip[3]] += diff;
         ip += 5;
@@ -303,19 +309,21 @@ void LibRaw::vng_interpolate()
       memset(sum, 0, sizeof sum);
       color = fcol(row, col);
       for (num = g = 0; g < 8; g++, ip += 2)
-      { /* Average the neighbors */
+      {
+        /* Average the neighbors */
         if (gval[g] <= thold)
         {
           FORCC
-          if (c == color && ip[1])
-            sum[c] += (pix[c] + pix[ip[1]]) >> 1;
-          else
-            sum[c] += pix[ip[0] + c];
+            if (c == color && ip[1])
+              sum[c] += (pix[c] + pix[ip[1]]) >> 1;
+            else
+              sum[c] += pix[ip[0] + c];
           num++;
         }
       }
       FORCC
-      { /* Save to buffer */
+      {
+        /* Save to buffer */
         t = pix[color];
         if (c != color)
           t += (sum[c] - sum[color]) / num;
@@ -343,7 +351,7 @@ void LibRaw::ppg_interpolate()
 {
   int dir[5] = {1, width, -1, -width, 1};
   int row, col, diff[2], guess[2], c, d, i;
-  ushort(*pix)[4];
+  ushort (*pix)[4];
 
   border_interpolate(3);
 
@@ -366,10 +374,10 @@ void LibRaw::ppg_interpolate()
         diff[i] =
             (ABS(pix[-2 * d][c] - pix[0][c]) + ABS(pix[2 * d][c] - pix[0][c]) +
              ABS(pix[-d][1] - pix[d][1])) *
-                3 +
+            3 +
             (ABS(pix[3 * d][1] - pix[d][1]) +
              ABS(pix[-3 * d][1] - pix[-d][1])) *
-                2;
+            2;
       }
       d = dir[i = diff[0] > diff[1]];
       pix[0][1] = ULIM(guess[i] >> 2, pix[d][1], pix[-d][1]);
@@ -406,7 +414,7 @@ void LibRaw::ppg_interpolate()
       pix = image + row * width + col;
       for (i = 0; i < 2; i++)
       {
-        d = dir[i] + dir[i+1];
+        d = dir[i] + dir[i + 1];
         diff[i] = ABS(pix[-d][c] - pix[d][c]) + ABS(pix[-d][1] - pix[0][1]) +
                   ABS(pix[d][1] - pix[0][1]);
         guess[i] =

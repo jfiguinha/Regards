@@ -21,42 +21,42 @@
 
 void LibRaw::parse_exif_interop(int base)
 {
-	unsigned entries, tag, type, len, save;
-	char value[4] = { 0,0,0,0 };
-	entries = get2();
-	INT64 fsize = ifp->size();
-	while (entries--)
-	{
-		tiff_get(base, &tag, &type, &len, &save);
+  unsigned entries, tag, type, len, save;
+  char value[4] = {0, 0, 0, 0};
+  entries = get2();
+  INT64 fsize = ifp->size();
+  while (entries--)
+  {
+    tiff_get(base, &tag, &type, &len, &save);
 
-		INT64 savepos = ftell(ifp);
-		if (len > 8 && savepos + len > fsize * 2)
-		{
-			fseek(ifp, save, SEEK_SET); // Recover tiff-read position!!
-			continue;
-		}
-        if (callbacks.exif_cb)
-        {
-            callbacks.exif_cb(callbacks.exifparser_data, tag | 0x40000, type, len, order, ifp, base);
-            fseek(ifp, savepos, SEEK_SET);
-        }
+    INT64 savepos = ftell(ifp);
+    if (len > 8 && savepos + len > fsize * 2)
+    {
+      fseek(ifp, save, SEEK_SET); // Recover tiff-read position!!
+      continue;
+    }
+    if (callbacks.exif_cb)
+    {
+      callbacks.exif_cb(callbacks.exifparser_data, tag | 0x40000, type, len, order, ifp, base);
+      fseek(ifp, savepos, SEEK_SET);
+    }
 
-		switch (tag)
-		{
-		case 0x0001: // InteropIndex
-			fread(value, 1, MIN(4, len), ifp);
-			if (strncmp(value, "R98", 3) == 0 &&
-				// Canon bug, when [Canon].ColorSpace = AdobeRGB,
-				// but [ExifIFD].ColorSpace = Uncalibrated and
-				// [InteropIFD].InteropIndex = "R98"
-				imgdata.color.ExifColorSpace == LIBRAW_COLORSPACE_Unknown)
-				imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_sRGB;
-			else if (strncmp(value, "R03", 3) == 0)
-				imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
-			break;
-		}
-		fseek(ifp, save, SEEK_SET);
-	}
+    switch (tag)
+    {
+    case 0x0001: // InteropIndex
+      fread(value, 1, MIN(4, len), ifp);
+      if (strncmp(value, "R98", 3) == 0 &&
+          // Canon bug, when [Canon].ColorSpace = AdobeRGB,
+          // but [ExifIFD].ColorSpace = Uncalibrated and
+          // [InteropIFD].InteropIndex = "R98"
+          imgdata.color.ExifColorSpace == LIBRAW_COLORSPACE_Unknown)
+        imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_sRGB;
+      else if (strncmp(value, "R03", 3) == 0)
+        imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
+      break;
+    }
+    fseek(ifp, save, SEEK_SET);
+  }
 }
 
 void LibRaw::parse_exif(int base)
@@ -95,17 +95,17 @@ void LibRaw::parse_exif(int base)
 
     switch (tag)
     {
-	case 0xA005: // Interoperability IFD
-		fseek(ifp, get4() + base, SEEK_SET);
-		parse_exif_interop(base);
-		break;
-	case 0xA001: // ExifIFD.ColorSpace
-		c = get2();
-		if (c == 1 && imgdata.color.ExifColorSpace == LIBRAW_COLORSPACE_Unknown)
-			imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_sRGB;
-		else if (c == 2)
-			imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
-		break;
+    case 0xA005: // Interoperability IFD
+      fseek(ifp, get4() + base, SEEK_SET);
+      parse_exif_interop(base);
+      break;
+    case 0xA001: // ExifIFD.ColorSpace
+      c = get2();
+      if (c == 1 && imgdata.color.ExifColorSpace == LIBRAW_COLORSPACE_Unknown)
+        imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_sRGB;
+      else if (c == 2)
+        imgdata.color.ExifColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
+      break;
     case 0x9400:
       imCommon.exifAmbientTemperature = getreal(type);
       if ((imCommon.CameraTemperature > -273.15f) &&
@@ -177,7 +177,7 @@ void LibRaw::parse_exif(int base)
     case 0x829a: // 33434
       shutter = getreal(type);
       if (tiff_nifds > 0 && tiff_nifds <= LIBRAW_IFD_MAXCOUNT)
-          tiff_ifd[tiff_nifds - 1].t_shutter = shutter;
+        tiff_ifd[tiff_nifds - 1].t_shutter = shutter;
       break;
     case 0x829d: // 33437, FNumber
       aperture = getreal(type);
@@ -199,12 +199,12 @@ void LibRaw::parse_exif(int base)
       get_timestamp(0);
       break;
     case 0x9201: // 37377
-       if ((expo = -getreal(type)) < 128 && shutter == 0.)
-       {
-            shutter = libraw_powf64l(2.0, expo);
-            if (tiff_nifds > 0 && tiff_nifds <= LIBRAW_IFD_MAXCOUNT)
-              tiff_ifd[tiff_nifds - 1].t_shutter = shutter;
-       }
+      if ((expo = -getreal(type)) < 128 && shutter == 0.)
+      {
+        shutter = libraw_powf64l(2.0, expo);
+        if (tiff_nifds > 0 && tiff_nifds <= LIBRAW_IFD_MAXCOUNT)
+          tiff_ifd[tiff_nifds - 1].t_shutter = shutter;
+      }
       break;
     case 0x9202: // 37378 ApertureValue
       if ((fabs(ape = getreal(type)) < 256.0) && (!aperture))
@@ -276,10 +276,10 @@ void LibRaw::parse_exif(int base)
                 num = 0.0;
                 for (c = 0; c < 3; c++)
                 {
-                  cmatrix[l][c] = (float)atoi(pos);
+                  cmatrix[l][c] = static_cast<float>(atoi(pos));
                   num += cmatrix[c][l];
 #ifdef LIBRAW_WIN32_CALLS
-                  pos = strtok(NULL, ",");
+                  pos = strtok(nullptr, ",");
 #else
                   pos = strtok_r(NULL, ",", &last);
 #endif
@@ -287,7 +287,8 @@ void LibRaw::parse_exif(int base)
                     goto end; // broken
                 }
                 if (num > 0.01)
-                    FORC3 cmatrix[l][c] = cmatrix[l][c] / num;
+                  FORC3
+                    cmatrix[l][c] = cmatrix[l][c] / num;
               }
             }
           }
@@ -347,14 +348,14 @@ void LibRaw::parse_gps_libraw(int base)
     INT64 savepos = ftell(ifp);
     if (len > 8 && savepos + len > fsize * 2)
     {
-        fseek(ifp, save, SEEK_SET); // Recover tiff-read position!!
-        continue;
+      fseek(ifp, save, SEEK_SET); // Recover tiff-read position!!
+      continue;
     }
 
     if (callbacks.exif_cb)
     {
-        callbacks.exif_cb(callbacks.exifparser_data, tag | 0x50000, type, len, order, ifp, base);
-        fseek(ifp, savepos, SEEK_SET);
+      callbacks.exif_cb(callbacks.exifparser_data, tag | 0x50000, type, len, order, ifp, base);
+      fseek(ifp, savepos, SEEK_SET);
     }
 
     switch (tag)
@@ -370,15 +371,18 @@ void LibRaw::parse_gps_libraw(int base)
       break;
     case 0x0002:
       if (len == 3)
-        FORC(3) imgdata.other.parsed_gps.latitude[c] = getreal(type);
+        FORC(3)
+          imgdata.other.parsed_gps.latitude[c] = getreal(type);
       break;
     case 0x0004:
       if (len == 3)
-        FORC(3) imgdata.other.parsed_gps.longitude[c] = getreal(type);
+        FORC(3)
+          imgdata.other.parsed_gps.longitude[c] = getreal(type);
       break;
     case 0x0007:
       if (len == 3)
-        FORC(3) imgdata.other.parsed_gps.gpstimestamp[c] = getreal(type);
+        FORC(3)
+          imgdata.other.parsed_gps.gpstimestamp[c] = getreal(type);
       break;
     case 0x0006:
       imgdata.other.parsed_gps.altitude = getreal(type);
@@ -416,10 +420,12 @@ void LibRaw::parse_gps(int base)
     case 0x0002:
     case 0x0004:
     case 0x0007:
-      FORC(6) gpsdata[tag / 3 * 6 + c] = get4();
+      FORC(6)
+        gpsdata[tag / 3 * 6 + c] = get4();
       break;
     case 0x0006:
-      FORC(2) gpsdata[18 + c] = get4();
+      FORC(2)
+        gpsdata[18 + c] = get4();
       break;
     case 0x0012: // 18
     case 0x001d: // 29

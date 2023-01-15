@@ -23,17 +23,16 @@
 #define CAMERA_METADATA_EXCEPTION_H
 
 
-namespace RawSpeed {
-
-void ThrowCME(const char* fmt, ...);
-
-class CameraMetadataException :
-  public std::runtime_error
+namespace RawSpeed
 {
-public:
-  CameraMetadataException(const string _msg);
-};
+	void ThrowCME(const char* fmt, ...);
 
+	class CameraMetadataException :
+		public std::runtime_error
+	{
+	public:
+		CameraMetadataException(string _msg);
+	};
 } // namespace RawSpeed
 
 #endif

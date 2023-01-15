@@ -45,24 +45,25 @@ struct PanasonicDecompressorV5::PacketDsc {
   int pixelsPerPacket;
 
   constexpr PacketDsc();
+
   explicit constexpr PacketDsc(int bps_)
-      : bps(bps_),
-        pixelsPerPacket(PanasonicDecompressorV5::bitsPerPacket / bps) {
+    : bps(bps_),
+      pixelsPerPacket(bitsPerPacket / bps) {
     // NOTE: the division is truncating. There may be some padding bits left.
   }
 };
 
 constexpr PanasonicDecompressorV5::PacketDsc
-    PanasonicDecompressorV5::TwelveBitPacket =
-        PanasonicDecompressorV5::PacketDsc(/*bps=*/12);
+PanasonicDecompressorV5::TwelveBitPacket =
+    PacketDsc(/*bps=*/12);
 constexpr PanasonicDecompressorV5::PacketDsc
-    PanasonicDecompressorV5::FourteenBitPacket =
-        PanasonicDecompressorV5::PacketDsc(/*bps=*/14);
+PanasonicDecompressorV5::FourteenBitPacket =
+    PacketDsc(/*bps=*/14);
 
 PanasonicDecompressorV5::PanasonicDecompressorV5(const RawImage& img,
                                                  const ByteStream& input_,
                                                  uint32_t bps_)
-    : mRaw(img), bps(bps_) {
+  : mRaw(img), bps(bps_) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -168,7 +169,9 @@ class PanasonicDecompressorV5::ProxyStream {
   }
 
 public:
-  explicit ProxyStream(ByteStream block_) : block(std::move(block_)) {}
+  explicit ProxyStream(ByteStream block_)
+    : block(std::move(block_)) {
+  }
 
   ByteStream& getStream() {
     parseBlock();
@@ -177,8 +180,8 @@ public:
 };
 
 template <const PanasonicDecompressorV5::PacketDsc& dsc>
-inline void PanasonicDecompressorV5::processPixelPacket(BitPumpLSB& bs, int row,
-                                                        int col) const {
+void PanasonicDecompressorV5::processPixelPacket(BitPumpLSB& bs, int row,
+                                                 int col) const {
   static_assert(dsc.pixelsPerPacket > 0, "dsc should be compile-time const");
   static_assert(dsc.bps > 0 && dsc.bps <= 16);
 
@@ -228,8 +231,9 @@ void PanasonicDecompressorV5::decompressInternal() const noexcept {
     schedule(static) default(none)
 #endif
   for (auto block = blocks.cbegin(); block < blocks.cend();
-       ++block) { // NOLINT(openmp-exception-escape): we have checked size
-                  // already.
+       ++block) {
+    // NOLINT(openmp-exception-escape): we have checked size
+    // already.
     processBlock<dsc>(*block);
   }
 }

@@ -36,26 +36,26 @@
 namespace rawspeed {
 
 const std::array<std::array<std::array<uint8_t, 16>, 2>, 6>
-    NikonDecompressor::nikon_tree = {{
-        {{/* 12-bit lossy */
-          {0, 1, 5, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
-          {5, 4, 3, 6, 2, 7, 1, 0, 8, 9, 11, 10, 12}}},
-        {{/* 12-bit lossy after split */
-          {0, 1, 5, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
-          {0x39, 0x5a, 0x38, 0x27, 0x16, 5, 4, 3, 2, 1, 0, 11, 12, 12}}},
-        {{/* 12-bit lossless */
-          {0, 1, 4, 2, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-          {5, 4, 6, 3, 7, 2, 8, 1, 9, 0, 10, 11, 12}}},
-        {{/* 14-bit lossy */
-          {0, 1, 4, 3, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
-          {5, 6, 4, 7, 8, 3, 9, 2, 1, 0, 10, 11, 12, 13, 14}}},
-        {{/* 14-bit lossy after split */
-          {0, 1, 5, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0},
-          {8, 0x5c, 0x4b, 0x3a, 0x29, 7, 6, 5, 4, 3, 2, 1, 0, 13, 14}}},
-        {{/* 14-bit lossless */
-          {0, 1, 4, 2, 2, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
-          {7, 6, 8, 5, 9, 4, 10, 3, 11, 12, 2, 0, 1, 13, 14}}},
-    }};
+NikonDecompressor::nikon_tree = {{
+    {{ /* 12-bit lossy */
+        {0, 1, 5, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
+        {5, 4, 3, 6, 2, 7, 1, 0, 8, 9, 11, 10, 12}}},
+    {{ /* 12-bit lossy after split */
+        {0, 1, 5, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
+        {0x39, 0x5a, 0x38, 0x27, 0x16, 5, 4, 3, 2, 1, 0, 11, 12, 12}}},
+    {{ /* 12-bit lossless */
+        {0, 1, 4, 2, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {5, 4, 6, 3, 7, 2, 8, 1, 9, 0, 10, 11, 12}}},
+    {{ /* 14-bit lossy */
+        {0, 1, 4, 3, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0},
+        {5, 6, 4, 7, 8, 3, 9, 2, 1, 0, 10, 11, 12, 13, 14}}},
+    {{ /* 14-bit lossy after split */
+        {0, 1, 5, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0},
+        {8, 0x5c, 0x4b, 0x3a, 0x29, 7, 6, 5, 4, 3, 2, 1, 0, 13, 14}}},
+    {{ /* 14-bit lossless */
+        {0, 1, 4, 2, 2, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {7, 6, 8, 5, 9, 4, 10, 3, 11, 12, 2, 0, 1, 13, 14}}},
+}};
 
 namespace {
 
@@ -117,7 +117,7 @@ class NikonLASDecompressor {
         huffsize[p++] = static_cast<char>(l);
         if (p > 256)
           ThrowRDE("LJpegDecompressor::createHuffmanTable: Code length too "
-                   "long. Corrupt data.");
+            "long. Corrupt data.");
       }
     }
     huffsize[p] = 0;
@@ -304,7 +304,8 @@ public:
    *
    *--------------------------------------------------------------
    */
-  int decodeDifference(BitPumpMSB& bits) { // NOLINT: google-runtime-references
+  int decodeDifference(BitPumpMSB& bits) {
+    // NOLINT: google-runtime-references
     int rv;
     int l;
     int temp;
@@ -337,9 +338,8 @@ public:
 
       if (l > 16) {
         ThrowRDE("Corrupt JPEG data: bad Huffman code:%u\n", l);
-      } else {
-        rv = dctbl1.huffval[dctbl1.valptr[l] + (code - dctbl1.mincode[l])];
       }
+      rv = dctbl1.huffval[dctbl1.valptr[l] + (code - dctbl1.mincode[l])];
     }
 
     if (rv == 16)
@@ -361,9 +361,9 @@ public:
 } // namespace
 
 std::vector<uint16_t> NikonDecompressor::createCurve(ByteStream& metadata,
-                                                     uint32_t bitsPS,
-                                                     uint32_t v0, uint32_t v1,
-                                                     uint32_t* split) {
+  uint32_t bitsPS,
+  uint32_t v0, uint32_t v1,
+  uint32_t* split) {
   // Nikon Z7 12/14 bit compressed hack.
   if (v0 == 68 && v1 == 64)
     bitsPS -= 2;
@@ -437,7 +437,7 @@ Huffman NikonDecompressor::createHuffmanTable(uint32_t huffSelect) {
 
 NikonDecompressor::NikonDecompressor(const RawImage& raw, ByteStream metadata,
                                      uint32_t bitsPS_)
-    : mRaw(raw), bitsPS(bitsPS_) {
+  : mRaw(raw), bitsPS(bitsPS_) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -445,7 +445,7 @@ NikonDecompressor::NikonDecompressor(const RawImage& raw, ByteStream metadata,
   if (mRaw->dim.x == 0 || mRaw->dim.y == 0 || mRaw->dim.x % 2 != 0 ||
       mRaw->dim.x > 8288 || mRaw->dim.y > 5520)
     ThrowRDE("Unexpected image dimensions found: (%u; %u)", mRaw->dim.x,
-             mRaw->dim.y);
+           mRaw->dim.y);
 
   switch (bitsPS) {
   case 12:

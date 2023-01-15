@@ -58,7 +58,8 @@ bool CrwDecoder::isCRW(const Buffer& input) {
 
 CrwDecoder::CrwDecoder(std::unique_ptr<const CiffIFD> rootIFD,
                        const Buffer& file)
-    : RawDecoder(file), mRootIFD(move(rootIFD)) {}
+  : RawDecoder(file), mRootIFD(move(rootIFD)) {
+}
 
 RawImage CrwDecoder::decodeRawInternal() {
   const CiffEntry* rawData = mRootIFD->getEntry(CIFF_RAWDATA);
@@ -113,8 +114,7 @@ float __attribute__((const)) CrwDecoder::canonEv(const int64_t in) {
   // convert 1/3 (0x0c) and 2/3 (0x14) codes
   if (frac == 0x0c) {
     frac = 32.0F / 3;
-  }
-  else if (frac == 0x14) {
+  } else if (frac == 0x14) {
     frac = 64.0F / 3;
   }
   return copysignf((val + frac) / 32.0F, in);
@@ -122,7 +122,7 @@ float __attribute__((const)) CrwDecoder::canonEv(const int64_t in) {
 
 void CrwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   int iso = 0;
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
   vector<const CiffIFD*> data = mRootIFD->getIFDsWithTag(CIFF_MAKEMODEL);
   if (data.empty())
     ThrowRDE("Model name not found");
@@ -138,13 +138,13 @@ void CrwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     if (shot_info->type == CIFF_SHORT && shot_info->count >= 2) {
       // os << exp(canonEv(value.toLong()) * log(2.0)) * 100.0 / 32.0;
       uint16_t iso_index = shot_info->getU16(2);
-      iso = expf(canonEv(static_cast<int64_t>(iso_index)) * logf(2.0)) *
+      iso = expf(canonEv(iso_index) * logf(2.0)) *
             100.0F / 32.0F;
     }
   }
 
   // Fetch the white balance
-  try{
+  try {
     if (mRootIFD->hasEntryRecursive(static_cast<CiffTag>(0x0032))) {
       const CiffEntry* wb =
           mRootIFD->getEntryRecursive(static_cast<CiffTag>(0x0032));
@@ -163,7 +163,8 @@ void CrwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
             static_cast<float>((1024.0 / wbMuls[1]) + (1024.0 / wbMuls[2])) /
             2.0F;
         mRaw->metadata.wbCoeffs[2] = static_cast<float>(1024.0 / wbMuls[3]);
-      } else if (wb->type == CIFF_BYTE && wb->count > 768) { // Other G series and S series cameras
+      } else if (wb->type == CIFF_BYTE && wb->count > 768) {
+        // Other G series and S series cameras
         // correct offset for most cameras
         int offset = hints.get("wb_offset", 120);
 
@@ -198,14 +199,15 @@ void CrwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
         mRaw->metadata.wbCoeffs[2] = static_cast<float>(entry->getU16(52));
       }
     }
-    if (mRootIFD->hasEntryRecursive(CIFF_SHOTINFO) && mRootIFD->hasEntryRecursive(CIFF_WHITEBALANCE)) {
+    if (mRootIFD->hasEntryRecursive(CIFF_SHOTINFO) && mRootIFD->
+        hasEntryRecursive(CIFF_WHITEBALANCE)) {
       const CiffEntry* shot_info = mRootIFD->getEntryRecursive(CIFF_SHOTINFO);
       uint16_t wb_index = shot_info->getU16(7);
       const CiffEntry* wb_data = mRootIFD->getEntryRecursive(CIFF_WHITEBALANCE);
       /* CANON EOS D60, CANON EOS 10D, CANON EOS 300D */
       if (wb_index > 9)
         ThrowRDE("Invalid white balance index");
-      int wb_offset = 1 + ("0134567028"[wb_index]-'0') * 4;
+      int wb_offset = 1 + ("0134567028"[wb_index] - '0') * 4;
       mRaw->metadata.wbCoeffs[0] = wb_data->getU16(wb_offset + 0);
       mRaw->metadata.wbCoeffs[1] = wb_data->getU16(wb_offset + 1);
       mRaw->metadata.wbCoeffs[2] = wb_data->getU16(wb_offset + 3);

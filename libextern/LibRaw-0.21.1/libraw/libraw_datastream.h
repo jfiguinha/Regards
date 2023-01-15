@@ -84,8 +84,14 @@ class LibRaw_bit_buffer;
 class DllDef LibRaw_abstract_datastream
 {
 public:
-  LibRaw_abstract_datastream() { };
-  virtual ~LibRaw_abstract_datastream(void) { }
+  LibRaw_abstract_datastream()
+  {
+  };
+
+  virtual ~LibRaw_abstract_datastream(void)
+  {
+  }
+
   virtual int valid() = 0;
   virtual int read(void *, size_t, size_t) = 0;
   virtual int seek(INT64, int) = 0;
@@ -99,14 +105,21 @@ public:
   virtual void *make_jas_stream() = 0;
 #endif
   virtual int jpeg_src(void *);
-  virtual void buffering_off() {}
+
+  virtual void buffering_off()
+  {
+  }
+
   /* reimplement in subclass to use parallel access in xtrans_load_raw() if
    * OpenMP is not used */
   virtual int lock() { return 1; } /* success */
-  virtual void unlock() {}
-  virtual const char *fname() { return NULL; };
+  virtual void unlock()
+  {
+  }
+
+  virtual const char *fname() { return nullptr; };
 #ifdef LIBRAW_WIN32_UNICODEPATHS
-  virtual const wchar_t *wfname() { return NULL; };
+  virtual const wchar_t *wfname() { return nullptr; };
 #endif
 };
 
@@ -164,98 +177,104 @@ public:
 
 struct DllDef LibRaw_bufio_params
 {
-    static int bufsize;
-    static void set_bufsize(int bs);
+  static int bufsize;
+  static void set_bufsize(int bs);
 };
 
 class buffer_t : public std::vector<unsigned char>
 {
 public:
-    INT64 _bstart, _bend;
-    buffer_t() : std::vector<unsigned char>(LibRaw_bufio_params::bufsize), _bstart(0), _bend(0) {}
-    int charOReof(INT64 _fpos)
+  INT64 _bstart, _bend;
+
+  buffer_t()
+    : std::vector<unsigned char>(LibRaw_bufio_params::bufsize), _bstart(0), _bend(0)
+  {
+  }
+
+  int charOReof(INT64 _fpos)
+  {
+    if (_bstart < 0LL || _bend < 0LL || _bend < _bstart || _fpos < 0LL)
+      return -1;
+    if ((_bend - _bstart) > static_cast<INT64>(size()))
+      return -1;
+    if (_fpos >= _bstart && _fpos < _bend)
+      return data()[_fpos - _bstart];
+    return -1;
+  }
+
+  bool contains(INT64 _fpos, INT64 &contains)
+  {
+    if (_bstart < 0LL || _bend < 0LL || _bend < _bstart || _fpos < 0LL)
     {
-        if (_bstart < 0LL || _bend < 0LL || _bend < _bstart || _fpos < 0LL)  
-            return -1;
-        if ((_bend - _bstart) > (INT64)size()) 
-            return -1;
-        if (_fpos >= _bstart && _fpos < _bend)
-            return data()[_fpos - _bstart];
-        return -1;
+      contains = 0;
+      return false;
     }
-    bool contains(INT64 _fpos, INT64& contains)
+    if ((_bend - _bstart) > static_cast<INT64>(size()))
     {
-        if (_bstart < 0LL || _bend < 0LL || _bend < _bstart || _fpos < 0LL)
-        {
-            contains = 0;
-            return false;
-        }
-        if ((_bend - _bstart) > (INT64)size())
-        {
-          contains = 0;
-          return false;
-        }       
-        if (_fpos >= _bstart && _fpos < _bend)
-        {
-            contains = _bend - _fpos;
-            return true;
-        }
-        contains = 0;
-        return false;
+      contains = 0;
+      return false;
     }
+    if (_fpos >= _bstart && _fpos < _bend)
+    {
+      contains = _bend - _fpos;
+      return true;
+    }
+    contains = 0;
+    return false;
+  }
 };
 
 
 class DllDef LibRaw_bigfile_buffered_datastream : public LibRaw_abstract_datastream
 {
 public:
-    LibRaw_bigfile_buffered_datastream(const char *fname);
+  LibRaw_bigfile_buffered_datastream(const char *fname);
 #ifdef LIBRAW_WIN32_UNICODEPATHS
-    LibRaw_bigfile_buffered_datastream(const wchar_t *fname);
+  LibRaw_bigfile_buffered_datastream(const wchar_t *fname);
 #endif
-    virtual ~LibRaw_bigfile_buffered_datastream();
-    virtual int valid();
+  ~LibRaw_bigfile_buffered_datastream() override;
+  int valid() override;
 #ifdef LIBRAW_OLD_VIDEO_SUPPORT
     virtual void *make_jas_stream();
 #endif
-    virtual void buffering_off() { buffered = 0; }
-    virtual int read(void *ptr, size_t size, size_t nmemb);
-    virtual int eof();
-    virtual int seek(INT64 o, int whence);
-    virtual INT64 tell();
-    virtual INT64 size() { return _fsize; }
-    virtual char *gets(char *str, int sz);
-    virtual int scanf_one(const char *fmt, void *val);
-    virtual const char *fname();
+  void buffering_off() override { buffered = 0; }
+  int read(void *ptr, size_t size, size_t nmemb) override;
+  int eof() override;
+  int seek(INT64 o, int whence) override;
+  INT64 tell() override;
+  INT64 size() override { return _fsize; }
+  char *gets(char *str, int sz) override;
+  int scanf_one(const char *fmt, void *val) override;
+  const char *fname() override;
 #ifdef LIBRAW_WIN32_UNICODEPATHS
-    virtual const wchar_t *wfname();
+  const wchar_t *wfname() override;
 #endif
-    virtual int get_char()
+  int get_char() override
+  {
+    int r = iobuffers[0].charOReof(_fpos);
+    if (r >= 0)
     {
-        int r = iobuffers[0].charOReof(_fpos);
-        if (r >= 0)
-        {
-            _fpos++;
-            return r;
-        }
-        unsigned char c;
-        r = read(&c, 1, 1);
-        return r > 0 ? c : r;
+      _fpos++;
+      return r;
     }
+    unsigned char c;
+    r = read(&c, 1, 1);
+    return r > 0 ? c : r;
+  }
 
 protected:
-    INT64   readAt(void *ptr, size_t size, INT64 off);
-    bool	fillBufferAt(int buf, INT64 off);
-    int		selectStringBuffer(INT64 len, INT64& contains);
-    HANDLE fhandle;
-    INT64 _fsize;
-    INT64 _fpos; /* current file position; current buffer start position */
+  INT64 readAt(void *ptr, size_t size, INT64 off);
+  bool fillBufferAt(int buf, INT64 off);
+  int selectStringBuffer(INT64 len, INT64 &contains);
+  HANDLE fhandle;
+  INT64 _fsize;
+  INT64 _fpos; /* current file position; current buffer start position */
 #ifdef LIBRAW_WIN32_UNICODEPATHS
-    std::wstring wfilename;
+  std::wstring wfilename;
 #endif
-    std::string filename;
-    buffer_t iobuffers[2];
-    int buffered;
+  std::string filename;
+  buffer_t iobuffers[2];
+  int buffered;
 };
 
 #endif
@@ -264,22 +283,24 @@ class DllDef LibRaw_buffer_datastream : public LibRaw_abstract_datastream
 {
 public:
   LibRaw_buffer_datastream(const void *buffer, size_t bsize);
-  virtual ~LibRaw_buffer_datastream();
-  virtual int valid();
+  ~LibRaw_buffer_datastream() override;
+  int valid() override;
 #ifdef LIBRAW_OLD_VIDEO_SUPPORT
   virtual void *make_jas_stream();
 #endif
-  virtual int jpeg_src(void *jpegdata);
-  virtual int read(void *ptr, size_t sz, size_t nmemb);
-  virtual int eof();
-  virtual int seek(INT64 o, int whence);
-  virtual INT64 tell();
-  virtual INT64 size() { return streamsize; }
-  virtual char *gets(char *s, int sz);
-  virtual int scanf_one(const char *fmt, void *val);
-  virtual int get_char()
+  int jpeg_src(void *jpegdata) override;
+  int read(void *ptr, size_t sz, size_t nmemb) override;
+  int eof() override;
+  int seek(INT64 o, int whence) override;
+  INT64 tell() override;
+  INT64 size() override { return streamsize; }
+  char *gets(char *s, int sz) override;
+  int scanf_one(const char *fmt, void *val) override;
+
+  int get_char() override
   {
-    if (streampos >= streamsize)   return -1;
+    if (streampos >= streamsize)
+      return -1;
     return buf[streampos++];
   }
 
@@ -295,24 +316,24 @@ public:
 #ifdef LIBRAW_WIN32_UNICODEPATHS
   LibRaw_bigfile_datastream(const wchar_t *fname);
 #endif
-  virtual ~LibRaw_bigfile_datastream();
-  virtual int valid();
+  ~LibRaw_bigfile_datastream() override;
+  int valid() override;
 #ifdef LIBRAW_OLD_VIDEO_SUPPORT
   virtual void *make_jas_stream();
 #endif
 
-  virtual int read(void *ptr, size_t size, size_t nmemb);
-  virtual int eof();
-  virtual int seek(INT64 o, int whence);
-  virtual INT64 tell();
-  virtual INT64 size() { return _fsize; }
-  virtual char *gets(char *str, int sz);
-  virtual int scanf_one(const char *fmt, void *val);
-  virtual const char *fname();
+  int read(void *ptr, size_t size, size_t nmemb) override;
+  int eof() override;
+  int seek(INT64 o, int whence) override;
+  INT64 tell() override;
+  INT64 size() override { return _fsize; }
+  char *gets(char *str, int sz) override;
+  int scanf_one(const char *fmt, void *val) override;
+  const char *fname() override;
 #ifdef LIBRAW_WIN32_UNICODEPATHS
-  virtual const wchar_t *wfname();
+  const wchar_t *wfname() override;
 #endif
-  virtual int get_char()
+  int get_char() override
   {
 #ifndef LIBRAW_WIN32_CALLS
     return getc_unlocked(f);
@@ -340,17 +361,18 @@ public:
    * file handle */
   LibRaw_windows_datastream(HANDLE hFile);
   /* dtor: unmap and close the mapping handle */
-  virtual ~LibRaw_windows_datastream();
-  virtual INT64 size() { return cbView_; }
+  ~LibRaw_windows_datastream() override;
+  INT64 size() override { return cbView_; }
 
 protected:
   void Open(HANDLE hFile);
-  inline void reconstruct_base()
+
+  void reconstruct_base()
   {
     /* this subterfuge is to overcome the private-ness of
      * LibRaw_buffer_datastream */
-    (LibRaw_buffer_datastream &)*this =
-        LibRaw_buffer_datastream(pView_, (size_t)cbView_);
+    static_cast<LibRaw_buffer_datastream &>(*this) =
+        LibRaw_buffer_datastream(pView_, static_cast<size_t>(cbView_));
   }
 
   HANDLE hMap_;    /* handle of the file mapping */

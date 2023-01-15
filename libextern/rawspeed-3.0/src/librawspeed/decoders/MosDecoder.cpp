@@ -70,13 +70,13 @@ bool MosDecoder::isAppropriateDecoder(const TiffRootIFD* rootIFD,
 }
 
 MosDecoder::MosDecoder(TiffRootIFDOwner&& rootIFD, const Buffer& file)
-    : AbstractTiffDecoder(move(rootIFD), file) {
+  : AbstractTiffDecoder(move(rootIFD), file) {
   if (mRootIFD->getEntryRecursive(MAKE)) {
     auto id = mRootIFD->getID();
     make = id.make;
     model = id.model;
   } else {
-    TiffEntry *xmp = mRootIFD->getEntryRecursive(XMP);
+    TiffEntry* xmp = mRootIFD->getEntryRecursive(XMP);
     if (!xmp)
       ThrowRDE("Couldn't find the XMP");
 
@@ -87,19 +87,19 @@ MosDecoder::MosDecoder(TiffRootIFDOwner&& rootIFD, const Buffer& file)
   }
 }
 
-string MosDecoder::getXMPTag(const string &xmp, const string &tag) {
-  string::size_type start = xmp.find("<tiff:"+tag+">");
-  string::size_type end = xmp.find("</tiff:"+tag+">");
+string MosDecoder::getXMPTag(const string& xmp, const string& tag) {
+  string::size_type start = xmp.find("<tiff:" + tag + ">");
+  string::size_type end = xmp.find("</tiff:" + tag + ">");
   if (start == string::npos || end == string::npos || end <= start)
     ThrowRDE("Couldn't find tag '%s' in the XMP", tag.c_str());
-  int startlen = tag.size()+7;
-  return xmp.substr(start+startlen, end-start-startlen);
+  int startlen = tag.size() + 7;
+  return xmp.substr(start + startlen, end - start - startlen);
 }
 
 RawImage MosDecoder::decodeRawInternal() {
   uint32_t off = 0;
 
-  const TiffIFD *raw = nullptr;
+  const TiffIFD* raw = nullptr;
 
   if (mRootIFD->hasEntryRecursive(TILEOFFSETS)) {
     raw = mRootIFD->getIFDWithTag(TILEOFFSETS);
@@ -134,8 +134,7 @@ RawImage MosDecoder::decodeRawInternal() {
       u.decodeRawUnpacked<16, Endianness::big>(width, height);
     else
       u.decodeRawUnpacked<16, Endianness::little>(width, height);
-  }
-  else if (99 == compression || 7 == compression) {
+  } else if (99 == compression || 7 == compression) {
     ThrowRDE("Leaf LJpeg not yet supported");
     // LJpegPlain l(mFile, mRaw);
     // l.startDecoder(off, mFile.getSize()-off, 0, 0);

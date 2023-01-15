@@ -41,7 +41,10 @@ class IiqDecoder final : public AbstractTiffDecoder {
     uint32_t offset;
 
     IiqOffset() = default;
-    IiqOffset(uint32_t block, uint32_t offset_) : n(block), offset(offset_) {}
+
+    IiqOffset(uint32_t block, uint32_t offset_)
+      : n(block), offset(offset_) {
+    }
   };
 
   static std::vector<PhaseOneStrip>
@@ -54,7 +57,8 @@ public:
                                    const Buffer& file);
 
   IiqDecoder(TiffRootIFDOwner&& rootIFD, const Buffer& file)
-      : AbstractTiffDecoder(move(rootIFD), file) {}
+    : AbstractTiffDecoder(move(rootIFD), file) {
+  }
 
   RawImage decodeRawInternal() override;
   void checkSupportInternal(const CameraMetaData* meta) override;

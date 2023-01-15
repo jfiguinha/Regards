@@ -78,7 +78,7 @@ RawImage Cr2Decoder::decodeOldFormat() {
 
   // some old models (1D/1DS/D2000C) encode two lines as one
   // see: FIX_CANON_HALF_HEIGHT_DOUBLE_WIDTH
-  if (width > 2*height) {
+  if (width > 2 * height) {
     height *= 2;
     width /= 2;
   }
@@ -92,7 +92,7 @@ RawImage Cr2Decoder::decodeOldFormat() {
   mRaw->createData();
 
   Cr2Slicing slicing(/*numSlices=*/1, /*sliceWidth=don't care*/ 0,
-                     /*lastSliceWidth=*/width);
+                                   /*lastSliceWidth=*/width);
   l.decode(slicing);
 
   // deal with D2000 GrayResponseCurve
@@ -164,8 +164,10 @@ RawImage Cr2Decoder::decodeNewFormat() {
     if (cr2SliceEntry->getU16(1) != 0 && cr2SliceEntry->getU16(2) != 0) {
       // first component can be either zero or non-zero, don't care
       slicing = Cr2Slicing(/*numSlices=*/1 + cr2SliceEntry->getU16(0),
-                           /*sliceWidth=*/cr2SliceEntry->getU16(1),
-                           /*lastSliceWidth=*/cr2SliceEntry->getU16(2));
+                                         /*sliceWidth=*/
+                                         cr2SliceEntry->getU16(1),
+                                         /*lastSliceWidth=*/
+                                         cr2SliceEntry->getU16(2));
     } else if (cr2SliceEntry->getU16(0) == 0 && cr2SliceEntry->getU16(1) == 0 &&
                cr2SliceEntry->getU16(2) != 0) {
       // PowerShot G16, PowerShot S120, let Cr2Decompressor guess.
@@ -197,8 +199,8 @@ RawImage Cr2Decoder::decodeNewFormat() {
 RawImage Cr2Decoder::decodeRawInternal() {
   if (mRootIFD->getSubIFDs().size() < 4)
     return decodeOldFormat();
-  else // NOLINT ok, here it make sense
-    return decodeNewFormat();
+  // NOLINT ok, here it make sense
+  return decodeNewFormat();
 }
 
 void Cr2Decoder::checkSupportInternal(const CameraMetaData* meta) {
@@ -214,7 +216,7 @@ void Cr2Decoder::checkSupportInternal(const CameraMetaData* meta) {
 
 void Cr2Decoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   int iso = 0;
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
 
   string mode;
 
@@ -226,7 +228,7 @@ void Cr2Decoder::decodeMetaDataInternal(const CameraMetaData* meta) {
 
   if (mRootIFD->hasEntryRecursive(ISOSPEEDRATINGS))
     iso = mRootIFD->getEntryRecursive(ISOSPEEDRATINGS)->getU32();
-  if(65535 == iso) {
+  if (65535 == iso) {
     // ISOSPEEDRATINGS is a SHORT EXIF value. For larger values, we have to look
     // at RECOMMENDEDEXPOSUREINDEX (maybe Canon specific).
     if (mRootIFD->hasEntryRecursive(RECOMMENDEDEXPOSUREINDEX))
@@ -234,9 +236,9 @@ void Cr2Decoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   }
 
   // Fetch the white balance
-  try{
+  try {
     if (mRootIFD->hasEntryRecursive(CANONCOLORDATA)) {
-      TiffEntry *wb = mRootIFD->getEntryRecursive(CANONCOLORDATA);
+      TiffEntry* wb = mRootIFD->getEntryRecursive(CANONCOLORDATA);
       // this entry is a big table, and different cameras store used WB in
       // different parts, so find the offset, default is the most common one
       int offset = hints.get("wb_offset", 126);
@@ -248,12 +250,14 @@ void Cr2Decoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     } else {
       if (mRootIFD->hasEntryRecursive(CANONSHOTINFO) &&
           mRootIFD->hasEntryRecursive(CANONPOWERSHOTG9WB)) {
-        TiffEntry *shot_info = mRootIFD->getEntryRecursive(CANONSHOTINFO);
-        TiffEntry *g9_wb = mRootIFD->getEntryRecursive(CANONPOWERSHOTG9WB);
+        TiffEntry* shot_info = mRootIFD->getEntryRecursive(CANONSHOTINFO);
+        TiffEntry* g9_wb = mRootIFD->getEntryRecursive(CANONPOWERSHOTG9WB);
 
         uint16_t wb_index = shot_info->getU16(7);
-        int wb_offset = (wb_index < 18) ? "012347800000005896"[wb_index]-'0' : 0;
-        wb_offset = wb_offset*8 + 2;
+        int wb_offset = (wb_index < 18)
+                          ? "012347800000005896"[wb_index] - '0'
+                          : 0;
+        wb_offset = wb_offset * 8 + 2;
 
         mRaw->metadata.wbCoeffs[0] =
             static_cast<float>(g9_wb->getU32(wb_offset + 1));
@@ -320,8 +324,10 @@ int Cr2Decoder::getHue() {
   }
   uint32_t model_id =
       mRootIFD->getEntryRecursive(static_cast<TiffTag>(0x10))->getU32();
-  if (model_id >= 0x80000281 || model_id == 0x80000218 || (hints.has("force_new_sraw_hue")))
-    return ((mRaw->metadata.subsampling.y * mRaw->metadata.subsampling.x) - 1) >> 1;
+  if (model_id >= 0x80000281 || model_id == 0x80000218 || (hints.has(
+          "force_new_sraw_hue")))
+    return ((mRaw->metadata.subsampling.y * mRaw->metadata.subsampling.x) - 1)
+           >> 1;
 
   return (mRaw->metadata.subsampling.y * mRaw->metadata.subsampling.x);
 }
@@ -345,9 +351,9 @@ void Cr2Decoder::sRawInterpolate() {
 
   if (hints.has("invert_sraw_wb")) {
     sraw_coeffs[0] = static_cast<int>(
-        1024.0F / (static_cast<float>(sraw_coeffs[0]) / 1024.0F));
+      1024.0F / (static_cast<float>(sraw_coeffs[0]) / 1024.0F));
     sraw_coeffs[2] = static_cast<int>(
-        1024.0F / (static_cast<float>(sraw_coeffs[2]) / 1024.0F));
+      1024.0F / (static_cast<float>(sraw_coeffs[2]) / 1024.0F));
   }
 
   mRaw->checkMemIsInitialized();
@@ -356,9 +362,9 @@ void Cr2Decoder::sRawInterpolate() {
 
   iPoint2D interpolatedDims = {
       subsampledRaw->metadata.subsampling.x *
-          (subsampledRaw->dim.x /
-           (2 + subsampledRaw->metadata.subsampling.x *
-                    subsampledRaw->metadata.subsampling.y)),
+      (subsampledRaw->dim.x /
+       (2 + subsampledRaw->metadata.subsampling.x *
+        subsampledRaw->metadata.subsampling.y)),
       subsampledRaw->metadata.subsampling.y * subsampledRaw->dim.y};
 
   mRaw = RawImage::create(interpolatedDims, TYPE_USHORT16, 3);

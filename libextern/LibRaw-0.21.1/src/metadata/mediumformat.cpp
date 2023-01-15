@@ -43,13 +43,13 @@ void LibRaw::parse_phase_one(int base)
     tag = get4();
     type = get4();
     len = get4();
-	if (feof(ifp))
-		break;
+    if (feof(ifp))
+      break;
     data = get4();
     save = ftell(ifp);
-	bool do_seek = (tag < 0x0108 || tag > 0x0110); // to make it single rule, not copy-paste
-	if(do_seek)
-		fseek(ifp, base + data, SEEK_SET);
+    bool do_seek = (tag < 0x0108 || tag > 0x0110); // to make it single rule, not copy-paste
+    if (do_seek)
+      fseek(ifp, base + data, SEEK_SET);
     switch (tag)
     {
 
@@ -73,11 +73,12 @@ void LibRaw::parse_phase_one(int base)
     case 0x0106:
       for (i = 0; i < 9; i++)
         imgdata.color.P1_color[0].romm_cam[i] = ((float *)romm_cam)[i] =
-            (float)getreal(LIBRAW_EXIFTAG_TYPE_FLOAT);
+                                                static_cast<float>(getreal(LIBRAW_EXIFTAG_TYPE_FLOAT));
       romm_coeff(romm_cam);
       break;
     case 0x0107:
-      FORC3 cam_mul[c] = (float)getreal(LIBRAW_EXIFTAG_TYPE_FLOAT);
+      FORC3
+        cam_mul[c] = static_cast<float>(getreal(LIBRAW_EXIFTAG_TYPE_FLOAT));
       break;
     case 0x0108:
       raw_width = data;
@@ -102,14 +103,14 @@ void LibRaw::parse_phase_one(int base)
       break;
     case 0x010f:
       data_offset = data + base;
-	  data_size = len;
+      data_size = len;
       break;
     case 0x0110:
       meta_offset = data + base;
       meta_length = len;
       break;
     case 0x0112:
-      ph1.key_off = int(save - 4);
+      ph1.key_off = static_cast<int>(save - 4);
       break;
     case 0x0203:
       stmread(imPhaseOne.Software, len, ifp);
@@ -145,27 +146,27 @@ void LibRaw::parse_phase_one(int base)
       break;
     case 0x0226:
       for (i = 0; i < 9; i++)
-        imgdata.color.P1_color[1].romm_cam[i] = (float)getreal(LIBRAW_EXIFTAG_TYPE_FLOAT);
+        imgdata.color.P1_color[1].romm_cam[i] = static_cast<float>(getreal(LIBRAW_EXIFTAG_TYPE_FLOAT));
       break;
     case 0x0301:
       model[63] = 0;
       fread(imPhaseOne.FirmwareString, 1, 255, ifp);
       imPhaseOne.FirmwareString[255] = 0;
       memcpy(model, imPhaseOne.FirmwareString, 63);
-	  model[63] = 0;
+      model[63] = 0;
       if ((cp = strstr(model, " camera")))
         *cp = 0;
       else if ((cp = strchr(model, ',')))
         *cp = 0;
-      /* minus and the letter after it are not always present
-        if present, last letter means:
-          C : Contax 645AF
-          H : Hasselblad H1 / H2
-          M : Mamiya
-          V : Hasselblad 555ELD / 553ELX / 503CW / 501CM; not included below
-        because of adapter conflicts (Mamiya RZ body) if not present, Phase One
-        645 AF, Mamiya 645AFD Series, or anything
-       */
+    /* minus and the letter after it are not always present
+      if present, last letter means:
+        C : Contax 645AF
+        H : Hasselblad H1 / H2
+        M : Mamiya
+        V : Hasselblad 555ELD / 553ELX / 503CW / 501CM; not included below
+      because of adapter conflicts (Mamiya RZ body) if not present, Phase One
+      645 AF, Mamiya 645AFD Series, or anything
+     */
       strcpy(imPhaseOne.SystemModel, model);
       if ((cp = strchr(model, '-')))
       {
@@ -193,22 +194,22 @@ void LibRaw::parse_phase_one(int base)
       if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_LONG))
         ilm.CurAp = libraw_powf64l(2.0f, (int_to_float(data) / 2.0f));
       else
-        ilm.CurAp = libraw_powf64l(2.0f, float(getreal(type) / 2.0f));
+        ilm.CurAp = libraw_powf64l(2.0f, static_cast<float>(getreal(type) / 2.0f));
       break;
     case 0x0403:
       if (tagtypeIs(LIBRAW_EXIFTAG_TYPE_LONG))
         ilm.CurFocal = int_to_float(data);
       else
-        ilm.CurFocal = (float)getreal(type);
+        ilm.CurFocal = static_cast<float>(getreal(type));
       break;
     case 0x0410:
       stmread(ilm.body, len, ifp);
-      if (((unsigned char)ilm.body[0]) == 0xff)
+      if (static_cast<unsigned char>(ilm.body[0]) == 0xff)
         ilm.body[0] = 0;
       break;
     case 0x0412:
       stmread(ilm.Lens, len, ifp);
-      if (((unsigned char)ilm.Lens[0]) == 0xff)
+      if (static_cast<unsigned char>(ilm.Lens[0]) == 0xff)
         ilm.Lens[0] = 0;
       break;
     case 0x0414:
@@ -218,7 +219,7 @@ void LibRaw::parse_phase_one(int base)
       }
       else
       {
-        ilm.MaxAp4CurFocal = libraw_powf64l(2.0f, float(getreal(type) / 2.0f));
+        ilm.MaxAp4CurFocal = libraw_powf64l(2.0f, static_cast<float>(getreal(type) / 2.0f));
       }
       break;
     case 0x0415:
@@ -228,7 +229,7 @@ void LibRaw::parse_phase_one(int base)
       }
       else
       {
-        ilm.MinAp4CurFocal = libraw_powf64l(2.0f, float(getreal(type) / 2.0f));
+        ilm.MinAp4CurFocal = libraw_powf64l(2.0f, static_cast<float>(getreal(type) / 2.0f));
       }
       break;
     case 0x0416:
@@ -238,7 +239,7 @@ void LibRaw::parse_phase_one(int base)
       }
       else
       {
-        ilm.MinFocal = (float)getreal(type);
+        ilm.MinFocal = static_cast<float>(getreal(type));
       }
       if (ilm.MinFocal > 1000.0f)
       {
@@ -252,7 +253,7 @@ void LibRaw::parse_phase_one(int base)
       }
       else
       {
-        ilm.MaxFocal = (float)getreal(type);
+        ilm.MaxFocal = static_cast<float>(getreal(type));
       }
       break;
     }
@@ -274,8 +275,8 @@ void LibRaw::parse_phase_one(int base)
     {
       tag = get4();
       len = get4();
-	  if (feof(ifp))
-		  break;
+      if (feof(ifp))
+        break;
       data = get4();
       save = ftell(ifp);
       fseek(ifp, meta_offset + data, SEEK_SET);
@@ -302,14 +303,15 @@ void LibRaw::parse_phase_one(int base)
   }
 
   if ((ilm.MaxAp4CurFocal > 0.7f) &&
-      (ilm.MinAp4CurFocal > 0.7f)) {
-    float MinAp4CurFocal = MAX(ilm.MaxAp4CurFocal,ilm.MinAp4CurFocal);
-    ilm.MaxAp4CurFocal   = MIN(ilm.MaxAp4CurFocal,ilm.MinAp4CurFocal);
+      (ilm.MinAp4CurFocal > 0.7f))
+  {
+    float MinAp4CurFocal = MAX(ilm.MaxAp4CurFocal, ilm.MinAp4CurFocal);
+    ilm.MaxAp4CurFocal = MIN(ilm.MaxAp4CurFocal, ilm.MinAp4CurFocal);
     ilm.MinAp4CurFocal = MinAp4CurFocal;
   }
 
   if (ph1.format == 6)
-	  load_raw = &LibRaw::phase_one_load_raw_s;
+    load_raw = &LibRaw::phase_one_load_raw_s;
   else
     load_raw = ph1.format < 3 ? &LibRaw::phase_one_load_raw : &LibRaw::phase_one_load_raw_c;
   maximum = 0xffff; // Always scaled to 16bit?
@@ -434,21 +436,21 @@ void LibRaw::parse_mos(INT64 offset)
     if (!strcmp(data, "back_serial_number"))
     {
       char buffer[sizeof(imgdata.shootinginfo.BodySerial)];
-      char *words[4] = {0, 0, 0, 0};
+      char *words[4] = {nullptr, nullptr, nullptr, nullptr};
       stmread(buffer, (unsigned)skip, ifp);
       /*nwords = */
-          getwords(buffer, words, 4, sizeof(imgdata.shootinginfo.BodySerial));
-	  if(words[0])
-		strcpy(imgdata.shootinginfo.BodySerial, words[0]);
+      getwords(buffer, words, 4, sizeof(imgdata.shootinginfo.BodySerial));
+      if (words[0])
+        strcpy(imgdata.shootinginfo.BodySerial, words[0]);
     }
     if (!strcmp(data, "CaptProf_serial_number"))
     {
       char buffer[sizeof(imgdata.shootinginfo.InternalBodySerial)];
-      char *words[4] = {0, 0, 0, 0};
+      char *words[4] = {nullptr, nullptr, nullptr, nullptr};
       stmread(buffer, (unsigned)skip, ifp);
       getwords(buffer, words, 4, sizeof(imgdata.shootinginfo.InternalBodySerial));
-	  if(words[0])
-		strcpy(imgdata.shootinginfo.InternalBodySerial, words[0]);
+      if (words[0])
+        strcpy(imgdata.shootinginfo.InternalBodySerial, words[0]);
     }
 
     if (!strcmp(data, "JPEG_preview_data"))
@@ -464,7 +466,7 @@ void LibRaw::parse_mos(INT64 offset)
     if (!strcmp(data, "ShootObj_back_type"))
     {
       fscanf(ifp, "%d", &i);
-      if ((unsigned)i < sizeof mod / sizeof(*mod))
+      if (static_cast<unsigned>(i) < sizeof mod / sizeof(*mod))
       {
         strcpy(model, mod[i]);
         if (!strncmp(model, "AFi", 3))
@@ -505,10 +507,11 @@ void LibRaw::parse_mos(INT64 offset)
     }
     if (!strcmp(data, "NeutObj_neutrals") && !cam_mul[0])
     {
-      FORC4 fscanf(ifp, "%d", neut + c);
+      FORC4
+        fscanf(ifp, "%d", neut + c);
       FORC3
-      if (neut[c + 1])
-        cam_mul[c] = (float)neut[0] / neut[c + 1];
+        if (neut[c + 1])
+          cam_mul[c] = static_cast<float>(neut[0]) / neut[c + 1];
     }
     if (!strcmp(data, "Rows_data"))
       load_flags = get4();
@@ -517,5 +520,5 @@ void LibRaw::parse_mos(INT64 offset)
   }
   if (planes)
     filters = (planes == 1) * 0x01010101U *
-              (uchar) "\x94\x61\x16\x49"[(flip / 90 + frot) & 3];
+              static_cast<uchar>("\x94\x61\x16\x49"[(flip / 90 + frot) & 3]);
 }

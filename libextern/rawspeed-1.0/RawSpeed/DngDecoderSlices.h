@@ -26,51 +26,62 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class DngSliceElement
+namespace RawSpeed
 {
-public:
-  DngSliceElement(uint32 off, uint32 count, uint32 offsetX, uint32 offsetY) : 
-      byteOffset(off), byteCount(count), offX(offsetX), offY(offsetY), mUseBigtable(false) {};
-  ~DngSliceElement(void) {};
-  const uint32 byteOffset;
-  const uint32 byteCount;
-  const uint32 offX;
-  const uint32 offY;
-  bool mUseBigtable;
-};
-class DngDecoderSlices;
+	class DngSliceElement
+	{
+	public:
+		DngSliceElement(uint32 off, uint32 count, uint32 offsetX, uint32 offsetY) :
+			byteOffset(off), byteCount(count), offX(offsetX), offY(offsetY), mUseBigtable(false)
+		{
+		};
 
-class DngDecoderThread
-{
-public:
-  DngDecoderThread(void) {}
-  ~DngDecoderThread(void) {}
-  pthread_t threadid;
-  queue<DngSliceElement> slices;
-  DngDecoderSlices* parent;
-};
+		~DngSliceElement(void)
+		{
+		};
+		const uint32 byteOffset;
+		const uint32 byteCount;
+		const uint32 offX;
+		const uint32 offY;
+		bool mUseBigtable;
+	};
+
+	class DngDecoderSlices;
+
+	class DngDecoderThread
+	{
+	public:
+		DngDecoderThread(void)
+		{
+		}
+
+		~DngDecoderThread(void)
+		{
+		}
+
+		pthread_t threadid;
+		queue<DngSliceElement> slices;
+		DngDecoderSlices* parent;
+	};
 
 
-class DngDecoderSlices
-{
-public:
-  DngDecoderSlices(FileMap* file, RawImage img, int compression );
-  ~DngDecoderSlices(void);
-  void addSlice(DngSliceElement slice);
-  void startDecoding();
-  void decodeSlice(DngDecoderThread* t);
-  int size();
-  queue<DngSliceElement> slices;
-  vector<DngDecoderThread*> threads;
-  FileMap *mFile; 
-  RawImage mRaw;
-  bool mFixLjpeg;
-  uint32 nThreads;
-  int compression;
-};
-
+	class DngDecoderSlices
+	{
+	public:
+		DngDecoderSlices(FileMap* file, RawImage img, int compression);
+		~DngDecoderSlices(void);
+		void addSlice(DngSliceElement slice);
+		void startDecoding();
+		void decodeSlice(DngDecoderThread* t);
+		int size();
+		queue<DngSliceElement> slices;
+		vector<DngDecoderThread*> threads;
+		FileMap* mFile;
+		RawImage mRaw;
+		bool mFixLjpeg;
+		uint32 nThreads;
+		int compression;
+	};
 } // namespace RawSpeed
 
 #endif

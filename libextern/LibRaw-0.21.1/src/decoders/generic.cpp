@@ -21,8 +21,7 @@
 void LibRaw::unpacked_load_raw()
 {
   int row, col, bits = 0;
-  while (1 << ++bits < (int)maximum)
-    ;
+  while (1 << ++bits < static_cast<int>(maximum));
   read_shorts(raw_image, raw_width * raw_height);
   fseek(ifp, -2, SEEK_CUR); // avoid EOF error
   if (maximum < 0xffff || load_flags)
@@ -31,8 +30,8 @@ void LibRaw::unpacked_load_raw()
       checkCancel();
       for (col = 0; col < raw_width; col++)
         if ((RAW(row, col) >>= load_flags) >> bits &&
-            (unsigned)(row - top_margin) < height &&
-            (unsigned)(col - left_margin) < width)
+            static_cast<unsigned>(row - top_margin) < height &&
+            static_cast<unsigned>(col - left_margin) < width)
           derror();
     }
 }
@@ -72,7 +71,7 @@ void LibRaw::packed_load_raw()
       {
         bitbuf <<= bite;
         for (i = 0; i < bite; i += 8)
-          bitbuf |= (unsigned(fgetc(ifp)) << i);
+          bitbuf |= (static_cast<unsigned>(fgetc(ifp)) << i);
       }
       val = bitbuf << (64 - tiff_bps - vbits) >> (64 - tiff_bps);
       RAW(row, col ^ (load_flags >> 6 & 1)) = val;
@@ -91,11 +90,11 @@ void LibRaw::eight_bit_load_raw()
   std::vector<uchar> pixel(raw_width);
   for (row = 0; row < raw_height; row++)
   {
-      checkCancel();
-      if (fread(pixel.data(), 1, raw_width, ifp) < raw_width)
-          derror();
-      for (col = 0; col < raw_width; col++)
-          RAW(row, col) = curve[pixel[col]];
+    checkCancel();
+    if (fread(pixel.data(), 1, raw_width, ifp) < raw_width)
+      derror();
+    for (col = 0; col < raw_width; col++)
+      RAW(row, col) = curve[pixel[col]];
   }
   maximum = curve[0xff];
 }

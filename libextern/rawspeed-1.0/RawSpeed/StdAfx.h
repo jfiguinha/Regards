@@ -21,7 +21,6 @@
 */
 
 
-
 #if defined(__MINGW32__)
 #define UNICODE
 #undef _WIN32_WINNT
@@ -100,5 +99,3 @@ using namespace std;
 #include "TiffTag.h"
 #include "Common.h"
 #include "Point.h"
-
-

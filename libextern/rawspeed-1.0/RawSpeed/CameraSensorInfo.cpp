@@ -22,29 +22,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-CameraSensorInfo::CameraSensorInfo(int black_level, int white_level, int min_iso, int max_iso, vector<int> black_separate) :
-mBlackLevel(black_level),
-mWhiteLevel(white_level),
-mMinIso(min_iso), 
-mMaxIso(max_iso),
-mBlackLevelSeparate(black_separate)
+namespace RawSpeed
 {
-}
+	CameraSensorInfo::CameraSensorInfo(int black_level, int white_level, int min_iso, int max_iso,
+	                                   vector<int> black_separate) :
+		mBlackLevel(black_level),
+		mWhiteLevel(white_level),
+		mMinIso(min_iso),
+		mMaxIso(max_iso),
+		mBlackLevelSeparate(black_separate)
+	{
+	}
 
-CameraSensorInfo::~CameraSensorInfo(void)
-{
-}
+	CameraSensorInfo::~CameraSensorInfo(void)
+	{
+	}
 
-bool CameraSensorInfo::isIsoWithin( int iso )
-{
-  return (iso >= mMinIso && iso <= mMaxIso) || (iso >= mMinIso && 0 == mMaxIso);
-}
+	bool CameraSensorInfo::isIsoWithin(int iso)
+	{
+		return (iso >= mMinIso && iso <= mMaxIso) || (iso >= mMinIso && 0 == mMaxIso);
+	}
 
-bool CameraSensorInfo::isDefault()
-{
-  return (0 == mMinIso && 0 == mMaxIso);
-}
-
+	bool CameraSensorInfo::isDefault()
+	{
+		return (0 == mMinIso && 0 == mMaxIso);
+	}
 } // namespace RawSpeed

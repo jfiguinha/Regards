@@ -26,18 +26,18 @@
 #include "FileMap.h"
 #include "RawDecoder.h"
 
-namespace RawSpeed {
-
-class RawParser 
+namespace RawSpeed
 {
-public:
-  RawParser(FileMap* input);
-  virtual ~RawParser();
-  virtual RawDecoder* getDecoder();
-protected:
-  FileMap *mInput;
-};
+	class RawParser
+	{
+	public:
+		RawParser(FileMap* input);
+		virtual ~RawParser();
+		virtual RawDecoder* getDecoder();
 
+	protected:
+		FileMap* mInput;
+	};
 } // namespace RawSpeed
 
 #endif

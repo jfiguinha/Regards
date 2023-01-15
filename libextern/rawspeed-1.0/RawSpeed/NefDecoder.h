@@ -29,37 +29,41 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class NefDecoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  NefDecoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~NefDecoder(void);
-  virtual RawImage decodeRawInternal();
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  TiffIFD *mRootIFD;
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-private:
-  bool D100IsCompressed(uint32 offset);
-  void DecodeUncompressed();
-  void DecodeD100Uncompressed();
-  void readCoolpixMangledRaw(ByteStream &input, iPoint2D& size, iPoint2D& offset, int inputPitch);
-  void readCoolpixSplitRaw(ByteStream &input, iPoint2D& size, iPoint2D& offset, int inputPitch);
-  TiffIFD* FindBestImage(vector<TiffIFD*>* data);
-  string getMode();
-};
+	class NefDecoder :
+		public RawDecoder
+	{
+	public:
+		NefDecoder(TiffIFD* rootIFD, FileMap* file);
+		~NefDecoder(void) override;
+		RawImage decodeRawInternal() override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		TiffIFD* mRootIFD;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
 
-class NefSlice {
-public:
-  NefSlice() { h = offset = count = 0;};
-  ~NefSlice() {};
-  uint32 h;
-  uint32 offset;
-  uint32 count;
-};
+	private:
+		bool D100IsCompressed(uint32 offset);
+		void DecodeUncompressed();
+		void DecodeD100Uncompressed();
+		void readCoolpixMangledRaw(ByteStream& input, iPoint2D& size, iPoint2D& offset, int inputPitch);
+		void readCoolpixSplitRaw(ByteStream& input, iPoint2D& size, iPoint2D& offset, int inputPitch);
+		TiffIFD* FindBestImage(vector<TiffIFD*>* data);
+		string getMode();
+	};
 
+	class NefSlice
+	{
+	public:
+		NefSlice() { h = offset = count = 0; };
+
+		~NefSlice()
+		{
+		};
+		uint32 h;
+		uint32 offset;
+		uint32 count;
+	};
 } // namespace RawSpeed
 #endif

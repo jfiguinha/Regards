@@ -65,7 +65,8 @@ void CiffIFD::parseIFDEntry(NORangesSet<Buffer>* valueDatas,
   }
 }
 
-CiffIFD::CiffIFD(CiffIFD* const parent_) : parent(parent_) {
+CiffIFD::CiffIFD(CiffIFD* const parent_)
+  : parent(parent_) {
   recursivelyCheckSubIFDs(1);
   // If we are good (can add this IFD without violating the limits),
   // we are still here. However, due to the way we add parsed sub-IFD's (lazy),
@@ -74,7 +75,7 @@ CiffIFD::CiffIFD(CiffIFD* const parent_) : parent(parent_) {
 }
 
 CiffIFD::CiffIFD(CiffIFD* const parent_, ByteStream directory)
-    : CiffIFD(parent_) {
+  : CiffIFD(parent_) {
   if (directory.getSize() < 4)
     ThrowCPE("CIFF directory is too short.");
 
@@ -123,22 +124,22 @@ void CiffIFD::checkSubIFDs(int headroom) const {
   int count = headroom + subIFDCount;
   if (!headroom)
     assert(count <= CiffIFD::Limits::SubIFDCount);
-  else if (count > CiffIFD::Limits::SubIFDCount)
+  else if (count > Limits::SubIFDCount)
     ThrowCPE("TIFF IFD has %u SubIFDs", count);
 
   count = headroom + subIFDCountRecursive;
   if (!headroom)
     assert(count <= CiffIFD::Limits::RecursiveSubIFDCount);
-  else if (count > CiffIFD::Limits::RecursiveSubIFDCount)
+  else if (count > Limits::RecursiveSubIFDCount)
     ThrowCPE("TIFF IFD file has %u SubIFDs (recursively)", count);
 }
 
 void CiffIFD::recursivelyCheckSubIFDs(int headroom) const {
   int depth = 0;
-  for (const CiffIFD* p = this; p != nullptr;) {
+  for (auto p = this; p != nullptr;) {
     if (!headroom)
       assert(depth <= CiffIFD::Limits::Depth);
-    else if (depth > CiffIFD::Limits::Depth)
+    else if (depth > Limits::Depth)
       ThrowCPE("CiffIFD cascading overflow, found %u level IFD", depth);
 
     p->checkSubIFDs(headroom);
@@ -166,7 +167,7 @@ void CiffIFD::add(std::unique_ptr<CiffEntry> entry) {
 
 template <typename Lambda>
 std::vector<const CiffIFD*> CiffIFD::getIFDsWithTagIf(CiffTag tag,
-                                                      const Lambda& f) const {
+  const Lambda& f) const {
   assert(isIn(tag, CiffTagsWeCareAbout));
 
   std::vector<const CiffIFD*> matchingIFDs;

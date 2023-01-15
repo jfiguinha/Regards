@@ -43,7 +43,8 @@ const int MAX_NUM_PRESCALE = 8;
 // Decompresses VC-5 as used by GoPro
 
 enum class VC5Tag : int16_t {
-  NoTag = 0x0, // synthetic, not an actual tag
+  NoTag = 0x0,
+  // synthetic, not an actual tag
 
   ChannelCount = 0x000c,
   ImageWidth = 0x0014,
@@ -65,23 +66,28 @@ enum class VC5Tag : int16_t {
   UniqueImageIdentifier = 0x4004,
   LargeCodeblock = 0x6000,
 
-  Optional = int16_t(0x8000U), // only signbit set
+  Optional = static_cast<int16_t>(0x8000U),
+  // only signbit set
 };
+
 inline VC5Tag operator&(VC5Tag LHS, VC5Tag RHS) {
-  using value_type = std::underlying_type<VC5Tag>::type;
+  using value_type = std::underlying_type_t<VC5Tag>;
   return static_cast<VC5Tag>(static_cast<value_type>(LHS) &
                              static_cast<value_type>(RHS));
 }
+
 inline bool matches(VC5Tag LHS, VC5Tag RHS) {
   // Are there any common bit set?
   return (LHS & RHS) != VC5Tag::NoTag;
 }
+
 inline bool is(VC5Tag LHS, VC5Tag RHS) {
   // Does LHS have all the RHS bits set?
   return (LHS & RHS) == RHS;
 }
+
 inline VC5Tag operator-(VC5Tag tag) {
-  using value_type = std::underlying_type<VC5Tag>::type;
+  using value_type = std::underlying_type_t<VC5Tag>;
   // Negate
   return static_cast<VC5Tag>(-static_cast<value_type>(tag));
 }
@@ -127,47 +133,65 @@ class VC5Decompressor final : public AbstractDecompressor {
     struct AbstractBand {
       Wavelet& wavelet;
       std::optional<BandData> data;
-      explicit AbstractBand(Wavelet& wavelet_) : wavelet(wavelet_) {}
+
+      explicit AbstractBand(Wavelet& wavelet_)
+        : wavelet(wavelet_) {
+      }
+
       virtual ~AbstractBand() = default;
       virtual void createDecodingTasks(ErrorLog& errLog,
                                        bool& exceptionThrown) noexcept = 0;
     };
+
     struct ReconstructableBand final : AbstractBand {
       bool clampUint;
       bool finalWavelet;
+
       struct {
         std::optional<BandData> lowpass;
         std::optional<BandData> highpass;
       } intermediates;
+
       explicit ReconstructableBand(Wavelet& wavelet_, bool clampUint_ = false,
                                    bool finalWavelet_ = false)
-          : AbstractBand(wavelet_), clampUint(clampUint_),
-            finalWavelet(finalWavelet_) {}
+        : AbstractBand(wavelet_), clampUint(clampUint_),
+          finalWavelet(finalWavelet_) {
+      }
+
       void createLowpassReconstructionTask(bool& exceptionThrown) noexcept;
       void createHighpassReconstructionTask(bool& exceptionThrown) noexcept;
       void createLowHighPassCombiningTask(bool& exceptionThrown) noexcept;
       void createDecodingTasks(ErrorLog& errLog,
-                               bool& exceptionThrown) noexcept final;
+                               bool& exceptionThrown) noexcept override;
     };
+
     struct AbstractDecodeableBand : AbstractBand {
       ByteStream bs;
+
       explicit AbstractDecodeableBand(Wavelet& wavelet_, ByteStream bs_)
-          : AbstractBand(wavelet_), bs(std::move(bs_)) {}
+        : AbstractBand(wavelet_), bs(std::move(bs_)) {
+      }
+
       [[nodiscard]] virtual BandData decode() const = 0;
       void createDecodingTasks(ErrorLog& errLog,
                                bool& exceptionThrown) noexcept final;
     };
+
     struct LowPassBand final : AbstractDecodeableBand {
       uint16_t lowpassPrecision;
       LowPassBand(Wavelet& wavelet_, ByteStream bs_,
                   uint16_t lowpassPrecision_);
-      [[nodiscard]] BandData decode() const noexcept final;
+      [[nodiscard]] BandData decode() const noexcept override;
     };
+
     struct HighPassBand final : AbstractDecodeableBand {
       int16_t quant;
+
       HighPassBand(Wavelet& wavelet_, ByteStream bs_, int16_t quant_)
-          : AbstractDecodeableBand(wavelet_, std::move(bs_)), quant(quant_) {}
-      [[nodiscard]] BandData decode() const final;
+        : AbstractDecodeableBand(wavelet_, std::move(bs_)), quant(quant_) {
+      }
+
+      [[nodiscard]] BandData decode() const override;
     };
 
     static constexpr uint16_t maxBands = numLowPassBands + numHighPassBands;

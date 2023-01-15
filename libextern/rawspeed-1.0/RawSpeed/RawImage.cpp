@@ -26,207 +26,228 @@
 #include <emmintrin.h>
 #endif
 
-namespace RawSpeed {
-
-RawImageData::RawImageData(void):
-    dim(0, 0), isCFA(true),
-    blackLevel(-1), whitePoint(65536),
-    dataRefCount(0), data(0), cpp(1), bpp(0),
-    uncropped_dim(0, 0) {
-  blackLevelSeparate[0] = blackLevelSeparate[1] = blackLevelSeparate[2] = blackLevelSeparate[3] = -1;
-  pthread_mutex_init(&mymutex, NULL);
-  subsampling.x = subsampling.y = 1;
-  isoSpeed = 0;
-  mBadPixelMap = NULL;
-  pthread_mutex_init(&errMutex, NULL);
-  pthread_mutex_init(&mBadPixelMutex, NULL);
-}
-
-RawImageData::RawImageData(iPoint2D _dim, uint32 _bpc, uint32 _cpp) :
-    dim(_dim),
-    blackLevel(-1), whitePoint(65536),
-    dataRefCount(0), data(0), cpp(_cpp), bpp(_bpc * _cpp),
-    uncropped_dim(0, 0) {
-  blackLevelSeparate[0] = blackLevelSeparate[1] = blackLevelSeparate[2] = blackLevelSeparate[3] = -1;
-  subsampling.x = subsampling.y = 1;
-  isoSpeed = 0;
-  mBadPixelMap = NULL;
-  createData();
-  pthread_mutex_init(&mymutex, NULL);
-  pthread_mutex_init(&errMutex, NULL);
-  pthread_mutex_init(&mBadPixelMutex, NULL);
-}
-
-RawImageData::~RawImageData(void) {
-  _ASSERTE(dataRefCount == 0);
-  mOffset = iPoint2D(0, 0);
-  pthread_mutex_destroy(&mymutex);
-  pthread_mutex_destroy(&errMutex);
-  pthread_mutex_destroy(&mBadPixelMutex);
-  for (uint32 i = 0 ; i < errors.size(); i++) {
-    free((void*)errors[i]);
-  }
-  errors.clear();
-  destroyData();
-}
-
-
-void RawImageData::createData() {
-  if (dim.x > 65535 || dim.y > 65535)
-    ThrowRDE("RawImageData: Dimensions too large for allocation.");
-  if (dim.x <= 0 || dim.y <= 0)
-    ThrowRDE("RawImageData: Dimension of one sides is less than 1 - cannot allocate image.");
-  if (data)
-    ThrowRDE("RawImageData: Duplicate data allocation in createData.");
-  pitch = (((dim.x * bpp) + 15) / 16) * 16;
-  data = (uchar8*)_aligned_malloc(pitch * dim.y, 16);
-  if (!data)
-    ThrowRDE("RawImageData::createData: Memory Allocation failed.");
-  uncropped_dim = dim;
-}
-
-void RawImageData::destroyData() {
-  if (data)
-    _aligned_free(data);
-  if (mBadPixelMap)
-    _aligned_free(mBadPixelMap);
-  data = 0;
-  mBadPixelMap = 0;
-}
-
-void RawImageData::setCpp(uint32 val) {
-  if (data)
-    ThrowRDE("RawImageData: Attempted to set Components per pixel after data allocation");
-  if (val > 4)
-    ThrowRDE("RawImageData: Only up to 4 components per pixel is support - attempted to set: %d", val);
-  bpp /= cpp;
-  cpp = val;
-  bpp *= val;
-}
-
-uchar8* RawImageData::getData() {
-  if (!data)
-    ThrowRDE("RawImageData::getData - Data not yet allocated.");
-  return &data[mOffset.y*pitch+mOffset.x*bpp];
-}
-
-uchar8* RawImageData::getData(uint32 x, uint32 y) {
-  if ((int)x >= dim.x)
-    ThrowRDE("RawImageData::getData - X Position outside image requested.");
-  if ((int)y >= dim.y) {
-    ThrowRDE("RawImageData::getData - Y Position outside image requested.");
-  }
-
-  x += mOffset.x;
-  y += mOffset.y;
-
-  if (!data)
-    ThrowRDE("RawImageData::getData - Data not yet allocated.");
-
-  return &data[y*pitch+x*bpp];
-}
-
-uchar8* RawImageData::getDataUncropped(uint32 x, uint32 y) {
-  if ((int)x >= uncropped_dim.x)
-    ThrowRDE("RawImageData::getDataUncropped - X Position outside image requested.");
-  if ((int)y >= uncropped_dim.y) {
-    ThrowRDE("RawImageData::getDataUncropped - Y Position outside image requested.");
-  }
-
-  if (!data)
-    ThrowRDE("RawImageData::getDataUncropped - Data not yet allocated.");
-
-  return &data[y*pitch+x*bpp];
-}
-
-iPoint2D RawImageData::getUncroppedDim()
+namespace RawSpeed
 {
-  return uncropped_dim;
-}
+	RawImageData::RawImageData(void):
+		dim(0, 0), isCFA(true),
+		blackLevel(-1), whitePoint(65536),
+		dataRefCount(0), data(nullptr), cpp(1), bpp(0),
+		uncropped_dim(0, 0)
+	{
+		blackLevelSeparate[0] = blackLevelSeparate[1] = blackLevelSeparate[2] = blackLevelSeparate[3] = -1;
+		pthread_mutex_init(&mymutex, nullptr);
+		subsampling.x = subsampling.y = 1;
+		isoSpeed = 0;
+		mBadPixelMap = nullptr;
+		pthread_mutex_init(&errMutex, nullptr);
+		pthread_mutex_init(&mBadPixelMutex, nullptr);
+	}
 
-iPoint2D RawImageData::getCropOffset()
-{
-  return mOffset;
-}
+	RawImageData::RawImageData(iPoint2D _dim, uint32 _bpc, uint32 _cpp) :
+		dim(_dim),
+		blackLevel(-1), whitePoint(65536),
+		dataRefCount(0), data(nullptr), cpp(_cpp), bpp(_bpc * _cpp),
+		uncropped_dim(0, 0)
+	{
+		blackLevelSeparate[0] = blackLevelSeparate[1] = blackLevelSeparate[2] = blackLevelSeparate[3] = -1;
+		subsampling.x = subsampling.y = 1;
+		isoSpeed = 0;
+		mBadPixelMap = nullptr;
+		createData();
+		pthread_mutex_init(&mymutex, nullptr);
+		pthread_mutex_init(&errMutex, nullptr);
+		pthread_mutex_init(&mBadPixelMutex, nullptr);
+	}
 
-void RawImageData::subFrame(iRectangle2D crop) {
-  if (!crop.dim.isThisInside(dim - crop.pos)) {
-    printf("WARNING: RawImageData::subFrame - Attempted to create new subframe larger than original size. Crop skipped.\n");
-    return;
-  }
-  if (crop.pos.x < 0 || crop.pos.y < 0 || !crop.hasPositiveArea()) {
-    printf("WARNING: RawImageData::subFrame - Negative crop offset. Crop skipped.\n");
-    return;
-  }
-
-  mOffset += crop.pos;
-  dim = crop.dim;
-}
-
-void RawImageData::setError( const char* err )
-{
-  pthread_mutex_lock(&errMutex);
-  errors.push_back(_strdup(err));
-  pthread_mutex_unlock(&errMutex);
-}
-
-void RawImageData::createBadPixelMap()
-{
-  if (!isAllocated())
-    ThrowRDE("RawImageData::createBadPixelMap: (internal) Bad pixel map cannot be allocated before image.");
-  mBadPixelMapPitch = (((uncropped_dim.x / 8) + 15) / 16) * 16;
-  mBadPixelMap = (uchar8*)_aligned_malloc(mBadPixelMapPitch * uncropped_dim.y, 16);
-  memset(mBadPixelMap, 0, mBadPixelMapPitch * uncropped_dim.y);
-  if (!mBadPixelMap)
-    ThrowRDE("RawImageData::createData: Memory Allocation failed.");
-}
-
-RawImage::RawImage(RawImageData* p) : p_(p) {
-  pthread_mutex_lock(&p_->mymutex);
-  ++p_->dataRefCount;
-  pthread_mutex_unlock(&p_->mymutex);
-}
-
-RawImage::RawImage(const RawImage& p) : p_(p.p_) {
-  pthread_mutex_lock(&p_->mymutex);
-  ++p_->dataRefCount;
-  pthread_mutex_unlock(&p_->mymutex);
-}
-
-RawImage::~RawImage() {
-  pthread_mutex_lock(&p_->mymutex);
-  if (--p_->dataRefCount == 0) {
-    pthread_mutex_unlock(&p_->mymutex);
-    delete p_;
-    return;
-  }
-  pthread_mutex_unlock(&p_->mymutex);
-}
+	RawImageData::~RawImageData(void)
+	{
+		_ASSERTE(dataRefCount == 0);
+		mOffset = iPoint2D(0, 0);
+		pthread_mutex_destroy(&mymutex);
+		pthread_mutex_destroy(&errMutex);
+		pthread_mutex_destroy(&mBadPixelMutex);
+		for (uint32 i = 0; i < errors.size(); i++)
+		{
+			free((void*)errors[i]);
+		}
+		errors.clear();
+		destroyData();
+	}
 
 
-void RawImageData::transferBadPixelsToMap()
-{
-  if (mBadPixelPositions.empty())
-    return;
+	void RawImageData::createData()
+	{
+		if (dim.x > 65535 || dim.y > 65535)
+			ThrowRDE("RawImageData: Dimensions too large for allocation.");
+		if (dim.x <= 0 || dim.y <= 0)
+			ThrowRDE("RawImageData: Dimension of one sides is less than 1 - cannot allocate image.");
+		if (data)
+			ThrowRDE("RawImageData: Duplicate data allocation in createData.");
+		pitch = (((dim.x * bpp) + 15) / 16) * 16;
+		data = static_cast<uchar8*>(_aligned_malloc(pitch * dim.y, 16));
+		if (!data)
+			ThrowRDE("RawImageData::createData: Memory Allocation failed.");
+		uncropped_dim = dim;
+	}
 
-  if (!mBadPixelMap)
-    createBadPixelMap();
+	void RawImageData::destroyData()
+	{
+		if (data)
+			_aligned_free(data);
+		if (mBadPixelMap)
+			_aligned_free(mBadPixelMap);
+		data = nullptr;
+		mBadPixelMap = nullptr;
+	}
 
-  for (vector<uint32>::iterator i=mBadPixelPositions.begin(); i != mBadPixelPositions.end(); i++) {
-    uint32 pos = *i;
-    uint32 pos_x = pos&0xffff;
-    uint32 pos_y = pos>>16;
-    mBadPixelMap[mBadPixelMapPitch * pos_y + (pos_x >> 3)] |= 1 << (pos_x&7);
-  }
-  mBadPixelPositions.clear();
-}
+	void RawImageData::setCpp(uint32 val)
+	{
+		if (data)
+			ThrowRDE("RawImageData: Attempted to set Components per pixel after data allocation");
+		if (val > 4)
+			ThrowRDE("RawImageData: Only up to 4 components per pixel is support - attempted to set: %d", val);
+		bpp /= cpp;
+		cpp = val;
+		bpp *= val;
+	}
 
-void RawImageData::fixBadPixels()
-{
+	uchar8* RawImageData::getData()
+	{
+		if (!data)
+			ThrowRDE("RawImageData::getData - Data not yet allocated.");
+		return &data[mOffset.y * pitch + mOffset.x * bpp];
+	}
+
+	uchar8* RawImageData::getData(uint32 x, uint32 y)
+	{
+		if (static_cast<int>(x) >= dim.x)
+			ThrowRDE("RawImageData::getData - X Position outside image requested.");
+		if (static_cast<int>(y) >= dim.y)
+		{
+			ThrowRDE("RawImageData::getData - Y Position outside image requested.");
+		}
+
+		x += mOffset.x;
+		y += mOffset.y;
+
+		if (!data)
+			ThrowRDE("RawImageData::getData - Data not yet allocated.");
+
+		return &data[y * pitch + x * bpp];
+	}
+
+	uchar8* RawImageData::getDataUncropped(uint32 x, uint32 y)
+	{
+		if (static_cast<int>(x) >= uncropped_dim.x)
+			ThrowRDE("RawImageData::getDataUncropped - X Position outside image requested.");
+		if (static_cast<int>(y) >= uncropped_dim.y)
+		{
+			ThrowRDE("RawImageData::getDataUncropped - Y Position outside image requested.");
+		}
+
+		if (!data)
+			ThrowRDE("RawImageData::getDataUncropped - Data not yet allocated.");
+
+		return &data[y * pitch + x * bpp];
+	}
+
+	iPoint2D RawImageData::getUncroppedDim()
+	{
+		return uncropped_dim;
+	}
+
+	iPoint2D RawImageData::getCropOffset()
+	{
+		return mOffset;
+	}
+
+	void RawImageData::subFrame(iRectangle2D crop)
+	{
+		if (!crop.dim.isThisInside(dim - crop.pos))
+		{
+			printf(
+				"WARNING: RawImageData::subFrame - Attempted to create new subframe larger than original size. Crop skipped.\n");
+			return;
+		}
+		if (crop.pos.x < 0 || crop.pos.y < 0 || !crop.hasPositiveArea())
+		{
+			printf("WARNING: RawImageData::subFrame - Negative crop offset. Crop skipped.\n");
+			return;
+		}
+
+		mOffset += crop.pos;
+		dim = crop.dim;
+	}
+
+	void RawImageData::setError(const char* err)
+	{
+		pthread_mutex_lock(&errMutex);
+		errors.push_back(_strdup(err));
+		pthread_mutex_unlock(&errMutex);
+	}
+
+	void RawImageData::createBadPixelMap()
+	{
+		if (!isAllocated())
+			ThrowRDE("RawImageData::createBadPixelMap: (internal) Bad pixel map cannot be allocated before image.");
+		mBadPixelMapPitch = (((uncropped_dim.x / 8) + 15) / 16) * 16;
+		mBadPixelMap = static_cast<uchar8*>(_aligned_malloc(mBadPixelMapPitch * uncropped_dim.y, 16));
+		memset(mBadPixelMap, 0, mBadPixelMapPitch * uncropped_dim.y);
+		if (!mBadPixelMap)
+			ThrowRDE("RawImageData::createData: Memory Allocation failed.");
+	}
+
+	RawImage::RawImage(RawImageData* p) : p_(p)
+	{
+		pthread_mutex_lock(&p_->mymutex);
+		++p_->dataRefCount;
+		pthread_mutex_unlock(&p_->mymutex);
+	}
+
+	RawImage::RawImage(const RawImage& p) : p_(p.p_)
+	{
+		pthread_mutex_lock(&p_->mymutex);
+		++p_->dataRefCount;
+		pthread_mutex_unlock(&p_->mymutex);
+	}
+
+	RawImage::~RawImage()
+	{
+		pthread_mutex_lock(&p_->mymutex);
+		if (--p_->dataRefCount == 0)
+		{
+			pthread_mutex_unlock(&p_->mymutex);
+			delete p_;
+			return;
+		}
+		pthread_mutex_unlock(&p_->mymutex);
+	}
+
+
+	void RawImageData::transferBadPixelsToMap()
+	{
+		if (mBadPixelPositions.empty())
+			return;
+
+		if (!mBadPixelMap)
+			createBadPixelMap();
+
+		for (auto i = mBadPixelPositions.begin(); i != mBadPixelPositions.end(); ++i)
+		{
+			uint32 pos = *i;
+			uint32 pos_x = pos & 0xffff;
+			uint32 pos_y = pos >> 16;
+			mBadPixelMap[mBadPixelMapPitch * pos_y + (pos_x >> 3)] |= 1 << (pos_x & 7);
+		}
+		mBadPixelPositions.clear();
+	}
+
+	void RawImageData::fixBadPixels()
+	{
 #if !defined (EMULATE_DCRAW_BAD_PIXELS)
 
-  /* Transfer if not already done */
-  transferBadPixelsToMap();
+		/* Transfer if not already done */
+		transferBadPixelsToMap();
 
 #if 0 // For testing purposes
   if (!mBadPixelMap)
@@ -238,11 +259,9 @@ void RawImageData::fixBadPixels()
   }
 #endif
 
-  /* Process bad pixels, if any */
-  if (mBadPixelMap)
-    startWorker(RawImageWorker::FIX_BAD_PIXELS, false);
-
-  return;
+		/* Process bad pixels, if any */
+		if (mBadPixelMap)
+			startWorker(RawImageWorker::FIX_BAD_PIXELS, false);
 
 #else  // EMULATE_DCRAW_BAD_PIXELS - not recommended, testing purposes only
 
@@ -268,200 +287,229 @@ void RawImageData::fixBadPixels()
     }
   }
 #endif
+	}
 
-}
+	void RawImageData::startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped)
+	{
+		int height = cropped ? dim.y : uncropped_dim.y;
 
-void RawImageData::startWorker(RawImageWorker::RawImageWorkerTask task, bool cropped )
-{
-  int height = cropped ? dim.y : uncropped_dim.y;
+		int threads = getThreadCount();
+		if (threads <= 1)
+		{
+			RawImageWorker worker(this, task, 0, height);
+			worker.performTask();
+			return;
+		}
 
-  int threads = getThreadCount();
-  if (threads <= 1) {
-    RawImageWorker worker(this, task, 0, height);
-    worker.performTask();
-    return;
-  }
+		auto workers = new RawImageWorker*[threads];
+		int y_offset = 0;
+		int y_per_thread = (height + threads - 1) / threads;
 
-  RawImageWorker **workers = new RawImageWorker*[threads];
-  int y_offset = 0;
-  int y_per_thread = (height + threads - 1) / threads;
+		for (int i = 0; i < threads; i++)
+		{
+			int y_end = MIN(y_offset + y_per_thread, height);
+			workers[i] = new RawImageWorker(this, task, y_offset, y_end);
+			workers[i]->startThread();
+			y_offset = y_end;
+		}
+		for (int i = 0; i < threads; i++)
+		{
+			workers[i]->waitForThread();
+			delete workers[i];
+		}
+		delete[] workers;
+	}
 
-  for (int i = 0; i < threads; i++) {
-    int y_end = MIN(y_offset + y_per_thread, height);
-    workers[i] = new RawImageWorker(this, task, y_offset, y_end);
-    workers[i]->startThread();
-    y_offset = y_end;
-  }
-  for (int i = 0; i < threads; i++) {
-    workers[i]->waitForThread();
-    delete workers[i];
-  }
-  delete[] workers;
-}
+	void RawImageData::fixBadPixelsThread(int start_y, int end_y)
+	{
+		int gw = (uncropped_dim.x + 15) / 32;
+		for (int y = start_y; y < end_y; y++)
+		{
+			auto bad_map = (uint32*)&mBadPixelMap[y * mBadPixelMapPitch];
+			for (int x = 0; x < gw; x++)
+			{
+				// Test if there is a bad pixel within these 32 pixels
+				if (bad_map[x] != 0)
+				{
+					auto bad = (uchar8*)&bad_map[x];
+					// Go through each pixel
+					for (int i = 0; i < 4; i++)
+					{
+						for (int j = 0; j < 8; j++)
+						{
+							if (1 == ((bad[i] >> j) & 1))
+								fixBadPixel(x * 32 + i * 8 + j, y, 0);
+						}
+					}
+				}
+			}
+		}
+	}
 
-void RawImageData::fixBadPixelsThread( int start_y, int end_y )
-{
-  int gw = (uncropped_dim.x + 15) / 32;
-  for (int y = start_y; y < end_y; y++) {
-    uint32* bad_map = (uint32*)&mBadPixelMap[y*mBadPixelMapPitch];
-    for (int x = 0 ; x < gw; x++) {
-      // Test if there is a bad pixel within these 32 pixels
-      if (bad_map[x] != 0) {
-        uchar8 *bad = (uchar8*)&bad_map[x];
-        // Go through each pixel
-        for (int i = 0; i < 4; i++) {
-          for (int j = 0; j < 8; j++) {
-            if (1 == ((bad[i]>>j) & 1))
-              fixBadPixel(x*32+i*8+j, y, 0);
-          }
-        }
-      }
-    }
-  }
-}
+	void RawImageData::blitFrom(RawImage src, iPoint2D srcPos, iPoint2D size, iPoint2D destPos)
+	{
+		iRectangle2D src_rect(srcPos, size);
+		iRectangle2D dest_rect(destPos, size);
+		src_rect = src_rect.getOverlap(iRectangle2D(iPoint2D(0, 0), src->dim));
+		dest_rect = dest_rect.getOverlap(iRectangle2D(iPoint2D(0, 0), dim));
 
-void RawImageData::blitFrom(RawImage src, iPoint2D srcPos, iPoint2D size, iPoint2D destPos )
-{
-  iRectangle2D src_rect(srcPos, size);
-  iRectangle2D dest_rect(destPos, size);
-  src_rect = src_rect.getOverlap(iRectangle2D(iPoint2D(0,0), src->dim));
-  dest_rect = dest_rect.getOverlap(iRectangle2D(iPoint2D(0,0), dim));
+		iPoint2D blitsize = src_rect.dim.getSmallest(dest_rect.dim);
+		if (blitsize.area() <= 0)
+			return;
 
-  iPoint2D blitsize = src_rect.dim.getSmallest(dest_rect.dim);
-  if (blitsize.area() <= 0)
-    return;
+		// TODO: Move offsets after crop.
+		BitBlt(getData(dest_rect.pos.x, dest_rect.pos.y), pitch, src->getData(src_rect.pos.x, src_rect.pos.y),
+		       src->pitch, blitsize.x * bpp, blitsize.y);
+	}
 
-  // TODO: Move offsets after crop.
-  BitBlt(getData(dest_rect.pos.x, dest_rect.pos.y), pitch, src->getData(src_rect.pos.x, src_rect.pos.y), src->pitch, blitsize.x*bpp, blitsize.y);
-}
+	/* Does not take cfa into consideration */
+	void RawImageData::expandBorder(iRectangle2D validData)
+	{
+		validData = validData.getOverlap(iRectangle2D(0, 0, dim.x, dim.y));
+		if (validData.pos.x > 0)
+		{
+			for (int y = 0; y < dim.y; y++)
+			{
+				uchar8* src_pos = getData(validData.pos.x, y);
+				uchar8* dst_pos = getData(validData.pos.x - 1, y);
+				for (int x = validData.pos.x; x >= 0; x--)
+				{
+					for (uint32 i = 0; i < bpp; i++)
+					{
+						dst_pos[i] = src_pos[i];
+					}
+					dst_pos -= bpp;
+				}
+			}
+		}
 
-/* Does not take cfa into consideration */
-void RawImageData::expandBorder(iRectangle2D validData)
-{
-  validData = validData.getOverlap(iRectangle2D(0,0,dim.x, dim.y));
-  if (validData.pos.x > 0) {
-    for (int y = 0; y < dim.y; y++ ) {
-      uchar8* src_pos = getData(validData.pos.x, y);
-      uchar8* dst_pos = getData(validData.pos.x-1, y);
-      for (int x = validData.pos.x; x >= 0; x--) {
-        for (uint32 i = 0; i < bpp; i++) {
-          dst_pos[i] = src_pos[i];
-        }
-        dst_pos -= bpp;
-      }
-    }
-  }
+		if (validData.getRight() < dim.x)
+		{
+			int pos = validData.getRight();
+			for (int y = 0; y < dim.y; y++)
+			{
+				uchar8* src_pos = getData(pos - 1, y);
+				uchar8* dst_pos = getData(pos, y);
+				for (int x = pos; x < dim.x; x++)
+				{
+					for (uint32 i = 0; i < bpp; i++)
+					{
+						dst_pos[i] = src_pos[i];
+					}
+					dst_pos += bpp;
+				}
+			}
+		}
 
-  if (validData.getRight() < dim.x) {
-    int pos = validData.getRight();
-    for (int y = 0; y < dim.y; y++ ) {
-      uchar8* src_pos = getData(pos-1, y);
-      uchar8* dst_pos = getData(pos, y);
-      for (int x = pos; x < dim.x; x++) {
-        for (uint32 i = 0; i < bpp; i++) {
-          dst_pos[i] = src_pos[i];
-        }
-        dst_pos += bpp;
-      }
-    }
-  }
+		if (validData.pos.y > 0)
+		{
+			uchar8* src_pos = getData(0, validData.pos.y);
+			for (int y = 0; y < validData.pos.y; y++)
+			{
+				uchar8* dst_pos = getData(0, y);
+				memcpy(dst_pos, src_pos, dim.x * bpp);
+			}
+		}
+		if (validData.getBottom() < dim.y)
+		{
+			uchar8* src_pos = getData(0, validData.getBottom() - 1);
+			for (int y = validData.getBottom(); y < dim.y; y++)
+			{
+				uchar8* dst_pos = getData(0, y);
+				memcpy(dst_pos, src_pos, dim.x * bpp);
+			}
+		}
+	}
 
-  if (validData.pos.y > 0) {
-    uchar8* src_pos = getData(0, validData.pos.y);
-    for (int y = 0; y < validData.pos.y; y++ ) {
-      uchar8* dst_pos = getData(0, y);
-      memcpy(dst_pos, src_pos, dim.x*bpp);
-    }
-  }
-  if (validData.getBottom() < dim.y) {
-    uchar8* src_pos = getData(0, validData.getBottom()-1);
-    for (int y = validData.getBottom(); y < dim.y; y++ ) {
-      uchar8* dst_pos = getData(0, y);
-      memcpy(dst_pos, src_pos, dim.x*bpp);
-    }
-  }
-}
+	RawImageData* RawImage::operator->()
+	{
+		return p_;
+	}
 
-RawImageData* RawImage::operator->() {
-  return p_;
-}
+	RawImageData& RawImage::operator*()
+	{
+		return *p_;
+	}
 
-RawImageData& RawImage::operator*() {
-  return *p_;
-}
+	RawImage& RawImage::operator=(const RawImage& p)
+	{
+		if (this == &p) // Same object?
+			return *this; // Yes, so skip assignment, and just return *this.
+		pthread_mutex_lock(&p_->mymutex);
+		// Retain the old RawImageData before overwriting it
+		RawImageData* const old = p_;
+		p_ = p.p_;
+		// Increment use on new data
+		++p_->dataRefCount;
+		// If the RawImageData previously used by "this" is unused, delete it.
+		if (--old->dataRefCount == 0)
+		{
+			pthread_mutex_unlock(&(old->mymutex));
+			delete old;
+		}
+		else
+		{
+			pthread_mutex_unlock(&(old->mymutex));
+		}
+		return *this;
+	}
 
-RawImage& RawImage::operator=(const RawImage & p) {
-  if (this == &p)      // Same object?
-    return *this;      // Yes, so skip assignment, and just return *this.
-  pthread_mutex_lock(&p_->mymutex);
-  // Retain the old RawImageData before overwriting it
-  RawImageData* const old = p_;
-  p_ = p.p_;
-  // Increment use on new data
-  ++p_->dataRefCount;
-  // If the RawImageData previously used by "this" is unused, delete it.
-  if (--old->dataRefCount == 0) {
-  	pthread_mutex_unlock(&(old->mymutex));
-  	delete old;
-  } else {
-  	pthread_mutex_unlock(&(old->mymutex));
-  }
-  return *this;
-}
+	void* RawImageWorkerThread(void* _this)
+	{
+		auto me = static_cast<RawImageWorker*>(_this);
+		me->performTask();
+		pthread_exit(nullptr);
+		return nullptr;
+	}
 
-void *RawImageWorkerThread(void *_this) {
-  RawImageWorker* me = (RawImageWorker*)_this;
-  me->performTask();
-  pthread_exit(NULL);
-  return 0;
-}
+	RawImageWorker::RawImageWorker(RawImageData* _img, RawImageWorkerTask _task, int _start_y, int _end_y)
+	{
+		data = _img;
+		start_y = _start_y;
+		end_y = _end_y;
+		task = _task;
+	}
 
-RawImageWorker::RawImageWorker( RawImageData *_img, RawImageWorkerTask _task, int _start_y, int _end_y )
-{
-  data = _img;
-  start_y = _start_y;
-  end_y = _end_y;
-  task = _task;
-}
+	void RawImageWorker::startThread()
+	{
+		/* Initialize and set thread detached attribute */
+		pthread_attr_t attr;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+		pthread_create(&threadid, &attr, RawImageWorkerThread, this);
+	}
 
-void RawImageWorker::startThread()
-{
-  /* Initialize and set thread detached attribute */
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-  pthread_create(&threadid, &attr, RawImageWorkerThread, this);
-}
+	void RawImageWorker::waitForThread()
+	{
+		void* status;
+		pthread_join(threadid, &status);
+	}
 
-void RawImageWorker::waitForThread()
-{
-  void *status;
-  pthread_join(threadid, &status);
-}
-
-void RawImageWorker::performTask()
-{
-  try {
-    switch(task)
-    {
-    case SCALE_VALUES:
-      data->scaleValues(start_y, end_y);
-      break;
-    case FIX_BAD_PIXELS:
-      data->fixBadPixelsThread(start_y, end_y);
-      break;
-    default:
-      _ASSERTE(false);
-    }
-  } catch (RawDecoderException &e) {
-    data->setError(e.what());
-  } catch (TiffParserException &e) {
-    data->setError(e.what());
-  } catch (IOException &e) {
-    data->setError(e.what());
-  }
-}
-
-
-
+	void RawImageWorker::performTask()
+	{
+		try
+		{
+			switch (task)
+			{
+			case SCALE_VALUES:
+				data->scaleValues(start_y, end_y);
+				break;
+			case FIX_BAD_PIXELS:
+				data->fixBadPixelsThread(start_y, end_y);
+				break;
+			default:
+				_ASSERTE(false);
+			}
+		}
+		catch (RawDecoderException& e)
+		{
+			data->setError(e.what());
+		} catch (TiffParserException& e)
+		{
+			data->setError(e.what());
+		} catch (IOException& e)
+		{
+			data->setError(e.what());
+		}
+	}
 } // namespace RawSpeed

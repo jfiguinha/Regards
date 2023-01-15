@@ -45,8 +45,7 @@ using TiffIFDOwner = std::unique_ptr<TiffIFD>;
 using TiffRootIFDOwner = std::unique_ptr<TiffRootIFD>;
 using TiffEntryOwner = std::unique_ptr<TiffEntry>;
 
-class TiffIFD
-{
+class TiffIFD {
   uint32_t nextIFD = 0;
 
   TiffIFD* const parent;
@@ -113,9 +112,11 @@ public:
   [[nodiscard]] TiffEntry* getEntry(TiffTag tag) const;
   [[nodiscard]] TiffEntry* __attribute__((pure))
   getEntryRecursive(TiffTag tag) const;
+
   [[nodiscard]] bool __attribute__((pure)) hasEntry(TiffTag tag) const {
     return entries.find(tag) != entries.end();
   }
+
   [[nodiscard]] bool hasEntryRecursive(TiffTag tag) const {
     return getEntryRecursive(tag) != nullptr;
   }
@@ -123,11 +124,11 @@ public:
   [[nodiscard]] const std::vector<TiffIFDOwner>& getSubIFDs() const {
     return subIFDs;
   }
-//  const std::map<TiffTag, TiffEntry*>& getEntries() const { return entries; }
+
+  //  const std::map<TiffTag, TiffEntry*>& getEntries() const { return entries; }
 };
 
-struct TiffID
-{
+struct TiffID {
   std::string make;
   std::string model;
 };
@@ -138,7 +139,8 @@ public:
 
   TiffRootIFD(TiffIFD* parent_, NORangesSet<Buffer>* ifds,
               const DataBuffer& data, uint32_t offset)
-      : TiffIFD(parent_, ifds, data, offset), rootBuffer(data) {}
+    : TiffIFD(parent_, ifds, data, offset), rootBuffer(data) {
+  }
 
   // find the MAKE and MODEL tags identifying the camera
   // note: the returned strings are trimmed automatically

@@ -27,19 +27,18 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class PentaxDecompressor :
-  public LJpegDecompressor
+namespace RawSpeed
 {
-public:
-  PentaxDecompressor(FileMap* file, RawImage img);
-  virtual ~PentaxDecompressor(void);
-  int HuffDecodePentax();
-  void decodePentax(TiffIFD *root, uint32 offset, uint32 size);
-  BitPumpMSB *pentaxBits;
-};
-
+	class PentaxDecompressor :
+		public LJpegDecompressor
+	{
+	public:
+		PentaxDecompressor(FileMap* file, RawImage img);
+		~PentaxDecompressor(void) override;
+		int HuffDecodePentax();
+		void decodePentax(TiffIFD* root, uint32 offset, uint32 size);
+		BitPumpMSB* pentaxBits;
+	};
 } // namespace RawSpeed
 
 #endif

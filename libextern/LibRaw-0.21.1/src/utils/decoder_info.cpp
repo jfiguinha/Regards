@@ -25,7 +25,7 @@ int LibRaw::get_decoder_info(libraw_decoder_info_t *d_info)
 {
   if (!d_info)
     return LIBRAW_UNSPECIFIED_ERROR;
-  d_info->decoder_name = 0;
+  d_info->decoder_name = nullptr;
   d_info->decoder_flags = 0;
   if (!load_raw)
     return LIBRAW_OUT_OF_ORDER_CALL;
@@ -43,7 +43,7 @@ int LibRaw::get_decoder_info(libraw_decoder_info_t *d_info)
   }
   else if (load_raw == &LibRaw::vc5_dng_load_raw_placeholder)
   {
-      d_info->decoder_name = "vc5_dng_load_raw_placeholder()";
+    d_info->decoder_name = "vc5_dng_load_raw_placeholder()";
 #ifndef USE_GPRSDK
     d_info->decoder_flags = LIBRAW_DECODER_UNSUPPORTED_FORMAT;
 #endif
@@ -156,7 +156,7 @@ int LibRaw::get_decoder_info(libraw_decoder_info_t *d_info)
   else if (load_raw == &LibRaw::unpacked_load_raw)
   {
     d_info->decoder_name = "unpacked_load_raw()";
-	d_info->decoder_flags = LIBRAW_DECODER_FLATDATA;
+    d_info->decoder_flags = LIBRAW_DECODER_FLATDATA;
   }
   else if (load_raw == &LibRaw::unpacked_load_raw_reversed)
   {
@@ -218,7 +218,7 @@ int LibRaw::get_decoder_info(libraw_decoder_info_t *d_info)
   else if (load_raw == &LibRaw::olympus_load_raw)
   {
     d_info->decoder_name = "olympus_load_raw()";
-    d_info->decoder_flags = LIBRAW_DECODER_TRYRAWSPEED | LIBRAW_DECODER_TRYRAWSPEED3;;
+    d_info->decoder_flags = LIBRAW_DECODER_TRYRAWSPEED | LIBRAW_DECODER_TRYRAWSPEED3;
   }
   else if (load_raw == &LibRaw::minolta_rd175_load_raw)
   {
@@ -310,7 +310,8 @@ int LibRaw::get_decoder_info(libraw_decoder_info_t *d_info)
   else if (load_raw == &LibRaw::sony_arq_load_raw)
   {
     d_info->decoder_name = "sony_arq_load_raw()";
-    d_info->decoder_flags = LIBRAW_DECODER_LEGACY_WITH_MARGINS | LIBRAW_DECODER_FLATDATA | LIBRAW_DECODER_FLAT_BG2_SWAPPED;
+    d_info->decoder_flags = LIBRAW_DECODER_LEGACY_WITH_MARGINS | LIBRAW_DECODER_FLATDATA |
+                            LIBRAW_DECODER_FLAT_BG2_SWAPPED;
   }
   else if (load_raw == &LibRaw::samsung_load_raw)
   {

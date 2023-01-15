@@ -29,8 +29,9 @@ namespace rawspeed {
 CameraSensorInfo::CameraSensorInfo(int black_level, int white_level,
                                    int min_iso, int max_iso,
                                    vector<int> black_separate)
-    : mBlackLevel(black_level), mWhiteLevel(white_level), mMinIso(min_iso),
-      mMaxIso(max_iso), mBlackLevelSeparate(std::move(black_separate)) {}
+  : mBlackLevel(black_level), mWhiteLevel(white_level), mMinIso(min_iso),
+    mMaxIso(max_iso), mBlackLevelSeparate(std::move(black_separate)) {
+}
 
 bool __attribute__((pure)) CameraSensorInfo::isIsoWithin(int iso) const {
   return (iso >= mMinIso && iso <= mMaxIso) || (iso >= mMinIso && 0 == mMaxIso);

@@ -41,10 +41,14 @@ namespace rawspeed {
 // code of Samsung's DNG converter at http://opensource.samsung.com/
 
 enum struct SamsungV2Decompressor::OptFlags : uint32_t {
-  NONE = 0U,       // no flags
-  SKIP = 1U << 0U, // Skip checking if we need differences from previous line
-  MV = 1U << 1U,   // Simplify motion vector definition
-  QP = 1U << 2U,   // Don't scale the diff values
+  NONE = 0U,
+  // no flags
+  SKIP = 1U << 0U,
+  // Skip checking if we need differences from previous line
+  MV = 1U << 1U,
+  // Simplify motion vector definition
+  QP = 1U << 2U,
+  // Don't scale the diff values
 
   // all possible flags
   ALL = SKIP | MV | QP,
@@ -54,22 +58,22 @@ constexpr SamsungV2Decompressor::OptFlags
 operator|(SamsungV2Decompressor::OptFlags lhs,
           SamsungV2Decompressor::OptFlags rhs) {
   return static_cast<SamsungV2Decompressor::OptFlags>(
-      static_cast<std::underlying_type<SamsungV2Decompressor::OptFlags>::type>(
-          lhs) |
-      static_cast<std::underlying_type<SamsungV2Decompressor::OptFlags>::type>(
-          rhs));
+    static_cast<std::underlying_type_t<SamsungV2Decompressor::OptFlags>>(
+      lhs) |
+    static_cast<std::underlying_type_t<SamsungV2Decompressor::OptFlags>>(
+      rhs));
 }
 
 constexpr bool operator&(SamsungV2Decompressor::OptFlags lhs,
                          SamsungV2Decompressor::OptFlags rhs) {
   return SamsungV2Decompressor::OptFlags::NONE !=
          static_cast<SamsungV2Decompressor::OptFlags>(
-             static_cast<
-                 std::underlying_type<SamsungV2Decompressor::OptFlags>::type>(
-                 lhs) &
-             static_cast<
-                 std::underlying_type<SamsungV2Decompressor::OptFlags>::type>(
-                 rhs));
+           static_cast<
+             std::underlying_type_t<SamsungV2Decompressor::OptFlags>>(
+             lhs) &
+           static_cast<
+             std::underlying_type_t<SamsungV2Decompressor::OptFlags>>(
+             rhs));
 }
 
 inline __attribute__((always_inline)) int16_t
@@ -83,7 +87,7 @@ SamsungV2Decompressor::getDiff(BitPumpMSB32& pump, uint32_t len) {
 SamsungV2Decompressor::SamsungV2Decompressor(const RawImage& image,
                                              const ByteStream& bs,
                                              unsigned bits)
-    : AbstractSamsungDecompressor(image) {
+  : AbstractSamsungDecompressor(image) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -96,7 +100,7 @@ SamsungV2Decompressor::SamsungV2Decompressor(const RawImage& image,
     ThrowRDE("Unexpected bit per pixel (%u)", bits);
   }
 
-  static constexpr const auto headerSize = 16;
+  static constexpr auto headerSize = 16;
   (void)bs.check(headerSize);
 
   BitPumpMSB32 startpump(bs);
@@ -192,9 +196,9 @@ SamsungV2Decompressor::prepareBaselineValues(BitPumpMSB32& pump, int row,
     ThrowRDE("Got a previous line lookup on first two lines. File corrupted?");
 
   static constexpr std::array<int32_t, 7> motionOffset = {-4, -2, -2, 0,
-                                                          0,  2,  4};
+    0, 2, 4};
   static constexpr std::array<int32_t, 7> motionDoAverage = {0, 0, 1, 0,
-                                                             1, 0, 0};
+    1, 0, 0};
 
   int32_t slideOffset = motionOffset[motion];
   int32_t doAverage = motionDoAverage[motion];
@@ -203,9 +207,11 @@ SamsungV2Decompressor::prepareBaselineValues(BitPumpMSB32& pump, int row,
     int refRow = row;
     int refCol = col + i + slideOffset;
 
-    if ((row + i) & 1) { // Red or blue pixels use same color two lines up
+    if ((row + i) & 1) {
+      // Red or blue pixels use same color two lines up
       refRow -= 2;
-    } else { // Green pixel N uses Green pixel N from row above
+    } else {
+      // Green pixel N uses Green pixel N from row above
       refRow -= 1;
       refCol += (i & 1) ? -1 : 1; // (top left or top right)
     }
@@ -303,7 +309,7 @@ SamsungV2Decompressor::decodeDifferences(BitPumpMSB32& pump, int row) {
   // And finally widen and scale the differences.
   std::array<int, 16> scaled;
   for (int i = 0; i < 16; i++) {
-    int scaledDiff = int(shuffled[i]) * (scale * 2 + 1) + scale;
+    int scaledDiff = static_cast<int>(shuffled[i]) * (scale * 2 + 1) + scale;
     scaled[i] = scaledDiff;
   }
 

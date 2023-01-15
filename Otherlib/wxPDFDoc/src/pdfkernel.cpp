@@ -2570,7 +2570,7 @@ wxPdfDocument::OutRawTextstring(const wxString& s, bool newline)
 	wxString::const_iterator sChar = s.begin();
 	for (j = 0; j < len; j++)
 	{
-		mbstr[ofs + j] = static_cast<char>((unsigned int)(*sChar) & 0xff);
+		mbstr[ofs + j] = static_cast<char>(static_cast<unsigned int>(*sChar) & 0xff);
 		++sChar;
 	}
 	mbstr[ofs + len] = 0;
@@ -2602,7 +2602,7 @@ wxPdfDocument::OutHexTextstring(const wxString& s, bool newline)
 	wxString::const_iterator sChar = s.begin();
 	for (j = 0; j < len; j++)
 	{
-		mbstr[ofs + j] = static_cast<char>((unsigned int)(*sChar) & 0xff);
+		mbstr[ofs + j] = static_cast<char>(static_cast<unsigned int>(*sChar) & 0xff);
 		++sChar;
 	}
 	mbstr[ofs + len] = 0;

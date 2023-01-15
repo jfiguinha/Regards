@@ -84,8 +84,9 @@ static inline int log2ceil(int val)
   int result = 0;
   if (val--)
     do
+    {
       ++result;
-    while (val >>= 1);
+    } while (val >>= 1);
 
   return result;
 }
@@ -167,7 +168,7 @@ void LibRaw::init_fuji_compr(fuji_compressed_params *params)
   {
     // setup main qtable only, zero the rest
     memset(params->qt + 1, 0, 3 * sizeof(fuji_q_table));
-    params->qt[0].q_table = (int8_t *)params->buf;
+    params->qt[0].q_table = static_cast<int8_t *>(params->buf);
     params->qt[0].q_base = -1;
     init_main_qtable(params, 0);
   }
@@ -181,7 +182,7 @@ void LibRaw::init_fuji_compr(fuji_compressed_params *params)
     qp[4] = params->max_value;
 
     // table 0
-    params->qt[1].q_table = (int8_t *)params->buf;
+    params->qt[1].q_table = static_cast<int8_t *>(params->buf);
     params->qt[1].q_base = 0;
     params->qt[1].max_grad = 5;
     params->qt[1].q_grad_mult = 3;
@@ -275,7 +276,7 @@ void init_main_grads(const fuji_compressed_params *params, fuji_compressed_block
 void LibRaw::init_fuji_block(fuji_compressed_block *info, const fuji_compressed_params *params, INT64 raw_offset,
                              unsigned dsize)
 {
-  info->linealloc = (ushort *)calloc(sizeof(ushort), _ltotal * (params->line_width + 2));
+  info->linealloc = static_cast<ushort *>(calloc(sizeof(ushort), _ltotal * (params->line_width + 2)));
 
   INT64 fsize = libraw_internal_data.internal_data.input->size();
   info->max_read_size = _min(unsigned(fsize - raw_offset), dsize); // Data size may be incorrect?
@@ -287,7 +288,7 @@ void LibRaw::init_fuji_block(fuji_compressed_block *info, const fuji_compressed_
     info->linebuf[i] = info->linebuf[i - 1] + params->line_width + 2;
 
   // init buffer
-  info->cur_buf = (uchar *)malloc(XTRANS_BUF_SIZE);
+  info->cur_buf = static_cast<uchar *>(malloc(XTRANS_BUF_SIZE));
   info->cur_bit = 0;
   info->cur_pos = 0;
   info->cur_buf_offset = raw_offset;
@@ -339,7 +340,7 @@ void LibRaw::copy_line_to_xtrans(fuji_compressed_block *info, int cur_line, int 
   while (row_count < 6)
   {
     pixel_count = 0;
-    while (pixel_count < (unsigned)cur_block_width)
+    while (pixel_count < static_cast<unsigned>(cur_block_width))
     {
       switch (imgdata.idata.xtrans_abs[row_count][(pixel_count % 6)])
       {
@@ -393,7 +394,7 @@ void LibRaw::copy_line_to_bayer(fuji_compressed_block *info, int cur_line, int c
   while (row_count < 6)
   {
     pixel_count = 0;
-    while (pixel_count < (unsigned)cur_block_width)
+    while (pixel_count < static_cast<unsigned>(cur_block_width))
     {
       switch (fuji_bayer[row_count & 1][pixel_count & 1])
       {
@@ -466,7 +467,7 @@ static inline void fuji_read_code(fuji_compressed_block *info, int *data, int bi
   }
   *data <<= bits_left;
   bits_left_in_byte -= bits_left;
-  *data |= ((1 << bits_left) - 1) & ((unsigned)info->cur_buf[info->cur_pos] >> bits_left_in_byte);
+  *data |= ((1 << bits_left) - 1) & (static_cast<unsigned>(info->cur_buf[info->cur_pos]) >> bits_left_in_byte);
   info->cur_bit = (8 - (bits_left_in_byte & 7)) & 7;
 }
 
@@ -474,8 +475,7 @@ static inline int bitDiff(int value1, int value2)
 {
   int decBits = 0;
   if (value2 < value1)
-    while (decBits <= 14 && (value2 << ++decBits) < value1)
-      ;
+    while (decBits <= 14 && (value2 << ++decBits) < value1);
   return decBits;
 }
 
@@ -854,7 +854,8 @@ void LibRaw::xtrans_decode_block(fuji_compressed_block *info, const fuji_compres
     derror();
 }
 
-void LibRaw::fuji_bayer_decode_block(fuji_compressed_block *info, const fuji_compressed_params *params, int /*cur_line*/)
+void LibRaw::fuji_bayer_decode_block(fuji_compressed_block *info, const fuji_compressed_params *params,
+                                     int /*cur_line*/)
 {
   int r_even_pos = 0, r_odd_pos = 1;
   int g_even_pos = 0, g_odd_pos = 1;
@@ -1020,7 +1021,7 @@ void LibRaw::fuji_decode_strip(fuji_compressed_params *params, int cur_block, IN
   {
     int buf_size = sizeof(fuji_compressed_params) + (2 << libraw_internal_data.unpacker_data.fuji_bits);
 
-    info_common = (fuji_compressed_params *)malloc(buf_size);
+    info_common = static_cast<fuji_compressed_params *>(malloc(buf_size));
     memcpy(info_common, params, sizeof(fuji_compressed_params));
     info_common->qt[0].q_table = (int8_t *)(info_common + 1);
     info_common->qt[0].q_base = -1;
@@ -1091,14 +1092,16 @@ void LibRaw::fuji_compressed_load_raw()
   fuji_compressed_params common_info;
   int cur_block;
   unsigned *block_sizes;
-  uchar *q_bases = 0;
+  uchar *q_bases = nullptr;
   INT64 raw_offset, *raw_block_offsets;
 
   init_fuji_compr(&common_info);
 
   // read block sizes
-  block_sizes = (unsigned *)malloc(sizeof(unsigned) * libraw_internal_data.unpacker_data.fuji_total_blocks);
-  raw_block_offsets = (INT64 *)malloc(sizeof(INT64) * libraw_internal_data.unpacker_data.fuji_total_blocks);
+  block_sizes = static_cast<unsigned *>(
+    malloc(sizeof(unsigned) * libraw_internal_data.unpacker_data.fuji_total_blocks));
+  raw_block_offsets = static_cast<INT64 *>(
+    malloc(sizeof(INT64) * libraw_internal_data.unpacker_data.fuji_total_blocks));
 
   libraw_internal_data.internal_data.input->seek(libraw_internal_data.unpacker_data.data_offset, SEEK_SET);
   int sizesToRead = sizeof(unsigned) * libraw_internal_data.unpacker_data.fuji_total_blocks;
@@ -1116,7 +1119,7 @@ void LibRaw::fuji_compressed_load_raw()
   {
     int total_q_bases = libraw_internal_data.unpacker_data.fuji_total_blocks *
                         ((libraw_internal_data.unpacker_data.fuji_total_lines + 0xF) & ~0xF);
-    q_bases = (uchar *)malloc(total_q_bases);
+    q_bases = static_cast<uchar *>(malloc(total_q_bases));
     libraw_internal_data.internal_data.input->seek(raw_offset + libraw_internal_data.unpacker_data.data_offset,
                                                    SEEK_SET);
     libraw_internal_data.internal_data.input->read(q_bases, 1, total_q_bases);
@@ -1156,14 +1159,14 @@ void LibRaw::fuji_decode_loop(fuji_compressed_params *common_info, int count, IN
   for (cur_block = 0; cur_block < count; cur_block++)
   {
     fuji_decode_strip(common_info, cur_block, raw_block_offsets[cur_block], block_sizes[cur_block],
-                      q_bases ? q_bases + cur_block * lineStep : 0);
+                      q_bases ? q_bases + cur_block * lineStep : nullptr);
   }
 }
 
 void LibRaw::parse_fuji_compressed_header()
 {
   unsigned signature, lossless, h_raw_type, h_raw_bits, h_raw_height, h_raw_rounded_width, h_raw_width, h_block_size,
-      h_blocks_in_row, h_total_lines;
+           h_blocks_in_row, h_total_lines;
 
   uchar header[16];
 

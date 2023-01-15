@@ -54,7 +54,7 @@ void LibRaw::nikon_3700()
   fseek(ifp, 3072, SEEK_SET);
   fread(dp, 1, 24, ifp);
   bits = (dp[8] & 3) << 4 | (dp[20] & 3);
-  for (i = 0; i < int(sizeof table / sizeof *table); i++)
+  for (i = 0; i < static_cast<int>(sizeof table / sizeof *table); i++)
     if (bits == table[i].bits)
     {
       strcpy(make, table[i].t_make);
@@ -71,9 +71,9 @@ int LibRaw::minolta_z2()
   int i, nz;
   char tail[424];
 
-  fseek(ifp, -int(sizeof tail), SEEK_END);
+  fseek(ifp, -static_cast<int>(sizeof tail), SEEK_END);
   fread(tail, 1, sizeof tail, ifp);
-  for (nz = i = 0; i < int(sizeof tail); i++)
+  for (nz = i = 0; i < static_cast<int>(sizeof tail); i++)
     if (tail[i])
       nz++;
   return nz > 20;
@@ -191,8 +191,8 @@ void LibRaw::parse_cine()
   fseek(ifp, off_image, SEEK_SET);
   if (shot_select < is_raw)
     fseek(ifp, shot_select * 8, SEEK_CUR);
-  data_offset = (INT64)get4() + 8;
-  data_offset += (INT64)get4() << 32;
+  data_offset = static_cast<INT64>(get4()) + 8;
+  data_offset += static_cast<INT64>(get4()) << 32;
 }
 
 void LibRaw::parse_qt(int end)
@@ -206,7 +206,7 @@ void LibRaw::parse_qt(int end)
     save = ftell(ifp);
     if ((size = get4()) < 8)
       return;
-    if ((int)size < 0)
+    if (static_cast<int>(size) < 0)
       return; // 2+GB is too much
     if (save + size < save)
       return; // 32bit overflow
@@ -229,7 +229,7 @@ void LibRaw::parse_smal(int offset, int fsize)
   ver = fgetc(ifp);
   if (ver == 6)
     fseek(ifp, 5, SEEK_CUR);
-  if (get4() != (unsigned)fsize)
+  if (get4() != static_cast<unsigned>(fsize))
     return;
   if (ver > 6)
     data_offset = get4();
@@ -251,7 +251,7 @@ void LibRaw::parse_riff(int maxdepth)
                                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
   struct tm t;
   if (maxdepth < 1)
-	  throw LIBRAW_EXCEPTION_IO_CORRUPT;
+    throw LIBRAW_EXCEPTION_IO_CORRUPT;
 
   order = 0x4949;
   fread(tag, 4, 1, ifp);
@@ -262,14 +262,14 @@ void LibRaw::parse_riff(int maxdepth)
     int maxloop = 1000;
     get4();
     while (ftell(ifp) + 7 < end && !feof(ifp) && maxloop--)
-      parse_riff(maxdepth-1);
+      parse_riff(maxdepth - 1);
   }
   else if (!memcmp(tag, "nctg", 4))
   {
     while (ftell(ifp) + 7 < end)
     {
-		if (feof(ifp))
-			break;
+      if (feof(ifp))
+        break;
       i = get2();
       size = get2();
       if ((i + 1) >> 1 == 10 && size == 20)
@@ -286,8 +286,7 @@ void LibRaw::parse_riff(int maxdepth)
     if (sscanf(date, "%*s %s %d %d:%d:%d %d", month, &t.tm_mday, &t.tm_hour,
                &t.tm_min, &t.tm_sec, &t.tm_year) == 6)
     {
-      for (i = 0; i < 12 && strcasecmp(mon[i], month); i++)
-        ;
+      for (i = 0; i < 12 && strcasecmp(mon[i], month); i++);
       t.tm_mon = i;
       t.tm_year -= 1900;
       if (mktime(&t) > 0)
@@ -311,7 +310,8 @@ void LibRaw::parse_rollei()
     if (!fgets(line, 128, ifp))
       break;
     line[127] = 0;
-    if(!line[0]) break; // zero-length
+    if (!line[0])
+      break; // zero-length
     if ((val = strchr(line, '=')))
       *val++ = 0;
     else
@@ -337,9 +337,10 @@ void LibRaw::parse_rollei()
     if (!strcmp(line, "FOCLEN"))
       focal_len = atof(val);
     if (!strcmp(line, "BLKOFS"))
-      black = atoi(val) +1;
+      black = atoi(val) + 1;
     if (!strcmp(line, "ORI"))
-      switch (atoi(val)) {
+      switch (atoi(val))
+      {
       case 1:
         flip = 6;
         break;
@@ -350,7 +351,8 @@ void LibRaw::parse_rollei()
         flip = 5;
         break;
       }
-    if (!strcmp(line, "CUTRECT")) {
+    if (!strcmp(line, "CUTRECT"))
+    {
       sscanf(val, "%hu %hu %hu %hu",
              &imgdata.sizes.raw_inset_crops[0].cleft,
              &imgdata.sizes.raw_inset_crops[0].ctop,
@@ -413,7 +415,7 @@ void LibRaw::parse_kyocera()
 {
 
   int c;
-  static const ushort table[13] = {25,  32,  40,  50,  64,  80, 100,
+  static const ushort table[13] = {25, 32, 40, 50, 64, 80, 100,
                                    125, 160, 200, 250, 320, 400};
 
   fseek(ifp, 33, SEEK_SET);
@@ -422,15 +424,16 @@ void LibRaw::parse_kyocera()
   c = get4();
   if ((c > 6) && (c < 20))
     iso_speed = table[c - 7];
-  shutter = libraw_powf64l(2.0f, (((float)get4()) / 8.0f)) / 16000.0f;
-  FORC4 cam_mul[RGGB_2_RGBG(c)] = get4();
+  shutter = libraw_powf64l(2.0f, (static_cast<float>(get4()) / 8.0f)) / 16000.0f;
+  FORC4
+    cam_mul[RGGB_2_RGBG(c)] = get4();
   fseek(ifp, 88, SEEK_SET);
-  aperture = libraw_powf64l(2.0f, ((float)get4()) / 16.0f);
+  aperture = libraw_powf64l(2.0f, static_cast<float>(get4()) / 16.0f);
   fseek(ifp, 112, SEEK_SET);
   focal_len = get4();
 
   fseek(ifp, 104, SEEK_SET);
-  ilm.MaxAp4CurFocal = libraw_powf64l(2.0f, ((float)get4()) / 16.0f);
+  ilm.MaxAp4CurFocal = libraw_powf64l(2.0f, static_cast<float>(get4()) / 16.0f);
   fseek(ifp, 124, SEEK_SET);
   stmread(ilm.Lens, 32, ifp);
   ilm.CameraMount = LIBRAW_MOUNT_Contax_N;
@@ -512,8 +515,8 @@ void LibRaw::parse_broadcom()
   fseek(ifp, 0xb0 - 0x20, SEEK_CUR);
   fread(&header, 1, sizeof(header), ifp);
   raw_stride =
-      ((((((header.uwidth + header.padding_right) * 5) + 3) >> 2) + 0x1f) &
-       (~0x1f));
+  ((((((header.uwidth + header.padding_right) * 5) + 3) >> 2) + 0x1f) &
+   (~0x1f));
   raw_width = width = header.uwidth;
   raw_height = height = header.uheight;
   filters = 0x16161616; /* default Bayer order is 2, BGGR */

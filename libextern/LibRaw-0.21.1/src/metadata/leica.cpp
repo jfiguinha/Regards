@@ -51,9 +51,9 @@ void LibRaw::setLeicaBodyFeatures(int LeicaMakernoteSignature)
             0x0200) || // M10, M10-D, M10-R, "S (Typ 007)", M11
            (LeicaMakernoteSignature ==
             0x02ff) || // "M (Typ 240)", "M (Typ 262)", "M-D (Typ 262)",
-                       // "M Monochrom (Typ 246)", "S (Typ 006)", "S-E (Typ 006)", S2, S3
+           // "M Monochrom (Typ 246)", "S (Typ 006)", "S-E (Typ 006)", S2, S3
            (LeicaMakernoteSignature ==
-            0x0300))   // M9, "M9 Monochrom", "M Monochrom", M-E
+            0x0300)) // M9, "M9 Monochrom", "M Monochrom", M-E
   {
     if ((model[0] == 'M') || (model[6] == 'M'))
     {
@@ -126,8 +126,7 @@ int LibRaw::parseLeicaLensName(unsigned len)
     strcpy(plln, "N/A");
     return 0;
   }
-  else
-    return 1;
+  return 1;
 #undef plln
 }
 
@@ -160,7 +159,7 @@ int LibRaw::parseLeicaInternalBodySerial(unsigned len)
     memcpy(plibs + 6, plibs + 3, 2);
     plibs[3] = plibs[14] = ' ';
     plibs[8] = plibs[11] = '/';
-    if (((short)(plibs[3] - '0') * 10 + (short)(plibs[4] - '0')) < 70)
+    if ((static_cast<short>((plibs[3] - '0')) * 10 + static_cast<short>((plibs[4] - '0'))) < 70)
     {
       memcpy(plibs + 4, "20", 2);
     }
@@ -197,7 +196,7 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
   else
   {
     fseek(ifp, -2, SEEK_CUR);
-    LeicaMakernoteSignature = ((uchar)buf[6] << 8) | (uchar)buf[7];
+    LeicaMakernoteSignature = (static_cast<uchar>(buf[6]) << 8) | static_cast<uchar>(buf[7]);
     // printf ("LeicaMakernoteSignature 0x%04x\n", LeicaMakernoteSignature);
     if (!LeicaMakernoteSignature &&
         (!strncmp(model, "M8", 2) || !strncmp(model + 6, "M8", 2)))
@@ -243,8 +242,9 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
         if (ilm.CurAp > 126.3)
         {
           ilm.CurAp = 0.0f;
-        } else if (fabs(aperture) < 0.17f)
-           aperture = ilm.CurAp;
+        }
+        else if (fabs(aperture) < 0.17f)
+          aperture = ilm.CurAp;
       }
       else if (tag == 0x0320)
       {
@@ -255,7 +255,8 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
     {
       if (tag == 0x000d)
       {
-        FORC3 cam_mul[c] = get2();
+        FORC3
+          cam_mul[c] = get2();
         cam_mul[3] = cam_mul[1];
       }
     }
@@ -280,7 +281,7 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
       {
         ci = fgetc(ifp);
         cj = fgetc(ifp);
-        imgdata.shootinginfo.ExposureMode = ((ushort)ci << 8) | cj;
+        imgdata.shootinginfo.ExposureMode = (static_cast<ushort>(ci) << 8) | cj;
       }
     }
     else if ((LeicaMakernoteSignature == 0x0600) || // TL, "T (Typ 701)"
@@ -290,7 +291,7 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
       {
         ci = fgetc(ifp);
         cj = fgetc(ifp);
-        imgdata.shootinginfo.ExposureMode = ((ushort)ci << 8) | cj;
+        imgdata.shootinginfo.ExposureMode = (static_cast<ushort>(ci) << 8) | cj;
       }
       else if (tag == 0x0303)
       {
@@ -305,14 +306,15 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
         if (ilm.CurAp > 126.3)
         {
           ilm.CurAp = 0.0f;
-        } else if (fabs(aperture) < 0.17f)
-           aperture = ilm.CurAp;
+        }
+        else if (fabs(aperture) < 0.17f)
+          aperture = ilm.CurAp;
       }
     }
     else if (LeicaMakernoteSignature == 0x02ff)
-                     // "M (Typ 240)", "M (Typ 262)", "M-D (Typ 262)"
-                     // "M Monochrom (Typ 246)"
-                     // "S (Typ 006)", "S-E (Typ 006)", S2, S3
+    // "M (Typ 240)", "M (Typ 262)", "M-D (Typ 262)"
+    // "M Monochrom (Typ 246)"
+    // "S (Typ 006)", "S-E (Typ 006)", S2, S3
     {
       if (tag == 0x0303)
       {
@@ -332,7 +334,7 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
     }
     else if ((LeicaMakernoteSignature == 0x0800) || // "Q (Typ 116)"
              (LeicaMakernoteSignature == 0x0900))   // SL2, "SL2-S", "SL (Typ 601)",
-                                                    // CL, Q2, "Q2 MONO"
+    // CL, Q2, "Q2 MONO"
     {
       if ((tag == 0x0304) && (len == 1) && ((c = fgetc(ifp)) != 0) &&
           (ilm.CameraMount == LIBRAW_MOUNT_LPS_L))
@@ -340,7 +342,8 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
         strcpy(ilm.Adapter, "M-Adapter L");
         ilm.LensMount = LIBRAW_MOUNT_Leica_M;
         ilm.LensFormat = LIBRAW_FORMAT_FF;
-        if (c != 0xff) ilm.LensID = c * 256;
+        if (c != 0xff)
+          ilm.LensID = c * 256;
       }
       else if (tag == 0x0500)
       {
@@ -363,8 +366,9 @@ void LibRaw::parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType)
         if (ilm.CurAp > 126.3)
         {
           ilm.CurAp = 0.0f;
-        } else if (fabs(aperture) < 0.17f)
-           aperture = ilm.CurAp;
+        }
+        else if (fabs(aperture) < 0.17f)
+          aperture = ilm.CurAp;
       }
     }
 

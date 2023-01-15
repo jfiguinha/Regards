@@ -40,7 +40,7 @@ class JpegDecompressor final : public AbstractDecompressor {
 
 public:
   JpegDecompressor(ByteStream bs, const RawImage& img)
-      : input(std::move(bs)), mRaw(img) {
+    : input(std::move(bs)), mRaw(img) {
     input.setByteOrder(Endianness::big);
   }
 

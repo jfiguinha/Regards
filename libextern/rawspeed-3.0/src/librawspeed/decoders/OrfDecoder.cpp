@@ -56,8 +56,8 @@ bool OrfDecoder::isAppropriateDecoder(const TiffRootIFD* rootIFD,
 ByteStream OrfDecoder::handleSlices() const {
   const auto* raw = mRootIFD->getIFDWithTag(STRIPOFFSETS);
 
-  TiffEntry *offsets = raw->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(STRIPBYTECOUNTS);
 
   if (counts->count != offsets->count) {
     ThrowRDE(
@@ -121,7 +121,7 @@ RawImage OrfDecoder::decodeRawInternal() {
 
   if (raw->getEntry(STRIPOFFSETS)->count != 1)
     ThrowRDE("%u stripes, and not uncompressed. Unsupported.",
-             raw->getEntry(STRIPOFFSETS)->count);
+           raw->getEntry(STRIPOFFSETS)->count);
 
   OlympusDecompressor o(mRaw);
   mRaw->createData();
@@ -143,7 +143,8 @@ bool OrfDecoder::decodeUncompressed(const ByteStream& s, uint32_t w, uint32_t h,
     return true;
   }
 
-  if (size == w * h * 12 / 8) { // We're in a 12-bit packed raw
+  if (size == w * h * 12 / 8) {
+    // We're in a 12-bit packed raw
     iPoint2D dimensions(w, h);
     iPoint2D pos(0, 0);
     mRaw->createData();
@@ -151,7 +152,8 @@ bool OrfDecoder::decodeUncompressed(const ByteStream& s, uint32_t w, uint32_t h,
     return true;
   }
 
-  if (size == w * h * 2) { // We're in an unpacked raw
+  if (size == w * h * 2) {
+    // We're in an unpacked raw
     mRaw->createData();
     // FIXME: seems fishy
     if (s.getByteOrder() == getHostEndianness())
@@ -162,7 +164,8 @@ bool OrfDecoder::decodeUncompressed(const ByteStream& s, uint32_t w, uint32_t h,
   }
 
   if (size >
-      w * h * 3 / 2) { // We're in one of those weird interlaced packed raws
+      w * h * 3 / 2) {
+    // We're in one of those weird interlaced packed raws
     mRaw->createData();
     u.decode12BitRaw<Endianness::big, true>(w, h);
     return true;
@@ -177,7 +180,7 @@ void OrfDecoder::parseCFA() {
     ThrowRDE("No EXIFCFAPATTERN entry found!");
 
   TiffEntry* CFA = mRootIFD->getEntryRecursive(EXIFCFAPATTERN);
-  if (CFA->type != TiffDataType::TIFF_UNDEFINED || CFA->count != 8) {
+  if (CFA->type != TIFF_UNDEFINED || CFA->count != 8) {
     ThrowRDE("Bad EXIFCFAPATTERN entry (type %u, count %u).", CFA->type,
              CFA->count);
   }
@@ -223,10 +226,10 @@ void OrfDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   if (mRootIFD->hasEntryRecursive(OLYMPUSREDMULTIPLIER) &&
       mRootIFD->hasEntryRecursive(OLYMPUSBLUEMULTIPLIER)) {
     mRaw->metadata.wbCoeffs[0] = static_cast<float>(
-        mRootIFD->getEntryRecursive(OLYMPUSREDMULTIPLIER)->getU16());
+      mRootIFD->getEntryRecursive(OLYMPUSREDMULTIPLIER)->getU16());
     mRaw->metadata.wbCoeffs[1] = 256.0F;
     mRaw->metadata.wbCoeffs[2] = static_cast<float>(
-        mRootIFD->getEntryRecursive(OLYMPUSBLUEMULTIPLIER)->getU16());
+      mRootIFD->getEntryRecursive(OLYMPUSBLUEMULTIPLIER)->getU16());
   } else if (mRootIFD->hasEntryRecursive(OLYMPUSIMAGEPROCESSING)) {
     // Newer cameras process the Image Processing SubIFD in the makernote
     TiffEntry* img_entry = mRootIFD->getEntryRecursive(OLYMPUSIMAGEPROCESSING);

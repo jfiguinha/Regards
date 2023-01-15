@@ -35,11 +35,11 @@ using namespace std;
 class wxScanDataOption
 {
 public:
-    wxString name;
-    int index;
+	wxString name;
+	int index;
 };
 
-typedef vector<wxScanDataOption> vectorDataScan;
+using vectorDataScan = vector<wxScanDataOption>;
 
 //////////////////////////////////////////////////////////
 // Class wxScanBase
@@ -52,63 +52,66 @@ typedef vector<wxScanDataOption> vectorDataScan;
 class wxScanBase
 {
 public:
-    
-enum wxSCANReturnCode
-{
-    //! Operation completed successfully
-    wxSCAN_RC_SUCCESS = 0,
-    //! Unknown error
-    wxSCAN_RC_UNKNOWNERROR,
-    //! Operation, mode, or value not supported
-    wxSCAN_RC_NOTSUPPORTED,
-    //! Operation was cancelled by user
-    wxSCAN_RC_CANCELLED,
-    //! Device is not ready
-    wxSCAN_RC_NOTREADY,
-    //! Device is busy
-    wxSCAN_RC_DEVICEBUSY,
-    //! Invalid data or argument
-    wxSCAN_RC_INVAL,
-    //! Document feeder jammed
-    wxSCAN_RC_JAMMED,
-    //! Document feeder out of documents
-    wxSCAN_RC_NODOCS,
-    //! Scanner cover is open
-    wxSCAN_RC_COVEROPEN,
-    //! Error during device I/O
-    wxSCAN_RC_IOERROR,
-    //! Out of memory
-    wxSCAN_RC_NOMEM,
-    //! Access to resource has been denied
-    wxSCAN_RC_ACCESSDENIED,
-    //! No source selected
-    wxSCAN_RC_NOSOURCE,
-    //! Provider not initialized
-    wxSCAN_RC_NOTINITIALIZED,
-};    
-    
-    
-    /// Standard constructor
-    wxScanBase(){}
+	enum wxSCANReturnCode
+	{
+		//! Operation completed successfully
+		wxSCAN_RC_SUCCESS = 0,
+		//! Unknown error
+		wxSCAN_RC_UNKNOWNERROR,
+		//! Operation, mode, or value not supported
+		wxSCAN_RC_NOTSUPPORTED,
+		//! Operation was cancelled by user
+		wxSCAN_RC_CANCELLED,
+		//! Device is not ready
+		wxSCAN_RC_NOTREADY,
+		//! Device is busy
+		wxSCAN_RC_DEVICEBUSY,
+		//! Invalid data or argument
+		wxSCAN_RC_INVAL,
+		//! Document feeder jammed
+		wxSCAN_RC_JAMMED,
+		//! Document feeder out of documents
+		wxSCAN_RC_NODOCS,
+		//! Scanner cover is open
+		wxSCAN_RC_COVEROPEN,
+		//! Error during device I/O
+		wxSCAN_RC_IOERROR,
+		//! Out of memory
+		wxSCAN_RC_NOMEM,
+		//! Access to resource has been denied
+		wxSCAN_RC_ACCESSDENIED,
+		//! No source selected
+		wxSCAN_RC_NOSOURCE,
+		//! Provider not initialized
+		wxSCAN_RC_NOTINITIALIZED,
+	};
 
-    /// Virtual destructor
-    virtual ~wxScanBase(){}
 
-    /// Check if the error state is 'OK'. This function returns 'true' on 'OK'.
-    virtual bool IsOk() = 0;
+	/// Standard constructor
+	wxScanBase()
+	{
+	}
 
-    /// Check if the scan device is available.
-    virtual bool IsDeviceAvailable() = 0;
+	/// Virtual destructor
+	virtual ~wxScanBase()
+	{
+	}
 
-    /// Get the scanning resolution
-    virtual int  GetResolution() = 0;
+	/// Check if the error state is 'OK'. This function returns 'true' on 'OK'.
+	virtual bool IsOk() = 0;
 
-    /// \brief Scan an image.
-    ///
-    /// \param oImage   a reference to the image object that should hold the image
-    ///
-    /// The result is in the parameter oImage.
-    virtual bool ScanImage( wxImage &oImage ) = 0;
+	/// Check if the scan device is available.
+	virtual bool IsDeviceAvailable() = 0;
+
+	/// Get the scanning resolution
+	virtual int GetResolution() = 0;
+
+	/// \brief Scan an image.
+	///
+	/// \param oImage   a reference to the image object that should hold the image
+	///
+	/// The result is in the parameter oImage.
+	virtual bool ScanImage(wxImage& oImage) = 0;
 };
 
 #if __WXSCANSANE__
@@ -322,43 +325,45 @@ typedef wxScanSane wxScan;
 ///       MS Windows.
 class wxScanTwain
 {
-  public:
-    /// Standard constructor
-    wxScanTwain(){}
+public:
+	/// Standard constructor
+	wxScanTwain()
+	{
+	}
 
-    /// Virtual destructor
-    virtual ~wxScanTwain(){}
+	/// Virtual destructor
+	virtual ~wxScanTwain()
+	{
+	}
 
-    /// Check if the error state is 'OK'. This function returns 'true' on 'OK'.
-    ///
-    /// Note: This function is currently only a stub and returns a dummy value.
-    virtual bool IsOk(){ return false; }
+	/// Check if the error state is 'OK'. This function returns 'true' on 'OK'.
+	///
+	/// Note: This function is currently only a stub and returns a dummy value.
+	virtual bool IsOk() { return false; }
 
-    /// Check if the scan device is available.
-    ///
-    /// Note: This function is currently only a stub and returns a dummy value.
-    virtual bool IsDeviceAvailable(){ return false; }
+	/// Check if the scan device is available.
+	///
+	/// Note: This function is currently only a stub and returns a dummy value.
+	virtual bool IsDeviceAvailable() { return false; }
 
-    /// Get the scanning resolution
-    ///
-    /// Note: This function is currently only a stub and returns a dummy value.
-    virtual int  GetResolution(){ return 0; }
+	/// Get the scanning resolution
+	///
+	/// Note: This function is currently only a stub and returns a dummy value.
+	virtual int GetResolution() { return 0; }
 
-    /// \brief Scan an image.
-    ///
-    /// \param oImage   a reference to the image object that should hold the image
-    ///
-    /// The result is in the parameter oImage.
-    ///
-    /// Note: This function is currently only a stub and returns a dummy value
-    ///       (false).
-    virtual bool ScanImage( wxImage &oImage ){ return false; };
+	/// \brief Scan an image.
+	///
+	/// \param oImage   a reference to the image object that should hold the image
+	///
+	/// The result is in the parameter oImage.
+	///
+	/// Note: This function is currently only a stub and returns a dummy value
+	///       (false).
+	virtual bool ScanImage(wxImage& oImage) { return false; };
 };
 
 // Define the standard wxScan object.
-typedef wxScanTwain wxScan;
+using wxScanTwain = wxScanTwain;
 #endif // __WXSCANTWAIN__
 
 #endif // WXSCAN_H_INCLUDED
-
-

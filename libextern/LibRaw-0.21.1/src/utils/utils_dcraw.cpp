@@ -48,7 +48,7 @@ int LibRaw::fcol(int row, int col)
 size_t LibRaw::strnlen(const char *s, size_t n)
 {
 #if !defined(__FreeBSD__) && !defined(__OpenBSD__)
-  const char *p = (const char *)memchr(s, 0, n);
+  auto p = static_cast<const char *>(memchr(s, 0, n));
   return (p ? p - s : n);
 #else
   return ::strnlen(s, n);
@@ -63,7 +63,7 @@ void *LibRaw::memmem(char *haystack, size_t haystacklen, char *needle,
   for (c = haystack; c <= haystack + haystacklen - needlelen; c++)
     if (!memcmp(c, needle, needlelen))
       return c;
-  return 0;
+  return nullptr;
 #else
   return ::memmem(haystack, haystacklen, needle, needlelen);
 #endif
@@ -75,7 +75,7 @@ char *LibRaw::strcasestr(char *haystack, const char *needle)
   for (c = haystack; *c; c++)
     if (!strncasecmp(c, needle, strlen(needle)))
       return c;
-  return 0;
+  return nullptr;
 }
 
 void LibRaw::initdata()
@@ -91,7 +91,7 @@ void LibRaw::initdata()
   for (int i = 0; i < LIBRAW_IFD_MAXCOUNT; i++)
   {
     tiff_ifd[i].dng_color[0].illuminant = tiff_ifd[i].dng_color[1].illuminant =
-        0xffff;
+                                          0xffff;
     for (int c = 0; c < 4; c++)
       tiff_ifd[i].dng_levels.analogbalance[c] = 1.0f;
   }
@@ -102,7 +102,7 @@ void LibRaw::initdata()
   memset(white, 0, sizeof white);
   memset(mask, 0, sizeof mask);
   thumb_offset = thumb_length = thumb_width = thumb_height = 0;
-  load_raw = 0;
+  load_raw = nullptr;
   thumb_format = LIBRAW_INTERNAL_THUMBNAIL_JPEG; // default to JPEG
   data_offset = meta_offset = meta_length = tiff_bps = tiff_compress = 0;
   kodak_cbpp = zero_after_ff = dng_version = load_flags = 0;
@@ -140,16 +140,16 @@ void LibRaw::aRGB_coeff(double aRGB_cam[3][3])
     {
       for (k = 0; k < 3; k++)
         cmatrix_tmp[i][j] += rgb_aRGB[i][k] * aRGB_cam[k][j];
-      cmatrix[i][j] = (float)cmatrix_tmp[i][j];
+      cmatrix[i][j] = static_cast<float>(cmatrix_tmp[i][j]);
     }
 }
 
 void LibRaw::romm_coeff(float romm_cam[3][3])
 {
   static const float rgb_romm[3][3] = /* ROMM == Kodak ProPhoto */
-      {{2.034193f, -0.727420f, -0.306766f},
-       {-0.228811f, 1.231729f, -0.002922f},
-       {-0.008565f, -0.153273f, 1.161839f}};
+  {{2.034193f, -0.727420f, -0.306766f},
+   {-0.228811f, 1.231729f, -0.002922f},
+   {-0.008565f, -0.153273f, 1.161839f}};
   int i, j, k;
 
   for (i = 0; i < 3; i++)
@@ -170,8 +170,8 @@ void LibRaw::remove_zeroes()
       if (BAYER(row, col) == 0)
       {
         tot = n = 0;
-        for (r = (int)row - 2; r <= (int)row + 2; r++)
-          for (c = (int)col - 2; c <= (int)col + 2; c++)
+        for (r = static_cast<int>(row) - 2; r <= static_cast<int>(row) + 2; r++)
+          for (c = static_cast<int>(col) - 2; c <= static_cast<int>(col) + 2; c++)
             if (r >= 0 && r < height && c >= 0 && c < width &&
                 FC(r, c) == FC(row, col) && BAYER(r, c))
               tot += (n++, BAYER(r, c));
@@ -180,6 +180,7 @@ void LibRaw::remove_zeroes()
       }
   RUN_CALLBACK(LIBRAW_PROGRESS_REMOVE_ZEROES, 1, 2);
 }
+
 void LibRaw::crop_masked_pixels()
 {
   int row, col;
@@ -227,19 +228,20 @@ mask_set:
       {
         /* No need to subtract margins because full area and active area filters are the same */
         c = FC(row, col);
-        mblack[c] += val = raw_image[(row)*raw_pitch / 2 + (col)];
+        mblack[c] += val = raw_image[(row) * raw_pitch / 2 + (col)];
         mblack[4 + c]++;
         zero += !val;
       }
   if (load_raw == &LibRaw::canon_600_load_raw && width < raw_width)
   {
     black = (mblack[0] + mblack[1] + mblack[2] + mblack[3]) /
-                MAX(1, (mblack[4] + mblack[5] + mblack[6] + mblack[7])) -
+            MAX(1, (mblack[4] + mblack[5] + mblack[6] + mblack[7])) -
             4;
   }
   else if (zero < mblack[4] && mblack[5] && mblack[6] && mblack[7])
   {
-    FORC4 cblack[c] = mblack[c] / MAX(1, mblack[4 + c]);
+    FORC4
+      cblack[c] = mblack[c] / MAX(1, mblack[4 + c]);
     black = cblack[4] = cblack[5] = cblack[6] = 0;
   }
 }
@@ -290,7 +292,8 @@ void LibRaw::cam_xyz_coeff(float _rgb_cam[3][4], double cam_xyz[4][3])
         cam_rgb[i][j] += cam_xyz[i][k] * LibRaw_constants::xyz_rgb[k][j];
 
   for (i = 0; i < colors && i < 4; i++)
-  {                               /* Normalize cam_rgb so that */
+  {
+    /* Normalize cam_rgb so that */
     for (num = j = 0; j < 3; j++) /* cam_rgb * (1,1,1) is (1,1,1,1) */
       num += cam_rgb[i][j];
     if (num > 0.00001)

@@ -24,17 +24,16 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class TiffIFDBE :
-  public TiffIFD
+namespace RawSpeed
 {
-public:
-  TiffIFDBE();
-  TiffIFDBE(FileMap* f, uint32 offset);
-  virtual ~TiffIFDBE(void);
-};
-
+	class TiffIFDBE :
+		public TiffIFD
+	{
+	public:
+		TiffIFDBE();
+		TiffIFDBE(FileMap* f, uint32 offset);
+		~TiffIFDBE(void) override;
+	};
 } // namespace RawSpeed
 
 #endif

@@ -17,9 +17,9 @@ public:
 
 	// IUnknown interface
 
-	STDMETHOD(QueryInterface)(REFIID iid, LPVOID *ppvObj);
-	STDMETHOD_(ULONG, AddRef)();
-	STDMETHOD_(ULONG, Release)();
+	STDMETHOD(QueryInterface)(REFIID iid, LPVOID* ppvObj) override;
+	STDMETHOD_(ULONG, AddRef)() override;
+	STDMETHOD_(ULONG, Release)() override;
 
 	// CProgressDlg methods
 	BOOL Cancelled() const;
@@ -33,19 +33,18 @@ private:
 	static INT_PTR CALLBACK DialogProc(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	LONG    m_cRef;
-	HWND    m_hDlg;
-	HWND    m_hWndParent;
-	LONG    m_bCancelled;
-	HANDLE  m_hInitDlg;
+	LONG m_cRef;
+	HWND m_hDlg;
+	HWND m_hWndParent;
+	LONG m_bCancelled;
+	HANDLE m_hInitDlg;
 	HINSTANCE g_hInstance;
-
 };
 
 HRESULT
 CALLBACK
 DefaultProgressCallback(
-	LONG   lStatus,
-	LONG   lPercentComplete,
-	PVOID  pParam
+	LONG lStatus,
+	LONG lPercentComplete,
+	PVOID pParam
 );

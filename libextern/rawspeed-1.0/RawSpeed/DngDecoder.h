@@ -27,37 +27,41 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class DngDecoder : 
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  DngDecoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~DngDecoder(void);
-  virtual RawImage decodeRawInternal();
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-protected:
-  TiffIFD *mRootIFD;
-  bool mFixLjpeg;
-  void printMetaData();
-  bool decodeMaskedAreas(TiffIFD* raw);
-  bool decodeBlackLevels(TiffIFD* raw);
-  void setBlack(TiffIFD* raw);
-};
+	class DngDecoder :
+		public RawDecoder
+	{
+	public:
+		DngDecoder(TiffIFD* rootIFD, FileMap* file);
+		~DngDecoder(void) override;
+		RawImage decodeRawInternal() override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
 
-class DngStrip {
-public:
-  DngStrip() { h = offset = count = offsetY = 0;};
-  ~DngStrip() {};
-  uint32 h;
-  uint32 offset; // Offset in bytes
-  uint32 count;
-  uint32 offsetY;
-};
+	protected:
+		TiffIFD* mRootIFD;
+		bool mFixLjpeg;
+		void printMetaData();
+		bool decodeMaskedAreas(TiffIFD* raw);
+		bool decodeBlackLevels(TiffIFD* raw);
+		void setBlack(TiffIFD* raw);
+	};
 
+	class DngStrip
+	{
+	public:
+		DngStrip() { h = offset = count = offsetY = 0; };
+
+		~DngStrip()
+		{
+		};
+		uint32 h;
+		uint32 offset; // Offset in bytes
+		uint32 count;
+		uint32 offsetY;
+	};
 } // namespace RawSpeed
 
 #endif

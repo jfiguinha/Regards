@@ -25,31 +25,32 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-/******************
- * Decompresses Lossless non subsampled JPEGs, with 2-4 components
- *****************/
-
-class LJpegPlain :
-  public LJpegDecompressor
+namespace RawSpeed
 {
-public:
-  LJpegPlain(FileMap* file, RawImage img);
-  virtual ~LJpegPlain(void);
-protected:
-  virtual void decodeScan();
-private:
-  void decodeScanLeft4Comps();
-  void decodeScanLeft2Comps();
-  void decodeScanLeft3Comps();
-  void decodeScanLeftGeneric();
-  void decodeScanLeft4_2_0();
-  void decodeScanLeft4_2_2();
-  uint32 *offset;
-  int* slice_width;
-};
+	/******************
+	 * Decompresses Lossless non subsampled JPEGs, with 2-4 components
+	 *****************/
 
+	class LJpegPlain :
+		public LJpegDecompressor
+	{
+	public:
+		LJpegPlain(FileMap* file, RawImage img);
+		~LJpegPlain(void) override;
+
+	protected:
+		void decodeScan() override;
+
+	private:
+		void decodeScanLeft4Comps();
+		void decodeScanLeft2Comps();
+		void decodeScanLeft3Comps();
+		void decodeScanLeftGeneric();
+		void decodeScanLeft4_2_0();
+		void decodeScanLeft4_2_2();
+		uint32* offset;
+		int* slice_width;
+	};
 } // namespace RawSpeed
 
 #endif

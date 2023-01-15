@@ -38,8 +38,8 @@ namespace rawspeed {
 
 KodakDecompressor::KodakDecompressor(const RawImage& img, ByteStream bs,
                                      int bps_, bool uncorrectedRawValues_)
-    : mRaw(img), input(std::move(bs)), bps(bps_),
-      uncorrectedRawValues(uncorrectedRawValues_) {
+  : mRaw(img), input(std::move(bs)), bps(bps_),
+    uncorrectedRawValues(uncorrectedRawValues_) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -47,7 +47,7 @@ KodakDecompressor::KodakDecompressor(const RawImage& img, ByteStream bs,
   if (mRaw->dim.x == 0 || mRaw->dim.y == 0 || mRaw->dim.x % 4 != 0 ||
       mRaw->dim.x > 4516 || mRaw->dim.y > 3012)
     ThrowRDE("Unexpected image dimensions found: (%u; %u)", mRaw->dim.x,
-             mRaw->dim.y);
+           mRaw->dim.y);
 
   if (bps != 10 && bps != 12)
     ThrowRDE("Unexpected bits per sample: %i", bps);
@@ -93,7 +93,7 @@ KodakDecompressor::decodeSegment(const uint32_t bsize) {
     if (bits < len) {
       for (uint32_t j = 0; j < 32; j += 8) {
         bitbuf += static_cast<int64_t>(static_cast<int>(input.getByte()))
-                  << (bits + (j ^ 8));
+            << (bits + (j ^ 8));
       }
       bits += 32;
     }
@@ -103,7 +103,9 @@ KodakDecompressor::decodeSegment(const uint32_t bsize) {
     bitbuf >>= len;
     bits -= len;
 
-    out[i] = len != 0 ? HuffmanTable::extend(diff, len) : int(diff);
+    out[i] = len != 0
+               ? HuffmanTable::extend(diff, len)
+               : static_cast<int>(diff);
   }
 
   return out;

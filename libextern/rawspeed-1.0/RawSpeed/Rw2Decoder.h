@@ -27,40 +27,42 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class PanaBitpump {
-  public:
-  PanaBitpump(ByteStream* input);
-  virtual ~PanaBitpump();
-  ByteStream* input;
-  uchar8 buf[0x4000];
-  int vbits;
-  uint32 load_flags;
-  uint32 getBits(int nbits);
-  void skipBytes(int bytes);
-};
-
-class Rw2Decoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  Rw2Decoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~Rw2Decoder(void);
-  RawImage decodeRawInternal();
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  TiffIFD *mRootIFD;
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-protected:
-  virtual void decodeThreaded(RawDecoderThread* t);
-private:
-  void DecodeRw2();
-  std::string guessMode();
-  ByteStream* input_start;
-  uint32 load_flags;
-};
+	class PanaBitpump
+	{
+	public:
+		PanaBitpump(ByteStream* input);
+		virtual ~PanaBitpump();
+		ByteStream* input;
+		uchar8 buf[0x4000];
+		int vbits;
+		uint32 load_flags;
+		uint32 getBits(int nbits);
+		void skipBytes(int bytes);
+	};
 
+	class Rw2Decoder :
+		public RawDecoder
+	{
+	public:
+		Rw2Decoder(TiffIFD* rootIFD, FileMap* file);
+		~Rw2Decoder(void) override;
+		RawImage decodeRawInternal() override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		TiffIFD* mRootIFD;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
+
+	protected:
+		void decodeThreaded(RawDecoderThread* t) override;
+
+	private:
+		void DecodeRw2();
+		std::string guessMode();
+		ByteStream* input_start;
+		uint32 load_flags;
+	};
 } // namespace RawSpeed
 
 #endif

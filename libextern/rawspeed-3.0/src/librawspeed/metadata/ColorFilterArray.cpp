@@ -37,12 +37,11 @@ using std::map;
 
 namespace rawspeed {
 
-ColorFilterArray::ColorFilterArray(const iPoint2D &_size) {
+ColorFilterArray::ColorFilterArray(const iPoint2D& _size) {
   setSize(_size);
 }
 
-void ColorFilterArray::setSize(const iPoint2D& _size)
-{
+void ColorFilterArray::setSize(const iPoint2D& _size) {
   size = _size;
 
   if (size.area() > 36) {
@@ -59,8 +58,7 @@ void ColorFilterArray::setSize(const iPoint2D& _size)
   fill(cfa.begin(), cfa.end(), CFA_UNKNOWN);
 }
 
-CFAColor ColorFilterArray::getColorAt( int x, int y ) const
-{
+CFAColor ColorFilterArray::getColorAt(int x, int y) const {
   if (cfa.empty())
     ThrowRDE("No CFA size set");
 
@@ -71,8 +69,7 @@ CFAColor ColorFilterArray::getColorAt( int x, int y ) const
   return cfa[x + static_cast<size_t>(y) * size.x];
 }
 
-void ColorFilterArray::setCFA( iPoint2D in_size, ... )
-{
+void ColorFilterArray::setCFA(iPoint2D in_size, ...) {
   if (in_size != size) {
     setSize(in_size);
   }
@@ -81,7 +78,7 @@ void ColorFilterArray::setCFA( iPoint2D in_size, ... )
   for (auto i = 0UL; i < size.area(); i++) {
     cfa[i] = static_cast<CFAColor>(va_arg(arguments, int));
   }
-  va_end (arguments);
+  va_end(arguments);
 }
 
 void ColorFilterArray::shiftLeft(int n) {
@@ -123,7 +120,7 @@ string ColorFilterArray::asString() const {
   string dst;
   for (int y = 0; y < size.y; y++) {
     for (int x = 0; x < size.x; x++) {
-      dst += colorToString(getColorAt(x,y));
+      dst += colorToString(getColorAt(x, y));
       dst += (x == size.x - 1) ? "\n" : ",";
     }
   }
@@ -159,14 +156,13 @@ uint32_t ColorFilterArray::shiftDcrawFilter(uint32_t filter, int x, int y) {
 }
 
 const map<CFAColor, string> ColorFilterArray::color2String = {
-    {CFA_RED, "RED"},         {CFA_GREEN, "GREEN"},
-    {CFA_BLUE, "BLUE"},       {CFA_CYAN, "CYAN"},
+    {CFA_RED, "RED"}, {CFA_GREEN, "GREEN"},
+    {CFA_BLUE, "BLUE"}, {CFA_CYAN, "CYAN"},
     {CFA_MAGENTA, "MAGENTA"}, {CFA_YELLOW, "YELLOW"},
-    {CFA_WHITE, "WHITE"},     {CFA_FUJI_GREEN, "FUJIGREEN"},
+    {CFA_WHITE, "WHITE"}, {CFA_FUJI_GREEN, "FUJIGREEN"},
     {CFA_UNKNOWN, "UNKNOWN"}};
 
-string ColorFilterArray::colorToString(CFAColor c)
-{
+string ColorFilterArray::colorToString(CFAColor c) {
   try {
     return color2String.at(c);
   } catch (std::out_of_range&) {
@@ -185,12 +181,16 @@ void ColorFilterArray::setColorAt(iPoint2D pos, CFAColor c) {
 static uint32_t toDcrawColor(CFAColor c) {
   switch (c) {
   case CFA_FUJI_GREEN:
-  case CFA_RED: return 0;
+  case CFA_RED:
+    return 0;
   case CFA_MAGENTA:
-  case CFA_GREEN: return 1;
+  case CFA_GREEN:
+    return 1;
   case CFA_CYAN:
-  case CFA_BLUE: return 2;
-  case CFA_YELLOW: return 3;
+  case CFA_BLUE:
+    return 2;
+  case CFA_YELLOW:
+    return 3;
   default:
     throw out_of_range(ColorFilterArray::colorToString(c));
   }
@@ -209,7 +209,7 @@ uint32_t ColorFilterArray::getDcrawFilter() const {
     for (int y = 0; y < 8; y++) {
       uint32_t c = toDcrawColor(getColorAt(x, y));
       int g = (x >> 1) * 8;
-      ret |= c << ((x&1)*2 + y*4 + g);
+      ret |= c << ((x & 1) * 2 + y * 4 + g);
     }
   }
 

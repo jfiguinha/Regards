@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "FileReader.h"
-#if defined(__unix__) || defined(__APPLE__) 
+#if defined(__unix__) || defined(__APPLE__)
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -29,13 +29,15 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	FileReader::FileReader(LPCWSTR _filename) : mFilename(_filename)
+	{
+	}
 
-FileReader::FileReader(LPCWSTR _filename) : mFilename(_filename) {
-}
-
-FileMap* FileReader::readFile() {
-#if defined(__unix__) || defined(__APPLE__) 
+	FileMap* FileReader::readFile()
+	{
+#if defined(__unix__) || defined(__APPLE__)
   int bytes_read = 0;
   FILE *file;
   char *dest;
@@ -71,34 +73,36 @@ FileMap* FileReader::readFile() {
 #endif
 
 #else // __unix__
-  HANDLE file_h;  // File handle
-  file_h = CreateFile(mFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-  if (file_h == INVALID_HANDLE_VALUE) {
-    throw FileIOException("Could not open file.");
-  }
+		HANDLE file_h; // File handle
+		file_h = CreateFile(mFilename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN,
+		                    nullptr);
+		if (file_h == INVALID_HANDLE_VALUE)
+		{
+			throw FileIOException("Could not open file.");
+		}
 
-  LARGE_INTEGER f_size;
-  GetFileSizeEx(file_h , &f_size);
+		LARGE_INTEGER f_size;
+		GetFileSizeEx(file_h, &f_size);
 
-  if (!f_size.LowPart)
-    throw FileIOException("File is 0 bytes.");
+		if (!f_size.LowPart)
+			throw FileIOException("File is 0 bytes.");
 
-  FileMap *fileData = new FileMap(f_size.LowPart);
+		auto fileData = new FileMap(f_size.LowPart);
 
-  DWORD bytes_read;
-  if (! ReadFile(file_h, fileData->getDataWrt(0), fileData->getSize(), &bytes_read, NULL)) {
-    CloseHandle(file_h);
-    delete fileData;
-    throw FileIOException("Could not read file.");
-  }
-  CloseHandle(file_h);
+		DWORD bytes_read;
+		if (! ReadFile(file_h, fileData->getDataWrt(0), fileData->getSize(), &bytes_read, nullptr))
+		{
+			CloseHandle(file_h);
+			delete fileData;
+			throw FileIOException("Could not read file.");
+		}
+		CloseHandle(file_h);
 
 #endif // __unix__
-  return fileData;
-}
+		return fileData;
+	}
 
-FileReader::~FileReader(void) {
-
-}
-
+	FileReader::~FileReader(void)
+	{
+	}
 } // namespace RawSpeed

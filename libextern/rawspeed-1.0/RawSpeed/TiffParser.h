@@ -37,25 +37,25 @@
 #include "Rw2Decoder.h"
 #include "SrwDecoder.h"
 
-namespace RawSpeed {
-
-class TiffParser 
+namespace RawSpeed
 {
-public:
-  TiffParser(FileMap* input);
-  virtual ~TiffParser(void);
+	class TiffParser
+	{
+	public:
+		TiffParser(FileMap* input);
+		virtual ~TiffParser(void);
 
-  virtual void parseData();
-  virtual RawDecoder* getDecoder();
-  Endianness tiff_endian;
-  TiffIFD* RootIFD() const { return mRootIFD; }
-  RawSpeed::Endianness getHostEndian() const { return host_endian; }
-protected:
-  FileMap *mInput;
-  TiffIFD* mRootIFD;
-  Endianness host_endian;
-};
+		virtual void parseData();
+		virtual RawDecoder* getDecoder();
+		Endianness tiff_endian;
+		TiffIFD* RootIFD() const { return mRootIFD; }
+		Endianness getHostEndian() const { return host_endian; }
 
+	protected:
+		FileMap* mInput;
+		TiffIFD* mRootIFD;
+		Endianness host_endian;
+	};
 } // namespace RawSpeed
 
 #endif

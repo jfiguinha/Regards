@@ -25,24 +25,29 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	RawParser::RawParser(FileMap* inputData): mInput(inputData)
+	{
+	}
 
 
-RawParser::RawParser(FileMap* inputData): mInput(inputData) {
-}
+	RawParser::~RawParser(void)
+	{
+	}
 
-
-RawParser::~RawParser(void) {
-}
-
-RawDecoder* RawParser::getDecoder() {
-  try {
-    TiffParser p(mInput);
-    p.parseData();
-    return p.getDecoder();
-  } catch (TiffParserException) {}
-  throw RawDecoderException("No decoder found. Sorry.");
-  return NULL;
-}
-
+	RawDecoder* RawParser::getDecoder()
+	{
+		try
+		{
+			TiffParser p(mInput);
+			p.parseData();
+			return p.getDecoder();
+		}
+		catch (TiffParserException)
+		{
+		}
+		throw RawDecoderException("No decoder found. Sorry.");
+		return nullptr;
+	}
 } // namespace RawSpeed

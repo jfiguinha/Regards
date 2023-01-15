@@ -78,7 +78,7 @@ std::unique_ptr<const Buffer> FileReader::readFile() {
 
   auto wFileName = widenFileName(fileName);
 
-  using file_ptr = std::unique_ptr<std::remove_pointer<HANDLE>::type,
+  using file_ptr = std::unique_ptr<std::remove_pointer_t<HANDLE>,
                                    decltype(&CloseHandle)>;
   file_ptr file(CreateFileW(wFileName.data(), GENERIC_READ, FILE_SHARE_READ,
                             nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN,
@@ -92,9 +92,9 @@ std::unique_ptr<const Buffer> FileReader::readFile() {
   GetFileSizeEx(file.get(), &size);
 
   static_assert(
-      std::numeric_limits<Buffer::size_type>::max() ==
-          std::numeric_limits<decltype(size.LowPart)>::max(),
-      "once Buffer migrates to 64-bit index, this needs to be updated.");
+    std::numeric_limits<Buffer::size_type>::max() ==
+    std::numeric_limits<decltype(size.LowPart)>::max(),
+    "once Buffer migrates to 64-bit index, this needs to be updated.");
 
   if (size.HighPart > 0)
     ThrowFIE("File is too big.");

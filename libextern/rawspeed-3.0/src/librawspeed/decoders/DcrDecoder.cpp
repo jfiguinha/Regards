@@ -54,7 +54,7 @@ void DcrDecoder::checkImageDimensions() {
 }
 
 RawImage DcrDecoder::decodeRawInternal() {
-  SimpleTiffDecoder::prepareForRawDecoding();
+  prepareForRawDecoding();
 
   ByteStream input(DataBuffer(mFile.getSubView(off), Endianness::little));
 

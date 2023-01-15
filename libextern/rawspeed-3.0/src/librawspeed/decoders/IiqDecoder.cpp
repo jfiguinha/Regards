@@ -63,7 +63,7 @@ bool IiqDecoder::isAppropriateDecoder(const TiffRootIFD* rootIFD,
   const auto id = rootIFD->getID();
   const std::string& make = id.make;
 
-  return IiqDecoder::isAppropriateDecoder(file) &&
+  return isAppropriateDecoder(file) &&
          (make == "Phase One A/S" || make == "Phase One" || make == "Leaf");
 }
 
@@ -190,7 +190,7 @@ RawImage IiqDecoder::decodeRawInternal() {
 
   if (split_col > width || split_row > height)
     ThrowRDE("Invalid sensor quadrant split values (%u, %u)", split_row,
-             split_col);
+           split_col);
 
   block_offsets = block_offsets.getStream(height, sizeof(uint32_t));
 
@@ -300,7 +300,8 @@ void IiqDecoder::CorrectQuadrantMultipliersCombined(ByteStream data,
         // These multipliers are expressed in ten-thousandths in the
         // file
         const uint64_t y_coord =
-            (uint64_t(data.getU32()) * shared_x_coords[i]) / 10000ULL;
+            (static_cast<uint64_t>(data.getU32()) * shared_x_coords[i]) /
+            10000ULL;
         if (y_coord > 65535)
           ThrowRDE("The Y coordinate %" PRIu64 " is too large", y_coord);
         quadrant.emplace_back(shared_x_coords[i], y_coord);

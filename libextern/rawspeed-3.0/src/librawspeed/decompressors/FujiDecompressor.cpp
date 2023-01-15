@@ -40,7 +40,7 @@
 namespace rawspeed {
 
 FujiDecompressor::FujiDecompressor(const RawImage& img, ByteStream input_)
-    : mRaw(img), input(std::move(input_)) {
+  : mRaw(img), input(std::move(input_)) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -56,7 +56,7 @@ FujiDecompressor::FujiDecompressor(const RawImage& img, ByteStream input_)
 
   if (12 == header.raw_bits) {
     ThrowRDE("Aha, finally, a 12-bit compressed RAF! Please consider providing "
-             "samples on <https://raw.pixls.us/>, thanks!");
+        "samples on <https://raw.pixls.us/>, thanks!");
   }
 
   for (int i = 0; i < 6; i++) {
@@ -86,7 +86,6 @@ FujiDecompressor::fuji_compressed_params::fuji_compressed_params(
       (d.header.block_size & 1 && d.header.raw_type == 0)) {
     ThrowRDE("fuji_block_checks");
   }
-
 
   if (d.header.raw_type == 16) {
     line_width = (d.header.block_size * 2) / 3;
@@ -127,11 +126,12 @@ FujiDecompressor::fuji_compressed_params::fuji_compressed_params(
   }
 
   // populting gradients
-  if (q_point[4] == 0xFFFF) { // (1 << d.header.raw_bits) - 1
-    total_values = 0x10000;   // 1 << d.header.raw_bits
-    raw_bits = 16;            // d.header.raw_bits
-    max_bits = 64;            // d.header.raw_bits * (64 / d.header.raw_bits)
-    maxDiff = 1024;           // 1 << (d.header.raw_bits - 6)
+  if (q_point[4] == 0xFFFF) {
+    // (1 << d.header.raw_bits) - 1
+    total_values = 0x10000; // 1 << d.header.raw_bits
+    raw_bits = 16;          // d.header.raw_bits
+    max_bits = 64;          // d.header.raw_bits * (64 / d.header.raw_bits)
+    maxDiff = 1024;         // 1 << (d.header.raw_bits - 6)
   } else if (q_point[4] == 0x3FFF) {
     total_values = 0x4000;
     raw_bits = 14;
@@ -139,7 +139,7 @@ FujiDecompressor::fuji_compressed_params::fuji_compressed_params(
     maxDiff = 256;
   } else if (q_point[4] == 0xFFF) {
     ThrowRDE("Aha, finally, a 12-bit compressed RAF! Please consider providing "
-             "samples on <https://raw.pixls.us/>, thanks!");
+        "samples on <https://raw.pixls.us/>, thanks!");
 
     /* kept for future, once there is a sample.
      total_values = 4096;
@@ -422,8 +422,8 @@ void FujiDecompressor::fuji_decode_sample_odd(
 #undef fuji_quant_gradient
 
 void FujiDecompressor::fuji_decode_interpolation_even(int line_width,
-                                                      uint16_t* line_buf,
-                                                      int* pos) {
+  uint16_t* line_buf,
+  int* pos) {
   uint16_t* line_buf_cur = line_buf + *pos;
   int Rb = line_buf_cur[-2 - line_width];
   int Rc = line_buf_cur[-3 - line_width];
@@ -796,28 +796,29 @@ void FujiDecompressor::decompress() const {
 }
 
 FujiDecompressor::FujiHeader::FujiHeader(ByteStream& bs)
-    : signature(bs.getU16()), version(bs.getByte()), raw_type(bs.getByte()),
-      raw_bits(bs.getByte()), raw_height(bs.getU16()),
-      raw_rounded_width(bs.getU16()), raw_width(bs.getU16()),
-      block_size(bs.getU16()), blocks_in_row(bs.getByte()),
-      total_lines(bs.getU16()) {}
+  : signature(bs.getU16()), version(bs.getByte()), raw_type(bs.getByte()),
+    raw_bits(bs.getByte()), raw_height(bs.getU16()),
+    raw_rounded_width(bs.getU16()), raw_width(bs.getU16()),
+    block_size(bs.getU16()), blocks_in_row(bs.getByte()),
+    total_lines(bs.getU16()) {
+}
 
 FujiDecompressor::FujiHeader::operator bool() const {
   // general validation
   const bool invalid =
-      (signature != 0x4953 || version != 1 || raw_height > 0x3000 ||
-       raw_height < FujiStrip::lineHeight() ||
-       raw_height % FujiStrip::lineHeight() || raw_width > 0x3000 ||
-       raw_width < 0x300 || raw_width % 24 || raw_rounded_width > 0x3000 ||
-       block_size != 0x300 || raw_rounded_width < block_size ||
-       raw_rounded_width % block_size ||
-       raw_rounded_width - raw_width >= block_size || blocks_in_row > 0x10 ||
-       blocks_in_row == 0 || blocks_in_row != raw_rounded_width / block_size ||
-       blocks_in_row != roundUpDivision(raw_width, block_size) ||
-       total_lines > 0x800 || total_lines == 0 ||
-       total_lines != raw_height / FujiStrip::lineHeight() ||
-       (raw_bits != 12 && raw_bits != 14 && raw_bits != 16) ||
-       (raw_type != 16 && raw_type != 0));
+  (signature != 0x4953 || version != 1 || raw_height > 0x3000 ||
+   raw_height < FujiStrip::lineHeight() ||
+   raw_height % FujiStrip::lineHeight() || raw_width > 0x3000 ||
+   raw_width < 0x300 || raw_width % 24 || raw_rounded_width > 0x3000 ||
+   block_size != 0x300 || raw_rounded_width < block_size ||
+   raw_rounded_width % block_size ||
+   raw_rounded_width - raw_width >= block_size || blocks_in_row > 0x10 ||
+   blocks_in_row == 0 || blocks_in_row != raw_rounded_width / block_size ||
+   blocks_in_row != roundUpDivision(raw_width, block_size) ||
+   total_lines > 0x800 || total_lines == 0 ||
+   total_lines != raw_height / FujiStrip::lineHeight() ||
+   (raw_bits != 12 && raw_bits != 14 && raw_bits != 16) ||
+   (raw_type != 16 && raw_type != 0));
 
   return !invalid;
 }

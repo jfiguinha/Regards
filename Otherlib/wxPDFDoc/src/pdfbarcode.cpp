@@ -1186,9 +1186,9 @@ wxPdfBarCodeCreator::Code128A(double x, double y, const wxString& barcode, doubl
 			break;
 		default:
 			if (*ch < 32)
-				bcode += static_cast<wxChar>((int)(*ch) + 64);
+				bcode += static_cast<wxChar>(static_cast<int>(*ch) + 64);
 			else
-				bcode += static_cast<wxChar>((int)(*ch) - 32);
+				bcode += static_cast<wxChar>(static_cast<int>(*ch) - 32);
 			break;
 		}
 	}
@@ -1229,7 +1229,7 @@ wxPdfBarCodeCreator::Code128B(double x, double y, const wxString& barcode, doubl
 			bcode += CODE128_CODE_TO_B;
 			break;
 		default:
-			bcode += static_cast<wxChar>((int)(*ch) - 32);
+			bcode += static_cast<wxChar>(static_cast<int>(*ch) - 32);
 			break;
 		}
 	}

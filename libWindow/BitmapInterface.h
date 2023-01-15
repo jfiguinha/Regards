@@ -1,31 +1,28 @@
 #pragma once
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CBitmapInterface
 	{
-		class CBitmapInterface
+	public:
+		CBitmapInterface()
 		{
-		public:
-			CBitmapInterface()
-			{
-			};
-
-			virtual ~CBitmapInterface()
-			{
-			};
-
-			virtual void TransitionEnd()
-			{
-			};
-
-			virtual void ImageSuivante()
-			{
-			};
-
-			virtual void ImagePrecedente()
-			{
-			};
 		};
-	}
+
+		virtual ~CBitmapInterface()
+		{
+		};
+
+		virtual void TransitionEnd()
+		{
+		};
+
+		virtual void ImageSuivante()
+		{
+		};
+
+		virtual void ImagePrecedente()
+		{
+		};
+	};
 }

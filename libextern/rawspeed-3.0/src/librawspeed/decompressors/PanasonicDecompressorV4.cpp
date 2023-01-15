@@ -45,8 +45,8 @@ PanasonicDecompressorV4::PanasonicDecompressorV4(const RawImage& img,
                                                  const ByteStream& input_,
                                                  bool zero_is_not_bad,
                                                  uint32_t section_split_offset_)
-    : mRaw(img), zero_is_bad(!zero_is_not_bad),
-      section_split_offset(section_split_offset_) {
+  : mRaw(img), zero_is_bad(!zero_is_not_bad),
+    section_split_offset(section_split_offset_) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");
@@ -58,7 +58,7 @@ PanasonicDecompressorV4::PanasonicDecompressorV4(const RawImage& img,
 
   if (BlockSize < section_split_offset)
     ThrowRDE("Bad section_split_offset: %u, less than BlockSize (%u)",
-             section_split_offset, BlockSize);
+           section_split_offset, BlockSize);
 
   // Naive count of bytes that given pixel count requires.
   assert(mRaw->dim.area() % PixelsPerPacket == 0);
@@ -152,7 +152,7 @@ class PanasonicDecompressorV4::ProxyStream {
 
 public:
   ProxyStream(ByteStream block_, int section_split_offset_)
-      : block(std::move(block_)), section_split_offset(section_split_offset_) {
+    : block(std::move(block_)), section_split_offset(section_split_offset_) {
     parseBlock();
   }
 

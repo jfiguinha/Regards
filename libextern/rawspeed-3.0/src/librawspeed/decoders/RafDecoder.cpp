@@ -73,7 +73,7 @@ RawImage RafDecoder::decodeRawInternal() {
     height = raw->getEntry(FUJI_RAWIMAGEFULLHEIGHT)->getU32();
     width = raw->getEntry(FUJI_RAWIMAGEFULLWIDTH)->getU32();
   } else if (raw->hasEntry(IMAGEWIDTH)) {
-    TiffEntry *e = raw->getEntry(IMAGEWIDTH);
+    TiffEntry* e = raw->getEntry(IMAGEWIDTH);
     height = e->getU16(0);
     width = e->getU16(1);
   } else
@@ -83,12 +83,12 @@ RawImage RafDecoder::decodeRawInternal() {
     ThrowRDE("Unexpected image dimensions found: (%u; %u)", width, height);
 
   if (raw->hasEntry(FUJI_LAYOUT)) {
-    TiffEntry *e = raw->getEntry(FUJI_LAYOUT);
+    TiffEntry* e = raw->getEntry(FUJI_LAYOUT);
     alt_layout = !(e->getByte(0) >> 7);
   }
 
-  TiffEntry *offsets = raw->getEntry(FUJI_STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(FUJI_STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(FUJI_STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(FUJI_STRIPBYTECOUNTS);
 
   if (offsets->count != 1 || counts->count != 1)
     ThrowRDE("Multiple Strips found: %u %u", offsets->count, counts->count);
@@ -204,7 +204,7 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   assert(cam != nullptr);
 
   iPoint2D new_size(mRaw->dim);
-  iPoint2D crop_offset = iPoint2D(0,0);
+  auto crop_offset = iPoint2D(0, 0);
 
   if (applyCrop) {
     new_size = cam->cropSize;
@@ -212,7 +212,8 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     bool double_width = hints.has("double_width_unpacked");
     // If crop size is negative, use relative cropping
     if (new_size.x <= 0)
-      new_size.x = mRaw->dim.x / (double_width ? 2 : 1) - cam->cropPos.x + new_size.x;
+      new_size.x = mRaw->dim.x / (double_width ? 2 : 1) - cam->cropPos.x +
+                   new_size.x;
     else
       new_size.x /= (double_width ? 2 : 1);
     if (new_size.y <= 0)
@@ -228,17 +229,16 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     uint32_t rotatedsize;
     uint32_t rotationPos;
     if (alt_layout) {
-      rotatedsize = new_size.y+new_size.x/2;
-      rotationPos = new_size.x/2 - 1;
-    }
-    else {
-      rotatedsize = new_size.x+new_size.y/2;
+      rotatedsize = new_size.y + new_size.x / 2;
+      rotationPos = new_size.x / 2 - 1;
+    } else {
+      rotatedsize = new_size.x + new_size.y / 2;
       rotationPos = new_size.x - 1;
     }
 
-    iPoint2D final_size(rotatedsize, rotatedsize-1);
+    iPoint2D final_size(rotatedsize, rotatedsize - 1);
     RawImage rotated = RawImage::create(final_size, TYPE_USHORT16, 1);
-    rotated->clearArea(iRectangle2D(iPoint2D(0,0), rotated->dim));
+    rotated->clearArea(iRectangle2D(iPoint2D(0, 0), rotated->dim));
     rotated->metadata = mRaw->metadata;
     rotated->metadata.fujiRotationPos = rotationPos;
 
@@ -249,12 +249,13 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
       for (int x = 0; x < new_size.x; x++) {
         int h;
         int w;
-        if (alt_layout) { // Swapped x and y
+        if (alt_layout) {
+          // Swapped x and y
           h = rotatedsize - (new_size.y + 1 - y + (x >> 1));
-          w = ((x+1) >> 1) + y;
+          w = ((x + 1) >> 1) + y;
         } else {
           h = new_size.x - 1 - x + (y >> 1);
-          w = ((y+1) >> 1) + x;
+          w = ((y + 1) >> 1) + x;
         }
         if (h < rotated->dim.y && w < rotated->dim.x)
           dstImg(h, w) = srcImg(crop_offset.y + y, crop_offset.x + x);
@@ -267,15 +268,14 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
     mRaw->subFrame(iRectangle2D(crop_offset, new_size));
   }
 
-  const CameraSensorInfo *sensor = cam->getSensorInfo(iso);
+  const CameraSensorInfo* sensor = cam->getSensorInfo(iso);
   mRaw->blackLevel = sensor->mBlackLevel;
 
   // at least the (bayer sensor) X100 comes with a tag like this:
   if (mRootIFD->hasEntryRecursive(FUJI_BLACKLEVEL)) {
     TiffEntry* sep_black = mRootIFD->getEntryRecursive(FUJI_BLACKLEVEL);
-    if (sep_black->count == 4)
-    {
-      for(int k=0;k<4;k++)
+    if (sep_black->count == 4) {
+      for (int k = 0; k < 4; k++)
         mRaw->blackLevelSeparate[k] = sep_black->getU32(k);
     } else if (sep_black->count == 36) {
       for (int& k : mRaw->blackLevelSeparate)
@@ -303,14 +303,14 @@ void RafDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   mRaw->metadata.model = id.model;
 
   if (mRootIFD->hasEntryRecursive(FUJI_WB_GRBLEVELS)) {
-    TiffEntry *wb = mRootIFD->getEntryRecursive(FUJI_WB_GRBLEVELS);
+    TiffEntry* wb = mRootIFD->getEntryRecursive(FUJI_WB_GRBLEVELS);
     if (wb->count == 3) {
       mRaw->metadata.wbCoeffs[0] = wb->getFloat(1);
       mRaw->metadata.wbCoeffs[1] = wb->getFloat(0);
       mRaw->metadata.wbCoeffs[2] = wb->getFloat(2);
     }
   } else if (mRootIFD->hasEntryRecursive(FUJIOLDWB)) {
-    TiffEntry *wb = mRootIFD->getEntryRecursive(FUJIOLDWB);
+    TiffEntry* wb = mRootIFD->getEntryRecursive(FUJIOLDWB);
     if (wb->count == 8) {
       mRaw->metadata.wbCoeffs[0] = wb->getFloat(1);
       mRaw->metadata.wbCoeffs[1] = wb->getFloat(0);

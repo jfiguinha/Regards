@@ -34,7 +34,7 @@ class ErrorLog {
 public:
   void setError(const std::string& err) REQUIRES(!mutex);
   bool isTooManyErrors(unsigned many, std::string* firstErr = nullptr)
-      REQUIRES(!mutex);
+  REQUIRES(!mutex);
   std::vector<std::string>&& getErrors() REQUIRES(!mutex);
 };
 

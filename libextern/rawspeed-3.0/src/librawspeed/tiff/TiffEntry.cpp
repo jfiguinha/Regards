@@ -40,14 +40,15 @@ class DataBuffer;
 
 // order see TiffDataType
 const std::array<uint32_t, 14> TiffEntry::datashifts = {0, 0, 0, 1, 2, 3, 0,
-                                                        0, 1, 2, 3, 2, 3, 2};
+  0, 1, 2, 3, 2, 3, 2};
 //                                  0-1-2-3-4-5-6-7-8-9-10-11-12-13
 
 TiffEntry::TiffEntry(TiffIFD* parent_, ByteStream& bs)
-    : parent(parent_), tag(static_cast<TiffTag>(bs.getU16())) {
+  : parent(parent_), tag(static_cast<TiffTag>(bs.getU16())) {
   const uint16_t numType = bs.getU16();
   if (numType > TIFF_OFFSET)
-    ThrowTPE("Error reading TIFF structure. Unknown Type 0x%x encountered.", numType);
+    ThrowTPE("Error reading TIFF structure. Unknown Type 0x%x encountered.",
+           numType);
   type = static_cast<TiffDataType>(numType);
   count = bs.getU32();
 
@@ -64,7 +65,9 @@ TiffEntry::TiffEntry(TiffIFD* parent_, ByteStream& bs)
     bs.skipBytes(4);
   } else {
     data_offset = bs.getU32();
-    if (type == TIFF_OFFSET || isIn(tag, {DNGPRIVATEDATA, MAKERNOTE, MAKERNOTE_ALT, FUJI_RAW_IFD, SUBIFDS, EXIFIFDPOINTER})) {
+    if (type == TIFF_OFFSET || isIn(tag, {DNGPRIVATEDATA, MAKERNOTE,
+                                          MAKERNOTE_ALT, FUJI_RAW_IFD, SUBIFDS,
+                                          EXIFIFDPOINTER})) {
       // preserve offset for SUB_IFD/EXIF/MAKER_NOTE data
 #if 0
       // limit access to range from 0 to data_offset+byte_size
@@ -86,8 +89,8 @@ TiffEntry::TiffEntry(TiffIFD* parent_, ByteStream& bs)
 
 TiffEntry::TiffEntry(TiffIFD* parent_, TiffTag tag_, TiffDataType type_,
                      uint32_t count_, ByteStream&& data_)
-    : parent(parent_), data(std::move(data_)), tag(tag_), type(type_),
-      count(count_) {
+  : parent(parent_), data(std::move(data_)), tag(tag_), type(type_),
+    count(count_) {
   // check for count << datashift overflow
   if (count > UINT32_MAX >> datashifts[type])
     ThrowTPE("integer overflow in size calculation.");
@@ -132,7 +135,7 @@ uint8_t TiffEntry::getByte(uint32_t index) const {
 uint16_t TiffEntry::getU16(uint32_t index) const {
   if (type != TIFF_SHORT && type != TIFF_UNDEFINED)
     ThrowTPE("Wrong type %u encountered. Expected Short or Undefined on 0x%x",
-             type, tag);
+           type, tag);
 
   return data.peek<uint16_t>(index);
 }
@@ -140,7 +143,7 @@ uint16_t TiffEntry::getU16(uint32_t index) const {
 int16_t TiffEntry::getI16(uint32_t index) const {
   if (type != TIFF_SSHORT && type != TIFF_UNDEFINED)
     ThrowTPE("Wrong type %u encountered. Expected Short or Undefined on 0x%x",
-             type, tag);
+           type, tag);
 
   return data.peek<int16_t>(index);
 }
@@ -171,7 +174,7 @@ int32_t TiffEntry::getI32(uint32_t index) const {
     return getI16(index);
   if (!(type == TIFF_SLONG || type == TIFF_UNDEFINED))
     ThrowTPE("Wrong type %u encountered. Expected SLong or Undefined on 0x%x",
-             type, tag);
+           type, tag);
 
   return data.peek<int32_t>(index);
 }
@@ -184,8 +187,10 @@ float TiffEntry::getFloat(uint32_t index) const {
   }
 
   switch (type) {
-  case TIFF_DOUBLE: return data.peek<double>(index);
-  case TIFF_FLOAT:  return data.peek<float>(index);
+  case TIFF_DOUBLE:
+    return data.peek<double>(index);
+  case TIFF_FLOAT:
+    return data.peek<float>(index);
   case TIFF_LONG:
   case TIFF_SHORT:
     return static_cast<float>(getU32(index));
@@ -219,7 +224,7 @@ string TiffEntry::getString() const {
   return {s, strnlen(s, bufSize)};
 }
 
-const DataBuffer &TiffEntry::getRootIfdData() const {
+const DataBuffer& TiffEntry::getRootIfdData() const {
   TiffIFD* p = parent;
   TiffRootIFD* r = nullptr;
   while (p) {

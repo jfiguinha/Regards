@@ -29,14 +29,16 @@ namespace rawspeed {
 
 template <typename T> class Range final {
   T base;
-  typename std::make_unsigned<T>::type size;
+  std::make_unsigned_t<T> size;
 
 public:
   constexpr Range() = default;
 
   template <typename T2,
-            typename = std::enable_if_t<std::is_unsigned<T2>::value>>
-  constexpr Range(T base_, T2 size_) : base(base_), size(size_) {}
+            typename = std::enable_if_t<std::is_unsigned_v<T2>>>
+  constexpr Range(T base_, T2 size_)
+    : base(base_), size(size_) {
+  }
 
   constexpr T __attribute__((const)) begin() const { return base; }
 
@@ -48,7 +50,7 @@ template <typename T> bool operator<(const Range<T>& lhs, const Range<T>& rhs) {
 }
 
 template <typename Tr, typename Tv>
-inline constexpr bool __attribute__((const))
+constexpr bool __attribute__((const))
 RangeContains(const Tr& r, Tv pos) {
   if (pos < r.begin())
     return false;
@@ -58,7 +60,7 @@ RangeContains(const Tr& r, Tv pos) {
 }
 
 template <typename T>
-inline constexpr bool __attribute__((const))
+constexpr bool __attribute__((const))
 RangesOverlap(const T& lhs, const T& rhs) {
   if (&lhs == &rhs)
     return true;

@@ -49,7 +49,7 @@ std::unique_ptr<RawDecoder> RawParser::getDecoder(const CameraMetaData* meta) {
   if (MrwDecoder::isMRW(mInput)) {
     try {
       return std::make_unique<MrwDecoder>(mInput);
-    } catch (RawDecoderException &) {
+    } catch (RawDecoderException&) {
     }
   }
 
@@ -67,14 +67,14 @@ std::unique_ptr<RawDecoder> RawParser::getDecoder(const CameraMetaData* meta) {
   try {
     TiffParser p(mInput);
     return p.getDecoder(meta);
-  } catch (TiffParserException &) {
+  } catch (TiffParserException&) {
   }
 
   // CIFF images
   try {
     CiffParser p(mInput);
     return p.getDecoder(meta);
-  } catch (CiffParserException &) {
+  } catch (CiffParserException&) {
   }
 
   // Detect camera on filesize (CHDK).
@@ -83,7 +83,7 @@ std::unique_ptr<RawDecoder> RawParser::getDecoder(const CameraMetaData* meta) {
 
     try {
       return std::make_unique<NakedDecoder>(mInput, c);
-    } catch (RawDecoderException &) {
+    } catch (RawDecoderException&) {
     }
   }
 

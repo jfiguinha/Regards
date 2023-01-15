@@ -27,28 +27,28 @@
 #include "TiffIFD.h"
 #include "BitPumpPlain.h"
 
-namespace RawSpeed {
-
-class ArwDecoder :
-  public RawDecoder
+namespace RawSpeed
 {
-public:
-  ArwDecoder(TiffIFD *rootIFD, FileMap* file);
-  virtual ~ArwDecoder(void);
-  virtual RawImage decodeRawInternal();
-  virtual void checkSupportInternal(CameraMetaData *meta);
-  virtual void decodeMetaDataInternal(CameraMetaData *meta);
-  virtual void decodeThreaded(RawDecoderThread* t);
-  virtual TiffIFD* getRootIFD() {return mRootIFD;}
-protected:
-  void DecodeARW(ByteStream &input, uint32 w, uint32 h);
-  void DecodeARW2(ByteStream &input, uint32 w, uint32 h, uint32 bpp);
-  TiffIFD *mRootIFD;
-  uint32 curve[0x4001];
-  ByteStream *in;
-  int mShiftDownScale;
-};
+	class ArwDecoder :
+		public RawDecoder
+	{
+	public:
+		ArwDecoder(TiffIFD* rootIFD, FileMap* file);
+		~ArwDecoder(void) override;
+		RawImage decodeRawInternal() override;
+		void checkSupportInternal(CameraMetaData* meta) override;
+		void decodeMetaDataInternal(CameraMetaData* meta) override;
+		void decodeThreaded(RawDecoderThread* t) override;
+		TiffIFD* getRootIFD() override { return mRootIFD; }
 
+	protected:
+		void DecodeARW(ByteStream& input, uint32 w, uint32 h);
+		void DecodeARW2(ByteStream& input, uint32 w, uint32 h, uint32 bpp);
+		TiffIFD* mRootIFD;
+		uint32 curve[0x4001];
+		ByteStream* in;
+		int mShiftDownScale;
+	};
 } // namespace RawSpeed
 
 #endif

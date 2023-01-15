@@ -53,7 +53,7 @@ public:
                                                  const Buffer& data);
   using checker_t = bool (*)(const TiffRootIFD* root, const Buffer& data);
   using constructor_t = std::unique_ptr<RawDecoder> (*)(TiffRootIFDOwner&& root,
-                                                        const Buffer& data);
+    const Buffer& data);
   static const std::array<std::pair<checker_t, constructor_t>, 16> Map;
 };
 

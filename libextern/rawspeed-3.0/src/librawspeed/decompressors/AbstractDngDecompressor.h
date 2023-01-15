@@ -53,9 +53,9 @@ struct DngTilingDescription final {
   const unsigned numTiles;
 
   DngTilingDescription(const iPoint2D& dim_, uint32_t tileW_, uint32_t tileH_)
-      : dim(dim_), tileW(tileW_), tileH(tileH_),
-        tilesX(roundUpDivision(dim.x, tileW)),
-        tilesY(roundUpDivision(dim.y, tileH)), numTiles(tilesX * tilesY) {
+    : dim(dim_), tileW(tileW_), tileH(tileH_),
+      tilesX(roundUpDivision(dim.x, tileW)),
+      tilesY(roundUpDivision(dim.y, tileH)), numTiles(tilesX * tilesY) {
     assert(dim.area() > 0);
     assert(tileW > 0);
     assert(tileH > 0);
@@ -94,12 +94,12 @@ struct DngSliceElement final {
   const unsigned height;
 
   DngSliceElement(const DngTilingDescription& dsc_, unsigned n_, ByteStream bs_)
-      : dsc(dsc_), n(n_), bs(std::move(bs_)), column(n % dsc.tilesX),
-        row(n / dsc.tilesX), lastColumn((column + 1) == dsc.tilesX),
-        lastRow((row + 1) == dsc.tilesY), offX(dsc.tileW * column),
-        offY(dsc.tileH * row),
-        width(!lastColumn ? dsc.tileW : dsc.dim.x - offX),
-        height(!lastRow ? dsc.tileH : dsc.dim.y - offY) {
+    : dsc(dsc_), n(n_), bs(std::move(bs_)), column(n % dsc.tilesX),
+      row(n / dsc.tilesX), lastColumn((column + 1) == dsc.tilesX),
+      lastRow((row + 1) == dsc.tilesY), offX(dsc.tileW * column),
+      offY(dsc.tileH * row),
+      width(!lastColumn ? dsc.tileW : dsc.dim.x - offX),
+      height(!lastRow ? dsc.tileH : dsc.dim.y - offY) {
     assert(n < dsc.numTiles);
     assert(bs.getRemainSize() > 0);
     assert(column < dsc.tilesX);
@@ -126,8 +126,9 @@ public:
   AbstractDngDecompressor(const RawImage& img, DngTilingDescription dsc_,
                           int compression_, bool mFixLjpeg_, uint32_t mBps_,
                           uint32_t mPredictor_)
-      : mRaw(img), dsc(dsc_), compression(compression_), mFixLjpeg(mFixLjpeg_),
-        mBps(mBps_), mPredictor(mPredictor_) {}
+    : mRaw(img), dsc(dsc_), compression(compression_), mFixLjpeg(mFixLjpeg_),
+      mBps(mBps_), mPredictor(mPredictor_) {
+  }
 
   void decompress() const;
 

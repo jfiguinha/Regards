@@ -35,8 +35,7 @@ class CameraMetaData;
 
 class TiffIFD;
 
-class RawDecoder
-{
+class RawDecoder {
 public:
   /* Construct decoder instance - Buffer is a filemap of the file to be decoded
    */
@@ -68,7 +67,7 @@ public:
 
   /* Allows access to the root IFD structure */
   /* If image isn't TIFF based NULL will be returned */
-  virtual TiffIFD *getRootIFD() { return nullptr; }
+  virtual TiffIFD* getRootIFD() { return nullptr; }
 
   /* The decoded image - undefined if image has not or could not be decoded. */
   /* Remember this is automatically refcounted, so a reference is retained until this class is destroyed */

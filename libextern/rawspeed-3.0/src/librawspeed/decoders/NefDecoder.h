@@ -37,20 +37,22 @@ class CameraMetaData;
 class iPoint2D;
 class Buffer;
 
-class NefDecoder final : public AbstractTiffDecoder
-{
+class NefDecoder final : public AbstractTiffDecoder {
 public:
   static bool isAppropriateDecoder(const TiffRootIFD* rootIFD,
                                    const Buffer& file);
+
   NefDecoder(TiffRootIFDOwner&& root, const Buffer& file)
-      : AbstractTiffDecoder(move(root), file) {}
+    : AbstractTiffDecoder(move(root), file) {
+  }
 
   RawImage decodeRawInternal() override;
   void decodeMetaDataInternal(const CameraMetaData* meta) override;
   void checkSupportInternal(const CameraMetaData* meta) override;
 
 protected:
-  struct NefSlice final : RawSlice {};
+  struct NefSlice final : RawSlice {
+  };
 
 private:
   [[nodiscard]] int getDecoderVersion() const override { return 5; }
@@ -64,7 +66,7 @@ private:
                            const iPoint2D& offset, int inputPitch);
   void DecodeNikonSNef(const ByteStream& input);
   std::string getMode();
-  std::string getExtendedMode(const std::string &mode);
+  std::string getExtendedMode(const std::string& mode);
   static std::vector<uint16_t> gammaCurve(double pwr, double ts, int mode,
                                           int imax);
 

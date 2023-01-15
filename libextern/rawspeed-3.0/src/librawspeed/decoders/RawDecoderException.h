@@ -30,7 +30,8 @@ class RawDecoderException : public RawspeedException {
 public:
   explicit RAWSPEED_UNLIKELY_FUNCTION RAWSPEED_NOINLINE
   RawDecoderException(const char* msg)
-      : RawspeedException(msg) {}
+    : RawspeedException(msg) {
+  }
 };
 
 #define ThrowRDE(...)                                                          \

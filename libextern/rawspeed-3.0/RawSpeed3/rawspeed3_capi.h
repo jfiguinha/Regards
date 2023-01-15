@@ -14,32 +14,29 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-enum rawspeed3_error_codes
-{
-    rawspeed_inited = -2,
-    rawspeed3_param_error = -1,
-    rawspeed3_ok = 0,
-    rawspeed3_ok_warnings = 1,
-    rawspeed3_not_inited = 2,
-    rawspeed3_processing_error = 3,
-    rawspeed3_no_decoder = 4,
-    rawspeed3_not_supported = 5,
+enum rawspeed3_error_codes {
+  rawspeed_inited = -2,
+  rawspeed3_param_error = -1,
+  rawspeed3_ok = 0,
+  rawspeed3_ok_warnings = 1,
+  rawspeed3_not_inited = 2,
+  rawspeed3_processing_error = 3,
+  rawspeed3_no_decoder = 4,
+  rawspeed3_not_supported = 5,
 };
 
-typedef void *rawspeed3_handle_t;
+using rawspeed3_handle_t = void*;
 
 /* RAW file parsing results */
-typedef struct 
-{
-    int status; /* -1: param error, 0 => OK, >=1 error code */
-    uint16_t width, height, bpp, cpp; 
-    unsigned pitch, filters;
-    const void *pixeldata;   
-}rawspeed3_ret_t;
+using rawspeed3_ret_t = struct {
+  int status; /* -1: param error, 0 => OK, >=1 error code */
+  uint16_t width, height, bpp, cpp;
+  unsigned pitch, filters;
+  const void* pixeldata;
+};
 
 /* API calls */
 DllDef void rawspeed3_clearresult(rawspeed3_ret_t*);
@@ -68,8 +65,10 @@ DllDef rawspeed3_handle_t rawspeed3_initdefault();
       >1 -> error code
      -1 -> Incorrect parameters passed (handle, or data, or datasize)
 */
-DllDef int rawspeed3_decodefile(rawspeed3_handle_t handle, rawspeed3_ret_t* resultp, 
-    const void *data, size_t datasize, bool allowunknown);
+DllDef int rawspeed3_decodefile(rawspeed3_handle_t handle,
+                                rawspeed3_ret_t* resultp,
+                                const void* data, size_t datasize,
+                                bool allowunknown);
 
 /* release internal raw data buffer */
 DllDef void rawspeed3_release(rawspeed3_handle_t handle);

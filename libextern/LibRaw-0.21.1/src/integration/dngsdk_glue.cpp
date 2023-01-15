@@ -151,8 +151,6 @@ int LibRaw::valid_for_dngsdk()
 }
 
 
-
-
 int LibRaw::try_dngsdk()
 {
 #ifdef USE_DNGSDK
@@ -406,6 +404,7 @@ int LibRaw::try_dngsdk()
   return LIBRAW_UNSPECIFIED_ERROR;
 #endif
 }
+
 void LibRaw::set_dng_host(void *p)
 {
 #ifdef USE_DNGSDK

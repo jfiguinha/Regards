@@ -40,7 +40,7 @@ namespace rawspeed {
 SamsungV0Decompressor::SamsungV0Decompressor(const RawImage& image,
                                              const ByteStream& bso,
                                              const ByteStream& bsr)
-    : AbstractSamsungDecompressor(image) {
+  : AbstractSamsungDecompressor(image) {
   if (mRaw->getCpp() != 1 || mRaw->getDataType() != TYPE_USHORT16 ||
       mRaw->getBpp() != sizeof(uint16_t))
     ThrowRDE("Unexpected component count / data type");

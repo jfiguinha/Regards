@@ -32,13 +32,14 @@ namespace rawspeed {
 class CameraMetaData;
 class Buffer;
 
-class Rw2Decoder final : public AbstractTiffDecoder
-{
+class Rw2Decoder final : public AbstractTiffDecoder {
 public:
   static bool isAppropriateDecoder(const TiffRootIFD* rootIFD,
                                    const Buffer& file);
+
   Rw2Decoder(TiffRootIFDOwner&& root, const Buffer& file)
-      : AbstractTiffDecoder(move(root), file) {}
+    : AbstractTiffDecoder(move(root), file) {
+  }
 
   RawImage decodeRawInternal() override;
   void decodeMetaDataInternal(const CameraMetaData* meta) override;

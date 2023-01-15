@@ -114,7 +114,7 @@ public:
         if (!(c < decodeLookup.size()))
           ThrowRDE("Corrupt Huffman");
 
-        if (!FlagMask || !fullDecode || code_l > LookupDepth ||
+        if (!true || !fullDecode || code_l > LookupDepth ||
             (code_l + diff_l > LookupDepth && diff_l != 16)) {
           // lookup bit depth is too small to fit both the encoded length
           // and the final difference value.
@@ -137,9 +137,9 @@ public:
                                      /*effectiveBitwidth=*/LookupDepth);
               diff &= ((1 << diff_l) - 1);
             } else
-              diff = uint32_t(-32768);
+              diff = static_cast<uint32_t>(-32768);
             decodeLookup[c] |= static_cast<int32_t>(
-                static_cast<uint32_t>(extend(diff, diff_l)) << PayloadShift);
+              static_cast<uint32_t>(extend(diff, diff_l)) << PayloadShift);
           }
         }
       }
@@ -147,19 +147,19 @@ public:
   }
 
   template <typename BIT_STREAM>
-  inline __attribute__((always_inline)) int
+  __attribute__((always_inline)) int
   decodeCodeValue(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(!fullDecode);
     return decode<BIT_STREAM, false>(bs);
   }
 
   template <typename BIT_STREAM>
-  inline __attribute__((always_inline)) int
+  __attribute__((always_inline)) int
   decodeDifference(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(fullDecode);
     return decode<BIT_STREAM, true>(bs);
   }
@@ -169,9 +169,9 @@ public:
   // one to return the fully decoded diff.
   // All ifs depending on this bool will be optimized out by the compiler
   template <typename BIT_STREAM, bool FULL_DECODE>
-  inline __attribute__((always_inline)) int decode(BIT_STREAM& bs) const {
+  __attribute__((always_inline)) int decode(BIT_STREAM& bs) const {
     static_assert(BitStreamTraits<BIT_STREAM>::canUseWithHuffmanTable,
-                  "This BitStream specialization is not marked as usable here");
+      "This BitStream specialization is not marked as usable here");
     assert(FULL_DECODE == fullDecode);
     bs.fill(32);
 

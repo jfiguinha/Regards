@@ -42,7 +42,7 @@ namespace rawspeed {
 
 PhaseOneDecompressor::PhaseOneDecompressor(const RawImage& img,
                                            std::vector<PhaseOneStrip>&& strips_)
-    : mRaw(img), strips(std::move(strips_)) {
+  : mRaw(img), strips(std::move(strips_)) {
   if (mRaw->getDataType() != TYPE_USHORT16)
     ThrowRDE("Unexpected data type");
 
@@ -88,8 +88,8 @@ void PhaseOneDecompressor::decompressStrip(const PhaseOneStrip& strip) const {
   assert(out.width > 0);
   assert(out.width % 2 == 0);
 
-  static constexpr std::array<const int, 10> length = {8,  7, 6,  9,  11,
-                                                       10, 5, 12, 14, 13};
+  static constexpr std::array<const int, 10> length = {8, 7, 6, 9, 11,
+    10, 5, 12, 14, 13};
 
   BitPumpMSB32 pump(strip.bs);
 
@@ -129,7 +129,7 @@ void PhaseOneDecompressor::decompressStrip(const PhaseOneStrip& strip) const {
       pred[col & 1] +=
           static_cast<signed>(pump.getBitsNoFill(i)) + 1 - (1 << (i - 1));
       // FIXME: is the truncation the right solution here?
-      out(row, col) = uint16_t(pred[col & 1]);
+      out(row, col) = static_cast<uint16_t>(pred[col & 1]);
     }
   }
 }

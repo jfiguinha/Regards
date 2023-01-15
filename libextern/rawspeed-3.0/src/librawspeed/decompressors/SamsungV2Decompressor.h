@@ -61,7 +61,7 @@ protected:
   decodeDifferences(BitPumpMSB32& pump, int row);
 
   inline __attribute__((always_inline)) void processBlock(BitPumpMSB32& pump,
-                                                          int row, int col);
+    int row, int col);
 
   void decompressRow(int row);
 

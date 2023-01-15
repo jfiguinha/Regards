@@ -27,21 +27,21 @@ void LibRaw::sony_arq_load_raw()
   libraw_internal_data.internal_data.input->seek(
       -2, SEEK_CUR); // avoid wrong eof error
 
-  if(imgdata.rawparams.options & LIBRAW_RAWOPTIONS_ARQ_SKIP_CHANNEL_SWAP)
+  if (imgdata.rawparams.options & LIBRAW_RAWOPTIONS_ARQ_SKIP_CHANNEL_SWAP)
     return;
 
   for (row = 0; row < imgdata.sizes.raw_height; row++)
   {
-    unsigned short(*rowp)[4] =
-        (unsigned short(*)[4]) &
+    auto rowp =
+        (unsigned short(*)[4])&
         imgdata.rawdata.raw_image[row * imgdata.sizes.raw_width * 4];
     for (col = 0; col < imgdata.sizes.raw_width; col++)
     {
       unsigned short g2 = rowp[col][2];
       rowp[col][2] = rowp[col][3];
       rowp[col][3] = g2;
-      if (((unsigned)(row - imgdata.sizes.top_margin) < imgdata.sizes.height) &&
-          ((unsigned)(col - imgdata.sizes.left_margin) < imgdata.sizes.width) &&
+      if ((static_cast<unsigned>(row - imgdata.sizes.top_margin) < imgdata.sizes.height) &&
+          (static_cast<unsigned>(col - imgdata.sizes.left_margin) < imgdata.sizes.width) &&
           (MAX(MAX(rowp[col][0], rowp[col][1]),
                MAX(rowp[col][2], rowp[col][3])) > imgdata.color.maximum))
         derror();
@@ -51,20 +51,20 @@ void LibRaw::sony_arq_load_raw()
 
 void LibRaw::pentax_4shot_load_raw()
 {
-  ushort *plane = (ushort *)malloc(imgdata.sizes.raw_width *
-                                   imgdata.sizes.raw_height * sizeof(ushort));
+  auto plane = static_cast<ushort *>(malloc(imgdata.sizes.raw_width *
+                                            imgdata.sizes.raw_height * sizeof(ushort)));
   int alloc_sz = imgdata.sizes.raw_width * (imgdata.sizes.raw_height + 16) * 4 *
                  sizeof(ushort);
-  ushort(*result)[4] = (ushort(*)[4])malloc(alloc_sz);
+  auto result = static_cast<ushort(*)[4]>(malloc(alloc_sz));
   struct movement_t
   {
     int row, col;
   } _move[4] = {
-      {1, 1},
-      {0, 1},
-      {0, 0},
-      {1, 0},
-  };
+          {1, 1},
+          {0, 1},
+          {0, 0},
+          {1, 0},
+      };
 
   int tidx = 0;
   for (int i = 0; i < 4; i++)
@@ -99,7 +99,7 @@ void LibRaw::pentax_4shot_load_raw()
       for (int c = 0; c < 2; c++)
         colors[c] = COLOR(row, c);
       ushort *srcrow = &plane[imgdata.sizes.raw_width * row];
-      ushort(*dstrow)[4] =
+      ushort (*dstrow)[4] =
           &result[(imgdata.sizes.raw_width) * (row + move_row) + move_col];
       for (int col = 0; col < imgdata.sizes.raw_width - move_col; col++)
         dstrow[col][colors[col % 2]] = srcrow[col];
@@ -112,7 +112,7 @@ void LibRaw::pentax_4shot_load_raw()
       imgdata.color.cblack[FC(c / 2, c % 2)] +=
           imgdata.color.cblack[6 +
                                c / 2 % imgdata.color.cblack[4] *
-                                   imgdata.color.cblack[5] +
+                               imgdata.color.cblack[5] +
                                c % 2 % imgdata.color.cblack[5]];
   imgdata.color.cblack[4] = imgdata.color.cblack[5] = 0;
 
@@ -121,7 +121,7 @@ void LibRaw::pentax_4shot_load_raw()
   imgdata.idata.filters = 0;
   imgdata.rawdata.raw_alloc = imgdata.rawdata.color4_image = result;
   free(plane);
-  imgdata.rawdata.raw_image = 0;
+  imgdata.rawdata.raw_image = nullptr;
 }
 
 void LibRaw::hasselblad_full_load_raw()
@@ -191,10 +191,10 @@ static inline void unpack7bytesto4x16_nikon(unsigned char *src,
 void LibRaw::nikon_14bit_load_raw()
 {
   const unsigned linelen =
-      (unsigned)(ceilf((float)(S.raw_width * 7 / 4) / 16.0)) *
+      static_cast<unsigned>(ceilf(static_cast<float>((S.raw_width * 7 / 4)) / 16.0)) *
       16; // 14512; // S.raw_width * 7 / 4;
   const unsigned pitch = S.raw_pitch ? S.raw_pitch / 2 : S.raw_width;
-  unsigned char *buf = (unsigned char *)malloc(linelen);
+  auto buf = static_cast<unsigned char *>(malloc(linelen));
   for (int row = 0; row < S.raw_height; row++)
   {
     unsigned bytesread =
@@ -213,7 +213,7 @@ void LibRaw::fuji_14bit_load_raw()
 {
   const unsigned linelen = S.raw_width * 7 / 4;
   const unsigned pitch = S.raw_pitch ? S.raw_pitch / 2 : S.raw_width;
-  unsigned char *buf = (unsigned char *)malloc(linelen);
+  auto buf = static_cast<unsigned char *>(malloc(linelen));
 
   for (int row = 0; row < S.raw_height; row++)
   {
@@ -236,15 +236,16 @@ void LibRaw::fuji_14bit_load_raw()
   }
   free(buf);
 }
+
 void LibRaw::nikon_load_padded_packed_raw() // 12 bit per pixel, padded to 16
-                                            // bytes
+// bytes
 {
   // libraw_internal_data.unpacker_data.load_flags -> row byte count
   if (libraw_internal_data.unpacker_data.load_flags < 2000 ||
       libraw_internal_data.unpacker_data.load_flags > 64000)
     return;
-  unsigned char *buf =
-      (unsigned char *)malloc(libraw_internal_data.unpacker_data.load_flags);
+  auto buf =
+      static_cast<unsigned char *>(malloc(libraw_internal_data.unpacker_data.load_flags));
   for (int row = 0; row < S.raw_height; row++)
   {
     checkCancel();
@@ -252,9 +253,9 @@ void LibRaw::nikon_load_padded_packed_raw() // 12 bit per pixel, padded to 16
         buf, libraw_internal_data.unpacker_data.load_flags, 1);
     for (int icol = 0; icol < S.raw_width / 2; icol++)
     {
-      imgdata.rawdata.raw_image[(row)*S.raw_width + (icol * 2)] =
+      imgdata.rawdata.raw_image[(row) * S.raw_width + (icol * 2)] =
           ((buf[icol * 3 + 1] & 0xf) << 8) | buf[icol * 3];
-      imgdata.rawdata.raw_image[(row)*S.raw_width + (icol * 2 + 1)] =
+      imgdata.rawdata.raw_image[(row) * S.raw_width + (icol * 2 + 1)] =
           buf[icol * 3 + 2] << 4 | ((buf[icol * 3 + 1] & 0xf0) >> 4);
     }
   }
@@ -304,10 +305,10 @@ void LibRaw::nikon_load_striped_packed_raw()
         bitbuf <<= bite;
         for (i = 0; i < bite; i += 8)
           bitbuf |=
-              (unsigned)(libraw_internal_data.internal_data.input->get_char()
-                         << i);
+              static_cast<unsigned>(libraw_internal_data.internal_data.input->get_char()
+                                    << i);
       }
-      imgdata.rawdata.raw_image[(row)*S.raw_width + (col)] =
+      imgdata.rawdata.raw_image[(row) * S.raw_width + (col)] =
           bitbuf << (64 - tiff_bps - vbits) >> (64 - tiff_bps);
     }
     vbits -= rbits;
@@ -318,11 +319,13 @@ struct pana_cs6_page_decoder
 {
   unsigned int pixelbuffer[18], lastoffset, maxoffset;
   unsigned char current, *buffer;
+
   pana_cs6_page_decoder(unsigned char *_buffer, unsigned int bsize)
-      : lastoffset(0), maxoffset(bsize), current(0), buffer(_buffer)
+    : lastoffset(0), maxoffset(bsize), current(0), buffer(_buffer)
   {
   }
-  void read_page(); // will throw IO error if not enough space in buffer
+
+  void read_page();   // will throw IO error if not enough space in buffer
   void read_page12(); // 12-bit variant
   unsigned int nextpixel() { return current < 14 ? pixelbuffer[current++] : 0; }
   unsigned int nextpixel12() { return current < 18 ? pixelbuffer[current++] : 0; }
@@ -359,23 +362,23 @@ void pana_cs6_page_decoder::read_page12()
 #define wb(i) ((unsigned short)buffer[lastoffset + 15 - i])
   pixelbuffer[0] = (wb(0) << 4) | (wb(1) >> 4);              // 12 bit: 8/0 + 4 upper bits of /1
   pixelbuffer[1] = (((wb(1) & 0xf) << 8) | (wb(2))) & 0xfff; // 12 bit: 4l/1 + 8/2
-  
-  pixelbuffer[2] = (wb(3) >> 6) & 0x3;                       // 2; 2u/3, 6 low bits remains in wb(3) 
-  pixelbuffer[3] = ((wb(3) & 0x3f) << 2) | (wb(4) >> 6);     // 8; 6l/3 + 2u/4; 6 low bits remains in wb(4)
-  pixelbuffer[4] = ((wb(4) & 0x3f) << 2) | (wb(5) >> 6);     // 8: 6l/4 + 2u/5; 6 low bits remains in wb(5)
-  pixelbuffer[5] = ((wb(5) & 0x3f) << 2) | (wb(6) >> 6);     // 8: 6l/5 + 2u/6, 6 low bits remains in wb(6)
 
-  pixelbuffer[6] = (wb(6) >> 4) & 0x3;                       // 2, 4 low bits remains in wb(6)
-  pixelbuffer[7] = ((wb(6) & 0xf) << 4) | (wb(7) >> 4);      // 8: 4 low bits from wb(6), 4 upper bits from wb(7)
-  pixelbuffer[8] = ((wb(7) & 0xf) << 4) | (wb(8) >> 4);      // 8: 4 low bits from wb7, 4 upper bits from wb8
-  pixelbuffer[9] = ((wb(8) & 0xf) << 4) | (wb(9) >> 4);      // 8: 4 low bits from wb8, 4 upper bits from wb9
+  pixelbuffer[2] = (wb(3) >> 6) & 0x3;                   // 2; 2u/3, 6 low bits remains in wb(3) 
+  pixelbuffer[3] = ((wb(3) & 0x3f) << 2) | (wb(4) >> 6); // 8; 6l/3 + 2u/4; 6 low bits remains in wb(4)
+  pixelbuffer[4] = ((wb(4) & 0x3f) << 2) | (wb(5) >> 6); // 8: 6l/4 + 2u/5; 6 low bits remains in wb(5)
+  pixelbuffer[5] = ((wb(5) & 0x3f) << 2) | (wb(6) >> 6); // 8: 6l/5 + 2u/6, 6 low bits remains in wb(6)
 
-  pixelbuffer[10] = (wb(9) >> 2) & 0x3;                      // 2: bits 2-3 from wb9, two low bits remain in wb9
-  pixelbuffer[11] = ((wb(9) & 0x3) << 6) | (wb(10) >> 2);    // 8: 2 bits from wb9, 6 bits from wb10
-  pixelbuffer[12] = ((wb(10) & 0x3) << 6) | (wb(11) >> 2);   // 8: 2 bits from wb10, 6 bits from wb11
-  pixelbuffer[13] = ((wb(11) & 0x3) << 6) | (wb(12) >> 2);   // 8: 2 bits from wb11, 6 bits from wb12
+  pixelbuffer[6] = (wb(6) >> 4) & 0x3;                  // 2, 4 low bits remains in wb(6)
+  pixelbuffer[7] = ((wb(6) & 0xf) << 4) | (wb(7) >> 4); // 8: 4 low bits from wb(6), 4 upper bits from wb(7)
+  pixelbuffer[8] = ((wb(7) & 0xf) << 4) | (wb(8) >> 4); // 8: 4 low bits from wb7, 4 upper bits from wb8
+  pixelbuffer[9] = ((wb(8) & 0xf) << 4) | (wb(9) >> 4); // 8: 4 low bits from wb8, 4 upper bits from wb9
 
-  pixelbuffer[14] = wb(12) & 0x3;                            // 2: low bits from wb12
+  pixelbuffer[10] = (wb(9) >> 2) & 0x3;                    // 2: bits 2-3 from wb9, two low bits remain in wb9
+  pixelbuffer[11] = ((wb(9) & 0x3) << 6) | (wb(10) >> 2);  // 8: 2 bits from wb9, 6 bits from wb10
+  pixelbuffer[12] = ((wb(10) & 0x3) << 6) | (wb(11) >> 2); // 8: 2 bits from wb10, 6 bits from wb11
+  pixelbuffer[13] = ((wb(11) & 0x3) << 6) | (wb(12) >> 2); // 8: 2 bits from wb11, 6 bits from wb12
+
+  pixelbuffer[14] = wb(12) & 0x3; // 2: low bits from wb12
   pixelbuffer[15] = wb(13);
   pixelbuffer[16] = wb(14);
   pixelbuffer[17] = wb(15);
@@ -388,7 +391,7 @@ void LibRaw::panasonicC6_load_raw()
 {
   const int rowstep = 16;
   const bool _12bit = libraw_internal_data.unpacker_data.pana_bpp == 12;
-  const int pixperblock =  _12bit ? 14 : 11;
+  const int pixperblock = _12bit ? 14 : 11;
   const int blocksperrow = imgdata.sizes.raw_width / pixperblock;
   const int rowbytes = blocksperrow * 16;
   const unsigned pixelbase0 = _12bit ? 0x80 : 0x200;
@@ -398,7 +401,7 @@ void LibRaw::panasonicC6_load_raw()
   std::vector<unsigned char> iobuf;
   try
   {
-      iobuf.resize(rowbytes * rowstep);
+    iobuf.resize(rowbytes * rowstep);
   }
   catch (...)
   {
@@ -417,23 +420,23 @@ void LibRaw::panasonicC6_load_raw()
     {
       unsigned short *rowptr =
           &imgdata.rawdata
-               .raw_image[(row + crow) * imgdata.sizes.raw_pitch / 2];
+                  .raw_image[(row + crow) * imgdata.sizes.raw_pitch / 2];
       for (int rblock = 0; rblock < blocksperrow; rblock++)
       {
-          if (_12bit)
-              page.read_page12();
-          else
-              page.read_page();
+        if (_12bit)
+          page.read_page12();
+        else
+          page.read_page();
         unsigned oddeven[2] = {0, 0}, nonzero[2] = {0, 0};
         unsigned pmul = 0, pixel_base = 0;
         for (int pix = 0; pix < pixperblock; pix++)
         {
           if (pix % 3 == 2)
           {
-            unsigned base = _12bit ? page.nextpixel12(): page.nextpixel();
+            unsigned base = _12bit ? page.nextpixel12() : page.nextpixel();
             if (base > 3)
               throw LIBRAW_EXCEPTION_IO_CORRUPT; // not possible b/c of 2-bit
-                                                 // field, but....
+            // field, but....
             if (base == 3)
               base = 4;
             pixel_base = pixelbase0 << base;
@@ -460,7 +463,7 @@ void LibRaw::panasonicC6_load_raw()
             rowptr[col++] = spix & spix_compare;
           else
           {
-            epixel = (((signed int)(epixel + 0x7ffffff1)) >> 0x1f);
+            epixel = (static_cast<signed int>(epixel + 0x7ffffff1) >> 0x1f);
             rowptr[col++] = epixel & pixel_mask;
           }
         }
@@ -475,7 +478,7 @@ void LibRaw::panasonicC7_load_raw()
   const int rowstep = 16;
   int pixperblock = libraw_internal_data.unpacker_data.pana_bpp == 14 ? 9 : 10;
   int rowbytes = imgdata.sizes.raw_width / pixperblock * 16;
-  unsigned char *iobuf = (unsigned char *)malloc(rowbytes * rowstep);
+  auto iobuf = static_cast<unsigned char *>(malloc(rowbytes * rowstep));
   for (int row = 0; row < imgdata.sizes.raw_height - rowstep + 1;
        row += rowstep)
   {
@@ -488,7 +491,7 @@ void LibRaw::panasonicC7_load_raw()
     {
       unsigned short *rowptr =
           &imgdata.rawdata
-               .raw_image[(row + crow) * imgdata.sizes.raw_pitch / 2];
+                  .raw_image[(row + crow) * imgdata.sizes.raw_pitch / 2];
       for (int col = 0; col < imgdata.sizes.raw_width - pixperblock + 1;
            col += pixperblock, bytes += 16)
       {
@@ -537,7 +540,7 @@ void LibRaw::unpacked_load_raw_fuji_f700s20()
     libraw_internal_data.internal_data.input->seek(-row_size, SEEK_CUR);
     base_offset = row_size; // in bytes
   }
-  unsigned char *buffer = (unsigned char *)malloc(row_size * 2);
+  auto buffer = static_cast<unsigned char *>(malloc(row_size * 2));
   for (int row = 0; row < imgdata.sizes.raw_height; row++)
   {
     read_shorts((ushort *)buffer, imgdata.sizes.raw_width * 2);
@@ -550,8 +553,8 @@ void LibRaw::unpacked_load_raw_fuji_f700s20()
 void LibRaw::nikon_load_sraw()
 {
   // We're already seeked to data!
-  unsigned char *rd =
-      (unsigned char *)malloc(3 * (imgdata.sizes.raw_width + 2));
+  auto rd =
+      static_cast<unsigned char *>(malloc(3 * (imgdata.sizes.raw_width + 2)));
   if (!rd)
     throw LIBRAW_EXCEPTION_ALLOC;
   try
@@ -598,17 +601,17 @@ void LibRaw::nikon_load_sraw()
     {
       int col2 = col < imgdata.sizes.raw_width - 2 ? col + 2 : col;
       imgdata.image[row * imgdata.sizes.raw_width + col + 1][1] =
-          (unsigned short)(int(imgdata.image[row * imgdata.sizes.raw_width +
-                                             col][1] +
-                               imgdata.image[row * imgdata.sizes.raw_width +
-                                             col2][1]) /
-                           2);
+          static_cast<unsigned short>(static_cast<int>(imgdata.image[row * imgdata.sizes.raw_width +
+                                                                     col][1] +
+                                                       imgdata.image[row * imgdata.sizes.raw_width +
+                                                                     col2][1]) /
+                                      2);
       imgdata.image[row * imgdata.sizes.raw_width + col + 1][2] =
-          (unsigned short)(int(imgdata.image[row * imgdata.sizes.raw_width +
-                                             col][2] +
-                               imgdata.image[row * imgdata.sizes.raw_width +
-                                             col2][2]) /
-                           2);
+          static_cast<unsigned short>(static_cast<int>(imgdata.image[row * imgdata.sizes.raw_width +
+                                                                     col][2] +
+                                                       imgdata.image[row * imgdata.sizes.raw_width +
+                                                                     col2][2]) /
+                                      2);
     }
   }
   if (imgdata.rawparams.specials & LIBRAW_RAWSPECIAL_SRAW_NO_RGB)
@@ -620,12 +623,12 @@ void LibRaw::nikon_load_sraw()
     for (col = 0; col < imgdata.sizes.raw_width; col++)
     {
       float Y =
-          float(imgdata.image[row * imgdata.sizes.raw_width + col][0]) / 2549.f;
+          static_cast<float>(imgdata.image[row * imgdata.sizes.raw_width + col][0]) / 2549.f;
       float Ch2 =
-          float(imgdata.image[row * imgdata.sizes.raw_width + col][1] - 1280) /
+          static_cast<float>(imgdata.image[row * imgdata.sizes.raw_width + col][1] - 1280) /
           1536.f;
       float Ch3 =
-          float(imgdata.image[row * imgdata.sizes.raw_width + col][2] - 1280) /
+          static_cast<float>(imgdata.image[row * imgdata.sizes.raw_width + col][2] - 1280) /
           1536.f;
       if (Y > 1.f)
         Y = 1.f;
@@ -647,11 +650,11 @@ void LibRaw::nikon_load_sraw()
       if (b < 0.f)
         b = 0.f;
       imgdata.image[row * imgdata.sizes.raw_width + col][0] =
-          imgdata.color.curve[int(r * 3072.f)];
+          imgdata.color.curve[static_cast<int>(r * 3072.f)];
       imgdata.image[row * imgdata.sizes.raw_width + col][1] =
-          imgdata.color.curve[int(g * 3072.f)];
+          imgdata.color.curve[static_cast<int>(g * 3072.f)];
       imgdata.image[row * imgdata.sizes.raw_width + col][2] =
-          imgdata.color.curve[int(b * 3072.f)];
+          imgdata.color.curve[static_cast<int>(b * 3072.f)];
     }
   }
   C.maximum = 16383;
@@ -681,41 +684,46 @@ void LibRaw::nikon_load_sraw()
 
 struct iiq_bitstream_t
 {
-	uint64_t curr;
-	uint32_t *input;
-	uint8_t used;
-	iiq_bitstream_t(uint32_t *img_input): curr(0),input(img_input),used(0){}
+  uint64_t curr;
+  uint32_t *input;
+  uint8_t used;
 
-	void fill()
-    {
-      if (used <= 32)
-      {
-        uint64_t bitpump_next = *input++;
-        curr = (curr << 32) | bitpump_next;
-        used += 32;
-      }
-    }
-    uint64_t peek(uint8_t len)
-    {
-      if (len >= used)
-        fill();
+  iiq_bitstream_t(uint32_t *img_input)
+    : curr(0), input(img_input), used(0)
+  {
+  }
 
-	  uint64_t res = curr >> (used - len);
-      return res & ((1 << (uint8_t)len) - 1);
-    }
-
-    void consume(uint8_t len)
+  void fill()
+  {
+    if (used <= 32)
     {
-      peek(len); // fill buffer if needed
-      used -= len;
+      uint64_t bitpump_next = *input++;
+      curr = (curr << 32) | bitpump_next;
+      used += 32;
     }
+  }
 
-    uint64_t get(char len)
-    {
-      uint64_t val = peek(len);
-      consume(len);
-      return val;
-    }
+  uint64_t peek(uint8_t len)
+  {
+    if (len >= used)
+      fill();
+
+    uint64_t res = curr >> (used - len);
+    return res & ((1 << len) - 1);
+  }
+
+  void consume(uint8_t len)
+  {
+    peek(len); // fill buffer if needed
+    used -= len;
+  }
+
+  uint64_t get(char len)
+  {
+    uint64_t val = peek(len);
+    consume(len);
+    return val;
+  }
 
 };
 
@@ -725,137 +733,150 @@ void decode_S_type(int32_t out_width, uint32_t *img_input, ushort *outbuf /*, in
 	if (((bit_depth - 12) & 0xFFFFFFFD) != 0)
 		return 0;
 #endif
-	iiq_bitstream_t stream(img_input);
+  iiq_bitstream_t stream(img_input);
 
-	const int pix_corr_shift = 2; // 16 - bit_depth;
-	unsigned int bit_check[2] = { 0, 0 };
+  const int pix_corr_shift = 2; // 16 - bit_depth;
+  unsigned int bit_check[2] = {0, 0};
 
-	const uint8_t used_corr[8] = {
-        3, 3, 3, 3, 1, 1, 1, 1,
-    };
+  const uint8_t used_corr[8] = {
+      3, 3, 3, 3, 1, 1, 1, 1,
+  };
 
-	const uint8_t extra_bits[8] = {
-        1, 2, 3, 4, 0, 0, 0, 0,
-    };
+  const uint8_t extra_bits[8] = {
+      1, 2, 3, 4, 0, 0, 0, 0,
+  };
 
-	const uint8_t bit_indicator[8 * 4] = {
-        9, 8, 0, 7, 6, 6, 5, 5, 1, 1, 1, 1, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-    };
+  const uint8_t bit_indicator[8 * 4] = {
+      9, 8, 0, 7, 6, 6, 5, 5, 1, 1, 1, 1, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+  };
 
-	const uint8_t skip_bits[8 * 4] = {5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3,
-                                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+  const uint8_t skip_bits[8 * 4] = {5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3,
+                                    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-	int block_count = ((out_width - 8) >> 3) + 1;
-	int block_total_bytes = 8 * block_count;
+  int block_count = ((out_width - 8) >> 3) + 1;
+  int block_total_bytes = 8 * block_count;
 
-	int32_t prev_pix_value[2] = { 0, 0 };
+  int32_t prev_pix_value[2] = {0, 0};
 
-	uint8_t init_bits = stream.get(16) & 7;
+  uint8_t init_bits = stream.get(16) & 7;
 
-	if (out_width - 7 > 0)
-	{
-      uint8_t pix_sub_init = 17 - init_bits;
+  if (out_width - 7 > 0)
+  {
+    uint8_t pix_sub_init = 17 - init_bits;
 
-      for (int blk_id = 0; blk_id < block_count; ++blk_id)
+    for (int blk_id = 0; blk_id < block_count; ++blk_id)
+    {
+      int8_t idx_even = stream.peek(7);
+      stream.consume(2);
+
+      if (static_cast<unsigned int>(idx_even) >= 32)
+        bit_check[0] = (static_cast<unsigned int>(idx_even) >> 5) + bit_check[0] - 2;
+      else
       {
-        int8_t idx_even = stream.peek(7);
-        stream.consume(2);
-
-        if ((unsigned int)idx_even >= 32)
-          bit_check[0] = ((unsigned int)idx_even >> 5) + bit_check[0] - 2;
-        else
-        {
-          bit_check[0] = bit_indicator[idx_even];
-          stream.consume(skip_bits[idx_even]);
-        }
-
-        int8_t idx_odd = stream.peek(7);
-        stream.consume(2);
-
-        if ((unsigned int)idx_odd >= 32)
-          bit_check[1] = ((unsigned int)idx_odd >> 5) + bit_check[1] - 2;
-        else
-        {
-          bit_check[1] = bit_indicator[idx_odd];
-          stream.consume(skip_bits[idx_odd]);
-        }
-
-        uint8_t bidx = stream.peek(3);
-        stream.consume(used_corr[bidx]);
-
-        uint8_t take_bits = init_bits + extra_bits[bidx]; // 11 or less
-
-        uint32_t bp_shift[2] = {bit_check[0] - extra_bits[bidx], bit_check[1] - extra_bits[bidx]};
-
-		int pix_sub[2] = {0xFFFF >> (pix_sub_init - bit_check[0]), 0xFFFF >> (pix_sub_init - bit_check[1])};
-
-	    for (int i = 0; i < 8; i++) // MAIN LOOP for pixel decoding
-        {
-          int32_t value = 0;
-          if (bit_check[i & 1] == 9)
-            value = stream.get(14);
-          else
-            value = prev_pix_value[i & 1] + ((uint32_t)stream.get(take_bits) << bp_shift[i & 1]) - pix_sub[i & 1];
-
-		  outbuf[i] = LIM(value << pix_corr_shift, 0, 0xffff);
-          prev_pix_value[i & 1] = value;
-        }
-          outbuf += 8; // always produce 8 pixels from this cluster
+        bit_check[0] = bit_indicator[idx_even];
+        stream.consume(skip_bits[idx_even]);
       }
-	} // if width > 7                                            // End main if
 
-	// Final block
-	// maybe fill/unpack extra bytes if width % 8 <> 0?
-	if (block_total_bytes < out_width)
-	{
-		do
-		{
-			stream.fill();
-			uint32_t pix_value = stream.get(14);
-			++block_total_bytes;
-			*outbuf++ = pix_value << pix_corr_shift;
-		} while (block_total_bytes < out_width);
-	}
+      int8_t idx_odd = stream.peek(7);
+      stream.consume(2);
+
+      if (static_cast<unsigned int>(idx_odd) >= 32)
+        bit_check[1] = (static_cast<unsigned int>(idx_odd) >> 5) + bit_check[1] - 2;
+      else
+      {
+        bit_check[1] = bit_indicator[idx_odd];
+        stream.consume(skip_bits[idx_odd]);
+      }
+
+      uint8_t bidx = stream.peek(3);
+      stream.consume(used_corr[bidx]);
+
+      uint8_t take_bits = init_bits + extra_bits[bidx]; // 11 or less
+
+      uint32_t bp_shift[2] = {bit_check[0] - extra_bits[bidx], bit_check[1] - extra_bits[bidx]};
+
+      int pix_sub[2] = {0xFFFF >> (pix_sub_init - bit_check[0]), 0xFFFF >> (pix_sub_init - bit_check[1])};
+
+      for (int i = 0; i < 8; i++) // MAIN LOOP for pixel decoding
+      {
+        int32_t value = 0;
+        if (bit_check[i & 1] == 9)
+          value = stream.get(14);
+        else
+          value = prev_pix_value[i & 1] + (static_cast<uint32_t>(stream.get(take_bits)) << bp_shift[i & 1]) - pix_sub[
+                    i & 1];
+
+        outbuf[i] = LIM(value << pix_corr_shift, 0, 0xffff);
+        prev_pix_value[i & 1] = value;
+      }
+      outbuf += 8; // always produce 8 pixels from this cluster
+    }
+  } // if width > 7                                            // End main if
+
+  // Final block
+  // maybe fill/unpack extra bytes if width % 8 <> 0?
+  if (block_total_bytes < out_width)
+  {
+    do
+    {
+      stream.fill();
+      uint32_t pix_value = stream.get(14);
+      ++block_total_bytes;
+      *outbuf++ = pix_value << pix_corr_shift;
+    } while (block_total_bytes < out_width);
+  }
 }
 
 struct p1_row_info_t
 {
-	unsigned row;
-	INT64 offset;
-	p1_row_info_t(): row(0),offset(0){}
-	p1_row_info_t(const p1_row_info_t& q): row(q.row),offset(q.offset){}
-	bool operator < (const p1_row_info_t & rhs) const { return offset < rhs.offset; }
+  unsigned row;
+  INT64 offset;
+
+  p1_row_info_t()
+    : row(0), offset(0)
+  {
+  }
+
+  p1_row_info_t(const p1_row_info_t &q)
+    : row(q.row), offset(q.offset)
+  {
+  }
+
+  bool operator <(const p1_row_info_t &rhs) const { return offset < rhs.offset; }
 };
 
 void LibRaw::phase_one_load_raw_s()
 {
-	if(!libraw_internal_data.unpacker_data.strip_offset || !imgdata.rawdata.raw_image || !libraw_internal_data.unpacker_data.data_offset)
-		throw LIBRAW_EXCEPTION_IO_CORRUPT;
-	std::vector<p1_row_info_t> stripes(imgdata.sizes.raw_height+1);
-	libraw_internal_data.internal_data.input->seek(libraw_internal_data.unpacker_data.strip_offset, SEEK_SET);
-	for (unsigned row = 0; row < imgdata.sizes.raw_height; row++)
-	{
-		stripes[row].row = row;
-		stripes[row].offset = INT64(get4()) + libraw_internal_data.unpacker_data.data_offset;
-	}
-	stripes[imgdata.sizes.raw_height].row = imgdata.sizes.raw_height;
-	stripes[imgdata.sizes.raw_height].offset = libraw_internal_data.unpacker_data.data_offset + INT64(libraw_internal_data.unpacker_data.data_size);
-	std::sort(stripes.begin(), stripes.end());
-	INT64 maxsz = imgdata.sizes.raw_width * 3 + 2; // theor max: 17 bytes per 8 pix + row header
-	std::vector<uint8_t> datavec(maxsz);
+  if (!libraw_internal_data.unpacker_data.strip_offset || !imgdata.rawdata.raw_image || !libraw_internal_data.
+      unpacker_data.data_offset)
+    throw LIBRAW_EXCEPTION_IO_CORRUPT;
+  std::vector<p1_row_info_t> stripes(imgdata.sizes.raw_height + 1);
+  libraw_internal_data.internal_data.input->seek(libraw_internal_data.unpacker_data.strip_offset, SEEK_SET);
+  for (unsigned row = 0; row < imgdata.sizes.raw_height; row++)
+  {
+    stripes[row].row = row;
+    stripes[row].offset = static_cast<INT64>(get4()) + libraw_internal_data.unpacker_data.data_offset;
+  }
+  stripes[imgdata.sizes.raw_height].row = imgdata.sizes.raw_height;
+  stripes[imgdata.sizes.raw_height].offset = libraw_internal_data.unpacker_data.data_offset + static_cast<INT64>(
+                                               libraw_internal_data.unpacker_data.data_size);
+  std::sort(stripes.begin(), stripes.end());
+  INT64 maxsz = imgdata.sizes.raw_width * 3 + 2; // theor max: 17 bytes per 8 pix + row header
+  std::vector<uint8_t> datavec(maxsz);
 
-	for (unsigned row = 0; row < imgdata.sizes.raw_height; row++)
-	{
-		if (stripes[row].row >= imgdata.sizes.raw_height) continue; 
-		ushort *datap = imgdata.rawdata.raw_image + stripes[row].row * imgdata.sizes.raw_width;
-		libraw_internal_data.internal_data.input->seek(stripes[row].offset, SEEK_SET);
-		INT64 readsz = stripes[row + 1].offset - stripes[row].offset;
-		if (readsz > maxsz)
-			throw LIBRAW_EXCEPTION_IO_CORRUPT;
+  for (unsigned row = 0; row < imgdata.sizes.raw_height; row++)
+  {
+    if (stripes[row].row >= imgdata.sizes.raw_height)
+      continue;
+    ushort *datap = imgdata.rawdata.raw_image + stripes[row].row * imgdata.sizes.raw_width;
+    libraw_internal_data.internal_data.input->seek(stripes[row].offset, SEEK_SET);
+    INT64 readsz = stripes[row + 1].offset - stripes[row].offset;
+    if (readsz > maxsz)
+      throw LIBRAW_EXCEPTION_IO_CORRUPT;
 
-		if(libraw_internal_data.internal_data.input->read(datavec.data(), 1, readsz) != readsz)
-			derror(); // TODO: check read state
+    if (libraw_internal_data.internal_data.input->read(datavec.data(), 1, readsz) != readsz)
+      derror(); // TODO: check read state
 
-		decode_S_type(imgdata.sizes.raw_width, (uint32_t *)datavec.data(), datap /*, 14 */);
-	}
+    decode_S_type(imgdata.sizes.raw_width, (uint32_t *)datavec.data(), datap /*, 14 */);
+  }
 }

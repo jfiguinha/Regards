@@ -25,23 +25,23 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class TiffEntryBE :
-  public TiffEntry
+namespace RawSpeed
 {
-public:
-//  TiffEntryBE(void);
-  TiffEntryBE(FileMap* f, uint32 offset);
-  virtual ~TiffEntryBE(void);
-  virtual uint32 getInt();
-  virtual ushort16 getShort();
-  virtual const uint32* getIntArray();
-  virtual const ushort16* getShortArray();
-private:
-  bool mDataSwapped;
-};
+	class TiffEntryBE :
+		public TiffEntry
+	{
+	public:
+		//  TiffEntryBE(void);
+		TiffEntryBE(FileMap* f, uint32 offset);
+		~TiffEntryBE(void) override;
+		uint32 getInt() override;
+		ushort16 getShort() override;
+		const uint32* getIntArray() override;
+		const ushort16* getShortArray() override;
 
+	private:
+		bool mDataSwapped;
+	};
 } // namespace RawSpeed
 
 #endif

@@ -28,40 +28,41 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-class Camera
+namespace RawSpeed
 {
-public:
-  Camera(xmlDocPtr doc, xmlNodePtr cur);
-  Camera(const Camera* camera, uint32 alias_num);
-  void parseCameraChild(xmlDocPtr doc, xmlNodePtr cur);
-  const CameraSensorInfo* getSensorInfo(int iso);
-  virtual ~Camera(void);
-  string make;
-  string model;
-  string mode;
-  vector<string> aliases;
-  ColorFilterArray cfa;
-  bool supported;
-  iPoint2D cropSize;
-  iPoint2D cropPos;
-  vector<BlackArea> blackAreas;
-  vector<CameraSensorInfo> sensorInfo;
-  int decoderVersion;
-  map<string,string> hints;
-private:
-  int StringToInt(const xmlChar *in, const xmlChar *tag, const char* attribute);
-  int getAttributeAsInt( xmlNodePtr cur , const xmlChar *tag, const char* attribute);
-protected:
-  void parseCFA( xmlDocPtr doc, xmlNodePtr cur );
-  void parseAlias( xmlDocPtr doc, xmlNodePtr cur );
-  void parseHint( xmlDocPtr doc, xmlNodePtr cur );
-  void parseBlackAreas( xmlDocPtr doc, xmlNodePtr cur );
-  void parseSensorInfo( xmlDocPtr doc, xmlNodePtr cur );
-  vector<int> MultipleStringToInt(const xmlChar *in, const xmlChar *tag, const char* attribute);
-};
+	class Camera
+	{
+	public:
+		Camera(xmlDocPtr doc, xmlNodePtr cur);
+		Camera(const Camera* camera, uint32 alias_num);
+		void parseCameraChild(xmlDocPtr doc, xmlNodePtr cur);
+		const CameraSensorInfo* getSensorInfo(int iso);
+		virtual ~Camera(void);
+		string make;
+		string model;
+		string mode;
+		vector<string> aliases;
+		ColorFilterArray cfa;
+		bool supported;
+		iPoint2D cropSize;
+		iPoint2D cropPos;
+		vector<BlackArea> blackAreas;
+		vector<CameraSensorInfo> sensorInfo;
+		int decoderVersion;
+		map<string, string> hints;
 
+	private:
+		int StringToInt(const xmlChar* in, const xmlChar* tag, const char* attribute);
+		int getAttributeAsInt(xmlNodePtr cur, const xmlChar* tag, const char* attribute);
+
+	protected:
+		void parseCFA(xmlDocPtr doc, xmlNodePtr cur);
+		void parseAlias(xmlDocPtr doc, xmlNodePtr cur);
+		void parseHint(xmlDocPtr doc, xmlNodePtr cur);
+		void parseBlackAreas(xmlDocPtr doc, xmlNodePtr cur);
+		void parseSensorInfo(xmlDocPtr doc, xmlNodePtr cur);
+		vector<int> MultipleStringToInt(const xmlChar* in, const xmlChar* tag, const char* attribute);
+	};
 } // namespace RawSpeed
 
 #endif

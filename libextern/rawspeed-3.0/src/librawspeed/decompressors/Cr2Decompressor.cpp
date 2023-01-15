@@ -36,7 +36,7 @@ namespace rawspeed {
 class ByteStream;
 
 Cr2Decompressor::Cr2Decompressor(const ByteStream& bs, const RawImage& img)
-    : AbstractLJpegDecompressor(bs, img) {
+  : AbstractLJpegDecompressor(bs, img) {
   if (mRaw->getDataType() != TYPE_USHORT16)
     ThrowRDE("Unexpected data type");
 
@@ -50,8 +50,7 @@ Cr2Decompressor::Cr2Decompressor(const ByteStream& bs, const RawImage& img)
   }
 }
 
-void Cr2Decompressor::decodeScan()
-{
+void Cr2Decompressor::decodeScan() {
   if (predictorMode != 1)
     ThrowRDE("Unsupported predictor mode.");
 
@@ -61,7 +60,7 @@ void Cr2Decompressor::decodeScan()
       ThrowRDE("Don't know slicing pattern, and failed to guess it.");
 
     slicing = Cr2Slicing(/*numSlices=*/1, /*sliceWidth=don't care*/ 0,
-                         /*lastSliceWidth=*/slicesWidth);
+                                       /*lastSliceWidth=*/slicesWidth);
   }
 
   bool isSubSampled = false;
@@ -129,8 +128,7 @@ void Cr2Decompressor::decode(const Cr2Slicing& slicing_) {
 // Y_S_F  == y/vertical   sampling factor (1 or 2)
 
 template <int N_COMP, int X_S_F, int Y_S_F>
-void Cr2Decompressor::decodeN_X_Y()
-{
+void Cr2Decompressor::decodeN_X_Y() {
   const Array2DRef<uint16_t> out(mRaw->getU16DataAsUncroppedArray2DRef());
 
   // To understand the CR2 slice handling and sampling factor behavior, see
@@ -173,8 +171,7 @@ void Cr2Decompressor::decodeN_X_Y()
     frame.h *= 2;
   }
 
-  if (X_S_F == 2 && Y_S_F == 1)
-  {
+  if (X_S_F == 2 && Y_S_F == 1) {
     // fix the inconsistent slice width in sRaw mode, ask Canon.
     for (auto* width : {&slicing.sliceWidth, &slicing.lastSliceWidth})
       *width = (*width) * 3 / 2;
@@ -193,7 +190,7 @@ void Cr2Decompressor::decodeN_X_Y()
     }
   }
 
-  if (iPoint2D::area_type(frame.h) * slicing.totalWidth() <
+  if (static_cast<iPoint2D::area_type>(frame.h) * slicing.totalWidth() <
       cpp * realDim.area())
     ThrowRDE("Incorrrect slice height / slice widths! Less than image size.");
 
@@ -245,10 +242,11 @@ void Cr2Decompressor::decodeN_X_Y()
         unsigned sliceColsRemaining = std::min(
             sliceColsRemainingInThisSliceRow, sliceColsRemainingInThisFrameRow);
         assert(sliceColsRemaining >= sliceColStep &&
-               (sliceColsRemaining % sliceColStep) == 0);
+            (sliceColsRemaining % sliceColStep) == 0);
         for (unsigned sliceColEnd = sliceCol + sliceColsRemaining;
              sliceCol < sliceColEnd; sliceCol += sliceColStep,
-                      globalFrameCol += X_S_F, col += groupSize) {
+                                     globalFrameCol += X_S_F, col +=
+                                     groupSize) {
           for (int p = 0; p < groupSize; ++p) {
             int c = p < pixelsPerGroup ? 0 : p - pixelsPerGroup + 1;
             out(row, col + p) = pred[c] += ht[c]->decodeDifference(bs);

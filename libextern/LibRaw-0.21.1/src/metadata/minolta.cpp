@@ -40,7 +40,7 @@ void LibRaw::parse_minolta(int base)
     len = get4();
     if (len < 0)
       return; // just ignore wrong len?? or raise bad file exception?
-    if ((INT64)len + save + 8LL > fsize)
+    if (static_cast<INT64>(len) + save + 8LL > fsize)
       return; // just ignore out of file metadata, stop parse
     switch (tag)
     {
@@ -50,11 +50,11 @@ void LibRaw::parse_minolta(int base)
       wide = get2();
       imSony.prd_ImageHeight = get2();
       imSony.prd_ImageWidth = get2();
-      imSony.prd_Total_bps = (ushort)fgetc(ifp);
-      imSony.prd_Active_bps = (ushort)fgetc(ifp);
-      imSony.prd_StorageMethod = (ushort)fgetc(ifp);
+      imSony.prd_Total_bps = static_cast<ushort>(fgetc(ifp));
+      imSony.prd_Active_bps = static_cast<ushort>(fgetc(ifp));
+      imSony.prd_StorageMethod = static_cast<ushort>(fgetc(ifp));
       fseek(ifp, 4L, SEEK_CUR);
-      imSony.prd_BayerPattern = (ushort)fgetc(ifp);
+      imSony.prd_BayerPattern = static_cast<ushort>(fgetc(ifp));
       break;
     case 0x524946: /* RIF */
       fseek(ifp, 8, SEEK_CUR);
@@ -71,12 +71,17 @@ void LibRaw::parse_minolta(int base)
       icWBC[LIBRAW_WBI_Custom][0] = get2();
       icWBC[LIBRAW_WBI_Custom][2] = get2();
       icWBC[LIBRAW_WBI_Tungsten][1] = icWBC[LIBRAW_WBI_Tungsten][3] =
-        icWBC[LIBRAW_WBI_Daylight][1] = icWBC[LIBRAW_WBI_Daylight][3] =
-        icWBC[LIBRAW_WBI_Cloudy][1] = icWBC[LIBRAW_WBI_Cloudy][3] =
-        icWBC[LIBRAW_WBI_FL_W][1] = icWBC[LIBRAW_WBI_FL_W][3] =
-        icWBC[LIBRAW_WBI_Flash][1] = icWBC[LIBRAW_WBI_Flash][3] =
-        icWBC[LIBRAW_WBI_Custom][1] = icWBC[LIBRAW_WBI_Custom][3] = 0x100;
-      if (!strncasecmp(model, "DSLR-A100", 9)) {
+                                      icWBC[LIBRAW_WBI_Daylight][1] = icWBC[LIBRAW_WBI_Daylight][3] =
+                                                                      icWBC[LIBRAW_WBI_Cloudy][1] =
+                                                                      icWBC[LIBRAW_WBI_Cloudy][3] =
+                                                                      icWBC[LIBRAW_WBI_FL_W][1] =
+                                                                      icWBC[LIBRAW_WBI_FL_W][3] =
+                                                                      icWBC[LIBRAW_WBI_Flash][1] =
+                                                                      icWBC[LIBRAW_WBI_Flash][3] =
+                                                                      icWBC[LIBRAW_WBI_Custom][1] =
+                                                                      icWBC[LIBRAW_WBI_Custom][3] = 0x100;
+      if (!strncasecmp(model, "DSLR-A100", 9))
+      {
         icWBC[LIBRAW_WBI_Shade][0] = get2();
         icWBC[LIBRAW_WBI_Shade][2] = get2();
         icWBC[LIBRAW_WBI_FL_D][0] = get2();
@@ -86,17 +91,20 @@ void LibRaw::parse_minolta(int base)
         icWBC[LIBRAW_WBI_FL_WW][0] = get2();
         icWBC[LIBRAW_WBI_FL_WW][2] = get2();
         icWBC[LIBRAW_WBI_Shade][1] = icWBC[LIBRAW_WBI_Shade][3] =
-          icWBC[LIBRAW_WBI_FL_D][1] = icWBC[LIBRAW_WBI_FL_D][3] =
-          icWBC[LIBRAW_WBI_FL_N][1] = icWBC[LIBRAW_WBI_FL_N][3] =
-          icWBC[LIBRAW_WBI_FL_WW][1] = icWBC[LIBRAW_WBI_FL_WW][3] = 0x0100;
+                                     icWBC[LIBRAW_WBI_FL_D][1] = icWBC[LIBRAW_WBI_FL_D][3] =
+                                                                 icWBC[LIBRAW_WBI_FL_N][1] = icWBC[LIBRAW_WBI_FL_N][3] =
+                                                                   icWBC[LIBRAW_WBI_FL_WW][1] =
+                                                                   icWBC[LIBRAW_WBI_FL_WW][3] = 0x0100;
       }
       break;
     case 0x574247: /* WBG */
       get4();
       if (imSony.prd_BayerPattern == LIBRAW_MINOLTA_G2BRG1)
-        FORC4 cam_mul[G2BRG1_2_RGBG(c)] = get2();
+        FORC4
+          cam_mul[G2BRG1_2_RGBG(c)] = get2();
       else
-      	FORC4 cam_mul[RGGB_2_RGBG(c)] = get2();
+        FORC4
+          cam_mul[RGGB_2_RGBG(c)] = get2();
       break;
     case 0x545457: /* TTW */
       parse_tiff(ftell(ifp));

@@ -59,7 +59,7 @@ CiffEntry::CiffEntry(NORangesSet<Buffer>* valueDatas,
   case 0x4000:
     // Data is stored directly in entry
     data_offset = dirEntry.getPosition();
-    // Maximum of 8 bytes of data (the size and offset fields)
+  // Maximum of 8 bytes of data (the size and offset fields)
     bytesize = 8;
     data = dirEntry.getStream(bytesize);
     break;
@@ -73,38 +73,38 @@ CiffEntry::CiffEntry(NORangesSet<Buffer>* valueDatas,
 
 uint32_t __attribute__((pure)) CiffEntry::getElementShift() const {
   switch (type) {
-    case CIFF_SHORT:
-      return 1;
-    case CIFF_LONG:
-    case CIFF_MIX:
-    case CIFF_SUB1:
-    case CIFF_SUB2:
-      return 2;
-    default:
-      // e.g. CIFF_BYTE or CIFF_ASCII
-      return 0;
+  case CIFF_SHORT:
+    return 1;
+  case CIFF_LONG:
+  case CIFF_MIX:
+  case CIFF_SUB1:
+  case CIFF_SUB2:
+    return 2;
+  default:
+    // e.g. CIFF_BYTE or CIFF_ASCII
+    return 0;
   }
 }
 
 uint32_t __attribute__((pure)) CiffEntry::getElementSize() const {
   switch (type) {
-    case CIFF_BYTE:
-    case CIFF_ASCII:
-      return 1;
-    case CIFF_SHORT:
-      return 2;
-    case CIFF_LONG:
-    case CIFF_MIX:
-    case CIFF_SUB1:
-    case CIFF_SUB2:
-      return 4;
-    default:
-      return 0;
+  case CIFF_BYTE:
+  case CIFF_ASCII:
+    return 1;
+  case CIFF_SHORT:
+    return 2;
+  case CIFF_LONG:
+  case CIFF_MIX:
+  case CIFF_SUB1:
+  case CIFF_SUB2:
+    return 4;
+  default:
+    return 0;
   }
 }
 
 bool __attribute__((pure)) CiffEntry::isInt() const {
-  return (type == CIFF_LONG || type == CIFF_SHORT || type ==  CIFF_BYTE);
+  return (type == CIFF_LONG || type == CIFF_SHORT || type == CIFF_BYTE);
 }
 
 uint32_t CiffEntry::getU32(uint32_t num) const {
@@ -159,7 +159,7 @@ vector<string> CiffEntry::getStrings() const {
     if (str[i] != 0)
       continue;
 
-    strs.emplace_back(reinterpret_cast<const char*>(&str[start]));
+    strs.emplace_back(&str[start]);
     start = i + 1;
   }
 

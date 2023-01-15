@@ -34,11 +34,11 @@ constexpr int TABLE_SIZE = TABLE_MAX_ELTS * 2;
 
 // Creates n numre of tables.
 TableLookUp::TableLookUp(int _ntables, bool _dither)
-    : ntables(_ntables), dither(_dither) {
+  : ntables(_ntables), dither(_dither) {
   if (ntables < 1) {
     ThrowRDE("Cannot construct 0 tables");
   }
-  tables.resize(ntables * TABLE_SIZE, uint16_t(0));
+  tables.resize(ntables * TABLE_SIZE, static_cast<uint16_t>(0));
 }
 
 void TableLookUp::setTable(int ntable, const std::vector<uint16_t>& table) {
@@ -64,7 +64,7 @@ void TableLookUp::setTable(int ntable, const std::vector<uint16_t>& table) {
     int upper = i < (nfilled - 1) ? table[i + 1] : center;
     int delta = upper - lower;
     t[i * 2] = clampBits(center - ((upper - lower + 2) / 4), 16);
-    t[i * 2 + 1] = uint16_t(delta);
+    t[i * 2 + 1] = static_cast<uint16_t>(delta);
     // FIXME: this is completely broken when the curve is non-monotonic.
   }
 

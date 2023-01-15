@@ -25,21 +25,21 @@
 #include "FileIOException.h"
 #include "FileMap.h"
 
-namespace RawSpeed {
-
-class FileReader
+namespace RawSpeed
 {
-public:
-	FileReader(LPCWSTR filename);
-public:
-	FileMap* readFile();
-	virtual ~FileReader();
-  LPCWSTR Filename() const { return mFilename; }
-//  void Filename(LPCWSTR val) { mFilename = val; }
-private:
-  LPCWSTR mFilename;
-};
+	class FileReader
+	{
+	public:
+		FileReader(LPCWSTR filename);
 
+	public:
+		FileMap* readFile();
+		virtual ~FileReader();
+		LPCWSTR Filename() const { return mFilename; }
+		//  void Filename(LPCWSTR val) { mFilename = val; }
+	private:
+		LPCWSTR mFilename;
+	};
 } // namespace RawSpeed
 
 #endif

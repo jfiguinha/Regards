@@ -57,7 +57,7 @@ float LibRaw::find_green(int bps, int bite, int off0, int off1)
       {
         bitbuf <<= bite;
         for (i = 0; i < bite; i += 8)
-          bitbuf |= (unsigned)(fgetc(ifp) << i);
+          bitbuf |= static_cast<unsigned>((fgetc(ifp) << i));
       }
       img[c][col] = bitbuf << (64 - bps - vbits) >> (64 - bps);
     }
@@ -69,20 +69,19 @@ float LibRaw::find_green(int bps, int bite, int off0, int off1)
   }
   if (sum[0] >= 1.0 && sum[1] >= 1.0)
     return 100 * log(sum[0] / sum[1]);
-  else
-    return 0.f;
+  return 0.f;
 }
 
 void LibRaw::trimSpaces(char *s)
 {
   char *p = s;
-  int l = int(strlen(p));
+  int l = static_cast<int>(strlen(p));
   if (!l)
     return;
   while (isspace(p[l - 1]))
     p[--l] = 0; /* trim trailing spaces */
   while (*p && isspace(*p))
-    ++p, --l;   /* trim leading spaces */
+    ++p, --l; /* trim leading spaces */
   memmove(s, p, l + 1);
 }
 
@@ -96,7 +95,7 @@ void LibRaw::remove_trailing_spaces(char *string, size_t len)
   len = strnlen(string, len - 1);
   for (size_t i = len - 1; i >= 0; i--)
   {
-    if (isspace((unsigned char)string[i]))
+    if (isspace(static_cast<unsigned char>(string[i])))
       string[i] = 0;
     else
       break;
@@ -106,35 +105,43 @@ void LibRaw::remove_trailing_spaces(char *string, size_t len)
 void LibRaw::remove_caseSubstr(char *string, char *subStr) // replace a substring with an equal length of spaces
 {
   char *found;
-  while ((found = strcasestr(string,subStr))) {
-    if (!found) return;
-    int fill_len = int(strlen(subStr));
+  while ((found = strcasestr(string, subStr)))
+  {
+    if (!found)
+      return;
+    int fill_len = static_cast<int>(strlen(subStr));
     int p = found - string;
-    for (int i=p; i<p+fill_len; i++) {
+    for (int i = p; i < p + fill_len; i++)
+    {
       string[i] = 32;
     }
   }
-  trimSpaces (string);
+  trimSpaces(string);
 }
 
 void LibRaw::removeExcessiveSpaces(char *string) // replace repeating spaces with one space
 {
-	int orig_len = int(strlen(string));
-	int i = 0;   // counter for resulting string
-	int j = -1;
-	bool prev_char_is_space = false;
-	while (++j < orig_len && string[j] == ' ');
-	while (j < orig_len)  {
-		if (string[j] != ' ')  {
-				string[i++] = string[j++];
-				prev_char_is_space = false;
-		} else if (string[j++] == ' ') {
-			if (!prev_char_is_space) {
-				string[i++] = ' ';
-				prev_char_is_space = true;
-			}
-		}
-	}
-	if (string[i-1] == ' ')
-    string[i-1] = 0;
+  int orig_len = static_cast<int>(strlen(string));
+  int i = 0; // counter for resulting string
+  int j = -1;
+  bool prev_char_is_space = false;
+  while (++j < orig_len && string[j] == ' ');
+  while (j < orig_len)
+  {
+    if (string[j] != ' ')
+    {
+      string[i++] = string[j++];
+      prev_char_is_space = false;
+    }
+    else if (string[j++] == ' ')
+    {
+      if (!prev_char_is_space)
+      {
+        string[i++] = ' ';
+        prev_char_is_space = true;
+      }
+    }
+  }
+  if (string[i - 1] == ' ')
+    string[i - 1] = 0;
 }

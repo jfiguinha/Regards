@@ -42,12 +42,13 @@ using std::string;
 
 namespace rawspeed {
 
-RawImageData::RawImageData() : cfa(iPoint2D(0, 0)) {
+RawImageData::RawImageData()
+  : cfa(iPoint2D(0, 0)) {
   blackLevelSeparate.fill(-1);
 }
 
 RawImageData::RawImageData(const iPoint2D& _dim, int _bpc, int _cpp)
-    : dim(_dim), isCFA(_cpp == 1), cfa(iPoint2D(0, 0)), cpp(_cpp) {
+  : dim(_dim), isCFA(_cpp == 1), cfa(iPoint2D(0, 0)), cpp(_cpp) {
   assert(_bpc > 0);
 
   if (cpp > std::numeric_limits<decltype(cpp)>::max() / _bpc)
@@ -67,7 +68,7 @@ RawImageData::~RawImageData() {
 
 
 void RawImageData::createData() {
-  static constexpr const auto alignment = 16;
+  static constexpr auto alignment = 16;
 
   if (dim.x > 65535 || dim.y > 65535)
     ThrowRDE("Dimensions too large for allocation.");
@@ -209,7 +210,7 @@ void RawImageData::setCpp(uint32_t val) {
 uint8_t* RawImageData::getData() const {
   if (!data)
     ThrowRDE("Data not yet allocated.");
-  return &data[mOffset.y*pitch+mOffset.x*bpp];
+  return &data[mOffset.y * pitch + mOffset.x * bpp];
 }
 
 uint8_t* RawImageData::getData(uint32_t x, uint32_t y) {
@@ -239,7 +240,7 @@ uint8_t* RawImageData::getDataUncropped(uint32_t x, uint32_t y) {
   return &data[static_cast<size_t>(y) * pitch + x * bpp];
 }
 
-iPoint2D __attribute__((pure)) rawspeed::RawImageData::getUncroppedDim() const {
+iPoint2D __attribute__((pure)) RawImageData::getUncroppedDim() const {
   return uncropped_dim;
 }
 
@@ -250,13 +251,13 @@ iPoint2D __attribute__((pure)) RawImageData::getCropOffset() const {
 void RawImageData::subFrame(iRectangle2D crop) {
   if (!crop.dim.isThisInside(dim - crop.pos)) {
     writeLog(DEBUG_PRIO_WARNING, "WARNING: RawImageData::subFrame - Attempted "
-                                 "to create new subframe larger than original "
-                                 "size. Crop skipped.");
+             "to create new subframe larger than original "
+             "size. Crop skipped.");
     return;
   }
   if (crop.pos.x < 0 || crop.pos.y < 0 || !crop.hasPositiveArea()) {
     writeLog(DEBUG_PRIO_WARNING, "WARNING: RawImageData::subFrame - Negative "
-                                 "crop offset. Crop skipped.");
+             "crop offset. Crop skipped.");
     return;
   }
 
@@ -270,8 +271,7 @@ void RawImageData::subFrame(iRectangle2D crop) {
   dim = crop.dim;
 }
 
-void RawImageData::createBadPixelMap()
-{
+void RawImageData::createBadPixelMap() {
   if (!isAllocated())
     ThrowRDE("(internal) Bad pixel map cannot be allocated before image.");
   mBadPixelMapPitch = roundUp(roundUpDivision(uncropped_dim.x, 8), 16);
@@ -283,12 +283,14 @@ void RawImageData::createBadPixelMap()
     ThrowRDE("Memory Allocation failed.");
 }
 
-RawImage::RawImage(RawImageData* p) : p_(p) {
+RawImage::RawImage(RawImageData* p)
+  : p_(p) {
   MutexLocker guard(&p_->mymutex);
   ++p_->dataRefCount;
 }
 
-RawImage::RawImage(const RawImage& p) : p_(p.p_) {
+RawImage::RawImage(const RawImage& p)
+  : p_(p.p_) {
   MutexLocker guard(&p_->mymutex);
   ++p_->dataRefCount;
 }
@@ -307,8 +309,7 @@ RawImage::~RawImage() {
   p_->mymutex.Unlock();
 }
 
-void RawImageData::transferBadPixelsToMap()
-{
+void RawImageData::transferBadPixelsToMap() {
   MutexLocker guard(&mBadPixelMutex);
   if (mBadPixelPositions.empty())
     return;
@@ -323,13 +324,12 @@ void RawImageData::transferBadPixelsToMap()
     assert(pos_x < static_cast<uint16_t>(uncropped_dim.x));
     assert(pos_y < static_cast<uint16_t>(uncropped_dim.y));
 
-    mBadPixelMap[mBadPixelMapPitch * pos_y + (pos_x >> 3)] |= 1 << (pos_x&7);
+    mBadPixelMap[mBadPixelMapPitch * pos_y + (pos_x >> 3)] |= 1 << (pos_x & 7);
   }
   mBadPixelPositions.clear();
 }
 
-void RawImageData::fixBadPixels()
-{
+void RawImageData::fixBadPixels() {
 #if !defined (EMULATE_DCRAW_BAD_PIXELS)
 
   /* Transfer if not already done */
@@ -433,8 +433,8 @@ void RawImageData::blitFrom(const RawImage& src, const iPoint2D& srcPos,
                             const iPoint2D& size, const iPoint2D& destPos) {
   iRectangle2D src_rect(srcPos, size);
   iRectangle2D dest_rect(destPos, size);
-  src_rect = src_rect.getOverlap(iRectangle2D(iPoint2D(0,0), src->dim));
-  dest_rect = dest_rect.getOverlap(iRectangle2D(iPoint2D(0,0), dim));
+  src_rect = src_rect.getOverlap(iRectangle2D(iPoint2D(0, 0), src->dim));
+  dest_rect = dest_rect.getOverlap(iRectangle2D(iPoint2D(0, 0), dim));
 
   iPoint2D blitsize = src_rect.dim.getSmallest(dest_rect.dim);
   if (blitsize.area() <= 0)
@@ -447,11 +447,10 @@ void RawImageData::blitFrom(const RawImage& src, const iPoint2D& srcPos,
 }
 
 /* Does not take cfa into consideration */
-void RawImageData::expandBorder(iRectangle2D validData)
-{
-  validData = validData.getOverlap(iRectangle2D(0,0,dim.x, dim.y));
+void RawImageData::expandBorder(iRectangle2D validData) {
+  validData = validData.getOverlap(iRectangle2D(0, 0, dim.x, dim.y));
   if (validData.pos.x > 0) {
-    for (int y = 0; y < dim.y; y++ ) {
+    for (int y = 0; y < dim.y; y++) {
       uint8_t* src_pos = getData(validData.pos.x, y);
       uint8_t* dst_pos = getData(validData.pos.x - 1, y);
       for (int x = validData.pos.x; x >= 0; x--) {
@@ -465,7 +464,7 @@ void RawImageData::expandBorder(iRectangle2D validData)
 
   if (validData.getRight() < dim.x) {
     int pos = validData.getRight();
-    for (int y = 0; y < dim.y; y++ ) {
+    for (int y = 0; y < dim.y; y++) {
       uint8_t* src_pos = getData(pos - 1, y);
       uint8_t* dst_pos = getData(pos, y);
       for (int x = pos; x < dim.x; x++) {
@@ -479,14 +478,14 @@ void RawImageData::expandBorder(iRectangle2D validData)
 
   if (validData.pos.y > 0) {
     uint8_t* src_pos = getData(0, validData.pos.y);
-    for (int y = 0; y < validData.pos.y; y++ ) {
+    for (int y = 0; y < validData.pos.y; y++) {
       uint8_t* dst_pos = getData(0, y);
       memcpy(dst_pos, src_pos, static_cast<size_t>(dim.x) * bpp);
     }
   }
   if (validData.getBottom() < dim.y) {
     uint8_t* src_pos = getData(0, validData.getBottom() - 1);
-    for (int y = validData.getBottom(); y < dim.y; y++ ) {
+    for (int y = validData.getBottom(); y < dim.y; y++) {
       uint8_t* dst_pos = getData(0, y);
       memcpy(dst_pos, src_pos, static_cast<size_t>(dim.x) * bpp);
     }
@@ -494,7 +493,7 @@ void RawImageData::expandBorder(iRectangle2D validData)
 }
 
 void RawImageData::clearArea(iRectangle2D area, uint8_t val /*= 0*/) {
-  area = area.getOverlap(iRectangle2D(iPoint2D(0,0), dim));
+  area = area.getOverlap(iRectangle2D(iPoint2D(0, 0), dim));
 
   if (area.area() <= 0)
     return;
@@ -525,14 +524,13 @@ RawImage& RawImage::operator=(const RawImage& rhs) noexcept {
 
 RawImageWorker::RawImageWorker(RawImageData* _img, RawImageWorkerTask _task,
                                int _start_y, int _end_y) noexcept
-    : data(_img), task(_task), start_y(_start_y), end_y(_end_y) {
+  : data(_img), task(_task), start_y(_start_y), end_y(_end_y) {
   performTask();
 }
 
 void RawImageWorker::performTask() noexcept {
   try {
-    switch(task)
-    {
+    switch (task) {
     case SCALE_VALUES:
       data->scaleValues(start_y, end_y);
       break;
@@ -546,11 +544,11 @@ void RawImageWorker::performTask() noexcept {
       // NOLINTNEXTLINE: https://bugs.llvm.org/show_bug.cgi?id=50532
       assert(false);
     }
-  } catch (RawDecoderException &e) {
+  } catch (RawDecoderException& e) {
     data->setError(e.what());
-  } catch (TiffParserException &e) {
+  } catch (TiffParserException& e) {
     data->setError(e.what());
-  } catch (IOException &e) {
+  } catch (IOException& e) {
     data->setError(e.what());
   }
 }

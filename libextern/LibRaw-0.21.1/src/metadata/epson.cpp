@@ -61,9 +61,11 @@ void LibRaw::parseEpsonMakernote(int base, int uptag, unsigned dng_writer)
         isRIC.cheight = get2();
     }
     else if (tag == 0x0400)
-    {                                 // sensor area
+    {
+      // sensor area
       ushort sdims[4] = {0, 0, 0, 0}; // left margin, top margin, width, height
-      FORC4 sdims[c] = get2();
+      FORC4
+        sdims[c] = get2();
       isRIC.cleft = (sdims[2] - sdims[0] - isRIC.cwidth) / 2;
       isRIC.ctop = (sdims[3] - sdims[1] - isRIC.cheight) / 2;
     }
@@ -78,7 +80,8 @@ void LibRaw::parseEpsonMakernote(int base, int uptag, unsigned dng_writer)
       }
       else if (tag == 0x0401)
       {
-        FORC4 cblack[RGGB_2_RGBG(c)] = get4();
+        FORC4
+          cblack[RGGB_2_RGBG(c)] = get4();
       }
       else if (tag == 0x0e80)
       {

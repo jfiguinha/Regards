@@ -23,64 +23,89 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	TiffIFDBE::TiffIFDBE()
+	{
+		endian = big;
+	}
 
-TiffIFDBE::TiffIFDBE() {
-  endian = big;
-}
+	TiffIFDBE::TiffIFDBE(FileMap* f, uint32 offset)
+	{
+		endian = big;
+		int entries;
+		CHECKSIZE(offset);
 
-TiffIFDBE::TiffIFDBE(FileMap* f, uint32 offset) {
-  endian = big;
-  int entries;
-  CHECKSIZE(offset);
+		const unsigned char* data = f->getData(offset);
+		entries = static_cast<unsigned short>(data[0]) << 8 | static_cast<unsigned short>(data[1]);
+		// Directory entries in this IFD
 
-  const unsigned char* data = f->getData(offset);
-  entries = (unsigned short)data[0] << 8 | (unsigned short)data[1];    // Directory entries in this IFD
+		CHECKSIZE(offset + 2 + entries*4);
+		for (int i = 0; i < entries; i++)
+		{
+			auto t = new TiffEntryBE(f, offset + 2 + i * 12);
 
-  CHECKSIZE(offset + 2 + entries*4);
-  for (int i = 0; i < entries; i++) {
-    TiffEntryBE *t = new TiffEntryBE(f, offset + 2 + i*12);
+			if (t->tag == SUBIFDS || t->tag == EXIFIFDPOINTER || t->tag == DNGPRIVATEDATA || t->tag == MAKERNOTE)
+			{
+				// subIFD tag
+				if (t->tag == DNGPRIVATEDATA)
+				{
+					try
+					{
+						TiffIFD* maker_ifd = parseDngPrivateData(t);
+						mSubIFD.push_back(maker_ifd);
+						delete(t);
+					}
+					catch (TiffParserException)
+					{
+						// Unparsable private data are added as entries
+						mEntry[t->tag] = t;
+					}
+				}
+				else if (t->tag == MAKERNOTE || t->tag == 0x2e)
+				{
+					try
+					{
+						mSubIFD.push_back(parseMakerNote(f, t->getDataOffset(), endian));
+						delete(t);
+					}
+					catch (TiffParserException)
+					{
+						// Unparsable makernotes are added as entries
+						mEntry[t->tag] = t;
+					}
+				}
+				else
+				{
+					const unsigned int* sub_offsets = t->getIntArray();
+					try
+					{
+						for (uint32 j = 0; j < t->count; j++)
+						{
+							mSubIFD.push_back(new TiffIFDBE(f, sub_offsets[j]));
+						}
+						delete(t);
+					}
+					catch (TiffParserException)
+					{
+						// Unparsable subifds are added as entries
+						mEntry[t->tag] = t;
+					}
+				}
+			}
+			else
+			{
+				// Store as entry
+				mEntry[t->tag] = t;
+			}
+		}
+		data = f->getDataWrt(offset + 2 + entries * 12);
+		nextIFD = static_cast<unsigned int>(data[0]) << 24 | static_cast<unsigned int>(data[1]) << 16 | static_cast<
+			unsigned int>(data[2]) << 8 | static_cast<unsigned int>(data[3]);
+	}
 
-    if (t->tag == SUBIFDS || t->tag == EXIFIFDPOINTER || t->tag == DNGPRIVATEDATA || t->tag == MAKERNOTE) {   // subIFD tag
-      if (t->tag == DNGPRIVATEDATA) {
-        try {
-          TiffIFD *maker_ifd = parseDngPrivateData(t);
-          mSubIFD.push_back(maker_ifd);
-          delete(t);
-        } catch (TiffParserException) {
-          // Unparsable private data are added as entries
-          mEntry[t->tag] = t;
-        }
-      } else if (t->tag == MAKERNOTE || t->tag == 0x2e) {
-        try {
-          mSubIFD.push_back(parseMakerNote(f, t->getDataOffset(), endian));
-          delete(t);
-        } catch (TiffParserException) {
-          // Unparsable makernotes are added as entries
-          mEntry[t->tag] = t;
-        }
-      } else {
-        const unsigned int* sub_offsets = t->getIntArray();
-        try {
-          for (uint32 j = 0; j < t->count; j++) {
-            mSubIFD.push_back(new TiffIFDBE(f, sub_offsets[j]));
-          }
-          delete(t);
-        } catch (TiffParserException) {
-          // Unparsable subifds are added as entries
-          mEntry[t->tag] = t;
-        }
-      }
-    } else {  // Store as entry
-      mEntry[t->tag] = t;
-    }
-  }
-  data = f->getDataWrt(offset + 2 + entries * 12);
-  nextIFD = (unsigned int)data[0] << 24 | (unsigned int)data[1] << 16 | (unsigned int)data[2] << 8 | (unsigned int)data[3];
-}
 
-
-TiffIFDBE::~TiffIFDBE(void) {
-}
-
+	TiffIFDBE::~TiffIFDBE(void)
+	{
+	}
 } // namespace RawSpeed

@@ -28,7 +28,8 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
       ilm.CameraFormat = LIBRAW_FORMAT_APSC;
     }
     else if (!strncmp(model, "NX mini", 7))
-    { // device type 0x1000: 'NX mini', EX2F, EX1, WB2000
+    {
+      // device type 0x1000: 'NX mini', EX2F, EX1, WB2000
       ilm.CameraMount = LIBRAW_MOUNT_Samsung_NX_M;
       ilm.CameraFormat = LIBRAW_FORMAT_1INCH;
     }
@@ -46,7 +47,7 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
   {
     if ((i = get4()))
     {
-      imCommon.CameraTemperature = (float)i;
+      imCommon.CameraTemperature = static_cast<float>(i);
       if (get4() == 10)
         imCommon.CameraTemperature /= 10.0f;
     }
@@ -62,7 +63,8 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
       ilm.LensMount = LIBRAW_MOUNT_Samsung_NX;
   }
   else if (tag == 0xa004)
-  { // LensFirmware
+  {
+    // LensFirmware
     stmread(imSamsung.LensFirmware, len, ifp);
   }
   else if (tag == 0xa005)
@@ -71,25 +73,28 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
   }
   else if (tag == 0xa010)
   {
-    FORC4 imSamsung.ImageSizeFull[c] = get4();
-    FORC4 imSamsung.ImageSizeCrop[c] = get4();
+    FORC4
+      imSamsung.ImageSizeFull[c] = get4();
+    FORC4
+      imSamsung.ImageSizeCrop[c] = get4();
   }
   else if ((tag == 0xa011) && ((len == 1) || (len == 2)) && tagtypeIs(LIBRAW_EXIFTAG_TYPE_SHORT))
   {
-    imSamsung.ColorSpace[0] = (int)get2();
-		switch (imSamsung.ColorSpace[0]) {
-		case 0:
-			imCommon.ColorSpace = LIBRAW_COLORSPACE_sRGB;
-			break;
-		case 1:
-			imCommon.ColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
-			break;
-		default:
-			imCommon.ColorSpace = LIBRAW_COLORSPACE_Unknown;
-			break;
-		}
+    imSamsung.ColorSpace[0] = static_cast<int>(get2());
+    switch (imSamsung.ColorSpace[0])
+    {
+    case 0:
+      imCommon.ColorSpace = LIBRAW_COLORSPACE_sRGB;
+      break;
+    case 1:
+      imCommon.ColorSpace = LIBRAW_COLORSPACE_AdobeRGB;
+      break;
+    default:
+      imCommon.ColorSpace = LIBRAW_COLORSPACE_Unknown;
+      break;
+    }
     if (len == 2)
-      imSamsung.ColorSpace[1] = (int)get2();
+      imSamsung.ColorSpace[1] = static_cast<int>(get2());
   }
   else if (tag == 0xa019)
   {
@@ -107,16 +112,19 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
   }
   else if (tag == 0xa020)
   {
-    FORC(11) imSamsung.key[c] = get4();
+    FORC(11)
+      imSamsung.key[c] = get4();
   }
   else if ((tag == 0xa021) && (dng_writer == nonDNG))
   {
-    FORC4 cam_mul[RGGB_2_RGBG(c)] = get4() - imSamsung.key[c];
+    FORC4
+      cam_mul[RGGB_2_RGBG(c)] = get4() - imSamsung.key[c];
   }
   else if (tag == 0xa022)
   {
-    FORC4 icWBC[LIBRAW_WBI_Auto][RGGB_2_RGBG(c)] =
-        get4() - imSamsung.key[c + 4];
+    FORC4
+      icWBC[LIBRAW_WBI_Auto][RGGB_2_RGBG(c)] =
+          get4() - imSamsung.key[c + 4];
     if (icWBC[LIBRAW_WBI_Auto][0] <
         (icWBC[LIBRAW_WBI_Auto][1] >> 1))
     {
@@ -129,8 +137,9 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
   else if (tag == 0xa023)
   {
     ushort ki[4] = {8, 9, 10, 0};
-    FORC4 icWBC[LIBRAW_WBI_Ill_A][RGGB_2_RGBG(c)] =
-        get4() - imSamsung.key[ki[c]];
+    FORC4
+      icWBC[LIBRAW_WBI_Ill_A][RGGB_2_RGBG(c)] =
+          get4() - imSamsung.key[ki[c]];
     if (icWBC[LIBRAW_WBI_Ill_A][0] <
         (icWBC[LIBRAW_WBI_Ill_A][1] >> 1))
     {
@@ -142,8 +151,9 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
   }
   else if (tag == 0xa024)
   {
-    FORC4 icWBC[LIBRAW_WBI_D65][RGGB_2_RGBG(c)] =
-        get4() - imSamsung.key[c + 1];
+    FORC4
+      icWBC[LIBRAW_WBI_D65][RGGB_2_RGBG(c)] =
+          get4() - imSamsung.key[c + 1];
     if (icWBC[LIBRAW_WBI_D65][0] <
         (icWBC[LIBRAW_WBI_D65][1] >> 1))
     {
@@ -159,24 +169,26 @@ void LibRaw::parseSamsungMakernotes(int /*base*/, unsigned tag, unsigned type,
     if (t == 4096)
       imSamsung.DigitalGain = 1.0;
     else
-      imSamsung.DigitalGain = ((double)t) / 4096.0;
+      imSamsung.DigitalGain = static_cast<double>(t) / 4096.0;
   }
   else if ((tag == 0xa028) && (dng_writer == nonDNG))
   {
-    FORC4 cblack[RGGB_2_RGBG(c)] = get4() - imSamsung.key[c];
+    FORC4
+      cblack[RGGB_2_RGBG(c)] = get4() - imSamsung.key[c];
   }
   else if ((tag == 0xa030) && (len == 9))
   {
     for (i = 0; i < 3; i++)
-      FORC3 imgdata.color.ccm[i][c] =
-          (float)((short)((get4() + imSamsung.key[i * 3 + c]))) / 256.0;
+      FORC3
+        imgdata.color.ccm[i][c] =
+            static_cast<float>(static_cast<short>((get4() + imSamsung.key[i * 3 + c]))) / 256.0;
   }
   else if ((tag == 0xa032) && (len == 9) && (dng_writer == nonDNG))
   {
     double aRGB_cam[3][3];
     FORC(9)
-    ((double *)aRGB_cam)[c] =
-        ((double)((short)((get4() + imSamsung.key[c])))) / 256.0;
+      ((double *)aRGB_cam)[c] =
+          static_cast<double>(static_cast<short>((get4() + imSamsung.key[c]))) / 256.0;
     aRGB_coeff(aRGB_cam);
   }
 }

@@ -25,35 +25,35 @@
 #include "IOException.h"
 #include <stack>
 
-namespace RawSpeed {
-
-class ByteStream
+namespace RawSpeed
 {
-public:
-  ByteStream(const uchar8* _buffer, uint32 _size);
-  ByteStream(const ByteStream* b);
-  virtual ~ByteStream(void);
-  uint32 peekByte();
-  uint32 getOffset() {return off;}
-  void skipBytes(uint32 nbytes);
-  uchar8 getByte();
-  void setAbsoluteOffset(uint32 offset);
-  void skipToMarker();
-  uint32 getRemainSize() { return size-off;}
-  const uchar8* getData() {return &buffer[off];}
-  virtual ushort16 getShort();
-  virtual int getInt();
-  virtual uint32 getUInt();
-  virtual float getFloat();
-  void pushOffset() { offset_stack.push(off);}
-  void popOffset();
-protected:
-  const uchar8* buffer;
-  const uint32 size;            // This if the end of buffer.
-  uint32 off;                  // Offset in bytes (this is next byte to deliver)
-  stack<uint32> offset_stack;
-};
+	class ByteStream
+	{
+	public:
+		ByteStream(const uchar8* _buffer, uint32 _size);
+		ByteStream(const ByteStream* b);
+		virtual ~ByteStream(void);
+		uint32 peekByte();
+		uint32 getOffset() { return off; }
+		void skipBytes(uint32 nbytes);
+		uchar8 getByte();
+		void setAbsoluteOffset(uint32 offset);
+		void skipToMarker();
+		uint32 getRemainSize() { return size - off; }
+		const uchar8* getData() { return &buffer[off]; }
+		virtual ushort16 getShort();
+		virtual int getInt();
+		virtual uint32 getUInt();
+		virtual float getFloat();
+		void pushOffset() { offset_stack.push(off); }
+		void popOffset();
 
+	protected:
+		const uchar8* buffer;
+		const uint32 size; // This if the end of buffer.
+		uint32 off; // Offset in bytes (this is next byte to deliver)
+		stack<uint32> offset_stack;
+	};
 } // namespace RawSpeed
 
 #endif

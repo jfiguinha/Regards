@@ -28,12 +28,12 @@ void LibRaw::exp_bef(float shift, float smooth)
   if (smooth > 1.0)
     smooth = 1.0;
 
-  unsigned short *lut = (ushort *)malloc((TBLN + 1) * sizeof(unsigned short));
+  auto lut = static_cast<ushort *>(malloc((TBLN + 1) * sizeof(unsigned short)));
 
   if (shift <= 1.0)
   {
     for (int i = 0; i <= TBLN; i++)
-      lut[i] = (unsigned short)((float)i * shift);
+      lut[i] = static_cast<unsigned short>(static_cast<float>(i) * shift);
   }
   else
   {
@@ -42,7 +42,7 @@ void LibRaw::exp_bef(float shift, float smooth)
     float cstops = log(shift) / log(2.0f);
     float room = cstops * 2;
     float roomlin = powf(2.0f, room);
-    x2 = (float)TBLN;
+    x2 = static_cast<float>(TBLN);
     x1 = (x2 + 1) / roomlin - 1;
     y1 = x1 * shift;
     y2 = x2 * (1 + (1 - smooth) * (shift - 1));
@@ -53,12 +53,12 @@ void LibRaw::exp_bef(float shift, float smooth)
     float CC = y2 - A * powf(x2, 1.0f / 3.0f) - B * x2;
     for (int i = 0; i <= TBLN; i++)
     {
-      float X = (float)i;
+      float X = static_cast<float>(i);
       float Y = A * powf(X, 1.0f / 3.0f) + B * X + CC;
       if (i < x1)
-        lut[i] = (unsigned short)((float)i * shift);
+        lut[i] = static_cast<unsigned short>(static_cast<float>(i) * shift);
       else
-        lut[i] = Y < 0 ? 0 : (Y > TBLN ? TBLN : (unsigned short)(Y));
+        lut[i] = Y < 0 ? 0 : (Y > TBLN ? TBLN : static_cast<unsigned short>(Y));
     }
   }
   for (int i = 0; i < S.height * S.width; i++)
@@ -152,7 +152,8 @@ void LibRaw::scale_colors_loop(float scale_mul[4])
     {
       for (unsigned c = 0; c < 4; c++)
       {
-        if (!(val = imgdata.image[i][c])) continue;
+        if (!(val = imgdata.image[i][c]))
+          continue;
         val -= C.cblack[6 + i / S.iwidth % C.cblack[4] * C.cblack[5] +
                         i % S.iwidth % C.cblack[5]];
         val -= C.cblack[c];
@@ -168,7 +169,8 @@ void LibRaw::scale_colors_loop(float scale_mul[4])
       for (unsigned c = 0; c < 4; c++)
       {
         int val = imgdata.image[i][c];
-        if (!val) continue;
+        if (!val)
+          continue;
         val -= C.cblack[c];
         val *= scale_mul[c];
         imgdata.image[i][c] = CLIP(val);

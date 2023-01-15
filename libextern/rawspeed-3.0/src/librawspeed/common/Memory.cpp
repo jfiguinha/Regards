@@ -42,7 +42,7 @@ namespace rawspeed {
 void* alignedMalloc(size_t size, size_t alignment) {
   assert(isPowerOfTwo(alignment)); // for posix_memalign, _aligned_malloc
   assert(isAligned(alignment, sizeof(void*))); // for posix_memalign
-  assert(isAligned(size, alignment));          // for aligned_alloc
+  assert(isAligned(size, alignment)); // for aligned_alloc
 
   void* ptr = nullptr;
 

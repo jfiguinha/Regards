@@ -55,39 +55,47 @@ namespace rawspeed {
 #define JPEG_MEMSRC(A, B, C) jpeg_mem_src_int(A, B, C)
 /* Read JPEG image from a memory segment */
 
-static void init_source(j_decompress_ptr cinfo) {}
-static boolean fill_input_buffer(j_decompress_ptr cinfo) {
-  auto* src = (struct jpeg_source_mgr*)cinfo->src;
-  return (boolean) !!src->bytes_in_buffer;
+static void init_source(j_decompress_ptr cinfo) {
 }
-static void skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
-  auto* src = (struct jpeg_source_mgr*)cinfo->src;
 
-  if (num_bytes > (int)src->bytes_in_buffer)
+static boolean fill_input_buffer(j_decompress_ptr cinfo) {
+  auto* src = cinfo->src;
+  return !!src->bytes_in_buffer;
+}
+
+static void skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
+  auto* src = cinfo->src;
+
+  if (num_bytes > static_cast<int>(src->bytes_in_buffer))
     ThrowIOE("read out of buffer");
   if (num_bytes > 0) {
-    src->next_input_byte += (size_t)num_bytes;
-    src->bytes_in_buffer -= (size_t)num_bytes;
+    src->next_input_byte += static_cast<size_t>(num_bytes);
+    src->bytes_in_buffer -= static_cast<size_t>(num_bytes);
   }
 }
-static void term_source(j_decompress_ptr cinfo) {}
+
+static void term_source(j_decompress_ptr cinfo) {
+}
+
 static void jpeg_mem_src_int(j_decompress_ptr cinfo,
                              const unsigned char* buffer, long nbytes) {
   struct jpeg_source_mgr* src;
 
-  if (cinfo->src == nullptr) { /* first time for this JPEG object? */
-    cinfo->src = (struct jpeg_source_mgr*)(*cinfo->mem->alloc_small)(
-        (j_common_ptr)cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
+  if (cinfo->src == nullptr) {
+    /* first time for this JPEG object? */
+    cinfo->src = static_cast<struct jpeg_source_mgr*>((*cinfo->mem->
+      alloc_small)(
+        (j_common_ptr)cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr)));
   }
 
-  src = (struct jpeg_source_mgr*)cinfo->src;
+  src = cinfo->src;
   src->init_source = init_source;
   src->fill_input_buffer = fill_input_buffer;
   src->skip_input_data = skip_input_data;
   src->resync_to_restart = jpeg_resync_to_restart; /* use default method */
   src->term_source = term_source;
   src->bytes_in_buffer = nbytes;
-  src->next_input_byte = (const JOCTET*)buffer;
+  src->next_input_byte = buffer;
 }
 
 #endif
@@ -101,24 +109,27 @@ static void jpeg_mem_src_int(j_decompress_ptr cinfo,
 
 struct JpegDecompressor::JpegDecompressStruct : jpeg_decompress_struct {
   struct jpeg_error_mgr jerr;
+
   JpegDecompressStruct() {
     jpeg_create_decompress(this);
 
     err = jpeg_std_error(&jerr);
     jerr.error_exit = &my_error_throw;
   }
+
   ~JpegDecompressStruct() { jpeg_destroy_decompress(this); }
 };
 
 void JpegDecompressor::decode(uint32_t offX,
-                              uint32_t offY) { /* Each slice is a JPEG image */
+                              uint32_t offY) {
+  /* Each slice is a JPEG image */
   struct JpegDecompressStruct dinfo;
 
   const auto size = input.getRemainSize();
 
   JPEG_MEMSRC(&dinfo, input.getData(size), size);
 
-  if (JPEG_HEADER_OK != jpeg_read_header(&dinfo, static_cast<boolean>(true)))
+  if (JPEG_HEADER_OK != jpeg_read_header(&dinfo, true))
     ThrowRDE("Unable to read JPEG header");
 
   jpeg_start_decompress(&dinfo);
@@ -137,7 +148,7 @@ void JpegDecompressor::decode(uint32_t offX,
                                 dinfo.output_height, row_stride);
 
   while (dinfo.output_scanline < dinfo.output_height) {
-    auto* rowOut = static_cast<JSAMPROW>(&tmp(dinfo.output_scanline, 0));
+    auto* rowOut = &tmp(dinfo.output_scanline, 0);
     if (0 == jpeg_read_scanlines(&dinfo, &rowOut, 1))
       ThrowRDE("JPEG Error while decompressing image.");
   }

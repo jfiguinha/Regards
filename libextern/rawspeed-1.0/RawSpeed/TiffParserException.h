@@ -23,16 +23,15 @@
 #define TIFF_PARSER_EXCEPTION_H
 
 
-namespace RawSpeed {
-
-void ThrowTPE(const char* fmt, ...);
-
-class TiffParserException : public std::runtime_error
+namespace RawSpeed
 {
-public:
-  TiffParserException(const string _msg);
-};
+	void ThrowTPE(const char* fmt, ...);
 
+	class TiffParserException : public std::runtime_error
+	{
+	public:
+		TiffParserException(string _msg);
+	};
 } // namespace RawSpeed
 
 #endif

@@ -50,13 +50,14 @@ using std::string;
 namespace rawspeed {
 
 RawDecoder::RawDecoder(const Buffer& file)
-    : mRaw(RawImage::create()), failOnUnknown(false),
-      interpolateBadPixels(true), applyStage1DngOpcodes(true), applyCrop(true),
-      uncorrectedRawValues(false), fujiRotate(true), mFile(file) {}
+  : mRaw(RawImage::create()), failOnUnknown(false),
+    interpolateBadPixels(true), applyStage1DngOpcodes(true), applyCrop(true),
+    uncorrectedRawValues(false), fujiRotate(true), mFile(file) {
+}
 
-void RawDecoder::decodeUncompressed(const TiffIFD *rawIFD, BitOrder order) {
-  TiffEntry *offsets = rawIFD->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = rawIFD->getEntry(STRIPBYTECOUNTS);
+void RawDecoder::decodeUncompressed(const TiffIFD* rawIFD, BitOrder order) {
+  TiffEntry* offsets = rawIFD->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = rawIFD->getEntry(STRIPBYTECOUNTS);
   uint32_t yPerSlice = rawIFD->getEntry(ROWSPERSTRIP)->getU32();
   uint32_t width = rawIFD->getEntry(IMAGEWIDTH)->getU32();
   uint32_t height = rawIFD->getEntry(IMAGELENGTH)->getU32();
@@ -132,8 +133,8 @@ void RawDecoder::decodeUncompressed(const TiffIFD *rawIFD, BitOrder order) {
     iPoint2D size(width, slice.h);
     iPoint2D pos(0, offY);
     bitPerPixel = static_cast<int>(
-        static_cast<uint64_t>(static_cast<uint64_t>(slice.count) * 8U) /
-        (slice.h * width));
+      static_cast<uint64_t>(slice.count) * 8U /
+      (slice.h * width));
     const auto inputPitch = width * bitPerPixel / 8;
     if (!inputPitch)
       ThrowRDE("Bad input pitch. Can not decode anything.");
@@ -166,7 +167,9 @@ bool RawDecoder::checkCameraSupported(const CameraMetaData* meta,
     askForSamples(meta, make, model, mode);
 
     if (failOnUnknown)
-      ThrowRDE("Camera '%s' '%s', mode '%s' not supported, and not allowed to guess. Sorry.", make.c_str(), model.c_str(), mode.c_str());
+      ThrowRDE(
+        "Camera '%s' '%s', mode '%s' not supported, and not allowed to guess. Sorry.",
+        make.c_str(), model.c_str(), mode.c_str());
 
     // Assume the camera can be decoded, but return false, so decoders can see that we are unsure.
     return false;
@@ -176,7 +179,8 @@ bool RawDecoder::checkCameraSupported(const CameraMetaData* meta,
     ThrowRDE("Camera not supported (explicit). Sorry.");
 
   if (cam->decoderVersion > getDecoderVersion())
-    ThrowRDE("Camera not supported in this version. Update RawSpeed for support.");
+    ThrowRDE(
+      "Camera not supported in this version. Update RawSpeed for support.");
 
   hints = cam->hints;
   return true;
@@ -191,7 +195,9 @@ void RawDecoder::setMetaData(const CameraMetaData* meta, const string& make,
     askForSamples(meta, make, model, mode);
 
     if (failOnUnknown)
-      ThrowRDE("Camera '%s' '%s', mode '%s' not supported, and not allowed to guess. Sorry.", make.c_str(), model.c_str(), mode.c_str());
+      ThrowRDE(
+        "Camera '%s' '%s', mode '%s' not supported, and not allowed to guess. Sorry.",
+        make.c_str(), model.c_str(), mode.c_str());
 
     return;
   }
@@ -222,7 +228,7 @@ void RawDecoder::setMetaData(const CameraMetaData* meta, const string& make,
     mRaw->subFrame(iRectangle2D(cam->cropPos, new_size));
   }
 
-  const CameraSensorInfo *sensor = cam->getSensorInfo(iso_speed);
+  const CameraSensorInfo* sensor = cam->getSensorInfo(iso_speed);
   mRaw->blackLevel = sensor->mBlackLevel;
   mRaw->whitePoint = sensor->mWhiteLevel;
   mRaw->blackAreas = cam->blackAreas;
@@ -232,7 +238,8 @@ void RawDecoder::setMetaData(const CameraMetaData* meta, const string& make,
       for (auto i = 0UL; i < cfaArea; i++) {
         mRaw->blackLevelSeparate[i] = sensor->mBlackLevelSeparate[i];
       }
-    } else if (!mRaw->isCFA && mRaw->getCpp() <= sensor->mBlackLevelSeparate.size()) {
+    } else if (!mRaw->isCFA && mRaw->getCpp() <= sensor->mBlackLevelSeparate.
+               size()) {
       for (uint32_t i = 0; i < mRaw->getCpp(); i++) {
         mRaw->blackLevelSeparate[i] = sensor->mBlackLevelSeparate[i];
       }
@@ -247,7 +254,8 @@ void RawDecoder::setMetaData(const CameraMetaData* meta, const string& make,
   if (!cfa_black.empty()) {
     vector<string> v = splitString(cfa_black, ',');
     if (v.size() != 4) {
-      mRaw->setError("Expected 4 values '10,20,30,20' as values for override_cfa_black hint.");
+      mRaw->setError(
+          "Expected 4 values '10,20,30,20' as values for override_cfa_black hint.");
     } else {
       for (int i = 0; i < 4; i++) {
         mRaw->blackLevelSeparate[i] = stoi(v[i]);
@@ -256,7 +264,7 @@ void RawDecoder::setMetaData(const CameraMetaData* meta, const string& make,
   }
 }
 
-rawspeed::RawImage RawDecoder::decodeRaw() {
+RawImage RawDecoder::decodeRaw() {
   try {
     RawImage raw = decodeRawInternal();
     raw->checkMemIsInitialized();
@@ -269,11 +277,11 @@ rawspeed::RawImage RawDecoder::decodeRaw() {
     }
 
     return raw;
-  } catch (TiffParserException &e) {
+  } catch (TiffParserException& e) {
     ThrowRDE("%s", e.what());
-  } catch (FileIOException &e) {
+  } catch (FileIOException& e) {
     ThrowRDE("%s", e.what());
-  } catch (IOException &e) {
+  } catch (IOException& e) {
     ThrowRDE("%s", e.what());
   }
 }
@@ -281,11 +289,11 @@ rawspeed::RawImage RawDecoder::decodeRaw() {
 void RawDecoder::decodeMetaData(const CameraMetaData* meta) {
   try {
     decodeMetaDataInternal(meta);
-  } catch (TiffParserException &e) {
+  } catch (TiffParserException& e) {
     ThrowRDE("%s", e.what());
-  } catch (FileIOException &e) {
+  } catch (FileIOException& e) {
     ThrowRDE("%s", e.what());
-  } catch (IOException &e) {
+  } catch (IOException& e) {
     ThrowRDE("%s", e.what());
   }
 }
@@ -293,11 +301,11 @@ void RawDecoder::decodeMetaData(const CameraMetaData* meta) {
 void RawDecoder::checkSupport(const CameraMetaData* meta) {
   try {
     checkSupportInternal(meta);
-  } catch (TiffParserException &e) {
+  } catch (TiffParserException& e) {
     ThrowRDE("%s", e.what());
-  } catch (FileIOException &e) {
+  } catch (FileIOException& e) {
     ThrowRDE("%s", e.what());
-  } catch (IOException &e) {
+  } catch (IOException& e) {
     ThrowRDE("%s", e.what());
   }
 }

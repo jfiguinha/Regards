@@ -1283,7 +1283,7 @@ If neither a row nor a cell background colour is specified the background is tra
 #ifdef WXPDFDOC_HAVE_VISIBILITY
     #define WXPDFDOC_EXPORT __attribute__ ((visibility("default")))
 #else
-    #define WXPDFDOC_EXPORT WXEXPORT
+#define WXPDFDOC_EXPORT WXEXPORT
 #endif
 
 #if defined(WXMAKINGDLL_PDFDOC)
@@ -1293,8 +1293,8 @@ If neither a row nor a cell background colour is specified the background is tra
   #define WXDLLIMPEXP_PDFDOC WXIMPORT
   #define WXDLLIMPEXP_DATA_PDFDOC(type) WXIMPORT type
 #else // not making nor using DLL
-  #define WXDLLIMPEXP_PDFDOC
-  #define WXDLLIMPEXP_DATA_PDFDOC(type) type
+#define WXDLLIMPEXP_PDFDOC
+#define WXDLLIMPEXP_DATA_PDFDOC(type) type
 #endif
 
 // Setting inheritance of wxPdfDocument
@@ -1313,7 +1313,7 @@ If neither a row nor a cell background colour is specified the background is tra
 #if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
   #define WXDLLIMPEXP_FWD_PDFDOC
 #else
-  #define WXDLLIMPEXP_FWD_PDFDOC WXDLLIMPEXP_PDFDOC
+#define WXDLLIMPEXP_FWD_PDFDOC WXDLLIMPEXP_PDFDOC
 #endif
 
 #endif // _PDFDOC_DEF_H_

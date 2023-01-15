@@ -1189,7 +1189,7 @@ int wxPdfRijndael::padEncrypt(const UINT8* input, int inputOctets, UINT8* outBuf
 		}
 		for (i = 16 - padLen; i < 16; i++)
 		{
-			block[i] = static_cast<UINT8>((UINT8)padLen ^ iv[i]);
+			block[i] = static_cast<UINT8>(static_cast<UINT8>(padLen) ^ iv[i]);
 		}
 		encrypt(block, outBuffer);
 		break;

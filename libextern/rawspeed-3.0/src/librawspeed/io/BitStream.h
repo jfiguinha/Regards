@@ -41,8 +41,7 @@ namespace rawspeed {
 //  * L<-R: new bits are pushed in on the right and pulled out on the left
 // Each BitStream specialization uses one of the two.
 
-struct BitStreamCacheBase
-{
+struct BitStreamCacheBase {
   uint64_t cache = 0;         // the actual bits stored in the cache
   unsigned int fillLevel = 0; // bits left in cache
 
@@ -56,32 +55,30 @@ struct BitStreamCacheBase
   static constexpr unsigned MaxProcessBytes = 8;
 };
 
-struct BitStreamCacheLeftInRightOut : BitStreamCacheBase
-{
-  inline void push(uint64_t bits, uint32_t count) noexcept {
+struct BitStreamCacheLeftInRightOut : BitStreamCacheBase {
+  void push(uint64_t bits, uint32_t count) noexcept {
     assert(count + fillLevel <= bitwidth(cache));
     cache |= bits << fillLevel;
     fillLevel += count;
   }
 
-  [[nodiscard]] inline uint32_t peek(uint32_t count) const noexcept {
+  [[nodiscard]] uint32_t peek(uint32_t count) const noexcept {
     return cache & ((1U << count) - 1U);
   }
 
-  inline void skip(uint32_t count) noexcept {
+  void skip(uint32_t count) noexcept {
     cache >>= count;
     fillLevel -= count;
   }
 };
 
-struct BitStreamCacheRightInLeftOut : BitStreamCacheBase
-{
-  inline void push(uint64_t bits, uint32_t count) noexcept {
+struct BitStreamCacheRightInLeftOut : BitStreamCacheBase {
+  void push(uint64_t bits, uint32_t count) noexcept {
     assert(count + fillLevel <= Size);
     assert(count != 0);
     // If the maximal size of the cache is BitStreamCacheBase::Size, and we
     // have fillLevel [high] bits set, how many empty [low] bits do we have?
-    const uint32_t vacantBits = BitStreamCacheBase::Size - fillLevel;
+    const uint32_t vacantBits = Size - fillLevel;
     // If we just directly 'or' these low bits into the cache right now,
     // how many unfilled bits of a gap will there be in the middle of a cache?
     const uint32_t emptyBitsGap = vacantBits - count;
@@ -90,11 +87,11 @@ struct BitStreamCacheRightInLeftOut : BitStreamCacheBase
     fillLevel += count;
   }
 
-  [[nodiscard]] inline uint32_t peek(uint32_t count) const noexcept {
-    return extractHighBits(cache, count, /*effectiveBitwidth=*/BitStreamCacheBase::Size);
+  [[nodiscard]] uint32_t peek(uint32_t count) const noexcept {
+    return extractHighBits(cache, count, /*effectiveBitwidth=*/Size);
   }
 
-  inline void skip(uint32_t count) noexcept {
+  void skip(uint32_t count) noexcept {
     fillLevel -= count;
     cache <<= count;
   }
@@ -110,7 +107,8 @@ struct BitStreamReplenisherBase {
   BitStreamReplenisherBase() = default;
 
   explicit BitStreamReplenisherBase(const Buffer& input)
-      : data(input.getData(0, input.getSize())), size(input.getSize()) {}
+    : data(input.getData(0, input.getSize())), size(input.getSize()) {
+  }
 
   // A temporary intermediate buffer that may be used by fill() method either
   // in debug build to enforce lack of out-of-bounds reads, or when we are
@@ -123,15 +121,18 @@ struct BitStreamForwardSequentialReplenisher final : BitStreamReplenisherBase {
   BitStreamForwardSequentialReplenisher() = default;
 
   explicit BitStreamForwardSequentialReplenisher(const Buffer& input)
-      : BitStreamReplenisherBase(input) {}
+    : BitStreamReplenisherBase(input) {
+  }
 
-  [[nodiscard]] inline size_type getPos() const { return pos; }
-  [[nodiscard]] inline size_type getRemainingSize() const {
+  [[nodiscard]] size_type getPos() const { return pos; }
+
+  [[nodiscard]] size_type getRemainingSize() const {
     return size - getPos();
   }
-  inline void markNumBytesAsConsumed(size_type numBytes) { pos += numBytes; }
 
-  inline const uint8_t* getInput() {
+  void markNumBytesAsConsumed(size_type numBytes) { pos += numBytes; }
+
+  const uint8_t* getInput() {
 #if !defined(DEBUG)
     // Do we have MaxProcessBytes or more bytes left in the input buffer?
     // If so, then we can just read from said buffer.
@@ -182,12 +183,15 @@ class BitStream final {
 public:
   BitStream() = default;
 
-  explicit BitStream(const Buffer& buf) : replenisher(buf) {}
+  explicit BitStream(const Buffer& buf)
+    : replenisher(buf) {
+  }
 
   explicit BitStream(const ByteStream& s)
-      : BitStream(s.getSubView(s.getPosition(), s.getRemainSize())) {}
+    : BitStream(s.getSubView(s.getPosition(), s.getRemainSize())) {
+  }
 
-  inline void fill(uint32_t nbits = Cache::MaxGetBits) {
+  void fill(uint32_t nbits = Cache::MaxGetBits) {
     assert(nbits <= Cache::MaxGetBits);
 
     if (cache.fillLevel >= nbits)
@@ -197,58 +201,58 @@ public:
   }
 
   // these methods might be specialized by implementations that support it
-  [[nodiscard]] inline size_type getInputPosition() const {
+  [[nodiscard]] size_type getInputPosition() const {
     return replenisher.getPos();
   }
 
   // these methods might be specialized by implementations that support it
-  [[nodiscard]] inline size_type getStreamPosition() const {
+  [[nodiscard]] size_type getStreamPosition() const {
     return getInputPosition() - (cache.fillLevel >> 3);
   }
 
-  [[nodiscard]] inline size_type getRemainingSize() const {
+  [[nodiscard]] size_type getRemainingSize() const {
     return replenisher.getRemainingSize();
   }
 
-  [[nodiscard]] inline size_type getFillLevel() const {
+  [[nodiscard]] size_type getFillLevel() const {
     return cache.fillLevel;
   }
 
-  inline uint32_t __attribute__((pure)) peekBitsNoFill(uint32_t nbits) {
+  uint32_t __attribute__((pure)) peekBitsNoFill(uint32_t nbits) {
     assert(nbits != 0);
     assert(nbits < Cache::MaxGetBits);
     assert(nbits <= cache.fillLevel);
     return cache.peek(nbits);
   }
 
-  inline void skipBitsNoFill(uint32_t nbits) {
+  void skipBitsNoFill(uint32_t nbits) {
     assert(nbits <= Cache::MaxGetBits);
     assert(nbits <= cache.fillLevel);
     cache.skip(nbits);
   }
 
-  inline uint32_t getBitsNoFill(uint32_t nbits) {
+  uint32_t getBitsNoFill(uint32_t nbits) {
     uint32_t ret = peekBitsNoFill(nbits);
     skipBitsNoFill(nbits);
     return ret;
   }
 
-  inline uint32_t peekBits(uint32_t nbits) {
+  uint32_t peekBits(uint32_t nbits) {
     fill(nbits);
     return peekBitsNoFill(nbits);
   }
 
-  inline uint32_t getBits(uint32_t nbits) {
+  uint32_t getBits(uint32_t nbits) {
     fill(nbits);
     return getBitsNoFill(nbits);
   }
 
   // This may be used to skip arbitrarily large number of *bytes*,
   // not limited by the fill level.
-  inline void skipBytes(uint32_t nbytes) {
+  void skipBytes(uint32_t nbytes) {
     uint32_t remainingBitsToSkip = 8 * nbytes;
     for (; remainingBitsToSkip >= Cache::MaxGetBits;
-         remainingBitsToSkip -= Cache::MaxGetBits) {
+           remainingBitsToSkip -= Cache::MaxGetBits) {
       fill(Cache::MaxGetBits);
       skipBitsNoFill(Cache::MaxGetBits);
     }

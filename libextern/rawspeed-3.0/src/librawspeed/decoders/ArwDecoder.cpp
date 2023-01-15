@@ -111,7 +111,7 @@ RawImage ArwDecoder::decodeRawInternal() {
   vector<const TiffIFD*> data = mRootIFD->getIFDsWithTag(STRIPOFFSETS);
 
   if (data.empty()) {
-    TiffEntry *model = mRootIFD->getEntryRecursive(MODEL);
+    TiffEntry* model = mRootIFD->getEntryRecursive(MODEL);
 
     if (model && model->getString() == "DSLR-A100") {
       // We've caught the elusive A100 in the wild, a transitional format
@@ -148,8 +148,8 @@ RawImage ArwDecoder::decodeRawInternal() {
   if (32767 != compression)
     ThrowRDE("Unsupported compression %i", compression);
 
-  TiffEntry *offsets = raw->getEntry(STRIPOFFSETS);
-  TiffEntry *counts = raw->getEntry(STRIPBYTECOUNTS);
+  TiffEntry* offsets = raw->getEntry(STRIPOFFSETS);
+  TiffEntry* counts = raw->getEntry(STRIPBYTECOUNTS);
 
   if (offsets->count != 1) {
     ThrowRDE("Multiple Strips found: %u", offsets->count);
@@ -178,7 +178,7 @@ RawImage ArwDecoder::decodeRawInternal() {
   // to detect it this way in the future.
   data = mRootIFD->getIFDsWithTag(MAKE);
   if (data.size() > 1) {
-    for (auto &i : data) {
+    for (auto& i : data) {
       string make = i->getEntry(MAKE)->getString();
       /* Check for maker "SONY" without spaces */
       if (make == "SONY")
@@ -190,25 +190,26 @@ RawImage ArwDecoder::decodeRawInternal() {
       height > 6376)
     ThrowRDE("Unexpected image dimensions found: (%u; %u)", width, height);
 
-  bool arw1 = uint64_t(counts->getU32()) * 8 != width * height * bitPerPixel;
+  bool arw1 = static_cast<uint64_t>(counts->getU32()) * 8 != width * height *
+              bitPerPixel;
   if (arw1)
     height += 8;
 
   mRaw->dim = iPoint2D(width, height);
 
   std::vector<uint16_t> curve(0x4001);
-  TiffEntry *c = raw->getEntry(SONY_CURVE);
+  TiffEntry* c = raw->getEntry(SONY_CURVE);
   std::array<uint32_t, 6> sony_curve = {{0, 0, 0, 0, 0, 4095}};
 
   for (uint32_t i = 0; i < 4; i++)
-    sony_curve[i+1] = (c->getU16(i) >> 2) & 0xfff;
+    sony_curve[i + 1] = (c->getU16(i) >> 2) & 0xfff;
 
   for (uint32_t i = 0; i < 0x4001; i++)
     curve[i] = i;
 
   for (uint32_t i = 0; i < 5; i++)
     for (uint32_t j = sony_curve[i] + 1; j <= sony_curve[i + 1]; j++)
-      curve[j] = curve[j-1] + (1 << i);
+      curve[j] = curve[j - 1] + (1 << i);
 
   RawImageCurveGuard curveHandler(&mRaw, curve, uncorrectedRawValues);
 
@@ -316,7 +317,8 @@ void ArwDecoder::ParseA100WB() {
     if (!len)
       ThrowRDE("Found entry of zero length, corrupt.");
 
-    if (0x574247 != tag) { // WBG
+    if (0x574247 != tag) {
+      // WBG
       // not the tag we are interested in, skip
       bs.skipBytes(len);
       continue;
@@ -342,7 +344,7 @@ void ArwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
   //Default
   int iso = 0;
 
-  mRaw->cfa.setCFA(iPoint2D(2,2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
+  mRaw->cfa.setCFA(iPoint2D(2, 2), CFA_RED, CFA_GREEN, CFA_GREEN, CFA_BLUE);
 
   if (mRootIFD->hasEntryRecursive(ISOSPEEDRATINGS))
     iso = mRootIFD->getEntryRecursive(ISOSPEEDRATINGS)->getU32();
@@ -355,9 +357,11 @@ void ArwDecoder::decodeMetaDataInternal(const CameraMetaData* meta) {
 
   // Set the whitebalance
   try {
-    if (id.model == "DSLR-A100") { // Handle the MRW style WB of the A100
+    if (id.model == "DSLR-A100") {
+      // Handle the MRW style WB of the A100
       ParseA100WB();
-    } else { // Everything else but the A100
+    } else {
+      // Everything else but the A100
       GetWB();
     }
   } catch (RawspeedException& e) {
@@ -374,18 +378,18 @@ void ArwDecoder::SonyDecrypt(const uint32_t* ibuf, uint32_t* obuf, uint32_t len,
   std::array<uint32_t, 128> pad;
 
   // Initialize the decryption pad from the key
-  for (int p=0; p < 4; p++)
-    pad[p] = key = uint32_t(key * 48828125UL + 1UL);
-  pad[3] = pad[3] << 1 | (pad[0]^pad[2]) >> 31;
-  for (int p=4; p < 127; p++)
-    pad[p] = (pad[p-4]^pad[p-2]) << 1 | (pad[p-3]^pad[p-1]) >> 31;
-  for (int p=0; p < 127; p++)
+  for (int p = 0; p < 4; p++)
+    pad[p] = key = static_cast<uint32_t>(key * 48828125UL + 1UL);
+  pad[3] = pad[3] << 1 | (pad[0] ^ pad[2]) >> 31;
+  for (int p = 4; p < 127; p++)
+    pad[p] = (pad[p - 4] ^ pad[p - 2]) << 1 | (pad[p - 3] ^ pad[p - 1]) >> 31;
+  for (int p = 0; p < 127; p++)
     pad[p] = getU32BE(&pad[p]);
 
   int p = 127;
   // Decrypt the buffer in place using the pad
   for (; len > 0; len--) {
-    pad[p & 127] = pad[(p+1) & 127] ^ pad[(p+1+64) & 127];
+    pad[p & 127] = pad[(p + 1) & 127] ^ pad[(p + 1 + 64) & 127];
 
     uint32_t pv;
     memcpy(&pv, &(pad[p & 127]), sizeof(uint32_t));
@@ -408,14 +412,14 @@ void ArwDecoder::GetWB() {
   if (mRootIFD->hasEntryRecursive(DNGPRIVATEDATA)) {
     NORangesSet<Buffer> ifds_undecoded;
 
-    TiffEntry *priv = mRootIFD->getEntryRecursive(DNGPRIVATEDATA);
+    TiffEntry* priv = mRootIFD->getEntryRecursive(DNGPRIVATEDATA);
     TiffRootIFD makerNoteIFD(nullptr, &ifds_undecoded, priv->getRootIfdData(),
                              priv->getU32());
 
-    TiffEntry *sony_offset = makerNoteIFD.getEntryRecursive(SONY_OFFSET);
-    TiffEntry *sony_length = makerNoteIFD.getEntryRecursive(SONY_LENGTH);
-    TiffEntry *sony_key = makerNoteIFD.getEntryRecursive(SONY_KEY);
-    if(!sony_offset || !sony_length || !sony_key || sony_key->count != 4)
+    TiffEntry* sony_offset = makerNoteIFD.getEntryRecursive(SONY_OFFSET);
+    TiffEntry* sony_length = makerNoteIFD.getEntryRecursive(SONY_LENGTH);
+    TiffEntry* sony_key = makerNoteIFD.getEntryRecursive(SONY_KEY);
+    if (!sony_offset || !sony_length || !sony_key || sony_key->count != 4)
       ThrowRDE("couldn't find the correct metadata for WB decoding");
 
     assert(sony_offset != nullptr);
@@ -448,15 +452,15 @@ void ArwDecoder::GetWB() {
     DataBuffer dbIDD(decIFD, priv->getRootIfdData().getByteOrder());
     TiffRootIFD encryptedIFD(nullptr, &ifds_decoded, dbIDD, off);
 
-    if (encryptedIFD.hasEntry(SONYGRBGLEVELS)){
-      TiffEntry *wb = encryptedIFD.getEntry(SONYGRBGLEVELS);
+    if (encryptedIFD.hasEntry(SONYGRBGLEVELS)) {
+      TiffEntry* wb = encryptedIFD.getEntry(SONYGRBGLEVELS);
       if (wb->count != 4)
         ThrowRDE("WB has %d entries instead of 4", wb->count);
       mRaw->metadata.wbCoeffs[0] = wb->getFloat(1);
       mRaw->metadata.wbCoeffs[1] = wb->getFloat(0);
       mRaw->metadata.wbCoeffs[2] = wb->getFloat(2);
-    } else if (encryptedIFD.hasEntry(SONYRGGBLEVELS)){
-      TiffEntry *wb = encryptedIFD.getEntry(SONYRGGBLEVELS);
+    } else if (encryptedIFD.hasEntry(SONYRGGBLEVELS)) {
+      TiffEntry* wb = encryptedIFD.getEntry(SONYRGGBLEVELS);
       if (wb->count != 4)
         ThrowRDE("WB has %d entries instead of 4", wb->count);
       mRaw->metadata.wbCoeffs[0] = wb->getFloat(0);

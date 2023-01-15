@@ -24,7 +24,7 @@
  */
 void LibRaw::bad_pixels(const char *cfname)
 {
-  FILE *fp = NULL;
+  FILE *fp = nullptr;
   char *cp, line[128];
   int time, row, col, r, c, rad, tot, n;
 
@@ -45,14 +45,14 @@ void LibRaw::bad_pixels(const char *cfname)
       *cp = 0;
     if (sscanf(line, "%d %d %d", &col, &row, &time) != 3)
       continue;
-    if ((unsigned)col >= width || (unsigned)row >= height)
+    if (static_cast<unsigned>(col) >= width || static_cast<unsigned>(row) >= height)
       continue;
     if (time > timestamp)
       continue;
     for (tot = n = 0, rad = 1; rad < 3 && n == 0; rad++)
       for (r = row - rad; r <= row + rad; r++)
         for (c = col - rad; c <= col + rad; c++)
-          if ((unsigned)r < height && (unsigned)c < width &&
+          if (static_cast<unsigned>(r) < height && static_cast<unsigned>(c) < width &&
               (r != row || c != col) && fcol(r, c) == fcol(row, col))
           {
             tot += BAYER2(r, c);
@@ -107,7 +107,7 @@ void LibRaw::subtract(const char *fname)
     fclose(fp);
     return;
   }
-  else if (dim[0] != width || dim[1] != height || dim[2] != 65535)
+  if (dim[0] != width || dim[1] != height || dim[2] != 65535)
   {
     imgdata.process_warnings |= LIBRAW_WARN_BAD_DARKFRAME_DIM;
     fclose(fp);

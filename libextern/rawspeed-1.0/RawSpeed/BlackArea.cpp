@@ -22,16 +22,14 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-BlackArea::BlackArea( int _offset, int _size, bool _isVertical ) :
-offset(_offset), size(_size), isVertical(_isVertical)
+namespace RawSpeed
 {
+	BlackArea::BlackArea(int _offset, int _size, bool _isVertical) :
+		offset(_offset), size(_size), isVertical(_isVertical)
+	{
+	}
 
-}
-
-BlackArea::~BlackArea(void)
-{
-}
-
+	BlackArea::~BlackArea(void)
+	{
+	}
 } // namespace RawSpeed

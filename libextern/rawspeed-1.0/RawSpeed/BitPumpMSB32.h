@@ -31,60 +31,66 @@
 #define BITS_PER_LONG_LONG (8*sizeof(uint64))
 #define MIN_GET_BITS  (BITS_PER_LONG_LONG-33)    /* max value for long getBuffer */
 
-namespace RawSpeed {
-
-// Note: Allocated buffer MUST be at least size+sizeof(uint32) large.
-
-class BitPumpMSB32
+namespace RawSpeed
 {
-public:
-  BitPumpMSB32(ByteStream *s);
-  BitPumpMSB32(const uchar8* _buffer, uint32 _size );
-	uint32 getBitsSafe(uint32 nbits);
-	uint32 getBitSafe();
-	uchar8 getByteSafe();
-	void setAbsoluteOffset(uint32 offset);     // Set offset in bytes
-  __inline uint32 getOffset() { return off-(mLeft>>3);}
-  __inline void checkPos()  { if (off>size) throw IOException("Out of buffer read");};        // Check if we have a valid position
+	// Note: Allocated buffer MUST be at least size+sizeof(uint32) large.
 
-  // Fill the buffer with at least 24 bits
-void fill();
+	class BitPumpMSB32
+	{
+	public:
+		BitPumpMSB32(ByteStream* s);
+		BitPumpMSB32(const uchar8* _buffer, uint32 _size);
+		uint32 getBitsSafe(uint32 nbits);
+		uint32 getBitSafe();
+		uchar8 getByteSafe();
+		void setAbsoluteOffset(uint32 offset); // Set offset in bytes
+		__inline uint32 getOffset() { return off - (mLeft >> 3); }
+		__inline void checkPos() { if (off > size) throw IOException("Out of buffer read"); };
+		// Check if we have a valid position
 
-  __inline uint32 getBit() {
-    if (!mLeft) fill();
+		// Fill the buffer with at least 24 bits
+		void fill();
 
-    return (uint32)((mCurr >> (--mLeft)) & 1);
-  }
+		__inline uint32 getBit()
+		{
+			if (!mLeft) fill();
 
-  __inline uint32 getBits(uint32 nbits) {
-    if (mLeft < nbits) {
-      fill();
-    }
+			return static_cast<uint32>((mCurr >> (--mLeft)) & 1);
+		}
 
-    return (uint32)((mCurr >> (mLeft -= (nbits))) & ((1 << nbits) - 1));
-  }
+		__inline uint32 getBits(uint32 nbits)
+		{
+			if (mLeft < nbits)
+			{
+				fill();
+			}
 
-  __inline void skipBits(unsigned int nbits) {
-    while (nbits) {
-      fill();
-      checkPos();
-      int n = MIN(nbits, mLeft);
-      mLeft -= n;
-      nbits -= n;
-    }
-  }
+			return static_cast<uint32>((mCurr >> (mLeft -= (nbits))) & ((1 << nbits) - 1));
+		}
 
-  virtual ~BitPumpMSB32(void);
-protected:
-  void __inline init();
-  const uchar8* buffer;
-  const uint32 size;            // This if the end of buffer.
-  uint32 mLeft;
-  uint64 mCurr;
-  uint32 off;                  // Offset in bytes
-private:
-};
+		__inline void skipBits(unsigned int nbits)
+		{
+			while (nbits)
+			{
+				fill();
+				checkPos();
+				int n = MIN(nbits, mLeft);
+				mLeft -= n;
+				nbits -= n;
+			}
+		}
 
+		virtual ~BitPumpMSB32(void);
+
+	protected:
+		void __inline init();
+		const uchar8* buffer;
+		const uint32 size; // This if the end of buffer.
+		uint32 mLeft;
+		uint64 mCurr;
+		uint32 off; // Offset in bytes
+	private:
+	};
 } // namespace RawSpeed
 
 #endif

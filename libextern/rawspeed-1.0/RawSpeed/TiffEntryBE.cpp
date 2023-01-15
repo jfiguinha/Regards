@@ -22,29 +22,35 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
+namespace RawSpeed
+{
+	TiffEntryBE::TiffEntryBE(FileMap* f, uint32 offset) : mDataSwapped(false)
+	{
+		type = TIFF_UNDEFINED; // We set type to undefined to avoid debug assertion errors.
+		data = f->getDataWrt(offset);
+		tag = static_cast<TiffTag>(getShort());
+		data += 2;
+		auto _type = static_cast<TiffDataType>(getShort());
+		data += 2;
+		count = getInt();
+		type = _type; //Now we can set it to the proper type
 
-TiffEntryBE::TiffEntryBE(FileMap* f, uint32 offset) : mDataSwapped(false) {
-  type = TIFF_UNDEFINED;  // We set type to undefined to avoid debug assertion errors.
-  data = f->getDataWrt(offset);
-  tag = (TiffTag)getShort();
-  data += 2;
-  TiffDataType _type = (TiffDataType)getShort();
-  data += 2;
-  count = getInt();
-  type = _type;         //Now we can set it to the proper type
-
-  if (type > 13)
-    ThrowTPE("Error reading TIFF structure. Unknown Type 0x%x encountered.", type);
-  uint32 bytesize = count << datashifts[type];
-  if (bytesize <= 4) {
-    data = f->getDataWrt(offset + 8);
-  } else { // offset
-    data = f->getDataWrt(offset + 8);
-    data_offset = (unsigned int)data[0] << 24 | (unsigned int)data[1] << 16 | (unsigned int)data[2] << 8 | (unsigned int)data[3];
-    CHECKSIZE(data_offset + bytesize);
-    data = f->getDataWrt(data_offset);
-  }
+		if (type > 13)
+			ThrowTPE("Error reading TIFF structure. Unknown Type 0x%x encountered.", type);
+		uint32 bytesize = count << datashifts[type];
+		if (bytesize <= 4)
+		{
+			data = f->getDataWrt(offset + 8);
+		}
+		else
+		{
+			// offset
+			data = f->getDataWrt(offset + 8);
+			data_offset = static_cast<unsigned int>(data[0]) << 24 | static_cast<unsigned int>(data[1]) << 16 |
+				static_cast<unsigned int>(data[2]) << 8 | static_cast<unsigned int>(data[3]);
+			CHECKSIZE(data_offset + bytesize);
+			data = f->getDataWrt(data_offset);
+		}
 #ifdef _DEBUG
   debug_intVal = 0xC0CAC01A;
   debug_floatVal = sqrtf(-1);
@@ -54,59 +60,67 @@ TiffEntryBE::TiffEntryBE(FileMap* f, uint32 offset) : mDataSwapped(false) {
   if (type == TIFF_FLOAT || type == TIFF_DOUBLE)
     debug_floatVal = getFloat();
 #endif
-}
+	}
 
-TiffEntryBE::~TiffEntryBE(void) {
-}
+	TiffEntryBE::~TiffEntryBE(void)
+	{
+	}
 
-unsigned int TiffEntryBE::getInt() {
-  if (!(type == TIFF_LONG || type == TIFF_SHORT || type == TIFF_UNDEFINED))
-    ThrowTPE("TIFF, getInt: Wrong type 0x%x encountered. Expected Int", type);
-  if (type == TIFF_SHORT)
-    return getShort();
-  if (mDataSwapped)
-    return *(unsigned int*)&data[0];
-  return (unsigned int)data[0] << 24 | (unsigned int)data[1] << 16 | (unsigned int)data[2] << 8 | (unsigned int)data[3];
-}
+	unsigned int TiffEntryBE::getInt()
+	{
+		if (!(type == TIFF_LONG || type == TIFF_SHORT || type == TIFF_UNDEFINED))
+			ThrowTPE("TIFF, getInt: Wrong type 0x%x encountered. Expected Int", type);
+		if (type == TIFF_SHORT)
+			return getShort();
+		if (mDataSwapped)
+			return *(unsigned int*)&data[0];
+		return static_cast<unsigned int>(data[0]) << 24 | static_cast<unsigned int>(data[1]) << 16 | static_cast<
+			unsigned int>(data[2]) << 8 | static_cast<unsigned int>(data[3]);
+	}
 
-unsigned short TiffEntryBE::getShort() {
-  if (!(type == TIFF_SHORT || type == TIFF_UNDEFINED))
-    ThrowTPE("TIFF, getShort: Wrong type 0x%x encountered. Expected Short", type);
-  if (mDataSwapped)
-    return *(unsigned short*)&data[0];
-  return (unsigned short)data[0] << 8 | (unsigned short)data[1];
-}
+	unsigned short TiffEntryBE::getShort()
+	{
+		if (!(type == TIFF_SHORT || type == TIFF_UNDEFINED))
+			ThrowTPE("TIFF, getShort: Wrong type 0x%x encountered. Expected Short", type);
+		if (mDataSwapped)
+			return *(unsigned short*)&data[0];
+		return static_cast<unsigned short>(data[0]) << 8 | static_cast<unsigned short>(data[1]);
+	}
 
-const unsigned int* TiffEntryBE::getIntArray() {
-  //TODO: Make critical section to avoid clashes.
-  if (!(type == TIFF_LONG || type == TIFF_UNDEFINED || type == TIFF_RATIONAL ||  type == TIFF_SRATIONAL))
-    ThrowTPE("TIFF, getIntArray: Wrong type 0x%x encountered. Expected Int", type);
-  if (mDataSwapped)
-    return (unsigned int*)&data[0];
+	const unsigned int* TiffEntryBE::getIntArray()
+	{
+		//TODO: Make critical section to avoid clashes.
+		if (!(type == TIFF_LONG || type == TIFF_UNDEFINED || type == TIFF_RATIONAL || type == TIFF_SRATIONAL))
+			ThrowTPE("TIFF, getIntArray: Wrong type 0x%x encountered. Expected Int", type);
+		if (mDataSwapped)
+			return (unsigned int*)&data[0];
 
-  unsigned int* d = (unsigned int*) & data[0];
-  uint32 ncount = count * ((type == TIFF_RATIONAL ||  type == TIFF_SRATIONAL) ? 2 : 1);
-  for (uint32 i = 0; i < ncount; i++) {
-    d[i] = (unsigned int)data[i*4+0] << 24 | (unsigned int)data[i*4+1] << 16 | (unsigned int)data[i*4+2] << 8 | (unsigned int)data[i*4+3];
-  }
-  mDataSwapped = true;
-  return d;
-}
+		auto d = (unsigned int*)&data[0];
+		uint32 ncount = count * ((type == TIFF_RATIONAL || type == TIFF_SRATIONAL) ? 2 : 1);
+		for (uint32 i = 0; i < ncount; i++)
+		{
+			d[i] = static_cast<unsigned int>(data[i * 4 + 0]) << 24 | static_cast<unsigned int>(data[i * 4 + 1]) << 16 |
+				static_cast<unsigned int>(data[i * 4 + 2]) << 8 | static_cast<unsigned int>(data[i * 4 + 3]);
+		}
+		mDataSwapped = true;
+		return d;
+	}
 
-const unsigned short* TiffEntryBE::getShortArray() {
-  //TODO: Make critical section to avoid clashes.
-  if (!(type == TIFF_SHORT || type == TIFF_UNDEFINED))
-    ThrowTPE("TIFF, getShortArray: Wrong type 0x%x encountered. Expected Short", type);
+	const unsigned short* TiffEntryBE::getShortArray()
+	{
+		//TODO: Make critical section to avoid clashes.
+		if (!(type == TIFF_SHORT || type == TIFF_UNDEFINED))
+			ThrowTPE("TIFF, getShortArray: Wrong type 0x%x encountered. Expected Short", type);
 
-  if (mDataSwapped)
-    return (unsigned short*)&data[0];
+		if (mDataSwapped)
+			return (unsigned short*)&data[0];
 
-  unsigned short* d = (unsigned short*) & data[0];
-  for (uint32 i = 0; i < count; i++) {
-    d[i] = (unsigned short)data[i*2+0] << 8 | (unsigned short)data[i*2+1];
-  }
-  mDataSwapped = true;
-  return d;
-}
-
+		auto d = (unsigned short*)&data[0];
+		for (uint32 i = 0; i < count; i++)
+		{
+			d[i] = static_cast<unsigned short>(data[i * 2 + 0]) << 8 | static_cast<unsigned short>(data[i * 2 + 1]);
+		}
+		mDataSwapped = true;
+		return d;
+	}
 } // namespace RawSpeed

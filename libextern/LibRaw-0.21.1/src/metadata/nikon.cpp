@@ -16,10 +16,10 @@
 
 // void hexDump(char *title, void *addr, int len);
 
-unsigned sget4_order (short _order, uchar *s);
-double sget_fixed32u (short _order, uchar *s);
-double AngleConversion_a (short _order, uchar *s);
-double AngleConversion (short _order, uchar *s);
+unsigned sget4_order(short _order, uchar *s);
+double sget_fixed32u(short _order, uchar *s);
+double AngleConversion_a(short _order, uchar *s);
+double AngleConversion(short _order, uchar *s);
 
 static const uchar xlat[2][256] = {
     {0xc1, 0xbf, 0x6d, 0x0d, 0x59, 0xc5, 0x13, 0x9d, 0x83, 0x61, 0x6b, 0x4f,
@@ -65,27 +65,37 @@ static const uchar xlat[2][256] = {
      0xba, 0x29, 0x00, 0x3c, 0x52, 0x7d, 0xa8, 0x49, 0x3b, 0x2d, 0xeb, 0x25,
      0x49, 0xfa, 0xa3, 0xaa, 0x39, 0xa7, 0xc5, 0xa7, 0x50, 0x11, 0x36, 0xfb,
      0xc6, 0x67, 0x4a, 0xf5, 0xa5, 0x12, 0x65, 0x7e, 0xb0, 0xdf, 0xaf, 0x4e,
-     0xb3, 0x61, 0x7f, 0x2f} };
+     0xb3, 0x61, 0x7f, 0x2f}};
 
 void LibRaw::processNikonLensData(uchar *LensData, unsigned len)
 {
 
-  ushort i=0;
-  if (imgdata.lens.nikon.LensType & 0x80) {
-    strcpy (ilm.LensFeatures_pre, "AF-P");
-  } else if (!(imgdata.lens.nikon.LensType & 0x01)) {
+  ushort i = 0;
+  if (imgdata.lens.nikon.LensType & 0x80)
+  {
+    strcpy(ilm.LensFeatures_pre, "AF-P");
+  }
+  else if (!(imgdata.lens.nikon.LensType & 0x01))
+  {
     ilm.LensFeatures_pre[0] = 'A';
     ilm.LensFeatures_pre[1] = 'F';
-  } else {
+  }
+  else
+  {
     ilm.LensFeatures_pre[0] = 'M';
     ilm.LensFeatures_pre[1] = 'F';
   }
 
-  if (imgdata.lens.nikon.LensType & 0x40) {
+  if (imgdata.lens.nikon.LensType & 0x40)
+  {
     ilm.LensFeatures_suf[0] = 'E';
-  } else if (imgdata.lens.nikon.LensType & 0x04) {
+  }
+  else if (imgdata.lens.nikon.LensType & 0x04)
+  {
     ilm.LensFeatures_suf[0] = 'G';
-  } else if (imgdata.lens.nikon.LensType & 0x02) {
+  }
+  else if (imgdata.lens.nikon.LensType & 0x02)
+  {
     ilm.LensFeatures_suf[0] = 'D';
   }
 
@@ -127,7 +137,7 @@ void LibRaw::processNikonLensData(uchar *LensData, unsigned len)
     case 16:
       i = 8;
       break;
-    case  58: // "Z 6", "Z 6 II", "Z 7", "Z 7 II", "Z 50", D780, "Z 5", "Z fc"
+    case 58:  // "Z 6", "Z 6 II", "Z 7", "Z 7 II", "Z 50", D780, "Z 5", "Z fc"
     case 108: // "Z 9"
       if (model[6] == 'Z')
         ilm.CameraMount = LIBRAW_MOUNT_Nikon_Z;
@@ -141,17 +151,19 @@ void LibRaw::processNikonLensData(uchar *LensData, unsigned len)
         ilm.LensMount = LIBRAW_MOUNT_Nikon_Z;
         ilm.LensID = sget2(LensData + 0x2c);
         if (
-               (ilm.LensID == 11)
-            || (ilm.LensID == 12)
-            || (ilm.LensID == 26)
-           ) ilm.LensFormat = LIBRAW_FORMAT_APSC;
-        else ilm.LensFormat = LIBRAW_FORMAT_FF;
+          (ilm.LensID == 11)
+          || (ilm.LensID == 12)
+          || (ilm.LensID == 26)
+        )
+          ilm.LensFormat = LIBRAW_FORMAT_APSC;
+        else
+          ilm.LensFormat = LIBRAW_FORMAT_FF;
         if (ilm.MaxAp4CurFocal < 0.7f)
           ilm.MaxAp4CurFocal = libraw_powf64l(
-              2.0f, (float)sget2(LensData + 0x32) / 384.0f - 1.0f);
+              2.0f, static_cast<float>(sget2(LensData + 0x32)) / 384.0f - 1.0f);
         if (ilm.CurAp < 0.7f)
           ilm.CurAp = libraw_powf64l(
-              2.0f, (float)sget2(LensData + 0x34) / 384.0f - 1.0f);
+              2.0f, static_cast<float>(sget2(LensData + 0x34)) / 384.0f - 1.0f);
         if (fabsf(ilm.CurFocal) < 1.1f)
           ilm.CurFocal = sget2(LensData + 0x38);
         return;
@@ -164,40 +176,40 @@ void LibRaw::processNikonLensData(uchar *LensData, unsigned len)
     }
     imgdata.lens.nikon.LensIDNumber = LensData[i];
     imgdata.lens.nikon.LensFStops = LensData[i + 1];
-    ilm.LensFStops = (float)imgdata.lens.nikon.LensFStops / 12.0f;
+    ilm.LensFStops = static_cast<float>(imgdata.lens.nikon.LensFStops) / 12.0f;
     if (fabsf(ilm.MinFocal) < 1.1f)
     {
-      if ((imgdata.lens.nikon.LensType ^ (uchar)0x01) || LensData[i + 2])
+      if ((imgdata.lens.nikon.LensType ^ static_cast<uchar>(0x01)) || LensData[i + 2])
         ilm.MinFocal =
-            5.0f * libraw_powf64l(2.0f, (float)LensData[i + 2] / 24.0f);
-      if ((imgdata.lens.nikon.LensType ^ (uchar)0x01) || LensData[i + 3])
+            5.0f * libraw_powf64l(2.0f, static_cast<float>(LensData[i + 2]) / 24.0f);
+      if ((imgdata.lens.nikon.LensType ^ static_cast<uchar>(0x01)) || LensData[i + 3])
         ilm.MaxFocal =
-            5.0f * libraw_powf64l(2.0f, (float)LensData[i + 3] / 24.0f);
-      if ((imgdata.lens.nikon.LensType ^ (uchar)0x01) || LensData[i + 4])
+            5.0f * libraw_powf64l(2.0f, static_cast<float>(LensData[i + 3]) / 24.0f);
+      if ((imgdata.lens.nikon.LensType ^ static_cast<uchar>(0x01)) || LensData[i + 4])
         ilm.MaxAp4MinFocal =
-            libraw_powf64l(2.0f, (float)LensData[i + 4] / 24.0f);
-      if ((imgdata.lens.nikon.LensType ^ (uchar)0x01) || LensData[i + 5])
+            libraw_powf64l(2.0f, static_cast<float>(LensData[i + 4]) / 24.0f);
+      if ((imgdata.lens.nikon.LensType ^ static_cast<uchar>(0x01)) || LensData[i + 5])
         ilm.MaxAp4MaxFocal =
-            libraw_powf64l(2.0f, (float)LensData[i + 5] / 24.0f);
+            libraw_powf64l(2.0f, static_cast<float>(LensData[i + 5]) / 24.0f);
     }
     imgdata.lens.nikon.MCUVersion = LensData[i + 6];
     if (i != 2)
     {
       if ((LensData[i - 1]) && (fabsf(ilm.CurFocal) < 1.1f))
         ilm.CurFocal =
-            5.0f * libraw_powf64l(2.0f, (float)LensData[i - 1] / 24.0f);
+            5.0f * libraw_powf64l(2.0f, static_cast<float>(LensData[i - 1]) / 24.0f);
       if (LensData[i + 7])
         imgdata.lens.nikon.EffectiveMaxAp =
-            libraw_powf64l(2.0f, (float)LensData[i + 7] / 24.0f);
+            libraw_powf64l(2.0f, static_cast<float>(LensData[i + 7]) / 24.0f);
     }
-    ilm.LensID = (unsigned long long)LensData[i] << 56 |
-                 (unsigned long long)LensData[i + 1] << 48 |
-                 (unsigned long long)LensData[i + 2] << 40 |
-                 (unsigned long long)LensData[i + 3] << 32 |
-                 (unsigned long long)LensData[i + 4] << 24 |
-                 (unsigned long long)LensData[i + 5] << 16 |
-                 (unsigned long long)LensData[i + 6] << 8 |
-                 (unsigned long long)imgdata.lens.nikon.LensType;
+    ilm.LensID = static_cast<unsigned long long>(LensData[i]) << 56 |
+                 static_cast<unsigned long long>(LensData[i + 1]) << 48 |
+                 static_cast<unsigned long long>(LensData[i + 2]) << 40 |
+                 static_cast<unsigned long long>(LensData[i + 3]) << 32 |
+                 static_cast<unsigned long long>(LensData[i + 4]) << 24 |
+                 static_cast<unsigned long long>(LensData[i + 5]) << 16 |
+                 static_cast<unsigned long long>(LensData[i + 6]) << 8 |
+                 static_cast<unsigned long long>(imgdata.lens.nikon.LensType);
   }
   else if ((len == 459) || (len == 590))
   {
@@ -212,7 +224,6 @@ void LibRaw::processNikonLensData(uchar *LensData, unsigned len)
     memcpy(ilm.Lens, LensData + 680, 64);
   }
 
-  return;
 }
 
 void LibRaw::Nikon_NRW_WBtag(int wb, int skip)
@@ -232,7 +243,6 @@ void LibRaw::Nikon_NRW_WBtag(int wb, int skip)
     icWBC[wb][2] = b << 1;
     icWBC[wb][3] = g1;
   }
-  return;
 }
 
 void LibRaw::parseNikonMakernote(int base, int uptag, unsigned /*dng_writer */)
@@ -242,7 +252,7 @@ void LibRaw::parseNikonMakernote(int base, int uptag, unsigned /*dng_writer */)
 
   unsigned c, i;
   unsigned LensData_len = 0;
-  uchar *LensData_buf=0;
+  uchar *LensData_buf = nullptr;
   uchar ColorBalanceData_buf[324];
   int ColorBalanceData_ready = 0;
   uchar ci, cj, ck;
@@ -250,11 +260,11 @@ void LibRaw::parseNikonMakernote(int base, int uptag, unsigned /*dng_writer */)
   unsigned custom_serial = 0;
 
   unsigned ShotInfo_len = 0;
-  uchar *ShotInfo_buf=0;
+  uchar *ShotInfo_buf = nullptr;
 
-/* for dump:
-uchar *cj_block, *ck_block;
-*/
+  /* for dump:
+  uchar *cj_block, *ck_block;
+  */
 
   short morder, sorder = order;
   char buf[10];
@@ -271,7 +281,7 @@ uchar *cj_block, *ck_block;
     if (get2() != 42)
       goto quit;
     offset = get4();
-    fseek(ifp, INT64(offset) - 8LL, SEEK_CUR);
+    fseek(ifp, static_cast<INT64>(offset) - 8LL, SEEK_CUR);
   }
   else
   {
@@ -329,14 +339,15 @@ uchar *cj_block, *ck_block;
       uchar uc2 = fgetc(ifp);
       uchar uc3 = fgetc(ifp);
       if (uc3)
-        imCommon.FlashEC = (float)(uc1 * uc2) / (float)uc3;
+        imCommon.FlashEC = static_cast<float>(uc1 * uc2) / static_cast<float>(uc3);
     }
     else if (tag == 0x0014)
     {
       if (tagtypeIs(LIBRAW_EXIFTOOLTAGTYPE_binary))
       {
         if (len == 2560)
-        { // E5400, E8400, E8700, E8800
+        {
+          // E5400, E8400, E8700, E8800
           fseek(ifp, 0x4e0L, SEEK_CUR);
           order = 0x4d4d;
           cam_mul[0] = get2() / 256.0;
@@ -363,13 +374,19 @@ uchar *cj_block, *ck_block;
           icWBC[LIBRAW_WBI_Flash][2] = get2();
 
           icWBC[LIBRAW_WBI_Auto][1] = icWBC[LIBRAW_WBI_Auto][3] =
-            icWBC[LIBRAW_WBI_Daylight][1] = icWBC[LIBRAW_WBI_Daylight][3] =
-            icWBC[LIBRAW_WBI_Tungsten][1] = icWBC[LIBRAW_WBI_Tungsten][3] =
-            icWBC[LIBRAW_WBI_FL_W][1] = icWBC[LIBRAW_WBI_FL_W][3] =
-            icWBC[LIBRAW_WBI_FL_N][1] = icWBC[LIBRAW_WBI_FL_N][3] =
-            icWBC[LIBRAW_WBI_FL_D][1] = icWBC[LIBRAW_WBI_FL_D][3] =
-            icWBC[LIBRAW_WBI_Cloudy][1] = icWBC[LIBRAW_WBI_Cloudy][3] =
-            icWBC[LIBRAW_WBI_Flash][1] = icWBC[LIBRAW_WBI_Flash][3] = 256;
+                                      icWBC[LIBRAW_WBI_Daylight][1] = icWBC[LIBRAW_WBI_Daylight][3] =
+                                                                      icWBC[LIBRAW_WBI_Tungsten][1] =
+                                                                      icWBC[LIBRAW_WBI_Tungsten][3] =
+                                                                      icWBC[LIBRAW_WBI_FL_W][1] =
+                                                                      icWBC[LIBRAW_WBI_FL_W][3] =
+                                                                      icWBC[LIBRAW_WBI_FL_N][1] =
+                                                                      icWBC[LIBRAW_WBI_FL_N][3] =
+                                                                      icWBC[LIBRAW_WBI_FL_D][1] =
+                                                                      icWBC[LIBRAW_WBI_FL_D][3] =
+                                                                      icWBC[LIBRAW_WBI_Cloudy][1] =
+                                                                      icWBC[LIBRAW_WBI_Cloudy][3] =
+                                                                      icWBC[LIBRAW_WBI_Flash][1] =
+                                                                      icWBC[LIBRAW_WBI_Flash][3] = 256;
 
           if (strncmp(model, "E8700", 5))
           {
@@ -380,16 +397,19 @@ uchar *cj_block, *ck_block;
           }
         }
         else if (len == 1280)
-        { // E5000, E5700
+        {
+          // E5000, E5700
           cam_mul[0] = cam_mul[1] = cam_mul[2] = cam_mul[3] = 1.0;
         }
         else
         {
           fread(buf, 1, 10, ifp);
           if (!strncmp(buf, "NRW ", 4))
-          { // P6000, P7000, P7100, B700, P1000
+          {
+            // P6000, P7000, P7100, B700, P1000
             if (!strcmp(buf + 4, "0100"))
-            { // P6000
+            {
+              // P6000
               fseek(ifp, 0x13deL, SEEK_CUR);
               cam_mul[0] = get4() << 1;
               cam_mul[1] = get4();
@@ -406,7 +426,8 @@ uchar *cj_block, *ck_block;
               Nikon_NRW_WBtag(LIBRAW_WBI_Auto, 0);
             }
             else
-            { // P7000, P7100, B700, P1000
+            {
+              // P7000, P7100, B700, P1000
               fseek(ifp, 0x16L, SEEK_CUR);
               black = get2();
               if (cam_mul[0] < 0.1f)
@@ -422,7 +443,8 @@ uchar *cj_block, *ck_block;
                 fseek(ifp, 0x26L, SEEK_CUR);
               }
               if (len != 332)
-              { // not A1000
+              {
+                // not A1000
                 Nikon_NRW_WBtag(LIBRAW_WBI_Daylight, 1);
                 Nikon_NRW_WBtag(LIBRAW_WBI_Cloudy, 1);
                 Nikon_NRW_WBtag(LIBRAW_WBI_Shade, 1);
@@ -485,11 +507,12 @@ uchar *cj_block, *ck_block;
       }
     }
     else if (tag == 0x001d)
-    { // serial number
+    {
+      // serial number
       if (len > 0)
       {
-        int model_len = (int)strbuflen(model);
-        while ((c = fgetc(ifp)) && (len-- > 0) && (c != (unsigned)EOF))
+        int model_len = static_cast<int>(strbuflen(model));
+        while ((c = fgetc(ifp)) && (len-- > 0) && (c != static_cast<unsigned>(EOF)))
         {
           if ((!custom_serial) && (!isdigit(c)))
           {
@@ -511,8 +534,10 @@ uchar *cj_block, *ck_block;
           sprintf(imgdata.shootinginfo.BodySerial, "%d", serial);
       }
     }
-    else if (tag == 0x001e) {
-      switch (get2()) {
+    else if (tag == 0x001e)
+    {
+      switch (get2())
+      {
       case 1:
         imCommon.ColorSpace = LIBRAW_COLORSPACE_sRGB;
         break;
@@ -523,9 +548,11 @@ uchar *cj_block, *ck_block;
         imCommon.ColorSpace = LIBRAW_COLORSPACE_Unknown;
         break;
       }
-    } else if (tag == 0x0025)
+    }
+    else if (tag == 0x0025)
     {
-      imCommon.real_ISO = int(100.0 * libraw_powf64l(2.0, double((uchar)fgetc(ifp)) / 12.0 - 5.0));
+      imCommon.real_ISO = static_cast<int>(100.0 * libraw_powf64l(
+                                               2.0, static_cast<double>((uchar)fgetc(ifp)) / 12.0 - 5.0));
       if (!iso_speed || (iso_speed == 65535))
       {
         iso_speed = imCommon.real_ISO;
@@ -536,22 +563,29 @@ uchar *cj_block, *ck_block;
       imNikon.Active_D_Lighting = get2();
     }
     else if (tag == 0x003b)
-    { // WB for multi-exposure (ME); all 1s for regular exposures
+    {
+      // WB for multi-exposure (ME); all 1s for regular exposures
       imNikon.ME_WB[0] = getreal(type);
       imNikon.ME_WB[2] = getreal(type);
       imNikon.ME_WB[1] = getreal(type);
       imNikon.ME_WB[3] = getreal(type);
     }
     else if (tag == 0x003d)
-    { // not corrected for file bitcount, to be patched in open_datastream
-      FORC4 cblack[RGGB_2_RGBG(c)] = get2();
+    {
+      // not corrected for file bitcount, to be patched in open_datastream
+      FORC4
+        cblack[RGGB_2_RGBG(c)] = get2();
       i = cblack[3];
-      FORC3 if (i > cblack[c]) i = cblack[c];
-      FORC4 cblack[c] -= i;
+      FORC3
+        if (i > cblack[c])
+          i = cblack[c];
+      FORC4
+        cblack[c] -= i;
       black += i;
     }
     else if (tag == 0x0045)
-    { /* upper left pixel (x,y), size (width,height) */
+    {
+      /* upper left pixel (x,y), size (width,height) */
       imgdata.sizes.raw_inset_crops[0].cleft = get2();
       imgdata.sizes.raw_inset_crops[0].ctop = get2();
       imgdata.sizes.raw_inset_crops[0].cwidth = get2();
@@ -563,15 +597,18 @@ uchar *cj_block, *ck_block;
       imNikon.NEFCompression = get2();
     }
     else if (tag == 0x0082)
-    { // lens attachment
+    {
+      // lens attachment
       stmread(ilm.Attachment, len, ifp);
     }
     else if (tag == 0x0083)
-    { // lens type
+    {
+      // lens type
       imgdata.lens.nikon.LensType = fgetc(ifp);
     }
     else if (tag == 0x0084)
-    { // lens
+    {
+      // lens
       ilm.MinFocal = getreal(type);
       ilm.MaxFocal = getreal(type);
       ilm.MaxAp4MinFocal = getreal(type);
@@ -584,8 +621,10 @@ uchar *cj_block, *ck_block;
         imCommon.afdata[imCommon.afcount].AFInfoData_tag = tag;
         imCommon.afdata[imCommon.afcount].AFInfoData_order = order;
         imCommon.afdata[imCommon.afcount].AFInfoData_length = len;
-        imCommon.afdata[imCommon.afcount].AFInfoData = (uchar *)malloc(imCommon.afdata[imCommon.afcount].AFInfoData_length);
-        fread(imCommon.afdata[imCommon.afcount].AFInfoData, imCommon.afdata[imCommon.afcount].AFInfoData_length, 1, ifp);
+        imCommon.afdata[imCommon.afcount].AFInfoData = static_cast<uchar *>(malloc(
+            imCommon.afdata[imCommon.afcount].AFInfoData_length));
+        fread(imCommon.afdata[imCommon.afcount].AFInfoData, imCommon.afdata[imCommon.afcount].AFInfoData_length, 1,
+              ifp);
         imCommon.afcount = 1;
       }
     }
@@ -597,7 +636,7 @@ uchar *cj_block, *ck_block;
       if (uc3)
       {
         imgdata.lens.nikon.LensFStops = uc1 * uc2 * (12 / uc3);
-        ilm.LensFStops = (float)imgdata.lens.nikon.LensFStops / 12.0f;
+        ilm.LensFStops = static_cast<float>(imgdata.lens.nikon.LensFStops) / 12.0f;
       }
     }
     else if ((tag == 0x008c) || (tag == 0x0096))
@@ -607,16 +646,17 @@ uchar *cj_block, *ck_block;
     else if ((tag == 0x0091) && (len > 4))
     {
       ShotInfo_len = len;
-      ShotInfo_buf = (uchar *)malloc(ShotInfo_len);
+      ShotInfo_buf = static_cast<uchar *>(malloc(ShotInfo_len));
 
-/* for dump:
-cj_block = (uchar *)malloc(ShotInfo_len);
-ck_block = (uchar *)malloc(ShotInfo_len);
-*/
+      /* for dump:
+      cj_block = (uchar *)malloc(ShotInfo_len);
+      ck_block = (uchar *)malloc(ShotInfo_len);
+      */
 
       fread(ShotInfo_buf, ShotInfo_len, 1, ifp);
-      FORC4 imNikon.ShotInfoVersion =
-          imNikon.ShotInfoVersion * 10 + ShotInfo_buf[c] - '0';
+      FORC4
+        imNikon.ShotInfoVersion =
+            imNikon.ShotInfoVersion * 10 + ShotInfo_buf[c] - '0';
     }
     else if (tag == 0x0093)
     {
@@ -628,22 +668,27 @@ ck_block = (uchar *)malloc(ShotInfo_len);
       }
     }
     else if (tag == 0x0097)
-    { // ver97
-      FORC4 imNikon.ColorBalanceVersion =
-          imNikon.ColorBalanceVersion * 10 + fgetc(ifp) - '0';
+    {
+      // ver97
+      FORC4
+        imNikon.ColorBalanceVersion =
+            imNikon.ColorBalanceVersion * 10 + fgetc(ifp) - '0';
       switch (imNikon.ColorBalanceVersion)
       {
       case 100: // NIKON D100
         fseek(ifp, 0x44L, SEEK_CUR);
-        FORC4 cam_mul[RBGG_2_RGBG(c)] = get2();
+        FORC4
+          cam_mul[RBGG_2_RGBG(c)] = get2();
         break;
       case 102: // NIKON D2H
         fseek(ifp, 0x6L, SEEK_CUR);
-        FORC4 cam_mul[RGGB_2_RGBG(c)] = get2();
+        FORC4
+          cam_mul[RGGB_2_RGBG(c)] = get2();
         break;
       case 103: // NIKON D70, D70s
         fseek(ifp, 0x10L, SEEK_CUR);
-        FORC4 cam_mul[c] = get2();
+        FORC4
+          cam_mul[c] = get2();
       }
       if (imNikon.ColorBalanceVersion >= 200)
       {
@@ -683,18 +728,21 @@ ck_block = (uchar *)malloc(ShotInfo_len);
       }
       if ((imNikon.ColorBalanceVersion >= 400) &&
           (imNikon.ColorBalanceVersion <= 405))
-      { // 1 J1, 1 V1, 1 J2, 1 V2, 1 J3, 1 S1, 1 AW1, 1 S2, 1 J4, 1 V3, 1 J5
+      {
+        // 1 J1, 1 V1, 1 J2, 1 V2, 1 J3, 1 S1, 1 AW1, 1 S2, 1 J4, 1 V3, 1 J5
         ilm.CameraFormat = LIBRAW_FORMAT_1INCH;
         ilm.CameraMount = LIBRAW_MOUNT_Nikon_CX;
       }
       else if ((imNikon.ColorBalanceVersion >= 500) &&
                (imNikon.ColorBalanceVersion <= 502))
-      { // P7700, P7800, P330, P340
+      {
+        // P7700, P7800, P330, P340
         ilm.CameraMount = ilm.LensMount = LIBRAW_MOUNT_FixedLens;
         ilm.FocalType = LIBRAW_FT_ZOOM_LENS;
       }
       else if (imNikon.ColorBalanceVersion == 601)
-      { // Coolpix A
+      {
+        // Coolpix A
         ilm.CameraFormat = ilm.LensFormat = LIBRAW_FORMAT_APSC;
         ilm.CameraMount = ilm.LensMount = LIBRAW_MOUNT_FixedLens;
         ilm.FocalType = LIBRAW_FT_PRIME_LENS;
@@ -702,8 +750,9 @@ ck_block = (uchar *)malloc(ShotInfo_len);
     }
     else if (tag == 0x0098) // contains lens data
     {
-      FORC4 imNikon.LensDataVersion =
-          imNikon.LensDataVersion * 10 + fgetc(ifp) - '0';
+      FORC4
+        imNikon.LensDataVersion =
+            imNikon.LensDataVersion * 10 + fgetc(ifp) - '0';
       switch (imNikon.LensDataVersion)
       {
       case 100:
@@ -740,7 +789,7 @@ ck_block = (uchar *)malloc(ShotInfo_len);
       }
       if (LensData_len)
       {
-        LensData_buf = (uchar *)malloc(LensData_len);
+        LensData_buf = static_cast<uchar *>(malloc(LensData_len));
         fread(LensData_buf, LensData_len, 1, ifp);
       }
     }
@@ -761,14 +810,15 @@ ck_block = (uchar *)malloc(ShotInfo_len);
       }
       cj = xlat[1][imNikon.key];
       ck = 0x60;
-      if (((unsigned)(imNikon.ColorBalanceVersion - 200) < 18) &&
+      if ((imNikon.ColorBalanceVersion - 200 < 18) &&
           ColorBalanceData_ready)
       {
         for (i = 0; i < 324; i++)
           ColorBalanceData_buf[i] ^= (cj += ci * ck++);
         i = "66666>666;6A;:;555"[imNikon.ColorBalanceVersion - 200] - '0';
-        FORC4 cam_mul[c ^ (c >> 1) ^ (i & 1)] =
-            sget2(ColorBalanceData_buf + (i & -2) + c * 2);
+        FORC4
+          cam_mul[c ^ (c >> 1) ^ (i & 1)] =
+              sget2(ColorBalanceData_buf + (i & -2) + c * 2);
       }
 
       if (LensData_len)
@@ -786,67 +836,74 @@ ck_block = (uchar *)malloc(ShotInfo_len);
         LensData_len = 0;
         free(LensData_buf);
       }
-      if (ShotInfo_len && (imNikon.ShotInfoVersion >= 208)) {
+      if (ShotInfo_len && (imNikon.ShotInfoVersion >= 208))
+      {
         unsigned RotationOffset = 0,
                  OrientationOffset = 0;
 
         cj = xlat[1][imNikon.key];
         ck = 0x60;
-        for (i = 4; i < ShotInfo_len; i++) {
+        for (i = 4; i < ShotInfo_len; i++)
+        {
           ShotInfo_buf[i] ^= (cj += ci * ck++);
 
-/* for dump:
-cj_block[i-4] = cj;
-ck_block[i-4] = ck-1;
-*/
+          /* for dump:
+          cj_block[i-4] = cj;
+          ck_block[i-4] = ck-1;
+          */
         }
-/* for dump:
-printf ("==>> ci: 0x%02x, cj at start: 0x%02x\n",
-ci, xlat[1][imNikon.key]);
-hexDump("ck array:", ck_block, ShotInfo_len-4);
-hexDump("cj array:", cj_block, ShotInfo_len-4);
-free(cj_block);
-free(ck_block);
-*/
+        /* for dump:
+        printf ("==>> ci: 0x%02x, cj at start: 0x%02x\n",
+        ci, xlat[1][imNikon.key]);
+        hexDump("ck array:", ck_block, ShotInfo_len-4);
+        hexDump("cj array:", cj_block, ShotInfo_len-4);
+        free(cj_block);
+        free(ck_block);
+        */
 
-        switch (imNikon.ShotInfoVersion) {
+        switch (imNikon.ShotInfoVersion)
+        {
         case 208: // ShotInfoD80, Rotation
           RotationOffset = 590;
-          if (RotationOffset<ShotInfo_len) {
-            imNikon.MakernotesFlip = *(ShotInfo_buf+RotationOffset) & 0x07;
+          if (RotationOffset < ShotInfo_len)
+          {
+            imNikon.MakernotesFlip = *(ShotInfo_buf + RotationOffset) & 0x07;
           }
           break;
 
         case 231: // ShotInfoD4S, Rotation, Roll/Pitch/Yaw
-          OrientationOffset  = 0x350b;
-          RotationOffset     = 0x3693;
-          if (RotationOffset<ShotInfo_len) {
-            imNikon.MakernotesFlip = (*(ShotInfo_buf+RotationOffset)>>4) & 0x03;
+          OrientationOffset = 0x350b;
+          RotationOffset = 0x3693;
+          if (RotationOffset < ShotInfo_len)
+          {
+            imNikon.MakernotesFlip = (*(ShotInfo_buf + RotationOffset) >> 4) & 0x03;
           }
           break;
 
         case 233: // ShotInfoD810, Roll/Pitch/Yaw
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0x84);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0x84);
           break;
 
         case 238: // D5,   ShotInfoD500, Rotation, Roll/Pitch/Yaw
         case 239: // D500, ShotInfoD500, Rotation, Roll/Pitch/Yaw
-          RotationOffset = sget4_order(morder, ShotInfo_buf+0x10) + 0xca;
-          if (RotationOffset > 0xca) {
+          RotationOffset = sget4_order(morder, ShotInfo_buf + 0x10) + 0xca;
+          if (RotationOffset > 0xca)
+          {
             RotationOffset -= 0xb0;
           }
-          if (RotationOffset<ShotInfo_len) {
-            imNikon.MakernotesFlip = *(ShotInfo_buf+RotationOffset) & 0x03;
+          if (RotationOffset < ShotInfo_len)
+          {
+            imNikon.MakernotesFlip = *(ShotInfo_buf + RotationOffset) & 0x03;
           }
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0xa0);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0xa0);
           break;
 
         case 243: // ShotInfoD850, Roll/Pitch/Yaw
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0xa0);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0xa0);
           break;
 
         case 246: // ShotInfoD6, Roll/Pitch/Yaw
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0x9c);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0x9c);
           break;
 
         case 800: // Z 6, Z 7,     ShotInfoZ7II, Roll/Pitch/Yaw
@@ -854,21 +911,22 @@ free(ck_block);
         case 802: // Z 5,          ShotInfoZ7II, Roll/Pitch/Yaw
         case 803: // Z 6_2, Z 7_2, ShotInfoZ7II, Roll/Pitch/Yaw
         case 804: // Z fc          ShotInfoZ7II, Roll/Pitch/Yaw
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0x98);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0x98);
           break;
 
         case 805: // Z 9,          ShotInfoZ9, Roll/Pitch/Yaw
-          OrientationOffset = sget4_order(morder, ShotInfo_buf+0x84);
+          OrientationOffset = sget4_order(morder, ShotInfo_buf + 0x84);
           break;
         }
 
-        if (OrientationOffset && ((OrientationOffset+12)<ShotInfo_len) && OrientationOffset < 0xffff) {
+        if (OrientationOffset && ((OrientationOffset + 12) < ShotInfo_len) && OrientationOffset < 0xffff)
+        {
           if (imNikon.ShotInfoVersion == 231) // ShotInfoD4S
-            imNikon.RollAngle = AngleConversion_a(morder, ShotInfo_buf+OrientationOffset);
+            imNikon.RollAngle = AngleConversion_a(morder, ShotInfo_buf + OrientationOffset);
           else
-            imNikon.RollAngle = AngleConversion(morder, ShotInfo_buf+OrientationOffset);
-          imNikon.PitchAngle  = AngleConversion (morder, ShotInfo_buf+OrientationOffset+4);
-          imNikon.YawAngle    = AngleConversion (morder, ShotInfo_buf+OrientationOffset+8);
+            imNikon.RollAngle = AngleConversion(morder, ShotInfo_buf + OrientationOffset);
+          imNikon.PitchAngle = AngleConversion(morder, ShotInfo_buf + OrientationOffset + 4);
+          imNikon.YawAngle = AngleConversion(morder, ShotInfo_buf + OrientationOffset + 8);
         }
         if ((RotationOffset) && (imNikon.MakernotesFlip < 4) && (imNikon.MakernotesFlip >= 0))
           imNikon.MakernotesFlip = "0863"[imNikon.MakernotesFlip] - '0';
@@ -877,9 +935,11 @@ free(ck_block);
       }
     }
     else if (tag == 0x00a8)
-    { // contains flash data
-      FORC4 imNikon.FlashInfoVersion =
-          imNikon.FlashInfoVersion * 10 + fgetc(ifp) - '0';
+    {
+      // contains flash data
+      FORC4
+        imNikon.FlashInfoVersion =
+            imNikon.FlashInfoVersion * 10 + fgetc(ifp) - '0';
     }
     else if (tag == 0x00b0)
     {
@@ -895,11 +955,14 @@ free(ck_block);
         imCommon.afdata[imCommon.afcount].AFInfoData_tag = tag;
         imCommon.afdata[imCommon.afcount].AFInfoData_order = order;
         int ver = 0;
-        FORC4  ver = ver * 10 + (fgetc(ifp) - '0');
+        FORC4
+          ver = ver * 10 + (fgetc(ifp) - '0');
         imCommon.afdata[imCommon.afcount].AFInfoData_version = ver;
-        imCommon.afdata[imCommon.afcount].AFInfoData_length = len-4;
-        imCommon.afdata[imCommon.afcount].AFInfoData = (uchar *)malloc(imCommon.afdata[imCommon.afcount].AFInfoData_length);
-        fread(imCommon.afdata[imCommon.afcount].AFInfoData, imCommon.afdata[imCommon.afcount].AFInfoData_length, 1, ifp);
+        imCommon.afdata[imCommon.afcount].AFInfoData_length = len - 4;
+        imCommon.afdata[imCommon.afcount].AFInfoData = static_cast<uchar *>(malloc(
+            imCommon.afdata[imCommon.afcount].AFInfoData_length));
+        fread(imCommon.afdata[imCommon.afcount].AFInfoData, imCommon.afdata[imCommon.afcount].AFInfoData_length, 1,
+              ifp);
         imCommon.afcount = 1;
       }
     }
@@ -907,7 +970,7 @@ free(ck_block);
     {
       imNikon.AFFineTune = fgetc(ifp);
       imNikon.AFFineTuneIndex = fgetc(ifp);
-      imNikon.AFFineTuneAdj = (int8_t)fgetc(ifp);
+      imNikon.AFFineTuneAdj = static_cast<int8_t>(fgetc(ifp));
     }
     else if ((tag == 0x0100) && tagtypeIs(LIBRAW_EXIFTAG_TYPE_UNDEFINED))
     {
@@ -915,7 +978,8 @@ free(ck_block);
       thumb_length = len;
     }
     else if (tag == 0x0e01)
-    { /* Nikon Software / in-camera edit Note */
+    {
+      /* Nikon Software / in-camera edit Note */
       int loopc = 0;
       int WhiteBalanceAdj_active = 0;
       order = 0x4949;
@@ -936,7 +1000,8 @@ free(ck_block);
         {
           if (WhiteBalanceAdj_active)
           {
-            union {
+            union
+            {
               double dbl;
               unsigned long long lng;
             } un;
@@ -966,7 +1031,8 @@ free(ck_block);
     }
     else if (tag == 0x0e22)
     {
-      FORC4 imNikon.NEFBitDepth[c] = get2();
+      FORC4
+        imNikon.NEFBitDepth[c] = get2();
     }
   next:
     fseek(ifp, save, SEEK_SET);
@@ -975,30 +1041,36 @@ quit:
   order = sorder;
 }
 
-unsigned sget4_order (short _order, uchar *s) {
+unsigned sget4_order(short _order, uchar *s)
+{
   unsigned v;
   if (_order == 0x4949)
-    v= s[0] | s[1] << 8 | s[2] << 16 | s[3] << 24;
+    v = s[0] | s[1] << 8 | s[2] << 16 | s[3] << 24;
   else
-    v= s[0] << 24 | s[1] << 16 | s[2] << 8 | s[3];
+    v = s[0] << 24 | s[1] << 16 | s[2] << 8 | s[3];
   return v;
 }
 
-double sget_fixed32u (short _order, uchar *s) {
-  unsigned v = sget4_order (_order, s);
-  return ((double)v / 6.5536 + 0.5) / 10000.0;
+double sget_fixed32u(short _order, uchar *s)
+{
+  unsigned v = sget4_order(_order, s);
+  return (static_cast<double>(v) / 6.5536 + 0.5) / 10000.0;
 }
 
-double AngleConversion_a (short _order, uchar *s) {
+double AngleConversion_a(short _order, uchar *s)
+{
   double v = sget_fixed32u(_order, s);
-  if (v < 180.0) return -v;
-  return 360.0-v;
+  if (v < 180.0)
+    return -v;
+  return 360.0 - v;
 }
 
-double AngleConversion (short _order, uchar *s) {
+double AngleConversion(short _order, uchar *s)
+{
   double v = sget_fixed32u(_order, s);
-  if (v <= 180.0) return v;
-  return v-360.0;
+  if (v <= 180.0)
+    return v;
+  return v - 360.0;
 }
 
 /* ========= */

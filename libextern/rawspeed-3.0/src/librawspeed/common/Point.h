@@ -33,11 +33,15 @@ public:
   using area_type = uint64_t;
 
   constexpr iPoint2D() = default;
-  constexpr iPoint2D(value_type a, value_type b) : x(a), y(b) {}
+
+  constexpr iPoint2D(value_type a, value_type b)
+    : x(a), y(b) {
+  }
 
   constexpr iPoint2D operator+(const iPoint2D& rhs) const {
     return {x + rhs.x, y + rhs.y};
   }
+
   constexpr iPoint2D operator-(const iPoint2D& rhs) const {
     return {x - rhs.x, y - rhs.y};
   }
@@ -46,6 +50,7 @@ public:
     *this = operator+(rhs);
     return *this;
   }
+
   iPoint2D& operator-=(const iPoint2D& rhs) {
     *this = operator-(rhs);
     return *this;
@@ -54,6 +59,7 @@ public:
   constexpr bool operator==(const iPoint2D& rhs) const {
     return x == rhs.x && y == rhs.y;
   }
+
   constexpr bool operator!=(const iPoint2D& rhs) const {
     return !operator==(rhs);
   }
@@ -61,6 +67,7 @@ public:
   constexpr bool operator>(const iPoint2D& rhs) const {
     return x > rhs.x && y > rhs.y;
   }
+
   constexpr bool operator<(const iPoint2D& rhs) const {
     return x < rhs.x && y < rhs.y;
   }
@@ -68,6 +75,7 @@ public:
   constexpr bool operator>=(const iPoint2D& rhs) const {
     return x >= rhs.x && y >= rhs.y;
   }
+
   constexpr bool operator<=(const iPoint2D& rhs) const {
     return x <= rhs.x && y <= rhs.y;
   }
@@ -75,7 +83,7 @@ public:
   [[nodiscard]] bool hasPositiveArea() const { return operator>({0, 0}); }
 
   [[nodiscard]] area_type __attribute__((pure)) area() const {
-    using signed_area = std::make_signed<area_type>::type;
+    using signed_area = std::make_signed_t<area_type>;
 
     area_type x_abs = std::abs(static_cast<signed_area>(x));
     area_type y_abs = std::abs(static_cast<signed_area>(y));
@@ -102,14 +110,22 @@ public:
 class iRectangle2D {
 public:
   constexpr iRectangle2D() = default;
-  constexpr iRectangle2D(const iPoint2D& pos_, const iPoint2D& dim_)
-      : pos(pos_), dim(dim_) {}
-  constexpr iRectangle2D(iPoint2D&& pos_, iPoint2D&& dim_)
-      : pos(pos_), dim(dim_) {}
 
-  constexpr iRectangle2D(int w, int h) : dim({w, h}) {}
+  constexpr iRectangle2D(const iPoint2D& pos_, const iPoint2D& dim_)
+    : pos(pos_), dim(dim_) {
+  }
+
+  constexpr iRectangle2D(iPoint2D&& pos_, iPoint2D&& dim_)
+    : pos(pos_), dim(dim_) {
+  }
+
+  constexpr iRectangle2D(int w, int h)
+    : dim({w, h}) {
+  }
+
   constexpr iRectangle2D(int x_pos, int y_pos, int w, int h)
-      : pos({x_pos, y_pos}), dim({w, h}) {}
+    : pos({x_pos, y_pos}), dim({w, h}) {
+  }
 
   [[nodiscard]] constexpr int getTop() const { return pos.y; }
   [[nodiscard]] constexpr int getBottom() const { return pos.y + dim.y; }
@@ -119,6 +135,7 @@ public:
   [[nodiscard]] constexpr int getHeight() const { return dim.y; }
   [[nodiscard]] constexpr iPoint2D getTopLeft() const { return pos; }
   [[nodiscard]] constexpr iPoint2D getBottomRight() const { return dim + pos; }
+
   [[nodiscard]] constexpr bool hasPositiveArea() const {
     return (dim.x > 0) && (dim.y > 0);
   }
@@ -151,10 +168,12 @@ public:
     pos = top_left;
     setBottomRightAbsolute(bottom_right);
   }
+
   void setAbsolute(iPoint2D&& top_left, iPoint2D&& bottom_right) {
     pos = top_left;
     setBottomRightAbsolute(bottom_right);
   }
+
   void setAbsolute(int x1, int y1, int x2, int y2) {
     setAbsolute({x1, y1}, {x2, y2});
   }

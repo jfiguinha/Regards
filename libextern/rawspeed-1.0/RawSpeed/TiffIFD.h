@@ -27,48 +27,49 @@
     http://www.klauspost.com
 */
 
-namespace RawSpeed {
-
-
-class TiffIFD
+namespace RawSpeed
 {
-public:
-  TiffIFD();
-  TiffIFD(FileMap* f, uint32 offset);
-  virtual ~TiffIFD(void);
-  vector<TiffIFD*> mSubIFD;
-  map<TiffTag, TiffEntry*> mEntry;
-  int getNextIFD() {return nextIFD;}
-  vector<TiffIFD*> getIFDsWithTag(TiffTag tag);
-  TiffEntry* getEntry(TiffTag tag);
-  bool hasEntry(TiffTag tag);
-  bool hasEntryRecursive(TiffTag tag);
-  TiffEntry* getEntryRecursive(TiffTag tag);
-  TiffIFD* parseDngPrivateData(TiffEntry *t);
-  TiffIFD* parseMakerNote(FileMap *f, uint32 offset, Endianness parent_end);
-  Endianness endian;
-protected:
-  int nextIFD;
-};
+	class TiffIFD
+	{
+	public:
+		TiffIFD();
+		TiffIFD(FileMap* f, uint32 offset);
+		virtual ~TiffIFD(void);
+		vector<TiffIFD*> mSubIFD;
+		map<TiffTag, TiffEntry*> mEntry;
+		int getNextIFD() { return nextIFD; }
+		vector<TiffIFD*> getIFDsWithTag(TiffTag tag);
+		TiffEntry* getEntry(TiffTag tag);
+		bool hasEntry(TiffTag tag);
+		bool hasEntryRecursive(TiffTag tag);
+		TiffEntry* getEntryRecursive(TiffTag tag);
+		TiffIFD* parseDngPrivateData(TiffEntry* t);
+		TiffIFD* parseMakerNote(FileMap* f, uint32 offset, Endianness parent_end);
+		Endianness endian;
 
-inline bool isTiffSameAsHost(const ushort16* tifftag) {
-  Endianness host = getHostEndianness();
-  if (tifftag[0] == 0x4949)
-    return little == host;
-  if (tifftag[0] == 0x4d4d)
-    return big == host;
-  ThrowTPE("Unknown Tiff Byteorder :%x", tifftag[0]);
-  return false;
-}
+	protected:
+		int nextIFD;
+	};
 
-inline Endianness getTiffEndianness(const ushort16* tifftag) {
-  if (tifftag[0] == 0x4949)
-    return little;
-  if (tifftag[0] == 0x4d4d)
-    return big;
-  return unknown;
-}
+	inline bool isTiffSameAsHost(const ushort16* tifftag)
+	{
+		Endianness host = getHostEndianness();
+		if (tifftag[0] == 0x4949)
+			return little == host;
+		if (tifftag[0] == 0x4d4d)
+			return big == host;
+		ThrowTPE("Unknown Tiff Byteorder :%x", tifftag[0]);
+		return false;
+	}
 
+	inline Endianness getTiffEndianness(const ushort16* tifftag)
+	{
+		if (tifftag[0] == 0x4949)
+			return little;
+		if (tifftag[0] == 0x4d4d)
+			return big;
+		return unknown;
+	}
 } // namespace RawSpeed
 
 #endif
