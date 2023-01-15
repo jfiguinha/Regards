@@ -14,7 +14,6 @@ using namespace Regards::Filter;
 
 CCropFilter::CCropFilter()
 {
-
 }
 
 CCropFilter::~CCropFilter()
@@ -33,7 +32,7 @@ bool CCropFilter::IsOpenCLCompatible()
 
 void CCropFilter::SetCursor()
 {
-	::wxSetCursor(wxCursor(wxCURSOR_CROSS));
+	wxSetCursor(wxCursor(wxCURSOR_CROSS));
 }
 
 bool CCropFilter::SupportMouseClick()
@@ -67,21 +66,22 @@ wxString CCropFilter::GetFilterLabel()
 	return CLibResource::LoadStringFromResource("LBLCROP", 1);
 }
 
-void CCropFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CCropFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                         IFiltreEffectInterface* filtreInterface)
 {
 	this->source = source;
 	this->filename = filename;
 }
 
-void CCropFilter::FilterChangeParam(CEffectParameter * effectParameter, CTreeElementValue * valueData, const wxString &key)
+void CCropFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                    const wxString& key)
 {
-
 }
 
-CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
+CImageLoadingFormat* CCropFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	cv::Mat out;
-	CImageLoadingFormat * imageLoad = nullptr;
+	CImageLoadingFormat* imageLoad = nullptr;
 	wxRect rcZoom;
 	bitmapViewer->GetDessinPt()->GetPos(rcZoom);
 	if (!source.empty())
@@ -116,30 +116,30 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 	return imageLoad;
 }
 
-CImageLoadingFormat * CCropFilter::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
+CImageLoadingFormat* CCropFilter::ApplyMouseMoveEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                       CDraw* dessin)
 {
-
-
 	return nullptr;
 }
 
-void CCropFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
+void CCropFilter::Drawing(wxMemoryDC* dc, IBitmapDisplay* bitmapViewer, CDraw* m_cDessin)
 {
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();
 
 	if (m_cDessin != nullptr)
-		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0),
+		                    wxColour(0, 0, 0), 2);
 }
 
-void CCropFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CCropFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                     CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
 	DrawingToPicture(effectParameter, bitmapViewer, filtreEffet, m_cDessin);
 }
 
 void CCropFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
-
 }
 
 bool CCropFilter::NeedToUpdateSource()
@@ -151,5 +151,3 @@ bool CCropFilter::NeedPreview()
 {
 	return true;
 }
-
-

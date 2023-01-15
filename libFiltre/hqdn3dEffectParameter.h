@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class Chqdn3dEffectParameter : public CEffectParameter
 {
 public:
@@ -11,7 +12,10 @@ public:
 		ChromTmp = 3;
 	}
 	;
-	~Chqdn3dEffectParameter(){};
+
+	~Chqdn3dEffectParameter() override
+	{
+	};
 
 	double LumSpac;
 	double ChromSpac;
@@ -20,4 +24,3 @@ public:
 	int width;
 	int height;
 };
-

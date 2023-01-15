@@ -2,7 +2,6 @@
 #include "TreeWindow.h"
 
 
-
 #include "ScrollbarWnd.h"
 #include <wx/dcbuffer.h>
 #include "TreeControl.h"
@@ -178,18 +177,15 @@ void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 */
 CTreeWindow::~CTreeWindow()
 {
-	
 }
 
 int CTreeWindow::GetWidth()
 {
-	
 	return controlWidth;
 }
 
 int CTreeWindow::GetHeight()
 {
-	
 	return controlHeight;
 }
 
@@ -198,7 +194,6 @@ int CTreeWindow::GetHeight()
 ////////////////////////////////////////////////////////////////////////////////
 void CTreeWindow::TestMaxX()
 {
-	
 	long xValue = GetWidth() - GetWindowWidth();
 
 	if (posLargeur >= xValue)
@@ -213,7 +208,6 @@ void CTreeWindow::TestMaxX()
 ////////////////////////////////////////////////////////////////////////////////
 void CTreeWindow::TestMaxY()
 {
-	
 	long yValue = GetHeight() - GetWindowHeight();
 
 	if (posHauteur >= yValue)
@@ -226,7 +220,6 @@ void CTreeWindow::TestMaxY()
 
 void CTreeWindow::OnKeyDown(wxKeyEvent& event)
 {
-	
 	bool update = false;
 
 
@@ -260,15 +253,13 @@ void CTreeWindow::OnKeyDown(wxKeyEvent& event)
 
 void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
 {
-	
-
 	bool update;
-    
-    if (event.GetWheelRotation() > 0)
-        this->MoveTop();
-    else
-        this->MoveBottom();
-    update = true; 
+
+	if (event.GetWheelRotation() > 0)
+		this->MoveTop();
+	else
+		this->MoveBottom();
+	update = true;
 
 	if (update)
 	{
@@ -280,7 +271,6 @@ void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
 void CTreeWindow::DrawBackgroundRectangle(wxDC* deviceContext, const int& y, const int& rowHeight,
                                           const wxColour& color)
 {
-	
 	wxRect rc;
 	rc.x = 0;
 	rc.width = GetWindowWidth();
@@ -292,18 +282,15 @@ void CTreeWindow::DrawBackgroundRectangle(wxDC* deviceContext, const int& y, con
 
 void CTreeWindow::CalculControlSize()
 {
-	
 	if (treeControl != nullptr)
 	{
 		controlWidth = treeControl->GetWidth();
 		controlHeight = treeControl->GetNbRow() * themeTree.GetRowHeight();
-
 	}
 }
 
 wxColour CTreeWindow::GetBackgroundColour(const int& yPos)
 {
-	
 	int moduloValue = yPos % (themeTree.GetRowHeight() * 2);
 	if (moduloValue < themeTree.GetRowHeight())
 		return themeTree.bgColorOne;
@@ -313,7 +300,6 @@ wxColour CTreeWindow::GetBackgroundColour(const int& yPos)
 
 void CTreeWindow::GenerateBackgroundBitmap(wxDC* deviceContext, const int& posLargeur, const int& posHauteur)
 {
-	
 	int yMaxPos = posHauteur; //-(posHauteur % themeTree.GetRowHeight());
 	//bool style = true;
 	int diff = themeTree.GetRowHeight() - posHauteur % themeTree.GetRowHeight();
@@ -332,7 +318,6 @@ void CTreeWindow::GenerateBackgroundBitmap(wxDC* deviceContext, const int& posLa
 
 void CTreeWindow::Resize()
 {
-	
 	GenerateScreenBuffer();
 	needToRefresh = true;
 	/*
@@ -348,7 +333,6 @@ void CTreeWindow::Resize()
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 {
-	
 	if (treeControl == nullptr)
 		return;
 
@@ -383,8 +367,6 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 
 void CTreeWindow::OnLButtonUp(wxMouseEvent& event)
 {
-	
-
 	if (treeControl == nullptr)
 		return;
 
@@ -407,8 +389,6 @@ void CTreeWindow::OnLButtonUp(wxMouseEvent& event)
 
 void CTreeWindow::OnLButtonDown(wxMouseEvent& event)
 {
-	
-
 	if (treeControl == nullptr)
 		return;
 
@@ -433,8 +413,6 @@ void CTreeWindow::OnLButtonDown(wxMouseEvent& event)
 
 void CTreeWindow::OnLDoubleClick(wxMouseEvent& event)
 {
-	
-
 	if (treeControl == nullptr)
 		return;
 
@@ -456,7 +434,6 @@ void CTreeWindow::OnLDoubleClick(wxMouseEvent& event)
 
 void CTreeWindow::UpdateTreeControl()
 {
-	
 	printf("CTreeWindow::UpdateTreeControl \n");
 	GenerateScreenBuffer();
 	needToRefresh = true;
@@ -464,7 +441,6 @@ void CTreeWindow::UpdateTreeControl()
 
 void CTreeWindow::UpdateScreenRatio()
 {
-	
 	printf("CTreeWindow::UpdateScreenRatio \n");
 	//bufferUpdate = true;
 	if (this->treeControl != nullptr)
@@ -476,7 +452,6 @@ void CTreeWindow::UpdateScreenRatio()
 
 void CTreeWindow::SetTreeControl(CTreeControl* treeControl)
 {
-	
 	printf("CTreeWindow::SetTreeControl \n");
 	this->treeControl = treeControl;
 	GenerateScreenBuffer();
@@ -485,7 +460,6 @@ void CTreeWindow::SetTreeControl(CTreeControl* treeControl)
 
 void CTreeWindow::GenerateScreenBuffer()
 {
-	
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)

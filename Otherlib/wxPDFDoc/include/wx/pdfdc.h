@@ -23,17 +23,17 @@
 /// Enumeration of map mode styles
 enum wxPdfMapModeStyle
 {
-  wxPDF_MAPMODESTYLE_STANDARD = 1,
-  wxPDF_MAPMODESTYLE_MSW,
-  wxPDF_MAPMODESTYLE_GTK,
-  wxPDF_MAPMODESTYLE_MAC,
-  /// same font sizes and text position as with the wxPdfDocument API
-  wxPDF_MAPMODESTYLE_PDF,
-  /// same font sizes as with the wxPdfDocument API
-  wxPDF_MAPMODESTYLE_PDFFONTSCALE
+	wxPDF_MAPMODESTYLE_STANDARD = 1,
+	wxPDF_MAPMODESTYLE_MSW,
+	wxPDF_MAPMODESTYLE_GTK,
+	wxPDF_MAPMODESTYLE_MAC,
+	/// same font sizes and text position as with the wxPdfDocument API
+	wxPDF_MAPMODESTYLE_PDF,
+	/// same font sizes as with the wxPdfDocument API
+	wxPDF_MAPMODESTYLE_PDFFONTSCALE
 };
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(2, 9, 0)
 // Interface of wxPdfDC for wxWidgets 2.9.x (and above)
 #include "wx/pdfdc29.h"
 #else

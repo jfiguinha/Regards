@@ -27,8 +27,8 @@ int CThumbnailDiaporama::SendMessageProgress()
 //**********************************************************************
 //
 //**********************************************************************
-int CThumbnailDiaporama::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, const int& nbFrame,
-	int width, int height, int effect)
+int CThumbnailDiaporama::ExecuteEffect(Mat& pictureOne, Mat& pictureTwo, const int& nbFrame,
+                                       int width, int height, int effect)
 {
 	return 0;
 }
@@ -38,7 +38,7 @@ int CThumbnailDiaporama::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo,
 //
 //**********************************************************************
 int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps,
-	int width, int height, int effect)
+                                        int width, int height, int effect)
 {
 	CLibPicture libPicture;
 	vector<wxString> picturefile;
@@ -61,10 +61,10 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 	int movie_duration = countNbFrame / fps;
 
 	wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr,
-		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 	this->dialog = &dialog;
-	cv::Mat old_bitmap;
-	cv::Mat src_bitmap;
+	Mat old_bitmap;
+	Mat src_bitmap;
 	for (int i = 0; i < picturefile.size(); i++)
 	{
 		src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
@@ -82,18 +82,17 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 }
 
 
-
 //**********************************************************************
 //
 //**********************************************************************
-int CThumbnailVideoOpenCVExportImpl::CopyPicture(cv::Mat& dest, const int& nbFrame, int width, int height)
+int CThumbnailVideoOpenCVExportImpl::CopyPicture(Mat& dest, const int& nbFrame, int width, int height)
 {
 	//cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
 	if (!dest.empty())
 	{
-		cv::Mat video;
-		if (dest.channels() == 1) { cvtColor(dest, video, cv::COLOR_GRAY2RGB); }
-		else if (dest.channels() == 4) { cvtColor(dest, video, cv::COLOR_BGRA2BGR); }
+		Mat video;
+		if (dest.channels() == 1) { cvtColor(dest, video, COLOR_GRAY2RGB); }
+		else if (dest.channels() == 4) { cvtColor(dest, video, COLOR_BGRA2BGR); }
 		else
 			dest.copyTo(video);
 
@@ -113,7 +112,7 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(cv::Mat& dest, const int& nbFra
 	return 0;
 }
 
-void CThumbnailVideoOpenCVExportImpl::WritePicture(cv::Mat& dest)
+void CThumbnailVideoOpenCVExportImpl::WritePicture(Mat& dest)
 {
 	outputVideo.write(dest);
 }
@@ -122,24 +121,24 @@ void CThumbnailVideoOpenCVExportImpl::WritePicture(cv::Mat& dest)
 //**********************************************************************
 //
 //**********************************************************************
-cv::Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int width, int height)
+Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int width, int height)
 {
-	cv::Mat src_bitmap;
+	Mat src_bitmap;
 	CLibPicture libPicture;
 	bool pictureOK = true;
 
 	CImageLoadingFormat* bitmap = libPicture.LoadPictureToBGRA(filename, pictureOK, width, height);
 	if (bitmap != nullptr)
 	{
-		cv::Mat pBitmap = bitmap->GetOpenCVPicture();
-		src_bitmap = cv::Mat::zeros(cv::Size(width, height), CV_8UC4);
+		Mat pBitmap = bitmap->GetOpenCVPicture();
+		src_bitmap = Mat::zeros(Size(width, height), CV_8UC4);
 		int x = (width - bitmap->GetWidth()) / 2;
 		int y = (height - bitmap->GetHeight()) / 2;
 		try
 		{
-			pBitmap.copyTo(src_bitmap(cv::Rect(x, y, pBitmap.cols, pBitmap.rows)));
+			pBitmap.copyTo(src_bitmap(Rect(x, y, pBitmap.cols, pBitmap.rows)));
 		}
-		catch (cv::Exception& e)
+		catch (Exception& e)
 		{
 			const char* err_msg = e.what();
 			std::cout << "exception caught: " << err_msg << std::endl;

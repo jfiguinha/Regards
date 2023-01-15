@@ -12,10 +12,10 @@ ULONG GetBitmapHeaderSize(LPCVOID pDib)
 
 	switch (nHeaderSize)
 	{
-		case sizeof(BITMAPCOREHEADER) :
-			case sizeof(BITMAPINFOHEADER) :
-			case sizeof(BITMAPV4HEADER) :
-			case sizeof(BITMAPV5HEADER) :
+	case sizeof(BITMAPCOREHEADER):
+	case sizeof(BITMAPINFOHEADER):
+	case sizeof(BITMAPV4HEADER):
+	case sizeof(BITMAPV5HEADER):
 		{
 			return nHeaderSize;
 		}
@@ -41,7 +41,7 @@ ULONG GetBitmapLineWidthInBytes(ULONG nWidthInPixels, ULONG nBitCount)
 // GetBitmapDimensions
 //
 
-BOOL GetBitmapDimensions(LPCVOID pDib, UINT *pWidth, UINT *pHeight)
+BOOL GetBitmapDimensions(LPCVOID pDib, UINT* pWidth, UINT* pHeight)
 {
 	ULONG nHeaderSize = GetBitmapHeaderSize(pDib);
 
@@ -52,28 +52,28 @@ BOOL GetBitmapDimensions(LPCVOID pDib, UINT *pWidth, UINT *pHeight)
 
 	if (nHeaderSize == sizeof(BITMAPCOREHEADER))
 	{
-		PBITMAPCOREHEADER pbmch = (PBITMAPCOREHEADER)pDib;
+		auto pbmch = (PBITMAPCOREHEADER)pDib;
 
-		if (pWidth != NULL)
+		if (pWidth != nullptr)
 		{
 			*pWidth = pbmch->bcWidth;
 		}
 
-		if (pHeight != NULL)
+		if (pHeight != nullptr)
 		{
 			*pHeight = pbmch->bcHeight;
 		}
 	}
 	else
 	{
-		PBITMAPINFOHEADER pbmih = (PBITMAPINFOHEADER)pDib;
+		auto pbmih = (PBITMAPINFOHEADER)pDib;
 
-		if (pWidth != NULL)
+		if (pWidth != nullptr)
 		{
 			*pWidth = pbmih->biWidth;
 		}
 
-		if (pHeight != NULL)
+		if (pHeight != nullptr)
 		{
 			*pHeight = abs(pbmih->biHeight);
 		}
@@ -105,13 +105,13 @@ ULONG GetBitmapSize(LPCVOID pDib)
 
 	if (nHeaderSize == sizeof(BITMAPCOREHEADER))
 	{
-		PBITMAPCOREHEADER pbmch = (PBITMAPCOREHEADER)pDib;
+		auto pbmch = (PBITMAPCOREHEADER)pDib;
 
 		// Add the color table size
 
 		if (pbmch->bcBitCount <= 8)
 		{
-			nDibSize += (ULONG)sizeof(RGBTRIPLE) * (1 << pbmch->bcBitCount);
+			nDibSize += static_cast<ULONG>(sizeof(RGBTRIPLE)) * (1 << pbmch->bcBitCount);
 		}
 
 		// Add the bitmap size
@@ -124,7 +124,7 @@ ULONG GetBitmapSize(LPCVOID pDib)
 	{
 		// this is at least a BITMAPINFOHEADER
 
-		PBITMAPINFOHEADER pbmih = (PBITMAPINFOHEADER)pDib;
+		auto pbmih = (PBITMAPINFOHEADER)pDib;
 
 		// Add the color table size
 
@@ -134,7 +134,7 @@ ULONG GetBitmapSize(LPCVOID pDib)
 		}
 		else if (pbmih->biBitCount <= 8)
 		{
-			nDibSize += (ULONG)sizeof(RGBQUAD) * (1 << pbmih->biBitCount);
+			nDibSize += static_cast<ULONG>(sizeof(RGBQUAD)) * (1 << pbmih->biBitCount);
 		}
 
 		// Add the bitmap size
@@ -176,7 +176,7 @@ ULONG GetBitmapSize(LPCVOID pDib)
 			// If this is a V5 header and an ICM profile is specified,
 			// we need to consider the profile data size
 
-			PBITMAPV5HEADER pbV5h = (PBITMAPV5HEADER)pDib;
+			auto pbV5h = (PBITMAPV5HEADER)pDib;
 
 			// if there is some padding before the profile data, add it
 
@@ -217,20 +217,20 @@ ULONG GetBitmapOffsetBits(LPCVOID pDib)
 
 	if (nHeaderSize == sizeof(BITMAPCOREHEADER))
 	{
-		PBITMAPCOREHEADER pbmch = (PBITMAPCOREHEADER)pDib;
+		auto pbmch = (PBITMAPCOREHEADER)pDib;
 
 		// Add the color table size
 
 		if (pbmch->bcBitCount <= 8)
 		{
-			nOffsetBits += (ULONG)sizeof(RGBTRIPLE) * (1 << pbmch->bcBitCount);
+			nOffsetBits += static_cast<ULONG>(sizeof(RGBTRIPLE)) * (1 << pbmch->bcBitCount);
 		}
 	}
 	else
 	{
 		// this is at least a BITMAPINFOHEADER
 
-		PBITMAPINFOHEADER pbmih = (PBITMAPINFOHEADER)pDib;
+		auto pbmih = (PBITMAPINFOHEADER)pDib;
 
 		// Add the color table size
 
@@ -240,7 +240,7 @@ ULONG GetBitmapOffsetBits(LPCVOID pDib)
 		}
 		else if (pbmih->biBitCount <= 8)
 		{
-			nOffsetBits += (ULONG)sizeof(RGBQUAD) * (1 << pbmih->biBitCount);
+			nOffsetBits += static_cast<ULONG>(sizeof(RGBQUAD)) * (1 << pbmih->biBitCount);
 		}
 
 		// Consider special cases
@@ -261,7 +261,7 @@ ULONG GetBitmapOffsetBits(LPCVOID pDib)
 			// If this is a V5 header and an ICM profile is specified,
 			// we need to consider the profile data size
 
-			PBITMAPV5HEADER pbV5h = (PBITMAPV5HEADER)pDib;
+			auto pbV5h = (PBITMAPV5HEADER)pDib;
 
 			// if the profile data comes before the pixel data, add it
 
@@ -294,7 +294,7 @@ BOOL FixBitmapHeight(PVOID pDib, ULONG nSize, BOOL bTopDown)
 
 	if (nHeaderSize == sizeof(BITMAPCOREHEADER))
 	{
-		PBITMAPCOREHEADER pbmch = (PBITMAPCOREHEADER)pDib;
+		auto pbmch = static_cast<PBITMAPCOREHEADER>(pDib);
 
 		// fix the height value if necessary
 
@@ -308,7 +308,7 @@ BOOL FixBitmapHeight(PVOID pDib, ULONG nSize, BOOL bTopDown)
 
 			if (pbmch->bcBitCount <= 8)
 			{
-				nSizeImage -= (ULONG)sizeof(RGBTRIPLE) * (1 << pbmch->bcBitCount);
+				nSizeImage -= static_cast<ULONG>(sizeof(RGBTRIPLE)) * (1 << pbmch->bcBitCount);
 			}
 
 			// calculate the height
@@ -322,14 +322,14 @@ BOOL FixBitmapHeight(PVOID pDib, ULONG nSize, BOOL bTopDown)
 
 			LONG nHeight = nSizeImage / nWidth;
 
-			pbmch->bcHeight = (WORD)nHeight;
+			pbmch->bcHeight = static_cast<WORD>(nHeight);
 		}
 	}
 	else
 	{
 		// this is at least a BITMAPINFOHEADER
 
-		PBITMAPINFOHEADER pbmih = (PBITMAPINFOHEADER)pDib;
+		auto pbmih = static_cast<PBITMAPINFOHEADER>(pDib);
 
 		// fix the height value if necessary
 
@@ -359,7 +359,7 @@ BOOL FixBitmapHeight(PVOID pDib, ULONG nSize, BOOL bTopDown)
 				}
 				else if (pbmih->biBitCount <= 8)
 				{
-					nSizeImage -= (ULONG)sizeof(RGBQUAD) * (1 << pbmih->biBitCount);
+					nSizeImage -= static_cast<ULONG>(sizeof(RGBQUAD)) * (1 << pbmih->biBitCount);
 				}
 
 				// Consider special cases
@@ -380,7 +380,7 @@ BOOL FixBitmapHeight(PVOID pDib, ULONG nSize, BOOL bTopDown)
 					// If this is a V5 header and an ICM profile is specified,
 					// we need to consider the profile data size
 
-					PBITMAPV5HEADER pbV5h = (PBITMAPV5HEADER)pDib;
+					auto pbV5h = static_cast<PBITMAPV5HEADER>(pDib);
 
 					// add the profile data size
 

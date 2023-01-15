@@ -42,7 +42,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		myGLVersion = 0;
 		version = glGetString(GL_VERSION);
 		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
-        isInit = true;
+		isInit = true;
 	}
 }
 
@@ -228,7 +228,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, int left, int top, bool inver
 	glPopMatrix();
 
 	glFlush();
-
 }
 
 
@@ -315,7 +314,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const int& width, const int& 
 	glPopMatrix();
 
 	glFlush();
-
 }
 
 
@@ -402,7 +400,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 	glPopMatrix();
 
 	glFlush();
-
 }
 
 /*
@@ -436,4 +433,3 @@ GLTexture* CRenderOpenGL::GetGLTexture()
 {
 	return textureDisplay;
 }
-

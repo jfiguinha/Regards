@@ -11,13 +11,14 @@
 #include <picture_utility.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
+
 class CThumbnailVideoPimpl
 {
 public:
 	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware)
 	{
 		this->filename = fileName;
-        printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
+		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 		videoThumbnailer = new CVideoPlayer(filename, false);
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
@@ -81,7 +82,7 @@ public:
 		}
 	}
 
-	void GetThumbnail(cv::Mat & image, const int & thumbnailWidth, const int& thumbnailHeight)
+	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
 	{
 		if (m_seekTimeInSecond > 0)
 			videoThumbnailer->SeekToPos(m_seekTimeInSecond);
@@ -100,7 +101,7 @@ public:
 				int scaledHeight = thumbnailHeight;
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
-				cv::resize(image, image, cv::Size(scaledWidth, scaledHeight));
+				resize(image, image, cv::Size(scaledWidth, scaledHeight));
 			}
 			else
 			{
@@ -111,17 +112,16 @@ public:
 				int scaledHeight = thumbnailHeight;
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
-				cv::resize(image, image, cv::Size(scaledHeight, scaledWidth));
+				resize(image, image, cv::Size(scaledHeight, scaledWidth));
 			}
 		}
 
 		//CPictureUtility::ApplyTransform(image);
-
 	}
 
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
-	CVideoPlayer * videoThumbnailer = nullptr;
+	CVideoPlayer* videoThumbnailer = nullptr;
 	int width = 0;
 	int height = 0;
 	int rotation = 0;
@@ -141,7 +141,7 @@ CThumbnailVideo::~CThumbnailVideo()
 }
 
 int CThumbnailVideo::GetOrientation()
-{	
+{
 	int rotation = pimpl->rotation;
 	if (rotation == -90)
 		return 90;
@@ -150,7 +150,7 @@ int CThumbnailVideo::GetOrientation()
 	return rotation;
 }
 
-void CThumbnailVideo::GetVideoDimensions(int & width, int & height)
+void CThumbnailVideo::GetVideoDimensions(int& width, int& height)
 {
 	width = pimpl->width;
 	height = pimpl->height;
@@ -163,8 +163,6 @@ cv::Mat CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thu
 	{
 		pimpl->SetMoviePos(0);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
-
-
 	}
 	catch (...)
 	{
@@ -172,15 +170,14 @@ cv::Mat CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thu
 	return image;
 }
 
-cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth,
+                                          const int& thumbnailHeight)
 {
 	cv::Mat image;
 	try
 	{
 		pimpl->SetMoviePos(timePosition);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
-
-		
 	}
 	catch (...)
 	{
@@ -188,7 +185,7 @@ cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& 
 	return image;
 }
 
-cv::Mat CThumbnailVideo::GetVideoFramePercent(const int &percent, const int & thumbnailWidth, const int & thumbnailHeight)
+cv::Mat CThumbnailVideo::GetVideoFramePercent(const int& percent, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
 
@@ -209,9 +206,9 @@ int64_t CThumbnailVideo::GetMovieDuration()
 	return pimpl->m_videoMovieDuration;
 }
 
-vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &widthThumbnail,const int &heightThumbnail)
+vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail)
 {
-	vector<CImageVideoThumbnail *> listPicture;
+	vector<CImageVideoThumbnail*> listPicture;
 
 	int duration = pimpl->m_videoMovieDuration;
 
@@ -221,7 +218,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 		{
 			try
 			{
-				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
+				auto cxVideo = new CImageVideoThumbnail();
 				cv::Mat image;
 				int timePosition = 0;
 
@@ -254,7 +251,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 		{
 			try
 			{
-				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
+				auto cxVideo = new CImageVideoThumbnail();
 				cv::Mat image;
 				int timePosition = 0;
 

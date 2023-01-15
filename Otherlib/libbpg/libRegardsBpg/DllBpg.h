@@ -6,7 +6,6 @@
 // définis avec cette macro comme étant exportés.
 
 
-
 #ifdef WIN32
 #include <Windows.h>
 #include <stdint.h>
@@ -29,11 +28,15 @@
 extern "C" {
 #endif
 
-DLLFORMATBPG_API int BPG_GetDimensions(uint8_t * buf, size_t buf_len, int & width, int & height);
-DLLFORMATBPG_API int BPG_GetPictureRGBA(uint8_t * buf, size_t buf_len, uint8_t * data, size_t data_len, int & width, int & height, bool flip);
-DLLFORMATBPG_API int BPG_GetPictureBGRA(uint8_t * buf, size_t buf_len, uint8_t * data, size_t data_len, int & width, int & height, bool flip);
-DLLFORMATBPG_API int BPG_SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossless_mode, int bit_depth, const char * filename);
-DLLFORMATBPG_API uint8_t * BPG_ReadToPNGPicture(uint8_t * buf, size_t buf_len, size_t * buf_out, int bit_depth, int * returnValue);
+DLLFORMATBPG_API int BPG_GetDimensions(uint8_t* buf, size_t buf_len, int& width, int& height);
+DLLFORMATBPG_API int BPG_GetPictureRGBA(uint8_t* buf, size_t buf_len, uint8_t* data, size_t data_len, int& width,
+                                        int& height, bool flip);
+DLLFORMATBPG_API int BPG_GetPictureBGRA(uint8_t* buf, size_t buf_len, uint8_t* data, size_t data_len, int& width,
+                                        int& height, bool flip);
+DLLFORMATBPG_API int BPG_SavePNGPicture(uint8_t* buf, size_t buf_len, int compress_level, int lossless_mode,
+                                        int bit_depth, const char* filename);
+DLLFORMATBPG_API uint8_t* BPG_ReadToPNGPicture(uint8_t* buf, size_t buf_len, size_t* buf_out, int bit_depth,
+                                               int* returnValue);
 
 #ifdef __cplusplus
 }

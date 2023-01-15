@@ -1,4 +1,3 @@
-
 // ReSharper disable All
 #include <header.h>
 #include "DiaporamaTransition.h"
@@ -14,7 +13,7 @@ using namespace Regards::Picture;
 //
 //**********************************************************************
 int CDiaporamaTransition::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, const int& nbFrame,
-	int width, int height, int effect)
+                                        int width, int height, int effect)
 {
 	CLibPicture libPicture;
 
@@ -62,7 +61,7 @@ int CDiaporamaTransition::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo
 //
 //**********************************************************************
 int CDiaporamaTransition::ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps,
-	int width, int height, int effect)
+                                         int width, int height, int effect)
 {
 	CLibPicture libPicture;
 	vector<wxString> picturefile;
@@ -85,7 +84,7 @@ int CDiaporamaTransition::ExecuteProcess(const wxString& outfile, vector<wxStrin
 	int movie_duration = countNbFrame / fps;
 
 	wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr,
-		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 	this->dialog = &dialog;
 	cv::Mat old_bitmap;
 	cv::Mat src_bitmap;
@@ -97,7 +96,6 @@ int CDiaporamaTransition::ExecuteProcess(const wxString& outfile, vector<wxStrin
 		ExecuteEffect(mat, src_bitmap, nbFrameByPicture, width, height, effect);
 		if (endProcess)
 			break;
-
 	}
 
 	if (endProcess)
@@ -106,4 +104,3 @@ int CDiaporamaTransition::ExecuteProcess(const wxString& outfile, vector<wxStrin
 
 	return movie_duration;
 }
-

@@ -44,8 +44,6 @@ const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
 #else
     return std::string(ConvertToUTF8(fileName)); 
 #endif
-    
-
 }
 
 const char* CConvertUtility::ConvertToUTF8(const wxString& s)
@@ -58,12 +56,10 @@ const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 	return s.mb_str(wxConvUTF8);
 #endif
  * */
- 
- 
- 
+
+
 	return s.ToUTF8();
 }
-
 
 
 wxString CConvertUtility::GetTimeLibelle(const int& secs)

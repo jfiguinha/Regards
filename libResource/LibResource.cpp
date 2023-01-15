@@ -43,181 +43,180 @@ void CLibResource::KillSqlEngine()
 	CSqlEngine::kill(L"ResourceDB");
 }
 
-wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight)
+wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth,
+                                                   const int& buttonHeight)
 {
-    int w = 0, h = 0;
-    int width = buttonWidth;
-    int height = buttonHeight;
+	int w = 0, h = 0;
+	int width = buttonWidth;
+	int height = buttonHeight;
 
-    if (width != height)
-    {
-        if (width > height)
-        {
-            width = height;
-        }
-        else
-        {
-            height = width;
-        }
-    }
+	if (width != height)
+	{
+		if (width > height)
+		{
+			width = height;
+		}
+		else
+		{
+			height = width;
+		}
+	}
 
-    //Calcul Ratio picture
-    bool isError = false;
+	//Calcul Ratio picture
+	bool isError = false;
 
-    {
-        NSVGimage* image = NULL;
-        image = nsvgParseFromFile(CConvertUtility::ConvertToUTF8(filename), "px", 96.0f, 0, 0);
-        if (image == NULL)
-        {
-            isError = true;
-            printf("Could not open SVG image.\n");
-        }
+	{
+		NSVGimage* image = nullptr;
+		image = nsvgParseFromFile(CConvertUtility::ConvertToUTF8(filename), "px", 96.0f, 0, 0);
+		if (image == nullptr)
+		{
+			isError = true;
+			printf("Could not open SVG image.\n");
+		}
 
-        if (!isError)
-        {
-            w = (int)image->width;
-            h = (int)image->height;
+		if (!isError)
+		{
+			w = static_cast<int>(image->width);
+			h = static_cast<int>(image->height);
+		}
 
-        }
+		nsvgDelete(image);
+	}
 
-        nsvgDelete(image);
-    }
+	float ratio = 1.0f;
+	if (w != h)
+	{
+		if (w > h)
+		{
+			ratio = static_cast<float>(h) / static_cast<float>(w);
+			height = width * ratio;
+		}
+		else
+		{
+			ratio = static_cast<float>(w) / static_cast<float>(h);
+			width = height * ratio;
+		}
+	}
 
-    float ratio = 1.0f;
-    if (w != h)
-    {
-        if (w > h)
-        {
-            ratio = (float)h / (float)w;
-            height = width * ratio;
-        }
-        else
-        {
-            ratio = (float)w / (float)h;
-            width = height * ratio;
-        }
-    }
+	wxImage img;
+	NSVGimage* image = nullptr;
+	NSVGrasterizer* rast = nullptr;
+	uint8_t* data = nullptr;
+	image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, width, height);
+	if (image == nullptr)
+	{
+		isError = true;
+		printf("Could not open SVG image.\n");
+	}
 
-    wxImage img;
-    NSVGimage *image = NULL;
-    NSVGrasterizer *rast = NULL;
-    uint8_t * data = nullptr;
-    image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, width, height);
-    if (image == NULL)
-    {
-        isError = true;
-        printf("Could not open SVG image.\n");
-    }
+	if (!isError)
+	{
+		w = static_cast<int>(image->width);
+		h = static_cast<int>(image->height);
+		rast = nsvgCreateRasterizer();
+	}
 
-    if(!isError)
-    {
-        w = (int)image->width;
-        h = (int)image->height;
-        rast = nsvgCreateRasterizer();
-    }
+	if (rast == nullptr)
+	{
+		isError = true;
+		printf("Could not init rasterizer.\n");
+	}
 
-    if (rast == NULL) {
-        isError = true;
-        printf("Could not init rasterizer.\n");
-    }
+	if (!isError)
+	{
+		data = new uint8_t[w * h * 4];
+		if (data == nullptr)
+		{
+			printf("Could not alloc image buffer.\n");
+			isError = true;
+		}
+	}
 
-    if(!isError)
-    {
-        data = new uint8_t[w*h*4];
-        if (data == NULL) {
-            printf("Could not alloc image buffer.\n");
-            isError = true;
-        }
-    }
+	if (!isError)
+		nsvgRasterize(rast, image, 0, 0, 1, data, w, h, w * 4);
 
-    if(!isError)
-        nsvgRasterize(rast, image, 0,0,1, data, w, h, w*4);
+	nsvgDeleteRasterizer(rast);
+	nsvgDelete(image);
 
-    nsvgDeleteRasterizer(rast);
-    nsvgDelete(image);
+	bool flip = false;
 
-    bool flip = false;
+	if (!isError)
+	{
+		const int width = w;
+		const int height = h;
+		const int widthSrcSize = width * 4;
 
-    if(!isError)
-    {
-        const int width = w;
-        const int height = h;
-        const int widthSrcSize = width * 4;
+		wxImage anImage(width, height, true);
+		anImage.InitAlpha();
 
-        wxImage anImage(width, height, true);
-        anImage.InitAlpha();
+		unsigned char* dataOut = anImage.GetData();
+		unsigned char* dataAlpha = anImage.GetAlpha();
 
-        unsigned char* dataOut = anImage.GetData();
-        unsigned char* dataAlpha = anImage.GetAlpha();
+		{
+			if (data != nullptr)
+			{
+				tbb::parallel_for(0, height, 1, [=](int y)
+				{
+					//changed line
+					int pos_data = y * widthSrcSize;
+					int posDataOut = y * (width * 3);
+					int posAlpha = y * width;
 
-        {
-            if (data != nullptr)
-            {
-
-                tbb::parallel_for(0, height, 1, [=](int y) { //changed line
-                    int pos_data = y * widthSrcSize;
-                    int posDataOut = y * (width * 3);
-                    int posAlpha = y * width;
-
-                    for (auto x = 0; x < width; x++)
-                    {
-                        dataOut[posDataOut] = data[pos_data + 2];
-                        dataOut[posDataOut + 1] = data[pos_data + 1];
-                        dataOut[posDataOut + 2] = data[pos_data];
-                        dataAlpha[posAlpha++] = data[pos_data + 3];
-                        pos_data += 4;
-                        posDataOut += 3;
-                    }
-                    }); //added ); at the end
-
-            }
-            delete[] data;
-        }
-
-
-        {
-            int posX = (buttonWidth - w) / 2;
-            int posY = (buttonHeight - h) / 2;
-            wxImage final(buttonWidth, buttonHeight, true);
-            final.InitAlpha();
-            unsigned char* dataAlpha = final.GetAlpha();
-            if (dataAlpha != nullptr)
-            {
-                tbb::parallel_for(0, buttonHeight, 1, [=](int y)
-                {
-                    int posAlpha = y * buttonWidth;
-                    for (auto x = 0; x < buttonWidth; x++)
-                        dataAlpha[posAlpha++] = 0;
-                });
+					for (auto x = 0; x < width; x++)
+					{
+						dataOut[posDataOut] = data[pos_data + 2];
+						dataOut[posDataOut + 1] = data[pos_data + 1];
+						dataOut[posDataOut + 2] = data[pos_data];
+						dataAlpha[posAlpha++] = data[pos_data + 3];
+						pos_data += 4;
+						posDataOut += 3;
+					}
+				}); //added ); at the end
+			}
+			delete[] data;
+		}
 
 
-            }
-            final.Paste(anImage, posX, posY);
-            return final;
-        }
-
-    }
+		{
+			int posX = (buttonWidth - w) / 2;
+			int posY = (buttonHeight - h) / 2;
+			wxImage final(buttonWidth, buttonHeight, true);
+			final.InitAlpha();
+			unsigned char* dataAlpha = final.GetAlpha();
+			if (dataAlpha != nullptr)
+			{
+				tbb::parallel_for(0, buttonHeight, 1, [=](int y)
+				{
+					int posAlpha = y * buttonWidth;
+					for (auto x = 0; x < buttonWidth; x++)
+						dataAlpha[posAlpha++] = 0;
+				});
+			}
+			final.Paste(anImage, posX, posY);
+			return final;
+		}
+	}
 	return img;
 }
 
 
 vector<wxString> CLibResource::GetSavePictureFormat()
 {
-    CSqlResource sqlResource;
-    return sqlResource.GetSavePictureFormat();
+	CSqlResource sqlResource;
+	return sqlResource.GetSavePictureFormat();
 }
 
 vector<wxString> CLibResource::GetSavePictureExtension()
 {
-    CSqlResource sqlResource;
-    return sqlResource.GetSavePictureExtension();
+	CSqlResource sqlResource;
+	return sqlResource.GetSavePictureExtension();
 }
 
 wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight)
 {
-    CSqlResource sqlResource;
-    wxString filename = sqlResource.GetFilepath(idName);
-    return CreatePictureFromSVGFilename(filename, buttonWidth, buttonHeight);
+	CSqlResource sqlResource;
+	wxString filename = sqlResource.GetFilepath(idName);
+	return CreatePictureFromSVGFilename(filename, buttonWidth, buttonHeight);
 }
 
 wxString CLibResource::LoadExifNameFromResource(const wxString& id)

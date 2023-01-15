@@ -17,7 +17,6 @@ CGaussianBlurFilter::CGaussianBlurFilter()
 
 CGaussianBlurFilter::~CGaussianBlurFilter()
 {
-
 }
 
 int CGaussianBlurFilter::TypeApplyFilter()
@@ -41,30 +40,34 @@ int CGaussianBlurFilter::GetTypeFilter()
 	return CONVOLUTION_EFFECT; //
 }
 
-void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CGaussianBlurFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                 IFiltreEffectInterface* filtreInterface)
 {
-	CGaussianBlurEffectParameter * gaussianBlurEffectParameter = (CGaussianBlurEffectParameter *)effectParameter;
+	auto gaussianBlurEffectParameter = static_cast<CGaussianBlurEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
 	vector<int> elementColor;
 	for (auto i = 0; i < 26; i++)
 	{
-		if(i % 2 == 1)
+		if (i % 2 == 1)
 			elementColor.push_back(i);
 	}
-		
 
-	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(gaussianBlurEffectParameter->radius), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(gaussianBlurEffectParameter->boxSize), &elementColor);
+
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(gaussianBlurEffectParameter->radius),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(gaussianBlurEffectParameter->boxSize),
+	                              &elementColor);
 }
 
-void CGaussianBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CGaussianBlurFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                            const wxString& key)
 {
-	CGaussianBlurEffectParameter * gaussianBlurEffectParameter = (CGaussianBlurEffectParameter *)effectParameter;
+	auto gaussianBlurEffectParameter = static_cast<CGaussianBlurEffectParameter*>(effectParameter);
 
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
+	int value = valueInt->GetValue();
 	//Video Parameter
 	if (key == libelleEffectRadius)
 	{
@@ -74,15 +77,15 @@ void CGaussianBlurFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 	{
 		gaussianBlurEffectParameter->boxSize = value;
 	}
-
 }
 
 
-void CGaussianBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+void CGaussianBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+                                       const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+		auto gaussianBlur = static_cast<CGaussianBlurEffectParameter*>(effectParameter);
 		filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
 	}
 }
@@ -99,7 +102,7 @@ CEffectParameter* CGaussianBlurFilter::GetEffectPointer()
 
 CEffectParameter* CGaussianBlurFilter::GetDefaultEffectParameter()
 {
-	CGaussianBlurEffectParameter* gaussianBlur = new CGaussianBlurEffectParameter();
+	auto gaussianBlur = new CGaussianBlurEffectParameter();
 	gaussianBlur->radius = 5;
 	gaussianBlur->boxSize = 3;
 	return gaussianBlur;
@@ -111,20 +114,21 @@ bool CGaussianBlurFilter::IsSourcePreview()
 }
 
 
-void CGaussianBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CGaussianBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                   CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+		auto gaussianBlur = static_cast<CGaussianBlurEffectParameter*>(effectParameter);
 		filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
 	}
 }
 
 
-void CGaussianBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CGaussianBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                             CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                             int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -139,13 +143,12 @@ CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectPa
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
-			
-			CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+
+			auto gaussianBlur = static_cast<CGaussianBlurEffectParameter*>(effectParameter);
 			filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
-
 		}
 	}
 

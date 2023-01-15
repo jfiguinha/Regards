@@ -38,32 +38,31 @@
 #include "libbpg.h"
 
 
-
 #ifdef USE_PNG
 
 
 /* structure to store PNG image bytes */
 typedef struct mem_encode
 {
-	uint8_t * buffer;
+	uint8_t* buffer;
 	size_t size;
-}mem_encode;
+} mem_encode;
 
 
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 static void png_write_data_buffer(png_structp png_ptr, png_bytep data,
-	png_size_t length)
+                                  png_size_t length)
 {
 	/* with libpng15 next line causes pointer deference error; use libpng12 */
-	struct mem_encode* p = (struct mem_encode*)png_get_io_ptr(png_ptr); /* was png_ptr->io_ptr */
+	struct mem_encode* p = png_get_io_ptr(png_ptr); /* was png_ptr->io_ptr */
 	size_t nsize = p->size + length;
 
 	/* allocate or grow buffer */
 	if (p->buffer)
-		p->buffer = (uint8_t *)realloc(p->buffer, nsize);
+		p->buffer = (uint8_t*)realloc(p->buffer, nsize);
 	else
-		p->buffer = (uint8_t *)malloc(nsize);
+		p->buffer = (uint8_t*)malloc(nsize);
 
 	if (!p->buffer)
 		png_error(png_ptr, "Write Error");
@@ -73,10 +72,10 @@ static void png_write_data_buffer(png_structp png_ptr, png_bytep data,
 	p->size += length;
 }
 
-static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
+static int png_save(BPGDecoderContext* img, mem_encode* mempng, int bit_depth)
 {
 	BPGImageInfo img_info_s, *img_info = &img_info_s;
-	FILE *f;
+	FILE* f;
 	png_structp png_ptr;
 	png_infop info_ptr;
 	png_bytep row_pointer;
@@ -87,7 +86,8 @@ static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
 	mempng->buffer = 0;
 	mempng->size = 0;
 
-	if (bit_depth != 8 && bit_depth != 16) {
+	if (bit_depth != 8 && bit_depth != 16)
+	{
 		fprintf(stderr, "Only bit_depth = 8 or 16 are supported for PNG output\n");
 		return -1;
 	}
@@ -95,17 +95,18 @@ static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
 	bpg_decoder_get_info(img, img_info);
 
 	png_ptr = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,
-		NULL,
-		NULL,  /* error */
-		NULL, /* warning */
-		NULL,
-		NULL,
-		NULL);
+	                                    NULL,
+	                                    NULL, /* error */
+	                                    NULL, /* warning */
+	                                    NULL,
+	                                    NULL,
+	                                    NULL);
 	info_ptr = png_create_info_struct(png_ptr);
 
-	png_set_write_fn(png_ptr, (png_voidp)mempng, &png_write_data_buffer, NULL);
+	png_set_write_fn(png_ptr, mempng, &png_write_data_buffer, NULL);
 
-	if (setjmp(png_jmpbuf(png_ptr)) != 0) {
+	if (setjmp(png_jmpbuf(png_ptr)) != 0)
+	{
 		fprintf(stderr, "PNG write error\n");
 		return -1;
 	}
@@ -116,8 +117,8 @@ static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
 		color_type = PNG_COLOR_TYPE_RGB;
 
 	png_set_IHDR(png_ptr, info_ptr, img_info->width, img_info->height,
-		bit_depth, color_type, PNG_INTERLACE_NONE,
-		PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	             bit_depth, color_type, PNG_INTERLACE_NONE,
+	             PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 	png_write_info(png_ptr, info_ptr);
 
@@ -127,13 +128,15 @@ static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
 	}
 #endif
 
-	if (bit_depth == 16) {
+	if (bit_depth == 16)
+	{
 		if (img_info->has_alpha)
 			out_fmt = BPG_OUTPUT_FORMAT_RGBA64;
 		else
 			out_fmt = BPG_OUTPUT_FORMAT_RGB48;
 	}
-	else {
+	else
+	{
 		if (img_info->has_alpha)
 			out_fmt = BPG_OUTPUT_FORMAT_RGBA32;
 		else
@@ -144,7 +147,8 @@ static int png_save(BPGDecoderContext *img, mem_encode * mempng, int bit_depth)
 
 	bpp = (3 + img_info->has_alpha) * (bit_depth / 8);
 	row_pointer = (png_bytep)png_malloc(png_ptr, img_info->width * bpp);
-	for (y = 0; y < img_info->height; y++) {
+	for (y = 0; y < img_info->height; y++)
+	{
 		bpg_decoder_get_line(img, row_pointer);
 		png_write_row(png_ptr, row_pointer);
 	}
@@ -250,18 +254,16 @@ int main(int argc, char **argv)
 #endif
 
 
-
-
-
-uint8_t * ReadToPNGPicture(uint8_t * buf, size_t buf_len, size_t * buf_out, int bit_depth, int * returnValue)
+uint8_t* ReadToPNGPicture(uint8_t* buf, size_t buf_len, size_t* buf_out, int bit_depth, int* returnValue)
 {
 	mem_encode mempng;
 
-	BPGDecoderContext *img;
+	BPGDecoderContext* img;
 
 	img = bpg_decoder_open();
 
-	if (bpg_decoder_decode(img, buf, buf_len) < 0) {
+	if (bpg_decoder_decode(img, buf, buf_len) < 0)
+	{
 		fprintf(stderr, "Could not decode image\n");
 		return 0;
 	}

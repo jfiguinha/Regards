@@ -13,13 +13,18 @@ CSqlFindLocalisation::~CSqlFindLocalisation()
 {
 }
 
-bool CSqlFindLocalisation::SearchUniqueCriteria(vector<wxString> * localisationVector, const wxString &day, const wxString &month, const wxString &year)
+bool CSqlFindLocalisation::SearchUniqueCriteria(vector<wxString>* localisationVector, const wxString& day,
+                                                const wxString& month, const wxString& year)
 {
 	this->localisationVector = localisationVector;
-	return (ExecuteRequest("Select distinct GeoGps from PHOTOSSEARCHCRITERIA WHERE CreateDate = '" + year + "." + month + "." + day + "'") != -1) ? true : false;
+	return (ExecuteRequest(
+		       "Select distinct GeoGps from PHOTOSSEARCHCRITERIA WHERE CreateDate = '" + year + "." + month + "." + day
+		       + "'") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFindLocalisation::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindLocalisation::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -27,7 +32,6 @@ int CSqlFindLocalisation::TraitementResult(CSqlResult * sqlResult)
 		wxString value;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:

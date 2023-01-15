@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(J2kOption, wxDialog)
-	//(*EventTable(J2kOption)
-	//*)
+		//(*EventTable(J2kOption)
+		//*)
 END_EVENT_TABLE()
 
 J2kOption::J2kOption(wxWindow* parent)

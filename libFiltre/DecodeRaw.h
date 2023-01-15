@@ -9,27 +9,35 @@ namespace Regards
 	{
 		class CDecodeRawPicture;
 
-		class CDecodeRaw: public CFilterWindowParam
+		class CDecodeRaw : public CFilterWindowParam
 		{
 		public:
 			CDecodeRaw(void);
-			~CDecodeRaw(void);
-			int TypeApplyFilter();
-			bool IsOpenCLCompatible();
-            int GetTypeFilter();
-			int GetNameFilter();
-			wxString GetFilterLabel();
-			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
-            void Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface);
-            void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
-			bool NeedPreview();
-			CEffectParameter* GetEffectPointer();
-			void CancelPreview(IBitmapDisplay* bitmapViewer);
-        private:
+			~CDecodeRaw(void) override;
+			int TypeApplyFilter() override;
+			bool IsOpenCLCompatible() override;
+			int GetTypeFilter() override;
+			int GetNameFilter() override;
+			wxString GetFilterLabel() override;
 
-			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
-			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int& widthOutput, int& heightOutput);
+			void Filter(CEffectParameter* effectParameter, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override
+			{
+			};
+			void Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override;
+			void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+			                       const wxString& key) override;
+			CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer) override;
+			bool NeedPreview() override;
+			CEffectParameter* GetEffectPointer() override;
+			void CancelPreview(IBitmapDisplay* bitmapViewer) override;
+
+		private:
+			void AddMetadataElement(vector<CMetadata>& element, wxString value, int key);
+			void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+			                        CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+			                        int& heightOutput) override;
 			int orientation = 0;
 			wxString libellebright;
 			wxString libellehighlight;
@@ -84,9 +92,8 @@ namespace Regards
 			wxString libellewf_deband_tresholdBlue;
 			wxString libellewf_deband_tresholdOther;
 			bool firstUpdate;
-			CDecodeRawPicture * rawDecoder;
+			CDecodeRawPicture* rawDecoder;
 			cv::Mat source;
 		};
 	}
 }
-

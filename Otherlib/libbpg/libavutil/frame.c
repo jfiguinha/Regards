@@ -31,10 +31,10 @@ MAKE_ACCESSORS(AVFrame, frame, int64_t, best_effort_timestamp)
 MAKE_ACCESSORS(AVFrame, frame, int64_t, pkt_duration)
 MAKE_ACCESSORS(AVFrame, frame, int64_t, pkt_pos)
 MAKE_ACCESSORS(AVFrame, frame, int64_t, channel_layout)
-MAKE_ACCESSORS(AVFrame, frame, int,     channels)
-MAKE_ACCESSORS(AVFrame, frame, int,     sample_rate)
-MAKE_ACCESSORS(AVFrame, frame, int,     decode_error_flags)
-MAKE_ACCESSORS(AVFrame, frame, int,     pkt_size)
+MAKE_ACCESSORS(AVFrame, frame, int, channels)
+MAKE_ACCESSORS(AVFrame, frame, int, sample_rate)
+MAKE_ACCESSORS(AVFrame, frame, int, decode_error_flags)
+MAKE_ACCESSORS(AVFrame, frame, int, pkt_size)
 MAKE_ACCESSORS(AVFrame, frame, enum AVColorSpace, colorspace)
 MAKE_ACCESSORS(AVFrame, frame, enum AVColorRange, color_range)
 
@@ -43,87 +43,88 @@ MAKE_ACCESSORS(AVFrame, frame, enum AVColorRange, color_range)
                (frame)->channels == \
                av_get_channel_layout_nb_channels((frame)->channel_layout))
 
-static void get_frame_defaults(AVFrame *frame)
+static void get_frame_defaults(AVFrame* frame)
 {
-    memset(frame, 0, sizeof(*frame));
+	memset(frame, 0, sizeof(*frame));
 
-    frame->pts                   =
-    frame->pkt_dts               =
-    frame->pkt_pts               = AV_NOPTS_VALUE;
-    av_frame_set_best_effort_timestamp(frame, AV_NOPTS_VALUE);
-    av_frame_set_pkt_duration         (frame, 0);
-    av_frame_set_pkt_pos              (frame, -1);
-    av_frame_set_pkt_size             (frame, -1);
-    frame->key_frame           = 1;
-    frame->sample_aspect_ratio = (AVRational){ 0, 1 };
-    frame->format              = -1; /* unknown */
-    frame->color_primaries     = AVCOL_PRI_UNSPECIFIED;
-    frame->color_trc           = AVCOL_TRC_UNSPECIFIED;
-    frame->colorspace          = AVCOL_SPC_UNSPECIFIED;
-    frame->color_range         = AVCOL_RANGE_UNSPECIFIED;
-    frame->chroma_location     = AVCHROMA_LOC_UNSPECIFIED;
+	frame->pts =
+		frame->pkt_dts =
+		frame->pkt_pts = AV_NOPTS_VALUE;
+	av_frame_set_best_effort_timestamp(frame, AV_NOPTS_VALUE);
+	av_frame_set_pkt_duration(frame, 0);
+	av_frame_set_pkt_pos(frame, -1);
+	av_frame_set_pkt_size(frame, -1);
+	frame->key_frame = 1;
+	frame->sample_aspect_ratio = (AVRational){0, 1};
+	frame->format = -1; /* unknown */
+	frame->color_primaries = AVCOL_PRI_UNSPECIFIED;
+	frame->color_trc = AVCOL_TRC_UNSPECIFIED;
+	frame->colorspace = AVCOL_SPC_UNSPECIFIED;
+	frame->color_range = AVCOL_RANGE_UNSPECIFIED;
+	frame->chroma_location = AVCHROMA_LOC_UNSPECIFIED;
 }
 
-static void free_side_data(AVFrameSideData **ptr_sd)
+static void free_side_data(AVFrameSideData** ptr_sd)
 {
-    AVFrameSideData *sd = *ptr_sd;
+	AVFrameSideData* sd = *ptr_sd;
 
-    av_freep(&sd->data);
-    av_freep(ptr_sd);
+	av_freep(&sd->data);
+	av_freep(ptr_sd);
 }
 
-AVFrame *av_frame_alloc(void)
+AVFrame* av_frame_alloc(void)
 {
-    AVFrame *frame = av_mallocz(sizeof(*frame));
+	AVFrame* frame = av_mallocz(sizeof(*frame));
 
-    if (!frame)
-        return NULL;
+	if (!frame)
+		return NULL;
 
-    get_frame_defaults(frame);
+	get_frame_defaults(frame);
 
-    return frame;
+	return frame;
 }
 
-void av_frame_free(AVFrame **frame)
+void av_frame_free(AVFrame** frame)
 {
-    if (!frame || !*frame)
-        return;
+	if (!frame || !*frame)
+		return;
 
-    av_frame_unref(*frame);
-    av_freep(frame);
+	av_frame_unref(*frame);
+	av_freep(frame);
 }
 
-void av_frame_unref(AVFrame *frame)
+void av_frame_unref(AVFrame* frame)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < FF_ARRAY_ELEMS(frame->buf); i++)
-        av_buffer_unref(&frame->buf[i]);
+	for (i = 0; i < FF_ARRAY_ELEMS(frame->buf); i++)
+		av_buffer_unref(&frame->buf[i]);
 
-    get_frame_defaults(frame);
+	get_frame_defaults(frame);
 }
 
-void av_frame_move_ref(AVFrame *dst, AVFrame *src)
+void av_frame_move_ref(AVFrame* dst, AVFrame* src)
 {
-    *dst = *src;
-    memset(src, 0, sizeof(*src));
-    get_frame_defaults(src);
+	*dst = *src;
+	memset(src, 0, sizeof(*src));
+	get_frame_defaults(src);
 }
 
-int av_frame_ref(AVFrame *dst, const AVFrame *src)
+int av_frame_ref(AVFrame* dst, const AVFrame* src)
 {
-    int i, ret = 0;
+	int i, ret = 0;
 
-    dst->format         = src->format;
-    dst->width          = src->width;
-    dst->height         = src->height;
-    dst->channels       = src->channels;
-    dst->channel_layout = src->channel_layout;
-    dst->nb_samples     = src->nb_samples;
+	dst->format = src->format;
+	dst->width = src->width;
+	dst->height = src->height;
+	dst->channels = src->channels;
+	dst->channel_layout = src->channel_layout;
+	dst->nb_samples = src->nb_samples;
 
-    /* duplicate the frame data if it's not refcounted */
-    if (!src->buf[0]) {
-        abort();
+	/* duplicate the frame data if it's not refcounted */
+	if (!src->buf[0])
+	{
+		abort();
 #if 0
         ret = av_frame_get_buffer(dst, 32);
         if (ret < 0)
@@ -135,27 +136,29 @@ int av_frame_ref(AVFrame *dst, const AVFrame *src)
 
         return ret;
 #endif
-    }
+	}
 
-    /* ref the buffers */
-    for (i = 0; i < FF_ARRAY_ELEMS(src->buf); i++) {
-        if (!src->buf[i])
-            continue;
-        dst->buf[i] = av_buffer_ref(src->buf[i]);
-        if (!dst->buf[i]) {
-            ret = AVERROR(ENOMEM);
-            goto fail;
-        }
-    }
+	/* ref the buffers */
+	for (i = 0; i < FF_ARRAY_ELEMS(src->buf); i++)
+	{
+		if (!src->buf[i])
+			continue;
+		dst->buf[i] = av_buffer_ref(src->buf[i]);
+		if (!dst->buf[i])
+		{
+			ret = AVERROR(ENOMEM);
+			goto fail;
+		}
+	}
 
-    memcpy(dst->data,     src->data,     sizeof(src->data));
-    memcpy(dst->linesize, src->linesize, sizeof(src->linesize));
+	memcpy(dst->data, src->data, sizeof(src->data));
+	memcpy(dst->linesize, src->linesize, sizeof(src->linesize));
 
-    return 0;
+	return 0;
 
 fail:
-    av_frame_unref(dst);
-    return ret;
+	av_frame_unref(dst);
+	return ret;
 }
 
 #if 0

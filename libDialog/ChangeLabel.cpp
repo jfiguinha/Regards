@@ -12,8 +12,8 @@
 using namespace Regards::Sqlite;
 
 BEGIN_EVENT_TABLE(ChangeLabel, wxDialog)
-	//(*EventTable(ChangeLabel)
-	//*)
+		//(*EventTable(ChangeLabel)
+		//*)
 END_EVENT_TABLE()
 
 ChangeLabel::ChangeLabel(wxWindow* parent)

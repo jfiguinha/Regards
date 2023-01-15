@@ -19,13 +19,12 @@ using namespace Regards::Filter;
 
 CSwirlFilter::CSwirlFilter()
 {
-    libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS",1);
-    libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE",1);
+	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS", 1);
+	libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE", 1);
 }
 
 CSwirlFilter::~CSwirlFilter()
 {
-    
 }
 
 int CSwirlFilter::TypeApplyFilter()
@@ -49,42 +48,46 @@ int CSwirlFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CSwirlFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
-{   
-   	CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
+void CSwirlFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                          IFiltreEffectInterface* filtreInterface)
+{
+	auto swirlEffectParameter = static_cast<CSwirlEffectParameter*>(effectParameter);
 	this->source = source;
-    swirlEffectParameter->bitmapWidth = source.size().width;
-    swirlEffectParameter->bitmapHeight = source.size().height;
+	swirlEffectParameter->bitmapWidth = source.size().width;
+	swirlEffectParameter->bitmapHeight = source.size().height;
 	this->filename = filename;
-    vector<int> elementAngle;
-    for (auto i = 0; i < 360; i++)
-        elementAngle.push_back(i);
-    
-    vector<int> elementRadius;
-    for (auto i = 0; i < swirlEffectParameter->bitmapWidth; i++)
-        elementRadius.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(swirlEffectParameter->radius), &elementRadius);
-    filtreInterface->AddTreeInfos(libelleEffectAngle, new CTreeElementValueInt(swirlEffectParameter->angle), &elementAngle);
+	vector<int> elementAngle;
+	for (auto i = 0; i < 360; i++)
+		elementAngle.push_back(i);
+
+	vector<int> elementRadius;
+	for (auto i = 0; i < swirlEffectParameter->bitmapWidth; i++)
+		elementRadius.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(swirlEffectParameter->radius),
+	                              &elementRadius);
+	filtreInterface->AddTreeInfos(libelleEffectAngle, new CTreeElementValueInt(swirlEffectParameter->angle),
+	                              &elementAngle);
 }
 
-void CSwirlFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CSwirlFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                     const wxString& key)
 {
-    CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
-    
+	auto swirlEffectParameter = static_cast<CSwirlEffectParameter*>(effectParameter);
+
 	this->source = source;
 
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectRadius)
-    {
-        swirlEffectParameter->radius = value;
-    }
-    if (key == libelleEffectAngle)
-    {
-        swirlEffectParameter->angle = value;
-    }
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
+	int value = valueInt->GetValue();
+	//Video Parameter
+	if (key == libelleEffectRadius)
+	{
+		swirlEffectParameter->radius = value;
+	}
+	if (key == libelleEffectAngle)
+	{
+		swirlEffectParameter->angle = value;
+	}
 }
 
 
@@ -92,10 +95,10 @@ void CSwirlFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* eff
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+		auto swirlParameter = static_cast<CSwirlEffectParameter*>(effectParameter);
 		if (preview)
 		{
-			float ratio = (float)filtreEffet->GetWidth() / (float)swirlParameter->bitmapWidth;
+			float ratio = static_cast<float>(filtreEffet->GetWidth()) / static_cast<float>(swirlParameter->bitmapWidth);
 			filtreEffet->Swirl(swirlParameter->radius * ratio, swirlParameter->angle);
 		}
 		else
@@ -116,7 +119,7 @@ CEffectParameter* CSwirlFilter::GetEffectPointer()
 
 CEffectParameter* CSwirlFilter::GetDefaultEffectParameter()
 {
-	CSwirlEffectParameter* swirl = new CSwirlEffectParameter();
+	auto swirl = new CSwirlEffectParameter();
 	swirl->angle = 20;
 	swirl->radius = 20;
 	return swirl;
@@ -128,20 +131,20 @@ bool CSwirlFilter::IsSourcePreview()
 }
 
 
-void CSwirlFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CSwirlFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                            CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+		auto swirlParameter = static_cast<CSwirlEffectParameter*>(effectParameter);
 		filtreEffet->Swirl(swirlParameter->radius, swirlParameter->angle);
 	}
-
 }
 
 
-void CSwirlFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CSwirlFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                      CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CSwirlFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -152,13 +155,12 @@ CImageLoadingFormat* CSwirlFilter::ApplyEffect(CEffectParameter* effectParameter
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			
 			CImageLoadingFormat image;
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
-			CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+
+			auto swirlParameter = static_cast<CSwirlEffectParameter*>(effectParameter);
 			filter->Swirl(swirlParameter->radius, swirlParameter->angle);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);

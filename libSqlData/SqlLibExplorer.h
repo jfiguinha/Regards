@@ -10,16 +10,16 @@ namespace Regards
 		class CSqlLibExplorer : public CSqlLib
 		{
 		public:
-			CSqlLibExplorer(const bool &readOnly, const wxString &libelleNotGeo, const bool &load_inmemory);
+			CSqlLibExplorer(const bool& readOnly, const wxString& libelleNotGeo, const bool& load_inmemory);
 			~CSqlLibExplorer() override;
 
-			auto InitDatabase(const wxString& lpFilename) -> bool override;
-			auto CheckVersion(const wxString& lpFilename) -> bool override;
+			bool InitDatabase(const wxString& lpFilename) override;
+			bool CheckVersion(const wxString& lpFilename) override;
+
 		private:
 			wxString libelleNotGeo;
-			bool CreateDatabase(const wxString &databasePath, const bool &load_inmemory);
+			bool CreateDatabase(const wxString& databasePath, const bool& load_inmemory);
 			void LoadAndRotate(const wxString& filePath, const int& rotate);
 		};
 	}
 }
-

@@ -21,8 +21,8 @@
 
 wxPdfFontParser::wxPdfFontParser()
 {
-  m_fileName = wxEmptyString;
-  m_inFont = NULL;
+	m_fileName = wxEmptyString;
+	m_inFont = nullptr;
 }
 
 wxPdfFontParser::~wxPdfFontParser()
@@ -32,159 +32,159 @@ wxPdfFontParser::~wxPdfFontParser()
 void
 wxPdfFontParser::SeekI(int offset)
 {
-  SeekI(offset, m_inFont);
+	SeekI(offset, m_inFont);
 }
 
 void
 wxPdfFontParser::SeekI(int offset, wxInputStream* stream)
 {
-  stream->SeekI(offset);
+	stream->SeekI(offset);
 }
 
 int
 wxPdfFontParser::TellI()
 {
-  return TellI(m_inFont);
+	return TellI(m_inFont);
 }
 
 int
 wxPdfFontParser::TellI(wxInputStream* stream)
 {
-  return stream->TellI();
+	return stream->TellI();
 }
 
 void
 wxPdfFontParser::SkipBytes(int count)
 {
-  SkipBytes(count, m_inFont);
+	SkipBytes(count, m_inFont);
 }
 
 void
 wxPdfFontParser::SkipBytes(int count, wxInputStream* stream)
 {
-  if (stream != NULL)
-  {
-    stream->SeekI(count, wxFromCurrent);
-  }
-  else
-  {
-    wxLogError(wxString(wxS("wxPdfFontParser::SkipBytes: ")) +
-               wxString(_("Input stream not set.")));
-  }
+	if (stream != nullptr)
+	{
+		stream->SeekI(count, wxFromCurrent);
+	}
+	else
+	{
+		wxLogError(wxString(wxS("wxPdfFontParser::SkipBytes: ")) +
+			wxString(_("Input stream not set.")));
+	}
 }
 
 int
 wxPdfFontParser::ReadInt()
 {
-  // Read a 4-byte integer from file (big endian)
-  int i32;
-  m_inFont->Read(&i32, 4);
-  return wxINT32_SWAP_ON_LE(i32);
+	// Read a 4-byte integer from file (big endian)
+	int i32;
+	m_inFont->Read(&i32, 4);
+	return wxINT32_SWAP_ON_LE(i32);
 }
 
 short
 wxPdfFontParser::ReadShort()
 {
-  // Read a 2-byte integer from file (big endian)
-  short i16;
-  m_inFont->Read(&i16, 2);
-  return wxINT16_SWAP_ON_LE(i16);
+	// Read a 2-byte integer from file (big endian)
+	short i16;
+	m_inFont->Read(&i16, 2);
+	return wxINT16_SWAP_ON_LE(i16);
 }
 
 unsigned short
 wxPdfFontParser::ReadUShort()
 {
-  // Read a unsigned 2-byte integer from file (big endian)
-  unsigned short i16;
-  m_inFont->Read(&i16, 2);
-  return wxUINT16_SWAP_ON_LE(i16);
+	// Read a unsigned 2-byte integer from file (big endian)
+	unsigned short i16;
+	m_inFont->Read(&i16, 2);
+	return wxUINT16_SWAP_ON_LE(i16);
 }
 
 unsigned char
 wxPdfFontParser::ReadByte()
 {
-  return ReadByte(m_inFont);
+	return ReadByte(m_inFont);
 }
 
 unsigned char
 wxPdfFontParser::ReadByte(wxInputStream* stream)
 {
-  unsigned char card8;
-  stream->Read(&card8, 1);
-  return card8;
+	unsigned char card8;
+	stream->Read(&card8, 1);
+	return card8;
 }
 
 wxString
 wxPdfFontParser::ReadString(int length)
 {
-  return ReadString(length, m_inFont);
+	return ReadString(length, m_inFont);
 }
 
 wxString
 wxPdfFontParser::ReadString(int length, wxInputStream* stream)
 {
-  char* buffer = new char[length];
-  stream->Read(buffer, length);
-  wxString str = wxString(buffer, wxConvISO8859_1, length);
-  delete [] buffer;
-  return str;
+	auto buffer = new char[length];
+	stream->Read(buffer, length);
+	auto str = wxString(buffer, wxConvISO8859_1, length);
+	delete [] buffer;
+	return str;
 }
 
 wxString
 wxPdfFontParser::ReadUnicodeString(int length)
 {
-  wxMBConvUTF16BE conv;
-  char* buffer = new char[length];
-  m_inFont->Read(buffer, length);
-  wxString str = wxString(buffer, conv, length);
-  delete [] buffer;
-  return str;
+	wxMBConvUTF16BE conv;
+	auto buffer = new char[length];
+	m_inFont->Read(buffer, length);
+	auto str = wxString(buffer, conv, length);
+	delete [] buffer;
+	return str;
 }
 
 wxString
 wxPdfFontParser::ReadString(wxInputStream& fileStream)
 {
-  wxString str = wxEmptyString;
-  unsigned char c;
-  int maxlen = 255;
-  int j = 0;
-  do
-  {
-    fileStream.Read(&c, 1);
-#if wxCHECK_VERSION(2,9,0)
-    if (c > 0) str += wxUniChar((unsigned int) c);
+	wxString str = wxEmptyString;
+	unsigned char c;
+	int maxlen = 255;
+	int j = 0;
+	do
+	{
+		fileStream.Read(&c, 1);
+#if wxCHECK_VERSION(2, 9, 0)
+		if (c > 0) str += wxUniChar(static_cast<unsigned int>(c));
 #else
     if (c > 0) str += wxChar(c);
 #endif
-    j++;
-  }
-  while (c > 0 && j < maxlen);
-  return str;
+		j++;
+	}
+	while (c > 0 && j < maxlen);
+	return str;
 }
 
 short
 wxPdfFontParser::ReadShortLE(wxInputStream* stream)
 {
-  // Read a 2-byte integer from file (little endian)
-  short i16;
-  stream->Read(&i16, 2);
-  return wxINT16_SWAP_ON_BE(i16);
+	// Read a 2-byte integer from file (little endian)
+	short i16;
+	stream->Read(&i16, 2);
+	return wxINT16_SWAP_ON_BE(i16);
 }
 
 unsigned short
 wxPdfFontParser::ReadUShortLE(wxInputStream* stream)
 {
-  // Read a unsigned 2-byte integer from file (little endian)
-  unsigned short i16;
-  stream->Read(&i16, 2);
-  return wxUINT16_SWAP_ON_BE(i16);
+	// Read a unsigned 2-byte integer from file (little endian)
+	unsigned short i16;
+	stream->Read(&i16, 2);
+	return wxUINT16_SWAP_ON_BE(i16);
 }
 
 unsigned int
 wxPdfFontParser::ReadUIntLE(wxInputStream* stream)
 {
-  // Read a unsigned 4-byte integer from file (little endian)
-  unsigned int i32;
-  stream->Read(&i32, 4);
-  return wxUINT32_SWAP_ON_BE(i32);
+	// Read a unsigned 4-byte integer from file (little endian)
+	unsigned int i32;
+	stream->Read(&i32, 4);
+	return wxUINT32_SWAP_ON_BE(i32);
 }

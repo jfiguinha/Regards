@@ -30,7 +30,6 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 }
 
 
-
 void CToolbarWindow::OnMouseCaptureLost(wxMouseEvent& event)
 {
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CVignetteEffectParameter : public CEffectParameter
 {
 public:
@@ -10,7 +11,10 @@ public:
 		bitmapHeight = 0;
 		power = 50;
 	};
-	~CVignetteEffectParameter() override {};
+
+	~CVignetteEffectParameter() override
+	{
+	};
 
 	float radius;
 	float power;

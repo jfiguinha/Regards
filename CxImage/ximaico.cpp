@@ -189,7 +189,7 @@ bool CxImageICO::Decode(CxFile *hFile)
 
 						// <vho> - Transparency support w/o Alpha support
 						if (c <= 8){ // only for icons with less than 256 colors (XP icons need alpha).
-							  
+
 							// find a color index, which is not used in the image
 							// it is almost sure to find one, bcs. nobody uses all possible colors for an icon
 
@@ -467,4 +467,3 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
 #endif // CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_ICO
-

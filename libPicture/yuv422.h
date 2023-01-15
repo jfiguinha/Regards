@@ -51,7 +51,7 @@ void yuv422p_to_rgb32(unsigned char* yuv422p, unsigned char* rgb, int width, int
 	unsigned char* p_u;
 	unsigned char* p_v;
 	unsigned char* p_rgb;
-	static int init_yuv422p = 0;    // just do it once
+	static int init_yuv422p = 0; // just do it once
 
 	p_y = yuv422p;
 	p_u = p_y + width * height;
@@ -70,8 +70,8 @@ void yuv422p_to_rgb32(unsigned char* yuv422p, unsigned char* rgb, int width, int
 		cb = p_u[0];
 		cr = p_v[0];
 
-		r = MAX(0, MIN(255, (V[cr] + Y1[y]) / 10000));   //R value
-		b = MAX(0, MIN(255, (U[cb] + Y1[y]) / 10000));   //B value
+		r = MAX(0, MIN(255, (V[cr] + Y1[y]) / 10000)); //R value
+		b = MAX(0, MIN(255, (U[cb] + Y1[y]) / 10000)); //B value
 		g = MAX(0, MIN(255, (Y2[y] - 5094 * (r)-1942 * (b)) / 10000)); //G value
 
 		p_rgb[0] = r;
@@ -82,8 +82,8 @@ void yuv422p_to_rgb32(unsigned char* yuv422p, unsigned char* rgb, int width, int
 		y = p_y[1];
 		cb = p_u[0];
 		cr = p_v[0];
-		r = MAX(0, MIN(255, (V[cr] + Y1[y]) / 10000));   //R value
-		b = MAX(0, MIN(255, (U[cb] + Y1[y]) / 10000));   //B value
+		r = MAX(0, MIN(255, (V[cr] + Y1[y]) / 10000)); //R value
+		b = MAX(0, MIN(255, (U[cb] + Y1[y]) / 10000)); //B value
 		g = MAX(0, MIN(255, (Y2[y] - 5094 * (r)-1942 * (b)) / 10000)); //G value
 
 		p_rgb[4] = r;

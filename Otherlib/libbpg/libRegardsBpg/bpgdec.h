@@ -24,4 +24,4 @@
 
 #include <stdint.h>
 
-uint8_t * ReadToPNGPicture(uint8_t * buf, size_t buf_len, size_t * buf_out, int bit_depth, int * returnValue);
+uint8_t* ReadToPNGPicture(uint8_t* buf, size_t buf_len, size_t* buf_out, int bit_depth, int* returnValue);

@@ -3,6 +3,7 @@
 #include "ConvertUtility.h"
 #include <wx/wfstream.h>
 #include "FileUtility.h"
+
 uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
@@ -20,10 +21,9 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 }
 
 
-
-float CPictureUtility::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth, const int& screenHeight)
+float CPictureUtility::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth,
+                                          const int& screenHeight)
 {
-
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
@@ -59,32 +59,32 @@ void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 	case 1: // top left side
 		break;
 	case 2: // top right side
-		cv::flip(_image, _image, 1);
+		flip(_image, _image, 1);
 		break;
 	case 3: // bottom right side
-		cv::flip(_image, _image, 1);
-		cv::flip(_image, _image, 0);
+		flip(_image, _image, 1);
+		flip(_image, _image, 0);
 		break;
 	case 4: // bottom left side
-		cv::flip(_image, _image, 0);
+		flip(_image, _image, 0);
 		break;
 	case 5: //left side top
 		Rotate90(_image);
-		cv::flip(_image, _image, 0);
+		flip(_image, _image, 0);
 		break;
 	case 6: // right side top
 		Rotate90(_image);
-		cv::flip(_image, _image, 1);
-		cv::flip(_image, _image, 0);
+		flip(_image, _image, 1);
+		flip(_image, _image, 0);
 		break;
 	case 7: // right side bottom
 		Rotate90(_image);
-		cv::flip(_image, _image, 1);
+		flip(_image, _image, 1);
 		break;
 	case 8: // left side bottom
 		Rotate90(_image);
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -149,11 +149,11 @@ void CPictureUtility::ApplyTransform(cv::Mat& image)
 		cvtColor(image, image, cv::COLOR_RGBA2BGRA);
 }
 
-void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t & size)
+void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t& size)
 {
 	uint8_t* _compressedImage = nullptr;
 	wxFile file;
-	if(file.Create(fileName, true, wxFile::write))
+	if (file.Create(fileName, true, wxFile::write))
 		file.Write(data, size);
 	file.Close();
 }

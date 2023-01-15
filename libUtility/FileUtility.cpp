@@ -4,6 +4,7 @@
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 #include "ConvertUtility.h"
+
 CFileUtility::CFileUtility(void)
 {
 }
@@ -33,7 +34,6 @@ wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const boo
 	}
 	catch (...)
 	{
-
 	}
 
 	return file;
@@ -69,7 +69,6 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 	}
 	catch (...)
 	{
-
 	}
 
 

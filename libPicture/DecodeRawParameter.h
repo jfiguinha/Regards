@@ -40,14 +40,14 @@ public:
 		dcb_iterations = -1;
 		dcb_enhance_fl = 0;
 		fbdd_noiserd = 0;
-		exp_correc = 0;
+		exp_correc = false;
 		exp_shift = 1.0;
 		exp_preser = 0.0;
-
 	};
-	~CDecodeRawParameter() {};
 
-
+	~CDecodeRawParameter() override
+	{
+	};
 
 
 	float bright; //Brightness (default 1.0).
@@ -85,6 +85,4 @@ public:
 	int fbdd_noiserd;
 	bool exp_correc;
 	float exp_shift, exp_preser;
-
 };
-

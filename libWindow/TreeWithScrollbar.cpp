@@ -6,7 +6,8 @@
 using namespace Regards::Window;
 
 CTreeWithScrollbar::CTreeWithScrollbar(const wxString& windowName, wxWindow* parent, wxWindowID id,
-                                       const CThemeScrollBar& themeScroll, const CThemeTree& theme, const wxString & label, const bool& showTitle)
+                                       const CThemeScrollBar& themeScroll, const CThemeTree& theme,
+                                       const wxString& label, const bool& showTitle)
 	: CWindowMain(windowName, parent, id)
 {
 	scrollWindow = nullptr;
@@ -28,7 +29,7 @@ CTreeWithScrollbar::CTreeWithScrollbar(const wxString& windowName, wxWindow* par
 
 void CTreeWithScrollbar::SetLabel(const wxString& label)
 {
-	if(titleBar != nullptr)
+	if (titleBar != nullptr)
 		titleBar->SetTitle(label);
 }
 
@@ -54,12 +55,13 @@ void CTreeWithScrollbar::Resize()
 {
 	if (scrollWindow != nullptr)
 	{
-		if(!showTitle)
+		if (!showTitle)
 			scrollWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 		else
 		{
 			titleBar->SetSize(0, 0, GetWindowWidth(), titleBar->GetHeight());
-			scrollWindow->SetSize(0, titleBar->GetHeight(), GetWindowWidth(), GetWindowHeight() - titleBar->GetHeight());
+			scrollWindow->SetSize(0, titleBar->GetHeight(), GetWindowWidth(),
+			                      GetWindowHeight() - titleBar->GetHeight());
 		}
 	}
 }

@@ -13,13 +13,17 @@ CSqlFindMonth::~CSqlFindMonth()
 {
 }
 
-bool CSqlFindMonth::SearchUniqueCriteria(vector<wxString> * monthVector, const wxString &year)
+bool CSqlFindMonth::SearchUniqueCriteria(vector<wxString>* monthVector, const wxString& year)
 {
 	this->monthVector = monthVector;
-	return (ExecuteRequest("Select distinct SUBSTR(CreateDate, 6, 2) as mois, SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA where annee = '" + year + "' order by mois desc") != -1) ? true : false;
+	return (ExecuteRequest(
+		       "Select distinct SUBSTR(CreateDate, 6, 2) as mois, SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA where annee = '"
+		       + year + "' order by mois desc") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFindMonth::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindMonth::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -27,7 +31,6 @@ int CSqlFindMonth::TraitementResult(CSqlResult * sqlResult)
 		wxString value;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:

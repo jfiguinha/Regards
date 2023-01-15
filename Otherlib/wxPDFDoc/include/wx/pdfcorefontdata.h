@@ -16,30 +16,30 @@
 class wxPdfKernPairDesc
 {
 public:
-  wxUint32 unicode1; ///< first unicode character in kerning pair
-  wxUint32 unicode2; ///< second unicode character in kerning pair
-  int      kerning;  ///< kerning measure
+	wxUint32 unicode1; ///< first unicode character in kerning pair
+	wxUint32 unicode2; ///< second unicode character in kerning pair
+	int kerning; ///< kerning measure
 };
 
 /// Structure describing core fonts (For internal use only)
-typedef struct _wxPdfCoreFontDesc
+using wxPdfCoreFontDesc = struct _wxPdfCoreFontDesc
 {
-  const wxChar*      family;             ///< font family
-  const wxChar*      alias;              ///< font family alias
-  const wxChar*      name;               ///< font name
-  short*             cwArray;            ///< array of character widths
-  const wxPdfKernPairDesc* kpArray;      ///< array of kerning pairs
-  const wxChar*      bbox;               ///< bounding box
-  int                ascent;             ///< ascender
-  int                descent;            ///< descender
-  int                capHeight;          ///< height of capital characters
-  int                flags;              ///< font flags
-  int                italicAngle;        ///< italic angle
-  int                stemV;              ///< stemV value
-  int                missingWidth;       ///< width used for missing characters
-  int                xHeight;            ///< height of the character X
-  int                underlinePosition;  ///< position of the underline decoration
-  int                underlineThickness; ///< thickness of the underline decoration
-} wxPdfCoreFontDesc;
+	const wxChar* family; ///< font family
+	const wxChar* alias; ///< font family alias
+	const wxChar* name; ///< font name
+	short* cwArray; ///< array of character widths
+	const wxPdfKernPairDesc* kpArray; ///< array of kerning pairs
+	const wxChar* bbox; ///< bounding box
+	int ascent; ///< ascender
+	int descent; ///< descender
+	int capHeight; ///< height of capital characters
+	int flags; ///< font flags
+	int italicAngle; ///< italic angle
+	int stemV; ///< stemV value
+	int missingWidth; ///< width used for missing characters
+	int xHeight; ///< height of the character X
+	int underlinePosition; ///< position of the underline decoration
+	int underlineThickness; ///< thickness of the underline decoration
+};
 
 #endif

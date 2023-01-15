@@ -5,18 +5,19 @@ using namespace Regards::FiltreEffet;
 
 #ifdef USE_TBB
 
-struct myFiltreTask {
-	myFiltreTask(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest, CFiltre * pt)
+struct myFiltreTask
+{
+	myFiltreTask(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest, CFiltre* pt)
 	{
 		this->x = x;
 		this->y = y;
-		this->pBitsSrc= pBitsSrc;
+		this->pBitsSrc = pBitsSrc;
 		this->pBitsDest = pBitsDest;
 		this->filtre = pt;
 	}
 
-	void operator()() 
-    {
+	void operator()()
+	{
 		filtre->PixelCompute(x, y, pBitsSrc, pBitsDest);
 	}
 
@@ -29,7 +30,7 @@ struct myFiltreTask {
 	int y;
 	cv::Mat pBitsSrc;
 	cv::Mat pBitsDest;
-	CFiltre * filtre;
+	CFiltre* filtre;
 };
 #endif
 
@@ -42,7 +43,7 @@ CFiltre::~CFiltre()
 {
 }
 
-void CFiltre::SetParameter(cv::Mat & pBitmap, CRgbaquad color)
+void CFiltre::SetParameter(cv::Mat& pBitmap, CRgbaquad color)
 {
 	this->pBitsSrc = pBitmap;
 	this->color = color;
@@ -53,31 +54,31 @@ void CFiltre::SetParameter(cv::Mat & pBitmap, CRgbaquad color)
 //Effet GrayScale
 void CFiltre::Compute()
 {
-		cv::Mat pBitsDest;
-		pBitsSrc.copyTo(pBitsDest);
+	cv::Mat pBitsDest;
+	pBitsSrc.copyTo(pBitsDest);
 
-#ifdef USE_TBB		
-		//tbb::task_scheduler_init init;  // Automatic number of threads
-		//tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+#ifdef USE_TBB
+	//tbb::task_scheduler_init init;  // Automatic number of threads
+	//tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
-		std::vector<myFiltreTask> tasks;
-		for (auto y = 0; y < bmHeight; y++)
+	std::vector<myFiltreTask> tasks;
+	for (auto y = 0; y < bmHeight; y++)
+	{
+		for (auto x = 0; x < bmWidth; x++)
 		{
-			for (auto x = 0; x < bmWidth; x++)
-			{
-				tasks.push_back(myFiltreTask(x, y, pBitsSrc, pBitsDest, this));
-			}
+			tasks.push_back(myFiltreTask(x, y, pBitsSrc, pBitsDest, this));
 		}
-		
+	}
 
-		tbb::parallel_for(
-			0, bmHeight * bmWidth, 1, [=](int y)
-			{
-				//for (size_t i = r.begin(); i < r.end(); ++i) 
-				myFiltreTask task = tasks[y];
-				task.ExecuteFilter();
-			}
-		);
+
+	tbb::parallel_for(
+		0, bmHeight * bmWidth, 1, [=](int y)
+		{
+			//for (size_t i = r.begin(); i < r.end(); ++i) 
+			myFiltreTask task = tasks[y];
+			task.ExecuteFilter();
+		}
+	);
 
 #else
 
@@ -92,15 +93,12 @@ void CFiltre::Compute()
 		}
 #endif
 
-		pBitsDest.copyTo(pBitsSrc);
+	pBitsDest.copyTo(pBitsSrc);
 }
 
 
-
-
-void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CMatrixConvolution::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
-
 	float red = 0.0;
 	float green = 0.0;
 	float blue = 0.0;
@@ -118,12 +116,11 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat 
 			int localY = y + i;
 			if (localX >= 0 && localX < bmWidth && localY < bmHeight && localY >= 0)
 			{
-				red += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[0]) * kernel[k];
-				green += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[1]) * kernel[k];
-				blue += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[2]) * kernel[k];
+				red += static_cast<float>(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[0]) * kernel[k];
+				green += static_cast<float>(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[1]) * kernel[k];
+				blue += static_cast<float>(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[2]) * kernel[k];
 			}
 			k++;
-			
 		}
 	}
 
@@ -139,11 +136,10 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat 
 
 	blue = blue < 0 ? 0 : blue;
 	uint8_t b = blue > 255 ? 255 : blue;
-	
+
 	pBitsDest.at<cv::Vec3b>(y, x)[0] = r;
 	pBitsDest.at<cv::Vec3b>(y, x)[1] = g;
 	pBitsDest.at<cv::Vec3b>(y, x)[2] = b;
-
 }
 
 float CNoise::Noise2d(int x, int y)
@@ -152,16 +148,16 @@ float CNoise::Noise2d(int x, int y)
 	return 255 * (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
 }
 
-void CNoise::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CNoise::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
 	//int pos = GetPosition(x, y);
 	//uint8_t alpha = pBitsSrc.data[pos + 3];
-	float n = Noise2d(int(x), int(y));
+	float n = Noise2d(static_cast<int>(x), static_cast<int>(y));
 
 	int r = pBitsSrc.at<cv::Vec3b>(y, x)[0] + n;
 	int g = pBitsSrc.at<cv::Vec3b>(y, x)[1] + n;
 	int b = pBitsSrc.at<cv::Vec3b>(y, x)[2] + n;
-	
+
 	r = max(0, min(255, r));
 	g = max(0, min(255, g));
 	b = max(0, min(255, b));
@@ -175,7 +171,7 @@ void CNoise::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, 
 	//memcpy(pBitsDest.data + pos, data, 4);
 }
 
-void CMosaic::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CMosaic::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
 	//uint8_t r = 0;
 	//uint8_t g = 0;
@@ -202,7 +198,7 @@ float CSwirl::EuclideanDist(FLOATPOINT p, FLOATPOINT q)
 	FLOATPOINT diff;
 	diff.x = p.x - q.x;
 	diff.y = p.y - q.y;
-	return sqrt(diff.x*diff.x + diff.y*diff.y);
+	return sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
 float CSwirl::DotProduct(FLOATPOINT p, FLOATPOINT q)
@@ -220,8 +216,8 @@ wxPoint CSwirl::PostFX(int x, int y, int width, int height, float radius, float 
 	wxPoint ptOut;
 	FLOATPOINT ptCentre;
 
-	ptCentre.x = float(width) / 2.0;
-	ptCentre.y = float(height) / 2.0;
+	ptCentre.x = static_cast<float>(width) / 2.0;
+	ptCentre.y = static_cast<float>(height) / 2.0;
 
 	pttest.x = x;
 	pttest.y = y;
@@ -261,10 +257,9 @@ wxPoint CSwirl::PostFX(int x, int y, int width, int height, float radius, float 
 	ptOut.x = pt.x;
 	ptOut.y = pt.y;
 	return ptOut;
-
 }
 
-void CSwirl::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CSwirl::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
 	//uint8_t data[4];
 	wxPoint pt = PostFX(x, y, bmWidth, bmHeight, radius, angle);
@@ -282,20 +277,18 @@ void CSwirl::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, 
 	}
 }
 
-void CPosterize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CPosterize::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
-
-	int r = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[0]) / _offset;
-	int g = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[1]) / _offset;
-	int b = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[2]) / _offset;
+	int r = static_cast<float>(pBitsSrc.at<cv::Vec3b>(y, x)[0]) / _offset;
+	int g = static_cast<float>(pBitsSrc.at<cv::Vec3b>(y, x)[1]) / _offset;
+	int b = static_cast<float>(pBitsSrc.at<cv::Vec3b>(y, x)[2]) / _offset;
 
 	pBitsDest.at<cv::Vec3b>(y, x)[0] = posterize[r];
 	pBitsDest.at<cv::Vec3b>(y, x)[1] = posterize[g];
 	pBitsDest.at<cv::Vec3b>(y, x)[2] = posterize[b];
-
 }
 
-void CSolarize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
+void CSolarize::PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
 {
 	pBitsDest.at<cv::Vec3b>(y, x)[0] = solarize[pBitsSrc.at<cv::Vec3b>(y, x)[0]];
 	pBitsDest.at<cv::Vec3b>(y, x)[1] = solarize[pBitsSrc.at<cv::Vec3b>(y, x)[1]];

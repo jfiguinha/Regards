@@ -21,8 +21,10 @@ CTreeElementStar::~CTreeElementStar()
 
 void CTreeElementStar::CreateStar()
 {
-	starEmpty = CLibResource::CreatePictureFromSVG(L"IDB_STAREMPTY", themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2);
-	starYellow = CLibResource::CreatePictureFromSVG(L"IDB_STARYELLOW", themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2);
+	starEmpty = CLibResource::CreatePictureFromSVG(L"IDB_STAREMPTY", themeTriangle.GetWidth() * 2,
+	                                               themeTriangle.GetHeight() * 2);
+	starYellow = CLibResource::CreatePictureFromSVG(L"IDB_STARYELLOW", themeTriangle.GetWidth() * 2,
+	                                                themeTriangle.GetHeight() * 2);
 }
 
 void CTreeElementStar::SetNumPhoto(const int& numPhotoId)

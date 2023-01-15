@@ -14,7 +14,7 @@ void CDeepLearning::CleanRecognition()
 	CFaceDetector::CleanBase();
 }
 
-vector<int> CDeepLearning::FindFace(const cv::Mat & pictureData, const wxString &filename, const bool & fastDetection)
+vector<int> CDeepLearning::FindFace(const cv::Mat& pictureData, const wxString& filename, const bool& fastDetection)
 {
 	//bool fastDetection = true;
 	muLoading.lock();
@@ -68,7 +68,7 @@ bool CDeepLearning::IsResourceReady()
 	return isLoading;
 }
 
-int CDeepLearning::GetExifOrientation(const cv::Mat&  pBitmap, const bool& fastDetection)
+int CDeepLearning::GetExifOrientation(const cv::Mat& pBitmap, const bool& fastDetection)
 {
 	muLoading.lock();
 	const bool isLoading = isload;

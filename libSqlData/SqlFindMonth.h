@@ -11,14 +11,12 @@ namespace Regards
 		{
 		public:
 			CSqlFindMonth();
-			~CSqlFindMonth();
-			bool SearchUniqueCriteria(vector<wxString> * monthVector, const wxString &year);
+			~CSqlFindMonth() override;
+			bool SearchUniqueCriteria(vector<wxString>* monthVector, const wxString& year);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
-			vector<wxString> * monthVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			vector<wxString>* monthVector;
 		};
 	}
 }
-

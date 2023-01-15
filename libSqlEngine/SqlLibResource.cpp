@@ -2,7 +2,7 @@
 #include "SqlLibResource.h"
 using namespace Regards::Sqlite;
 
-CSqlLibResource::CSqlLibResource(const bool &readOnly, const bool &load_inmemory)
+CSqlLibResource::CSqlLibResource(const bool& readOnly, const bool& load_inmemory)
 {
 	this->readonly = readOnly;
 	this->load_inmemory = load_inmemory;
@@ -11,7 +11,6 @@ CSqlLibResource::CSqlLibResource(const bool &readOnly, const bool &load_inmemory
 
 CSqlLibResource::~CSqlLibResource()
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,9 +24,9 @@ CSqlLibResource::~CSqlLibResource()
 // Notes:
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool CSqlLibResource::InitDatabase(const wxString &lpFilename)
+bool CSqlLibResource::InitDatabase(const wxString& lpFilename)
 {
-	bool hr = false;	// Error code reporting
+	bool hr = false; // Error code reporting
 
 	if (wxFileExists(lpFilename))
 	{
@@ -35,4 +34,3 @@ bool CSqlLibResource::InitDatabase(const wxString &lpFilename)
 	}
 	return hr;
 }
-

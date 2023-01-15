@@ -19,7 +19,7 @@ using namespace Regards::Filter;
 
 CLensDistortion::CLensDistortion()
 {
-    libelleEffectStrength = CLibResource::LoadStringFromResource(L"LBLFILTERSTRENGTH", 1); //"Effect.Strength";
+	libelleEffectStrength = CLibResource::LoadStringFromResource(L"LBLFILTERSTRENGTH", 1); //"Effect.Strength";
 }
 
 int CLensDistortion::TypeApplyFilter()
@@ -29,7 +29,6 @@ int CLensDistortion::TypeApplyFilter()
 
 CLensDistortion::~CLensDistortion()
 {
-    
 }
 
 wxString CLensDistortion::GetFilterLabel()
@@ -48,59 +47,60 @@ int CLensDistortion::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CLensDistortion::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CLensDistortion::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                             IFiltreEffectInterface* filtreInterface)
 {
-    CLensDistortionEffectParameter * lensEffectParameter = (CLensDistortionEffectParameter *)effectParameter;
+	auto lensEffectParameter = static_cast<CLensDistortionEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
-    vector<int> elementColor;
-    for (auto i = 1; i < 1000; i+=10)
+	vector<int> elementColor;
+	for (auto i = 1; i < 1000; i += 10)
 	{
 		elementColor.push_back(i);
 	}
 
-    
-    filtreInterface->AddTreeInfos(libelleEffectStrength,new CTreeElementValueInt(lensEffectParameter->strength), &elementColor);
+
+	filtreInterface->AddTreeInfos(libelleEffectStrength, new CTreeElementValueInt(lensEffectParameter->strength),
+	                              &elementColor);
 }
 
-void CLensDistortion::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CLensDistortion::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                        const wxString& key)
 {
-    CLensDistortionEffectParameter * lensEffectParameter = (CLensDistortionEffectParameter *)effectParameter;
-    //Video Parameter
+	auto lensEffectParameter = static_cast<CLensDistortionEffectParameter*>(effectParameter);
+	//Video Parameter
 	float value = 0.0;
-	switch(valueData->GetType())
+	switch (valueData->GetType())
 	{
-		case TYPE_ELEMENT_INT:
-			{
-				CTreeElementValueInt * intValue = (CTreeElementValueInt*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_FLOAT:
-			{
-				CTreeElementValueFloat * intValue = (CTreeElementValueFloat*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_BOOL:
-			{
-				CTreeElementValueBool * intValue = (CTreeElementValueBool*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
+	case TYPE_ELEMENT_INT:
+		{
+			auto intValue = static_cast<CTreeElementValueInt*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_FLOAT:
+		{
+			auto intValue = static_cast<CTreeElementValueFloat*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_BOOL:
+		{
+			auto intValue = static_cast<CTreeElementValueBool*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	}
 
-    if (key == libelleEffectStrength)
-    {
-        lensEffectParameter->strength = value;
-    }
-
+	if (key == libelleEffectStrength)
+	{
+		lensEffectParameter->strength = value;
+	}
 }
 
 void CLensDistortion::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
-
 }
 
 bool CLensDistortion::NeedPreview()
@@ -125,18 +125,20 @@ bool CLensDistortion::IsSourcePreview()
 }
 
 
-void CLensDistortion::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CLensDistortion::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                               CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
+		auto lensEffectParameter = static_cast<CLensDistortionEffectParameter*>(effectParameter);
 		filtreEffet->LensDistortionFilter(lensEffectParameter->strength);
 	}
-
 }
 
 
-void CLensDistortion::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CLensDistortion::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                         CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                         int& heightOutput)
 {
 }
 
@@ -154,7 +156,7 @@ CImageLoadingFormat* CLensDistortion::ApplyEffect(CEffectParameter* effectParame
 			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
 
-			CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
+			auto lensEffectParameter = static_cast<CLensDistortionEffectParameter*>(effectParameter);
 			filtre->LensDistortionFilter(lensEffectParameter->strength);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filtre->GetBitmap(true);
@@ -163,5 +165,4 @@ CImageLoadingFormat* CLensDistortion::ApplyEffect(CEffectParameter* effectParame
 	}
 
 	return imageLoad;
-
 }

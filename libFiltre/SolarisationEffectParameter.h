@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CSolarisationEffectParameter : public CEffectParameter
 {
 public:
@@ -7,8 +8,10 @@ public:
 	{
 		threshold = 50;
 	};
-	~CSolarisationEffectParameter() override {};
+
+	~CSolarisationEffectParameter() override
+	{
+	};
 
 	long threshold;
 };
-

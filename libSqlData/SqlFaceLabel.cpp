@@ -16,12 +16,16 @@ CSqlFaceLabel::~CSqlFaceLabel()
 //--------------------------------------------------------
 //Chargement de toutes les données d'un album
 //--------------------------------------------------------
-bool CSqlFaceLabel::InsertFaceLabel(const int &numFace, const wxString &faceName, const int &isSelectable)
+bool CSqlFaceLabel::InsertFaceLabel(const int& numFace, const wxString& faceName, const int& isSelectable)
 {
-	return (ExecuteRequestWithNoResult("INSERT INTO FACE_NAME (numFace, faceName, isSelectable) VALUES (" + to_string(numFace) + ",'" + faceName + "'," + to_string(isSelectable) + ")") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "INSERT INTO FACE_NAME (numFace, faceName, isSelectable) VALUES (" + to_string(numFace) + ",'" + faceName
+		       + "'," + to_string(isSelectable) + ")") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFaceLabel::GetNumFace(const wxString &faceName)
+int CSqlFaceLabel::GetNumFace(const wxString& faceName)
 {
 	numFace = -1;
 	type = 2;
@@ -37,19 +41,31 @@ int CSqlFaceLabel::GetFaceNumLabel(int idFace)
 	return numFace;
 }
 
-bool CSqlFaceLabel::UpdateNumFaceLabel(const int &numFace, const int &NewNumName)
+bool CSqlFaceLabel::UpdateNumFaceLabel(const int& numFace, const int& NewNumName)
 {
-	return (ExecuteRequestWithNoResult("UPDATE FACE_NAME SET numFace = " + to_string(NewNumName) + " where numFace = " + to_string(numFace)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+			       "UPDATE FACE_NAME SET numFace = " + to_string(NewNumName) + " where numFace = " + to_string(numFace))
+		       !=
+		       -1)
+		       ? true
+		       : false;
 }
 
-bool CSqlFaceLabel::UpdateFaceLabel(const int &numFace, const wxString &faceName)
+bool CSqlFaceLabel::UpdateFaceLabel(const int& numFace, const wxString& faceName)
 {
-	return (ExecuteRequestWithNoResult("UPDATE FACE_NAME SET faceName = '" + faceName + "' where numFace = " + to_string(numFace)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "UPDATE FACE_NAME SET faceName = '" + faceName + "' where numFace = " + to_string(numFace)) != -1)
+		       ? true
+		       : false;
 }
 
-bool CSqlFaceLabel::UpdateFaceLabel(const int &numFace, const int &isSelectable)
+bool CSqlFaceLabel::UpdateFaceLabel(const int& numFace, const int& isSelectable)
 {
-	return (ExecuteRequestWithNoResult("UPDATE FACE_NAME SET isSelectable = "  + to_string(isSelectable) + " where numFace = " + to_string(numFace)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "UPDATE FACE_NAME SET isSelectable = " + to_string(isSelectable) + " where numFace = " +
+		       to_string(numFace)) != -1)
+		       ? true
+		       : false;
 }
 
 vector<int> CSqlFaceLabel::GetFaceLabelAlone()
@@ -69,7 +85,9 @@ wxString CSqlFaceLabel::GetFaceName(int numFace)
 
 bool CSqlFaceLabel::DeleteFaceLabelDatabase(int numFace)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM FACE_NAME where numFace = " + to_string(numFace)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM FACE_NAME where numFace = " + to_string(numFace)) != -1)
+		       ? true
+		       : false;
 }
 
 bool CSqlFaceLabel::DeleteFaceLabelDatabase()
@@ -77,23 +95,23 @@ bool CSqlFaceLabel::DeleteFaceLabelDatabase()
 	return (ExecuteRequestWithNoResult("DELETE FROM FACE_NAME") != -1) ? true : false;
 }
 
-int CSqlFaceLabel::TraitementResult(CSqlResult * sqlResult)
+int CSqlFaceLabel::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-			if(type == 0)
+			if (type == 0)
 			{
 				switch (i)
 				{
 				case 0:
-					faceName =  sqlResult->ColumnDataText(i);
+					faceName = sqlResult->ColumnDataText(i);
 					break;
 				}
 			}
-			else if(type == 1)
+			else if (type == 1)
 			{
 				switch (i)
 				{
@@ -102,7 +120,7 @@ int CSqlFaceLabel::TraitementResult(CSqlResult * sqlResult)
 					break;
 				}
 			}
-			else if(type == 2)
+			else if (type == 2)
 			{
 				switch (i)
 				{

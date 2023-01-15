@@ -262,7 +262,7 @@
 #endif
 
 
-	/* Common defaults */
+/* Common defaults */
 
 #ifndef OS_CODE
 #  define OS_CODE  0x03  /* assume Unix */
@@ -300,7 +300,7 @@
 
 #ifndef MIN_PART
 #  define MIN_PART 3
-   /* keep at least MIN_PART chars between dots in a file name. */
+/* keep at least MIN_PART chars between dots in a file name. */
 #endif
 
 #ifndef EXPAND
@@ -326,4 +326,3 @@
 #ifndef put_char
 #  define put_char(c) put_byte(c)
 #endif
-

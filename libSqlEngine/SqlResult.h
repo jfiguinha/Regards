@@ -12,22 +12,22 @@ namespace Regards
 		public:
 			CSqlResult();
 			~CSqlResult();
-			
-			void SetStatement(sqlite3_stmt * pRes);
+
+			void SetStatement(sqlite3_stmt* pRes);
 			/*Result Set Definations*/
-			int	GetColumnCount();
+			int GetColumnCount();
 			bool Next();
 
-			wxString NextColumnName(const int &iClmnCount);
-			wxString ColumnDataText(const int & clmNum);
-			int ColumnDataInt(const int & clmNum);
-			int ColumnDataBlob(const int & clmNum, void * & pzBlob, const int & pnBlob);
-			int ColumnDataBlobSize(const int & clmNum);
-			const void * ColumnDataBlob(const int & clmNum);
+			wxString NextColumnName(const int& iClmnCount);
+			wxString ColumnDataText(const int& clmNum);
+			int ColumnDataInt(const int& clmNum);
+			int ColumnDataBlob(const int& clmNum, void* & pzBlob, const int& pnBlob);
+			int ColumnDataBlobSize(const int& clmNum);
+			const void* ColumnDataBlob(const int& clmNum);
+
 		private:
-			sqlite3_stmt * pRes;
+			sqlite3_stmt* pRes;
 			int m_iColumnCount;
 		};
 	}
 }
-

@@ -480,4 +480,3 @@ void CxImageWMF::ShrinkMetafile(int32_t &cx, int32_t &cy)
 }
 
 #endif	// CIMAGE_SUPPORT_WMF
-

@@ -21,7 +21,7 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bi
 	openclFilter = new COpenCLFilter();
 }
 
-bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilizationt)
+bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilizationt)
 {
 	return true;
 }
@@ -39,7 +39,7 @@ cv::Mat COpenCLEffect::GetMat()
 		input.copyTo(output);
 	}
 
-	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
 }
@@ -57,7 +57,7 @@ cv::UMat COpenCLEffect::GetUMat()
 		input.copyTo(output);
 	}
 
-	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
 }
@@ -88,7 +88,6 @@ int COpenCLEffect::GetHeight()
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
 {
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput);
@@ -128,9 +127,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		//local.copyTo(input);
 		//delete _bitmap;
 		preview = false;
-
 	}
-
 }
 
 COpenCLEffect::~COpenCLEffect()
@@ -155,24 +152,22 @@ cv::Mat COpenCLEffect::GetBitmap(const bool& source)
 	else
 	{
 		input.copyTo(bitmapOut);
-
 	}
 
 	return bitmapOut;
-
 }
 
 //-----------------------------------------------------------------------------------------------
 //Get Output
 //-----------------------------------------------------------------------------------------------
 
-wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
+wxImage COpenCLEffect::GetwxImage(cv::UMat& input)
 {
 	cv::Mat cvDest;
-	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
+	cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
 
 	long imsize = cvDest.rows * cvDest.cols * cvDest.channels();
-	wxImage wx(cvDest.cols, cvDest.rows, (unsigned char*)malloc(imsize), false);
+	wxImage wx(cvDest.cols, cvDest.rows, static_cast<unsigned char*>(malloc(imsize)), false);
 	unsigned char* s = cvDest.data;
 	unsigned char* d = wx.GetData();
 	memcpy(d, s, imsize);
@@ -193,7 +188,6 @@ wxImage COpenCLEffect::GetwxImage()
 		return GetwxImage(paramOutput);
 	}
 	return GetwxImage(input);
-	
 }
 
 
@@ -215,7 +209,6 @@ int COpenCLEffect::LensDistortionFilter(const int& size)
 
 int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
-		
 	if (preview && !paramOutput.empty())
 	{
 		openclFilter->BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
@@ -229,9 +222,7 @@ int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const in
 
 int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->BrightnessAndContrast(brightness, contrast, paramOutput);
@@ -246,9 +237,7 @@ int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double&
 
 int COpenCLEffect::Swirl(const float& radius, const float& angle)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Swirl(radius, angle, paramOutput);
@@ -261,7 +250,8 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 	return 0;
 }
 
-int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
+int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize,
+                                 const int& searchWindowSize)
 {
 	if (preview && !paramOutput.empty())
 	{
@@ -277,9 +267,7 @@ int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& tem
 
 int COpenCLEffect::Posterize(const float& level, const float& gamma)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Posterize(level, gamma, paramOutput);
@@ -295,7 +283,7 @@ int COpenCLEffect::Posterize(const float& level, const float& gamma)
 int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const double& angle)
 {
 	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
-	
+
 	{
 		vector<double> kernel;
 		vector<wxPoint> offsets;
@@ -308,10 +296,10 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 		if (kernel.size() < 3)
 			return false;
 
-		
+
 		{
 			offsets = CMotionBlur::GetOffsetKernel(kernel.size(), angle);
-			
+
 			if (preview && !paramOutput.empty())
 			{
 				openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), paramOutput);
@@ -329,9 +317,7 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 
 int COpenCLEffect::Median()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Median(paramOutput);
@@ -346,9 +332,7 @@ int COpenCLEffect::Median()
 
 int COpenCLEffect::Negatif()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->ColorEffect("Negatif", paramOutput);
@@ -364,23 +348,20 @@ int COpenCLEffect::Negatif()
 
 int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
-
-    try
-    {
-        
-        {
-            
-            if (preview && !paramOutput.empty())
-            {
-                openclFilter->BrightnessAndContrastAuto(paramOutput, clipHistPercent);
-            }
-            else
-            {
-                openclFilter->BrightnessAndContrastAuto(input, clipHistPercent);
-            }
-        }
-    }
-    catch (cv::Exception& e)
+	try
+	{
+		{
+			if (preview && !paramOutput.empty())
+			{
+				openclFilter->BrightnessAndContrastAuto(paramOutput, clipHistPercent);
+			}
+			else
+			{
+				openclFilter->BrightnessAndContrastAuto(input, clipHistPercent);
+			}
+		}
+	}
+	catch (cv::Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -393,9 +374,7 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 
 int COpenCLEffect::Sepia()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->ColorEffect("Sepia", paramOutput);
@@ -404,7 +383,6 @@ int COpenCLEffect::Sepia()
 		{
 			openclFilter->ColorEffect("Sepia", input);
 		}
-
 	}
 
 	return 0;
@@ -412,9 +390,7 @@ int COpenCLEffect::Sepia()
 
 int COpenCLEffect::NoirEtBlanc()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->ColorEffect("NoirEtBlanc", paramOutput);
@@ -423,7 +399,6 @@ int COpenCLEffect::NoirEtBlanc()
 		{
 			openclFilter->ColorEffect("NoirEtBlanc", input);
 		}
-
 	}
 
 	return 0;
@@ -431,9 +406,7 @@ int COpenCLEffect::NoirEtBlanc()
 
 int COpenCLEffect::NiveauDeGris()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->ColorEffect("GrayLevel", paramOutput);
@@ -442,7 +415,6 @@ int COpenCLEffect::NiveauDeGris()
 		{
 			openclFilter->ColorEffect("GrayLevel", input);
 		}
-
 	}
 
 	return 0;
@@ -450,15 +422,14 @@ int COpenCLEffect::NiveauDeGris()
 
 int COpenCLEffect::FlipVertical()
 {
-	
 	{
 		if (preview && !paramOutput.empty())
 		{
-			cv::flip(paramOutput, paramOutput, 0);
+			flip(paramOutput, paramOutput, 0);
 		}
 		else
 		{
-			cv::flip(input, input, 0);
+			flip(input, input, 0);
 		}
 	}
 
@@ -469,11 +440,11 @@ int COpenCLEffect::FlipHorizontal()
 {
 	if (preview && !paramOutput.empty())
 	{
-		cv::flip(paramOutput, paramOutput, 1);
+		flip(paramOutput, paramOutput, 1);
 	}
 	else
 	{
-		cv::flip(input, input, 1);
+		flip(input, input, 1);
 	}
 
 	return 0;
@@ -534,9 +505,7 @@ int COpenCLEffect::RotateFree(const double& angle, const int& widthOut, const in
 
 int COpenCLEffect::SharpenMasking(const float& sharpness)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->SharpenMasking(sharpness, paramOutput);
@@ -552,9 +521,7 @@ int COpenCLEffect::SharpenMasking(const float& sharpness)
 
 int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->PhotoFiltre(clValue, intensity, paramOutput);
@@ -570,9 +537,7 @@ int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 
 int COpenCLEffect::Solarize(const long& threshold)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Solarize(threshold, paramOutput);
@@ -616,11 +581,11 @@ int COpenCLEffect::FiltreMosaic(const int& size)
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int COpenCLEffect::Fusion(cv::Mat & bitmapSecond, const float& pourcentage)
+int COpenCLEffect::Fusion(cv::Mat& bitmapSecond, const float& pourcentage)
 {
 	cv::UMat second;
 	bitmapSecond.copyTo(second);
-		
+
 	if (preview && !paramOutput.empty())
 	{
 		openclFilter->Fusion(paramOutput, second, pourcentage);
@@ -647,9 +612,7 @@ int COpenCLEffect::Soften()
 
 int COpenCLEffect::Noise()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Noise(paramOutput);
@@ -658,7 +621,6 @@ int COpenCLEffect::Noise()
 		{
 			openclFilter->Noise(input);
 		}
-		
 	}
 
 	return 0;
@@ -666,9 +628,7 @@ int COpenCLEffect::Noise()
 
 int COpenCLEffect::Blur(const int& radius)
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->Blur(radius, paramOutput);
@@ -677,7 +637,6 @@ int COpenCLEffect::Blur(const int& radius)
 		{
 			openclFilter->Blur(radius, input);
 		}
-		
 	}
 
 	return 0;
@@ -685,7 +644,6 @@ int COpenCLEffect::Blur(const int& radius)
 
 int COpenCLEffect::Emboss()
 {
-	
 	if (preview && !paramOutput.empty())
 	{
 		openclFilter->Emboss(paramOutput);
@@ -715,7 +673,7 @@ int COpenCLEffect::SharpenStrong()
 }
 
 int COpenCLEffect::Sharpen()
-{		
+{
 	if (preview && !paramOutput.empty())
 	{
 		openclFilter->Sharpen(paramOutput);
@@ -742,9 +700,7 @@ int COpenCLEffect::FiltreEdge()
 
 int COpenCLEffect::Erode()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
 			openclFilter->ErodeDilate("Erode", paramOutput);
@@ -759,7 +715,6 @@ int COpenCLEffect::Erode()
 
 int COpenCLEffect::Dilate()
 {
-	
 	if (preview && !paramOutput.empty())
 	{
 		openclFilter->ErodeDilate("Dilate", paramOutput);
@@ -784,11 +739,10 @@ int COpenCLEffect::GaussianBlur(const int& radius, const int& boxSize)
 	return 0;
 }
 
-void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
+void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+                                  int flipH, int flipV, int angle, int ratio)
 {
-	
 	{
-		
 		paramOutput = openclFilter->Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio);
 		preview = true;
 	}

@@ -5,11 +5,15 @@ class CImageLoadingFormat;
 class CBitmapToAscii
 {
 public:
-    CBitmapToAscii(){};
-    ~CBitmapToAscii(){};
-    static void SaveToAscii(CImageLoadingFormat* source, const string &filenameOut);
-    
-private:
+	CBitmapToAscii()
+	{
+	};
 
-    static char getDensity(int value);
+	~CBitmapToAscii()
+	{
+	};
+	static void SaveToAscii(CImageLoadingFormat* source, const string& filenameOut);
+
+private:
+	static char getDensity(int value);
 };

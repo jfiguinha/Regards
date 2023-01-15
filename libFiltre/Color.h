@@ -18,20 +18,17 @@ namespace Regards
 {
 	namespace FiltreEffet
 	{
-		class CColor  
+		class CColor
 		{
 		public:
 			CColor();
 			virtual ~CColor();
 
 
-			static CRgbaquad RGBtoYUV(const CRgbaquad &color);
-			static CRgbaquad YUVtoRGB(const CRgbaquad & lYUVColor);
-			static int HSBToRGB(HSB &HSBValue, CRgbaquad &rgb);
-			static int RGBToHSB(HSB &HSBValue, CRgbaquad &rgb);
-
+			static CRgbaquad RGBtoYUV(const CRgbaquad& color);
+			static CRgbaquad YUVtoRGB(const CRgbaquad& lYUVColor);
+			static int HSBToRGB(HSB& HSBValue, CRgbaquad& rgb);
+			static int RGBToHSB(HSB& HSBValue, CRgbaquad& rgb);
 		};
 	}
 }
-
-

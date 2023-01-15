@@ -19,109 +19,116 @@ using namespace Regards::Filter;
 
 CPhotoFiltreFilter::CPhotoFiltreFilter()
 {
-    libelleEffectIntensity = CLibResource::LoadStringFromResource(L"LBLEFFECTINTENSITY",1);
-    libelleEffectColorRed = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORRED",1);
-    libelleEffectColorGreen = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORGREEN",1);
-    libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE",1);
+	libelleEffectIntensity = CLibResource::LoadStringFromResource(L"LBLEFFECTINTENSITY", 1);
+	libelleEffectColorRed = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORRED", 1);
+	libelleEffectColorGreen = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORGREEN", 1);
+	libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE", 1);
 }
 
 CPhotoFiltreFilter::~CPhotoFiltreFilter()
 {
-    
 }
 
 int CPhotoFiltreFilter::TypeApplyFilter()
 {
-    return 2;
+	return 2;
 }
 
 wxString CPhotoFiltreFilter::GetFilterLabel()
 {
-    return CLibResource::LoadStringFromResource("LBLfilterPhoto", 1);
+	return CLibResource::LoadStringFromResource("LBLfilterPhoto", 1);
 }
 
 int CPhotoFiltreFilter::GetNameFilter()
 {
-    return ID_AJUSTEMENT_PHOTOFILTRE;
+	return ID_AJUSTEMENT_PHOTOFILTRE;
 }
 
 int CPhotoFiltreFilter::GetTypeFilter()
 {
-    return COLOR_EFFECT; //
+	return COLOR_EFFECT; //
 }
 
-void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CPhotoFiltreFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                IFiltreEffectInterface* filtreInterface)
 {
-    CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-    
+	auto photoEffectParameter = static_cast<CPhotoFiltreEffectParameter*>(effectParameter);
+
 	this->source = source;
-    this->filename = filename;
-    vector<int> elementColor;
-    for (auto i = 0; i < 256; i++)
-        elementColor.push_back(i);
-    
-    vector<int> intensity;
-    for (auto i = 0; i < 101; i++)
-        intensity.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectIntensity, new CTreeElementValueInt(photoEffectParameter->intensity), &intensity);
-    filtreInterface->AddTreeInfos(libelleEffectColorRed, new CTreeElementValueInt(photoEffectParameter->red), &elementColor);
-    filtreInterface->AddTreeInfos(libelleEffectColorGreen, new CTreeElementValueInt(photoEffectParameter->green), &elementColor);
-    filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(photoEffectParameter->blue), &elementColor);
+	this->filename = filename;
+	vector<int> elementColor;
+	for (auto i = 0; i < 256; i++)
+		elementColor.push_back(i);
+
+	vector<int> intensity;
+	for (auto i = 0; i < 101; i++)
+		intensity.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectIntensity, new CTreeElementValueInt(photoEffectParameter->intensity),
+	                              &intensity);
+	filtreInterface->AddTreeInfos(libelleEffectColorRed, new CTreeElementValueInt(photoEffectParameter->red),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectColorGreen, new CTreeElementValueInt(photoEffectParameter->green),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(photoEffectParameter->blue),
+	                              &elementColor);
 }
 
-void CPhotoFiltreFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CPhotoFiltreFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                           const wxString& key)
 {
-    CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-    
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectColorRed)
-    {
-        photoEffectParameter->red = value;
-    }
-    else if (key == libelleEffectColorGreen)
-    {
-        photoEffectParameter->green = value;
-    }
-    else if (key == libelleEffectColorBlue)
-    {
-        photoEffectParameter->blue = value;
-    }
-    else if (key == libelleEffectIntensity)
-    {
-        photoEffectParameter->intensity = value;
-    }
+	auto photoEffectParameter = static_cast<CPhotoFiltreEffectParameter*>(effectParameter);
+
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
+	int value = valueInt->GetValue();
+	//Video Parameter
+	if (key == libelleEffectColorRed)
+	{
+		photoEffectParameter->red = value;
+	}
+	else if (key == libelleEffectColorGreen)
+	{
+		photoEffectParameter->green = value;
+	}
+	else if (key == libelleEffectColorBlue)
+	{
+		photoEffectParameter->blue = value;
+	}
+	else if (key == libelleEffectIntensity)
+	{
+		photoEffectParameter->intensity = value;
+	}
 }
 
 void CPhotoFiltreFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
-    if (effectParameter != nullptr && filtreEffet != nullptr)
-    {
-        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
-        filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-    }
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		auto photoFiltreParameter = static_cast<CPhotoFiltreEffectParameter*>(effectParameter);
+		filtreEffet->PhotoFiltre(
+			CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue),
+			photoFiltreParameter->intensity);
+	}
 }
 
 bool CPhotoFiltreFilter::NeedPreview()
 {
-    return true;
+	return true;
 }
 
 CEffectParameter* CPhotoFiltreFilter::GetEffectPointer()
 {
-    return new CPhotoFiltreEffectParameter();
+	return new CPhotoFiltreEffectParameter();
 }
 
 CEffectParameter* CPhotoFiltreFilter::GetDefaultEffectParameter()
 {
-    CPhotoFiltreEffectParameter* photoFiltre = new CPhotoFiltreEffectParameter();
-    photoFiltre->red = 255;
-    photoFiltre->green = 0;
-    photoFiltre->blue = 0;
-    photoFiltre->intensity = 30;
-    return photoFiltre;
+	auto photoFiltre = new CPhotoFiltreEffectParameter();
+	photoFiltre->red = 255;
+	photoFiltre->green = 0;
+	photoFiltre->blue = 0;
+	photoFiltre->intensity = 30;
+	return photoFiltre;
 }
 
 
@@ -131,48 +138,50 @@ bool CPhotoFiltreFilter::IsSourcePreview()
 }
 
 
-void CPhotoFiltreFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CPhotoFiltreFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                  CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-
 	if (effectParameter != nullptr && !source.empty())
 	{
-        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
-        filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+		auto photoFiltreParameter = static_cast<CPhotoFiltreEffectParameter*>(effectParameter);
+		filtreEffet->PhotoFiltre(
+			CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue),
+			photoFiltreParameter->intensity);
 	}
 }
 
 
-void CPhotoFiltreFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CPhotoFiltreFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                            CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                            int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
-    CImageLoadingFormat* imageLoad = nullptr;
-	
-    if (effectParameter != nullptr && bitmapViewer != nullptr)
-    {
-        CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
+	CImageLoadingFormat* imageLoad = nullptr;
 
-        if (!source.empty() && filtre != nullptr)
-        {
+	if (effectParameter != nullptr && bitmapViewer != nullptr)
+	{
+		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-            CImageLoadingFormat image;
-            image.SetPicture(source);
-            image.RotateExif(orientation);
-            filtre->SetBitmap(&image);
-        	
-            imageLoad = new CImageLoadingFormat();
-            CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
-            filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-            cv::Mat bitmapOut = filtre->GetBitmap(true);
-            imageLoad->SetPicture(bitmapOut);
+		if (!source.empty() && filtre != nullptr)
+		{
+			CImageLoadingFormat image;
+			image.SetPicture(source);
+			image.RotateExif(orientation);
+			filtre->SetBitmap(&image);
 
-        }
-    }
+			imageLoad = new CImageLoadingFormat();
+			auto photoFiltreParameter = static_cast<CPhotoFiltreEffectParameter*>(effectParameter);
+			filtre->PhotoFiltre(
+				CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue),
+				photoFiltreParameter->intensity);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
 
 
 	return imageLoad;
 }
-

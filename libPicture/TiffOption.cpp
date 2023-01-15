@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(TiffOption, wxDialog)
-	//(*EventTable(TiffOption)
-	//*)
+		//(*EventTable(TiffOption)
+		//*)
 END_EVENT_TABLE()
 
 TiffOption::TiffOption(wxWindow* parent)

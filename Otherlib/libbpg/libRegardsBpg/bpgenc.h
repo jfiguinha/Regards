@@ -27,56 +27,59 @@ extern "C" {
 
 #include "libbpg.h"
 
-typedef struct {
-    int w, h;
-    BPGImageFormatEnum format; /* x_VIDEO values are forbidden here */
-    uint8_t c_h_phase; /* 4:2:2 or 4:2:0 : give the horizontal chroma
+typedef struct
+{
+	int w, h;
+	BPGImageFormatEnum format; /* x_VIDEO values are forbidden here */
+	uint8_t c_h_phase; /* 4:2:2 or 4:2:0 : give the horizontal chroma
                           position. 0=MPEG2, 1=JPEG. */
-    uint8_t has_alpha;
-    uint8_t has_w_plane;
-    uint8_t limited_range;
-    uint8_t premultiplied_alpha;
-    BPGColorSpaceEnum color_space;
-    uint8_t bit_depth;
-    uint8_t pixel_shift; /* (1 << pixel_shift) bytes per pixel */
-    uint8_t *data[4];
-    int linesize[4];
+	uint8_t has_alpha;
+	uint8_t has_w_plane;
+	uint8_t limited_range;
+	uint8_t premultiplied_alpha;
+	BPGColorSpaceEnum color_space;
+	uint8_t bit_depth;
+	uint8_t pixel_shift; /* (1 << pixel_shift) bytes per pixel */
+	uint8_t* data[4];
+	int linesize[4];
 } Image;
 
-typedef struct {
-    int width;
-    int height;
-    int chroma_format; /* 0-3 */
-    int bit_depth; /* 8-14 */
-    int intra_only; /* 0-1 */
+typedef struct
+{
+	int width;
+	int height;
+	int chroma_format; /* 0-3 */
+	int bit_depth; /* 8-14 */
+	int intra_only; /* 0-1 */
 
-    int qp; /* quantizer 0-51 */
-    int lossless; /* 0-1 lossless mode */
-    int sei_decoded_picture_hash; /* 0=no hash, 1=MD5 hash */
-    int compress_level; /* 1-9 */
-    int verbose;
+	int qp; /* quantizer 0-51 */
+	int lossless; /* 0-1 lossless mode */
+	int sei_decoded_picture_hash; /* 0=no hash, 1=MD5 hash */
+	int compress_level; /* 1-9 */
+	int verbose;
 } HEVCEncodeParams;
 
-typedef struct HEVCEncoderContext HEVCEncoderContext; 
+typedef struct HEVCEncoderContext HEVCEncoderContext;
 
-typedef struct {
-    HEVCEncoderContext *(*open)(const HEVCEncodeParams *params);
-    int (*encode)(HEVCEncoderContext *s, Image *img);
-    int (*close)(HEVCEncoderContext *s, uint8_t **pbuf);
+typedef struct
+{
+	HEVCEncoderContext*(*open)(const HEVCEncodeParams* params);
+	int (*encode)(HEVCEncoderContext* s, Image* img);
+	int (*close)(HEVCEncoderContext* s, uint8_t** pbuf);
 } HEVCEncoder;
 
 extern HEVCEncoder jctvc_encoder;
 extern HEVCEncoder x265_hevc_encoder;
 
-int x265_encode_picture(uint8_t **pbuf, Image *img, 
-                        const HEVCEncodeParams *params);
-void save_yuv1(Image *img, FILE *f);
-void save_yuv(Image *img, const char *filename);
+int x265_encode_picture(uint8_t** pbuf, Image* img,
+                        const HEVCEncodeParams* params);
+void save_yuv1(Image* img, FILE* f);
+void save_yuv(Image* img, const char* filename);
 
-int SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossless_mode, int bit_depth, const char * outfilename);
+int SavePNGPicture(uint8_t* buf, size_t buf_len, int compress_level, int lossless_mode, int bit_depth,
+                   const char* outfilename);
 
 
 #ifdef __cplusplus
 }
 #endif
-

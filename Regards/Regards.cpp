@@ -77,7 +77,6 @@ void MyApp::MacOpenFile(const wxString &fileName)
 
 int MyApp::Close()
 {
-  
 	CSqlInit::KillSqlEngine();
 	CPrintEngine::Kill();
 
@@ -145,7 +144,7 @@ bool MyApp::OnInit()
 #ifdef __APPLE__
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
-	 
+
 	int retCode = sqlite3_config(SQLITE_CONFIG_SERIALIZED);
 	if (retCode == SQLITE_OK)
 	{
@@ -163,7 +162,7 @@ bool MyApp::OnInit()
 	int ret;
 	ret = wcstombs(buffer, name, sizeof(buffer));
 	setlocale(LC_ALL, buffer);
-	
+
 #elif __APPLE__
     std::locale::global(std::locale(""));
 
@@ -178,7 +177,7 @@ bool MyApp::OnInit()
 #ifdef __APPLE__
 	setlocale(LC_NUMERIC, "en_US.UTF-8");
 #elif defined(WIN32)
-    std::setlocale(LC_NUMERIC, "en_US.UTF-8");
+	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 #endif
 
 	sqlite3_initialize();
@@ -197,7 +196,7 @@ bool MyApp::OnInit()
 #ifdef GLUT
 #ifndef __APPLE__
 	int argc = 1;
-	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
+	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
 	glutInit(&argc, argv);
 #endif
 #endif
@@ -234,45 +233,45 @@ bool MyApp::OnInit()
 
 	if (!configFileExist)
 	{
-		if (!cv::ocl::haveOpenCL())
+		if (!ocl::haveOpenCL())
 			regardsParam->SetIsOpenCLSupport(false);
 		else
-			regardsParam->SetIsOpenCLSupport(true);		
+			regardsParam->SetIsOpenCLSupport(true);
 	}
 
 
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
 	{
-		if (!cv::ocl::haveOpenCL())
+		if (!ocl::haveOpenCL())
 		{
 			cout << "OpenCL is not avaiable..." << endl;
 		}
 		else
 		{
-
-			cv::ocl::Context context;
-			if (!context.create(cv::ocl::Device::TYPE_GPU))
+			ocl::Context context;
+			if (!context.create(ocl::Device::TYPE_GPU))
 				isOpenCLInitialized = false;
 			else
 				isOpenCLInitialized = true;
 
 			if (!isOpenCLInitialized)
 			{
-				if (!context.create(cv::ocl::Device::TYPE_CPU))
+				if (!context.create(ocl::Device::TYPE_CPU))
 					isOpenCLInitialized = false;
 				else
 					isOpenCLInitialized = true;
 			}
 
-			cout << context.ndevices() << " GPU devices are detected." << endl; //This bit provides an overview of the OpenCL devices you have in your computer
+			cout << context.ndevices() << " GPU devices are detected." << endl;
+			//This bit provides an overview of the OpenCL devices you have in your computer
 			for (int i = 0; i < context.ndevices(); i++)
 			{
-				cv::ocl::Device device = context.device(i);
+				ocl::Device device = context.device(i);
 #if defined(WIN32)
 				char message[255];
 				sprintf(message, "name: % s \n", device.name().c_str());
 				OutputDebugStringA(message);
-				sprintf(message,"OpenCL_C_Version: % s \n", device.OpenCL_C_Version().c_str());
+				sprintf(message, "OpenCL_C_Version: % s \n", device.OpenCL_C_Version().c_str());
 				OutputDebugStringA(message);
 #else
 				
@@ -282,13 +281,11 @@ bool MyApp::OnInit()
 				cout << "OpenCL_C_Version:  " << device.OpenCL_C_Version() << endl;
 				cout << endl;
 #endif
-
-
 			}
 
 			if (isOpenCLInitialized)
 			{
-				cv::ocl::Device(context.device(1));
+				ocl::Device(context.device(1));
 			}
 		}
 

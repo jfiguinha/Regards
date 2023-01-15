@@ -212,7 +212,8 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		unsigned int local = 0;
 		unsigned char* buf;
 		ExifData* d = exif_data_new_from_file(filename);
-		if (!d) {
+		if (!d)
+		{
 			//fprintf(stderr, "Could not load data from '%s'!\n", filename);
 			size = 0;
 			return;
@@ -221,14 +222,15 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		exif_data_save_data(d, &buf, &local);
 		exif_data_unref(d);
 		free(buf);
-		size = local;// +sizeof(exif_header);
+		size = local; // +sizeof(exif_header);
 	}
 	else
 	{
 		unsigned int local = 0;
 		unsigned char* buf;
 		ExifData* d = exif_data_new_from_file(filename);
-		if (!d) {
+		if (!d)
+		{
 			//fprintf(stderr, "Could not load data from '%s'!\n", filename);
 			size = 0;
 			return;
@@ -242,9 +244,7 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		memcpy(data, buf, local);
 
 		free(buf);
-
 	}
-
 }
 
 bool CPictureMetadataExiv::CopyMetadata(const wxString& output)
@@ -748,9 +748,10 @@ vector<CMetadata> CPictureMetadataExiv::GetMetadata()
 }
 
 
-wxMemoryInputStream * CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation)
+wxMemoryInputStream* CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension,
+                                                                 int& orientation)
 {
-	wxMemoryInputStream * cxMemFile = nullptr;
+	wxMemoryInputStream* cxMemFile = nullptr;
 	if (dataIn != nullptr)
 	{
 		Exiv2::ExifThumb thumb(*dataIn);
@@ -775,9 +776,9 @@ wxMemoryInputStream * CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifDat
 	return cxMemFile;
 }
 
-wxMemoryInputStream * CPictureMetadataExiv::DecodeThumbnail(wxString& extension, int& orientation)
+wxMemoryInputStream* CPictureMetadataExiv::DecodeThumbnail(wxString& extension, int& orientation)
 {
-	wxMemoryInputStream * bitmap = nullptr;
+	wxMemoryInputStream* bitmap = nullptr;
 	try
 	{
 		Exiv2::ExifData& exifData = exif->exifData();

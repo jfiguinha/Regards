@@ -14,28 +14,41 @@
 
 #if CXIMAGE_SUPPORT_SKA
 
-class CxImageSKA: public CxImage
+class CxImageSKA : public CxImage
 {
 #pragma pack(1)
-	typedef struct tagSkaHeader {
-    uint16_t  Width;
-    uint16_t  Height;
-    uint8_t  BppExp;
-    uint32_t dwUnknown;
-} SKAHEADER;
+	using SKAHEADER = struct tagSkaHeader
+	{
+		uint16_t Width;
+		uint16_t Height;
+		uint8_t BppExp;
+		uint32_t dwUnknown;
+	};
 #pragma pack()
 
 public:
-	CxImageSKA(): CxImage(CXIMAGE_FORMAT_SKA) {}
+	CxImageSKA(): CxImage(CXIMAGE_FORMAT_SKA)
+	{
+	}
 
-//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_ICO);}
-//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_ICO);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+	//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_ICO);}
+	//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_ICO);}
+	bool Decode(CxFile* hFile);
+
+	bool Decode(FILE* hFile)
+	{
+		CxIOFile file(hFile);
+		return Decode(&file);
+	}
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+	bool Encode(CxFile* hFile);
+
+	bool Encode(FILE* hFile)
+	{
+		CxIOFile file(hFile);
+		return Encode(&file);
+	}
 #endif // CXIMAGE_SUPPORT_ENCODE
 };
 

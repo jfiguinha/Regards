@@ -12,8 +12,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(IndexGenerator, wxDialog)
-	//(*EventTable(IndexGenerator)
-	//*)
+		//(*EventTable(IndexGenerator)
+		//*)
 END_EVENT_TABLE()
 
 IndexGenerator::IndexGenerator(wxWindow* parent)

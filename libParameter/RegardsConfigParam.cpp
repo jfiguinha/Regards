@@ -630,8 +630,6 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		nodeName = child_node->name();
 		numSuperResolution = atoi(child_node->value());
 	}
-
-
 }
 
 

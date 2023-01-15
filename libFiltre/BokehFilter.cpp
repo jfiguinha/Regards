@@ -20,6 +20,7 @@
 #include <FaceDetector.h>
 using namespace Regards::Filter;
 using namespace Regards::OpenCV;
+
 CBokehFilter::CBokehFilter()
 {
 	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS", 1);
@@ -33,12 +34,11 @@ int CBokehFilter::TypeApplyFilter()
 
 CBokehFilter::~CBokehFilter()
 {
-
 }
 
 wxString CBokehFilter::GetFilterLabel()
 {
-	return "Bokeh Effect";//CLibResource::LoadStringFromResource("LBLBokehDENOISING", 1);
+	return "Bokeh Effect"; //CLibResource::LoadStringFromResource("LBLBokehDENOISING", 1);
 }
 
 
@@ -52,9 +52,10 @@ int CBokehFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CBokehFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface* filtreInterface)
+void CBokehFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                          IFiltreEffectInterface* filtreInterface)
 {
-	CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
+	auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 
 	this->source = source;
 	this->filename = filename;
@@ -83,41 +84,43 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source, c
 	vector<int> elementColor;
 	for (auto i = 0; i < 100; i++)
 	{
-		if(i%2 != 0)
+		if (i % 2 != 0)
 			elementColor.push_back(i);
 	}
-	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(BokehEffectParameter->radius), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(BokehEffectParameter->boxSize), &elementColor);
-
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(BokehEffectParameter->radius),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(BokehEffectParameter->boxSize),
+	                              &elementColor);
 }
 
-void CBokehFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData, const wxString& key)
+void CBokehFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                     const wxString& key)
 {
-	CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
+	auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 	//Video Parameter
 	float value = 0.0;
 	switch (valueData->GetType())
 	{
 	case TYPE_ELEMENT_INT:
-	{
-		CTreeElementValueInt* intValue = (CTreeElementValueInt*)valueData;
-		value = intValue->GetValue();
-	}
-	break;
+		{
+			auto intValue = static_cast<CTreeElementValueInt*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	case TYPE_ELEMENT_FLOAT:
-	{
-		CTreeElementValueFloat* intValue = (CTreeElementValueFloat*)valueData;
-		value = intValue->GetValue();
-	}
-	break;
+		{
+			auto intValue = static_cast<CTreeElementValueFloat*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	case TYPE_ELEMENT_BOOL:
-	{
-		CTreeElementValueBool* intValue = (CTreeElementValueBool*)valueData;
-		value = intValue->GetValue();
+		{
+			auto intValue = static_cast<CTreeElementValueBool*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	}
-	break;
-	}
-	
+
 	if (key == libelleEffectRadius)
 	{
 		BokehEffectParameter->radius = value;
@@ -132,7 +135,7 @@ void CBokehFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* eff
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
+		auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 		filtreEffet->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 	}
 }
@@ -152,7 +155,8 @@ CEffectParameter* CBokehFilter::GetDefaultEffectParameter()
 	return new CBokehEffectParameter();
 }
 
-void CBokehFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CBokehFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                      CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
 }
 
@@ -163,7 +167,8 @@ bool CBokehFilter::IsSourcePreview()
 }
 
 
-void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                            CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty())
@@ -171,8 +176,8 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
-		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
@@ -183,7 +188,6 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 
 		delete imageLoad;
 	}
-
 }
 
 CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -194,8 +198,8 @@ CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
-		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);

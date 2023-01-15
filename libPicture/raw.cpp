@@ -12,6 +12,7 @@
 #include "PictureMetadataExiv.h"
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
+
 CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
@@ -32,14 +33,12 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			picture->SetFilename(fileName);
 			//CPictureMetadataExiv metadata(fileName);
 			//orientation = metadata.GetOrientation();
-			
-
 		}
 		else
 		{
 			picture = new CImageLoadingFormat();
-			cv::Mat rawData(1, memFile->size, CV_8UC1, (void*)memFile->dataPt);
-			cv::Mat matPicture = cv::imdecode(rawData, cv::IMREAD_COLOR);
+			cv::Mat rawData(1, memFile->size, CV_8UC1, memFile->dataPt);
+			cv::Mat matPicture = imdecode(rawData, cv::IMREAD_COLOR);
 			//cv::flip(matPicture, matPicture, 0);
 			picture->SetPicture(matPicture, 0, fileName);
 			picture->SetFilename(fileName);
@@ -57,10 +56,10 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	return picture;
 }
 
-bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoadingFormat)
+bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat* imageLoadingFormat)
 {
 	int result;
-	LibRaw* rawProcessor = new LibRaw();
+	auto rawProcessor = new LibRaw();
 	result = rawProcessor->open_file(fileName.mb_str());
 	if (result == LIBRAW_SUCCESS)
 	{
@@ -77,13 +76,12 @@ bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoad
 	}
 	catch (...)
 	{
-
 	}
 
 	int width = 0;
 	int height = 0;
 	bool isOk = false;
-	CxImage* image = new CxImage();
+	auto image = new CxImage();
 	if (result == 0)
 	{
 		int raw_color, raw_bitsize;

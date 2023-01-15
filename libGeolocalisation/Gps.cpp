@@ -22,7 +22,8 @@ public:
 	}
 
 
-	static size_t write_data(void *ptr, size_t size, size_t nmemb, struct url_data *data) {
+	static size_t write_data(void* ptr, size_t size, size_t nmemb, struct url_data* data)
+	{
 		size_t index = data->size;
 		size_t n = (size * nmemb);
 		char* tmp;
@@ -32,13 +33,16 @@ public:
 #ifdef DEBUG
 		fprintf(stderr, "data at %p size=%ld nmemb=%ld\n", ptr, size, nmemb);
 #endif
-		tmp = (char *)realloc(data->data, data->size + 1); /* +1 for '\0' */
+		tmp = static_cast<char*>(realloc(data->data, data->size + 1)); /* +1 for '\0' */
 
-		if (tmp != NULL) {
+		if (tmp != nullptr)
+		{
 			data->data = tmp;
 		}
-		else {
-			if (data->data) {
+		else
+		{
+			if (data->data)
+			{
 				free(data->data);
 			}
 			fprintf(stderr, "Failed to allocate memory.\n");
@@ -51,7 +55,7 @@ public:
 		return size * nmemb;
 	}
 
-	void PerformHttpGet(url_data * data, const char * httpAdress)
+	void PerformHttpGet(url_data* data, const char* httpAdress)
 	{
 		if (curl != nullptr)
 		{
@@ -71,13 +75,13 @@ public:
 		}
 	}
 
-	CURL *curl = nullptr;
+	CURL* curl = nullptr;
 };
 
 
 //Test parameter /extras/location.gp?lat=48.896168&long=2.387500&format=xml wxString server = L"www.geoplugin.net";
 
-CGps::CGps(const wxString &server)
+CGps::CGps(const wxString& server)
 {
 	serverHttp = server;
 	gpsUrl = new CGpscurl();
@@ -90,8 +94,6 @@ CGps::~CGps()
 	if (gpsUrl)
 		delete gpsUrl;
 	//CloseHttpRequest();
-
-		
 }
 
 float CGps::GetGpsfValue(const wxString& gpsValue)
@@ -105,14 +107,13 @@ float CGps::GetGpsfValue(const wxString& gpsValue)
 
 	float outputValue = 0.0;
 
-	for (vector<wxString>::iterator it = latValue.begin(); it != latValue.end(); it++)
+	for (auto it = latValue.begin(); it != latValue.end(); ++it)
 	{
-
 		vector<wxString> intValue = CConvertUtility::split(*it, '/');
 		int valeur = atoi(intValue.at(0));
 		int diviseur = atoi(intValue.at(1));
 
-		float value = (float)valeur / (float)diviseur;
+		float value = static_cast<float>(valeur) / static_cast<float>(diviseur);
 		if (i == 1)
 		{
 			value = value / 60;
@@ -137,26 +138,26 @@ wxString CGps::GetGpsValue(const float& gpsValue)
 
 float CGps::GetFLatitude()
 {
-    double val;
-    latitude.ToDouble(&val);
-    return val;
+	double val;
+	latitude.ToDouble(&val);
+	return val;
 }
 
 float CGps::GetFLongitude()
 {
-    double val;
-    longitude.ToDouble(&val);
-    return val;
+	double val;
+	longitude.ToDouble(&val);
+	return val;
 }
 
-bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitude)
+bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitude)
 {
 	bool returnValue = true;
 	try
 	{
 		printf("CGps GeolocalisationGPS \n");
-		
-		
+
+
 		this->latitude = latitude;
 		this->longitude = longitude;
 
@@ -170,8 +171,9 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 
 		struct url_data data;
 		data.size = 0;
-		data.data = (char *)malloc(4096); /* reasonable size initial buffer */
-		if (NULL == data.data) {
+		data.data = static_cast<char*>(malloc(4096)); /* reasonable size initial buffer */
+		if (nullptr == data.data)
+		{
 			printf("CGps GeolocalisationGPS Failed to allocate memory \n");
 			fprintf(stderr, "Failed to allocate memory.\n");
 			return false;
@@ -200,12 +202,12 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 	return returnValue;
 }
 
-GeoPluginVector * CGps::GetGpsList()
+GeoPluginVector* CGps::GetGpsList()
 {
 	return &geoPluginVector;
 }
 
-wxString CGps::FindElement(const wxString &xml, const wxString &baliseBegin, const wxString &baliseEnd)
+wxString CGps::FindElement(const wxString& xml, const wxString& baliseBegin, const wxString& baliseEnd)
 {
 	size_t i = xml.find(baliseBegin);
 	if (i == -1)
@@ -218,7 +220,7 @@ wxString CGps::FindElement(const wxString &xml, const wxString &baliseBegin, con
 }
 
 
-bool CGps::ImportationGeoPlugin(const wxString &xml)
+bool CGps::ImportationGeoPlugin(const wxString& xml)
 {
 	//int j = 0;
 	wxString data = L"";
@@ -241,16 +243,15 @@ bool CGps::ImportationGeoPlugin(const wxString &xml)
 
 			geoPluginVector.push_back(geoValue);
 
-			int i = (int)xmlData.find(baliseEnd);
+			int i = static_cast<int>(xmlData.find(baliseEnd));
 			if (i != -1)
 			{
 				i += baliseEnd.length();
 			}
 			xmlData = xml.substr(i, xml.size() - i);
 		}
-	} while (data != L"");
+	}
+	while (data != L"");
 
 	return true;
-
 }
-

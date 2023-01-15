@@ -38,44 +38,46 @@
  *
  * @param buf_size size of buf in bits
  */
-void ff_init_cabac_encoder(CABACContext *c, uint8_t *buf, int buf_size){
-    init_put_bits(&c->pb, buf, buf_size);
+void ff_init_cabac_encoder(CABACContext* c, uint8_t* buf, int buf_size)
+{
+	init_put_bits(&c->pb, buf, buf_size);
 
-    c->low= 0;
-    c->range= 0x1FE;
-    c->outstanding_count= 0;
-    c->pb.bit_left++; //avoids firstBitFlag
+	c->low = 0;
+	c->range = 0x1FE;
+	c->outstanding_count = 0;
+	c->pb.bit_left++; //avoids firstBitFlag
 }
 
 /**
  *
  * @param buf_size size of buf in bits
  */
-void ff_init_cabac_decoder(CABACContext *c, const uint8_t *buf, int buf_size){
-    c->bytestream_start=
-    c->bytestream= buf;
-    c->bytestream_end= buf + buf_size;
+void ff_init_cabac_decoder(CABACContext* c, const uint8_t* buf, int buf_size)
+{
+	c->bytestream_start =
+		c->bytestream = buf;
+	c->bytestream_end = buf + buf_size;
 
 #if CABAC_BITS == 16
-    c->low =  (*c->bytestream++)<<18;
-    c->low+=  (*c->bytestream++)<<10;
+	c->low = (*c->bytestream++) << 18;
+	c->low += (*c->bytestream++) << 10;
 #else
     c->low =  (*c->bytestream++)<<10;
 #endif
-    c->low+= ((*c->bytestream++)<<2) + 2;
-    c->range= 0x1FE;
+	c->low += ((*c->bytestream++) << 2) + 2;
+	c->range = 0x1FE;
 }
 
 void ff_init_cabac_states(void)
 {
-    static int initialized = 0;
+	static int initialized = 0;
 
-    if (initialized)
-        return;
+	if (initialized)
+		return;
 
-    cabac_tableinit();
+	cabac_tableinit();
 
-    initialized = 1;
+	initialized = 1;
 }
 
 #ifdef TEST

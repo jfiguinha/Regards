@@ -16,83 +16,83 @@
 class WXDLLIMPEXP_PDFDOC wxPdfDC : public wxDC
 {
 public:
-  wxPdfDC();
+	wxPdfDC();
 
-  // Recommended constructor
-  wxPdfDC(const wxPrintData& printData);
+	// Recommended constructor
+	wxPdfDC(const wxPrintData& printData);
 
-  wxPdfDC(wxPdfDocument* pdfDocument, double templateWidth, double templateHeight);
+	wxPdfDC(wxPdfDocument* pdfDocument, double templateWidth, double templateHeight);
 
-  wxPdfDocument* GetPdfDocument();
+	wxPdfDocument* GetPdfDocument();
 
-  void SetResolution(int ppi);
-  int GetResolution() const;
+	void SetResolution(int ppi);
+	int GetResolution() const override;
 
-  void SetImageType(wxBitmapType bitmapType, int quality = 75);
+	void SetImageType(wxBitmapType bitmapType, int quality = 75);
 
-  void SetMapModeStyle(wxPdfMapModeStyle style);
-  wxPdfMapModeStyle GetMapModeStyle() const;
+	void SetMapModeStyle(wxPdfMapModeStyle style);
+	wxPdfMapModeStyle GetMapModeStyle() const;
 
 private:
-  wxDECLARE_DYNAMIC_CLASS(wxPdfDC);
+	wxDECLARE_DYNAMIC_CLASS(wxPdfDC);
 };
 
 /// Class representing the PDF drawing context implementation
-class WXDLLIMPEXP_PDFDOC wxPdfDCImpl: public wxDCImpl
+class WXDLLIMPEXP_PDFDOC wxPdfDCImpl : public wxDCImpl
 {
 public:
-  wxPdfDCImpl(wxPdfDC *owner);
-  wxPdfDCImpl(wxPdfDC* owner, const wxPrintData& data);
-  wxPdfDCImpl(wxPdfDC* owner, wxPdfDocument* pdfDocument, double templateWidth, double templateHeight);
-  wxPdfDCImpl(wxPdfDC* owner, const wxString& file, int w = 300, int h = 200);
-  virtual ~wxPdfDCImpl();
+	wxPdfDCImpl(wxPdfDC* owner);
+	wxPdfDCImpl(wxPdfDC* owner, const wxPrintData& data);
+	wxPdfDCImpl(wxPdfDC* owner, wxPdfDocument* pdfDocument, double templateWidth, double templateHeight);
+	wxPdfDCImpl(wxPdfDC* owner, const wxString& file, int w = 300, int h = 200);
+	~wxPdfDCImpl() override;
 
-  void Init();
+	void Init();
 
-  wxPdfDocument* GetPdfDocument();
-  void SetPrintData(const wxPrintData& data);
-  wxPrintData& GetPrintData() { return m_printData; }
+	wxPdfDocument* GetPdfDocument();
+	void SetPrintData(const wxPrintData& data);
+	wxPrintData& GetPrintData() { return m_printData; }
 
-  void SetResolution(int ppi);
-  int GetResolution() const;
+	void SetResolution(int ppi);
+	int GetResolution() const override;
 
-  void SetImageType(wxBitmapType bitmapType, int quality = 75);
+	void SetImageType(wxBitmapType bitmapType, int quality = 75);
 
-  // implement base class pure virtuals
+	// implement base class pure virtuals
 
-  virtual void Clear();
-  virtual bool StartDoc(const wxString& message);
-  virtual void EndDoc();
-  virtual void StartPage();
-  virtual void EndPage();
-  virtual void SetFont(const wxFont& font);
-  virtual void SetPen(const wxPen& pen);
-  virtual void SetBrush(const wxBrush& brush);
-  virtual void SetBackground(const wxBrush& brush);
-  virtual void SetBackgroundMode(int mode);
-  virtual void SetPalette(const wxPalette& palette);
+	void Clear() override;
+	bool StartDoc(const wxString& message) override;
+	void EndDoc() override;
+	void StartPage() override;
+	void EndPage() override;
+	void SetFont(const wxFont& font) override;
+	void SetPen(const wxPen& pen) override;
+	void SetBrush(const wxBrush& brush) override;
+	void SetBackground(const wxBrush& brush) override;
+	void SetBackgroundMode(int mode) override;
+	void SetPalette(const wxPalette& palette) override;
 
-  virtual void DestroyClippingRegion();
+	void DestroyClippingRegion() override;
 
-  virtual wxCoord GetCharHeight() const;
-  virtual wxCoord GetCharWidth() const;
+	wxCoord GetCharHeight() const override;
+	wxCoord GetCharWidth() const override;
 
-  virtual bool CanDrawBitmap() const;
-  virtual bool CanGetTextExtent() const;
-  virtual int GetDepth() const;
-  virtual wxSize GetPPI() const;
+	bool CanDrawBitmap() const override;
+	bool CanGetTextExtent() const override;
+	int GetDepth() const override;
+	wxSize GetPPI() const override;
 
-  virtual void SetMapMode(wxMappingMode mode);
-  virtual void SetUserScale(double x, double y);
+	void SetMapMode(wxMappingMode mode) override;
+	void SetUserScale(double x, double y) override;
 
-  virtual void SetLogicalScale(double x, double y);
-  virtual void SetLogicalOrigin(wxCoord x, wxCoord y);
-  virtual void SetDeviceOrigin(wxCoord x, wxCoord y);
-  virtual void SetAxisOrientation(bool xLeftRight, bool yBottomUp);
-  virtual void SetLogicalFunction(wxRasterOperationMode function);
+	void SetLogicalScale(double x, double y) override;
+	void SetLogicalOrigin(wxCoord x, wxCoord y) override;
+	void SetDeviceOrigin(wxCoord x, wxCoord y) override;
+	void SetAxisOrientation(bool xLeftRight, bool yBottomUp) override;
+	void SetLogicalFunction(wxRasterOperationMode function) override;
 
-  virtual void SetTextForeground(const wxColour& colour);
-  virtual void ComputeScaleAndOrigin();
+	void SetTextForeground(const wxColour& colour) override;
+	void ComputeScaleAndOrigin() override;
 
 #if 0
   // RTL related functions
@@ -107,73 +107,73 @@ public:
 #endif
 
 protected:
-  // the true implementations
-  virtual bool DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
-                           wxFloodFillStyle style = wxFLOOD_SURFACE);
+	// the true implementations
+	bool DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
+	                 wxFloodFillStyle style = wxFLOOD_SURFACE) override;
 
-  virtual void DoGradientFillLinear(const wxRect& rect,
-                                    const wxColour& initialColour,
-                                    const wxColour& destColour,
-                                    wxDirection nDirection = wxEAST);
+	void DoGradientFillLinear(const wxRect& rect,
+	                          const wxColour& initialColour,
+	                          const wxColour& destColour,
+	                          wxDirection nDirection = wxEAST) override;
 
-  virtual void DoGradientFillConcentric(const wxRect& rect,
-                                        const wxColour& initialColour,
-                                        const wxColour& destColour,
-                                        const wxPoint& circleCenter);
+	void DoGradientFillConcentric(const wxRect& rect,
+	                              const wxColour& initialColour,
+	                              const wxColour& destColour,
+	                              const wxPoint& circleCenter) override;
 
-  virtual bool DoGetPixel(wxCoord x, wxCoord y, wxColour* col) const;
+	bool DoGetPixel(wxCoord x, wxCoord y, wxColour* col) const override;
 
-  virtual void DoDrawPoint(wxCoord x, wxCoord y);
+	void DoDrawPoint(wxCoord x, wxCoord y) override;
 
 #if wxUSE_SPLINES
-  virtual void DoDrawSpline(const wxPointList* points);
+	void DoDrawSpline(const wxPointList* points) override;
 #endif
 
-  virtual void DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2);
+	void DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2) override;
 
-  virtual void DoDrawArc(wxCoord x1, wxCoord y1,
-                         wxCoord x2, wxCoord y2,
-                         wxCoord xc, wxCoord yc);
+	void DoDrawArc(wxCoord x1, wxCoord y1,
+	               wxCoord x2, wxCoord y2,
+	               wxCoord xc, wxCoord yc) override;
 
-  virtual void DoDrawCheckMark(wxCoord x, wxCoord y,
-                               wxCoord width, wxCoord height);
+	void DoDrawCheckMark(wxCoord x, wxCoord y,
+	                     wxCoord width, wxCoord height) override;
 
-  virtual void DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord w, wxCoord h,
-                                 double sa, double ea);
+	void DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord w, wxCoord h,
+	                       double sa, double ea) override;
 
-  virtual void DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
-  virtual void DoDrawRoundedRectangle(wxCoord x, wxCoord y,
-                                      wxCoord width, wxCoord height,
-                                      double radius);
-  virtual void DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
+	void DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height) override;
+	void DoDrawRoundedRectangle(wxCoord x, wxCoord y,
+	                            wxCoord width, wxCoord height,
+	                            double radius) override;
+	void DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height) override;
 
-  virtual void DoCrossHair(wxCoord x, wxCoord y);
+	void DoCrossHair(wxCoord x, wxCoord y) override;
 
-  virtual void DoDrawIcon(const wxIcon& icon, wxCoord x, wxCoord y);
-  virtual void DoDrawBitmap(const wxBitmap &bmp, wxCoord x, wxCoord y,
-                            bool useMask = false);
+	void DoDrawIcon(const wxIcon& icon, wxCoord x, wxCoord y) override;
+	void DoDrawBitmap(const wxBitmap& bmp, wxCoord x, wxCoord y,
+	                  bool useMask = false) override;
 
-  virtual void DoDrawText(const wxString& text, wxCoord x, wxCoord y);
-  virtual void DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y,
-                                 double angle);
+	void DoDrawText(const wxString& text, wxCoord x, wxCoord y) override;
+	void DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y,
+	                       double angle) override;
 
-  virtual bool DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
-                      wxDC* source, wxCoord xsrc, wxCoord ysrc,
-                      wxRasterOperationMode rop = wxCOPY, bool useMask = false,
-                      wxCoord xsrcMask = -1, wxCoord ysrcMask = -1);
+	bool DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
+	            wxDC* source, wxCoord xsrc, wxCoord ysrc,
+	            wxRasterOperationMode rop = wxCOPY, bool useMask = false,
+	            wxCoord xsrcMask = -1, wxCoord ysrcMask = -1) override;
 
-  virtual void DoGetSize(int* width, int* height) const;
-  virtual void DoGetSizeMM(int* width, int* height) const;
+	void DoGetSize(int* width, int* height) const override;
+	void DoGetSizeMM(int* width, int* height) const override;
 
-#if wxCHECK_VERSION(2,9,5)
-  virtual void DoDrawLines(int n, const wxPoint points[],
-                           wxCoord xoffset, wxCoord yoffset);
-  virtual void DoDrawPolygon(int n, const wxPoint points[],
-                             wxCoord xoffset, wxCoord yoffset,
-                             wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
-  virtual void DoDrawPolyPolygon(int n, const int count[], const wxPoint points[],
-                                 wxCoord xoffset, wxCoord yoffset,
-                                 wxPolygonFillMode fillStyle);
+#if wxCHECK_VERSION(2, 9, 5)
+	void DoDrawLines(int n, const wxPoint points[],
+	                 wxCoord xoffset, wxCoord yoffset) override;
+	void DoDrawPolygon(int n, const wxPoint points[],
+	                   wxCoord xoffset, wxCoord yoffset,
+	                   wxPolygonFillMode fillStyle = wxODDEVEN_RULE) override;
+	void DoDrawPolyPolygon(int n, const int count[], const wxPoint points[],
+	                       wxCoord xoffset, wxCoord yoffset,
+	                       wxPolygonFillMode fillStyle) override;
 #else
   virtual void DoDrawLines(int n, wxPoint points[],
                            wxCoord xoffset, wxCoord yoffset);
@@ -185,61 +185,61 @@ protected:
                                  int fillStyle);
 #endif // wxCHECK_VERSION
 
-  virtual void DoSetClippingRegionAsRegion(const wxRegion& region);
-  virtual void DoSetClippingRegion(wxCoord x, wxCoord y,
-                                   wxCoord width, wxCoord height);
-  virtual void DoSetDeviceClippingRegion(const wxRegion& region);
+	virtual void DoSetClippingRegionAsRegion(const wxRegion& region);
+	void DoSetClippingRegion(wxCoord x, wxCoord y,
+	                         wxCoord width, wxCoord height) override;
+	void DoSetDeviceClippingRegion(const wxRegion& region) override;
 
-  virtual void DoGetTextExtent(const wxString& string,
-                               wxCoord* x, wxCoord* y,
-                               wxCoord* descent = NULL,
-                               wxCoord* externalLeading = NULL,
-                               const wxFont* theFont = NULL) const;
+	void DoGetTextExtent(const wxString& string,
+	                     wxCoord* x, wxCoord* y,
+	                     wxCoord* descent = nullptr,
+	                     wxCoord* externalLeading = nullptr,
+	                     const wxFont* theFont = nullptr) const override;
 
-  virtual bool DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const;
+	bool DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const override;
 
 public:
-  int GetDrawingStyle();
-  bool StretchBlt(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
-                  wxBitmap* bitmap);
-  int IncreaseImageCounter() { return ++m_imageCount; }
+	int GetDrawingStyle();
+	bool StretchBlt(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
+	                wxBitmap* bitmap);
+	int IncreaseImageCounter() { return ++m_imageCount; }
 
-  void SetMapModeStyle(wxPdfMapModeStyle style) { m_mappingModeStyle = style; }
-  wxPdfMapModeStyle GetMapModeStyle() const { return m_mappingModeStyle; }
+	void SetMapModeStyle(wxPdfMapModeStyle style) { m_mappingModeStyle = style; }
+	wxPdfMapModeStyle GetMapModeStyle() const { return m_mappingModeStyle; }
 
-  double ScaleLogicalToPdfX(wxCoord x) const;
-  double ScaleLogicalToPdfXRel(wxCoord x) const;
-  double ScaleLogicalToPdfY(wxCoord y) const;
-  double ScaleLogicalToPdfYRel(wxCoord y) const;
-  double ScaleFontSizeToPdf(int pointSize) const;
-  int ScalePdfToFontMetric(double metric) const;
+	double ScaleLogicalToPdfX(wxCoord x) const;
+	double ScaleLogicalToPdfXRel(wxCoord x) const;
+	double ScaleLogicalToPdfY(wxCoord y) const;
+	double ScaleLogicalToPdfYRel(wxCoord y) const;
+	double ScaleFontSizeToPdf(int pointSize) const;
+	int ScalePdfToFontMetric(double metric) const;
 
 private:
-  int FindPdfFont(wxFont* font) const;
-  void SetupPen();
-  void SetupBrush();
-  void SetupAlpha();
-  void SetupTextAlpha();
-  void CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
-                            int* height, int* ascent, int* descent, int* extLeading) const;
+	int FindPdfFont(wxFont* font) const;
+	void SetupPen();
+	void SetupBrush();
+	void SetupAlpha();
+	void SetupTextAlpha();
+	void CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
+	                          int* height, int* ascent, int* descent, int* extLeading) const;
 
-  bool           m_templateMode;
-  double         m_templateWidth;
-  double         m_templateHeight;
-  double         m_ppi;
-  double         m_ppiPdfFont;
-  wxPdfDocument* m_pdfDocument;
-  int            m_imageCount;
-  wxPrintData    m_printData;
-  wxPdfMapModeStyle m_mappingModeStyle;
+	bool m_templateMode;
+	double m_templateWidth;
+	double m_templateHeight;
+	double m_ppi;
+	double m_ppiPdfFont;
+	wxPdfDocument* m_pdfDocument;
+	int m_imageCount;
+	wxPrintData m_printData;
+	wxPdfMapModeStyle m_mappingModeStyle;
 
-  wxPdfColour   m_cachedPdfColour;
-  wxUint32      m_cachedRGB;
+	wxPdfColour m_cachedPdfColour;
+	wxUint32 m_cachedRGB;
 
-  bool m_jpegFormat;
-  int  m_jpegQuality;
+	bool m_jpegFormat;
+	int m_jpegQuality;
 
-  wxDECLARE_DYNAMIC_CLASS(wxPdfDCImpl);
+	wxDECLARE_DYNAMIC_CLASS(wxPdfDCImpl);
 };
 
 #endif

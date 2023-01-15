@@ -13,13 +13,16 @@ CSqlFindYear::~CSqlFindYear()
 {
 }
 
-bool CSqlFindYear::SearchUniqueCriteria(vector<wxString> * yearVector)
+bool CSqlFindYear::SearchUniqueCriteria(vector<wxString>* yearVector)
 {
 	this->yearVector = yearVector;
-	return (ExecuteRequest("Select distinct SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA order by annee desc") != -1) ? true : false;
+	return (ExecuteRequest(
+		       "Select distinct SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA order by annee desc") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFindYear::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindYear::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -27,7 +30,6 @@ int CSqlFindYear::TraitementResult(CSqlResult * sqlResult)
 		wxString value;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:

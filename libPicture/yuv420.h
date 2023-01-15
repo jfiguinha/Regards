@@ -7,15 +7,17 @@ static long int cbu_tab[256];
 static long int cgu_tab[256];
 static long int cgv_tab[256];
 static long int tab_76309[256];
-static unsigned char clp[1024];   //for clip in CCIR601   
+static unsigned char clp[1024]; //for clip in CCIR601   
 
 void init_yuv420p_table()
 {
 	long int crv, cbu, cgu, cgv;
 	int i, ind;
 
-	crv = 104597; cbu = 132201;  /* fra matrise i global.h */
-	cgu = 25675;  cgv = 53279;
+	crv = 104597;
+	cbu = 132201; /* fra matrise i global.h */
+	cgu = 25675;
+	cgv = 53279;
 
 	for (i = 0; i < 256; i++)
 	{
@@ -57,7 +59,8 @@ w
 +----------+
 w/2
 */
-void yuv420p_to_rgb32(const unsigned char* srcY, const unsigned char * srcU, const unsigned char * srcV, unsigned char* rgbbuffer, int width, int height)
+void yuv420p_to_rgb32(const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV,
+                      unsigned char* rgbbuffer, int width, int height)
 {
 	int y1, y2, u, v;
 	const unsigned char *py1, *py2;
@@ -66,10 +69,10 @@ void yuv420p_to_rgb32(const unsigned char* srcY, const unsigned char * srcU, con
 	const unsigned char *src_u, *src_v;
 	static int init_yuv420p = 0;
 
-	src_u = srcU;   // u
-	src_v = srcV;  // v
+	src_u = srcU; // u
+	src_v = srcV; // v
 
-	py1 = srcY;   // y
+	py1 = srcY; // y
 	py2 = py1 + width;
 	d1 = rgbbuffer;
 	d2 = d1 + 4 * width;

@@ -14,15 +14,14 @@ namespace Regards
 		class CDecodeRawPicture
 		{
 		public:
-			CDecodeRawPicture(const string & fileName);
+			CDecodeRawPicture(const string& fileName);
 			~CDecodeRawPicture();
-			CImageLoadingFormat * DecodePicture(CDecodeRawParameter * decodeRawParameter);
+			CImageLoadingFormat* DecodePicture(CDecodeRawParameter* decodeRawParameter);
 
 		private:
-			LibRaw * rawProcessor;
+			LibRaw* rawProcessor;
 			int result;
 			CLocalData* localData = nullptr;
-
 		};
 	}
 }

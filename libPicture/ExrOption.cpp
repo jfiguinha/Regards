@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(ExrOption, wxDialog)
-	//(*EventTable(ExrOption)
-	//*)
+		//(*EventTable(ExrOption)
+		//*)
 END_EVENT_TABLE()
 
 ExrOption::ExrOption(wxWindow* parent)

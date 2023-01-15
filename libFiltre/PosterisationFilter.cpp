@@ -24,13 +24,12 @@ int CPosterisationFilter::TypeApplyFilter()
 
 CPosterisationFilter::CPosterisationFilter()
 {
-    libelleEffectLevel = CLibResource::LoadStringFromResource(L"LBLEFFECTLEVEL",1);
-    libelleEffectGamma = CLibResource::LoadStringFromResource(L"LBLEFFECTGAMMA",1);
+	libelleEffectLevel = CLibResource::LoadStringFromResource(L"LBLEFFECTLEVEL", 1);
+	libelleEffectGamma = CLibResource::LoadStringFromResource(L"LBLEFFECTGAMMA", 1);
 }
 
 CPosterisationFilter::~CPosterisationFilter()
 {
-    
 }
 
 wxString CPosterisationFilter::GetFilterLabel()
@@ -48,29 +47,33 @@ int CPosterisationFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CPosterisationFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CPosterisationFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                  IFiltreEffectInterface* filtreInterface)
 {
-    CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
+	auto posterisationEffectParameter = static_cast<CPosterisationEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
-    vector<int> elementColor;
-    for (auto i = 0; i < 256; i++)
-        elementColor.push_back(i);
-    
-    vector<int> elementGamma;
-    for (auto i = 0; i < 11; i++)
-        elementGamma.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectLevel, new CTreeElementValueInt(posterisationEffectParameter->level), &elementColor);
-    filtreInterface->AddTreeInfos(libelleEffectGamma, new CTreeElementValueInt(posterisationEffectParameter->gamma * 10), &elementGamma);
+	vector<int> elementColor;
+	for (auto i = 0; i < 256; i++)
+		elementColor.push_back(i);
+
+	vector<int> elementGamma;
+	for (auto i = 0; i < 11; i++)
+		elementGamma.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectLevel, new CTreeElementValueInt(posterisationEffectParameter->level),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectGamma,
+	                              new CTreeElementValueInt(posterisationEffectParameter->gamma * 10), &elementGamma);
 }
 
-void CPosterisationFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CPosterisationFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                             const wxString& key)
 {
-    CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
-    
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
+	auto posterisationEffectParameter = static_cast<CPosterisationEffectParameter*>(effectParameter);
+
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
 
 	if (posterisationEffectParameter != nullptr && valueInt != nullptr)
 	{
@@ -88,11 +91,12 @@ void CPosterisationFilter::FilterChangeParam(CEffectParameter * effectParameter,
 }
 
 
-void CPosterisationFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+void CPosterisationFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+                                        const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+		auto posterisationFiltreParameter = static_cast<CPosterisationEffectParameter*>(effectParameter);
 		filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
 	}
 }
@@ -109,7 +113,7 @@ CEffectParameter* CPosterisationFilter::GetEffectPointer()
 
 CEffectParameter* CPosterisationFilter::GetDefaultEffectParameter()
 {
-	CPosterisationEffectParameter* posterization = new CPosterisationEffectParameter();
+	auto posterization = new CPosterisationEffectParameter();
 	posterization->gamma = 20;
 	posterization->level = 20;
 	return posterization;
@@ -122,20 +126,21 @@ bool CPosterisationFilter::IsSourcePreview()
 }
 
 
-void CPosterisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CPosterisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                    CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+		auto posterisationFiltreParameter = static_cast<CPosterisationEffectParameter*>(effectParameter);
 		filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
 	}
 }
 
 
-void CPosterisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CPosterisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                              CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                              int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -147,13 +152,12 @@ CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectP
 
 		if (!source.empty() && filtre != nullptr)
 		{
-
 			CImageLoadingFormat image;
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
-			
-			CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+
+			auto posterisationFiltreParameter = static_cast<CPosterisationEffectParameter*>(effectParameter);
 			filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filtre->GetBitmap(true);

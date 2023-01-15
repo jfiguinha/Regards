@@ -50,10 +50,9 @@ void write_ppm(libraw_processed_image_t* img, std::vector<uint8_t>* p)
 }
 
 
-
 DataStorage* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
 {
-	DataStorage * memPicture = new DataStorage();
+	auto memPicture = new DataStorage();
 	auto RawProcessor = new LibRaw;
 	int ret; //, output_thumbs = 0;
 	outputFormat = BITMAPOUTPUT;

@@ -315,7 +315,8 @@ void CTreeElementSlide::CalculPositionButton()
 	if (position > 0)
 	{
 		float pourcentage = static_cast<float>(position) / static_cast<float>(tabValue->size());
-		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
+		CalculPositionButton(
+			positionSlider.x + static_cast<int>(static_cast<float>(positionSlider.width) * pourcentage));
 	}
 	else
 	{

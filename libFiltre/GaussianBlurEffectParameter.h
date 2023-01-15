@@ -1,6 +1,6 @@
-
 #pragma once
 #include "EffectParameter.h"
+
 class CGaussianBlurEffectParameter : public CEffectParameter
 {
 public:
@@ -9,9 +9,11 @@ public:
 		radius = 5;
 		boxSize = 3;
 	};
-	~CGaussianBlurEffectParameter(){};
+
+	~CGaussianBlurEffectParameter() override
+	{
+	};
 
 	int radius;
 	int boxSize;
 };
-

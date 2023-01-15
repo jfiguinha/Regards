@@ -15,21 +15,24 @@ class CMetadata;
 namespace Regards
 {
 	namespace Filter
-    {
-        class CVideoFilter : public CFilterWindowParam
-        {
-        public:
-            CVideoFilter();
-            ~CVideoFilter();
-			int GetNameFilter();
-			wxString GetFilterLabel();
-            int GetTypeFilter();
-			void Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface);
-			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface);
-            void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
+	{
+		class CVideoFilter : public CFilterWindowParam
+		{
+		public:
+			CVideoFilter();
+			~CVideoFilter() override;
+			int GetNameFilter() override;
+			wxString GetFilterLabel() override;
+			int GetTypeFilter() override;
+			void Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override;
+			void Filter(CEffectParameter* effectParameter, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override;
+			void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+			                       const wxString& key) override;
 
-        private:
-			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
+		private:
+			void AddMetadataElement(vector<CMetadata>& element, wxString value, int key);
 			wxString enableEffect;
 			wxString enableDenoiseEffect;
 			wxString enableSharpenEffect;
@@ -54,8 +57,8 @@ namespace Regards
 			wxString libelleVideo;
 			wxString libelleSubtitle;
 			wxString enableSubtitle;
-            wxString enableBicubicInterpolation;
-            wxString enableOpenCL;
+			wxString enableBicubicInterpolation;
+			wxString enableOpenCL;
 			wxString threshold;
 			wxString enableFilmgrain;
 			wxString libelleScale;
@@ -63,6 +66,6 @@ namespace Regards
 			wxString libelleAutoContrast;
 			wxString libelleStabilize;
 			wxString libelleStabilizeNbFrame;
-        };
-    }
+		};
+	}
 }

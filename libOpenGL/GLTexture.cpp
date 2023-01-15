@@ -17,11 +17,10 @@ using namespace cv::ocl;
 class CTextureGLPriv
 {
 public:
-
 	CTextureGLPriv()
 	{
-		context = (cl_context)Context::getDefault().ptr();
-		q = (cl_command_queue)Queue::getDefault().ptr();
+		context = static_cast<cl_context>(Context::getDefault().ptr());
+		q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
 	}
 
 	bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
@@ -35,16 +34,16 @@ public:
 };
 
 
-
 cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
 	cl_int status = 0;
 	if (clImage == nullptr)
 	{
-		clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+		clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(),
+		                                &status);
 		if (status == CL_SUCCESS)
 		{
-			status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+			status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
 		}
 
 		if (status == CL_SUCCESS)
@@ -71,29 +70,28 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 		try
 		{
 			cv::Size srcSize = u.size();
-			status =CreateTextureInterop(glTexture);
+			status = CreateTextureInterop(glTexture);
 
 			if (status != CL_SUCCESS)
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-			cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+			auto clBuffer = static_cast<cl_mem>(u.handle(cv::ACCESS_READ));
 			size_t offset = 0; // TODO
-			size_t dst_origin[3] = { 0, 0, 0 };
-			size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
-			status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
-			
+			size_t dst_origin[3] = {0, 0, 0};
+			size_t region[3] = {static_cast<size_t>(u.cols), static_cast<size_t>(u.rows), 1};
+			status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, nullptr, nullptr);
+
 			if (status == CL_SUCCESS)
 			{
 				status = clFinish(q); // TODO Use events
 			}
 			if (status == CL_SUCCESS)
 				printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
-            else
-            {
-               CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-                isOk = false;
-            }
-
+			else
+			{
+				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+				isOk = false;
+			}
 		}
 		catch (cv::Exception& e)
 		{
@@ -114,7 +112,7 @@ void CTextureGLPriv::DeleteTextureInterop()
 	if (clImage != nullptr)
 	{
 		cl_int status = 0;
-		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
 		if (status != CL_SUCCESS)
 			cout << "OpenCL: clEnqueueReleaseGLObjects failed" << endl;
 
@@ -130,7 +128,6 @@ GLTexture::GLTexture(void)
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;
-
 }
 
 GLTexture::~GLTexture(void)
@@ -139,12 +136,11 @@ GLTexture::~GLTexture(void)
 
 	if (pimpl_ != nullptr)
 		delete pimpl_;
-
 }
 
 GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
 {
-	GLTexture* glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format);
+	auto glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format);
 	return glTextureDest;
 }
 
@@ -156,7 +152,6 @@ GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOp
 	this->format = format;
 	this->openclOpenGLInterop = openclOpenGLInterop;
 	Create(nWidth, nHeight, nullptr);
-
 }
 
 int GLTexture::GetWidth()
@@ -195,9 +190,9 @@ void GLTexture::GetData(uint8_t* data)
 
 bool GLTexture::SetData(cv::UMat& bitmap)
 {
-    bool isOk = false;
-    
-	if(pimpl_ == nullptr && openclOpenGLInterop)
+	bool isOk = false;
+
+	if (pimpl_ == nullptr && openclOpenGLInterop)
 		pimpl_ = new CTextureGLPriv();
 
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
@@ -218,7 +213,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 		}
-			
+
 
 		if (!isOk)
 		{
@@ -228,7 +223,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 	}
 
 
-	if(!isOk)
+	if (!isOk)
 	{
 		cv::Mat bitmapMatrix;
 		if (bitmap.channels() == 3)
@@ -243,8 +238,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 		SetTextureData(bitmapMatrix);
 	}
 
-    return isOk;
-	
+	return isOk;
 }
 
 void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
@@ -271,7 +265,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 	}
 }
 
-void GLTexture::SetData(cv::Mat & bitmap)
+void GLTexture::SetData(cv::Mat& bitmap)
 {
 	cv::Mat bitmapMatrix;
 	if (bitmap.channels() == 3)
@@ -353,8 +347,6 @@ void GLTexture::Delete()
 	}
 
 	checkErrors("GLTexture::Delete()");
-
-
 }
 
 void GLTexture::Enable()

@@ -132,7 +132,7 @@ vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 	MediaInfo MI;
 	String To_Display = MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
 	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	std:wstring value = MI.Inform();
+std:wstring value = MI.Inform();
 	metadata = SplitByLine(value);
 	MI.Close();
 	return metadata;
@@ -153,10 +153,9 @@ int CMediaInfo::GetVideoRotation(const wxString& filename)
 		}
 		catch (...)
 		{
-
 		}
 	}
-		
+
 	return 0;
 }
 

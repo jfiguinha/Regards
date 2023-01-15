@@ -1,6 +1,6 @@
-
 #pragma once
 #include "EffectParameter.h"
+
 class CLensDistortionEffectParameter : public CEffectParameter
 {
 public:
@@ -8,8 +8,10 @@ public:
 	{
 		strength = 10;
 	};
-	~CLensDistortionEffectParameter() override {};
+
+	~CLensDistortionEffectParameter() override
+	{
+	};
 
 	int strength;
 };
-

@@ -21,90 +21,90 @@ WX_DEFINE_OBJARRAY(wxPdfCffIndexArray);
 
 wxPdfCffIndexElement::wxPdfCffIndexElement(wxInputStream* buf, int offset, int length)
 {
-  m_offset = offset;
-  m_length = length;
-  m_buf    = buf;
-  m_delete = false;
+	m_offset = offset;
+	m_length = length;
+	m_buf = buf;
+	m_delete = false;
 }
 
 wxPdfCffIndexElement::wxPdfCffIndexElement(wxMemoryOutputStream& buf)
 {
-  buf.Close();
-  m_buf    = new wxMemoryInputStream(buf);
-  m_offset = 0;
-  m_length = (int) m_buf->GetSize();
-  m_delete = true;
+	buf.Close();
+	m_buf = new wxMemoryInputStream(buf);
+	m_offset = 0;
+	m_length = static_cast<int>(m_buf->GetSize());
+	m_delete = true;
 }
 
 wxPdfCffIndexElement::wxPdfCffIndexElement(const char* str)
 {
-  wxMemoryOutputStream buf;
-  buf.Write(str, strlen(str));
-  buf.Close();
-  m_buf    = new wxMemoryInputStream(buf);
-  m_offset = 0;
-  m_length = (int) m_buf->GetSize();
-  m_delete = true;
+	wxMemoryOutputStream buf;
+	buf.Write(str, strlen(str));
+	buf.Close();
+	m_buf = new wxMemoryInputStream(buf);
+	m_offset = 0;
+	m_length = static_cast<int>(m_buf->GetSize());
+	m_delete = true;
 }
 
 wxPdfCffIndexElement::~wxPdfCffIndexElement()
 {
-  if (m_delete && m_buf != NULL)
-  {
-    delete m_buf;
-  }
+	if (m_delete && m_buf != nullptr)
+	{
+		delete m_buf;
+	}
 }
 
 wxPdfCffIndexElement::wxPdfCffIndexElement(const wxPdfCffIndexElement& copy)
 {
-  m_offset = copy.m_offset;
-  m_length = copy.m_length;
-  if (copy.m_delete)
-  {
-    wxMemoryOutputStream buffer;
-    buffer.Write(*copy.m_buf);
-    m_buf    = new wxMemoryInputStream(buffer);
-    m_delete = true;
-  }
-  else
-  {
-    m_buf    = copy.m_buf;
-    m_delete = copy.m_delete;
-  }
+	m_offset = copy.m_offset;
+	m_length = copy.m_length;
+	if (copy.m_delete)
+	{
+		wxMemoryOutputStream buffer;
+		buffer.Write(*copy.m_buf);
+		m_buf = new wxMemoryInputStream(buffer);
+		m_delete = true;
+	}
+	else
+	{
+		m_buf = copy.m_buf;
+		m_delete = copy.m_delete;
+	}
 }
 
 wxPdfCffIndexElement&
 wxPdfCffIndexElement::operator=(const wxPdfCffIndexElement& copy)
 {
-  m_offset = copy.m_offset;
-  m_length = copy.m_length;
-  if (copy.m_delete)
-  {
-    wxMemoryOutputStream buffer;
-    buffer.Write(*copy.m_buf);
-    m_buf    = new wxMemoryInputStream(buffer);
-    m_delete = true;
-  }
-  else
-  {
-    m_buf    = copy.m_buf;
-    m_delete = copy.m_delete;
-  }
-  return *this;
+	m_offset = copy.m_offset;
+	m_length = copy.m_length;
+	if (copy.m_delete)
+	{
+		wxMemoryOutputStream buffer;
+		buffer.Write(*copy.m_buf);
+		m_buf = new wxMemoryInputStream(buffer);
+		m_delete = true;
+	}
+	else
+	{
+		m_buf = copy.m_buf;
+		m_delete = copy.m_delete;
+	}
+	return *this;
 }
 
 void
 wxPdfCffIndexElement::SetBuffer(wxMemoryOutputStream& buf)
 {
-  if (m_delete)
-  {
-    delete m_buf;
-  }
-  buf.Close();
-  m_buf    = new wxMemoryInputStream(buf);
-  m_offset = 0;
-  m_length = (int) m_buf->GetSize();
-  m_delete = true;
+	if (m_delete)
+	{
+		delete m_buf;
+	}
+	buf.Close();
+	m_buf = new wxMemoryInputStream(buf);
+	m_offset = 0;
+	m_length = static_cast<int>(m_buf->GetSize());
+	m_delete = true;
 }
 
 void
@@ -113,16 +113,16 @@ wxPdfCffIndexElement::Emit(wxMemoryOutputStream& buffer)
 #if 0
   wxLogDebug(wxS("Emit: offset=%d length=%d"), m_offset, m_length);
 #endif
-  char locBuffer[1024];
-  m_buf->SeekI(m_offset);
-  int copyLength = m_length;
-  int bufferLength;
-  while (copyLength > 0)
-  {
-    bufferLength = (copyLength > 1024) ? 1024 : copyLength;
-    m_buf->Read(locBuffer, bufferLength);
-    buffer.Write(locBuffer, bufferLength);
-    copyLength -= bufferLength;
+	char locBuffer[1024];
+	m_buf->SeekI(m_offset);
+	int copyLength = m_length;
+	int bufferLength;
+	while (copyLength > 0)
+	{
+		bufferLength = (copyLength > 1024) ? 1024 : copyLength;
+		m_buf->Read(locBuffer, bufferLength);
+		buffer.Write(locBuffer, bufferLength);
+		copyLength -= bufferLength;
 #if 0
     wxString str;
     int kk;
@@ -140,5 +140,5 @@ wxPdfCffIndexElement::Emit(wxMemoryOutputStream& buffer)
       wxLogDebug(str);
     }
 #endif
-  }
+	}
 }

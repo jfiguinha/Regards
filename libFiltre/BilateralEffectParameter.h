@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CBilateralEffectParameter : public CEffectParameter
 {
 public:
@@ -9,10 +10,12 @@ public:
 		sigmaX = 80;
 		sigmaP = 80;
 	};
-	~CBilateralEffectParameter() override {};
+
+	~CBilateralEffectParameter() override
+	{
+	};
 
 	int fSize;
 	int sigmaX;
 	int sigmaP;
 };
-

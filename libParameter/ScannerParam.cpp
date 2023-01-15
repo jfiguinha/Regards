@@ -490,24 +490,24 @@ void CMainParam::GetDiaporamaParameter(xml_node<>* diaporama_node)
 	child_node = diaporama_node->first_node("Effect");
 	if (child_node != nullptr)
 	{
-	//	value = child_node->value();
-	//	nodeName = child_node->name();
+		//	value = child_node->value();
+		//	nodeName = child_node->name();
 		numEffect = atoi(child_node->value());
 	}
 
 	child_node = diaporama_node->first_node("Delai");
 	if (child_node != nullptr)
 	{
-	//	value = child_node->value();
-	//	nodeName = child_node->name();
+		//	value = child_node->value();
+		//	nodeName = child_node->name();
 		delai = atoi(child_node->value());
 	}
 
 	child_node = diaporama_node->first_node("Forward");
 	if (child_node != nullptr)
 	{
-	//	value = child_node->value();
-	//	nodeName = child_node->name();
+		//	value = child_node->value();
+		//	nodeName = child_node->name();
 		enAvant = atoi(child_node->value());
 	}
 }

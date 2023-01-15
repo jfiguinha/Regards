@@ -80,33 +80,42 @@ public:
 };
 
 
-float Filter(const float &f)
+float Filter(const float& f)
 {
-
-	return (f < -2.0 || f > 2.0) ? 0.0 : (
-		(f < -1.0) ? (2.0 + f)*(2.0 + f)*(2.0 + f) / 6.0 : (
-		(f < 0.0) ? (4.0 + f*f*(-6.0 - 3.0*f)) / 6.0 : (
-		(f < 1.0) ? (4.0 + f*f*(-6.0 + 3.0*f)) / 6.0 : (2.0 - f)*(2.0 - f)*(2.0 - f) / 6.0)));
-
+	return (f < -2.0 || f > 2.0)
+		       ? 0.0
+		       : (
+			       (f < -1.0)
+				       ? (2.0 + f) * (2.0 + f) * (2.0 + f) / 6.0
+				       : (
+					       (f < 0.0)
+						       ? (4.0 + f * f * (-6.0 - 3.0 * f)) / 6.0
+						       : (
+							       (f < 1.0)
+								       ? (4.0 + f * f * (-6.0 + 3.0 * f)) / 6.0
+								       : (2.0 - f) * (2.0 - f) * (2.0 - f) / 6.0)));
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImage::EncodeSafeCheck(CxFile *hFile)
+bool CxImage::EncodeSafeCheck(CxFile* hFile)
 {
-	if (hFile==NULL) {
+	if (hFile == nullptr)
+	{
 		strcpy(info.szLastError,CXIMAGE_ERR_NOFILE);
 		return true;
 	}
 
-	if (pDib==NULL){
+	if (pDib == nullptr)
+	{
 		strcpy(info.szLastError,CXIMAGE_ERR_NOIMAGE);
 		return true;
 	}
 	return false;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 //#ifdef WIN32
 //bool CxImage::Save(LPCWSTR filename, uint32_t imagetype)
@@ -126,20 +135,21 @@ bool CxImage::EncodeSafeCheck(CxFile *hFile)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Save(const char * filename, uint32_t imagetype)
+bool CxImage::Save(const char* filename, uint32_t imagetype)
 {
-	FILE* hFile;	//file handle to write the image
+	FILE* hFile; //file handle to write the image
 
 #ifdef WIN32
-	if ((hFile=_tfopen(filename,_T("wb")))==NULL)  return false;	// For UNICODE support
+	if ((hFile = _tfopen(filename,_T("wb"))) == nullptr) return false; // For UNICODE support
 #else
 	if ((hFile=fopen(filename,"wb"))==NULL)  return false;
 #endif
 
-	bool bOK = Encode(hFile,imagetype);
+	bool bOK = Encode(hFile, imagetype);
 	fclose(hFile);
 	return bOK;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk the image in a specific format.
@@ -147,11 +157,12 @@ bool CxImage::Save(const char * filename, uint32_t imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
+bool CxImage::Encode(FILE* hFile, uint32_t imagetype)
 {
 	CxIOFile file(hFile);
-	return Encode(&file,imagetype);
+	return Encode(&file, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to memory buffer the image in a specific format.
@@ -162,21 +173,24 @@ bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Encode(uint8_t * &buffer, int32_t &size, uint32_t imagetype)
+bool CxImage::Encode(uint8_t* & buffer, int32_t& size, uint32_t imagetype)
 {
-	if (buffer!=NULL){
-		strcpy(info.szLastError,"the buffer must be empty");
+	if (buffer != nullptr)
+	{
+		strcpy(info.szLastError, "the buffer must be empty");
 		return false;
 	}
 	CxMemFile file;
 	file.Open();
-	if(Encode(&file,imagetype)){
-		buffer=file.GetBuffer();
-		size=file.Size();
+	if (Encode(&file, imagetype))
+	{
+		buffer = file.GetBuffer();
+		size = file.Size();
 		return true;
 	}
 	return false;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk the image in a specific format.
@@ -185,9 +199,8 @@ bool CxImage::Encode(uint8_t * &buffer, int32_t &size, uint32_t imagetype)
  * \return true if everything is ok
  * \sa ENUM_CXIMAGE_FORMATS
  */
-bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
+bool CxImage::Encode(CxFile* hFile, uint32_t imagetype)
 {
-
 #if CXIMAGE_SUPPORT_BMP
 	if (CXIMAGE_FORMAT_BMP==imagetype){
 		CxImageBMP *newima = new CxImageBMP;
@@ -249,33 +262,35 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	if (CXIMAGE_FORMAT_GIF==imagetype){
-		CxImageGIF *newima = new CxImageGIF;
+	if (CXIMAGE_FORMAT_GIF == imagetype)
+	{
+		auto newima = new CxImageGIF;
 		if (!newima) return false;
 		newima->Ghost(this);
-		if (newima->Encode(hFile)){
+		if (newima->Encode(hFile))
+		{
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			delete newima;
-			return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		delete newima;
+		return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_PNG
-	if (CXIMAGE_FORMAT_PNG==imagetype){
-		CxImagePNG *newima = new CxImagePNG;
+	if (CXIMAGE_FORMAT_PNG == imagetype)
+	{
+		auto newima = new CxImagePNG;
 		if (!newima) return false;
 		newima->Ghost(this);
-		if (newima->Encode(hFile)){
+		if (newima->Encode(hFile))
+		{
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			delete newima;
-			return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		delete newima;
+		return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_MNG
@@ -354,37 +369,38 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 #if CXIMAGE_SUPPORT_JBG
-	if (CXIMAGE_FORMAT_JBG==imagetype){
-		CxImageJBG *newima = new CxImageJBG;
+	if (CXIMAGE_FORMAT_JBG == imagetype)
+	{
+		auto newima = new CxImageJBG;
 		if (!newima) return false;
 		newima->Ghost(this);
-		if (newima->Encode(hFile)){
+		if (newima->Encode(hFile))
+		{
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			delete newima;
-			return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		delete newima;
+		return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_JASPER
 	if (
- #if	CXIMAGE_SUPPORT_JP2
+#if	CXIMAGE_SUPPORT_JP2
 		CXIMAGE_FORMAT_JP2==imagetype || 
- #endif
- #if	CXIMAGE_SUPPORT_JPC
+#endif
+#if	CXIMAGE_SUPPORT_JPC
 		CXIMAGE_FORMAT_JPC==imagetype || 
- #endif
- #if	CXIMAGE_SUPPORT_PGX
+#endif
+#if	CXIMAGE_SUPPORT_PGX
 		CXIMAGE_FORMAT_PGX==imagetype || 
- #endif
- #if	CXIMAGE_SUPPORT_PNM
+#endif
+#if	CXIMAGE_SUPPORT_PNM
 		CXIMAGE_FORMAT_PNM==imagetype || 
- #endif
- #if	CXIMAGE_SUPPORT_RAS
+#endif
+#if	CXIMAGE_SUPPORT_RAS
 		CXIMAGE_FORMAT_RAS==imagetype || 
- #endif
+#endif
 		 false ){
 		CxImageJAS *newima = new CxImageJAS;
 		if (!newima) return false;
@@ -401,18 +417,19 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
 #endif
 
 #if CXIMAGE_SUPPORT_SKA
-	if (CXIMAGE_FORMAT_SKA==imagetype){
-		CxImageSKA *newima = new CxImageSKA;
+	if (CXIMAGE_FORMAT_SKA == imagetype)
+	{
+		auto newima = new CxImageSKA;
 		if (!newima) return false;
 		newima->Ghost(this);
-		if (newima->Encode(hFile)){
+		if (newima->Encode(hFile))
+		{
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			delete newima;
-			return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		delete newima;
+		return false;
 	}
 #endif
 
@@ -448,9 +465,10 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 
-	strcpy(info.szLastError,"Encode: Unknown format");
+	strcpy(info.szLastError, "Encode: Unknown format");
 	return false;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk or memory pagecount images, referenced by an array of CxImage pointers.
@@ -460,11 +478,12 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
  * \param imagetype: can be CXIMAGE_FORMAT_TIF or CXIMAGE_FORMAT_GIF.
  * \return true if everything is ok
  */
-bool CxImage::Encode(FILE * hFile, CxImage ** pImages, int32_t pagecount, uint32_t imagetype)
+bool CxImage::Encode(FILE* hFile, CxImage** pImages, int32_t pagecount, uint32_t imagetype)
 {
 	CxIOFile file(hFile);
-	return Encode(&file, pImages, pagecount,imagetype);
+	return Encode(&file, pImages, pagecount, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk or memory pagecount images, referenced by an array of CxImage pointers.
@@ -474,7 +493,7 @@ bool CxImage::Encode(FILE * hFile, CxImage ** pImages, int32_t pagecount, uint32
  * \param imagetype: can be CXIMAGE_FORMAT_TIF, CXIMAGE_FORMAT_GIF or CXIMAGE_FORMAT_ICO.
  * \return true if everything is ok
  */
-bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint32_t imagetype)
+bool CxImage::Encode(CxFile* hFile, CxImage** pImages, int32_t pagecount, uint32_t imagetype)
 {
 #if CXIMAGE_SUPPORT_TIF
 	if (imagetype==CXIMAGE_FORMAT_TIF){
@@ -489,15 +508,16 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
 	}
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	if (imagetype==CXIMAGE_FORMAT_GIF){
+	if (imagetype == CXIMAGE_FORMAT_GIF)
+	{
 		CxImageGIF newima;
 		newima.Ghost(this);
-		if (newima.Encode(hFile,pImages,pagecount)){
+		if (newima.Encode(hFile, pImages, pagecount))
+		{
 			return true;
-		} else {
-			strcpy(info.szLastError,newima.GetLastError());
-			return false;
 		}
+		strcpy(info.szLastError, newima.GetLastError());
+		return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_ICO
@@ -512,7 +532,7 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
 		}
 	}
 #endif
-	strcpy(info.szLastError,"Multipage Encode, Unsupported operation for this format");
+	strcpy(info.szLastError, "Multipage Encode, Unsupported operation for this format");
 	return false;
 }
 
@@ -526,74 +546,75 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
  * \param bFlipY: direction of Y axis. default = false.
  * \return true if everything is ok
  */
-bool CxImage::Encode2RGBA(uint8_t * &buffer, int32_t &size, bool bFlipY)
+bool CxImage::Encode2RGBA(uint8_t* & buffer, int32_t& size, bool bFlipY)
 {
-	if (buffer!=NULL){
-		strcpy(info.szLastError,"the buffer must be empty");
+	if (buffer != nullptr)
+	{
+		strcpy(info.szLastError, "the buffer must be empty");
 		return false;
 	}
 	CxMemFile file;
 	file.Open();
-	if(Encode2RGBA(&file,bFlipY)){
-		buffer=file.GetBuffer();
-		size=file.Size();
+	if (Encode2RGBA(&file, bFlipY))
+	{
+		buffer = file.GetBuffer();
+		size = file.Size();
 		return true;
 	}
 	return false;
 }
 
-void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, const int &height)
+void CxImage::InterpolationBicubicRGB(uint8_t* & dataOut, const int& width, const int& height)
 {
-
-
 	int widthIn = head.biWidth;
 	int heightIn = head.biHeight;
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
+	float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+	float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
-	weightX * wX = new weightX[width];
-	weightX * wY = new weightX[height];
+	auto wX = new weightX[width];
+	auto wY = new weightX[height];
 
 
 	//tbb::parallel_for(tbb::blocked_range<int>(0, height),
 	//	[&](tbb::blocked_range<int> r)
-	tbb::parallel_for(0, height, 1, [=](int y) {
-		float posY = (float)y * ratioY;
-		int valueB = (int)posY;
+	tbb::parallel_for(0, height, 1, [=](int y)
+	{
+		float posY = static_cast<float>(y) * ratioY;
+		int valueB = static_cast<int>(posY);
 		float realB = posY - valueB;
-		wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
-		wY[y].tabF[1] = ::Filter(-(0.0f - realB));
-		wY[y].tabF[2] = ::Filter(-(1.0f - realB));
-		wY[y].tabF[3] = ::Filter(-(2.0f - realB));
-
-		});
+		wY[y].tabF[0] = Filter(-(-1.0f - realB));
+		wY[y].tabF[1] = Filter(-(0.0f - realB));
+		wY[y].tabF[2] = Filter(-(1.0f - realB));
+		wY[y].tabF[3] = Filter(-(2.0f - realB));
+	});
 
 	//tbb::parallel_for(tbb::blocked_range<int>(0, width),
 	//	[&](tbb::blocked_range<int> r)
 
-	tbb::parallel_for(0, width, 1, [=](int x) {
-			float posX = (float)x * ratioX;
-			int valueA = (int)posX;
-			float realA = posX - valueA;
-			wX[x].tabF[0] = ::Filter((-1.0f - realA));
-			wX[x].tabF[1] = ::Filter((0.0f - realA));
-			wX[x].tabF[2] = ::Filter((1.0f - realA));
-			wX[x].tabF[3] = ::Filter((2.0f - realA));
-		});
+	tbb::parallel_for(0, width, 1, [=](int x)
+	{
+		float posX = static_cast<float>(x) * ratioX;
+		int valueA = static_cast<int>(posX);
+		float realA = posX - valueA;
+		wX[x].tabF[0] = Filter((-1.0f - realA));
+		wX[x].tabF[1] = Filter((0.0f - realA));
+		wX[x].tabF[2] = Filter((1.0f - realA));
+		wX[x].tabF[3] = Filter((2.0f - realA));
+	});
 
 
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)(height - y - 1) * ratioY;
+		float posY = static_cast<float>(height - y - 1) * ratioY;
 		int tailleYOut = y * width;
 
 
 		for (auto x = 0; x < width; x++)
 		{
-			float posX = (float)x * ratioX;
+			float posX = static_cast<float>(x) * ratioX;
 			int position = (x + tailleYOut) << 2;
-			uint8_t data[4] = { 0, 0, 0, 0 };
+			uint8_t data[4] = {0, 0, 0, 0};
 			BicubicRGB(data, widthIn, heightIn, posX, posY, wY[y].tabF, wX[x].tabF);
 			memcpy(dataOut + position, data, 4);
 		}
@@ -602,11 +623,12 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	delete[] wY;
 }
 
-void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF)
+void CxImage::BicubicRGB(uint8_t* data, const int& width, const int& height, const float& x, const float& y,
+                         float* tabF1, float* tabF)
 {
 	float nDenom = 0.0;
-	int valueA = (int)x;
-	int valueB = (int)y;
+	int valueA = static_cast<int>(x);
+	int valueB = static_cast<int>(y);
 
 	float r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
@@ -668,62 +690,60 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 		}
 	}
 
-	data[0] = uint8_t(r / nDenom);
-	data[1] = uint8_t(g / nDenom);
-	data[2] = uint8_t(b / nDenom);
-	data[3] = uint8_t(a / nDenom);
+	data[0] = static_cast<uint8_t>(r / nDenom);
+	data[1] = static_cast<uint8_t>(g / nDenom);
+	data[2] = static_cast<uint8_t>(b / nDenom);
+	data[3] = static_cast<uint8_t>(a / nDenom);
 }
 
 
-void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, const int &height)
+void CxImage::InterpolationBicubicBGR(uint8_t* & dataOut, const int& width, const int& height)
 {
 	int widthIn = head.biWidth;
 	int heightIn = head.biHeight;
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
+	float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+	float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
-	weightX * wX = new weightX[width];
-	weightX * wY = new weightX[height];
+	auto wX = new weightX[width];
+	auto wY = new weightX[height];
 
 
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY;
-		int valueB = (int)posY;
+		float posY = static_cast<float>(y) * ratioY;
+		int valueB = static_cast<int>(posY);
 		float realB = posY - valueB;
-		wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
-		wY[y].tabF[1] = ::Filter(-(0.0f - realB));
-		wY[y].tabF[2] = ::Filter(-(1.0f - realB));
-		wY[y].tabF[3] = ::Filter(-(2.0f - realB));
+		wY[y].tabF[0] = Filter(-(-1.0f - realB));
+		wY[y].tabF[1] = Filter(-(0.0f - realB));
+		wY[y].tabF[2] = Filter(-(1.0f - realB));
+		wY[y].tabF[3] = Filter(-(2.0f - realB));
 	}
-
 
 
 	for (auto x = 0; x < width; x++)
 	{
-		float posX = (float)x * ratioX;
-		int valueA = (int)posX;
+		float posX = static_cast<float>(x) * ratioX;
+		int valueA = static_cast<int>(posX);
 		float realA = posX - valueA;
-		wX[x].tabF[0] = ::Filter((-1.0f - realA));
-		wX[x].tabF[1] = ::Filter((0.0f - realA));
-		wX[x].tabF[2] = ::Filter((1.0f - realA));
-		wX[x].tabF[3] = ::Filter((2.0f - realA));
+		wX[x].tabF[0] = Filter((-1.0f - realA));
+		wX[x].tabF[1] = Filter((0.0f - realA));
+		wX[x].tabF[2] = Filter((1.0f - realA));
+		wX[x].tabF[3] = Filter((2.0f - realA));
 	}
-
 
 
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY;
+		float posY = static_cast<float>(y) * ratioY;
 		int tailleYOut = y * width;
 
 
-	for (auto x = 0; x < width; x++)
+		for (auto x = 0; x < width; x++)
 		{
-			float posX = (float)x * ratioX;
+			float posX = static_cast<float>(x) * ratioX;
 			int position = (x + tailleYOut) << 2;
-			uint8_t data[4] = { 0, 0, 0, 0 };
+			uint8_t data[4] = {0, 0, 0, 0};
 			BicubicBGR(data, widthIn, heightIn, posX, posY, wY[y].tabF, wX[x].tabF);
 			memcpy(dataOut + position, data, 4);
 		}
@@ -732,11 +752,12 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 	delete[] wY;
 }
 
-void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF)
+void CxImage::BicubicBGR(uint8_t* data, const int& width, const int& height, const float& x, const float& y,
+                         float* tabF1, float* tabF)
 {
 	float nDenom = 0.0;
-	int valueA = (int)x;
-	int valueB = (int)y;
+	int valueA = static_cast<int>(x);
+	int valueB = static_cast<int>(y);
 
 	float r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
@@ -792,7 +813,7 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 		for (auto m = debutM; m <= finM; m++)
 		{
 			RGBQUAD color = BlindGetPixelColor(posX + m, posY + n);
-			
+
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
 
@@ -805,18 +826,17 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 			g += static_cast<float>(color.rgbGreen) * f;
 			b += static_cast<float>(color.rgbBlue) * f;
 			a += static_cast<float>(color.rgbReserved) * f;
-			
 		}
 	}
 
-	data[0] = uint8_t(b / nDenom);
-	data[1] = uint8_t(g / nDenom);
-	data[2] = uint8_t(r / nDenom);
-	data[3] = uint8_t(a / nDenom);
+	data[0] = static_cast<uint8_t>(b / nDenom);
+	data[1] = static_cast<uint8_t>(g / nDenom);
+	data[2] = static_cast<uint8_t>(r / nDenom);
+	data[3] = static_cast<uint8_t>(a / nDenom);
 }
 
 
-bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
+bool CxImage::Encode2RGBA32F(float* buffer, bool bFlipY)
 {
 	//float * buffer = new float[head.biHeight * head.biWidth * 4];
 	long yPos = 0;
@@ -839,49 +859,46 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 				else
 				{
 					uint8_t pos;
-					uint8_t iDst = info.pImage[yPos + (x*head.biBitCount >> 3)];
-					if (head.biBitCount == 4){
-						pos = (uint8_t)(4 * (1 - x % 2));
+					uint8_t iDst = info.pImage[yPos + (x * head.biBitCount >> 3)];
+					if (head.biBitCount == 4)
+					{
+						pos = static_cast<uint8_t>(4 * (1 - x % 2));
 						iDst &= (0x0F << pos);
-						idx = (uint8_t)(iDst >> pos);
+						idx = static_cast<uint8_t>(iDst >> pos);
 					}
-					else if (head.biBitCount == 1){
-						pos = (uint8_t)(7 - x % 8);
+					else if (head.biBitCount == 1)
+					{
+						pos = static_cast<uint8_t>(7 - x % 8);
 						iDst &= (0x01 << pos);
-						idx = (uint8_t)(iDst >> pos);
+						idx = static_cast<uint8_t>(iDst >> pos);
 					}
 				}
 
 				if ((pDib) && (head.biClrUsed))
 				{
-					uint8_t* iDst = (uint8_t*)(pDib)+sizeof(BITMAPINFOHEADER);
-					if (idx<head.biClrUsed)
+					uint8_t* iDst = static_cast<uint8_t*>(pDib) + sizeof(BITMAPINFOHEADER);
+					if (idx < head.biClrUsed)
 					{
 						RGBQUAD color;
-						long ldx = idx*sizeof(RGBQUAD);
+						long ldx = idx * sizeof(RGBQUAD);
 						memcpy(&color, iDst + ldx, sizeof(RGBQUAD));
 						*buffer++ = static_cast<int>(color.rgbRed);
 						*buffer++ = static_cast<int>(color.rgbGreen);
 						*buffer++ = static_cast<int>(color.rgbBlue);
 						*buffer++ = static_cast<int>(color.rgbReserved);
-
 					}
 				}
 
 				//buffer += 4;
-
 			}
-
 		}
 	}
 	else
 	{
 		if (pAlpha)
 		{
-
 			for (auto y = 0; y < head.biHeight; y++)
 			{
-
 				for (auto x = 0; x < head.biWidth; x++)
 				{
 					int position = (y * head.biWidth << 2) + (x << 2);
@@ -895,10 +912,8 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 		}
 		else
 		{
-
 			for (long y1 = 0; y1 < head.biHeight; y1++)
 			{
-
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					int position = (y1 * head.biWidth * 4) + (x * 4);
@@ -913,11 +928,11 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 		}
 	}
 
-	return 0;
+	return false;
 }
 
 
-bool CxImage::Encode2BGRAFloat(float * buffer, long size, bool bFlipY)
+bool CxImage::Encode2BGRAFloat(float* buffer, long size, bool bFlipY)
 {
 	for (long y = 0; y < head.biHeight; y++)
 	{
@@ -925,7 +940,7 @@ bool CxImage::Encode2BGRAFloat(float * buffer, long size, bool bFlipY)
 		{
 			RGBQUAD color = BlindGetPixelColor(x, y);
 			*buffer++ = static_cast<float>(color.rgbRed) / 255.0f;
-			*buffer++ = static_cast<float>(color.rgbGreen)/ 255.0f;
+			*buffer++ = static_cast<float>(color.rgbGreen) / 255.0f;
 			*buffer++ = static_cast<float>(color.rgbBlue) / 255.0f;
 			*buffer++ = static_cast<float>(color.rgbReserved) / 255.0f;
 		}
@@ -933,7 +948,7 @@ bool CxImage::Encode2BGRAFloat(float * buffer, long size, bool bFlipY)
 	return true;
 }
 
-bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
+bool CxImage::Encode2BGRA(uint8_t* buffer, long size, bool bFlipY)
 {
 	//uint8_t* iDst  = info.pImage;
 	long yPos = 0;
@@ -947,7 +962,6 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 
 			for (long x = 0, xPos = 0; x < head.biWidth; x++, xPos += 3)
 			{
-
 				//RGBQUAD rgb;
 				uint8_t idx;
 
@@ -958,43 +972,41 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 				else
 				{
 					uint8_t pos;
-					uint8_t iDst = info.pImage[yPos + (x*head.biBitCount >> 3)];
-					if (head.biBitCount == 4){
-						pos = (uint8_t)(4 * (1 - x % 2));
+					uint8_t iDst = info.pImage[yPos + (x * head.biBitCount >> 3)];
+					if (head.biBitCount == 4)
+					{
+						pos = static_cast<uint8_t>(4 * (1 - x % 2));
 						iDst &= (0x0F << pos);
-						idx = (uint8_t)(iDst >> pos);
+						idx = static_cast<uint8_t>(iDst >> pos);
 					}
-					else if (head.biBitCount == 1){
-						pos = (uint8_t)(7 - x % 8);
+					else if (head.biBitCount == 1)
+					{
+						pos = static_cast<uint8_t>(7 - x % 8);
 						iDst &= (0x01 << pos);
-						idx = (uint8_t)(iDst >> pos);
+						idx = static_cast<uint8_t>(iDst >> pos);
 					}
 				}
 
 				if ((pDib) && (head.biClrUsed))
 				{
-					uint8_t* iDst = (uint8_t*)(pDib)+sizeof(BITMAPINFOHEADER);
-					if (idx<head.biClrUsed)
+					uint8_t* iDst = static_cast<uint8_t*>(pDib) + sizeof(BITMAPINFOHEADER);
+					if (idx < head.biClrUsed)
 					{
-						long ldx = idx*sizeof(RGBQUAD);
+						long ldx = idx * sizeof(RGBQUAD);
 						memcpy(buffer, iDst + ldx, sizeof(uint8_t) << 2);
 					}
 				}
 
 				buffer += 4;
-
 			}
-
 		}
 	}
 	else
 	{
 		if (pAlpha)
 		{
-
 			for (long y = 0; y < head.biHeight; y++)
 			{
-
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);
@@ -1004,70 +1016,69 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 		}
 		else
 		{
-/*
-#if defined(__x86_64__) || defined(_M_AMD64)			
-			int restant = head.biWidth % 16;
-			int width = head.biWidth - restant;
-			int sizeofCopy = sizeof(uint8_t) * 3;
-			__m128i mask = _mm_setr_epi8(0, 1, 2, -1, 3, 4, 5, -1, 6, 7, 8, -1, 9, 10, 11, -1);
-
+			/*
+			#if defined(__x86_64__) || defined(_M_AMD64)			
+						int restant = head.biWidth % 16;
+						int width = head.biWidth - restant;
+						int sizeofCopy = sizeof(uint8_t) * 3;
+						__m128i mask = _mm_setr_epi8(0, 1, 2, -1, 3, 4, 5, -1, 6, 7, 8, -1, 9, 10, 11, -1);
+			
+			
+						for (long y = 0; y < head.biHeight; y++)
+						{
+							int ySrcWidth = y * info.dwEffWidth;
+							int yDstWidth = y * head.biWidth << 2;
+							for (long x = 0; x < width; x += 16)
+							{
+								uint8_t * dataDst = buffer + yDstWidth + (x << 2);
+								uint8_t * data = info.pImage + ySrcWidth + (x * 3);
+			
+								__m128i * src = (__m128i *)data;
+								__m128i * dst = (__m128i *)dataDst;
+			
+								__m128i sa = _mm_loadu_si128((__m128i *)src);
+								__m128i sb = _mm_loadu_si128((__m128i *)(src + 1));
+								__m128i sc = _mm_loadu_si128((__m128i *)(src + 2));
+			
+								__m128i val = _mm_shuffle_epi8(sa, mask);
+								_mm_storeu_si128(dst, val);
+								val = _mm_shuffle_epi8(_mm_alignr_epi8(sb, sa, 12), mask);
+								_mm_storeu_si128(dst + 1, val);
+								val = _mm_shuffle_epi8(_mm_alignr_epi8(sc, sb, 8), mask);
+								_mm_storeu_si128(dst + 2, val);
+								val = _mm_shuffle_epi8(_mm_alignr_epi8(sc, sc, 4), mask);
+								_mm_storeu_si128(dst + 3, val);
+							
+							}
+							for (long x = width; x < head.biWidth; x++)
+							{
+								memcpy(buffer + yDstWidth + (x << 2), info.pImage + ySrcWidth + (x * 3), sizeofCopy);
+							}
+						}
+			#else
+			
+			
+						for (long y = 0; y < head.biHeight; y++)
+						{
+			
+							for (long x = 0; x < head.biWidth; x++)
+							{
+								RGBQUAD color = BlindGetPixelColor(x, y);
+								memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t) << 2);
+							}
+						}
+			#endif
+			*/
 
 			for (long y = 0; y < head.biHeight; y++)
 			{
-				int ySrcWidth = y * info.dwEffWidth;
-				int yDstWidth = y * head.biWidth << 2;
-				for (long x = 0; x < width; x += 16)
-				{
-					uint8_t * dataDst = buffer + yDstWidth + (x << 2);
-					uint8_t * data = info.pImage + ySrcWidth + (x * 3);
-
-					__m128i * src = (__m128i *)data;
-					__m128i * dst = (__m128i *)dataDst;
-
-					__m128i sa = _mm_loadu_si128((__m128i *)src);
-					__m128i sb = _mm_loadu_si128((__m128i *)(src + 1));
-					__m128i sc = _mm_loadu_si128((__m128i *)(src + 2));
-
-					__m128i val = _mm_shuffle_epi8(sa, mask);
-					_mm_storeu_si128(dst, val);
-					val = _mm_shuffle_epi8(_mm_alignr_epi8(sb, sa, 12), mask);
-					_mm_storeu_si128(dst + 1, val);
-					val = _mm_shuffle_epi8(_mm_alignr_epi8(sc, sb, 8), mask);
-					_mm_storeu_si128(dst + 2, val);
-					val = _mm_shuffle_epi8(_mm_alignr_epi8(sc, sc, 4), mask);
-					_mm_storeu_si128(dst + 3, val);
-				
-				}
-				for (long x = width; x < head.biWidth; x++)
-				{
-					memcpy(buffer + yDstWidth + (x << 2), info.pImage + ySrcWidth + (x * 3), sizeofCopy);
-				}
-			}
-#else
-
-
-			for (long y = 0; y < head.biHeight; y++)
-			{
-
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);
 					memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t) << 2);
 				}
 			}
-#endif
-*/
-
-			for (long y = 0; y < head.biHeight; y++)
-			{
-
-				for (long x = 0; x < head.biWidth; x++)
-				{
-					RGBQUAD color = BlindGetPixelColor(x, y);
-					memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t) << 2);
-				}
-			}
-//#endif
+			//#endif
 		}
 	}
 	return true;
@@ -1080,24 +1091,25 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
  * \param bFlipY: direction of Y axis. default = false.
  * \return true if everything is ok
  */
-bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
+bool CxImage::Encode2RGBA(CxFile* hFile, bool bFlipY)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
 
-//	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
-//		[&](tbb::blocked_range<int> r)
-		tbb::parallel_for(0, (int)head.biHeight, 1, [=](int y1)
+	//	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
+	//		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, static_cast<int>(head.biHeight), 1, [=](int y1)
+	{
+		int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
+		for (int32_t x = 0; x < head.biWidth; x++)
 		{
-			int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
-			for (int32_t x = 0; x < head.biWidth; x++) {
-				RGBQUAD color = BlindGetPixelColor(x, y);
-				hFile->PutC(color.rgbRed);
-				hFile->PutC(color.rgbGreen);
-				hFile->PutC(color.rgbBlue);
-				hFile->PutC(color.rgbReserved);
-			}
-		});
+			RGBQUAD color = BlindGetPixelColor(x, y);
+			hFile->PutC(color.rgbRed);
+			hFile->PutC(color.rgbGreen);
+			hFile->PutC(color.rgbBlue);
+			hFile->PutC(color.rgbReserved);
+		}
+	});
 	return true;
 }
 
@@ -1118,7 +1130,7 @@ bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Load(const char * filename, uint32_t imagetype)
+bool CxImage::Load(const char* filename, uint32_t imagetype)
 //bool CxImage::Load(const char * filename, uint32_t imagetype)
 {
 	/*FILE* hFile;	//file handle to read the image
@@ -1128,11 +1140,12 @@ bool CxImage::Load(const char * filename, uint32_t imagetype)
 
 	/* automatic file type recognition */
 	bool bOK = false;
-	if (GetTypeIndexFromId(imagetype)){
-		FILE* hFile;	//file handle to read the image
+	if (GetTypeIndexFromId(imagetype))
+	{
+		FILE* hFile; //file handle to read the image
 
 #ifdef WIN32
-		if ((hFile = _tfopen(filename, _T("rb"))) == NULL)  return false;	// For UNICODE support
+		if ((hFile = _tfopen(filename, _T("rb"))) == nullptr) return false; // For UNICODE support
 #else
 		if ((hFile=fopen(filename,"rb"))==NULL)  return false;
 #endif
@@ -1145,7 +1158,7 @@ bool CxImage::Load(const char * filename, uint32_t imagetype)
 		return false;
 
 	char szError[256];
-	strcpy(szError,info.szLastError); //save the first error
+	strcpy(szError, info.szLastError); //save the first error
 
 	/*
 	// if failed, try automatic recognition of the file...
@@ -1161,11 +1174,12 @@ bool CxImage::Load(const char * filename, uint32_t imagetype)
 	fclose(hFile);
 	*/
 
-	if (!bOK && imagetype > 0) 
-		strcpy(info.szLastError,szError); //restore the first error
+	if (!bOK && imagetype > 0)
+		strcpy(info.szLastError, szError); //restore the first error
 
 	return bOK;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef WIN32
 //bool CxImage::Load(LPCWSTR filename, uint32_t imagetype)
@@ -1208,11 +1222,13 @@ bool CxImage::Load(const char * filename, uint32_t imagetype)
  */
 bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
 {
-	uint32_t rsize=SizeofResource(hModule,hRes);
-	HGLOBAL hMem=::LoadResource(hModule,hRes);
-	if (hMem){
-		char* lpVoid=(char*)LockResource(hMem);
-		if (lpVoid){
+	uint32_t rsize = SizeofResource(hModule, hRes);
+	HGLOBAL hMem = ::LoadResource(hModule, hRes);
+	if (hMem)
+	{
+		auto lpVoid = static_cast<char*>(LockResource(hMem));
+		if (lpVoid)
+		{
 			// FILE* fTmp=tmpfile(); doesn't work with network
 			/*char tmpPath[MAX_PATH] = {0};
 			char tmpFile[MAX_PATH] = {0};
@@ -1228,10 +1244,11 @@ bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
 				return bOK;
 			}*/
 
-			CxMemFile fTmp((uint8_t*)lpVoid,rsize);
-			return Decode(&fTmp,imagetype);
+			CxMemFile fTmp((uint8_t*)lpVoid, rsize);
+			return Decode(&fTmp, imagetype);
 		}
-	} else strcpy(info.szLastError,"Unable to load resource!");
+	}
+	else strcpy(info.szLastError, "Unable to load resource!");
 	return false;
 }
 #endif //WIN32
@@ -1246,7 +1263,7 @@ bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
 // > imagetype: specify the image format (CXIMAGE_FORMAT_BMP,...)
 // For UNICODE support: char -> char
 //CxImage::CxImage(const char * filename, uint32_t imagetype)
-CxImage::CxImage(const std::wstring & ws, uint32_t imagetype)
+CxImage::CxImage(const std::wstring& ws, uint32_t imagetype)
 {
 	const std::string s(ws.begin(), ws.end());
 
@@ -1265,7 +1282,7 @@ CxImage::CxImage(const std::wstring & ws, uint32_t imagetype)
 // > imagetype: specify the image format (CXIMAGE_FORMAT_BMP,...)
 // For UNICODE support: char -> char
 //CxImage::CxImage(const char * filename, uint32_t imagetype)
-CxImage::CxImage(const std::wstring & ws, uint32_t imagetype, const bool &header)
+CxImage::CxImage(const std::wstring& ws, uint32_t imagetype, const bool& header)
 {
 	const std::string s(ws.begin(), ws.end());
 	Startup(imagetype);
@@ -1273,28 +1290,31 @@ CxImage::CxImage(const std::wstring & ws, uint32_t imagetype, const bool &header
 		info.nEscape = -1;
 	Load(s.c_str(), imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Constructor from file handle, see Decode()
  * \param stream: file handle, with read access.
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  */
-CxImage::CxImage(FILE * stream, uint32_t imagetype)
+CxImage::CxImage(FILE* stream, uint32_t imagetype)
 {
 	Startup(imagetype);
-	Decode(stream,imagetype);
+	Decode(stream, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Constructor from CxFile object, see Decode()
  * \param stream: file handle (CxMemFile or CxIOFile), with read access.
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  */
-CxImage::CxImage(CxFile * stream, uint32_t imagetype)
+CxImage::CxImage(CxFile* stream, uint32_t imagetype)
 {
 	Startup(imagetype);
-	Decode(stream,imagetype);
+	Decode(stream, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Constructor from memory buffer, see Decode()
@@ -1302,12 +1322,13 @@ CxImage::CxImage(CxFile * stream, uint32_t imagetype)
  * \param size: size of buffer
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  */
-CxImage::CxImage(uint8_t * buffer, uint32_t size, uint32_t imagetype)
+CxImage::CxImage(uint8_t* buffer, uint32_t size, uint32_t imagetype)
 {
 	Startup(imagetype);
-	CxMemFile stream(buffer,size);
-	Decode(&stream,imagetype);
+	CxMemFile stream(buffer, size);
+	Decode(&stream, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from memory buffer
@@ -1316,11 +1337,12 @@ CxImage::CxImage(uint8_t * buffer, uint32_t size, uint32_t imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Decode(uint8_t * buffer, uint32_t size, uint32_t imagetype)
+bool CxImage::Decode(uint8_t* buffer, uint32_t size, uint32_t imagetype)
 {
-	CxMemFile file(buffer,size);
-	return Decode(&file,imagetype);
+	CxMemFile file(buffer, size);
+	return Decode(&file, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from file handle.
@@ -1328,11 +1350,12 @@ bool CxImage::Decode(uint8_t * buffer, uint32_t size, uint32_t imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Decode(FILE *hFile, uint32_t imagetype)
+bool CxImage::Decode(FILE* hFile, uint32_t imagetype)
 {
 	CxIOFile file(hFile);
-	return Decode(&file,imagetype);
+	return Decode(&file, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from CxFile object
@@ -1341,9 +1364,10 @@ bool CxImage::Decode(FILE *hFile, uint32_t imagetype)
  * \return true if everything is ok
  * \sa ENUM_CXIMAGE_FORMATS
  */
-bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
+bool CxImage::Decode(CxFile* hFile, uint32_t imagetype)
 {
-	if (hFile == NULL){
+	if (hFile == nullptr)
+	{
 		strcpy(info.szLastError,CXIMAGE_ERR_NOFILE);
 		return false;
 	}
@@ -1409,42 +1433,44 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	if (CXIMAGE_FORMAT_UNKNOWN==imagetype || CXIMAGE_FORMAT_GIF==imagetype){
-		CxImageGIF *newima = new CxImageGIF;
+	if (CXIMAGE_FORMAT_UNKNOWN == imagetype || CXIMAGE_FORMAT_GIF == imagetype)
+	{
+		auto newima = new CxImageGIF;
 		if (!newima)
 			return false;
 		newima->CopyInfo(*this);
-		if (newima->Decode(hFile)) {
+		if (newima->Decode(hFile))
+		{
 			Transfer(*newima);
 			delete newima;
 			return true;
-		} else {
-			info.nNumFrames = newima->info.nNumFrames;
-			strcpy(info.szLastError,newima->GetLastError());
-			hFile->Seek(pos,SEEK_SET);
-			delete newima;
-			if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
-				return false;
 		}
+		info.nNumFrames = newima->info.nNumFrames;
+		strcpy(info.szLastError, newima->GetLastError());
+		hFile->Seek(pos,SEEK_SET);
+		delete newima;
+		if (CXIMAGE_FORMAT_UNKNOWN != imagetype)
+			return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_PNG
-	if (CXIMAGE_FORMAT_UNKNOWN==imagetype || CXIMAGE_FORMAT_PNG==imagetype){
-		CxImagePNG *newima = new CxImagePNG;
+	if (CXIMAGE_FORMAT_UNKNOWN == imagetype || CXIMAGE_FORMAT_PNG == imagetype)
+	{
+		auto newima = new CxImagePNG;
 		if (!newima)
 			return false;
 		newima->CopyInfo(*this);
-		if (newima->Decode(hFile)) {
+		if (newima->Decode(hFile))
+		{
 			Transfer(*newima);
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			hFile->Seek(pos,SEEK_SET);
-			delete newima;
-			if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
-				return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		hFile->Seek(pos,SEEK_SET);
+		delete newima;
+		if (CXIMAGE_FORMAT_UNKNOWN != imagetype)
+			return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_TIF
@@ -1564,22 +1590,23 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 #if CXIMAGE_SUPPORT_JBG
-	if (CXIMAGE_FORMAT_UNKNOWN==imagetype || CXIMAGE_FORMAT_JBG==imagetype){
-		CxImageJBG *newima = new CxImageJBG;
+	if (CXIMAGE_FORMAT_UNKNOWN == imagetype || CXIMAGE_FORMAT_JBG == imagetype)
+	{
+		auto newima = new CxImageJBG;
 		if (!newima)
 			return false;
 		newima->CopyInfo(*this);
-		if (newima->Decode(hFile)) {
+		if (newima->Decode(hFile))
+		{
 			Transfer(*newima);
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			hFile->Seek(pos,SEEK_SET);
-			delete newima;
-			if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
-				return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		hFile->Seek(pos,SEEK_SET);
+		delete newima;
+		if (CXIMAGE_FORMAT_UNKNOWN != imagetype)
+			return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_JASPER
@@ -1618,22 +1645,23 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 #if CXIMAGE_SUPPORT_SKA
-	if (CXIMAGE_FORMAT_UNKNOWN==imagetype || CXIMAGE_FORMAT_SKA==imagetype){
-		CxImageSKA *newima = new CxImageSKA;
+	if (CXIMAGE_FORMAT_UNKNOWN == imagetype || CXIMAGE_FORMAT_SKA == imagetype)
+	{
+		auto newima = new CxImageSKA;
 		if (!newima)
 			return false;
 		newima->CopyInfo(*this);
-		if (newima->Decode(hFile)) {
+		if (newima->Decode(hFile))
+		{
 			Transfer(*newima);
 			delete newima;
 			return true;
-		} else {
-			strcpy(info.szLastError,newima->GetLastError());
-			hFile->Seek(pos,SEEK_SET);
-			delete newima;
-			if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
-				return false;
 		}
+		strcpy(info.szLastError, newima->GetLastError());
+		hFile->Seek(pos,SEEK_SET);
+		delete newima;
+		if (CXIMAGE_FORMAT_UNKNOWN != imagetype)
+			return false;
 	}
 #endif
 #if CXIMAGE_SUPPORT_RAW
@@ -1675,9 +1703,10 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 	}
 #endif
 
-	strcpy(info.szLastError,"Decode: Unknown or wrong format");
+	strcpy(info.szLastError, "Decode: Unknown or wrong format");
 	return false;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from CxFile object
@@ -1690,35 +1719,39 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
  *  to retrieve the basic image information.
  * \sa ENUM_CXIMAGE_FORMATS
  */
-bool CxImage::CheckFormat(CxFile * hFile, uint32_t imagetype)
+bool CxImage::CheckFormat(CxFile* hFile, uint32_t imagetype)
 {
 	SetType(CXIMAGE_FORMAT_UNKNOWN);
 	SetEscape(-1);
 
-	if (!Decode(hFile,imagetype))
+	if (!Decode(hFile, imagetype))
 		return false;
 
 	if (GetType() == CXIMAGE_FORMAT_UNKNOWN ||
-		((imagetype!=CXIMAGE_FORMAT_UNKNOWN)&&(GetType() != imagetype)))
+		((imagetype != CXIMAGE_FORMAT_UNKNOWN) && (GetType() != imagetype)))
 		return false;
 
 	return true;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImage::CheckFormat(uint8_t * buffer, uint32_t size, uint32_t imagetype)
+bool CxImage::CheckFormat(uint8_t* buffer, uint32_t size, uint32_t imagetype)
 {
-	if (buffer==NULL || size==NULL){
-		strcpy(info.szLastError,"invalid or empty buffer");
+	if (buffer == nullptr || size == NULL)
+	{
+		strcpy(info.szLastError, "invalid or empty buffer");
 		return false;
 	}
-	CxMemFile file(buffer,size);
-	return CheckFormat(&file,imagetype);
+	CxMemFile file(buffer, size);
+	return CheckFormat(&file, imagetype);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_EXIF
-bool CxImage::GetExifThumbnail(const char *filename, const char *outname, int32_t type)
+bool CxImage::GetExifThumbnail(const char* filename, const char* outname, int32_t type)
 {
-	switch (type){
+	switch (type)
+	{
 #if CXIMAGE_SUPPORT_RAW
 	case CXIMAGE_FORMAT_RAW:
 	{

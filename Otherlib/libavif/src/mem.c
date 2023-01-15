@@ -5,16 +5,17 @@
 
 #include <stdlib.h>
 
-void * avifAlloc(size_t size)
+void* avifAlloc(size_t size)
 {
-    void * out = malloc(size);
-    if (out == NULL) {
-        abort();
-    }
-    return out;
+	void* out = malloc(size);
+	if (out == NULL)
+	{
+		abort();
+	}
+	return out;
 }
 
-void avifFree(void * p)
+void avifFree(void* p)
 {
-    free(p);
+	free(p);
 }

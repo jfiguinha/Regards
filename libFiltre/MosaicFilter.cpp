@@ -39,9 +39,10 @@ int CMosaicFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //return IDM_SHARPENMASKING;
 }
 
-void CMosaicFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CMosaicFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                           IFiltreEffectInterface* filtreInterface)
 {
-	CMosaicEffectParameter* sharpenMaskingParameter = (CMosaicEffectParameter*)effectParameter;
+	auto sharpenMaskingParameter = static_cast<CMosaicEffectParameter*>(effectParameter);
 
 	this->source = source;
 	this->filename = filename;
@@ -49,15 +50,17 @@ void CMosaicFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source,
 	for (auto i = 0; i < 100; i++)
 		elementFreq.push_back(i);
 
-	filtreInterface->AddTreeInfos(libelleSharpness, new CTreeElementValueInt(sharpenMaskingParameter->size), &elementFreq);
+	filtreInterface->AddTreeInfos(libelleSharpness, new CTreeElementValueInt(sharpenMaskingParameter->size),
+	                              &elementFreq);
 }
 
-void CMosaicFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CMosaicFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                      const wxString& key)
 {
-	CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
+	auto mosaicParameter = static_cast<CMosaicEffectParameter*>(effectParameter);
 
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
+	int value = valueInt->GetValue();
 
 	//Video Parameter
 	if (key == libelleSharpness)
@@ -71,7 +74,7 @@ void CMosaicFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* ef
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
+		auto mosaicParameter = static_cast<CMosaicEffectParameter*>(effectParameter);
 		filtreEffet->SharpenMasking(mosaicParameter->size);
 	}
 }
@@ -88,7 +91,7 @@ CEffectParameter* CMosaicFilter::GetEffectPointer()
 
 CEffectParameter* CMosaicFilter::GetDefaultEffectParameter()
 {
-	CMosaicEffectParameter* mosaicParameter = new CMosaicEffectParameter();
+	auto mosaicParameter = new CMosaicEffectParameter();
 	mosaicParameter->size = 5;
 	return mosaicParameter;
 }
@@ -100,20 +103,20 @@ bool CMosaicFilter::IsSourcePreview()
 }
 
 
-void CMosaicFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CMosaicFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                             CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
+		auto mosaicParameter = static_cast<CMosaicEffectParameter*>(effectParameter);
 		filtreEffet->FiltreMosaic(mosaicParameter->size);
 	}
-
 }
 
 
-void CMosaicFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CMosaicFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                       CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CMosaicFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -128,9 +131,9 @@ CImageLoadingFormat* CMosaicFilter::ApplyEffect(CEffectParameter* effectParamete
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
+
 			imageLoad = new CImageLoadingFormat();
-			CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
+			auto mosaicParameter = static_cast<CMosaicEffectParameter*>(effectParameter);
 			filter->FiltreMosaic(mosaicParameter->size);
 			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);

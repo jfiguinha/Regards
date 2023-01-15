@@ -11,7 +11,6 @@ float clamp(float val, float minval, float maxval)
 #ifdef REGARDS_RESOURCE
 
 
-
 #include "SqlInit.h"
 #include <SqlResource.h>
 #include <wx/textfile.h>
@@ -41,7 +40,6 @@ void WriteToFile(const wxString& filename, const wstring& text)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
 	CSqlInit::InitializeSQLServerDatabase();
 	CSqlResource sqlResource;
 	wxString path = "C:\\developpement\\git\\Regards\\Regards\\Resources\\vector\\";

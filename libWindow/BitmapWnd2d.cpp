@@ -10,8 +10,6 @@
 CBitmapWnd2D::CBitmapWnd2D(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CBitmapWnd2D", parent, id)
 {
-
-
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd2D::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd2D::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd2D::OnLButtonDown));
@@ -48,7 +46,6 @@ void CBitmapWnd2D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 	for (int id : listCommand)
 	{
 		Connect(id, wxCommandEventHandler(CBitmapWnd2D::OnCommand));
-
 	}
 }
 
@@ -80,7 +77,7 @@ void CBitmapWnd2D::Resize()
 	//this->Refresh();
 }
 
-IBitmapRenderInterface * CBitmapWnd2D::GetWndPt()
+IBitmapRenderInterface* CBitmapWnd2D::GetWndPt()
 {
 	return bitmapWndRender;
 }
@@ -104,9 +101,8 @@ CBitmapWnd2D::~CBitmapWnd2D(void)
 
 void CBitmapWnd2D::OnRButtonDown(wxMouseEvent& event)
 {
-	bitmapWndRender->OnRButtonDown(event);//
+	bitmapWndRender->OnRButtonDown(event); //
 	this->SetFocus();
-
 }
 
 //-----------------------------------------------------------------
@@ -116,7 +112,6 @@ void CBitmapWnd2D::OnLButtonDown(wxMouseEvent& event)
 {
 	bitmapWndRender->OnLButtonDown(event);
 	this->SetFocus();
-
 }
 
 //-----------------------------------------------------------------
@@ -168,8 +163,6 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 		return;
 
 	bitmapWndRender->OnPaint2D(this);
-	
-
 }
 
 

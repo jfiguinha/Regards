@@ -15,8 +15,8 @@ using namespace Regards::Sqlite;
 //*)
 
 BEGIN_EVENT_TABLE(MoveFaceDialog, wxDialog)
-	//(*EventTable(MoveFaceDialog)
-	//*)
+		//(*EventTable(MoveFaceDialog)
+		//*)
 END_EVENT_TABLE()
 
 MoveFaceDialog::MoveFaceDialog(wxWindow* parent)
@@ -85,4 +85,3 @@ void MoveFaceDialog::OnBtnCancelClick(wxCommandEvent& event)
 	isOk = false;
 	this->Close();
 }
-

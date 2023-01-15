@@ -11,14 +11,12 @@ namespace Regards
 		{
 		public:
 			CSqlFindYear();
-			~CSqlFindYear();
-			bool SearchUniqueCriteria(vector<wxString> * yearVector);
+			~CSqlFindYear() override;
+			bool SearchUniqueCriteria(vector<wxString>* yearVector);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
-			vector<wxString> * yearVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			vector<wxString>* yearVector;
 		};
 	}
 }
-

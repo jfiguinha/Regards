@@ -14,8 +14,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(KeywordDialogBox, wxDialog)
-	//(*EventTable(ConfigRegards)
-	//*)
+		//(*EventTable(ConfigRegards)
+		//*)
 END_EVENT_TABLE()
 
 

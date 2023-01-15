@@ -13,13 +13,13 @@ CSqlFindCatalog::~CSqlFindCatalog()
 {
 }
 
-bool CSqlFindCatalog::GetCatalog(CatalogVector * catalogVector)
+bool CSqlFindCatalog::GetCatalog(CatalogVector* catalogVector)
 {
 	m_catalogVector = catalogVector;
 	return (ExecuteRequest("SELECT NumCatalog, LibelleCatalog FROM CATALOG") != -1) ? true : false;
 }
 
-int CSqlFindCatalog::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindCatalog::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -27,7 +27,6 @@ int CSqlFindCatalog::TraitementResult(CSqlResult * sqlResult)
 		CPhotoCatalog _catalog;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:
@@ -41,6 +40,6 @@ int CSqlFindCatalog::TraitementResult(CSqlResult * sqlResult)
 		}
 		m_catalogVector->push_back(_catalog);
 		nbResult++;
-	} 
+	}
 	return nbResult;
 };

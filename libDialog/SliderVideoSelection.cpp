@@ -163,7 +163,7 @@ void CSliderVideoSelection::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
-		
+
 		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, this->GetBackgroundColour());
@@ -206,7 +206,8 @@ void CSliderVideoSelection::CalculPositionButton()
 	if (secondTotalTime > 0)
 	{
 		float pourcentage = secondTimePast / secondTotalTime;
-		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
+		CalculPositionButton(
+			positionSlider.x + static_cast<int>(static_cast<float>(positionSlider.width) * pourcentage));
 	}
 	else
 	{
@@ -221,7 +222,8 @@ void CSliderVideoSelection::CalculPositionButtonTo()
 	if (secondTotalTime > 0)
 	{
 		float pourcentage = secondTimeTo / secondTotalTime;
-		CalculPositionButtonTo(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
+		CalculPositionButtonTo(
+			positionSlider.x + static_cast<int>(static_cast<float>(positionSlider.width) * pourcentage));
 	}
 	else
 	{

@@ -38,161 +38,172 @@
 #endif
 
 
-namespace heif {
+namespace heif
+{
+	class HeifPixelImage;
 
-  class HeifPixelImage;
-
-  class HeifImage;
-
-
-  class HeifFile
-  {
-  public:
-    HeifFile();
-
-    ~HeifFile();
-
-    Error read(std::shared_ptr<StreamReader> reader);
-
-    Error read_from_file(const char* input_filename);
-
-    Error read_from_memory(const void* data, size_t size, bool copy);
-
-    void new_empty_file();
-
-    void set_brand(heif_compression_format format, bool miaf_compatible);
-
-    void write(StreamWriter& writer);
-
-    int get_num_images() const
-    { return static_cast<int>(m_infe_boxes.size()); }
-
-    heif_item_id get_primary_image_ID() const
-    { return m_pitm_box->get_item_ID(); }
-
-    std::vector<heif_item_id> get_item_IDs() const;
-
-    bool image_exists(heif_item_id ID) const;
-
-    std::string get_item_type(heif_item_id ID) const;
-
-    std::string get_content_type(heif_item_id ID) const;
-
-    Error get_compressed_image_data(heif_item_id ID, std::vector<uint8_t>* out_data) const;
+	class HeifImage;
 
 
-    std::shared_ptr<Box_infe> get_infe_box(heif_item_id imageID)
-    {
-      auto iter = m_infe_boxes.find(imageID);
-      if (iter == m_infe_boxes.end()) {
-        return nullptr;
-      }
+	class HeifFile
+	{
+	public:
+		HeifFile();
 
-      return iter->second;
-    }
+		~HeifFile();
 
-    std::shared_ptr<Box_iref> get_iref_box()
-    { return m_iref_box; }
+		Error read(std::shared_ptr<StreamReader> reader);
 
-    std::shared_ptr<Box_ipco> get_ipco_box()
-    { return m_ipco_box; }
+		Error read_from_file(const char* input_filename);
 
-    std::shared_ptr<Box_ipma> get_ipma_box()
-    { return m_ipma_box; }
+		Error read_from_memory(const void* data, size_t size, bool copy);
 
-    Error get_properties(heif_item_id imageID,
-                         std::vector<Box_ipco::Property>& properties) const;
+		void new_empty_file();
 
-    heif_chroma get_image_chroma_from_configuration(heif_item_id imageID) const;
+		void set_brand(heif_compression_format format, bool miaf_compatible);
 
-    int get_luma_bits_per_pixel_from_configuration(heif_item_id imageID) const;
+		void write(StreamWriter& writer);
 
-    int get_chroma_bits_per_pixel_from_configuration(heif_item_id imageID) const;
+		int get_num_images() const
+		{
+			return static_cast<int>(m_infe_boxes.size());
+		}
 
-    std::string debug_dump_boxes() const;
+		heif_item_id get_primary_image_ID() const
+		{
+			return m_pitm_box->get_item_ID();
+		}
+
+		std::vector<heif_item_id> get_item_IDs() const;
+
+		bool image_exists(heif_item_id ID) const;
+
+		std::string get_item_type(heif_item_id ID) const;
+
+		std::string get_content_type(heif_item_id ID) const;
+
+		Error get_compressed_image_data(heif_item_id ID, std::vector<uint8_t>* out_data) const;
 
 
-    // --- writing ---
+		std::shared_ptr<Box_infe> get_infe_box(heif_item_id imageID)
+		{
+			auto iter = m_infe_boxes.find(imageID);
+			if (iter == m_infe_boxes.end())
+			{
+				return nullptr;
+			}
 
-    heif_item_id get_unused_item_id() const;
+			return iter->second;
+		}
 
-    heif_item_id add_new_image(const char* item_type);
+		std::shared_ptr<Box_iref> get_iref_box()
+		{
+			return m_iref_box;
+		}
 
-    std::shared_ptr<Box_infe> add_new_infe_box(const char* item_type);
+		std::shared_ptr<Box_ipco> get_ipco_box()
+		{
+			return m_ipco_box;
+		}
 
-    void add_hvcC_property(heif_item_id id);
+		std::shared_ptr<Box_ipma> get_ipma_box()
+		{
+			return m_ipma_box;
+		}
 
-    Error append_hvcC_nal_data(heif_item_id id, const std::vector<uint8_t>& data);
+		Error get_properties(heif_item_id imageID,
+		                     std::vector<Box_ipco::Property>& properties) const;
 
-    Error append_hvcC_nal_data(heif_item_id id, const uint8_t* data, size_t size);
+		heif_chroma get_image_chroma_from_configuration(heif_item_id imageID) const;
 
-    Error set_hvcC_configuration(heif_item_id id, const Box_hvcC::configuration& config);
+		int get_luma_bits_per_pixel_from_configuration(heif_item_id imageID) const;
 
-    void add_av1C_property(heif_item_id id);
+		int get_chroma_bits_per_pixel_from_configuration(heif_item_id imageID) const;
 
-    Error set_av1C_configuration(heif_item_id id, const Box_av1C::configuration& config);
+		std::string debug_dump_boxes() const;
 
-    void add_ispe_property(heif_item_id id, uint32_t width, uint32_t height);
 
-    void add_clap_property(heif_item_id id, uint32_t clap_width, uint32_t clap_height,
-                           uint32_t image_width, uint32_t image_height);
+		// --- writing ---
 
-    void add_pixi_property(heif_item_id id, uint8_t c1, uint8_t c2=0, uint8_t c3=0);
+		heif_item_id get_unused_item_id() const;
 
-    void append_iloc_data(heif_item_id id, const std::vector<uint8_t>& nal_packets, uint8_t construction_method = 0);
+		heif_item_id add_new_image(const char* item_type);
 
-    void append_iloc_data_with_4byte_size(heif_item_id id, const uint8_t* data, size_t size);
+		std::shared_ptr<Box_infe> add_new_infe_box(const char* item_type);
 
-    void set_primary_item_id(heif_item_id id);
+		void add_hvcC_property(heif_item_id id);
 
-    void add_iref_reference(heif_item_id from, uint32_t type,
-                            std::vector<heif_item_id> to);
+		Error append_hvcC_nal_data(heif_item_id id, const std::vector<uint8_t>& data);
 
-    void set_auxC_property(heif_item_id id, std::string type);
+		Error append_hvcC_nal_data(heif_item_id id, const uint8_t* data, size_t size);
 
-    void set_color_profile(heif_item_id id, const std::shared_ptr<const color_profile> profile);
+		Error set_hvcC_configuration(heif_item_id id, const Box_hvcC::configuration& config);
 
-    // TODO: the hdlr box is probably not the right place for this. Into which box should we write comments?
-    void set_hdlr_library_info(std::string encoder_plugin_version);
+		void add_av1C_property(heif_item_id id);
+
+		Error set_av1C_configuration(heif_item_id id, const Box_av1C::configuration& config);
+
+		void add_ispe_property(heif_item_id id, uint32_t width, uint32_t height);
+
+		void add_clap_property(heif_item_id id, uint32_t clap_width, uint32_t clap_height,
+		                       uint32_t image_width, uint32_t image_height);
+
+		void add_pixi_property(heif_item_id id, uint8_t c1, uint8_t c2 = 0, uint8_t c3 = 0);
+
+		void append_iloc_data(heif_item_id id, const std::vector<uint8_t>& nal_packets,
+		                      uint8_t construction_method = 0);
+
+		void append_iloc_data_with_4byte_size(heif_item_id id, const uint8_t* data, size_t size);
+
+		void set_primary_item_id(heif_item_id id);
+
+		void add_iref_reference(heif_item_id from, uint32_t type,
+		                        std::vector<heif_item_id> to);
+
+		void set_auxC_property(heif_item_id id, std::string type);
+
+		void set_color_profile(heif_item_id id, std::shared_ptr<const color_profile> profile);
+
+		// TODO: the hdlr box is probably not the right place for this. Into which box should we write comments?
+		void set_hdlr_library_info(std::string encoder_plugin_version);
 
 #ifdef _MSC_VER
-    static std::wstring convert_utf8_path_to_utf16(std::string pathutf8);
+		static std::wstring convert_utf8_path_to_utf16(std::string pathutf8);
 #endif
 
-  private:
+	private:
 #if ENABLE_PARALLEL_TILE_DECODING
     mutable std::mutex m_read_mutex;
 #endif
 
-    std::shared_ptr<StreamReader> m_input_stream;
+		std::shared_ptr<StreamReader> m_input_stream;
 
-    std::vector<std::shared_ptr<Box> > m_top_level_boxes;
+		std::vector<std::shared_ptr<Box>> m_top_level_boxes;
 
-    std::shared_ptr<Box_ftyp> m_ftyp_box;
-    std::shared_ptr<Box_hdlr> m_hdlr_box;
-    std::shared_ptr<Box_meta> m_meta_box;
+		std::shared_ptr<Box_ftyp> m_ftyp_box;
+		std::shared_ptr<Box_hdlr> m_hdlr_box;
+		std::shared_ptr<Box_meta> m_meta_box;
 
-    std::shared_ptr<Box_ipco> m_ipco_box;
-    std::shared_ptr<Box_ipma> m_ipma_box;
-    std::shared_ptr<Box_iloc> m_iloc_box;
-    std::shared_ptr<Box_idat> m_idat_box;
-    std::shared_ptr<Box_iref> m_iref_box;
-    std::shared_ptr<Box_pitm> m_pitm_box;
-    std::shared_ptr<Box_iinf> m_iinf_box;
+		std::shared_ptr<Box_ipco> m_ipco_box;
+		std::shared_ptr<Box_ipma> m_ipma_box;
+		std::shared_ptr<Box_iloc> m_iloc_box;
+		std::shared_ptr<Box_idat> m_idat_box;
+		std::shared_ptr<Box_iref> m_iref_box;
+		std::shared_ptr<Box_pitm> m_pitm_box;
+		std::shared_ptr<Box_iinf> m_iinf_box;
 
-    std::shared_ptr<Box_iprp> m_iprp_box;
+		std::shared_ptr<Box_iprp> m_iprp_box;
 
-    std::map<heif_item_id, std::shared_ptr<Box_infe> > m_infe_boxes;
+		std::map<heif_item_id, std::shared_ptr<Box_infe>> m_infe_boxes;
 
-    // list of image items (does not include hidden images or Exif data)
-    //std::vector<heif_item_id> m_valid_image_IDs;
+		// list of image items (does not include hidden images or Exif data)
+		//std::vector<heif_item_id> m_valid_image_IDs;
 
 
-    Error parse_heif_file(BitstreamRange& bitstream);
+		Error parse_heif_file(BitstreamRange& bitstream);
 
-    std::shared_ptr<Box_infe> get_infe(heif_item_id ID) const;
-  };
-
+		std::shared_ptr<Box_infe> get_infe(heif_item_id ID) const;
+	};
 }
 
 #endif

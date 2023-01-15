@@ -34,7 +34,7 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 
 
 void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter,
-                                          const wxFloatRect& rect, const float &iTime, const bool& inverted)
+                                          const wxFloatRect& rect, const float& iTime, const bool& inverted)
 {
 	glTexture->Enable();
 
@@ -89,10 +89,10 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 			{
 				printf("SetParam vhsEffect failed \n ");
 			}
-			if (!m_pShader->SetParam("iTime",iTime))
+			if (!m_pShader->SetParam("iTime", iTime))
 			{
 				printf("SetParam vhsEffect failed \n ");
-			}            
+			}
 			if (!m_pShader->SetIntegerParam("grayscale", effectParameter->grayEnable))
 			{
 				printf("SetParam grayscale failed \n ");
@@ -215,7 +215,6 @@ void CRenderVideoOpenGL::DeleteVideoTexture()
 	if (textureSubtitle != nullptr)
 		delete(textureSubtitle);
 	textureSubtitle = nullptr;
-
 }
 
 GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop)
@@ -227,7 +226,6 @@ GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& heig
 
 	return textureVideo;
 }
-
 
 
 GLTexture* CRenderVideoOpenGL::GetVideoTexturePt()

@@ -324,7 +324,6 @@ void CScrollbarWnd::SetPosition(const int& posX, const int& posY)
 
 void CScrollbarWnd::Resize()
 {
-	
 	int pictureWidth = GetWindowWidth();
 	int pictureHeight = GetWindowHeight();
 	bool _showScrollV = false;

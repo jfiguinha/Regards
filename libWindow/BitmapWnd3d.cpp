@@ -7,7 +7,6 @@
 #include <RegardsConfigParam.h>
 
 
-
 #include <opencv2/core/opengl.hpp>
 #include <utility.h>
 
@@ -37,8 +36,6 @@ extern bool isOpenCLInitialized;
 CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	: CWindowOpenGLMain("CBitmapWnd3D", parent, id)
 {
-
-
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd3D::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd3D::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd3D::OnLButtonDown));
@@ -63,7 +60,7 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 {
 	this->bitmapWndRender = bitmapWndRender;
 	this->bitmapWndRender->SetParent(this);
-    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+	bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 	vector<int> listTimer = bitmapWndRender->GetListTimer();
 	for (int id : listTimer)
 	{
@@ -74,14 +71,13 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 	for (int id : listCommand)
 	{
 		Connect(id, wxCommandEventHandler(CBitmapWnd3D::OnCommand));
-
 	}
 }
 
 void CBitmapWnd3D::UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender)
 {
 	this->bitmapWndRender = bitmapWndRender;
-    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+	bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 }
 
 bool CBitmapWnd3D::GetProcessEnd()
@@ -107,7 +103,7 @@ void CBitmapWnd3D::Resize()
 	this->Refresh();
 }
 
-IBitmapRenderInterface * CBitmapWnd3D::GetWndPt()
+IBitmapRenderInterface* CBitmapWnd3D::GetWndPt()
 {
 	return bitmapWndRender;
 }
@@ -131,9 +127,8 @@ CBitmapWnd3D::~CBitmapWnd3D(void)
 
 void CBitmapWnd3D::OnRButtonDown(wxMouseEvent& event)
 {
-	bitmapWndRender->OnRButtonDown(event);//
+	bitmapWndRender->OnRButtonDown(event); //
 	this->SetFocus();
-
 }
 
 //-----------------------------------------------------------------
@@ -143,7 +138,6 @@ void CBitmapWnd3D::OnLButtonDown(wxMouseEvent& event)
 {
 	bitmapWndRender->OnLButtonDown(event);
 	this->SetFocus();
-
 }
 
 //-----------------------------------------------------------------
@@ -187,97 +181,97 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 
 wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
 {
-    try
-    {	// Get the length for the i-th device name
-        size_t device_name_length = 0;
-        cl_int err = clGetDeviceInfo(
-            device,
-            param_name,
-            0,
-            nullptr,
-            &device_name_length
-        );
-        Error::CheckError(err);
+	try
+	{
+		// Get the length for the i-th device name
+		size_t device_name_length = 0;
+		cl_int err = clGetDeviceInfo(
+			device,
+			param_name,
+			0,
+			nullptr,
+			&device_name_length
+		);
+		Error::CheckError(err);
 
-        // Get the name itself for the i-th device
-        // use vector for automatic memory management
-        vector<char> device_name(device_name_length);
-        err = clGetDeviceInfo(
-            device,
-            param_name,
-            device_name_length,
-            &device_name[0],
-            nullptr
-        );
-        Error::CheckError(err);
+		// Get the name itself for the i-th device
+		// use vector for automatic memory management
+		vector<char> device_name(device_name_length);
+		err = clGetDeviceInfo(
+			device,
+			param_name,
+			device_name_length,
+			&device_name[0],
+			nullptr
+		);
+		Error::CheckError(err);
 
-        return wxString(&device_name[0]);
-    }
-    catch (...)
-    {
+		return wxString(&device_name[0]);
+	}
+	catch (...)
+	{
+	}
 
-    }
-
-    return "";
+	return "";
 }
 
 cl_device_id GetListOfDevice(cl_platform_id platform, cl_device_type device_type, int& found)
 {
-    found = -1;
-    
-    cl_uint num_of_devices;
+	found = -1;
 
-    cl_int err = clGetDeviceIDs(
-        platform,
-        device_type,
-        0,
-        nullptr,
-        &num_of_devices
-    );
+	cl_uint num_of_devices;
 
-    Error::CheckError(err);
+	cl_int err = clGetDeviceIDs(
+		platform,
+		device_type,
+		0,
+		nullptr,
+		&num_of_devices
+	);
 
-    vector<cl_device_id> devices(num_of_devices);
+	Error::CheckError(err);
 
-    err = clGetDeviceIDs(
-        platform,
-        device_type,
-        num_of_devices,
-        &devices[0],
-        nullptr
-    );
-    Error::CheckError(err);
+	vector<cl_device_id> devices(num_of_devices);
 
-    for (cl_uint i = 0; i < num_of_devices; ++i)
-    {
-        int supported = 0;
-        cl_device_type type;
-        clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
-        wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
-        if (deviceName == "")
-            continue;
+	err = clGetDeviceIDs(
+		platform,
+		device_type,
+		num_of_devices,
+		&devices[0],
+		nullptr
+	);
+	Error::CheckError(err);
 
-        if (type == CL_DEVICE_TYPE_GPU)
-        {
-            wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
-            supported = supportExt.find(CL_GL_SHARING_EXT);
-            if (supported > 0)
-                supported = 1;
-            else
-                supported = 0;
-        }
+	for (cl_uint i = 0; i < num_of_devices; ++i)
+	{
+		int supported = 0;
+		cl_device_type type;
+		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
+		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
+		if (deviceName == "")
+			continue;
 
-        if (!supported)
-            continue;
+		if (type == CL_DEVICE_TYPE_GPU)
+		{
+			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
+			supported = supportExt.find(CL_GL_SHARING_EXT);
+			if (supported > 0)
+				supported = 1;
+			else
+				supported = 0;
+		}
 
-        found = i;
-        printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
-        break;
-    }
+		if (!supported)
+			continue;
 
-    if(found == -1)
-        return nullptr;
-    return devices[found];
+		found = i;
+		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+		break;
+	}
+
+	if (found == -1)
+		return nullptr;
+	return devices[found];
 }
 
 cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
@@ -336,58 +330,59 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 
 #else
 
-    cl_uint numPlatforms;
-    cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
-    if (status != CL_SUCCESS)
-        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
-    if (numPlatforms == 0)
-        CV_Error(cv::Error::OpenCLInitError, "OpenCL: No available platforms");
+	cl_uint numPlatforms;
+	cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
+	if (status != CL_SUCCESS)
+		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+	if (numPlatforms == 0)
+		CV_Error(cv::Error::OpenCLInitError, "OpenCL: No available platforms");
 
-    std::vector<cl_platform_id> platforms(numPlatforms);
-    status = clGetPlatformIDs(numPlatforms, &platforms[0], NULL);
-    if (status != CL_SUCCESS)
-        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+	std::vector<cl_platform_id> platforms(numPlatforms);
+	status = clGetPlatformIDs(numPlatforms, &platforms[0], NULL);
+	if (status != CL_SUCCESS)
+		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
 
-    // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
+	// TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
 
-    int found = -1;
-    cl_device_id device = NULL;
-    cl_context context = NULL;
+	int found = -1;
+	cl_device_id device = NULL;
+	cl_context context = NULL;
 
-    for (int i = 0; i < (int)numPlatforms; i++)
-    {
-        // query platform extension: presence of "cl_khr_gl_sharing" extension is required
-        {
-            cv::AutoBuffer<char> extensionStr;
+	for (int i = 0; i < (int)numPlatforms; i++)
+	{
+		// query platform extension: presence of "cl_khr_gl_sharing" extension is required
+		{
+			cv::AutoBuffer<char> extensionStr;
 
-            size_t extensionSize;
-            status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, 0, NULL, &extensionSize);
-            if (status == CL_SUCCESS)
-            {
-                extensionStr.allocate(extensionSize + 1);
-                status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, extensionSize, (char*)extensionStr.data(), NULL);
-            }
-            if (status != CL_SUCCESS)
-                CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
+			size_t extensionSize;
+			status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, 0, NULL, &extensionSize);
+			if (status == CL_SUCCESS)
+			{
+				extensionStr.allocate(extensionSize + 1);
+				status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, extensionSize,
+				                           (char*)extensionStr.data(), NULL);
+			}
+			if (status != CL_SUCCESS)
+				CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
 
-            if (!strstr((const char*)extensionStr.data(), CL_GL_SHARING_EXT))
-                continue;
-        }
+			if (!strstr((const char*)extensionStr.data(), CL_GL_SHARING_EXT))
+				continue;
+		}
 
-        clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
-            clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
-        if (!clGetGLContextInfoKHR)
-            continue;
+		clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
+			clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
+		if (!clGetGLContextInfoKHR)
+			continue;
 
 
 #ifdef WIN32
-        // Create CL context properties, add WGL context & handle to DC
-        cl_context_properties properties[] = {
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
-            CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
-            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
-            0
-        };
+		// Create CL context properties, add WGL context & handle to DC
+		cl_context_properties properties[] = {
+			CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
+			CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
+			CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
+			0
+		};
 #elif defined(__WXGTK__)
 
 #if wxUSE_GLCANVAS_EGL == 1
@@ -413,38 +408,40 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 #endif
 #endif
 
-        // query device
-        device = NULL;
-        status = clGetGLContextInfoKHR(properties, CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR, sizeof(cl_device_id), (void*)&device, NULL);
-        if (status != CL_SUCCESS)
-            continue;
+		// query device
+		device = NULL;
+		status = clGetGLContextInfoKHR(properties, CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR, sizeof(cl_device_id),
+		                               (void*)&device, NULL);
+		if (status != CL_SUCCESS)
+			continue;
 
-        // create context
-        context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
-        if (status != CL_SUCCESS)
-        {
-            clReleaseDevice(device);
-            found = -1;
-            break;
-        }
-        else
-        {
-            found = i;
-            break;
-        }
-    }
+		// create context
+		context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+		if (status != CL_SUCCESS)
+		{
+			clReleaseDevice(device);
+			found = -1;
+			break;
+		}
+		else
+		{
+			found = i;
+			break;
+		}
+	}
 
-    if (found < 0)
-        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
+	if (found < 0)
+		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
 
-    cl_platform_id platform = platforms[found];
-    std::string platformName = cv::ocl::PlatformInfo(&platform).name();
+	cl_platform_id platform = platforms[found];
+	std::string platformName = cv::ocl::PlatformInfo(&platform).name();
 
-    cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
-    clReleaseDevice(device);
-    clReleaseContext(context);
-    clExecCtx.bind();
-    return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
+	cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(
+		platformName, platform, context, device);
+	clReleaseDevice(device);
+	clReleaseContext(context);
+	clExecCtx.bind();
+	return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
 #endif
 }
 
@@ -456,65 +453,61 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 {
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
-       
-    if(renderOpenGL == nullptr)
-    {
-        renderOpenGL = new CRenderOpenGL(this);
-        renderOpenGL->Init(this);
 
-        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-        if (regardsParam != nullptr)
-        {
-            if (regardsParam->GetIsOpenCLSupport() && regardsParam->GetIsOpenCLOpenGLInteropSupport())
-            {
-                if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
-                {
+	if (renderOpenGL == nullptr)
+	{
+		renderOpenGL = new CRenderOpenGL(this);
+		renderOpenGL->Init(this);
 
-                    try
-                    {
-                        initializeContextFromGL();
-                        isOpenCLInitialized = true;
-                        openclOpenGLInterop = true;
-                        regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		if (regardsParam != nullptr)
+		{
+			if (regardsParam->GetIsOpenCLSupport() && regardsParam->GetIsOpenCLOpenGLInteropSupport())
+			{
+				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
+				{
+					try
+					{
+						initializeContextFromGL();
+						isOpenCLInitialized = true;
+						openclOpenGLInterop = true;
+						regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
+					}
+					catch (cv::Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+						openclOpenGLInterop = false;
+						cv::ocl::Context context;
+						if (!context.create(cv::ocl::Device::TYPE_GPU))
+							isOpenCLInitialized = false;
+						else
+							isOpenCLInitialized = true;
 
-                    }
-                    catch (cv::Exception& e)
-                    {
-                        const char* err_msg = e.what();
-                        std::cout << "exception caught: " << err_msg << std::endl;
-                        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-                        openclOpenGLInterop = false;
-                        cv::ocl::Context context;
-                        if (!context.create(cv::ocl::Device::TYPE_GPU))
-                            isOpenCLInitialized = false;
-                        else
-                            isOpenCLInitialized = true;
+						if (!isOpenCLInitialized)
+						{
+							if (!context.create(cv::ocl::Device::TYPE_CPU))
+								isOpenCLInitialized = false;
+							else
+								isOpenCLInitialized = true;
+						}
 
-                        if (!isOpenCLInitialized)
-                        {
-                            if (!context.create(cv::ocl::Device::TYPE_CPU))
-                                isOpenCLInitialized = false;
-                            else
-                                isOpenCLInitialized = true;
-                        }
+						if (isOpenCLInitialized)
+						{
+							cv::ocl::Device(context.device(0));
+						}
+					}
+				}
+			}
+		}
+		regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+		bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+	}
 
-                        if (isOpenCLInitialized)
-                        {
-                            cv::ocl::Device(context.device(0));
-                        }
+	renderOpenGL->SetCurrent(*this);
 
-                    }
-                }
-            }
-        }
-        regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
-        bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
-    }  
-
-    renderOpenGL->SetCurrent(*this);
-    
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
-    
 }
 
 

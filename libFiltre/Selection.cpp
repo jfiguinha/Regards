@@ -28,7 +28,9 @@ CSelection::~CSelection()
 }
 
 
-void CSelection::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m_lVScroll, const float &ratio, const wxColour &rgb, const wxColour &rgbFirst, const wxColour &rgbSecond, const int32_t &style)
+void CSelection::Dessiner(wxDC* deviceContext, const long& m_lHScroll, const long& m_lVScroll, const float& ratio,
+                          const wxColour& rgb, const wxColour& rgbFirst, const wxColour& rgbSecond,
+                          const int32_t& style)
 {
 	wxRect rcTemp;
 	rcTemp.x = XDrawingPosition(ptSelection[0].x, m_lHScroll, ratio) - marge + m_rcAffichage.x;
@@ -36,10 +38,10 @@ void CSelection::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const lo
 	rcTemp.y = YDrawingPosition(ptSelection[0].y, m_lVScroll, ratio) - marge + m_rcAffichage.y;
 	rcTemp.height = marge * 2;
 	DessinerRectangleVide(deviceContext, 1, rcTemp, rgb);
-	
 }
 
-void CSelection::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CSelection::Selection(const int32_t& xNewSize, const int32_t& yNewSize, const long& m_lHScroll,
+                           const long& m_lVScroll, const float& ratio)
 {
 	//Changement de souris
 	//Test par rapport au x et y
@@ -68,11 +70,12 @@ void CSelection::Selection(const int32_t &xNewSize, const int32_t &yNewSize, con
 	}
 }
 
-void CSelection::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CSelection::MouseMove(const long& xNewSize, const long& yNewSize, const long& m_lHScroll, const long& m_lVScroll,
+                           const float& ratio)
 {
 	//Dessiner le rectangle
-	pt.x = (int)xNewSize;
-	pt.y = (int)yNewSize;
+	pt.x = static_cast<int>(xNewSize);
+	pt.y = static_cast<int>(yNewSize);
 
 	if (VerifierValiditerPoint(pt))
 	{
@@ -84,16 +87,17 @@ void CSelection::MouseMove(const long &xNewSize, const long &yNewSize, const lon
 	}
 }
 
-void CSelection::InitPoint(const long &m_lx, const long &m_ly, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CSelection::InitPoint(const long& m_lx, const long& m_ly, const long& m_lHScroll, const long& m_lVScroll,
+                           const float& ratio)
 {
 	float x, y;
-	if(iSelect == 0)
-	{	
+	if (iSelect == 0)
+	{
 		//pt.x = m_lx;
 		//pt.y = m_ly;
 		if (VerifierValiditerPoint(pt))
 		{
-			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll , ratio);
+			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll, ratio);
 			y = YRealPosition(m_ly - m_rcAffichage.y, m_lVScroll, ratio);
 			ptSelection[0].x = x;
 			ptSelection[0].y = y;
@@ -102,14 +106,14 @@ void CSelection::InitPoint(const long &m_lx, const long &m_ly, const long &m_lHS
 	}
 }
 
-void CSelection::GetPoint(wxPoint &pt)
+void CSelection::GetPoint(wxPoint& pt)
 {
 	pt.x = ptSelection[0].x;
 	pt.y = ptSelection[0].y;
 }
 
 
-void CSelection::GetScreenPoint(wxPoint &pt)
+void CSelection::GetScreenPoint(wxPoint& pt)
 {
 	pt = ptScreen;
 }

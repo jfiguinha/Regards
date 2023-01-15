@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CBm3dEffectParameter : public CEffectParameter
 {
 public:
@@ -7,7 +8,10 @@ public:
 	{
 		fSize = 5;
 	};
-	~CBm3dEffectParameter(){};
+
+	~CBm3dEffectParameter() override
+	{
+	};
 
 	int fSize;
 };

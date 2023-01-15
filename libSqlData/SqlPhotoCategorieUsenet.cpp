@@ -7,7 +7,6 @@
 using namespace Regards::Sqlite;
 
 
-
 CSqlPhotoCategorieUsenet::CSqlPhotoCategorieUsenet()
 	: CSqlExecuteRequest(L"RegardsDB"), type(0)
 {
@@ -21,22 +20,26 @@ CSqlPhotoCategorieUsenet::~CSqlPhotoCategorieUsenet()
 //--------------------------------------------------------
 //Chargement de toutes les données d'un album
 //--------------------------------------------------------
-bool CSqlPhotoCategorieUsenet::InsertPhotoProcessing(const wxString &path)
+bool CSqlPhotoCategorieUsenet::InsertPhotoProcessing(const wxString& path)
 {
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
-	return (ExecuteRequestWithNoResult("INSERT INTO PHOTO_CATEGORIE_USENET_PROCESSING (FullPath) VALUES ('" + fullpath + "')") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "INSERT INTO PHOTO_CATEGORIE_USENET_PROCESSING (FullPath) VALUES ('" + fullpath + "')") != -1)
+		       ? true
+		       : false;
 }
 
 vector<wxString> CSqlPhotoCategorieUsenet::GetPhotoListTreatment()
 {
 	type = 1;
 	listPhoto.clear();
-	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE FullPath not in (select FullPath FROM PHOTO_CATEGORIE_USENET_PROCESSING)");
+	ExecuteRequest(
+		"SELECT FullPath FROM PHOTOS WHERE FullPath not in (select FullPath FROM PHOTO_CATEGORIE_USENET_PROCESSING)");
 	return listPhoto;
 }
 
-bool CSqlPhotoCategorieUsenet::InsertPhotoCategorie(const int &numPhoto, const int &categorie, const wxString &label)
+bool CSqlPhotoCategorieUsenet::InsertPhotoCategorie(const int& numPhoto, const int& categorie, const wxString& label)
 {
 	bool isNew = false;
 	CSqlCriteria sqlCriteria;
@@ -45,11 +48,14 @@ bool CSqlPhotoCategorieUsenet::InsertPhotoCategorie(const int &numPhoto, const i
 	return photoCriteria.InsertPhotoCriteria(numPhoto, idCriteria);
 }
 
-bool CSqlPhotoCategorieUsenet::DeletePhotoProcessing(const wxString &path)
+bool CSqlPhotoCategorieUsenet::DeletePhotoProcessing(const wxString& path)
 {
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTO_CATEGORIE_USENET_PROCESSING WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "DELETE FROM PHOTO_CATEGORIE_USENET_PROCESSING WHERE FullPath = '" + fullpath + "'") != -1)
+		       ? true
+		       : false;
 }
 
 bool CSqlPhotoCategorieUsenet::DeletePhotoProcessingDatabase()
@@ -57,7 +63,7 @@ bool CSqlPhotoCategorieUsenet::DeletePhotoProcessingDatabase()
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTO_CATEGORIE_USENET_PROCESSING") != -1) ? true : false;
 }
 
-int CSqlPhotoCategorieUsenet::TraitementResult(CSqlResult * sqlResult)
+int CSqlPhotoCategorieUsenet::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	wxString filename;

@@ -3,13 +3,13 @@
 
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(TiffOption)
-	#include <wx/radiobox.h>
-	#include <wx/statbox.h>
-	#include <wx/slider.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(TiffOption)
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
+#include <wx/slider.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(TiffOption)
 //*)
@@ -44,7 +44,7 @@ private:
 
 	int compressOption;
 	bool isOk;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

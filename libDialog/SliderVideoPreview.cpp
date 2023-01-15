@@ -216,7 +216,7 @@ void CSliderVideoPreview::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
-		
+
 		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
@@ -332,7 +332,8 @@ void CSliderVideoPreview::CalculPositionButton()
 	if (secondTotalTime > 0)
 	{
 		float pourcentage = secondTimePast / secondTotalTime;
-		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
+		CalculPositionButton(
+			positionSlider.x + static_cast<int>(static_cast<float>(positionSlider.width) * pourcentage));
 	}
 	else
 	{

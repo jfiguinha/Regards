@@ -89,7 +89,7 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap
 //-----------------------------------------------------------------
-CImageLoadingFormat * CBitmapWndRender::GetBitmap(const bool& source)
+CImageLoadingFormat* CBitmapWndRender::GetBitmap(const bool& source)
 {
 	//
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
@@ -109,7 +109,7 @@ void CBitmapWndRender::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
 	isOpenCLOpenGLInterop = openclOpenGLInterop;
 }
 
-void CBitmapWndRender::SetTabValue(const std::vector<int> & value)
+void CBitmapWndRender::SetTabValue(const std::vector<int>& value)
 {
 	this->value = value;
 }
@@ -126,21 +126,20 @@ void CBitmapWndRender::SetEndProgram(const bool& endProgram)
 
 vector<int> CBitmapWndRender::GetListCommand()
 {
-	vector<int> list; 
-	list.push_back(wxEVENT_UPDATEBITMAP);// , wxCommandEventHandler(CBitmapWnd::OnUpdateBitmap));
-	list.push_back(wxEVENT_LEFTPOSITION);//, wxCommandEventHandler(CBitmapWnd::OnLeftPosition));
-	list.push_back(wxEVENT_TOPPOSITION);//, wxCommandEventHandler(CBitmapWnd::OnTopPosition));
-	list.push_back(wxEVENT_MOVELEFT);//, wxCommandEventHandler(CBitmapWnd::OnMoveLeft));
-	list.push_back(wxEVENT_MOVERIGHT);//, wxCommandEventHandler(CBitmapWnd::OnMoveRight));
-	list.push_back(wxEVENT_MOVETOP);//, wxCommandEventHandler(CBitmapWnd::OnMoveTop));
-	list.push_back(wxEVENT_MOVEBOTTOM);//, wxCommandEventHandler(CBitmapWnd::OnMoveBottom));
-	list.push_back(wxEVENT_SCROLLMOVE);//, wxCommandEventHandler(CBitmapWnd::OnScrollMove));
+	vector<int> list;
+	list.push_back(wxEVENT_UPDATEBITMAP); // , wxCommandEventHandler(CBitmapWnd::OnUpdateBitmap));
+	list.push_back(wxEVENT_LEFTPOSITION); //, wxCommandEventHandler(CBitmapWnd::OnLeftPosition));
+	list.push_back(wxEVENT_TOPPOSITION); //, wxCommandEventHandler(CBitmapWnd::OnTopPosition));
+	list.push_back(wxEVENT_MOVELEFT); //, wxCommandEventHandler(CBitmapWnd::OnMoveLeft));
+	list.push_back(wxEVENT_MOVERIGHT); //, wxCommandEventHandler(CBitmapWnd::OnMoveRight));
+	list.push_back(wxEVENT_MOVETOP); //, wxCommandEventHandler(CBitmapWnd::OnMoveTop));
+	list.push_back(wxEVENT_MOVEBOTTOM); //, wxCommandEventHandler(CBitmapWnd::OnMoveBottom));
+	list.push_back(wxEVENT_SCROLLMOVE); //, wxCommandEventHandler(CBitmapWnd::OnScrollMove));
 	return list;
 };
 
 void CBitmapWndRender::OnCommand(wxCommandEvent& event)
 {
-
 	switch (event.GetEventType())
 	{
 	case wxEVENT_UPDATEBITMAP:
@@ -318,7 +317,6 @@ CBitmapWndRender::~CBitmapWndRender(void)
 
 	if (source != nullptr)
 		delete source;
-
 }
 
 void CBitmapWndRender::SetKey(const int& iKey)
@@ -328,13 +326,13 @@ void CBitmapWndRender::SetKey(const int& iKey)
 	switch (toolOption)
 	{
 	case MOVEPICTURE:
-	{
-		if (iKey == WXK_CONTROL)
-			wxSetCursor(hCursorZoomIn);
-		else
-			wxSetCursor(hCursorZoomOut);
-		break;
-	}
+		{
+			if (iKey == WXK_CONTROL)
+				wxSetCursor(hCursorZoomIn);
+			else
+				wxSetCursor(hCursorZoomOut);
+			break;
+		}
 	}
 }
 
@@ -355,19 +353,19 @@ void CBitmapWndRender::SetTool(const int& tool)
 	switch (tool)
 	{
 	case ZOOMPICTURE:
-	{
-		if (iKey == WXK_CONTROL)
-			wxSetCursor(hCursorZoomIn);
-		else
-			wxSetCursor(hCursorZoomOut);
-	}
-	break;
+		{
+			if (iKey == WXK_CONTROL)
+				wxSetCursor(hCursorZoomIn);
+			else
+				wxSetCursor(hCursorZoomOut);
+		}
+		break;
 
 	default:
-	{
-		SetToolOption(tool, iKey);
-		break;
-	}
+		{
+			SetToolOption(tool, iKey);
+			break;
+		}
 	}
 }
 
@@ -737,7 +735,7 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				source = bitmapIn;
 				muBitmap.unlock();
 
-				if(shrinkImage)
+				if (shrinkImage)
 					ShrinkImage(false);
 			}
 			//RefreshWindow();
@@ -922,7 +920,7 @@ void CBitmapWndRender::FlipVertical()
 
 
 	UpdateExifInfos();
-	
+
 	//updateFilter = true;
 	RefreshWindow();
 }
@@ -1037,14 +1035,14 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 	switch (toolOption)
 	{
 	case MOVEPICTURE:
-	{
-		mouseBlock = true;
-		mouseScrollX = xPos;
-		mouseScrollY = yPos;
-		parentRender->CaptureMouse();
-		wxSetCursor(hCursorHand);
-	}
-	break;
+		{
+			mouseBlock = true;
+			mouseScrollX = xPos;
+			mouseScrollY = yPos;
+			parentRender->CaptureMouse();
+			wxSetCursor(hCursorHand);
+		}
+		break;
 
 	default:
 		wxSetCursor(*wxSTANDARD_CURSOR);
@@ -1052,7 +1050,6 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 	}
 
 	MouseClick(xPos * scale_factor, yPos * scale_factor);
-
 }
 
 //-----------------------------------------------------------------
@@ -1070,15 +1067,15 @@ void CBitmapWndRender::OnLButtonUp(wxMouseEvent& event)
 	switch (toolOption)
 	{
 	case MOVEPICTURE:
-	{
-		mouseBlock = false;
-		mouseScrollX = xPos;
-		mouseScrollY = yPos;
-		if (parentRender->HasCapture())
-			parentRender->ReleaseMouse();
-	}
-	break;
-	default:;
+		{
+			mouseBlock = false;
+			mouseScrollX = xPos;
+			mouseScrollY = yPos;
+			if (parentRender->HasCapture())
+				parentRender->ReleaseMouse();
+		}
+		break;
+	default: ;
 	}
 
 	MouseRelease(xPos, yPos);
@@ -1171,21 +1168,21 @@ void CBitmapWndRender::OnKeyDown(wxKeyEvent& event)
 
 	case WXK_NUMPAD_ADD:
 	case WXK_ADD:
-	{
-		const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
-		parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		this->ZoomOn();
-	}
-	break;
+		{
+			const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
+			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			this->ZoomOn();
+		}
+		break;
 
 	case WXK_NUMPAD_SUBTRACT:
 	case WXK_SUBTRACT:
-	{
-		const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
-		parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		this->ZoomOut();
-	}
-	break;
+		{
+			const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
+			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			this->ZoomOut();
+		}
+		break;
 
 	default:
 		KeyPress(event.GetKeyCode());
@@ -1200,10 +1197,10 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 {
 	//
 	int move = 0;
-    if (event.GetWheelRotation() > 0)
-        move = 0;
-    else
-       move = 1;
+	if (event.GetWheelRotation() > 0)
+		move = 0;
+	else
+		move = 1;
 
 	if (controlKeyPush)
 		move += 10;
@@ -1217,20 +1214,20 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		this->MoveBottom();
 		break;
 	case 10:
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
-		parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		this->ZoomOn();
-	}
-	break;
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
+			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			this->ZoomOn();
+		}
+		break;
 	case 11:
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
-		parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		this->ZoomOut();
-	}
-	break;
-	default:;
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
+			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			this->ZoomOut();
+		}
+		break;
+	default: ;
 	}
 }
 
@@ -1273,23 +1270,23 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 	switch (toolOption)
 	{
 	case MOVEPICTURE:
-	{
-		wxSetCursor(hCursorHand);
-
-		if (mouseBlock && !shrinkImage)
 		{
-			const int diffX = mouseScrollX - xPos;
-			const int diffY = mouseScrollY - yPos;
-			posLargeur += diffX;
-			posHauteur += diffY;
+			wxSetCursor(hCursorHand);
 
-			mouseScrollX = xPos;
-			mouseScrollY = yPos;
+			if (mouseBlock && !shrinkImage)
+			{
+				const int diffX = mouseScrollX - xPos;
+				const int diffY = mouseScrollY - yPos;
+				posLargeur += diffX;
+				posHauteur += diffY;
 
-			TestMaxX();
-			TestMaxY();
+				mouseScrollX = xPos;
+				mouseScrollY = yPos;
 
-			UpdateScrollBar();
+				TestMaxX();
+				TestMaxY();
+
+				UpdateScrollBar();
 
 #if defined(WIN32) && defined(_DEBUG)
 			TCHAR message[200];
@@ -1297,33 +1294,33 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 			OutputDebugString(message);
 #endif
 
-			if (mouseUpdate != nullptr)
-			{
-				if (mouseUpdate->IsSourcePreview())
+				if (mouseUpdate != nullptr)
 				{
-					updateFilter = true;
+					if (mouseUpdate->IsSourcePreview())
+					{
+						updateFilter = true;
+					}
 				}
-			}
 
-			needToRefresh = true;
+				needToRefresh = true;
+			}
 		}
-	}
-	break;
+		break;
 
 	case ZOOMPICTURE:
-	{
-		if (iKey == WXK_CONTROL)
-			wxSetCursor(hCursorZoomIn);
-		else
-			wxSetCursor(hCursorZoomOut);
-		break;
-	}
+		{
+			if (iKey == WXK_CONTROL)
+				wxSetCursor(hCursorZoomIn);
+			else
+				wxSetCursor(hCursorZoomOut);
+			break;
+		}
 
 	default:
-	{
-		wxSetCursor(*wxSTANDARD_CURSOR);
-		break;
-	}
+		{
+			wxSetCursor(*wxSTANDARD_CURSOR);
+			break;
+		}
 	}
 
 	MouseMove(xPos * scale_factor, yPos * scale_factor);
@@ -1423,8 +1420,9 @@ void CBitmapWndRender::TestMaxPosition()
 }
 
 
-void CBitmapWndRender::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize,
-	int& left, int& top, const bool& invert)
+void CBitmapWndRender::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
+                                                      int& heightInterpolationSize,
+                                                      int& left, int& top, const bool& invert)
 {
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
@@ -1506,7 +1504,7 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 	wxRect rc(0, 0, 0, 0);
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false);
 	filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
-		localflipVertical, localAngle, value[posRatio]);
+	                           localflipVertical, localAngle, value[posRatio]);
 
 	if (regardsParam != nullptr)
 	{
@@ -1524,11 +1522,10 @@ void CBitmapWndRender::SetPreview(const int& value)
 }
 
 
-
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
-     //printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
-    
+	//printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
+
 	CRgbaquad color;
 
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
@@ -1550,7 +1547,6 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		loadBitmap = false;
 		bitmapIsLoad = true;
-
 	}
 	muBitmap.unlock();
 
@@ -1578,19 +1574,16 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
-        cv::UMat data = filtreEffet->GetUMat();
-        if(!glTexture->SetData(data))
-            isOpenCLOpenGLInterop = false;
-
-		
+		cv::UMat data = filtreEffet->GetUMat();
+		if (!glTexture->SetData(data))
+			isOpenCLOpenGLInterop = false;
 	}
 
 	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-			themeBitmap.colorBack.Blue()));
+	                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+	                                           themeBitmap.colorBack.Blue()));
 
 	RenderTexture(invert);
-
 }
 
 void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
@@ -1625,8 +1618,8 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-				themeBitmap.colorBack.Blue()));
+		                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+		                                           themeBitmap.colorBack.Blue()));
 
 		printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
 
@@ -1640,17 +1633,17 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 		if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
 		{
-			float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput, heightOutput);
+			float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput,
+			                                                    heightOutput);
 			cv::resize(bitmap, bitmap, cv::Size(bitmap.size().width * percent, bitmap.size().height * percent));
 		}
-			
+
 
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 		if (glTexture != nullptr)
 			glTexture->SetData(bitmap);
 		else
 			printf("CBitmapWndRender GetDisplayTexture Error \n");
-
 	}
 	RenderTexture(true);
 }
@@ -1690,26 +1683,26 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 {
 	wxBufferedPaintDC dc(gdi);
-    
-    if(source != nullptr)
-    {
-        printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
 
-        CRgbaquad color;
+	if (source != nullptr)
+	{
+		printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
 
-        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio());
-        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
+		CRgbaquad color;
 
-        if (filtreEffet == nullptr)
-            filtreEffet = new CFiltreEffet(color, true, source);
-        else
-            filtreEffet->SetBitmap(source);
+		int widthOutput = static_cast<int>(GetBitmapWidthWithRatio());
+		int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
-        if (updateFilter)
-        {
-            BeforeInterpolationBitmap();
-            updateFilter = false;
-        }
+		if (filtreEffet == nullptr)
+			filtreEffet = new CFiltreEffet(color, true, source);
+		else
+			filtreEffet->SetBitmap(source);
+
+		if (updateFilter)
+		{
+			BeforeInterpolationBitmap();
+			updateFilter = false;
+		}
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
@@ -1728,25 +1721,23 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 		else
 			top = 0;
 
-        wxImage image = filtreEffet->GetwxImage();
-        CWindowUtility winUtility;
-        winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
+		wxImage image = filtreEffet->GetwxImage();
+		CWindowUtility winUtility;
+		winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
 		dc.DrawBitmap(image.Mirror(), left, top);
-        AfterRender();
-    }    
-    else
-    {
-        CWindowUtility winUtility;
-        winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);  
-    }
-
-
+		AfterRender();
+	}
+	else
+	{
+		CWindowUtility winUtility;
+		winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
+	}
 }
 
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
-void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL)
+void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
 #ifndef WIN32
 	scale_factor = parentRender->GetContentScaleFactor();
@@ -1774,7 +1765,6 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenG
 		}
 		else
 		{
-
 			printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}

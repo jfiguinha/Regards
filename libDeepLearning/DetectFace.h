@@ -16,20 +16,18 @@ class MyDetectFaceImpl;
 class CDetectFace
 {
 public:
-    CDetectFace(void);
-    ~CDetectFace(void);
+	CDetectFace(void);
+	~CDetectFace(void);
 
-    void LoadModel(const bool& openCLCompatible);
-    void DetectFace(const Mat & bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-    int FindNbFace(const Mat& bitmap, const float & confidenceThreshold, float& bestConfidence);
+	void LoadModel(const bool& openCLCompatible);
+	void DetectFace(const Mat& bitmap, const float& confidenceThreshold, std::vector<CFace>& listOfFace,
+	                std::vector<cv::Rect>& pointOfFace);
+	int FindNbFace(const Mat& bitmap, const float& confidenceThreshold, float& bestConfidence);
 
 private:
-
-   
-
 #ifdef __APPLE__
     MyDetectFaceImpl* _impl;
 #else
-    static bool isload;
+	static bool isload;
 #endif
 };

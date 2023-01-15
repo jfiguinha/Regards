@@ -14,7 +14,7 @@ CSqlFindFolderCatalog::~CSqlFindFolderCatalog()
 {
 }
 
-int CSqlFindFolderCatalog::GetNbFolderCatalog(const int &numCatalog)
+int CSqlFindFolderCatalog::GetNbFolderCatalog(const int& numCatalog)
 {
 	nbCatalog = 0;
 	typeRequest = 0;
@@ -22,14 +22,18 @@ int CSqlFindFolderCatalog::GetNbFolderCatalog(const int &numCatalog)
 	return nbCatalog;
 }
 
-bool CSqlFindFolderCatalog::GetFolderCatalog(FolderCatalogVector * catalogfolderVector, const int &numCatalog)
+bool CSqlFindFolderCatalog::GetFolderCatalog(FolderCatalogVector* catalogfolderVector, const int& numCatalog)
 {
 	typeRequest = 1;
 	m_catalogFolderVector = catalogfolderVector;
-	return (ExecuteRequest("SELECT NumFolderCatalog, NumCatalog, FolderPath FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(numCatalog)) != -1) ? true : false;
+	return (ExecuteRequest(
+		       "SELECT NumFolderCatalog, NumCatalog, FolderPath FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(
+			       numCatalog)) != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFindFolderCatalog::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindFolderCatalog::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())

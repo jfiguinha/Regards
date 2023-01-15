@@ -1,6 +1,6 @@
-
 #pragma once
 #include "EffectParameter.h"
+
 class CLensFlareEffectParameter : public CEffectParameter
 {
 public:
@@ -11,11 +11,13 @@ public:
 		colorIntensity = 10;
 		color = 20;
 	};
-	~CLensFlareEffectParameter() override {};
+
+	~CLensFlareEffectParameter() override
+	{
+	};
 
 	int brightness;
 	int colorIntensity;
 	int size;
 	int color;
 };
-

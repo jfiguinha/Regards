@@ -13,16 +13,15 @@ namespace Regards
 			CSqlPhotoCategorieUsenet();
 			~CSqlPhotoCategorieUsenet() override;
 			vector<wxString> GetPhotoListTreatment();
-			bool InsertPhotoProcessing(const wxString &path);
-			bool InsertPhotoCategorie(const int &numPhoto, const int &categorie, const wxString &label);
-			bool DeletePhotoProcessing(const wxString &path);
+			bool InsertPhotoProcessing(const wxString& path);
+			bool InsertPhotoCategorie(const int& numPhoto, const int& categorie, const wxString& label);
+			bool DeletePhotoProcessing(const wxString& path);
 			bool DeletePhotoProcessingDatabase();
+
 		private:
-
 			int type;
-			int TraitementResult(CSqlResult * sqlResult);
+			int TraitementResult(CSqlResult* sqlResult) override;
 			vector<wxString> listPhoto;
-
 		};
 	}
 }

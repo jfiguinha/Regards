@@ -12,10 +12,10 @@
 #include <LibResource.h>
 #include <picture_utility.h>
 #include <WindowUtility.h>
+
 extern "C" {
 #include <libavutil/error.h>
 }
-
 
 
 #ifndef WX_PRECOMP
@@ -32,8 +32,8 @@ extern "C" {
 //*)
 
 BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
-	//(*EventTable(CompressionAudioVideoOption)
-	//*)
+		//(*EventTable(CompressionAudioVideoOption)
+		//*)
 END_EVENT_TABLE()
 
 using namespace Regards::Picture;
@@ -168,8 +168,6 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
 
 	wxString decoder = "";
-	
-
 
 
 	CThemeSlider theme;
@@ -202,7 +200,6 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
 
-
 #ifdef __APPLE__
 	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, viewerTheme);
 	showBitmapWindow->Show(true);
@@ -214,9 +211,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
 	panel->Show(true);
-	
-#endif
 
+#endif
 }
 
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
@@ -225,7 +221,6 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
 	if (!bitmap_local.empty())
 	{
-
 		CPictureUtility::RotateExif(bitmap_local, orientation);
 		wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
 		int x = 0;
@@ -246,14 +241,14 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 
 
 void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
-	const wxString& videoOutputFilename)
+                                          const wxString& videoOutputFilename)
 {
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow->SetParameter(videoFilename, &videoOptionCompress);
 	//showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 
-	
+
 	wxFileName filepath(videoOutputFilename);
 	extension = filepath.GetExt();
 	if (extension == "mpeg")
@@ -322,9 +317,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 
 
-
 	SetBitmap(0);
-
 }
 
 void CompressionAudioVideoOption::OnErrorCompression(wxCommandEvent& event)

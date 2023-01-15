@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(CExportFile, wxDialog)
-	//(*EventTable(ExportFile)
-	//*)
+		//(*EventTable(ExportFile)
+		//*)
 END_EVENT_TABLE()
 
 CExportFile::CExportFile(wxWindow* parent)
@@ -79,7 +79,7 @@ void CExportFile::OnButton1Click(wxCommandEvent& event)
 	int selection = 0;
 	wxString stringSelect = cbFileSaveOption->GetStringSelection();
 	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
-	for(int i = 0;i < listFormat.size();i++)
+	for (int i = 0; i < listFormat.size(); i++)
 	{
 		if (listFormat[i] == stringSelect)
 		{

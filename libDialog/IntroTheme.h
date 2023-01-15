@@ -12,7 +12,7 @@ namespace Regards
 
 			~CIntroTheme() override;
 
-			auto GetAboutTexteTheme(CThemeIntroLogo* theme) const -> void;
+			void GetAboutTexteTheme(CThemeIntroLogo* theme) const;
 
 		private:
 			void LoadTheme() override

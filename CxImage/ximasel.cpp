@@ -11,7 +11,7 @@
  */
 bool CxImage::SelectionIsValid()
 {
-	return pSelection!=0;
+	return pSelection != nullptr;
 }
 
 #if CXIMAGE_SUPPORT_SELECTION
@@ -92,11 +92,11 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
 {
 #ifdef _DEBUG
 	if (!IsInside(x,y))
-  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+#if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
 		throw 0;
-  #else
+#else
 		return 0;
-  #endif
+#endif
 #endif
 	if (pSelection==NULL) return true;
 	return pSelection[x+y*head.biWidth]!=0;
@@ -588,11 +588,11 @@ uint8_t CxImage::BlindSelectionGet(const int32_t x,const int32_t y)
 {
 #ifdef _DEBUG
 	if (!IsInside(x,y) || (pSelection==0))
-  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+#if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
 		throw 0;
-  #else
+#else
 		return 0;
-  #endif
+#endif
 #endif
 	return pSelection[x+y*head.biWidth];
 }

@@ -19,9 +19,9 @@ using namespace Regards::Filter;
 
 CMotionBlurFilter::CMotionBlurFilter()
 {
-    libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS",1);
-    libelleEffectSigma = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);
-    libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE",1);
+	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS", 1);
+	libelleEffectSigma = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA", 1);
+	libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE", 1);
 }
 
 int CMotionBlurFilter::TypeApplyFilter()
@@ -31,7 +31,6 @@ int CMotionBlurFilter::TypeApplyFilter()
 
 CMotionBlurFilter::~CMotionBlurFilter()
 {
-    
 }
 
 wxString CMotionBlurFilter::GetFilterLabel()
@@ -47,42 +46,45 @@ int CMotionBlurFilter::GetNameFilter()
 
 int CMotionBlurFilter::GetTypeFilter()
 {
-	return CONVOLUTION_EFFECT;// IDM_FILTRE_MOTIONBLUR;
+	return CONVOLUTION_EFFECT; // IDM_FILTRE_MOTIONBLUR;
 }
 
-void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CMotionBlurFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                               IFiltreEffectInterface* filtreInterface)
 {
-    CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-    
+	auto motionBlurParameter = static_cast<CMotionBlurEffectParameter*>(effectParameter);
+
 	this->source = source;
 	this->filename = filename;
-    vector<int> elementAngle;
-    for (auto i = 0; i < 361; i++)
-        elementAngle.push_back(i);
-    
-    
-    vector<int> elementSample;
-    for (auto i = 0; i < 100; i++)
-        elementSample.push_back(i);
-    
-    vector<int> velocity;
-    for (auto i = 0; i < 101; i++)
-        velocity.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(motionBlurParameter->radius), &elementSample);
-    filtreInterface->AddTreeInfos(libelleEffectSigma, new CTreeElementValueInt(motionBlurParameter->sigma), &velocity);
-    filtreInterface->AddTreeInfos(libelleEffectAngle, new CTreeElementValueInt(motionBlurParameter->angle), &elementAngle);
+	vector<int> elementAngle;
+	for (auto i = 0; i < 361; i++)
+		elementAngle.push_back(i);
+
+
+	vector<int> elementSample;
+	for (auto i = 0; i < 100; i++)
+		elementSample.push_back(i);
+
+	vector<int> velocity;
+	for (auto i = 0; i < 101; i++)
+		velocity.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(motionBlurParameter->radius),
+	                              &elementSample);
+	filtreInterface->AddTreeInfos(libelleEffectSigma, new CTreeElementValueInt(motionBlurParameter->sigma), &velocity);
+	filtreInterface->AddTreeInfos(libelleEffectAngle, new CTreeElementValueInt(motionBlurParameter->angle),
+	                              &elementAngle);
 }
 
-void CMotionBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CMotionBlurFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                          const wxString& key)
 {
-    CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-    
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
+	auto motionBlurParameter = static_cast<CMotionBlurEffectParameter*>(effectParameter);
+
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
 
 	if (motionBlurParameter != nullptr && valueInt != nullptr)
 	{
-
 		int value = valueInt->GetValue();
 		//Video Parameter
 		if (key == libelleEffectRadius)
@@ -110,8 +112,9 @@ void CMotionBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
-		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+		auto motionblurEffectParameter = static_cast<CMotionBlurEffectParameter*>(effectParameter);
+		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma,
+		                        motionblurEffectParameter->angle);
 	}
 }
 
@@ -122,7 +125,7 @@ CEffectParameter* CMotionBlurFilter::GetEffectPointer()
 
 CEffectParameter* CMotionBlurFilter::GetDefaultEffectParameter()
 {
-	CMotionBlurEffectParameter* motionBlur = new CMotionBlurEffectParameter();
+	auto motionBlur = new CMotionBlurEffectParameter();
 	motionBlur->radius = 20;
 	motionBlur->sigma = 5;
 	motionBlur->angle = 40;
@@ -135,20 +138,22 @@ bool CMotionBlurFilter::IsSourcePreview()
 }
 
 
-void CMotionBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CMotionBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                 CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
-		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+		auto motionblurEffectParameter = static_cast<CMotionBlurEffectParameter*>(effectParameter);
+		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma,
+		                        motionblurEffectParameter->angle);
 	}
-
 }
 
 
-void CMotionBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CMotionBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                           CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                           int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CMotionBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -163,9 +168,10 @@ CImageLoadingFormat* CMotionBlurFilter::ApplyEffect(CEffectParameter* effectPara
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
-			CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
-			filter->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+
+			auto motionblurEffectParameter = static_cast<CMotionBlurEffectParameter*>(effectParameter);
+			filter->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma,
+			                   motionblurEffectParameter->angle);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);

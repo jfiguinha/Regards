@@ -74,22 +74,23 @@ void  free(void *ptr);
  * dynamic libraries and remove -Wl,-Bsymbolic from the linker flags.
  * Note that this will cost performance. */
 
-static size_t max_alloc_size= INT_MAX;
+static size_t max_alloc_size = INT_MAX;
 
-void av_max_alloc(size_t max){
-    max_alloc_size = max;
+void av_max_alloc(size_t max)
+{
+	max_alloc_size = max;
 }
 
-void *av_malloc(size_t size)
+void* av_malloc(size_t size)
 {
-    void *ptr = NULL;
+	void* ptr = NULL;
 #if CONFIG_MEMALIGN_HACK
     long diff;
 #endif
 
-    /* let's disallow possibly ambiguous cases */
-    if (size > (max_alloc_size - 32))
-        return NULL;
+	/* let's disallow possibly ambiguous cases */
+	if (size > (max_alloc_size - 32))
+		return NULL;
 
 #if CONFIG_MEMALIGN_HACK
     ptr = malloc(size + ALIGN);
@@ -110,32 +111,32 @@ void *av_malloc(size_t size)
 #else
     ptr = memalign(size, ALIGN);
 #endif
-    /* Why 64?
-     * Indeed, we should align it:
-     *   on  4 for 386
-     *   on 16 for 486
-     *   on 32 for 586, PPro - K6-III
-     *   on 64 for K7 (maybe for P3 too).
-     * Because L1 and L2 caches are aligned on those values.
-     * But I don't want to code such logic here!
-     */
-    /* Why 32?
-     * For AVX ASM. SSE / NEON needs only 16.
-     * Why not larger? Because I did not see a difference in benchmarks ...
-     */
-    /* benchmarks with P3
-     * memalign(64) + 1          3071, 3051, 3032
-     * memalign(64) + 2          3051, 3032, 3041
-     * memalign(64) + 4          2911, 2896, 2915
-     * memalign(64) + 8          2545, 2554, 2550
-     * memalign(64) + 16         2543, 2572, 2563
-     * memalign(64) + 32         2546, 2545, 2571
-     * memalign(64) + 64         2570, 2533, 2558
-     *
-     * BTW, malloc seems to do 8-byte alignment by default here.
-     */
+	/* Why 64?
+	 * Indeed, we should align it:
+	 *   on  4 for 386
+	 *   on 16 for 486
+	 *   on 32 for 586, PPro - K6-III
+	 *   on 64 for K7 (maybe for P3 too).
+	 * Because L1 and L2 caches are aligned on those values.
+	 * But I don't want to code such logic here!
+	 */
+	/* Why 32?
+	 * For AVX ASM. SSE / NEON needs only 16.
+	 * Why not larger? Because I did not see a difference in benchmarks ...
+	 */
+	/* benchmarks with P3
+	 * memalign(64) + 1          3071, 3051, 3032
+	 * memalign(64) + 2          3051, 3032, 3041
+	 * memalign(64) + 4          2911, 2896, 2915
+	 * memalign(64) + 8          2545, 2554, 2550
+	 * memalign(64) + 16         2543, 2572, 2563
+	 * memalign(64) + 32         2546, 2545, 2571
+	 * memalign(64) + 64         2570, 2533, 2558
+	 *
+	 * BTW, malloc seems to do 8-byte alignment by default here.
+	 */
 #else
-    ptr = malloc(size);
+	ptr = malloc(size);
 #ifdef USE_MEM_STATS
     printf("malloc(%ld) -> %p\n", size, ptr);
     if (ptr) {
@@ -151,26 +152,27 @@ void *av_malloc(size_t size)
     }
 #endif
 #endif
-    if(!ptr && !size) {
-        size = 1;
-        ptr= av_malloc(1);
-    }
+	if (!ptr && !size)
+	{
+		size = 1;
+		ptr = av_malloc(1);
+	}
 #if CONFIG_MEMORY_POISONING
     if (ptr)
         memset(ptr, FF_MEMORY_POISON, size);
 #endif
-    return ptr;
+	return ptr;
 }
 
-void *av_realloc(void *ptr, size_t size)
+void* av_realloc(void* ptr, size_t size)
 {
 #if CONFIG_MEMALIGN_HACK
     int diff;
 #endif
 
-    /* let's disallow possibly ambiguous cases */
-    if (size > (max_alloc_size - 32))
-        return NULL;
+	/* let's disallow possibly ambiguous cases */
+	if (size > (max_alloc_size - 32))
+		return NULL;
 
 #if CONFIG_MEMALIGN_HACK
     //FIXME this isn't aligned correctly, though it probably isn't needed
@@ -205,63 +207,66 @@ void *av_realloc(void *ptr, size_t size)
     }
     return ptr;
 #else
-    return realloc(ptr, size + !size);
+	return realloc(ptr, size + !size);
 #endif
 #endif
 }
 
-void *av_realloc_f(void *ptr, size_t nelem, size_t elsize)
+void* av_realloc_f(void* ptr, size_t nelem, size_t elsize)
 {
-    size_t size;
-    void *r;
+	size_t size;
+	void* r;
 
-    if (av_size_mult(elsize, nelem, &size)) {
-        av_free(ptr);
-        return NULL;
-    }
-    r = av_realloc(ptr, size);
-    if (!r && size)
-        av_free(ptr);
-    return r;
+	if (av_size_mult(elsize, nelem, &size))
+	{
+		av_free(ptr);
+		return NULL;
+	}
+	r = av_realloc(ptr, size);
+	if (!r && size)
+		av_free(ptr);
+	return r;
 }
 
-int av_reallocp(void *ptr, size_t size)
+int av_reallocp(void* ptr, size_t size)
 {
-    void **ptrptr = ptr;
-    void *ret;
+	void** ptrptr = ptr;
+	void* ret;
 
-    if (!size) {
-        av_freep(ptr);
-        return 0;
-    }
-    ret = av_realloc(*ptrptr, size);
+	if (!size)
+	{
+		av_freep(ptr);
+		return 0;
+	}
+	ret = av_realloc(*ptrptr, size);
 
-    if (!ret) {
-        av_freep(ptr);
-        return AVERROR(ENOMEM);
-    }
+	if (!ret)
+	{
+		av_freep(ptr);
+		return AVERROR(ENOMEM);
+	}
 
-    *ptrptr = ret;
-    return 0;
+	*ptrptr = ret;
+	return 0;
 }
 
-void *av_realloc_array(void *ptr, size_t nmemb, size_t size)
+void* av_realloc_array(void* ptr, size_t nmemb, size_t size)
 {
-    if (!size || nmemb >= INT_MAX / size)
-        return NULL;
-    return av_realloc(ptr, nmemb * size);
+	if (!size || nmemb >= INT_MAX / size)
+		return NULL;
+	return av_realloc(ptr, nmemb * size);
 }
 
-int av_reallocp_array(void *ptr, size_t nmemb, size_t size)
+int av_reallocp_array(void* ptr, size_t nmemb, size_t size)
 {
-    void **ptrptr = ptr;
-    *ptrptr = av_realloc_f(*ptrptr, nmemb, size);
-    if (!*ptrptr && nmemb && size)
-        return AVERROR(ENOMEM);
-    return 0;
+	void** ptrptr = ptr;
+	*ptrptr = av_realloc_f(*ptrptr, nmemb, size);
+	if (!*ptrptr && nmemb && size)
+		return AVERROR(ENOMEM);
+	return 0;
 }
 
-void av_free(void *ptr)
+void av_free(void* ptr)
 {
 #if CONFIG_MEMALIGN_HACK
     if (ptr) {
@@ -279,23 +284,23 @@ void av_free(void *ptr)
         block_cur--;
     }
 #endif
-    free(ptr);
+	free(ptr);
 #endif
 }
 
-void av_freep(void *arg)
+void av_freep(void* arg)
 {
-    void **ptr = (void **)arg;
-    av_free(*ptr);
-    *ptr = NULL;
+	void** ptr = arg;
+	av_free(*ptr);
+	*ptr = NULL;
 }
 
-void *av_mallocz(size_t size)
+void* av_mallocz(size_t size)
 {
-    void *ptr = av_malloc(size);
-    if (ptr)
-        memset(ptr, 0, size);
-    return ptr;
+	void* ptr = av_malloc(size);
+	if (ptr)
+		memset(ptr, 0, size);
+	return ptr;
 }
 
 #ifdef USE_FULL
@@ -537,35 +542,35 @@ void *av_fast_realloc(void *ptr, unsigned int *size, size_t min_size)
 }
 #endif
 
-static inline int ff_fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+static inline int ff_fast_malloc(void* ptr, unsigned int* size, size_t min_size, int zero_realloc)
 {
-    void **p = ptr;
-    if (min_size < *size)
-        return 0;
-    min_size = FFMAX(17 * min_size / 16 + 32, min_size);
-    av_free(*p);
-    *p = zero_realloc ? av_mallocz(min_size) : av_malloc(min_size);
-    if (!*p)
-        min_size = 0;
-    *size = min_size;
-    return 1;
+	void** p = ptr;
+	if (min_size < *size)
+		return 0;
+	min_size = FFMAX(17 * min_size / 16 + 32, min_size);
+	av_free(*p);
+	*p = zero_realloc ? av_mallocz(min_size) : av_malloc(min_size);
+	if (!*p)
+		min_size = 0;
+	*size = min_size;
+	return 1;
 }
 
-void av_fast_malloc(void *ptr, unsigned int *size, size_t min_size)
+void av_fast_malloc(void* ptr, unsigned int* size, size_t min_size)
 {
-    ff_fast_malloc(ptr, size, min_size, 0);
+	ff_fast_malloc(ptr, size, min_size, 0);
 }
 
-void *av_malloc_array(size_t nmemb, size_t size)
+void* av_malloc_array(size_t nmemb, size_t size)
 {
-    if (!size || nmemb >= INT_MAX / size)
-        return NULL;
-    return av_malloc(nmemb * size);
+	if (!size || nmemb >= INT_MAX / size)
+		return NULL;
+	return av_malloc(nmemb * size);
 }
 
-void *av_mallocz_array(size_t nmemb, size_t size)
+void* av_mallocz_array(size_t nmemb, size_t size)
 {
-    if (!size || nmemb >= INT_MAX / size)
-        return NULL;
-    return av_mallocz(nmemb * size);
+	if (!size || nmemb >= INT_MAX / size)
+		return NULL;
+	return av_mallocz(nmemb * size);
 }

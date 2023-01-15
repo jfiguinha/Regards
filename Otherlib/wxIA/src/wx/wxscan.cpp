@@ -438,7 +438,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     SANE_Parameters oSaneParameters;
 
     //::sane_get_parameters( hSaneHandle, &oSaneParameters );
-    
+
 
     // ... and start scanning.
     m_SaneStatus= ::sane_start( hSaneHandle );

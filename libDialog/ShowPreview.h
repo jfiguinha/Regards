@@ -78,19 +78,19 @@ namespace Regards
 			CScrollbarWnd* scrollbar;
 			CPreviewToolbar* previewToolbar;
 			CSliderVideoPreview* sliderVideo;
-			CBitmapWndRender * bitmapWindow;
+			CBitmapWndRender* bitmapWindow;
 			CBitmapWnd3D* bitmapWindowRender;
 			CRegardsConfigParam* configRegards;
 
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-			Regards::Video::CThumbnailVideo* videoOriginal = nullptr;
+			Video::CThumbnailVideo* videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
-			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
+			CFFmpegTranscoding* transcodeFFmpeg = nullptr;
 			cv::Mat decodeFrame;
 			cv::Mat decodeFrameOriginal;
-			
+
 
 			wxString extension;
 			bool transitionEnd;

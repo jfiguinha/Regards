@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(GifOption, wxDialog)
-	//(*EventTable(GifOption)
-	//*)
+		//(*EventTable(GifOption)
+		//*)
 END_EVENT_TABLE()
 
 GifOption::GifOption(wxWindow* parent)

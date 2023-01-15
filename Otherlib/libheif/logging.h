@@ -35,39 +35,45 @@
 #include <istream>
 
 
-namespace heif {
+namespace heif
+{
+	class Indent
+	{
+	public:
+		Indent() : m_indent(0)
+		{
+		}
 
-  class Indent
-  {
-  public:
-    Indent() : m_indent(0)
-    {}
+		int get_indent() const
+		{
+			return m_indent;
+		}
 
-    int get_indent() const
-    { return m_indent; }
+		void operator++(int)
+		{
+			m_indent++;
+		}
 
-    void operator++(int)
-    { m_indent++; }
+		void operator--(int)
+		{
+			m_indent--;
+			if (m_indent < 0) m_indent = 0;
+		}
 
-    void operator--(int)
-    {
-      m_indent--;
-      if (m_indent < 0) m_indent = 0;
-    }
-
-  private:
-    int m_indent;
-  };
+	private:
+		int m_indent;
+	};
 
 
-  inline std::ostream& operator<<(std::ostream& ostr, const Indent& indent)
-  {
-    for (int i = 0; i < indent.get_indent(); i++) {
-      ostr << "| ";
-    }
+	inline std::ostream& operator<<(std::ostream& ostr, const Indent& indent)
+	{
+		for (int i = 0; i < indent.get_indent(); i++)
+		{
+			ostr << "| ";
+		}
 
-    return ostr;
-  }
+		return ostr;
+	}
 }
 
 #endif

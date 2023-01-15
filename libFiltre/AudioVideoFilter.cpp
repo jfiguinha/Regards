@@ -21,15 +21,14 @@ using namespace Regards::Video;
 
 CAudioVideoFilter::CAudioVideoFilter()
 {
-	libelleAudio =  CLibResource::LoadStringFromResource(L"LBLPARAMETERAUDIO",1);//L"Parameter.Audio";
-	libelleVideo=  CLibResource::LoadStringFromResource(L"LBLPARAMETERVIDEO",1);//L"Parameter.Video";
-	enableSubtitle =  CLibResource::LoadStringFromResource(L"LBLSHOWSUBTITLE",1);//"Parameter.Show Subtitle";
-	libelleSubtitle=  CLibResource::LoadStringFromResource(L"LBLSUBTITLE",1);//L"Parameter.Subtitle";
+	libelleAudio = CLibResource::LoadStringFromResource(L"LBLPARAMETERAUDIO", 1); //L"Parameter.Audio";
+	libelleVideo = CLibResource::LoadStringFromResource(L"LBLPARAMETERVIDEO", 1); //L"Parameter.Video";
+	enableSubtitle = CLibResource::LoadStringFromResource(L"LBLSHOWSUBTITLE", 1); //"Parameter.Show Subtitle";
+	libelleSubtitle = CLibResource::LoadStringFromResource(L"LBLSUBTITLE", 1); //L"Parameter.Subtitle";
 }
 
 CAudioVideoFilter::~CAudioVideoFilter()
 {
-    
 }
 
 wxString CAudioVideoFilter::GetFilterLabel()
@@ -44,21 +43,23 @@ int CAudioVideoFilter::GetNameFilter()
 
 int CAudioVideoFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_AUDIOVIDEO;
+	return IDM_FILTRE_AUDIOVIDEO;
 }
 
-void CAudioVideoFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                               IFiltreEffectInterface* filtreInterface)
 {
-    if(!source.empty())
-    {
-        Filter(effectParameter, filename, filtreInterface);
-    }
+	if (!source.empty())
+	{
+		Filter(effectParameter, filename, filtreInterface);
+	}
 }
 
-void CAudioVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface)
-{   
+void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& filename,
+                               IFiltreEffectInterface* filtreInterface)
+{
 	vector<CStreamInfo> listStream = CVideoStream::GetVideoStream(filename);
-	CVideoEffectParameter * videoEffectParameter = (CVideoEffectParameter *)effectParameter;
+	auto videoEffectParameter = static_cast<CVideoEffectParameter*>(effectParameter);
 
 	int indexVideo = 0;
 	int indexAudio = 0;
@@ -67,40 +68,41 @@ void CAudioVideoFilter::Filter(CEffectParameter * effectParameter, const wxStrin
 	vector<CMetadata> elementVideo;
 	vector<CMetadata> elementSubtitle;
 
-	for(int i = 0;i < listStream.size();i++)
+	for (int i = 0; i < listStream.size(); i++)
 	{
 		CStreamInfo streamInfo = listStream[i];
-		switch(streamInfo.typeStream)
+		switch (streamInfo.typeStream)
 		{
 		case 1:
-			if(streamInfo.selected)
+			if (streamInfo.selected)
 				indexAudio = elementAudio.size();
 			AddMetadataElement(elementAudio, streamInfo.streamLibelle, streamInfo.indexStream);
 			break;
 		case 2:
-			if(streamInfo.selected)
+			if (streamInfo.selected)
 				indexVideo = elementVideo.size();
 			AddMetadataElement(elementVideo, streamInfo.streamLibelle, streamInfo.indexStream);
 			break;
 		case 3:
-			if(streamInfo.selected)
+			if (streamInfo.selected)
 				indexSubtitle = elementSubtitle.size();
 			AddMetadataElement(elementSubtitle, streamInfo.streamLibelle, streamInfo.indexStream);
 			break;
 		default: ;
 		}
 	}
-	
+
 	filtreInterface->AddTreeInfos(libelleAudio, new CTreeElementValueInt(indexAudio), &elementAudio, 3, 3);
 	filtreInterface->AddTreeInfos(libelleVideo, new CTreeElementValueInt(indexVideo), &elementVideo, 3, 3);
-	if(elementSubtitle.size() > 0)
+	if (elementSubtitle.size() > 0)
 	{
-		filtreInterface->AddTreeInfos(enableSubtitle, new CTreeElementValueInt(videoEffectParameter->enableSubtitle), &videoEffectParameter->enableSubtitle, 2, 2);
+		filtreInterface->AddTreeInfos(enableSubtitle, new CTreeElementValueInt(videoEffectParameter->enableSubtitle),
+		                              &videoEffectParameter->enableSubtitle, 2, 2);
 		filtreInterface->AddTreeInfos(libelleSubtitle, new CTreeElementValueInt(indexSubtitle), &elementSubtitle, 3, 3);
 	}
 }
 
-void CAudioVideoFilter::AddMetadataElement(vector<CMetadata> & element, wxString value, int key)
+void CAudioVideoFilter::AddMetadataElement(vector<CMetadata>& element, wxString value, int key)
 {
 	CMetadata linear;
 	linear.value = value;
@@ -108,32 +110,33 @@ void CAudioVideoFilter::AddMetadataElement(vector<CMetadata> & element, wxString
 	element.push_back(linear);
 }
 
-void CAudioVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CAudioVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                          const wxString& key)
 {
-	CVideoEffectParameter * videoEffectParameter = (CVideoEffectParameter *)effectParameter;
+	auto videoEffectParameter = static_cast<CVideoEffectParameter*>(effectParameter);
 
 	float value = 0.0;
-	switch(valueData->GetType())
+	switch (valueData->GetType())
 	{
-		case TYPE_ELEMENT_INT:
-			{
-				CTreeElementValueInt * intValue = (CTreeElementValueInt*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_FLOAT:
-			{
-				CTreeElementValueFloat * intValue = (CTreeElementValueFloat*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_BOOL:
-			{
-				CTreeElementValueBool * intValue = (CTreeElementValueBool*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		default: ;
+	case TYPE_ELEMENT_INT:
+		{
+			auto intValue = static_cast<CTreeElementValueInt*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_FLOAT:
+		{
+			auto intValue = static_cast<CTreeElementValueFloat*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_BOOL:
+		{
+			auto intValue = static_cast<CTreeElementValueBool*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	default: ;
 	}
 
 	if (key == libelleAudio)
@@ -156,5 +159,3 @@ void CAudioVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 		videoEffectParameter->enableSubtitle = value;
 	}
 }
-
-

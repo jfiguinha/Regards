@@ -2,6 +2,7 @@
 #include "FilterWindowParam.h"
 #include "LibResource.h"
 #include <effect_id.h>
+
 namespace Regards
 {
 	namespace Filter
@@ -22,7 +23,7 @@ namespace Regards
 			{
 			};
 
-			void Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename,
+			void Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
 			            IFiltreEffectInterface* filtreInterface) override
 			{
 			};
@@ -372,42 +373,42 @@ namespace Regards
 			};
 		};
 
-/*
-		class CMosaicFilter : public CDefaultFilter
-		{
-		public:
-			CMosaicFilter()
-			{
-			};
-
-			~CMosaicFilter() override
-			{
-			};
-
-			int GetNameFilter() override
-			{
-				return IDM_FILTRE_MOSAIQUE;
-			}
-
-
-			wxString GetFilterLabel() override
-			{
-				return CLibResource::LoadStringFromResource("LBLfilterMosaic", 1);
-			}
-
-			int GetTypeFilter() override
-			{
-				return SPECIAL_EFFECT;
-			};
-
-			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
-			                  const bool& preview) override
-			{
-				if (filtreEffet != nullptr)
-					filtreEffet->FiltreMosaic();
-			};
-		};
-*/
+		/*
+				class CMosaicFilter : public CDefaultFilter
+				{
+				public:
+					CMosaicFilter()
+					{
+					};
+		
+					~CMosaicFilter() override
+					{
+					};
+		
+					int GetNameFilter() override
+					{
+						return IDM_FILTRE_MOSAIQUE;
+					}
+		
+		
+					wxString GetFilterLabel() override
+					{
+						return CLibResource::LoadStringFromResource("LBLfilterMosaic", 1);
+					}
+		
+					int GetTypeFilter() override
+					{
+						return SPECIAL_EFFECT;
+					};
+		
+					void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+					                  const bool& preview) override
+					{
+						if (filtreEffet != nullptr)
+							filtreEffet->FiltreMosaic();
+					};
+				};
+		*/
 
 		class CNoiseFilter : public CDefaultFilter
 		{

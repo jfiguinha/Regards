@@ -31,71 +31,72 @@
 #include "intreadwrite.h"
 #include "version.h"
 
-typedef struct {
-    enum AVPixelFormat pix_fmt;
-    AVPixFmtDescriptor desc;
+typedef struct
+{
+	enum AVPixelFormat pix_fmt;
+	AVPixFmtDescriptor desc;
 } AVPixFmtDescriptorEntry;
 
 
 static const AVPixFmtDescriptorEntry pix_desc[] = {
 #ifdef USE_VAR_BIT_DEPTH
-    {
-        AV_PIX_FMT_YUV420P16LE,
-        {
-            //.name = "yuv420p16le",
-            .nb_components = 3,
-            .log2_chroma_w = 1,
-            .log2_chroma_h = 1,
-            .comp = {
-                { 0, 1, 1, 0, 15 },        /* Y */
-                { 1, 1, 1, 0, 15 },        /* U */
-                { 2, 1, 1, 0, 15 },        /* V */
-            },
-        }
-    },
-    {
-        AV_PIX_FMT_YUV422P16LE,
-        {
-            //.name = "yuv422p16le",
-            .nb_components = 3,
-            .log2_chroma_w = 1,
-            .log2_chroma_h = 0,
-            .comp = {
-                { 0, 1, 1, 0, 15 },        /* Y */
-                { 1, 1, 1, 0, 15 },        /* U */
-                { 2, 1, 1, 0, 15 },        /* V */
-            },
-            .flags = AV_PIX_FMT_FLAG_PLANAR,
-        }
-    },
-    {
-        AV_PIX_FMT_YUV444P16LE,
-        {
-            //.name = "yuv444p16le",
-            .nb_components = 3,
-            .log2_chroma_w = 0,
-            .log2_chroma_h = 0,
-            .comp = {
-                { 0, 1, 1, 0, 15 },        /* Y */
-                { 1, 1, 1, 0, 15 },        /* U */
-                { 2, 1, 1, 0, 15 },        /* V */
-            },
-            .flags = AV_PIX_FMT_FLAG_PLANAR,
-        }
-    },
-    {
-        AV_PIX_FMT_GRAY16LE,
-        {
-            //.name = "gray16le",
-            .nb_components = 1,
-            .log2_chroma_w = 0,
-            .log2_chroma_h = 0,
-            .comp = {
-                { 0, 1, 1, 0, 15 },       /* Y */
-            },
-            //.alias = "y16le",
-        },
-    },
+	{
+		AV_PIX_FMT_YUV420P16LE,
+		{
+			//.name = "yuv420p16le",
+			.nb_components = 3,
+			.log2_chroma_w = 1,
+			.log2_chroma_h = 1,
+			.comp = {
+				{0, 1, 1, 0, 15}, /* Y */
+				{1, 1, 1, 0, 15}, /* U */
+				{2, 1, 1, 0, 15}, /* V */
+			},
+		}
+	},
+	{
+		AV_PIX_FMT_YUV422P16LE,
+		{
+			//.name = "yuv422p16le",
+			.nb_components = 3,
+			.log2_chroma_w = 1,
+			.log2_chroma_h = 0,
+			.comp = {
+				{0, 1, 1, 0, 15}, /* Y */
+				{1, 1, 1, 0, 15}, /* U */
+				{2, 1, 1, 0, 15}, /* V */
+			},
+			.flags = AV_PIX_FMT_FLAG_PLANAR,
+		}
+	},
+	{
+		AV_PIX_FMT_YUV444P16LE,
+		{
+			//.name = "yuv444p16le",
+			.nb_components = 3,
+			.log2_chroma_w = 0,
+			.log2_chroma_h = 0,
+			.comp = {
+				{0, 1, 1, 0, 15}, /* Y */
+				{1, 1, 1, 0, 15}, /* U */
+				{2, 1, 1, 0, 15}, /* V */
+			},
+			.flags = AV_PIX_FMT_FLAG_PLANAR,
+		}
+	},
+	{
+		AV_PIX_FMT_GRAY16LE,
+		{
+			//.name = "gray16le",
+			.nb_components = 1,
+			.log2_chroma_w = 0,
+			.log2_chroma_h = 0,
+			.comp = {
+				{0, 1, 1, 0, 15}, /* Y */
+			},
+			//.alias = "y16le",
+		},
+	},
 #else
     {
         AV_PIX_FMT_YUV420P,
@@ -158,13 +159,15 @@ static const AVPixFmtDescriptorEntry pix_desc[] = {
 
 #define countof(x) (sizeof(x) / sizeof(x[0]))
 
-const AVPixFmtDescriptor *av_pix_fmt_desc_get(enum AVPixelFormat pix_fmt)
+const AVPixFmtDescriptor* av_pix_fmt_desc_get(enum AVPixelFormat pix_fmt)
 {
-    int i;
-    for(i = 0; i < countof(pix_desc); i++) {
-        if (pix_desc[i].pix_fmt == pix_fmt) {
-            return &pix_desc[i].desc;
-        }
-    }
-    return NULL;
+	int i;
+	for (i = 0; i < countof(pix_desc); i++)
+	{
+		if (pix_desc[i].pix_fmt == pix_fmt)
+		{
+			return &pix_desc[i].desc;
+		}
+	}
+	return NULL;
 }

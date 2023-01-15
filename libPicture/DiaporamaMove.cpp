@@ -13,7 +13,7 @@ using namespace Regards::Picture;
 //
 //**********************************************************************
 int CDiaporamaMove::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, const int& nbFrame,
-	int width, int height, int effect)
+                                  int width, int height, int effect)
 {
 	if (!pictureOne.empty())
 	{
@@ -54,7 +54,7 @@ int CDiaporamaMove::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, cons
 //
 //**********************************************************************
 int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps,
-	int width, int height, int effect)
+                                   int width, int height, int effect)
 {
 	CLibPicture libPicture;
 	vector<wxString> picturefile;
@@ -78,13 +78,12 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 	int movie_duration = countNbFrame / fps;
 
 	wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr,
-		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 	this->dialog = &dialog;
 	cv::Mat old_bitmap;
 	cv::Mat src_bitmap;
 	for (int i = 0; i < picturefile.size(); i++)
 	{
-
 		//int position;
 		if (i == 0)
 		{
@@ -93,7 +92,6 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 			CopyPicture(src_bitmap, nbFrameByPicture, width, height);
 			if (endProcess)
 				break;
-
 		}
 		else
 		{
@@ -109,7 +107,6 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 			CopyPicture(src_bitmap, nbFrameByPicture, width, height);
 			if (endProcess)
 				break;
-
 		}
 
 		if (endProcess)
@@ -122,5 +119,3 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 
 	return movie_duration;
 }
-
-

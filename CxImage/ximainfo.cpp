@@ -13,11 +13,12 @@
 /**
  * \return the color used for transparency, and/or for background color
  */
-RGBQUAD	CxImage::GetTransColor()
+RGBQUAD CxImage::GetTransColor()
 {
-	if (head.biBitCount<24 && info.nBkgndIndex>=0) return GetPaletteColor((uint8_t)info.nBkgndIndex);
+	if (head.biBitCount < 24 && info.nBkgndIndex >= 0) return GetPaletteColor(static_cast<uint8_t>(info.nBkgndIndex));
 	return info.nBkgndColor;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Gets the index used for transparency. Returns -1 for no transparancy.
@@ -26,17 +27,19 @@ int32_t CxImage::GetTransIndex() const
 {
 	return info.nBkgndIndex;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets the index used for transparency with 1, 4 and 8 bpp images. Set to -1 to remove the effect.
  */
 void CxImage::SetTransIndex(int32_t idx)
 {
-	if (idx<(int32_t)head.biClrUsed)
+	if (idx < static_cast<int32_t>(head.biClrUsed))
 		info.nBkgndIndex = idx;
-	else 
+	else
 		info.nBkgndIndex = 0;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets the color used for transparency with 24 bpp images.
@@ -44,34 +47,38 @@ void CxImage::SetTransIndex(int32_t idx)
  */
 void CxImage::SetTransColor(RGBQUAD rgb)
 {
-	rgb.rgbReserved=0;
+	rgb.rgbReserved = 0;
 	info.nBkgndColor = rgb;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::IsTransparent() const
 {
-	return info.nBkgndIndex>=0; // <vho>
+	return info.nBkgndIndex >= 0; // <vho>
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns true if the image has 256 colors or less.
  */
 bool CxImage::IsIndexed() const
 {
-	return head.biClrUsed!=0;
+	return head.biClrUsed != 0;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return 1 = indexed, 2 = RGB, 4 = RGBA
  */
 uint8_t CxImage::GetColorType()
 {
-	uint8_t b = (uint8_t)((head.biBitCount>8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
+	uint8_t b = static_cast<uint8_t>((head.biBitCount > 8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
 #if CXIMAGE_SUPPORT_ALPHA
 	if (AlphaIsValid()) b = 4 /*COLORTYPE_ALPHA*/;
 #endif //CXIMAGE_SUPPORT_ALPHA
 	return b;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return Resolution for TIFF, JPEG, PNG and BMP formats.
@@ -80,6 +87,7 @@ int32_t CxImage::GetXDPI() const
 {
 	return info.xDPI;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return Resolution for TIFF, JPEG, PNG and BMP formats.
@@ -88,28 +96,31 @@ int32_t CxImage::GetYDPI() const
 {
 	return info.yDPI;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Set resolution for TIFF, JPEG, PNG and BMP formats.
  */
 void CxImage::SetXDPI(int32_t dpi)
 {
-	if (dpi<=0) dpi = CXIMAGE_DEFAULT_DPI;
+	if (dpi <= 0) dpi = CXIMAGE_DEFAULT_DPI;
 	info.xDPI = dpi;
-	head.biXPelsPerMeter = (int32_t) floor(dpi * 10000.0 / 254.0 + 0.5);
-	if (pDib) ((BITMAPINFOHEADER*)pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
+	head.biXPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
+	if (pDib) static_cast<BITMAPINFOHEADER*>(pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Set resolution for TIFF, JPEG, PNG and BMP formats.
  */
 void CxImage::SetYDPI(int32_t dpi)
 {
-	if (dpi<=0) dpi = CXIMAGE_DEFAULT_DPI;
+	if (dpi <= 0) dpi = CXIMAGE_DEFAULT_DPI;
 	info.yDPI = dpi;
-	head.biYPelsPerMeter = (int32_t) floor(dpi * 10000.0 / 254.0 + 0.5);
-	if (pDib) ((BITMAPINFOHEADER*)pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
+	head.biYPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
+	if (pDib) static_cast<BITMAPINFOHEADER*>(pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetFlags
@@ -118,6 +129,7 @@ uint32_t CxImage::GetFlags() const
 {
 	return info.dwFlags;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Image flags, for future use
@@ -133,6 +145,7 @@ void CxImage::SetFlags(uint32_t flags, bool bLockReservedFlags)
 	if (bLockReservedFlags) info.dwFlags = flags & 0x0000ffff;
 	else info.dwFlags = flags;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetCodecOption
@@ -140,11 +153,13 @@ void CxImage::SetFlags(uint32_t flags, bool bLockReservedFlags)
 uint32_t CxImage::GetCodecOption(uint32_t imagetype)
 {
 	imagetype = GetTypeIndexFromId(imagetype);
-	if (imagetype==0){
+	if (imagetype == 0)
+	{
 		imagetype = GetTypeIndexFromId(GetType());
 	}
 	return info.dwCodecOpt[imagetype];
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Encode option for GIF, TIF, JPG, PNG and RAW
@@ -163,12 +178,14 @@ uint32_t CxImage::GetCodecOption(uint32_t imagetype)
 bool CxImage::SetCodecOption(uint32_t opt, uint32_t imagetype)
 {
 	imagetype = GetTypeIndexFromId(imagetype);
-	if (imagetype==0){
+	if (imagetype == 0)
+	{
 		imagetype = GetTypeIndexFromId(GetType());
 	}
 	info.dwCodecOpt[imagetype] = opt;
 	return true;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return internal hDib object..
@@ -177,16 +194,19 @@ void* CxImage::GetDIB() const
 {
 	return pDib;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetHeight() const
 {
 	return head.biHeight;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetWidth() const
 {
 	return head.biWidth;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return uint32_t aligned width of the image.
@@ -195,6 +215,7 @@ uint32_t CxImage::GetEffWidth() const
 {
 	return info.dwEffWidth;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return 2, 16, 256; 0 for RGB images.
@@ -203,6 +224,7 @@ uint32_t CxImage::GetNumColors() const
 {
 	return head.biClrUsed;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return: 1, 4, 8, 24.
@@ -211,6 +233,7 @@ uint16_t CxImage::GetBpp() const
 {
 	return head.biBitCount;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return original image format
@@ -220,6 +243,7 @@ uint32_t CxImage::GetType() const
 {
 	return info.dwType;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * change image format identifier
@@ -227,7 +251,8 @@ uint32_t CxImage::GetType() const
  */
 bool CxImage::SetType(uint32_t type)
 {
-	switch (type){
+	switch (type)
+	{
 #if CXIMAGE_SUPPORT_BMP
 	case CXIMAGE_FORMAT_BMP:
 #endif
@@ -296,11 +321,13 @@ bool CxImage::SetType(uint32_t type)
 	}
 	return false;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetNumTypes()
 {
-	return CMAX_IMAGE_FORMATS-1;
+	return CMAX_IMAGE_FORMATS - 1;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetTypeIdFromName(const char* ext)
 {
@@ -313,10 +340,10 @@ uint32_t CxImage::GetTypeIdFromName(const char* ext)
 		_tcsnicmp(ext,_T("jfi"),3)==0 )		return CXIMAGE_FORMAT_JPG;
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	if (_tcsnicmp(ext,_T("gif"),3)==0 )		return CXIMAGE_FORMAT_GIF;
+	if (_tcsnicmp(ext,_T("gif"), 3) == 0) return CXIMAGE_FORMAT_GIF;
 #endif
 #if CXIMAGE_SUPPORT_PNG
-	if (_tcsnicmp(ext,_T("png"),3)==0 )		return CXIMAGE_FORMAT_PNG;
+	if (_tcsnicmp(ext,_T("png"), 3) == 0) return CXIMAGE_FORMAT_PNG;
 #endif
 #if CXIMAGE_SUPPORT_ICO
 	if (_tcsnicmp(ext,_T("ico"),3)==0 ||
@@ -335,8 +362,9 @@ uint32_t CxImage::GetTypeIdFromName(const char* ext)
 	if (_tcsnicmp(ext,_T("wbm"),3)==0 )		return CXIMAGE_FORMAT_WBMP;
 #endif
 #if CXIMAGE_SUPPORT_WMF
-	if (_tcsnicmp(ext,_T("wmf"),3)==0 ||
-		_tcsnicmp(ext,_T("emf"),3)==0 )		return CXIMAGE_FORMAT_WMF;
+	if (_tcsnicmp(ext,_T("wmf"), 3) == 0 ||
+		_tcsnicmp(ext,_T("emf"), 3) == 0)
+		return CXIMAGE_FORMAT_WMF;
 #endif
 #if CXIMAGE_SUPPORT_JP2
 	if (_tcsnicmp(ext,_T("jp2"),3)==0 ||
@@ -358,14 +386,14 @@ uint32_t CxImage::GetTypeIdFromName(const char* ext)
 		_tcsnicmp(ext,_T("ppm"),3)==0 )		return CXIMAGE_FORMAT_PNM;
 #endif
 #if CXIMAGE_SUPPORT_JBG
-	if (_tcsnicmp(ext,_T("jbg"),3)==0 )		return CXIMAGE_FORMAT_JBG;
+	if (_tcsnicmp(ext,_T("jbg"), 3) == 0) return CXIMAGE_FORMAT_JBG;
 #endif
 #if CXIMAGE_SUPPORT_MNG
 	if (_tcsnicmp(ext,_T("mng"),3)==0 ||
 		_tcsnicmp(ext,_T("jng"),3)==0 )		return CXIMAGE_FORMAT_MNG;
 #endif
 #if CXIMAGE_SUPPORT_SKA
-	if (_tcsnicmp(ext,_T("ska"),3)==0 )		return CXIMAGE_FORMAT_SKA;
+	if (_tcsnicmp(ext,_T("ska"), 3) == 0) return CXIMAGE_FORMAT_SKA;
 #endif
 #if CXIMAGE_SUPPORT_PSD
 	if (_tcsnicmp(ext,_T("psd"),3)==0 )		return CXIMAGE_FORMAT_PSD;
@@ -391,23 +419,27 @@ uint32_t CxImage::GetTypeIdFromName(const char* ext)
 
 	return CXIMAGE_FORMAT_UNKNOWN;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetTypeIdFromIndex(const uint32_t index)
 {
 	uint32_t n;
 
-	n=0; if (index == n) return CXIMAGE_FORMAT_UNKNOWN;
+	n = 0;
+	if (index == n) return CXIMAGE_FORMAT_UNKNOWN;
 #if CXIMAGE_SUPPORT_BMP
 	n++; if (index == n) return CXIMAGE_FORMAT_BMP;
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	n++; if (index == n) return CXIMAGE_FORMAT_GIF;
+	n++;
+	if (index == n) return CXIMAGE_FORMAT_GIF;
 #endif
 #if CXIMAGE_SUPPORT_JPG
 	n++; if (index == n) return CXIMAGE_FORMAT_JPG;
 #endif
 #if CXIMAGE_SUPPORT_PNG
-	n++; if (index == n) return CXIMAGE_FORMAT_PNG;
+	n++;
+	if (index == n) return CXIMAGE_FORMAT_PNG;
 #endif
 #if CXIMAGE_SUPPORT_ICO
 	n++; if (index == n) return CXIMAGE_FORMAT_ICO;
@@ -425,7 +457,8 @@ uint32_t CxImage::GetTypeIdFromIndex(const uint32_t index)
 	n++; if (index == n) return CXIMAGE_FORMAT_WBMP;
 #endif
 #if CXIMAGE_SUPPORT_WMF
-	n++; if (index == n) return CXIMAGE_FORMAT_WMF;
+	n++;
+	if (index == n) return CXIMAGE_FORMAT_WMF;
 #endif
 #if CXIMAGE_SUPPORT_JP2
 	n++; if (index == n) return CXIMAGE_FORMAT_JP2;
@@ -443,13 +476,15 @@ uint32_t CxImage::GetTypeIdFromIndex(const uint32_t index)
 	n++; if (index == n) return CXIMAGE_FORMAT_RAS;
 #endif
 #if CXIMAGE_SUPPORT_JBG
-	n++; if (index == n) return CXIMAGE_FORMAT_JBG;
+	n++;
+	if (index == n) return CXIMAGE_FORMAT_JBG;
 #endif
 #if CXIMAGE_SUPPORT_MNG
 	n++; if (index == n) return CXIMAGE_FORMAT_MNG;
 #endif
 #if CXIMAGE_SUPPORT_SKA
-	n++; if (index == n) return CXIMAGE_FORMAT_SKA;
+	n++;
+	if (index == n) return CXIMAGE_FORMAT_SKA;
 #endif
 #if CXIMAGE_SUPPORT_RAW
 	n++; if (index == n) return CXIMAGE_FORMAT_RAW;
@@ -460,23 +495,27 @@ uint32_t CxImage::GetTypeIdFromIndex(const uint32_t index)
 
 	return CXIMAGE_FORMAT_UNKNOWN;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetTypeIndexFromId(const uint32_t id)
 {
 	uint32_t n;
 
-	n=0; if (id == CXIMAGE_FORMAT_UNKNOWN) return n;
+	n = 0;
+	if (id == CXIMAGE_FORMAT_UNKNOWN) return n;
 #if CXIMAGE_SUPPORT_BMP
 	n++; if (id == CXIMAGE_FORMAT_BMP) return n;
 #endif
 #if CXIMAGE_SUPPORT_GIF
-	n++; if (id == CXIMAGE_FORMAT_GIF) return n;
+	n++;
+	if (id == CXIMAGE_FORMAT_GIF) return n;
 #endif
 #if CXIMAGE_SUPPORT_JPG
 	n++; if (id == CXIMAGE_FORMAT_JPG) return n;
 #endif
 #if CXIMAGE_SUPPORT_PNG
-	n++; if (id == CXIMAGE_FORMAT_PNG) return n;
+	n++;
+	if (id == CXIMAGE_FORMAT_PNG) return n;
 #endif
 #if CXIMAGE_SUPPORT_ICO
 	n++; if (id == CXIMAGE_FORMAT_ICO) return n;
@@ -494,7 +533,8 @@ uint32_t CxImage::GetTypeIndexFromId(const uint32_t id)
 	n++; if (id == CXIMAGE_FORMAT_WBMP) return n;
 #endif
 #if CXIMAGE_SUPPORT_WMF
-	n++; if (id == CXIMAGE_FORMAT_WMF) return n;
+	n++;
+	if (id == CXIMAGE_FORMAT_WMF) return n;
 #endif
 #if CXIMAGE_SUPPORT_JP2
 	n++; if (id == CXIMAGE_FORMAT_JP2) return n;
@@ -512,13 +552,15 @@ uint32_t CxImage::GetTypeIndexFromId(const uint32_t id)
 	n++; if (id == CXIMAGE_FORMAT_RAS) return n;
 #endif
 #if CXIMAGE_SUPPORT_JBG
-	n++; if (id == CXIMAGE_FORMAT_JBG) return n;
+	n++;
+	if (id == CXIMAGE_FORMAT_JBG) return n;
 #endif
 #if CXIMAGE_SUPPORT_MNG
 	n++; if (id == CXIMAGE_FORMAT_MNG) return n;
 #endif
 #if CXIMAGE_SUPPORT_SKA
-	n++; if (id == CXIMAGE_FORMAT_SKA) return n;
+	n++;
+	if (id == CXIMAGE_FORMAT_SKA) return n;
 #endif
 #if CXIMAGE_SUPPORT_RAW
 	n++; if (id == CXIMAGE_FORMAT_RAW) return n;
@@ -529,6 +571,7 @@ uint32_t CxImage::GetTypeIndexFromId(const uint32_t id)
 
 	return 0;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return current frame delay in milliseconds. Only for GIF and MNG formats.
@@ -537,6 +580,7 @@ uint32_t CxImage::GetFrameDelay() const
 {
 	return info.dwFrameDelay;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets current frame delay. Only for GIF format.
@@ -544,20 +588,23 @@ uint32_t CxImage::GetFrameDelay() const
  */
 void CxImage::SetFrameDelay(uint32_t d)
 {
-	info.dwFrameDelay=d;
+	info.dwFrameDelay = d;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::GetOffset(int32_t *x,int32_t *y)
+void CxImage::GetOffset(int32_t* x, int32_t* y)
 {
-	*x=info.xOffset;
-	*y=info.yOffset;
+	*x = info.xOffset;
+	*y = info.yOffset;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetOffset(int32_t x,int32_t y)
+void CxImage::SetOffset(int32_t x, int32_t y)
 {
-	info.xOffset=x;
-	info.yOffset=y;
+	info.xOffset = x;
+	info.yOffset = y;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetJpegQuality, GetJpegQualityF
@@ -565,8 +612,9 @@ void CxImage::SetOffset(int32_t x,int32_t y)
  */
 uint8_t CxImage::GetJpegQuality() const
 {
-	return (uint8_t)(info.fQuality + 0.5f);
+	return static_cast<uint8_t>(info.fQuality + 0.5f);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetJpegQuality, GetJpegQuality
@@ -576,15 +624,18 @@ float CxImage::GetJpegQualityF() const
 {
 	return info.fQuality;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * quality level for JPEG and JPEG2000
  * \param q: can be from 0 to 100
  * \author [DP]; changes [Stefan Schürmans]
  */
-void CxImage::SetJpegQuality(uint8_t q){
-	info.fQuality = (float)q;
+void CxImage::SetJpegQuality(uint8_t q)
+{
+	info.fQuality = static_cast<float>(q);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * quality level for JPEG and JPEG2000
@@ -592,10 +643,12 @@ void CxImage::SetJpegQuality(uint8_t q){
  * \param q: can be from 0.0 to 100.0
  * \author [Stefan Schürmans]
  */
-void CxImage::SetJpegQualityF(float q){
-	if (q>0) info.fQuality = q;
-	else  info.fQuality = 0.0f;
+void CxImage::SetJpegQualityF(float q)
+{
+	if (q > 0) info.fQuality = q;
+	else info.fQuality = 0.0f;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetJpegScale
@@ -604,14 +657,17 @@ uint8_t CxImage::GetJpegScale() const
 {
 	return info.nJpegScale;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * scaling down during JPEG decoding valid numbers are 1, 2, 4, 8
  * \author [ignacio]
  */
-void CxImage::SetJpegScale(uint8_t q){
+void CxImage::SetJpegScale(uint8_t q)
+{
 	info.nJpegScale = q;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Used to monitor the slow loops.
@@ -622,6 +678,7 @@ int32_t CxImage::GetProgress() const
 {
 	return info.nProgress;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return the escape code.
@@ -631,6 +688,7 @@ int32_t CxImage::GetEscape() const
 {
 	return info.nEscape;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Forces the value of the internal progress variable.
@@ -641,6 +699,7 @@ void CxImage::SetProgress(int32_t p)
 {
 	info.nProgress = p;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Used to quit the slow loops or the codecs.
@@ -651,14 +710,16 @@ void CxImage::SetEscape(int32_t i)
 {
 	info.nEscape = i;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Checks if the image is correctly initializated.
  */
 bool CxImage::IsValid() const
 {
-	return pDib!=0;
+	return pDib != nullptr;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * True if the image is enabled for painting.
@@ -667,14 +728,16 @@ bool CxImage::IsEnabled() const
 {
 	return info.bEnabled;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Enables/disables the image.
  */
 void CxImage::Enable(bool enable)
 {
-	info.bEnabled=enable;
+	info.bEnabled = enable;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * This function must be used after a Decode() / Load() call.
@@ -686,6 +749,7 @@ int32_t CxImage::GetNumFrames() const
 {
 	return info.nNumFrames;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return the current selected image (zero-based index).
@@ -694,20 +758,26 @@ int32_t CxImage::GetFrame() const
 {
 	return info.nFrame;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets the image number that the next Decode() / Load() call will load
  */
-void CxImage::SetFrame(int32_t nFrame){
-	info.nFrame=nFrame;
+void CxImage::SetFrame(int32_t nFrame)
+{
+	info.nFrame = nFrame;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets the method for drawing the frame related to others
  * \sa GetDisposalMethod
  */
 void CxImage::SetDisposalMethod(uint8_t dm)
-{	info.dispmeth=dm; }
+{
+	info.dispmeth = dm;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Gets the method for drawing the frame related to others
@@ -723,35 +793,47 @@ void CxImage::SetDisposalMethod(uint8_t dm)
  *             4-7 -    To be defined.
  */
 uint8_t CxImage::GetDisposalMethod() const
-{	return info.dispmeth; }
+{
+	return info.dispmeth;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::GetRetreiveAllFrames() const
-{	return info.bGetAllFrames; }
+{
+	return info.bGetAllFrames;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::SetRetreiveAllFrames(bool flag)
-{	info.bGetAllFrames = flag; }
-////////////////////////////////////////////////////////////////////////////////
-CxImage * CxImage::GetFrame(int32_t nFrame) const
 {
-	if ( ppFrames == NULL) return NULL;
-	if ( info.nNumFrames == 0) return NULL;
-	if ( nFrame >= info.nNumFrames ) return NULL;
-	if ( nFrame < 0) nFrame = info.nNumFrames - 1;
+	info.bGetAllFrames = flag;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CxImage* CxImage::GetFrame(int32_t nFrame) const
+{
+	if (ppFrames == nullptr) return nullptr;
+	if (info.nNumFrames == 0) return nullptr;
+	if (nFrame >= info.nNumFrames) return nullptr;
+	if (nFrame < 0) nFrame = info.nNumFrames - 1;
 	return ppFrames[nFrame];
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 int16_t CxImage::m_ntohs(const int16_t word)
 {
 	if (info.bLittleEndianHost) return word;
-	return ( (word & 0xff) << 8 ) | ( (word >> 8) & 0xff );
+	return ((word & 0xff) << 8) | ((word >> 8) & 0xff);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 int32_t CxImage::m_ntohl(const int32_t dword)
 {
 	if (info.bLittleEndianHost) return dword;
-	return  ((dword & 0xff) << 24 ) | ((dword & 0xff00) << 8 ) |
-			((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
+	return ((dword & 0xff) << 24) | ((dword & 0xff00) << 8) |
+		((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::bihtoh(BITMAPINFOHEADER* bih)
 {
@@ -767,6 +849,7 @@ void CxImage::bihtoh(BITMAPINFOHEADER* bih)
 	bih->biClrUsed = m_ntohl(bih->biClrUsed);
 	bih->biClrImportant = m_ntohl(bih->biClrImportant);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns the last reported error.
@@ -775,6 +858,7 @@ const char* CxImage::GetLastError()
 {
 	return info.szLastError;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::DumpSize()
 {
@@ -782,9 +866,11 @@ uint32_t CxImage::DumpSize()
 	n = sizeof(BITMAPINFOHEADER) + sizeof(CXIMAGEINFO) + GetSize();
 
 #if CXIMAGE_SUPPORT_ALPHA
-	if (pAlpha){
+	if (pAlpha)
+	{
 		n += 1 + head.biWidth * head.biHeight;
-	} else n++;
+	}
+	else n++;
 #endif
 
 #if CXIMAGE_SUPPORT_SELECTION
@@ -803,36 +889,44 @@ uint32_t CxImage::DumpSize()
 	} else n++;
 #endif
 
-	if (ppFrames){
-		for (int32_t m=0; m<GetNumFrames(); m++){
-			if (GetFrame(m)){
+	if (ppFrames)
+	{
+		for (int32_t m = 0; m < GetNumFrames(); m++)
+		{
+			if (GetFrame(m))
+			{
 				n += 1 + GetFrame(m)->DumpSize();
 			}
 		}
-	} else n++;
+	}
+	else n++;
 
 	return n;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t CxImage::Dump(uint8_t * dst)
+uint32_t CxImage::Dump(uint8_t* dst)
 {
 	if (!dst) return 0;
 
-	memcpy(dst,&head,sizeof(BITMAPINFOHEADER));
+	memcpy(dst, &head, sizeof(BITMAPINFOHEADER));
 	dst += sizeof(BITMAPINFOHEADER);
 
-	memcpy(dst,&info,sizeof(CXIMAGEINFO));
+	memcpy(dst, &info, sizeof(CXIMAGEINFO));
 	dst += sizeof(CXIMAGEINFO);
 
-	memcpy(dst,pDib,GetSize());
+	memcpy(dst, pDib, GetSize());
 	dst += GetSize();
 
 #if CXIMAGE_SUPPORT_ALPHA
-	if (pAlpha){
+	if (pAlpha)
+	{
 		memset(dst++, 1, 1);
-		memcpy(dst,pAlpha,head.biWidth * head.biHeight);
+		memcpy(dst, pAlpha, head.biWidth * head.biHeight);
 		dst += head.biWidth * head.biHeight;
-	} else {
+	}
+	else
+	{
 		memset(dst++, 0, 1);
 	}
 #endif
@@ -860,21 +954,27 @@ uint32_t CxImage::Dump(uint8_t * dst)
 	}
 #endif
 
-	if (ppFrames){
+	if (ppFrames)
+	{
 		memset(dst++, 1, 1);
-		for (int32_t m=0; m<GetNumFrames(); m++){
-			if (GetFrame(m)){
+		for (int32_t m = 0; m < GetNumFrames(); m++)
+		{
+			if (GetFrame(m))
+			{
 				dst += GetFrame(m)->Dump(dst);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		memset(dst++, 0, 1);
 	}
 
 	return DumpSize();
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t CxImage::UnDump(const uint8_t * src)
+uint32_t CxImage::UnDump(const uint8_t* src)
 {
 	if (!src)
 		return 0;
@@ -885,21 +985,23 @@ uint32_t CxImage::UnDump(const uint8_t * src)
 
 	uint32_t n = 0;
 
-	memcpy(&head,src,sizeof(BITMAPINFOHEADER));
+	memcpy(&head, src, sizeof(BITMAPINFOHEADER));
 	n += sizeof(BITMAPINFOHEADER);
 
-	memcpy(&info,&src[n],sizeof(CXIMAGEINFO));
+	memcpy(&info, &src[n], sizeof(CXIMAGEINFO));
 	n += sizeof(CXIMAGEINFO);
 
 	if (!Create(head.biWidth, head.biHeight, head.biBitCount, info.dwType))
 		return 0;
 
-	memcpy(pDib,&src[n],GetSize());
+	memcpy(pDib, &src[n], GetSize());
 	n += GetSize();
 
 #if CXIMAGE_SUPPORT_ALPHA
-	if (src[n++]){
-		if (AlphaCreate()){
+	if (src[n++])
+	{
+		if (AlphaCreate())
+		{
 			memcpy(pAlpha, &src[n], head.biWidth * head.biHeight);
 		}
 		n += head.biWidth * head.biHeight;
@@ -927,9 +1029,11 @@ uint32_t CxImage::UnDump(const uint8_t * src)
 	}
 #endif
 
-	if (src[n++]){
+	if (src[n++])
+	{
 		ppFrames = new CxImage*[info.nNumFrames];
-		for (int32_t m=0; m<GetNumFrames(); m++){
+		for (int32_t m = 0; m < GetNumFrames(); m++)
+		{
 			ppFrames[m] = new CxImage();
 			n += ppFrames[m]->UnDump(&src[n]);
 		}
@@ -937,6 +1041,7 @@ uint32_t CxImage::UnDump(const uint8_t * src)
 
 	return n;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \return A.BBCCCDDDD
@@ -949,10 +1054,12 @@ const float CxImage::GetVersionNumber()
 {
 	return 7.000010000f;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 const char* CxImage::GetVersion()
 {
 	static const char CxImageVersion[] = _T("CxImage 7.0.1");
 	return (CxImageVersion);
 }
+
 ////////////////////////////////////////////////////////////////////////////////

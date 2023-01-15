@@ -73,4 +73,3 @@ public:
 	virtual char* GetS(char* string, int32_t n) = 0;
 	virtual int32_t Scanf(const char* format, void* output) = 0;
 };
-

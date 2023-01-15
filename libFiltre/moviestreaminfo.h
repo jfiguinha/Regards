@@ -39,33 +39,31 @@ struct AVRational;
 
 namespace ffmpegthumbnailer
 {
-
 	struct VideoFrame;
 
 	class MovieStreamInfo
 	{
 	public:
 		MovieStreamInfo(const std::string& filename, AVFormatContext* pavContext = nullptr);
-		~MovieStreamInfo();  
-		vector<CStreamInfo>	GetListStreamInfo();
+		~MovieStreamInfo();
+		vector<CStreamInfo> GetListStreamInfo();
+
 	private:
 		void initializeVideo();
 		void initialize(const std::string& filename);
 		void destroy();
-		int check_stream_specifier(AVFormatContext *s, AVStream *st, const char *spec);
-		AVDictionary * filter_codec_opts(AVDictionary *opts, enum AVCodecID codec_id,
-                                AVFormatContext *s, AVStream *st, AVCodec *codec);
-		AVDictionary ** setup_find_stream_info_opts(AVFormatContext *s, AVDictionary *codec_opts);
-		int                     m_VideoStream;
-		AVFormatContext*        m_pFormatContext;
-		AVCodecContext*         m_pVideoCodecContext;
+		int check_stream_specifier(AVFormatContext* s, AVStream* st, const char* spec);
+		AVDictionary* filter_codec_opts(AVDictionary* opts, enum AVCodecID codec_id,
+		                                AVFormatContext* s, AVStream* st, AVCodec* codec);
+		AVDictionary** setup_find_stream_info_opts(AVFormatContext* s, AVDictionary* codec_opts);
+		int m_VideoStream;
+		AVFormatContext* m_pFormatContext;
+		AVCodecContext* m_pVideoCodecContext;
 		//AVCodec*                m_pVideoCodec;
 		//AVStream*               m_pVideoStream;
-		bool                    m_FormatContextWasGiven;
-		vector<CStreamInfo>		listStream;
+		bool m_FormatContextWasGiven;
+		vector<CStreamInfo> listStream;
 	};
-
 }
 
 #endif
-

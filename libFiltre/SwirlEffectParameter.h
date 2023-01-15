@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CSwirlEffectParameter : public CEffectParameter
 {
 public:
@@ -10,11 +11,13 @@ public:
 		bitmapHeight = 0;
 		angle = 20;
 	};
-	~CSwirlEffectParameter() override {};
+
+	~CSwirlEffectParameter() override
+	{
+	};
 
 	int radius;
 	int angle;
 	int bitmapWidth;
 	int bitmapHeight;
 };
-

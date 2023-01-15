@@ -6,6 +6,7 @@
 #include "SqlResult.h"
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
+
 CSqlPhotosWithoutThumbnail::CSqlPhotosWithoutThumbnail()
 	: CSqlExecuteRequest(L"RegardsDB")
 {
@@ -16,61 +17,67 @@ CSqlPhotosWithoutThumbnail::CSqlPhotosWithoutThumbnail()
 
 CSqlPhotosWithoutThumbnail::~CSqlPhotosWithoutThumbnail()
 {
-
 }
 
 void CSqlPhotosWithoutThumbnail::GeneratePhotoList()
 {
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL");
-	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOSSEARCHCRITERIA WHERE FullPath not in ( SELECT FullPath From PHOTOSTHUMBNAIL) ORDER BY CreateDate desc, GeoGps");
-	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 FROM VIDEOTHUMBNAIL WHERE FullPath in (select FullPath from PHOTOS where MultiFiles = 1)  GROUP BY fullpath HAVING COUNT(*) < 20");
+	ExecuteRequestWithNoResult(
+		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOSSEARCHCRITERIA WHERE FullPath not in ( SELECT FullPath From PHOTOSTHUMBNAIL) ORDER BY CreateDate desc, GeoGps");
+	ExecuteRequestWithNoResult(
+		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 FROM VIDEOTHUMBNAIL WHERE FullPath in (select FullPath from PHOTOS where MultiFiles = 1)  GROUP BY fullpath HAVING COUNT(*) < 20");
 
-    //UpdateVideoList();
+	//UpdateVideoList();
 }
 
 void CSqlPhotosWithoutThumbnail::UpdateVideoList()
 {
-    PhotosVector photosVector;
-    CSqlFindPhotos findPhotos;
-    findPhotos.GetAllVideo(&photosVector);
-   
-    
-   // for(CPhotos photo : photosVector)
+	PhotosVector photosVector;
+	CSqlFindPhotos findPhotos;
+	findPhotos.GetAllVideo(&photosVector);
 
-	tbb::parallel_for(0, (int)photosVector.size(), 1, [=](int i)
+
+	// for(CPhotos photo : photosVector)
+
+	tbb::parallel_for(0, static_cast<int>(photosVector.size()), 1, [=](int i)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		CLibPicture libPicture;
+		CPhotos photo = photosVector[i];
+		if (libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.
+			TestIsAnimation(photo.GetPath()))
 		{
-			CSqlThumbnailVideo sqlThumbnailVideo;
-			CLibPicture libPicture;
-			CPhotos photo = photosVector[i];
-			if (libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
+			if (sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
 			{
-				if (sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
-				{
-					wxString fullpath = photo.GetPath();
-					fullpath.Replace("'", "''");
-					if (!IsPathFind(photo.GetPath()))
-						ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath + "', 1, 0)");
-				}
+				wxString fullpath = photo.GetPath();
+				fullpath.Replace("'", "''");
+				if (!IsPathFind(photo.GetPath()))
+					ExecuteRequestWithNoResult(
+						"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath +
+						"', 1, 0)");
 			}
-		});
+		}
+	});
 }
 
 void CSqlPhotosWithoutThumbnail::UpdatePhotoList()
 {
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT FullPath From PHOTOSTHUMBNAIL)");
-    ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
-    //ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOS where (ExtensionId >= 100 or ExtensionId in (5,) and FullPath not in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
-    //UpdateVideoList();
+	ExecuteRequestWithNoResult(
+		"DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT FullPath From PHOTOSTHUMBNAIL)");
+	ExecuteRequestWithNoResult(
+		"DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
+	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOS where (ExtensionId >= 100 or ExtensionId in (5,) and FullPath not in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
+	//UpdateVideoList();
 }
 
-void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString> * photoList)
+void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList)
 {
 	this->photoList = photoList;
 	typeResult = 0;
 	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0");
 }
 
-bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString & photo)
+bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString& photo)
 {
 	typeResult = 3;
 	fullpath = "";
@@ -82,32 +89,32 @@ bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString & photo)
 	return false;
 }
 
-void CSqlPhotosWithoutThumbnail::InsertPhotoPriority(const wxString & photoPath)
+void CSqlPhotosWithoutThumbnail::InsertPhotoPriority(const wxString& photoPath)
 {
 	wxString filename = photoPath;
 	filename.Replace("'", "''");
 	typeResult = 1;
 	//ExecuteRequest("SELECT distinct Priority from PHOTOSWIHOUTTHUMBNAIL ORDER BY Priority desc LIMIT 1");
 	//priority++;
-	ExecuteRequestWithNoResult("UPDATE PHOTOSWIHOUTTHUMBNAIL SET Priority = " + to_string(priority) + " WHERE FullPath = '" + filename + "'");
+	ExecuteRequestWithNoResult(
+		"UPDATE PHOTOSWIHOUTTHUMBNAIL SET Priority = " + to_string(priority) + " WHERE FullPath = '" + filename + "'");
 }
 
-void CSqlPhotosWithoutThumbnail::InsertProcessStart(const wxString & photoPath)
+void CSqlPhotosWithoutThumbnail::InsertProcessStart(const wxString& photoPath)
 {
 	wxString filename = photoPath;
 	filename.Replace("'", "''");
-	
+
 	ExecuteRequestWithNoResult("UPDATE PHOTOSWIHOUTTHUMBNAIL SET ProcessStart = 1 WHERE FullPath = '" + filename + "'");
 }
-	
-int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult * sqlResult)
+
+int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
 		if (typeResult == 0)
 		{
-
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)

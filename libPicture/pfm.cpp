@@ -150,7 +150,6 @@ cv::Mat CPfm::ReadFilePFM(const wxString& path, const bool& thumbnail)
 
 				if (thumbnail)
 				{
-					
 					image.at<float>(pos + 0) = vfvalue[0];
 					image.at<float>(pos + 1) = vfvalue[1];
 					image.at<float>(pos + 2) = vfvalue[2];
@@ -173,7 +172,7 @@ cv::Mat CPfm::ReadFilePFM(const wxString& path, const bool& thumbnail)
 	return image;
 }
 
-int CPfm::WriteFilePFM(const cv::Mat & image, const wxString& path, float scalef)
+int CPfm::WriteFilePFM(const cv::Mat& image, const wxString& path, float scalef)
 {
 	if (!image.empty())
 	{

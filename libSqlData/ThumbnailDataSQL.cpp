@@ -22,9 +22,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
 		isVideo = true;
-		
 	}
-
 }
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)
@@ -73,13 +71,13 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
 	}
-    
-    if (numFrame >= nbFrame)
-		numFrame = 0;
-        
-    //numFrame = max(numFrame, 0);
 
-	
+	if (numFrame >= nbFrame)
+		numFrame = 0;
+
+	//numFrame = max(numFrame, 0);
+
+
 	if (numFrame == 0 && nbFrame == 0)
 	{
 		CSqlThumbnail sqlThumbnail;
@@ -92,17 +90,16 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		{
 			if (libPicture.TestIsVideo(filename) && videoCapture == nullptr)
 			{
-				if(useOpenCV)
+				if (useOpenCV)
 					videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
 				else
-					videoCapture = new CVideoPlayer(filename,false);
+					videoCapture = new CVideoPlayer(filename, false);
 				//fps = videoCapture->get(cv::CAP_PROP_FPS);
 			}
 
-            bool grabbed = false;
-			if(videoCapture != nullptr && videoCapture->IsOk())
+			bool grabbed = false;
+			if (videoCapture != nullptr && videoCapture->IsOk())
 			{
-				
 				if (oldnumFrame != numFrame)
 				{
 					if (useOpenCV)
@@ -120,7 +117,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						{
 							int w = cvImg.cols;
 							int h = cvImg.rows;
-							cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+							cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
 							frameOut = wxImage(w, h, cvImg.data, true);
 							oldnumFrame = numFrame;
 						}
@@ -160,21 +157,21 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						}
 					}
 				}
-                else
-                    grabbed = true;
+				else
+					grabbed = true;
 			}
-			
-            if(!grabbed)
+
+			if (!grabbed)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
 				if (!frameOut.IsOk())
 				{
-                    frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
-                }
-                
-                if (!frameOut.IsOk())
-                {
+					frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
+				}
+
+				if (!frameOut.IsOk())
+				{
 					numFrame = 0;
 #ifdef WIN32
 					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
@@ -182,7 +179,6 @@ wxImage CThumbnailDataSQL::GetwxImage()
 					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
 #endif
 					frameOut.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
-
 				}
 			}
 		}

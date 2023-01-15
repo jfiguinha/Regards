@@ -6,13 +6,11 @@
 CThumbnailDataStorage::CThumbnailDataStorage(const wxString& filename)
 	: CThumbnailData(filename)
 {
-
 }
 
 
 CThumbnailDataStorage::~CThumbnailDataStorage(void)
 {
-
 }
 
 bool CThumbnailDataStorage::TestBitmap()
@@ -20,8 +18,8 @@ bool CThumbnailDataStorage::TestBitmap()
 	return localbitmap.IsOk();
 }
 
-void CThumbnailDataStorage::RemoveBitmap() {
-
+void CThumbnailDataStorage::RemoveBitmap()
+{
 }
 
 wxImage CThumbnailDataStorage::GetwxImage()

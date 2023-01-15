@@ -12,13 +12,11 @@ namespace Regards
 		public:
 			CSqlFindDay();
 			~CSqlFindDay() override;
-			bool SearchUniqueCriteria(vector<wxString> * dayVector, const wxString &month, const wxString &year);
+			bool SearchUniqueCriteria(vector<wxString>* dayVector, const wxString& month, const wxString& year);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
-			vector<wxString> * dayVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			vector<wxString>* dayVector;
 		};
 	}
 }
-

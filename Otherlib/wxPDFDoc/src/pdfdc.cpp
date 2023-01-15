@@ -12,7 +12,7 @@
 // For compilers that support precompilation, includes <wx/wx.h>.
 #include <header.h>
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(2, 9, 0)
 // Implementation of wxPdfDC for wxWidgets 2.9.x (and above)
 #include "pdfdc29.inc"
 #else

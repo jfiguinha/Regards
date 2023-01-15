@@ -1,6 +1,6 @@
-
 #pragma once
 #include "EffectParameter.h"
+
 class CMosaicEffectParameter : public CEffectParameter
 {
 public:
@@ -8,8 +8,10 @@ public:
 	{
 		size = 5;
 	};
-	~CMosaicEffectParameter() override {};
+
+	~CMosaicEffectParameter() override
+	{
+	};
 
 	int size;
 };
-

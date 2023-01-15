@@ -10,7 +10,7 @@ namespace Regards
 		public:
 			CWaveFilter();
 			~CWaveFilter();
-			void ProcessEffect(cv::Mat & image, int x, int y, short height, int radius, int scale);
+			void ProcessEffect(cv::Mat& image, int x, int y, short height, int radius, int scale);
 
 		private:
 			void WaterEffect(cv::Mat& image);

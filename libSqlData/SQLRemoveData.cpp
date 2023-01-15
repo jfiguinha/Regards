@@ -26,7 +26,7 @@ CSQLRemoveData::~CSQLRemoveData()
 ////////////////////////////////////////////////////////////////////
 //Suppression de toutes les données d'un catalog
 ////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
+bool CSQLRemoveData::DeleteCatalog(const int& numCatalog)
 {
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseThumbnail();
@@ -60,7 +60,7 @@ bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
 
 	CSqlPhotoCategorieUsenet photoCategorie;
 	photoCategorie.DeletePhotoProcessingDatabase();
-	return 0;
+	return false;
 }
 
 bool CSQLRemoveData::DeleteFaceDatabase()
@@ -75,27 +75,27 @@ bool CSQLRemoveData::DeleteFaceDatabase()
 	CSqlFaceLabel sqlFaceLabel;
 	sqlFaceLabel.DeleteFaceLabelDatabase();
 
-	return 0;
+	return false;
 }
 
 
 ////////////////////////////////////////////////////////////////////
 //Suppression de toutes les données d'un répertoire
 ////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteFolder(const int &numFolder)
+bool CSQLRemoveData::DeleteFolder(const int& numFolder)
 {
 	vector<wxString> listPhoto;
 	CSqlExecuteRequest::BeginTransaction();
-	
+
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseFolderThumbnail(numFolder);
 
 	CSqlThumbnailVideo sqlThumbnailVideo;
 	sqlThumbnailVideo.EraseFolderThumbnail(numFolder);
-	   
+
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	sqlPhotoCriteria.DeleteFolderCriteria(numFolder);
-	   	
+
 	//Suppression des répertoires du catalog
 	CSqlFolderCatalog sqlFolderCatalog;
 	sqlFolderCatalog.DeleteFolder(numFolder);
@@ -114,35 +114,33 @@ bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 
 
 	CSqlPhotoCategorieUsenet photoCategorie;
-	for(wxString photoPath : listPhoto)
+	for (wxString photoPath : listPhoto)
 		photoCategorie.DeletePhotoProcessing(photoPath);
 
 	CSqlExecuteRequest::CommitTransection();
-	return 0;
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////
 //Suppression de toutes les données d'un répertoire
 ////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVector * criteriaVector)
+bool CSQLRemoveData::DeleteListPhoto(const vector<int>& listPhoto, CriteriaVector* criteriaVector)
 {
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	CSqlPhotos sqlPhoto;
 	CSqlFindCriteria sqlFindCriteria;
 	CSqlCriteria sqlCriteria;
-    CSqlThumbnail sqlThumbnail;
-    CSqlThumbnailVideo sqlThumbnailVideo;
+	CSqlThumbnail sqlThumbnail;
+	CSqlThumbnailVideo sqlThumbnailVideo;
 	CSqlFacePhoto sqlFacePhoto;
-	
-	
+
 
 	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
 
 	for (auto photo : listPhoto)
 	{
-		
-		sqlThumbnail.DeleteThumbnail(photo );
-        sqlThumbnailVideo.DeleteThumbnail(photo);
+		sqlThumbnail.DeleteThumbnail(photo);
+		sqlThumbnailVideo.DeleteThumbnail(photo);
 
 
 		//Suppression des critères des photos		
@@ -150,7 +148,6 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVecto
 
 		//Suppression des photos du catalog
 		sqlPhoto.DeletePhoto(photo);
-
 	}
 
 	sqlFindCriteria.SearchCriteriaAlone(criteriaVector);
@@ -158,14 +155,14 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVecto
 	sqlCriteria.DeleteCriteriaAlone();
 
 
-	return 0;
+	return false;
 }
 
 
 ////////////////////////////////////////////////////////////////////
 //Suppression de toutes les données d'un répertoire
 ////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeletePhoto(const int & idPhoto)
+bool CSQLRemoveData::DeletePhoto(const int& idPhoto)
 {
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	CSqlPhotos sqlPhoto;
@@ -186,6 +183,6 @@ bool CSQLRemoveData::DeletePhoto(const int & idPhoto)
 	sqlCriteria.DeleteCriteriaAlone();
 
 	sqlThumbnail.DeleteThumbnail(idPhoto);
-	
-	return 0;
+
+	return false;
 }

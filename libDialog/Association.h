@@ -2,11 +2,11 @@
 #ifdef WIN32
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(TiffOption)
-	#include <wx/checklst.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(TiffOption)
+#include <wx/checklst.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(TiffOption)
 //*)
@@ -41,7 +41,7 @@ private:
 	void associate_application(HKEY classesDefined);
 	//*)
 	bool isOk;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

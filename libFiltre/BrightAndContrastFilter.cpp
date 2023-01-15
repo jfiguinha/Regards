@@ -19,94 +19,100 @@ using namespace Regards::Filter;
 
 CBrightAndContrastFilter::CBrightAndContrastFilter()
 {
-    libelleEffectContrast = CLibResource::LoadStringFromResource(L"LBLEFFECTCONTRAST",1);
-    libelleEffectLightness = CLibResource::LoadStringFromResource(L"LBLEFFECTBRIGHTNESS",1);
+	libelleEffectContrast = CLibResource::LoadStringFromResource(L"LBLEFFECTCONTRAST", 1);
+	libelleEffectLightness = CLibResource::LoadStringFromResource(L"LBLEFFECTBRIGHTNESS", 1);
 }
 
 CBrightAndContrastFilter::~CBrightAndContrastFilter()
 {
-    
 }
 
 int CBrightAndContrastFilter::TypeApplyFilter()
 {
-    return 2;
+	return 2;
 }
 
 wxString CBrightAndContrastFilter::GetFilterLabel()
 {
-    return CLibResource::LoadStringFromResource("LBLfilterLight", 1);
+	return CLibResource::LoadStringFromResource("LBLfilterLight", 1);
 }
 
 int CBrightAndContrastFilter::GetNameFilter()
 {
-    return IDM_IMAGE_LIGHTCONTRAST;
+	return IDM_IMAGE_LIGHTCONTRAST;
 }
 
 int CBrightAndContrastFilter::GetTypeFilter()
 {
-    return COLOR_EFFECT; //return IDM_IMAGE_LIGHTCONTRAST;
+	return COLOR_EFFECT; //return IDM_IMAGE_LIGHTCONTRAST;
 }
 
-void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CBrightAndContrastFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                      IFiltreEffectInterface* filtreInterface)
 {
-    CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-    this->filename = filename;
+	auto BrightAndContrastEffectParameter = static_cast<CBrightAndContrastEffectParameter*>(effectParameter);
+	this->filename = filename;
 	this->source = source;
 
 	vector<int> elementContrast;
 	for (int i = 0; i < 200; i++)
 		elementContrast.push_back(i);
 
-    vector<int> elementColor;
-    for (int i = -100; i < 101; i++)
-        elementColor.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectContrast,new CTreeElementValueInt(BrightAndContrastEffectParameter->contrast), &elementContrast);
-    filtreInterface->AddTreeInfos(libelleEffectLightness,new CTreeElementValueInt(BrightAndContrastEffectParameter->brightness), &elementColor);
+	vector<int> elementColor;
+	for (int i = -100; i < 101; i++)
+		elementColor.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectContrast,
+	                              new CTreeElementValueInt(BrightAndContrastEffectParameter->contrast),
+	                              &elementContrast);
+	filtreInterface->AddTreeInfos(libelleEffectLightness,
+	                              new CTreeElementValueInt(BrightAndContrastEffectParameter->brightness),
+	                              &elementColor);
 }
 
-void CBrightAndContrastFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CBrightAndContrastFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                                 const wxString& key)
 {
-    CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-    //Video Parameter
-	CTreeElementValueInt * value = (CTreeElementValueInt *)valueData;
+	auto BrightAndContrastEffectParameter = static_cast<CBrightAndContrastEffectParameter*>(effectParameter);
+	//Video Parameter
+	auto value = static_cast<CTreeElementValueInt*>(valueData);
 
-    if (key == libelleEffectContrast)
-    {
-        BrightAndContrastEffectParameter->contrast = value->GetValue();
-    }
-    else if (key == libelleEffectLightness)
-    {
-        BrightAndContrastEffectParameter->brightness = value->GetValue();
-    }
+	if (key == libelleEffectContrast)
+	{
+		BrightAndContrastEffectParameter->contrast = value->GetValue();
+	}
+	else if (key == libelleEffectLightness)
+	{
+		BrightAndContrastEffectParameter->brightness = value->GetValue();
+	}
 }
 
-void CBrightAndContrastFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+void CBrightAndContrastFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+                                            const bool& preview)
 {
-    if (effectParameter != nullptr && filtreEffet != nullptr)
-    {
-        CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
-        filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
-    }
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		auto brightAndContrast = static_cast<CBrightAndContrastEffectParameter*>(effectParameter);
+		filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
+	}
 }
 
 bool CBrightAndContrastFilter::NeedPreview()
 {
-    return true;
+	return true;
 }
 
 CEffectParameter* CBrightAndContrastFilter::GetEffectPointer()
 {
-    return new CBrightAndContrastEffectParameter();
+	return new CBrightAndContrastEffectParameter();
 }
 
 CEffectParameter* CBrightAndContrastFilter::GetDefaultEffectParameter()
 {
-    CBrightAndContrastEffectParameter* brightness = new CBrightAndContrastEffectParameter();
-    brightness->brightness = 20;
-    brightness->contrast = 20;
-    return brightness;
+	auto brightness = new CBrightAndContrastEffectParameter();
+	brightness->brightness = 20;
+	brightness->contrast = 20;
+	return brightness;
 }
 
 
@@ -116,23 +122,25 @@ bool CBrightAndContrastFilter::IsSourcePreview()
 }
 
 
-void CBrightAndContrastFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CBrightAndContrastFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                        CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
+		auto brightAndContrast = static_cast<CBrightAndContrastEffectParameter*>(effectParameter);
 		filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
 	}
-
 }
 
 
-void CBrightAndContrastFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CBrightAndContrastFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                  CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                                  int& heightOutput)
 {
-
 }
 
-CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* effectParameter,
+                                                           IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
@@ -142,10 +150,10 @@ CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* eff
 		{
 			CImageLoadingFormat image;
 			image.SetPicture(source);
-            image.RotateExif(orientation);
+			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
-			CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
+
+			auto brightAndContrast = static_cast<CBrightAndContrastEffectParameter*>(effectParameter);
 			filter->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);

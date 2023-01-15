@@ -19,19 +19,19 @@ CDecodeRawPicture::CDecodeRawPicture(const string& fileName)
 	localData = new CLocalData();
 	rawProcessor = new LibRaw();
 	result = rawProcessor->open_file(fileName.c_str());
-	if(result == LIBRAW_SUCCESS)
+	if (result == LIBRAW_SUCCESS)
 	{
 		// step two: positioning libraw_internal_data.unpacker_data.data_offset
 		result = rawProcessor->unpack();
 	}
-	
+
 	memcpy(&localData->params, &rawProcessor->imgdata.params, sizeof(rawProcessor->imgdata.params));
 }
 
 
 CDecodeRawPicture::~CDecodeRawPicture()
 {
-	if(rawProcessor != nullptr)
+	if (rawProcessor != nullptr)
 	{
 		rawProcessor->recycle();
 		delete rawProcessor;
@@ -42,9 +42,9 @@ CDecodeRawPicture::~CDecodeRawPicture()
 }
 
 
-CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * decodeRawParameter)
+CImageLoadingFormat* CDecodeRawPicture::DecodePicture(CDecodeRawParameter* decodeRawParameter)
 {
-	if(decodeRawParameter != nullptr)
+	if (decodeRawParameter != nullptr)
 	{
 		rawProcessor->imgdata.params.bright = decodeRawParameter->bright;
 		rawProcessor->imgdata.params.highlight = decodeRawParameter->highlight;
@@ -108,34 +108,33 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 	}
 	else
 	{
-		memcpy(&rawProcessor->imgdata.params, &localData->params,  sizeof(rawProcessor->imgdata.params));
+		memcpy(&rawProcessor->imgdata.params, &localData->params, sizeof(rawProcessor->imgdata.params));
 	}
 	//rawProcessor->imgdata.params.user_flip = 2;
 	//rawProcessor->imgdata.params.use_rawspeed = 1;
-	
+
 	try
 	{
 		result = rawProcessor->dcraw_process();
 	}
 	catch (...)
 	{
-
 	}
 
 	int width = 0;
 	int height = 0;
 
 
-	CImageLoadingFormat * imageLoadingFormat = nullptr;
-	CxImage * image = new CxImage();
-	if(result == 0)
+	CImageLoadingFormat* imageLoadingFormat = nullptr;
+	auto image = new CxImage();
+	if (result == 0)
 	{
 		imageLoadingFormat = new CImageLoadingFormat();
 		int raw_color, raw_bitsize;
 		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
-		image->Create(width,height,raw_bitsize*raw_color);
+		image->Create(width, height, raw_bitsize * raw_color);
 
-		int iTaille = raw_color * (raw_bitsize/8);
+		int iTaille = raw_color * (raw_bitsize / 8);
 		int stride = ((iTaille * width + iTaille) & ~iTaille);
 		//rawProcessor->copy_mem_image(image->GetBits(), width * raw_color * (raw_bitsize/8), 1);
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);

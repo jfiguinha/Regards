@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(JxrOption, wxDialog)
-	//(*EventTable(JxrOption)
-	//*)
+		//(*EventTable(JxrOption)
+		//*)
 END_EVENT_TABLE()
 
 JxrOption::JxrOption(wxWindow* parent)

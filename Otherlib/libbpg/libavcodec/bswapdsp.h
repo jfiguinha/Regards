@@ -21,12 +21,13 @@
 
 #include <stdint.h>
 
-typedef struct BswapDSPContext {
-    void (*bswap_buf)(uint32_t *dst, const uint32_t *src, int w);
-    void (*bswap16_buf)(uint16_t *dst, const uint16_t *src, int len);
+typedef struct BswapDSPContext
+{
+	void (*bswap_buf)(uint32_t* dst, const uint32_t* src, int w);
+	void (*bswap16_buf)(uint16_t* dst, const uint16_t* src, int len);
 } BswapDSPContext;
 
-void ff_bswapdsp_init(BswapDSPContext *c);
-void ff_bswapdsp_init_x86(BswapDSPContext *c);
+void ff_bswapdsp_init(BswapDSPContext* c);
+void ff_bswapdsp_init_x86(BswapDSPContext* c);
 
 #endif /* AVCODEC_BSWAP_BUF_H */

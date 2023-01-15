@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CFreeRotateEffectParameter : public CEffectParameter
 {
 public:
@@ -7,8 +8,10 @@ public:
 	{
 		angle = 0;
 	};
-	~CFreeRotateEffectParameter(){};
+
+	~CFreeRotateEffectParameter() override
+	{
+	};
 
 	int angle;
 };
-

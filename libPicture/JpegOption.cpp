@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(JpegOption, wxDialog)
-	//(*EventTable(JpegOption)
-	//*)
+		//(*EventTable(JpegOption)
+		//*)
 END_EVENT_TABLE()
 
 JpegOption::JpegOption(wxWindow* parent)

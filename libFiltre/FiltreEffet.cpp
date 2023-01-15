@@ -55,20 +55,20 @@ bool CFiltreEffet::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabili
 	return filtreEffet->StabilizeVideo(stabilization);
 }
 
-int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace)
+int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace)
 {
 	filtreEffet->BokehEffect(radius, boxsize, nbFace, listFace);
 	return 0;
 }
 
- cv::UMat CFiltreEffet::GetUMat()
- {
-     return filtreEffet->GetUMat();
- }
-
-int CFiltreEffet::LensDistortionFilter(const int &size)
+cv::UMat CFiltreEffet::GetUMat()
 {
-    filtreEffet->LensDistortionFilter(size);
+	return filtreEffet->GetUMat();
+}
+
+int CFiltreEffet::LensDistortionFilter(const int& size)
+{
+	filtreEffet->LensDistortionFilter(size);
 	return 0;
 }
 
@@ -78,13 +78,14 @@ int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
 	return 0;
 }
 
-int CFiltreEffet::BilateralFilter(const int & fSize, const int& sigmaX, const int& sigmaP)
+int CFiltreEffet::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	return filtreEffet->BilateralFilter(fSize, sigmaX, sigmaP);
 }
 
 
-int CFiltreEffet::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
+int CFiltreEffet::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize,
+                                const int& searchWindowSize)
 {
 	return filtreEffet->NlmeansFilter(h, hColor, templateWindowSize, searchWindowSize);
 }
@@ -131,12 +132,11 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CI
 		filtreEffet = new COpenCLEffect(backColor, bitmap);
 		this->numLib = LIBOPENCL;
 	}
-	
+
 	if (this->numLib == LIBCPU)
 	{
 		filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 	}
-
 }
 
 void CFiltreEffet::SetBitmap(CImageLoadingFormat* bitmap)
@@ -518,7 +518,7 @@ int CFiltreEffet::HQDn3D(const double& LumSpac, const double& ChromSpac, const d
 int CFiltreEffet::MotionBlur(const double& radius, const double& sigma, const double& angle)
 {
 	//return filtreEffet->MotionBlur(radius, sigma, angle);
-	int puissance = static_cast<int>((float)(width / 2) * ((float)sigma / 100.0f));
+	int puissance = static_cast<int>(static_cast<float>(width / 2) * (static_cast<float>(sigma) / 100.0f));
 	int value = filtreEffet->MotionBlur(radius, puissance, angle);
 	return value;
 }
@@ -613,7 +613,7 @@ int CFiltreEffet::Rotate270()
 //----------------------------------------------------------------------------
 //Fusion de deux bitmaps
 //----------------------------------------------------------------------------
-int CFiltreEffet::Fusion(cv::Mat & bitmapSecond, const float& pourcentage)
+int CFiltreEffet::Fusion(cv::Mat& bitmapSecond, const float& pourcentage)
 {
 	return filtreEffet->Fusion(bitmapSecond, pourcentage);
 }

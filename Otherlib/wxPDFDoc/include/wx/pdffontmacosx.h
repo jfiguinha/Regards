@@ -28,13 +28,13 @@
   #define wxPDFMACOSX_HAS_ATSU_TEXT wxOSX_USE_ATSU_TEXT
 #else // wxWidgets 2.8.x
   #include <wx/mac/private.h>
-  #ifndef __LP64__
+#ifndef __LP64__
     #define wxPDFMACOSX_HAS_CORE_TEXT 0
     #define wxPDFMACOSX_HAS_ATSU_TEXT 1
-  #else
+#else
     #define wxPDFMACOSX_HAS_CORE_TEXT 1
     #define wxPDFMACOSX_HAS_ATSU_TEXT 0
-  #endif
+#endif
 #endif
 
 #endif

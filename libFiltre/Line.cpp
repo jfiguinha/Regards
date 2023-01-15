@@ -2,7 +2,7 @@
 #include "Line.h"
 #include <RGBAQuad.h>
 
-CLine::CLine(const int & heightMax, const int & widthMax)
+CLine::CLine(const int& heightMax, const int& widthMax)
 {
 	this->heightMax = heightMax;
 	this->widthMax = widthMax;
@@ -17,11 +17,12 @@ CLine::~CLine()
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 ///////////////////////////////////////////////////////////////////////////////////////
-void CLine::MidpointLine(cv::Mat * bitmap, const int &xFrom, const int &yFrom, const int &xTo, const int &yTo, const CRgbaquad &m_color, const float &fAlpha, const bool &m_bAntialiasing)
+void CLine::MidpointLine(cv::Mat* bitmap, const int& xFrom, const int& yFrom, const int& xTo, const int& yTo,
+                         const CRgbaquad& m_color, const float& fAlpha, const bool& m_bAntialiasing)
 {
 	int x, y;
 
-	auto a = ((float)(yTo - yFrom) / (float)(xTo - xFrom));
+	auto a = (static_cast<float>(yTo - yFrom) / static_cast<float>(xTo - xFrom));
 	auto b = yFrom - (a * xFrom);
 
 	x = xFrom;
@@ -31,14 +32,13 @@ void CLine::MidpointLine(cv::Mat * bitmap, const int &xFrom, const int &yFrom, c
 
 	while (x < xTo)
 	{
-
 		x++;
 
 		const float fValue = a * x + b;
 
 		//Définition de l'antialiasing
 
-		y = (int)fValue;
+		y = static_cast<int>(fValue);
 
 		SetAlphaColorValue(x, y, x, y, fAlpha, m_color, bitmap);
 	}
@@ -48,10 +48,9 @@ void CLine::MidpointLine(cv::Mat * bitmap, const int &xFrom, const int &yFrom, c
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 ///////////////////////////////////////////////////////////////////////////////////////
-void CLine::SetAlphaColorValue(const int &xFrom, const int &yFrom, const int &x, const int &y, const float &fAlpha, const CRgbaquad &m_color, cv::Mat * pBitmap)
+void CLine::SetAlphaColorValue(const int& xFrom, const int& yFrom, const int& x, const int& y, const float& fAlpha,
+                               const CRgbaquad& m_color, cv::Mat* pBitmap)
 {
-	
-
 	float fDifference = 1.0f - fAlpha;
 
 	int iXMin = pBitmap->size().width - widthMax;
@@ -75,7 +74,7 @@ void CLine::SetAlphaColorValue(const int &xFrom, const int &yFrom, const int &x,
 			return;
 	}
 
-	CRgbaquad *  m_color2 = CRgbaquad::GetPtColorValue(pBitmap, xFrom, yFrom);
+	CRgbaquad* m_color2 = CRgbaquad::GetPtColorValue(pBitmap, xFrom, yFrom);
 	m_color2->SetRed(m_color.GetFRed() * fDifference + m_color2->GetFRed() * fAlpha);
 	m_color2->SetGreen(m_color.GetFGreen() * fDifference + m_color2->GetFGreen() * fAlpha);
 	m_color2->SetBlue(m_color.GetFBlue() * fDifference + m_color2->GetFBlue() * fAlpha);

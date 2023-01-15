@@ -19,7 +19,6 @@ using namespace std;
 CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme)
 	: CWindowMain("CBitmapInfos", parent, id)
 {
-	
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;
@@ -62,7 +61,7 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 		}
 	}
 
-    needToRefresh = true;
+	needToRefresh = true;
 }
 
 void CBitmapInfos::SetFilename(const wxString& libelle)

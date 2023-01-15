@@ -19,9 +19,9 @@ using namespace Regards::Filter;
 
 CBilateralFilter::CBilateralFilter()
 {
-    libelleEffectSize = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE",1);//"Effect.Size";
-	libelleEffectsigmaX= CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAX",1);//"Effect.Sigma.X";
-	libelleEffectsigmaP= CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP",1);//"Effect.Sigma.P";
+	libelleEffectSize = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
+	libelleEffectsigmaX = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAX", 1); //"Effect.Sigma.X";
+	libelleEffectsigmaP = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP", 1); //"Effect.Sigma.P";
 }
 
 int CBilateralFilter::TypeApplyFilter()
@@ -31,7 +31,6 @@ int CBilateralFilter::TypeApplyFilter()
 
 CBilateralFilter::~CBilateralFilter()
 {
-    
 }
 
 wxString CBilateralFilter::GetFilterLabel()
@@ -50,72 +49,78 @@ int CBilateralFilter::GetTypeFilter()
 	return CONVOLUTION_EFFECT; //
 }
 
-void CBilateralFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CBilateralFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                              IFiltreEffectInterface* filtreInterface)
 {
-    CBilateralEffectParameter * bilateralEffectParameter = (CBilateralEffectParameter *)effectParameter;
+	auto bilateralEffectParameter = static_cast<CBilateralEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
-    vector<int> elementColor;
-    for (auto i = 1; i < 20; i++)
+	vector<int> elementColor;
+	for (auto i = 1; i < 20; i++)
 	{
 		if (i % 2 == 1)
 			elementColor.push_back(i);
 	}
 
-    
-    filtreInterface->AddTreeInfos(libelleEffectSize,new CTreeElementValueInt(bilateralEffectParameter->fSize), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectsigmaX,new CTreeElementValueInt(bilateralEffectParameter->sigmaX), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectsigmaP,new CTreeElementValueInt(bilateralEffectParameter->sigmaP), &elementColor);
+
+	filtreInterface->AddTreeInfos(libelleEffectSize, new CTreeElementValueInt(bilateralEffectParameter->fSize),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectsigmaX, new CTreeElementValueInt(bilateralEffectParameter->sigmaX),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectsigmaP, new CTreeElementValueInt(bilateralEffectParameter->sigmaP),
+	                              &elementColor);
 }
 
-void CBilateralFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CBilateralFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                         const wxString& key)
 {
-    CBilateralEffectParameter * bilateralEffectParameter = (CBilateralEffectParameter *)effectParameter;
-    //Video Parameter
+	auto bilateralEffectParameter = static_cast<CBilateralEffectParameter*>(effectParameter);
+	//Video Parameter
 	float value = 0.0;
-	switch(valueData->GetType())
+	switch (valueData->GetType())
 	{
-		case TYPE_ELEMENT_INT:
-			{
-				CTreeElementValueInt * intValue = (CTreeElementValueInt*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_FLOAT:
-			{
-				CTreeElementValueFloat * intValue = (CTreeElementValueFloat*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
-		case TYPE_ELEMENT_BOOL:
-			{
-				CTreeElementValueBool * intValue = (CTreeElementValueBool*)valueData;
-				value = intValue->GetValue();
-			}
-			break;
+	case TYPE_ELEMENT_INT:
+		{
+			auto intValue = static_cast<CTreeElementValueInt*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_FLOAT:
+		{
+			auto intValue = static_cast<CTreeElementValueFloat*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	case TYPE_ELEMENT_BOOL:
+		{
+			auto intValue = static_cast<CTreeElementValueBool*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	}
 
-    if (key == libelleEffectSize)
-    {
-        bilateralEffectParameter->fSize = value;
-    }
+	if (key == libelleEffectSize)
+	{
+		bilateralEffectParameter->fSize = value;
+	}
 	else if (key == libelleEffectsigmaX)
-    {
-        bilateralEffectParameter->sigmaX = value;
-    }
+	{
+		bilateralEffectParameter->sigmaX = value;
+	}
 	else if (key == libelleEffectsigmaP)
-    {
-        bilateralEffectParameter->sigmaP = value;
-    }
+	{
+		bilateralEffectParameter->sigmaP = value;
+	}
 }
 
 void CBilateralFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
-		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+		auto bilateralEffectParameter = static_cast<CBilateralEffectParameter*>(effectParameter);
+		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX,
+		                             bilateralEffectParameter->sigmaP);
 	}
 }
 
@@ -141,20 +146,22 @@ bool CBilateralFilter::IsSourcePreview()
 }
 
 
-void CBilateralFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CBilateralFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
-		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+		auto bilateralEffectParameter = static_cast<CBilateralEffectParameter*>(effectParameter);
+		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX,
+		                             bilateralEffectParameter->sigmaP);
 	}
-
 }
 
 
-void CBilateralFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CBilateralFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                          CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                          int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CBilateralFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -169,9 +176,10 @@ CImageLoadingFormat* CBilateralFilter::ApplyEffect(CEffectParameter* effectParam
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
-			CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
-			filter->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+
+			auto bilateralEffectParameter = static_cast<CBilateralEffectParameter*>(effectParameter);
+			filter->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX,
+			                        bilateralEffectParameter->sigmaP);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);

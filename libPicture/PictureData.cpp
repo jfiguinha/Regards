@@ -55,7 +55,7 @@ void CPictureData::SetData(const int& width, const int& height, uint8_t* & extda
 	}
 }
 
-void CPictureData::CopyData(CImageLoadingFormat * bitmap)
+void CPictureData::CopyData(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr)
 		bitmapMatrix = bitmap->GetOpenCVPicture();
@@ -89,6 +89,7 @@ float CPictureData::CalculPictureRatio(const int& pictureWidth, const int& pictu
 
 	return newRatio;
 }
+
 /*
 void CPictureData::SetJpegData(uint8_t* & extdata, const int& outputsize)
 {

@@ -90,12 +90,13 @@ using namespace Regards::Viewer;
 
 #include <wx/glcanvas.h>
 int args[] = {
-    wx_GL_COMPAT_PROFILE,
-    WX_GL_SAMPLES, 4,
-    WX_GL_RGBA, 
-    WX_GL_DOUBLEBUFFER, 
-    WX_GL_DEPTH_SIZE, 16, 
-    0};
+	wx_GL_COMPAT_PROFILE,
+	WX_GL_SAMPLES, 4,
+	WX_GL_RGBA,
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_DEPTH_SIZE, 16,
+	0
+};
 
 // c: pointer to original argc
 // v: pointer to original argv
@@ -152,7 +153,7 @@ float value[256];
 float clamp(float val, float minval, float maxval)
 {
 	//return std::clamp(val, minval, maxval);
-    return std::max(minval, std::min(val, maxval));
+	return std::max(minval, std::min(val, maxval));
 }
 
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
@@ -166,8 +167,6 @@ public:
 	MyApp(
 	)
 	{
-
-
 		logNo = new wxLogNull();
 		//Init x11
 		regardsParam = nullptr;
@@ -248,7 +247,8 @@ public:
 		   circumstances. */
 
 		SDL_Log("Opening default playback device...\n");
-		SDL_AudioDeviceID devid_out = SDL_OpenAudioDevice(nullptr, SDL_FALSE, &wanted, &spec, SDL_AUDIO_ALLOW_ANY_CHANGE);
+		SDL_AudioDeviceID devid_out = SDL_OpenAudioDevice(nullptr, SDL_FALSE, &wanted, &spec,
+		                                                  SDL_AUDIO_ALLOW_ANY_CHANGE);
 		if (!devid_out)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open an audio device for playback: %s!\n",
@@ -286,7 +286,8 @@ public:
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
 
-		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
+		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition,
+		                               wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
 #endif
@@ -322,7 +323,7 @@ private:
 	wxString fileToOpen;
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
-	wxLogNull * logNo;
+	wxLogNull* logNo;
 
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member

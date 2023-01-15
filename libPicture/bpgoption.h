@@ -1,13 +1,13 @@
 #pragma once
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(JpegOption)
-	#include <wx/radiobox.h>
-	#include <wx/statbox.h>
-	#include <wx/slider.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(JpegOption)
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
+#include <wx/slider.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(JpegOption)
 //*)
@@ -44,5 +44,5 @@ private:
 	bool isOk;
 	int compressOption;
 	int compressLevel;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };

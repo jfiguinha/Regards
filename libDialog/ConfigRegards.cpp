@@ -18,8 +18,8 @@ using namespace Regards::Viewer;
 //*)
 
 BEGIN_EVENT_TABLE(ConfigRegards, wxDialog)
-	//(*EventTable(ConfigRegards)
-	//*)
+		//(*EventTable(ConfigRegards)
+		//*)
 END_EVENT_TABLE()
 
 ConfigRegards::ConfigRegards(wxWindow* parent)
@@ -211,7 +211,6 @@ void ConfigRegards::init()
 		rbOpenCLOpenGLInterop->SetSelection(1);
 	else
 		rbOpenCLOpenGLInterop->SetSelection(0);
-	
 
 
 	int numItem = 0;
@@ -224,7 +223,7 @@ void ConfigRegards::init()
 	else
 		rbVideoEncoderHard->SetSelection(0);
 
-	wxString decoder = regardsParam->GetHardwareDecoder();	
+	wxString decoder = regardsParam->GetHardwareDecoder();
 	if (decoder != "")
 	{
 		numItem = rbVideoDecoderHard->FindString(decoder);
@@ -232,9 +231,6 @@ void ConfigRegards::init()
 	}
 	else
 		rbVideoDecoderHard->SetSelection(0);
-
-
-
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -321,7 +317,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	wxString encoder = rbVideoEncoderHard->GetStringSelection();
 	wxString decoder = rbVideoDecoderHard->GetStringSelection();
 
-	if(encoder == "auto")
+	if (encoder == "auto")
 		regardsParam->SetHardwareEncoder("");
 	else
 		regardsParam->SetHardwareEncoder(encoder);

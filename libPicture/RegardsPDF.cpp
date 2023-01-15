@@ -47,7 +47,7 @@ wxImage CRegardsPDF::GetPicture(const int& numPicture)
 	return image;
 }
 
-int CRegardsPDF::GetNbFrame(const wxString & filename, bool& error)
+int CRegardsPDF::GetNbFrame(const wxString& filename, bool& error)
 {
 	wxPoppler poppler;
 	int m_ani_images = 0;
@@ -62,7 +62,8 @@ int CRegardsPDF::GetNbFrame(const wxString & filename, bool& error)
 	return m_ani_images;
 }
 
-void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat* bitmap, const int& option, const int& quality)
+void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat* bitmap, const int& option,
+                                   const int& quality)
 {
 	wxString fileToAdd = "";
 	wxString file = "";
@@ -96,7 +97,6 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 		wxImage image = bitmap->GetwxImage();
 		image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
 		image.SaveFile(file, wxBITMAP_TYPE_JPEG);
-
 	}
 	else
 	{
@@ -141,24 +141,24 @@ int CRegardsPDF::SavePictureOption(int& option, int& quality)
 		switch (option)
 		{
 		case 0:
-		{
-			CompressionOption jpegOption(nullptr);
-			jpegOption.ShowModal();
-			if (jpegOption.IsOk())
 			{
-				quality = jpegOption.CompressionLevel();
+				CompressionOption jpegOption(nullptr);
+				jpegOption.ShowModal();
+				if (jpegOption.IsOk())
+				{
+					quality = jpegOption.CompressionLevel();
+				}
+				break;
+			}
+		case 1:
+			{
+				TiffOption tiffOption(nullptr);
+				tiffOption.ShowModal();
+				if (tiffOption.IsOk())
+					quality = tiffOption.CompressionOption();
 			}
 			break;
-		}
-		case 1:
-		{
-			TiffOption tiffOption(nullptr);
-			tiffOption.ShowModal();
-			if (tiffOption.IsOk())
-				quality = tiffOption.CompressionOption();
-		}
-		break;
-		default:;
+		default: ;
 		}
 		returnValue = 1;
 	}
@@ -191,9 +191,8 @@ bool CRegardsPDF::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int optio
 }
 
 
-
 bool CRegardsPDF::SaveToPDF(wxImage* poImage, const wxString& fileName, const wxString& pictureName, int option,
-	int quality)
+                            int quality)
 {
 	if (poImage->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
 	{
@@ -246,10 +245,10 @@ bool CRegardsPDF::SaveToPDF(wxImage* poImage, const wxString& fileName, const wx
 
 			if (option == 0)
 				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(),
-					wxT("image/jpeg"));
+				                   wxT("image/jpeg"));
 			else
 				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(),
-					wxT("image/tiff"));
+				                   wxT("image/tiff"));
 
 			oPdfDocument.Close();
 			oPdfDocument.SaveAsFile(fileName);
@@ -280,15 +279,16 @@ int CRegardsPDF::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 }
 
 
-void CRegardsPDF::AddPdfPage(wxPdfDocument * oPdfDocument, CImageLoadingFormat* imageFormat, int option, int quality, int numpage)
+void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* imageFormat, int option, int quality,
+                             int numpage)
 {
-
 	wxString file;
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -299,7 +299,6 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument * oPdfDocument, CImageLoadingFormat* 
 	//Save
 	if (option == 0)
 	{
-
 #ifdef WIN32
 		file = tempFolder + "\\temporary" + to_string(numpage) + ".jpg";
 #else
@@ -356,18 +355,16 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument * oPdfDocument, CImageLoadingFormat* 
 		}
 		if (nResolution)
 		{
-
-
 			//int tpl = oPdfDocument.BeginTemplate(0, 0, image.GetWidth(), image.GetHeight());
 			wxPrintOrientation orientation = (image.GetHeight() > image.GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
 			oPdfDocument->AddPage(orientation);
 
 			if (option == 0)
-				oPdfDocument->Image(file, 0, 0, oPdfDocument->GetPageWidth(), oPdfDocument->GetPageHeight(), wxT("image/jpeg"));
+				oPdfDocument->Image(file, 0, 0, oPdfDocument->GetPageWidth(), oPdfDocument->GetPageHeight(),
+				                    wxT("image/jpeg"));
 			else
-				oPdfDocument->Image(file, 0, 0, oPdfDocument->GetPageWidth(), oPdfDocument->GetPageHeight(), wxT("image/tiff"));
-
-
+				oPdfDocument->Image(file, 0, 0, oPdfDocument->GetPageWidth(), oPdfDocument->GetPageHeight(),
+				                    wxT("image/tiff"));
 		}
 	}
 }
@@ -378,7 +375,8 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -395,12 +393,11 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 
 		if (wxFileExists(file))
 			wxRemoveFile(file);
-
 	}
 
 	QPDF inpdf;
 	inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
-	std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
+	const std::vector<QPDFObjectHandle>& pages = inpdf.getAllPages();
 	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 	int pageno = 0;
 
@@ -409,8 +406,8 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 	outpdf.emptyPDF();
 
 
-	for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin();
-		iter != pages.end(); ++iter)
+	for (auto iter = pages.begin();
+	     iter != pages.end(); ++iter)
 	{
 		bool find = false;
 		for (int i : listPage)
@@ -438,14 +435,16 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 }
 
 
-void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, const vector<int>& listPage, int oldAnimationPosition)
+void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, const vector<int>& listPage,
+                          int oldAnimationPosition)
 {
 	wxString file = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -462,7 +461,6 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 
 		if (wxFileExists(file))
 			wxRemoveFile(file);
-
 	}
 
 	if (file != "")
@@ -502,14 +500,12 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 		}
 
 
-
-
-		std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
+		const std::vector<QPDFObjectHandle>& pages = inpdf.getAllPages();
 		//int pageno_len = pages.size();
 		int pageno = 0;
 
 
-		for (std::vector<QPDFObjectHandle>::const_iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
+		for (auto newiter = pages.begin(); newiter != pages.end(); ++newiter)
 		{
 			bool find = false;
 			for (int i1 : listPage)
@@ -557,17 +553,17 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 
 	wxCopyFile(file, filename);
 #endif
-	}
+}
 
 
-
-void CRegardsPDF::RemovePage(const wxString & filename, const vector<int> &listPage)
+void CRegardsPDF::RemovePage(const wxString& filename, const vector<int>& listPage)
 {
 	wxString file = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
 	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -584,14 +580,13 @@ void CRegardsPDF::RemovePage(const wxString & filename, const vector<int> &listP
 
 		if (wxFileExists(file))
 			wxRemoveFile(file);
-
 	}
 
 	{
 		wxBusyInfo wait("Please wait, working...");
 		QPDF inpdf;
 		inpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
-		std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
+		const std::vector<QPDFObjectHandle>& pages = inpdf.getAllPages();
 		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 		int pageno = 0;
 
@@ -600,7 +595,7 @@ void CRegardsPDF::RemovePage(const wxString & filename, const vector<int> &listP
 		outpdf.emptyPDF();
 
 
-		for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin(); iter != pages.end(); ++iter)
+		for (auto iter = pages.begin(); iter != pages.end(); ++iter)
 		{
 			bool find = false;
 			for (int i : listPage)
@@ -626,8 +621,6 @@ void CRegardsPDF::RemovePage(const wxString & filename, const vector<int> &listP
 	}
 
 
-
-
 #ifndef DEMO
 	if (wxFileExists(filename))
 		wxRemoveFile(filename);
@@ -635,5 +628,3 @@ void CRegardsPDF::RemovePage(const wxString & filename, const vector<int> &listP
 	wxCopyFile(file, filename);
 #endif
 }
-
-

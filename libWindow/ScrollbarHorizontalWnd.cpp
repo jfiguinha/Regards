@@ -63,7 +63,7 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(const wxString& windowName, wxW
 	        this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseCaptureLost));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarHorizontalWnd::OnEraseBackground));
-//	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseLeave));
+	//	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseLeave));
 }
 
 void CScrollbarHorizontalWnd::OnMouseCaptureLost(wxMouseEvent& event)
@@ -177,7 +177,7 @@ void CScrollbarHorizontalWnd::CalculBarSize()
 	{
 		barSize = BARSIZEMIN;
 		nbPos = (barEndX - barStartX) - barSize;
-		lineSize = static_cast<float>(diff) / static_cast<float>(nbPos);
+		lineSize = static_cast<float>(diff) / nbPos;
 		pageSize = lineSize * 10;
 	}
 }

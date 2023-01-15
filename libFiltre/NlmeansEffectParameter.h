@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CNlmeansEffectParameter : public CEffectParameter
 {
 public:
@@ -10,12 +11,13 @@ public:
 		templateWindowSize = 7;
 		searchWindowSize = 15;
 	};
-	~CNlmeansEffectParameter() override {};
+
+	~CNlmeansEffectParameter() override
+	{
+	};
 
 	int h;
 	int templateWindowSize;
 	int searchWindowSize;
 	int hColor;
-
 };
-

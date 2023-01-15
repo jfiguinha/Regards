@@ -97,6 +97,7 @@ void CSqlExecuteRequest::CommitTransection()
 	_sqlLibTransaction->unlock();
 #endif
 }
+
 /*
 int64_t CSqlExecuteRequest::GetLastId()
 {

@@ -52,7 +52,7 @@ void CFFmpegApp::ExecuteFFmpeg()
 	if (showProgressWindow)
 	{
 		dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 100, nullptr,
-			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		                              wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 	}
 
 	try
@@ -103,7 +103,8 @@ int CFFmpegApp::TestFFmpeg(const wxString& commandline)
 	return 0;
 }
 
-int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const wxString& outputFile, const int& rotate)
+int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const wxString& outputFile,
+                                           const int& rotate)
 {
 	//ffmpeg -i 20200509_132328.mp4 -map_metadata 0 -metadata:s:v rotate=-90 -codec copy output.mp4
 	arrayOfStrings.push_back("ffmpeg");
@@ -178,7 +179,8 @@ int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString&
 	return 0;
 }
 
-int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxString& timeVideoIn, const wxString& timeVideoOut, const wxString& outputFile)
+int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxString& timeVideoIn,
+                                      const wxString& timeVideoOut, const wxString& outputFile)
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
@@ -200,7 +202,8 @@ int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxSt
 }
 
 
-int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const wxString& timeVideoIn, const wxString& timeVideoOut, const wxString& outputFile)
+int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const wxString& timeVideoIn,
+                                          const wxString& timeVideoOut, const wxString& outputFile)
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
@@ -224,7 +227,8 @@ int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const 
 }
 
 
-int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const wxString& timeVideoIn, const wxString& timeVideoOut, const wxString& outputFile)
+int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const wxString& timeVideoIn,
+                                          const wxString& timeVideoOut, const wxString& outputFile)
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
@@ -248,8 +252,8 @@ int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const 
 }
 
 
-
-int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const wxString& inputAudioFile, const wxString& outputFile)
+int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const wxString& inputAudioFile,
+                                           const wxString& outputFile)
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 

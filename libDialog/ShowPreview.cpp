@@ -113,7 +113,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 }
 
 void CShowPreview::SetParameter(const wxString& videoFilename,
-	CVideoOptionCompress* videoOptionCompress)
+                                CVideoOptionCompress* videoOptionCompress)
 {
 	isFirstPicture = true;
 	wxString decoder = "";
@@ -136,7 +136,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	//this->Resize();
 }
 
-void CShowPreview::ShowPicture(cv::Mat & bitmap, const wxString& label)
+void CShowPreview::ShowPicture(cv::Mat& bitmap, const wxString& label)
 {
 	if (!bitmap.empty())
 	{
@@ -253,7 +253,8 @@ void CShowPreview::ThreadLoading(void* data)
 			showPreview->extension = filename.GetExt();
 		}
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
-		ret = showPreview->transcodeFFmpeg->EncodeFrame(showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
+		ret = showPreview->transcodeFFmpeg->EncodeFrame(showPreview->filename, fileTemp, showPreview->position,
+		                                                &showPreview->videoOptionCompress);
 		showPreview->decodeFrameOriginal = showPreview->transcodeFFmpeg->GetFrameOutputWithOutEffect();
 
 		if (ret == 0)
@@ -295,7 +296,6 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 		this->videoOptionCompress = *videoOptionCompress;
 		this->extension = extension;
 	}
-
 
 
 	sliderVideo->Start();
@@ -411,14 +411,11 @@ void CShowPreview::Resize()
 
 bool CShowPreview::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	
-
 	if (previewToolbar != nullptr)
 		previewToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 
 	if (bitmapWindow != nullptr)
 	{
-
 		bitmap->SetOrientation(orientation);
 		bitmapWindow->SetBitmap(bitmap, false);
 	}

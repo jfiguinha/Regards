@@ -7,57 +7,57 @@
 using namespace std;
 using namespace Regards::OpenCV;
 using namespace cv;
-using namespace cv::xfeatures2d;
+using namespace xfeatures2d;
 
 //1、 Use feature detection algorithm to find similar points in two images , Calculate the transformation matrix 
 //2、 The image right Pictures and images obtained after perspective transformation left Splicing 
 class CPanoramaPimp
 {
 public:
+	CPanoramaPimp()
+	{
+	};
 
-	CPanoramaPimp() {};
-	~CPanoramaPimp() {};
+	~CPanoramaPimp()
+	{
+	};
 
-	bool Image_Stitching(const cv::Mat& image_left, const cv::Mat& image_right, Mat& H, Mat& WarpImg, Mat& DstImg, bool draw)
+	bool Image_Stitching(const Mat& image_left, const Mat& image_right, Mat& H, Mat& WarpImg, Mat& DstImg, bool draw)
 	{
 		// establish SURF Characteristic detector 
 		int Hessian = 800;
-		Ptr<SURF>detector = SURF::create(Hessian);
+		Ptr<SURF> detector = SURF::create(Hessian);
 
 		// Carry out image feature detection 、 Feature description 
-		vector<KeyPoint>keypoint_left, keypoint_right;
+		vector<KeyPoint> keypoint_left, keypoint_right;
 		Mat descriptor_left, descriptor_right;
 		detector->detectAndCompute(image_left, Mat(), keypoint_left, descriptor_left);
 		detector->detectAndCompute(image_right, Mat(), keypoint_right, descriptor_right);
 
 		// Use FLANN The algorithm matches the feature descriptors 
 		FlannBasedMatcher matcher;
-		vector<DMatch>matches;
+		vector<DMatch> matches;
 		matcher.match(descriptor_left, descriptor_right, matches);
 
 		double Max = 0.0;
 		for (int i = 0; i < matches.size(); i++)
 		{
-
 			//float distance –> Represents this pair of matched feature point descriptors （ The essence is a vector ） Euclidean distance of , The smaller the value, the more similar the two feature points are .
 			double dis = matches[i].distance;
 			if (dis > Max)
 			{
-
 				Max = dis;
 			}
 		}
 
 		// Filter out the key points with high matching degree 
-		vector<DMatch>goodmatches;
-		vector<Point2f>goodkeypoint_left, goodkeypoint_right;
+		vector<DMatch> goodmatches;
+		vector<Point2f> goodkeypoint_left, goodkeypoint_right;
 		for (int i = 0; i < matches.size(); i++)
 		{
-
 			double dis = matches[i].distance;
 			if (dis < 0.15 * Max)
 			{
-
 				/*  Make perspective transformation with the right figure   On the left ->queryIdx: Query point index （ Query image ）  Right picture ->trainIdx: The index of the queried point （ Target image ） */
 				// notes ： Yes image_right Perspective transformation of the image , so goodkeypoint_left Corresponding queryIdx,goodkeypoint_right Corresponding trainIdx
 				//int queryIdx –> Is the feature point descriptor of the test image （descriptor） The subscript , It is also the feature point corresponding to the descriptor （keypoint) The subscript .
@@ -71,7 +71,6 @@ public:
 		// Draw feature points 
 		if (draw)
 		{
-
 			Mat result;
 			drawMatches(image_left, keypoint_left, image_right, keypoint_right, goodmatches, result);
 			//imshow(" Feature matching ", result);
@@ -79,7 +78,6 @@ public:
 			Mat temp_left = image_left.clone();
 			for (int i = 0; i < goodkeypoint_left.size(); i++)
 			{
-
 				circle(temp_left, goodkeypoint_left[i], 3, Scalar(0, 255, 0), -1);
 			}
 			//imshow("goodkeypoint_left", temp_left);
@@ -87,7 +85,6 @@ public:
 			Mat temp_right = image_right.clone();
 			for (int i = 0; i < goodkeypoint_right.size(); i++)
 			{
-
 				circle(temp_right, goodkeypoint_right[i], 3, Scalar(0, 255, 0), -1);
 			}
 			//imshow("goodkeypoint_right", temp_right);
@@ -116,9 +113,8 @@ public:
 
 
 	// Image fusion , Make the splicing natural 
-	bool OptimizeSeam(const cv::Mat& H, const Mat& image_left, Mat& WarpImg, Mat& DstImg)
+	bool OptimizeSeam(const Mat& H, const Mat& image_left, Mat& WarpImg, Mat& DstImg)
 	{
-
 		// Perspective transform upper left corner (0,0,1)
 		Mat V2 = (Mat_<double>(3, 1) << 0.0, 0.0, 1.0);
 		Mat V1 = H * V2;
@@ -131,9 +127,10 @@ public:
 		int left_bottom = V1.at<double>(0, 0) / V1.at<double>(2, 0);
 		if (left_bottom < 0)left_bottom = 0;
 
-		int start = MAX(left_top, left_bottom);// Starting position , That is, the left boundary of the overlapping area  
+		int start = MAX(left_top, left_bottom);
+		// Starting position , That is, the left boundary of the overlapping area  
 
-		double Width = (image_left.cols - start);// The width of the overlapping area  
+		double Width = (image_left.cols - start); // The width of the overlapping area  
 
 		//line(WarpImg, Point(start, 0), Point(start, WarpImg.rows), Scalar(0, 0, 255), 2);
 		//line(WarpImg, Point(image_left.cols, 0), Point(image_left.cols, WarpImg.rows), Scalar(0, 0, 255), 2);
@@ -142,26 +139,23 @@ public:
 		double alpha = 1.0;
 		for (int i = 0; i < DstImg.rows; i++)
 		{
-
 			for (int j = start; j < image_left.cols; j++)
 			{
-
 				for (int c = 0; c < 3; c++)
 				{
-
 					// If the image WarpImg The pixel is 0, Then a full copy image_left
 					if (WarpImg.at<Vec3b>(i, j)[c] == 0)
 					{
-
 						alpha = 1.0;
 					}
 					else
 					{
-
-						double l = Width - (j - start); // The distance from a pixel in the overlapping area to the seam 
+						double l = Width - (j - start);
+						// The distance from a pixel in the overlapping area to the seam 
 						alpha = l / Width;
 					}
-					DstImg.at<Vec3b>(i, j)[c] = image_left.at<Vec3b>(i, j)[c] * alpha + WarpImg.at<Vec3b>(i, j)[c] * (1.0 - alpha);
+					DstImg.at<Vec3b>(i, j)[c] = image_left.at<Vec3b>(i, j)[c] * alpha + WarpImg.at<Vec3b>(i, j)[c] * (
+						1.0 - alpha);
 				}
 			}
 		}
@@ -170,19 +164,18 @@ public:
 		return true;
 	}
 
-	cv::Mat OpenCV_Stitching(const cv::Mat& image_left, const cv::Mat& image_right, bool & isOk)
+	Mat OpenCV_Stitching(const Mat& image_left, const Mat& image_right, bool& isOk)
 	{
-
 		// Put the pictures to be spliced into the container 
-		vector<Mat>images;
+		vector<Mat> images;
 		images.push_back(image_left);
 		images.push_back(image_right);
 
 		// establish Stitcher Model 
-		Ptr<Stitcher>stitcher = Stitcher::create();
+		Ptr<Stitcher> stitcher = Stitcher::create();
 
 		Mat result;
-		Stitcher::Status status = stitcher->stitch(images, result);//  Use stitch Function 
+		Stitcher::Status status = stitcher->stitch(images, result); //  Use stitch Function 
 
 		if (status != Stitcher::OK)
 			isOk = false;
@@ -194,23 +187,21 @@ public:
 };
 
 
-cv::Mat CImagePanorama::CreatePanorama(const cv::Mat& image_left, const cv::Mat& image_right)
+Mat CImagePanorama::CreatePanorama(const Mat& image_left, const Mat& image_right)
 {
 	CPanoramaPimp pimpl;
-	cv::Mat out;
+	Mat out;
 
 	if (image_left.empty() || image_right.empty())
 	{
-
 		cout << "No Image!" << endl;
 		system("pause");
-		return cv::Mat();
+		return Mat();
 	}
 
 	Mat H, WarpImg, DstImg;
 	if (pimpl.Image_Stitching(image_left, image_right, H, WarpImg, DstImg, false))
 	{
-
 		if (!pimpl.OptimizeSeam(H, image_left, WarpImg, DstImg))
 		{
 			throw("Image fusion is not possible! ");
@@ -218,7 +209,6 @@ cv::Mat CImagePanorama::CreatePanorama(const cv::Mat& image_left, const cv::Mat&
 	}
 	else
 	{
-
 		throw("can not stitching the image!");
 	}
 	bool isOk = true;

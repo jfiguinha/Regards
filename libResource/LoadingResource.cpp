@@ -19,6 +19,7 @@ wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 	out.LoadFile(resourcePath, wxBITMAP_TYPE_ANY);
 	return out;
 }
+
 /*
 wxImage CLoadingResource::ConvertTowxImageRGB(cv::Mat & mat)
 {

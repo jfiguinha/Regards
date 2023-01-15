@@ -28,30 +28,35 @@
 static int8_t transform[32][32];
 
 static const int8_t dct_coefs[32] = {
-    64, 90, 90, 90, 89, 88, 87, 85, 83, 82, 80, 78, 75, 73, 70, 67, 64, 61, 57, 54, 50, 46, 43, 38, 36, 31, 25, 22, 18, 13, 9, 4
+	64, 90, 90, 90, 89, 88, 87, 85, 83, 82, 80, 78, 75, 73, 70, 67, 64, 61, 57, 54, 50, 46, 43, 38, 36, 31, 25, 22, 18,
+	13, 9, 4
 };
 
 void hevc_transform_init(void)
 {
-    int i, j, k, s;
+	int i, j, k, s;
 
-    if (transform[0][0])
-        return;
-    for(i = 0; i < 32; i++) {
-        for(j = 0; j < 32; j++) {
-            k = (unsigned)((2 * j + 1) * i) % 128;
-            s = 1;
-            if (k >= 64) {
-                k -= 64;
-                s = -1;
-            }
-            if (k >= 32) {
-                k = 64 - k;
-                s = -s;
-            }
-            transform[i][j] = dct_coefs[k] * s;
-        }
-    }
+	if (transform[0][0])
+		return;
+	for (i = 0; i < 32; i++)
+	{
+		for (j = 0; j < 32; j++)
+		{
+			k = (unsigned)((2 * j + 1) * i) % 128;
+			s = 1;
+			if (k >= 64)
+			{
+				k -= 64;
+				s = -1;
+			}
+			if (k >= 32)
+			{
+				k = 64 - k;
+				s = -s;
+			}
+			transform[i][j] = dct_coefs[k] * s;
+		}
+	}
 }
 
 #else
@@ -124,19 +129,19 @@ static const int8_t transform[32][32] = {
 #endif
 
 DECLARE_ALIGNED(16, const int8_t, ff_hevc_epel_filters[7][4]) = {
-    { -2, 58, 10, -2},
-    { -4, 54, 16, -2},
-    { -6, 46, 28, -4},
-    { -4, 36, 36, -4},
-    { -4, 28, 46, -6},
-    { -2, 16, 54, -4},
-    { -2, 10, 58, -2},
+	{-2, 58, 10, -2},
+	{-4, 54, 16, -2},
+	{-6, 46, 28, -4},
+	{-4, 36, 36, -4},
+	{-4, 28, 46, -6},
+	{-2, 16, 54, -4},
+	{-2, 10, 58, -2},
 };
 
 DECLARE_ALIGNED(16, const int8_t, ff_hevc_qpel_filters[3][16]) = {
-    { -1,  4,-10, 58, 17, -5,  1,  0, -1,  4,-10, 58, 17, -5,  1,  0},
-    { -1,  4,-11, 40, 40,-11,  4, -1, -1,  4,-11, 40, 40,-11,  4, -1},
-    {  0,  1, -5, 17, 58,-10,  4, -1,  0,  1, -5, 17, 58,-10,  4, -1}
+	{-1, 4, -10, 58, 17, -5, 1, 0, -1, 4, -10, 58, 17, -5, 1, 0},
+	{-1, 4, -11, 40, 40, -11, 4, -1, -1, 4, -11, 40, 40, -11, 4, -1},
+	{0, 1, -5, 17, 58, -10, 4, -1, 0, 1, -5, 17, 58, -10, 4, -1}
 };
 
 #if defined(USE_VAR_BIT_DEPTH)
@@ -167,7 +172,7 @@ DECLARE_ALIGNED(16, const int8_t, ff_hevc_qpel_filters[3][16]) = {
 
 #endif /* !USE_VAR_BIT_DEPTH */
 
-void ff_hevc_dsp_init(HEVCDSPContext *hevcdsp, int bit_depth)
+void ff_hevc_dsp_init(HEVCDSPContext* hevcdsp, int bit_depth)
 {
 #undef FUNC
 #define FUNC(a, depth) a ## _ ## depth
@@ -315,7 +320,7 @@ int i = 0;
 #endif
 
 #if defined(USE_VAR_BIT_DEPTH)
-    HEVC_DSP(var);
+	HEVC_DSP(var);
 #else
     switch (bit_depth) {
 #ifdef USE_FULL

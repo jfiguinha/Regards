@@ -26,8 +26,8 @@ void CWaveFilter::ProcessEffect(cv::Mat& image, int x, int y, short height, int 
 	_waveHeight = image.size().height >> _scale;
 	int size = _waveWidth * _waveWidth * _waveHeight * 2;
 
-	int realX = (int)((x / (double)image.size().width)*_waveWidth);
-	int realY = (int)((y / (double)image.size().height)*_waveHeight);
+	int realX = static_cast<int>((x / (double)image.size().width) * _waveWidth);
+	int realY = static_cast<int>((y / (double)image.size().height) * _waveHeight);
 
 	PutDrop(realX, realY, height, radius);
 
@@ -45,20 +45,18 @@ void CWaveFilter::ProcessWaves()
 	bool wavesFound = false;
 
 
-	for (int x = 1; x<_waveWidth - 1; x++)
+	for (int x = 1; x < _waveWidth - 1; x++)
 	{
-
-		for (int y = 1; y<_waveHeight - 1; y++)
+		for (int y = 1; y < _waveHeight - 1; y++)
 		{
-			short value = (short)(
-				((GetWaveData(x - 1, y - 1, _activeBuffer) +
-					GetWaveData(x, y - 1, _activeBuffer) +
-					GetWaveData(x + 1, y - 1, _activeBuffer) +
-					GetWaveData(x - 1, y, _activeBuffer) +
-					GetWaveData(x + 1, y, _activeBuffer) +
-					GetWaveData(x - 1, y + 1, _activeBuffer) +
-					GetWaveData(x, y + 1, _activeBuffer) +
-					GetWaveData(x + 1, y + 1, _activeBuffer)) >> 2) - GetWaveData(x, y, newBuffer));
+			short value = static_cast<short>(((GetWaveData(x - 1, y - 1, _activeBuffer) +
+				GetWaveData(x, y - 1, _activeBuffer) +
+				GetWaveData(x + 1, y - 1, _activeBuffer) +
+				GetWaveData(x - 1, y, _activeBuffer) +
+				GetWaveData(x + 1, y, _activeBuffer) +
+				GetWaveData(x - 1, y + 1, _activeBuffer) +
+				GetWaveData(x, y + 1, _activeBuffer) +
+				GetWaveData(x + 1, y + 1, _activeBuffer)) >> 2) - GetWaveData(x, y, newBuffer));
 
 			SetWaveData(x, y, newBuffer, value);
 
@@ -70,93 +68,87 @@ void CWaveFilter::ProcessWaves()
 				SetWaveData(x, y, newBuffer, data);
 				wavesFound = true;
 			}
-
-
 		}
 	}
 
 	_weHaveWaves = wavesFound;
 	_activeBuffer = newBuffer;
-
 }
 
 void CWaveFilter::WaterEffect(cv::Mat& image)
 {
 	cv::Mat copyMat;
-    uint8_t * data = image.data;
+	uint8_t* data = image.data;
 	image.copyTo(copyMat);
 	uint8_t* copy = copyMat.data;
 
 
-    int _bmpWidth = image.size().width;
+	int _bmpWidth = image.size().width;
 	int _bmpHeight = image.size().height;
-    int xOffset, yOffset;
-    short alpha;
+	int xOffset, yOffset;
+	short alpha;
 
-    if (_weHaveWaves)
-    {
-        for (int x = 1; x < _bmpWidth - 1; x++)
-        {
-            for (int y = 1; y < _bmpHeight - 1; y++)
-            {
-                int waveX = x >> _scale;
-                int waveY = y >> _scale;
+	if (_weHaveWaves)
+	{
+		for (int x = 1; x < _bmpWidth - 1; x++)
+		{
+			for (int y = 1; y < _bmpHeight - 1; y++)
+			{
+				int waveX = x >> _scale;
+				int waveY = y >> _scale;
 
-                //check bounds
-                if (waveX <= 0) waveX = 1;
-                if (waveY <= 0) waveY = 1;
-                if (waveX >= _waveWidth - 1) waveX = _waveWidth - 2;
-                if (waveY >= _waveHeight - 1) waveY = _waveHeight - 2;
+				//check bounds
+				if (waveX <= 0) waveX = 1;
+				if (waveY <= 0) waveY = 1;
+				if (waveX >= _waveWidth - 1) waveX = _waveWidth - 2;
+				if (waveY >= _waveHeight - 1) waveY = _waveHeight - 2;
 
-                //this gives us the effect of water breaking the light
-                xOffset = (GetWaveData(waveX - 1, waveY, _activeBuffer) - GetWaveData(waveX + 1, waveY, _activeBuffer)) >> 3;
-                yOffset = (GetWaveData(waveX, waveY - 1, _activeBuffer) - GetWaveData(waveX, waveY + 1, _activeBuffer)) >> 3;
+				//this gives us the effect of water breaking the light
+				xOffset = (GetWaveData(waveX - 1, waveY, _activeBuffer) - GetWaveData(waveX + 1, waveY, _activeBuffer))
+					>> 3;
+				yOffset = (GetWaveData(waveX, waveY - 1, _activeBuffer) - GetWaveData(waveX, waveY + 1, _activeBuffer))
+					>> 3;
 
-                if ((xOffset != 0) || (yOffset != 0))
-                {
-                    //check bounds
-                    if (x + xOffset >= _bmpWidth - 1)	xOffset = _bmpWidth - x - 1;
-                    if (y + yOffset >= _bmpHeight - 1)	yOffset = _bmpHeight - y - 1;
-                    if (x + xOffset < 0)	xOffset = -x;
-                    if (y + yOffset < 0)	yOffset = -y;
+				if ((xOffset != 0) || (yOffset != 0))
+				{
+					//check bounds
+					if (x + xOffset >= _bmpWidth - 1) xOffset = _bmpWidth - x - 1;
+					if (y + yOffset >= _bmpHeight - 1) yOffset = _bmpHeight - y - 1;
+					if (x + xOffset < 0) xOffset = -x;
+					if (y + yOffset < 0) yOffset = -y;
 
-                    //generate alpha
-                    alpha = (short)(200 - xOffset);
-                    if (alpha < 0) alpha = 0;
-                    if (alpha > 255) alpha = 254;
+					//generate alpha
+					alpha = static_cast<short>(200 - xOffset);
+					if (alpha < 0) alpha = 0;
+					if (alpha > 255) alpha = 254;
 
-                    //set colors
-                    copy[3 * (x + y*_bmpWidth)] = data[3 * (x + xOffset + (y + yOffset)*_bmpWidth)];
-                    copy[3 * (x + y*_bmpWidth) + 1] = data[3 * (x + xOffset + (y + yOffset)*_bmpWidth) + 1];
-                    copy[3 * (x + y*_bmpWidth) + 2] = data[3 * (x + xOffset + (y + yOffset)*_bmpWidth) + 2];
-
-                }
-
-            }
-        }
-    }
+					//set colors
+					copy[3 * (x + y * _bmpWidth)] = data[3 * (x + xOffset + (y + yOffset) * _bmpWidth)];
+					copy[3 * (x + y * _bmpWidth) + 1] = data[3 * (x + xOffset + (y + yOffset) * _bmpWidth) + 1];
+					copy[3 * (x + y * _bmpWidth) + 2] = data[3 * (x + xOffset + (y + yOffset) * _bmpWidth) + 2];
+				}
+			}
+		}
+	}
 	copyMat.copyTo(image);
 }
 
 void CWaveFilter::PutDrop(int x, int y, short height, int radius)
 {
-
-
 	_weHaveWaves = true;
 	//int radius = 20;
 	double dist;
 
 	for (int i = -radius; i <= radius; i++)
 	{
-
 		for (int j = -radius; j <= radius; j++)
 		{
-			if (((x + i >= 0) && (x + i<_waveWidth - 1)) && ((y + j >= 0) && (y + j<_waveHeight - 1)))
+			if (((x + i >= 0) && (x + i < _waveWidth - 1)) && ((y + j >= 0) && (y + j < _waveHeight - 1)))
 			{
-				dist = sqrt(i*i + j*j);
+				dist = sqrt(i * i + j * j);
 				if (dist < radius)
 				{
-					SetWaveData(x + i, y + j, _activeBuffer, (short)(cos(dist*PI / radius) * height));
+					SetWaveData(x + i, y + j, _activeBuffer, static_cast<short>(cos(dist * PI / radius) * height));
 				}
 			}
 		}

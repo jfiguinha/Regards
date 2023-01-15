@@ -39,7 +39,7 @@
  * @param ptr updated if the prefix is matched inside str
  * @return non-zero if the prefix matches, zero otherwise
  */
-int av_strstart(const char *str, const char *pfx, const char **ptr);
+int av_strstart(const char* str, const char* pfx, const char** ptr);
 
 /**
  * Return non-zero if pfx is a prefix of str independent of case. If
@@ -51,7 +51,7 @@ int av_strstart(const char *str, const char *pfx, const char **ptr);
  * @param ptr updated if the prefix is matched inside str
  * @return non-zero if the prefix matches, zero otherwise
  */
-int av_stristart(const char *str, const char *pfx, const char **ptr);
+int av_stristart(const char* str, const char* pfx, const char** ptr);
 
 /**
  * Locate the first case-independent occurrence in the string haystack
@@ -65,7 +65,7 @@ int av_stristart(const char *str, const char *pfx, const char **ptr);
  * @return         pointer to the located match within haystack
  *                 or a null pointer if no match
  */
-char *av_stristr(const char *haystack, const char *needle);
+char* av_stristr(const char* haystack, const char* needle);
 
 /**
  * Locate the first occurrence of the string needle in the string haystack
@@ -80,7 +80,7 @@ char *av_stristr(const char *haystack, const char *needle);
  * @return           pointer to the located match within haystack
  *                   or a null pointer if no match
  */
-char *av_strnstr(const char *haystack, const char *needle, size_t hay_length);
+char* av_strnstr(const char* haystack, const char* needle, size_t hay_length);
 
 /**
  * Copy the string src to dst, but no more than size - 1 bytes, and
@@ -97,7 +97,7 @@ char *av_strnstr(const char *haystack, const char *needle, size_t hay_length);
  * _must_ be a properly 0-terminated string, otherwise this will read beyond
  * the end of the buffer and possibly crash.
  */
-size_t av_strlcpy(char *dst, const char *src, size_t size);
+size_t av_strlcpy(char* dst, const char* src, size_t size);
 
 /**
  * Append the string src to the string dst, but to a total length of
@@ -115,7 +115,7 @@ size_t av_strlcpy(char *dst, const char *src, size_t size);
  * absolutely _must_ be a properly 0-terminated strings, otherwise this
  * will read beyond the end of the buffer and possibly crash.
  */
-size_t av_strlcat(char *dst, const char *src, size_t size);
+size_t av_strlcat(char* dst, const char* src, size_t size);
 
 /**
  * Append output to a string, according to a format. Never write out of
@@ -129,7 +129,7 @@ size_t av_strlcat(char *dst, const char *src, size_t size);
  * @return the length of the string that would have been generated
  *  if enough space had been available
  */
-size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...) av_printf_format(3, 4);
+size_t av_strlcatf(char* dst, size_t size, const char* fmt, ...) av_printf_format(3, 4);
 
 /**
  * Get the count of continuous non zero chars starting from the beginning.
@@ -137,12 +137,11 @@ size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...) av_printf_forma
  * @param len maximum number of characters to check in the string, that
  *            is the maximum value which is returned by the function
  */
-static inline size_t av_strnlen(const char *s, size_t len)
+static inline size_t av_strnlen(const char* s, size_t len)
 {
-    size_t i;
-    for (i = 0; i < len && s[i]; i++)
-        ;
-    return i;
+	size_t i;
+	for (i = 0; i < len && s[i]; i++);
+	return i;
 }
 
 /**
@@ -153,12 +152,12 @@ static inline size_t av_strnlen(const char *s, size_t len)
  * @return the allocated string
  * @note You have to free the string yourself with av_free().
  */
-char *av_asprintf(const char *fmt, ...) av_printf_format(1, 2);
+char* av_asprintf(const char* fmt, ...) av_printf_format(1, 2);
 
 /**
  * Convert a number to a av_malloced string.
  */
-char *av_d2str(double d);
+char* av_d2str(double d);
 
 /**
  * Unescape the given string until a non escaped terminating char,
@@ -174,7 +173,7 @@ char *av_d2str(double d);
  * @return the malloced unescaped string, which must be av_freed by
  * the user, NULL in case of allocation failure
  */
-char *av_get_token(const char **buf, const char *term);
+char* av_get_token(const char** buf, const char* term);
 
 /**
  * Split the string into several tokens which can be accessed by
@@ -198,7 +197,7 @@ char *av_get_token(const char **buf, const char *term);
  * first delimiter found, or to NULL if the string was terminated
  * @return the found token, or NULL when no token is found
  */
-char *av_strtok(char *s, const char *delim, char **saveptr);
+char* av_strtok(char* s, const char* delim, char** saveptr);
 
 /**
  * Locale-independent conversion of ASCII isdigit.
@@ -220,9 +219,9 @@ av_const int av_isspace(int c);
  */
 static inline av_const int av_toupper(int c)
 {
-    if (c >= 'a' && c <= 'z')
-        c ^= 0x20;
-    return c;
+	if (c >= 'a' && c <= 'z')
+		c ^= 0x20;
+	return c;
 }
 
 /**
@@ -230,9 +229,9 @@ static inline av_const int av_toupper(int c)
  */
 static inline av_const int av_tolower(int c)
 {
-    if (c >= 'A' && c <= 'Z')
-        c ^= 0x20;
-    return c;
+	if (c >= 'A' && c <= 'Z')
+		c ^= 0x20;
+	return c;
 }
 
 /**
@@ -244,13 +243,13 @@ av_const int av_isxdigit(int c);
  * Locale-independent case-insensitive compare.
  * @note This means only ASCII-range characters are case-insensitive
  */
-int av_strcasecmp(const char *a, const char *b);
+int av_strcasecmp(const char* a, const char* b);
 
 /**
  * Locale-independent case-insensitive compare.
  * @note This means only ASCII-range characters are case-insensitive
  */
-int av_strncasecmp(const char *a, const char *b, size_t n);
+int av_strncasecmp(const char* a, const char* b, size_t n);
 
 
 /**
@@ -258,7 +257,7 @@ int av_strncasecmp(const char *a, const char *b, size_t n);
  * @param path the path, on DOS both \ and / are considered separators.
  * @return pointer to the basename substring.
  */
-const char *av_basename(const char *path);
+const char* av_basename(const char* path);
 
 /**
  * Thread safe dirname.
@@ -266,7 +265,7 @@ const char *av_basename(const char *path);
  * @return the path with the separator replaced by the string terminator or ".".
  * @note the function may change the input string.
  */
-const char *av_dirname(char *path);
+const char* av_dirname(char* path);
 
 /**
  * Match instances of a name in a comma-separated list of names.
@@ -274,12 +273,16 @@ const char *av_dirname(char *path);
  * @param names List of names.
  * @return 1 on match, 0 otherwise.
  */
-int av_match_name(const char *name, const char *names);
+int av_match_name(const char* name, const char* names);
 
-enum AVEscapeMode {
-    AV_ESCAPE_MODE_AUTO,      ///< Use auto-selected escaping mode.
-    AV_ESCAPE_MODE_BACKSLASH, ///< Use backslash escaping.
-    AV_ESCAPE_MODE_QUOTE,     ///< Use single-quote escaping.
+enum AVEscapeMode
+{
+	AV_ESCAPE_MODE_AUTO,
+	///< Use auto-selected escaping mode.
+	AV_ESCAPE_MODE_BACKSLASH,
+	///< Use backslash escaping.
+	AV_ESCAPE_MODE_QUOTE,
+	///< Use single-quote escaping.
 };
 
 /**
@@ -315,7 +318,7 @@ enum AVEscapeMode {
  * @return the length of the allocated string, or a negative error code in case of error
  * @see av_bprint_escape()
  */
-int av_escape(char **dst, const char *src, const char *special_chars,
+int av_escape(char** dst, const char* src, const char* special_chars,
               enum AVEscapeMode mode, int flags);
 
 #define AV_UTF8_FLAG_ACCEPT_INVALID_BIG_CODES          1 ///< accept codepoints over 0x10FFFF
@@ -354,7 +357,7 @@ int av_escape(char **dst, const char *src, const char *special_chars,
  * @return >= 0 in case a sequence was successfully read, a negative
  * value in case of invalid sequence
  */
-int av_utf8_decode(int32_t *codep, const uint8_t **bufp, const uint8_t *buf_end,
+int av_utf8_decode(int32_t* codep, const uint8_t** bufp, const uint8_t* buf_end,
                    unsigned int flags);
 
 /**
@@ -362,7 +365,7 @@ int av_utf8_decode(int32_t *codep, const uint8_t **bufp, const uint8_t *buf_end,
  * @returns 0 if not found, or the 1 based index where it has been found in the
  *            list.
  */
-int av_match_list(const char *name, const char *list, char separator);
+int av_match_list(const char* name, const char* list, char separator);
 
 /**
  * @}

@@ -50,7 +50,7 @@
 
 #if _MSC_VER > 1000
 #pragma once
-#endif 
+#endif
 
 #ifdef __MINGW32__
 #ifndef WIN32
@@ -85,19 +85,20 @@ using namespace std;
 
 /////////////////////////////////////////////////////////////////////////////
 // CxImage formats enumerator
-enum ENUM_CXIMAGE_FORMATS{
-CXIMAGE_FORMAT_UNKNOWN = 0,
+enum ENUM_CXIMAGE_FORMATS
+{
+	CXIMAGE_FORMAT_UNKNOWN = 0,
 #if CXIMAGE_SUPPORT_BMP
 CXIMAGE_FORMAT_BMP = 1,
 #endif
 #if CXIMAGE_SUPPORT_GIF
-CXIMAGE_FORMAT_GIF = 2,
+	CXIMAGE_FORMAT_GIF = 2,
 #endif
 #if CXIMAGE_SUPPORT_JPG
 CXIMAGE_FORMAT_JPG = 3,
 #endif
 #if CXIMAGE_SUPPORT_PNG
-CXIMAGE_FORMAT_PNG = 4,
+	CXIMAGE_FORMAT_PNG = 4,
 #endif
 #if CXIMAGE_SUPPORT_ICO
 CXIMAGE_FORMAT_ICO = 5,
@@ -115,7 +116,7 @@ CXIMAGE_FORMAT_PCX = 8,
 CXIMAGE_FORMAT_WBMP = 9,
 #endif
 #if CXIMAGE_SUPPORT_WMF
-CXIMAGE_FORMAT_WMF = 10,
+	CXIMAGE_FORMAT_WMF = 10,
 #endif
 #if CXIMAGE_SUPPORT_JP2
 CXIMAGE_FORMAT_JP2 = 11,
@@ -133,13 +134,13 @@ CXIMAGE_FORMAT_PNM = 14,
 CXIMAGE_FORMAT_RAS = 15,
 #endif
 #if CXIMAGE_SUPPORT_JBG
-CXIMAGE_FORMAT_JBG = 16,
+	CXIMAGE_FORMAT_JBG = 16,
 #endif
 #if CXIMAGE_SUPPORT_MNG
 CXIMAGE_FORMAT_MNG = 17,
 #endif
 #if CXIMAGE_SUPPORT_SKA
-CXIMAGE_FORMAT_SKA = 18,
+	CXIMAGE_FORMAT_SKA = 18,
 #endif
 #if CXIMAGE_SUPPORT_RAW
 CXIMAGE_FORMAT_RAW = 19,
@@ -147,13 +148,13 @@ CXIMAGE_FORMAT_RAW = 19,
 #if CXIMAGE_SUPPORT_PSD
 CXIMAGE_FORMAT_PSD = 20,
 #endif
-CMAX_IMAGE_FORMATS = CXIMAGE_SUPPORT_BMP + CXIMAGE_SUPPORT_GIF + CXIMAGE_SUPPORT_JPG +
-					 CXIMAGE_SUPPORT_PNG + CXIMAGE_SUPPORT_MNG + CXIMAGE_SUPPORT_ICO +
-					 CXIMAGE_SUPPORT_TIF + CXIMAGE_SUPPORT_TGA + CXIMAGE_SUPPORT_PCX +
-					 CXIMAGE_SUPPORT_WBMP+ CXIMAGE_SUPPORT_WMF +
-					 CXIMAGE_SUPPORT_JBG + CXIMAGE_SUPPORT_JP2 + CXIMAGE_SUPPORT_JPC +
-					 CXIMAGE_SUPPORT_PGX + CXIMAGE_SUPPORT_PNM + CXIMAGE_SUPPORT_RAS +
-					 CXIMAGE_SUPPORT_SKA + CXIMAGE_SUPPORT_RAW + CXIMAGE_SUPPORT_PSD + 1
+	CMAX_IMAGE_FORMATS = CXIMAGE_SUPPORT_BMP + CXIMAGE_SUPPORT_GIF + CXIMAGE_SUPPORT_JPG +
+	CXIMAGE_SUPPORT_PNG + CXIMAGE_SUPPORT_MNG + CXIMAGE_SUPPORT_ICO +
+	CXIMAGE_SUPPORT_TIF + CXIMAGE_SUPPORT_TGA + CXIMAGE_SUPPORT_PCX +
+	CXIMAGE_SUPPORT_WBMP + CXIMAGE_SUPPORT_WMF +
+	CXIMAGE_SUPPORT_JBG + CXIMAGE_SUPPORT_JP2 + CXIMAGE_SUPPORT_JPC +
+	CXIMAGE_SUPPORT_PGX + CXIMAGE_SUPPORT_PNM + CXIMAGE_SUPPORT_RAS +
+	CXIMAGE_SUPPORT_SKA + CXIMAGE_SUPPORT_RAW + CXIMAGE_SUPPORT_PSD + 1
 };
 
 #if CXIMAGE_SUPPORT_EXIF
@@ -161,27 +162,28 @@ CMAX_IMAGE_FORMATS = CXIMAGE_SUPPORT_BMP + CXIMAGE_SUPPORT_GIF + CXIMAGE_SUPPORT
 #define MAX_COMMENT 255
 #define MAX_SECTIONS 20
 
-typedef struct tag_ExifInfo {
-	char  Version      [5];
-    char  CameraMake   [32];
-    char  CameraModel  [40];
-    char  DateTime     [20];
-    int32_t   Height, Width;
-    int32_t   Orientation;
-    int32_t   IsColor;
-    int32_t   Process;
-    int32_t   FlashUsed;
-    float FocalLength;
-    float ExposureTime;
-    float ApertureFNumber;
-    float Distance;
-    float CCDWidth;
-    float ExposureBias;
-    int32_t   Whitebalance;
-    int32_t   MeteringMode;
-    int32_t   ExposureProgram;
-    int32_t   ISOequivalent;
-    int32_t   CompressionLevel;
+using EXIFINFO = struct tag_ExifInfo
+{
+	char Version[5];
+	char CameraMake[32];
+	char CameraModel[40];
+	char DateTime[20];
+	int32_t Height, Width;
+	int32_t Orientation;
+	int32_t IsColor;
+	int32_t Process;
+	int32_t FlashUsed;
+	float FocalLength;
+	float ExposureTime;
+	float ApertureFNumber;
+	float Distance;
+	float CCDWidth;
+	float ExposureBias;
+	int32_t Whitebalance;
+	int32_t MeteringMode;
+	int32_t ExposureProgram;
+	int32_t ISOequivalent;
+	int32_t CompressionLevel;
 	float FocalplaneXRes;
 	float FocalplaneYRes;
 	float FocalplaneUnits;
@@ -189,13 +191,13 @@ typedef struct tag_ExifInfo {
 	float Yresolution;
 	float ResolutionUnit;
 	float Brightness;
-    char  Comments[MAX_COMMENT+1];
+	char Comments[MAX_COMMENT + 1];
 
-    uint8_t * ThumbnailPointer;  /* Pointer at the thumbnail */
-    unsigned ThumbnailSize;     /* Size of thumbnail. */
+	uint8_t* ThumbnailPointer; /* Pointer at the thumbnail */
+	unsigned ThumbnailSize; /* Size of thumbnail. */
 
-	bool  IsExif;
-} EXIFINFO;
+	bool IsExif;
+};
 
 #endif //CXIMAGE_SUPPORT_EXIF
 
@@ -204,50 +206,53 @@ typedef struct tag_ExifInfo {
 /////////////////////////////////////////////////////////////////////////////
 class DLL_EXP CxImage
 {
-//extensible information collector
-typedef struct tagCxImageInfo {
-	uint32_t	dwEffWidth;			///< uint32_t aligned scan line width
-	uint8_t*	pImage;				///< THE IMAGE BITS
-	CxImage* pGhost;			///< if this is a ghost, pGhost points to the body
-	CxImage* pParent;			///< if this is a layer, pParent points to the body
-	uint32_t	dwType;				///< original image format
-	char	szLastError[256];	///< debugging
-	int32_t	nProgress;			///< monitor
-	int32_t	nEscape;			///< escape
-	int32_t	nBkgndIndex;		///< used for GIF, PNG, MNG
-	RGBQUAD nBkgndColor;		///< used for RGB transparency
-	float	fQuality;			///< used for JPEG, JPEG2000 (0.0f ... 100.0f)
-	uint8_t	nJpegScale;			///< used for JPEG [ignacio]
-	int32_t	nFrame;				///< used for TIF, GIF, MNG : actual frame
-	int32_t	nNumFrames;			///< used for TIF, GIF, MNG : total number of frames
-	uint32_t	dwFrameDelay;		///< used for GIF, MNG
-	int32_t	xDPI;				///< horizontal resolution
-	int32_t	yDPI;				///< vertical resolution
-	RECT	rSelectionBox;		///< bounding rectangle
-	uint8_t	nAlphaMax;			///< max opacity (fade)
-	bool	bAlphaPaletteEnabled; ///< true if alpha values in the palette are enabled.
-	bool	bEnabled;			///< enables the painting functions
-	int32_t	xOffset;
-	int32_t	yOffset;
-	uint32_t	dwCodecOpt[CMAX_IMAGE_FORMATS];	///< for GIF, TIF : 0=def.1=unc,2=fax3,3=fax4,4=pack,5=jpg
-	RGBQUAD last_c;				///< for GetNearestIndex optimization
-	uint8_t	last_c_index;
-	bool	last_c_isvalid;
-	int32_t	nNumLayers;
-	uint32_t	dwFlags;			///< 0x??00000 = reserved, 0x00??0000 = blend mode, 0x0000???? = layer id - user flags
-	uint8_t	dispmeth;
-	bool	bGetAllFrames;
-	bool	bLittleEndianHost;
+	//extensible information collector
+	using CXIMAGEINFO = struct tagCxImageInfo
+	{
+		uint32_t dwEffWidth; ///< uint32_t aligned scan line width
+		uint8_t* pImage; ///< THE IMAGE BITS
+		CxImage* pGhost; ///< if this is a ghost, pGhost points to the body
+		CxImage* pParent; ///< if this is a layer, pParent points to the body
+		uint32_t dwType; ///< original image format
+		char szLastError[256]; ///< debugging
+		int32_t nProgress; ///< monitor
+		int32_t nEscape; ///< escape
+		int32_t nBkgndIndex; ///< used for GIF, PNG, MNG
+		RGBQUAD nBkgndColor; ///< used for RGB transparency
+		float fQuality; ///< used for JPEG, JPEG2000 (0.0f ... 100.0f)
+		uint8_t nJpegScale; ///< used for JPEG [ignacio]
+		int32_t nFrame; ///< used for TIF, GIF, MNG : actual frame
+		int32_t nNumFrames; ///< used for TIF, GIF, MNG : total number of frames
+		uint32_t dwFrameDelay; ///< used for GIF, MNG
+		int32_t xDPI; ///< horizontal resolution
+		int32_t yDPI; ///< vertical resolution
+		RECT rSelectionBox; ///< bounding rectangle
+		uint8_t nAlphaMax; ///< max opacity (fade)
+		bool bAlphaPaletteEnabled; ///< true if alpha values in the palette are enabled.
+		bool bEnabled; ///< enables the painting functions
+		int32_t xOffset;
+		int32_t yOffset;
+		uint32_t dwCodecOpt[CMAX_IMAGE_FORMATS]; ///< for GIF, TIF : 0=def.1=unc,2=fax3,3=fax4,4=pack,5=jpg
+		RGBQUAD last_c; ///< for GetNearestIndex optimization
+		uint8_t last_c_index;
+		bool last_c_isvalid;
+		int32_t nNumLayers;
+		uint32_t dwFlags; ///< 0x??00000 = reserved, 0x00??0000 = blend mode, 0x0000???? = layer id - user flags
+		uint8_t dispmeth;
+		bool bGetAllFrames;
+		bool bLittleEndianHost;
 
 #if CXIMAGE_SUPPORT_EXIF
-	EXIFINFO ExifInfo;
+		EXIFINFO ExifInfo;
 #endif
-
-} CXIMAGEINFO;
+	};
 
 public:
 	//public structures
-struct rgb_color { uint8_t r,g,b; };
+	struct rgb_color
+	{
+		uint8_t r, g, b;
+	};
 
 #if CXIMAGE_SUPPORT_WINDOWS
 // <VATI> text placement data
@@ -274,242 +279,257 @@ typedef struct tagCxTextInfo
 #endif
 
 public:
-/** \addtogroup Constructors */ //@{
+	/** \addtogroup Constructors */ //@{
 	CxImage(uint32_t imagetype = 0);
 	CxImage(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype = 0);
-	CxImage(const CxImage &src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
+	CxImage(const CxImage& src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
 #if CXIMAGE_SUPPORT_DECODE
-	CxImage(const std::wstring& ws, uint32_t imagetype);	// For UNICODE support: char -> char
-	CxImage(FILE * stream, uint32_t imagetype);
-	CxImage(CxFile * stream, uint32_t imagetype);
-	CxImage(const std::wstring& ws, uint32_t imagetype, const bool &header);
-	CxImage(uint8_t * buffer, uint32_t size, uint32_t imagetype);
+	CxImage(const std::wstring& ws, uint32_t imagetype); // For UNICODE support: char -> char
+	CxImage(FILE* stream, uint32_t imagetype);
+	CxImage(CxFile* stream, uint32_t imagetype);
+	CxImage(const std::wstring& ws, uint32_t imagetype, const bool& header);
+	CxImage(uint8_t* buffer, uint32_t size, uint32_t imagetype);
 #endif
-	virtual ~CxImage() { DestroyFrames(); Destroy(); };
-	CxImage& operator = (const CxImage&);
-//@}
+	virtual ~CxImage()
+	{
+		DestroyFrames();
+		Destroy();
+	};
+	CxImage& operator =(const CxImage&);
+	//@}
 
-/** \addtogroup Initialization */ //@{
-	void*	Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype = 0);
-	bool	Destroy();
-	bool	DestroyFrames();
-	void	Clear(uint8_t bval=0);
-	void	Copy(const CxImage &src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
-	bool	Transfer(CxImage &from, bool bTransferFrames = true);
-	bool	CreateFromArray(uint8_t* pArray, int size,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage, bool rgb);
-	bool	CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage);
-	void	FreeMemory(void* memblock);
+	/** \addtogroup Initialization */ //@{
+	void* Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype = 0);
+	bool Destroy();
+	bool DestroyFrames();
+	void Clear(uint8_t bval = 0);
+	void Copy(const CxImage& src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
+	bool Transfer(CxImage& from, bool bTransferFrames = true);
+	bool CreateFromArray(uint8_t* pArray, int size, uint32_t dwWidth, uint32_t dwHeight, uint32_t dwBitsperpixel,
+	                     uint32_t dwBytesperline, bool bFlipImage, bool rgb);
+	bool CreateFromMatrix(uint8_t** ppMatrix, uint32_t dwWidth, uint32_t dwHeight, uint32_t dwBitsperpixel,
+	                      uint32_t dwBytesperline, bool bFlipImage);
+	void FreeMemory(void* memblock);
 
-	uint32_t Dump(uint8_t * dst);
-	uint32_t UnDump(const uint8_t * src);
+	uint32_t Dump(uint8_t* dst);
+	uint32_t UnDump(const uint8_t* src);
 	uint32_t DumpSize();
+
 	bool IsBGR()
 	{
 		return isbgr;
 	}
-//@}
 
-/** \addtogroup Attributes */ //@{
-	int32_t	GetSize();
-	uint8_t*	GetBits(uint32_t row = 0);
-	uint8_t	GetColorType();
-	void*	GetDIB() const;
-	uint32_t	GetHeight() const;
-	uint32_t	GetWidth() const;
-	uint32_t	GetEffWidth() const;
-	uint32_t	GetNumColors() const;
-	uint16_t	GetBpp() const;
-	uint32_t	GetType() const;
-	const char*	GetLastError();
+	//@}
+
+	/** \addtogroup Attributes */ //@{
+	int32_t GetSize();
+	uint8_t* GetBits(uint32_t row = 0);
+	uint8_t GetColorType();
+	void* GetDIB() const;
+	uint32_t GetHeight() const;
+	uint32_t GetWidth() const;
+	uint32_t GetEffWidth() const;
+	uint32_t GetNumColors() const;
+	uint16_t GetBpp() const;
+	uint32_t GetType() const;
+	const char* GetLastError();
 	static const char* GetVersion();
 	static const float GetVersionNumber();
 
-	uint32_t	GetFrameDelay() const;
-	void	SetFrameDelay(uint32_t d);
+	uint32_t GetFrameDelay() const;
+	void SetFrameDelay(uint32_t d);
 
-	void	GetOffset(int32_t *x,int32_t *y);
-	void	SetOffset(int32_t x,int32_t y);
+	void GetOffset(int32_t* x, int32_t* y);
+	void SetOffset(int32_t x, int32_t y);
 
-	uint8_t	GetJpegQuality() const;
-	void	SetJpegQuality(uint8_t q);
-	float	GetJpegQualityF() const;
-	void	SetJpegQualityF(float q);
+	uint8_t GetJpegQuality() const;
+	void SetJpegQuality(uint8_t q);
+	float GetJpegQualityF() const;
+	void SetJpegQualityF(float q);
 
-	uint8_t	GetJpegScale() const;
-	void	SetJpegScale(uint8_t q);
+	uint8_t GetJpegScale() const;
+	void SetJpegScale(uint8_t q);
 
 #if CXIMAGE_SUPPORT_EXIF
-	EXIFINFO *GetExifInfo() {return &info.ExifInfo;};
-	bool  GetExifThumbnail(const char *filename, const char *outname, int32_t imageType);
-  #if CXIMAGE_SUPPORT_TRANSFORMATION
-	bool  RotateExif(int32_t orientation = 0);
-  #endif
+	EXIFINFO* GetExifInfo() { return &info.ExifInfo; };
+	bool GetExifThumbnail(const char* filename, const char* outname, int32_t imageType);
+#if CXIMAGE_SUPPORT_TRANSFORMATION
+	bool RotateExif(int32_t orientation = 0);
+#endif
 #endif
 
-	int32_t	GetXDPI() const;
-	int32_t	GetYDPI() const;
-	void	SetXDPI(int32_t dpi);
-	void	SetYDPI(int32_t dpi);
+	int32_t GetXDPI() const;
+	int32_t GetYDPI() const;
+	void SetXDPI(int32_t dpi);
+	void SetYDPI(int32_t dpi);
 
-	uint32_t	GetClrImportant() const;
-	void	SetClrImportant(uint32_t ncolors = 0);
+	uint32_t GetClrImportant() const;
+	void SetClrImportant(uint32_t ncolors = 0);
 
-	int32_t	GetProgress() const;
-	int32_t	GetEscape() const;
-	void	SetProgress(int32_t p);
-	void	SetEscape(int32_t i);
+	int32_t GetProgress() const;
+	int32_t GetEscape() const;
+	void SetProgress(int32_t p);
+	void SetEscape(int32_t i);
 
-	int32_t	GetTransIndex() const;
-	RGBQUAD	GetTransColor();
-	void	SetTransIndex(int32_t idx);
-	void	SetTransColor(RGBQUAD rgb);
-	bool	IsTransparent() const;
+	int32_t GetTransIndex() const;
+	RGBQUAD GetTransColor();
+	void SetTransIndex(int32_t idx);
+	void SetTransColor(RGBQUAD rgb);
+	bool IsTransparent() const;
 
-	uint32_t	GetCodecOption(uint32_t imagetype = 0);
-	bool	SetCodecOption(uint32_t opt, uint32_t imagetype = 0);
+	uint32_t GetCodecOption(uint32_t imagetype = 0);
+	bool SetCodecOption(uint32_t opt, uint32_t imagetype = 0);
 
-	uint32_t	GetFlags() const;
-	void	SetFlags(uint32_t flags, bool bLockReservedFlags = true);
+	uint32_t GetFlags() const;
+	void SetFlags(uint32_t flags, bool bLockReservedFlags = true);
 
-	uint8_t	GetDisposalMethod() const;
-	void	SetDisposalMethod(uint8_t dm);
+	uint8_t GetDisposalMethod() const;
+	void SetDisposalMethod(uint8_t dm);
 
-	bool	SetType(uint32_t type);
+	bool SetType(uint32_t type);
 
 	static uint32_t GetNumTypes();
 	static uint32_t GetTypeIdFromName(const char* ext);
-	static uint32_t GetTypeIdFromIndex(const uint32_t index);
-	static uint32_t GetTypeIndexFromId(const uint32_t id);
+	static uint32_t GetTypeIdFromIndex(uint32_t index);
+	static uint32_t GetTypeIndexFromId(uint32_t id);
 
-	bool	GetRetreiveAllFrames() const;
-	void	SetRetreiveAllFrames(bool flag);
-	CxImage * GetFrame(int32_t nFrame) const;
+	bool GetRetreiveAllFrames() const;
+	void SetRetreiveAllFrames(bool flag);
+	CxImage* GetFrame(int32_t nFrame) const;
 
 	//void*	GetUserData() const {return info.pUserData;}
 	//void	SetUserData(void* pUserData) {info.pUserData = pUserData;}
-//@}
+	//@}
 
-/** \addtogroup Palette
- * These functions have no effects on RGB images and in this case the returned value is always 0.
- * @{ */
-	bool	IsGrayScale();
-	bool	IsIndexed() const;
-	bool	IsSamePalette(CxImage &img, bool bCheckAlpha = true);
-	uint32_t	GetPaletteSize();
+	/** \addtogroup Palette
+	 * These functions have no effects on RGB images and in this case the returned value is always 0.
+	 * @{ */
+	bool IsGrayScale();
+	bool IsIndexed() const;
+	bool IsSamePalette(CxImage& img, bool bCheckAlpha = true);
+	uint32_t GetPaletteSize();
 	RGBQUAD* GetPalette() const;
 	RGBQUAD GetPaletteColor(uint8_t idx);
-	bool	GetPaletteColor(uint8_t i, uint8_t* r, uint8_t* g, uint8_t* b);
-	uint8_t	GetNearestIndex(RGBQUAD c);
-	void	BlendPalette(COLORREF cr,int32_t perc);
-	void	SetGrayPalette();
-	void	SetPalette(uint32_t n, uint8_t *r, uint8_t *g, uint8_t *b);
-	void	SetPalette(RGBQUAD* pPal,uint32_t nColors=256);
-	void	SetPalette(rgb_color *rgb,uint32_t nColors=256);
-	void	SetPaletteColor(uint8_t idx, uint8_t r, uint8_t g, uint8_t b, uint8_t alpha=0);
-	void	SetPaletteColor(uint8_t idx, RGBQUAD c);
-	void	SetPaletteColor(uint8_t idx, COLORREF cr);
-	void	SwapIndex(uint8_t idx1, uint8_t idx2);
-	void	SwapRGB2BGR();
-	void	SetStdPalette();
-//@}
+	bool GetPaletteColor(uint8_t i, uint8_t* r, uint8_t* g, uint8_t* b);
+	uint8_t GetNearestIndex(RGBQUAD c);
+	void BlendPalette(COLORREF cr, int32_t perc);
+	void SetGrayPalette();
+	void SetPalette(uint32_t n, uint8_t* r, uint8_t* g, uint8_t* b);
+	void SetPalette(RGBQUAD* pPal, uint32_t nColors = 256);
+	void SetPalette(rgb_color* rgb, uint32_t nColors = 256);
+	void SetPaletteColor(uint8_t idx, uint8_t r, uint8_t g, uint8_t b, uint8_t alpha = 0);
+	void SetPaletteColor(uint8_t idx, RGBQUAD c);
+	void SetPaletteColor(uint8_t idx, COLORREF cr);
+	void SwapIndex(uint8_t idx1, uint8_t idx2);
+	void SwapRGB2BGR();
+	void SetStdPalette();
+	//@}
 
-/** \addtogroup Pixel */ //@{
-	bool	IsInside(int32_t x, int32_t y);
-	bool	IsTransparent(int32_t x,int32_t y);
-	bool	GetTransparentMask(CxImage* iDst = 0);
-	RGBQUAD GetPixelColor(int32_t x,int32_t y, bool bGetAlpha = true);
-	uint8_t	GetPixelIndex(int32_t x,int32_t y);
-	uint8_t	GetPixelGray(int32_t x, int32_t y);
-	void	SetPixelColor(int32_t x,int32_t y,RGBQUAD c, bool bSetAlpha = false);
-	void	SetPixelColor(int32_t x,int32_t y,COLORREF cr);
-	void	SetPixelIndex(int32_t x,int32_t y,uint8_t i);
-	void	DrawLine(int32_t StartX, int32_t EndX, int32_t StartY, int32_t EndY, RGBQUAD color, bool bSetAlpha=false);
-	void	DrawLine(int32_t StartX, int32_t EndX, int32_t StartY, int32_t EndY, COLORREF cr);
-	void	BlendPixelColor(int32_t x,int32_t y,RGBQUAD c, float blend, bool bSetAlpha = false);
-//@}
-
-public:
-/** \addtogroup Protected */ //@{
-	uint8_t BlindGetPixelIndex(const int32_t x,const int32_t y);
-	RGBQUAD BlindGetPixelColor(const int32_t x,const int32_t y, bool bGetAlpha = true);
-	void *BlindGetPixelPointer(const int32_t x,const  int32_t y);
-	void BlindSetPixelColor(int32_t x,int32_t y,RGBQUAD c, bool bSetAlpha = false);
-	void BlindSetPixelIndex(int32_t x,int32_t y,uint8_t i);
-//@}
+	/** \addtogroup Pixel */ //@{
+	bool IsInside(int32_t x, int32_t y);
+	bool IsTransparent(int32_t x, int32_t y);
+	bool GetTransparentMask(CxImage* iDst = nullptr);
+	RGBQUAD GetPixelColor(int32_t x, int32_t y, bool bGetAlpha = true);
+	uint8_t GetPixelIndex(int32_t x, int32_t y);
+	uint8_t GetPixelGray(int32_t x, int32_t y);
+	void SetPixelColor(int32_t x, int32_t y, RGBQUAD c, bool bSetAlpha = false);
+	void SetPixelColor(int32_t x, int32_t y, COLORREF cr);
+	void SetPixelIndex(int32_t x, int32_t y, uint8_t i);
+	void DrawLine(int32_t StartX, int32_t EndX, int32_t StartY, int32_t EndY, RGBQUAD color, bool bSetAlpha = false);
+	void DrawLine(int32_t StartX, int32_t EndX, int32_t StartY, int32_t EndY, COLORREF cr);
+	void BlendPixelColor(int32_t x, int32_t y, RGBQUAD c, float blend, bool bSetAlpha = false);
+	//@}
 
 public:
+	/** \addtogroup Protected */ //@{
+	uint8_t BlindGetPixelIndex(int32_t x, int32_t y);
+	RGBQUAD BlindGetPixelColor(int32_t x, int32_t y, bool bGetAlpha = true);
+	void* BlindGetPixelPointer(int32_t x, int32_t y);
+	void BlindSetPixelColor(int32_t x, int32_t y, RGBQUAD c, bool bSetAlpha = false);
+	void BlindSetPixelIndex(int32_t x, int32_t y, uint8_t i);
+	//@}
 
+public:
 #if CXIMAGE_SUPPORT_INTERPOLATION
-/** \addtogroup Interpolation */ //@{
+	/** \addtogroup Interpolation */ //@{
 	//overflow methods:
-	enum OverflowMethod {
-		OM_COLOR=1,
-		OM_BACKGROUND=2,
-		OM_TRANSPARENT=3,
-		OM_WRAP=4,
-		OM_REPEAT=5,
-		OM_MIRROR=6
+	enum OverflowMethod
+	{
+		OM_COLOR = 1,
+		OM_BACKGROUND = 2,
+		OM_TRANSPARENT = 3,
+		OM_WRAP = 4,
+		OM_REPEAT = 5,
+		OM_MIRROR = 6
 	};
-	void OverflowCoordinates(float &x, float &y, OverflowMethod const ofMethod);
-	void OverflowCoordinates(int32_t  &x, int32_t &y, OverflowMethod const ofMethod);
-	RGBQUAD GetPixelColorWithOverflow(int32_t x, int32_t y, OverflowMethod const ofMethod=OM_BACKGROUND, RGBQUAD* const rplColor=0);
+
+	void OverflowCoordinates(float& x, float& y, OverflowMethod ofMethod);
+	void OverflowCoordinates(int32_t& x, int32_t& y, OverflowMethod ofMethod);
+	RGBQUAD GetPixelColorWithOverflow(int32_t x, int32_t y, OverflowMethod ofMethod = OM_BACKGROUND,
+	                                  RGBQUAD* rplColor = nullptr);
+
 	//interpolation methods:
-	enum InterpolationMethod {
-		IM_NEAREST_NEIGHBOUR=1,
-		IM_BILINEAR		=2,
-		IM_BSPLINE		=3,
-		IM_BICUBIC		=4,
-		IM_BICUBIC2		=5,
-		IM_LANCZOS		=6,
-		IM_BOX			=7,
-		IM_HERMITE		=8,
-		IM_HAMMING		=9,
-		IM_SINC			=10,
-		IM_BLACKMAN		=11,
-		IM_BESSEL		=12,
-		IM_GAUSSIAN		=13,
-		IM_QUADRATIC	=14,
-		IM_MITCHELL		=15,
-		IM_CATROM		=16,
-		IM_HANNING		=17,
-		IM_POWER		=18
+	enum InterpolationMethod
+	{
+		IM_NEAREST_NEIGHBOUR = 1,
+		IM_BILINEAR = 2,
+		IM_BSPLINE = 3,
+		IM_BICUBIC = 4,
+		IM_BICUBIC2 = 5,
+		IM_LANCZOS = 6,
+		IM_BOX = 7,
+		IM_HERMITE = 8,
+		IM_HAMMING = 9,
+		IM_SINC = 10,
+		IM_BLACKMAN = 11,
+		IM_BESSEL = 12,
+		IM_GAUSSIAN = 13,
+		IM_QUADRATIC = 14,
+		IM_MITCHELL = 15,
+		IM_CATROM = 16,
+		IM_HANNING = 17,
+		IM_POWER = 18
 	};
-	RGBQUAD GetPixelColorInterpolated(float x,float y, InterpolationMethod const inMethod=IM_BILINEAR, OverflowMethod const ofMethod=OM_BACKGROUND, RGBQUAD* const rplColor=0);
-	RGBQUAD GetAreaColorInterpolated(float const xc, float const yc, float const w, float const h, InterpolationMethod const inMethod, OverflowMethod const ofMethod=OM_BACKGROUND, RGBQUAD* const rplColor=0);
-//@}
+
+	RGBQUAD GetPixelColorInterpolated(float x, float y, InterpolationMethod inMethod = IM_BILINEAR,
+	                                  OverflowMethod ofMethod = OM_BACKGROUND, RGBQUAD* rplColor = nullptr);
+	RGBQUAD GetAreaColorInterpolated(float xc, float yc, float w, float h, InterpolationMethod inMethod,
+	                                 OverflowMethod ofMethod = OM_BACKGROUND, RGBQUAD* rplColor = nullptr);
+	//@}
 
 protected:
-/** \addtogroup Protected */ //@{
-	void  AddAveragingCont(RGBQUAD const &color, float const surf, float &rr, float &gg, float &bb, float &aa);
-//@}
+	/** \addtogroup Protected */ //@{
+	void AddAveragingCont(const RGBQUAD& color, float surf, float& rr, float& gg, float& bb, float& aa);
+	//@}
 
-/** \addtogroup Kernels */ //@{
+	/** \addtogroup Kernels */ //@{
 public:
-	static float KernelBSpline(const float x);
-	static float KernelLinear(const float t);
-	static float KernelCubic(const float t);
-	static float KernelGeneralizedCubic(const float t, const float a=-1);
-	static float KernelLanczosSinc(const float t, const float r = 3);
-	static float KernelBox(const float x);
-	static float KernelHermite(const float x);
-	static float KernelHamming(const float x);
-	static float KernelSinc(const float x);
-	static float KernelBlackman(const float x);
-	static float KernelBessel_J1(const float x);
-	static float KernelBessel_P1(const float x);
-	static float KernelBessel_Q1(const float x);
+	static float KernelBSpline(float x);
+	static float KernelLinear(float t);
+	static float KernelCubic(float t);
+	static float KernelGeneralizedCubic(float t, float a = -1);
+	static float KernelLanczosSinc(float t, float r = 3);
+	static float KernelBox(float x);
+	static float KernelHermite(float x);
+	static float KernelHamming(float x);
+	static float KernelSinc(float x);
+	static float KernelBlackman(float x);
+	static float KernelBessel_J1(float x);
+	static float KernelBessel_P1(float x);
+	static float KernelBessel_Q1(float x);
 	static float KernelBessel_Order1(float x);
-	static float KernelBessel(const float x);
-	static float KernelGaussian(const float x);
-	static float KernelQuadratic(const float x);
-	static float KernelMitchell(const float x);
-	static float KernelCatrom(const float x);
-	static float KernelHanning(const float x);
-	static float KernelPower(const float x, const float a = 2);
-//@}
+	static float KernelBessel(float x);
+	static float KernelGaussian(float x);
+	static float KernelQuadratic(float x);
+	static float KernelMitchell(float x);
+	static float KernelCatrom(float x);
+	static float KernelHanning(float x);
+	static float KernelPower(float x, float a = 2);
+	//@}
 #endif //CXIMAGE_SUPPORT_INTERPOLATION
-	
-/** \addtogroup Painting */ //@{
+
+	/** \addtogroup Painting */ //@{
 #if CXIMAGE_SUPPORT_WINDOWS
 	int32_t	Blt(HDC pDC, int32_t x=0, int32_t y=0);
 	HBITMAP Draw2HBITMAP(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy, RECT* pClipRect, bool bSmooth);
@@ -535,112 +555,116 @@ protected:
 	bool IsHBITMAPAlphaValid( HBITMAP hbmp );
 public:
 #endif //CXIMAGE_SUPPORT_WINDOWS
-//@}
+	//@}
 
 	// file operations
 #if CXIMAGE_SUPPORT_DECODE
-/** \addtogroup Decode */ //@{
+	/** \addtogroup Decode */ //@{
 #ifdef WIN32
 	//bool Load(LPCWSTR filename, uint32_t imagetype=0);
-	bool LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule=NULL);
+	bool LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule = nullptr);
 #endif
 	// For UNICODE support: char -> char
-	bool Load(const char* filename, uint32_t imagetype=0);
+	bool Load(const char* filename, uint32_t imagetype = 0);
 	//bool Load(const char * filename, uint32_t imagetype=0);
-	bool Decode(FILE * hFile, uint32_t imagetype);
-	bool Decode(CxFile * hFile, uint32_t imagetype);
-	bool Decode(uint8_t * buffer, uint32_t size, uint32_t imagetype);
+	bool Decode(FILE* hFile, uint32_t imagetype);
+	bool Decode(CxFile* hFile, uint32_t imagetype);
+	bool Decode(uint8_t* buffer, uint32_t size, uint32_t imagetype);
 
-	bool CheckFormat(CxFile * hFile, uint32_t imagetype = 0);
-	bool CheckFormat(uint8_t * buffer, uint32_t size, uint32_t imagetype = 0);
-//@}
+	bool CheckFormat(CxFile* hFile, uint32_t imagetype = 0);
+	bool CheckFormat(uint8_t* buffer, uint32_t size, uint32_t imagetype = 0);
+	//@}
 #endif //CXIMAGE_SUPPORT_DECODE
 
 private:
-	inline void BicubicRGB(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
-	inline void BicubicBGR(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
-	
+	inline void BicubicRGB(uint8_t* data, const int& width, const int& height, const float& x, const float& y,
+	                       float* tabF1, float* tabF);
+	inline void BicubicBGR(uint8_t* data, const int& width, const int& height, const float& x, const float& y,
+	                       float* tabF1, float* tabF);
+
 
 #if CXIMAGE_SUPPORT_ENCODE
+
 protected:
-/** \addtogroup Protected */ //@{
-	bool EncodeSafeCheck(CxFile *hFile);
-//@}
+	/** \addtogroup Protected */ //@{
+	bool EncodeSafeCheck(CxFile* hFile);
+	//@}
 
 public:
-/** \addtogroup Encode */ //@{
+	/** \addtogroup Encode */ //@{
 #ifdef WIN32
 	//bool Save(LPCWSTR filename, uint32_t imagetype=0);
 #endif
 	// For UNICODE support: char -> char
 	bool Save(const char* filename, uint32_t imagetype);
 	//bool Save(const char * filename, uint32_t imagetype=0);
-	bool Encode(FILE * hFile, uint32_t imagetype);
-	bool Encode(CxFile * hFile, uint32_t imagetype);
-	bool Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint32_t imagetype);
-	bool Encode(FILE *hFile, CxImage ** pImages, int32_t pagecount, uint32_t imagetype);
-	bool Encode(uint8_t * &buffer, int32_t &size, uint32_t imagetype);
+	bool Encode(FILE* hFile, uint32_t imagetype);
+	bool Encode(CxFile* hFile, uint32_t imagetype);
+	bool Encode(CxFile* hFile, CxImage** pImages, int32_t pagecount, uint32_t imagetype);
+	bool Encode(FILE* hFile, CxImage** pImages, int32_t pagecount, uint32_t imagetype);
+	bool Encode(uint8_t* & buffer, int32_t& size, uint32_t imagetype);
 
-	void InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, const int &height);
-	void InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, const int &height);
+	void InterpolationBicubicRGB(uint8_t* & dataOut, const int& width, const int& height);
+	void InterpolationBicubicBGR(uint8_t* & dataOut, const int& width, const int& height);
 
-	bool Encode2RGBA(CxFile *hFile, bool bFlipY = false);
-	bool Encode2RGBA32F(float * buffer, bool bFlipY);
-	bool Encode2RGBA(uint8_t * &buffer, int32_t &size, bool bFlipY = false);
-	bool Encode2BGRA(uint8_t * buffer, long size, bool bFlipY);
-	bool Encode2BGRAFloat(float * buffer, long size, bool bFlipY);
-//@}
+	bool Encode2RGBA(CxFile* hFile, bool bFlipY = false);
+	bool Encode2RGBA32F(float* buffer, bool bFlipY);
+	bool Encode2RGBA(uint8_t* & buffer, int32_t& size, bool bFlipY = false);
+	bool Encode2BGRA(uint8_t* buffer, long size, bool bFlipY);
+	bool Encode2BGRAFloat(float* buffer, long size, bool bFlipY);
+	//@}
 #endif //CXIMAGE_SUPPORT_ENCODE
 
-/** \addtogroup Attributes */ //@{
+	/** \addtogroup Attributes */ //@{
 	//misc.
 	bool IsValid() const;
 	bool IsEnabled() const;
-	void Enable(bool enable=true);
+	void Enable(bool enable = true);
 
 	// frame operations
 	int32_t GetNumFrames() const;
 	int32_t GetFrame() const;
 	void SetFrame(int32_t nFrame);
-//@}
+	//@}
 
 #if CXIMAGE_SUPPORT_BASICTRANSFORMATIONS
-/** \addtogroup BasicTransformations */ //@{
+	/** \addtogroup BasicTransformations */ //@{
 	bool GrayScale();
 	bool Flip(bool bFlipSelection = false, bool bFlipAlpha = true);
 	bool Mirror(bool bMirrorSelection = false, bool bMirrorAlpha = true);
 	bool Negative();
-	bool RotateLeft(CxImage* iDst = NULL);
-	bool RotateRight(CxImage* iDst = NULL);
+	bool RotateLeft(CxImage* iDst = nullptr);
+	bool RotateRight(CxImage* iDst = nullptr);
 	bool IncreaseBpp(uint32_t nbit);
-//@}
+	//@}
 #endif //CXIMAGE_SUPPORT_BASICTRANSFORMATIONS
 
 #if CXIMAGE_SUPPORT_TRANSFORMATION
-/** \addtogroup Transformations */ //@{
+	/** \addtogroup Transformations */ //@{
 	// image operations
-	bool Rotate(float angle, CxImage* iDst = NULL);
-	bool Rotate2(float angle, CxImage *iDst = NULL, InterpolationMethod inMethod=IM_BILINEAR,
-                OverflowMethod ofMethod=OM_BACKGROUND, RGBQUAD *replColor=0,
-                bool const optimizeRightAngles=true, bool const bKeepOriginalSize=false);
-	bool Rotate180(CxImage* iDst = NULL);
-	bool Resample(int32_t newx, int32_t newy, int32_t mode = 1, CxImage* iDst = NULL);
-	bool Resample2(int32_t newx, int32_t newy, InterpolationMethod const inMethod=IM_BICUBIC2,
-				OverflowMethod const ofMethod=OM_REPEAT, CxImage* const iDst = NULL,
-				bool const disableAveraging=false);
-	bool DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal = 0, uint32_t clrimportant = 0);
+	bool Rotate(float angle, CxImage* iDst = nullptr);
+	bool Rotate2(float angle, CxImage* iDst = nullptr, InterpolationMethod inMethod = IM_BILINEAR,
+	             OverflowMethod ofMethod = OM_BACKGROUND, RGBQUAD* replColor = nullptr,
+	             bool optimizeRightAngles = true, bool bKeepOriginalSize = false);
+	bool Rotate180(CxImage* iDst = nullptr);
+	bool Resample(int32_t newx, int32_t newy, int32_t mode = 1, CxImage* iDst = nullptr);
+	bool Resample2(int32_t newx, int32_t newy, InterpolationMethod inMethod = IM_BICUBIC2,
+	               OverflowMethod ofMethod = OM_REPEAT, CxImage* iDst = nullptr,
+	               bool disableAveraging = false);
+	bool DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal = nullptr, uint32_t clrimportant = 0);
 	bool Dither(int32_t method = 0);
-	bool Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxImage* iDst = NULL);
-	bool Crop(const RECT& rect, CxImage* iDst = NULL);
-	bool CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, int32_t height, float angle, CxImage* iDst = NULL);
-	bool Skew(float xgain, float ygain, int32_t xpivot=0, int32_t ypivot=0, bool bEnableInterpolation = false);
-	bool Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, RGBQUAD canvascolor, CxImage* iDst = 0);
-	bool Expand(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = 0);
-	bool Thumbnail(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = 0);
-	bool CircleTransform(int32_t type,int32_t rmax=0,float Koeff=1.0f);
-	bool QIShrink(int32_t newx, int32_t newy, CxImage* const iDst = NULL, bool bChangeBpp = false);
+	bool Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxImage* iDst = nullptr);
+	bool Crop(const RECT& rect, CxImage* iDst = nullptr);
+	bool CropRotatedRectangle(int32_t topx, int32_t topy, int32_t width, int32_t height, float angle,
+	                          CxImage* iDst = nullptr);
+	bool Skew(float xgain, float ygain, int32_t xpivot = 0, int32_t ypivot = 0, bool bEnableInterpolation = false);
+	bool Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, RGBQUAD canvascolor, CxImage* iDst = nullptr);
+	bool Expand(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = nullptr);
+	bool Thumbnail(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = nullptr);
+	bool CircleTransform(int32_t type, int32_t rmax = 0, float Koeff = 1.0f);
+	bool QIShrink(int32_t newx, int32_t newy, CxImage* iDst = nullptr, bool bChangeBpp = false);
 
-//@}
+	//@}
 #endif //CXIMAGE_SUPPORT_TRANSFORMATION
 
 #if CXIMAGE_SUPPORT_DSP
@@ -725,10 +749,10 @@ public:
 	static RGBQUAD RGBtoXYZ(RGBQUAD lRGBColor);
 #endif //CXIMAGE_SUPPORT_DSP
 	static RGBQUAD RGBtoRGBQUAD(COLORREF cr);
-	static COLORREF RGBQUADtoRGB (RGBQUAD c);
-//@}
+	static COLORREF RGBQUADtoRGB(RGBQUAD c);
+	//@}
 
-/** \addtogroup Selection */ //@{
+	/** \addtogroup Selection */ //@{
 	bool SelectionIsValid();
 #if CXIMAGE_SUPPORT_SELECTION
 	bool SelectionClear(uint8_t level = 0);
@@ -762,41 +786,41 @@ protected:
 public:
 
 #endif //CXIMAGE_SUPPORT_SELECTION
-//@}
+	//@}
 
 #if CXIMAGE_SUPPORT_ALPHA
-/** \addtogroup Alpha */ //@{
+	/** \addtogroup Alpha */ //@{
 	void AlphaClear();
 	bool AlphaCreate();
 	void AlphaDelete();
 	void AlphaInvert();
 	bool AlphaMirror();
 	bool AlphaFlip();
-	bool AlphaCopy(CxImage &from);
-	bool AlphaSplit(CxImage *dest);
+	bool AlphaCopy(CxImage& from);
+	bool AlphaSplit(CxImage* dest);
 	void AlphaStrip();
 	void AlphaSet(uint8_t level);
-	bool AlphaSet(CxImage &from);
-	void AlphaSet(const int32_t x,const int32_t y,const uint8_t level);
-	uint8_t AlphaGet(const int32_t x,const int32_t y);
+	bool AlphaSet(CxImage& from);
+	void AlphaSet(int32_t x, int32_t y, uint8_t level);
+	uint8_t AlphaGet(int32_t x, int32_t y);
 	uint8_t AlphaGetMax() const;
 	void AlphaSetMax(uint8_t nAlphaMax);
 	bool AlphaIsValid();
-	uint8_t * GetAlpha();
-	uint8_t* AlphaGetPointer(const int32_t x = 0,const int32_t y = 0);
+	uint8_t* GetAlpha();
+	uint8_t* AlphaGetPointer(int32_t x = 0, int32_t y = 0);
 	bool AlphaFromTransparency();
 
 	void AlphaPaletteClear();
-	void AlphaPaletteEnable(bool enable=true);
+	void AlphaPaletteEnable(bool enable = true);
 	bool AlphaPaletteIsEnabled();
 	bool AlphaPaletteIsValid();
-	bool AlphaPaletteSplit(CxImage *dest);
-//@}
+	bool AlphaPaletteSplit(CxImage* dest);
+	//@}
 
 protected:
-/** \addtogroup Protected */ //@{
-	uint8_t BlindAlphaGet(const int32_t x,const int32_t y);
-//@}
+	/** \addtogroup Protected */ //@{
+	uint8_t BlindAlphaGet(int32_t x, int32_t y);
+	//@}
 #endif //CXIMAGE_SUPPORT_ALPHA
 
 public:
@@ -814,28 +838,28 @@ public:
 #endif //CXIMAGE_SUPPORT_LAYERS
 
 public:
-/** \addtogroup Protected */ //@{
+	/** \addtogroup Protected */ //@{
 	void Startup(uint32_t imagetype = 0);
-	void CopyInfo(const CxImage &src);
-	void Ghost(const CxImage *src);
-	void RGBtoBGR(uint8_t *buffer, int32_t length);
-	static float HueToRGB(float n1,float n2, float hue);
-	void Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, uint32_t bluemask, uint8_t bpp);
-	static int32_t CompareColors(const void *elem1, const void *elem2);
-	int16_t m_ntohs(const int16_t word);
-	int32_t m_ntohl(const int32_t dword);
+	void CopyInfo(const CxImage& src);
+	void Ghost(const CxImage* src);
+	void RGBtoBGR(uint8_t* buffer, int32_t length);
+	static float HueToRGB(float n1, float n2, float hue);
+	void Bitfield2RGB(uint8_t* src, uint32_t redmask, uint32_t greenmask, uint32_t bluemask, uint8_t bpp);
+	static int32_t CompareColors(const void* elem1, const void* elem2);
+	int16_t m_ntohs(int16_t word);
+	int32_t m_ntohl(int32_t dword);
 	void bihtoh(BITMAPINFOHEADER* bih);
 
-	void*				pDib; //contains the header, the palette, the pixels
-    BITMAPINFOHEADER    head; //standard header
-	CXIMAGEINFO			info; //extended information
-	uint8_t*			pSelection;	//selected region
-	uint8_t*			pAlpha; //alpha channel
-	CxImage**			ppLayers; //generic layers
-	CxImage**			ppFrames;
-	bool				isbgr;	
-	char				message[1024];//memory for message error
-//@}
+	void* pDib; //contains the header, the palette, the pixels
+	BITMAPINFOHEADER head; //standard header
+	CXIMAGEINFO info; //extended information
+	uint8_t* pSelection; //selected region
+	uint8_t* pAlpha; //alpha channel
+	CxImage** ppLayers; //generic layers
+	CxImage** ppFrames;
+	bool isbgr;
+	char message[1024]; //memory for message error
+	//@}
 };
 
 ////////////////////////////////////////////////////////////////////////////

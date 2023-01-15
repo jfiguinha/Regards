@@ -280,7 +280,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 		return 1;
 	}
 
-	if(showDeleted)
+	if (showDeleted)
 	{
 		checkPos.x = themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge());
 		checkPos.width = checkPos.x + bitmapDelete.GetWidth();
@@ -292,7 +292,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 		}
 	}
 
-	
+
 	return 0;
 }
 
@@ -407,13 +407,12 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 				GetWidth() != themeIcone.GetCheckboxWidth()))
 			{
 				bitmapDelete = CLibResource::CreatePictureFromSVG("IDB_DELETE", themeIcone.GetCheckboxWidth(),
-					themeIcone.GetCheckboxHeight());
+				                                                  themeIcone.GetCheckboxHeight());
 				bitmapDelete = bitmapDelete.ConvertToDisabled();
 			}
 
 			memDC->DrawBitmap(bitmapDelete, themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge()),
-					themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapDelete.GetHeight());
-
+			                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapDelete.GetHeight());
 		}
 	}
 
@@ -624,7 +623,7 @@ int CIcone::GetBitmapHeight()
 	if (themeIcone.showOnlyThumbnail)
 		return themeIcone.GetHeight() - (themeIcone.GetMarge() << 1);
 
-	return static_cast<int>(float(themeIcone.GetHeight()) * 0.75);
+	return static_cast<int>(static_cast<float>(themeIcone.GetHeight()) * 0.75);
 }
 
 CThumbnailData* CIcone::GetData()
@@ -676,7 +675,6 @@ void CIcone::CalculPosition(const wxImage& render)
 
 namespace
 {
-
 	struct BicubicPrecalc
 	{
 		double weight[4];
@@ -686,12 +684,12 @@ namespace
 
 	// The following two local functions are for the B-spline weighting of the
 	// bicubic sampling algorithm
-	static inline double spline_cube(double value)
+	double spline_cube(double value)
 	{
 		return value <= 0.0 ? 0.0 : value * value * value;
 	}
 
-	static inline double spline_weight(double value)
+	double spline_weight(double value)
 	{
 		return (spline_cube(value + 2) -
 			4 * spline_cube(value + 1) +
@@ -700,17 +698,17 @@ namespace
 	}
 
 
-	inline void DoCalc(BicubicPrecalc& precalc, double srcpixd, int oldDim)
+	void DoCalc(BicubicPrecalc& precalc, double srcpixd, int oldDim)
 	{
 		const double dd = srcpixd - static_cast<int>(srcpixd);
 
 		for (int k = -1; k <= 2; k++)
 		{
 			precalc.offset[k + 1] = srcpixd + k < 0.0
-				? 0
-				: srcpixd + k >= oldDim
-				? oldDim - 1
-				: static_cast<int>(srcpixd + k);
+				                        ? 0
+				                        : srcpixd + k >= oldDim
+				                        ? oldDim - 1
+				                        : static_cast<int>(srcpixd + k);
 
 			precalc.weight[k + 1] = spline_weight(k - dd);
 		}
@@ -743,12 +741,11 @@ namespace
 			DoCalc(aWeight[0], srcpixd, oldDim);
 		}
 	}
-
 } // anonymous namespace
 
 
 // This is the bicubic resampling algorithm
-wxImage CIcone::ResampleBicubic(wxImage * src, int width, int height)
+wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
 	/*
 	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
@@ -799,58 +796,58 @@ wxImage CIcone::ResampleBicubic(wxImage * src, int width, int height)
 	ResampleBicubicPrecalc(vPrecalcs, src->GetHeight());
 	ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
 
-	tbb::parallel_for(0, height, 1, [=](int dsty) 
+	tbb::parallel_for(0, height, 1, [=](int dsty)
 	{
-			// We need to calculate the source pixel to interpolate from - Y-axis
-			const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
+		// We need to calculate the source pixel to interpolate from - Y-axis
+		const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
 
-			for (int dstx = 0; dstx < width; dstx++)
+		for (int dstx = 0; dstx < width; dstx++)
+		{
+			int dst_pixel_index = dsty * width * 3 + dstx * 3;
+			// X-axis of pixel to interpolate from
+			const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
+
+			// Sums for each color channel
+			double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
+
+			// Here we actually determine the RGBA values for the destination pixel
+			for (int k = -1; k <= 2; k++)
 			{
-				int dst_pixel_index = dsty * width * 3 + dstx * 3;
-				// X-axis of pixel to interpolate from
-				const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
+				// Y offset
+				const int y_offset = vPrecalc.offset[k + 1];
 
-				// Sums for each color channel
-				double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
-
-				// Here we actually determine the RGBA values for the destination pixel
-				for (int k = -1; k <= 2; k++)
+				// Loop across the X axis
+				for (int i = -1; i <= 2; i++)
 				{
-					// Y offset
-					const int y_offset = vPrecalc.offset[k + 1];
+					// X offset
+					const int x_offset = hPrecalc.offset[i + 1];
 
-					// Loop across the X axis
-					for (int i = -1; i <= 2; i++)
-					{
-						// X offset
-						const int x_offset = hPrecalc.offset[i + 1];
+					// Calculate the exact position where the source data
+					// should be pulled from based on the x_offset and y_offset
+					int src_pixel_index = y_offset * src->GetWidth() + x_offset;
 
-						// Calculate the exact position where the source data
-						// should be pulled from based on the x_offset and y_offset
-						int src_pixel_index = y_offset * src->GetWidth() + x_offset;
+					// Calculate the weight for the specified pixel according
+					// to the bicubic b-spline kernel we're using for
+					// interpolation
+					const double
+						pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
 
-						// Calculate the weight for the specified pixel according
-						// to the bicubic b-spline kernel we're using for
-						// interpolation
-						const double
-							pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
-
-						sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
-						sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
-						sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
-					}
+					sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
+					sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
+					sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
 				}
-				dst_data[dst_pixel_index + 0] = (unsigned char)(sum_r + 0.5);
-				dst_data[dst_pixel_index + 1] = (unsigned char)(sum_g + 0.5);
-				dst_data[dst_pixel_index + 2] = (unsigned char)(sum_b + 0.5);
-
 			}
-		});
+			dst_data[dst_pixel_index + 0] = static_cast<unsigned char>(sum_r + 0.5);
+			dst_data[dst_pixel_index + 1] = static_cast<unsigned char>(sum_g + 0.5);
+			dst_data[dst_pixel_index + 2] = static_cast<unsigned char>(sum_b + 0.5);
+		}
+	});
 
 	return ret_image;
 }
 
-wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical, const bool &forceRedraw)
+wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
+                                const bool& forceRedraw)
 {
 	wxImage image;
 	if (forceRedraw)
@@ -867,11 +864,12 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		image = pThumbnailData->GetwxImage();
 	}
 
-	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() != themeIcone.GetHeight()))
+	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() !=
+		themeIcone.GetHeight()))
 	{
 		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
 		wxMemoryDC memDC(localmemBitmap_backup);
-		
+
 		wxImage scale;
 
 
@@ -879,7 +877,8 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		int tailleAffichageBitmapHeight = 0;
 		float ratio = 0.0;
 
-		if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.GetHeight() != themeIcone.GetHeight())
+		if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
+			GetHeight() != themeIcone.GetHeight())
 		{
 			if (pThumbnailData != nullptr)
 			{
@@ -907,37 +906,42 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			}
 			if (image.IsOk())
 			{
-				GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight,
-					ratio);
+				GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth,
+				                   tailleAffichageBitmapHeight,
+				                   ratio);
 
 				if (config->GetThumbnailQuality() == 0)
 					scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-				else if(photoDefault)
+				else if (photoDefault)
 					scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 				else
 				{
 					if (photoTemp.IsOk())
 					{
-						if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() != tailleAffichageBitmapHeight)
+						if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() !=
+							tailleAffichageBitmapHeight)
 						{
 							wxColor colorToReplace = wxColor(0, 0, 0);
 							wxColor colorActifReplacement = wxColor(255, 255, 255);
-							photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+							photoTemp = CLibResource::CreatePictureFromSVG(
+								"IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 							photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-								colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+							                  colorActifReplacement.Red(), colorActifReplacement.Green(),
+							                  colorActifReplacement.Blue());
 						}
 					}
 					else
 					{
 						wxColor colorToReplace = wxColor(0, 0, 0);
 						wxColor colorActifReplacement = wxColor(255, 255, 255);
-						photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+						photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth,
+						                                               tailleAffichageBitmapHeight);
 						photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-							colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+						                  colorActifReplacement.Red(), colorActifReplacement.Green(),
+						                  colorActifReplacement.Blue());
 					}
 					scale = photoTemp;
 				}
-				
 			}
 
 			scaleBackup = scale;
@@ -962,7 +966,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 //
 //----------------------------------------------------------------------------------
 int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, const bool& flipHorizontal,
-                        const bool& flipVertical, const bool &forceRedraw)
+                        const bool& flipVertical, const bool& forceRedraw)
 {
 	int returnValue = 0;
 
@@ -1040,6 +1044,6 @@ void CIcone::GetBitmapDimension(const int& width, const int& height, int& taille
 {
 	newRatio = CalculRatio(width, height, GetWidth(), GetHeight());
 
-	tailleAffichageBitmapWidth = static_cast<int>(float(width) * newRatio);
-	tailleAffichageBitmapHeight = static_cast<int>(float(height) * newRatio);
+	tailleAffichageBitmapWidth = static_cast<int>(static_cast<float>(width) * newRatio);
+	tailleAffichageBitmapHeight = static_cast<int>(static_cast<float>(height) * newRatio);
 }

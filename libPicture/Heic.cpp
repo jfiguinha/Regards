@@ -118,8 +118,6 @@ cv::Mat GetRGBPicture(const de265_image* img)
 	{
 	case de265_chroma_420:
 		{
-
-
 			if (stride == frame_width && chroma_stride == frame_width / 2)
 			{
 				// fast copy
@@ -132,7 +130,8 @@ cv::Mat GetRGBPicture(const de265_image* img)
 				cv::Mat mSrc_YUV420(cv::Size(frame_width, frame_height + frame_height / 2), CV_8UC1);
 				memcpy(mSrc_YUV420.data, yOrigin, frame_width * frame_height);
 				memcpy(mSrc_YUV420.data + (frame_width * frame_height), cbOrigin, frame_width * frame_height / 4);
-				memcpy(mSrc_YUV420.data + (frame_width * frame_height + frame_width * frame_height / 4), crOrigin, frame_width * frame_height / 4);
+				memcpy(mSrc_YUV420.data + (frame_width * frame_height + frame_width * frame_height / 4), crOrigin,
+				       frame_width * frame_height / 4);
 				cv::cvtColor(mSrc_YUV420, picture, cv::COLOR_YUV2RGB_I420);
 				//cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
 			}
@@ -160,7 +159,6 @@ cv::Mat GetRGBPicture(const de265_image* img)
 				delete[] _cb;
 				delete[] _cr;
 			}
-
 		}
 		break;
 	case de265_chroma_422:
@@ -495,7 +493,8 @@ vector<cv::Mat> CHeic::GetAllPicture(const string& filename, bool& isMasterSeque
 	return listPicture;
 }
 
-void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& data_exif, unsigned int& size, const int& compression, const bool& hasExif)
+void CHeic::SavePicture(const string& filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
+                        const int& compression, const bool& hasExif)
 {
 #ifdef HAS_X265
 	struct heif_error err{};
@@ -509,10 +508,8 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& d
 			heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
 
 
-
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);
-
 
 
 			// encode the image
@@ -522,8 +519,6 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& d
 			                        heif_colorspace_RGB,
 			                        heif_chroma_interleaved_RGBA,
 			                        &image);
-
-
 
 
 			heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height,
@@ -819,7 +814,6 @@ struct mytask
 
 cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 {
-
 	struct PictureEncoder
 	{
 		x265Frame* frame = nullptr;
@@ -911,13 +905,12 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				tasks.push_back(mytask(frame));
 			}
 
-			
+
 			tbb::parallel_for(0, (int)tasks.size(), 1, [=](int k)
-				{
-					mytask task = tasks[k];
-					task.ApplyFilter();
-				});
-			
+			{
+				mytask task = tasks[k];
+				task.ApplyFilter();
+			});
 
 
 			if (tasks.size() > 0)
@@ -932,7 +925,7 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				reader->getWidth(itemId, _width);
 				reader->getHeight(itemId, _heigth);
 
-				
+
 				if (tasks.size() == 1)
 				{
 					picture = tasks[0].GetFrame();
@@ -945,7 +938,6 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 					{
 						try
 						{
-
 							int boxWidth = bitmapSrc.size().width;
 							int boxHeight = bitmapSrc.size().height;
 
@@ -973,7 +965,8 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 								{
 									const char* err_msg = e.what();
 									std::cout << "exception caught: " << err_msg << std::endl;
-									std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+									std::cout << "wrong file format, please input the name of an IMAGE file" <<
+										std::endl;
 								}
 								//out->InsertBitmap(task.GetFrame(), x, y, false);
 								x += boxWidth;
@@ -1005,7 +998,6 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 			}
 
 			tasks.clear();
-
 		}
 
 		if (memoryBuffer != nullptr)
@@ -1024,7 +1016,7 @@ END:
 
 
 	Reader::Destroy(reader);
-	
+
 
 	/*
 
@@ -1103,7 +1095,7 @@ void CHeic::GetPictureDimension(const string& filename, int& width, int& height)
 	}
 }
 
-cv::Mat CHeic::GetThumbnailPicture(const string& filename, int & orientation)
+cv::Mat CHeic::GetThumbnailPicture(const string& filename, int& orientation)
 {
 	cv::Mat picture;
 	auto* reader = Reader::Create();
@@ -1295,7 +1287,6 @@ void CHeic::GetMetadata(const string& filename, uint8_t*& data, unsigned int& si
 
 	Reader::Destroy(reader);
 }
-
 
 
 #endif

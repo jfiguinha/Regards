@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(CBpgOption, wxDialog)
-	//(*EventTable(CBpgOption)
-	//*)
+		//(*EventTable(CBpgOption)
+		//*)
 END_EVENT_TABLE()
 
 CBpgOption::CBpgOption(wxWindow* parent)

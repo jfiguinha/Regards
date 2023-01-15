@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class COilPaintingEffectParameter : public CEffectParameter
 {
 public:
@@ -8,10 +9,11 @@ public:
 		size = 10;
 		dynRatio = 1;
 	};
-	~COilPaintingEffectParameter() override {};
+
+	~COilPaintingEffectParameter() override
+	{
+	};
 
 	int size;
 	int dynRatio;
-
 };
-

@@ -33,7 +33,7 @@
 #endif
 
 #ifndef av_always_inline
-#if AV_GCC_VERSION_AT_LEAST(3,1)
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
 #    define av_always_inline __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
 #    define av_always_inline __forceinline
@@ -50,7 +50,7 @@
 #endif
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(3,1)
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
 #    define av_noinline __attribute__((noinline))
 #elif defined(_MSC_VER)
 #    define av_noinline __declspec(noinline)
@@ -58,31 +58,31 @@
 #    define av_noinline
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(3,1)
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
 #    define av_pure __attribute__((pure))
 #else
 #    define av_pure
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(2,6)
+#if AV_GCC_VERSION_AT_LEAST(2, 6)
 #    define av_const __attribute__((const))
 #else
 #    define av_const
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(4,3)
+#if AV_GCC_VERSION_AT_LEAST(4, 3)
 #    define av_cold __attribute__((cold))
 #else
 #    define av_cold
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(4,1) && !defined(__llvm__)
+#if AV_GCC_VERSION_AT_LEAST(4, 1) && !defined(__llvm__)
 #    define av_flatten __attribute__((flatten))
 #else
 #    define av_flatten
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(3,1)
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
 #    define attribute_deprecated __attribute__((deprecated))
 #elif defined(_MSC_VER)
 #    define attribute_deprecated __declspec(deprecated)
@@ -96,7 +96,7 @@
  * scheduled for removal.
  */
 #ifndef AV_NOWARN_DEPRECATED
-#if AV_GCC_VERSION_AT_LEAST(4,6)
+#if AV_GCC_VERSION_AT_LEAST(4, 6)
 #    define AV_NOWARN_DEPRECATED(code) \
         _Pragma("GCC diagnostic push") \
         _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"") \
@@ -125,13 +125,13 @@
  * away.  This is useful for variables accessed only from inline
  * assembler without the compiler being aware.
  */
-#if AV_GCC_VERSION_AT_LEAST(3,1)
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
 #    define av_used __attribute__((used))
 #else
 #    define av_used
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(3,3)
+#if AV_GCC_VERSION_AT_LEAST(3, 3)
 #   define av_alias __attribute__((may_alias))
 #else
 #   define av_alias
@@ -151,7 +151,7 @@
 #    define av_printf_format(fmtpos, attrpos)
 #endif
 
-#if AV_GCC_VERSION_AT_LEAST(2,5)
+#if AV_GCC_VERSION_AT_LEAST(2, 5)
 #    define av_noreturn __attribute__((noreturn))
 #else
 #    define av_noreturn

@@ -25,7 +25,6 @@ CVignetteFilter::CVignetteFilter()
 
 CVignetteFilter::~CVignetteFilter()
 {
-
 }
 
 int CVignetteFilter::TypeApplyFilter()
@@ -49,9 +48,10 @@ int CVignetteFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CVignetteFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface* filtreInterface)
+void CVignetteFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                             IFiltreEffectInterface* filtreInterface)
 {
-	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+	auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
@@ -63,31 +63,34 @@ void CVignetteFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source
 		elementRadius.push_back(i);
 
 
-	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius), &elementRadius);
-	filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power), &elementRadius);
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius),
+	                              &elementRadius);
+	filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power),
+	                              &elementRadius);
 }
 
-void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData, const wxString& key)
+void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                        const wxString& key)
 {
-	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+	auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 
-	CTreeElementValueInt* valueInt = (CTreeElementValueInt*)valueData;
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
 	int value = valueInt->GetValue();
 	//Video Parameter
 	if (key == libelleEffectRadius)
 	{
-		vignetteEffectParameter->radius = (float)value;
+		vignetteEffectParameter->radius = static_cast<float>(value);
 	}
 	if (key == libelleEffectPower)
 	{
-		vignetteEffectParameter->power = (float)value;
+		vignetteEffectParameter->power = static_cast<float>(value);
 	}
 }
 
-void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                         CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                         int& heightOutput)
 {
-
-
 }
 
 bool CVignetteFilter::IsSourcePreview()
@@ -96,17 +99,18 @@ bool CVignetteFilter::IsSourcePreview()
 }
 
 
-void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                               CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty())
 	{
 		CImageLoadingFormat image;
 		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 
 
-		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+		auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 
 		imageLoad = new CImageLoadingFormat();
@@ -118,7 +122,6 @@ void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter
 
 		delete imageLoad;
 	}
-
 }
 
 CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -126,7 +129,7 @@ CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParame
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
-		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+		auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
@@ -134,7 +137,7 @@ CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParame
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
+
 			filter->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);
@@ -149,7 +152,7 @@ void CVignetteFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* 
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+		auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 		filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 	}
 }
@@ -166,7 +169,7 @@ CEffectParameter* CVignetteFilter::GetEffectPointer()
 
 CEffectParameter* CVignetteFilter::GetDefaultEffectParameter()
 {
-	CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
+	auto vignetteEffectParameter = new CVignetteEffectParameter();
 	//vignetteEffectParameter->power = 0.8;
 	vignetteEffectParameter->radius = 50;
 	return vignetteEffectParameter;

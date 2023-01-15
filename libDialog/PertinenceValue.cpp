@@ -9,8 +9,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(PertinenceValue, wxDialog)
-	//(*EventTable(PertinenceValue)
-	//*)
+		//(*EventTable(PertinenceValue)
+		//*)
 END_EVENT_TABLE()
 
 PertinenceValue::PertinenceValue(wxWindow* parent)

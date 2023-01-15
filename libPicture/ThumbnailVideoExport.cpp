@@ -17,7 +17,7 @@ using namespace cv;
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString>& listOfFile, int delay,
                                                  int fps, int width, int height, int effect)
 {
-    CThumbnailVideoOpenCVExportImpl * thumbnailImpl = nullptr;
+	CThumbnailVideoOpenCVExportImpl* thumbnailImpl = nullptr;
 
 
 	switch (effect)
@@ -36,10 +36,10 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 		break;
 	}
 
-    int movie_duration = 0;
+	int movie_duration = 0;
 	int fourcc = VideoWriter::fourcc('H', '2', '6', '4');
-    Size S = Size((int)width,    // Acquire input size
-        (int)height);
+	Size S = Size((int)width, // Acquire input size
+	              (int)height);
 
 	if (thumbnailImpl != nullptr)
 	{
@@ -58,7 +58,6 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 	}
 
 
-
 	delete thumbnailImpl;
-    return movie_duration;
+	return movie_duration;
 }

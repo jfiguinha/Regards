@@ -24,50 +24,50 @@ class WXDLLIMPEXP_FWD_PDFDOC wxPdfImage;
 class WXDLLIMPEXP_PDFDOC wxPdfPattern
 {
 public:
-  /// Constructor for pattern
-  /**
-  * \param index The pattern index
-  * \param width The pattern width
-  * \param height The pattern height
-  */
-  wxPdfPattern(int index, double width, double height);
+	/// Constructor for pattern
+	/**
+	* \param index The pattern index
+	* \param width The pattern width
+	* \param height The pattern height
+	*/
+	wxPdfPattern(int index, double width, double height);
 
-  /// Copy constructor
-  wxPdfPattern(const wxPdfPattern& pattern);
+	/// Copy constructor
+	wxPdfPattern(const wxPdfPattern& pattern);
 
-  /// Set object index
-  void SetObjIndex(int index) { m_objIndex = index; };
+	/// Set object index
+	void SetObjIndex(int index) { m_objIndex = index; };
 
-  /// Get object index
-  int GetObjIndex() const { return m_objIndex; };
+	/// Get object index
+	int GetObjIndex() const { return m_objIndex; };
 
-  /// Get pattern index
-  int GetIndex() const { return m_index; };
+	/// Get pattern index
+	int GetIndex() const { return m_index; };
 
-  /// Set image
-  void SetImage(wxPdfImage* image) { m_image = image; };
+	/// Set image
+	void SetImage(wxPdfImage* image) { m_image = image; };
 
-  /// Get image
-  wxPdfImage* GetImage() const {return m_image; };
+	/// Get image
+	wxPdfImage* GetImage() const { return m_image; };
 
-  /// Get pattern width
-  double GetWidth() const {return m_width; };
+	/// Get pattern width
+	double GetWidth() const { return m_width; };
 
-  /// Get pattern height
-  double GetHeight() const {return m_height; };
+	/// Get pattern height
+	double GetHeight() const { return m_height; };
 
 private:
-  int    m_objIndex;   ///< object index
-  int    m_index;      ///< pattern index
+	int m_objIndex; ///< object index
+	int m_index; ///< pattern index
 
-  wxPdfImage* m_image; ///< image
+	wxPdfImage* m_image; ///< image
 
-  double m_width;      ///< pattern width
-  double m_height;     ///< pattern height
+	double m_width; ///< pattern width
+	double m_height; ///< pattern height
 
- // double m_xStep;      ///< repeat offset in x direction
-  //double m_yStep;      ///< repeat offset in y direction
-  //double m_matrix[6];  ///< transformation matrix
+	// double m_xStep;      ///< repeat offset in x direction
+	//double m_yStep;      ///< repeat offset in y direction
+	//double m_matrix[6];  ///< transformation matrix
 };
 
 #if 0

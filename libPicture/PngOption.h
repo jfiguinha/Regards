@@ -2,11 +2,11 @@
 #define PNGOPTION_H
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(PngOption)
-	#include <wx/radiobox.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(PngOption)
+#include <wx/radiobox.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(PngOption)
 //*)
@@ -39,7 +39,7 @@ private:
 	//*)
 	bool isOk;
 	int compressOption;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 #endif

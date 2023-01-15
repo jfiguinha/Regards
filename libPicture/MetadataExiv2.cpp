@@ -30,7 +30,6 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 		unsigned int size = 0;
 		if (type == HEIC)
 		{
-
 			CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), buffer, size);
 			if (size > 0)
 			{
@@ -136,7 +135,6 @@ void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 				CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), data, size);
 			}
 		}
-
 	}
 	else if (metaExiv != nullptr)
 		metaExiv->GetMetadataBuffer(data, size);
@@ -206,7 +204,7 @@ vector<CMetadata> CMetadataExiv2::GetMetadata()
 }
 
 
-wxMemoryInputStream * CMetadataExiv2::DecodeThumbnail(wxString& extension, int& orientation)
+wxMemoryInputStream* CMetadataExiv2::DecodeThumbnail(wxString& extension, int& orientation)
 {
 	if (metaExiv != nullptr)
 		return metaExiv->DecodeThumbnail(extension, orientation);

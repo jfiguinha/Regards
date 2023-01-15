@@ -91,7 +91,6 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char* frame_src,
                                      short* spatial,
                                      short* temporal)
 {
-	
 	int x, y;
 	unsigned int pixel_ant;
 	unsigned int tmp;
@@ -104,8 +103,8 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char* frame_src,
 
 	for (x = 0; x < w; x++)
 	{
-		line_ant[x] = tmp = pixel_ant = hqdn3d_lowpass_mul(pixel_ant,frame_src[x] << 8,spatial);
-		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],tmp,temporal);
+		line_ant[x] = tmp = pixel_ant = hqdn3d_lowpass_mul(pixel_ant, frame_src[x] << 8, spatial);
+		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x], tmp, temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 
@@ -118,13 +117,13 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char* frame_src,
 
 		for (x = 0; x < w - 1; x++)
 		{
-			line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],pixel_ant,spatial);
-			pixel_ant = hqdn3d_lowpass_mul(pixel_ant,frame_src[x + 1] << 8,spatial);
-			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],tmp,temporal);
+			line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x], pixel_ant, spatial);
+			pixel_ant = hqdn3d_lowpass_mul(pixel_ant, frame_src[x + 1] << 8, spatial);
+			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x], tmp, temporal);
 			frame_dst[x] = (tmp + 0x7F) >> 8;
 		}
-		line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],pixel_ant,spatial);
-		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],tmp,temporal);
+		line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x], pixel_ant, spatial);
+		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x], tmp, temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 }
@@ -159,13 +158,12 @@ void Chqdn3d::hqdn3d_denoise(unsigned char* frame_src,
 
 	/* If no spatial coefficients, do temporal denoise only */
 	hqdn3d_denoise_spatial(frame_src,
-		frame_dst,
-		line_ant,
-		frame_ant,
-		w, h,
-		spatial,
-		temporal);
-
+	                       frame_dst,
+	                       line_ant,
+	                       frame_ant,
+	                       w, h,
+	                       spatial,
+	                       temporal);
 }
 
 
@@ -263,8 +261,8 @@ int Chqdn3d::ApplyDenoise3D(cv::Mat& bitmapIn)
 	cv::Mat yChannel;
 
 	cvtColor(bitmapIn, ycbcr, cv::COLOR_BGR2YCrCb);
-	
-	cv::extractChannel(ycbcr, yChannel, 0);
+
+	extractChannel(ycbcr, yChannel, 0);
 
 	memcpy(picture_y, yChannel.data, bitmapIn.cols * bitmapIn.rows);
 
@@ -273,10 +271,10 @@ int Chqdn3d::ApplyDenoise3D(cv::Mat& bitmapIn)
 	memcpy(yChannel.data, y_out, bitmapIn.cols * bitmapIn.rows);
 
 	// Merge the the color planes back into an Lab image
-	cv::insertChannel(yChannel, ycbcr, 0);
+	insertChannel(yChannel, ycbcr, 0);
 
 	// convert back to RGB
-	cv::cvtColor(ycbcr, bitmapIn, cv::COLOR_YCrCb2BGR);
+	cvtColor(ycbcr, bitmapIn, cv::COLOR_YCrCb2BGR);
 
 	yChannel.release();
 	ycbcr.release();

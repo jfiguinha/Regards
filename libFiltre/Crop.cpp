@@ -31,7 +31,8 @@ CCrop::~CCrop()
 }
 
 
-void CCrop::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m_lVScroll, const float &ratio, const wxColour &rgb, const wxColour &rgbFirst, const wxColour &rgbSecond, const int32_t &style)
+void CCrop::Dessiner(wxDC* deviceContext, const long& m_lHScroll, const long& m_lVScroll, const float& ratio,
+                     const wxColour& rgb, const wxColour& rgbFirst, const wxColour& rgbSecond, const int32_t& style)
 {
 	//Ajout d'un wxRectangle pour tester le crop
 	//Trouver le wxPoint central
@@ -44,7 +45,7 @@ void CCrop::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m
 
 	wxRect rcTemp;
 	rcTemp.x = XDrawingPosition(ptSelection[0].x, m_lHScroll, ratio) + m_rcAffichage.x;
-	rcTemp.width = (XDrawingPosition(ptSelection[1].x, m_lHScroll, ratio) + m_rcAffichage.x) - rcTemp.x ;
+	rcTemp.width = (XDrawingPosition(ptSelection[1].x, m_lHScroll, ratio) + m_rcAffichage.x) - rcTemp.x;
 	rcTemp.y = YDrawingPosition(ptSelection[0].y, m_lVScroll, ratio) + m_rcAffichage.y;
 	rcTemp.height = (YDrawingPosition(ptSelection[3].y, m_lVScroll, ratio) + m_rcAffichage.y) - rcTemp.y;
 
@@ -141,11 +142,10 @@ void CCrop::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m
 	rcTemp2.height = marge;
 
 	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	
 }
 
-void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CCrop::Selection(const int32_t& xNewSize, const int32_t& yNewSize, const long& m_lHScroll, const long& m_lVScroll,
+                      const float& ratio)
 {
 	//Changement de souris
 	//Test par rapport au x et y
@@ -173,10 +173,10 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 		if ((x > (ptSelection[0].x - marge) && x < (ptSelection[0].x + marge)))
 			iSelect = 1;
 
-		if ((x >(ptSelection[1].x - marge) && x < (ptSelection[1].x + marge)))
+		if ((x > (ptSelection[1].x - marge) && x < (ptSelection[1].x + marge)))
 			iSelect = 2;
 
-		if ((y >(ptSelection[0].y - marge) && y < (ptSelection[0].y + marge)))
+		if ((y > (ptSelection[0].y - marge) && y < (ptSelection[0].y + marge)))
 		{
 			switch (iSelect)
 			{
@@ -233,17 +233,17 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 		default:
 			wxSetCursor(wxCursor(wxCURSOR_CROSS));
 			break;
-
 		}
 	}
 }
 
-void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CCrop::MouseMove(const long& xNewSize, const long& yNewSize, const long& m_lHScroll, const long& m_lVScroll,
+                      const float& ratio)
 {
 	//Dessiner le wxRectangle
 	wxPoint pt;
-	pt.x = (int)xNewSize;
-	pt.y = (int)yNewSize;
+	pt.x = static_cast<int>(xNewSize);
+	pt.y = static_cast<int>(yNewSize);
 
 	if (VerifierValiditerPoint(pt))
 	{
@@ -252,7 +252,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 
 		switch (iSelect)
 		{
-			case 0:
+		case 0:
 			{
 				ptSelection[1].x = x;
 				ptSelection[1].y = ptSelection[0].y;
@@ -264,11 +264,10 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 				ptSelection[3].y = y;
 
 				wxSetCursor(wxCursor(wxCURSOR_CROSS));
-
 			}
 			break;
 
-			case 1:
+		case 1:
 			{
 				ptSelection[0].x = x;
 				ptSelection[3].x = x;
@@ -276,7 +275,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 2:
+		case 2:
 			{
 				ptSelection[1].x = x;
 				ptSelection[2].x = x;
@@ -284,7 +283,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 3:
+		case 3:
 			{
 				ptSelection[0].y = y;
 				ptSelection[1].y = y;
@@ -292,7 +291,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 6:
+		case 6:
 			{
 				ptSelection[2].y = y;
 				ptSelection[3].y = y;
@@ -300,7 +299,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 4:
+		case 4:
 			{
 				//NO - SE
 				//wxPoint bougean 0 NO
@@ -317,7 +316,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 5:
+		case 5:
 			{
 				//NE - SO
 				//wxPoint bougean 3 
@@ -334,7 +333,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 			}
 			break;
 
-			case 7:
+		case 7:
 			{
 				//SO - NE
 				ptSelection[0].x = x;
@@ -343,11 +342,10 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 				ptSelection[2].y = y;
 
 				wxSetCursor(wxCursor(wxCURSOR_SIZENESW));
-
 			}
 			break;
 
-			case 8:
+		case 8:
 			{
 				//SE - NO
 				ptSelection[1].x = x;
@@ -366,17 +364,18 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 	}
 }
 
-void CCrop::InitPoint(const long &m_lx, const long &m_ly, const long &m_lHScroll, const long &m_lVScroll, const float &ratio)
+void CCrop::InitPoint(const long& m_lx, const long& m_ly, const long& m_lHScroll, const long& m_lVScroll,
+                      const float& ratio)
 {
 	float x, y;
-	if(iSelect == 0)
+	if (iSelect == 0)
 	{
 		wxPoint pt;
-		pt.x = (int)m_lx;
-		pt.y = (int)m_ly;
+		pt.x = static_cast<int>(m_lx);
+		pt.y = static_cast<int>(m_ly);
 		if (VerifierValiditerPoint(pt))
 		{
-			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll , ratio);
+			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll, ratio);
 			y = YRealPosition(m_ly - m_rcAffichage.y, m_lVScroll, ratio);
 
 			for (auto i = 0; i < 4; i++)
@@ -388,26 +387,26 @@ void CCrop::InitPoint(const long &m_lx, const long &m_ly, const long &m_lHScroll
 	}
 }
 
-void CCrop::GetPos(wxRect &rc)
+void CCrop::GetPos(wxRect& rc)
 {
 	rc.x = ptSelection[0].x;
 	rc.width = ptSelection[1].x - rc.x;
 	rc.y = ptSelection[0].y;
 	rc.height = ptSelection[3].y - rc.y;
 
-    if(rc.width < 0)
-    {
-        rc.x = rc.x + rc.width;
-        rc.width = abs(rc.width);
-    }
-    
-    if(rc.height < 0)
-    {
-        rc.y = rc.y + rc.height;
-        rc.height = abs(rc.height);
-    }
-    
-    /*
+	if (rc.width < 0)
+	{
+		rc.x = rc.x + rc.width;
+		rc.width = abs(rc.width);
+	}
+
+	if (rc.height < 0)
+	{
+		rc.y = rc.y + rc.height;
+		rc.height = abs(rc.height);
+	}
+
+	/*
 	if ((rc.height + rc.y) > rc.y)
 	{
 		rc.y = rc.height + rc.y;
@@ -419,5 +418,5 @@ void CCrop::GetPos(wxRect &rc)
 		rc.x = rc.x + rc.width;
 		rc.width = 0;
 	}
-     */
+	 */
 }

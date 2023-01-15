@@ -17,11 +17,11 @@ CSqlEngine::~CSqlEngine()
 {
 }
 
-CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
+CSqlLib* CSqlEngine::getInstance(const wxString& baseName)
 {
-	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
-		_listOfBase.end(),
-		[&](const auto& val) { return val.baseName == baseName; });
+	auto i = std::find_if(_listOfBase.begin(),
+	                      _listOfBase.end(),
+	                      [&](const auto& val) { return val.baseName == baseName; });
 
 	if (i != _listOfBase.end())
 	{
@@ -34,12 +34,11 @@ CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 }
 
 
-
-void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName, CSqlLib * sqlLib)
+void CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib)
 {
-	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
-		_listOfBase.end(),
-		[&](const auto& val) { return val.baseName == baseName; });
+	auto i = std::find_if(_listOfBase.begin(),
+	                      _listOfBase.end(),
+	                      [&](const auto& val) { return val.baseName == baseName; });
 	if (i != _listOfBase.end())
 		return;
 
@@ -60,16 +59,15 @@ void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName,
 	{
 		_listOfBase.push_back(db);
 	}
-    
-    db._singleton->CheckVersion(filename);
 
+	db._singleton->CheckVersion(filename);
 }
 
-void CSqlEngine::kill(const wxString &baseName)
+void CSqlEngine::kill(const wxString& baseName)
 {
-	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
-		_listOfBase.end(),
-		[&](const auto& val) { return val.baseName == baseName; });
+	auto i = std::find_if(_listOfBase.begin(),
+	                      _listOfBase.end(),
+	                      [&](const auto& val) { return val.baseName == baseName; });
 
 	if (i != _listOfBase.end())
 	{
@@ -94,5 +92,5 @@ void CSqlEngine::kill(const wxString &baseName)
 			break;
 		}
 	}
-	*/	
+	*/
 }

@@ -15,15 +15,13 @@ namespace Regards
 		public:
 			CImagePanorama()
 			{
-
 			}
 
 			~CImagePanorama()
 			{
-
 			}
 
-			static cv::Mat CreatePanorama(const cv::Mat & image_left, const cv::Mat & image_right);
+			static cv::Mat CreatePanorama(const cv::Mat& image_left, const cv::Mat& image_right);
 		};
 	}
 }

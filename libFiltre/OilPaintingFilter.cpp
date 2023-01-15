@@ -11,11 +11,11 @@ using namespace Regards::Filter;
 
 COilPaintingFilter::COilPaintingFilter()
 {
-	libelleSize = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1);//"Effect.FSize";
-	libelleDynRatio = CLibResource::LoadStringFromResource(L"LBLDYNAMICRATIO", 1);//"Effect.BSize";
+	libelleSize = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.FSize";
+	libelleDynRatio = CLibResource::LoadStringFromResource(L"LBLDYNAMICRATIO", 1); //"Effect.BSize";
 
-//    libelleSize = L"effect.Size";
-//	libelleDynRatio = L"effect.Dynamic Ratio";
+	//    libelleSize = L"effect.Size";
+	//	libelleDynRatio = L"effect.Dynamic Ratio";
 }
 
 COilPaintingFilter::~COilPaintingFilter()
@@ -42,57 +42,61 @@ int COilPaintingFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //return IDM_FILTER_OILPAINTING;
 }
 
-void COilPaintingFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void COilPaintingFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                IFiltreEffectInterface* filtreInterface)
 {
-	COilPaintingEffectParameter * oilPaintingEffectParameter = (COilPaintingEffectParameter *)effectParameter;
-    
+	auto oilPaintingEffectParameter = static_cast<COilPaintingEffectParameter*>(effectParameter);
+
 	this->source = source;
 	this->filename = filename;
-    vector<int> elementColor;
-    for (int i = 0; i < 50; i++)
-        elementColor.push_back(i);
+	vector<int> elementColor;
+	for (int i = 0; i < 50; i++)
+		elementColor.push_back(i);
 
 	vector<int> elementRatio;
 	for (int i = 0; i < 10; i++)
 		elementRatio.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleSize, new CTreeElementValueInt(oilPaintingEffectParameter->size), &elementColor);
-	filtreInterface->AddTreeInfos(libelleDynRatio, new CTreeElementValueInt(oilPaintingEffectParameter->dynRatio), &elementRatio);
+
+	filtreInterface->AddTreeInfos(libelleSize, new CTreeElementValueInt(oilPaintingEffectParameter->size),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleDynRatio, new CTreeElementValueInt(oilPaintingEffectParameter->dynRatio),
+	                              &elementRatio);
 }
 
-void COilPaintingFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void COilPaintingFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                           const wxString& key)
 {
-	COilPaintingEffectParameter * oilPaintingEffectParameter = (COilPaintingEffectParameter *)effectParameter;
-    //Video Parameter
+	auto oilPaintingEffectParameter = static_cast<COilPaintingEffectParameter*>(effectParameter);
+	//Video Parameter
 	//Video Parameter
 	float value = 0.0;
 	switch (valueData->GetType())
 	{
 	case TYPE_ELEMENT_INT:
-	{
-		CTreeElementValueInt * intValue = (CTreeElementValueInt*)valueData;
-		value = intValue->GetValue();
-	}
-	break;
+		{
+			auto intValue = static_cast<CTreeElementValueInt*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	case TYPE_ELEMENT_FLOAT:
-	{
-		CTreeElementValueFloat * intValue = (CTreeElementValueFloat*)valueData;
-		value = intValue->GetValue();
-	}
-	break;
+		{
+			auto intValue = static_cast<CTreeElementValueFloat*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
 	case TYPE_ELEMENT_BOOL:
-	{
-		CTreeElementValueBool * intValue = (CTreeElementValueBool*)valueData;
-		value = intValue->GetValue();
-	}
-	break;
-default: ;
+		{
+			auto intValue = static_cast<CTreeElementValueBool*>(valueData);
+			value = intValue->GetValue();
+		}
+		break;
+	default: ;
 	}
 
-    if (key == libelleSize)
-    {
+	if (key == libelleSize)
+	{
 		oilPaintingEffectParameter->size = value;
-    }
+	}
 	else if (key == libelleDynRatio)
 	{
 		oilPaintingEffectParameter->dynRatio = value;
@@ -103,7 +107,7 @@ void COilPaintingFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParamete
 {
 	if (effectParameter != nullptr)
 	{
-		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		auto oilPaintingParam = static_cast<COilPaintingEffectParameter*>(effectParameter);
 		filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 	}
 }
@@ -120,7 +124,7 @@ CEffectParameter* COilPaintingFilter::GetEffectPointer()
 
 CEffectParameter* COilPaintingFilter::GetDefaultEffectParameter()
 {
-	COilPaintingEffectParameter* oilpainteffect = new COilPaintingEffectParameter();
+	auto oilpainteffect = new COilPaintingEffectParameter();
 	oilpainteffect->size = 10;
 	oilpainteffect->dynRatio = 1;
 	return oilpainteffect;
@@ -133,16 +137,17 @@ bool COilPaintingFilter::IsSourcePreview()
 }
 
 
-void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                  CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty())
 	{
-		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		auto oilPaintingParam = static_cast<COilPaintingEffectParameter*>(effectParameter);
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
@@ -156,9 +161,10 @@ void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParame
 }
 
 
-void COilPaintingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void COilPaintingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                            CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                            int& heightOutput)
 {
-
 }
 
 
@@ -167,12 +173,12 @@ CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectPar
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
-		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		auto oilPaintingParam = static_cast<COilPaintingEffectParameter*>(effectParameter);
 
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);

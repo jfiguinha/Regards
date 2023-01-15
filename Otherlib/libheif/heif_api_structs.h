@@ -28,38 +28,38 @@
 
 struct heif_image_handle
 {
-  std::shared_ptr<heif::HeifContext::Image> image;
+	std::shared_ptr<heif::HeifContext::Image> image;
 
-  // store reference to keep the context alive while we are using the handle (issue #147)
-  std::shared_ptr<heif::HeifContext> context;
+	// store reference to keep the context alive while we are using the handle (issue #147)
+	std::shared_ptr<heif::HeifContext> context;
 };
 
 
 struct heif_image
 {
-  std::shared_ptr<heif::HeifPixelImage> image;
+	std::shared_ptr<heif::HeifPixelImage> image;
 };
 
 
 struct heif_context
 {
-  std::shared_ptr<heif::HeifContext> context;
+	std::shared_ptr<heif::HeifContext> context;
 };
 
 
 struct heif_encoder
 {
-  heif_encoder(const struct heif_encoder_plugin* plugin);
+	heif_encoder(const struct heif_encoder_plugin* plugin);
 
-  ~heif_encoder();
+	~heif_encoder();
 
-  struct heif_error alloc();
+	struct heif_error alloc();
 
-  void release();
+	void release();
 
 
-  const struct heif_encoder_plugin* plugin;
-  void* encoder = nullptr;
+	const struct heif_encoder_plugin* plugin;
+	void* encoder = nullptr;
 };
 
 

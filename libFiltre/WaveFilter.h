@@ -12,38 +12,45 @@
 namespace Regards
 {
 	namespace Filter
-    {
-        class CWaveFilter : public CFilterWindowParam
-        {
-        public:
-            int TypeApplyFilter();
+	{
+		class CWaveFilter : public CFilterWindowParam
+		{
+		public:
+			int TypeApplyFilter() override;
 			CWaveFilter();
-            ~CWaveFilter();
-            int GetNameFilter();
-            wxString GetFilterLabel();
-            int GetTypeFilter();
-            bool SupportMouseClick();
-            bool IsOpenCLCompatible();
-            CDraw* GetDrawingPt();
-			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
-            void Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface);
-            void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
-            bool NeedPreview();
-            CEffectParameter* GetEffectPointer();
-            CEffectParameter* GetDefaultEffectParameter();
-            bool IsSourcePreview();
-            void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing);
-            void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput);
+			~CWaveFilter() override;
+			int GetNameFilter() override;
+			wxString GetFilterLabel() override;
+			int GetTypeFilter() override;
+			bool SupportMouseClick() override;
+			bool IsOpenCLCompatible() override;
+			CDraw* GetDrawingPt() override;
 
-        
-        private:
+			void Filter(CEffectParameter* effectParameter, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override
+			{
+			};
+			void Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override;
+			void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+			                       const wxString& key) override;
+			CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer) override;
+			bool NeedPreview() override;
+			CEffectParameter* GetEffectPointer() override;
+			CEffectParameter* GetDefaultEffectParameter() override;
+			bool IsSourcePreview() override;
+			void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+			                              CFiltreEffet* filtreEffet, CDraw* dessing) override;
+			void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+			                        CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+			                        int& heightOutput) override;
 
-			void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);
+		private:
+			void Drawing(wxMemoryDC* dc, IBitmapDisplay* bitmapViewer, CDraw* m_cDessin) override;
 
-            wxString libelleEffectScale;
-            wxString libelleEffectHeight;
-            wxString libelleEffectRadius;
-        };
-    }
+			wxString libelleEffectScale;
+			wxString libelleEffectHeight;
+			wxString libelleEffectRadius;
+		};
+	}
 }

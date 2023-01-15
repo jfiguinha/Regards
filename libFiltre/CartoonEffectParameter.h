@@ -1,6 +1,6 @@
-
 #pragma once
 #include "EffectParameter.h"
+
 class CCartoonEffectParameter : public CEffectParameter
 {
 public:
@@ -8,8 +8,10 @@ public:
 	{
 		mode = 0;
 	};
-	~CCartoonEffectParameter() {};
+
+	~CCartoonEffectParameter() override
+	{
+	};
 
 	int mode = 0;
 };
-

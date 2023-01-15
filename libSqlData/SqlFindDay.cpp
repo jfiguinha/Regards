@@ -13,13 +13,17 @@ CSqlFindDay::~CSqlFindDay()
 {
 }
 
-bool CSqlFindDay::SearchUniqueCriteria(vector<wxString> * dayVector, const wxString &month, const wxString &year)
+bool CSqlFindDay::SearchUniqueCriteria(vector<wxString>* dayVector, const wxString& month, const wxString& year)
 {
 	this->dayVector = dayVector;
-	return (ExecuteRequest("Select distinct SUBSTR(CreateDate, 9, 2) as day, SUBSTR(CreateDate, 6, 2) as mois, SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA  where mois = '" + month + "' and annee = '" + year + "' order by day desc") != -1) ? true : false;
+	return (ExecuteRequest(
+		       "Select distinct SUBSTR(CreateDate, 9, 2) as day, SUBSTR(CreateDate, 6, 2) as mois, SUBSTR(CreateDate, 1, 4) as annee from PHOTOSSEARCHCRITERIA  where mois = '"
+		       + month + "' and annee = '" + year + "' order by day desc") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlFindDay::TraitementResult(CSqlResult * sqlResult)
+int CSqlFindDay::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -27,7 +31,6 @@ int CSqlFindDay::TraitementResult(CSqlResult * sqlResult)
 		wxString value;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:

@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CMotionBlurEffectParameter : public CEffectParameter
 {
 public:
@@ -10,11 +11,13 @@ public:
 		angle = 40;
 		bitmapWidth = 0;
 	};
-	~CMotionBlurEffectParameter() override {};
+
+	~CMotionBlurEffectParameter() override
+	{
+	};
 
 	int radius;
 	int sigma;
 	int angle;
 	int bitmapWidth;
 };
-

@@ -89,209 +89,211 @@ struct heif_image;
 
 enum heif_error_code
 {
-  // Everything ok, no error occurred.
-  heif_error_Ok = 0,
+	// Everything ok, no error occurred.
+	heif_error_Ok = 0,
 
-  // Input file does not exist.
-  heif_error_Input_does_not_exist = 1,
+	// Input file does not exist.
+	heif_error_Input_does_not_exist = 1,
 
-  // Error in input file. Corrupted or invalid content.
-  heif_error_Invalid_input = 2,
+	// Error in input file. Corrupted or invalid content.
+	heif_error_Invalid_input = 2,
 
-  // Input file type is not supported.
-  heif_error_Unsupported_filetype = 3,
+	// Input file type is not supported.
+	heif_error_Unsupported_filetype = 3,
 
-  // Image requires an unsupported decoder feature.
-  heif_error_Unsupported_feature = 4,
+	// Image requires an unsupported decoder feature.
+	heif_error_Unsupported_feature = 4,
 
-  // Library API has been used in an invalid way.
-  heif_error_Usage_error = 5,
+	// Library API has been used in an invalid way.
+	heif_error_Usage_error = 5,
 
-  // Could not allocate enough memory.
-  heif_error_Memory_allocation_error = 6,
+	// Could not allocate enough memory.
+	heif_error_Memory_allocation_error = 6,
 
-  // The decoder plugin generated an error
-  heif_error_Decoder_plugin_error = 7,
+	// The decoder plugin generated an error
+	heif_error_Decoder_plugin_error = 7,
 
-  // The encoder plugin generated an error
-  heif_error_Encoder_plugin_error = 8,
+	// The encoder plugin generated an error
+	heif_error_Encoder_plugin_error = 8,
 
-  // Error during encoding or when writing to the output
-  heif_error_Encoding_error = 9,
+	// Error during encoding or when writing to the output
+	heif_error_Encoding_error = 9,
 
-  // Application has asked for a color profile type that does not exist
-  heif_error_Color_profile_does_not_exist = 10
+	// Application has asked for a color profile type that does not exist
+	heif_error_Color_profile_does_not_exist = 10
 };
 
 
 enum heif_suberror_code
 {
-  // no further information available
-  heif_suberror_Unspecified = 0,
+	// no further information available
+	heif_suberror_Unspecified = 0,
 
-  // --- Invalid_input ---
+	// --- Invalid_input ---
 
-  // End of data reached unexpectedly.
-  heif_suberror_End_of_data = 100,
+	// End of data reached unexpectedly.
+	heif_suberror_End_of_data = 100,
 
-  // Size of box (defined in header) is wrong
-  heif_suberror_Invalid_box_size = 101,
+	// Size of box (defined in header) is wrong
+	heif_suberror_Invalid_box_size = 101,
 
-  // Mandatory 'ftyp' box is missing
-  heif_suberror_No_ftyp_box = 102,
+	// Mandatory 'ftyp' box is missing
+	heif_suberror_No_ftyp_box = 102,
 
-  heif_suberror_No_idat_box = 103,
+	heif_suberror_No_idat_box = 103,
 
-  heif_suberror_No_meta_box = 104,
+	heif_suberror_No_meta_box = 104,
 
-  heif_suberror_No_hdlr_box = 105,
+	heif_suberror_No_hdlr_box = 105,
 
-  heif_suberror_No_hvcC_box = 106,
+	heif_suberror_No_hvcC_box = 106,
 
-  heif_suberror_No_pitm_box = 107,
+	heif_suberror_No_pitm_box = 107,
 
-  heif_suberror_No_ipco_box = 108,
+	heif_suberror_No_ipco_box = 108,
 
-  heif_suberror_No_ipma_box = 109,
+	heif_suberror_No_ipma_box = 109,
 
-  heif_suberror_No_iloc_box = 110,
+	heif_suberror_No_iloc_box = 110,
 
-  heif_suberror_No_iinf_box = 111,
+	heif_suberror_No_iinf_box = 111,
 
-  heif_suberror_No_iprp_box = 112,
+	heif_suberror_No_iprp_box = 112,
 
-  heif_suberror_No_iref_box = 113,
+	heif_suberror_No_iref_box = 113,
 
-  heif_suberror_No_pict_handler = 114,
+	heif_suberror_No_pict_handler = 114,
 
-  // An item property referenced in the 'ipma' box is not existing in the 'ipco' container.
-  heif_suberror_Ipma_box_references_nonexisting_property = 115,
+	// An item property referenced in the 'ipma' box is not existing in the 'ipco' container.
+	heif_suberror_Ipma_box_references_nonexisting_property = 115,
 
-  // No properties have been assigned to an item.
-  heif_suberror_No_properties_assigned_to_item = 116,
+	// No properties have been assigned to an item.
+	heif_suberror_No_properties_assigned_to_item = 116,
 
-  // Image has no (compressed) data
-  heif_suberror_No_item_data = 117,
+	// Image has no (compressed) data
+	heif_suberror_No_item_data = 117,
 
-  // Invalid specification of image grid (tiled image)
-  heif_suberror_Invalid_grid_data = 118,
+	// Invalid specification of image grid (tiled image)
+	heif_suberror_Invalid_grid_data = 118,
 
-  // Tile-images in a grid image are missing
-  heif_suberror_Missing_grid_images = 119,
+	// Tile-images in a grid image are missing
+	heif_suberror_Missing_grid_images = 119,
 
-  heif_suberror_Invalid_clean_aperture = 120,
+	heif_suberror_Invalid_clean_aperture = 120,
 
-  // Invalid specification of overlay image
-  heif_suberror_Invalid_overlay_data = 121,
+	// Invalid specification of overlay image
+	heif_suberror_Invalid_overlay_data = 121,
 
-  // Overlay image completely outside of visible canvas area
-  heif_suberror_Overlay_image_outside_of_canvas = 122,
+	// Overlay image completely outside of visible canvas area
+	heif_suberror_Overlay_image_outside_of_canvas = 122,
 
-  heif_suberror_Auxiliary_image_type_unspecified = 123,
+	heif_suberror_Auxiliary_image_type_unspecified = 123,
 
-  heif_suberror_No_or_invalid_primary_item = 124,
+	heif_suberror_No_or_invalid_primary_item = 124,
 
-  heif_suberror_No_infe_box = 125,
+	heif_suberror_No_infe_box = 125,
 
-  heif_suberror_Unknown_color_profile_type = 126,
+	heif_suberror_Unknown_color_profile_type = 126,
 
-  heif_suberror_Wrong_tile_image_chroma_format = 127,
+	heif_suberror_Wrong_tile_image_chroma_format = 127,
 
-  heif_suberror_Invalid_fractional_number = 128,
+	heif_suberror_Invalid_fractional_number = 128,
 
-  heif_suberror_Invalid_image_size = 129,
+	heif_suberror_Invalid_image_size = 129,
 
-  heif_suberror_Invalid_pixi_box = 130,
+	heif_suberror_Invalid_pixi_box = 130,
 
-  heif_suberror_No_av1C_box = 131,
+	heif_suberror_No_av1C_box = 131,
 
-  heif_suberror_Wrong_tile_image_pixel_depth = 132,
-
-
-  // --- Memory_allocation_error ---
-
-  // A security limit preventing unreasonable memory allocations was exceeded by the input file.
-  // Please check whether the file is valid. If it is, contact us so that we could increase the
-  // security limits further.
-  heif_suberror_Security_limit_exceeded = 1000,
+	heif_suberror_Wrong_tile_image_pixel_depth = 132,
 
 
-  // --- Usage_error ---
+	// --- Memory_allocation_error ---
 
-  // An item ID was used that is not present in the file.
-  heif_suberror_Nonexisting_item_referenced = 2000, // also used for Invalid_input
-
-  // An API argument was given a NULL pointer, which is not allowed for that function.
-  heif_suberror_Null_pointer_argument = 2001,
-
-  // Image channel referenced that does not exist in the image
-  heif_suberror_Nonexisting_image_channel_referenced = 2002,
-
-  // The version of the passed plugin is not supported.
-  heif_suberror_Unsupported_plugin_version = 2003,
-
-  // The version of the passed writer is not supported.
-  heif_suberror_Unsupported_writer_version = 2004,
-
-  // The given (encoder) parameter name does not exist.
-  heif_suberror_Unsupported_parameter = 2005,
-
-  // The value for the given parameter is not in the valid range.
-  heif_suberror_Invalid_parameter_value = 2006,
+	// A security limit preventing unreasonable memory allocations was exceeded by the input file.
+	// Please check whether the file is valid. If it is, contact us so that we could increase the
+	// security limits further.
+	heif_suberror_Security_limit_exceeded = 1000,
 
 
-  // --- Unsupported_feature ---
+	// --- Usage_error ---
 
-  // Image was coded with an unsupported compression method.
-  heif_suberror_Unsupported_codec = 3000,
+	// An item ID was used that is not present in the file.
+	heif_suberror_Nonexisting_item_referenced = 2000,
+	// also used for Invalid_input
 
-  // Image is specified in an unknown way, e.g. as tiled grid image (which is supported)
-  heif_suberror_Unsupported_image_type = 3001,
+	// An API argument was given a NULL pointer, which is not allowed for that function.
+	heif_suberror_Null_pointer_argument = 2001,
 
-  heif_suberror_Unsupported_data_version = 3002,
+	// Image channel referenced that does not exist in the image
+	heif_suberror_Nonexisting_image_channel_referenced = 2002,
 
-  // The conversion of the source image to the requested chroma / colorspace is not supported.
-  heif_suberror_Unsupported_color_conversion = 3003,
+	// The version of the passed plugin is not supported.
+	heif_suberror_Unsupported_plugin_version = 2003,
 
-  heif_suberror_Unsupported_item_construction_method = 3004,
+	// The version of the passed writer is not supported.
+	heif_suberror_Unsupported_writer_version = 2004,
+
+	// The given (encoder) parameter name does not exist.
+	heif_suberror_Unsupported_parameter = 2005,
+
+	// The value for the given parameter is not in the valid range.
+	heif_suberror_Invalid_parameter_value = 2006,
 
 
-  // --- Encoder_plugin_error ---
+	// --- Unsupported_feature ---
 
-  heif_suberror_Unsupported_bit_depth = 4000,
+	// Image was coded with an unsupported compression method.
+	heif_suberror_Unsupported_codec = 3000,
+
+	// Image is specified in an unknown way, e.g. as tiled grid image (which is supported)
+	heif_suberror_Unsupported_image_type = 3001,
+
+	heif_suberror_Unsupported_data_version = 3002,
+
+	// The conversion of the source image to the requested chroma / colorspace is not supported.
+	heif_suberror_Unsupported_color_conversion = 3003,
+
+	heif_suberror_Unsupported_item_construction_method = 3004,
 
 
-  // --- Encoding_error ---
+	// --- Encoder_plugin_error ---
 
-  heif_suberror_Cannot_write_output_data = 5000,
+	heif_suberror_Unsupported_bit_depth = 4000,
+
+
+	// --- Encoding_error ---
+
+	heif_suberror_Cannot_write_output_data = 5000,
 };
 
 
 struct heif_error
 {
-  // main error category
-  enum heif_error_code code;
+	// main error category
+	enum heif_error_code code;
 
-  // more detailed error code
-  enum heif_suberror_code subcode;
+	// more detailed error code
+	enum heif_suberror_code subcode;
 
-  // textual error message (is always defined, you do not have to check for NULL)
-  const char* message;
+	// textual error message (is always defined, you do not have to check for NULL)
+	const char* message;
 };
 
 
-typedef uint32_t heif_item_id;
-
+using heif_item_id = uint32_t;
 
 
 // ========================= file type check ======================
 
 enum heif_filetype_result
 {
-  heif_filetype_no,
-  heif_filetype_yes_supported,   // it is heif and can be read by libheif
-  heif_filetype_yes_unsupported, // it is heif, but cannot be read by libheif
-  heif_filetype_maybe // not sure whether it is an heif, try detection with more input data
+	heif_filetype_no,
+	heif_filetype_yes_supported,
+	// it is heif and can be read by libheif
+	heif_filetype_yes_unsupported,
+	// it is heif, but cannot be read by libheif
+	heif_filetype_maybe // not sure whether it is an heif, try detection with more input data
 };
 
 // input data should be at least 12 bytes
@@ -302,18 +304,28 @@ enum heif_filetype_result heif_check_filetype(const uint8_t* data, int len);
 // DEPRECATED, use heif_brand2 instead
 enum heif_brand
 {
-  heif_unknown_brand,
-  heif_heic, // the usual HEIF images
-  heif_heix, // 10bit images, or anything that uses h265 with range extension
-  heif_hevc, heif_hevx, // brands for image sequences
-  heif_heim, // multiview
-  heif_heis, // scalable
-  heif_hevm, // multiview sequence
-  heif_hevs, // scalable sequence
-  heif_mif1, // image, any coding algorithm
-  heif_msf1, // sequence, any coding algorithm
-  heif_avif,
-  heif_avis
+	heif_unknown_brand,
+	heif_heic,
+	// the usual HEIF images
+	heif_heix,
+	// 10bit images, or anything that uses h265 with range extension
+	heif_hevc,
+	heif_hevx,
+	// brands for image sequences
+	heif_heim,
+	// multiview
+	heif_heis,
+	// scalable
+	heif_hevm,
+	// multiview sequence
+	heif_hevs,
+	// scalable sequence
+	heif_mif1,
+	// image, any coding algorithm
+	heif_msf1,
+	// sequence, any coding algorithm
+	heif_avif,
+	heif_avis
 };
 
 // input data should be at least 12 bytes
@@ -322,7 +334,7 @@ LIBHEIF_API
 enum heif_brand heif_main_brand(const uint8_t* data, int len);
 
 
-typedef uint32_t heif_brand2;
+using heif_brand2 = uint32_t;
 
 // input data should be at least 12 bytes
 LIBHEIF_API
@@ -371,7 +383,6 @@ LIBHEIF_API
 const char* heif_get_file_mime_type(const uint8_t* data, int len);
 
 
-
 // ========================= heif_context =========================
 // A heif_context represents a HEIF file that has been read.
 // In the future, you will also be able to add pictures to a heif_context
@@ -392,37 +403,40 @@ struct heif_reading_options;
 
 enum heif_reader_grow_status
 {
-  heif_reader_grow_status_size_reached,   // requested size has been reached, we can read until this point
-  heif_reader_grow_status_timeout,        // size has not been reached yet, but it may still grow further
-  heif_reader_grow_status_size_beyond_eof // size has not been reached and never will. The file has grown to its full size
+	heif_reader_grow_status_size_reached,
+	// requested size has been reached, we can read until this point
+	heif_reader_grow_status_timeout,
+	// size has not been reached yet, but it may still grow further
+	heif_reader_grow_status_size_beyond_eof
+	// size has not been reached and never will. The file has grown to its full size
 };
 
 struct heif_reader
 {
-  // API version supported by this reader
-  int reader_api_version;
+	// API version supported by this reader
+	int reader_api_version;
 
-  // --- version 1 functions ---
-  int64_t (* get_position)(void* userdata);
+	// --- version 1 functions ---
+	int64_t (* get_position)(void* userdata);
 
-  // The functions read(), and seek() return 0 on success.
-  // Generally, libheif will make sure that we do not read past the file size.
-  int (* read)(void* data,
-               size_t size,
-               void* userdata);
+	// The functions read(), and seek() return 0 on success.
+	// Generally, libheif will make sure that we do not read past the file size.
+	int (* read)(void* data,
+	             size_t size,
+	             void* userdata);
 
-  int (* seek)(int64_t position,
-               void* userdata);
+	int (* seek)(int64_t position,
+	             void* userdata);
 
-  // When calling this function, libheif wants to make sure that it can read the file
-  // up to 'target_size'. This is useful when the file is currently downloaded and may
-  // grow with time. You may, for example, extract the image sizes even before the actual
-  // compressed image data has been completely downloaded.
-  //
-  // Even if your input files will not grow, you will have to implement at least
-  // detection whether the target_size is above the (fixed) file length
-  // (in this case, return 'size_beyond_eof').
-  enum heif_reader_grow_status (* wait_for_file_size)(int64_t target_size, void* userdata);
+	// When calling this function, libheif wants to make sure that it can read the file
+	// up to 'target_size'. This is useful when the file is currently downloaded and may
+	// grow with time. You may, for example, extract the image sizes even before the actual
+	// compressed image data has been completely downloaded.
+	//
+	// Even if your input files will not grow, you will have to implement at least
+	// detection whether the target_size is above the (fixed) file length
+	// (in this case, return 'size_beyond_eof').
+	enum heif_reader_grow_status (* wait_for_file_size)(int64_t target_size, void* userdata);
 };
 
 
@@ -564,35 +578,35 @@ struct heif_error heif_image_handle_get_depth_image_handle(const struct heif_ima
 
 enum heif_depth_representation_type
 {
-  heif_depth_representation_type_uniform_inverse_Z = 0,
-  heif_depth_representation_type_uniform_disparity = 1,
-  heif_depth_representation_type_uniform_Z = 2,
-  heif_depth_representation_type_nonuniform_disparity = 3
+	heif_depth_representation_type_uniform_inverse_Z = 0,
+	heif_depth_representation_type_uniform_disparity = 1,
+	heif_depth_representation_type_uniform_Z = 2,
+	heif_depth_representation_type_nonuniform_disparity = 3
 };
 
 struct heif_depth_representation_info
 {
-  uint8_t version;
+	uint8_t version;
 
-  // version 1 fields
+	// version 1 fields
 
-  uint8_t has_z_near;
-  uint8_t has_z_far;
-  uint8_t has_d_min;
-  uint8_t has_d_max;
+	uint8_t has_z_near;
+	uint8_t has_z_far;
+	uint8_t has_d_min;
+	uint8_t has_d_max;
 
-  double z_near;
-  double z_far;
-  double d_min;
-  double d_max;
+	double z_near;
+	double z_far;
+	double d_min;
+	double d_max;
 
-  enum heif_depth_representation_type depth_representation_type;
-  uint32_t disparity_reference_view;
+	enum heif_depth_representation_type depth_representation_type;
+	uint32_t disparity_reference_view;
 
-  uint32_t depth_nonlinear_representation_model_size;
-  uint8_t* depth_nonlinear_representation_model;
+	uint32_t depth_nonlinear_representation_model_size;
+	uint8_t* depth_nonlinear_representation_model;
 
-  // version 2 fields below
+	// version 2 fields below
 };
 
 
@@ -608,7 +622,6 @@ LIBHEIF_API
 int heif_image_handle_get_depth_image_representation_info(const struct heif_image_handle* handle,
                                                           heif_item_id depth_image_id,
                                                           const struct heif_depth_representation_info** out);
-
 
 
 // ------------------------- thumbnails -------------------------
@@ -702,10 +715,10 @@ struct heif_error heif_image_handle_get_metadata(const struct heif_image_handle*
 
 enum heif_color_profile_type
 {
-  heif_color_profile_type_not_present = 0,
-  heif_color_profile_type_nclx = heif_fourcc('n', 'c', 'l', 'x'),
-  heif_color_profile_type_rICC = heif_fourcc('r', 'I', 'C', 'C'),
-  heif_color_profile_type_prof = heif_fourcc('p', 'r', 'o', 'f')
+	heif_color_profile_type_not_present = 0,
+	heif_color_profile_type_nclx = heif_fourcc('n', 'c', 'l', 'x'),
+	heif_color_profile_type_rICC = heif_fourcc('r', 'I', 'C', 'C'),
+	heif_color_profile_type_prof = heif_fourcc('p', 'r', 'o', 'f')
 };
 
 
@@ -728,76 +741,79 @@ struct heif_error heif_image_handle_get_raw_color_profile(const struct heif_imag
 
 enum heif_color_primaries
 {
-  heif_color_primaries_ITU_R_BT_709_5 = 1, // g=0.3;0.6, b=0.15;0.06, r=0.64;0.33, w=0.3127,0.3290
-  heif_color_primaries_unspecified = 2,
-  heif_color_primaries_ITU_R_BT_470_6_System_M = 4,
-  heif_color_primaries_ITU_R_BT_470_6_System_B_G = 5,
-  heif_color_primaries_ITU_R_BT_601_6 = 6,
-  heif_color_primaries_SMPTE_240M = 7,
-  heif_color_primaries_generic_film = 8,
-  heif_color_primaries_ITU_R_BT_2020_2_and_2100_0 = 9,
-  heif_color_primaries_SMPTE_ST_428_1 = 10,
-  heif_color_primaries_SMPTE_RP_431_2 = 11,
-  heif_color_primaries_SMPTE_EG_432_1 = 12,
-  heif_color_primaries_EBU_Tech_3213_E = 22
+	heif_color_primaries_ITU_R_BT_709_5 = 1,
+	// g=0.3;0.6, b=0.15;0.06, r=0.64;0.33, w=0.3127,0.3290
+	heif_color_primaries_unspecified = 2,
+	heif_color_primaries_ITU_R_BT_470_6_System_M = 4,
+	heif_color_primaries_ITU_R_BT_470_6_System_B_G = 5,
+	heif_color_primaries_ITU_R_BT_601_6 = 6,
+	heif_color_primaries_SMPTE_240M = 7,
+	heif_color_primaries_generic_film = 8,
+	heif_color_primaries_ITU_R_BT_2020_2_and_2100_0 = 9,
+	heif_color_primaries_SMPTE_ST_428_1 = 10,
+	heif_color_primaries_SMPTE_RP_431_2 = 11,
+	heif_color_primaries_SMPTE_EG_432_1 = 12,
+	heif_color_primaries_EBU_Tech_3213_E = 22
 };
 
 enum heif_transfer_characteristics
 {
-  heif_transfer_characteristic_ITU_R_BT_709_5 = 1,
-  heif_transfer_characteristic_unspecified = 2,
-  heif_transfer_characteristic_ITU_R_BT_470_6_System_M = 4,
-  heif_transfer_characteristic_ITU_R_BT_470_6_System_B_G = 5,
-  heif_transfer_characteristic_ITU_R_BT_601_6 = 6,
-  heif_transfer_characteristic_SMPTE_240M = 7,
-  heif_transfer_characteristic_linear = 8,
-  heif_transfer_characteristic_logarithmic_100 = 9,
-  heif_transfer_characteristic_logarithmic_100_sqrt10 = 10,
-  heif_transfer_characteristic_IEC_61966_2_4 = 11,
-  heif_transfer_characteristic_ITU_R_BT_1361 = 12,
-  heif_transfer_characteristic_IEC_61966_2_1 = 13,
-  heif_transfer_characteristic_ITU_R_BT_2020_2_10bit = 14,
-  heif_transfer_characteristic_ITU_R_BT_2020_2_12bit = 15,
-  heif_transfer_characteristic_ITU_R_BT_2100_0_PQ = 16,
-  heif_transfer_characteristic_SMPTE_ST_428_1 = 17,
-  heif_transfer_characteristic_ITU_R_BT_2100_0_HLG = 18
+	heif_transfer_characteristic_ITU_R_BT_709_5 = 1,
+	heif_transfer_characteristic_unspecified = 2,
+	heif_transfer_characteristic_ITU_R_BT_470_6_System_M = 4,
+	heif_transfer_characteristic_ITU_R_BT_470_6_System_B_G = 5,
+	heif_transfer_characteristic_ITU_R_BT_601_6 = 6,
+	heif_transfer_characteristic_SMPTE_240M = 7,
+	heif_transfer_characteristic_linear = 8,
+	heif_transfer_characteristic_logarithmic_100 = 9,
+	heif_transfer_characteristic_logarithmic_100_sqrt10 = 10,
+	heif_transfer_characteristic_IEC_61966_2_4 = 11,
+	heif_transfer_characteristic_ITU_R_BT_1361 = 12,
+	heif_transfer_characteristic_IEC_61966_2_1 = 13,
+	heif_transfer_characteristic_ITU_R_BT_2020_2_10bit = 14,
+	heif_transfer_characteristic_ITU_R_BT_2020_2_12bit = 15,
+	heif_transfer_characteristic_ITU_R_BT_2100_0_PQ = 16,
+	heif_transfer_characteristic_SMPTE_ST_428_1 = 17,
+	heif_transfer_characteristic_ITU_R_BT_2100_0_HLG = 18
 };
 
 enum heif_matrix_coefficients
 {
-  heif_matrix_coefficients_RGB_GBR = 0,
-  heif_matrix_coefficients_ITU_R_BT_709_5 = 1,  // TODO: or 709-6 according to h.273
-  heif_matrix_coefficients_unspecified = 2,
-  heif_matrix_coefficients_US_FCC_T47 = 4,
-  heif_matrix_coefficients_ITU_R_BT_470_6_System_B_G = 5,
-  heif_matrix_coefficients_ITU_R_BT_601_6 = 6,  // TODO: or 601-7 according to h.273
-  heif_matrix_coefficients_SMPTE_240M = 7,
-  heif_matrix_coefficients_YCgCo = 8,
-  heif_matrix_coefficients_ITU_R_BT_2020_2_non_constant_luminance = 9,
-  heif_matrix_coefficients_ITU_R_BT_2020_2_constant_luminance = 10,
-  heif_matrix_coefficients_SMPTE_ST_2085 = 11,
-  heif_matrix_coefficients_chromaticity_derived_non_constant_luminance = 12,
-  heif_matrix_coefficients_chromaticity_derived_constant_luminance = 13,
-  heif_matrix_coefficients_ICtCp = 14
+	heif_matrix_coefficients_RGB_GBR = 0,
+	heif_matrix_coefficients_ITU_R_BT_709_5 = 1,
+	// TODO: or 709-6 according to h.273
+	heif_matrix_coefficients_unspecified = 2,
+	heif_matrix_coefficients_US_FCC_T47 = 4,
+	heif_matrix_coefficients_ITU_R_BT_470_6_System_B_G = 5,
+	heif_matrix_coefficients_ITU_R_BT_601_6 = 6,
+	// TODO: or 601-7 according to h.273
+	heif_matrix_coefficients_SMPTE_240M = 7,
+	heif_matrix_coefficients_YCgCo = 8,
+	heif_matrix_coefficients_ITU_R_BT_2020_2_non_constant_luminance = 9,
+	heif_matrix_coefficients_ITU_R_BT_2020_2_constant_luminance = 10,
+	heif_matrix_coefficients_SMPTE_ST_2085 = 11,
+	heif_matrix_coefficients_chromaticity_derived_non_constant_luminance = 12,
+	heif_matrix_coefficients_chromaticity_derived_constant_luminance = 13,
+	heif_matrix_coefficients_ICtCp = 14
 };
 
 struct heif_color_profile_nclx
 {
-  // === version 1 fields
+	// === version 1 fields
 
-  uint8_t version;
+	uint8_t version;
 
-  enum heif_color_primaries color_primaries;
-  enum heif_transfer_characteristics transfer_characteristics;
-  enum heif_matrix_coefficients matrix_coefficients;
-  uint8_t full_range_flag;
+	enum heif_color_primaries color_primaries;
+	enum heif_transfer_characteristics transfer_characteristics;
+	enum heif_matrix_coefficients matrix_coefficients;
+	uint8_t full_range_flag;
 
-  // --- decoded values (not used when saving nclx)
+	// --- decoded values (not used when saving nclx)
 
-  float color_primary_red_x, color_primary_red_y;
-  float color_primary_green_x, color_primary_green_y;
-  float color_primary_blue_x, color_primary_blue_y;
-  float color_primary_white_x, color_primary_white_y;
+	float color_primary_red_x, color_primary_red_y;
+	float color_primary_green_x, color_primary_green_y;
+	float color_primary_blue_x, color_primary_blue_y;
+	float color_primary_white_x, color_primary_white_y;
 };
 
 // Returns 'heif_error_Color_profile_does_not_exist' when there is no NCLX profile.
@@ -832,7 +848,6 @@ struct heif_error heif_image_get_nclx_color_profile(const struct heif_image* ima
                                                     struct heif_color_profile_nclx** out_data);
 
 
-
 // ========================= heif_image =========================
 
 // An heif_image contains a decoded pixel image in various colorspaces, chroma formats,
@@ -846,26 +861,26 @@ struct heif_error heif_image_get_nclx_color_profile(const struct heif_image* ima
 
 enum heif_compression_format
 {
-  heif_compression_undefined = 0,
-  heif_compression_HEVC = 1,
-  heif_compression_AVC = 2,
-  heif_compression_JPEG = 3,
-  heif_compression_AV1 = 4
+	heif_compression_undefined = 0,
+	heif_compression_HEVC = 1,
+	heif_compression_AVC = 2,
+	heif_compression_JPEG = 3,
+	heif_compression_AV1 = 4
 };
 
 enum heif_chroma
 {
-  heif_chroma_undefined = 99,
-  heif_chroma_monochrome = 0,
-  heif_chroma_420 = 1,
-  heif_chroma_422 = 2,
-  heif_chroma_444 = 3,
-  heif_chroma_interleaved_RGB = 10,
-  heif_chroma_interleaved_RGBA = 11,
-  heif_chroma_interleaved_RRGGBB_BE = 12,
-  heif_chroma_interleaved_RRGGBBAA_BE = 13,
-  heif_chroma_interleaved_RRGGBB_LE = 14,
-  heif_chroma_interleaved_RRGGBBAA_LE = 15
+	heif_chroma_undefined = 99,
+	heif_chroma_monochrome = 0,
+	heif_chroma_420 = 1,
+	heif_chroma_422 = 2,
+	heif_chroma_444 = 3,
+	heif_chroma_interleaved_RGB = 10,
+	heif_chroma_interleaved_RGBA = 11,
+	heif_chroma_interleaved_RRGGBB_BE = 12,
+	heif_chroma_interleaved_RRGGBBAA_BE = 13,
+	heif_chroma_interleaved_RRGGBB_LE = 14,
+	heif_chroma_interleaved_RRGGBBAA_LE = 15
 };
 
 // DEPRECATED ENUM NAMES
@@ -875,53 +890,53 @@ enum heif_chroma
 
 enum heif_colorspace
 {
-  heif_colorspace_undefined = 99,
-  heif_colorspace_YCbCr = 0,
-  heif_colorspace_RGB = 1,
-  heif_colorspace_monochrome = 2
+	heif_colorspace_undefined = 99,
+	heif_colorspace_YCbCr = 0,
+	heif_colorspace_RGB = 1,
+	heif_colorspace_monochrome = 2
 };
 
 enum heif_channel
 {
-  heif_channel_Y = 0,
-  heif_channel_Cb = 1,
-  heif_channel_Cr = 2,
-  heif_channel_R = 3,
-  heif_channel_G = 4,
-  heif_channel_B = 5,
-  heif_channel_Alpha = 6,
-  heif_channel_interleaved = 10
+	heif_channel_Y = 0,
+	heif_channel_Cb = 1,
+	heif_channel_Cr = 2,
+	heif_channel_R = 3,
+	heif_channel_G = 4,
+	heif_channel_B = 5,
+	heif_channel_Alpha = 6,
+	heif_channel_interleaved = 10
 };
 
 
 enum heif_progress_step
 {
-  heif_progress_step_total = 0,
-  heif_progress_step_load_tile = 1
+	heif_progress_step_total = 0,
+	heif_progress_step_load_tile = 1
 };
 
 
 struct heif_decoding_options
 {
-  uint8_t version;
+	uint8_t version;
 
-  // version 1 options
+	// version 1 options
 
-  // Ignore geometric transformations like cropping, rotation, mirroring.
-  // Default: false (do not ignore).
-  uint8_t ignore_transformations;
+	// Ignore geometric transformations like cropping, rotation, mirroring.
+	// Default: false (do not ignore).
+	uint8_t ignore_transformations;
 
-  void (* start_progress)(enum heif_progress_step step, int max_progress, void* progress_user_data);
+	void (* start_progress)(enum heif_progress_step step, int max_progress, void* progress_user_data);
 
-  void (* on_progress)(enum heif_progress_step step, int progress, void* progress_user_data);
+	void (* on_progress)(enum heif_progress_step step, int progress, void* progress_user_data);
 
-  void (* end_progress)(enum heif_progress_step step, void* progress_user_data);
+	void (* end_progress)(enum heif_progress_step step, void* progress_user_data);
 
-  void* progress_user_data;
+	void* progress_user_data;
 
-  // version 2 options
+	// version 2 options
 
-  uint8_t convert_hdr_to_8bit;
+	uint8_t convert_hdr_to_8bit;
 };
 
 
@@ -1029,7 +1044,7 @@ LIBHEIF_API
 struct heif_error heif_image_set_raw_color_profile(struct heif_image* image,
                                                    const char* profile_type_fourcc_string,
                                                    const void* profile_data,
-                                                   const size_t profile_size);
+                                                   size_t profile_size);
 
 LIBHEIF_API
 struct heif_error heif_image_set_nclx_color_profile(struct heif_image* image,
@@ -1054,14 +1069,14 @@ struct heif_error heif_context_write_to_file(struct heif_context*,
 
 struct heif_writer
 {
-  // API version supported by this writer
-  int writer_api_version;
+	// API version supported by this writer
+	int writer_api_version;
 
-  // --- version 1 functions ---
-  struct heif_error (* write)(struct heif_context* ctx, // TODO: why do we need this parameter?
-                              const void* data,
-                              size_t size,
-                              void* userdata);
+	// --- version 1 functions ---
+	struct heif_error (* write)(struct heif_context* ctx, // TODO: why do we need this parameter?
+	                            const void* data,
+	                            size_t size,
+	                            void* userdata);
 };
 
 LIBHEIF_API
@@ -1184,9 +1199,9 @@ const char* heif_encoder_parameter_get_name(const struct heif_encoder_parameter*
 
 enum heif_encoder_parameter_type
 {
-  heif_encoder_parameter_type_integer = 1,
-  heif_encoder_parameter_type_boolean = 2,
-  heif_encoder_parameter_type_string = 3
+	heif_encoder_parameter_type_integer = 1,
+	heif_encoder_parameter_type_boolean = 2,
+	heif_encoder_parameter_type_string = 3
 };
 
 // Return the parameter type.
@@ -1293,30 +1308,30 @@ int heif_encoder_has_default(struct heif_encoder*,
 
 struct heif_encoding_options
 {
-  uint8_t version;
+	uint8_t version;
 
-  // version 1 options
+	// version 1 options
 
-  uint8_t save_alpha_channel; // default: true
+	uint8_t save_alpha_channel; // default: true
 
-  // version 2 options
+	// version 2 options
 
-  // Crops heif images with a grid wrapper instead of a 'clap' transform.
-  // Results in slightly larger file size.
-  // Default: on.
-  uint8_t macOS_compatibility_workaround;
+	// Crops heif images with a grid wrapper instead of a 'clap' transform.
+	// Results in slightly larger file size.
+	// Default: on.
+	uint8_t macOS_compatibility_workaround;
 
-  // version 3 options
+	// version 3 options
 
-  uint8_t save_two_colr_boxes_when_ICC_and_nclx_available; // default: false
+	uint8_t save_two_colr_boxes_when_ICC_and_nclx_available; // default: false
 
-  // version 4 options
+	// version 4 options
 
-  // Set this to the NCLX parameters to be used in the output image or set to NULL
-  // when the same parameters as in the input image should be used.
-  struct heif_color_profile_nclx* output_nclx_profile;
+	// Set this to the NCLX parameters to be used in the output image or set to NULL
+	// when the same parameters as in the input image should be used.
+	struct heif_color_profile_nclx* output_nclx_profile;
 
-  uint8_t macOS_compatibility_workaround_no_nclx_profile;
+	uint8_t macOS_compatibility_workaround_no_nclx_profile;
 };
 
 LIBHEIF_API
@@ -1416,7 +1431,6 @@ LIBHEIF_API
 int heif_image_is_premultiplied_alpha(struct heif_image* image);
 
 
-
 // --- register plugins
 
 struct heif_decoder_plugin;
@@ -1431,7 +1445,6 @@ struct heif_error heif_register_decoder_plugin(const struct heif_decoder_plugin*
 
 LIBHEIF_API
 struct heif_error heif_register_encoder_plugin(const struct heif_encoder_plugin*);
-
 
 
 // DEPRECATED, typo in function name

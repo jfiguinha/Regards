@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CBrightAndContrastEffectParameter : public CEffectParameter
 {
 public:
@@ -8,9 +9,11 @@ public:
 		contrast = 15;
 		brightness = 20;
 	};
-	~CBrightAndContrastEffectParameter(){};
+
+	~CBrightAndContrastEffectParameter() override
+	{
+	};
 
 	long contrast;
 	long brightness;
 };
-

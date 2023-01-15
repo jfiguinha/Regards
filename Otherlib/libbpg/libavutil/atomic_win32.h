@@ -24,30 +24,34 @@
 #include <windows.h>
 
 #define avpriv_atomic_int_get atomic_int_get_win32
-static inline int atomic_int_get_win32(volatile int *ptr)
+
+static inline int atomic_int_get_win32(volatile int* ptr)
 {
-    MemoryBarrier();
-    return *ptr;
+	MemoryBarrier();
+	return *ptr;
 }
 
 #define avpriv_atomic_int_set atomic_int_set_win32
-static inline void atomic_int_set_win32(volatile int *ptr, int val)
+
+static inline void atomic_int_set_win32(volatile int* ptr, int val)
 {
-    *ptr = val;
-    MemoryBarrier();
+	*ptr = val;
+	MemoryBarrier();
 }
 
 #define avpriv_atomic_int_add_and_fetch atomic_int_add_and_fetch_win32
-static inline int atomic_int_add_and_fetch_win32(volatile int *ptr, int inc)
+
+static inline int atomic_int_add_and_fetch_win32(volatile int* ptr, int inc)
 {
-    return inc + InterlockedExchangeAdd(ptr, inc);
+	return inc + InterlockedExchangeAdd(ptr, inc);
 }
 
 #define avpriv_atomic_ptr_cas atomic_ptr_cas_win32
-static inline void *atomic_ptr_cas_win32(void * volatile *ptr,
-                                         void *oldval, void *newval)
+
+static inline void* atomic_ptr_cas_win32(void* volatile * ptr,
+                                         void* oldval, void* newval)
 {
-    return InterlockedCompareExchangePointer(ptr, newval, oldval);
+	return InterlockedCompareExchangePointer(ptr, newval, oldval);
 }
 
 #endif /* AVUTIL_ATOMIC_WIN32_H */

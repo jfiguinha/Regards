@@ -39,9 +39,10 @@ int CSharpenMaskingFilter::GetTypeFilter()
 	return CONVOLUTION_EFFECT; //return IDM_SHARPENMASKING;
 }
 
-void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CSharpenMaskingFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                   IFiltreEffectInterface* filtreInterface)
 {
-	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
+	auto sharpenMaskingParameter = static_cast<CSharpenMaskingEffectParameter*>(effectParameter);
 	this->filename = filename;
 	this->source = source;
 
@@ -49,29 +50,32 @@ void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, cv::Mat &
 	for (auto i = 0; i < 100; i++)
 		elementFreq.push_back(i);
 
-	filtreInterface->AddTreeInfos(libelleSharpness, new CTreeElementValueInt(sharpenMaskingParameter->sharpness), &elementFreq);
+	filtreInterface->AddTreeInfos(libelleSharpness, new CTreeElementValueInt(sharpenMaskingParameter->sharpness),
+	                              &elementFreq);
 }
 
-void CSharpenMaskingFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CSharpenMaskingFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                              const wxString& key)
 {
-	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
+	auto sharpenMaskingParameter = static_cast<CSharpenMaskingEffectParameter*>(effectParameter);
 
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
+	int value = valueInt->GetValue();
 
 	//Video Parameter
 	if (key == libelleSharpness)
 	{
-		sharpenMaskingParameter->sharpness = (float)value / 10.0f;
+		sharpenMaskingParameter->sharpness = static_cast<float>(value) / 10.0f;
 	}
 }
 
 
-void CSharpenMaskingFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+void CSharpenMaskingFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+                                         const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+		auto sharpenParameter = static_cast<CSharpenMaskingEffectParameter*>(effectParameter);
 		filtreEffet->SharpenMasking(sharpenParameter->sharpness);
 	}
 }
@@ -88,7 +92,7 @@ CEffectParameter* CSharpenMaskingFilter::GetEffectPointer()
 
 CEffectParameter* CSharpenMaskingFilter::GetDefaultEffectParameter()
 {
-	CSharpenMaskingEffectParameter* sharpen = new CSharpenMaskingEffectParameter();
+	auto sharpen = new CSharpenMaskingEffectParameter();
 	sharpen->sharpness = 1.0f;
 	return sharpen;
 }
@@ -100,20 +104,21 @@ bool CSharpenMaskingFilter::IsSourcePreview()
 }
 
 
-void CSharpenMaskingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CSharpenMaskingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                     CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+		auto sharpenParameter = static_cast<CSharpenMaskingEffectParameter*>(effectParameter);
 		filtreEffet->SharpenMasking(sharpenParameter->sharpness);
 	}
-
 }
 
 
-void CSharpenMaskingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CSharpenMaskingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                               CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                               int& heightOutput)
 {
-
 }
 
 CImageLoadingFormat* CSharpenMaskingFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
@@ -128,9 +133,9 @@ CImageLoadingFormat* CSharpenMaskingFilter::ApplyEffect(CEffectParameter* effect
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
-			
+
 			imageLoad = new CImageLoadingFormat();
-			CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+			auto sharpenParameter = static_cast<CSharpenMaskingEffectParameter*>(effectParameter);
 			filter->SharpenMasking(sharpenParameter->sharpness);
 			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);

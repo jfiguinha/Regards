@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(WebpOption, wxDialog)
-	//(*EventTable(WebpOption)
-	//*)
+		//(*EventTable(WebpOption)
+		//*)
 END_EVENT_TABLE()
 
 WebpOption::WebpOption(wxWindow* parent)

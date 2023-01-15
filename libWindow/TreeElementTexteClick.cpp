@@ -36,7 +36,7 @@ void CTreeElementTexteClick::ClickElement(wxWindow* window, const int& x, const 
 {
 	switch (typeElement)
 	{
-		//Ouverture d'un fichier dans les ressources
+	//Ouverture d'un fichier dans les ressources
 	case 1:
 		{
 			wxString helpFile = CFileUtility::GetResourcesFolderPath();
@@ -45,7 +45,7 @@ void CTreeElementTexteClick::ClickElement(wxWindow* window, const int& x, const 
 		}
 		break;
 
-		//Ouverture d'un lien URL
+	//Ouverture d'un lien URL
 	case 2:
 		{
 			wxLaunchDefaultApplication(linkElement);

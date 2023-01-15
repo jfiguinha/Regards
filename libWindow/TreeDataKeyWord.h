@@ -1,18 +1,14 @@
 #pragma once
 #include "TreeData.h"
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CTreeDataKeyWord : public CTreeData
 	{
-		class CTreeDataKeyWord : public CTreeData
-		{
-		public:
-			CTreeDataKeyWord(void);
-			~CTreeDataKeyWord(void);
+	public:
+		CTreeDataKeyWord(void);
+		~CTreeDataKeyWord(void);
 
-
-		protected:
-		};
-	}
+	protected:
+	};
 }

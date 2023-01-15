@@ -1,12 +1,12 @@
 #pragma once
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(ExrOption)
-	#include <wx/radiobox.h>
-	#include <wx/statbox.h>
-	#include <wx/slider.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(ExrOption)
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
+#include <wx/slider.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
 //(*Headers(ExrOption)
 //*)
@@ -36,5 +36,5 @@ private:
 
 	int compressOption;
 	bool isOk;
-DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };

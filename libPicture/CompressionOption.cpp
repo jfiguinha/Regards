@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(CompressionOption, wxDialog)
-	//(*EventTable(CompressionOption)
-	//*)
+		//(*EventTable(CompressionOption)
+		//*)
 END_EVENT_TABLE()
 
 CompressionOption::CompressionOption(wxWindow* parent)

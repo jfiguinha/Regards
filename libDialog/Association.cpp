@@ -18,8 +18,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(Association, wxDialog)
-	//(*EventTable(Association)
-	//*)
+		//(*EventTable(Association)
+		//*)
 END_EVENT_TABLE()
 
 Association::Association(wxWindow* parent)

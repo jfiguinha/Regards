@@ -43,11 +43,9 @@ namespace Regards
 
 			void UpdateScreenRatio() override;
 
-
 		protected:
 			//Slider Event
 			CSliderInterface* sliderEvent;
-
 
 		private:
 			void InsertPreviousButton(const int& xStart, wxDC* context);

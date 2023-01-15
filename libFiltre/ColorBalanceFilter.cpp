@@ -21,9 +21,9 @@ using namespace Regards::Filter;
 
 CColorBalanceFilter::CColorBalanceFilter()
 {
-    libelleEffectColorRed = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORRED",1);
-    libelleEffectColorGreen = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORGREEN",1);
-    libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE",1);
+	libelleEffectColorRed = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORRED", 1);
+	libelleEffectColorGreen = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORGREEN", 1);
+	libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE", 1);
 }
 
 int CColorBalanceFilter::TypeApplyFilter()
@@ -33,7 +33,6 @@ int CColorBalanceFilter::TypeApplyFilter()
 
 CColorBalanceFilter::~CColorBalanceFilter()
 {
-    
 }
 
 wxString CColorBalanceFilter::GetFilterLabel()
@@ -49,29 +48,34 @@ int CColorBalanceFilter::GetNameFilter()
 
 int CColorBalanceFilter::GetTypeFilter()
 {
-	return COLOR_EFFECT;// 
+	return COLOR_EFFECT; // 
 }
 
-void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
+void CColorBalanceFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+                                 IFiltreEffectInterface* filtreInterface)
 {
-    CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
-    
+	auto rgbEffectParameter = static_cast<CRgbEffectParameter*>(effectParameter);
+
 	this->source = source;
 	this->filename = filename;
-    vector<int> elementColor;
-    for (auto i = -255; i < 256; i++)
-        elementColor.push_back(i);
-    
-    filtreInterface->AddTreeInfos(libelleEffectColorRed, new CTreeElementValueInt(rgbEffectParameter->red), &elementColor);
-    filtreInterface->AddTreeInfos(libelleEffectColorGreen, new CTreeElementValueInt(rgbEffectParameter->green), &elementColor);
-    filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(rgbEffectParameter->blue), &elementColor);
+	vector<int> elementColor;
+	for (auto i = -255; i < 256; i++)
+		elementColor.push_back(i);
+
+	filtreInterface->AddTreeInfos(libelleEffectColorRed, new CTreeElementValueInt(rgbEffectParameter->red),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectColorGreen, new CTreeElementValueInt(rgbEffectParameter->green),
+	                              &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(rgbEffectParameter->blue),
+	                              &elementColor);
 }
 
-void CColorBalanceFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
+void CColorBalanceFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+                                            const wxString& key)
 {
-    CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
-    
-	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
+	auto rgbEffectParameter = static_cast<CRgbEffectParameter*>(effectParameter);
+
+	auto valueInt = static_cast<CTreeElementValueInt*>(valueData);
 
 	if (rgbEffectParameter != nullptr && valueInt != nullptr)
 	{
@@ -92,11 +96,12 @@ void CColorBalanceFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 	}
 }
 
-void CColorBalanceFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+void CColorBalanceFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+                                       const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
-		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+		auto rgbParameter = static_cast<CRgbEffectParameter*>(effectParameter);
 		filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
 	}
 }
@@ -113,7 +118,7 @@ CEffectParameter* CColorBalanceFilter::GetEffectPointer()
 
 CEffectParameter* CColorBalanceFilter::GetDefaultEffectParameter()
 {
-	CRgbEffectParameter* rgbFilter = new CRgbEffectParameter();
+	auto rgbFilter = new CRgbEffectParameter();
 	rgbFilter->red = 120;
 	rgbFilter->green = 120;
 	rgbFilter->blue = 120;
@@ -126,20 +131,21 @@ bool CColorBalanceFilter::IsSourcePreview()
 }
 
 
-void CColorBalanceFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+void CColorBalanceFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                                   CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	if (effectParameter != nullptr && !source.empty())
 	{
-		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+		auto rgbParameter = static_cast<CRgbEffectParameter*>(effectParameter);
 		filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
 	}
-
 }
 
 
-void CColorBalanceFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+void CColorBalanceFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
+                                             CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput,
+                                             int& heightOutput)
 {
-
 }
 
 
@@ -155,8 +161,8 @@ CImageLoadingFormat* CColorBalanceFilter::ApplyEffect(CEffectParameter* effectPa
 			image.SetPicture(source);
 			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
-			
-			CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+
+			auto rgbParameter = static_cast<CRgbEffectParameter*>(effectParameter);
 			filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filtre->GetBitmap(true);

@@ -22,11 +22,11 @@ using namespace dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 using namespace std;
-using namespace cv::face;
+using namespace face;
 using namespace std;
 
 
-std::map<int, cv::Mat> listScore;
+std::map<int, Mat> listScore;
 
 struct FaceValueIntegration
 {
@@ -36,9 +36,9 @@ struct FaceValueIntegration
 
 
 static Net netPosition;
-static cv::CascadeClassifier eye_cascade;
+static CascadeClassifier eye_cascade;
 std::mutex CFaceDetector::muFaceMark;
-static Ptr<face::Facemark> facemark;
+static Ptr<Facemark> facemark;
 static Ptr<FaceRecognizerSF> faceRecognizer;
 
 const Scalar meanVal(104.0, 177.0, 123.0);
@@ -89,7 +89,7 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 	return new_ratio;
 }
 
-int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat& pBitmap)
+int CFaceDetector::DectectOrientationByFaceDetector(const Mat& pBitmap)
 {
 	std::vector<Rect> pointOfFace;
 	bool faceFound = false;
@@ -117,7 +117,6 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat& pBitmap)
 					{
 						selectAngle = listOfFace[i].angle;
 						break;
-
 					}
 					catch (Exception& e)
 					{
@@ -127,7 +126,6 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat& pBitmap)
 						faceFound = false;
 					}
 				}
-
 			}
 		}
 	}
@@ -137,12 +135,10 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat& pBitmap)
 
 void CFaceDetector::LoadModel(const bool& openCLCompatible)
 {
-
 	try
 	{
 		CDetectFacePCN detectFacePCN;
 		CDetectFace detectFace;
-
 
 
 #ifdef WIN32
@@ -156,7 +152,7 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 #endif
 
 
-		facemark = face::createFacemarkKazemi();
+		facemark = createFacemarkKazemi();
 		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
 
 		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
@@ -176,17 +172,17 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 }
 
 
-cv::Point2f rotatePointUsingTransformationMat(const cv::Point2f& inPoint, const cv::Point2f& center, const double& rotAngle)
+Point2f rotatePointUsingTransformationMat(const Point2f& inPoint, const Point2f& center, const double& rotAngle)
 {
 	double angRad = rotAngle * (CV_PI / 180);
-	cv::Point2f outPoint;
+	Point2f outPoint;
 	//CW rotation
 	outPoint.x = std::cos(angRad) * inPoint.x - std::sin(angRad) * inPoint.y;
 	outPoint.y = std::sin(angRad) * inPoint.x + std::cos(angRad) * inPoint.y;
 	return outPoint;
 }
 
-Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, const cv::Mat& image)
+Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, const Mat& image)
 {
 	//Mat image = pBitmap->GetMatrix();
 	Mat dst;
@@ -228,9 +224,9 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	return dst;
 }
 
-std::vector<cv::Rect> CFaceDetector::GetRectFace(const cv::Mat& picture)
+std::vector<Rect> CFaceDetector::GetRectFace(const Mat& picture)
 {
-	std::vector<cv::Rect> listFace;
+	std::vector<Rect> listFace;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
@@ -245,7 +241,8 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(const cv::Mat& picture)
 	return listFace;
 }
 
-float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& pictureWidthOut, const int& pictureHeightOut)
+float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& pictureWidthOut,
+                         const int& pictureHeightOut)
 {
 	float new_ratio = 1;
 
@@ -269,7 +266,7 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, cons
 }
 
 
-std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString &filename)
+std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& filename)
 {
 	std::vector<int> listFace;
 	int i = 0;
@@ -292,24 +289,24 @@ std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString 
 		if (source.size().width > 600 || source.size().height > 600)
 		{
 			dRatio = CalculPictureRatio(source.size().width, source.size().height, 600, 600);
-			invertRatio = CalculPictureRatio(source.size().width * dRatio, source.size().height * dRatio, source.size().width, source.size().height);
+			invertRatio = CalculPictureRatio(source.size().width * dRatio, source.size().height * dRatio,
+			                                 source.size().width, source.size().height);
 			resize(source, resizeSource, Size(source.size().width * dRatio, source.size().height * dRatio));
-            detectFacePCN->DetectFace(resizeSource, listOfFace, pointOfFace);
+			detectFacePCN->DetectFace(resizeSource, listOfFace, pointOfFace);
 		}
 		else
 			detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
-		
-		
+
+
 		for (CFace face : listOfFace)
 		{
 			if (face.confidence > confidenceThreshold)
 			{
 				Mat resizedImage;
 				Size size(150, 150);
-				
+
 				try
 				{
-							
 					face.myROI.x *= invertRatio;
 					face.myROI.y *= invertRatio;
 					face.myROI.width *= invertRatio;
@@ -322,26 +319,22 @@ std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString 
 					catch (Exception& e)
 					{
 						source(face.myROI).copyTo(resizedImage);
-
-
 					}
 
 					float bestConfidence = 0;
-                    Mat resizedBgra;
-                    cvtColor(resizedImage, resizedBgra, COLOR_BGR2BGRA);
+					Mat resizedBgra;
+					cvtColor(resizedImage, resizedBgra, COLOR_BGR2BGRA);
 					int nbFace = detectFace->FindNbFace(resizedBgra, confidenceThreshold, bestConfidence);
 
 					if (nbFace > 0)
 					{
-
-
 						Mat localFace;
 						std::vector<uchar> buff;
 						resize(resizedImage, localFace, size);
 						ImageToJpegBuffer(localFace, buff);
 						int numFace = facePhoto.InsertFace(filename, ++i, face.croppedImage.rows,
-							face.croppedImage.cols, face.confidence, buff.data(),
-							buff.size());
+						                                   face.croppedImage.cols, face.confidence, buff.data(),
+						                                   buff.size());
 
 						listFace.push_back(numFace);
 						face.croppedImage.release();
@@ -370,7 +363,7 @@ std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString 
 }
 
 
-void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
+void CFaceDetector::DetectEyes(const Mat& pBitmap)
 {
 	std::vector<Rect> pointOfFace;
 	bool faceFound = false;
@@ -380,7 +373,7 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 	muLoading.unlock();
 
 
-	Mat Source;	
+	Mat Source;
 	if (isLoading)
 	{
 		std::vector<CFace> listOfFace;
@@ -406,7 +399,7 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
 
 						warpAffine(face, faceColor, rot, bbox.size());
-						Rect rc = { 0,0, faceColor.size().width, faceColor.size().height};
+						Rect rc = {0, 0, faceColor.size().width, faceColor.size().height};
 						Mat gray;
 						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
 
@@ -414,9 +407,10 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 						//int radiusR = 40;
 
 						faces.push_back(rc);
-					
-						std::vector<cv::Rect> eyes;
-						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
+
+						std::vector<Rect> eyes;
+						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);
+						// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
 
 						for (int p = 0; p < eyes.size(); p++)
 						{
@@ -446,8 +440,6 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 
 						if (eyes.size() == 2)
 						{
-
-
 							vector<vector<Point2f>> shapes;
 
 							try
@@ -464,9 +456,9 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 							}
 
 							std::vector<Point2f> landmarks = shapes[0];
-							
+
 							std::vector<Point2f> _veyeLeft;
-							for(int p = 37;p < 42;p++)
+							for (int p = 37; p < 42; p++)
 								_veyeLeft.push_back(landmarks[p]);
 
 							Rect eyeLeft = boundingRect(_veyeLeft);
@@ -484,14 +476,19 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 								Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
 								Mat rot = getRotationMatrix2D(center22, 360 - listOfFace[i].angle, 1.0);
 								// determine bounding rectangle
-								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - listOfFace[i].angle).boundingRect();
+								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - listOfFace[i].angle).
+									boundingRect();
 								// adjust transformation matrix
 								rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
 								rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
 
 								warpAffine(faceColor, faceColor, rot, bbox.size());
 
-								rc = { (bbox.width - listOfFace[i].myROI.width) / 2, (bbox.height - listOfFace[i].myROI.height) / 2,listOfFace[i].myROI.width, listOfFace[i].myROI.height };
+								rc = {
+									(bbox.width - listOfFace[i].myROI.width) / 2,
+									(bbox.height - listOfFace[i].myROI.height) / 2, listOfFace[i].myROI.width,
+									listOfFace[i].myROI.height
+								};
 								rc.x += 1;
 								rc.y += 1;
 								rc.width -= 2;
@@ -512,7 +509,6 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 							faceColor.copyTo(Source(listOfFace[i].myROI));
 							faceFound = true;
 						}
-
 					}
 					catch (Exception& e)
 					{
@@ -521,13 +517,12 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 					}
 				}
-				
 			}
 		}
 	}
 }
 
-void CFaceDetector::ImageToJpegBuffer(const cv::Mat& image, std::vector<uchar>& buff)
+void CFaceDetector::ImageToJpegBuffer(const Mat& image, std::vector<uchar>& buff)
 {
 	//std::vector<uchar> buff;//buffer for coding
 	std::vector<int> param(2);
@@ -536,7 +531,7 @@ void CFaceDetector::ImageToJpegBuffer(const cv::Mat& image, std::vector<uchar>& 
 	imencode(".jpg", image, buff, param);
 }
 
-void CFaceDetector::RemoveRedEye(const cv::Mat& image, const Rect& rSelectionBox, const Rect& radius)
+void CFaceDetector::RemoveRedEye(const Mat& image, const Rect& rSelectionBox, const Rect& radius)
 {
 	Mat eyeMat = image(rSelectionBox);
 
@@ -582,7 +577,6 @@ void CFaceDetector::RemoveRedEye(const cv::Mat& image, const Rect& rSelectionBox
 	iris2.copyTo(img_gray, thresh);
 	img_gray.copyTo(eyeMat(rc));
 }
-
 
 
 int CFaceDetector::FaceRecognition(const int& numFace)
@@ -674,19 +668,18 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	CSqlFacePhoto facePhoto;
 	CSqlFaceRecognition sqlfaceRecognition;
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
-    wxString fileSource = CFileUtility::GetFaceThumbnailPath(numFace);
+	wxString fileSource = CFileUtility::GetFaceThumbnailPath(numFace);
 
 	if (!wxFileExists(fileSource))
 	{
 		return 0;
 	}
 
-  
 
 	Mat aligned_face1 = imread(CConvertUtility::ConvertToStdString(fileSource));
-    if(aligned_face1.empty())
-        return 0;
-    
+	if (aligned_face1.empty())
+		return 0;
+
 	Mat feature1;
 	faceRecognizer->feature(aligned_face1, feature1);
 	feature1 = feature1.clone();
@@ -698,18 +691,18 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		double confidence = 0.0;
 
 		for (CFaceRecognitionData picture : faceRecognitonVec)
-        {
-            wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
+		{
+			wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
 
-            if (!wxFileExists(fileSource))
-            {
-                continue;
-            }
-            
+			if (!wxFileExists(fileSource))
+			{
+				continue;
+			}
+
 			Mat aligned_face2 = imread(CConvertUtility::ConvertToStdString(fileSource));
-            if(aligned_face2.empty())
-                continue;
-            
+			if (aligned_face2.empty())
+				continue;
+
 			Mat feature2;
 			faceRecognizer->feature(aligned_face2, feature2);
 			feature2 = feature2.clone();
@@ -718,7 +711,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			double score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
 			//double L2_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_NORM_L2);
 
-			
+
 			if (score >= cosine_similar_thresh)
 			{
 				confidence = score;

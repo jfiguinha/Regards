@@ -18,56 +18,51 @@ class CEffectParameter;
 
 using namespace Regards::Window;
 
-namespace Regards
+namespace Regards::Window
 {
-	namespace Window
+	class CBitmapWndRender;
+
+	class CBitmapWnd2D : public CWindowMain, public IBitmapWnd
 	{
-		class CBitmapWndRender;
+	public:
+		CBitmapWnd2D(wxWindow* parent, wxWindowID id);
+		~CBitmapWnd2D(void) override;
 
-		class CBitmapWnd2D : public CWindowMain, public IBitmapWnd
+		void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
+
+		void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
+
+		IBitmapRenderInterface* GetWndPt() override;
+
+		void UpdateScreenRatio() override;
+
+		void Resize() override;
+
+		bool GetProcessEnd() override;
+
+	private:
+		//void OnLoading(wxTimerEvent& event);
+		void OnMouseCaptureLost(wxMouseEvent& event)
 		{
-		public:
-			CBitmapWnd2D(wxWindow* parent, wxWindowID id);
-			~CBitmapWnd2D(void) override;
-
-			virtual void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
-
-			virtual void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
-
-			virtual IBitmapRenderInterface * GetWndPt() override;
-
-			virtual void UpdateScreenRatio() override;
-
-			virtual void Resize() override;
-
-			virtual bool GetProcessEnd() override;
-
-		private:
-
-
-			//void OnLoading(wxTimerEvent& event);
-			void OnMouseCaptureLost(wxMouseEvent& event)
-			{
-			};
-			void OnPaint(wxPaintEvent& event);
-			void OnMouseMove(wxMouseEvent& event);
-			void OnLButtonDown(wxMouseEvent& event);
-			void OnRButtonDown(wxMouseEvent& event);
-			void OnLButtonUp(wxMouseEvent& event);
-			void OnLDoubleClick(wxMouseEvent& event);
-			void OnMouseWheel(wxMouseEvent& event);
-			void OnKeyDown(wxKeyEvent& event);
-			void OnKeyUp(wxKeyEvent& event);
-			void OnIdle(wxIdleEvent& evt);
-			void OnEraseBackground(wxEraseEvent& event) override
-			{
-			};
-			void OnMouseLeave(wxMouseEvent& event);
-			void OnTimer(wxTimerEvent& event);
-			void OnCommand(wxCommandEvent& event);
-
-			IBitmapRenderInterface* bitmapWndRender = nullptr;
-
 		};
-	}
+		void OnPaint(wxPaintEvent& event);
+		void OnMouseMove(wxMouseEvent& event);
+		void OnLButtonDown(wxMouseEvent& event);
+		void OnRButtonDown(wxMouseEvent& event);
+		void OnLButtonUp(wxMouseEvent& event);
+		void OnLDoubleClick(wxMouseEvent& event);
+		void OnMouseWheel(wxMouseEvent& event);
+		void OnKeyDown(wxKeyEvent& event);
+		void OnKeyUp(wxKeyEvent& event);
+		void OnIdle(wxIdleEvent& evt) override;
+
+		void OnEraseBackground(wxEraseEvent& event) override
+		{
+		};
+		void OnMouseLeave(wxMouseEvent& event);
+		void OnTimer(wxTimerEvent& event);
+		void OnCommand(wxCommandEvent& event);
+
+		IBitmapRenderInterface* bitmapWndRender = nullptr;
+	};
 }

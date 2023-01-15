@@ -9,18 +9,17 @@
 //
 
 
-
 CProgressDlg::CProgressDlg(HWND hWndParent)
 {
 	m_cRef = 0;
 
-	m_hDlg = NULL;
+	m_hDlg = nullptr;
 	m_hWndParent = hWndParent;
 	m_bCancelled = FALSE;
 
-	m_hInitDlg = CreateEvent(NULL, FALSE, FALSE, NULL);
+	m_hInitDlg = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
-	if (m_hInitDlg != NULL)
+	if (m_hInitDlg != nullptr)
 	{
 		// Create the progress dialog in a separate thread so that it
 		// remains responsive
@@ -28,7 +27,7 @@ CProgressDlg::CProgressDlg(HWND hWndParent)
 		DWORD dwThreadId;
 
 		HANDLE hThread = CreateThread(
-			NULL,
+			nullptr,
 			0,
 			ThreadProc,
 			this,
@@ -41,13 +40,14 @@ CProgressDlg::CProgressDlg(HWND hWndParent)
 		// to this thread, and this will cause a deadlock if we use 
 		// WaitForSingleObject instead of MsgWaitForMultipleObjects
 
-		if (hThread != NULL)
+		if (hThread != nullptr)
 		{
-			while (MsgWaitForMultipleObjects(1, &m_hInitDlg, FALSE, INFINITE, QS_ALLINPUT | QS_ALLPOSTMESSAGE) == WAIT_OBJECT_0 + 1)
+			while (MsgWaitForMultipleObjects(1, &m_hInitDlg, FALSE, INFINITE, QS_ALLINPUT | QS_ALLPOSTMESSAGE) ==
+				WAIT_OBJECT_0 + 1)
 			{
 				MSG msg;
 
-				while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+				while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 				{
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
@@ -76,20 +76,20 @@ CProgressDlg::~CProgressDlg()
 // CProgressDlg::QueryInterface
 //
 
-STDMETHODIMP CProgressDlg::QueryInterface(REFIID iid, LPVOID *ppvObj)
+STDMETHODIMP CProgressDlg::QueryInterface(REFIID iid, LPVOID* ppvObj)
 {
-	if (ppvObj == NULL)
+	if (ppvObj == nullptr)
 	{
 		return E_POINTER;
 	}
 
 	if (iid == IID_IUnknown)
 	{
-		*ppvObj = (IUnknown *)this;
+		*ppvObj = static_cast<IUnknown*>(this);
 	}
 	else
 	{
-		*ppvObj = NULL;
+		*ppvObj = nullptr;
 		return E_NOINTERFACE;
 	}
 
@@ -161,7 +161,7 @@ VOID CProgressDlg::SetMessage(PCTSTR pszMessage)
 
 VOID CProgressDlg::SetPercent(UINT nPercent)
 {
-	SendDlgItemMessage(m_hDlg, IDC_PROGRESS_BAR, PBM_SETPOS, (WPARAM)nPercent, 0);
+	SendDlgItemMessage(m_hDlg, IDC_PROGRESS_BAR, PBM_SETPOS, nPercent, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -171,17 +171,17 @@ VOID CProgressDlg::SetPercent(UINT nPercent)
 
 DWORD WINAPI CProgressDlg::ThreadProc(PVOID pParameter)
 {
-	CProgressDlg *that = (CProgressDlg *)pParameter;
+	auto that = static_cast<CProgressDlg*>(pParameter);
 
 	INT_PTR nResult = DialogBoxParam(
-		NULL,
+		nullptr,
 		MAKEINTRESOURCE(IDD_PROGRESS),
 		that->m_hWndParent,
 		DialogProc,
 		(LPARAM)that
 	);
 
-	return (DWORD)nResult;
+	return static_cast<DWORD>(nResult);
 }
 
 HWND CProgressDlg::GetDlgWindow()
@@ -197,8 +197,8 @@ HWND CProgressDlg::GetDlgWindow()
 INT_PTR
 CALLBACK
 CProgressDlg::DialogProc(
-	HWND   hDlg,
-	UINT   uMsg,
+	HWND hDlg,
+	UINT uMsg,
 	WPARAM wParam,
 	LPARAM lParam
 )
@@ -206,55 +206,55 @@ CProgressDlg::DialogProc(
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
-	{
-		// Retrieve and store the "this" pointer
-
-		CProgressDlg *that = (CProgressDlg *)lParam;
-
-		SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)that);
-
-		that->m_hDlg = hDlg;
-
-		// Initialize progress bar to the range 0 to 100 and set bar colour to purple
-
-		SendDlgItemMessage(hDlg, IDC_PROGRESS_BAR, PBM_SETRANGE32, (WPARAM)0, (LPARAM)100);
-		SendDlgItemMessage(hDlg, IDC_PROGRESS_BAR, PBM_SETBARCOLOR, (WPARAM)0, (LPARAM)RGB(130, 63, 158));
-		// Signal the main thread that we are ready
-
-		SetEvent(that->m_hInitDlg);
-
-		return TRUE;
-	}
-
-	case WM_COMMAND:
-	{
-		switch (LOWORD(wParam))
 		{
-		case IDCANCEL:
-		{
-			// If the user presses the cancel button, set the m_bCancelled flag.
+			// Retrieve and store the "this" pointer
 
-			CProgressDlg *that = (CProgressDlg *)GetWindowLongPtr(hDlg, DWLP_USER);
+			auto that = (CProgressDlg*)lParam;
 
-			InterlockedIncrement(&that->m_bCancelled);
+			SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)that);
 
-			// The cancel operation will probably take some time, so 
-			// change the cancel button text to "Wait...", so that 
-			// the user will see the cancel command is received and 
-			// is being processed
+			that->m_hDlg = hDlg;
 
-			wchar_t szWait[DEFAULT_STRING_SIZE] = _T("");
+			// Initialize progress bar to the range 0 to 100 and set bar colour to purple
 
-			LoadString(NULL, IDS_WAIT, szWait, COUNTOF(szWait));
+			SendDlgItemMessage(hDlg, IDC_PROGRESS_BAR, PBM_SETRANGE32, static_cast<WPARAM>(0), 100);
+			SendDlgItemMessage(hDlg, IDC_PROGRESS_BAR, PBM_SETBARCOLOR, static_cast<WPARAM>(0), RGB(130, 63, 158));
+			// Signal the main thread that we are ready
 
-			SetDlgItemText(hDlg, IDCANCEL, szWait);
+			SetEvent(that->m_hInitDlg);
 
 			return TRUE;
 		}
-		}
 
-		break;
-	}
+	case WM_COMMAND:
+		{
+			switch (LOWORD(wParam))
+			{
+			case IDCANCEL:
+				{
+					// If the user presses the cancel button, set the m_bCancelled flag.
+
+					auto that = (CProgressDlg*)GetWindowLongPtr(hDlg, DWLP_USER);
+
+					InterlockedIncrement(&that->m_bCancelled);
+
+					// The cancel operation will probably take some time, so 
+					// change the cancel button text to "Wait...", so that 
+					// the user will see the cancel command is received and 
+					// is being processed
+
+					wchar_t szWait[DEFAULT_STRING_SIZE] = _T("");
+
+					LoadString(nullptr, IDS_WAIT, szWait, COUNTOF(szWait));
+
+					SetDlgItemText(hDlg, IDCANCEL, szWait);
+
+					return TRUE;
+				}
+			}
+
+			break;
+		}
 	}
 
 	return FALSE;
@@ -264,14 +264,14 @@ CProgressDlg::DialogProc(
 HRESULT
 CALLBACK
 DefaultProgressCallback(
-	LONG   lStatus,
-	LONG   lPercentComplete,
-	PVOID  pParam
+	LONG lStatus,
+	LONG lPercentComplete,
+	PVOID pParam
 )
 {
-	CProgressDlg *pProgressDlg = (CProgressDlg *)pParam;
+	auto pProgressDlg = static_cast<CProgressDlg*>(pParam);
 
-	if (pProgressDlg == NULL)
+	if (pProgressDlg == nullptr)
 	{
 		return E_POINTER;
 	}
@@ -290,37 +290,36 @@ DefaultProgressCallback(
 	switch (lStatus)
 	{
 	case IT_STATUS_TRANSFER_FROM_DEVICE:
-	{
-		uID = IDS_STATUS_TRANSFER_FROM_DEVICE;
-		break;
-	}
+		{
+			uID = IDS_STATUS_TRANSFER_FROM_DEVICE;
+			break;
+		}
 
 	case IT_STATUS_PROCESSING_DATA:
-	{
-		uID = IDS_STATUS_PROCESSING_DATA;
-		break;
-	}
+		{
+			uID = IDS_STATUS_PROCESSING_DATA;
+			break;
+		}
 
 	case IT_STATUS_TRANSFER_TO_CLIENT:
-	{
-		uID = IDS_STATUS_TRANSFER_TO_CLIENT;
-		break;
-	}
+		{
+			uID = IDS_STATUS_TRANSFER_TO_CLIENT;
+			break;
+		}
 
 	default:
-	{
-		return E_INVALIDARG;
-	}
+		{
+			return E_INVALIDARG;
+		}
 	}
 
 	wchar_t szFormat[DEFAULT_STRING_SIZE] = _T("%d");
 
-	LoadString(NULL, uID, szFormat, COUNTOF(szFormat));
+	LoadString(nullptr, uID, szFormat, COUNTOF(szFormat));
 
 	wchar_t szStatusText[DEFAULT_STRING_SIZE];
 
 	_sntprintf_s(szStatusText, COUNTOF(szStatusText), COUNTOF(szStatusText) - 1, szFormat, lPercentComplete);
-
 
 
 	// Update the progress bar values

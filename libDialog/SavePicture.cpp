@@ -33,7 +33,7 @@ const wxString GetPictureFilter()
 	wxString listPictureFilter = "";
 	for (wxString format : listFormat)
 	{
-		if(i < listFormat.size() - 1)
+		if (i < listFormat.size() - 1)
 			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++) + "|");
 		else
 			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++));
@@ -72,14 +72,13 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 
 		int filterIndex = saveFileDialog.GetFilterIndex();
 		file = saveFileDialog.GetPath();
-        wxFileName outputName(file);
-        wxString extension = listExtension[filterIndex];
+		wxFileName outputName(file);
+		wxString extension = listExtension[filterIndex];
 #ifdef WIN32
-        file = outputName.GetPath() + "\\" + outputName.GetName() + extension;
+		file = outputName.GetPath() + "\\" + outputName.GetName() + extension;
 #else
         file = outputName.GetPath() + "/" + outputName.GetName() + extension;
 #endif
-        
 	}
 	return file;
 }
@@ -104,36 +103,34 @@ wxString CSavePicture::LoadPicture()
 	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
 
 	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
-		GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return "";     // the user changed idea..
+		return ""; // the user changed idea..
 
 
 	//int filterIndex = openFileDialog.GetFilterIndex();
-	return openFileDialog.GetPath();   
- }
-
-
+	return openFileDialog.GetPath();
+}
 
 
 wxArrayString CSavePicture::LoadMultiplePicture()
 {
-    wxArrayString listFile;
- 
+	wxArrayString listFile;
+
 	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
 
 	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
-		GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return listFile;     // the user changed idea..
+		return listFile; // the user changed idea..
 
-    
-    //int filterIndex = openFileDialog.GetFilterIndex();
-    openFileDialog.GetPaths(listFile);
 
 	//int filterIndex = openFileDialog.GetFilterIndex();
-	return listFile; 
- }
+	openFileDialog.GetPaths(listFile);
+
+	//int filterIndex = openFileDialog.GetFilterIndex();
+	return listFile;
+}
 
 void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename)
 {

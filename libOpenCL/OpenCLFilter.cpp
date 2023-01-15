@@ -34,11 +34,16 @@ int numTexture = -1;
 class CSuperSampling
 {
 public:
-	CSuperSampling() {};
-	~CSuperSampling() {};
+	CSuperSampling()
+	{
+	};
+
+	~CSuperSampling()
+	{
+	};
 	string GenerateModelPath(string modelName, int scale);
 	bool TestIfMethodIsValid(int method, int scale);
-	cv::UMat upscaleImage(cv::UMat img, int method, int scale);
+	UMat upscaleImage(UMat img, int method, int scale);
 
 private:
 	DnnSuperResImpl sr;
@@ -64,22 +69,22 @@ bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 	{
 		return true;
 	}
-	else if (method == ESPCN && (scale == 2 || scale == 3 || scale == 4))
+	if (method == ESPCN && (scale == 2 || scale == 3 || scale == 4))
 	{
 		return true;
 	}
-	else if (method == FSRCNN && (scale == 2 || scale == 3 || scale == 4))
+	if (method == FSRCNN && (scale == 2 || scale == 3 || scale == 4))
 	{
 		return true;
 	}
-	else if (method == LapSRN && (scale == 2 || scale == 4 || scale == 8))
+	if (method == LapSRN && (scale == 2 || scale == 4 || scale == 8))
 	{
 		return true;
 	}
 	return false;
 }
 
-cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
+UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 {
 	isUsed = true;
 	UMat outputImage;
@@ -91,43 +96,42 @@ cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 			switch (method)
 			{
 			case EDSR:
-			{
-				string algorithm = "edsr";
-				sr.readModel(GenerateModelPath("EDSR", scale));
-				sr.setModel(algorithm, scale);
-			}
-			break;
+				{
+					string algorithm = "edsr";
+					sr.readModel(GenerateModelPath("EDSR", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
 
 			case ESPCN:
-			{
-				string algorithm = "espcn";
-				sr.readModel(GenerateModelPath("ESPCN", scale));
-				sr.setModel(algorithm, scale);
-			}
-			break;
+				{
+					string algorithm = "espcn";
+					sr.readModel(GenerateModelPath("ESPCN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
 			case FSRCNN:
-			{
-				string algorithm = "fsrcnn";
-				sr.readModel(GenerateModelPath("FSRCNN", scale));
-				sr.setModel(algorithm, scale);
-			}
-			break;
+				{
+					string algorithm = "fsrcnn";
+					sr.readModel(GenerateModelPath("FSRCNN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
 			case LapSRN:
-			{
-				string algorithm = "lapsrn";
-				sr.readModel(GenerateModelPath("LapSRN", scale));
-				sr.setModel(algorithm, scale);
-			}
-			break;
+				{
+					string algorithm = "lapsrn";
+					sr.readModel(GenerateModelPath("LapSRN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
 			}
 
 			sr.setPreferableTarget(DNN_TARGET_OPENCL);
 			sr.upsample(img, outputImage);
 
 			//muDnnSuperResImpl.unlock();
-
 		}
-		catch (cv::Exception& e)
+		catch (Exception& e)
 		{
 			const char* err_msg = e.what();
 			std::cout << "exception caught: " << err_msg << std::endl;
@@ -140,7 +144,7 @@ cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 		{
 			sr.upsample(img, outputImage);
 		}
-		catch (cv::Exception& e)
+		catch (Exception& e)
 		{
 			const char* err_msg = e.what();
 			std::cout << "exception caught: " << err_msg << std::endl;
@@ -155,10 +159,9 @@ cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 }
 
 
-
 COpenCLFilter::COpenCLFilter()
 {
-	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	hq3d = nullptr;
 	superSampling = new CSuperSampling();
@@ -172,53 +175,15 @@ COpenCLFilter::~COpenCLFilter()
 }
 
 
-void COpenCLFilter::BilateralEffect(cv::UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
+void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	try
 	{
-		cv::UMat dest;
-		cv::bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		UMat dest;
+		bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
 		dest.copyTo(inputData);
-
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-
-}
-
-
-void COpenCLFilter::NlMeans(cv::UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
-{
-	try
-	{
-		cv::UMat ycbcr;
-		cv::UMat yChannel;
-		cv::UMat yChannelOut;
-
-		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
-
-		// Extract the Y channel
-		cv::extractChannel(ycbcr, yChannel, 0); cv::extractChannel(ycbcr, yChannel, 0);
-
-		cv::fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
-
-		// Merge the the color planes back into an Lab image
-		cv::insertChannel(yChannelOut, ycbcr, 0);
-
-		// convert back to RGB
-		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
-
-		// Temporary Mat not reused, so release from memory.
-		yChannel.release();
-		ycbcr.release();
-		yChannelOut.release();
-
-	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -227,33 +192,35 @@ void COpenCLFilter::NlMeans(cv::UMat& inputData, const int& h, const int& hColor
 }
 
 
-void COpenCLFilter::Bm3d(cv::UMat& inputData, const float& fSigma)
+void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
+                            const int& searchWindowSize)
 {
 	try
 	{
-		cv::UMat ycbcr;
-		cv::UMat yChannel;
-		cv::UMat yChannelOut;
+		UMat ycbcr;
+		UMat yChannel;
+		UMat yChannelOut;
 
-		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
+		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
-		cv::extractChannel(ycbcr, yChannel, 0);
+		extractChannel(ycbcr, yChannel, 0);
+		extractChannel(ycbcr, yChannel, 0);
 
-		cv::xphoto::bm3dDenoising(yChannel, yChannelOut, fSigma);
+		fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
 
 		// Merge the the color planes back into an Lab image
-		cv::insertChannel(yChannelOut, ycbcr, 0);
+		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
+		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
 		ycbcr.release();
 		yChannelOut.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -262,8 +229,42 @@ void COpenCLFilter::Bm3d(cv::UMat& inputData, const float& fSigma)
 }
 
 
+void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
+{
+	try
+	{
+		UMat ycbcr;
+		UMat yChannel;
+		UMat yChannelOut;
 
-void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat& inputData, float clipHistPercent)
+		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+
+		// Extract the Y channel
+		extractChannel(ycbcr, yChannel, 0);
+
+		xphoto::bm3dDenoising(yChannel, yChannelOut, fSigma);
+
+		// Merge the the color planes back into an Lab image
+		insertChannel(yChannelOut, ycbcr, 0);
+
+		// convert back to RGB
+		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+
+		// Temporary Mat not reused, so release from memory.
+		yChannel.release();
+		ycbcr.release();
+		yChannelOut.release();
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+
+void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPercent)
 {
 	try
 	{
@@ -271,8 +272,8 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat& inputData, float clipHis
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
 
-		cv::UMat gray;
-		cvtColor(inputData, gray, cv::COLOR_BGR2GRAY);
+		UMat gray;
+		cvtColor(inputData, gray, COLOR_BGR2GRAY);
 
 		if (clipHistPercent == 0)
 		{
@@ -281,16 +282,16 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat& inputData, float clipHis
 		}
 		else
 		{
-			cv::UMat h;
+			UMat h;
 
-			std::vector<int> channels = { 0 }; // Analyze only the channel 0.
-			std::vector<int> hsize = { 256 };
+			std::vector<int> channels = {0}; // Analyze only the channel 0.
+			std::vector<int> hsize = {256};
 			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
-			std::vector<float> hranges = { 0, 256 }; // The range is between 0 - 255 (so less than 256).
+			std::vector<float> hranges = {0, 256}; // The range is between 0 - 255 (so less than 256).
 
-			calcHist(std::vector<cv::UMat>(1, gray), channels, cv::noArray(), h, hsize, hranges);
+			calcHist(std::vector<UMat>(1, gray), channels, noArray(), h, hsize, hranges);
 
-			cv::Mat hist;
+			Mat hist;
 
 			h.copyTo(hist);
 
@@ -329,7 +330,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat& inputData, float clipHis
 
 		convertScaleAbs(inputData, inputData, alpha, beta);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -341,16 +342,16 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat& inputData, float clipHis
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat& secondPictureData, const float& pourcentage)
+void COpenCLFilter::Fusion(UMat& inputData, const UMat& secondPictureData, const float& pourcentage)
 {
 	try
 	{
-		cv::UMat dst;
+		UMat dst;
 		float beta = (1.0 - pourcentage);
-		cv::addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
+		addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
 		dst.copyTo(inputData);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -359,147 +360,52 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat& secondPictureDat
 }
 
 
-void COpenCLFilter::SharpenMasking(const float& sharpness, cv::UMat& inputData)
+void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 {
 	try
 	{
-        cv::UMat cvDestBgra;
-        double sigma = 1;
-		cv::GaussianBlur(inputData, cvDestBgra, cv::Size(), sigma, sigma);
-        
-        cv::UMat dest;
-        cv::UMat inputDataBgra;
-        cv::cvtColor(cvDestBgra, cvDestBgra, cv::COLOR_BGR2BGRA);
-        cv::cvtColor(inputData, inputDataBgra, cv::COLOR_BGR2BGRA);
+		UMat cvDestBgra;
+		double sigma = 1;
+		cv::GaussianBlur(inputData, cvDestBgra, Size(), sigma, sigma);
 
-        vector<COpenCLParameter*> vecParam;
-        cl_mem clBuffer = (cl_mem)inputDataBgra.handle(cv::ACCESS_READ);
-        COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
-        input->SetValue(clBuffer);
-        input->SetLibelle("input");
-        input->SetNoDelete(true);
-        vecParam.push_back(input);
-        
-        cl_mem clBuffer_out = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-        COpenCLParameterClMem* gauss = new COpenCLParameterClMem(true);
-        gauss->SetValue(clBuffer_out);
-        gauss->SetLibelle("gaussian");
-        gauss->SetNoDelete(true);
-        vecParam.push_back(gauss);
-
-
-        COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-        paramWidth->SetValue(inputData.size().width);
-        paramWidth->SetLibelle("width");
-        vecParam.push_back(paramWidth);
-
-        COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-        paramHeight->SetValue(inputData.size().height);
-        paramHeight->SetLibelle("height");
-        vecParam.push_back(paramHeight);
-
-        COpenCLParameterFloat * paramThreshold = new COpenCLParameterFloat();
-        paramThreshold->SetLibelle("sharpness");
-        paramThreshold->SetValue(sharpness);
-        vecParam.push_back(paramThreshold);
-
-        dest = ExecuteOpenCLCode("IDR_OPENCL_SHARPENMASKING", "SharpenMasking", vecParam, inputData.size().width, inputData.size().height);
-
-        for (COpenCLParameter* parameter : vecParam)
-        {
-            if (!parameter->GetNoDelete())
-            {
-                delete parameter;
-                parameter = nullptr;
-            }
-        }
-
-        cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-}
-
-void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, cv::UMat& inputData)
-{
-	try
-	{
-		float coeff = (float)intensity / 100.0f;
-		float diff = 1.0f - coeff;
-		cv::UMat out;
-		cv::UMat out_one;
-		out_one = inputData.mul(diff);
-
-		cv::Scalar color = cv::Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
-		cv::Scalar out_two = color * coeff;
-
-		cv::add(out_one, out_two, out);
-		out.copyTo(inputData);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-}
-
-void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue, cv::UMat& inputData)
-{
-	try
-	{
-		cv::UMat out;
-		cv::Scalar color = cv::Scalar(blue, green, red);
-		cv::add(inputData, color, out);
-		out.copyTo(inputData);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-
-
-}
-
-void COpenCLFilter::FiltreMosaic(cv::UMat& inputData, const int& size)
-{
-	try
-	{
-		cv::UMat dest;
-		cv::UMat cvDestBgra;
-		cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+		UMat dest;
+		UMat inputDataBgra;
+		cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
+		cvtColor(inputData, inputDataBgra, COLOR_BGR2BGRA);
 
 		vector<COpenCLParameter*> vecParam;
-		cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+		auto clBuffer = static_cast<cl_mem>(inputDataBgra.handle(ACCESS_READ));
+		auto input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
 		input->SetLibelle("input");
 		input->SetNoDelete(true);
 		vecParam.push_back(input);
 
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(inputData.cols);
+		auto clBuffer_out = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+		auto gauss = new COpenCLParameterClMem(true);
+		gauss->SetValue(clBuffer_out);
+		gauss->SetLibelle("gaussian");
+		gauss->SetNoDelete(true);
+		vecParam.push_back(gauss);
+
+
+		auto paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(inputData.size().width);
 		paramWidth->SetLibelle("width");
 		vecParam.push_back(paramWidth);
 
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(inputData.rows);
+		auto paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(inputData.size().height);
 		paramHeight->SetLibelle("height");
 		vecParam.push_back(paramHeight);
 
-		COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
-		paramAngle->SetLibelle("fTileSize");
-		paramAngle->SetValue(size);
-		vecParam.push_back(paramAngle);
+		auto paramThreshold = new COpenCLParameterFloat();
+		paramThreshold->SetLibelle("sharpness");
+		paramThreshold->SetValue(sharpness);
+		vecParam.push_back(paramThreshold);
 
-		dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width, inputData.size().height);
+		dest = ExecuteOpenCLCode("IDR_OPENCL_SHARPENMASKING", "SharpenMasking", vecParam, inputData.size().width,
+		                         inputData.size().height);
 
 		for (COpenCLParameter* parameter : vecParam)
 		{
@@ -510,9 +416,9 @@ void COpenCLFilter::FiltreMosaic(cv::UMat& inputData, const int& size)
 			}
 		}
 
-		cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -520,13 +426,23 @@ void COpenCLFilter::FiltreMosaic(cv::UMat& inputData, const int& size)
 	}
 }
 
-void COpenCLFilter::Blur(const int& radius, cv::UMat& inputData)
+void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, UMat& inputData)
 {
 	try
 	{
-		cv::blur(inputData, inputData, cv::Size(radius, radius));
+		float coeff = static_cast<float>(intensity) / 100.0f;
+		float diff = 1.0f - coeff;
+		UMat out;
+		UMat out_one;
+		out_one = inputData.mul(diff);
+
+		auto color = Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
+		Scalar out_two = color * coeff;
+
+		add(out_one, out_two, out);
+		out.copyTo(inputData);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -534,13 +450,16 @@ void COpenCLFilter::Blur(const int& radius, cv::UMat& inputData)
 	}
 }
 
-void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, cv::UMat& inputData)
+void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue, UMat& inputData)
 {
 	try
 	{
-		cv::GaussianBlur(inputData, inputData, cv::Size(boxSize, boxSize), radius);
+		UMat out;
+		auto color = Scalar(blue, green, red);
+		add(inputData, color, out);
+		out.copyTo(inputData);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -548,58 +467,143 @@ void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, cv::UMat
 	}
 }
 
-void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, const int& size, cv::UMat& inputData)
+void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	try
+	{
+		UMat dest;
+		UMat cvDestBgra;
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+
+		vector<COpenCLParameter*> vecParam;
+		auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+		auto input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		auto paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(inputData.cols);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		auto paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(inputData.rows);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		auto paramAngle = new COpenCLParameterFloat();
+		paramAngle->SetLibelle("fTileSize");
+		paramAngle->SetValue(size);
+		vecParam.push_back(paramAngle);
+
+		dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width,
+		                         inputData.size().height);
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::Blur(const int& radius, UMat& inputData)
+{
+	try
+	{
+		blur(inputData, inputData, Size(radius, radius));
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, UMat& inputData)
+{
+	try
+	{
+		cv::GaussianBlur(inputData, inputData, Size(boxSize, boxSize), radius);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets,
+                                      const int& size,
+                                      UMat& inputData)
+{
+	UMat dest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(inputData.cols);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(inputData.rows);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	float* kernel = new float[kernelMotion.size()];
+	auto kernel = new float[kernelMotion.size()];
 	for (auto i = 0; i < kernelMotion.size(); i++)
 		kernel[i] = kernelMotion[i];
 
-	COpenCLParameterFloatArray* paramkernelMotion = new COpenCLParameterFloatArray();
+	auto paramkernelMotion = new COpenCLParameterFloatArray();
 	paramkernelMotion->SetLibelle("kernelMotion");
-	paramkernelMotion->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), kernel, size, flag);
+	paramkernelMotion->SetValue(static_cast<cl_context>(ocl::Context::getDefault(false).ptr()), kernel, size, flag);
 	vecParam.push_back(paramkernelMotion);
 
-	int* offsetsMotion = new int[kernelMotion.size() * 2];
+	auto offsetsMotion = new int[kernelMotion.size() * 2];
 	for (auto i = 0, j = 0; i < offsets.size(); i++, j += 2)
 	{
 		offsetsMotion[j] = offsets[i].x;
 		offsetsMotion[j + 1] = offsets[i].y;
 	}
 
-	COpenCLParameterIntArray* paramoffsets = new COpenCLParameterIntArray();
+	auto paramoffsets = new COpenCLParameterIntArray();
 	paramoffsets->SetLibelle("offsets");
-	paramoffsets->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), offsetsMotion, size * 2, flag);
+	paramoffsets->SetValue(static_cast<cl_context>(ocl::Context::getDefault(false).ptr()), offsetsMotion, size * 2,
+	                       flag);
 	vecParam.push_back(paramoffsets);
 
 
-	COpenCLParameterInt* paramkernelSize = new COpenCLParameterInt();
+	auto paramkernelSize = new COpenCLParameterInt();
 	paramkernelSize->SetLibelle("kernelSize");
 	paramkernelSize->SetValue(size);
 	vecParam.push_back(paramkernelSize);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "MotionBlur", vecParam, inputData.size().width, inputData.size().height);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "MotionBlur", vecParam, inputData.size().width,
+	                         inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -614,11 +618,10 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	delete[] kernel;
 	delete[] offsetsMotion;
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Emboss(cv::UMat& inputData)
+void COpenCLFilter::Emboss(UMat& inputData)
 {
 	try
 	{
@@ -632,23 +635,21 @@ void COpenCLFilter::Emboss(cv::UMat& inputData)
 		dest.release();
 		kernel.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-
-
 }
 
-void COpenCLFilter::Sharpen(cv::UMat& inputData)
+void COpenCLFilter::Sharpen(UMat& inputData)
 {
 	try
 	{
 		// Construct kernel (all entries initialized to 0)
 		// Construct kernel (all entries initialized to 0)
-		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		Mat kernel(3, 3, CV_32F, Scalar(0));
 		// assigns kernel values
 		kernel.at<float>(1, 1) = 5.0;
 		kernel.at<float>(0, 1) = -1.0;
@@ -662,7 +663,7 @@ void COpenCLFilter::Sharpen(cv::UMat& inputData)
 		dest.release();
 		kernel.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -670,7 +671,7 @@ void COpenCLFilter::Sharpen(cv::UMat& inputData)
 	}
 }
 
-void COpenCLFilter::SharpenStrong(cv::UMat& inputData)
+void COpenCLFilter::SharpenStrong(UMat& inputData)
 {
 	try
 	{
@@ -690,17 +691,15 @@ void COpenCLFilter::SharpenStrong(cv::UMat& inputData)
 		dest.release();
 		kernel.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-
-
 }
 
-void COpenCLFilter::Edge(cv::UMat& inputData)
+void COpenCLFilter::Edge(UMat& inputData)
 {
 	try
 	{
@@ -708,13 +707,13 @@ void COpenCLFilter::Edge(cv::UMat& inputData)
 		cvtColor(inputData, dest, COLOR_BGR2GRAY);
 
 		Mat img_blur;
-		cv::GaussianBlur(dest, img_blur, cv::Size(3, 3), 0, 0);
+		cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
 		UMat edges;
 		Canny(img_blur, edges, 100, 200, 3, false);
 
 		cvtColor(edges, inputData, COLOR_GRAY2BGR);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -722,26 +721,26 @@ void COpenCLFilter::Edge(cv::UMat& inputData)
 	}
 }
 
-void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxString& functionName, cv::UMat& inputData)
+void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxString& functionName, UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(cvDestBgra.cols);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(cvDestBgra.rows);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
@@ -757,20 +756,19 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::ErodeDilate(const wxString& functionName, cv::UMat& inputData)
+void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
 {
 	try
 	{
 		if (functionName == "Erode")
-			cv::erode(inputData, inputData, cv::Mat());
+			erode(inputData, inputData, Mat());
 		else if (functionName == "Dilate")
-			cv::dilate(inputData, inputData, cv::Mat());
-
+			dilate(inputData, inputData, Mat());
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -778,36 +776,37 @@ void COpenCLFilter::ErodeDilate(const wxString& functionName, cv::UMat& inputDat
 	}
 }
 
-void COpenCLFilter::Posterize(const float& level, const float& gamma, cv::UMat& inputData)
+void COpenCLFilter::Posterize(const float& level, const float& gamma, UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(cvDestBgra.size().width);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(cvDestBgra.size().height);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	COpenCLParameterInt* paramLevel = new COpenCLParameterInt();
+	auto paramLevel = new COpenCLParameterInt();
 	paramLevel->SetLibelle("level");
 	paramLevel->SetValue(level);
 	vecParam.push_back(paramLevel);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Posterisation", vecParam, inputData.size().width, inputData.size().height);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Posterisation", vecParam, inputData.size().width,
+	                         inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -818,44 +817,45 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, cv::UMat& 
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
-void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
+void COpenCLFilter::LensDistortion(const float& strength, UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
-	double _strength = (double)strength / 100;
+	double _strength = static_cast<double>(strength) / 100;
 	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(cvDestBgra.size().width);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(cvDestBgra.size().height);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
 
-	COpenCLParameterFloat* paramLevel = new COpenCLParameterFloat();
+	auto paramLevel = new COpenCLParameterFloat();
 	paramLevel->SetLibelle("correctionRadius");
 	paramLevel->SetValue(correctionRadius);
 	vecParam.push_back(paramLevel);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_DISTORTION", "Distortion", vecParam, inputData.size().width, inputData.size().height);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_DISTORTION", "Distortion", vecParam, inputData.size().width,
+	                         inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -866,26 +866,26 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 {
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+	auto clBuffer = static_cast<cl_mem>(u.handle(ACCESS_READ));
 
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(u.size().width);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(u.size().height);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
@@ -893,7 +893,8 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 #ifdef __APPLE__
 	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTextureApple", vecParam, u.size().width, u.size().height, cl_image);// program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
 #else
-	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTexture", vecParam, u.size().width, u.size().height, cl_image); //program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTexture", vecParam, u.size().width, u.size().height,
+	                  cl_image); //program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 #endif
 
 
@@ -910,40 +911,39 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 }
 
 
-
-
-void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
+void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(cvDestBgra.size().width);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(cvDestBgra.size().height);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	COpenCLParameterInt* paramThreshold = new COpenCLParameterInt();
+	auto paramThreshold = new COpenCLParameterInt();
 	paramThreshold->SetLibelle("threshold");
-	paramThreshold->SetValue((int)threshold);
+	paramThreshold->SetValue(static_cast<int>(threshold));
 	vecParam.push_back(paramThreshold);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Solarization", vecParam, inputData.size().width, inputData.size().height);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Solarization", vecParam, inputData.size().width,
+	                         inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -954,18 +954,16 @@ void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Median(cv::UMat& inputData)
+void COpenCLFilter::Median(UMat& inputData)
 {
 	try
 	{
-		cv::medianBlur(inputData, inputData, 3);
-
+		medianBlur(inputData, inputData, 3);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -973,26 +971,26 @@ void COpenCLFilter::Median(cv::UMat& inputData)
 	}
 }
 
-void COpenCLFilter::Noise(cv::UMat& inputData)
+void COpenCLFilter::Noise(UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(inputData.cols);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(inputData.rows);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
@@ -1008,54 +1006,54 @@ void COpenCLFilter::Noise(cv::UMat& inputData)
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
-void COpenCLFilter::Flip(const wxString& functionName, cv::UMat& inputData)
+void COpenCLFilter::Flip(const wxString& functionName, UMat& inputData)
 {
 	if (functionName == "FlipVertical")
 	{
-		cv::flip(inputData, inputData, 0);
+		flip(inputData, inputData, 0);
 	}
 	else
 	{
-		cv::flip(inputData, inputData, 1);
+		flip(inputData, inputData, 1);
 	}
 }
 
-void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inputData)
+void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	UMat dest;
+	UMat cvDest;
+	UMat cvDestBgra;
+	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
 
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	auto input = new COpenCLParameterClMem(true);
 	input->SetValue(clBuffer);
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	vecParam.push_back(input);
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	auto paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(inputData.cols);
 	paramWidth->SetLibelle("width");
 	vecParam.push_back(paramWidth);
 
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	auto paramHeight = new COpenCLParameterInt();
 	paramHeight->SetValue(inputData.rows);
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	COpenCLParameterFloat* paramRadius = new COpenCLParameterFloat();
+	auto paramRadius = new COpenCLParameterFloat();
 	paramRadius->SetLibelle("radius");
 	paramRadius->SetValue(radius);
 	vecParam.push_back(paramRadius);
 
-	COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
+	auto paramAngle = new COpenCLParameterFloat();
 	paramAngle->SetLibelle("angle");
 	paramAngle->SetValue(angle);
 	vecParam.push_back(paramAngle);
@@ -1072,18 +1070,18 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inp
 		}
 	}
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, cv::UMat& inputData)
+void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, UMat& inputData)
 {
-	cv::UMat cvDest;
+	UMat cvDest;
 	try
 	{
-		cv::convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
+		convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
 		cvDest.copyTo(inputData);
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -1092,40 +1090,40 @@ void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double
 }
 
 
-void COpenCLFilter::ColorEffect(const wxString& functionName, cv::UMat& inputData)
+void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 {
-	cv::UMat cvDest;
+	UMat cvDest;
 	try
 	{
 		if (functionName == "Sepia")
 		{
-			cv::Mat kernel =
-				(cv::Mat_<float>(3, 3)
-					<<
-					0.272, 0.534, 0.131,
-					0.349, 0.686, 0.168,
-					0.393, 0.769, 0.189);
+			Mat kernel =
+			(cv::Mat_<float>(3, 3)
+				<<
+				0.272, 0.534, 0.131,
+				0.349, 0.686, 0.168,
+				0.393, 0.769, 0.189);
 
 			cv::transform(inputData, inputData, kernel);
 		}
 		else if (functionName == "Negatif")
 		{
-			cv::bitwise_not(inputData, inputData);
+			bitwise_not(inputData, inputData);
 		}
 		else if (functionName == "NoirEtBlanc")
 		{
-			cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2GRAY);
-			cv::threshold(cvDest, cvDest, 127, 255, cv::THRESH_BINARY);
-			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGR);
+			cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+			threshold(cvDest, cvDest, 127, 255, THRESH_BINARY);
+			cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
 		}
 		else if (functionName == "GrayLevel")
 		{
-			cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2GRAY);
-			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGR);
+			cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+			cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
 		}
 		cvDest.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -1133,7 +1131,8 @@ void COpenCLFilter::ColorEffect(const wxString& functionName, cv::UMat& inputDat
 	}
 }
 
-void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp, cv::UMat& inputData)
+void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp,
+                           UMat& inputData)
 {
 	if (hq3d == nullptr)
 		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, LumTmp);
@@ -1144,14 +1143,14 @@ void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const
 	}
 	try
 	{
-		cv::UMat ycbcr;
-		cv::Mat yChannel;
-		cv::Mat yChannelOut;
+		UMat ycbcr;
+		Mat yChannel;
+		Mat yChannelOut;
 
-		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
+		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
-		std::vector<cv::Mat> planes(3);
-		cv::split(ycbcr, planes);
+		std::vector<Mat> planes(3);
+		split(ycbcr, planes);
 
 		// Extract the Y channel
 		//cv::extractChannel(ycbcr, yChannel, 0);
@@ -1164,13 +1163,13 @@ void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
+		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 
 		ycbcr.release();
 		yChannel.release();
 		yChannelOut.release();
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -1178,9 +1177,10 @@ void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const
 	}
 }
 
-void COpenCLFilter::Rotate(const wxString& functionName, const int& widthOut, const int& heightOut, const double& angle, cv::UMat& inputData)
+void COpenCLFilter::Rotate(const wxString& functionName, const int& widthOut, const int& heightOut, const double& angle,
+                           UMat& inputData)
 {
-	cv::UMat cvDest;
+	UMat cvDest;
 	// get rotation matrix for rotating the image around its center in pixel coordinates
 	const Point2f center((inputData.cols - 1) / 2.0, (inputData.rows - 1) / 2.0);
 	Mat rot = getRotationMatrix2D(center, angle, 1.0);
@@ -1198,11 +1198,12 @@ void COpenCLFilter::Rotate(const wxString& functionName, const int& widthOut, co
 	cvDest.release();
 }
 
-cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
+Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle,
+                               float ratioX, float ratioY, int x, int y, float left, float top)
 {
-	cv::Rect rect;
-	float posX = (float)x * ratioX + left * ratioX;
-	float posY = (float)y * ratioY + top * ratioY;
+	Rect rect;
+	float posX = static_cast<float>(x) * ratioX + left * ratioX;
+	float posY = static_cast<float>(y) * ratioY + top * ratioY;
 
 	if (angle == 270)
 	{
@@ -1242,7 +1243,6 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 		{
 			posY = heightIn - posY - 1;
 		}
-
 	}
 	else
 	{
@@ -1262,22 +1262,24 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 	return rect;
 }
 
-void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer)
+void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
+                                      vector<COpenCLParameter*>& vecParam, const int& width, const int& height,
+                                      cl_mem& outBuffer)
 {
 	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
-	cv::ocl::ProgramSource programSource(kernelSource);
-	cv::ocl::Context context = cv::ocl::Context::getDefault(false);
+	ocl::ProgramSource programSource(kernelSource);
+	ocl::Context context = ocl::Context::getDefault(false);
 
 	// Compile the kernel code
-	cv::String errmsg;
-	cv::String buildopt = "";// cv::format("-D dstT=%s", cv::ocl::typeToStr(paramSrc.depth()));
-	cv::ocl::Program program = context.getProg(programSource, buildopt, errmsg);
+	String errmsg;
+	String buildopt = ""; // cv::format("-D dstT=%s", cv::ocl::typeToStr(paramSrc.depth()));
+	ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 
-	cv::ocl::Kernel kernel(functionName, program);
+	ocl::Kernel kernel(functionName, program);
 
 	//cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_WRITE);
 
-	cl_int err = clSetKernelArg((cl_kernel)kernel.ptr(), 0, sizeof(cl_mem), &outBuffer);
+	cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &outBuffer);
 	if (err > 0)
 		throw "OpenCL Kernel Error";
 
@@ -1285,13 +1287,14 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
 	{
 		COpenCLParameter* parameter = *it;
-		parameter->Add((cl_kernel)kernel.ptr(), numArg++);
+		parameter->Add(static_cast<cl_kernel>(kernel.ptr()), numArg++);
 	}
 
-	size_t global_work_size[2] = { (size_t)width, (size_t)height };
+	size_t global_work_size[2] = {static_cast<size_t>(width), static_cast<size_t>(height)};
 	//size_t localThreads[2] = { 16, 16 };
 	bool success = kernel.run(2, global_work_size, nullptr, true);
-	if (!success) {
+	if (!success)
+	{
 		cout << "Failed running the kernel..." << endl;
 		if (err > 0)
 			throw "OpenCL Kernel run";
@@ -1306,16 +1309,17 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	}
 }
 
-cv::UMat COpenCLFilter::ExecuteOpenCLCode(const wxString & programName, const wxString & functionName, vector<COpenCLParameter*> & vecParam, const int &width, const int &height)
+UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
+                                      vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
 	UMat paramSrc;
 
 
 	int depth = CV_8U;
 	int type = CV_MAKE_TYPE(depth, 4);
-	paramSrc.create((int)height, (int)width, type);
+	paramSrc.create(height, width, type);
 
-	cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_WRITE);
+	auto clBuffer = static_cast<cl_mem>(paramSrc.handle(ACCESS_WRITE));
 
 	ExecuteOpenCLCode(programName, functionName, vecParam, width, height, clBuffer);
 
@@ -1323,25 +1327,27 @@ cv::UMat COpenCLFilter::ExecuteOpenCLCode(const wxString & programName, const wx
 }
 
 
-
-cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int flipH, int flipV, int angle, int ratio)
+UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+                                  UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
-	cv::UMat cvImage;
+	UMat cvImage;
 	//inputData.copyTo(cvImage);
 
 	try
 	{
-		float ratioX = (float)inputData.cols / rc.width;
-		float ratioY = (float)inputData.rows / rc.height;
+		float ratioX = static_cast<float>(inputData.cols) / rc.width;
+		float ratioY = static_cast<float>(inputData.rows) / rc.height;
 		if (angle == 90 || angle == 270)
 		{
-			ratioX = (float)inputData.cols / (float)rc.height;
-			ratioY = (float)inputData.rows / (float)rc.width;
+			ratioX = static_cast<float>(inputData.cols) / static_cast<float>(rc.height);
+			ratioY = static_cast<float>(inputData.rows) / static_cast<float>(rc.width);
 		}
 
-		cv::Rect rectGlobal;
-		cv::Rect rect_begin = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
-		cv::Rect rect_end = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
+		Rect rectGlobal;
+		Rect rect_begin = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX,
+		                             ratioY, 0, 0, rc.x, rc.y);
+		Rect rect_end = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX,
+		                           ratioY, widthOut, heightOut, rc.x, rc.y);
 		rectGlobal.x = rect_begin.x;
 		rectGlobal.y = rect_begin.y;
 		rectGlobal.width = rect_end.x;
@@ -1389,26 +1395,24 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 		if (angle == 270)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
-
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
 		}
 		else if (angle == 90)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
-
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
 		}
 		else if (angle == 180)
 		{
-			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
+			cv::rotate(cvImage, cvImage, ROTATE_180);
 		}
 
 
@@ -1440,7 +1444,7 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 		}
 		else if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 		{
-			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 		}
 		/*
 		else
@@ -1450,32 +1454,31 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 		*/
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 
 		//Apply Transformation
 
 		if (flipH)
 		{
 			if (angle == 90 || angle == 270)
-				cv::flip(cvImage, cvImage, 0);
+				flip(cvImage, cvImage, 0);
 			else
-				cv::flip(cvImage, cvImage, 1);
+				flip(cvImage, cvImage, 1);
 		}
 		if (flipV)
 		{
 			if (angle == 90 || angle == 270)
-				cv::flip(cvImage, cvImage, 1);
+				flip(cvImage, cvImage, 1);
 			else
-				cv::flip(cvImage, cvImage, 0);
+				flip(cvImage, cvImage, 0);
 		}
 		//
 	}
-	catch (cv::Exception& e)
+	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-
 	}
 
 

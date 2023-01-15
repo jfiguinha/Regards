@@ -46,1172 +46,1318 @@
 #define HAS_BOOL_ARRAY 1
 #endif
 
-namespace heif {
-
+namespace heif
+{
 #define fourcc(id) (((uint32_t)(id[0])<<24) | (id[1]<<16) | (id[2]<<8) | (id[3]))
 
-  /*
-    constexpr uint32_t fourcc(const char* string)
-    {
-    return ((string[0]<<24) |
-    (string[1]<<16) |
-    (string[2]<< 8) |
-    (string[3]));
-    }
-  */
+	/*
+	  constexpr uint32_t fourcc(const char* string)
+	  {
+	  return ((string[0]<<24) |
+	  (string[1]<<16) |
+	  (string[2]<< 8) |
+	  (string[3]));
+	  }
+	*/
 
 
-  class Fraction
-  {
-  public:
-    Fraction()
-    {}
+	class Fraction
+	{
+	public:
+		Fraction()
+		{
+		}
 
-    Fraction(int32_t num, int32_t den);
+		Fraction(int32_t num, int32_t den);
 
-    // may only use values up to int32_t maximum
-    Fraction(uint32_t num, uint32_t den);
+		// may only use values up to int32_t maximum
+		Fraction(uint32_t num, uint32_t den);
 
-    Fraction operator+(const Fraction&) const;
+		Fraction operator+(const Fraction&) const;
 
-    Fraction operator-(const Fraction&) const;
+		Fraction operator-(const Fraction&) const;
 
-    Fraction operator+(int) const;
+		Fraction operator+(int) const;
 
-    Fraction operator-(int) const;
+		Fraction operator-(int) const;
 
-    Fraction operator/(int) const;
+		Fraction operator/(int) const;
 
-    int32_t round_down() const;
+		int32_t round_down() const;
 
-    int32_t round_up() const;
+		int32_t round_up() const;
 
-    int32_t round() const;
+		int32_t round() const;
 
-    bool is_valid() const;
+		bool is_valid() const;
 
-    int32_t numerator = 0;
-    int32_t denominator = 1;
-  };
+		int32_t numerator = 0;
+		int32_t denominator = 1;
+	};
 
 
-  inline std::ostream& operator<<(std::ostream& str, const Fraction& f)
-  {
-    str << f.numerator << "/" << f.denominator;
-    return str;
-  }
+	inline std::ostream& operator<<(std::ostream& str, const Fraction& f)
+	{
+		str << f.numerator << "/" << f.denominator;
+		return str;
+	}
 
 
-  class BoxHeader
-  {
-  public:
-    BoxHeader();
+	class BoxHeader
+	{
+	public:
+		BoxHeader();
 
-    virtual ~BoxHeader()
-    {}
+		virtual ~BoxHeader()
+		{
+		}
 
-    constexpr static uint64_t size_until_end_of_file = 0;
+		constexpr static uint64_t size_until_end_of_file = 0;
 
-    uint64_t get_box_size() const
-    { return m_size; }
+		uint64_t get_box_size() const
+		{
+			return m_size;
+		}
 
-    uint32_t get_header_size() const
-    { return m_header_size; }
+		uint32_t get_header_size() const
+		{
+			return m_header_size;
+		}
 
-    uint32_t get_short_type() const
-    { return m_type; }
+		uint32_t get_short_type() const
+		{
+			return m_type;
+		}
 
-    std::vector<uint8_t> get_type() const;
+		std::vector<uint8_t> get_type() const;
 
-    std::string get_type_string() const;
+		std::string get_type_string() const;
 
-    void set_short_type(uint32_t type)
-    { m_type = type; }
+		void set_short_type(uint32_t type)
+		{
+			m_type = type;
+		}
 
 
-    Error parse(BitstreamRange& range);
+		Error parse(BitstreamRange& range);
 
-    virtual std::string dump(Indent&) const;
+		virtual std::string dump(Indent&) const;
 
 
-    // --- full box
+		// --- full box
 
-    Error parse_full_box_header(BitstreamRange& range);
+		Error parse_full_box_header(BitstreamRange& range);
 
-    uint8_t get_version() const
-    { return m_version; }
+		uint8_t get_version() const
+		{
+			return m_version;
+		}
 
-    void set_version(uint8_t version)
-    { m_version = version; }
+		void set_version(uint8_t version)
+		{
+			m_version = version;
+		}
 
-    uint32_t get_flags() const
-    { return m_flags; }
+		uint32_t get_flags() const
+		{
+			return m_flags;
+		}
 
-    void set_flags(uint32_t flags)
-    { m_flags = flags; }
+		void set_flags(uint32_t flags)
+		{
+			m_flags = flags;
+		}
 
-    void set_is_full_box(bool flag = true)
-    { m_is_full_box = flag; }
+		void set_is_full_box(bool flag = true)
+		{
+			m_is_full_box = flag;
+		}
 
-    bool is_full_box_header() const
-    { return m_is_full_box; }
+		bool is_full_box_header() const
+		{
+			return m_is_full_box;
+		}
 
 
-    // --- writing
+		// --- writing
 
-    size_t reserve_box_header_space(StreamWriter& writer) const;
+		size_t reserve_box_header_space(StreamWriter& writer) const;
 
-    Error prepend_header(StreamWriter&, size_t box_start) const;
+		Error prepend_header(StreamWriter&, size_t box_start) const;
 
-  private:
-    uint64_t m_size = 0;
-    uint32_t m_header_size = 0;
+	private:
+		uint64_t m_size = 0;
+		uint32_t m_header_size = 0;
 
-    uint32_t m_type = 0;
-    std::vector<uint8_t> m_uuid_type;
+		uint32_t m_type = 0;
+		std::vector<uint8_t> m_uuid_type;
 
 
-    bool m_is_full_box = false;
+		bool m_is_full_box = false;
 
-    uint8_t m_version = 0;
-    uint32_t m_flags = 0;
-  };
+		uint8_t m_version = 0;
+		uint32_t m_flags = 0;
+	};
 
 
-  class Box : public BoxHeader
-  {
-  public:
-    Box()
-    {}
+	class Box : public BoxHeader
+	{
+	public:
+		Box()
+		{
+		}
 
-    Box(const BoxHeader& hdr) : BoxHeader(hdr)
-    {}
+		Box(const BoxHeader& hdr) : BoxHeader(hdr)
+		{
+		}
 
-    static Error read(BitstreamRange& range, std::shared_ptr<heif::Box>* box);
+		static Error read(BitstreamRange& range, std::shared_ptr<Box>* box);
 
-    virtual Error write(StreamWriter& writer) const;
+		virtual Error write(StreamWriter& writer) const;
 
-    // check, which box version is required and set this in the (full) box header
-    virtual void derive_box_version()
-    { set_version(0); }
+		// check, which box version is required and set this in the (full) box header
+		virtual void derive_box_version()
+		{
+			set_version(0);
+		}
 
-    void derive_box_version_recursive();
+		void derive_box_version_recursive();
 
-    virtual std::string dump(Indent&) const;
+		std::string dump(Indent&) const override;
 
-    std::shared_ptr<Box> get_child_box(uint32_t short_type) const;
+		std::shared_ptr<Box> get_child_box(uint32_t short_type) const;
 
-    std::vector<std::shared_ptr<Box>> get_child_boxes(uint32_t short_type) const;
+		std::vector<std::shared_ptr<Box>> get_child_boxes(uint32_t short_type) const;
 
-    const std::vector<std::shared_ptr<Box>>& get_all_child_boxes() const
-    { return m_children; }
+		const std::vector<std::shared_ptr<Box>>& get_all_child_boxes() const
+		{
+			return m_children;
+		}
 
-    int append_child_box(std::shared_ptr<Box> box)
-    {
-      m_children.push_back(box);
-      return (int) m_children.size() - 1;
-    }
+		int append_child_box(std::shared_ptr<Box> box)
+		{
+			m_children.push_back(box);
+			return static_cast<int>(m_children.size()) - 1;
+		}
 
-  protected:
-    virtual Error parse(BitstreamRange& range);
+	protected:
+		virtual Error parse(BitstreamRange& range);
 
-    std::vector<std::shared_ptr<Box>> m_children;
+		std::vector<std::shared_ptr<Box>> m_children;
 
-    const static int READ_CHILDREN_ALL = -1;
+		const static int READ_CHILDREN_ALL = -1;
 
-    Error read_children(BitstreamRange& range, int number = READ_CHILDREN_ALL);
+		Error read_children(BitstreamRange& range, int number = READ_CHILDREN_ALL);
 
-    Error write_children(StreamWriter& writer) const;
+		Error write_children(StreamWriter& writer) const;
 
-    std::string dump_children(Indent&) const;
-  };
+		std::string dump_children(Indent&) const;
+	};
 
 
-  class Box_ftyp : public Box
-  {
-  public:
-    Box_ftyp()
-    {
-      set_short_type(fourcc("ftyp"));
-      set_is_full_box(false);
-    }
+	class Box_ftyp : public Box
+	{
+	public:
+		Box_ftyp()
+		{
+			set_short_type(fourcc("ftyp"));
+			set_is_full_box(false);
+		}
 
-    Box_ftyp(const BoxHeader& hdr) : Box(hdr)
-    {}
+		Box_ftyp(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    std::string dump(Indent&) const override;
+		std::string dump(Indent&) const override;
 
-    bool has_compatible_brand(uint32_t brand) const;
+		bool has_compatible_brand(uint32_t brand) const;
 
-    std::vector<uint32_t> list_brands() const { return m_compatible_brands; }
+		std::vector<uint32_t> list_brands() const { return m_compatible_brands; }
 
-    
-    void set_major_brand(uint32_t major_brand)
-    { m_major_brand = major_brand; }
 
-    void set_minor_version(uint32_t minor_version)
-    { m_minor_version = minor_version; }
+		void set_major_brand(uint32_t major_brand)
+		{
+			m_major_brand = major_brand;
+		}
 
-    void clear_compatible_brands()
-    { m_compatible_brands.clear(); }
+		void set_minor_version(uint32_t minor_version)
+		{
+			m_minor_version = minor_version;
+		}
 
-    void add_compatible_brand(uint32_t brand);
+		void clear_compatible_brands()
+		{
+			m_compatible_brands.clear();
+		}
 
-    Error write(StreamWriter& writer) const override;
+		void add_compatible_brand(uint32_t brand);
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    uint32_t m_major_brand = 0;
-    uint32_t m_minor_version = 0;
-    std::vector<uint32_t> m_compatible_brands;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		uint32_t m_major_brand = 0;
+		uint32_t m_minor_version = 0;
+		std::vector<uint32_t> m_compatible_brands;
+	};
 
-  class Box_meta : public Box
-  {
-  public:
-    Box_meta()
-    {
-      set_short_type(fourcc("meta"));
-      set_is_full_box(true);
-    }
 
-    Box_meta(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_meta : public Box
+	{
+	public:
+		Box_meta()
+		{
+			set_short_type(fourcc("meta"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_meta(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
-  };
+		std::string dump(Indent&) const override;
 
+	protected:
+		Error parse(BitstreamRange& range) override;
+	};
 
-  class Box_hdlr : public Box
-  {
-  public:
-    Box_hdlr()
-    {
-      set_short_type(fourcc("hdlr"));
-      set_is_full_box(true);
-    }
 
-    Box_hdlr(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_hdlr : public Box
+	{
+	public:
+		Box_hdlr()
+		{
+			set_short_type(fourcc("hdlr"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_hdlr(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    uint32_t get_handler_type() const
-    { return m_handler_type; }
+		std::string dump(Indent&) const override;
 
-    void set_handler_type(uint32_t handler)
-    { m_handler_type = handler; }
+		uint32_t get_handler_type() const
+		{
+			return m_handler_type;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		void set_handler_type(uint32_t handler)
+		{
+			m_handler_type = handler;
+		}
 
-    void set_name(std::string name) { m_name = std::move(name); }
+		Error write(StreamWriter& writer) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		void set_name(std::string name) { m_name = std::move(name); }
 
-  private:
-    uint32_t m_pre_defined = 0;
-    uint32_t m_handler_type = fourcc("pict");
-    uint32_t m_reserved[3] = {0,};
-    std::string m_name;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		uint32_t m_pre_defined = 0;
+		uint32_t m_handler_type = fourcc("pict");
+		uint32_t m_reserved[3] = {0,};
+		std::string m_name;
+	};
 
-  class Box_pitm : public Box
-  {
-  public:
-    Box_pitm()
-    {
-      set_short_type(fourcc("pitm"));
-      set_is_full_box(true);
-    }
 
-    Box_pitm(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_pitm : public Box
+	{
+	public:
+		Box_pitm()
+		{
+			set_short_type(fourcc("pitm"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_pitm(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    heif_item_id get_item_ID() const
-    { return m_item_ID; }
+		std::string dump(Indent&) const override;
 
-    void set_item_ID(heif_item_id id)
-    { m_item_ID = id; }
+		heif_item_id get_item_ID() const
+		{
+			return m_item_ID;
+		}
 
-    void derive_box_version() override;
+		void set_item_ID(heif_item_id id)
+		{
+			m_item_ID = id;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		void derive_box_version() override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    heif_item_id m_item_ID = 0;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		heif_item_id m_item_ID = 0;
+	};
 
-  class Box_iloc : public Box
-  {
-  public:
-    Box_iloc()
-    {
-      set_short_type(fourcc("iloc"));
-      set_is_full_box(true);
-    }
 
-    Box_iloc(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_iloc : public Box
+	{
+	public:
+		Box_iloc()
+		{
+			set_short_type(fourcc("iloc"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_iloc(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    struct Extent
-    {
-      uint64_t index = 0;
-      uint64_t offset = 0;
-      uint64_t length = 0;
+		std::string dump(Indent&) const override;
 
-      std::vector<uint8_t> data; // only used when writing data
-    };
+		struct Extent
+		{
+			uint64_t index = 0;
+			uint64_t offset = 0;
+			uint64_t length = 0;
 
-    struct Item
-    {
-      heif_item_id item_ID = 0;
-      uint8_t construction_method = 0; // >= version 1
-      uint16_t data_reference_index = 0;
-      uint64_t base_offset = 0;
+			std::vector<uint8_t> data; // only used when writing data
+		};
 
-      std::vector<Extent> extents;
-    };
+		struct Item
+		{
+			heif_item_id item_ID = 0;
+			uint8_t construction_method = 0; // >= version 1
+			uint16_t data_reference_index = 0;
+			uint64_t base_offset = 0;
 
-    const std::vector<Item>& get_items() const
-    { return m_items; }
+			std::vector<Extent> extents;
+		};
 
-    Error read_data(const Item& item,
-                    std::shared_ptr<StreamReader> istr,
-                    const std::shared_ptr<class Box_idat>&,
-                    std::vector<uint8_t>* dest) const;
+		const std::vector<Item>& get_items() const
+		{
+			return m_items;
+		}
 
-    void set_min_version(uint8_t min_version)
-    { m_user_defined_min_version = min_version; }
+		Error read_data(const Item& item,
+		                std::shared_ptr<StreamReader> istr,
+		                const std::shared_ptr<class Box_idat>&,
+		                std::vector<uint8_t>* dest) const;
 
-    // append bitstream data that will be written later (after iloc box)
-    Error append_data(heif_item_id item_ID,
-                      const std::vector<uint8_t>& data,
-                      uint8_t construction_method = 0);
+		void set_min_version(uint8_t min_version)
+		{
+			m_user_defined_min_version = min_version;
+		}
 
-    // append bitstream data that already has been written (before iloc box)
-    // Error write_mdat_before_iloc(heif_image_id item_ID,
-    //                              std::vector<uint8_t>& data)
+		// append bitstream data that will be written later (after iloc box)
+		Error append_data(heif_item_id item_ID,
+		                  const std::vector<uint8_t>& data,
+		                  uint8_t construction_method = 0);
 
-    // reserve data entry that will be written later
-    // Error reserve_mdat_item(heif_image_id item_ID,
-    //                         uint8_t construction_method,
-    //                         uint32_t* slot_ID);
-    // void patch_mdat_slot(uint32_t slot_ID, size_t start, size_t length);
+		// append bitstream data that already has been written (before iloc box)
+		// Error write_mdat_before_iloc(heif_image_id item_ID,
+		//                              std::vector<uint8_t>& data)
 
-    void derive_box_version() override;
+		// reserve data entry that will be written later
+		// Error reserve_mdat_item(heif_image_id item_ID,
+		//                         uint8_t construction_method,
+		//                         uint32_t* slot_ID);
+		// void patch_mdat_slot(uint32_t slot_ID, size_t start, size_t length);
 
-    Error write(StreamWriter& writer) const override;
+		void derive_box_version() override;
 
-    Error write_mdat_after_iloc(StreamWriter& writer);
+		Error write(StreamWriter& writer) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write_mdat_after_iloc(StreamWriter& writer);
 
-  private:
-    std::vector<Item> m_items;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    mutable size_t m_iloc_box_start = 0;
-    uint8_t m_user_defined_min_version = 0;
-    uint8_t m_offset_size = 0;
-    uint8_t m_length_size = 0;
-    uint8_t m_base_offset_size = 0;
-    uint8_t m_index_size = 0;
+	private:
+		std::vector<Item> m_items;
 
-    void patch_iloc_header(StreamWriter& writer) const;
+		mutable size_t m_iloc_box_start = 0;
+		uint8_t m_user_defined_min_version = 0;
+		uint8_t m_offset_size = 0;
+		uint8_t m_length_size = 0;
+		uint8_t m_base_offset_size = 0;
+		uint8_t m_index_size = 0;
 
-    int m_idat_offset = 0; // only for writing: offset of next data array
-  };
+		void patch_iloc_header(StreamWriter& writer) const;
 
+		int m_idat_offset = 0; // only for writing: offset of next data array
+	};
 
-  class Box_infe : public Box
-  {
-  public:
-    Box_infe()
-    {
-      set_short_type(fourcc("infe"));
-      set_is_full_box(true);
-    }
 
-    Box_infe(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_infe : public Box
+	{
+	public:
+		Box_infe()
+		{
+			set_short_type(fourcc("infe"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_infe(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    bool is_hidden_item() const
-    { return m_hidden_item; }
+		std::string dump(Indent&) const override;
 
-    void set_hidden_item(bool hidden);
+		bool is_hidden_item() const
+		{
+			return m_hidden_item;
+		}
 
-    heif_item_id get_item_ID() const
-    { return m_item_ID; }
+		void set_hidden_item(bool hidden);
 
-    void set_item_ID(heif_item_id id)
-    { m_item_ID = id; }
+		heif_item_id get_item_ID() const
+		{
+			return m_item_ID;
+		}
 
-    std::string get_item_type() const
-    { return m_item_type; }
+		void set_item_ID(heif_item_id id)
+		{
+			m_item_ID = id;
+		}
 
-    void set_item_type(std::string type)
-    { m_item_type = type; }
+		std::string get_item_type() const
+		{
+			return m_item_type;
+		}
 
-    void set_item_name(std::string name)
-    { m_item_name = name; }
+		void set_item_type(std::string type)
+		{
+			m_item_type = type;
+		}
 
-    std::string get_content_type() const
-    { return m_content_type; }
+		void set_item_name(std::string name)
+		{
+			m_item_name = name;
+		}
 
-    void set_content_type(std::string content_type)
-    { m_content_type = content_type; }
+		std::string get_content_type() const
+		{
+			return m_content_type;
+		}
 
-    void derive_box_version() override;
+		void set_content_type(std::string content_type)
+		{
+			m_content_type = content_type;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		void derive_box_version() override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    heif_item_id m_item_ID = 0;
-    uint16_t m_item_protection_index = 0;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    std::string m_item_type;
-    std::string m_item_name;
-    std::string m_content_type;
-    std::string m_content_encoding;
-    std::string m_item_uri_type;
+	private:
+		heif_item_id m_item_ID = 0;
+		uint16_t m_item_protection_index = 0;
 
-    // if set, this item should not be part of the presentation (i.e. hidden)
-    bool m_hidden_item = false;
-  };
+		std::string m_item_type;
+		std::string m_item_name;
+		std::string m_content_type;
+		std::string m_content_encoding;
+		std::string m_item_uri_type;
 
+		// if set, this item should not be part of the presentation (i.e. hidden)
+		bool m_hidden_item = false;
+	};
 
-  class Box_iinf : public Box
-  {
-  public:
-    Box_iinf()
-    {
-      set_short_type(fourcc("iinf"));
-      set_is_full_box(true);
-    }
 
-    Box_iinf(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_iinf : public Box
+	{
+	public:
+		Box_iinf()
+		{
+			set_short_type(fourcc("iinf"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_iinf(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    void derive_box_version() override;
+		std::string dump(Indent&) const override;
 
-    Error write(StreamWriter& writer) const override;
+		void derive_box_version() override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    //std::vector< std::shared_ptr<Box_infe> > m_iteminfos;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		//std::vector< std::shared_ptr<Box_infe> > m_iteminfos;
+	};
 
-  class Box_iprp : public Box
-  {
-  public:
-    Box_iprp()
-    {
-      set_short_type(fourcc("iprp"));
-      set_is_full_box(false);
-    }
 
-    Box_iprp(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_iprp : public Box
+	{
+	public:
+		Box_iprp()
+		{
+			set_short_type(fourcc("iprp"));
+			set_is_full_box(false);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_iprp(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
-  };
+		std::string dump(Indent&) const override;
 
+	protected:
+		Error parse(BitstreamRange& range) override;
+	};
 
-  class Box_ipco : public Box
-  {
-  public:
-    Box_ipco()
-    {
-      set_short_type(fourcc("ipco"));
-      set_is_full_box(false);
-    }
 
-    Box_ipco(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_ipco : public Box
+	{
+	public:
+		Box_ipco()
+		{
+			set_short_type(fourcc("ipco"));
+			set_is_full_box(false);
+		}
 
-    struct Property
-    {
-      bool essential;
-      std::shared_ptr<Box> property;
-    };
+		Box_ipco(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    Error get_properties_for_item_ID(heif_item_id itemID,
-                                     const std::shared_ptr<class Box_ipma>&,
-                                     std::vector<Property>& out_properties) const;
+		struct Property
+		{
+			bool essential;
+			std::shared_ptr<Box> property;
+		};
 
-    std::shared_ptr<Box> get_property_for_item_ID(heif_item_id itemID,
-                                                  const std::shared_ptr<class Box_ipma>&,
-                                                  uint32_t property_box_type) const;
+		Error get_properties_for_item_ID(heif_item_id itemID,
+		                                 const std::shared_ptr<class Box_ipma>&,
+		                                 std::vector<Property>& out_properties) const;
 
-    std::string dump(Indent&) const override;
+		std::shared_ptr<Box> get_property_for_item_ID(heif_item_id itemID,
+		                                              const std::shared_ptr<class Box_ipma>&,
+		                                              uint32_t property_box_type) const;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
-  };
+		std::string dump(Indent&) const override;
 
+	protected:
+		Error parse(BitstreamRange& range) override;
+	};
 
-  class Box_ispe : public Box
-  {
-  public:
-    Box_ispe()
-    {
-      set_short_type(fourcc("ispe"));
-      set_is_full_box(true);
-    }
 
-    Box_ispe(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_ispe : public Box
+	{
+	public:
+		Box_ispe()
+		{
+			set_short_type(fourcc("ispe"));
+			set_is_full_box(true);
+		}
 
-    uint32_t get_width() const
-    { return m_image_width; }
+		Box_ispe(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    uint32_t get_height() const
-    { return m_image_height; }
+		uint32_t get_width() const
+		{
+			return m_image_width;
+		}
 
-    void set_size(uint32_t width, uint32_t height)
-    {
-      m_image_width = width;
-      m_image_height = height;
-    }
+		uint32_t get_height() const
+		{
+			return m_image_height;
+		}
 
-    std::string dump(Indent&) const override;
+		void set_size(uint32_t width, uint32_t height)
+		{
+			m_image_width = width;
+			m_image_height = height;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		std::string dump(Indent&) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    uint32_t m_image_width = 0;
-    uint32_t m_image_height = 0;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		uint32_t m_image_width = 0;
+		uint32_t m_image_height = 0;
+	};
 
-  class Box_ipma : public Box
-  {
-  public:
-    Box_ipma()
-    {
-      set_short_type(fourcc("ipma"));
-      set_is_full_box(true);
-    }
 
-    Box_ipma(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_ipma : public Box
+	{
+	public:
+		Box_ipma()
+		{
+			set_short_type(fourcc("ipma"));
+			set_is_full_box(true);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_ipma(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    struct PropertyAssociation
-    {
-      bool essential;
-      uint16_t property_index;
-    };
+		std::string dump(Indent&) const override;
 
-    const std::vector<PropertyAssociation>* get_properties_for_item_ID(heif_item_id itemID) const;
+		struct PropertyAssociation
+		{
+			bool essential;
+			uint16_t property_index;
+		};
 
-    void add_property_for_item_ID(heif_item_id itemID,
-                                  PropertyAssociation assoc);
+		const std::vector<PropertyAssociation>* get_properties_for_item_ID(heif_item_id itemID) const;
 
-    void derive_box_version() override;
+		void add_property_for_item_ID(heif_item_id itemID,
+		                              PropertyAssociation assoc);
 
-    Error write(StreamWriter& writer) const override;
+		void derive_box_version() override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-    struct Entry
-    {
-      heif_item_id item_ID;
-      std::vector<PropertyAssociation> associations;
-    };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    std::vector<Entry> m_entries;
-  };
+		struct Entry
+		{
+			heif_item_id item_ID;
+			std::vector<PropertyAssociation> associations;
+		};
 
+		std::vector<Entry> m_entries;
+	};
 
-  class Box_auxC : public Box
-  {
-  public:
-    Box_auxC()
-    {
-      set_short_type(fourcc("auxC"));
-      set_is_full_box(true);
-    }
 
-    Box_auxC(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_auxC : public Box
+	{
+	public:
+		Box_auxC()
+		{
+			set_short_type(fourcc("auxC"));
+			set_is_full_box(true);
+		}
 
-    std::string get_aux_type() const
-    { return m_aux_type; }
+		Box_auxC(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    void set_aux_type(std::string type)
-    { m_aux_type = type; }
+		std::string get_aux_type() const
+		{
+			return m_aux_type;
+		}
 
-    std::vector<uint8_t> get_subtypes() const
-    { return m_aux_subtypes; }
+		void set_aux_type(std::string type)
+		{
+			m_aux_type = type;
+		}
 
-    std::string dump(Indent&) const override;
+		std::vector<uint8_t> get_subtypes() const
+		{
+			return m_aux_subtypes;
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		std::string dump(Indent&) const override;
 
-    Error write(StreamWriter& writer) const override;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-  private:
-    std::string m_aux_type;
-    std::vector<uint8_t> m_aux_subtypes;
-  };
+		Error write(StreamWriter& writer) const override;
 
+	private:
+		std::string m_aux_type;
+		std::vector<uint8_t> m_aux_subtypes;
+	};
 
-  class Box_irot : public Box
-  {
-  public:
-    Box_irot(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_irot : public Box
+	{
+	public:
+		Box_irot(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    int get_rotation() const
-    { return m_rotation; }
+		std::string dump(Indent&) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		int get_rotation() const
+		{
+			return m_rotation;
+		}
 
-  private:
-    int m_rotation = 0; // in degrees (CCW)
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		int m_rotation = 0; // in degrees (CCW)
+	};
 
-  class Box_imir : public Box
-  {
-  public:
-    Box_imir(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    enum class MirrorDirection : uint8_t
-    {
-      Vertical = 0,
-      Horizontal = 1
-    };
+	class Box_imir : public Box
+	{
+	public:
+		Box_imir(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    MirrorDirection get_mirror_direction() const
-    { return m_axis; }
+		enum class MirrorDirection : uint8_t
+		{
+			Vertical = 0,
+			Horizontal = 1
+		};
 
-    std::string dump(Indent&) const override;
+		MirrorDirection get_mirror_direction() const
+		{
+			return m_axis;
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		std::string dump(Indent&) const override;
 
-  private:
-    MirrorDirection m_axis = MirrorDirection::Vertical;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		MirrorDirection m_axis = MirrorDirection::Vertical;
+	};
 
-  class Box_clap : public Box
-  {
-  public:
-    Box_clap()
-    {
-      set_short_type(fourcc("clap"));
-      set_is_full_box(false);
-    }
 
-    Box_clap(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_clap : public Box
+	{
+	public:
+		Box_clap()
+		{
+			set_short_type(fourcc("clap"));
+			set_is_full_box(false);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_clap(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    int left_rounded(int image_width) const;  // first column
-    int right_rounded(int image_width) const; // last column that is part of the cropped image
-    int top_rounded(int image_height) const;   // first row
-    int bottom_rounded(int image_height) const; // last row included in the cropped image
+		std::string dump(Indent&) const override;
 
-    int get_width_rounded() const;
+		int left_rounded(int image_width) const; // first column
+		int right_rounded(int image_width) const; // last column that is part of the cropped image
+		int top_rounded(int image_height) const; // first row
+		int bottom_rounded(int image_height) const; // last row included in the cropped image
 
-    int get_height_rounded() const;
+		int get_width_rounded() const;
 
-    void set(uint32_t clap_width, uint32_t clap_height,
-             uint32_t image_width, uint32_t image_height);
+		int get_height_rounded() const;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		void set(uint32_t clap_width, uint32_t clap_height,
+		         uint32_t image_width, uint32_t image_height);
 
-    Error write(StreamWriter& writer) const override;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-  private:
-    Fraction m_clean_aperture_width;
-    Fraction m_clean_aperture_height;
-    Fraction m_horizontal_offset;
-    Fraction m_vertical_offset;
-  };
+		Error write(StreamWriter& writer) const override;
 
+	private:
+		Fraction m_clean_aperture_width;
+		Fraction m_clean_aperture_height;
+		Fraction m_horizontal_offset;
+		Fraction m_vertical_offset;
+	};
 
-  class Box_iref : public Box
-  {
-  public:
-    Box_iref()
-    {
-      set_short_type(fourcc("iref"));
-      set_is_full_box(true);
-    }
 
-    Box_iref(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_iref : public Box
+	{
+	public:
+		Box_iref()
+		{
+			set_short_type(fourcc("iref"));
+			set_is_full_box(true);
+		}
 
-    struct Reference
-    {
-      BoxHeader header;
+		Box_iref(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-      heif_item_id from_item_ID;
-      std::vector<heif_item_id> to_item_ID;
-    };
+		struct Reference
+		{
+			BoxHeader header;
 
+			heif_item_id from_item_ID;
+			std::vector<heif_item_id> to_item_ID;
+		};
 
-    std::string dump(Indent&) const override;
 
-    bool has_references(heif_item_id itemID) const;
+		std::string dump(Indent&) const override;
 
-    std::vector<heif_item_id> get_references(heif_item_id itemID, uint32_t ref_type) const;
+		bool has_references(heif_item_id itemID) const;
 
-    std::vector<Reference> get_references_from(heif_item_id itemID) const;
+		std::vector<heif_item_id> get_references(heif_item_id itemID, uint32_t ref_type) const;
 
-    void add_reference(heif_item_id from_id, uint32_t type, std::vector<heif_item_id> to_ids);
+		std::vector<Reference> get_references_from(heif_item_id itemID) const;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		void add_reference(heif_item_id from_id, uint32_t type, std::vector<heif_item_id> to_ids);
 
-    Error write(StreamWriter& writer) const override;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    void derive_box_version() override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    std::vector<Reference> m_references;
-  };
+		void derive_box_version() override;
 
+	private:
+		std::vector<Reference> m_references;
+	};
 
-  class Box_hvcC : public Box
-  {
-  public:
-    Box_hvcC()
-    {
-      set_short_type(fourcc("hvcC"));
-      set_is_full_box(false);
-    }
 
-    Box_hvcC(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_hvcC : public Box
+	{
+	public:
+		Box_hvcC()
+		{
+			set_short_type(fourcc("hvcC"));
+			set_is_full_box(false);
+		}
 
-    struct configuration
-    {
-      uint8_t configuration_version;
-      uint8_t general_profile_space;
-      bool general_tier_flag;
-      uint8_t general_profile_idc;
-      uint32_t general_profile_compatibility_flags;
+		Box_hvcC(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-      static const int NUM_CONSTRAINT_INDICATOR_FLAGS = 48;
-      std::bitset<NUM_CONSTRAINT_INDICATOR_FLAGS> general_constraint_indicator_flags;
+		struct configuration
+		{
+			uint8_t configuration_version;
+			uint8_t general_profile_space;
+			bool general_tier_flag;
+			uint8_t general_profile_idc;
+			uint32_t general_profile_compatibility_flags;
 
-      uint8_t general_level_idc;
+			static const int NUM_CONSTRAINT_INDICATOR_FLAGS = 48;
+			std::bitset<NUM_CONSTRAINT_INDICATOR_FLAGS> general_constraint_indicator_flags;
 
-      uint16_t min_spatial_segmentation_idc;
-      uint8_t parallelism_type;
-      uint8_t chroma_format;
-      uint8_t bit_depth_luma;
-      uint8_t bit_depth_chroma;
-      uint16_t avg_frame_rate;
+			uint8_t general_level_idc;
 
-      uint8_t constant_frame_rate;
-      uint8_t num_temporal_layers;
-      uint8_t temporal_id_nested;
-    };
+			uint16_t min_spatial_segmentation_idc;
+			uint8_t parallelism_type;
+			uint8_t chroma_format;
+			uint8_t bit_depth_luma;
+			uint8_t bit_depth_chroma;
+			uint16_t avg_frame_rate;
 
+			uint8_t constant_frame_rate;
+			uint8_t num_temporal_layers;
+			uint8_t temporal_id_nested;
+		};
 
-    std::string dump(Indent&) const override;
 
-    bool get_headers(std::vector<uint8_t>* dest) const;
+		std::string dump(Indent&) const override;
 
-    void set_configuration(const configuration& config)
-    { m_configuration = config; }
+		bool get_headers(std::vector<uint8_t>* dest) const;
 
-    configuration get_configuration() const
-    { return m_configuration; }
+		void set_configuration(const configuration& config)
+		{
+			m_configuration = config;
+		}
 
-    void append_nal_data(const std::vector<uint8_t>& nal);
+		configuration get_configuration() const
+		{
+			return m_configuration;
+		}
 
-    void append_nal_data(const uint8_t* data, size_t size);
+		void append_nal_data(const std::vector<uint8_t>& nal);
 
-    Error write(StreamWriter& writer) const override;
+		void append_nal_data(const uint8_t* data, size_t size);
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    struct NalArray
-    {
-      uint8_t m_array_completeness;
-      uint8_t m_NAL_unit_type;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-      std::vector<std::vector<uint8_t> > m_nal_units;
-    };
+	private:
+		struct NalArray
+		{
+			uint8_t m_array_completeness;
+			uint8_t m_NAL_unit_type;
 
-    configuration m_configuration;
-    uint8_t m_length_size = 4; // default: 4 bytes for NAL unit lengths
+			std::vector<std::vector<uint8_t>> m_nal_units;
+		};
 
-    std::vector<NalArray> m_nal_array;
-  };
+		configuration m_configuration;
+		uint8_t m_length_size = 4; // default: 4 bytes for NAL unit lengths
 
+		std::vector<NalArray> m_nal_array;
+	};
 
-  class Box_av1C : public Box
-  {
-  public:
-    Box_av1C()
-    {
-      set_short_type(fourcc("av1C"));
-      set_is_full_box(false);
-    }
 
-    Box_av1C(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_av1C : public Box
+	{
+	public:
+		Box_av1C()
+		{
+			set_short_type(fourcc("av1C"));
+			set_is_full_box(false);
+		}
 
-    struct configuration
-    {
-      //unsigned int (1) marker = 1;
-      uint8_t version = 1;
-      uint8_t seq_profile = 0;
-      uint8_t seq_level_idx_0 = 0;
-      uint8_t seq_tier_0 = 0;
-      uint8_t high_bitdepth = 0;
-      uint8_t twelve_bit = 0;
-      uint8_t monochrome = 0;
-      uint8_t chroma_subsampling_x = 0;
-      uint8_t chroma_subsampling_y = 0;
-      uint8_t chroma_sample_position = 0;
-      //uint8_t reserved = 0;
+		Box_av1C(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-      uint8_t initial_presentation_delay_present = 0;
-      uint8_t initial_presentation_delay_minus_one = 0;
+		struct configuration
+		{
+			//unsigned int (1) marker = 1;
+			uint8_t version = 1;
+			uint8_t seq_profile = 0;
+			uint8_t seq_level_idx_0 = 0;
+			uint8_t seq_tier_0 = 0;
+			uint8_t high_bitdepth = 0;
+			uint8_t twelve_bit = 0;
+			uint8_t monochrome = 0;
+			uint8_t chroma_subsampling_x = 0;
+			uint8_t chroma_subsampling_y = 0;
+			uint8_t chroma_sample_position = 0;
+			//uint8_t reserved = 0;
 
-      //unsigned int (8)[] configOBUs;
-    };
+			uint8_t initial_presentation_delay_present = 0;
+			uint8_t initial_presentation_delay_minus_one = 0;
 
+			//unsigned int (8)[] configOBUs;
+		};
 
-    std::string dump(Indent&) const override;
 
-    bool get_headers(std::vector<uint8_t>* dest) const
-    {
-      *dest = m_config_OBUs;
-      return true;
-    }
+		std::string dump(Indent&) const override;
 
-    void set_configuration(const configuration& config)
-    { m_configuration = config; }
+		bool get_headers(std::vector<uint8_t>* dest) const
+		{
+			*dest = m_config_OBUs;
+			return true;
+		}
 
-    configuration get_configuration() const
-    { return m_configuration; }
+		void set_configuration(const configuration& config)
+		{
+			m_configuration = config;
+		}
 
-    //void append_nal_data(const std::vector<uint8_t>& nal);
-    //void append_nal_data(const uint8_t* data, size_t size);
+		configuration get_configuration() const
+		{
+			return m_configuration;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		//void append_nal_data(const std::vector<uint8_t>& nal);
+		//void append_nal_data(const uint8_t* data, size_t size);
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    configuration m_configuration;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    std::vector<uint8_t> m_config_OBUs;
-  };
+	private:
+		configuration m_configuration;
 
+		std::vector<uint8_t> m_config_OBUs;
+	};
 
-  class Box_idat : public Box
-  {
-  public:
-    Box_idat(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_idat : public Box
+	{
+	public:
+		Box_idat(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    Error read_data(std::shared_ptr<StreamReader> istr,
-                    uint64_t start, uint64_t length,
-                    std::vector<uint8_t>& out_data) const;
+		std::string dump(Indent&) const override;
 
-    int append_data(const std::vector<uint8_t>& data) {
-      auto pos = m_data_for_writing.size();
+		Error read_data(std::shared_ptr<StreamReader> istr,
+		                uint64_t start, uint64_t length,
+		                std::vector<uint8_t>& out_data) const;
 
-      m_data_for_writing.insert(m_data_for_writing.end(),
-                                data.begin(),
-                                data.end());
+		int append_data(const std::vector<uint8_t>& data)
+		{
+			auto pos = m_data_for_writing.size();
 
-      return (int)pos;
-    }
+			m_data_for_writing.insert(m_data_for_writing.end(),
+			                          data.begin(),
+			                          data.end());
 
-    Error write(StreamWriter& writer) const override;
+			return static_cast<int>(pos);
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-    std::streampos m_data_start_pos;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-    std::vector<uint8_t> m_data_for_writing;
-  };
+		std::streampos m_data_start_pos;
 
+		std::vector<uint8_t> m_data_for_writing;
+	};
 
-  class Box_grpl : public Box
-  {
-  public:
-    Box_grpl(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_grpl : public Box
+	{
+	public:
+		Box_grpl(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		std::string dump(Indent&) const override;
 
-    struct EntityGroup
-    {
-      BoxHeader header;
-      uint32_t group_id;
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-      std::vector<heif_item_id> entity_ids;
-    };
+		struct EntityGroup
+		{
+			BoxHeader header;
+			uint32_t group_id;
 
-    std::vector<EntityGroup> m_entity_groups;
-  };
+			std::vector<heif_item_id> entity_ids;
+		};
 
+		std::vector<EntityGroup> m_entity_groups;
+	};
 
-  class Box_dinf : public Box
-  {
-  public:
-    Box_dinf(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_dinf : public Box
+	{
+	public:
+		Box_dinf(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
-  };
+		std::string dump(Indent&) const override;
 
+	protected:
+		Error parse(BitstreamRange& range) override;
+	};
 
-  class Box_dref : public Box
-  {
-  public:
-    Box_dref(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_dref : public Box
+	{
+	public:
+		Box_dref(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
-  };
+		std::string dump(Indent&) const override;
 
+	protected:
+		Error parse(BitstreamRange& range) override;
+	};
 
-  class Box_url : public Box
-  {
-  public:
-    Box_url(const BoxHeader& hdr) : Box(hdr)
-    {}
 
-    std::string dump(Indent&) const override;
+	class Box_url : public Box
+	{
+	public:
+		Box_url(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		std::string dump(Indent&) const override;
 
-    std::string m_location;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
-  class Box_pixi : public Box
-  {
-  public:
-    Box_pixi()
-    {
-      set_short_type(fourcc("pixi"));
-      set_is_full_box(true);
-    }
+		std::string m_location;
+	};
 
-    Box_pixi(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_pixi : public Box
+	{
+	public:
+		Box_pixi()
+		{
+			set_short_type(fourcc("pixi"));
+			set_is_full_box(true);
+		}
 
-    int get_num_channels() const
-    { return (int) m_bits_per_channel.size(); }
+		Box_pixi(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    int get_bits_per_channel(int channel) const
-    { return m_bits_per_channel[channel]; }
+		int get_num_channels() const
+		{
+			return static_cast<int>(m_bits_per_channel.size());
+		}
 
-    void add_channel_bits(uint8_t c){
-      m_bits_per_channel.push_back(c);
-    }
+		int get_bits_per_channel(int channel) const
+		{
+			return m_bits_per_channel[channel];
+		}
 
-    std::string dump(Indent&) const override;
+		void add_channel_bits(uint8_t c)
+		{
+			m_bits_per_channel.push_back(c);
+		}
 
-    Error write(StreamWriter& writer) const override;
+		std::string dump(Indent&) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    std::vector<uint8_t> m_bits_per_channel;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		std::vector<uint8_t> m_bits_per_channel;
+	};
 
-  class color_profile
-  {
-  public:
-    virtual ~color_profile()
-    {}
 
-    virtual uint32_t get_type() const = 0;
+	class color_profile
+	{
+	public:
+		virtual ~color_profile()
+		{
+		}
 
-    virtual std::string dump(Indent&) const = 0;
+		virtual uint32_t get_type() const = 0;
 
-    virtual Error write(StreamWriter& writer) const = 0;
-  };
+		virtual std::string dump(Indent&) const = 0;
 
-  class color_profile_raw : public color_profile
-  {
-  public:
-    color_profile_raw(uint32_t type, std::vector<uint8_t> data)
-        : m_type(type), m_data(data)
-    {}
+		virtual Error write(StreamWriter& writer) const = 0;
+	};
 
-    uint32_t get_type() const override
-    { return m_type; }
+	class color_profile_raw : public color_profile
+	{
+	public:
+		color_profile_raw(uint32_t type, std::vector<uint8_t> data)
+			: m_type(type), m_data(data)
+		{
+		}
 
-    std::vector<uint8_t> get_data() const
-    { return m_data; }
+		uint32_t get_type() const override
+		{
+			return m_type;
+		}
 
-    std::string dump(Indent&) const override;
+		std::vector<uint8_t> get_data() const
+		{
+			return m_data;
+		}
 
-    Error write(StreamWriter& writer) const override;
+		std::string dump(Indent&) const override;
 
-  private:
-    uint32_t m_type;
-    std::vector<uint8_t> m_data;
-  };
+		Error write(StreamWriter& writer) const override;
 
+	private:
+		uint32_t m_type;
+		std::vector<uint8_t> m_data;
+	};
 
-  class color_profile_nclx : public color_profile
-  {
-  public:
-    color_profile_nclx()
-    { set_default(); }
 
-    uint32_t get_type() const override
-    { return fourcc("nclx"); }
+	class color_profile_nclx : public color_profile
+	{
+	public:
+		color_profile_nclx()
+		{
+			set_default();
+		}
 
-    std::string dump(Indent&) const override;
+		uint32_t get_type() const override
+		{
+			return fourcc("nclx");
+		}
 
-    Error parse(BitstreamRange& range);
+		std::string dump(Indent&) const override;
 
-    Error write(StreamWriter& writer) const override;
+		Error parse(BitstreamRange& range);
 
-    uint16_t get_colour_primaries() const
-    { return m_colour_primaries; }
+		Error write(StreamWriter& writer) const override;
 
-    uint16_t get_transfer_characteristics() const
-    { return m_transfer_characteristics; }
+		uint16_t get_colour_primaries() const
+		{
+			return m_colour_primaries;
+		}
 
-    uint16_t get_matrix_coefficients() const
-    { return m_matrix_coefficients; }
+		uint16_t get_transfer_characteristics() const
+		{
+			return m_transfer_characteristics;
+		}
 
-    bool get_full_range_flag() const
-    { return m_full_range_flag; }
+		uint16_t get_matrix_coefficients() const
+		{
+			return m_matrix_coefficients;
+		}
 
-    void set_colour_primaries(uint16_t primaries)
-    { m_colour_primaries = primaries; }
+		bool get_full_range_flag() const
+		{
+			return m_full_range_flag;
+		}
 
-    void set_transfer_characteristics(uint16_t characteristics)
-    { m_transfer_characteristics = characteristics; }
+		void set_colour_primaries(uint16_t primaries)
+		{
+			m_colour_primaries = primaries;
+		}
 
-    void set_matrix_coefficients(uint16_t coefficients)
-    { m_matrix_coefficients = coefficients; }
+		void set_transfer_characteristics(uint16_t characteristics)
+		{
+			m_transfer_characteristics = characteristics;
+		}
 
-    void set_full_range_flag(bool full_range)
-    { m_full_range_flag = full_range; }
+		void set_matrix_coefficients(uint16_t coefficients)
+		{
+			m_matrix_coefficients = coefficients;
+		}
 
-    void set_default();
+		void set_full_range_flag(bool full_range)
+		{
+			m_full_range_flag = full_range;
+		}
 
-    void set_undefined();
+		void set_default();
 
-    Error get_nclx_color_profile(struct heif_color_profile_nclx** out_data) const;
+		void set_undefined();
 
-    static struct heif_color_profile_nclx* alloc_nclx_color_profile();
+		Error get_nclx_color_profile(struct heif_color_profile_nclx** out_data) const;
 
-    static void free_nclx_color_profile(struct heif_color_profile_nclx* profile);
+		static struct heif_color_profile_nclx* alloc_nclx_color_profile();
 
-    void set_from_heif_color_profile_nclx(const struct heif_color_profile_nclx* nclx);
+		static void free_nclx_color_profile(struct heif_color_profile_nclx* profile);
 
-  private:
-    uint16_t m_colour_primaries = 0;
-    uint16_t m_transfer_characteristics = 0;
-    uint16_t m_matrix_coefficients = 0;
-    bool m_full_range_flag = true;
-  };
+		void set_from_heif_color_profile_nclx(const struct heif_color_profile_nclx* nclx);
 
+	private:
+		uint16_t m_colour_primaries = 0;
+		uint16_t m_transfer_characteristics = 0;
+		uint16_t m_matrix_coefficients = 0;
+		bool m_full_range_flag = true;
+	};
 
-  class Box_colr : public Box
-  {
-  public:
-    Box_colr()
-    {
-      set_short_type(fourcc("colr"));
-      set_is_full_box(false);
-    }
 
-    Box_colr(const BoxHeader& hdr) : Box(hdr)
-    {}
+	class Box_colr : public Box
+	{
+	public:
+		Box_colr()
+		{
+			set_short_type(fourcc("colr"));
+			set_is_full_box(false);
+		}
 
-    std::string dump(Indent&) const override;
+		Box_colr(const BoxHeader& hdr) : Box(hdr)
+		{
+		}
 
-    uint32_t get_color_profile_type() const
-    { return m_color_profile->get_type(); }
+		std::string dump(Indent&) const override;
 
-    std::shared_ptr<const color_profile> get_color_profile() const
-    { return m_color_profile; }
+		uint32_t get_color_profile_type() const
+		{
+			return m_color_profile->get_type();
+		}
 
-    void set_color_profile(std::shared_ptr<const color_profile> prof)
-    { m_color_profile = prof; }
+		std::shared_ptr<const color_profile> get_color_profile() const
+		{
+			return m_color_profile;
+		}
 
+		void set_color_profile(std::shared_ptr<const color_profile> prof)
+		{
+			m_color_profile = prof;
+		}
 
-    Error write(StreamWriter& writer) const override;
 
-  protected:
-    Error parse(BitstreamRange& range) override;
+		Error write(StreamWriter& writer) const override;
 
-  private:
-    std::shared_ptr<const color_profile> m_color_profile;
-  };
+	protected:
+		Error parse(BitstreamRange& range) override;
 
+	private:
+		std::shared_ptr<const color_profile> m_color_profile;
+	};
 }
 
 #endif

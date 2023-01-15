@@ -38,297 +38,325 @@
 #include "error.h"
 
 
-namespace heif {
+namespace heif
+{
+	class StreamReader
+	{
+	public:
+		virtual ~StreamReader()
+		{
+		}
 
-  class StreamReader
-  {
-  public:
-    virtual ~StreamReader()
-    {}
+		virtual int64_t get_position() const = 0;
 
-    virtual int64_t get_position() const = 0;
+		enum grow_status
+		{
+			size_reached,
+			// requested size has been reached
+			timeout,
+			// size has not been reached yet, but it may still grow further
+			size_beyond_eof // size has not been reached and never will. The file has grown to its full size
+		};
 
-    enum grow_status
-    {
-      size_reached,   // requested size has been reached
-      timeout,        // size has not been reached yet, but it may still grow further
-      size_beyond_eof // size has not been reached and never will. The file has grown to its full size
-    };
+		// a StreamReader can maintain a timeout for waiting for new data
+		virtual grow_status wait_for_file_size(int64_t target_size) = 0;
 
-    // a StreamReader can maintain a timeout for waiting for new data
-    virtual grow_status wait_for_file_size(int64_t target_size) = 0;
+		// returns 'false' when we read out of the available file size
+		virtual bool read(void* data, size_t size) = 0;
 
-    // returns 'false' when we read out of the available file size
-    virtual bool read(void* data, size_t size) = 0;
+		virtual bool seek(int64_t position) = 0;
 
-    virtual bool seek(int64_t position) = 0;
+		bool seek_cur(int64_t position_offset)
+		{
+			return seek(get_position() + position_offset);
+		}
+	};
 
-    bool seek_cur(int64_t position_offset)
-    {
-      return seek(get_position() + position_offset);
-    }
-  };
 
+	class StreamReader_istream : public StreamReader
+	{
+	public:
+		StreamReader_istream(std::unique_ptr<std::istream>&& istr);
 
-  class StreamReader_istream : public StreamReader
-  {
-  public:
-    StreamReader_istream(std::unique_ptr<std::istream>&& istr);
+		int64_t get_position() const override;
 
-    int64_t get_position() const override;
+		grow_status wait_for_file_size(int64_t target_size) override;
 
-    grow_status wait_for_file_size(int64_t target_size) override;
+		bool read(void* data, size_t size) override;
 
-    bool read(void* data, size_t size) override;
+		bool seek(int64_t position) override;
 
-    bool seek(int64_t position) override;
+	private:
+		std::unique_ptr<std::istream> m_istr;
+		int64_t m_length;
+	};
 
-  private:
-    std::unique_ptr<std::istream> m_istr;
-    int64_t m_length;
-  };
 
+	class StreamReader_memory : public StreamReader
+	{
+	public:
+		StreamReader_memory(const uint8_t* data, int64_t size, bool copy);
 
-  class StreamReader_memory : public StreamReader
-  {
-  public:
-    StreamReader_memory(const uint8_t* data, int64_t size, bool copy);
+		~StreamReader_memory() override;
 
-    ~StreamReader_memory();
+		int64_t get_position() const override;
 
-    int64_t get_position() const override;
+		grow_status wait_for_file_size(int64_t target_size) override;
 
-    grow_status wait_for_file_size(int64_t target_size) override;
+		bool read(void* data, size_t size) override;
 
-    bool read(void* data, size_t size) override;
+		bool seek(int64_t position) override;
 
-    bool seek(int64_t position) override;
+	private:
+		const uint8_t* m_data;
+		int64_t m_length;
+		int64_t m_position;
 
-  private:
-    const uint8_t* m_data;
-    int64_t m_length;
-    int64_t m_position;
+		// if we made a copy of the data, we store a pointer to the owned memory area here
+		uint8_t* m_owned_data = nullptr;
+	};
 
-    // if we made a copy of the data, we store a pointer to the owned memory area here
-    uint8_t* m_owned_data = nullptr;
-  };
 
+	class StreamReader_CApi : public StreamReader
+	{
+	public:
+		StreamReader_CApi(const heif_reader* func_table, void* userdata);
 
-  class StreamReader_CApi : public StreamReader
-  {
-  public:
-    StreamReader_CApi(const heif_reader* func_table, void* userdata);
+		int64_t get_position() const override
+		{
+			return m_func_table->get_position(m_userdata);
+		}
 
-    int64_t get_position() const override
-    { return m_func_table->get_position(m_userdata); }
+		grow_status wait_for_file_size(int64_t target_size) override;
 
-    StreamReader::grow_status wait_for_file_size(int64_t target_size) override;
+		bool read(void* data, size_t size) override
+		{
+			return !m_func_table->read(data, size, m_userdata);
+		}
 
-    bool read(void* data, size_t size) override
-    { return !m_func_table->read(data, size, m_userdata); }
+		bool seek(int64_t position) override
+		{
+			return !m_func_table->seek(position, m_userdata);
+		}
 
-    bool seek(int64_t position) override
-    { return !m_func_table->seek(position, m_userdata); }
+	private:
+		const heif_reader* m_func_table;
+		void* m_userdata;
+	};
+
+
+	// This class simplifies safely reading part of a file (e.g. a box).
+	// It makes sure that we do not read past the boundaries of a box.
+	class BitstreamRange
+	{
+	public:
+		BitstreamRange(std::shared_ptr<StreamReader> istr,
+		               uint64_t length,
+		               BitstreamRange* parent = nullptr);
+
+		// This function tries to make sure that the full data of this range is
+		// available. You should call this before starting reading the range.
+		// If you don't, you have to make sure that you do not read past the available data.
+		StreamReader::grow_status wait_until_range_is_available();
+
+		uint8_t read8();
+
+		uint16_t read16();
+
+		uint32_t read32();
+
+		std::string read_string();
+
+		bool read(uint8_t* data, int64_t n);
+
+		bool prepare_read(int64_t nBytes);
+
+		StreamReader::grow_status wait_for_available_bytes(int64_t nBytes);
+
+		void skip_to_end_of_file()
+		{
+			// we do not actually move the file position here (because the stream may still be incomplete),
+			// but we set all m_remaining to zero
+			m_remaining = 0;
 
-  private:
-    const heif_reader* m_func_table;
-    void* m_userdata;
-  };
+			if (m_parent_range)
+			{
+				m_parent_range->skip_to_end_of_file();
+			}
+		}
 
+		void skip_to_end_of_box()
+		{
+			if (m_remaining > 0)
+			{
+				if (m_parent_range)
+				{
+					// also advance position in parent range
+					m_parent_range->skip_without_advancing_file_pos(m_remaining);
+				}
 
-  // This class simplifies safely reading part of a file (e.g. a box).
-  // It makes sure that we do not read past the boundaries of a box.
-  class BitstreamRange
-  {
-  public:
-    BitstreamRange(std::shared_ptr<StreamReader> istr,
-                   uint64_t length,
-                   BitstreamRange* parent = nullptr);
-
-    // This function tries to make sure that the full data of this range is
-    // available. You should call this before starting reading the range.
-    // If you don't, you have to make sure that you do not read past the available data.
-    StreamReader::grow_status wait_until_range_is_available();
+				m_istr->seek_cur(m_remaining);
+				m_remaining = 0;
+			}
+		}
 
-    uint8_t read8();
+		void set_eof_while_reading()
+		{
+			m_remaining = 0;
 
-    uint16_t read16();
+			if (m_parent_range)
+			{
+				m_parent_range->set_eof_while_reading();
+			}
 
-    uint32_t read32();
+			m_error = true;
+		}
 
-    std::string read_string();
+		bool eof() const
+		{
+			return m_remaining == 0;
+		}
 
-    bool read(uint8_t* data, int64_t n);
+		bool error() const
+		{
+			return m_error;
+		}
 
-    bool prepare_read(int64_t nBytes);
+		Error get_error() const
+		{
+			if (m_error)
+			{
+				return Error(heif_error_Invalid_input,
+				             heif_suberror_End_of_data);
+			}
+			return Error::Ok;
+		}
 
-    StreamReader::grow_status wait_for_available_bytes(int64_t nBytes);
+		std::shared_ptr<StreamReader> get_istream()
+		{
+			return m_istr;
+		}
 
-    void skip_to_end_of_file()
-    {
-      // we do not actually move the file position here (because the stream may still be incomplete),
-      // but we set all m_remaining to zero
-      m_remaining = 0;
+		int get_nesting_level() const
+		{
+			return m_nesting_level;
+		}
 
-      if (m_parent_range) {
-        m_parent_range->skip_to_end_of_file();
-      }
-    }
+		int64_t get_remaining_bytes() const
+		{
+			return m_remaining;
+		}
 
-    void skip_to_end_of_box()
-    {
-      if (m_remaining > 0) {
-        if (m_parent_range) {
-          // also advance position in parent range
-          m_parent_range->skip_without_advancing_file_pos(m_remaining);
-        }
+	private:
+		std::shared_ptr<StreamReader> m_istr;
+		BitstreamRange* m_parent_range = nullptr;
+		int m_nesting_level = 0;
 
-        m_istr->seek_cur(m_remaining);
-        m_remaining = 0;
-      }
-    }
+		int64_t m_remaining;
+		bool m_error = false;
 
-    void set_eof_while_reading()
-    {
-      m_remaining = 0;
+		// Note: 'nBytes' may not be larger than the number of remaining bytes
+		void skip_without_advancing_file_pos(int64_t nBytes);
+	};
 
-      if (m_parent_range) {
-        m_parent_range->set_eof_while_reading();
-      }
 
-      m_error = true;
-    }
+	class BitReader
+	{
+	public:
+		BitReader(const uint8_t* buffer, int len);
 
-    bool eof() const
-    {
-      return m_remaining == 0;
-    }
+		int get_bits(int n);
 
-    bool error() const
-    {
-      return m_error;
-    }
+		int get_bits_fast(int n);
 
-    Error get_error() const
-    {
-      if (m_error) {
-        return Error(heif_error_Invalid_input,
-                     heif_suberror_End_of_data);
-      }
-      else {
-        return Error::Ok;
-      }
-    }
+		int peek_bits(int n);
 
-    std::shared_ptr<StreamReader> get_istream()
-    { return m_istr; }
+		void skip_bytes(int nBytes);
 
-    int get_nesting_level() const
-    { return m_nesting_level; }
+		void skip_bits(int n);
 
-    int64_t get_remaining_bytes() const
-    { return m_remaining; }
+		void skip_bits_fast(int n);
 
-  private:
-    std::shared_ptr<StreamReader> m_istr;
-    BitstreamRange* m_parent_range = nullptr;
-    int m_nesting_level = 0;
+		void skip_to_byte_boundary();
 
-    int64_t m_remaining;
-    bool m_error = false;
+		bool get_uvlc(int* value);
 
-    // Note: 'nBytes' may not be larger than the number of remaining bytes
-    void skip_without_advancing_file_pos(int64_t nBytes);
-  };
+		bool get_svlc(int* value);
 
+		int get_current_byte_index() const
+		{
+			return data_length - bytes_remaining - nextbits_cnt / 8;
+		}
 
-  class BitReader
-  {
-  public:
-    BitReader(const uint8_t* buffer, int len);
+		int64_t get_bits_remaining() const
+		{
+			return bytes_remaining * 8 + nextbits_cnt;
+		}
 
-    int get_bits(int n);
+	private:
+		const uint8_t* data;
+		int data_length;
+		int bytes_remaining;
 
-    int get_bits_fast(int n);
+		uint64_t nextbits; // left-aligned bits
+		int nextbits_cnt;
 
-    int peek_bits(int n);
+		void refill(); // refill to at least 56+1 bits
+	};
 
-    void skip_bytes(int nBytes);
 
-    void skip_bits(int n);
+	class StreamWriter
+	{
+	public:
+		void write8(uint8_t);
 
-    void skip_bits_fast(int n);
+		void write16(uint16_t);
 
-    void skip_to_byte_boundary();
+		void write32(uint32_t);
 
-    bool get_uvlc(int* value);
+		void write64(uint64_t);
 
-    bool get_svlc(int* value);
+		void write(int size, uint64_t value);
 
-    int get_current_byte_index() const
-    {
-      return data_length - bytes_remaining - nextbits_cnt / 8;
-    }
+		void write(const std::string&);
 
-    int64_t get_bits_remaining() const
-    {
-      return bytes_remaining*8 + nextbits_cnt;
-    }
+		void write(const std::vector<uint8_t>&);
 
-  private:
-    const uint8_t* data;
-    int data_length;
-    int bytes_remaining;
+		void write(const StreamWriter&);
 
-    uint64_t nextbits; // left-aligned bits
-    int nextbits_cnt;
+		void skip(int n);
 
-    void refill(); // refill to at least 56+1 bits
-  };
+		void insert(int nBytes);
 
+		size_t data_size() const
+		{
+			return m_data.size();
+		}
 
-  class StreamWriter
-  {
-  public:
-    void write8(uint8_t);
+		size_t get_position() const
+		{
+			return m_position;
+		}
 
-    void write16(uint16_t);
+		void set_position(size_t pos)
+		{
+			m_position = pos;
+		}
 
-    void write32(uint32_t);
+		void set_position_to_end()
+		{
+			m_position = m_data.size();
+		}
 
-    void write64(uint64_t);
+		const std::vector<uint8_t> get_data() const
+		{
+			return m_data;
+		}
 
-    void write(int size, uint64_t value);
-
-    void write(const std::string&);
-
-    void write(const std::vector<uint8_t>&);
-
-    void write(const StreamWriter&);
-
-    void skip(int n);
-
-    void insert(int nBytes);
-
-    size_t data_size() const
-    { return m_data.size(); }
-
-    size_t get_position() const
-    { return m_position; }
-
-    void set_position(size_t pos)
-    { m_position = pos; }
-
-    void set_position_to_end()
-    { m_position = m_data.size(); }
-
-    const std::vector<uint8_t> get_data() const
-    { return m_data; }
-
-  private:
-    std::vector<uint8_t> m_data;
-    size_t m_position = 0;
-  };
+	private:
+		std::vector<uint8_t> m_data;
+		size_t m_position = 0;
+	};
 }
 
 #endif

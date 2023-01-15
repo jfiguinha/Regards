@@ -58,7 +58,7 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString& windowName, wxWindo
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CScrollbarVerticalWnd::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CScrollbarVerticalWnd::OnLButtonUp));
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseHover));
-//	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseLeave));
+	//	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseLeave));
 	Connect(TIMER_TRIANGLETOP, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerTriangleTop), nullptr,
 	        this);
 	Connect(TIMER_TRIANGLEBOTTOM, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerTriangleBottom),
@@ -69,9 +69,7 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString& windowName, wxWindo
 	Connect(TIMER_STOPMOVING, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerStopMoving), nullptr,
 	        this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseCaptureLost));
-
 }
-
 
 
 void CScrollbarVerticalWnd::OnMouseCaptureLost(wxMouseEvent& event)
@@ -112,7 +110,7 @@ void CScrollbarVerticalWnd::CalculBarSize()
 	{
 		barSize = BARSIZEMIN;
 		nbPos = static_cast<float>((barEndY - barStartY) - barSize);
-		lineSize = static_cast<int>(float(diff) / nbPos);
+		lineSize = static_cast<int>(static_cast<float>(diff) / nbPos);
 	}
 
 	pageSize = lineSize * 10;

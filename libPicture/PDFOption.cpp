@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(PDFOption, wxDialog)
-	//(*EventTable(PDFOption)
-	//*)
+		//(*EventTable(PDFOption)
+		//*)
 END_EVENT_TABLE()
 
 PDFOption::PDFOption(wxWindow* parent)

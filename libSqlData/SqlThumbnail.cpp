@@ -22,12 +22,13 @@ CSqlThumbnail::~CSqlThumbnail()
 {
 }
 
-bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
+bool CSqlThumbnail::TestThumbnail(const wxString& path, const wxString& hash)
 {
 	type = 2;
-    wxString fullpath(path);
-    fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
+	wxString fullpath(path);
+	fullpath.Replace("'", "''");
+	ExecuteRequest(
+		"SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
 	if (!find)
 	{
 		DeleteThumbnail(path);
@@ -35,7 +36,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 	return find;
 }
 
-bool CSqlThumbnail::TestThumbnail(const wxString & path)
+bool CSqlThumbnail::TestThumbnail(const wxString& path)
 {
 	type = 2;
 	wxString fullpath(path);
@@ -49,15 +50,15 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 }
 
 
-
-bool CSqlThumbnail::InsertThumbnail(const wxString & path, std::vector<uchar> & data, const int & width, const int &height, const wxString &hash)
+bool CSqlThumbnail::InsertThumbnail(const wxString& path, std::vector<uchar>& data, const int& width, const int& height,
+                                    const wxString& hash)
 {
 	bool returnValue = true;
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
-	
+
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 		wxRemoveFile(thumbnail);
@@ -66,9 +67,11 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, std::vector<uchar> & 
 	{
 		wxFile fileOut;
 		fileOut.Create(thumbnail, true);
-		fileOut.Write((void*)data.data(), data.size());
+		fileOut.Write(data.data(), data.size());
 		fileOut.Close();
-		returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
+		returnValue = ExecuteRequestWithNoResult(
+			"INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
+			+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 	}
 
 	return returnValue;
@@ -82,7 +85,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 	return listPhoto;
 }
 
-wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
+wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 {
 	wxLogNull logNo;
 	type = 6;
@@ -96,27 +99,27 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 	{
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 	}
-    else
-    {
-        printf("error GetThumbnail");
-    }        
+	else
+	{
+		printf("error GetThumbnail");
+	}
 	return image;
 }
 
-CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
+CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 {
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 
-	CImageLoadingFormat * picture = nullptr;
+	CImageLoadingFormat* picture = nullptr;
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
 		CLibPicture libPicture;
 		picture = libPicture.LoadPicture(thumbnail);
-		if(picture != nullptr)
+		if (picture != nullptr)
 			picture->SetFilename(thumbnail);
 		else
 		{
@@ -127,7 +130,7 @@ CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 	return picture;
 }
 
-bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
+bool CSqlThumbnail::DeleteThumbnail(const wxString& path)
 {
 	type = 6;
 	wxString fullpath(path);
@@ -138,10 +141,12 @@ bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
 	{
 		wxRemoveFile(thumbnail);
 	}
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1)
+		       ? true
+		       : false;
 }
 
-bool CSqlThumbnail::DeleteThumbnail(const int & numPhoto)
+bool CSqlThumbnail::DeleteThumbnail(const int& numPhoto)
 {
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
@@ -149,14 +154,21 @@ bool CSqlThumbnail::DeleteThumbnail(const int & numPhoto)
 		wxRemoveFile(thumbnail);
 	}
 
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " +
+		       to_string(numPhoto) + ")") != -1)
+		       ? true
+		       : false;
 }
 
 void CSqlThumbnail::EraseThumbnail(const int& numPhoto)
 {
-	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
-	
+	ExecuteRequestWithNoResult(
+		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = "
+		+ to_string(numPhoto) + ")");
+	ExecuteRequestWithNoResult(
+		"DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " +
+		to_string(numPhoto) + ")");
 }
 
 bool CSqlThumbnail::EraseThumbnail()
@@ -184,7 +196,7 @@ bool CSqlThumbnail::EraseThumbnail()
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
 
-bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
+bool CSqlThumbnail::EraseFolderThumbnail(const int& numFolder)
 {
 	type = 7;
 	listPhoto.clear();
@@ -192,20 +204,24 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
 
 	//tbb::parallel_for(0, (int)listPhoto.size(), 1, [=](int i)
 	//{
-    for(int i = 0;i < listPhoto.size();i++)
-    {
+	for (int i = 0; i < listPhoto.size(); i++)
+	{
 		int idPhoto = listPhoto[i];
 		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
 		if (wxFileExists(thumbnail))
 		{
 			wxRemoveFile(thumbnail);
 		}
-    }
+	}
 	//});
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+		       "DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " +
+		       to_string(numFolder) + ")") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
+int CSqlThumbnail::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())

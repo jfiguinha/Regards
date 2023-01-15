@@ -70,7 +70,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 	if (photoVector.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
 
-	nbElement = photoVector.size();  // NOLINT(clang-diagnostic-shorten-64-to-32)
+	nbElement = photoVector.size(); // NOLINT(clang-diagnostic-shorten-64-to-32)
 }
 
 void CThumbnailFileSelection::InitTypeAffichage(const int& typeAffichage)

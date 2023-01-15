@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(BmpOption, wxDialog)
-	//(*EventTable(BmpOption)
-	//*)
+		//(*EventTable(BmpOption)
+		//*)
 END_EVENT_TABLE()
 
 BmpOption::BmpOption(wxWindow* parent)

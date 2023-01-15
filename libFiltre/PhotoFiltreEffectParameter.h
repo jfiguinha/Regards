@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+
 class CPhotoFiltreEffectParameter : public CEffectParameter
 {
 public:
@@ -10,11 +11,13 @@ public:
 		blue = 0;
 		intensity = 0;
 	};
-	~CPhotoFiltreEffectParameter() override {};
+
+	~CPhotoFiltreEffectParameter() override
+	{
+	};
 
 	int red;
 	int green;
 	int blue;
 	int intensity;
 };
-

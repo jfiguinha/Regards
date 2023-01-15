@@ -11,8 +11,8 @@ class DataStorage
 public:
 	DataStorage()
 	{
-
 	}
+
 	~DataStorage()
 	{
 		if (dataPt != nullptr)
@@ -36,7 +36,7 @@ namespace Regards
 
 			static void GetDimensions(const string& fileName, int& width, int& height);
 			static int GetOrientation(const string& fileName);
-			static DataStorage * GetThumbnail(const string& fileName, int& outputFormat);
+			static DataStorage* GetThumbnail(const string& fileName, int& outputFormat);
 		};
 	}
 }

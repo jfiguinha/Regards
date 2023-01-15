@@ -10,25 +10,24 @@
 
 namespace Regards
 {
-    namespace Sqlite
-    {
+	namespace Sqlite
+	{
 		class CSqlResult;
 
-        class CSqlVersion : public CSqlExecuteRequest
-        {
-        public:
-            CSqlVersion(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);
-            ~CSqlVersion();
-            bool InsertVersion(const wxString & version);
-            bool UpdateVersion(const wxString & version, const wxString &oldValue);
-            bool DeleteVersion();
-            wxString GetVersion();
-            
-        private:
-            
-            int TraitementResult(CSqlResult * sqlResult);
-            int typeResult;
-            wxString result;
-        };
-    }
+		class CSqlVersion : public CSqlExecuteRequest
+		{
+		public:
+			CSqlVersion(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
+			~CSqlVersion() override;
+			bool InsertVersion(const wxString& version);
+			bool UpdateVersion(const wxString& version, const wxString& oldValue);
+			bool DeleteVersion();
+			wxString GetVersion();
+
+		private:
+			int TraitementResult(CSqlResult* sqlResult) override;
+			int typeResult;
+			wxString result;
+		};
+	}
 }

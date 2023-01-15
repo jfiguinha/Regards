@@ -21,27 +21,27 @@
 class wxPdfVoltRule
 {
 public :
-  /// Default constructor
-  wxPdfVoltRule()
-    : m_repeat(false), m_match(wxS("")), m_replace(wxS(""))
-  {
-  }
+	/// Default constructor
+	wxPdfVoltRule()
+		: m_repeat(false), m_match(wxS("")), m_replace(wxS(""))
+	{
+	}
 
-  wxPdfVoltRule(bool repeat, const wxString& match, const wxString& replace)
-    : m_repeat(repeat), m_match(match), m_replace(replace)
-  {
-    m_re.Compile(m_match);
-  }
+	wxPdfVoltRule(bool repeat, const wxString& match, const wxString& replace)
+		: m_repeat(repeat), m_match(match), m_replace(replace)
+	{
+		m_re.Compile(m_match);
+	}
 
-  ~wxPdfVoltRule()
-  {
-  }
+	~wxPdfVoltRule()
+	{
+	}
 
 public:
-  bool     m_repeat;
-  wxString m_match;
-  wxString m_replace;
-  wxRegEx  m_re;
+	bool m_repeat;
+	wxString m_match;
+	wxString m_replace;
+	wxRegEx m_re;
 };
 
 wxPdfVolt::wxPdfVolt()
@@ -50,47 +50,47 @@ wxPdfVolt::wxPdfVolt()
 
 wxPdfVolt::~wxPdfVolt()
 {
-  size_t n = m_rules.GetCount();
-  size_t j;
-  for (j = 0; j < n; ++j)
-  {
-    delete (wxPdfVoltRule*) m_rules.Item(j);
-  }
+	size_t n = m_rules.GetCount();
+	size_t j;
+	for (j = 0; j < n; ++j)
+	{
+		delete static_cast<wxPdfVoltRule*>(m_rules.Item(j));
+	}
 }
 
 void
 wxPdfVolt::LoadVoltData(wxXmlNode* volt)
 {
-  wxString repeat, match, replace;
-  bool doRepeat;
-  wxXmlNode* child = volt->GetChildren();
-  while (child)
-  {
-    if (child->GetName() == wxS("ruleset"))
-    {
-      wxXmlNode* rule = child->GetChildren();
-      while (rule)
-      {
-        if (rule->GetName() == wxS("rule"))
-        {
-#if wxCHECK_VERSION(2,9,0)
-          repeat  = rule->GetAttribute(wxS("repeat"), wxS("false"));
-          match   = rule->GetAttribute(wxS("match"), wxS(""));
-          replace = rule->GetAttribute(wxS("replace"), wxS(""));
+	wxString repeat, match, replace;
+	bool doRepeat;
+	wxXmlNode* child = volt->GetChildren();
+	while (child)
+	{
+		if (child->GetName() == wxS("ruleset"))
+		{
+			wxXmlNode* rule = child->GetChildren();
+			while (rule)
+			{
+				if (rule->GetName() == wxS("rule"))
+				{
+#if wxCHECK_VERSION(2, 9, 0)
+					repeat = rule->GetAttribute(wxS("repeat"), wxS("false"));
+					match = rule->GetAttribute(wxS("match"), wxS(""));
+					replace = rule->GetAttribute(wxS("replace"), wxS(""));
 #else
           repeat  = rule->GetPropVal(wxS("repeat"), wxS("false"));
           match   = rule->GetPropVal(wxS("match"), wxS(""));
           replace = rule->GetPropVal(wxS("replace"), wxS(""));
 #endif
-          doRepeat = repeat.IsSameAs(wxS("true"));
-          wxPdfVoltRule* voltRule = new wxPdfVoltRule(doRepeat, match, replace);
-          m_rules.Add(voltRule);
-        }
-        rule = rule->GetNext();
-      }
-    }
-    child = child->GetNext();
-  }
+					doRepeat = repeat.IsSameAs(wxS("true"));
+					auto voltRule = new wxPdfVoltRule(doRepeat, match, replace);
+					m_rules.Add(voltRule);
+				}
+				rule = rule->GetNext();
+			}
+		}
+		child = child->GetNext();
+	}
 }
 
 wxString
@@ -102,16 +102,16 @@ wxPdfVolt::ProcessRules(const wxString& text)
 
   wxString str;
 #endif
-  wxString processText = text;
-  size_t n = m_rules.GetCount();
-  size_t j;
-  for (j = 0; j < n; ++j)
-  {
-    wxPdfVoltRule* rule = (wxPdfVoltRule*) m_rules.Item(j);
-    int matchCount;
-    do
-    {
-      matchCount = rule->m_re.Replace(&processText, rule->m_replace);
+	wxString processText = text;
+	size_t n = m_rules.GetCount();
+	size_t j;
+	for (j = 0; j < n; ++j)
+	{
+		auto rule = static_cast<wxPdfVoltRule*>(m_rules.Item(j));
+		int matchCount;
+		do
+		{
+			matchCount = rule->m_re.Replace(&processText, rule->m_replace);
 #if 0
       str = wxEmptyString;
       wxString::const_iterator ch;
@@ -122,11 +122,11 @@ wxPdfVolt::ProcessRules(const wxString& text)
       str += wxS("\n");
       dbgIndic.WriteString(str);
 #endif
-    }
-    while (rule->m_repeat && matchCount > 0);
-  }
+		}
+		while (rule->m_repeat && matchCount > 0);
+	}
 #if 0
   dbgOut.Close();
 #endif
-  return processText;
+	return processText;
 }

@@ -38,7 +38,6 @@ CRgbaquad CImageLoadingFormat::GetColorValue(const int& x, const int& y)
 }
 
 
-
 CRgbaquad* CImageLoadingFormat::GetPtColorValue(const int& x, const int& y)
 {
 	CRgbaquad* color = nullptr;
@@ -51,7 +50,8 @@ CRgbaquad* CImageLoadingFormat::GetPtColorValue(const int& x, const int& y)
 }
 
 
-int CImageLoadingFormat::InsertBitmap(CImageLoadingFormat * bitmap, const int & xPos, const int& yPos, const bool& withalpha)
+int CImageLoadingFormat::InsertBitmap(CImageLoadingFormat* bitmap, const int& xPos, const int& yPos,
+                                      const bool& withalpha)
 {
 	if (!_image.empty() && bitmap != nullptr)
 	{
@@ -67,7 +67,6 @@ int CImageLoadingFormat::InsertBitmap(CImageLoadingFormat * bitmap, const int & 
 
 		for (auto y = yPos; y < yEnd; y++)
 		{
-
 			for (auto x = xPos; x < xEnd; x++)
 			{
 				CRgbaquad* colorSrc = GetPtColorValue(x, y);
@@ -269,7 +268,7 @@ void CImageLoadingFormat::RotateExif_withoutflip(const int& orientation)
 		this->Rotate90();
 		cv::flip(_image, _image, 0);
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -321,7 +320,7 @@ void CImageLoadingFormat::RotateExif(const int& orientation)
 	case 8: // left side bottom
 		this->Rotate90();
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -347,7 +346,6 @@ wxImage CImageLoadingFormat::GetwxImage()
 	}
 	*/
 	return wx;
-
 }
 
 CxImage CImageLoadingFormat::GetCxImage()
@@ -356,10 +354,10 @@ CxImage CImageLoadingFormat::GetCxImage()
 		return CxImage();
 
 	CxImage image;
-	image.CreateFromArray(_image.data, _image.rows * _image.cols * 4, _image.size().width, _image.size().height, 32, _image.size().width * 4, false, false);
+	image.CreateFromArray(_image.data, _image.rows * _image.cols * 4, _image.size().width, _image.size().height, 32,
+	                      _image.size().width * 4, false, false);
 	image.Flip();
 	return image;
-
 }
 
 
@@ -387,20 +385,19 @@ void CImageLoadingFormat::SetPicture(CxImage* image)
 	cv::flip(_image, _image, 0);
 }
 
-FIBITMAP * CImageLoadingFormat::GetFreeImage()
+FIBITMAP* CImageLoadingFormat::GetFreeImage()
 {
 	int pitch = GetWidth() * 4;
 	return FreeImage_ConvertFromRawBits(_image.data, GetWidth(),
-		GetHeight(), pitch, 32, FI_RGBA_RED_MASK,
-		FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, TRUE);
+	                                    GetHeight(), pitch, 32, FI_RGBA_RED_MASK,
+	                                    FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, TRUE);
 }
 
-void CImageLoadingFormat::SetPicture(wxImage & image)
+void CImageLoadingFormat::SetPicture(wxImage& image)
 {
 	_image = CLibPicture::mat_from_wx(image);
 	if (_image.channels() == 1)
 		cvtColor(_image, _image, cv::COLOR_GRAY2BGRA);
-	
 }
 
 cv::Mat CImageLoadingFormat::GetFloatImage()
@@ -418,10 +415,10 @@ void CImageLoadingFormat::SetPicture(cv::Mat& image)
 		cvtColor(image, _image, cv::COLOR_GRAY2BGRA);
 	else
 		image.copyTo(_image);
-
 }
 
-void CImageLoadingFormat::SetPicture(cv::Mat& image, const int & exif, const wxString & fileIn, const bool& convertToRGB24)
+void CImageLoadingFormat::SetPicture(cv::Mat& image, const int& exif, const wxString& fileIn,
+                                     const bool& convertToRGB24)
 {
 	SetPicture(image);
 
@@ -429,7 +426,7 @@ void CImageLoadingFormat::SetPicture(cv::Mat& image, const int & exif, const wxS
 		cvtColor(_image, _image, cv::COLOR_RGBA2BGRA);
 
 	RotateExif(exif);
-	orientation = 0;// image->GetOrientation();
+	orientation = 0; // image->GetOrientation();
 	if (orientation < 0)
 		orientation = 0;
 	filename = fileIn;
@@ -461,7 +458,7 @@ std::vector<uchar> CImageLoadingFormat::GetJpegData()
 		return buff;
 	}
 
-	
+
 	std::vector<int> param(2);
 	param[0] = cv::IMWRITE_JPEG_QUALITY;
 	param[1] = 80; //default(95) 0-100
@@ -501,7 +498,6 @@ float CImageLoadingFormat::CalculPictureRatio(const int& pictureWidth, const int
 bool CImageLoadingFormat::IsOk()
 {
 	return !_image.empty();
-
 }
 
 
@@ -530,7 +526,7 @@ int CImageLoadingFormat::Resize(const int& pictureWidth, const int& pictureHeigh
 
 	if (thumbnailWidth > 0 && thumbnailHeight > 0)
 	{
-		cv::resize(_image, _image,cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
+		cv::resize(_image, _image, cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
 	}
 	return 0;
 }

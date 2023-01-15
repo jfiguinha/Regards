@@ -12,26 +12,27 @@ namespace Regards
 		class CSqlResource : public CSqlExecuteRequest
 		{
 		public:
-			CSqlResource(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);
-			~CSqlResource();
+			CSqlResource(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
+			~CSqlResource() override;
 
-			CPictureData * GetBitmap(const wxString &idName);
+			CPictureData* GetBitmap(const wxString& idName);
 			vector<wxString> GetSavePictureFormat();
 			vector<wxString> GetSavePictureExtension();
 			wxString GetText(const wxString& idName);
 			wxString GetOpenGLShader(const wxString& idName);
 			wxString GetFilepath(const wxString& idName);
-			wxString GetVectorFromFile(const wxString &idName);
-            wxString GetVector(const wxString &idName);
-			wxString GetLibelle(const wxString &idName, const int &idLang);
-			wxString GetExifLibelle(const wxString &idName);
-            int GetExtensionId(const wxString &extension);
-			void InsertBitmap(const wstring &idName, const wstring &mimeType, const wstring &filename, const bool &flip = false);
-			void InsertOpenGLShader(const wstring &idName, const wstring &mimeType, const wstring &filename);
+			wxString GetVectorFromFile(const wxString& idName);
+			wxString GetVector(const wxString& idName);
+			wxString GetLibelle(const wxString& idName, const int& idLang);
+			wxString GetExifLibelle(const wxString& idName);
+			int GetExtensionId(const wxString& extension);
+			void InsertBitmap(const wstring& idName, const wstring& mimeType, const wstring& filename,
+			                  const bool& flip = false);
+			void InsertOpenGLShader(const wstring& idName, const wstring& mimeType, const wstring& filename);
 			void InsertOpenCLFloat(const wstring& idName, const wstring& mimeType, const wstring& filename);
 			void InsertOpenCLUchar(const wstring& idName, const wstring& mimeType, const wstring& filename);
-			void InsertLibelle(const wstring &idName, const wstring &libelle, const int &lang);
-			void InsertVector(const wstring &idName, const wstring &filename);
+			void InsertLibelle(const wstring& idName, const wstring& libelle, const int& lang);
+			void InsertVector(const wstring& idName, const wstring& filename);
 			wxString GetOpenCLFloatFromFile(const wxString& idName);
 			wxString GetOpenCLUcharFromFile(const wxString& idName);
 			wxString GetOpenGLFromFile(const wxString& idName);
@@ -40,25 +41,24 @@ namespace Regards
 		private:
 			wxString GetOpenCLFloat(const wxString& idName);
 			wxString GetOpenCLUchar(const wxString& idName);
-			wxString readFileBytes(const wxString & name);
-			int TraitementResultExif(CSqlResult * sqlResult);
-            int TraitementResultVector(CSqlResult * sqlResult);
-			int TraitementResultBitmap(CSqlResult * sqlResult);
-			int TraitementResultText(CSqlResult * sqlResult);
-			int TraitementResultLibelle(CSqlResult * sqlResult);
-            int TraitementResultExtension(CSqlResult * sqlResult);
-			int TraitementResult(CSqlResult * sqlResult);
-			int TraitementResultFilePath(CSqlResult * sqlResult);
+			wxString readFileBytes(const wxString& name);
+			int TraitementResultExif(CSqlResult* sqlResult);
+			int TraitementResultVector(CSqlResult* sqlResult);
+			int TraitementResultBitmap(CSqlResult* sqlResult);
+			int TraitementResultText(CSqlResult* sqlResult);
+			int TraitementResultLibelle(CSqlResult* sqlResult);
+			int TraitementResultExtension(CSqlResult* sqlResult);
+			int TraitementResult(CSqlResult* sqlResult) override;
+			int TraitementResultFilePath(CSqlResult* sqlResult);
 			int TraitementResultList(CSqlResult* sqlResult);
 			int typeResult;
-			CPictureData * memFile;
+			CPictureData* memFile;
 			wxString text;
 			wxString libelle;
-            string test;
+			string test;
 			wxString defaultPathSearch;
 			vector<wxString> list;
-            int id;
+			int id;
 		};
 	}
 }
-

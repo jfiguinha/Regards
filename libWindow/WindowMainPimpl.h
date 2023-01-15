@@ -23,7 +23,7 @@ public:
 		}
 	}
 
-	thread * threadIdle;
+	thread* threadIdle;
 	int width;
 	int height;
 	unsigned long sleeptime;

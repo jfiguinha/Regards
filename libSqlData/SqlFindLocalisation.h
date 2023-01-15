@@ -11,14 +11,13 @@ namespace Regards
 		{
 		public:
 			CSqlFindLocalisation();
-			~CSqlFindLocalisation();
-			bool SearchUniqueCriteria(vector<wxString> * localisationVector, const wxString &day, const wxString &month, const wxString &year);
+			~CSqlFindLocalisation() override;
+			bool SearchUniqueCriteria(vector<wxString>* localisationVector, const wxString& day, const wxString& month,
+			                          const wxString& year);
 
 		private:
-
-			int TraitementResult(CSqlResult * sqlResult);
-			vector<wxString> * localisationVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			vector<wxString>* localisationVector;
 		};
 	}
 }
-

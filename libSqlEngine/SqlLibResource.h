@@ -8,12 +8,10 @@ namespace Regards
 		class CSqlLibResource : public CSqlLib
 		{
 		public:
-			CSqlLibResource(const bool &readOnly, const bool &load_inmemory);
-			~CSqlLibResource();
+			CSqlLibResource(const bool& readOnly, const bool& load_inmemory);
+			~CSqlLibResource() override;
 
-			bool InitDatabase(const wxString &lpFilename);
-
+			bool InitDatabase(const wxString& lpFilename) override;
 		};
 	}
 }
-

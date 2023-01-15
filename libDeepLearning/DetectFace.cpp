@@ -41,12 +41,11 @@ CDetectFace::~CDetectFace(void)
 }
 
 
-
-
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CDetectFace::DetectFace(const Mat& bitmap, const float& confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
+void CDetectFace::DetectFace(const Mat& bitmap, const float& confidenceThreshold, std::vector<CFace>& listOfFace,
+                             std::vector<cv::Rect>& pointOfFace)
 {
 #ifdef __APPLE__
 
@@ -103,7 +102,6 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float& confidenceThreshold
 
 	try
 	{
-
 		Mat inputBlob = blobFromImage(frameOpenCVDNN, 1.0, Size(300, 300), (104.0, 177.0, 123.0), false, false);
 		net.setInput(inputBlob, "data");
 		Mat detection = net.forward("detection_out").clone();
@@ -158,7 +156,7 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 	if (!isload)
 		return 0;
 
-	Mat frameOpenCVDNN;// (bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	Mat frameOpenCVDNN; // (bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	int nbFaceDetect = 0;
 	cvtColor(bitmap, frameOpenCVDNN, COLOR_BGRA2BGR);
 	try
@@ -194,19 +192,18 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 #endif
 }
 
-void CDetectFace::LoadModel(const bool & openCLCompatible)
+void CDetectFace::LoadModel(const bool& openCLCompatible)
 {
-
 #ifdef __APPLE__
 #else
 
 	try
 	{
-
 #ifndef __WXGTK__
 
 		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() +
+			"\\model\\opencv_face_detector_uint8.pb";
 
 		/*
 		bool openCLCompatible = false;
@@ -218,7 +215,8 @@ void CDetectFace::LoadModel(const bool & openCLCompatible)
 		}
 		*/
 
-		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
+		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile),
+		                            CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
 		if (openCLCompatible)
@@ -234,7 +232,6 @@ void CDetectFace::LoadModel(const bool & openCLCompatible)
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		net.setPreferableTarget(DNN_TARGET_CPU);
 #endif
-
 	}
 	catch (Exception& e)
 	{
@@ -245,5 +242,4 @@ void CDetectFace::LoadModel(const bool & openCLCompatible)
 
 	isload = true;
 #endif
-
 }

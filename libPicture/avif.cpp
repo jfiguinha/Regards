@@ -215,7 +215,7 @@ cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPict
 					int image_width = dstRGB.width;
 					int image_height = dstRGB.height;
 
-					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
+					auto out = cv::Mat(image_height, image_width, CV_8UC4);
 					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
 					//cv::flip(out, out, 0);
 				}
@@ -230,9 +230,8 @@ cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPict
 }
 
 
-
-
-void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data, const long& size, const int& compression, const bool& hasExif)
+void CAvif::SavePicture(const string& filename, cv::Mat& source, uint8_t* data, const long& size,
+                        const int& compression, const bool& hasExif)
 {
 	if (!source.empty())
 	{
@@ -243,9 +242,9 @@ void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data,
 		avifImage* image = avifImageCreate(width, height, depth, format);
 		if (image != nullptr)
 		{
-			if(hasExif)
+			if (hasExif)
 				avifImageSetMetadataExif(image, data, size);
-			
+
 			// (Semi-)optional: Describe the color profile, YUV<->RGB conversion, and range.
 			// These default to "unspecified" and full range. You should at least set the
 			// matrixCoefficients to indicate how you would like YUV<->RGB conversion to be done.
@@ -342,7 +341,7 @@ vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 				{
 					int image_width = dstRGB.width;
 					int image_height = dstRGB.height;
-					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
+					auto out = cv::Mat(image_height, image_width, CV_8UC4);
 					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
 					//cv::flip(out, out, 0);
 					listPicture.push_back(out);
@@ -496,7 +495,6 @@ void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& si
 				memcpy(data + pos, decoded->exif.data, decoded->exif.size);
 				pos += decoded->exif.size;
 				memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
-
 			}
 			else
 				size = decoded->exif.size + 512;

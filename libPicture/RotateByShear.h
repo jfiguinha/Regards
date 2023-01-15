@@ -279,16 +279,17 @@ CRotateByShear<CPxl>::Rotate90(CPxl* pSrc, wxSize sSrc, wxSize* psDst)
 	{
 		return nullptr;
 	}
-	for (auto uY = 0; uY < static_cast<int>(sSrc.y); uY++)
+	for (auto uY = 0; uY < sSrc.y; uY++)
 	{
-		for (auto uX = 0; uX < static_cast<int>(sSrc.x); uX++)
+		for (auto uX = 0; uX < sSrc.x; uX++)
 		{
 			SetRGB(pDst, *psDst, uY, (*psDst).y - uX - 1, GetRGB(pSrc, sSrc, uX, uY));
 		}
 		if (m_Callback)
 		{
 			// Report progress
-			if (!m_Callback(static_cast<uint8_t>(float(uY) / float(sSrc.y) * float(50.0))))
+			if (!m_Callback(
+				static_cast<uint8_t>(static_cast<float>(uY) / static_cast<float>(sSrc.y) * static_cast<float>(50.0))))
 			{
 				// Operation cancelled
 				DestroyBitmap(pDst, *psDst);
@@ -325,16 +326,17 @@ CRotateByShear<CPxl>::Rotate180(CPxl* pSrc, wxSize sSrc, wxSize* psDst)
 		return nullptr;
 	}
 
-	for (auto uY = 0; uY < static_cast<int>(sSrc.y); uY++)
+	for (auto uY = 0; uY < sSrc.y; uY++)
 	{
-		for (auto uX = 0; uX < static_cast<int>(sSrc.x); uX++)
+		for (auto uX = 0; uX < sSrc.x; uX++)
 		{
 			SetRGB(pDst, *psDst, (*psDst).x - uX - 1, (*psDst).y - uY - 1, GetRGB(pSrc, sSrc, uX, uY));
 		}
 		if (m_Callback)
 		{
 			// Report progress
-			if (!m_Callback(static_cast<uint8_t>(float(uY) / float(sSrc.y) * float(50.0))))
+			if (!m_Callback(
+				static_cast<uint8_t>(static_cast<float>(uY) / static_cast<float>(sSrc.y) * static_cast<float>(50.0))))
 			{
 				// Operation cancelled
 				DestroyBitmap(pDst, *psDst);
@@ -372,16 +374,17 @@ CRotateByShear<CPxl>::Rotate270(CPxl* pSrc, wxSize sSrc, wxSize* psDst)
 		return nullptr;
 	}
 
-	for (auto uY = 0; uY < static_cast<int>(sSrc.y); uY++)
+	for (auto uY = 0; uY < sSrc.y; uY++)
 	{
-		for (auto uX = 0; uX < static_cast<int>(sSrc.x); uX++)
+		for (auto uX = 0; uX < sSrc.x; uX++)
 		{
 			SetRGB(pDst, *psDst, (*psDst).x - uY - 1, uX, GetRGB(pSrc, sSrc, uX, uY));
 		}
 		if (m_Callback)
 		{
 			// Report progress
-			if (!m_Callback(static_cast<uint8_t>(float(uY) / float(sSrc.y) * float(50.0))))
+			if (!m_Callback(
+				static_cast<uint8_t>(static_cast<float>(uY) / static_cast<float>(sSrc.y) * static_cast<float>(50.0))))
 			{
 				// Operation cancelled
 				DestroyBitmap(pDst, *psDst);
@@ -433,7 +436,7 @@ CRotateByShear<CPxl>::Rotate45(
 
 	// Calc first shear (horizontal) destination image dimensions 
 	wxSize sDst1;
-	sDst1.x = sSrc.x + static_cast<int>(float(sSrc.y) * fabs(dTan));
+	sDst1.x = sSrc.x + static_cast<int>(static_cast<float>(sSrc.y) * fabs(dTan));
 	sDst1.y = sSrc.y;
 
 
@@ -445,7 +448,7 @@ CRotateByShear<CPxl>::Rotate45(
 	{
 		return nullptr;
 	}
-	for (auto u = 0; u < static_cast<int>(sDst1.y); u++)
+	for (auto u = 0; u < sDst1.y; u++)
 	{
 		float dShear;
 
@@ -457,7 +460,7 @@ CRotateByShear<CPxl>::Rotate45(
 		else
 		{
 			// Negative angle
-			dShear = (static_cast<float>(int(u) - sDst1.y) + 0.5) * dTan;
+			dShear = (static_cast<float>(static_cast<int>(u) - sDst1.y) + 0.5) * dTan;
 		}
 		int iShear = static_cast<int>(floor(dShear));
 		HorizSkew(pSrc,
@@ -472,8 +475,10 @@ CRotateByShear<CPxl>::Rotate45(
 		{
 			// Report progress
 			uint8_t bProgress = bMidImage
-				                    ? 50 + static_cast<uint8_t>(float(u) / float(sDst1.y) * float(50.0 / 3.0))
-				                    : static_cast<uint8_t>(float(u) / float(sDst1.y) * float(33.33333));
+				                    ? 50 + static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>(sDst1.y) *
+					                    static_cast<float>(50.0 / 3.0))
+				                    : static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>(sDst1.y) *
+					                    static_cast<float>(33.33333));
 			if (!m_Callback(bProgress))
 			{
 				// Operation cancelled
@@ -488,7 +493,8 @@ CRotateByShear<CPxl>::Rotate45(
 	// Calc 2nd shear (vertical) destination image dimensions
 	wxSize sDst2;
 	sDst2.x = sDst1.x;
-	sDst2.y = static_cast<int>(float(sSrc.x) * fabs(dSinE) + float(sSrc.y) * cos(dRadAngle)) + 1;
+	sDst2.y = static_cast<int>(static_cast<float>(sSrc.x) * fabs(dSinE) + static_cast<float>(sSrc.y) * cos(dRadAngle)) +
+		1;
 	// Allocate image for 2nd shear
 	CPxl* pDst2 = CreateNewBitmap(sDst2);
 	if (nullptr == pDst2)
@@ -524,8 +530,10 @@ CRotateByShear<CPxl>::Rotate45(
 		{
 			// Report progress
 			uint8_t bProgress = bMidImage
-				                    ? 66 + static_cast<uint8_t>(float(u) / float(sDst2.y) * float(50.0 / 3.0))
-				                    : 33 + static_cast<uint8_t>(float(u) / float(sDst2.y) * float(33.33333));
+				                    ? 66 + static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>(sDst2.y) *
+					                    static_cast<float>(50.0 / 3.0))
+				                    : 33 + static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>(sDst2.y) *
+					                    static_cast<float>(33.33333));
 			if (!m_Callback(bProgress))
 			{
 				// Operation cancelled
@@ -542,7 +550,8 @@ CRotateByShear<CPxl>::Rotate45(
 	DestroyBitmap(pDst1, sDst1);
 
 	// Calc 3rd shear (horizontal) destination image dimensions
-	(*psDst).x = static_cast<int>(float(sSrc.y) * fabs(dSinE) + float(sSrc.x) * cos(dRadAngle)) + 1;
+	(*psDst).x = static_cast<int>(static_cast<float>(sSrc.y) * fabs(dSinE) + static_cast<float>(sSrc.x) *
+		cos(dRadAngle)) + 1;
 	(*psDst).y = sDst2.y;
 
 	// Allocate image for 3rd shear
@@ -564,7 +573,7 @@ CRotateByShear<CPxl>::Rotate45(
 		// Negative angle
 		dOffset = dTan * (static_cast<float>(sSrc.x - 1) * -dSinE + static_cast<float>(1 - (*psDst).y));
 	}
-	for (auto u = 0; u < static_cast<int>((*psDst).y); u++, dOffset += dTan)
+	for (auto u = 0; u < (*psDst).y; u++, dOffset += dTan)
 	{
 		int iShear = static_cast<int>(floor(dOffset));
 		HorizSkew(pDst2,
@@ -580,8 +589,10 @@ CRotateByShear<CPxl>::Rotate45(
 		{
 			// Report progress
 			uint8_t bProgress = bMidImage
-				                    ? 83 + static_cast<uint8_t>(float(u) / float((*psDst).y) * float(50.0 / 3.0))
-				                    : 66 + static_cast<uint8_t>(float(u) / float((*psDst).y) * float(33.33333));
+				                    ? 83 + static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>((*psDst).y) *
+					                    static_cast<float>(50.0 / 3.0))
+				                    : 66 + static_cast<uint8_t>(static_cast<float>(u) / static_cast<float>((*psDst).y) *
+					                    static_cast<float>(33.33333));
 			if (!m_Callback(bProgress))
 			{
 				// Operation cancelled

@@ -20,7 +20,7 @@ ULONG GetBitmapLineWidthInBytes(ULONG nWidthInPixels, ULONG nBitCount);
 // GetBitmapDimensions
 //
 
-BOOL GetBitmapDimensions(LPCVOID pDib, UINT *pWidth, UINT *pHeight);
+BOOL GetBitmapDimensions(LPCVOID pDib, UINT* pWidth, UINT* pHeight);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,6 @@ BOOL GetBitmapDimensions(LPCVOID pDib, UINT *pWidth, UINT *pHeight);
 //
 
 ULONG GetBitmapSize(LPCVOID pDib);
-
 
 
 //////////////////////////////////////////////////////////////////////////

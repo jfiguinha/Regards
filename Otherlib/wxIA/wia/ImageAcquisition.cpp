@@ -6,9 +6,9 @@
 // ReadPropertyLong
 //
 HRESULT ReadPropertyLong(
-	IWiaPropertyStorage *pWiaPropertyStorage,
-	const PROPSPEC      *pPropSpec,
-	LONG                *plResult
+	IWiaPropertyStorage* pWiaPropertyStorage,
+	const PROPSPEC* pPropSpec,
+	LONG* plResult
 )
 {
 	PROPVARIANT PropVariant;
@@ -32,108 +32,106 @@ HRESULT ReadPropertyLong(
 		switch (PropVariant.vt)
 		{
 		case VT_I1:
-		{
-			*plResult = (LONG)PropVariant.cVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.cVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_UI1:
-		{
-			*plResult = (LONG)PropVariant.bVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.bVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_I2:
-		{
-			*plResult = (LONG)PropVariant.iVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.iVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_UI2:
-		{
-			*plResult = (LONG)PropVariant.uiVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.uiVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_I4:
-		{
-			*plResult = (LONG)PropVariant.lVal;
+			{
+				*plResult = PropVariant.lVal;
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_UI4:
-		{
-			*plResult = (LONG)PropVariant.ulVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.ulVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_INT:
-		{
-			*plResult = (LONG)PropVariant.intVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.intVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_UINT:
-		{
-			*plResult = (LONG)PropVariant.uintVal;
+			{
+				*plResult = static_cast<LONG>(PropVariant.uintVal);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_R4:
-		{
-			*plResult = (LONG)(PropVariant.fltVal + 0.5);
+			{
+				*plResult = static_cast<LONG>(PropVariant.fltVal + 0.5);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_R8:
-		{
-			*plResult = (LONG)(PropVariant.dblVal + 0.5);
+			{
+				*plResult = static_cast<LONG>(PropVariant.dblVal + 0.5);
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		default:
-		{
-			hr = E_FAIL;
+			{
+				hr = E_FAIL;
 
-			break;
-		}
-
+				break;
+			}
 		}
 		PropVariantClear(&PropVariant);
 	}
 	return hr;
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -142,9 +140,9 @@ HRESULT ReadPropertyLong(
 
 HRESULT
 ReadPropertyGuid(
-	IWiaPropertyStorage *pWiaPropertyStorage,
-	const PROPSPEC      *pPropSpec,
-	GUID                *pguidResult
+	IWiaPropertyStorage* pWiaPropertyStorage,
+	const PROPSPEC* pPropSpec,
+	GUID* pguidResult
 )
 {
 	PROPVARIANT PropVariant;
@@ -168,46 +166,46 @@ ReadPropertyGuid(
 		switch (PropVariant.vt)
 		{
 		case VT_CLSID:
-		{
-			*pguidResult = *PropVariant.puuid;
+			{
+				*pguidResult = *PropVariant.puuid;
 
-			hr = S_OK;
+				hr = S_OK;
 
-			break;
-		}
+				break;
+			}
 
 		case VT_BSTR:
-		{
-			hr = CLSIDFromString(PropVariant.bstrVal, pguidResult);
+			{
+				hr = CLSIDFromString(PropVariant.bstrVal, pguidResult);
 
-			break;
-		}
+				break;
+			}
 
 		case VT_LPWSTR:
-		{
-			hr = CLSIDFromString(PropVariant.pwszVal, pguidResult);
+			{
+				hr = CLSIDFromString(PropVariant.pwszVal, pguidResult);
 
-			break;
-		}
+				break;
+			}
 
 		case VT_LPSTR:
-		{
-			WCHAR wszGuid[MAX_GUID_STRING_LEN];
-			mbstowcs_s(NULL, wszGuid, MAX_GUID_STRING_LEN, PropVariant.pszVal, MAX_GUID_STRING_LEN);
+			{
+				WCHAR wszGuid[MAX_GUID_STRING_LEN];
+				mbstowcs_s(nullptr, wszGuid, MAX_GUID_STRING_LEN, PropVariant.pszVal, MAX_GUID_STRING_LEN);
 
-			wszGuid[MAX_GUID_STRING_LEN - 1] = L'\0';
+				wszGuid[MAX_GUID_STRING_LEN - 1] = L'\0';
 
-			hr = CLSIDFromString(wszGuid, pguidResult);
+				hr = CLSIDFromString(wszGuid, pguidResult);
 
-			break;
-		}
+				break;
+			}
 
 		default:
-		{
-			hr = E_FAIL;
+			{
+				hr = E_FAIL;
 
-			break;
-		}
+				break;
+			}
 		}
 	}
 
@@ -223,35 +221,35 @@ ReadPropertyGuid(
 
 HRESULT
 WiaGetImage(
-	HWND                 hWndParent,
-	LONG                 lDeviceType,
-	LONG                 lFlags,
-	LONG                 lIntent,
-	IWiaDevMgr          *pSuppliedWiaDevMgr,
-	IWiaItem            *pSuppliedItemRoot,
-	PFNPROGRESSCALLBACK  pfnProgressCallback,
-	PVOID                pProgressCallbackParam,
-	GUID                *pguidFormat,
-	LONG                *plCount,
-	IStream             ***pppStream
+	HWND hWndParent,
+	LONG lDeviceType,
+	LONG lFlags,
+	LONG lIntent,
+	IWiaDevMgr* pSuppliedWiaDevMgr,
+	IWiaItem* pSuppliedItemRoot,
+	PFNPROGRESSCALLBACK pfnProgressCallback,
+	PVOID pProgressCallbackParam,
+	GUID* pguidFormat,
+	LONG* plCount,
+	IStream*** pppStream
 )
 {
 	HRESULT hr;
 
 	// Validate and initialize output parameters
 
-	if (plCount == NULL)
+	if (plCount == nullptr)
 	{
 		return E_POINTER;
 	}
 
-	if (pppStream == NULL)
+	if (pppStream == nullptr)
 	{
 		return E_POINTER;
 	}
 
 	*plCount = 0;
-	*pppStream = NULL;
+	*pppStream = nullptr;
 
 
 	// Initialize the local root item variable with the supplied value.
@@ -259,18 +257,18 @@ WiaGetImage(
 
 	ComPtr<IWiaItem> pItemRoot = pSuppliedItemRoot;
 
-	if (pItemRoot == NULL)
+	if (pItemRoot == nullptr)
 	{
 		// Initialize the device manager pointer with the supplied value
 		// If no value is supplied, connect to the local device manager
 
 		ComPtr<IWiaDevMgr> pWiaDevMgr = pSuppliedWiaDevMgr;
 
-		if (pWiaDevMgr == NULL)
+		if (pWiaDevMgr == nullptr)
 		{
 			//hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
 			hr = CoCreateInstance(
-				CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
+				CLSID_WiaDevMgr, nullptr, CLSCTX_LOCAL_SERVER,
 				IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
 			if (FAILED(hr))
@@ -285,7 +283,7 @@ WiaGetImage(
 			hWndParent,
 			lDeviceType,
 			lFlags,
-			0,
+			nullptr,
 			&pItemRoot
 		);
 
@@ -321,14 +319,13 @@ WiaGetImage(
 
 	if (!(lFlags & WIA_DEVICE_DIALOG_SINGLE_IMAGE))
 	{
-
 		// Get the property storage interface pointer for the root item
 
 		//ComQIPtr<IWiaPropertyStorage> pWiaRootPropertyStorage(pItemRoot);
-		IWiaPropertyStorage *pWiaRootPropertyStorage = NULL;
+		IWiaPropertyStorage* pWiaRootPropertyStorage = nullptr;
 		HRESULT hr = pItemRoot->QueryInterface(IID_IWiaPropertyStorage, (void**)&pWiaRootPropertyStorage);
 
-		if (pWiaRootPropertyStorage == NULL)
+		if (pWiaRootPropertyStorage == nullptr)
 		{
 			return E_NOINTERFACE;
 		}
@@ -389,20 +386,20 @@ WiaGetImage(
 		}
 
 		pWiaRootPropertyStorage->Release();
-		pWiaRootPropertyStorage = NULL;
+		pWiaRootPropertyStorage = nullptr;
 	}
 
 	// If a status callback function is not supplied, use the default.
 	// The default displays a simple dialog with a progress bar and cancel button.
 	ComPtr<CProgressDlg> pProgressDlg;
 
-	if (pfnProgressCallback == NULL)
+	if (pfnProgressCallback == nullptr)
 	{
 		pfnProgressCallback = DefaultProgressCallback;
 
 		pProgressDlg = new CProgressDlg(hWndParent);
 
-		pProgressCallbackParam = (CProgressDlg *)pProgressDlg;
+		pProgressCallbackParam = static_cast<CProgressDlg*>(pProgressDlg);
 	}
 
 	//wxSleep(2);
@@ -416,7 +413,7 @@ WiaGetImage(
 		pppStream
 	);
 
-	if (pDataCallback == NULL)
+	if (pDataCallback == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -428,18 +425,18 @@ WiaGetImage(
 	for (int i = 0; i < ppIWiaItem.Count(); ++i)
 	{
 		// Get the interface pointers
-		IWiaDataTransfer	*pIWiaDataTransfer = NULL;
-		IWiaPropertyStorage *pWiaPropertyStorage = NULL;
+		IWiaDataTransfer* pIWiaDataTransfer = nullptr;
+		IWiaPropertyStorage* pWiaPropertyStorage = nullptr;
 		HRESULT hr = ppIWiaItem[i]->QueryInterface(IID_IWiaPropertyStorage, (void**)&pWiaPropertyStorage);
 
-		if (pWiaPropertyStorage == NULL)
+		if (pWiaPropertyStorage == nullptr)
 		{
 			return E_NOINTERFACE;
 		}
 
 		hr = ppIWiaItem[i]->QueryInterface(IID_IWiaDataTransfer, (void**)&pIWiaDataTransfer);
 
-		if (pIWiaDataTransfer == NULL)
+		if (pIWiaDataTransfer == nullptr)
 		{
 			return E_NOINTERFACE;
 		}
@@ -474,7 +471,7 @@ WiaGetImage(
 
 		GUID guidFormat = GUID_NULL;
 
-		if (pguidFormat == NULL)
+		if (pguidFormat == nullptr)
 		{
 			pguidFormat = &guidFormat;
 		}
@@ -508,9 +505,9 @@ WiaGetImage(
 		PROPVARIANT varFormat;
 
 		varFormat.vt = VT_CLSID;
-		varFormat.puuid = (CLSID *)CoTaskMemAlloc(sizeof(CLSID));
+		varFormat.puuid = static_cast<CLSID*>(CoTaskMemAlloc(sizeof(CLSID)));
 
-		if (varFormat.puuid == NULL)
+		if (varFormat.puuid == nullptr)
 		{
 			return E_OUTOFMEMORY;
 		}
@@ -553,7 +550,7 @@ WiaGetImage(
 
 		// Choose double buffered transfer for better performance
 
-		WIA_DATA_TRANSFER_INFO WiaDataTransferInfo = { 0 };
+		WIA_DATA_TRANSFER_INFO WiaDataTransferInfo = {0};
 
 		WiaDataTransferInfo.ulSize = sizeof(WIA_DATA_TRANSFER_INFO);
 		WiaDataTransferInfo.ulBufferSize = 2 * nBufferSize;
@@ -574,7 +571,8 @@ WiaGetImage(
 				nbTime++;
 				wxSleep(1);
 			}
-		} while (tryagain && nbTime < 5);
+		}
+		while (tryagain && nbTime < 5);
 
 		if (FAILED(hr))
 		{
@@ -582,10 +580,10 @@ WiaGetImage(
 		}
 
 		pWiaPropertyStorage->Release();
-		pWiaPropertyStorage = NULL;
+		pWiaPropertyStorage = nullptr;
 
 		pIWiaDataTransfer->Release();
-		pIWiaDataTransfer = NULL;
+		pIWiaDataTransfer = nullptr;
 
 		if (FAILED(hr) || hr == S_FALSE)
 		{
