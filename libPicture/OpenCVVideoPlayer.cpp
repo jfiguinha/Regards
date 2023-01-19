@@ -11,11 +11,11 @@ using namespace cv;
 
 COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName, const bool& useHardware) : IVideoPlayer(fileName, useHardware)
 {
-	filename = fileName;
+	filename = CConvertUtility::ConvertToStdString(fileName);
 	if (useHardware)
-		capture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(fileName), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+		capture = new cv::VideoCapture(filename, cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
 	else
-		capture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(fileName));
+		capture = new cv::VideoCapture(filename);
 
 	isOpen = capture->isOpened();
 

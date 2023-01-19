@@ -381,10 +381,6 @@
         <Library Value="webpdemux"/>
         <Library Value="webpmux"/>
         <Library Value="webp"/>
-        <Library Value="svml"/>
-        <Library Value="irng"/>
-        <Library Value="imf"/>
-        <Library Value="intlc"/>
         <Library Value="gmodule-2.0"/>
         <Library Value="expat"/>
         <Library Value="jpeg"/>

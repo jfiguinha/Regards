@@ -94,8 +94,9 @@ public:
 			timestamp = 0;
 		}
 
-		int ret = av_seek_frame(input_ctx, -1, timestamp, 0);
+		int ret = av_seek_frame(input_ctx, -1, timestamp, AVSEEK_FLAG_FRAME);
 
+        
 		if (ret >= 0)
 		{
 			avcodec_flush_buffers(decoder_ctx);
@@ -104,36 +105,9 @@ public:
 		{
 			throw logic_error("Seeking in video failed");
 		}
+    
+        return -1;
 
-
-		/*
-  
-		//int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
-		int64_t seekTarget = (double)((double)sec) * (double)AV_TIME_BASE;
-		if (seekTarget < duration)
-		{
-		    AVRational time_base = input_ctx->streams[video_stream]->time_base;
-		    int64_t ts = av_rescale_q(sec, AV_TIME_BASE_Q, time_base);           
-
-		    ret = av_seek_frame(input_ctx, video_stream, ts, 0);
-
-		    if (ret >= 0)
-		    {
-		        avcodec_flush_buffers(decoder_ctx);
-		    }
-		    else
-		    {
-		        throw logic_error("Seeking in video failed");
-		    }
-
-		    return ret;
-
-		}
-		
-		return -1;
-		*/
-
-		//avcodec_flush_buffers(decoder_ctx);
 	}
 
 	CVideoPlayerPimpl()
