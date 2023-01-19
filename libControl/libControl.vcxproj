@@ -561,10 +561,11 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libEmail;..\include;..\libDeepLearning;..\libPicture;..\libOpenCL;..\libWindowMain;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;_HAS_STD_BYTE=0;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -576,7 +577,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -590,6 +591,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -542,7 +542,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../libSqlData;../include;../CxImage;../libUtility;../libParameter;../libResource;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libFiltreInterface;../libSqlData;../include;../CxImage;../libUtility;../libParameter;../libResource;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>HAS_X265;LIBBPG;LIBHEIC;LIBRAW;WIN32;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -560,7 +560,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libFiltreInterface;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HAS_X265;LIBBPG;LIBHEIC;LIBRAW;WIN32;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

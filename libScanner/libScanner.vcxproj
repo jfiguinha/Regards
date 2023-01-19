@@ -279,7 +279,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;_HAS_STD_BYTE=0;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -468,11 +468,12 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>;wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -484,7 +485,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -498,6 +499,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
