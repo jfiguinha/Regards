@@ -116,12 +116,14 @@ int COpenCVVideoPlayer::GetOrientation()
 int COpenCVVideoPlayer::SeekToPos(const int& sec)
 {
 	if (!isOpen)
-		return 0;
+		return -1;
 
 	double fps = capture->get(CAP_PROP_FPS);
 	double noFrame = fps * sec;
 	if (sec != 0)
 		capture->set(CAP_PROP_POS_FRAMES, noFrame);
+
+	return 0;
 }
 
 cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation)
