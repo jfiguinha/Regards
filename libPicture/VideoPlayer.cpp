@@ -619,7 +619,7 @@ int CVideoPlayer::SeekToPos(const int& sec)
 	return -1;
 }
 
-CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware)
+CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware) : IVideoPlayer(filename, useHardware)
 {
 	int ret = 0;
 	pimpl = new CVideoPlayerPimpl();

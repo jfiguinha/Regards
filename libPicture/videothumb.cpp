@@ -5,6 +5,7 @@
 #include "Metadata.h"
 #include <ximage.h>
 #include "ImageVideoThumbnail.h"
+#include "OpenCVVideoPlayer.h"
 #include <ImageLoadingFormat.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
@@ -15,11 +16,17 @@ using namespace Regards::Picture;
 class CThumbnailVideoPimpl
 {
 public:
-	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware)
+	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware) 
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-		videoThumbnailer = new CVideoPlayer(filename, false);
+#ifdef __WXGTK__
+		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
+#else
+		//videoThumbnailer = new CVideoPlayer(filename, false);
+		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
+#endif
+		
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
 		rotation = videoThumbnailer->GetOrientation();
@@ -102,14 +109,18 @@ public:
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
 				resize(image, image, cv::Size(scaledWidth, scaledHeight));
+
 			}
 			else
 			{
 				int scaledSize = 0;
 				bool maintainAspectRatio = true;
 
+
 				int scaledWidth = thumbnailWidth;
 				int scaledHeight = thumbnailHeight;
+
+
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
 				resize(image, image, cv::Size(scaledHeight, scaledWidth));
@@ -121,7 +132,7 @@ public:
 
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
-	CVideoPlayer* videoThumbnailer = nullptr;
+	IVideoPlayer* videoThumbnailer = nullptr;
 	int width = 0;
 	int height = 0;
 	int rotation = 0;

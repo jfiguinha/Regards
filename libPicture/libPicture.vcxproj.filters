@@ -127,6 +127,9 @@
     <ClCompile Include="DecodeRawPicture.cpp">
       <Filter>libraw</Filter>
     </ClCompile>
+    <ClCompile Include="OpenCVVideoPlayer.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -278,6 +281,12 @@
     </ClInclude>
     <ClInclude Include="DecodeRawParameter.h">
       <Filter>libraw</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCVVideoPlayer.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayerInterface.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

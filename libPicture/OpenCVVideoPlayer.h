@@ -1,22 +1,21 @@
 #pragma once
 #include "VideoPlayerInterface.h"
 
-class CVideoPlayerPimpl;
-
 namespace cv
 {
 	class Mat;
+	class VideoCapture;
 }
 
 namespace Regards
 {
 	namespace Video
 	{
-		class CVideoPlayer : public IVideoPlayer
+		class COpenCVVideoPlayer : public IVideoPlayer
 		{
 		public:
-			CVideoPlayer(const wxString& filename, const bool& useHardware = true);
-			virtual ~CVideoPlayer();
+			COpenCVVideoPlayer(const wxString& filename, const bool& useHardware = true);
+			virtual ~COpenCVVideoPlayer() override;
 
 			bool isOpened() override;
 			void SeekToBegin() override;
@@ -28,7 +27,7 @@ namespace Regards
 			int GetFps() override;
 			int GetTotalFrame() override;
 			int GetWidth() override;
-			int GetHeight() override;
+			int GetHeight() override; 
 
 			bool IsOk() override;
 
@@ -39,8 +38,10 @@ namespace Regards
 			
 
 		private:
-			CVideoPlayerPimpl* pimpl;
-			bool isOk = false;
+
+			std::string filename;
+			cv::VideoCapture* capture;
+			bool isOpen = false;
 		};
 	}
 }
