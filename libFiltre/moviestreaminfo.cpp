@@ -67,7 +67,7 @@ AVDictionary* MovieStreamInfo::filter_codec_opts(AVDictionary* opts, enum AVCode
 	char prefix = 0;
 	const AVClass* cc = avcodec_get_class();
 
-#ifdef __APPLE__
+#ifndef __WXGTK__
 	if (!codec)
 		codec = (AVCodec *)(s->oformat
 			        ? avcodec_find_encoder(codec_id)
