@@ -27,7 +27,6 @@
 #include <wx/stdpaths.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
-#include <wx/stdpaths.h>
 #include "window_mode_id.h"
 #include <wx/busyinfo.h>
 using namespace std;

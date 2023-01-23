@@ -29,8 +29,7 @@ namespace Regards
 			int GetVideoFacePosition(const int& numFace);
 			vector<wxString> GetPhotoList();
 			vector<wxString> GetPhotoListTreatment();
-			vector<CImageLoadingFormat*> GetAllFace();
-			vector<CImageLoadingFormat*> GetAllFace(const int& numFace);
+
 			CImageLoadingFormat* GetFacePicture(const int& numFace);
 			void DeleteNumFace(const int& numFace);
 			void EraseFace(const int& numFace);

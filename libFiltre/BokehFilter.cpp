@@ -9,14 +9,12 @@
 
 #include "BokehFilter.h"
 #include "BokehEffectParameter.h"
-
 #include <LibResource.h>
 #include <FilterData.h>
 #include <BitmapDisplay.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
 #include <FaceDetector.h>
 using namespace Regards::Filter;
 using namespace Regards::OpenCV;

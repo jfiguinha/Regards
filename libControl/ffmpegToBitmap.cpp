@@ -2,8 +2,6 @@
 #include "ffmpegToBitmap.h"
 #include <stdexcept>
 #include <cassert>
-#include <array>
-
 
 extern "C" {
 #include "libavutil/imgutils.h"

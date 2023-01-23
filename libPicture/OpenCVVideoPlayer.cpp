@@ -1,10 +1,6 @@
 #include "header.h"
 #include "OpenCVVideoPlayer.h"
-#include <ImageVideoThumbnail.h>
-#include <ImageLoadingFormat.h>
-#include "libPicture.h"
 #include <opencv2/core/core.hpp>
-#include "MediaInfo.h"
 #include <ConvertUtility.h>
 using namespace Regards::Video;
 using namespace cv;

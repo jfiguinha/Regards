@@ -5,8 +5,8 @@
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>
+#include "ThumbnailBuffer.h"
 #include <FileUtility.h>
-#include <ConvertUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -113,7 +113,11 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 	wxImage image;
 	if (wxFileExists(thumbnail))
-		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	{
+		image = CThumbnailBuffer::GetPicture(thumbnail);
+		//image = CLibPicture::ReadThumbnail(thumbnail);
+		//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	}
 	else
 	{
 		printf("error GetThumbnail");

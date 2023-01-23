@@ -15,7 +15,6 @@
 #include <ImageLoadingFormat.h>
 #include "TreeElementValue.h"
 #include <BitmapDisplay.h>
-#include "bilateralFilter.h"
 using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()

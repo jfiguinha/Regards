@@ -1,5 +1,4 @@
 #include <header.h>
-#include <tesseract/renderer.h>
 #include "ExportOcr.h"
 #include "OcrWnd.h"
 #include <wx/gbsizer.h>

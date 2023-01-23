@@ -15,4 +15,7 @@ public:
 	static bool Rotate270(cv::Mat& image);
 	static float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth,
 	                                const int& screenHeight);
+
+	
+
 };

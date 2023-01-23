@@ -1,7 +1,6 @@
 #include "header.h"
 #include "SliderVideo.h"
 #include <LibResource.h>
-#include <ConfigParam.h>
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"

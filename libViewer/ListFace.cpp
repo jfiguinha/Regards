@@ -8,7 +8,6 @@
 #include "MainTheme.h"
 #include <libPicture.h>
 #include "MainThemeInit.h"
-#include "FileUtility.h"
 #include <MoveFaceDialog.h>
 #include <SqlFacePhoto.h>
 #include <SQLRemoveData.h>

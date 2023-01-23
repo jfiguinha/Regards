@@ -5,7 +5,6 @@
 #include "DiaporamaFusion.h"
 #include "DiaporamaMove.h"
 #include "DiaporamaTransition.h"
-
 #include <ConvertUtility.h>
 #include <effect_id.h>
 using namespace cv;

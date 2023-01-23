@@ -168,6 +168,9 @@
     <ClInclude Include="ListCriteriaPhoto.h">
       <Filter>datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailBuffer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlCatalog.cpp">
@@ -298,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailBuffer.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

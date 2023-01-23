@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlCountry::CSqlCountry()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_countryVector(nullptr)
 {
 }
 

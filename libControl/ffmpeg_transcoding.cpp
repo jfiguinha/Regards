@@ -4,14 +4,12 @@
 #include <CompressVideo.h>
 #include "ffmpegToBitmap.h"
 #include "VideoCompressOption.h"
-#include <wx/progdlg.h>
-#include <wx/filename.h>
 #include <window_id.h>
 #include <LibResource.h>
 #ifdef WIN32_MFT
 #include "MFTEncoding.h"
 #endif
-#include "FFmpegTranscodingPimpl.h"
+
 
 CFFmpegTranscoding::CFFmpegTranscoding() :
 	encode_thread(nullptr),

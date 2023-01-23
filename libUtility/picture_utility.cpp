@@ -1,6 +1,5 @@
 #include <header.h>
 #include "picture_utility.h"
-#include "ConvertUtility.h"
 #include <wx/wfstream.h>
 #include "FileUtility.h"
 
@@ -19,6 +18,8 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 	}
 	return _compressedImage;
 }
+
+
 
 
 float CPictureUtility::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth,

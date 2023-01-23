@@ -5,6 +5,7 @@
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>
+#include "ThumbnailBuffer.h"
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -97,7 +98,9 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	wxImage image;
 	if (wxFileExists(thumbnail))
 	{
-		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+		image = CThumbnailBuffer::GetPicture(thumbnail);
+		//image = CLibPicture::ReadThumbnail(thumbnail);
+		//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 	}
 	else
 	{

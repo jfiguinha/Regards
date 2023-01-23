@@ -1,7 +1,6 @@
 #include <header.h>
 #include "CropFilter.h"
 #include "EffectParameter.h"
-
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>

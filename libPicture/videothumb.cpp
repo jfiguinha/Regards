@@ -1,15 +1,10 @@
 #include "header.h"
-#include <FreeImage.h>
 #include "videothumb.h"
 #include "VideoPlayer.h"
-#include "Metadata.h"
-#include <ximage.h>
 #include "ImageVideoThumbnail.h"
 #include "OpenCVVideoPlayer.h"
-#include <ImageLoadingFormat.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
-#include <picture_utility.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 

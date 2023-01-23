@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFaceLabel::CSqlFaceLabel()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), type(0), numFace(0)
 {
 }
 

@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFindCriteria::CSqlFindCriteria()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_criteriaVector(nullptr)
 {
 }
 

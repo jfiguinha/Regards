@@ -9,17 +9,8 @@
 #include <mfapi.h>            // Media Foundation platform APIs
 #include <mferror.h>        // Media Foundation error codes
 #include <mfreadwrite.h>
-#include <wmcontainer.h>    // ASF-specific components
-#include <wmcodecdsp.h>        // Windows Media DSP interfaces
-#include <Dmo.h>            // DMO objects
-#include <uuids.h>            // Definition for FORMAT_VideoInfo
 #include <propvarutil.h>
-//#include <d3d9.h>
-#include <initguid.h>
-//#include <dxva2api.h>
-#include <map>
 #include <chrono>
-#include <vector>
 #include <OpenCLEffectVideo.h>
 #include <fstream>
 #include <VideoStabilization.h>

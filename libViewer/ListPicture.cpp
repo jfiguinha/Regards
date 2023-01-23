@@ -7,7 +7,6 @@
 #include "MainThemeInit.h"
 #include <LibResource.h>
 #include "MainWindow.h"
-#include <picture_id.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>
 #include <wx/dir.h>
@@ -29,7 +28,6 @@
 #include "ThumbnailToolBarZoom.h"
 #include <GpsEngine.h>
 #include <wx/filename.h>
-#include <RegardsConfigParam.h>
 #include <ImageLoadingFormat.h>
 #include <WindowMain.h>
 #ifdef EXIV2

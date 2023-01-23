@@ -1,10 +1,8 @@
 #include <header.h>
 #include "pfm.h"
 #include <iostream>
-#include <stdio.h>
 #include <fstream>
 #include <iomanip>
-#include <cmath>
 #include <ConvertUtility.h>
 #define uchar unsigned char
 

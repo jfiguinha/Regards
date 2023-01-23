@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ThumbnailHorizontal.h"
 #include <ThumbnailDataSQL.h>
-#include <queue>
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
