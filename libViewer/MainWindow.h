@@ -1,6 +1,7 @@
 #pragma once
 #include <Photos.h>
 #include <WindowMain.h>
+#include <ToolbarInterface.h>
 using namespace Regards::Window;
 
 class CRegardsBitmap;
@@ -19,9 +20,10 @@ namespace Regards::Viewer
 	class CToolbar;
 	class CMainParam;
 	class CCentralWindow;
+	class CToolbarViewerMode;
 
 
-	class CMainWindow : public CWindowMain
+	class CMainWindow : public CWindowMain, public CToolbarInterface
 	{
 	public:
 		CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile);
@@ -51,6 +53,9 @@ namespace Regards::Viewer
 		void SaveParameter() override;
 
 	private:
+
+		void ClickShowButton(const int& id, const int& refresh);
+
 		void SetDataToStatusBar(void* thumbnailMessage, const wxString& message);
 
 		bool FindNextValidFile();
@@ -113,6 +118,7 @@ namespace Regards::Viewer
 		wxStatusBar* statusBar;
 		CToolbar* toolbar;
 		CCentralWindow* centralWnd;
+		CToolbarViewerMode * toolbarViewerMode;
 
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;

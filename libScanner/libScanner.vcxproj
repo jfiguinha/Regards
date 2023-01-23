@@ -279,10 +279,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;_HAS_STD_BYTE=0;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
