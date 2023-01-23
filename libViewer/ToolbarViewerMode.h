@@ -19,7 +19,7 @@ namespace Regards::Viewer
 		void SetPictureWindowPush();
 
 	private:
-		void Resize() override;
+
 		void EventManager(const int& id) override;
 
 		CToolbarInterface* toolbarInterface = nullptr;

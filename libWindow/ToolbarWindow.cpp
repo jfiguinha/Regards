@@ -313,6 +313,17 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext, const wxRect& rc)
 		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom);
 	else
 		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom, wxNORTH);
+
+
+	if (showLine)
+	{
+		CThemeToolbarTexte theme;
+		wxPen penTop(theme.rectTop, theme.GetRectangleSize(), wxPENSTYLE_SOLID);
+		deviceContext->SetPen(penTop);
+		deviceContext->DrawLine(0, GetWindowHeight(), GetWindowWidth(), GetWindowHeight());
+		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
+		deviceContext->SetPen(wxNullPen);
+	}
 }
 
 
@@ -327,10 +338,14 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext)
 		//CWindowMain::FillRect(&memDC, rc, themeToolbar.colorTop);
 		memDC.SelectObject(wxNullBitmap);
 
+
+
 		backPicture = background.ConvertToImage();
 		deviceContext->DrawBitmap(background, 0, 0);
 	}
 }
+
+
 
 void CToolbarWindow::GenerateNavigatorButton(wxDC* deviceContext)
 {

@@ -38,19 +38,23 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
 	wxString lblPrint = CLibResource::LoadStringFromResource(L"LBLPRINT", 1);
 
+
+
+	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
+
+	/*
+
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		faceDetection = regardsParam->GetFaceDetection();
 	}
 
-
 	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
-
-	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
 	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 	wxString lblPictureMode = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1);
+	*/
 	wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
 	wxString lblNewVersion = CLibResource::LoadStringFromResource(L"LBLUPDATE", 1);
 
@@ -68,6 +72,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	navElement.push_back(infos);
 	*/
 
+	/*
 	if (faceDetection)
 	{
 		auto thumbnailFace = new CToolbarButton(themeToolbar.button);
@@ -94,6 +99,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	picture->SetLibelle(lblPictureMode);
 	picture->SetCommandId(IDM_PICTUREMODE);
 	navElement.push_back(picture);
+	*/
 
 	auto scanner = new CToolbarButton(themeToolbar.button);
 	scanner->SetButtonResourceId(L"IDB_SCANNER");
