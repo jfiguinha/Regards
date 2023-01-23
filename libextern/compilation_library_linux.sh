@@ -8,15 +8,15 @@ unzip vcpkg-2022.08.15.zip
 cd vcpkg-2022.08.15
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
-./vcpkg install libjxl
 cd ..
 
-tar xf vcpkg.tar.gz
-cd vcpkg-master
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
 ./bootstrap-vcpkg.sh
+./vcpkg install wxwidgets
 ./vcpkg install ffnvcodec
-./vcpkg install ffmpeg[all-gpl]
-./vcpkg install opencv[contrib,ipp,openmp]
+./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install tbb
 ./vcpkg install libmediainfo
@@ -27,7 +27,12 @@ cd vcpkg-master
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
+./vcpkg install libjxl
+./vcpkg install libepoxy
 cd ..
+
+#decompress tbb
+tar -xf oneapi-tbb-2021.7.0.tar.gz
 
 #Compile heif-master
 unzip heif-master.zip
