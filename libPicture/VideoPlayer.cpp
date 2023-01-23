@@ -311,11 +311,9 @@ public:
 			}
 
 			// find the video stream information 
-#ifndef __WXGTK__
+
             ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
-#else
-			ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
-#endif
+
 			if (ret < 0)
 			{
 				fprintf(stderr, "Cannot find a video stream in the input file\n");
@@ -381,12 +379,9 @@ public:
 				return -1;
 			}
 
-			// find the video stream information 
-#ifndef __WXGTK__
+
             ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
-#else
-			ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
-#endif
+
 			if (ret < 0)
 			{
 				fprintf(stderr, "Cannot find a video stream in the input file\n");

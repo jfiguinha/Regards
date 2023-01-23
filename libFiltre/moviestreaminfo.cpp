@@ -67,17 +67,11 @@ AVDictionary* MovieStreamInfo::filter_codec_opts(AVDictionary* opts, enum AVCode
 	char prefix = 0;
 	const AVClass* cc = avcodec_get_class();
 
-#ifndef __WXGTK__
 	if (!codec)
 		codec = (AVCodec *)(s->oformat
 			        ? avcodec_find_encoder(codec_id)
 			        : avcodec_find_decoder(codec_id));
-#else
-	if (!codec)
-		codec = s->oformat
-			        ? avcodec_find_encoder(codec_id)
-			        : avcodec_find_decoder(codec_id);
-#endif
+
 	if (!codec)
 		return nullptr;
 

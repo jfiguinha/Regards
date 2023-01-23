@@ -41,6 +41,8 @@
     <File Name="CheckVersion.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Tab Window">
+    <File Name="ToolbarViewerMode.h"/>
+    <File Name="ToolbarViewerMode.cpp"/>
     <VirtualDirectory Name="Panel Search Photo">
       <File Name="PanelPhotoWnd.h"/>
       <File Name="PanelPhotoWnd.cpp"/>
