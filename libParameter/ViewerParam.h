@@ -14,6 +14,8 @@ namespace Regards
 			CMainParam();
 			~CMainParam() override;
 
+
+
 			void SetOptionDiaporama(const bool& fullscreen, const int& effect, const int& delai, const bool& enAvant);
 			void SetPositionWindow(const wxRect& rc);
 			void SetPositionSplitter(const int& position);
@@ -153,6 +155,7 @@ namespace Regards
 
 			int posFace;
 			int posFolder;
+			
 		};
 	}
 }

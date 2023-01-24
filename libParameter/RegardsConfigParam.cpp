@@ -43,8 +43,19 @@ CRegardsConfigParam::CRegardsConfigParam()
 	fastFaceDetection = 1;
 	musicDiaporama = "";
 
+	bufferSize = 100;
 	numSuperResolution = 0;
 	useSuperResolution = 0;
+}
+
+int CRegardsConfigParam::GetBufferSize()
+{
+	return bufferSize;
+}
+
+void CRegardsConfigParam::SetBufferSize(const int& value)
+{
+	bufferSize = value;
 }
 
 
@@ -870,6 +881,8 @@ void CRegardsConfigParam::SetThumbnail(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("Quality", to_string(thumbnailQuality)));
 	sectionPosition->append_node(node("IconeCache", to_string(thumbnailIconeCache)));
 	sectionPosition->append_node(node("FacePictureSize", to_string(pictureSize)));
+	sectionPosition->append_node(node("BufferCache", to_string(bufferSize)));
+	
 }
 
 void CRegardsConfigParam::GetThumbnail(xml_node<>* position_node)
@@ -898,5 +911,13 @@ void CRegardsConfigParam::GetThumbnail(xml_node<>* position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		pictureSize = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("BufferCache");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		bufferSize = atoi(child_node->value());
 	}
 }

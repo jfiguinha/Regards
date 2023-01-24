@@ -8,10 +8,9 @@ public:
 	static wxImage GetPicture(const wxString& filename);
 
 private:
-	struct PictureStock
-	{
-		wxImage picture;
-		clock_t  date;
-	};
-	static std::map<wxString, PictureStock> listPicture;
+
+	static std::map<wxString, wxImage> listPicture;
+	static std::vector<wxString> listFile;
+	static std::mutex muPictureBuffer;
+	static std::mutex muListFile;
 };

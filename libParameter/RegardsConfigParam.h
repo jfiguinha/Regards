@@ -9,6 +9,10 @@ public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam() override;
 
+
+	int GetBufferSize();
+	void SetBufferSize(const int& value);
+
 	int GetInterpolationType();
 	void SetInterpolationType(const int& numInterpolation);
 
@@ -189,4 +193,5 @@ protected:
 	wxString videoEncoderHardware;
 
 	wxString musicDiaporama;
+	int bufferSize;
 };

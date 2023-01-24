@@ -20,6 +20,8 @@ CMainParam::CMainParam(): showFace(false), numEffect(0)
 	positionFolderCriteria = 0;
 	check = false;
 
+	
+
 	//Définition des valeurs par défaut
 	positionRegardsViewer.x = 0;
 	positionRegardsViewer.width = 800;
@@ -50,6 +52,7 @@ CMainParam::CMainParam(): showFace(false), numEffect(0)
 	posFace = 3;
 	posFolder = 3;
 }
+
 
 void CMainParam::SetSlideFacePos(const int& pos)
 {
