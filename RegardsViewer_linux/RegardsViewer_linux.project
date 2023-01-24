@@ -205,7 +205,6 @@
         <Library Value="raw_r"/>
         <Library Value="jasper"/>
         <Library Value="gomp"/>
-        <Library Value="VideoThumbnail"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>
         <Library Value="avcodec"/>
@@ -222,7 +221,6 @@
         <Library Value="xcb"/>
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
-        <Library Value="SDL2"/>
         <Library Value="curl"/>
         <Library Value="dl"/>
         <Library Value="webkit2gtk-4.0"/>
