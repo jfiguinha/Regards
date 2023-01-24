@@ -120,8 +120,11 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
-		CLibPicture libPicture;
-		picture = libPicture.LoadPicture(thumbnail);
+		picture = new CImageLoadingFormat();
+		wxImage image = CThumbnailBuffer::GetPicture(thumbnail);
+		//CLibPicture libPicture;
+		//picture = libPicture.LoadPicture(thumbnail);
+		picture->SetPicture(image);
 		if (picture != nullptr)
 			picture->SetFilename(thumbnail);
 		else
