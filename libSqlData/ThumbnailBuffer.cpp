@@ -2,7 +2,6 @@
 #include "ThumbnailBuffer.h"
 #include <libPicture.h>
 #include <ParamInit.h>
-
 #include "RegardsConfigParam.h"
 std::map<wxString, wxImage> CThumbnailBuffer::listPicture;
 std::vector<wxString> CThumbnailBuffer::listFile;
