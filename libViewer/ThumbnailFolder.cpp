@@ -402,9 +402,11 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
+
 		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
 		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
+		bool start = false;
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
 			int numElement = infosSeparationBar->listElement.at(j);
@@ -418,8 +420,14 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 				int top = rc.y - posHauteur;
 				int bottom = rc.y + rc.height - posHauteur;
 
-				//				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+				{
+					if (!start)
+						start = true;
+					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+				}
+				else if (start)
+					break;
 			}
 		}
 	}

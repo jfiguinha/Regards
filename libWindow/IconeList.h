@@ -17,6 +17,7 @@ namespace Regards::Window
 		void AddElement(CIcone* icone);
 		wxString GetFilename(const int& numElement);
 		CIcone* FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
+		void SortById();
 
 	private:
 		IconeVector pIconeList;

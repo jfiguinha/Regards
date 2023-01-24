@@ -1231,11 +1231,20 @@ vector<wxString> CCentralWindow::GetFileList()
 
 void CCentralWindow::SetListeFile(const wxString& filename)
 {
-	if (listPicture != nullptr)
-		listPicture->SetListeFile();
+	tbb::parallel_for(0, 2, 1, [=](int y)
+	{
+		if (y == 0)
+		{
+			if (listPicture != nullptr)
+				listPicture->SetListeFile();
+		}
+		if (y == 1)
+		{
+			if (thumbnailPicture != nullptr)
+				thumbnailPicture->SetListeFile();
+		}
+	});
 
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetListeFile();
 
 	LoadPicture(filename);
 }

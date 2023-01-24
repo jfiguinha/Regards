@@ -114,7 +114,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	needToReload = false;
 	typeAffichage = THUMB_SHOW_ALL;
 	updateCriteria = true;
-	updateFolder = true;
+	updateFolder = false;
 	refreshFolder = false;
 	numElementTraitement = 0;
 	start = true;
@@ -200,13 +200,15 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	                          wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
-	refreshFolder = true;
+	//refreshFolder = true;
 	processIdle = true;
-	updateFolder = true;
+	//updateFolder = true;
 	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		firstFileToShow = localFilename = config->GetLastShowPicture();
+
+	UpdateFolder();
 }
 
 void CMainWindow::ClickShowButton(const int& id, const int& refresh)
@@ -1188,6 +1190,7 @@ void CMainWindow::UpdateFolder()
 		localFilename = firstFileToShow;
 	else
 		localFilename = centralWnd->GetFilename();
+
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
 	if (categoryFolder != nullptr)
@@ -1201,17 +1204,20 @@ void CMainWindow::UpdateFolder()
 	else
 		sqlFindPhotos.SearchPhotos(&pictures);
 
-	bool isFound = false;
-
-	if (!isFound && pictures.size() > 0 && localFilename != "")
+	if (firstFileToShow == "")
 	{
-		isFound = FindNextValidFile();
-		if (!isFound)
-			isFound = FindPreviousValidFile();
-	}
+		bool isFound = false;
 
-	if (!isFound && !pictures.empty())
-		localFilename = pictures[0].GetPath();
+		if (!isFound && pictures.size() > 0 && localFilename != "")
+		{
+			isFound = FindNextValidFile();
+			if (!isFound)
+				isFound = FindPreviousValidFile();
+		}
+
+		if (!isFound && !pictures.empty())
+			localFilename = pictures[0].GetPath();
+	}
 
 	centralWnd->SetListeFile(localFilename);
 

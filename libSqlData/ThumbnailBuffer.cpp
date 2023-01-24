@@ -1,7 +1,9 @@
 #include "header.h"
 #include "ThumbnailBuffer.h"
 #include <libPicture.h>
+#include <ParamInit.h>
 
+#include "RegardsConfigParam.h"
 std::map<wxString, wxImage> CThumbnailBuffer::listPicture;
 std::vector<wxString> CThumbnailBuffer::listFile;
 std::mutex CThumbnailBuffer::muPictureBuffer;
@@ -12,6 +14,12 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
 	wxImage image;
 	float diff_min = 0;
 	wxString keyToDelete = "";
+	int sizeBuffer = 100;
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		sizeBuffer = param->GetBufferSize();
+	}
 
 	muPictureBuffer.lock();
 
@@ -37,7 +45,7 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
 	}
 	muPictureBuffer.unlock();
 
-	if (listFile.size() > 100)
+	if (listFile.size() > sizeBuffer)
 	{
 		muListFile.lock();
 		wxString firstFile = listFile[0];

@@ -105,3 +105,16 @@ void CIconeList::EraseThumbnailList()
 	}
 	pIconeList.clear();
 }
+
+
+// Compares two intervals
+// according to starting times.
+bool compareInterval(CIcone* i1, CIcone* i2)
+{
+	return (i1->GetNumElement() < i2->GetNumElement());
+}
+
+void CIconeList::SortById()
+{
+	std::sort(pIconeList.begin(), pIconeList.end(), compareInterval);
+}

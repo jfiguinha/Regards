@@ -55,6 +55,8 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 	return list;
 }
 
+
+
 void CThumbnailViewerPicture::SetListeFile()
 {
 	PhotosVector pictures;
@@ -67,7 +69,34 @@ void CThumbnailViewerPicture::SetListeFile()
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
+	int size = pictures.size();
 
+	//std::map<int, CIcone *>
+
+	tbb::parallel_for(0, size, 1, [=](int i)
+	{
+		CPhotos fileEntry = pictures[i];
+		wxString filename = fileEntry.GetPath();
+		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		thumbnailData->SetNumPhotoId(fileEntry.GetId());
+		thumbnailData->SetNumElement(i);
+
+		auto pBitmapIcone = new CIcone();
+		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), y);
+
+		iconeListLocal->AddElement(pBitmapIcone);
+
+		//x += themeThumbnail.themeIcone.GetWidth();
+
+
+	});
+
+	iconeListLocal->SortById();
+
+	/*
 	for (CPhotos fileEntry : pictures)
 	{
 		wxString filename = fileEntry.GetPath();
@@ -86,7 +115,7 @@ void CThumbnailViewerPicture::SetListeFile()
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
-	}
+	}*/
 
 
 	lockIconeList.lock();
@@ -122,6 +151,18 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
+	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
+	{
+		CIcone* pBitmapIcone = iconeList->GetElement(i);
+		if (pBitmapIcone != nullptr)
+		{
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+			//x += themeThumbnail.themeIcone.GetWidth();
+		}
+	});
+
+	/*
 	int x = 0;
 	int y = 0;
 
@@ -135,11 +176,13 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 			x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}
+	*/
 }
 
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 {
+	int numStart = 0;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
@@ -152,10 +195,34 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			int right = rc.x + rc.width - posLargeur;
 
 			// printf("void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext) left : %d right : %d \n", left, right);
-			if (right > 0 && left < GetWindowWidth())
-				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
+			if (right > 0)
+			{
+				numStart = i;
+				break;
+			}
 		}
 	}
+
+	for (int i = numStart; i < nbElementInIconeList; i++)
+	{
+		CIcone* pBitmapIcone = iconeList->GetElement(i);
+		if (pBitmapIcone != nullptr)
+		{
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			wxRect rc = pBitmapIcone->GetPos();
+			//if visible
+			int left = rc.x - posLargeur;
+			int right = rc.x + rc.width - posLargeur;
+
+			if (left > GetWindowWidth())
+				break;
+
+			RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
+
+
+		}
+	}
+	
 }
 
 CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
