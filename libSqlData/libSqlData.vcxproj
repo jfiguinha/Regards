@@ -549,7 +549,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../include;.;../libsqlengine;../libPicture;../libUtility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;.;../libsqlengine;../libPicture;../libUtility;../libParameter</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -560,7 +560,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../include;.;../libsqlengine;../libPicture;../libUtility;../libResource;../libFiltre;../libFiltreInterface;../libOpenGL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;.;../libsqlengine;../libPicture;../libUtility;../libResource;../libFiltre;../libFiltreInterface;../libOpenGL;../libParameter</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
