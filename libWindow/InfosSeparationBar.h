@@ -34,6 +34,13 @@ namespace Regards::Window
 		void Render(wxDC* dc, const int& posLargeur, const int& posHauteur);
 
 
+		void SetNbElementX(const int& nbElementX);
+		void SetNbElementY(const int& nbElementY);
+
+		int GetNbElementX();
+		int GetNbElementY();
+
+
 		vector<int> listElement;
 
 	protected:
@@ -43,6 +50,9 @@ namespace Regards::Window
 		int _xPos;
 		int _yPos;
 		int width;
+
+		int nbElementX = 0;
+		int nbElementY = 0;
 
 		CThemeInfosSeparationBar theme;
 

@@ -132,6 +132,26 @@ void CInfosSeparationBar::RenderTitle(wxDC* dc)
 	}
 }
 
+void  CInfosSeparationBar::SetNbElementX(const int& nbElementX)
+{
+	this->nbElementX = nbElementX;
+}
+
+void CInfosSeparationBar::SetNbElementY(const int& nbElementY)
+{
+	this->nbElementY = nbElementY;
+}
+
+int  CInfosSeparationBar::GetNbElementX()
+{
+	return nbElementX;
+}
+
+int  CInfosSeparationBar::GetNbElementY()
+{
+	return nbElementY;
+}
+
 void CInfosSeparationBar::Render(wxDC* dc, const int& posLargeur, const int& posHauteur)
 {
 	wxBitmap memBitmap(GetWidth(), GetHeight());
