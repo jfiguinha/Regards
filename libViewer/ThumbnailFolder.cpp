@@ -59,8 +59,11 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 
 	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = photoVector->size();
-	//for (auto i = 0; i < photoVector->size(); i++)
+#ifdef __WXGTK__
+	for (auto i = 0; i < photoVector->size(); i++)
+#else
 	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
 	{
 		CPhotos photo = photoVector->at(i);
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
@@ -73,7 +76,10 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 	iconeListLocal->SortById();
 
@@ -203,9 +209,12 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	//int x = 0;
 	//int y = 0;
 	thumbnailPos = 0;
-	int size = photoVector->size();
-	//for (CPhotos fileEntry : *photoVector)
-	tbb::parallel_for(0, size, 1, [=](int i)
+#ifdef __WXGTK__
+	for (auto i = 0; i < photoVector->size(); i++)
+#else
+    int size = photoVector->size();
+	tbb::parallel_for(0, size, 1, [=](int i)    
+#endif    
 	{
 		CPhotos fileEntry = photoVector->at(i);
 		wxString filename = fileEntry.GetPath();
@@ -224,7 +233,10 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 
 		//x += themeThumbnail.themeIcone.GetWidth();
 		//i++;
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 
 	lockIconeList.lock();

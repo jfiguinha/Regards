@@ -80,9 +80,13 @@ void CThumbnailViewerPicture::SetListeFile()
 	int size = pictures.size();
 
 	//std::map<int, CIcone *>
-
+#ifdef __WXGTK__
+	for (auto i = 0; i < size; i++)
+#else
 	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
 	{
+	
 		CPhotos fileEntry = pictures[i];
 		wxString filename = fileEntry.GetPath();
 		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
@@ -96,11 +100,10 @@ void CThumbnailViewerPicture::SetListeFile()
 		pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), y);
 
 		iconeListLocal->AddElement(pBitmapIcone);
-
-		//x += themeThumbnail.themeIcone.GetWidth();
-
-
-	});
+	}
+#ifndef __WXGTK__
+    );
+#endif
 
 	iconeListLocal->SortById();
 
@@ -159,7 +162,11 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
+#ifdef __WXGTK__
+	for (auto i = 0; i < nbElementInIconeList; i++)
+#else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
+#endif    
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -168,7 +175,10 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
 			//x += themeThumbnail.themeIcone.GetWidth();
 		}
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 	/*
 	int x = 0;
@@ -216,8 +226,11 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 	//for (int i = 0; i < nbElementInIconeList; i++)
 
 	
-
+#ifdef __WXGTK__
+	for (auto i = 0; i < nbElementInIconeList; i++)
+#else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
+#endif 
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -235,7 +248,10 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 				localmu.unlock();
 			}
 		}
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 	
 }
 

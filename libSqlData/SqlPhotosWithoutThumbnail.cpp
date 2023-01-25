@@ -38,8 +38,11 @@ void CSqlPhotosWithoutThumbnail::UpdateVideoList()
 
 
 	// for(CPhotos photo : photosVector)
-
+#ifdef __WXGTK__
+	for (auto i = 0; i < photosVector.size(); i++)
+#else
 	tbb::parallel_for(0, static_cast<int>(photosVector.size()), 1, [=](int i)
+#endif  
 	{
 		CSqlThumbnailVideo sqlThumbnailVideo;
 		CLibPicture libPicture;
@@ -57,7 +60,10 @@ void CSqlPhotosWithoutThumbnail::UpdateVideoList()
 						"', 1, 0)");
 			}
 		}
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 }
 
 void CSqlPhotosWithoutThumbnail::UpdatePhotoList()

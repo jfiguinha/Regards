@@ -173,8 +173,11 @@ CImageLoadingFormat* CSqlFacePhoto::GetFacePicture(const int& numFace)
 bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int>& listNumPhoto)
 {
 	type = 2;
-
+#ifdef __WXGTK__
+	for (auto i = 0; i < listNumPhoto.size(); i++)
+#else
 	tbb::parallel_for(0, static_cast<int>(listNumPhoto.size()), 1, [=](int i)
+#endif  
 	{
 		int numPhoto = listNumPhoto[i];
 		CSqlPhotos sqlPhoto;
@@ -192,8 +195,10 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int>& listNumPhoto)
 		ExecuteRequestWithNoResult(
 			"DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " +
 			to_string(numPhoto) + ")");
-	});
-
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 	RebuildLink();
 	return false;
 }
@@ -218,8 +223,11 @@ void CSqlFacePhoto::RebuildLink()
 		
 	}
 	*/
-
+#ifdef __WXGTK__
+	for (auto i = 0; i < listFace.size(); i++)
+#else
 	tbb::parallel_for(0, static_cast<int>(listFace.size()), 1, [=](int i)
+#endif 
 	{
 		int oldNumFace = listFace[i];
 		numFace = -1;
@@ -233,8 +241,10 @@ void CSqlFacePhoto::RebuildLink()
 			faceLabel.UpdateNumFaceLabel(oldNumFace, numFace);
 			faceRecognition.UpdateFaceRecognition(oldNumFace, numFace);
 		}
-	});
-
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 	DeleteFaceNameAlone();
 }
@@ -251,13 +261,19 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString>& listPhoto)
 		CSqlFindFacePhoto findFacePhoto;
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
 
-
-		tbb::parallel_for(0, static_cast<int>(listFace.size()), 1, [=](int k)
+#ifdef __WXGTK__
+	for (auto k = 0; k < listFace.size(); k++)
+#else
+	tbb::parallel_for(0, static_cast<int>(listFace.size()), 1, [=](int k)
+#endif 
 		{
 			//changed line
 			CFaceName facename = listFace[k];
 			DeleteNumFace(facename.numFace);
-		});
+		}
+#ifndef __WXGTK__        
+    );
+#endif
 
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
@@ -392,14 +408,22 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 
+
+#ifdef __WXGTK__
+	for (auto i = 0; i < listFace.size(); i++)
+#else
 	tbb::parallel_for(0, static_cast<int>(listFace.size()), 1, [=](int i)
+#endif 
 	{
 		wxString filename = files[i];
 		if (wxFileExists(filename))
 		{
 			wxRemoveFile(filename);
 		}
-	});
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 	/*
 	for (wxString filename : files)

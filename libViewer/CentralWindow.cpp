@@ -1231,7 +1231,11 @@ vector<wxString> CCentralWindow::GetFileList()
 
 void CCentralWindow::SetListeFile(const wxString& filename)
 {
+#ifdef __WXGTK__
+	for (auto y = 0; y < 2; y++)
+#else
 	tbb::parallel_for(0, 2, 1, [=](int y)
+#endif     
 	{
 		if (y == 0)
 		{
@@ -1243,8 +1247,10 @@ void CCentralWindow::SetListeFile(const wxString& filename)
 			if (thumbnailPicture != nullptr)
 				thumbnailPicture->SetListeFile();
 		}
-	});
-
+	}
+#ifndef __WXGTK__    
+    );
+#endif
 
 	LoadPicture(filename);
 }
