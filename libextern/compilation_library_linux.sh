@@ -65,6 +65,9 @@ make -j$NBPROC CXXFLAGS="-I$LOCALPATH/vcpkg/installed/x64-linux/include"
 sudo make install
 cd ..
 
+rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/lib/libpng.a
+rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/include/nanosvg.h
+rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/include/nanosvgrast.h
 rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libpng.a
 rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libhardfbuzz.a
 rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libhardfbuzz-subset.a
