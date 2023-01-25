@@ -83,8 +83,7 @@ void CInfoAbout::Init()
 	treeRapipXML->SetKey("Rapid XML");
 	treeRapipXML->SetValue("1.13");
 	tr.append_child(child, treeRapipXML);
-
-
+	
 	auto libMediaInfo = new CTreeData();
 	libMediaInfo->SetIsParent(false);
 	libMediaInfo->SetKey("Lib Media Info");
@@ -106,7 +105,7 @@ void CInfoAbout::Init()
 	auto treelibRaw = new CTreeData();
 	treelibRaw->SetIsParent(false);
 	treelibRaw->SetKey("Libraw");
-	treelibRaw->SetValue("0.20.0");
+	treelibRaw->SetValue("0.21.0");
 	tr.append_child(child, treelibRaw);
 
 	auto treelibExiv = new CTreeData();
@@ -118,13 +117,13 @@ void CInfoAbout::Init()
 	auto treelibFFmpeg = new CTreeData();
 	treelibFFmpeg->SetIsParent(false);
 	treelibFFmpeg->SetKey("FFMpeg");
-	treelibFFmpeg->SetValue("4.4.0");
+	treelibFFmpeg->SetValue("5.1.2");
 	tr.append_child(child, treelibFFmpeg);
 
 	auto treelibBPG = new CTreeData();
 	treelibBPG->SetIsParent(false);
 	treelibBPG->SetKey("wxWidget");
-	treelibBPG->SetValue("3.1.5");
+	treelibBPG->SetValue("3.2.0");
 	tr.append_child(child, treelibBPG);
 
 	auto treelibTurboJpeg = new CTreeData();
@@ -132,18 +131,6 @@ void CInfoAbout::Init()
 	treelibTurboJpeg->SetKey("Turbo JPEG");
 	treelibTurboJpeg->SetValue("1.5.1");
 	tr.append_child(child, treelibTurboJpeg);
-
-	auto treelibDlib = new CTreeData();
-	treelibDlib->SetIsParent(false);
-	treelibDlib->SetKey("dlib");
-	treelibDlib->SetValue("19.20");
-	tr.append_child(child, treelibDlib);
-
-	auto treelibGlew = new CTreeData();
-	treelibGlew->SetIsParent(false);
-	treelibGlew->SetKey("glew");
-	treelibGlew->SetValue("2.1.0");
-	tr.append_child(child, treelibGlew);
 
 	auto treelibWebp = new CTreeData();
 	treelibWebp->SetIsParent(false);
@@ -181,12 +168,6 @@ void CInfoAbout::Init()
 	treelibAvif->SetValue("1.0");
 	tr.append_child(child, treelibAvif);
 
-	auto treePiccante = new CTreeData();
-	treePiccante->SetIsParent(false);
-	treePiccante->SetKey("Piccante");
-	treePiccante->SetValue("0.4");
-	tr.append_child(child, treePiccante);
-
 	auto treeOpenEXR = new CTreeData();
 	treeOpenEXR->SetIsParent(false);
 	treeOpenEXR->SetKey("QPDF");
@@ -205,10 +186,16 @@ void CInfoAbout::Init()
 	poppler->SetValue("0.8");
 	tr.append_child(child, poppler);
 
+	auto tesseract = new CTreeData();
+	tesseract->SetIsParent(false);
+	tesseract->SetKey("Tesseract");
+	tesseract->SetValue("5.2");
+	tr.append_child(child, tesseract);
+
 	auto opencv = new CTreeData();
 	opencv->SetIsParent(false);
 	opencv->SetKey("OpenCV");
-	opencv->SetValue("4.5");
+	opencv->SetValue("4.6");
 	tr.append_child(child, opencv);
 
 	CreateElement();
