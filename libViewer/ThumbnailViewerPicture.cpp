@@ -231,8 +231,25 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 	
 }
 
+
+bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
+{
+	CThumbnailViewerPicture* viewerPicture = (CThumbnailViewerPicture*)parent;
+	wxRect rc = icone->GetPos();
+	int left = rc.x - viewerPicture->GetLargeur();
+	int right = rc.x + rc.width - viewerPicture->GetLargeur();
+	int top = rc.y - viewerPicture->GetHauteur();
+	int bottom = rc.y + rc.height - viewerPicture->GetHauteur();
+	if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+	{
+		return true;
+	}
+	return false;
+}
+
 CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 {
+	/*
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* icone = iconeList->GetElement(i);
@@ -249,6 +266,9 @@ CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 			}
 		}
 	}
+	*/
 
-	return nullptr;
+	pItemCompFonct _pf = &ItemCompFonct;
+	CIcone* icone = iconeList->FindElement(xPos, yPos, &_pf, this);
+	return icone;
 }

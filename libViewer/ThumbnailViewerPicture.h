@@ -28,6 +28,8 @@ namespace Regards::Viewer
 			return GetIconeHeight();
 		}
 
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+
 	protected:
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
