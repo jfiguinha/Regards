@@ -6,6 +6,7 @@
 #include "ViewerParam.h"
 #include <PrintEngine.h>
 #include <libPicture.h>
+#include "window_mode_id.h"
 #include "ThemeParam.h"
 #include <ImageLoadingFormat.h>
 #include "MainThemeInit.h"
@@ -17,6 +18,7 @@
 #include <BitmapWndViewer.h>
 #include <BitmapWnd3d.h>
 #include "Toolbar.h"
+#include "ToolbarViewerMode.h"
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
 #include "FileUtility.h"
@@ -112,7 +114,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	needToReload = false;
 	typeAffichage = THUMB_SHOW_ALL;
 	updateCriteria = true;
-	updateFolder = true;
+	updateFolder = false;
 	refreshFolder = false;
 	numElementTraitement = 0;
 	start = true;
@@ -128,6 +130,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 		CThemeToolbar theme;
 		viewerTheme->GetMainToolbarTheme(&theme);
 		toolbar = new CToolbar(this, wxID_ANY, theme, false);
+
+		CThemeToolbar theme_infos;
+		viewerTheme->GetInfosToolbarTheme(&theme_infos);
+		theme_infos.position = NAVIGATOR_CENTER;
+		toolbarViewerMode = new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false);
+		//wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface, const bool& vertical
 	}
 
 	if (viewerTheme != nullptr)
@@ -192,13 +200,58 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	                          wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
-	refreshFolder = true;
+	//refreshFolder = true;
 	processIdle = true;
-	updateFolder = true;
+	//updateFolder = true;
 	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		firstFileToShow = localFilename = config->GetLastShowPicture();
+
+	UpdateFolder();
+}
+
+void CMainWindow::ClickShowButton(const int& id, const int& refresh)
+{
+	switch(id)
+	{
+		case WINDOW_VIEWER:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(1);
+			wxPostEvent(central, event);
+		}
+		break;
+
+		case WINDOW_FACE:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(2);
+			wxPostEvent(central, event);
+		}
+		break;
+
+		case WINDOW_EXPLORER:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(3);
+			wxPostEvent(central, event);
+		}
+		break;
+
+		case WINDOW_PICTURE:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(4);
+			wxPostEvent(central, event);
+		}
+		break;
+
+	}
 }
 
 
@@ -1137,6 +1190,7 @@ void CMainWindow::UpdateFolder()
 		localFilename = firstFileToShow;
 	else
 		localFilename = centralWnd->GetFilename();
+
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
 	if (categoryFolder != nullptr)
@@ -1150,17 +1204,20 @@ void CMainWindow::UpdateFolder()
 	else
 		sqlFindPhotos.SearchPhotos(&pictures);
 
-	bool isFound = false;
-
-	if (!isFound && pictures.size() > 0 && localFilename != "")
+	if (firstFileToShow == "")
 	{
-		isFound = FindNextValidFile();
-		if (!isFound)
-			isFound = FindPreviousValidFile();
-	}
+		bool isFound = false;
 
-	if (!isFound && !pictures.empty())
-		localFilename = pictures[0].GetPath();
+		if (!isFound && pictures.size() > 0 && localFilename != "")
+		{
+			isFound = FindNextValidFile();
+			if (!isFound)
+				isFound = FindPreviousValidFile();
+		}
+
+		if (!isFound && !pictures.empty())
+			localFilename = pictures[0].GetPath();
+	}
 
 	centralWnd->SetListeFile(localFilename);
 
@@ -1347,21 +1404,20 @@ void CMainWindow::Resize()
 {
 	if (!fullscreen)
 	{
-		wxRect rcAffichageBitmap;
-		wxSize sizeStatusBar = statusBar->GetSize();
+		const wxSize sizeStatusBar = statusBar->GetSize();
 
-		rcAffichageBitmap.x = 0;
-		rcAffichageBitmap.y = toolbar->GetNavigatorHeight();
-		rcAffichageBitmap.width = GetWindowWidth();
-		rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
-
-		toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
+		toolbar->SetSize(0, 0, GetWindowWidth(), toolbar->GetNavigatorHeight());
 		toolbar->Refresh();
-		centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width,
-		                    rcAffichageBitmap.height);
+
+
+
+		toolbarViewerMode->SetSize(0, toolbar->GetNavigatorHeight(), GetWindowWidth(), toolbarViewerMode->GetNavigatorHeight());
+		toolbarViewerMode->Refresh();
+
+		centralWnd->SetSize(0, toolbar->GetNavigatorHeight() + toolbarViewerMode->GetNavigatorHeight(), GetWindowWidth(), GetWindowHeight() - (toolbarViewerMode->GetNavigatorHeight() + toolbar->GetNavigatorHeight() + sizeStatusBar.y));
 		centralWnd->Refresh();
-		statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width,
-		                   sizeStatusBar.y);
+
+		statusBar->SetSize(0, GetWindowHeight() - sizeStatusBar.y, GetWindowWidth(),sizeStatusBar.y);
 		statusBar->Refresh();
 	}
 	else

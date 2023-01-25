@@ -5,6 +5,7 @@
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>
+#include "ThumbnailBuffer.h"
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -97,7 +98,9 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	wxImage image;
 	if (wxFileExists(thumbnail))
 	{
-		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+		image = CThumbnailBuffer::GetPicture(thumbnail);
+		//image = CLibPicture::ReadThumbnail(thumbnail);
+		//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 	}
 	else
 	{
@@ -117,8 +120,11 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
-		CLibPicture libPicture;
-		picture = libPicture.LoadPicture(thumbnail);
+		picture = new CImageLoadingFormat();
+		wxImage image = CThumbnailBuffer::GetPicture(thumbnail);
+		//CLibPicture libPicture;
+		//picture = libPicture.LoadPicture(thumbnail);
+		picture->SetPicture(image);
 		if (picture != nullptr)
 			picture->SetFilename(thumbnail);
 		else
@@ -140,6 +146,7 @@ bool CSqlThumbnail::DeleteThumbnail(const wxString& path)
 	if (wxFileExists(thumbnail))
 	{
 		wxRemoveFile(thumbnail);
+		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1)
 		       ? true
@@ -152,6 +159,7 @@ bool CSqlThumbnail::DeleteThumbnail(const int& numPhoto)
 	if (wxFileExists(thumbnail))
 	{
 		wxRemoveFile(thumbnail);
+		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
 
 	return (ExecuteRequestWithNoResult(
@@ -189,7 +197,10 @@ bool CSqlThumbnail::EraseThumbnail()
 	{
 		wxString filename = files[i];
 		if (wxFileExists(filename))
+		{
 			wxRemoveFile(filename);
+			CThumbnailBuffer::RemovePicture(filename);
+		}
 	}
 	//});
 
@@ -211,6 +222,7 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int& numFolder)
 		if (wxFileExists(thumbnail))
 		{
 			wxRemoveFile(thumbnail);
+			CThumbnailBuffer::RemovePicture(thumbnail);
 		}
 	}
 	//});

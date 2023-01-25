@@ -26,6 +26,10 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="buffer">
+    <File Name="ThumbnailBuffer.h"/>
+    <File Name="ThumbnailBuffer.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Datastructure">
     <File Name="Photos.h"/>
     <File Name="PhotoGps.h"/>
@@ -124,6 +128,8 @@
     <File Name="SqlFindFacePhoto.h"/>
     <File Name="SqlPhotoGPS.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
@@ -140,6 +146,7 @@
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libParameter"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -223,6 +230,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

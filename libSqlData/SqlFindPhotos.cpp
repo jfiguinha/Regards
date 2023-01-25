@@ -96,6 +96,18 @@ bool CSqlFindPhotos::SearchPhotos(PhotosVector* photosVector)
 		       : false;
 }
 
+bool CSqlFindPhotos::SearchPhotos(vector<wxString> * fileList)
+{
+	typeResult = 3;
+	this->fileList = fileList;
+	return (ExecuteRequest(
+		"SELECT FullPath FROM PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps")
+		!= -1)
+		? true
+		: false;
+}
+
+
 bool CSqlFindPhotos::SearchPhotos(vector<int>* listPhoto)
 {
 	typeResult = 1;
@@ -296,6 +308,9 @@ int CSqlFindPhotos::TraitementResult(CSqlResult* sqlResult)
 	case 2:
 		nbResult = TraitementResultPhotoDataCriteria(sqlResult);
 		break;
+	case 3:
+		nbResult = TraitementResultFilename(sqlResult);
+		break;
 	case 4:
 		{
 			while (sqlResult->Next())
@@ -317,6 +332,26 @@ int CSqlFindPhotos::TraitementResult(CSqlResult* sqlResult)
 	default: ;
 	}
 
+	return nbResult;
+}
+
+int CSqlFindPhotos::TraitementResultFilename(CSqlResult* sqlResult)
+{
+	int nbResult = 0;
+	while (sqlResult->Next())
+	{
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		{
+			switch (i)
+			{
+			case 0:
+				fileList->push_back(sqlResult->ColumnDataText(i));
+				break;
+			}
+		}
+		
+		nbResult++;
+	}
 	return nbResult;
 }
 

@@ -575,9 +575,6 @@ void CxImage::InterpolationBicubicRGB(uint8_t* & dataOut, const int& width, cons
 	auto wX = new weightX[width];
 	auto wY = new weightX[height];
 
-
-	//tbb::parallel_for(tbb::blocked_range<int>(0, height),
-	//	[&](tbb::blocked_range<int> r)
 	tbb::parallel_for(0, height, 1, [=](int y)
 	{
 		float posY = static_cast<float>(y) * ratioY;
@@ -588,9 +585,6 @@ void CxImage::InterpolationBicubicRGB(uint8_t* & dataOut, const int& width, cons
 		wY[y].tabF[2] = Filter(-(1.0f - realB));
 		wY[y].tabF[3] = Filter(-(2.0f - realB));
 	});
-
-	//tbb::parallel_for(tbb::blocked_range<int>(0, width),
-	//	[&](tbb::blocked_range<int> r)
 
 	tbb::parallel_for(0, width, 1, [=](int x)
 	{
@@ -1095,9 +1089,6 @@ bool CxImage::Encode2RGBA(CxFile* hFile, bool bFlipY)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
-
-	//	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
-	//		[&](tbb::blocked_range<int> r)
 	tbb::parallel_for(0, static_cast<int>(head.biHeight), 1, [=](int y1)
 	{
 		int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;

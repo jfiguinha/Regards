@@ -180,6 +180,9 @@
     <ClInclude Include="window_mode_id.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ToolbarViewerMode.h">
+      <Filter>Toolbar\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -286,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarViewerMode.cpp">
+      <Filter>Toolbar\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

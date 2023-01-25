@@ -2,6 +2,7 @@
 #include "IconeList.h"
 #include <WindowMain.h>
 #include <ThumbnailData.h>
+#include <tbb/parallel_sort.h>
 using namespace Regards::Window;
 
 //Class use for finding element in IconeList
@@ -104,4 +105,17 @@ void CIconeList::EraseThumbnailList()
 		}
 	}
 	pIconeList.clear();
+}
+
+
+// Compares two intervals
+// according to starting times.
+bool compareInterval(CIcone* i1, CIcone* i2)
+{
+	return (i1->GetNumElement() < i2->GetNumElement());
+}
+
+void CIconeList::SortById()
+{
+	tbb::parallel_sort(pIconeList.begin(), pIconeList.end(), compareInterval);
 }

@@ -20,7 +20,6 @@
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
 #include <FileUtility.h>
-#include "OcrWnd.h"
 #include <wx/filefn.h>
 #include <ImageLoadingFormat.h>
 #include <MainThemeInit.h>

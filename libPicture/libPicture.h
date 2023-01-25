@@ -77,6 +77,7 @@ namespace Regards
 			static void InitFreeImage();
 			static void UninitFreeImage();
 
+			static wxImage ReadThumbnail(const wxString& path);
 			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat& img);
 			static wxImage* ConvertRegardsBitmapToWXImagePt(cv::Mat& img);
 #ifdef LIBBPG

@@ -96,20 +96,14 @@ static void SetVariablesFromCLArgs(tesseract::TessBaseAPI* api, int argc,
 */
 static void PrintLangsList(tesseract::TessBaseAPI* api)
 {
-#ifndef __WXGTK__
 	std::vector<std::string> languages;
-#else
-	GenericVector<STRING> languages;
-#endif
+
 	api->GetAvailableLanguagesAsVector(&languages);
 	printf("List of available languages (%d):\n", languages.size());
 	for (int index = 0; index < languages.size(); ++index)
 	{
-#ifndef __WXGTK__
 		std::string& lang = languages[index];
-#else
-		STRING& lang = languages[index];
-#endif
+
 		printf("%s\n", lang.c_str());
 	}
 	api->End();
@@ -147,7 +141,7 @@ static void checkArgValues(int arg, const char* mode, int count)
 }
 
 // NOTE: arg_i is used here to avoid ugly *i so many times in this function
-#ifndef __WXGTK__
+
 static void ParseArgs(const int argc, char** argv, const char** lang,
                       const char** image, const char** outputbase,
                       const char** datapath, l_int32* dpi, bool* list_langs,
@@ -155,15 +149,6 @@ static void ParseArgs(const int argc, char** argv, const char** lang,
                       std::vector<std::string>* vars_values, l_int32* arg_i,
                       tesseract::PageSegMode* pagesegmode,
                       tesseract::OcrEngineMode* enginemode)
-#else
-static void ParseArgs(const int argc, char** argv, const char** lang,
-	const char** image, const char** outputbase,
-	const char** datapath, l_int32* dpi, bool* list_langs,
-	bool* print_parameters, GenericVector<STRING> * vars_vec,
-	GenericVector<STRING> * vars_values, l_int32* arg_i,
-	tesseract::PageSegMode* pagesegmode,
-	tesseract::OcrEngineMode* enginemode)
-#endif
 {
 	bool noocr = false;
 	int i;
@@ -496,11 +481,8 @@ static void PreloadRenderers(
 		}
 	}
 }
-#ifndef __WXGTK__
+
 void CExportOcr::monitorProgress(tesseract::ETEXT_DESC* monitor, int page)
-#else
-void CExportOcr::monitorProgress(ETEXT_DESC* monitor, int page)
-#endif
 {
 	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, nullptr,
 	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
@@ -514,11 +496,7 @@ void CExportOcr::monitorProgress(ETEXT_DESC* monitor, int page)
 	}
 }
 
-#ifndef __WXGTK__
 void CExportOcr::ocrProcess(tesseract::TessBaseAPI* api, tesseract::ETEXT_DESC* monitor)
-#else
-void CExportOcr::ocrProcess(tesseract::TessBaseAPI* api, ETEXT_DESC* monitor)
-#endif
 {
 	api->Recognize(monitor);
 }
@@ -550,14 +528,9 @@ int CExportOcr::ExportOcr(
 	/* main() calls functions like ParseArgs which call exit().
 	 * This results in memory leaks if vars_vec and vars_values are
 	 * declared as auto variables (destructor is not called then). */
-#ifndef __WXGTK__
 	static std::vector<std::string> vars_vec;
 	static std::vector<std::string> vars_values;
-#else
-	static GenericVector<STRING> vars_vec;
-	static GenericVector<STRING> vars_values;
 
-#endif
 
 #if !defined(DEBUG)
 	// Disable debugging and informational messages from Leptonica.

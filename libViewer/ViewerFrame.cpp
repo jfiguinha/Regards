@@ -27,7 +27,6 @@
 #include <wx/stdpaths.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
-#include <wx/stdpaths.h>
 #include "window_mode_id.h"
 #include <wx/busyinfo.h>
 using namespace std;
@@ -564,7 +563,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTURENEXT;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(200, true);
+					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
 				/*
 				printf("Image Suivante \n");
@@ -583,7 +582,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTUREPREVIOUS;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(200, true);
+					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
 			}
 			break;

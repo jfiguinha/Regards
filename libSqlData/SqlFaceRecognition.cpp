@@ -80,6 +80,7 @@ int CSqlFaceRecognition::TraitementResult(CSqlResult* sqlResult)
 				case 0:
 					listFace.push_back(sqlResult->ColumnDataInt(i));
 					break;
+				default: ;
 				}
 			}
 			else if (type == 1)

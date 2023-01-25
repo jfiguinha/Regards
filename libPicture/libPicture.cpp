@@ -1804,6 +1804,42 @@ float CLibPicture::CalculPictureRatio(const int& pictureWidth, const int& pictur
 	return new_ratio;
 }
 
+wxImage CLibPicture::ReadThumbnail(const wxString& fileName)
+{
+	printf("CLibPicture LoadPicture TURBOJPEG \n");
+	size_t _jpegSize;
+	uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
+	wxImage imageOut;
+
+	if (_compressedImage == nullptr)
+		cout << "File Failed To Load\n";
+	else
+	{
+		int jpegSubsamp, width, height;
+
+		tjhandle _jpegDecompressor = tjInitDecompress();
+
+
+		tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
+			&jpegSubsamp);
+
+		imageOut = wxImage(width, height);
+
+		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, imageOut.GetData(), width, 0,
+			height, TJPF_RGB, TJFLAG_FASTDCT);
+
+		tjDestroy(_jpegDecompressor);
+
+		cout << "JPEGTURBO END File Loaded Successfully\n";
+
+		delete[] _compressedImage;
+
+		cout << "JPEGTURBO DELETE File Loaded Successfully\n";
+	}
+
+	return imageOut;
+}
+
 bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, int& height)
 {
 #ifdef __FREEIMAGE__

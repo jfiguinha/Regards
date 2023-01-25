@@ -1,10 +1,6 @@
 #include "header.h"
 #include "OpenCVVideoPlayer.h"
-#include <ImageVideoThumbnail.h>
-#include <ImageLoadingFormat.h>
-#include "libPicture.h"
 #include <opencv2/core/core.hpp>
-#include "MediaInfo.h"
 #include <ConvertUtility.h>
 using namespace Regards::Video;
 using namespace cv;
@@ -116,12 +112,14 @@ int COpenCVVideoPlayer::GetOrientation()
 int COpenCVVideoPlayer::SeekToPos(const int& sec)
 {
 	if (!isOpen)
-		return 0;
+		return -1;
 
 	double fps = capture->get(CAP_PROP_FPS);
 	double noFrame = fps * sec;
 	if (sec != 0)
 		capture->set(CAP_PROP_POS_FRAMES, noFrame);
+
+	return 0;
 }
 
 cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation)

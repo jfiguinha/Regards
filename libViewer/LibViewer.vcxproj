@@ -299,12 +299,12 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EXIV2;WIN32;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXIV2;WIN32;_HAS_STD_BYTE=0;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -645,6 +645,7 @@
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarKeyword.h" />
     <ClInclude Include="ToolbarPhoto.h" />
+    <ClInclude Include="ToolbarViewerMode.h" />
     <ClInclude Include="TreatmentData.h" />
     <ClInclude Include="ViewerFrame.h" />
     <ClInclude Include="WaitingWindow.h" />
@@ -689,6 +690,7 @@
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarKeyword.cpp" />
     <ClCompile Include="ToolbarPhoto.cpp" />
+    <ClCompile Include="ToolbarViewerMode.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
     <ClCompile Include="WaitingWindow.cpp" />
   </ItemGroup>

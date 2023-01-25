@@ -68,9 +68,10 @@ AVDictionary* MovieStreamInfo::filter_codec_opts(AVDictionary* opts, enum AVCode
 	const AVClass* cc = avcodec_get_class();
 
 	if (!codec)
-		codec = s->oformat
+		codec = (AVCodec *)(s->oformat
 			        ? avcodec_find_encoder(codec_id)
-			        : avcodec_find_decoder(codec_id);
+			        : avcodec_find_decoder(codec_id));
+
 	if (!codec)
 		return nullptr;
 

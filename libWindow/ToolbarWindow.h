@@ -41,6 +41,7 @@ namespace Regards::Window
 		void GenerateNavigatorButton(wxDC* deviceContext);
 		void RedrawElement(wxDC* dc, CToolbarElement* nav);
 
+
 		wxBitmap hbmNavigator;
 
 		VectorNavigatorElement navElement;
@@ -48,6 +49,7 @@ namespace Regards::Window
 		CThemeToolbar themeToolbar;
 		bool saveLastPush;
 		bool isVertical;
+		bool showLine = false;
 
 	private:
 		void DrawButton(wxDC* dc, CToolbarElement* nav);

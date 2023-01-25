@@ -57,14 +57,18 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 
+	int local_nbElement = iconeListLocal->GetNbElement();
+	int size = photoVector->size();
+#ifndef WIN32
 	for (auto i = 0; i < photoVector->size(); i++)
+#else
+	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
 	{
 		CPhotos photo = photoVector->at(i);
-		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
-
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
 		thumbnailData->SetNumPhotoId(photo.GetId());
-		thumbnailData->SetNumElement(nbElement++);
+		thumbnailData->SetNumElement(local_nbElement + i);
 
 		CIcone* pBitmapIcone = new CIcone();
 		pBitmapIcone->ShowSelectButton(true);
@@ -73,7 +77,19 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
+#ifdef WIN32  
+    );
+#endif
 
+	iconeListLocal->SortById();
+
+	for (auto i = 0; i < photoVector->size(); i++)
+	{
+		infosSeparationBar->listElement.push_back(local_nbElement + i);
+	}
+
+	nbElement += size;
+	
 	if (photoVector->size() > 0)
 		listSeparator.push_back(infosSeparationBar);
 }
@@ -189,13 +205,18 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	threadDataProcess = false;
-	int i = 0;
-	int x = 0;
-	int y = 0;
+	//int i = 0;
+	//int x = 0;
+	//int y = 0;
 	thumbnailPos = 0;
-
-	for (CPhotos fileEntry : *photoVector)
+#ifndef WIN32
+	for (auto i = 0; i < photoVector->size(); i++)
+#else
+    int size = photoVector->size();
+	tbb::parallel_for(0, size, 1, [=](int i)    
+#endif    
 	{
+		CPhotos fileEntry = photoVector->at(i);
 		wxString filename = fileEntry.GetPath();
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, testValidity);
 		thumbnailData->SetNumPhotoId(fileEntry.GetId());
@@ -206,13 +227,16 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(x, y);
+		pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
 
 		iconeListLocal->AddElement(pBitmapIcone);
 
-		x += themeThumbnail.themeIcone.GetWidth();
-		i++;
+		//x += themeThumbnail.themeIcone.GetWidth();
+		//i++;
 	}
+#ifdef WIN32  
+    );
+#endif
 
 
 	lockIconeList.lock();
@@ -331,7 +355,8 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		//int nbElement = (int)infosSeparationBar->listElement.size();
+		int nbElement_localX = 0;
+		int nbElement_localY = 0;
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);
@@ -347,12 +372,15 @@ void CThumbnailFolder::ResizeThumbnail()
 				pBitmapIcone->SetWindowPos(x, y);
 
 				x += themeThumbnail.themeIcone.GetWidth();
+
+				nbElement_localX++;
 				nbElementX++;
 				if (nbElementX == nbElementByRow)
 				{
 					nbElementX = 0;
 					x = 0;
 					nbElementY++;
+					nbElement_localY++;
 					y += themeThumbnail.themeIcone.GetHeight();
 				}
 			}
@@ -363,8 +391,12 @@ void CThumbnailFolder::ResizeThumbnail()
 			nbElementX = 0;
 			x = 0;
 			nbElementY++;
+			nbElement_localY++;
 			y += themeThumbnail.themeIcone.GetHeight();
 		}
+
+		infosSeparationBar->SetNbElementX(nbElement_localX);
+		infosSeparationBar->SetNbElementY(nbElement_localY);
 	}
 
 	widthThumbnail = GetWindowWidth();
@@ -402,24 +434,49 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
+
 		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
-		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
-		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
+		if (infosSeparationBar != nullptr)
 		{
-			int numElement = infosSeparationBar->listElement.at(j);
+			int numElement = infosSeparationBar->listElement.at(0);
 			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
-			if (pBitmapIcone != nullptr)
-			{
-				wxRect rc = pBitmapIcone->GetPos();
-				//if visible
-				int left = rc.x - posLargeur;
-				int right = rc.x + rc.width - posLargeur;
-				int top = rc.y - posHauteur;
-				int bottom = rc.y + rc.height - posHauteur;
+			wxRect rc = pBitmapIcone->GetPos();
+			//int nbElement_localX = infosSeparationBar->GetNbElementX();
+			int nbElement_localY = infosSeparationBar->GetNbElementY();
 
-				//				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+			//int width_size = nbElement_localX * themeThumbnail.themeIcone.GetWidth();
+			int height_size =rc.y + (nbElement_localY * themeThumbnail.themeIcone.GetHeight()) - posHauteur;
+			int start_height = rc.y - posHauteur;
+
+			if (height_size > 0 && start_height < GetWindowHeight())
+			{
+				infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
+
+				bool start = false;
+				for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
+				{
+					int numElement = infosSeparationBar->listElement.at(j);
+					CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+					if (pBitmapIcone != nullptr)
+					{
+						wxRect rc = pBitmapIcone->GetPos();
+						//if visible
+						int left = rc.x - posLargeur;
+						int right = rc.x + rc.width - posLargeur;
+						int top = rc.y - posHauteur;
+						int bottom = rc.y + rc.height - posHauteur;
+
+						if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+						{
+							if (!start)
+								start = true;
+							RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+						}
+						else if (start)
+							break;
+					}
+				}
 			}
 		}
 	}
@@ -458,6 +515,8 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 			int nbElementEnY = (int)infosSeparationBar->listElement.size() / nbElementByRow;
 			if (nbElementEnY * nbElementByRow < infosSeparationBar->listElement.size())
 				nbElementEnY++;
+
+			infosSeparationBar->SetNbElementY(nbElementEnY);
 
 			if (nbElement < nbElementByRow)
 				nbElementByRow = nbElement;

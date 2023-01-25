@@ -28,6 +28,8 @@ namespace Regards::Viewer
 			return GetIconeHeight();
 		}
 
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+
 	protected:
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
@@ -37,7 +39,7 @@ namespace Regards::Viewer
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		void RenderIconeWithoutVScroll(wxDC* deviceContext) override;
 
-
+		static std::mutex localmu;
 		int widthThumbnail;
 		int heightThumbnail;
 	};

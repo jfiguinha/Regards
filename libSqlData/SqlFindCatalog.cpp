@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFindCatalog::CSqlFindCatalog()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_catalogVector(nullptr)
 {
 }
 

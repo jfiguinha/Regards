@@ -13,9 +13,7 @@
 #include <wx/pdfdocument.h>
 #include <LibResource.h>
 #include <SavePicture.h>
-#include <ConvertUtility.h>
 #include <wx/busyinfo.h>
-#include <ConvertUtility.h>
 #include <RegardsPDF.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;

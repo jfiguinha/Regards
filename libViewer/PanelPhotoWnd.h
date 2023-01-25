@@ -1,6 +1,5 @@
 #pragma once
 #include "ToolbarPhoto.h"
-#include <ScrollbarWnd.h>
 #include "TabWindow.h"
 #include "CategoryFolderWindow.h"
 using namespace std;

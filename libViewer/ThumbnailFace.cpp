@@ -609,6 +609,7 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC* deviceContext)
 	{
 		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
 		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
+		bool isStart = false;
 
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
@@ -623,7 +624,12 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC* deviceContext)
 				int bottom = rc.y + rc.height - posHauteur;
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+				{
+					isStart = true;
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+				}
+				else if (isStart)
+					break;
 			}
 		}
 	}

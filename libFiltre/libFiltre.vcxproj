@@ -297,7 +297,7 @@
       <AdditionalIncludeDirectories>../include;../cximage;../libParameter;../libUtility;../libDeeplearning;../libPicture;../libFiltreInterface;../libResource;../libOpenCL;../libOpenGL;.;../libOpenCLEngine</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>

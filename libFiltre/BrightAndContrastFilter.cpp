@@ -9,7 +9,6 @@
 
 #include "BrightAndContrastFilter.h"
 #include "BrightAndContrastEffectParameter.h"
-
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>

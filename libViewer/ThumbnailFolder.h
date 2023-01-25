@@ -28,7 +28,7 @@ namespace Regards::Viewer
 	protected:
 		void OnPictureClick(CThumbnailData* data) override;
 		void ResizeThumbnail() override;
-
+		static bool compareInterval(int i1, int i2);
 	private:
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);

@@ -5,8 +5,8 @@
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>
+#include "ThumbnailBuffer.h"
 #include <FileUtility.h>
-#include <ConvertUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -113,7 +113,11 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 	wxImage image;
 	if (wxFileExists(thumbnail))
-		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	{
+		image = CThumbnailBuffer::GetPicture(thumbnail);
+		//image = CLibPicture::ReadThumbnail(thumbnail);
+		//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	}
 	else
 	{
 		printf("error GetThumbnail");
@@ -134,6 +138,7 @@ bool CSqlThumbnailVideo::DeleteThumbnail(const wxString& path)
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), i);
 		if (wxFileExists(thumbnail))
 		{
+			CThumbnailBuffer::RemovePicture(thumbnail);
 			wxRemoveFile(thumbnail);
 		}
 	}
@@ -150,6 +155,7 @@ bool CSqlThumbnailVideo::DeleteThumbnail(const int& numPhoto)
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), i);
 		if (wxFileExists(thumbnail))
 		{
+			CThumbnailBuffer::RemovePicture(thumbnail);
 			wxRemoveFile(thumbnail);
 		}
 	}
@@ -174,6 +180,7 @@ bool CSqlThumbnailVideo::EraseThumbnail()
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 	for (wxString filename : files)
 	{
+		CThumbnailBuffer::RemovePicture(filename);
 		wxRemoveFile(filename);
 	}
 	//wxRmdir(documentPath);
