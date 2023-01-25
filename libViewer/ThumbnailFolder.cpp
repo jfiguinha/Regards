@@ -57,14 +57,15 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 
-	for (auto i = 0; i < photoVector->size(); i++)
+	int local_nbElement = iconeListLocal->GetNbElement();
+	int size = photoVector->size();
+	//for (auto i = 0; i < photoVector->size(); i++)
+	tbb::parallel_for(0, size, 1, [=](int i)
 	{
 		CPhotos photo = photoVector->at(i);
-		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
-
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
 		thumbnailData->SetNumPhotoId(photo.GetId());
-		thumbnailData->SetNumElement(nbElement++);
+		thumbnailData->SetNumElement(local_nbElement + i);
 
 		CIcone* pBitmapIcone = new CIcone();
 		pBitmapIcone->ShowSelectButton(true);
@@ -72,8 +73,17 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
+	});
+
+	iconeListLocal->SortById();
+
+	for (auto i = 0; i < photoVector->size(); i++)
+	{
+		infosSeparationBar->listElement.push_back(local_nbElement + i);
 	}
 
+	nbElement += size;
+	
 	if (photoVector->size() > 0)
 		listSeparator.push_back(infosSeparationBar);
 }
@@ -189,13 +199,15 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	threadDataProcess = false;
-	int i = 0;
-	int x = 0;
-	int y = 0;
+	//int i = 0;
+	//int x = 0;
+	//int y = 0;
 	thumbnailPos = 0;
-
-	for (CPhotos fileEntry : *photoVector)
+	int size = photoVector->size();
+	//for (CPhotos fileEntry : *photoVector)
+	tbb::parallel_for(0, size, 1, [=](int i)
 	{
+		CPhotos fileEntry = photoVector->at(i);
 		wxString filename = fileEntry.GetPath();
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, testValidity);
 		thumbnailData->SetNumPhotoId(fileEntry.GetId());
@@ -206,13 +218,13 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(x, y);
+		pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
 
 		iconeListLocal->AddElement(pBitmapIcone);
 
-		x += themeThumbnail.themeIcone.GetWidth();
-		i++;
-	}
+		//x += themeThumbnail.themeIcone.GetWidth();
+		//i++;
+	});
 
 
 	lockIconeList.lock();

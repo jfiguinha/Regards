@@ -42,7 +42,7 @@ wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 class CThreadLoadingBitmap
 {
 public:
-	CThreadLoadingBitmap(): percent(0), typeElement(0), photoId(0), timePosition(0)
+	CThreadLoadingBitmap(): percent(0), typeElement(0), photoId(0), timePosition(0), _threadVideo(nullptr)
 	{
 		_thread = nullptr;
 		thumbnail = nullptr;
@@ -993,8 +993,6 @@ void CThumbnail::LoadPicture(void* param)
 			{
 				CImageVideoThumbnail* bitmap = listVideo[i];
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
-				int compressMethod = 0;
-				unsigned long outputsize = 0;
 
 				wxMemoryOutputStream memOut;
 				bitmap->image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);

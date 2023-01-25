@@ -9,6 +9,8 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
 
+std::mutex CThumbnailViewerPicture::localmu;
+
 CThumbnailViewerPicture::CThumbnailViewerPicture(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                                  const bool& testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
@@ -211,7 +213,11 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 	}
 	*/
 
-	for (int i = 0; i < nbElementInIconeList; i++)
+	//for (int i = 0; i < nbElementInIconeList; i++)
+
+	
+
+	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -223,13 +229,13 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			int right = rc.x + rc.width - posLargeur;
 
 			if (right >= 0 && left <= GetWindowWidth())
-				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-			else if(left > GetWindowWidth())
 			{
-				break;
+				localmu.lock();
+				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
+				localmu.unlock();
 			}
 		}
-	}
+	});
 	
 }
 

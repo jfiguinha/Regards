@@ -39,7 +39,7 @@ namespace Regards::Viewer
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		void RenderIconeWithoutVScroll(wxDC* deviceContext) override;
 
-
+		static std::mutex localmu;
 		int widthThumbnail;
 		int heightThumbnail;
 	};
