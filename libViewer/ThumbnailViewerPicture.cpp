@@ -45,17 +45,6 @@ void CThumbnailViewerPicture::Init(const int& typeAffichage)
 
 vector<wxString> CThumbnailViewerPicture::GetFileList()
 {
-	/*/
-	PhotosVector pictures;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotos(&pictures);
-
-	vector<wxString> list;
-	for (CPhotos photo : pictures)
-	{
-		list.push_back(photo.GetPath());
-	}
-	*/
 	vector<wxString> list;
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotos(&list);
@@ -80,7 +69,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	int size = pictures.size();
 
 	//std::map<int, CIcone *>
-#ifdef __WXGTK__
+#ifndef WIN32
 	for (auto i = 0; i < size; i++)
 #else
 	tbb::parallel_for(0, size, 1, [=](int i)
@@ -101,33 +90,11 @@ void CThumbnailViewerPicture::SetListeFile()
 
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
-#ifndef __WXGTK__
+#ifdef WIN32
     );
 #endif
 
 	iconeListLocal->SortById();
-
-	/*
-	for (CPhotos fileEntry : pictures)
-	{
-		wxString filename = fileEntry.GetPath();
-		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
-		thumbnailData->SetNumPhotoId(fileEntry.GetId());
-		thumbnailData->SetNumElement(i);
-
-
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(x, y);
-
-		iconeListLocal->AddElement(pBitmapIcone);
-
-		x += themeThumbnail.themeIcone.GetWidth();
-		i++;
-	}*/
-
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -162,7 +129,7 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
-#ifdef __WXGTK__
+#ifndef WIN32
 	for (auto i = 0; i < nbElementInIconeList; i++)
 #else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
@@ -176,57 +143,17 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 			//x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}
-#ifndef __WXGTK__    
+#ifdef WIN32
     );
 #endif
 
-	/*
-	int x = 0;
-	int y = 0;
-
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
-		if (pBitmapIcone != nullptr)
-		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
-			x += themeThumbnail.themeIcone.GetWidth();
-		}
-	}
-	*/
 }
 
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 {
-	/*
-	int numStart = 0;
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
-		if (pBitmapIcone != nullptr)
-		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			wxRect rc = pBitmapIcone->GetPos();
-			//if visible
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
 
-			// printf("void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext) left : %d right : %d \n", left, right);
-			if (right > 0)
-			{
-				numStart = i;
-				break;
-			}
-		}
-	}
-	*/
-
-	//for (int i = 0; i < nbElementInIconeList; i++)
-
-	
-#ifdef __WXGTK__
+#ifndef WIN32
 	for (auto i = 0; i < nbElementInIconeList; i++)
 #else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
@@ -249,7 +176,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			}
 		}
 	}
-#ifndef __WXGTK__    
+#ifdef WIN32   
     );
 #endif
 	
@@ -273,25 +200,6 @@ bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone* icone, C
 
 CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 {
-	/*
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
-			int top = rc.y - posHauteur;
-			int bottom = rc.y + rc.height - posHauteur;
-			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
-			{
-				return icone;
-			}
-		}
-	}
-	*/
-
 	pItemCompFonct _pf = &ItemCompFonct;
 	CIcone* icone = iconeList->FindElement(xPos, yPos, &_pf, this);
 	return icone;

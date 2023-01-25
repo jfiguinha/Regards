@@ -59,7 +59,7 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 
 	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = photoVector->size();
-#ifdef __WXGTK__
+#ifndef WIN32
 	for (auto i = 0; i < photoVector->size(); i++)
 #else
 	tbb::parallel_for(0, size, 1, [=](int i)
@@ -77,7 +77,7 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
-#ifndef __WXGTK__    
+#ifdef WIN32  
     );
 #endif
 
@@ -209,7 +209,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	//int x = 0;
 	//int y = 0;
 	thumbnailPos = 0;
-#ifdef __WXGTK__
+#ifndef WIN32
 	for (auto i = 0; i < photoVector->size(); i++)
 #else
     int size = photoVector->size();
@@ -234,7 +234,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 		//x += themeThumbnail.themeIcone.GetWidth();
 		//i++;
 	}
-#ifndef __WXGTK__    
+#ifdef WIN32  
     );
 #endif
 
