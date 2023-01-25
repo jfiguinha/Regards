@@ -134,7 +134,6 @@ void CInfosSeparationBar::RenderTitle(wxDC* dc)
 
 void CInfosSeparationBar::Render(wxDC* dc, const int& posLargeur, const int& posHauteur)
 {
-	// double scale_factor = 1.0f;
 	wxBitmap memBitmap(GetWidth(), GetHeight());
 	wxMemoryDC memDC(memBitmap);
 	RenderIcone(&memDC, posLargeur, posHauteur);

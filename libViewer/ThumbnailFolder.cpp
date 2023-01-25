@@ -416,7 +416,12 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 	{
 
 		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
-		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
+
+		int _xPos = infosSeparationBar->GetXPos();
+		int _yPos = infosSeparationBar->GetYPos();
+
+		if (_xPos + posLargeur < GetWindowWidth() && _yPos + posHauteur < GetWindowHeight())
+			infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
 		bool start = false;
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
