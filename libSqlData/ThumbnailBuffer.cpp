@@ -9,6 +9,24 @@ std::vector<wxString> CThumbnailBuffer::listFile;
 std::mutex CThumbnailBuffer::muPictureBuffer;
 std::mutex CThumbnailBuffer::muListFile;
 
+void CThumbnailBuffer::RemovePicture(const wxString& filename)
+{
+	muPictureBuffer.lock();
+
+	std::map<wxString, wxImage>::iterator it = listPicture.find(filename);
+
+	if (it != listPicture.end())
+	{
+		listPicture.erase(it);
+		muListFile.lock();
+		std::vector<wxString>::iterator local = std::find(listFile.begin(), listFile.end(), filename);
+		listFile.erase(local);
+		muListFile.unlock();
+	}
+	muPictureBuffer.unlock();
+	
+}
+
 wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
 {
 	wxImage image;

@@ -6,6 +6,7 @@ class CThumbnailBuffer
 public:
 
 	static wxImage GetPicture(const wxString& filename);
+	static void RemovePicture(const wxString& filename);
 
 private:
 
