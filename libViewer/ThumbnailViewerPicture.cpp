@@ -188,6 +188,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 {
+	/*
 	int numStart = 0;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
@@ -208,8 +209,9 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			}
 		}
 	}
+	*/
 
-	for (int i = numStart; i < nbElementInIconeList; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -220,12 +222,12 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			int left = rc.x - posLargeur;
 			int right = rc.x + rc.width - posLargeur;
 
-			if (left > GetWindowWidth())
+			if (right >= 0 && left <= GetWindowWidth())
+				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
+			else if(left > GetWindowWidth())
+			{
 				break;
-
-			RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-
-
+			}
 		}
 	}
 	
