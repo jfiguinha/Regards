@@ -29,6 +29,16 @@ namespace Regards::Window
 		int GetNumPhotoId(const int& numItem);
 		int GetNumItem();
 
+		int GetHauteur()
+		{
+			return posHauteur;
+		}
+
+		int GetLargeur()
+		{
+			return posLargeur;
+		}
+
 		void ZoomOn();
 		void ZoomOff();
 		void ZoomPosition(const int& position);

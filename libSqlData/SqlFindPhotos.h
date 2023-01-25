@@ -28,6 +28,7 @@ namespace Regards
 			                            vector<int>& listKeywordSelected, vector<int>& listKeywordNotSelected,
 			                            const wxString& libelleNotGeo, const double& pertinence = 0.0);
 			bool SearchPhotos(const wxString& sqlRequest);
+			bool SearchPhotos(vector<wxString> * fileList);
 			bool GetAllPhotos(PhotosVector* photosVector);
 			bool GetAllVideo(PhotosVector* photosVector);
 			bool SearchPhotosByCriteria(PhotosVector* photosVector);
@@ -37,10 +38,12 @@ namespace Regards
 			int TraitementResultPhotoDataCriteria(CSqlResult* sqlResult);
 			int TraitementResultPhoto(CSqlResult* sqlResult);
 			int TraitementResultNumPhoto(CSqlResult* sqlResult);
+			int TraitementResultFilename(CSqlResult* sqlResult);
 			bool DeleteAllInSearchPhotos();
 			wxString GetSearchSQL(vector<int> list);
 			int TraitementResult(CSqlResult* sqlResult) override;
 			PhotosVector* m_photosVector;
+			vector<wxString> * fileList;
 			vector<int>* m_listPhoto;
 			int typeResult;
 			wxString table_name;
