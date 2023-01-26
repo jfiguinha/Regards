@@ -1161,6 +1161,9 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\ogg.dll"  $(
     <ProjectReference Include="..\libEmail\libEmail.vcxproj">
       <Project>{b9f8de9e-8e05-4455-955d-dc31f55d87bd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libextern\LibRaw-0.21.1\buildfiles\libraw.vcxproj">
+      <Project>{a71d2131-f425-381f-8a9a-29d60132a046}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libResource\libResource.vcxproj">
       <Project>{ae3f398c-b13b-4c98-99e6-6ec349823995}</Project>
     </ProjectReference>

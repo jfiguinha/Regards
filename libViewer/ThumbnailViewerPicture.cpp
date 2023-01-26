@@ -69,7 +69,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	int size = pictures.size();
 
 	//std::map<int, CIcone *>
-#ifndef WIN32
+#ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
 #else
 	tbb::parallel_for(0, size, 1, [=](int i)
@@ -90,7 +90,7 @@ void CThumbnailViewerPicture::SetListeFile()
 
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
-#ifdef WIN32
+#ifdef USE_TBB_VECTOR
     );
 #endif
 
@@ -129,7 +129,7 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
-#ifndef WIN32
+#ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < nbElementInIconeList; i++)
 #else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
@@ -143,7 +143,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 			//x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}
-#ifdef WIN32
+#ifdef USE_TBB_VECTOR
     );
 #endif
 
@@ -153,7 +153,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 {
 
-#ifndef WIN32
+#ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < nbElementInIconeList; i++)
 #else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
@@ -176,7 +176,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			}
 		}
 	}
-#ifdef WIN32   
+#ifdef USE_TBB_VECTOR   
     );
 #endif
 	
