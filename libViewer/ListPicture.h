@@ -32,7 +32,7 @@ namespace Regards
 			void SetListeFile();
 			void ChangeTypeAffichage(const long& typeAffichage);
 			void Resize() override;
-			vector<wxString> GetFileList();
+
 			int ImageSuivante();
 			int ImagePrecedente();
 			int ImageFin();

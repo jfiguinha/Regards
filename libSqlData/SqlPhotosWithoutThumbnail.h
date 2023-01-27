@@ -12,7 +12,8 @@ namespace Regards
 		public:
 			CSqlPhotosWithoutThumbnail();
 			~CSqlPhotosWithoutThumbnail() override;
-			void GetPhotoList(vector<wxString>* photoList);
+			void GetPhotoList(vector<wxString>* photoList, int nbElement = 20);
+			int GetPhotoElement();
 			void InsertPhotoPriority(const wxString& photoPath);
 			void InsertProcessStart(const wxString& photoPath);
 			void GeneratePhotoList();
@@ -25,6 +26,7 @@ namespace Regards
 			int TraitementResult(CSqlResult* sqlResult) override;
 			int typeResult;
 			int priority;
+			int nbElement = 0;
 			vector<wxString>* photoList;
 			wxString fullpath;
 		};

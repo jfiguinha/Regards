@@ -76,11 +76,20 @@ void CSqlPhotosWithoutThumbnail::UpdatePhotoList()
 	//UpdateVideoList();
 }
 
-void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList)
+int CSqlPhotosWithoutThumbnail::GetPhotoElement()
 {
+	nbElement = 0;
+	typeResult = 1;
+	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0 and  FullPath not in (SELECT FullPath From PHOTOSTHUMBNAIL)");
+	return nbElement;
+}
+
+void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList, int nbElement)
+{
+	this->nbElement = nbElement;
 	this->photoList = photoList;
 	typeResult = 0;
-	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0");
+	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0 LIMIT " + to_string(nbElement));
 }
 
 bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString& photo)
@@ -141,7 +150,7 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
 				switch (i)
 				{
 				case 0:
-					priority = sqlResult->ColumnDataInt(i);
+					nbElement = priority = sqlResult->ColumnDataInt(i);
 					break;
 				default: ;
 				}

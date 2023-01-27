@@ -122,7 +122,7 @@ namespace Regards::Viewer
 
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
-		PhotosVector pictures;
+
 
 		wxString localFilename;
 		int nbProcessMD5;

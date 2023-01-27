@@ -905,13 +905,6 @@ int CListPicture::ImageDebut()
 	return 0;
 }
 
-vector<wxString> CListPicture::GetFileList()
-{
-	vector<wxString> list;
-	if (thumbnailFolder != nullptr)
-		return thumbnailFolder->GetFileList();
-	return list;
-}
 
 wxString CListPicture::GetFilename(const int& numItem)
 {

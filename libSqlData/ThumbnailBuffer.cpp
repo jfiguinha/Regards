@@ -5,8 +5,11 @@
 #include "RegardsConfigParam.h"
 std::map<wxString, wxImage> CThumbnailBuffer::listPicture;
 std::vector<wxString> CThumbnailBuffer::listFile;
+PhotosVector  CThumbnailBuffer::newPhotosVectorList;
 std::mutex CThumbnailBuffer::muPictureBuffer;
 std::mutex CThumbnailBuffer::muListFile;
+std::mutex CThumbnailBuffer::muNewVector;
+int  CThumbnailBuffer::vectorSize = 0;
 
 void CThumbnailBuffer::RemovePicture(const wxString& filename)
 {
@@ -24,6 +27,86 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 	}
 	muPictureBuffer.unlock();
 	
+}
+
+int CThumbnailBuffer::GetVectorSize()
+{
+    return vectorSize;
+}
+
+wxString CThumbnailBuffer::FindPhotoById(int id)
+{
+    wxString file = "";
+    bool isFound = false;
+    muNewVector.lock();
+
+    auto p = std::find_if(
+        newPhotosVectorList.begin(), newPhotosVectorList.end(),
+        [&](const auto& val)
+    {
+        auto photo = static_cast<CPhotos>(val);
+		return photo.GetId() == id;
+    }
+    );
+
+    if (p != newPhotosVectorList.end())
+    {
+        file = p->GetPath();
+        isFound = true;
+    }
+    muNewVector.unlock();
+
+    return file;
+}
+
+bool CThumbnailBuffer::FindValidFile(wxString localFilename)
+{
+    bool isFound = false;
+    muNewVector.lock();
+
+    auto p = std::find_if(
+        newPhotosVectorList.begin(), newPhotosVectorList.end(),
+        [&](const auto& val)
+    {
+        auto photo = static_cast<CPhotos>(val);
+		return photo.GetPath() == localFilename;
+    }
+    );
+
+    if (p != newPhotosVectorList.end())
+        isFound = true;
+
+    muNewVector.unlock();
+
+    return isFound;
+}
+
+CPhotos CThumbnailBuffer::GetVectorValue(int i)
+{
+    bool find = false;
+    CPhotos photo;
+    muNewVector.lock();
+    if (i < newPhotosVectorList.size())
+    {
+        find = true;
+        photo = newPhotosVectorList[i];
+    }
+	muNewVector.unlock();
+
+    if(!find)
+        throw("not exist");
+    return photo;
+}
+
+void CThumbnailBuffer::InitVectorList(PhotosVector & newVector)
+{
+    muNewVector.lock();
+    newPhotosVectorList.assign(newVector.begin(), newVector.end());
+    newPhotosVectorList.shrink_to_fit();
+    vectorSize = newPhotosVectorList.size();
+    muNewVector.unlock();
+    
+
 }
 
 wxImage CThumbnailBuffer::GetPicture(const wxString& filename)

@@ -1,6 +1,6 @@
 #pragma once
 #include <header.h>
-
+#include "ThumbnailBuffer.h"
 #include "ConvertUtility.h"
 #include "ThumbnailFolder.h"
 using namespace Regards::Viewer;
@@ -10,13 +10,15 @@ class CTreatmentData
 public:
 	virtual ~CTreatmentData() = default;
 
-	void MainTreatment(CIconeList* iconeListLocal, const PhotosVector* photoVector, CThumbnailFolder* folder,
+	void MainTreatment(CIconeList* iconeListLocal, CThumbnailFolder* folder,
 	                   int& numElement)
 	{
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
-		for (CPhotos photos : *photoVector)
+		int size = CThumbnailBuffer::GetVectorSize();
+		for (int i = 0;i < size;i++)
 		{
+			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
 			if (TestParameter(photos))
 			{
 				if (!first)
@@ -40,7 +42,7 @@ public:
 	{
 		//int nbElement = 0;
 		//copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
-		folder->AddSeparatorBar(iconeListLocal, libelle, &listPhoto, numElement);
+		folder->AddSeparatorBar(iconeListLocal, libelle, numElement);
 		listPhoto.clear();
 	};
 

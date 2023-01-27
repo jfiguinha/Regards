@@ -203,6 +203,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 		RefreshIcone(numSelectPhotoId);
+		refresh = true;
 	}
 
 
@@ -212,6 +213,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		if (numActif != nullptr)
 			numActif->SetSelected(false);
 		RefreshIcone(numActifPhotoId);
+		refresh = true;
 	}
 
 	numActifPhotoId = iconeList->GetPhotoId(numItem);
@@ -247,6 +249,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 					if (numActif != nullptr)
 						rect = numActif->GetPos();
 					RefreshIcone(numActifPhotoId);
+					refresh = true;
 				}
 
 				//Positionnement au milieu
@@ -281,6 +284,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		if (numSelect != nullptr)
 			numSelect->SetSelected(true);
 		RefreshIcone(numSelectPhotoId);
+		refresh = true;
 	}
 
 	numOldItem = numItem;
@@ -492,6 +496,7 @@ int CThumbnail::GetTabValue()
 void CThumbnail::OnAnimation(wxTimerEvent& event)
 {
 	RefreshIcone(numActifPhotoId);
+	needToRefresh = true;
 
 	if (animationStart)
 		timerAnimation->Start(TIMER_TIME_REFRESH, true);
@@ -511,9 +516,6 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int& positi
 
 void CThumbnail::RefreshIcone(const int& idPhoto)
 {
-	needToRefresh = true;
-	/*
-	wxClientDC dc(this);
 	CIcone* icone = GetIconeById(idPhoto);
 	if (icone != nullptr)
 	{
@@ -524,15 +526,16 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 		int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-			icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+			needToRefresh = true;
 	}
-	*/
+	
 }
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	int idPhoto = event.GetId();
 	RefreshIcone(idPhoto);
+	needToRefresh = true;
 }
 
 void CThumbnail::OnTimerMove(wxTimerEvent& event)
@@ -812,14 +815,15 @@ void CThumbnail::ProcessIdle()
 	//int nbProcesseur = thread::hardware_concurrency();
 	vector<wxString> photoList;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
-	sqlPhoto.UpdatePhotoList();
-	sqlPhoto.GetPhotoList(&photoList);
+	//sqlPhoto.UpdatePhotoList();
+	int nbElement = sqlPhoto.GetPhotoElement();
+	sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
 
 	//nbProcesseur = 1;
-	if (photoList.size() > 0)
+	if (nbElement > 0)
 	{
 		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
-		event->SetExtraLong(photoList.size());
+		event->SetExtraLong(nbElement);
 		wxQueueEvent(this, event);
 
 
@@ -867,12 +871,15 @@ void CThumbnail::ProcessIdle()
 			}
 		}
 	}
+	else
+		sqlPhoto.UpdatePhotoList();
 
 	if (photoList.empty())
 	{
 		processIdle = false;
 		needToRefresh = true;
 	}
+
 }
 
 void CThumbnail::UpdateMessage(wxCommandEvent& event)
@@ -1107,6 +1114,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 		refreshMouseMove->Start(1000, true);
 	}
+
+
 }
 
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur)
@@ -1645,7 +1654,13 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					pThumbnailData->SetIsLoading(false);
 				}
 
-				RefreshIcone(threadLoadingBitmap->photoId);
+				if (pThumbnailData != nullptr)
+				{
+					if (pThumbnailData->GetForceRefresh())
+						needToRefresh = true;
+				}
+				else
+					RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 
@@ -1681,7 +1696,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		else
 			delete filename;
 
-		needToRefresh = true;
+		//needToRefresh = true;
 	}
 	else
 	{

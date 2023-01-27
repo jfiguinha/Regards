@@ -12,6 +12,7 @@
 #include "MainThemeInit.h"
 #include "MainTheme.h"
 #include "PanelInfosWnd.h"
+#include "ThumbnailBuffer.h"
 #include "SqlFindPhotos.h"
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
@@ -291,10 +292,10 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 {
 	wxString filepath = "";
 	int numEffect = 0;
+	CSqlFindPhotos sqlFindPhotos;
 	vector<wxString> list;
-	if (centralWnd != nullptr)
-		list = centralWnd->GetFileList();
-
+	sqlFindPhotos.SearchPhotos(&list);
+	
 	tempVideoFile = CFileUtility::GetTempFile("thumbnail.mp4");
 	tempAudioVideoFile = CFileUtility::GetTempFile("thumbnail_audio.mp4");
 
@@ -1042,17 +1043,7 @@ bool CMainWindow::FindNextValidFile()
 	wxString lastFile = centralWnd->ImageFin(false);
 	do
 	{
-		auto p = std::find_if(
-			pictures.begin(), pictures.end(),
-			[&](const auto& val)
-			{
-				auto photo = static_cast<CPhotos>(val);
-				return photo.GetPath() == localFilename;
-			}
-		);
-
-		if (p != pictures.end())
-			isFound = true;
+		isFound = CThumbnailBuffer::FindValidFile(localFilename);
 
 		if (!isFound)
 		{
@@ -1076,17 +1067,7 @@ bool CMainWindow::FindPreviousValidFile()
 	wxString firstFile = centralWnd->ImageDebut(false);
 	do
 	{
-		auto p = std::find_if(
-			pictures.begin(), pictures.end(),
-			[&](const auto& val)
-			{
-				auto photo = static_cast<CPhotos>(val);
-				return photo.GetPath() == localFilename;
-			}
-		);
-
-		if (p != pictures.end())
-			isFound = true;
+		isFound = CThumbnailBuffer::FindValidFile(localFilename);
 
 		if (!isFound)
 		{
@@ -1184,10 +1165,14 @@ void CMainWindow::RefreshFolder()
 void CMainWindow::UpdateFolder()
 {
 	wxProgressDialog* dialog = nullptr;
-	dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
+	//if(!init)
+	//	dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
+
+	if (dialog != nullptr)
+		dialog->Update(50, "Find Next File ...");
 
 	wxString requestSql = "";
-	pictures.clear();
+	PhotosVector _pictures;
 	CSqlFindPhotos sqlFindPhotos;
 	if (firstFileToShow != "")
 		localFilename = firstFileToShow;
@@ -1195,49 +1180,46 @@ void CMainWindow::UpdateFolder()
 		localFilename = centralWnd->GetFilename();
 
 	if(dialog != nullptr)
-		dialog->Update(25, "Execute SQL Request ...");
+		dialog->Update(50, "Execute SQL Request ...");
 
-	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
+	auto categoryFolder = static_cast<CCategoryFolderWindow*>(FindWindowById(
 		CATEGORYFOLDERWINDOWID));
 	if (categoryFolder != nullptr)
 		requestSql = categoryFolder->GetSqlRequest();
 
 
 	
-	if (requestSql != "")
+	if (requestSql != "" && init)
 	{
-		if(oldRequest != requestSql)
+		if (oldRequest != requestSql)
 			sqlFindPhotos.SearchPhotos(requestSql);
-
 		oldRequest = requestSql;
-		sqlFindPhotos.SearchPhotosByTypeAffichage(&pictures, typeAffichage, NUMCATALOGID);
 	}
-	else
-		sqlFindPhotos.SearchPhotos(&pictures);
 
-	//oldRequest = requestSql;
+	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
 
+	CThumbnailBuffer::InitVectorList(_pictures);
 
-	if (dialog != nullptr)
-		dialog->Update(50, "Find Next File ...");
 
 	if (firstFileToShow == "")
 	{
 		bool isFound = false;
 
-		if (!isFound && pictures.size() > 0 && localFilename != "")
+		if (!isFound && _pictures.size() > 0 && localFilename != "")
 		{
 			isFound = FindNextValidFile();
 			if (!isFound)
 				isFound = FindPreviousValidFile();
 		}
 
-		if (!isFound && !pictures.empty())
-			localFilename = pictures[0].GetPath();
+		if (!isFound && !_pictures.empty())
+			localFilename = _pictures[0].GetPath();
 	}
 
 	if (dialog != nullptr)
 		dialog->Update(75, "Init window icon ...");
+
+	
 
 	centralWnd->SetListeFile(localFilename);
 
@@ -1245,6 +1227,8 @@ void CMainWindow::UpdateFolder()
 	//	dialog->Update(100, "In progress ...");
 
 	updateFolder = false;
+
+	
 
 	firstFileToShow = "";
 	numElementTraitement = 0;
@@ -1293,7 +1277,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 	}
 
 	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(pictures.size());
+	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(CThumbnailBuffer::GetVectorSize());
 	if (statusBarViewer != nullptr)
 	{
 		statusBarViewer->SetText(3, message);
@@ -1306,7 +1290,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 void CMainWindow::ProcessIdle()
 {
 	bool hasDoneOneThings = false;
-	//int nbProcesseur = 1;
+	int pictureSize = CThumbnailBuffer::GetVectorSize();
 
 	if (updateCriteria)
 	{
@@ -1323,9 +1307,10 @@ void CMainWindow::ProcessIdle()
 		UpdateFolder();
 		hasDoneOneThings = true;
 	}
-	else if (numElementTraitement < pictures.size())
+	else if (numElementTraitement < pictureSize)
 	{
-		PhotoProcess(&pictures[numElementTraitement]);
+		CPhotos photo = CThumbnailBuffer::GetVectorValue(numElementTraitement);
+		PhotoProcess(&photo);
 		hasDoneOneThings = true;
 	}
 
@@ -1343,6 +1328,7 @@ void CMainWindow::ProcessIdle()
 
 	if (!hasDoneOneThings)
 		processIdle = false;
+
 }
 
 //---------------------------------------------------------------
@@ -1378,7 +1364,7 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 	nbProcessMD5--;
 	numElementTraitement++;
 	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(pictures.size());
+	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(CThumbnailBuffer::GetVectorSize());
 	if (statusBarViewer != nullptr)
 	{
 		statusBarViewer->SetText(3, message);
@@ -1472,16 +1458,7 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
 	const int photoId = event.GetExtraLong();
-	wxString filename = "";
-	for (CPhotos photo : pictures)
-	{
-		if (photo.GetId() == photoId)
-		{
-			filename = photo.GetPath();
-			break;
-		}
-	}
-
+	wxString filename = CThumbnailBuffer::FindPhotoById(photoId);
 	centralWnd->LoadPicture(filename);
 }
 

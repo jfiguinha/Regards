@@ -14,10 +14,9 @@ namespace Regards::Viewer
 		CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailFolder(void) override;
-		vector<wxString> GetFileList();
+
 		void Init(const int& typeAffichage);
-		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector,
-		                     int& nbElement);
+		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 
 	protected:
 
@@ -28,7 +27,7 @@ namespace Regards::Viewer
 	private:
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
-		void SetListeFile(PhotosVector* photoVector);
+		void SetListeFile();
 
 
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
@@ -38,10 +37,9 @@ namespace Regards::Viewer
 		void RenderIconeWithVScroll(wxDC* dc) override;
 
 		void UpdateScrollWithVScroll() override;
-		void InitTypeAffichage(PhotosVector* photoVector, const int& typeAffichage);
+		void InitTypeAffichage(const int& typeAffichage);
 
 		InfosSeparationBarVector listSeparator;
-		PhotosVector newPhotosVectorList;
 		std::map<int, int> listElementToShow;
 		int barseparationHeight;
 		int widthThumbnail;

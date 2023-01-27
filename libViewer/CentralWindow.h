@@ -108,7 +108,6 @@ namespace Regards
 			void SaveParameter() override;
 			bool IsCompatibleFullscreen();
 
-			vector<wxString> GetFileList();
 			void TransitionEnd();
 
 			bool IsDiaporamaStart();

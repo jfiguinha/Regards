@@ -4,6 +4,7 @@
 #include <ThumbnailDataSQL.h>
 #include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
+#include "ThumbnailBuffer.h"
 #include <SqlFindPhotos.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
@@ -56,17 +57,15 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 
 void CThumbnailViewerPicture::SetListeFile()
 {
-	PhotosVector pictures;
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	threadDataProcess = false;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotos(&pictures);
+
 	int i = 0;
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
-	int size = pictures.size();
+	int size = CThumbnailBuffer::GetVectorSize();
 
 	//std::map<int, CIcone *>
 #ifndef USE_TBB_VECTOR
@@ -75,20 +74,26 @@ void CThumbnailViewerPicture::SetListeFile()
 	tbb::parallel_for(0, size, 1, [=](int i)
 #endif
 	{
-	
-		CPhotos fileEntry = pictures[i];
-		wxString filename = fileEntry.GetPath();
-		auto thumbnailData = new CThumbnailDataSQL(filename, false);
-		thumbnailData->SetNumPhotoId(fileEntry.GetId());
-		thumbnailData->SetNumElement(i);
+		try
+		{
+			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
+			wxString filename = fileEntry.GetPath();
+			auto thumbnailData = new CThumbnailDataSQL(filename, false);
+			thumbnailData->SetNumPhotoId(fileEntry.GetId());
+			thumbnailData->SetNumElement(i);
 
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), y);
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), y);
 
-		iconeListLocal->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
+		}
+		catch(...)
+		{
+			break;
+		}
 	}
 #ifdef USE_TBB_VECTOR
     );
@@ -113,7 +118,6 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	processIdle = true;
 
-	pictures.clear();
 	needToRefresh = true;
 }
 

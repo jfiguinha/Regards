@@ -46,6 +46,15 @@ CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
 	return *this;
 }
 
+void  CThumbnailData::SetForceRefresh(const bool& refresh)
+{
+	this->forceRefresh = refresh;
+}
+bool  CThumbnailData::GetForceRefresh()
+{
+	return forceRefresh;
+}
+
 void CThumbnailData::SetFilename(const wxString& filename)
 {
 	this->filename = filename;

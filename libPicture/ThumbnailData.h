@@ -49,6 +49,9 @@ public:
 		return image;
 	};
 
+	void SetForceRefresh(const bool& refresh);
+	bool GetForceRefresh();
+
 	void SetTypeElement(const int& typeElement);
 	int GetTypeElement();
 
@@ -130,6 +133,7 @@ protected:
 	int timePosition;
 	int percent;
 	bool isProcess;
+	bool forceRefresh = false;
 	int numFrame = 0;
 	wxString libelle;
 };
