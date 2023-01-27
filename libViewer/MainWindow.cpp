@@ -1183,6 +1183,9 @@ void CMainWindow::RefreshFolder()
 //---------------------------------------------------------------
 void CMainWindow::UpdateFolder()
 {
+	wxProgressDialog * dialog = new wxProgressDialog("Initialization", "Checking...", 100, this,
+		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
 	wxString requestSql = "";
 	pictures.clear();
 	CSqlFindPhotos sqlFindPhotos;
@@ -1190,6 +1193,8 @@ void CMainWindow::UpdateFolder()
 		localFilename = firstFileToShow;
 	else
 		localFilename = centralWnd->GetFilename();
+
+	dialog->Update(25, "Execute SQL Request ...");
 
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
@@ -1203,6 +1208,7 @@ void CMainWindow::UpdateFolder()
 	}
 	else
 		sqlFindPhotos.SearchPhotos(&pictures);
+
 
 	if (firstFileToShow == "")
 	{
@@ -1219,12 +1225,18 @@ void CMainWindow::UpdateFolder()
 			localFilename = pictures[0].GetPath();
 	}
 
+	dialog->Update(75, "Init window icon ...");
+
 	centralWnd->SetListeFile(localFilename);
+
+	dialog->Update(100, "In progress ...");
 
 	updateFolder = false;
 
 	firstFileToShow = "";
 	numElementTraitement = 0;
+
+	delete dialog;
 }
 
 //---------------------------------------------------------------

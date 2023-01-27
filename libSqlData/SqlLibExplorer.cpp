@@ -47,7 +47,6 @@ using namespace Regards::Sqlite;
 
 #define SQL_CREATE_PHOTOSTHUMBNAIL_TABLE "CREATE TABLE PHOTOSTHUMBNAIL (NumPhoto INT PRIMARY KEY, FullPath NVARCHAR(255), width INT, height INT, hash NVARCHAR(255))"
 #define SQL_DROP_PHOTOSTHUMBNAIL "DROP TABLE PHOTOSTHUMBNAIL"
-
 #define SQL_INDEX_PHOTOSTHUMBNAIL "CREATE UNIQUE INDEX idx_PHOTOSTHUMBNAIL_FullPath ON PHOTOSTHUMBNAIL(FullPath)"
 
 #define SQL_CREATE_VIDEOTHUMBNAIL_TABLE "CREATE TABLE VIDEOTHUMBNAIL (NumPhoto INT, numVideo INT, FullPath NVARCHAR(255), rotation INT, percent INT, timePosition INT, width INT, height INT, PRIMARY KEY (NumPhoto, numVideo))"
@@ -94,7 +93,7 @@ using namespace Regards::Sqlite;
 substr(CreateDate, 0, 5) as Year, substr(CreateDate, 6, 2) as Month, substr(CreateDate, 9, 2) as Day, \
 strftime('%w', REPLACE(CreateDate, '.', '-')) as DayOfWeek FROM PHOTOSSEARCHCRITERIA Order By Year, Month, Day"
 
-#define SQL_DROP_SEARCH_VIEW_VIEW "DROP TABLE PHOTOSGPS"
+
 
 CSqlLibExplorer::CSqlLibExplorer(const bool& readOnly, const wxString& libelleNotGeo, const bool& load_inmemory)
 	: CSqlLib()

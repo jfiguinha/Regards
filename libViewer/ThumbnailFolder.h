@@ -20,6 +20,8 @@ namespace Regards::Viewer
 		                     int& nbElement);
 
 	protected:
+
+		void VideoProcessThumbnail() override;
 		void OnPictureClick(CThumbnailData* data) override;
 		void ResizeThumbnail() override;
 		static bool compareInterval(int i1, int i2);
@@ -40,7 +42,7 @@ namespace Regards::Viewer
 
 		InfosSeparationBarVector listSeparator;
 		PhotosVector newPhotosVectorList;
-		//PhotosVector photoVector;
+		std::map<int, int> listElementToShow;
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;

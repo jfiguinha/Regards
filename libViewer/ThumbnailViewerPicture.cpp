@@ -78,7 +78,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	
 		CPhotos fileEntry = pictures[i];
 		wxString filename = fileEntry.GetPath();
-		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(filename, false);
 		thumbnailData->SetNumPhotoId(fileEntry.GetId());
 		thumbnailData->SetNumElement(i);
 

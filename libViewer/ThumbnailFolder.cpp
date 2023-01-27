@@ -12,6 +12,8 @@
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <config_id.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -23,6 +25,7 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
+	preprocess_thumbnail = true;
 	//	preprocess_thumbnail = false;
 }
 
@@ -225,7 +228,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	{
 		CPhotos fileEntry = photoVector->at(i);
 		wxString filename = fileEntry.GetPath();
-		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false);
 		thumbnailData->SetNumPhotoId(fileEntry.GetId());
 		thumbnailData->SetNumElement(i);
 
@@ -437,8 +440,48 @@ CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 }
 
 
+void CThumbnailFolder::VideoProcessThumbnail()
+{
+	for (const auto& [key, value] : listElementToShow)
+	{
+		CIcone* pBitmapIcone = iconeList->GetElement(value);
+		wxRect rc = pBitmapIcone->GetPos();
+
+		if (pBitmapIcone != nullptr)
+		{
+			int nbProcesseur = 1;
+			if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
+				nbProcesseur = config->GetThumbnailProcess();
+
+			if (pBitmapIcone != nullptr)
+			{
+				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
+				{
+					const bool isProcess = pThumbnailData->IsProcess();
+					//const bool isLoad = pThumbnailData->IsLoad();
+					if (!isProcess) // && !isLoad)
+					{
+						if (nbProcess < (nbProcesseur + 2))
+						{
+							ProcessThumbnail(pThumbnailData);
+							pThumbnailData->SetIsProcess(true);
+							nbProcess++;
+							listElementToShow.erase(key);
+						}
+					}
+					else
+						listElementToShow.erase(key);
+				}
+			}
+			
+		}
+	}
+}
+
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
+	listElementToShow.clear();
+
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
 
@@ -478,7 +521,13 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 						{
 							if (!start)
 								start = true;
+
 							RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+
+							CThumbnailData* pThumbnailData = pBitmapIcone->GetData();
+							const bool isProcess = pThumbnailData->IsProcess();
+							if(!isProcess)
+								listElementToShow.insert(std::pair(numElement, numElement));
 						}
 						else if (start)
 							break;

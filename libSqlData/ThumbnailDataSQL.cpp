@@ -18,10 +18,13 @@ using namespace Regards::Picture;
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
 	: CThumbnailData(filename)
 {
-	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
+	if (testValidity)
 	{
-		isVideo = true;
+		CLibPicture libPicture;
+		if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
+		{
+			isVideo = true;
+		}
 	}
 }
 
