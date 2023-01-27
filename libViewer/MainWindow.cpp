@@ -1184,8 +1184,7 @@ void CMainWindow::RefreshFolder()
 void CMainWindow::UpdateFolder()
 {
 	wxProgressDialog* dialog = nullptr;
-	if(!init)
-		dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
+	dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
 
 	wxString requestSql = "";
 	pictures.clear();
@@ -1203,6 +1202,8 @@ void CMainWindow::UpdateFolder()
 	if (categoryFolder != nullptr)
 		requestSql = categoryFolder->GetSqlRequest();
 
+
+	
 	if (requestSql != "")
 	{
 		sqlFindPhotos.SearchPhotos(requestSql);
@@ -1211,6 +1212,9 @@ void CMainWindow::UpdateFolder()
 	else
 		sqlFindPhotos.SearchPhotos(&pictures);
 
+
+	if (dialog != nullptr)
+		dialog->Update(50, "Find Next File ...");
 
 	if (firstFileToShow == "")
 	{
@@ -1239,8 +1243,7 @@ void CMainWindow::UpdateFolder()
 
 	firstFileToShow = "";
 	numElementTraitement = 0;
-
-	
+		
 	if (dialog != nullptr)
 	{
 		dialog->Close(true);
@@ -1421,6 +1424,7 @@ void CMainWindow::SaveParameter()
 {
 	if (centralWnd != nullptr)
 		centralWnd->SaveParameter();
+
 }
 
 void CMainWindow::Resize()
