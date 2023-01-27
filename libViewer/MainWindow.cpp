@@ -1697,6 +1697,7 @@ bool CMainWindow::SetFullscreenMode()
 		{
 			is_work = true;
 			fullscreen = true;
+			toolbarViewerMode->Show(false);
 			toolbar->Show(false);
 			statusBar->Show(false);
 			wxCommandEvent event(wxEVENT_SETSCREEN);
@@ -1717,6 +1718,7 @@ bool CMainWindow::SetScreen()
 			statusBarViewer->SetScreen();
 			fullscreen = false;
 			toolbar->Show(true);
+			toolbarViewerMode->Show(true);
 			statusBar->Show(true);
 			isWork = true;
 			wxCommandEvent event(wxEVENT_SETSCREEN);
