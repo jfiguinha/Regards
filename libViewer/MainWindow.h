@@ -150,5 +150,6 @@ namespace Regards::Viewer
 		bool needToRemux = false;
 		bool isAudio = false;
 		bool init = false;
+		wxString oldRequest = "";
 	};
 }

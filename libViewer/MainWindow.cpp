@@ -1206,11 +1206,16 @@ void CMainWindow::UpdateFolder()
 	
 	if (requestSql != "")
 	{
-		sqlFindPhotos.SearchPhotos(requestSql);
+		if(oldRequest != requestSql)
+			sqlFindPhotos.SearchPhotos(requestSql);
+
+		oldRequest = requestSql;
 		sqlFindPhotos.SearchPhotosByTypeAffichage(&pictures, typeAffichage, NUMCATALOGID);
 	}
 	else
 		sqlFindPhotos.SearchPhotos(&pictures);
+
+	//oldRequest = requestSql;
 
 
 	if (dialog != nullptr)
