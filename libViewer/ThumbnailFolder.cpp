@@ -9,6 +9,9 @@
 #include <ScrollbarWnd.h>
 #include <SqlPhotosWithoutThumbnail.h>
 #include "TreatmentData.h"
+#include "ViewerParam.h"
+#include "ViewerParamInit.h"
+#include <config_id.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -140,6 +143,13 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	{
 		CTreatmentDataDay dataDay;
 		dataDay.MainTreatment(iconeListLocal, photoVector, this, i);
+	}
+
+
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+	{
+		config->SetTypeAffichage(typeAffichage);
 	}
 
 

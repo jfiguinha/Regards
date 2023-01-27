@@ -51,6 +51,9 @@ namespace Regards
 			wxString GetPathForVideoEdit();
 			void SetPathForVideoEdit(const wxString& pathProgram);
 
+			int GetTypeAffichage();
+			void SetTypeAffichage(const int& typeAffichage);
+
 			wxString GetPathForPictureEdit();
 			void SetPathForPictureEdit(const wxString& pathProgram);
 
@@ -125,6 +128,8 @@ namespace Regards
 			wxRect positionRegardsViewer;
 			bool showThumbnail;
 			bool showVideoThumbnail;
+
+			int typeAffichage = 0;
 			int position;
 			bool showInfos;
 			bool showFace;

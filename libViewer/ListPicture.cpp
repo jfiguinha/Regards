@@ -30,6 +30,7 @@
 #include <wx/filename.h>
 #include <ImageLoadingFormat.h>
 #include <WindowMain.h>
+#include <config_id.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
 #elif defined(WIN32)
@@ -49,14 +50,18 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	thumbToolbar = nullptr;
 	thumbToolbarZoom = nullptr;
 	thumbnailFolder = nullptr;
-	typeAffichage = SHOW_ALL;
+	typeAffichage = SHOW_BYMONTH;
 	std::vector<int> value = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
 	wxRect rect;
 	int positionTab = 3;
 	bool checkValidity = false;
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
+	{
 		checkValidity = config->GetCheckThumbnailValidity();
+		typeAffichage = config->GetTypeAffichage();
+	}
+			
 
 	if (config != nullptr)
 		config->GetSlideFolderPos(positionTab);

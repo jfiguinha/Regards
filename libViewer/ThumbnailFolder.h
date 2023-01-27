@@ -4,12 +4,6 @@
 #include "Photos.h"
 using namespace Regards::Control;
 
-#define SHOW_ALL 0
-#define SHOW_BYYEAR 1
-#define SHOW_BYMONTH 2
-#define SHOW_BYDAY 3
-#define SHOW_BYLOCALISATION 4
-
 namespace Regards::Viewer
 {
 	class CMainFrame;
@@ -21,7 +15,7 @@ namespace Regards::Viewer
 		                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailFolder(void) override;
 		vector<wxString> GetFileList();
-		void Init(const int& typeAffichage = SHOW_ALL);
+		void Init(const int& typeAffichage);
 		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector,
 		                     int& nbElement);
 

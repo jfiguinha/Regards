@@ -3,6 +3,8 @@
 #include <LibResource.h>
 #include "ListPicture.h"
 #include <window_id.h>
+#include "ViewerParam.h"
+#include "ViewerParamInit.h"
 #include "MainWindow.h"
 using namespace Regards::Viewer;
 
@@ -10,6 +12,7 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 	: CWindowMain("CThumbnailToolBarZoom", parent, id)
 {
 	typeAffichage = 0;
+
 	positionPrevious = wxRect(0, 0, 0, 0);
 	positionNext = wxRect(0, 0, 0, 0);
 	themeToolbarZoom = theme;
@@ -20,6 +23,12 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 	byMonth = CLibResource::LoadStringFromResource(L"LBLByMonth", 1);
 	byDay = CLibResource::LoadStringFromResource(L"LBLByDay", 1);
 	byLocalisation = CLibResource::LoadStringFromResource(L"LBLByLocalisation", 1);
+
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+	{
+		typeAffichage = config->GetTypeAffichage();
+	}
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnailToolBarZoom::on_paint));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnailToolBarZoom::OnLButtonDown));

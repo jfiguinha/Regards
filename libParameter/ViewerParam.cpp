@@ -5,6 +5,7 @@
 #include <ConvertUtility.h>
 #include <window_id.h>
 #include <fstream>
+#include <config_id.h>
 using namespace rapidxml;
 using namespace Regards::Viewer;
 
@@ -51,8 +52,19 @@ CMainParam::CMainParam(): showFace(false), numEffect(0)
 
 	posFace = 3;
 	posFolder = 3;
+
+	typeAffichage = SHOW_BYMONTH;
 }
 
+int CMainParam::GetTypeAffichage()
+{
+	return typeAffichage;
+}
+
+void CMainParam::SetTypeAffichage(const int& typeAffichage)
+{
+	this->typeAffichage = typeAffichage;
+}
 
 void CMainParam::SetSlideFacePos(const int& pos)
 {
@@ -334,6 +346,7 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("ImageEditorPath", pathProgramPicture));
 	sectionWindow->append_node(node("SlideFacePos", to_string(posFace)));
 	sectionWindow->append_node(node("SlideFolderPos", to_string(posFolder)));
+	sectionWindow->append_node(node("typeAffichage", to_string(typeAffichage)));
 
 	xml_node<>* sectionPosition = node("leftPosPanel");
 	SetPositionParameter(sectionPosition, leftPanelPos, "window");
@@ -575,6 +588,11 @@ void CMainParam::GetWindowParameter(xml_node<>* window_node)
 		posFolder = atoi(child_node->value());
 	}
 
+	child_node = window_node->first_node("typeAffichage");
+	if (child_node != nullptr)
+	{
+		typeAffichage = atoi(child_node->value());
+	}
 
 	child_node = window_node->first_node("leftPosPanel");
 	if (child_node != nullptr)
