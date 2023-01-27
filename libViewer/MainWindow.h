@@ -149,5 +149,6 @@ namespace Regards::Viewer
 		wxString firstFileToShow = "";
 		bool needToRemux = false;
 		bool isAudio = false;
+		bool init = false;
 	};
 }

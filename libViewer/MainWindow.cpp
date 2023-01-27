@@ -202,13 +202,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	progressBar->SetValue(50);
 	//refreshFolder = true;
 	processIdle = true;
-	//updateFolder = true;
+	updateFolder = true;
 	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		firstFileToShow = localFilename = config->GetLastShowPicture();
 
-	UpdateFolder();
+	//UpdateFolder();
 }
 
 void CMainWindow::ClickShowButton(const int& id, const int& refresh)
@@ -1183,8 +1183,9 @@ void CMainWindow::RefreshFolder()
 //---------------------------------------------------------------
 void CMainWindow::UpdateFolder()
 {
-	wxProgressDialog * dialog = new wxProgressDialog("Initialization", "Checking...", 100, this,
-		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	wxProgressDialog* dialog = nullptr;
+	if(!init)
+		dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
 
 	wxString requestSql = "";
 	pictures.clear();
@@ -1194,7 +1195,8 @@ void CMainWindow::UpdateFolder()
 	else
 		localFilename = centralWnd->GetFilename();
 
-	dialog->Update(25, "Execute SQL Request ...");
+	if(dialog != nullptr)
+		dialog->Update(25, "Execute SQL Request ...");
 
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
@@ -1225,18 +1227,27 @@ void CMainWindow::UpdateFolder()
 			localFilename = pictures[0].GetPath();
 	}
 
-	dialog->Update(75, "Init window icon ...");
+	if (dialog != nullptr)
+		dialog->Update(75, "Init window icon ...");
 
 	centralWnd->SetListeFile(localFilename);
 
-	dialog->Update(100, "In progress ...");
+	//if (dialog != nullptr)
+	//	dialog->Update(100, "In progress ...");
 
 	updateFolder = false;
 
 	firstFileToShow = "";
 	numElementTraitement = 0;
 
-	delete dialog;
+	
+	if (dialog != nullptr)
+	{
+		dialog->Close(true);
+		delete dialog;
+	}
+	
+	init = true;
 }
 
 //---------------------------------------------------------------
