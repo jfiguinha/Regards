@@ -39,7 +39,11 @@ namespace Regards
 			int ImageDebut();
 			wxString GetFilename(const int& numItem);
 
-			CThumbnailFolder* thumbnailFolder;
+			CThumbnailFolder* GetPtThumbnailFolder()
+			{
+				return thumbnailFolder;
+			}
+			
 
 		private:
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -56,7 +60,7 @@ namespace Regards
 			CScrollbarWnd* thumbscrollbar;
 			CThumbnailToolBar* thumbToolbar;
 			CThumbnailToolBarZoom* thumbToolbarZoom;
-			
+			CThumbnailFolder* thumbnailFolder;
 
 			void GeolocalizeFile(const wxString& filename, const float& latitude, const float& longitude,
 			                     const wxString& lat, const wxString& lng, const wxString& geoInfos);

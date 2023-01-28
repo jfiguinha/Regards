@@ -1208,58 +1208,12 @@ void CMainWindow::UpdateFolder(void * param)
 
 	sqlFindPhotos.SearchPhotosByCriteria(threadData->_pictures);
 
-	threadData->iconeListThumbnail = threadData->mainWindow->centralWnd->thumbnailPicture->PregenerateList(threadData->_pictures);
-	threadData->iconeListLocal = threadData->mainWindow->centralWnd->listPicture->thumbnailFolder->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
+	threadData->iconeListThumbnail = threadData->mainWindow->centralWnd->GetThumbnailPicture()->PregenerateList(threadData->_pictures);
+	threadData->iconeListLocal = threadData->mainWindow->centralWnd->GetListPicture()->GetPtThumbnailFolder()->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
 	
 	wxCommandEvent event(wxEVENT_UPDATEPHOTOFOLDER);
 	event.SetClientData(threadData);
 	wxPostEvent(threadData->mainWindow, event);
-	/*
-
-
-	CThumbnailBuffer::InitVectorList(threadData->_pictures);
-
-
-	if (firstFileToShow == "")
-	{
-		bool isFound = false;
-
-		if (!isFound && _pictures.size() > 0 && localFilename != "")
-		{
-			isFound = FindNextValidFile();
-			if (!isFound)
-				isFound = FindPreviousValidFile();
-		}
-
-		if (!isFound && !_pictures.empty())
-			localFilename = _pictures[0].GetPath();
-	}
-
-	if (dialog != nullptr)
-		dialog->Update(75, "Init window icon ...");
-
-	
-
-	centralWnd->SetListeFile(localFilename);
-
-	//if (dialog != nullptr)
-	//	dialog->Update(100, "In progress ...");
-
-	updateFolder = false;
-
-	
-
-	firstFileToShow = "";
-	numElementTraitement = 0;
-		
-	if (dialog != nullptr)
-	{
-		dialog->Close(true);
-		delete dialog;
-	}
-	
-	init = true;
-	*/
 }
 
 void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)

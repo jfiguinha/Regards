@@ -113,8 +113,16 @@ namespace Regards
 
 			bool IsDiaporamaStart();
 
-			CListPicture* listPicture;
-			CThumbnailViewerPicture* thumbnailPicture;
+
+			CListPicture* GetListPicture()
+			{
+				return listPicture;
+			}
+
+			CThumbnailViewerPicture* GetThumbnailPicture()
+			{
+				return thumbnailPicture;
+			}
 
 		private:
 			int GetPhotoId(const wxString& filename);
@@ -152,7 +160,8 @@ namespace Regards
 			void StartAnimation();
 			bool SetAnimation(const wxString& filename);
 
-
+			CListPicture* listPicture;
+			CThumbnailViewerPicture* thumbnailPicture;
 			CPanelPhotoWnd* panelPhotoWnd;
 			CMainParam* viewerconfig;
 			
