@@ -173,6 +173,10 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& needToSendMessage)
 		delete(catalogWndOld);
 		catalogWndOld = catalogWnd;
 		update = true;
+
+		//Send Update Folder
+		wxCommandEvent evt(wxEVENT_REFRESHFOLDERLIST);
+		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 	processIdle = true;
 }

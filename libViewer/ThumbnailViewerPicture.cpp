@@ -53,7 +53,75 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 	return list;
 }
 
+CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
+{
+	auto iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+	int size = _pictures->size();
 
+	//std::map<int, CIcone *>
+#ifndef USE_TBB_VECTOR
+	for (auto i = 0; i < size; i++)
+#else
+	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
+	{
+		try
+		{
+			CPhotos fileEntry = _pictures->at(i);
+			wxString filename = fileEntry.GetPath();
+			auto thumbnailData = new CThumbnailDataSQL(filename, false);
+			thumbnailData->SetNumPhotoId(fileEntry.GetId());
+			thumbnailData->SetNumElement(i);
+
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+
+			iconeListLocal->AddElement(pBitmapIcone);
+		}
+		catch (...)
+		{
+			break;
+		}
+	}
+#ifdef USE_TBB_VECTOR
+	);
+#endif
+
+	iconeListLocal->SortById();
+
+	return iconeListLocal;
+}
+
+
+void CThumbnailViewerPicture::ApplyListeFile(CIconeList * iconeListLocal)
+{
+	CIconeList* oldIconeList = iconeList;
+	threadDataProcess = false;
+	
+	lockIconeList.lock();
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	nbElementInIconeList = iconeList->GetNbElement();
+
+	EraseThumbnailList(oldIconeList);
+
+	oldIconeList = nullptr;
+
+	AfterSetList();
+
+	ResizeThumbnail();
+
+	threadDataProcess = true;
+
+	processIdle = true;
+
+	needToRefresh = true;
+}
 
 void CThumbnailViewerPicture::SetListeFile()
 {
