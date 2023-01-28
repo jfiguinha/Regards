@@ -2,6 +2,8 @@
 #include <Photos.h>
 #include <WindowMain.h>
 #include <ToolbarInterface.h>
+#include "IconeList.h"
+#include <InfosSeparationBar.h>
 using namespace Regards::Window;
 
 class CRegardsBitmap;
@@ -21,6 +23,26 @@ namespace Regards::Viewer
 	class CMainParam;
 	class CCentralWindow;
 	class CToolbarViewerMode;
+
+	class CThreadPhotoLoading
+	{
+	public:
+		CThreadPhotoLoading()
+		{
+			_pictures = new PhotosVector();
+			_listSeparator = new InfosSeparationBarVector();
+		}
+
+		~CThreadPhotoLoading(){};
+
+		CMainWindow* mainWindow;
+		CIconeList* iconeListLocal;
+		InfosSeparationBarVector* _listSeparator;
+		CIconeList* iconeListThumbnail;
+		int typeAffichage;
+		PhotosVector * _pictures;
+	};
+
 
 
 	class CMainWindow : public CWindowMain, public CToolbarInterface
@@ -95,7 +117,7 @@ namespace Regards::Viewer
 		void SetScreenEvent(wxCommandEvent& event);
 		void OnExportDiaporama(wxCommandEvent& event);
 		void RefreshFolderList(wxCommandEvent& event);
-
+		void OnUpdatePhotoFolder(wxCommandEvent& event);
 		void OnUpdateFolder(wxCommandEvent& event);
 
 		void Resize() override;
@@ -108,7 +130,7 @@ namespace Regards::Viewer
 
 		void UpdateCriteria();
 		void RefreshFolder();
-		void UpdateFolder();
+		static void UpdateFolder(void * param);
 		void PhotoProcess(CPhotos* photo);
 
 		wxString tempVideoFile = "";
@@ -123,7 +145,7 @@ namespace Regards::Viewer
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 
-
+		std::thread* updateFolderThread = nullptr;
 		wxString localFilename;
 		int nbProcessMD5;
 

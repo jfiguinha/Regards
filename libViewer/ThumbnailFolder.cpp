@@ -33,6 +33,16 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 
 CThumbnailFolder::~CThumbnailFolder(void)
 {
+	if (listSeparator != nullptr)
+	{
+		for (CInfosSeparationBar* infosSeparationBar : *listSeparator)
+		{
+			delete(infosSeparationBar);
+		}
+
+		listSeparator->clear();
+		delete listSeparator;
+	}
 }
 
 void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
@@ -47,7 +57,7 @@ void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
 	}
 }
 
-void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
+CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
 {
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -62,8 +72,58 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 #endif
 	{
 		try
+	{
+		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
+		thumbnailData->SetNumPhotoId(photo.GetId());
+		thumbnailData->SetNumElement(local_nbElement + i);
+
+		CIcone* pBitmapIcone = new CIcone();
+		pBitmapIcone->ShowSelectButton(true);
+		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
+	}
+	catch (...)
+	{
+		break;
+	}
+	}
+#ifdef USE_TBB_VECTOR  
+	);
+#endif
+
+	iconeListLocal->SortById();
+
+	for (auto i = 0; i < size; i++)
+	{
+		infosSeparationBar->listElement.push_back(local_nbElement + i);
+	}
+
+	nbElement += size;
+
+	return infosSeparationBar;
+}
+
+
+CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
+{
+	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
+	infosSeparationBar->SetTitle(libelle);
+	infosSeparationBar->SetWidth(GetWindowWidth());
+
+	int local_nbElement = iconeListLocal->GetNbElement();
+	int size = _pictures->size();
+#ifndef USE_TBB_VECTOR
+	for (auto i = 0; i < size; i++)
+#else
+	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
+	{
+		try
 		{
-			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+			CPhotos photo = _pictures->at(i);
 			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
 			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(local_nbElement + i);
@@ -93,15 +153,53 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 
 	nbElement += size;
 	
-	if (size > 0)
-		listSeparator.push_back(infosSeparationBar);
+	//if (size > 0)
+	//	listSeparator.push_back(infosSeparationBar);
+	return infosSeparationBar;
+}
+
+CIconeList * CThumbnailFolder::PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage,  InfosSeparationBarVector * listSeparator)
+{
+	CIconeList* iconeListLocal = new CIconeList();
+	int i = 0;
+	int typeLocal = typeAffichage;
+
+	if (typeLocal == SHOW_ALL)
+	{
+		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
+		CInfosSeparationBarExplorer * infosSeparationBar = AddSeparatorBar(_pictures, iconeListLocal, libellePhoto, i);
+		if (_pictures->size() > 0)
+			listSeparator->push_back(infosSeparationBar);
+	}
+	else if (typeLocal == SHOW_BYYEAR)
+	{
+		CTreatmentDataYear dataYear;
+		dataYear.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
+	}
+	else if (typeLocal == SHOW_BYMONTH)
+	{
+		CTreatmentDataMonth dataMonth;
+		dataMonth.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
+	}
+	else if (typeLocal == SHOW_BYLOCALISATION)
+	{
+		CTreatmentDataLocalisation dataLocalisation;
+		dataLocalisation.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
+	}
+	else if (typeLocal == SHOW_BYDAY)
+	{
+		CTreatmentDataDay dataDay;
+		dataDay.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
+	}
+
+
+	return iconeListLocal;
 }
 
 
-void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
+void CThumbnailFolder::ApplyTypeAffichage(CIconeList* iconeListLocal, InfosSeparationBarVector* _listSeparator, int typeAffichage)
 {
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	CIconeList* oldIconeList = iconeList;
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -109,40 +207,119 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	threadDataProcess = false;
 	GetSelectItem(listSelectItem);
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	InfosSeparationBarVector* old = listSeparator;
+	
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
 	{
-		delete(infosSeparationBar);
+		config->SetTypeAffichage(typeAffichage);
+	}
+	
+	lockIconeList.lock();
+	iconeList = iconeListLocal;
+	listSeparator = _listSeparator;
+	lockIconeList.unlock();
+
+	//------------------------------------------------------------------
+	//Cleaning old Element
+	//------------------------------------------------------------------
+	if (old != nullptr)
+	{
+		for (CInfosSeparationBar* infosSeparationBar : *old)
+		{
+			delete(infosSeparationBar);
+		}
+
+		old->clear();
+		delete old;
+	}
+	
+
+	if (oldIconeList != nullptr)
+	{
+		EraseThumbnailList(oldIconeList);
+		oldIconeList = nullptr;
 	}
 
-	listSeparator.clear();
+	nbElementInIconeList = iconeList->GetNbElement();
+
+	//---------------------------------
+	//Application de l'tat
+	//---------------------------------
+
+	if (listSelectItem.size() > 0)
+	{
+		for (CThumbnailData* data : listSelectItem)
+		{
+			int itemId = GetNumItemById(data->GetNumPhotoId());
+			CIcone* icone = iconeList->GetElement(itemId);
+			if (icone != nullptr)
+			{
+				icone->SetChecked(true);
+				icone->SetSelected(true);
+			}
+		}
+	}
+
+	AfterSetList();
+
+	thumbnailPos = 0;
+
+	threadDataProcess = true;
+
+	widthThumbnail = 0;
+	heightThumbnail = 0;
+	ResizeThumbnail();
+
+	needToRefresh = true;
+}
+
+
+
+void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
+{
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = iconeList;
+	//---------------------------------
+	//Sauvegarde de l'état
+	//---------------------------------
+	vector<CThumbnailData*> listSelectItem;
+	threadDataProcess = false;
+	GetSelectItem(listSelectItem);
+
+	InfosSeparationBarVector* _listSeparator = new InfosSeparationBarVector();
+	InfosSeparationBarVector* old = listSeparator;
 
 	int i = 0;
 	int typeLocal = typeAffichage;
+	int size = CThumbnailBuffer::GetVectorSize();
 
 	if (typeLocal == SHOW_ALL)
 	{
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-		AddSeparatorBar(iconeListLocal, libellePhoto, i);
+		CInfosSeparationBarExplorer* infosSeparationBar = AddSeparatorBar(iconeListLocal, libellePhoto, i);
+		if (size > 0)
+			_listSeparator->push_back(infosSeparationBar);
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
 		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(iconeListLocal, this, i);
+		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
 		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(iconeListLocal, this, i);
+		dataMonth.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
 		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(iconeListLocal, this, i);
+		dataLocalisation.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
 		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(iconeListLocal, this, i);
+		dataDay.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 
 
@@ -154,13 +331,33 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
+	listSeparator = _listSeparator;
 	lockIconeList.unlock();
 
-	nbElementInIconeList = iconeList->GetNbElement();
+	//------------------------------------------------------------------
+	//Cleaning old Element
+	//------------------------------------------------------------------
+	if (old != nullptr)
+	{
+		for (CInfosSeparationBar* infosSeparationBar : *old)
+		{
+			delete(infosSeparationBar);
+		}
 
-	EraseThumbnailList(oldIconeList);
+		old->clear();
+		delete old;
+	}
+
+	
+
+	if (oldIconeList != nullptr)
+	{
+		EraseThumbnailList(oldIconeList);
+		oldIconeList = nullptr;
+	}
+
+	nbElementInIconeList = iconeList->GetNbElement();
 
 	//---------------------------------
 	//Application de l'tat
@@ -197,6 +394,7 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 {
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GeneratePhotoList();
+
 
 	if (noVscroll)
 		SetListeFile();
@@ -292,7 +490,10 @@ CInfosSeparationBar* CThumbnailFolder::FindSeparatorElement(const int& xPos, con
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
-	for (CInfosSeparationBar* separatorBar : listSeparator)
+	if (listSeparator == nullptr)
+		return nullptr;
+
+	for (CInfosSeparationBar* separatorBar : *listSeparator)
 	{
 		if (separatorBar != nullptr)
 		{
@@ -345,8 +546,11 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	int nbElementByRow = 0;
 
+	if (listSeparator == nullptr)
+		return;
+
 	//Calcul du width max
-	for (auto i = 0; i < listSeparator.size(); i++)
+	for (auto i = 0; i < listSeparator->size(); i++)
 	{
 		//int nbElement = infosSeparationBar->listElement.size();
 
@@ -360,7 +564,7 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	for (CInfosSeparationBar* infosSeparationBar : *listSeparator)
 	{
 		int nbElement_localX = 0;
 		int nbElement_localY = 0;
@@ -480,10 +684,13 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
 	listElementToShow.clear();
 
-	for (auto i = 0; i < listSeparator.size(); i++)
+	if (listSeparator == nullptr)
+		return;
+
+	for (auto i = 0; i < listSeparator->size(); i++)
 	{
 
-		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
+		CInfosSeparationBar* infosSeparationBar = listSeparator->at(i);
 
 		if (infosSeparationBar != nullptr)
 		{
@@ -545,7 +752,10 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	if (listSeparator == nullptr)
+		return;
+
+	for (CInfosSeparationBar* infosSeparationBar : *listSeparator)
 	{
 		int nbElement = (int)infosSeparationBar->listElement.size();
 

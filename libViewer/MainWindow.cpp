@@ -6,16 +6,20 @@
 #include "ViewerParam.h"
 #include <PrintEngine.h>
 #include <libPicture.h>
+#include "ThumbnailFolder.h"
 #include "window_mode_id.h"
 #include "ThemeParam.h"
 #include <ImageLoadingFormat.h>
 #include "MainThemeInit.h"
+#include "ListPicture.h"
 #include "MainTheme.h"
+#include "ThumbnailViewerPicture.h"
 #include "PanelInfosWnd.h"
 #include "ThumbnailBuffer.h"
 #include "SqlFindPhotos.h"
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
+
 #include <BitmapWndViewer.h>
 #include <BitmapWnd3d.h>
 #include "Toolbar.h"
@@ -97,6 +101,8 @@ public:
 	CMainWindow* mainWindow;
 	wxString video;
 };
+
+
 
 CThreadVideoData::~CThreadVideoData()
 {
@@ -184,6 +190,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
+	Connect(wxEVENT_UPDATEPHOTOFOLDER, wxCommandEventHandler(CMainWindow::OnUpdatePhotoFolder));
 
 	/*----------------------------------------------------------------------
 	 *
@@ -1162,8 +1169,9 @@ void CMainWindow::RefreshFolder()
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
-void CMainWindow::UpdateFolder()
+void CMainWindow::UpdateFolder(void * param)
 {
+	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)param;
 	wxProgressDialog* dialog = nullptr;
 	//if(!init)
 	//	dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
@@ -1172,12 +1180,8 @@ void CMainWindow::UpdateFolder()
 		dialog->Update(50, "Find Next File ...");
 
 	wxString requestSql = "";
-	PhotosVector _pictures;
 	CSqlFindPhotos sqlFindPhotos;
-	if (firstFileToShow != "")
-		localFilename = firstFileToShow;
-	else
-		localFilename = centralWnd->GetFilename();
+
 
 	if(dialog != nullptr)
 		dialog->Update(50, "Execute SQL Request ...");
@@ -1189,16 +1193,31 @@ void CMainWindow::UpdateFolder()
 
 
 	
-	if (requestSql != "" && init)
+	if (requestSql != "" && threadData->mainWindow->init)
 	{
-		if (oldRequest != requestSql)
+		if (threadData->mainWindow->oldRequest != requestSql)
 			sqlFindPhotos.SearchPhotos(requestSql);
-		oldRequest = requestSql;
+		threadData->mainWindow->oldRequest = requestSql;
 	}
 
-	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+	{
+		threadData->typeAffichage = config->GetTypeAffichage();
+	}
 
-	CThumbnailBuffer::InitVectorList(_pictures);
+	sqlFindPhotos.SearchPhotosByCriteria(threadData->_pictures);
+
+	threadData->iconeListThumbnail = threadData->mainWindow->centralWnd->thumbnailPicture->PregenerateList(threadData->_pictures);
+	threadData->iconeListLocal = threadData->mainWindow->centralWnd->listPicture->thumbnailFolder->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
+	
+	wxCommandEvent event(wxEVENT_UPDATEPHOTOFOLDER);
+	event.SetClientData(threadData);
+	wxPostEvent(threadData->mainWindow, event);
+	/*
+
+
+	CThumbnailBuffer::InitVectorList(threadData->_pictures);
 
 
 	if (firstFileToShow == "")
@@ -1240,6 +1259,46 @@ void CMainWindow::UpdateFolder()
 	}
 	
 	init = true;
+	*/
+}
+
+void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
+{
+	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)event.GetClientData();
+	if(threadData != nullptr)
+	{
+
+		CThumbnailBuffer::InitVectorList(threadData->_pictures);
+
+
+		if (firstFileToShow == "")
+		{
+			bool isFound = false;
+
+			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0 && localFilename != "")
+			{
+				isFound = FindNextValidFile();
+				if (!isFound)
+					isFound = FindPreviousValidFile();
+			}
+
+			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
+				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+		}
+
+		centralWnd->SetListeFile(localFilename, threadData);
+
+		delete threadData;
+		threadData = nullptr;
+
+
+		updateFolder = false;
+
+		firstFileToShow = "";
+		numElementTraitement = 0;
+
+		init = true;
+	}
 }
 
 //---------------------------------------------------------------
@@ -1304,7 +1363,31 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (updateFolder)
 	{
-		UpdateFolder();
+		if(updateFolderThread != nullptr)
+		{
+			updateFolderThread->join();
+			if(!updateFolderThread->joinable())
+			{
+				delete updateFolderThread;
+				updateFolderThread = nullptr;
+			}
+			else
+			{
+				updateFolder = true;
+			}
+		}
+		if(updateFolderThread == nullptr)
+		{
+			CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+			threadData->mainWindow = this;
+			if (firstFileToShow != "")
+				localFilename = firstFileToShow;
+			else
+				localFilename = centralWnd->GetFilename();
+
+			updateFolderThread = new std::thread(UpdateFolder, threadData);
+			updateFolder = false;
+		}
 		hasDoneOneThings = true;
 	}
 	else if (numElementTraitement < pictureSize)

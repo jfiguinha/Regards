@@ -1658,6 +1658,8 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 				{
 					if (pThumbnailData->GetForceRefresh())
 						needToRefresh = true;
+					else
+						RefreshIcone(threadLoadingBitmap->photoId);
 				}
 				else
 					RefreshIcone(threadLoadingBitmap->photoId);

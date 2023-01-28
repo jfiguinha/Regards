@@ -1,5 +1,5 @@
 #pragma once
-
+#include "MainWindow.h"
 #include <ExportFile.h>
 #include <WindowMain.h>
 using namespace Regards::Window;
@@ -29,7 +29,7 @@ namespace Regards
 			int GetNumItem();
 			void SetActifItem(const int& numItem, const bool& move);
 			int GetThumbnailHeight();
-			void SetListeFile();
+			void SetListeFile(CThreadPhotoLoading* threadData);
 			void ChangeTypeAffichage(const long& typeAffichage);
 			void Resize() override;
 
@@ -38,6 +38,8 @@ namespace Regards
 			int ImageFin();
 			int ImageDebut();
 			wxString GetFilename(const int& numItem);
+
+			CThumbnailFolder* thumbnailFolder;
 
 		private:
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -54,7 +56,7 @@ namespace Regards
 			CScrollbarWnd* thumbscrollbar;
 			CThumbnailToolBar* thumbToolbar;
 			CThumbnailToolBarZoom* thumbToolbarZoom;
-			CThumbnailFolder* thumbnailFolder;
+			
 
 			void GeolocalizeFile(const wxString& filename, const float& latitude, const float& longitude,
 			                     const wxString& lat, const wxString& lng, const wxString& geoInfos);

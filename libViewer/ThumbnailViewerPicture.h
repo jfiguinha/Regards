@@ -1,6 +1,8 @@
 #pragma once
 #include <ThumbnailVertical.h>
 #include "InfosSeparationBarExplorer.h"
+#include "Photos.h"
+#include "MainWindow.h"
 using namespace Regards::Control;
 
 #define SHOW_ALL 0
@@ -22,6 +24,9 @@ namespace Regards::Viewer
 		void Init(const int& typeAffichage = SHOW_ALL);
 		void SetListeFile();
 		vector<wxString> GetFileList();
+		void ApplyListeFile(CIconeList* iconeListLocal);
+
+		CIconeList* PregenerateList(PhotosVector * _pictures);
 
 		int GetHeight() override
 		{

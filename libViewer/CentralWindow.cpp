@@ -1208,14 +1208,14 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 
 
 
-void CCentralWindow::SetListeFile(const wxString& filename)
+void CCentralWindow::SetListeFile(const wxString& filename, CThreadPhotoLoading* threadData)
 {
 
 	if (listPicture != nullptr)
-		listPicture->SetListeFile();
+		listPicture->SetListeFile(threadData);
 
 	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetListeFile();
+		thumbnailPicture->ApplyListeFile(threadData->iconeListThumbnail);
 
 	LoadPicture(filename);
 }

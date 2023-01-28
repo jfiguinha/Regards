@@ -159,11 +159,11 @@ int CListPicture::GetNumItem()
 	return 0;
 }
 
-void CListPicture::SetListeFile()
+void CListPicture::SetListeFile(CThreadPhotoLoading* threadData)
 {
 	if (thumbnailFolder != nullptr)
 	{
-		thumbnailFolder->Init(typeAffichage);
+		thumbnailFolder->ApplyTypeAffichage(threadData->iconeListLocal, threadData->_listSeparator, threadData->typeAffichage);
 		thumbnailFolder->SetCheck(true);
 	}
 }

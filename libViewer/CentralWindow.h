@@ -66,6 +66,7 @@ namespace Regards
 			thread* myThread;
 		};
 
+		class CThreadPhotoLoading;
 		class CPanelPhotoWnd;
 		class CListFace;
 		class CListPicture;
@@ -101,7 +102,7 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-			void SetListeFile(const wxString& filename);
+			void SetListeFile(const wxString& filename, CThreadPhotoLoading* threadData);
 			int LoadPicture(const wxString& filename, const bool& refresh = false);
 			void OnEndThumbnail();
 			bool IsVideo();
@@ -111,6 +112,9 @@ namespace Regards
 			void TransitionEnd();
 
 			bool IsDiaporamaStart();
+
+			CListPicture* listPicture;
+			CThumbnailViewerPicture* thumbnailPicture;
 
 		private:
 			int GetPhotoId(const wxString& filename);
@@ -151,7 +155,7 @@ namespace Regards
 
 			CPanelPhotoWnd* panelPhotoWnd;
 			CMainParam* viewerconfig;
-			CListPicture* listPicture;
+			
 			CPanelWithClickToolbar* panelInfosClick;
 			bool isNext = false;
 			//Face List
@@ -168,7 +172,7 @@ namespace Regards
 			CPanelInfosWnd* panelInfosWindow;
 			CPreviewWnd* previewWindow;
 			CScrollbarWnd* scrollPictureWindow;
-			CThumbnailViewerPicture* thumbnailPicture;
+			
 
 			//Window List
 			static void LoadingNewPicture(CThreadPictureData* pictureData);

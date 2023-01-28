@@ -16,8 +16,10 @@ namespace Regards::Viewer
 		~CThumbnailFolder(void) override;
 
 		void Init(const int& typeAffichage);
-		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
-
+		void ApplyTypeAffichage(CIconeList* iconeListLocal, InfosSeparationBarVector* _listSeparator, int typeAffichage);
+		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
+		CIconeList* PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage, InfosSeparationBarVector* listSeparator);
+		CInfosSeparationBarExplorer* AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 	protected:
 
 		void VideoProcessThumbnail() override;
@@ -39,7 +41,7 @@ namespace Regards::Viewer
 		void UpdateScrollWithVScroll() override;
 		void InitTypeAffichage(const int& typeAffichage);
 
-		InfosSeparationBarVector listSeparator;
+		InfosSeparationBarVector * listSeparator = nullptr;
 		std::map<int, int> listElementToShow;
 		int barseparationHeight;
 		int widthThumbnail;

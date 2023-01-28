@@ -10,20 +10,20 @@ class CTreatmentData
 public:
 	virtual ~CTreatmentData() = default;
 
-	void MainTreatment(CIconeList* iconeListLocal, CThumbnailFolder* folder,
-	                   int& numElement)
+	void MainTreatment(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, CIconeList* iconeListLocal, CThumbnailFolder* folder, int& numElement)
 	{
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
-		int size = CThumbnailBuffer::GetVectorSize();
+		bool first = true;
+		int size = _pictures->size();
 		for (int i = 0;i < size;i++)
 		{
-			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
+			CPhotos photos = _pictures->at(i);
 			if (TestParameter(photos))
 			{
 				if (!first)
 				{
-					CreateSeparatorBar(GenerateLibelle(), folder);
+					CreateSeparatorBar(listSeparator, &listPhoto, GenerateLibelle(), folder);
 				}
 				first = false;
 				UpdateVariable(photos);
@@ -31,18 +31,50 @@ public:
 			listPhoto.push_back(photos);
 		}
 
-		CreateSeparatorBar(GenerateLibelle(), folder);
+		CreateSeparatorBar(listSeparator, &listPhoto, GenerateLibelle(), folder);
+	};
+
+
+	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, CThumbnailFolder* folder, int& numElement)
+	{
+		this->numElement = numElement;
+		this->iconeListLocal = iconeListLocal;
+		int size = CThumbnailBuffer::GetVectorSize();
+		for (int i = 0; i < size; i++)
+		{
+			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
+			if (TestParameter(photos))
+			{
+				if (!first)
+				{
+					CreateSeparatorBar(listSeparator, GenerateLibelle(), folder);
+				}
+				first = false;
+				UpdateVariable(photos);
+			}
+			listPhoto.push_back(photos);
+		}
+
+		CreateSeparatorBar(listSeparator,  GenerateLibelle(), folder);
 	};
 
 	virtual bool TestParameter(const CPhotos& photos) = 0;
 	virtual wxString GenerateLibelle() = 0;
 	virtual void UpdateVariable(const CPhotos& photos) = 0;
 
-	void CreateSeparatorBar(const wxString& libelle, CThumbnailFolder* folder)
+	void CreateSeparatorBar(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, const wxString& libelle, CThumbnailFolder* folder)
 	{
-		//int nbElement = 0;
-		//copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
-		folder->AddSeparatorBar(iconeListLocal, libelle, numElement);
+		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(_pictures, iconeListLocal, libelle, numElement);
+		if (infosSeparationBar->listElement.size() > 0)
+			listSeparator->push_back(infosSeparationBar);
+		listPhoto.clear();
+	};
+
+	void CreateSeparatorBar(InfosSeparationBarVector* listSeparator, const wxString& libelle, CThumbnailFolder* folder)
+	{
+		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(iconeListLocal, libelle, numElement);
+		if (infosSeparationBar->listElement.size() > 0)
+			listSeparator->push_back(infosSeparationBar);
 		listPhoto.clear();
 	};
 

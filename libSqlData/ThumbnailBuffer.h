@@ -7,7 +7,7 @@ public:
 
 	static wxImage GetPicture(const wxString& filename);
 	static void RemovePicture(const wxString& filename);
-	static void InitVectorList(PhotosVector & newVector);
+	static void InitVectorList(PhotosVector * newVector);
 	static CPhotos GetVectorValue(int i);
 	static int GetVectorSize();
 	static bool FindValidFile(wxString localFilename);
@@ -21,5 +21,5 @@ private:
 	static std::mutex muListFile;
 	static std::mutex muNewVector;
 	static int vectorSize;
-	static PhotosVector newPhotosVectorList;
+	static PhotosVector * newPhotosVectorList;
 };
