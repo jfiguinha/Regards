@@ -117,8 +117,6 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	}
 
 	thumbnailPos = 0;
-	CSqlPhotosWithoutThumbnail sqlPhoto;
-	sqlPhoto.GeneratePhotoList();
 
 	SetStopProcess(false);
 
@@ -817,7 +815,7 @@ void CThumbnail::ProcessIdle()
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	//sqlPhoto.UpdatePhotoList();
 	int nbElement = sqlPhoto.GetPhotoElement();
-	sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
+	sqlPhoto.GetPhotoList(&photoList, 20);
 
 	//nbProcesseur = 1;
 	if (nbElement > 0)
@@ -859,8 +857,6 @@ void CThumbnail::ProcessIdle()
 								pThumbnailData->SetIsProcess(true);
 								nbProcess++;
 							}
-							sqlPhoto.InsertProcessStart(filelocalName);
-
 							exitfor = true;
 						}
 					}
@@ -871,8 +867,6 @@ void CThumbnail::ProcessIdle()
 			}
 		}
 	}
-	else
-		sqlPhoto.UpdatePhotoList();
 
 	if (photoList.empty())
 	{
@@ -1663,6 +1657,9 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 				}
 				else
 					RefreshIcone(threadLoadingBitmap->photoId);
+
+                //RefreshIcone(threadLoadingBitmap->photoId);
+                //needToRefresh = true;
 			}
 		}
 

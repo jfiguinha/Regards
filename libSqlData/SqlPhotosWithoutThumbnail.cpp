@@ -19,68 +19,11 @@ CSqlPhotosWithoutThumbnail::~CSqlPhotosWithoutThumbnail()
 {
 }
 
-void CSqlPhotosWithoutThumbnail::GeneratePhotoList()
-{
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL");
-	ExecuteRequestWithNoResult(
-		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOSSEARCHCRITERIA WHERE FullPath not in ( SELECT FullPath From PHOTOSTHUMBNAIL) ORDER BY CreateDate desc, GeoGps");
-	ExecuteRequestWithNoResult(
-		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 FROM VIDEOTHUMBNAIL WHERE FullPath in (select FullPath from PHOTOS where MultiFiles = 1)  GROUP BY fullpath HAVING COUNT(*) < 20");
-
-	//UpdateVideoList();
-}
-
-void CSqlPhotosWithoutThumbnail::UpdateVideoList()
-{
-	PhotosVector photosVector;
-	CSqlFindPhotos findPhotos;
-	findPhotos.GetAllVideo(&photosVector);
-
-
-	// for(CPhotos photo : photosVector)
-#ifdef __WXGTK__
-	for (auto i = 0; i < photosVector.size(); i++)
-#else
-	tbb::parallel_for(0, static_cast<int>(photosVector.size()), 1, [=](int i)
-#endif  
-	{
-		CSqlThumbnailVideo sqlThumbnailVideo;
-		CLibPicture libPicture;
-		CPhotos photo = photosVector[i];
-		if (libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.
-			TestIsAnimation(photo.GetPath()))
-		{
-			if (sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
-			{
-				wxString fullpath = photo.GetPath();
-				fullpath.Replace("'", "''");
-				if (!IsPathFind(photo.GetPath()))
-					ExecuteRequestWithNoResult(
-						"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath +
-						"', 1, 0)");
-			}
-		}
-	}
-#ifndef __WXGTK__    
-    );
-#endif
-}
-
-void CSqlPhotosWithoutThumbnail::UpdatePhotoList()
-{
-	ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT FullPath From PHOTOSTHUMBNAIL)");
-	ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
-	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOS where (ExtensionId >= 100 or ExtensionId in (5,) and FullPath not in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
-	//UpdateVideoList();
-}
-
 int CSqlPhotosWithoutThumbnail::GetPhotoElement()
 {
 	nbElement = 0;
 	typeResult = 1;
-	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0 and  FullPath not in (SELECT FullPath From PHOTOSTHUMBNAIL)");
+	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL WHERE FullPath not in (SELECT FullPath From PHOTOSTHUMBNAIL)");
 	return nbElement;
 }
 
@@ -89,38 +32,7 @@ void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList, int n
 	this->nbElement = nbElement;
 	this->photoList = photoList;
 	typeResult = 0;
-	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0 LIMIT " + to_string(nbElement));
-}
-
-bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString& photo)
-{
-	typeResult = 3;
-	fullpath = "";
-	wxString path = photo;
-	path.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE FullPath = '" + path + "'");
-	if (fullpath == photo)
-		return true;
-	return false;
-}
-
-void CSqlPhotosWithoutThumbnail::InsertPhotoPriority(const wxString& photoPath)
-{
-	wxString filename = photoPath;
-	filename.Replace("'", "''");
-	typeResult = 1;
-	//ExecuteRequest("SELECT distinct Priority from PHOTOSWIHOUTTHUMBNAIL ORDER BY Priority desc LIMIT 1");
-	//priority++;
-	ExecuteRequestWithNoResult(
-		"UPDATE PHOTOSWIHOUTTHUMBNAIL SET Priority = " + to_string(priority) + " WHERE FullPath = '" + filename + "'");
-}
-
-void CSqlPhotosWithoutThumbnail::InsertProcessStart(const wxString& photoPath)
-{
-	wxString filename = photoPath;
-	filename.Replace("'", "''");
-
-	ExecuteRequestWithNoResult("UPDATE PHOTOSWIHOUTTHUMBNAIL SET ProcessStart = 1 WHERE FullPath = '" + filename + "'");
+	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL LIMIT " + to_string(nbElement));
 }
 
 int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
@@ -151,21 +63,6 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
 				{
 				case 0:
 					nbElement = priority = sqlResult->ColumnDataInt(i);
-					break;
-				default: ;
-				}
-			}
-
-			nbResult++;
-		}
-		else if (typeResult == 3)
-		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					fullpath = sqlResult->ColumnDataText(i);
 					break;
 				default: ;
 				}

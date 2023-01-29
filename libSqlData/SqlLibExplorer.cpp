@@ -60,6 +60,11 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE "CREATE TABLE PHOTOSWIHOUTTHUMBNAIL (FullPath NVARCHAR(255), Priority INT, ProcessStart INT)"
 #define SQL_DROP_PHOTOSWIHOUTTHUMBNAIL "DROP TABLE PHOTOSWIHOUTTHUMBNAIL"
 
+#define SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL "CREATE VIEW PHOTOSWIHOUTTHUMBNAIL_VIEW AS \
+            SELECT FullPath From PHOTOSSEARCHCRITERIA WHERE FullPath not in (SELECT FullPath From PHOTOSTHUMBNAIL) \
+            UNION \
+            SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath in (select FullPath from PHOTOS where MultiFiles = 1)  GROUP BY fullpath HAVING COUNT(*) < 20"
+
 #define SQL_CREATE_PHOTO_EXIF_TABLE "CREATE TABLE PHOTO_EXIF (NumExifPhoto INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Exif INT)"
 #define SQL_DROP_PHOTO_EXIF "DROP TABLE PHOTO_EXIF"
 
@@ -426,6 +431,13 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			sqlVersion.InsertVersion("2.69.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE FACEDESCRIPTOR");
 		}
+        if (sqlVersion.GetVersion() == "2.69.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.70.0.0");
+			hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSWIHOUTTHUMBNAIL);
+            hr = ExecuteSQLWithNoResult(SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL);
+		}
 	}
 	return hr;
 }
@@ -498,7 +510,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.69.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.70.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -1312,11 +1324,13 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
+    /*
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 	if (hr == -1)
 	{
 		goto Exit;
 	}
+    */
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_PHOTO_TABLE);
 	if (hr == -1)
@@ -1380,6 +1394,8 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_SEARCH_VIEW_VIEW);
+    
+    hr = ExecuteSQLWithNoResult(SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL);
 
 Exit:
 

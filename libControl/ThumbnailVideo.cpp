@@ -487,9 +487,6 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 				}
 			}
 		}
-
-		CSqlPhotosWithoutThumbnail sqlPhoto;
-		sqlPhoto.GeneratePhotoList();
 	}
 	thumbnailPos = 0;
 	process_end = false;

@@ -176,14 +176,14 @@
         <Library Value="Filtre"/>
         <Library Value="RegardsCL"/>
         <Library Value="RegardsGL"/>
-        <Library Value="SqlData"/>
-        <Library Value="SqlEngine"/>
-        <Library Value="Picture"/>
         <Library Value="DeepLearning"/>
         <Library Value="wxIA"/>
         <Library Value="Dialog"/>
         <Library Value="Window"/>
         <Library Value="Utility"/>
+        <Library Value="SqlData"/>
+        <Library Value="SqlEngine"/>
+        <Library Value="Picture"/>
         <Library Value="heif"/>
         <Library Value="heif_static"/>
         <Library Value="liblibde265"/>

@@ -392,10 +392,6 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 void CThumbnailFolder::Init(const int& typeAffichage)
 {
-	CSqlPhotosWithoutThumbnail sqlPhoto;
-	sqlPhoto.GeneratePhotoList();
-
-
 	if (noVscroll)
 		SetListeFile();
 	else
@@ -732,7 +728,7 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 							CThumbnailData* pThumbnailData = pBitmapIcone->GetData();
 							const bool isProcess = pThumbnailData->IsProcess();
 							if(!isProcess)
-								listElementToShow.insert(std::pair(numElement, numElement));
+								listElementToShow.insert({numElement, numElement});
 						}
 						else if (start)
 							break;

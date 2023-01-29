@@ -14,11 +14,6 @@ namespace Regards
 			~CSqlPhotosWithoutThumbnail() override;
 			void GetPhotoList(vector<wxString>* photoList, int nbElement = 20);
 			int GetPhotoElement();
-			void InsertPhotoPriority(const wxString& photoPath);
-			void InsertProcessStart(const wxString& photoPath);
-			void GeneratePhotoList();
-			void UpdatePhotoList();
-			void UpdateVideoList();
 
 		private:
 			bool IsPathFind(const wxString& photo);
