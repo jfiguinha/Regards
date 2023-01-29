@@ -1244,6 +1244,16 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 
 		init = true;
 	}
+
+	if (updateFolderThread != nullptr)
+	{
+		updateFolderThread->join();
+		if (!updateFolderThread->joinable())
+		{
+			delete updateFolderThread;
+			updateFolderThread = nullptr;
+		}
+	}
 }
 
 //---------------------------------------------------------------
@@ -1568,7 +1578,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0)
+	if (nbProcessMD5 > 0 || updateFolderThread != nullptr)
 		return false;
 
 	return true;
