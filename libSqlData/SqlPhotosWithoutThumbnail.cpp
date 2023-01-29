@@ -23,7 +23,7 @@ int CSqlPhotosWithoutThumbnail::GetPhotoElement()
 {
 	nbElement = 0;
 	typeResult = 1;
-	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL WHERE FullPath not in (SELECT FullPath From PHOTOSTHUMBNAIL)");
+	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL_VIEW");
 	return nbElement;
 }
 
@@ -32,7 +32,7 @@ void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList, int n
 	this->nbElement = nbElement;
 	this->photoList = photoList;
 	typeResult = 0;
-	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL LIMIT " + to_string(nbElement));
+	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW LIMIT " + to_string(nbElement));
 }
 
 int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)

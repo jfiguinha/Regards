@@ -747,6 +747,7 @@ namespace
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
+	wxImage ret_image;
 	/*
 	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
 	cv::resize(matrix, matrix, cv::Size(width, height));
@@ -778,28 +779,29 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 	//
 	// NOTE: below the y_offset and x_offset variables are being set for edge
 	// pixels using the "Mirror" method mentioned above
-
-	wxImage ret_image;
-
-	ret_image.Create(width, height, false);
-
-	const unsigned char* src_data = src->GetData();
-	unsigned char* dst_data = ret_image.GetData();
-
-
-	wxCHECK_MSG(dst_data, ret_image, wxS("unable to create image"));
-
-	// Precalculate weights
-	wxVector<BicubicPrecalc> vPrecalcs(height);
-	wxVector<BicubicPrecalc> hPrecalcs(width);
-
-	ResampleBicubicPrecalc(vPrecalcs, src->GetHeight());
-	ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
-
-	tbb::parallel_for(0, height, 1, [=](int dsty)
+	if (src != nullptr)
 	{
-		// We need to calculate the source pixel to interpolate from - Y-axis
-		const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
+		
+
+		ret_image.Create(width, height, false);
+
+		const unsigned char* src_data = src->GetData();
+		unsigned char* dst_data = ret_image.GetData();
+
+
+		wxCHECK_MSG(dst_data, ret_image, wxS("unable to create image"));
+
+		// Precalculate weights
+		wxVector<BicubicPrecalc> vPrecalcs(height);
+		wxVector<BicubicPrecalc> hPrecalcs(width);
+
+		ResampleBicubicPrecalc(vPrecalcs, src->GetHeight());
+		ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
+
+		tbb::parallel_for(0, height, 1, [=](int dsty)
+		{
+			// We need to calculate the source pixel to interpolate from - Y-axis
+			const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
 
 		for (int dstx = 0; dstx < width; dstx++)
 		{
@@ -841,7 +843,9 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 			dst_data[dst_pixel_index + 1] = static_cast<unsigned char>(sum_g + 0.5);
 			dst_data[dst_pixel_index + 2] = static_cast<unsigned char>(sum_b + 0.5);
 		}
-	});
+		});
+
+	}
 
 	return ret_image;
 }
