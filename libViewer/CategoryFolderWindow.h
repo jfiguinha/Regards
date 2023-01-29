@@ -20,7 +20,7 @@ namespace Regards::Viewer
 
 		void InitSaveParameter();
 		void init();
-		void UpdateCriteria(const bool& needToSendMessage);
+		void UpdateCriteria(const bool& need_to_send_message);
 		wxString GetWaitingMessage() override;
 		void RefreshCriteriaSearch();
 		wxString GetSqlRequest();

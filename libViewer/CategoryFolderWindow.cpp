@@ -34,7 +34,7 @@ wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 class CFindPhotoCriteria
 {
 public:
-	CFindPhotoCriteria();;
+	CFindPhotoCriteria();
 
 	wxString urlServer;
 	CCategoryFolderWindow* mainWindow;
@@ -56,9 +56,9 @@ CFindPhotoCriteria::CFindPhotoCriteria()
 	phthread = nullptr;
 }
 
-CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
+CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID idCTreeWithScrollbarViewer, const CThemeScrollBar& themeScroll,
                                              const CThemeTree& theme)
-	: CTreeWithScrollbar("CCategoryFolderWindow", parent, id, themeScroll, theme)
+	: CTreeWithScrollbar("CCategoryFolderWindow", parent, idCTreeWithScrollbarViewer, themeScroll, theme)
 {
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->AddWindow(this);
@@ -160,10 +160,10 @@ void CCategoryFolderWindow::init()
 	processIdle = true;
 }
 
-void CCategoryFolderWindow::UpdateCriteria(const bool& needToSendMessage)
+void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 {
 	printf("CCategoryFolderWindow::UpdateCriteria() \n");
-	this->needToSendMessage = needToSendMessage;
+	this->needToSendMessage = need_to_send_message;
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr && treeWindow != nullptr)
 	{
@@ -460,7 +460,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 			for (auto i = 0; i < vDateTime.size(); i++)
 			{
 				datetime.append(vDateTime.at(i));
-				if ((i + 1) < vDateTime.size())
+				if (i + 1 < vDateTime.size())
 					datetime.append(".");
 			}
 

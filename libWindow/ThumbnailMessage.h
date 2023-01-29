@@ -4,7 +4,7 @@ class CThumbnailMessage
 {
 public:
 	int nbPhoto;
-	int nbElement;
+	size_t nbElement;
 	int thumbnailPos;
 	int typeMessage;
 };

@@ -538,13 +538,6 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		}
 	}
 
-	CVideoControlSoft* videoWindow = nullptr;
-	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(BITMAPWINDOWVIEWERID));
-	if (bitmapWindow != nullptr)
-	{
-		videoWindow = static_cast<CVideoControlSoft*>(bitmapWindow->GetWndPt());
-	}
-
 	auto compressAudioVideoOption = new CompressionAudioVideoOption(this);
 
 	compressAudioVideoOption->SetFile(filename, filepath);
@@ -1172,19 +1165,8 @@ void CMainWindow::RefreshFolder()
 void CMainWindow::UpdateFolder(void * param)
 {
 	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)param;
-	wxProgressDialog* dialog = nullptr;
-	//if(!init)
-	//	dialog = new wxProgressDialog("Initialization", "Checking...", 100, this, wxPD_AUTO_HIDE);
-
-	if (dialog != nullptr)
-		dialog->Update(50, "Find Next File ...");
-
 	wxString requestSql = "";
 	CSqlFindPhotos sqlFindPhotos;
-
-
-	if(dialog != nullptr)
-		dialog->Update(50, "Execute SQL Request ...");
 
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(FindWindowById(
 		CATEGORYFOLDERWINDOWID));
@@ -1221,9 +1203,12 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)event.GetClientData();
 	if(threadData != nullptr)
 	{
+		if (firstFileToShow != "")
+			localFilename = firstFileToShow;
+		else
+			localFilename = centralWnd->GetFilename();
 
 		CThumbnailBuffer::InitVectorList(threadData->_pictures);
-
 
 		if (firstFileToShow == "")
 		{
@@ -1334,10 +1319,12 @@ void CMainWindow::ProcessIdle()
 		{
 			CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
 			threadData->mainWindow = this;
+			/*
 			if (firstFileToShow != "")
 				localFilename = firstFileToShow;
 			else
 				localFilename = centralWnd->GetFilename();
+			*/
 
 			updateFolderThread = new std::thread(UpdateFolder, threadData);
 			updateFolder = false;
