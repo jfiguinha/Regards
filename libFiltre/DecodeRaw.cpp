@@ -553,7 +553,8 @@ CImageLoadingFormat* CDecodeRaw::ApplyEffect(CEffectParameter* effectParameter, 
 		return nullptr;
 
 	auto rawParameter = static_cast<CDecodeRawParameter*>(effectParameter);
-	wxBusyInfo wait("Please wait, working...");
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle);
 	return rawDecoder->DecodePicture(rawParameter);
 }
 

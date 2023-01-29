@@ -162,7 +162,8 @@ void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename)
 				vector<int> listPage = SelectPage(window, filename);
 				if (listPage.size() > 0)
 				{
-					wxBusyInfo wait("Please wait, working...");
+					wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+					wxBusyInfo wait(libelle);
 
 					for (int i = 0; i < listPage.size(); i++)
 					{

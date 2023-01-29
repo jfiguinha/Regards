@@ -270,7 +270,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
-	wxBusyInfo wait("Please wait, Database is checking ...");
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle);
 
 	bool folderChange = false;
 

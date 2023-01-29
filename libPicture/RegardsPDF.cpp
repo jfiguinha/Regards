@@ -8,7 +8,7 @@
 #include <wx/pdfdocument.h>
 #include <PDFOption.h>
 #include <qpdf/QPDF.hh>
-#include <qpdf/QPDFPageDocumentHelper.hh>
+#include <LibResource.h>
 #include <qpdf/QPDFWriter.hh>
 #include <ConvertUtility.h>
 #include <wx/busyinfo.h>
@@ -465,7 +465,8 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 
 	if (file != "")
 	{
-		wxBusyInfo wait("Please wait, working...");
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+		wxBusyInfo wait(libelle);
 		std::vector<QPDFObjectHandle> oldpages;
 		int oldpageno_len = 0;
 		int i = 0;
@@ -583,7 +584,8 @@ void CRegardsPDF::RemovePage(const wxString& filename, const vector<int>& listPa
 	}
 
 	{
-		wxBusyInfo wait("Please wait, working...");
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+		wxBusyInfo wait(libelle);
 		QPDF inpdf;
 		inpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
 		const std::vector<QPDFObjectHandle>& pages = inpdf.getAllPages();

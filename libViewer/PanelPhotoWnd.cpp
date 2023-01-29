@@ -261,7 +261,8 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool& showDialo
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	wxBusyInfo wait("Please wait, working...", windowMain);
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle, windowMain);
 	{
 		//Indication d'imporation des critères 
 		CSqlFolderCatalog sqlFolderCatalog;
@@ -304,8 +305,8 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool& showDialo
 void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
-
-	wxBusyInfo wait("Please wait, working...", windowMain);
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle, windowMain);
 	if (!folder.IsEmpty())
 	{
 		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
