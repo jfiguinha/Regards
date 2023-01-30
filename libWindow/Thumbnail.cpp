@@ -852,39 +852,40 @@ void CThumbnail::ProcessIdle()
 	if (nbElement > 0)
 	{
 		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
-
-		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
-		event->SetExtraLong(nbElement);
-		wxQueueEvent(this, event);
-
-
-		for (int j = 0; nbProcess < nbProcesseur; j++)
+		if (photoList.size() > 0)
 		{
-			if (j >= photoList.size())
-				break;
+			auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
+			event->SetExtraLong(nbElement);
+			wxQueueEvent(this, event);
 
-			if (nbElementInIconeList == 0 || threadDataProcess == false)
-				return;
 
-			wxString filename = photoList[j];
-			pItemStringCompFonct _pf = &ItemFilenameCompFonct;
-			CIcone* icone = iconeList->FindElement(filename, &_pf);
-			if (icone != nullptr)
+			for (int j = 0; nbProcess < nbProcesseur; j++)
 			{
-				if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
+				if (j >= photoList.size())
+					break;
+
+				if (nbElementInIconeList == 0 || threadDataProcess == false)
+					return;
+
+				wxString filename = photoList[j];
+				pItemStringCompFonct _pf = &ItemFilenameCompFonct;
+				CIcone* icone = iconeList->FindElement(filename, &_pf);
+				if (icone != nullptr)
 				{
-					const bool isProcess = pThumbnailData->IsProcess();
-					//const bool isLoad = pThumbnailData->IsLoad();
-					if (!isProcess) // && !isLoad)
+					if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
 					{
-						ProcessThumbnail(pThumbnailData);
-						pThumbnailData->SetIsProcess(true);
-						nbProcess++;
-						nbElement--;
+						const bool isProcess = pThumbnailData->IsProcess();
+						//const bool isLoad = pThumbnailData->IsLoad();
+						if (!isProcess) // && !isLoad)
+						{
+							ProcessThumbnail(pThumbnailData);
+							pThumbnailData->SetIsProcess(true);
+							nbProcess++;
+							nbElement--;
+						}
 					}
 				}
 			}
-			
 		}
 	}
 
@@ -893,6 +894,12 @@ void CThumbnail::ProcessIdle()
 		nbElement = 0;
 		processIdle = false;
 		needToRefresh = true;
+
+
+		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
+		event->SetExtraLong(nbElement);
+		wxQueueEvent(this, event);
+
 	}
 
 }

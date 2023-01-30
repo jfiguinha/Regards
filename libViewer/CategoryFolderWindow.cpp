@@ -197,9 +197,11 @@ void CCategoryFolderWindow::ProcessIdle()
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
 
-
-	CSqlInsertFile sqlInsertFile;
-	nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
+	if (nbPhotos == 0 && numProcess < nbProcesseur && threadDataProcess)
+	{
+		CSqlInsertFile sqlInsertFile;
+		nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
+	}
 
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
@@ -223,9 +225,12 @@ void CCategoryFolderWindow::ProcessIdle()
 
 			findPhotoCriteria->phthread = new thread(FindPhotoCriteria, findPhotoCriteria);
 			numProcess++;
+			nbPhotos--;
 			sql_insert_file.UpdatePhotoProcess(photo.GetId());
 			traitementEnd = false;
 		}
+		else
+			nbPhotos = 0;
 	}
 	else if (!traitementEnd && threadDataProcess)
 	{

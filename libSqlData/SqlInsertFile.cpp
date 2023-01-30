@@ -31,8 +31,7 @@ CPhotos CSqlInsertFile::GetPhotoToProcess()
 	type = 4;
 	this->numPhoto = 0;
 	photoLocal.SetId(-1);
-	ExecuteRequest(
-		"SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0 LIMIT 20");
+	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0 LIMIT 1");
 	return photoLocal;
 }
 
