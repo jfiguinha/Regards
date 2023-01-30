@@ -1736,4 +1736,6 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 
 		needToRefresh = true;
 	}
+
+	nbProcess = max(nbProcess, 0);
 }

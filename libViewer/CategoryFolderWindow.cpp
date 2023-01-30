@@ -330,7 +330,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 		needToRefresh = false;
 	}
 
-	if (startUpdateCriteria && numProcess == 0 && nbPhotos == 0)
+	if (startUpdateCriteria&& numProcess <= 0 && nbPhotos == 0)
 	{
 		startUpdateCriteria = false;
 		//Send Update Folder
@@ -555,5 +555,6 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	delete findPhotoCriteria;
 
 	numProcess--;
+	numProcess = max(numProcess, 0);
 	processIdle = true;
 }
