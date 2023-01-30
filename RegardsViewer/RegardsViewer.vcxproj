@@ -517,6 +517,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>glut32.lib;D3d9.lib;opengl32.lib;sdl2.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;libxml2.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;libcairo.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'">
@@ -633,6 +634,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <AdditionalDependencies>RawSpeed3.lib;jpeg.lib;lz4.lib;Shcore.lib;rav1e.lib;dav1d.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.82.0.lib;tesseract52.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1.lib;Imath-3_1.lib;pthreadVC3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <EnableUAC>false</EnableUAC>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources

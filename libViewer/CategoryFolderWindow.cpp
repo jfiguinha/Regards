@@ -174,10 +174,7 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 		catalogWndOld = catalogWnd;
 		update = true;
 
-		//Send Update Folder
-		wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
-        evt.SetExtraLong(-1);
-		windowMain->GetEventHandler()->AddPendingEvent(evt);
+
 	}
 	processIdle = true;
 }
@@ -199,13 +196,14 @@ void CCategoryFolderWindow::ProcessIdle()
 {
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
-	int nbPhotos;
+
 
 	CSqlInsertFile sqlInsertFile;
 	nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
 
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
+		startUpdateCriteria = true;
 		//Put in a thread
 		CSqlInsertFile sql_insert_file;
 		auto findPhotoCriteria = new CFindPhotoCriteria();
@@ -278,8 +276,10 @@ void CCategoryFolderWindow::ProcessIdle()
 		threadDataProcess = true;
 	}
 	else if (nbPhotos == 0)
-		hasSomethingTodo = false;
+	{
 
+		hasSomethingTodo = false;
+	}
 	if (!hasSomethingTodo)
 		processIdle = false;
 
@@ -323,6 +323,15 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 	{
 		this->Refresh();
 		needToRefresh = false;
+	}
+
+	if (startUpdateCriteria && numProcess == 0 && nbPhotos == 0)
+	{
+		startUpdateCriteria = false;
+		//Send Update Folder
+		wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
+		evt.SetExtraLong(-1);
+		this->GetEventHandler()->AddPendingEvent(evt);
 	}
 
 	if (endProgram)

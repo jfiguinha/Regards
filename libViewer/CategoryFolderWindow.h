@@ -52,7 +52,8 @@ namespace Regards::Viewer
 		bool threadDataProcess;
 		bool noCategoryMessage;
 		bool categoryMessage;
-		//int nbPhotos;
+		bool startUpdateCriteria = false;
+		int nbPhotos = 0;
 
 		wxString urlServer;
 		bool gpsLocalisationFinish;

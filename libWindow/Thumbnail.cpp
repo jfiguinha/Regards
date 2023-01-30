@@ -29,7 +29,7 @@ class CImageLoadingFormat;
 #define TIMER_CLICK 7
 #define TIMER_MOVE 3
 
-
+#define TIMER_REFRESH_THUMBNAIL 10
 #define TIMER_REFRESH_ACTIF 8
 #define TIMER_REFRESH_SELECT 9
 
@@ -438,6 +438,9 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	timeClick = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerClick), nullptr, this);
 
+	refreshThumbnail = new wxTimer(this, TIMER_REFRESH_THUMBNAIL);
+	Connect(TIMER_REFRESH_THUMBNAIL, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerRefreshThumbnail), nullptr, this);
+
 	refreshActifTimer = new wxTimer(this, TIMER_REFRESH_ACTIF);
 	Connect(TIMER_REFRESH_ACTIF, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIconeActif), nullptr, this);
 
@@ -478,6 +481,11 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 
 	refreshActifTimer->Start(timeActif, TRUE);
 	refreshSelectTimer->Start(timeSelect, TRUE);
+}
+
+void CThumbnail::OnTimerRefreshThumbnail(wxTimerEvent & event)
+{
+	this->Refresh();
 }
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
@@ -933,7 +941,10 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	if (needToRefresh)
 	{
-		this->Refresh();
+		if(this->IsShown())
+			if(!refreshThumbnail->IsRunning())
+				refreshThumbnail->StartOnce(50);
+		//this->Refresh();
 		needToRefresh = false;
 	}
 

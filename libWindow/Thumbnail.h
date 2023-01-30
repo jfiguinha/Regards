@@ -123,6 +123,7 @@ namespace Regards::Window
 		bool GetProcessEnd() override;
 		void OnLeftPosition(wxCommandEvent& event);
 		void OnTopPosition(wxCommandEvent& event);
+		void OnRefreshThumbnail(wxCommandEvent& event);
 
 		void CalculControlSize();
 		virtual void OnPictureClick(CThumbnailData* data) = 0;
@@ -133,12 +134,13 @@ namespace Regards::Window
 		void OnRefreshIconeSelect(wxTimerEvent& event);
 		void OnRefreshIconeActif(wxTimerEvent& event);
 		void OnTimerClick(wxTimerEvent& event);
+		void OnTimerRefreshThumbnail(wxTimerEvent& event);
 		void OnTimerMove(wxTimerEvent& event);
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
-		void OnRefreshThumbnail(wxCommandEvent& event);
+		
 		void update_render_icone(wxCommandEvent& event);
 
 		virtual void VideoProcessThumbnail()
@@ -186,6 +188,7 @@ namespace Regards::Window
 		vector<int> TabSize;
 		int Max;
 
+		wxTimer* refreshThumbnail;
 		wxTimer* refreshMouseMove;
 		wxTimer* refreshActifTimer;
 		wxTimer* refreshSelectTimer;

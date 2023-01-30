@@ -142,7 +142,7 @@ int CListPicture::GetThumbnailHeight()
 void CListPicture::ChangeTypeAffichage(const long& typeAffichage)
 {
 	this->typeAffichage = typeAffichage;
-	//thumbnailFolder->Init(typeAffichage);
+	thumbnailFolder->Init(typeAffichage);
 }
 
 void CListPicture::SetActifItem(const int& numItem, const bool& move)
