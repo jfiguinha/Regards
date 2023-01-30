@@ -22,7 +22,26 @@ public:
 	int yPos;
 	CWindowMain* _parent;
 	pItemCompFonct* _pf;
+
 };
+
+class CItemString
+{
+public:
+	CItemString(wxString filename, pItemStringCompFonct * pf) : _filename(filename), _pf(pf)
+	{
+	}
+
+	bool operator()(CIcone* icone)
+	{
+		return (*_pf)(_filename, icone);
+	}
+
+	wxString _filename;
+	pItemStringCompFonct * _pf;
+
+};
+
 
 int CIconeList::GetNbElement()
 {
@@ -82,6 +101,18 @@ wxString CIconeList::GetFilename(const int& numElement)
 
 	return filename;
 }
+
+CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)
+{
+	IconeVector::iterator it;
+	CIcone* element = nullptr;
+	it = find_if(pIconeList.begin(), pIconeList.end(), CItemString(filename, _pf));
+
+	if (it != pIconeList.end())
+		element = *it;
+	return element;
+}
+
 
 CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
 {

@@ -139,6 +139,8 @@ namespace Regards::Window
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 
+		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
+
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
 		void update_render_icone(wxCommandEvent& event);
@@ -156,7 +158,7 @@ namespace Regards::Window
 
 		bool isMouseOnWindow = false;
 		bool enableTimer = true;
-
+		int nbElement = 0;
 		//Variable
 		std::mutex lockIconeList;
 		CIconeList* iconeList;

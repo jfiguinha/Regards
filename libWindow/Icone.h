@@ -161,4 +161,5 @@ namespace Regards::Window
 
 	using IconeVector = tbb::concurrent_vector<CIcone*>;
 	using pItemCompFonct = bool(*)(int, int, CIcone*, CWindowMain*);
+	using pItemStringCompFonct = bool(*)(wxString, CIcone*);
 }

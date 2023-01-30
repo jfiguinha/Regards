@@ -807,6 +807,23 @@ void CThumbnail::ProcessThumbnail(CThumbnailData* pThumbnailData)
 	pThumbnailData->SetIsProcess(true);
 }
 
+bool CThumbnail::ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */
+{
+	wxString dataFilename = "";
+	if (icone != nullptr)
+	{
+		CThumbnailData* data = icone->GetData();
+		if (data != nullptr)
+			dataFilename = data->GetFilename();
+	}
+
+	if (filename == dataFilename)
+	{
+		return true;
+	}
+	return false;
+}
+
 void CThumbnail::ProcessIdle()
 {
 	if (nbElementInIconeList == 0 || threadDataProcess == false)
@@ -815,19 +832,27 @@ void CThumbnail::ProcessIdle()
 		return;
 	}
 
+
+
 	int nbProcesseur = 1;
 	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
+
+	if (nbProcess >= nbProcesseur)
+		return;
+
 	//int nbProcesseur = thread::hardware_concurrency();
 	vector<wxString> photoList;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	//sqlPhoto.UpdatePhotoList();
-	int nbElement = sqlPhoto.GetPhotoElement();
-	sqlPhoto.GetPhotoList(&photoList, 20);
+	if(nbElement == 0)
+		nbElement = sqlPhoto.GetPhotoElement();
 
 	//nbProcesseur = 1;
 	if (nbElement > 0)
 	{
+		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
+
 		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
 		event->SetExtraLong(nbElement);
 		wxQueueEvent(this, event);
@@ -842,42 +867,30 @@ void CThumbnail::ProcessIdle()
 				return;
 
 			wxString filename = photoList[j];
-
-			for (int i = 0; i < nbElementInIconeList; i++)
+			pItemStringCompFonct _pf = &ItemFilenameCompFonct;
+			CIcone* icone = iconeList->FindElement(filename, &_pf);
+			if (icone != nullptr)
 			{
-				bool exitfor = false;
-
-				if (threadDataProcess == false)
-					return;
-
-				wxString filelocalName = iconeList->GetFilename(i);
-				if (filename == filelocalName)
+				if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
 				{
-					if (CIcone* icone = iconeList->GetElement(i); icone != nullptr)
+					const bool isProcess = pThumbnailData->IsProcess();
+					//const bool isLoad = pThumbnailData->IsLoad();
+					if (!isProcess) // && !isLoad)
 					{
-						if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
-						{
-							const bool isProcess = pThumbnailData->IsProcess();
-							//const bool isLoad = pThumbnailData->IsLoad();
-							if (!isProcess) // && !isLoad)
-							{
-								ProcessThumbnail(pThumbnailData);
-								pThumbnailData->SetIsProcess(true);
-								nbProcess++;
-							}
-							exitfor = true;
-						}
+						ProcessThumbnail(pThumbnailData);
+						pThumbnailData->SetIsProcess(true);
+						nbProcess++;
+						nbElement--;
 					}
 				}
-
-				if (exitfor)
-					break;
 			}
+			
 		}
 	}
 
 	if (photoList.empty())
 	{
+		nbElement = 0;
 		processIdle = false;
 		needToRefresh = true;
 	}
