@@ -175,7 +175,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
 	Connect(wxEVENT_PRINTPICTURE, wxCommandEventHandler(CMainWindow::PrintPreview));
-
+	Connect(wxEVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CMainWindow::OnCriteriaUpdate));
 	Connect(wxEVENT_UPDATESTATUSBARMESSAGE, wxCommandEventHandler(CMainWindow::UpdateStatusBarMessage));
 
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
@@ -916,6 +916,19 @@ void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 	processIdle = true;
 }
 
+void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
+{
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+	{
+		int typeAffichage = config->GetTypeAffichage();
+		if(typeAffichage != SHOW_ALL)
+		{
+			updateFolder = true;
+			processIdle = true;
+		}
+	}
+}
 
 //---------------------------------------------------------------
 //

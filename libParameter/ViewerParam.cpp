@@ -53,7 +53,7 @@ CMainParam::CMainParam(): showFace(false), numEffect(0)
 	posFace = 3;
 	posFolder = 3;
 
-	typeAffichage = SHOW_BYMONTH;
+	typeAffichage = SHOW_ALL;
 }
 
 int CMainParam::GetTypeAffichage()

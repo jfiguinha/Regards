@@ -92,7 +92,7 @@ namespace Regards::Viewer
 
 		void OnSetRangeProgressBar(wxCommandEvent& event);
 		void OnSetValueProgressBar(wxCommandEvent& event);
-
+		void OnCriteriaUpdate(wxCommandEvent& event);
 		void OnRefreshPicture(wxCommandEvent& event);
 		void OnScanner(wxCommandEvent& event);
 
