@@ -231,22 +231,29 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
 #endif 
 	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
-		if (pBitmapIcone != nullptr)
-		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			wxRect rc = pBitmapIcone->GetPos();
-			//if visible
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
+        try
+        {
+            CIcone* pBitmapIcone = iconeList->GetElement(i);
+            if (pBitmapIcone != nullptr)
+            {
+                pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+                wxRect rc = pBitmapIcone->GetPos();
+                //if visible
+                int left = rc.x - posLargeur;
+                int right = rc.x + rc.width - posLargeur;
 
-			if (right >= 0 && left <= GetWindowWidth())
-			{
-				localmu.lock();
-				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-				localmu.unlock();
-			}
-		}
+                if (right >= 0 && left <= GetWindowWidth())
+                {
+                    localmu.lock();
+                    RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
+                    localmu.unlock();
+                }
+            }
+        }
+        catch(...)
+        {
+            
+        }
 	}
 #ifdef USE_TBB_VECTOR   
     );

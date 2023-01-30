@@ -88,6 +88,14 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 		evt.SetExtraLong(typeAffichage);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
+    
+    mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	if (mainWindow != nullptr)
+	{
+        wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
+        evt.SetExtraLong(typeAffichage);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+    }
 	needToRefresh = true;
 }
 

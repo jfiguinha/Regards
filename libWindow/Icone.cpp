@@ -743,11 +743,36 @@ namespace
 	}
 } // anonymous namespace
 
+/*
+ * 
+ * wxIMAGE_QUALITY_NEAREST 	
+Simplest and fastest algorithm.
+
+wxIMAGE_QUALITY_BILINEAR 	
+Compromise between wxIMAGE_QUALITY_NEAREST and wxIMAGE_QUALITY_BICUBIC.
+
+wxIMAGE_QUALITY_BICUBIC 	
+Highest quality but slowest execution time.
+
+wxIMAGE_QUALITY_BOX_AVERAGE 	
+Use surrounding pixels to calculate an average that will be used for new pixels.
+
+This method is typically used when reducing the size of an image.
+
+wxIMAGE_QUALITY_NORMAL 	
+Default image resizing algorithm used by wxImage::Scale().
+
+Currently the same as wxIMAGE_QUALITY_NEAREST.
+
+wxIMAGE_QUALITY_HIGH 
+ * */
 
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
-	wxImage ret_image;
+	return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
+    
+    /*
 	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
 	cv::resize(matrix, matrix, cv::Size(width, height));
 	return wxImage(width, height, matrix.data, true);

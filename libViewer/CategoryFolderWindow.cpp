@@ -176,6 +176,7 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 
 		//Send Update Folder
 		wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
+        evt.SetExtraLong(-1);
 		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 	processIdle = true;

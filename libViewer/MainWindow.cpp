@@ -918,15 +918,27 @@ void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 
 void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 {
+    
+    
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
-		int typeAffichage = config->GetTypeAffichage();
-		if(typeAffichage != SHOW_ALL)
-		{
-			updateFolder = true;
-			processIdle = true;
-		}
+		int typeAffichage = 0;
+        typeAffichage = event.GetExtraLong();
+        if(typeAffichage == -1)
+        {
+            typeAffichage = config->GetTypeAffichage();          
+            if(typeAffichage != SHOW_ALL)
+            {
+                updateFolder = true;
+                processIdle = true;
+            }
+        }
+        else
+        {
+            updateFolder = true;
+            processIdle = true; 
+        }
 	}
 }
 
