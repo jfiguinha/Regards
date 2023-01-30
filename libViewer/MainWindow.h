@@ -145,6 +145,7 @@ namespace Regards::Viewer
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 
+		std::mutex muFolderThread;
 		std::thread* updateFolderThread = nullptr;
 		wxString localFilename;
 		int nbProcessMD5;

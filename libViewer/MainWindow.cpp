@@ -1258,15 +1258,14 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 		init = true;
 	}
 
+	muFolderThread.lock();
 	if (updateFolderThread != nullptr)
 	{
 		updateFolderThread->join();
-		if (!updateFolderThread->joinable())
-		{
-			delete updateFolderThread;
-			updateFolderThread = nullptr;
-		}
+		delete updateFolderThread;
+		updateFolderThread = nullptr;
 	}
+	muFolderThread.unlock();
 }
 
 //---------------------------------------------------------------
@@ -1331,19 +1330,7 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (updateFolder)
 	{
-		if(updateFolderThread != nullptr)
-		{
-			updateFolderThread->join();
-			if(!updateFolderThread->joinable())
-			{
-				delete updateFolderThread;
-				updateFolderThread = nullptr;
-			}
-			else
-			{
-				updateFolder = true;
-			}
-		}
+		muFolderThread.lock();
 		if(updateFolderThread == nullptr)
 		{
 			CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
@@ -1358,6 +1345,7 @@ void CMainWindow::ProcessIdle()
 			updateFolderThread = new std::thread(UpdateFolder, threadData);
 			updateFolder = false;
 		}
+		muFolderThread.unlock();
 		hasDoneOneThings = true;
 	}
 	else if (numElementTraitement < pictureSize)
