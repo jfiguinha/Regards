@@ -72,7 +72,7 @@ public:
 
 	void CreateSeparatorBar(InfosSeparationBarVector* listSeparator, const wxString& libelle, CThumbnailFolder* folder)
 	{
-		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(iconeListLocal, libelle, numElement);
+		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(&listPhoto, iconeListLocal, libelle, numElement);
 		if (infosSeparationBar->listElement.size() > 0)
 			listSeparator->push_back(infosSeparationBar);
 		listPhoto.clear();
