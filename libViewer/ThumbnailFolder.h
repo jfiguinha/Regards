@@ -27,11 +27,13 @@ namespace Regards::Viewer
 		void ResizeThumbnail() override;
 		static bool compareInterval(int i1, int i2);
 	private:
+
+		void EndGenThumbnail(wxCommandEvent& event);
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void SetListeFile();
-
-
+		void GenerateThumbnail();
+		static void  ExecuteThumbnailGen(void* param);
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
@@ -46,5 +48,7 @@ namespace Regards::Viewer
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;
+		std::mutex muThumb;
+		std::thread* thread_thumbnail = nullptr;
 	};
 }

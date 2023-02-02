@@ -162,6 +162,7 @@ namespace Regards::Window
 		//Variable
 		std::mutex lockIconeList;
 		CIconeList* iconeList;
+
 		//IconeVector pIconeList;
 
 		int xNewSize;

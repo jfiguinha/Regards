@@ -26,8 +26,9 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
+	nbVideoThumbnailProcess = 0;
 	preprocess_thumbnail = true;
-	//	preprocess_thumbnail = false;
+	Connect(wxEVENT_ENDGENTHUMB, wxCommandEventHandler(CThumbnailFolder::EndGenThumbnail));
 }
 
 
@@ -636,8 +637,33 @@ CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
+void  CThumbnailFolder::ExecuteThumbnailGen(void * param)
+{
+	CThumbnailFolder* thumb = (CThumbnailFolder*)param;
+	if(thumb != nullptr)
+	{
+		thumb->GenerateThumbnail();
 
-void CThumbnailFolder::VideoProcessThumbnail()
+		wxCommandEvent eventChange(wxEVENT_ENDGENTHUMB);
+		thumb->GetEventHandler()->AddPendingEvent(eventChange);
+	}
+}
+
+void CThumbnailFolder::EndGenThumbnail(wxCommandEvent& event)
+{
+	muThumb.lock();
+	if(thread_thumbnail != nullptr)
+	{
+		thread_thumbnail->join();
+		delete thread_thumbnail;
+		thread_thumbnail = nullptr;
+	}
+	muThumb.unlock();
+
+	nbVideoThumbnailProcess = 0;
+}
+
+void CThumbnailFolder::GenerateThumbnail()
 {
 	for (const auto& [key, value] : listElementToShow)
 	{
@@ -671,9 +697,21 @@ void CThumbnailFolder::VideoProcessThumbnail()
 						listElementToShow.erase(key);
 				}
 			}
-			
+
 		}
 	}
+}
+
+void CThumbnailFolder::VideoProcessThumbnail()
+{
+	muThumb.lock();
+	if(thread_thumbnail == nullptr && listElementToShow.size() > 0)
+	{
+		thread_thumbnail = new std::thread(ExecuteThumbnailGen, this);
+		nbVideoThumbnailProcess = 1;
+	}
+	muThumb.unlock();
+
 }
 
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
