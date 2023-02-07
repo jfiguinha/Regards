@@ -10,7 +10,6 @@
 #include <hqdn3d.h>
 #include "MeanShift.h"
 #include <fstream>
-#include <GLTexture.h>
 #include <opencv2/xphoto.hpp>
 #include "VideoStabilization.h"
 #include <opencv2/dnn_superres.hpp>

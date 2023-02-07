@@ -59,5 +59,6 @@ namespace Regards::Viewer
 		bool gpsLocalisationFinish;
 		int nbGpsFile;
 		wxTimer* refreshTimer;
+
 	};
 }

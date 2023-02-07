@@ -1,5 +1,4 @@
 #pragma once
-#include "EffectParameter.h"
 
 class CBitmapEffectParameter
 {

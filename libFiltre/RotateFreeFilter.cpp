@@ -5,7 +5,6 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
-#include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 using namespace Regards::Filter;

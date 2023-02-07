@@ -1,10 +1,8 @@
 #pragma once
-#include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <stdint.h>
-#include <string>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
