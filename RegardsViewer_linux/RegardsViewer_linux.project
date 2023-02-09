@@ -204,7 +204,6 @@
         <Library Value="xml2"/>
         <Library Value="raw_r"/>
         <Library Value="jasper"/>
-        <Library Value="gomp"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>
         <Library Value="avcodec"/>
@@ -235,8 +234,6 @@
         <Library Value="tesseract"/>
         <Library Value="leptonica"/>
         <Library Value="tbb"/>
-        <Library Value="tbbmalloc"/>
-        <Library Value="tbbmalloc_proxy"/>
         <Library Value="aom"/>
         <Library Value="webp"/>
         <Library Value="webpdemux"/>
@@ -393,6 +390,7 @@
         <Library Value="Xss"/>
         <Library Value="lz4"/>
         <Library Value="zstd"/>
+        <Library Value="gomp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -536,8 +534,6 @@
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc.* ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc_proxy.* ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>

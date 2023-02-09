@@ -16,7 +16,7 @@ using namespace Regards::exiv2;
 CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	CImageLoadingFormat* picture;
+	CImageLoadingFormat* picture = nullptr;
 	int type = 0;
 	int orientation = CRegardsRaw::GetOrientation(CConvertUtility::ConvertToStdString(fileName));
 	DataStorage* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
@@ -36,12 +36,25 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 		}
 		else
 		{
-			picture = new CImageLoadingFormat();
-			cv::Mat rawData(1, memFile->size, CV_8UC1, memFile->dataPt);
-			cv::Mat matPicture = imdecode(rawData, cv::IMREAD_COLOR);
-			//cv::flip(matPicture, matPicture, 0);
-			picture->SetPicture(matPicture, 0, fileName);
-			picture->SetFilename(fileName);
+            try
+            {
+                picture = new CImageLoadingFormat();
+                cv::Mat rawData(1, memFile->size, CV_8UC1, memFile->dataPt);
+                cv::Mat matPicture = imdecode(rawData, cv::IMREAD_COLOR);
+                //cv::flip(matPicture, matPicture, 0);
+                picture->SetPicture(matPicture, 0, fileName);
+                picture->SetFilename(fileName);
+            }
+            catch(...)
+            {
+                if(picture != nullptr)
+                    delete picture;
+                    
+                if(memFile != nullptr)
+                    delete memFile;
+                    
+                return nullptr;
+            }
 		}
 		delete memFile;
 	}

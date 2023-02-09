@@ -24,7 +24,9 @@
 #ifdef __APPLE__
 #undef fract1
 #endif
+
 #include <leptonica/allheaders.h>
+
 
 enum
 {
@@ -685,4 +687,5 @@ void COcrWnd::tesseract_preprocess(wxString source_file, wxString out_file)
 
 	// Write the image to file 
 	status = pixWriteImpliedFormat(out_file.c_str(), pixs, 0, 0);
+
 }

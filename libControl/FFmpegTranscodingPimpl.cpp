@@ -20,12 +20,13 @@
 #include <picture_utility.h>
 
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavcodec/packet.h>
-#include <libavutil/opt.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/display.h>
-#include <libavutil/channel_layout.h>
+    #include "logffmpeg.h"
+    #include <libavcodec/avcodec.h>
+    #include <libavcodec/packet.h>
+    #include <libavutil/opt.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/display.h>
+    #include <libavutil/channel_layout.h>
 }
 
 
@@ -34,6 +35,7 @@ extern "C" {
 using namespace cv;
 using namespace Regards::OpenCL;
 using namespace Regards::Video;
+
 
 static const char* ROTATE = "rotate";
 static const char* hb_h264_level_names[] = {
@@ -2163,17 +2165,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 					return ret;
 			}
 			int outStreamIndex = streamInNumberInOut[stream_index];
-#ifndef WIN32
-			printf("decoder -> type:video "
-				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
-				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
-				av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ifmt_ctx->streams[stream_index]->time_base));
-
-			printf("encoder -> type:video "
-				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
-				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
-				av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ofmt_ctx->streams[outStreamIndex]->time_base));
-#endif
+            
+            ShowInfo(&packet, ifmt_ctx, ofmt_ctx, stream_index, outStreamIndex);
 		}
 
 		av_packet_unref(&packet);

@@ -7,7 +7,6 @@
 #include <libde265/de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
-#include <libheif/heif_cxx.h>
 #include <libheif/heif.h>
 #include <FileUtility.h>
 #include <map>
