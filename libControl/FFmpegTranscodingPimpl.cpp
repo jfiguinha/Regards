@@ -20,7 +20,6 @@
 #include <picture_utility.h>
 
 extern "C" {
-    #include "logffmpeg.h"
     #include <libavcodec/avcodec.h>
     #include <libavcodec/packet.h>
     #include <libavutil/opt.h>
@@ -2166,7 +2165,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 			}
 			int outStreamIndex = streamInNumberInOut[stream_index];
             
-            ShowInfo(&packet, ifmt_ctx, ofmt_ctx, stream_index, outStreamIndex);
+            //ShowInfo(&packet, ifmt_ctx, ofmt_ctx, stream_index, outStreamIndex);
 		}
 
 		av_packet_unref(&packet);

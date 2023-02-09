@@ -665,13 +665,23 @@ void CThumbnailFolder::EndGenThumbnail(wxCommandEvent& event)
 
 void CThumbnailFolder::GenerateThumbnail()
 {
-	for (const auto& [key, value] : listElementToShow)
+	//for (const auto& [key, value] : listElementToShow)
+	//{
+
+	int i = 0;
+	int nbValue = 0;
+	do
 	{
-		CIcone* pBitmapIcone = iconeList->GetElement(value);
-		wxRect rc = pBitmapIcone->GetPos();
+		CIcone* pBitmapIcone = nullptr;
+		muVector.lock();
+		nbValue = listElementToShow.size();
+		if(i < nbValue)
+			pBitmapIcone = iconeList->GetElement(listElementToShow[i]);
+		muVector.unlock();
 
 		if (pBitmapIcone != nullptr)
 		{
+			wxRect rc = pBitmapIcone->GetPos();
 			int nbProcesseur = 1;
 			if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
 				nbProcesseur = config->GetThumbnailProcess();
@@ -690,16 +700,17 @@ void CThumbnailFolder::GenerateThumbnail()
 							ProcessThumbnail(pThumbnailData);
 							pThumbnailData->SetIsProcess(true);
 							nbProcess++;
-							listElementToShow.erase(key);
 						}
 					}
-					else
-						listElementToShow.erase(key);
 				}
 			}
 
 		}
-	}
+		else
+			break;
+		i++;
+
+	} while (i < nbValue);
 }
 
 void CThumbnailFolder::VideoProcessThumbnail()
@@ -716,7 +727,9 @@ void CThumbnailFolder::VideoProcessThumbnail()
 
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
+	muVector.lock();
 	listElementToShow.clear();
+	muVector.unlock();
 
 	if (listSeparator == nullptr)
 		return;
@@ -766,7 +779,12 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 							CThumbnailData* pThumbnailData = pBitmapIcone->GetData();
 							const bool isProcess = pThumbnailData->IsProcess();
 							if(!isProcess)
-								listElementToShow.insert({numElement, numElement});
+							{
+								muVector.lock();
+								listElementToShow.push_back(numElement);
+								muVector.unlock();
+							}
+								
 						}
 						else if (start)
 							break;

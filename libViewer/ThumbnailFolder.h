@@ -44,10 +44,11 @@ namespace Regards::Viewer
 		void InitTypeAffichage(const int& typeAffichage);
 
 		InfosSeparationBarVector * listSeparator = nullptr;
-		std::map<int, int> listElementToShow;
+		std::vector<int> listElementToShow;
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;
+		std::mutex muVector;
 		std::mutex muThumb;
 		std::thread* thread_thumbnail = nullptr;
 	};
