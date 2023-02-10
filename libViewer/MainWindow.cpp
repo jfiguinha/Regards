@@ -223,6 +223,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 		std::thread _thread(UpdateFolder, threadData);
 		_thread.join();
 	}
+
 }
 
 void CMainWindow::ClickShowButton(const int& id, const int& refresh)

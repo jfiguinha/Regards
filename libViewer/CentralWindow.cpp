@@ -263,20 +263,22 @@ void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
 {
 	ImagePrecedente();
 
-
+	/*
 	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
 	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
 	mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	*/
 }
 
 void CCentralWindow::OnPictureNext(wxCommandEvent& event)
 {
 	ImageSuivante();
 
-
+	/*
 	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
 	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
 	mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	*/
 }
 
 void CCentralWindow::OnPictureFirst(wxCommandEvent& event)
@@ -694,6 +696,11 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 					event->SetClientData(bitmapReturn);
 					event->SetInt(processLoadPicture ? 1 : 0);
 					wxQueueEvent(this, event);
+
+
+					wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
+					wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
 			}
 
@@ -918,7 +925,9 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	{
 		int redraw = event.GetInt();
 		if (isPicture)
+		{
 			ShowPicture(pictureData, redraw);
+		}
 		else
 		{
 			delete pictureData->bitmap;

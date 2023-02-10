@@ -770,13 +770,13 @@ wxIMAGE_QUALITY_HIGH
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
-	return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
+	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
     
     /*
 	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
 	cv::resize(matrix, matrix, cv::Size(width, height));
 	return wxImage(width, height, matrix.data, true);
-	
+	*/
 
 	// This function implements a Bicubic B-Spline algorithm for resampling.
 	// This method is certainly a little slower than wxImage's default pixel
@@ -804,11 +804,9 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 	// NOTE: below the y_offset and x_offset variables are being set for edge
 	// pixels using the "Mirror" method mentioned above
 
-	/*
+	wxImage ret_image;
 	if (src != nullptr)
 	{
-		
-
 		ret_image.Create(width, height, false);
 
 		const unsigned char* src_data = src->GetData();
@@ -874,7 +872,7 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 	}
 
 	return ret_image;
-	*/
+	
 }
 
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
