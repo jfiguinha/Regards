@@ -33,8 +33,6 @@
   <VirtualDirectory Name="Video">
     <File Name="VideoCompressOption.h"/>
     <VirtualDirectory Name="Encoder">
-      <File Name="logffmpeg.h"/>
-      <File Name="logffmpeg.c"/>
       <File Name="FFmpegTranscodingPimpl.h"/>
       <File Name="FFmpegTranscodingPimpl.cpp"/>
       <File Name="ffmpeg_transcoding.h"/>
