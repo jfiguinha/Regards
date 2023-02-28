@@ -3,6 +3,15 @@
 #include <libPicture.h>
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
+extern "C" {
+#include <leptonica\environ.h>
+#include <leptonica\pix.h>
+#include <leptonica\pix_internal.h>
+}
+
+
+
+
 std::map<wxString, wxImage> CThumbnailBuffer::listPicture;
 std::vector<wxString> CThumbnailBuffer::listFile;
 PhotosVector *  CThumbnailBuffer::newPhotosVectorList;
