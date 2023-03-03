@@ -3,11 +3,7 @@
 #include <libPicture.h>
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
-extern "C" {
-#include <leptonica\environ.h>
-#include <leptonica\pix.h>
-#include <leptonica\pix_internal.h>
-}
+
 
 
 
