@@ -407,9 +407,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\Iex*_d.d
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\OpenEXR*_d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\jpeg62.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpdemux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libwebp*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libpng16d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\bz2d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -417,7 +415,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlico
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\mediainfod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\wx*ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\FreeImaged.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\leptonica-1.82.0d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\leptonica-*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libprotobufd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -430,7 +428,9 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\zstd.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\jxl.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\jxl_threads.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlienc.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\pthreadVC3d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\pthreadVC3d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libsharpyuv.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\hwy.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -655,8 +655,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexpat.dll" 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libde265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\gif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libwebp*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jasper.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -667,9 +666,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freeglut.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jpeg62.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdemux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -679,7 +675,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\exiv2.dll"  $(
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\mediainfo.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\$(Configuration)\  
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\FreeImage.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.82.0.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lcms2.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libprotobuf.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\wx*u*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -703,7 +699,9 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jxl_threads.dl
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlienc.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\pthreadVC3.dll"  $(SolutionDir)$(Platform)\$(Configuration)\ 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\pugixml.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\libomp.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\libomp.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libsharpyuv.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\hwy.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
