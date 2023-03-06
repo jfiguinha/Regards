@@ -321,6 +321,8 @@
         <Library Value="tiff"/>
         <Library Value="lzma"/>
         <Library Value="SDL2"/>
+        <Library Value="decor-0"/>
+        <Library Value="sharpyuv"/>
         <Library Value="gtk-3"/>
         <Library Value="gdk-3"/>
         <Library Value="pangoft2-1.0"/>

@@ -21,18 +21,19 @@
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
 
-extern "C" {
-#include <leptonica\environ.h>
-#include <leptonica\pix.h>
-#include <leptonica\pix_internal.h>
-}
+
 //#include "ExportOdt.h"
 #ifdef __APPLE__
 #undef fract1
 #endif
 
-#include <leptonica/allheaders.h>
 
+extern "C" {
+#include <leptonica/allheaders.h>
+#include <leptonica/environ.h>
+#include <leptonica/pix.h>
+#include <leptonica/pix_internal.h>
+}
 
 enum
 {
