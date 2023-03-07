@@ -1,3 +1,4 @@
 #! /bin/sh
 cd /opt/RegardsViewer
+export FONTCONFIG_PATH=/etc/fonts
 ./RegardsViewer "$@"
