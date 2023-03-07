@@ -189,7 +189,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	}
 
 	softRender = true;
-	videoWindow = new CVideoControlSoft(windowMain, this);
+	videoWindow = new CVideoControlSoft(windowMain, this, this);
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 

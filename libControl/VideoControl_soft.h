@@ -40,7 +40,7 @@ namespace Regards
 class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInterface
 {
 public:
-	CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer);
+	CVideoControlSoft(CWindowMain* windowMain, wxWindow * window, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
 	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) override;
 	void SetParent(wxWindow* parent) override;
@@ -50,8 +50,8 @@ public:
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos) override;
 	//void SetVideoPosition(const int64_t & pos);
-	void VolumeUp() override;
-	void VolumeDown() override;
+	//void VolumeUp() override;
+	//void VolumeDown() override;
 	int GetVolume() override;
 	void SetVolume(const int& pos);
 	void ChangeVideoFormat();
@@ -127,7 +127,7 @@ protected:
 	void OnShowFPS(wxTimerEvent& event);
 	void OnPlayStart(wxTimerEvent& event);
 	void OnPlayStop(wxTimerEvent& event);
-
+	void OnSetPos(wxCommandEvent& event);
 
 	void CalculPositionPicture(const float& x, const float& y);
 	static void GenerateThumbnailVideo(void* data);
@@ -227,7 +227,7 @@ protected:
 	COpenCLEffectVideo* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
-
+	wxWindow * window;
 	CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;

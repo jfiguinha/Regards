@@ -43,10 +43,10 @@ public:
 	int64_t startTime;
 };
 
-CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer)
+CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, IVideoInterface* eventPlayer)
 {
 	renderBitmapOpenGL = nullptr;
-
+	this->window = window;
 	hq3d = nullptr; // new Chqdn3d(videoEffectParameter.denoisingLevel);
 	widthVideo = 0;
 	heightVideo = 0;
@@ -88,6 +88,7 @@ vector<int> CVideoControlSoft::GetListTimer()
 vector<int> CVideoControlSoft::GetListCommand()
 {
 	vector<int> list;
+	list.push_back(wxEVENT_UPDATEPOSMOVIETIME);
 	list.push_back(wxEVENT_SCROLLMOVE);
 	list.push_back(wxEVENT_ENDVIDEOTHREAD);
 	list.push_back(wxEVENT_STOPVIDEO);
@@ -126,6 +127,9 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 {
 	switch (event.GetEventType())
 	{
+	case wxEVENT_UPDATEPOSMOVIETIME:
+		OnSetPos(event);
+		break;
 	case wxEVENT_UPDATEMOVIETIME:
 		OnVideoDuration(event);
 		break;
@@ -657,11 +661,12 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 
 void CVideoControlSoft::SetRotation(const int& rotation)
 {
-	/*
+	
 	wxCommandEvent event(EVENT_VIDEOROTATION);
 	event.SetExtraLong(rotation);
 	wxPostEvent(parentRender, event);
-	*/
+	
+	/*
 	if (rotation == 90)
 		angle = 270;
 	else if (rotation == -90)
@@ -687,28 +692,39 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 		if (_flipV)
 			flipV = true;
 	}
+	*/
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
-	/*
 	long rotation = event.GetExtraLong();
 	if (rotation == 90)
-		angle = 90;
+		angle = 270;
 	else if (rotation == -90)
-		angle = 90;
+		angle = 270;
 	else if (rotation == -180)
 		angle = 180;
 	else if (rotation == 180)
 		angle = 180;
 	else if (rotation == -270)
-		angle = 270;
+		angle = 90;
 	else if (rotation == 270)
-		angle = 270;
-	muVideoEffect.lock();
-	videoEffectParameter.rotation = rotation;
-	muVideoEffect.unlock();
-	*/
+		angle = 90;
+
+	CSqlPhotos sqlPhotos;
+	int exif = sqlPhotos.GetPhotoExif(filename);
+	if (exif != -1)
+	{
+		int _flipH = 0;
+		int _flipV = 0;
+		CSqlPhotos::GetAngleAndFlip(exif, angle, _flipH, _flipV);
+		if (_flipH)
+			flipH = true;
+		if (_flipV)
+			flipV = true;
+	}
+
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
@@ -1479,7 +1495,7 @@ void CVideoControlSoft::OnPause()
 
 void CVideoControlSoft::OnVideoDuration(wxCommandEvent& event)
 {
-	DataTimeDuration * dtTime =  event.GetClientData();
+	DataTimeDuration * dtTime =  (DataTimeDuration *)event.GetClientData();
 	if(dtTime != nullptr)
 	{
 		startingTime = dtTime->startTime;
@@ -1492,6 +1508,26 @@ void CVideoControlSoft::OnVideoDuration(wxCommandEvent& event)
 
 }
 
+void CVideoControlSoft::OnSetPos(wxCommandEvent& event)
+{
+	if (!videoEnd)
+	{
+		videoPosition = event.GetExtraLong();
+		if (eventPlayer != nullptr)
+			eventPlayer->OnPositionVideo(videoPosition);
+	}
+}
+
+
+void CVideoControlSoft::SetPos(int64_t pos)
+{
+	int64_t videoPosition = (pos * 1000) - startingTime;
+	videoPosition = videoPosition / 1000;
+	wxCommandEvent evt(wxEVENT_UPDATEPOSMOVIETIME);
+	evt.SetExtraLong(videoPosition);
+	parentRender->GetEventHandler()->AddPendingEvent(evt);
+}
+
 void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t& startTime)
 {
 	DataTimeDuration * dtTime = new DataTimeDuration();
@@ -1499,7 +1535,7 @@ void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t&
 	dtTime->startTime = startTime;
 	wxCommandEvent evt(wxEVENT_UPDATEMOVIETIME);
 	evt.SetClientData(dtTime);
-	windowMain->GetEventHandler()->AddPendingEvent(evt);
+	parentRender->GetEventHandler()->AddPendingEvent(evt);
 }
 
 /*
@@ -1522,18 +1558,6 @@ void CVideoControlSoft::SetCurrentclock(wxString message)
 	this->message = message;
 }
 
-void CVideoControlSoft::SetPos(int64_t pos)
-{
-	if (!videoEnd)
-	{
-		videoPosition = (pos * 1000) - startingTime;
-		videoPosition = videoPosition / 1000;
-		if (eventPlayer != nullptr)
-			eventPlayer->OnPositionVideo(videoPosition);
-	}
-
-	//Refresh();
-}
 
 void CVideoControlSoft::SetVolume(const int& pos)
 {
@@ -1541,6 +1565,7 @@ void CVideoControlSoft::SetVolume(const int& pos)
 	SetSoundVolume(pos);
 }
 
+/*
 void CVideoControlSoft::VolumeUp()
 {
 	ffmfc->VolumeUp();
@@ -1550,7 +1575,7 @@ void CVideoControlSoft::VolumeDown()
 {
 	ffmfc->VolumeDown();
 }
-
+*/
 int CVideoControlSoft::GetVolume()
 {
 	return ffmfc->GetVolume();

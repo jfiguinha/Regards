@@ -27,8 +27,8 @@ public:
 	virtual void DeleteSubtitulePicture() = 0;
 
 	virtual int ChangeAudioStream(int newStreamAudio) = 0;
-	virtual void VolumeUp() = 0;
-	virtual void VolumeDown() = 0;
+	//virtual void VolumeUp() = 0;
+	//virtual void VolumeDown() = 0;
 	virtual int GetVolume() = 0;
 
 	virtual void SetRotation(const int& rotation) = 0;
