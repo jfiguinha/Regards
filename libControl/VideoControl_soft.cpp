@@ -36,6 +36,13 @@ AVFrame* copyFrameBuffer = nullptr;
 
 extern float clamp(float val, float minval, float maxval);
 
+class DataTimeDuration
+{
+public:
+	int64_t duration;
+	int64_t startTime;
+};
+
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer)
 {
 	renderBitmapOpenGL = nullptr;
@@ -89,6 +96,7 @@ vector<int> CVideoControlSoft::GetListCommand()
 	list.push_back(wxEVENT_TOPPOSITION);
 	list.push_back(wxEVENT_SETPOSITION);
 	list.push_back(EVENT_VIDEOROTATION);
+	list.push_back(wxEVENT_UPDATEMOVIETIME);
 	return list;
 }
 
@@ -118,6 +126,9 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 {
 	switch (event.GetEventType())
 	{
+	case wxEVENT_UPDATEMOVIETIME:
+		OnVideoDuration(event);
+		break;
 	case wxEVENT_SCROLLMOVE:
 		OnScrollMove(event);
 		break;
@@ -1466,12 +1477,29 @@ void CVideoControlSoft::OnPause()
 	}
 }
 
+void CVideoControlSoft::OnVideoDuration(wxCommandEvent& event)
+{
+	DataTimeDuration * dtTime =  event.GetClientData();
+	if(dtTime != nullptr)
+	{
+		startingTime = dtTime->startTime;
+		
+		if (eventPlayer != nullptr)
+			eventPlayer->SetVideoDuration(dtTime->duration);	
+			
+		delete dtTime;	
+	}
+
+}
+
 void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t& startTime)
 {
-	startingTime = startTime;
-
-	if (eventPlayer != nullptr)
-		eventPlayer->SetVideoDuration(duration);
+	DataTimeDuration * dtTime = new DataTimeDuration();
+	dtTime->duration = duration;
+	dtTime->startTime = startTime;
+	wxCommandEvent evt(wxEVENT_UPDATEMOVIETIME);
+	evt.SetClientData(dtTime);
+	windowMain->GetEventHandler()->AddPendingEvent(evt);
 }
 
 /*
