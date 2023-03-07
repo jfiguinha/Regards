@@ -1,6 +1,6 @@
 Package: RegardsViewer
-Version: 2.71.0
-Installed-Size: 466984
+Version: 2.75.5
+Installed-Size: 756736
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
 Section: graphics
 Source: https://github.com/jfiguinha/Regards.git
