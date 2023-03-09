@@ -269,7 +269,10 @@ protected:
 	bool isInit = false;
 	bool firstMovie = true;
 	wxTimer* playStopTimer;
+	
 	bool needToRefresh = false;
+	std::mutex muRefresh;
+
 	bool inverted = true;
 	cv::Mat previousFrame;
 	COpenCVStabilization* openCVStabilization = nullptr;

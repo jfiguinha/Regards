@@ -342,8 +342,9 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 	//	cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
+	videoSoft->muRefresh.lock();
 	videoSoft->needToRefresh = true;
-	//videoSoft->Refresh();
+	videoSoft->muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
@@ -383,14 +384,18 @@ void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
@@ -476,7 +481,9 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 	muVideoEffect.unlock();
 
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 
@@ -581,7 +588,9 @@ void CVideoControlSoft::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::MoveRight()
@@ -770,7 +779,11 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 	else
 	{
 		if (pause)
+		{
+			muRefresh.lock();
 			needToRefresh = true;
+			muRefresh.unlock();
+		}
 	}
 	//Refresh();
 }
@@ -783,7 +796,9 @@ bool CVideoControlSoft::GetPausedValue()
 
 void CVideoControlSoft::RedrawFrame()
 {
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -841,12 +856,15 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 		}
 	}
 
+	muRefresh.lock();
+
 	if (needToRefresh)
 	{
 		parentRender->Refresh();
-		//parentRender->Update();
 		needToRefresh = false;
 	}
+	muRefresh.unlock();
+
 }
 
 
@@ -1086,13 +1104,16 @@ int CVideoControlSoft::getHeight()
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
+	muRefresh.lock();
 	needToRefresh = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::ReloadResource()
 {
+	muRefresh.lock();
 	needToRefresh = true;
-	//reloadResource = true;
+	muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
@@ -1648,11 +1669,9 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	widthVideo = src_frame->width;
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-//#ifdef __APPLE__
+	muRefresh.lock();
 	needToRefresh = true;
-//#else
-//	parentRender->Refresh();
-//#endif
+	muRefresh.unlock();
 }
 
 GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
@@ -1719,7 +1738,9 @@ void CVideoControlSoft::Resize()
 			UpdateScrollBar();
 		}
 
+		muRefresh.lock();
 		needToRefresh = true;
+		muRefresh.unlock();
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
@@ -2045,7 +2066,11 @@ void CVideoControlSoft::FlipVertical()
 {
 	flipV = !flipV;
 	if (pause)
+	{
+		muRefresh.lock();
 		needToRefresh = true;
+		muRefresh.unlock();
+	}
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
@@ -2056,7 +2081,11 @@ void CVideoControlSoft::FlipHorizontal()
 {
 	flipH = !flipH;
 	if (pause)
+	{
+		muRefresh.lock();
 		needToRefresh = true;
+		muRefresh.unlock();
+	}
 
 	CSqlPhotos sqlPhotos;
 	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
