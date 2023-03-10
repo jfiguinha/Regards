@@ -1,7 +1,7 @@
 [DEBREATE-0.7.13]
 <<CTRL>>
 Package: RegardsViewer
-Version: 2.75.5
+Version: 2.75.7
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
 Section: graphics
 Source: https://github.com/jfiguinha/Regards.git
