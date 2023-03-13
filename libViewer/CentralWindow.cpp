@@ -1728,7 +1728,11 @@ void CCentralWindow::SetVideo(const wxString& path)
 	isPicture = false;
 
 	if (windowMode == WINDOW_VIEWER)
-		windowManager->ShowWindow(Pos::wxTOP);
+	{
+		if(showToolbar && isFullscreen)
+			windowManager->ShowWindow(Pos::wxTOP);
+	}
+		
 
 	if (thumbnailVideo->GetFilename() != filename)
 	{

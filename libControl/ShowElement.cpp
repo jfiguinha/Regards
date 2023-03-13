@@ -361,6 +361,11 @@ void CShowElement::Resize()
 			scrollbar->ShowHorizontalScroll();
 		}
 
+		if (!showToolbar && pictureToolbar->IsShown())
+		{
+			HideToolbar();
+		}
+
 		if (pictureToolbar != nullptr && scrollbar != nullptr)
 		{
 			if (pictureToolbar->IsShown())
@@ -396,28 +401,37 @@ void CShowElement::Resize()
 			//CDeferPos deferpos;
 			int posHeight = 0;
 			int posHeightSup = 0;
-			if (videoSlider->IsShown())
-				posHeight += videoSlider->GetHeight();
 
-			if (showToolbarSup && slideToolbar->IsShown())
-				posHeightSup = posHeight;
+			if (showToolbar)
+			{
+				if (videoSlider->IsShown())
+					posHeight += videoSlider->GetHeight();
+
+				if (showToolbarSup && slideToolbar->IsShown())
+					posHeightSup = posHeight;
+			}
+
 
 			int positionHeight = height - posHeight - posHeightSup;
 
 			scrollbar->SetSize(0, 0, width, positionHeight);
 			scrollbar->Resize();
 
-			if (videoSlider->IsShown())
+			if (showToolbar)
 			{
-				if (showToolbarSup)
+				if (videoSlider->IsShown())
 				{
-					slideToolbar->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
-					slideToolbar->Refresh();
-				}
+					if (showToolbarSup)
+					{
+						slideToolbar->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
+						slideToolbar->Refresh();
+					}
 
-				videoSlider->SetSize(0, positionHeight + posHeightSup, width, videoSlider->GetHeight(), TRUE);
-				videoSlider->Refresh();
+					videoSlider->SetSize(0, positionHeight + posHeightSup, width, videoSlider->GetHeight(), TRUE);
+					videoSlider->Refresh();
+				}
 			}
+
 		}
 		else
 		{
