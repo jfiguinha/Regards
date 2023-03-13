@@ -532,7 +532,12 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 		int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-			needToRefresh = true;
+		{
+			wxClientDC dc(this);
+			icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+			//needToRefresh = true;
+		}
+			
 	}
 	
 }
@@ -1066,8 +1071,10 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 	refreshMouseMove->Stop();
 
+	wxClientDC dc(this);
+
 	isMoving = true;
-	bool needtoRedraw = false;
+	//bool needtoRedraw = false;
 	isMovingScroll = true;
 	bool isChecked = false;
 	if (numActifPhotoId != -1)
@@ -1119,8 +1126,12 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						CIcone* numActif = GetIconeById(numActifPhotoId);
 						if (numActif != nullptr)
 							numActif->SetActive(false);
+
+						numActif->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
 					}
-					needtoRedraw = true;
+
+					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+					//needtoRedraw = true;
 				}
 			}
 
@@ -1128,15 +1139,17 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			{
 				numActifPhotoId = iconePhotoId;
 				pBitmapIcone->SetActive(true);
-				needtoRedraw = true;
+				pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+				//needtoRedraw = true;
 			}
 		}
 
+		/*
 		if (needtoRedraw)
 		{
 			needToRefresh = true;
 		}
-
+		*/
 		refreshMouseMove->Start(1000, true);
 	}
 
