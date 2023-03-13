@@ -64,11 +64,26 @@ const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 
 wxString CConvertUtility::GetTimeLibelle(const int& secs)
 {
-	uint32_t hh = secs / 3600;
-	uint32_t mm = (secs % 3600) / 60;
-	uint32_t ss = (secs % 3600) % 60;
 	char timestring[9];
-	sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
+	printf("GetTimeLibelle %d secs \n", secs);
+	if(secs > 0)
+	{
+		uint32_t hh = secs / 3600;
+		uint32_t mm = (secs % 3600) / 60;
+		uint32_t ss = (secs % 3600) % 60;
+		if(hh > 100)
+			hh = 99;
+		if(mm > 100)
+			mm = 99;
+		if(ss > 100)
+			ss = 99;
+		sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
+	}
+	else
+	{
+		strcpy(timestring, "00:00:00");
+	}
+
 	return wxString(timestring);
 }
 
