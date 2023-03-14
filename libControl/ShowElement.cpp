@@ -412,7 +412,8 @@ void CShowElement::Resize()
 			}
 			else
 			{
-				videoSlider->Hide();
+				if (videoSlider->IsShown())
+					videoSlider->Hide();
 			}
 
 
