@@ -410,6 +410,10 @@ void CShowElement::Resize()
 				if (showToolbarSup && slideToolbar->IsShown())
 					posHeightSup = posHeight;
 			}
+			else
+			{
+				videoSlider->Hide();
+			}
 
 
 			int positionHeight = height - posHeight - posHeightSup;
