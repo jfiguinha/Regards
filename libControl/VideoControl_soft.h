@@ -128,6 +128,7 @@ protected:
 	void OnPlayStart(wxTimerEvent& event);
 	void OnPlayStop(wxTimerEvent& event);
 	void OnSetPos(wxCommandEvent& event);
+	void OnSetData(wxCommandEvent& event);
 
 	void CalculPositionPicture(const float& x, const float& y);
 	static void GenerateThumbnailVideo(void* data);

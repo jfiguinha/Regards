@@ -34,6 +34,26 @@ using namespace Regards::Sqlite;
 
 AVFrame* copyFrameBuffer = nullptr;
 
+class CDataAVFrame
+{
+public:
+
+
+	CDataAVFrame()
+	{
+	}
+
+	~CDataAVFrame()
+	{
+	}
+	float sample_aspect_ratio = 0.0;
+	cv::Mat matFrame;
+	int width;
+	int height;
+
+
+};
+
 extern float clamp(float val, float minval, float maxval);
 
 class DataTimeDuration
@@ -98,6 +118,7 @@ vector<int> CVideoControlSoft::GetListCommand()
 	list.push_back(wxEVENT_SETPOSITION);
 	list.push_back(EVENT_VIDEOROTATION);
 	list.push_back(wxEVENT_UPDATEMOVIETIME);
+	list.push_back(wxEVENT_UPDATEFRAME);
 	return list;
 }
 
@@ -156,6 +177,9 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 		break;
 	case EVENT_VIDEOROTATION:
 		VideoRotation(event);
+		break;
+	case wxEVENT_UPDATEFRAME:
+		OnSetData(event);
 		break;
 	}
 }
@@ -1649,6 +1673,31 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	return bitmapData;
 }
 
+void CVideoControlSoft::OnSetData(wxCommandEvent& event)
+{
+
+	CDataAVFrame* avFrameData = (CDataAVFrame *)event.GetClientData();
+	if (avFrameData != nullptr)
+	{
+		//isffmpegDecode = true;
+		//enableopenCL = 0;
+
+		video_aspect_ratio = avFrameData->sample_aspect_ratio;
+		widthVideo = avFrameData->width;
+		heightVideo = avFrameData->height;
+		ratioVideo = static_cast<float>(avFrameData->width) / static_cast<float>(avFrameData->height);
+
+		muRefresh.lock();
+		needToRefresh = false;
+		muRefresh.unlock();
+
+		delete avFrameData;
+		parentRender->Refresh();
+	}
+
+
+}
+
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
@@ -1657,28 +1706,24 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();
 
+	CDataAVFrame* avFrameData = new CDataAVFrame();
+
 	//printf("Set Data Begin \n");
 
 	videoRenderStart = true;
-
 	auto src_frame = static_cast<AVFrame*>(data);
-
-	video_aspect_ratio = sample_aspect_ratio;
+	avFrameData->sample_aspect_ratio = sample_aspect_ratio;
 
 	SetFrameData(src_frame);
+	//avFrameData->matFrame = GetBitmapRGBA(src_frame);
+	avFrameData->width = src_frame->width;
+	avFrameData->height = src_frame->height;
+	//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-	widthVideo = src_frame->width;
-	heightVideo = src_frame->height;
-	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-	
-	muRefresh.lock();
-	needToRefresh = true;
-	muRefresh.unlock();
-	
-
-	//wxCommandEvent event(wxEVENT_REFRESH);
-	//wxPostEvent(parentRender, event);
+	wxCommandEvent event(wxEVENT_UPDATEFRAME);
+	event.SetClientData(avFrameData);
+	wxPostEvent(parentRender, event);
 }
 
 GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
