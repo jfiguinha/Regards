@@ -5,7 +5,7 @@
 #include <ChangeLabel.h>
 #include <wx/sstream.h>
 #include <LibResource.h>
-
+#include <wx/textdlg.h>
 #include <SqlFaceLabel.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;

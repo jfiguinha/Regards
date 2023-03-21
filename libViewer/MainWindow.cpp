@@ -19,9 +19,9 @@
 #include "ThumbnailBuffer.h"
 #include "SqlFindPhotos.h"
 #include <SqlThumbnail.h>
+#include <wx/textdlg.h>
 #include "PreviewWnd.h"
 #include <wx/busyinfo.h>
-#include <ChangeLabel.h>
 #include <BitmapWndViewer.h>
 #include <BitmapWnd3d.h>
 #include "Toolbar.h"
@@ -285,32 +285,39 @@ void CMainWindow::OnFaceAdd(wxCommandEvent& event)
 {
 
 	//Modification du titre
-	ChangeLabel changeLabel(this);
-	changeLabel.SetLabel("Add a New Person");
-	changeLabel.ShowModal();
-	if (changeLabel.IsOk())
+	wxTextEntryDialog changeLabel(this,"", "Add a New Person");
+	if (changeLabel.ShowModal() == wxID_OK)
 	{
 		vector<int> * numFace = (vector<int> *)event.GetClientData();
-		wxString newLabel = changeLabel.GetNewLabel();
-		CSqlFaceLabel sqlFaceLabel;
-		sqlFaceLabel.InsertFaceLabel(numFace->at(0), newLabel, 1);
-
-		CSqlFaceRecognition faceRecognition;
-		for(int i = 0;i < numFace->size();i++)
-			faceRecognition.MoveFaceRecognition(numFace->at(i), numFace->at(0));
-
-		numFace->clear();
-		delete numFace;
-
-		wxWindow* window = this->FindWindowById(LISTFACEID);
-		if (window != nullptr)
+		wxString newLabel = changeLabel.GetValue();
+		if (newLabel.size() > 3)
 		{
-			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
+			CSqlFaceLabel sqlFaceLabel;
+			sqlFaceLabel.InsertFaceLabel(numFace->at(0), newLabel, 1);
 
-		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-		wxQueueEvent(this, eventChange);
+			CSqlFaceRecognition faceRecognition;
+			for (int i = 0; i < numFace->size(); i++)
+				faceRecognition.MoveFaceRecognition(numFace->at(i), numFace->at(0));
+
+			numFace->clear();
+			delete numFace;
+
+			wxWindow* window = this->FindWindowById(LISTFACEID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+
+			auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxQueueEvent(this, eventChange);
+		}
+		else
+		{
+			wxString wronglabelsize = CLibResource::LoadStringFromResource(L"wronglabelsize", 1);
+			wxString error_labelsize = CLibResource::LoadStringFromResource(L"erroronlabelsize", 1);
+			wxMessageBox(wronglabelsize, error_labelsize, wxICON_ERROR);
+		}
 	}
 
 }

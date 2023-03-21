@@ -603,25 +603,10 @@ double GetNumFaceCompatibleScore(const int& numFace, vector<CFaceRecognitionData
 			feature2 = feature2.clone();
 
 			double local_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
-
-			if (local_score >= cosine_similar_thresh)
-			{
-				score += local_score;
-				nbElement++;
-			}
-			//double L2_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_NORM_L2);
-
-			/*
-			if (score >= cosine_similar_thresh)
-			{
-				confidence = score;
-				predictedLabel = picture.numFaceCompatible;
-			}
-			*/
+			score += local_score;
+			nbElement++;
 		}
 	}
-	if (nbElement == 0)
-		return 0;
 	return score / nbElement;
 }
 
