@@ -11,6 +11,7 @@
 #include "ThemeParam.h"
 #include <ImageLoadingFormat.h>
 #include "MainThemeInit.h"
+#include <SqlFaceRecognition.h>
 #include "ListPicture.h"
 #include "MainTheme.h"
 #include "ThumbnailViewerPicture.h"
@@ -20,6 +21,7 @@
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
 #include <wx/busyinfo.h>
+#include <ChangeLabel.h>
 #include <BitmapWndViewer.h>
 #include <BitmapWnd3d.h>
 #include "Toolbar.h"
@@ -47,7 +49,7 @@
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
 #include <ParamInit.h>
-
+#include <SqlFaceLabel.h>
 #include <ThumbnailVideoExport.h>
 #include <ffplaycore.h>
 #include <ConvertUtility.h>
@@ -177,7 +179,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_PRINTPICTURE, wxCommandEventHandler(CMainWindow::PrintPreview));
 	Connect(wxEVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CMainWindow::OnCriteriaUpdate));
 	Connect(wxEVENT_UPDATESTATUSBARMESSAGE, wxCommandEventHandler(CMainWindow::UpdateStatusBarMessage));
-
+	Connect(wxEVENT_FACEADD, wxCommandEventHandler(CMainWindow::OnFaceAdd));
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
 	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
@@ -276,6 +278,37 @@ bool CMainWindow::IsVideo()
 		return centralWnd->IsVideo();
 
 	return false;
+}
+
+
+void CMainWindow::OnFaceAdd(wxCommandEvent& event)
+{
+
+	//Modification du titre
+	ChangeLabel changeLabel(this);
+	changeLabel.SetLabel("Add a New Person");
+	changeLabel.ShowModal();
+	if (changeLabel.IsOk())
+	{
+		int numFace = event.GetId();
+		wxString newLabel = changeLabel.GetNewLabel();
+		CSqlFaceLabel sqlFaceLabel;
+		sqlFaceLabel.InsertFaceLabel(numFace, newLabel, 1);
+
+		CSqlFaceRecognition faceRecognition;
+		faceRecognition.MoveFaceRecognition(numFace, numFace);
+
+		wxWindow* window = this->FindWindowById(LISTFACEID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(this, eventChange);
+	}
+
 }
 
 

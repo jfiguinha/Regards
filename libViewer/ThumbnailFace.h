@@ -26,7 +26,7 @@ namespace Regards::Viewer
 		void init();
 		void MoveFace(const wxString& faceName);
 		void DeleteIcone(CIcone* numSelect) override;
-
+		int GetFaceSelectID();
 	protected:
 		void OnMouseRelease(const int& x, const int& y) override;
 		void ResizeThumbnail() override;
@@ -46,7 +46,7 @@ namespace Regards::Viewer
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		void RenderIconeWithVScroll(wxDC* dc) override;
 		void UpdateScrollWithVScroll() override;
-		void DeleteEmptyFace();
+
 
 
 		InfosSeparationBarVector listSeparator;

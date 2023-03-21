@@ -25,6 +25,31 @@ public:
 
 };
 
+//Class use for finding element in IconeList
+class CItemPhotoId
+{
+public:
+	CItemPhotoId(int photoId) : _photoId(photoId)
+	{
+	}
+
+	bool operator()(CIcone* icone)
+	{
+		int photoId = 0;
+		if (icone != nullptr)
+		{
+			CThumbnailData* data = icone->GetData();
+			if (data != nullptr)
+				photoId = data->GetNumPhotoId();
+		}
+		return _photoId == photoId;
+	}
+
+	int _photoId;
+	
+
+};
+
 class CItemString
 {
 public:
@@ -110,6 +135,19 @@ CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)
 
 	if (it != pIconeList.end())
 		element = *it;
+	return element;
+}
+
+CIcone* CIconeList::FindElementPhotoId(const int& photoId)
+{
+	IconeVector::iterator it;
+	CIcone* element = nullptr;
+	it = find_if(pIconeList.begin(), pIconeList.end(), CItemPhotoId(photoId));
+
+	if (it != pIconeList.end())
+		element = *it;
+
+
 	return element;
 }
 

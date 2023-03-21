@@ -302,6 +302,7 @@ int CThumbnail::ImageSuivante()
 	return numOldItem;
 }
 
+
 int CThumbnail::GetNumItem()
 {
 	return numOldItem;

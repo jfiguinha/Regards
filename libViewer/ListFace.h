@@ -44,6 +44,7 @@ namespace Regards
 			wxString GetFilename(const int& numItem);
 			int ImagePrecedente();
 			int GetNumItem();
+			int CListFace::GetFaceSelectID();
 
 		private:
 			static void FacialDetectionRecognition(void* param);
@@ -51,6 +52,7 @@ namespace Regards
 			void OnIdle(wxIdleEvent& evt) override;
 			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
+
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);

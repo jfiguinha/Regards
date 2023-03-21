@@ -157,6 +157,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
+
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
 	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxCommandEventHandler(CListFace::ThumbnailZoomPosition));
@@ -173,6 +174,11 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	isLoadingResource = false;
 	listProcessWindow.push_back(this);
+}
+
+int CListFace::GetFaceSelectID()
+{
+	return thumbnailFace->GetFaceSelectID();
 }
 
 int CListFace::ImageSuivante()
@@ -288,6 +294,8 @@ void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
+
+
 
 
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)

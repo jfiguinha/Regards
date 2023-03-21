@@ -136,6 +136,23 @@ void CThumbnailFace::init()
 		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
+	for (int i = 0; i < iconeListLocal->GetNbElement(); i++)
+	{
+		int photo = iconeListLocal->GetPhotoId(i);
+		CIcone * ico = iconeList->FindElementPhotoId(photo);
+		if (ico != nullptr)
+		{
+			CIcone* iconew = iconeListLocal->GetElement(i);
+			if (iconew != nullptr)
+			{
+				iconew->SetChecked(ico->IsChecked());
+				iconew->SetState(ico->GetState());
+			}
+
+		}
+
+	}
+
 	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
@@ -233,7 +250,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 		}
 	}
 
-	DeleteEmptyFace();
+	//DeleteEmptyFace();
 
 
 	widthThumbnail = 0;
@@ -247,31 +264,32 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 	needToRefresh = true;
 }
 
-void CThumbnailFace::DeleteEmptyFace()
+int CThumbnailFace::GetFaceSelectID()
 {
-	CSqlFaceLabel sqlfaceLabel;
-	//Test Si Infos Bar Vide
-	for (int i = 0; i < listSeparator.size(); i++)
-	{
-		auto infosSeparationBarFace = static_cast<CInfosSeparationBarFace*>(listSeparator.at(i));
-		if (infosSeparationBarFace != nullptr)
-		{
-			if (infosSeparationBarFace->listElement.size() == 0)
-			{
-				sqlfaceLabel.DeleteFaceLabelDatabase(infosSeparationBarFace->GetNumFace());
 
-				listSeparator.erase(listSeparator.begin() + i);
-				delete infosSeparationBarFace;
-				infosSeparationBarFace = nullptr;
-				i--;
+	for (CInfosSeparationBar* separatorBar : listSeparator)
+	{
+		if (separatorBar != nullptr)
+		{
+			vector<int> numElementToDelete;
+			for (int i = 0; i < separatorBar->listElement.size(); i++)
+			{
+				int numElement = separatorBar->listElement.at(i);
+				CIcone* icone = iconeList->GetElement(numElement);
+				if (icone != nullptr)
+				{
+					bool needToMove = false;
+					if (icone->IsChecked())
+					{
+						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+						return thumbnailData->GetNumFace();
+					}
+				}
 			}
 		}
 	}
-
-	CSqlFacePhoto facePhoto;
-	facePhoto.RebuildLink();
+	return -1;
 }
-
 
 //-----------------------------------------------------------------
 //
@@ -368,7 +386,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 
 	if (faceMove)
 	{
-		DeleteEmptyFace();
+		//DeleteEmptyFace();
 		widthThumbnail = 0;
 		heightThumbnail = 0;
 		ResizeThumbnail();
@@ -414,7 +432,7 @@ void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 		CSqlFacePhoto facePhoto;
 		facePhoto.DeleteNumFace(face_thumbnail->GetNumFace());
 
-		DeleteEmptyFace();
+		//DeleteEmptyFace();
 
 		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);

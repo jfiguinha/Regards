@@ -95,6 +95,7 @@ namespace Regards::Viewer
 		void OnCriteriaUpdate(wxCommandEvent& event);
 		void OnRefreshPicture(wxCommandEvent& event);
 		void OnScanner(wxCommandEvent& event);
+		void OnFaceAdd(wxCommandEvent& event);
 
 		void UpdateStatusBarMessage(wxCommandEvent& event);
 

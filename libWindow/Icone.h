@@ -84,6 +84,11 @@ namespace Regards::Window
 			return state;
 		}
 
+		void SetState(int state)
+		{
+			this->state = state;
+		}
+
 		int RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, const bool& flipHorizontal,
 		                const bool& flipVertical, const bool& forceRedraw = false);
 

@@ -7,10 +7,8 @@
 #include <window_id.h>
 using namespace Regards::Viewer;
 
-#define WM_REFRESHTHUMBNAIL 1023
-#define WM_EXPORT 1024
-#define WM_CALENDAR 1025
-#define WM_GEOLOCALISE 1026
+#define WM_ADD 1023
+
 
 CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
                                              const bool& vertical)
@@ -21,6 +19,13 @@ CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, co
 	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
 	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
 	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY", 1);
+	wxString add_label = CLibResource::LoadStringFromResource(L"LBLFACEADD", 1);
+
+	auto add = new CToolbarButton(themeToolbar.button);
+	add->SetButtonResourceId(L"IDB_PLUS");
+	add->SetCommandId(WM_ADD);
+	add->SetLibelleTooltip(add_label);
+	navElement.push_back(add);
 
 	auto copy = new CToolbarButton(themeToolbar.button);
 	copy->SetButtonResourceId(L"IDB_MULTIPLESELECT");
@@ -131,6 +136,31 @@ void CThumbnailFaceToolBar::EventManager(const int& id)
 	{
 		switch (id)
 		{
+		case WM_ADD:
+		{
+			auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
+			if (windowMain != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_FACEADD);
+				int faceId = listFace->GetFaceSelectID();
+				if (faceId != -1)
+				{
+					evt.SetId(faceId);
+					windowMain->GetEventHandler()->AddPendingEvent(evt);
+				}
+				else
+				{
+					wxString labelInformations = CLibResource::LoadStringFromResource(
+						L"labelInformations", 1);
+					wxString notCompatibleFormat = "Please select a face";
+					wxMessageBox(notCompatibleFormat, labelInformations,
+						wxICON_INFORMATION);
+				}
+			}
+
+		}
+		break;
+
 		case WM_COPY:
 			{
 				if (listFace != nullptr)
