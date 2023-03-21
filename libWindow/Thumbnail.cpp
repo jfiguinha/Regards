@@ -534,7 +534,7 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 		{
 			wxClientDC dc(this);
-			icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+			icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 			//needToRefresh = true;
 		}
 			
@@ -646,7 +646,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 			}
 		}
 	}
@@ -671,7 +671,7 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 			}
 		}
 	}
@@ -1127,10 +1127,10 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						if (numActif != nullptr)
 							numActif->SetActive(false);
 
-						numActif->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+						numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 					}
 
-					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 					//needtoRedraw = true;
 				}
 			}
@@ -1139,7 +1139,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			{
 				numActifPhotoId = iconePhotoId;
 				pBitmapIcone->SetActive(true);
-				pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
+				pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 				//needtoRedraw = true;
 			}
 		}
