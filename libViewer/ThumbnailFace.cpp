@@ -136,7 +136,6 @@ void CThumbnailFace::init()
 		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-
 	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
@@ -348,18 +347,15 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 						if (icone->IsChecked())
 						{
 							auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-							if (thumbnailData->GetNumFace() != numFace)
+							int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
+							if (numFaceCompatible != numFace)
 							{
-								int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
-								if (numFaceCompatible != numFace)
-								{
-									faceMove = true;
-									needToMove = true;
-									MoveIcone(numElement, numFace);
-									faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
-									separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
-									i--;
-								}
+								faceMove = true;
+								needToMove = true;
+								MoveIcone(numElement, numFace);
+								faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
+								separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
+								i--;
 							}
 						}
 						if (needToMove)

@@ -768,13 +768,11 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
-	muEraseList.lock();
 	iconeListLocal->EraseThumbnailList();
 
 	delete iconeListLocal;
 	iconeListLocal = nullptr;
 
-	muEraseList.unlock();
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -1114,11 +1112,13 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		int iconePhotoId = -1;
 		wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-		muEraseList.lock();
 		CIcone* pBitmapIcone = FindElement(xPos, yPos);
+		
 
 		if (pBitmapIcone != nullptr)
 		{
+			pBitmapIcone->muIcone.lock();
+
 			if (pBitmapIcone->GetData() != nullptr)
 				iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
 
@@ -1129,13 +1129,19 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 					if (numActifPhotoId != -1)
 					{
 						CIcone* numActif = GetIconeById(numActifPhotoId);
+						
 						if (numActif != nullptr)
+						{
+							numActif->muIcone.lock();
 							numActif->SetActive(false);
-
-						numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+							numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+							numActif->muIcone.unlock();
+						}
 					}
 
-					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+					//pBitmapIcone = FindElement(xPos, yPos);
+					if (pBitmapIcone != nullptr)
+						pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 					//needtoRedraw = true;
 				}
 			}
@@ -1143,13 +1149,19 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			if (pBitmapIcone->GetState() != ACTIFICONE)
 			{
 				numActifPhotoId = iconePhotoId;
-				pBitmapIcone->SetActive(true);
-				pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+				
+				//pBitmapIcone = FindElement(xPos, yPos);
+				
+				if (pBitmapIcone != nullptr)
+				{
+					pBitmapIcone->SetActive(true);
+					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+				}
 				//needtoRedraw = true;
 			}
-		}
 
-		muEraseList.unlock();
+			pBitmapIcone->muIcone.unlock();
+		}
 
 		/*
 		if (needtoRedraw)

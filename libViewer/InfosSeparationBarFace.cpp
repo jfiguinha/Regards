@@ -54,6 +54,8 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 {
 	bool updateInfos = false;
 
+
+
 	if ((rcSelect.x < x && x < (rcSelect.x + rcSelect.width)) && ((rcSelect.y) < y && y < (rcSelect.y + rcSelect.
 		height)))
 	{
@@ -70,7 +72,7 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 	{
 		isSelectIcone = !isSelectIcone;
 	}
-	else if ((rcDeleteIcone.x < x && x < (rcDeleteIcone.x + rcDeleteIcone.width)) && ((rcDeleteIcone.y) < y && y < (
+	else if ((rcDeleteIcone.x < x && x < (rcDeleteIcone.x + rcDeleteIcone.width + sizeDelete.GetWidth())) && ((rcDeleteIcone.y) < y && y < (
 		rcDeleteIcone.y + rcDeleteIcone.height)))
 	{
 		auto windowMain = static_cast<CWindowMain*>(parentWindow->FindWindowById(MAINVIEWERWINDOWID));
@@ -205,10 +207,10 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	rcDeleteIcone.width = bitmapDelete.GetWidth();
 	rcDeleteIcone.height = bitmapDelete.GetHeight();
 
-	size = CWindowMain::GetSizeTexte(deviceContext, libelleDelete, theme.themeFont);
+	sizeDelete = CWindowMain::GetSizeTexte(deviceContext, libelleDelete, theme.themeFont);
 
 	xPos = xPos + 5 + bitmapDelete.GetWidth();
-	yPos = y + (theme.GetHeight() - size.y) - (bitmapDelete.GetHeight() - size.y) / 2;
+	yPos = y + (theme.GetHeight() - sizeDelete.y) - (bitmapDelete.GetHeight() - sizeDelete.y) / 2;
 
 	CWindowMain::DrawTexte(deviceContext, libelleDelete, xPos, yPos, theme.themeFont);
 }

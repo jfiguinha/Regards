@@ -94,6 +94,8 @@ namespace Regards::Window
 			return pictureLoad;
 		}
 
+		std::mutex muIcone;
+
 	private:
 		void RenderPictureBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);
 		void RenderVideoBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);

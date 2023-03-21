@@ -37,6 +37,7 @@ namespace Regards::Viewer
 		wxRect rcSelect;
 		wxRect rcSelectIcone;
 		wxRect rcDeleteIcone;
+		wxSize sizeDelete;
 
 		int xPosEdit{};
 		int yPosEdit{};

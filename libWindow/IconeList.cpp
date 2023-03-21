@@ -122,6 +122,8 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 
 	if (it != pIconeList.end())
 		element = *it;
+
+	
 	return element;
 }
 
@@ -131,6 +133,17 @@ void CIconeList::EraseThumbnailList()
 	{
 		if (pIcone != nullptr)
 		{
+			pIcone->muIcone.lock();
+		}
+	}
+
+
+	for (CIcone* pIcone : pIconeList)
+	{
+		if (pIcone != nullptr)
+		{
+			pIcone->muIcone.unlock();
+
 			delete(pIcone);
 			pIcone = nullptr;
 		}
