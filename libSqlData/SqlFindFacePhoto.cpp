@@ -35,7 +35,7 @@ std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceNameSelectable()
 {
 	type = 2;
 	listFaceName.clear();
-	ExecuteRequest("SELECT NumFace, FaceName, isSelectable FROM FACE_NAME WHERE isSelectable = 1");
+	ExecuteRequest("SELECT NumFace, FaceName, isSelectable FROM FACE_NAME WHERE isSelectable = 1 and NumFace in (select DISTINCT NumFaceCompatible from FACE_RECOGNITION)");
 	return listFaceName;
 }
 
