@@ -34,6 +34,7 @@ namespace Regards::Viewer
 		void MoveIcone(const int& numElement, const int& numFace);
 
 	private:
+		void DeleteEmptyFace();
 		int FindSeparatorFace(const int& xPos, const int& yPos);
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
