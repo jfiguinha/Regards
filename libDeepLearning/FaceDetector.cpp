@@ -25,7 +25,7 @@ using namespace std;
 using namespace face;
 using namespace std;
 
-
+const double cosine_similar_thresh = 0.363;
 std::map<int, Mat> listScore;
 
 struct FaceValueIntegration
@@ -579,6 +579,52 @@ void CFaceDetector::RemoveRedEye(const Mat& image, const Rect& rSelectionBox, co
 }
 
 
+double GetNumFaceCompatibleScore(const int& numFace, vector<CFaceRecognitionData>& faceRecognitonVec, Mat& feature1)
+{
+	double score = 0.0;
+	int nbElement = 0;
+	for (CFaceRecognitionData picture : faceRecognitonVec)
+	{
+		if (picture.numFaceCompatible == numFace)
+		{
+			wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
+
+			if (!wxFileExists(fileSource))
+			{
+				continue;
+			}
+
+			Mat aligned_face2 = imread(CConvertUtility::ConvertToStdString(fileSource));
+			if (aligned_face2.empty())
+				continue;
+
+			Mat feature2;
+			faceRecognizer->feature(aligned_face2, feature2);
+			feature2 = feature2.clone();
+
+			double local_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
+
+			if (local_score >= cosine_similar_thresh)
+			{
+				score += local_score;
+				nbElement++;
+			}
+			//double L2_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_NORM_L2);
+
+			/*
+			if (score >= cosine_similar_thresh)
+			{
+				confidence = score;
+				predictedLabel = picture.numFaceCompatible;
+			}
+			*/
+		}
+	}
+	if (nbElement == 0)
+		return 0;
+	return score / nbElement;
+}
+
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
 	//int predictedLabel = -1;
@@ -659,17 +705,18 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 #else
 
 
-	double cosine_similar_thresh = 0.363;
+	
 	//double l2norm_similar_thresh = 1.128;
 
 	double maxConfidence = 0.0;
 	Mat fc1;
 	bool findFaceCompatible = false;
+	CSqlFaceLabel faceLabel;
 	CSqlFacePhoto facePhoto;
 	CSqlFaceRecognition sqlfaceRecognition;
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
 	wxString fileSource = CFileUtility::GetFaceThumbnailPath(numFace);
-
+	vector<int> listLabel = faceLabel.GetAllFace();
 	if (!wxFileExists(fileSource))
 	{
 		return 0;
@@ -690,45 +737,17 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		int predictedLabel = -1;
 		double confidence = 0.0;
 
-		for (CFaceRecognitionData picture : faceRecognitonVec)
+		for (int i : listLabel)
 		{
-			wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
-
-			if (!wxFileExists(fileSource))
-			{
-				continue;
-			}
-
-			Mat aligned_face2 = imread(CConvertUtility::ConvertToStdString(fileSource));
-			if (aligned_face2.empty())
-				continue;
-
-			Mat feature2;
-			faceRecognizer->feature(aligned_face2, feature2);
-			feature2 = feature2.clone();
-
-
-			double score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
-			//double L2_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_NORM_L2);
-
-
-			if (score >= cosine_similar_thresh)
+			double score = GetNumFaceCompatibleScore(i, faceRecognitonVec, feature1);
+			if (score >= cosine_similar_thresh && score > confidence)
 			{
 				confidence = score;
-				predictedLabel = picture.numFaceCompatible;
+				predictedLabel = i;
 			}
-			/*
-			std::cout << " Cosine Similarity: " << cos_score << ", threshold: " << cosine_similar_thresh << ". (higher value means higher similarity, max 1.0)\n";
-			if (L2_score <= l2norm_similar_thresh)
-			{
-				std::cout << "They have the same identity;";
-			}
-			else
-			{
-				std::cout << "They have different identities.";
-			}
-			*/
 		}
+
+
 
 		if (predictedLabel != -1 && confidence > cosine_similar_thresh)
 		{

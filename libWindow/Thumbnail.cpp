@@ -768,10 +768,13 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
+	muEraseList.lock();
 	iconeListLocal->EraseThumbnailList();
 
 	delete iconeListLocal;
 	iconeListLocal = nullptr;
+
+	muEraseList.unlock();
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -1110,6 +1113,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		int yPos = event.GetY();
 		int iconePhotoId = -1;
 		wxSetCursor(wxCursor(wxCURSOR_HAND));
+
+		muEraseList.lock();
 		CIcone* pBitmapIcone = FindElement(xPos, yPos);
 
 		if (pBitmapIcone != nullptr)
@@ -1143,6 +1148,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 				//needtoRedraw = true;
 			}
 		}
+
+		muEraseList.unlock();
 
 		/*
 		if (needtoRedraw)

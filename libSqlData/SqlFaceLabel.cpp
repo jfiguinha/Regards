@@ -25,6 +25,8 @@ bool CSqlFaceLabel::InsertFaceLabel(const int& numFace, const wxString& faceName
 		       : false;
 }
 
+
+
 int CSqlFaceLabel::GetNumFace(const wxString& faceName)
 {
 	numFace = -1;
@@ -73,6 +75,14 @@ vector<int> CSqlFaceLabel::GetFaceLabelAlone()
 	listOfFace.clear();
 	type = 1;
 	ExecuteRequest("SELECT NumFace FROM FACE_NAME WHERE NumFace not in (select NumFace From FacePhoto)");
+	return listOfFace;
+}
+
+vector<int> CSqlFaceLabel::GetAllFace()
+{
+	listOfFace.clear();
+	type = 1;
+	ExecuteRequest("SELECT NumFace FROM FACE_NAME");
 	return listOfFace;
 }
 

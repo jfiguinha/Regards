@@ -244,5 +244,7 @@ namespace Regards::Window
 		bool firstRefresh = true;
 
 		bool needToRefresh = false;
+
+		std::mutex muEraseList;
 	};
 }

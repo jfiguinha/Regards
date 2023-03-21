@@ -22,6 +22,7 @@ namespace Regards
 			bool DeleteFaceLabelDatabase(int numFace);
 			bool DeleteFaceLabelDatabase();
 			vector<int> GetFaceLabelAlone();
+			vector<int> GetAllFace();
 
 		private:
 			int type;

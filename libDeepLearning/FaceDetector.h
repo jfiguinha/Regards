@@ -32,7 +32,7 @@ namespace Regards
 			CDetectFacePCN* detectFacePCN;
 			CDetectFace* detectFace;
 			static bool isload;
-
+			
 			static std::mutex muFaceMark;
 			static std::mutex muLoading;
 		};
