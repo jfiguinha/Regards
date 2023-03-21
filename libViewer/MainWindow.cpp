@@ -290,13 +290,17 @@ void CMainWindow::OnFaceAdd(wxCommandEvent& event)
 	changeLabel.ShowModal();
 	if (changeLabel.IsOk())
 	{
-		int numFace = event.GetId();
+		vector<int> * numFace = (vector<int> *)event.GetClientData();
 		wxString newLabel = changeLabel.GetNewLabel();
 		CSqlFaceLabel sqlFaceLabel;
-		sqlFaceLabel.InsertFaceLabel(numFace, newLabel, 1);
+		sqlFaceLabel.InsertFaceLabel(numFace->at(0), newLabel, 1);
 
 		CSqlFaceRecognition faceRecognition;
-		faceRecognition.MoveFaceRecognition(numFace, numFace);
+		for(int i = 0;i < numFace->size();i++)
+			faceRecognition.MoveFaceRecognition(numFace->at(i), numFace->at(0));
+
+		numFace->clear();
+		delete numFace;
 
 		wxWindow* window = this->FindWindowById(LISTFACEID);
 		if (window != nullptr)

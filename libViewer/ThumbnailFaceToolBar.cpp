@@ -142,10 +142,12 @@ void CThumbnailFaceToolBar::EventManager(const int& id)
 			if (windowMain != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_FACEADD);
-				int faceId = listFace->GetFaceSelectID();
-				if (faceId != -1)
+				vector<int> faceId = listFace->GetFaceSelectID();
+				if (faceId.size() > 0)
 				{
-					evt.SetId(faceId);
+					vector<int>* data = new vector<int>();
+					*data = faceId;
+					evt.SetClientData(data);
 					windowMain->GetEventHandler()->AddPendingEvent(evt);
 				}
 				else

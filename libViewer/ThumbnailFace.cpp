@@ -264,9 +264,9 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 	needToRefresh = true;
 }
 
-int CThumbnailFace::GetFaceSelectID()
+vector<int> CThumbnailFace::GetFaceSelectID()
 {
-
+	vector<int> listFace;
 	for (CInfosSeparationBar* separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
@@ -282,13 +282,13 @@ int CThumbnailFace::GetFaceSelectID()
 					if (icone->IsChecked())
 					{
 						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-						return thumbnailData->GetNumFace();
+						listFace.push_back(thumbnailData->GetNumFace());
 					}
 				}
 			}
 		}
 	}
-	return -1;
+	return listFace;
 }
 
 //-----------------------------------------------------------------

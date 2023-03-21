@@ -44,7 +44,7 @@ namespace Regards
 			wxString GetFilename(const int& numItem);
 			int ImagePrecedente();
 			int GetNumItem();
-			int CListFace::GetFaceSelectID();
+			vector<int> GetFaceSelectID();
 
 		private:
 			static void FacialDetectionRecognition(void* param);
