@@ -1,13 +1,13 @@
 #pragma once
-#include <Thumbnail.h>
 #include <InfosSeparationBar.h>
+#include "ThumbnailVertical.h"
 using namespace Regards::Window;
 
 namespace Regards::Control
 {
 	class CInfosSeparationBarEffect;
 
-	class CThumbnailEffect : public CThumbnail
+	class CThumbnailEffect : public CThumbnailVertical
 	{
 	public:
 		CThumbnailEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
@@ -19,6 +19,7 @@ namespace Regards::Control
 		wxString GetFilename();
 		wxString GetWaitingMessage() override;
 		void UpdateScroll() override;
+
 		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent); /* Définit une fonction. */
 	private:
 		//virtual void SetTheme();
@@ -28,7 +29,10 @@ namespace Regards::Control
 		                  const int& tailleBitmapHeight);
 		CInfosSeparationBarEffect* CreateNewSeparatorBar(const wxString& libelle);
 		//void SetActiveScroll(bool visible);
-		void RenderIcone(wxDC* deviceContext) override;
+		void UpdateScrollWithVScroll();
+		void RenderIconeWithVScroll(wxDC* deviceContext);
+		void ResizeThumbnailWithVScroll();
+		void ResizeThumbnail();
 
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		void ProcessIdle() override;
