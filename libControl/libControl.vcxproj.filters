@@ -112,6 +112,9 @@
     <ClCompile Include="MFTEncoding.cpp">
       <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailVerticalSeparator.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -248,6 +251,9 @@
     </ClInclude>
     <ClInclude Include="MFTEncoding.h">
       <Filter>Video\Core\Encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVerticalSeparator.h">
+      <Filter>Thumbnail\header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

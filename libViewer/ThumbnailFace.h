@@ -1,7 +1,6 @@
 #ifndef __NOFACE_DETECTION__
 #pragma once
-#include <ThumbnailVertical.h>
-#include "InfosSeparationBarFace.h"
+#include <ThumbnailVerticalSeparator.h>
 #include <FaceFilePath.h>
 using namespace Regards::Control;
 
@@ -17,7 +16,7 @@ namespace Regards::Viewer
 {
 	class CMainFrame;
 
-	class CThumbnailFace : public CThumbnailVertical
+	class CThumbnailFace : public CThumbnailVerticalSeparator
 	{
 	public:
 		CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
@@ -29,8 +28,6 @@ namespace Regards::Viewer
 		vector<int> GetFaceSelectID();
 	protected:
 		void OnMouseRelease(const int& x, const int& y) override;
-		void ResizeThumbnail() override;
-		void ResizeThumbnailWithVScroll();
 		void MoveIcone(const int& numElement, const int& numFace);
 
 	private:
@@ -43,18 +40,12 @@ namespace Regards::Viewer
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void OnPictureClick(CThumbnailData* data) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
-		CIcone* FindElement(const int& xPos, const int& yPos) override;
+
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
-		void RenderIconeWithVScroll(wxDC* dc) override;
-		void UpdateScrollWithVScroll() override;
+		CIcone* FindElement(const int& xPos, const int& yPos);
 
 
 
-		InfosSeparationBarVector listSeparator;
-		int nbElement;
-		int barseparationHeight;
-		int widthThumbnail;
-		int heightThumbnail;
 	};
 }
 

@@ -1,13 +1,12 @@
 #pragma once
-#include <InfosSeparationBar.h>
-#include "ThumbnailVertical.h"
+#include "ThumbnailVerticalSeparator.h"
 using namespace Regards::Window;
 
 namespace Regards::Control
 {
 	class CInfosSeparationBarEffect;
 
-	class CThumbnailEffect : public CThumbnailVertical
+	class CThumbnailEffect : public CThumbnailVerticalSeparator
 	{
 	public:
 		CThumbnailEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
@@ -19,8 +18,6 @@ namespace Regards::Control
 		wxString GetFilename();
 		wxString GetWaitingMessage() override;
 		void UpdateScroll() override;
-
-		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent); /* Définit une fonction. */
 	private:
 		//virtual void SetTheme();
 		void GetBitmapDimension(const int& width, const int& height, int& tailleAffichageBitmapWidth,
@@ -28,12 +25,7 @@ namespace Regards::Control
 		float CalculRatio(const int& width, const int& height, const int& tailleBitmapWidth,
 		                  const int& tailleBitmapHeight);
 		CInfosSeparationBarEffect* CreateNewSeparatorBar(const wxString& libelle);
-		//void SetActiveScroll(bool visible);
-		void UpdateScrollWithVScroll();
-		void RenderIconeWithVScroll(wxDC* deviceContext);
-		void ResizeThumbnailWithVScroll();
-		void ResizeThumbnail();
-
+		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		void ProcessIdle() override;
 		static void LoadPicture(void* param);
@@ -41,7 +33,7 @@ namespace Regards::Control
 		bool isAllProcess;
 		wxString filename;
 		int barseparationHeight;
-		InfosSeparationBarVector listSeparator;
+
 		CRegardsConfigParam* config;
 		wxString colorEffect; //L"Color Effect";
 		wxString convolutionEffect; //L"Convolution Effect";
@@ -52,8 +44,6 @@ namespace Regards::Control
 		wxString hdrEffect;
 		wxString videoLabelEffect;
 		CImageLoadingFormat* imageLoading;
-		//const CThemeThumbnail& theme_thumbnail_;
-		//const bool& test_validity_;
-		//const wxWindowID id_;
+
 	};
 }
