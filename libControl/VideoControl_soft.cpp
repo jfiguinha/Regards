@@ -1691,6 +1691,13 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		needToRefresh = false;
 		muRefresh.unlock();
 
+		if (!isffmpegDecode)
+		{
+			muBitmap.lock();
+			openclEffectYUV->TransfertData();
+			muBitmap.unlock();
+		}
+
 		delete avFrameData;
 		parentRender->Refresh();
 	}
@@ -2233,7 +2240,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				_colorSpace = 3;
 			}
 
-			cv::ocl::OpenCLExecutionContext::getCurrent().bind();
+			//cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
 			AVFrame* tmp_frame = src_frame;
