@@ -362,7 +362,7 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 
 	//out.copyTo(convertSrc);
 	local.bind();
-	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
+	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
 
