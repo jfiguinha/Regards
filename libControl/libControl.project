@@ -129,11 +129,13 @@
       <File Name="ThumbnailEffect.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="ThumbnailVerticalSeparator.h"/>
       <File Name="ThumbnailVerticalListFile.h"/>
       <File Name="ThumbnailVertical.h"/>
       <File Name="ThumbnailHorizontal.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="src">
+      <File Name="ThumbnailVerticalSeparator.cpp"/>
       <File Name="ThumbnailVerticalListFile.cpp"/>
       <File Name="ThumbnailVertical.cpp"/>
       <File Name="ThumbnailHorizontal.cpp"/>
