@@ -193,24 +193,9 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	filtreInterface->AddTreeInfos(libellesearchWindowSize, new CTreeElementValueFloat(videoEffectParameter->searchWindowSize),
 		&elementDenoiseLevel, 4);
 	
-	/*
-	Denoise 3D
-		vector<float> elementDenoiseLevel;
-	for (float i = 0; i < 30; i += 1)
-		elementDenoiseLevel.push_back(i);
 
-	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel),
-	                              &elementDenoiseLevel, 4);
-	
-	*/
-
-	/*
-	
-	**** OpenGL Denoiser **********************************
-	
 	filtreInterface->AddTreeInfos(enableOpenglDenoising, new CTreeElementValueInt(videoEffectParameter->openglDenoise),
 	                              &videoEffectParameter->openglDenoise, 2, 2);
-
 
 	vector<float> elementSigma;
 	for (float i = 1; i < 30; i += 2)
@@ -224,9 +209,6 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma),
 	                              &elementSigma, 4);
 
-	****Fin OpenGL Denoiser ****
-
-	*/
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);
 }
