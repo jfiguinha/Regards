@@ -2005,11 +2005,12 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	                                       (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
+	/*
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
 		//openclEffect->HQDn3D(videoEffectParameter.denoisingLevel);
 		//openclEffect->NLMeansDenoise(videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-	}
+	*/
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	cv::UMat data = openclEffect->GetUMat(false);
@@ -2086,14 +2087,16 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 	                                                   flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
+	/*
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
 		if (hq3d == nullptr)
-			hq3d = new Chqdn3d(widthOutput, heightOutput, videoEffectParameter.denoisingLevel);
+			hq3d = new Chqdn3d(widthOutput, heightOutput, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 		else
-			hq3d->UpdateParameter(widthOutput, heightOutput, videoEffectParameter.denoisingLevel);
+			hq3d->UpdateParameter(widthOutput, heightOutput, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 		hq3d->ApplyDenoise3D(bitmapOut);
 	}
+	*/
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
@@ -2224,6 +2227,17 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 	if (!enableopenCL || (src_frame->format != AV_PIX_FMT_YUV420P && src_frame->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
+		int nWidth = src_frame->width;
+		int nHeight = src_frame->height;
+		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
+		{
+			if (hq3d == nullptr)
+				hq3d = new Chqdn3d(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+			else
+				hq3d->UpdateParameter(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+			uint8_t* outData = hq3d->ApplyDenoise3D(src_frame->data[0], src_frame->linesize[0], nHeight);
+			memcpy(src_frame->data[0], outData, src_frame->linesize[0] * nHeight);
+		}
 		cv::Mat bitmapData = GetBitmapRGBA(src_frame);
 		muBitmap.lock();
 		bitmapData.copyTo(pictureFrame);
