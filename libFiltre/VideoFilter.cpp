@@ -56,6 +56,10 @@ CVideoFilter::CVideoFilter()
 	enableFilmgrain = CLibResource::LoadStringFromResource(L"LBLFILMGRAIN", 1);
 	libelleScale = CLibResource::LoadStringFromResource(L"LBLPICTUREFORMAT", 1);
 	libelleZoom = CLibResource::LoadStringFromResource(L"LBLZOOMPICTURE", 1);
+
+
+	libelleTemplateWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingTemplate", 1);
+	libellesearchWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSearchWindowSize", 1);
 }
 
 CVideoFilter::~CVideoFilter()
@@ -179,14 +183,34 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	                              &videoEffectParameter->denoiseEnable, 2, 2);
 
 	vector<float> elementDenoiseLevel;
+	for (float i = 1; i < 30; i += 2)
+		elementDenoiseLevel.push_back(i);
+
+	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel),
+	                              &elementDenoiseLevel, 4);
+	filtreInterface->AddTreeInfos(libelleTemplateWindowSize, new CTreeElementValueFloat(videoEffectParameter->templateWindowSize),
+		&elementDenoiseLevel, 4);
+	filtreInterface->AddTreeInfos(libellesearchWindowSize, new CTreeElementValueFloat(videoEffectParameter->searchWindowSize),
+		&elementDenoiseLevel, 4);
+
+	/*
+	Denoise 3D
+		vector<float> elementDenoiseLevel;
 	for (float i = 0; i < 30; i += 1)
 		elementDenoiseLevel.push_back(i);
 
 	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel),
 	                              &elementDenoiseLevel, 4);
+	
+	*/
 
+	/*
+	
+	**** OpenGL Denoiser **********************************
+	
 	filtreInterface->AddTreeInfos(enableOpenglDenoising, new CTreeElementValueInt(videoEffectParameter->openglDenoise),
 	                              &videoEffectParameter->openglDenoise, 2, 2);
+
 
 	vector<float> elementSigma;
 	for (float i = 1; i < 30; i += 2)
@@ -200,7 +224,9 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma),
 	                              &elementSigma, 4);
 
+	****Fin OpenGL Denoiser ****
 
+	*/
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);
 }
@@ -372,5 +398,13 @@ void CVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEle
 	else if (key == enableOpenglDenoising)
 	{
 		videoEffectParameter->openglDenoise = value;
+	}
+	else if (key == libelleTemplateWindowSize)
+	{
+		videoEffectParameter->templateWindowSize = value;
+	}
+	else if (key == libellesearchWindowSize)
+	{
+		videoEffectParameter->searchWindowSize = value;
 	}
 }

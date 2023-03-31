@@ -61,6 +61,9 @@ namespace Regards
 			                                      const int& bicubic, int ratio);
 
 			void SetNV12(const cv::Mat& yuv);
+			void SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, const int& width,
+				const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
+				const int& colorRange, const int& colorSpace);
 			void SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width,
 			             const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
 			             const int& colorRange, const int& colorSpace);
@@ -73,6 +76,7 @@ namespace Regards
 
 			void HQDn3D(const double& LumSpac, const double& ChromSpac = 4, const double& LumTmp = 3,
 			            const double& ChromTmp = 3);
+			void NLMeansDenoise(const double& coeff, const double& templateWindowSize, const double& searchWindowSize);
 			void FlipVertical();
 			void ConvertToBgr();
 			bool StabilizeVideo(COpenCVStabilization* stabilization);

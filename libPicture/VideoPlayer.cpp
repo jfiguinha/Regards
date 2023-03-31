@@ -613,8 +613,13 @@ CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware) : 
 		{
 			ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware),
 			                           CConvertUtility::ConvertToUTF8(filename));
-			delete pimpl;
-			pimpl = new CVideoPlayerPimpl();
+
+			if (ret <= 0)
+			{
+				delete pimpl;
+				pimpl = new CVideoPlayerPimpl();
+			}
+
 		}
 
 		if (ret <= 0)

@@ -564,6 +564,12 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		filepath = saveFileDialog.GetPath();
 		int index = saveFileDialog.GetFilterIndex();
 
+		wxWindow * videoWindow = this->FindWindowById(SHOWBITMAPVIEWERID);
+		if (videoWindow != nullptr)
+		{
+			wxCommandEvent event(wxEVENT_PAUSEMOVIE);
+			wxPostEvent(videoWindow, event);
+		}
 
 		wxFileName file_path(filepath);
 		wxString extension = file_path.GetExt();
@@ -592,6 +598,8 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	auto compressAudioVideoOption = new CompressionAudioVideoOption(this);
 
 	compressAudioVideoOption->SetFile(filename, filepath);
+
+
 
 	compressAudioVideoOption->ShowModal();
 	wxString filename_in = filename;

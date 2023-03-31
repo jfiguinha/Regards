@@ -160,6 +160,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CShowElement::OnControlSize));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowElement::OnSetPosition));
 	Connect(wxEVENT_ROTATEDETECT, wxCommandEventHandler(CShowElement::OnRotateDetect));
+	Connect(wxEVENT_PAUSEMOVIE, wxCommandEventHandler(CShowElement::OnPauseVideo));
 
 	//--------------------------------------------------------------------
 	//Video
@@ -1252,6 +1253,11 @@ void CShowElement::PlayVideo()
 void CShowElement::RepeatVideo()
 {
 	videoWindow->RepeatVideo();
+}
+
+void CShowElement::OnPauseVideo(wxCommandEvent& event)
+{
+	PauseVideo();
 }
 
 void CShowElement::PauseVideo()

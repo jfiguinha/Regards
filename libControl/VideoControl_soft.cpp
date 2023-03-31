@@ -119,6 +119,7 @@ vector<int> CVideoControlSoft::GetListCommand()
 	list.push_back(EVENT_VIDEOROTATION);
 	list.push_back(wxEVENT_UPDATEMOVIETIME);
 	list.push_back(wxEVENT_UPDATEFRAME);
+	list.push_back(wxEVENT_PAUSEMOVIE);
 	return list;
 }
 
@@ -181,7 +182,16 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 	case wxEVENT_UPDATEFRAME:
 		OnSetData(event);
 		break;
+
+	case wxEVENT_PAUSEMOVIE:
+		OnPauseMovie(event);
+		break;
 	}
+}
+
+void CVideoControlSoft::OnPauseMovie(wxCommandEvent& event)
+{
+	OnPause();
 }
 
 void CVideoControlSoft::SetParent(wxWindow* parent)
@@ -1996,7 +2006,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
-		openclEffect->HQDn3D(videoEffectParameter.denoisingLevel);
+		//openclEffect->HQDn3D(videoEffectParameter.denoisingLevel);
+		//openclEffect->NLMeansDenoise(videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 	}
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
@@ -2247,9 +2258,22 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
 				muBitmap.lock();
-				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				                         tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				                         tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				//Test if denoising Effect
+				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
+				{
+					cv::Mat yChannel(nHeight, tmp_frame->linesize[0], CV_8UC1, tmp_frame->data[0]);
+					cv::UMat out;
+					yChannel.copyTo(out);
+					fastNlMeansDenoising(out, out, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+					openclEffectYUV->SetNV12(out, tmp_frame->data[1],
+						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+
+				}
+				else
+					openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+											 tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+											 tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)

@@ -64,5 +64,8 @@ namespace Regards::Filter
 		wxString libelleAutoContrast;
 		wxString libelleStabilize;
 		wxString libelleStabilizeNbFrame;
+		wxString libelleTemplateWindowSize;
+		wxString libellesearchWindowSize;
+
 	};
 }

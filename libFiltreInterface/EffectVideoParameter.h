@@ -70,7 +70,7 @@ public:
 		uKSigma = 2;
 		openglDenoise = false;
 
-		denoisingLevel = 4;
+		denoisingLevel = 3;
 
 		effectEnable = 0;
 

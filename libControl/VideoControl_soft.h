@@ -123,6 +123,7 @@ protected:
 	void EndVideoThread(wxCommandEvent& event);
 	void VideoRotation(wxCommandEvent& event);
 	void OnScrollMove(wxCommandEvent& event);
+	void OnPauseMovie(wxCommandEvent& event);
 	void OnVideoDuration(wxCommandEvent& event);
 	void OnShowFPS(wxTimerEvent& event);
 	void OnPlayStart(wxTimerEvent& event);

@@ -121,6 +121,7 @@ namespace Regards
 			void OnRotateDetect(wxCommandEvent& event);
 			void OnControlSize(wxCommandEvent& event);
 			void OnSetPosition(wxCommandEvent& event);
+			void OnPauseVideo(wxCommandEvent& event);
 
 			static void RotateRecognition(void* param);
 
