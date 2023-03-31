@@ -393,6 +393,8 @@
         <Library Value="lz4"/>
         <Library Value="zstd"/>
         <Library Value="gomp"/>
+        <Library Value="wayland-client"/>
+        <Library Value="wayland-egl"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -539,8 +541,6 @@
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
-        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o</Command>
-        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o.d</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
