@@ -55,8 +55,7 @@ namespace Regards::FiltreEffet
 		int RedEye() override { return -1; };
 		int HistogramNormalize() override { return -1; };
 		int HistogramEqualize() override { return -1; };
-		int HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp,
-		           const double& ChromTmp) override;
+		int HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault) override;
 		wxImage GetwxImage() override;
 		void SetBitmap(CImageLoadingFormat* bitmap) override;
 		int FlipVertical() override;

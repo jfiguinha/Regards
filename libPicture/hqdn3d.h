@@ -4,9 +4,14 @@ class CRegardsBitmap;
 class Chqdn3d
 {
 public:
-	Chqdn3d(const int& w, const int& h, const double& LumSpac = 4, const double& LumTmp = 6);
+	/*
+#define HQDN3D_SPATIAL_LUMA_DEFAULT    4.0f
+#define HQDN3D_SPATIAL_CHROMA_DEFAULT  3.0f
+#define HQDN3D_TEMPORAL_LUMA_DEFAULT   6.0f
+*/
+	Chqdn3d(const int& w, const int& h, const double& LumSpac = 4, const double& temporalLumaDefault=6.0, const double& temporalSpatialLumaDefault=4.0);
 	~Chqdn3d();
-	void UpdateParameter(const int& w, const int& h, const double& LumSpac);
+	void UpdateParameter(const int& w, const int& h, const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
 	int ApplyDenoise3D(cv::Mat& bitmapIn);
 	uint8_t* ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h);
 
@@ -43,4 +48,5 @@ private:
 	unsigned short* Line = nullptr;
 	uint8_t* picture_y = nullptr;
 	double spatial_luma = 0;
+	double temporal_luma = 0;
 };

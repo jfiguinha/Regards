@@ -32,8 +32,10 @@ namespace Regards
 			void Sharpen(cv::UMat& inputData);
 			void Edge(cv::UMat& inputData);
 			void SharpenStrong(cv::UMat& inputData);
-			void HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp,
+			void HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
 			            cv::UMat& inputData);
+			uint8_t* HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
+				cv::Mat& inputData);
 			//cv::UMat Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cv::UMat & inputData);
 			void FiltreConvolution(const wxString& programName, const wxString& functionName, cv::UMat& inputData);
 			void MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, const int& size,

@@ -620,8 +620,36 @@ void COpenCLEffectVideo::NLMeansDenoise(const double& coeff, const double & temp
 	}
 }
 
-void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp,
-                                const double& ChromTmp)
+
+
+uint8_t* COpenCLEffectVideo::HQDn3D(uint8_t * y, int width, int height, const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
+{
+	uint8_t* dataOut = nullptr;
+	try
+	{
+
+		if (hq3d == nullptr)
+			hq3d = new Chqdn3d(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+		else if (hq3d != nullptr)
+		{
+			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+		}
+
+		dataOut = hq3d->ApplyDenoise3D(y, width, height);
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return dataOut;
+}
+
+// LumSpac, temporalLumaDefault, temporalSpatialLumaDefault
+void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
 	try
 	{
@@ -644,10 +672,10 @@ void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& ChromSpac, 
 		}
 
 		if (hq3d == nullptr)
-			hq3d = new Chqdn3d(width, height, LumSpac);
+			hq3d = new Chqdn3d(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 		else if (hq3d != nullptr)
 		{
-			hq3d->UpdateParameter(width, height, LumSpac);
+			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 		}
 
 		std::vector<cv::Mat> planes(3);

@@ -13,6 +13,7 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
+#include <opencv2/xphoto.hpp>
 #include <picture_utility.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
@@ -2261,11 +2262,19 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				//Test if denoising Effect
 				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 				{
+					/*
 					cv::Mat yChannel(nHeight, tmp_frame->linesize[0], CV_8UC1, tmp_frame->data[0]);
-					cv::UMat out;
-					yChannel.copyTo(out);
+					cv::UMat yChannelOut;
+					yChannel.copyTo(yChannelOut);
 					fastNlMeansDenoising(out, out, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-					openclEffectYUV->SetNV12(out, tmp_frame->data[1],
+
+					openclEffectYUV->SetNV12(yChannelOut, tmp_frame->data[1],
+						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+					*/
+
+					uint8_t * outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+					openclEffectYUV->SetNV12(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 
@@ -2279,10 +2288,22 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
 				muBitmap.lock();
-				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				                            tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-				                            tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				                            tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
+				{
+					uint8_t* outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+					openclEffectYUV->SetYUV420P(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+						tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				}
+				else
+				{
+					openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+						tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
+				}
+
 				muBitmap.unlock();
 			}
 		}

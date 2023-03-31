@@ -17,7 +17,7 @@ public:
 	cv::Mat GetMat() override;
 	int RedEye() override;
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace) override;
-	int HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp) override;
+	int HQDn3D(const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0) override;
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP) override;
 	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize,
 	                  const int& searchWindowSize) override;

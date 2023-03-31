@@ -183,7 +183,7 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	                              &videoEffectParameter->denoiseEnable, 2, 2);
 
 	vector<float> elementDenoiseLevel;
-	for (float i = 1; i < 30; i += 2)
+	for (float i = 1; i < 30; i += 1)
 		elementDenoiseLevel.push_back(i);
 
 	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel),
@@ -192,7 +192,7 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 		&elementDenoiseLevel, 4);
 	filtreInterface->AddTreeInfos(libellesearchWindowSize, new CTreeElementValueFloat(videoEffectParameter->searchWindowSize),
 		&elementDenoiseLevel, 4);
-
+	
 	/*
 	Denoise 3D
 		vector<float> elementDenoiseLevel;

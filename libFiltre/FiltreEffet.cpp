@@ -506,9 +506,9 @@ void CFiltreEffet::SetPreview(const bool& value)
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffet::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
+int CFiltreEffet::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
-	int value = filtreEffet->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp);
+	int value = filtreEffet->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	return value;
 }
 

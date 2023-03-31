@@ -1130,15 +1130,39 @@ void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 	}
 }
 
-void COpenCLFilter::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp,
-                           UMat& inputData)
+uint8_t * COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
+	Mat& inputData)
 {
+	uint8_t* dataOut = nullptr;
 	if (hq3d == nullptr)
-		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, LumTmp);
+		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	else if (oldLevelDenoise != LumSpac || inputData.cols != oldwidthDenoise || inputData.rows != oldheightDenoise)
 	{
 		delete hq3d;
-		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, LumTmp);
+		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+	}
+	try
+	{
+		dataOut = hq3d->ApplyDenoise3D(inputData.data, inputData.cols, inputData.rows);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+	return dataOut;
+}
+
+void COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
+                           UMat& inputData)
+{
+	if (hq3d == nullptr)
+		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+	else if (oldLevelDenoise != LumSpac || inputData.cols != oldwidthDenoise || inputData.rows != oldheightDenoise)
+	{
+		delete hq3d;
+		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	}
 	try
 	{

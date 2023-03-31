@@ -73,9 +73,8 @@ namespace Regards
 			                const int& heightOut, const int& colorRange, const int& colorSpace);
 			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,
 			                const int& nWidth, const int& nHeight);
-
-			void HQDn3D(const double& LumSpac, const double& ChromSpac = 4, const double& LumTmp = 3,
-			            const double& ChromTmp = 3);
+			uint8_t* HQDn3D(uint8_t* y, int width, int height, const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
+			void HQDn3D(const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
 			void NLMeansDenoise(const double& coeff, const double& templateWindowSize, const double& searchWindowSize);
 			void FlipVertical();
 			void ConvertToBgr();

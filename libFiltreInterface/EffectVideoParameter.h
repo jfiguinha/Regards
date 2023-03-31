@@ -70,7 +70,9 @@ public:
 		uKSigma = 2;
 		openglDenoise = false;
 
-		denoisingLevel = 3;
+		denoisingLevel = 4;
+		templateWindowSize = 6;
+		searchWindowSize = 4;
 
 		effectEnable = 0;
 

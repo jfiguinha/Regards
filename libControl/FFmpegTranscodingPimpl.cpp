@@ -1935,7 +1935,7 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 				}
 				if (videoCompressOption->videoEffectParameter.denoiseEnable)
 				{
-					filtre.HQDn3D(videoCompressOption->videoEffectParameter.denoisingLevel, 4, 3, 3);
+					filtre.HQDn3D(videoCompressOption->videoEffectParameter.denoisingLevel, 6, 4);
 				}
 				if (videoCompressOption->videoEffectParameter.sepiaEnable)
 				{

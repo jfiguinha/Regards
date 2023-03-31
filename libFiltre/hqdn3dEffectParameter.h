@@ -6,10 +6,7 @@ class Chqdn3dEffectParameter : public CEffectParameter
 public:
 	Chqdn3dEffectParameter(): width(0), height(0)
 	{
-		LumSpac = 4;
-		ChromSpac = 4;
-		LumTmp = 3;
-		ChromTmp = 3;
+
 	}
 	;
 
@@ -17,10 +14,11 @@ public:
 	{
 	};
 
-	double LumSpac;
-	double ChromSpac;
-	double LumTmp;
-	double ChromTmp;
+
+
+	double LumSpac = 4;
+	double temporalLumaDefault = 6.0;
+	double temporalSpatialLumaDefault = 4.0;
 	int width;
 	int height;
 };

@@ -1410,8 +1410,7 @@ int CFiltreEffetCPU::HistogramEqualize()
 	return 0;
 }
 
-int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp,
-                            const double& ChromTmp)
+int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
 	Mat image;
 	if (preview)
@@ -1421,13 +1420,13 @@ int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& ChromSpac, cons
 
 	if (hq3d == nullptr)
 	{
-		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, LumTmp);
+		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	}
 	else if (oldLevelDenoise != LumSpac || image.size().width != oldwidthDenoise || image.size().height
 		!= oldheightDenoise)
 	{
 		delete hq3d;
-		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, LumTmp);
+		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	}
 
 	hq3d->ApplyDenoise3D(image);

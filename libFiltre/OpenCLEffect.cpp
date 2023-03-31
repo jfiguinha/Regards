@@ -84,16 +84,16 @@ int COpenCLEffect::GetHeight()
 	return input.rows;
 }
 
-int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
+int COpenCLEffect::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
 	{
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput);
+			openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, paramOutput);
 		}
 		else
 		{
-			openclFilter->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input);
+			openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, input);
 		}
 	}
 	return 0;

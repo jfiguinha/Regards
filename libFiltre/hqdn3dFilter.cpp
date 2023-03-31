@@ -88,16 +88,13 @@ void Chqdn3dFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEl
 	}
 	else if (key == libelleChromSpac)
 	{
-		hqdn3dParameter->ChromSpac = value;
+		hqdn3dParameter->temporalLumaDefault = value;
 	}
 	else if (key == libelleLumTmp)
 	{
-		hqdn3dParameter->LumTmp = value;
+		hqdn3dParameter->temporalSpatialLumaDefault = value;
 	}
-	else if (key == libelleChromTmp)
-	{
-		hqdn3dParameter->ChromTmp = value;
-	}
+
 }
 
 
@@ -120,8 +117,7 @@ CImageLoadingFormat* Chqdn3dFilter::ApplyEffect(CEffectParameter* effectParamete
 			filter->SetBitmap(&image);
 
 			auto hqdn3dParameter = static_cast<Chqdn3dEffectParameter*>(effectParameter);
-			filter->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp,
-			               hqdn3dParameter->ChromTmp);
+			filter->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->temporalLumaDefault, hqdn3dParameter->temporalSpatialLumaDefault);
 			imageLoad = new CImageLoadingFormat();
 			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
@@ -136,7 +132,7 @@ void Chqdn3dFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* ef
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
 		auto hq3dn = static_cast<Chqdn3dEffectParameter*>(effectParameter);
-		filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
+		filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->temporalLumaDefault, hq3dn->temporalSpatialLumaDefault);
 	}
 }
 
@@ -154,9 +150,8 @@ CEffectParameter* Chqdn3dFilter::GetDefaultEffectParameter()
 {
 	auto hq3deffect = new Chqdn3dEffectParameter();
 	hq3deffect->LumSpac = 4;
-	hq3deffect->ChromSpac = 4;
-	hq3deffect->LumTmp = 3;
-	hq3deffect->ChromTmp = 3;
+	hq3deffect->temporalLumaDefault = 6;
+	hq3deffect->temporalSpatialLumaDefault = 4;
 	return hq3deffect;
 }
 
@@ -173,6 +168,6 @@ void Chqdn3dFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, 
 	if (effectParameter != nullptr && !source.empty())
 	{
 		auto hq3dn = static_cast<Chqdn3dEffectParameter*>(effectParameter);
-		filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
+		filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->temporalLumaDefault, hq3dn->temporalSpatialLumaDefault);
 	}
 }
