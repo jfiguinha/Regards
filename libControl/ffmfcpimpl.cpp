@@ -849,19 +849,19 @@ int CFFmfcPimpl::video_thread(void* arg)
 	int last_vfilter_idx = 0;
 #endif
 
-	if (!frame)
-		return AVERROR(ENOMEM);
+    if (!frame)
+        return AVERROR(ENOMEM);
 
-	for (;;)
-	{
-		ret = is->_pimpl->get_video_frame(is, frame);
-		if (ret < 0)
-			goto the_end;
-		if (!ret)
-			continue;
+    for (;;)
+    {
+        ret = is->_pimpl->get_video_frame(is, frame);
+        if (ret < 0)
+            goto the_end;
+        if (!ret)
+            continue;
 
-		AVRational tb_frame = {frame_rate.den, frame_rate.num};
-		duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
+        AVRational tb_frame = {frame_rate.den, frame_rate.num};
+        duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
 		pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
 		ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
 		av_frame_unref(frame);

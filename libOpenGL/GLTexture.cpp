@@ -62,7 +62,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 	//printf("convertToGLTexture2D \n");
 	bool isOk = true;
 
-	printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
+	//printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
 	cl_int status = 0;
 
 	if (isOpenCLCompatible)
