@@ -102,7 +102,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                       continue;
                 }
 
-                if(!wxFileExists(fileToTest) && libPath.find("3.2.0.1.0.dylib")==wxNOT_FOUND)
+                if(!wxFileExists(fileToTest) && libPath.find("3.2.0.2.1.dylib")==wxNOT_FOUND)
                 {
                    // printf("copyFile \n");
                     copyFile[outputFilename] = toWrite + " " + fileToTest;
