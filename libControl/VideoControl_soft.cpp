@@ -33,6 +33,7 @@ using namespace Regards::Sqlite;
 #define TIMER_PLAYSTART 0x10002
 #define TIMER_PLAYSTOP 0x10003
 
+extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
 
 class CDataAVFrame
@@ -1274,7 +1275,13 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		delete glTextureOutput;
 
 	if (!videoStartRender)
-		playStartTimer->Start(100, true);
+    {
+        if(firstElementToShow)
+            playStartTimer->Start(1000, true);
+        else
+            playStartTimer->Start(100, true);
+    }
+		
 	videoStartRender = true;
 }
 
@@ -1326,7 +1333,7 @@ void CVideoControlSoft::OnPlay()
 	}
 	else
 	{
-		PlayMovie(filename, true);
+		PlayMovie(filename, false);
 	}
 
 	pause = false;

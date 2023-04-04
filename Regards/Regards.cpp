@@ -23,6 +23,8 @@
 
 
 bool isOpenCLInitialized = false;
+bool firstElementToShow = true;
+int numElementToLoad = 0;
 
 using namespace cv;
 using namespace Regards::Picture;
