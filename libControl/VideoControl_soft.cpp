@@ -96,6 +96,7 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
+    
 }
 
 vector<int> CVideoControlSoft::GetListTimer()
@@ -918,8 +919,23 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
+    wxString hardwareDecoder = "";
+    CRegardsConfigParam* config = CParamInit::getInstance();
+    if (config != nullptr)
+        hardwareDecoder = config->GetHardwareDecoder();
+    
 	ffmfc->SetFile(this, filename,
-	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
+                   isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
+}
+
+wxString CVideoControlSoft::GetAcceleratorHardware()
+{
+    wxString hardwareDecoder = "";
+    CRegardsConfigParam* config = CParamInit::getInstance();
+    if (config != nullptr)
+        hardwareDecoder = config->GetHardwareDecoder();
+    
+    return isHardwareDecoder ? hardwareDecoder : "none";
 }
 
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
@@ -969,6 +985,12 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		{
 			PlayMovie(filename, true);
 		}
+        
+        if(startVideoAfterProblem)
+        {
+            PlayMovie(filename, true);
+            startVideoAfterProblem = false;
+        }
 	}
 }
 
@@ -1035,7 +1057,7 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 
 bool CVideoControlSoft::IsHardwareCompatible()
 {
-	return true;
+	return isHardwareDecoder;
 }
 
 void CVideoControlSoft::PlayFirstMovie(const bool& firstMovie)
@@ -1050,63 +1072,68 @@ void CVideoControlSoft::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
 
 int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
-	if (videoEnd || stopVideo)
-	{
-		if (thumbnailVideo != nullptr)
-			delete thumbnailVideo;
-
-		if (localContext != nullptr)
-			sws_freeContext(localContext);
-		localContext = nullptr;
-
-		thumbnailVideo = new CThumbnailVideo(movie, true);
-
-		if (openCVStabilization != nullptr)
-			delete openCVStabilization;
-
-		openCVStabilization = nullptr;
-
-		if (playStopTimer->IsRunning())
-			playStopTimer->Stop();
-
-		if (playStartTimer->IsRunning())
-			playStartTimer->Stop();
-		startVideo = true;
-		stopVideo = false;
-		videoStartRender = false;
-		angle = 0;
-		flipV = false;
-		flipH = false;
-		videoStart = false;
-		newVideo = true;
-		initStart = true;
-		videoRenderStart = false;
-		filename = movie;
-		standByMovie = "";
-		pause = false;
-		firstMovie = true;
-
-		colorRange = CMediaInfo::GetColorRange(movie);
-		colorSpace = CMediaInfo::GetColorSpace(movie);
-
-		/*
-		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
-					   IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
-					   firstMovie ? 0 : GetSoundVolume());
-		*/
-		muVideoEffect.lock();
-		videoEffectParameter.ratioSelect = 0;
-		muVideoEffect.unlock();
-
-		firstMovie = false;
-		parentRender->Refresh();
-	}
-	else if (movie != filename)
-	{
-		OnStop(movie);
-	}
-	return 0;
+    if(movie != filename)
+    {
+        isHardwareDecoder = true;
+    }
+    return Play(movie);
 }
+
+int CVideoControlSoft::Play(const wxString& movie)
+{
+    if (videoEnd || stopVideo)
+    {
+        if (thumbnailVideo != nullptr)
+            delete thumbnailVideo;
+
+        if (localContext != nullptr)
+            sws_freeContext(localContext);
+        localContext = nullptr;
+
+        thumbnailVideo = new CThumbnailVideo(movie, true);
+
+        if (openCVStabilization != nullptr)
+            delete openCVStabilization;
+
+        openCVStabilization = nullptr;
+
+        if (playStopTimer->IsRunning())
+            playStopTimer->Stop();
+
+        if (playStartTimer->IsRunning())
+            playStartTimer->Stop();
+        startVideo = true;
+        stopVideo = false;
+        videoStartRender = false;
+        angle = 0;
+        flipV = false;
+        flipH = false;
+        videoStart = false;
+        newVideo = true;
+        initStart = true;
+        videoRenderStart = false;
+        filename = movie;
+        standByMovie = "";
+        pause = false;
+        firstMovie = true;
+
+        colorRange = CMediaInfo::GetColorRange(movie);
+        colorSpace = CMediaInfo::GetColorSpace(movie);
+
+        muVideoEffect.lock();
+        videoEffectParameter.ratioSelect = 0;
+        muVideoEffect.unlock();
+
+        firstMovie = false;
+        parentRender->Refresh();
+    }
+    else if (movie != filename)
+    {
+        OnStop(movie);
+    }
+    return 0;
+}
+
 
 void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 {
@@ -1305,6 +1332,22 @@ int CVideoControlSoft::ChangeAudioStream(int newStreamAudio)
 	parentRender->GetEventHandler()->AddPendingEvent(evt);
 	return 0;
 }
+
+
+void CVideoControlSoft::ErrorDecodingFrame()
+{
+    if(!startVideoAfterProblem)
+    {
+        isHardwareDecoder = false;
+        startVideoAfterProblem = true;
+        ffmfc->Quit(); 
+    }
+
+    //Play(filename);
+    //wxCommandEvent evt(wxEVENT_STOPVIDEO);
+    //parentRender->GetEventHandler()->AddPendingEvent(evt);
+}
+
 
 void CVideoControlSoft::OnPlay()
 {

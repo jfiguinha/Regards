@@ -1575,6 +1575,10 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 
 	hw_pix_fmt = AV_PIX_FMT_NONE;
 	fprintf(stderr, "Failed to get HW surface format.\n");
+
+    if (dlg != nullptr)
+        dlg->ErrorDecodingFrame();
+    
 	return AV_PIX_FMT_NONE;
 }
 
@@ -1632,6 +1636,14 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 							frame->pts = frame->pkt_dts;
 						}
 					}
+                    /*
+                    if (ret < 0)
+                    {
+                        acceleratorHardware = "none";
+                        if (dlg != nullptr)
+                            dlg->ErrorDecodingFrame();
+                    }
+                    */
 					break;
 				case AVMEDIA_TYPE_AUDIO:
 					ret = avcodec_receive_frame(d->avctx, frame);
@@ -1900,11 +1912,6 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		return -1;
 
 	bool isSuccess = false;
-	acceleratorHardware = "";
-
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		acceleratorHardware = config->GetHardwareDecoder();
 
 	avctx = avcodec_alloc_context3(NULL);
 	if (!avctx)
@@ -1978,15 +1985,15 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres)
 			av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
+        if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+        {
+            if (acceleratorHardware != "" && acceleratorHardware != "none")
+            {
+                AVStream* video = ic->streams[stream_index];
+                isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
+            }
+        }
 
-		if ((acceleratorHardware != "" || acceleratorHardware != "none") && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
-		{
-			if (!isSuccess)
-			{
-				AVStream* video = ic->streams[stream_index];
-				isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
-			}
-		}
 
 		if (!isSuccess)
 		{

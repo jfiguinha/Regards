@@ -22,7 +22,8 @@ public:
 	virtual void SetData(void* data, const float& sample_aspect_ratio, void* WIN32Context) = 0;
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
-
+    virtual void ErrorDecodingFrame() = 0;
+    virtual wxString GetAcceleratorHardware() = 0;
 	virtual void SetSubtitulePicture(cv::Mat& picture) = 0;
 	virtual void DeleteSubtitulePicture() = 0;
 

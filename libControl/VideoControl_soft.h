@@ -115,6 +115,8 @@ public:
 	vector<int> GetListCommand() override;
 	void SetEndProgram(const bool& endProgram) override;
 	int UpdateResized() override;
+    
+    wxString GetAcceleratorHardware();
 
 protected:
 	void OnSetPosition(wxCommandEvent& event);
@@ -131,6 +133,8 @@ protected:
 	void OnSetPos(wxCommandEvent& event);
 	void OnSetData(wxCommandEvent& event);
 
+    void ErrorDecodingFrame();
+    
 	void CalculPositionPicture(const float& x, const float& y);
 	static void GenerateThumbnailVideo(void* data);
 	int IsSupportOpenCL();
@@ -185,6 +189,7 @@ protected:
 	float GetMovieRatio();
 	Chqdn3d* hq3d = nullptr;
 	cv::Mat GetBitmapRGBA(AVFrame* tmp_frame);
+    int Play(const wxString& movie);
 
 	bool openclOpenGLInterop = false;
 	int mouseScrollX = 0;
@@ -219,6 +224,8 @@ protected:
 	mutex muVideoEffect;
 	mutex muVideoRender;
 	mutex muSubtitle;
+    
+    bool isHardwareDecoder = true;
 
 	bool videoRender = false;;
 	bool videoStartRender = false;
@@ -285,4 +292,6 @@ protected:
 	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
+    
+    bool startVideoAfterProblem = false;
 };
