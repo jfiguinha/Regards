@@ -32,7 +32,9 @@ extern "C" {
 #include <leptonica/allheaders.h>
 #include <leptonica/environ.h>
 #include <leptonica/pix.h>
-//#include <leptonica/pix_internal.h>
+#ifdef __WXGTK__
+#include <leptonica/pix_internal.h>
+#endif
 }
 
 enum

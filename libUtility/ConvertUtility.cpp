@@ -65,7 +65,7 @@ const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 wxString CConvertUtility::GetTimeLibelle(const int& secs)
 {
 	char timestring[9];
-	printf("GetTimeLibelle %d secs \n", secs);
+	//printf("GetTimeLibelle %d secs \n", secs);
 	if(secs > 0)
 	{
 		uint32_t hh = secs / 3600;
