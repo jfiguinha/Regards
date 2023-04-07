@@ -85,8 +85,6 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			{
 				status = clFinish(q); // TODO Use events
 			}
-			if (status == CL_SUCCESS)
-				printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
 			else
 			{
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
