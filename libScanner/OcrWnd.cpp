@@ -32,7 +32,7 @@ extern "C" {
 #include <leptonica/allheaders.h>
 #include <leptonica/environ.h>
 #include <leptonica/pix.h>
-#ifdef __WXGTK__
+#ifndef __APPLE__
 #include <leptonica/pix_internal.h>
 #endif
 }
