@@ -1738,7 +1738,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
-	int ret;
+	int ret = 0;
 	/*
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
