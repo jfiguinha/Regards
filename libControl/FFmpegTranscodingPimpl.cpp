@@ -825,6 +825,10 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 
 		if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "amf")
 			av_dict_set(&param, "rc", "vbr_peak", 0);
+
+
+		if (codec_id == AV_CODEC_ID_AV1)
+			av_dict_set(&param, "rc", "SVT_AV1_RC_MODE_VBR", 0);
 	}
 	else
 	{
@@ -916,6 +920,17 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 			pCodecCtx->global_quality = videoCompressOption->videoCompressionValue;
 
 			//hb_log("encavcodec: encoding at constant quality %d", context->global_quality);
+		}
+		else if (codec_id == AV_CODEC_ID_AV1)
+		{
+			char quality[7];
+			snprintf(quality, 7, "%.2d", videoCompressOption->videoCompressionValue);
+			av_dict_set(&param, "rc", "SVT_AV1_RC_MODE_CQP_OR_CRF", 0);
+			av_dict_set(&param, "qp", quality, 0);
+			av_dict_set(&param, "force_key_frames", "1", 0);
+			//pCodecCtx->max_b_frames = 1;
+			pCodecCtx->flags |= AV_CODEC_FLAG_QSCALE;
+			pCodecCtx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
 		}
 		else
 		{
@@ -1024,6 +1039,8 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		{
 			if (videoCompressOption->encoder_profile.Lower() == "main")
 				av_dict_set(&param, "profile", "main", 0);
+			else if (videoCompressOption->encoder_profile.Lower() == "high")
+				av_dict_set(&param, "profile", "high", 0);
 			else if (videoCompressOption->encoder_profile.Lower() == "high")
 				av_dict_set(&param, "profile", "high", 0);
 		}
