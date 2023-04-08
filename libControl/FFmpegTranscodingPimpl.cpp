@@ -51,6 +51,33 @@ static const char* hb_h265_level_names[] = {
 	"5.0", "5.1", "5.2", "6.0", "6.1", "6.2", nullptr,
 };
 
+static const char* const hb_av1_profile_names[] = {
+	"auto", "main", "high", "professional", NULL, };
+
+static const char* const hb_av1_level_names[] = {
+	"auto", "2.0", "2.1", "2.2", "2.3", "3.0", "3.1", "3.2",
+	"3.3", "4.0", "4.1", "4.2", "4.3", "5.0", "5.1", "5.2",
+	"5.3", "6.0", "6.1", "6.2", "6.3", NULL, };
+
+static const int          hb_av1_level_values[] = {
+	 -1,  20,  21,  22,  23,  30,  31,  32,  33,  40,  41,  42,
+	 43,  50,  51,  52,  53,  60,  61,  62,  63,  0 };
+
+static const char* const av1_svt_preset_names[] =
+{
+	"12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0", NULL
+};
+
+static const char* const av1_svt_tune_names[] =
+{
+	"psnr", "fastdecode", NULL
+};
+
+static const char* const av1_svt_profile_names[] =
+{
+	"auto", "main", NULL // "high", "profesional"
+};
+
 const char* extract_metadata_internal(AVFormatContext* ic, AVStream* audio_st, AVStream* video_st, const char* key)
 {
 	char* value = NULL;
@@ -579,6 +606,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 						{
 							fprintf(stderr, "Decoder %s does not support device type %s.\n",
 							        dec->name, av_hwdevice_get_type_name(type));
+
 							return -1;
 						}
 						if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
@@ -770,6 +798,8 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
 		av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
 	}
+
+
 	/*
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H265 && encoderName == ""  && videoCompressOption->videoPreset != "")
 	{
@@ -987,6 +1017,25 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		pCodecCtx->max_b_frames = 16;
 	}
 
+	if (codec_id == AV_CODEC_ID_AV1)// && encoderName == "")
+	{
+		// Set profile and level
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile.Lower() == "main")
+				av_dict_set(&param, "profile", "main", 0);
+			else if (videoCompressOption->encoder_profile.Lower() == "high")
+				av_dict_set(&param, "profile", "high", 0);
+		}
+		/*
+		else
+		{
+			av_dict_set(&param, "profile", "main", 0);
+		}
+		*/
+		pCodecCtx->max_b_frames = 16;
+	}
+
 	if (codec_id == AV_CODEC_ID_H264 && encoderName == "amf")
 	{
 		// Set profile and level
@@ -1082,6 +1131,20 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
 	//	return GetCodecNameForEncoder(codec_type, encoderHardware);
 	switch (codec_type)
 	{
+	case AV_CODEC_ID_AV1:
+		if (encoderHardware == "nvenc")
+			codec_name = "av1_nvenc";
+		else if (encoderHardware == "amf")
+			codec_name = "av1_amf";
+		else if (encoderHardware == "mf")
+			codec_name = "av1_mf";
+		else if (encoderHardware == "videotoolbox")
+			codec_name = "av1_videotoolbox";
+		else if (encoderHardware == "qsv")
+			codec_name = "av1_qsv";
+		else
+			codec_name = "libsvtav1";
+		break;
 	case AV_CODEC_ID_MPEG4:
 		{
 			//hb_log("encavcodecInit: MPEG-4 ASP encoder");
@@ -1194,6 +1257,10 @@ AVCodecID CFFmpegTranscodingPimpl::GetCodecID(AVMediaType codec_type) const
 		{
 			return AV_CODEC_ID_MPEG4;
 		}
+		if (videoCompressOption->videoCodec == "AV1")
+		{
+			return AV_CODEC_ID_AV1;
+		}
 		if (videoCompressOption->videoCodec == "MPEG2")
 		{
 			return AV_CODEC_ID_MPEG2VIDEO;
@@ -1220,6 +1287,9 @@ wxString CFFmpegTranscodingPimpl::GetCodecNameForEncoder(AVCodecID vcodec, const
 		break;
 	case AV_CODEC_ID_H265:
 		nameCodecEncoder = "hevc_";
+		break;
+	case AV_CODEC_ID_AV1:
+		nameCodecEncoder = "av1_";
 		break;
 	default:
 		break;
@@ -1652,7 +1722,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
 	int ret;
-
+	/*
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
@@ -1666,6 +1736,10 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 	}
 	else if ((ret = open_input_file(input, decoderHardware)) < 0)
 		return ret;
+	*/
+	if ((ret = open_input_file(input)) < 0)
+		return ret;
+
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
 
@@ -2369,16 +2443,24 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 {
 	AVCodecContext* c = nullptr;
 	wxString encoderHardName = "";
-	const AVCodec* p_codec;
+	const AVCodec* p_codec = nullptr;
 
 	if (encoderName != "")
 	{
 		encoderHardName = GetCodecName(codec_id, encoderName);
 		p_codec = avcodec_find_encoder_by_name(encoderHardName);
 	}
-	else
+
+	if(p_codec == nullptr)
 	{
-		p_codec = avcodec_find_encoder(codec_id);
+		
+		if (codec_id == AV_CODEC_ID_AV1)
+		{
+			encoderHardName = GetCodecName(codec_id, "");
+			p_codec = avcodec_find_encoder_by_name(encoderHardName);
+		}
+		else
+			p_codec = avcodec_find_encoder(codec_id);
 	}
 
 	if (p_codec != nullptr)

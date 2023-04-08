@@ -257,6 +257,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbVideoCodec->AppendString("MPEG2");
 		cbVideoCodec->SetStringSelection("MPEG2");
 		cbVideoProfile->SetStringSelection("None");
+		
 	}
 	else if (extension == "mov")
 	{
@@ -275,6 +276,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbVideoCodec->Clear();
 		cbVideoCodec->AppendString("H264");
 		cbVideoCodec->AppendString("H265");
+		cbVideoCodec->AppendString("AV1");
 		cbVideoCodec->AppendString("MPEG4");
 		cbVideoCodec->SetStringSelection("H264");
 		cbVideoProfile->SetStringSelection("Main");
@@ -382,6 +384,15 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoPreset->AppendString("VerySlow");
 		cbVideoPreset->AppendString("Placebo");
 		*/
+		cbVideoPreset->SetLabel("None");
+		cbVideoProfile->SetLabel("Main");
+	}
+	else if (codec == "AV1")
+	{
+		cbVideoProfile->AppendString("Auto");
+		cbVideoProfile->AppendString("Main");
+		cbVideoProfile->AppendString("High");
+		cbVideoPreset->AppendString("None");
 		cbVideoPreset->SetLabel("None");
 		cbVideoProfile->SetLabel("Main");
 	}
