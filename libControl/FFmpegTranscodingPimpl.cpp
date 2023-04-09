@@ -1859,22 +1859,22 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		}
 
 
-		bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
-		bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
-
-		if (stabilizeFrame && openCVStabilization == nullptr)
-			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(
-				videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
-
-		//COpenCLEffectVideo openclEffectVideo;
-		//openclEffectVideo.SetMatrix(bgr);
-
-		if (stabilizeFrame || correctedContrast)
+		if (videoCompressOption->videoEffectParameter.effectEnable)
 		{
-			openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
-		}
+			bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
+			bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 
-		openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
+			if (stabilizeFrame && openCVStabilization == nullptr)
+				openCVStabilization = new Regards::OpenCV::COpenCVStabilization(
+					videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+
+			if (stabilizeFrame || correctedContrast)
+			{
+				openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+			}
+
+			openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
+		}
 
 		if (dst_hardware == nullptr)
 		{
@@ -1897,7 +1897,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 	else
 	{
 		cv::Mat bitmap = GetBitmapRGBA(tmp_frame);
-		mat = ApplyProcess(bitmap);
+		if (videoCompressOption->videoEffectParameter.effectEnable)
+			mat = ApplyProcess(bitmap);
+		else
+			mat = bitmap;
 
 		if (dst_hardware == nullptr)
 		{

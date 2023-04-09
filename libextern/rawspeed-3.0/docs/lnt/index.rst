@@ -1,1 +1,0 @@
-.. include:: ../../lnt/README.rst

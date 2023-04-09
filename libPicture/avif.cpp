@@ -34,51 +34,86 @@ void LoadDataFromFile(const string& filename, avifRWData& raw)
 int CAvif::GetDelay(const string& filename)
 {
 	int delay = 0;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
 	// Decode it
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
 	if (decoder != nullptr)
 	{
 		delay = decoder->duration / decoder->imageCount;
-		avifDecoderDestroy(decoder);
 	}
+
+cleanup:
+
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
 	return delay;
 }
 
 int CAvif::GetNbFrame(const string& filename)
 {
 	int nbFrame = 0;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
 	// Decode it
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
 	if (decoder != nullptr)
 	{
 		nbFrame = decoder->imageCount;
-		avifDecoderDestroy(decoder);
 	}
+cleanup:
+
+
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
 	return nbFrame;
 }
 
 
 void CAvif::GetPictureDimension(const string& filename, int& width, int& height)
 {
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
-
-	// Decode it
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
 	if (decoder != nullptr)
 	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData*)&raw);
+		avifResult decodeResult = avifDecoderRead(decoder, decoded);
 
 		if (decodeResult == AVIF_RESULT_OK)
 		{
@@ -86,12 +121,13 @@ void CAvif::GetPictureDimension(const string& filename, int& width, int& height)
 			height = decoded->height;
 		}
 
-		avifDecoderDestroy(decoder);
 	}
 
+cleanup:
 
+	
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
 }
 
 
@@ -137,7 +173,7 @@ cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 				avifImage* decoded = avifImageCreateEmpty();
 				if (decoder != nullptr)
 				{
-					avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData*)&raw);
+					avifResult decodeResult = avifDecoderRead(decoder, decoded);
 
 					if (decodeResult == AVIF_RESULT_OK)
 					{
@@ -180,11 +216,21 @@ cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPicture)
 {
 	cv::Mat out;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
-
-	// Decode it
+	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
 	if (decoder != nullptr)
 	{
 		int frameIndex = 0;
@@ -223,9 +269,10 @@ cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPict
 			}
 			frameIndex++;
 		}
-		avifDecoderDestroy(decoder);
 	}
-	avifRWDataFree(&raw);
+cleanup:
+
+	avifDecoderDestroy(decoder);
 	return out;
 }
 
@@ -305,12 +352,23 @@ void CAvif::SavePicture(const string& filename, cv::Mat& source, uint8_t* data, 
 vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
-
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
-
-	// Decode it
+	int returnCode = 1;
+	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
 	if (decoder != nullptr)
 	{
 		//int frameIndex = 0;
@@ -349,24 +407,38 @@ vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 				avifRGBImageFreePixels(&dstRGB);
 			}
 		}
-		avifDecoderDestroy(decoder);
+
 	}
-	avifRWDataFree(&raw);
+cleanup:
+
+	avifDecoderDestroy(decoder);
 	return listPicture;
 }
 
 cv::Mat CAvif::GetPicture(const string& filename)
 {
 	cv::Mat out;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
 
-	// Decode it
+	int returnCode = 1;
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
 	if (decoder != nullptr)
 	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData*)&raw);
+		avifResult decodeResult = avifDecoderRead(decoder, decoded);
 
 		if (decodeResult == AVIF_RESULT_OK)
 		{
@@ -387,10 +459,12 @@ cv::Mat CAvif::GetPicture(const string& filename)
 			}
 			avifRGBImageFreePixels(&dstRGB);
 		}
-		avifDecoderDestroy(decoder);
+		
 	}
+	
+cleanup:
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
 	return out;
 }
 
@@ -398,19 +472,36 @@ cv::Mat CAvif::GetPicture(const string& filename)
 bool CAvif::HasExifMetaData(const string& filename)
 {
 	bool exifData = false;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
+
+	int returnCode = 1;
+
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
 	if (decoder != nullptr)
 	{
-		avifDecoderRead(decoder, decoded, (avifROData*)&raw);
+		avifDecoderRead(decoder, decoded);
 		if (decoded->exif.size > 0)
 			exifData = true;
-		avifDecoderDestroy(decoder);
+
 	}
+	
+cleanup:
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
 	return exifData;
 }
 
@@ -462,14 +553,28 @@ static const unsigned int image_data_offset = 20;
 // static
 void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& size)
 {
-	//bool exifData = false;
-	avifRWData raw = AVIF_DATA_EMPTY;
-	LoadDataFromFile(filename, raw);
+	int returnCode = 1;
+
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
+
+
+	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		goto cleanup;
+	}
+
+	result = avifDecoderParse(decoder);
+	if (result != AVIF_RESULT_OK) {
+		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
+		goto cleanup;
+	}
+
+
 	if (decoder != nullptr)
 	{
-		avifDecoderRead(decoder, decoded, (avifROData*)&raw);
+		avifDecoderRead(decoder, decoded);
 		if (decoded->exif.size > 0)
 		{
 			if (size > 0)
@@ -499,8 +604,12 @@ void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& si
 			else
 				size = decoded->exif.size + 512;
 		}
-		avifDecoderDestroy(decoder);
+
 	}
+	
+
+cleanup:
 	avifImageDestroy(decoded);
-	avifRWDataFree(&raw);
+	avifDecoderDestroy(decoder);
+	return;
 }
