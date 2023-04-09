@@ -747,7 +747,7 @@ int CFFmpegTranscodingPimpl::EncodeFrame(const int& stream_index, int& positionM
 		if (isVideo)
 		{
 			if (videoCompressOption != nullptr)
-				if (videoCompressOption->videoEffectParameter.effectEnable)
+				if (videoCompressOption->videoEffectParameter.effectEnable || (decoderHardware != "" && decoderHardware != "none"))
 					VideoTreatment(tmp_frame, stream);
 
 			VideoInfos(stream);
@@ -1739,7 +1739,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
 	int ret = 0;
-	/*
+	
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
@@ -1753,9 +1753,9 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 	}
 	else if ((ret = open_input_file(input, decoderHardware)) < 0)
 		return ret;
-	*/
-	if ((ret = open_input_file(input)) < 0)
-		return ret;
+	
+	//if ((ret = open_input_file(input)) < 0)
+	//	return ret;
 
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
