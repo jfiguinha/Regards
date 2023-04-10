@@ -8,7 +8,6 @@ unzip vcpkg-2022.08.15.zip
 cd vcpkg-2022.08.15
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
-./vcpkg install libheif
 cd ..
 
 git clone https://github.com/Microsoft/vcpkg.git
