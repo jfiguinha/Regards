@@ -376,8 +376,6 @@
         <LibraryPath Value="../libAppleFunction/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
-        <LibraryPath Value="../Otherlib/libavif/Release"/>
-        <LibraryPath Value="../Otherlib/libheif/Release"/>
         <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>

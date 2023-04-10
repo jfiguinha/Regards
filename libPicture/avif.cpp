@@ -40,7 +40,7 @@ int CAvif::GetDelay(const string& filename)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -71,7 +71,7 @@ int CAvif::GetNbFrame(const string& filename)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -102,7 +102,7 @@ void CAvif::GetPictureDimension(const string& filename, int& width, int& height)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -222,7 +222,7 @@ cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPict
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -359,7 +359,7 @@ vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -426,7 +426,7 @@ cv::Mat CAvif::GetPicture(const string& filename)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -481,7 +481,7 @@ bool CAvif::HasExifMetaData(const string& filename)
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 
@@ -561,7 +561,7 @@ void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& si
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
+		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
 		goto cleanup;
 	}
 

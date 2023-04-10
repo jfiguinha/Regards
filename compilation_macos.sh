@@ -20,6 +20,8 @@ brew install -v wxWidgets
 brew install -v exiv2
 brew install -v freeimage
 brew install -v libepoxy
+brew install -v libavif
+brew install -v libheif
 
 #Install External Library
 cd libextern
