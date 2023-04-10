@@ -8,12 +8,26 @@ unzip vcpkg-2022.08.15.zip
 cd vcpkg-2022.08.15
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
+./vcpkg install libheif
 cd ..
 
 git clone https://github.com/Microsoft/vcpkg.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install ffnvcodec
+cd ..
+unzip SVT-AV1-master.zip
+cd SVT-AV1-master/Build
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+cd ..
+cd ..
+cd vcpkg
+./vcpkg install libavif
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install exiv2[video,xmp]

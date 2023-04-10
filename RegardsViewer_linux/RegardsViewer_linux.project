@@ -230,6 +230,7 @@
         <Library Value="FreeImage"/>
         <Library Value="sane"/>
         <Library Value="avif"/>
+        <Library Value="heif"/>
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
         <Library Value="leptonica"/>
@@ -395,6 +396,8 @@
         <Library Value="gomp"/>
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
+        <Library Value="SvtAv1Enc"/>
+        <Library Value="yuv"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -518,7 +521,6 @@
         <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
-        <LibraryPath Value="../Otherlib/libavif/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Release"/>
       </Linker>
