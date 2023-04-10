@@ -147,6 +147,8 @@
 /Otherlib/libbpg/libgetopt/x64/Release
 /Otherlib/libffmpeg/x64/Release
 /Otherlib/libheif/x64/Release
+/Otherlib/libheif/Release
+/Otherlib/libheif/Debug
 /Otherlib/libJbig/x64/Release
 /Otherlib/wxIA/x64/Release
 /Otherlib/wxPDFDoc/x64/Release

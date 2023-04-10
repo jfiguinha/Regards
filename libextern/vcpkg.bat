@@ -21,3 +21,5 @@ vcpkg install libjxl:x64-windows
 vcpkg install tbb:x64-windows
 vcpkg install pthread:x64-windows
 vcpkg install pugixml:x64-windows
+vcpkg install libavif:x64-windows
+vcpkg install libheif:x64-windows
