@@ -1577,7 +1577,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame_withoutpos(AVFrame* filt_frame, 
 	int ret;
 	AVPacket enc_pkt;
 
-	av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
+	//av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
 	/* encode filtered frame */
 	enc_pkt.data = nullptr;
 	enc_pkt.size = 0;
@@ -1613,7 +1613,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 	int ret;
 	AVPacket enc_pkt;
 
-	av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
+	//av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
 	/* encode filtered frame */
 	enc_pkt.data = nullptr;
 	enc_pkt.size = 0;
