@@ -1041,15 +1041,14 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 				av_dict_set(&param, "profile", "main", 0);
 			else if (videoCompressOption->encoder_profile.Lower() == "high")
 				av_dict_set(&param, "profile", "high", 0);
-			else if (videoCompressOption->encoder_profile.Lower() == "high")
-				av_dict_set(&param, "profile", "high", 0);
+			else
+				av_dict_set(&param, "profile", "auto", 0);
 		}
-		/*
 		else
 		{
-			av_dict_set(&param, "profile", "main", 0);
+			av_dict_set(&param, "profile", "auto", 0);
 		}
-		*/
+		
 		pCodecCtx->max_b_frames = 16;
 	}
 
