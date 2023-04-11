@@ -327,8 +327,8 @@ void CAvif::SavePicture(const string& filename, cv::Mat& source, uint8_t* data, 
 			avifRWData output = AVIF_DATA_EMPTY;
 			avifEncoder* encoder = avifEncoderCreate();
 			encoder->maxThreads = 8; // Choose max encoder threads, 1 to disable multithreading
-			encoder->minQuantizer = compression;
-			encoder->maxQuantizer = compression;
+			encoder->minQuantizer = 100 - compression;
+			encoder->maxQuantizer = 100 - compression;
 			avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
 			if (encodeResult == AVIF_RESULT_OK)
 			{

@@ -1739,23 +1739,37 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
 	int ret = 0;
-	
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
+	bool isOpen = false;
+
+	if (videoCompressOption != nullptr)
 	{
-		decoderHardware = config->GetHardwareDecoder();
+		if (videoCompressOption->videoEffectParameter.effectEnable)
+		{
+			CRegardsConfigParam* config = CParamInit::getInstance();
+			if (config != nullptr)
+			{
+				decoderHardware = config->GetHardwareDecoder();
+			}
+
+			if (decoderHardware == "" || decoderHardware == "none")
+			{
+				if ((ret = open_input_file(input)) < 0)
+					return ret;
+			}
+			else if ((ret = open_input_file(input, decoderHardware)) < 0)
+				return ret;
+			
+
+			isOpen = true;
+		}
 	}
 
-	if (decoderHardware == "" || decoderHardware == "none")
+	if (!isOpen)
 	{
 		if ((ret = open_input_file(input)) < 0)
 			return ret;
 	}
-	else if ((ret = open_input_file(input, decoderHardware)) < 0)
-		return ret;
-	
-	//if ((ret = open_input_file(input)) < 0)
-	//	return ret;
+
 
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
