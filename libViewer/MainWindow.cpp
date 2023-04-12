@@ -529,7 +529,7 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 	}
 }
 
-void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
+void CMainWindow::ExportVideo(const wxString& filename)
 {
 	if (!wxFileExists(filename))
 		return;
@@ -543,8 +543,8 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	int ret = 0;
 	//CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
 
-	wxString filepath = filenameOutput;
-	if (filenameOutput == "")
+	wxString filepath = "";
+	if (filepath == "")
 	{
 		wxFileName videoFilename(filename);
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
@@ -747,7 +747,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 			}
 		}
 	}
-	else if (!filenameOutput.empty())
+	else if (!filepath.empty())
 	{
 		wxCopyFile(filename, filepath);
 		wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
