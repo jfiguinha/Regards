@@ -89,6 +89,30 @@ void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 	}
 }
 
+cv::Mat  CPictureUtility::ApplyRotationVideo(cv::Mat& image, const int& rotation)
+{
+	cv::Mat mat;
+	image.copyTo(mat);
+
+	if (image.empty())
+		return mat;
+
+	if (rotation == 90)
+		Rotate270(mat);
+	else if (rotation == -90)
+		Rotate90(mat);
+	else if (rotation == -180)
+		Rotate180(mat);
+	else if (rotation == 180)
+		Rotate180(mat);
+	else if (rotation == -270)
+		Rotate270(mat);
+	else if (rotation == 270)
+		Rotate90(mat);
+
+	return mat;
+}
+
 
 void CPictureUtility::ApplyRotation(cv::Mat& image, const int& rotation)
 {

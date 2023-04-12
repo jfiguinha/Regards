@@ -159,14 +159,14 @@ void CShowPreview::ShowPicture(cv::Mat& bitmap, const wxString& label)
 
 void CShowPreview::ShowOriginal()
 {
-	CPictureUtility::ApplyRotation(decodeFrameOriginal, orientation);
-	ShowPicture(decodeFrameOriginal, "Original Video");
+	cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrameOriginal, orientation);
+	ShowPicture(mat, "Original Video");
 }
 
 void CShowPreview::ShowNew()
 {
-	CPictureUtility::ApplyRotation(decodeFrame, orientation);
-	ShowPicture(decodeFrame, "Export Video");
+	cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrame, orientation);
+	ShowPicture(mat, "Export Video");
 }
 
 void CShowPreview::OnShowOriginal(wxCommandEvent& event)

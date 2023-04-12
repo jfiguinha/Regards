@@ -9,6 +9,7 @@ public:
 	static void VerifRectSize(cv::Rect& rect, cv::Mat& matSrc);
 	static void ApplyTransform(cv::Mat& image);
 	static void ApplyRotation(cv::Mat& image, const int& rotation);
+	static cv::Mat ApplyRotationVideo(cv::Mat& image, const int& rotation);
 	static void RotateExif(cv::Mat& image, const int& orientation);
 	static bool Rotate90(cv::Mat& image);
 	static bool Rotate180(cv::Mat& image);
