@@ -63,7 +63,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7CE205E7-E346-4490-B998-59B2D05EB159}</ProjectGuid>
+    <ProjectGuid>{25E7B7DA-8439-45AB-8BD0-DBCFD2A8821E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Viewer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -230,7 +230,7 @@
     <IncludePath>$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\IMath;$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\Debug;$(SolutionDir)libextern\rav1e\lib;$(oneMKLLibDir);$(oneTBBLibDir)\vc_mt;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Debug;$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Debug;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Debug;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\x265_2.5\build\vc15-x86_64\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib</LibraryPath>
     <EmbedManifest>false</EmbedManifest>
-    <TargetName>RegardsPDF</TargetName>
+    <TargetName>RegardsVideoConverter</TargetName>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -270,7 +270,7 @@
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)x64\Release;$(SolutionDir)libextern\rav1e\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Release;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Release;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Release;$(SolutionDir)libextern\heif-master\build\lib\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\IMath;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <TargetName>RegardsPDF</TargetName>
+    <TargetName>RegardsVideoConverter</TargetName>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
@@ -338,7 +338,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>wxUSE_WEBVIEW_EDGE_STATIC ;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../include;../libScanner;../Regards;../libVideoConverter;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libVideoConverter;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -524,7 +524,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../include;../libScanner;../Regards;../libVideoConverter;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libVideoConverter;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -990,7 +990,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\ogg.dll"  $(
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="..\Regards\openexr_3\half.h" />
-    <ClInclude Include="..\Regards\RegardsPDF.h" />
+    <ClInclude Include="..\Regards\RegardsVideoConverter.h" />
     <ClInclude Include="..\Regards\toFloat.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -1120,7 +1120,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\ogg.dll"  $(
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Regards\openexr_3\half.cpp" />
-    <ClCompile Include="..\Regards\RegardsPDF.cpp" />
+    <ClCompile Include="..\Regards\RegardsVideoConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc" />

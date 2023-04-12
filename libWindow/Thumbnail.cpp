@@ -920,10 +920,14 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 	thumbnailMessage->nbElement = nbElementInIconeList;
 	thumbnailMessage->typeMessage = 3;
 	wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
-	wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-	eventChange.SetClientData(thumbnailMessage);
-	eventChange.SetInt(3);
-	mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	if (mainWnd != nullptr)
+	{
+		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+		eventChange.SetClientData(thumbnailMessage);
+		eventChange.SetInt(3);
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	}
+
 
 	thumbnailPos++;
 }

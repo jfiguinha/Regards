@@ -130,6 +130,34 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 }
 
 
+
+void CRegardsPDF::SavePicture(const wxString& file, CImageLoadingFormat* bitmap, const int& option,
+	const int& quality)
+{
+
+	if (option == 0)
+	{
+		wxLogNull logNo;
+
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+		wxImage image = bitmap->GetwxImage();
+		image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
+		image.SaveFile(file, wxBITMAP_TYPE_JPEG);
+	}
+	else
+	{
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+		wxImage image = bitmap->GetwxImage();
+		image.SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
+		image.SaveFile(file, wxBITMAP_TYPE_TIFF);
+	}
+
+}
+
 int CRegardsPDF::SavePictureOption(int& option, int& quality)
 {
 	int returnValue = 0;
@@ -308,7 +336,8 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* i
 		if (wxFileExists(file))
 			wxRemoveFile(file);
 
-		SavePicture(file, imageFormat);
+		 SavePicture(file, imageFormat, option, quality);
+		//SavePicture(file, imageFormat);
 	}
 	else
 	{
@@ -321,7 +350,8 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* i
 		if (wxFileExists(file))
 			wxRemoveFile(file);
 
-		SavePicture(file, imageFormat);
+		SavePicture(file, imageFormat, option, quality);
+		//SavePicture(file, imageFormat);
 	}
 
 	wxImage image;

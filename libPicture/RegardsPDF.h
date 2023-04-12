@@ -31,6 +31,8 @@ namespace Regards
 		private:
 			static bool SaveToPDF(wxImage* poImage, const wxString& fileName, const wxString& pictureName, int option,
 			                      int quality);
+			static void SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap, const int& option,
+				const int& quality);
 			wxPoppler* poppler = nullptr;
 			bool isValid = false;
 		};

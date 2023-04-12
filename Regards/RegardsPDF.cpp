@@ -292,7 +292,7 @@ bool MyApp::OnInit()
 	framePDF = new CScannerFrame("RegardsPDF", this,  wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()));
 	framePDF->Centre(wxBOTH);
 	framePDF->Show(true);
-
+	framePDF->OnOpen();
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the

@@ -30,6 +30,7 @@ const wxString GetPictureFilter()
 	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
 
 	int i = 0;
+	/*
 	wxString listPictureFilter = "";
 	for (wxString format : listFormat)
 	{
@@ -39,7 +40,9 @@ const wxString GetPictureFilter()
 			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++));
 	}
 	return listPictureFilter;
-	//return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
+	
+	*/
+	return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
 }
 
 wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
