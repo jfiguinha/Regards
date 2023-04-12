@@ -527,6 +527,8 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		if (wxFileExists(fileOut))
 			wxRemoveFile(fileOut);
 	}
+	
+	cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 }
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
