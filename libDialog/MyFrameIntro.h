@@ -10,7 +10,7 @@ namespace Regards::Introduction
 	{
 	public:
 		MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size,
-		             IMainInterface* mainInterface);
+			ISCannerInterface * mainInterface);
 		~MyFrameIntro() override;
 
 	private:
@@ -20,7 +20,7 @@ namespace Regards::Introduction
 
 		CTitleIntro* titleIntro;
 		CMyCentralWindowIntro* myCentralWindow;
-		IMainInterface* mainInterface;
+		ISCannerInterface* mainInterface;
 		wxTimer* diaporamaTimer;
 	};
 }

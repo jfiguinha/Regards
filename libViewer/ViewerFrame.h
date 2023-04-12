@@ -144,7 +144,7 @@ namespace Regards::Viewer
 		wxTimer* eventFileSysTimer = nullptr;
 		wxString filenameTimer;
 		int nbTime;
-		CScannerFrame* frameScanner;
+		//CScannerFrame* frameScanner;
 		//CImageLoadingFormat * picture;
 		wxFileSystemWatcher* m_watcher;
 	};

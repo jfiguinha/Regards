@@ -19,20 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="ConvertVideoFrame.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">header.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ConvertVideoFrame.cpp" />
+    <ClCompile Include="VideoConverterFrame.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">header.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="VideoConverterFrame.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9fe56745-02c6-4d39-88d9-7980d4dff4a8}</ProjectGuid>
-    <RootNamespace>libConvertVideo</RootNamespace>
+    <ProjectGuid>{41687fa3-7971-461f-9579-b30bba6d77a7}</ProjectGuid>
+    <RootNamespace>libVideoConverter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -80,8 +86,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)libExtern\CvPlot\inc;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libExtern\CvPlot\inc;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,7 +133,9 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -142,7 +153,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>

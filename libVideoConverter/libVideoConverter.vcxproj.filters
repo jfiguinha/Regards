@@ -14,23 +14,23 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="header">
-      <UniqueIdentifier>{bf3bb900-8a7e-45c3-8209-a5d66566bdbe}</UniqueIdentifier>
+      <UniqueIdentifier>{bc66c516-c482-4d51-881c-f6bc4678dddf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConvertVideoFrame.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\header.h">
-      <Filter>header</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ConvertVideoFrame.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
     </ClCompile>
+    <ClCompile Include="VideoConverterFrame.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoConverterFrame.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

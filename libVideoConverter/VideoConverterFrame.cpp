@@ -1,11 +1,25 @@
 #include <header.h>
 #include <ffmpeg_transcoding.h>
-#include "ConvertVideoFrame.h"
+#include "VideoConverterFrame.h"
+#include <CompressionAudioVideoOption.h>
+#include <VideoCompressOption.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
 #include <MediaInfo.h>
 #include <ffmpeg_application.h>
 #include <ConvertUtility.h>
-#include <wx/dir.h>
-#include <wx/filename.h>
+#include <FileUtility.h>
+#include <LibResource.h>
+#include <libPicture.h>
+extern "C" {
+#include <libswscale/swscale.h>
+}
+#if defined(__WXMSW__)
+#include "../include/window_id.h"
+#else
+#include <window_id.h>
+#endif
+
 #ifndef wxHAS_IMAGES_IN_RESOURCES
 #ifdef __WXGTK__
 #include "../Resource/sample.xpm"
@@ -14,28 +28,30 @@
 #endif
 #endif
 
+//Connect(wxEVT_MOVE, wxMoveEventHandler(Move::OnMove));
+BEGIN_EVENT_TABLE(CVideoConverterFrame, wxFrame)
+EVT_CLOSE(CVideoConverterFrame::OnCloseWindow)
+END_EVENT_TABLE()
 
+using namespace Regards::Picture;
 
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CConvertVideoFrame::CConvertVideoFrame(const wxString& title, IMainInterface* mainInterface, const wxPoint& pos,
-                             const wxSize& size,
-                             long style) :
-	wxFrame(nullptr, wxID_ANY, title, pos, size, style)
+CVideoConverterFrame::CVideoConverterFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IVideoConverterInterface* videoInterface, wxString fileToOpen, long style) :
+	wxFrame(nullptr, FRAMEVIDEOCONVERTER_ID, title, pos, size, style)
 {
-
-}
-
-CConvertVideoFrame::~CConvertVideoFrame()
-{
+	SetIcon(wxICON(sample));
+	this->videoInterface = videoInterface;
+	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CVideoConverterFrame::OnEndDecompressFile));
+	ExportVideo(fileToOpen);
 
 }
 
 
-void CConvertVideoFrame::OnEndDecompressFile(wxCommandEvent& event)
+void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 {
 	wxString outputFile = "";
 	int ret = event.GetInt();
@@ -108,13 +124,36 @@ void CConvertVideoFrame::OnEndDecompressFile(wxCommandEvent& event)
 }
 
 
-void CConvertVideoFrame::ExportVideo(const wxString& filename)
+void CVideoConverterFrame::ExportVideo(wxString filename)
 {
+	CLibPicture libPicture;
 	if (!wxFileExists(filename))
-		return;
+	{
+		wxFileDialog openFileDialog(this, _("Open video file"), "", "",
+				"mp4 files (*.mp4)|*.mp4", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		if (openFileDialog.ShowModal() == wxID_CANCEL)
+		{
+			if (videoInterface != nullptr)
+			{
+				videoInterface->Close();
+			}
 
-	////CFFmpegApp ffmpeg;
-	//ffmpeg.TestFFmpeg("");
+			return;
+		}
+
+		filename = openFileDialog.GetPath();
+	}
+
+	if (!libPicture.TestIsVideo(filename))
+	{
+		if (videoInterface != nullptr)
+		{
+			videoInterface->Close();
+		}
+
+		return;
+	}
+		
 
 	CMediaInfo metadata;
 	int rotation = metadata.GetVideoRotation(filename);
@@ -142,6 +181,13 @@ void CConvertVideoFrame::ExportVideo(const wxString& filename)
 			return; // the user changed idea...
 		filepath = saveFileDialog.GetPath();
 		int index = saveFileDialog.GetFilterIndex();
+
+		wxWindow* videoWindow = this->FindWindowById(SHOWBITMAPVIEWERID);
+		if (videoWindow != nullptr)
+		{
+			wxCommandEvent event(wxEVENT_PAUSEMOVIE);
+			wxPostEvent(videoWindow, event);
+		}
 
 		wxFileName file_path(filepath);
 		wxString extension = file_path.GetExt();
@@ -319,7 +365,7 @@ void CConvertVideoFrame::ExportVideo(const wxString& filename)
 			}
 		}
 	}
-	else if (!filenameOutput.empty())
+	else if (!filepath.empty())
 	{
 		wxCopyFile(filename, filepath);
 		wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
@@ -337,4 +383,18 @@ void CConvertVideoFrame::ExportVideo(const wxString& filename)
 	}
 
 	delete compressAudioVideoOption;
+}
+
+void CVideoConverterFrame::OnCloseWindow(wxCloseEvent& event)
+{
+	if (videoInterface != nullptr)
+	{
+		videoInterface->Close();
+	}
+
+}
+
+CVideoConverterFrame::~CVideoConverterFrame()
+{
+
 }

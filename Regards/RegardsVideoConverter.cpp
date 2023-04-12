@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "header.h"
-#include <RegardsPDF.h>
+#include <RegardsVideoConverter.h>
 #include <wx/window.h>
 #include <libPicture.h>
 #include <LibResource.h>
@@ -28,7 +28,7 @@ int numElementToLoad = 0;
 
 using namespace cv;
 using namespace Regards::Picture;
-using namespace Regards::Print;
+
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -74,13 +74,11 @@ void MyApp::MacOpenFile(const wxString &fileName)
 int MyApp::Close()
 {
 	CLibResource::KillSqlEngine();
-	CPrintEngine::Kill();
+
 
 #ifdef USECURL
 	curl_global_cleanup();
 #endif
-
-	this->Exit();
 
 	CLibPicture::Uninitx265Decoder();
 
@@ -166,8 +164,6 @@ bool MyApp::OnInit()
 	CLibPicture::InitFreeImage();
 
 	wxSocketBase::Initialize();
-
-	CPrintEngine::Initialize();
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
@@ -288,10 +284,9 @@ bool MyApp::OnInit()
 
 	wxDisplay display;
 	wxRect screen = display.GetClientArea();
-	//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
-	framePDF = new CScannerFrame("RegardsPDF", this,  wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()));
-	framePDF->Centre(wxBOTH);
-	framePDF->Show(true);
+	frameVideoConverter = new CVideoConverterFrame("Regards Viewer", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
+	frameVideoConverter->Centre(wxBOTH);
+	frameVideoConverter->Show(false);
 
 
 	// success: wxApp::OnRun() will be called which will enter the main message

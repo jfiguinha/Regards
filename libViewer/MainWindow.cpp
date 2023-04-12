@@ -771,7 +771,9 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
 	if (centralWnd->IsVideo())
 	{
-		ExportVideo(this->centralWnd->GetFilename());
+		//ExportVideo(this->centralWnd->GetFilename());
+		wxString pathProgram = "RegardsVideoConverter.exe \"" + this->centralWnd->GetFilename() + "\"";
+		wxExecute(pathProgram);
 	}
 	else
 	{

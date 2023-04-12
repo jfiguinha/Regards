@@ -9,7 +9,7 @@ using namespace Regards::Introduction;
 #endif
 
 MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size,
-                           IMainInterface* mainInterface)
+	ISCannerInterface * mainInterface)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
 {
 	CThemeScrollBar themeScroll;

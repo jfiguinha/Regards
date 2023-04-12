@@ -471,7 +471,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 						initializeContextFromGL();
 						isOpenCLInitialized = true;
 						openclOpenGLInterop = true;
-						regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
+						regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 					}
 					catch (cv::Exception& e)
 					{

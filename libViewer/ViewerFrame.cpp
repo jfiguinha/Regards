@@ -98,7 +98,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	onExit = false;
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
-	frameScanner = nullptr;
+	//frameScanner = nullptr;
 	viewerParam = new CMainParam();
 	CMainParamInit::Initialize(viewerParam);
 	Maximize();
@@ -343,6 +343,7 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 
 int CViewerFrame::ShowScanner()
 {
+	/*
 	if (frameScanner != nullptr)
 	{
 		frameScanner->Show(true);
@@ -360,8 +361,11 @@ int CViewerFrame::ShowScanner()
 		frameScanner->Show(false);
 		this->Raise();
 	}
+	*/
 
-	return value;
+	wxString pathProgram = "RegardsPDF.exe";
+	wxExecute(pathProgram);
+	return 0;
 }
 
 void CViewerFrame::OnScanner(wxCommandEvent& event)
@@ -371,10 +375,12 @@ void CViewerFrame::OnScanner(wxCommandEvent& event)
 
 void CViewerFrame::HideScanner(wxCommandEvent& event)
 {
+	/*
 	if (frameScanner != nullptr)
 	{
 		frameScanner->Show(false);
 	}
+	*/
 }
 
 void CViewerFrame::OnExport(wxCommandEvent& event)
