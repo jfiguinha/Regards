@@ -2489,7 +2489,7 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 	if(p_codec == nullptr)
 	{
 		
-#ifndef _M_ARM64
+
 		if (codec_id == AV_CODEC_ID_AV1)
 		{
 			encoderHardName = GetCodecName(codec_id, "");
@@ -2497,9 +2497,7 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 		}
 		else
 			p_codec = avcodec_find_encoder(codec_id);
-#else
-		p_codec = avcodec_find_encoder(codec_id);
-#endif
+
 	}
 
 	if (p_codec != nullptr)

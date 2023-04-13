@@ -276,9 +276,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbVideoCodec->Clear();
 		cbVideoCodec->AppendString("H264");
 		cbVideoCodec->AppendString("H265");
-#ifndef _M_ARM64
 		cbVideoCodec->AppendString("AV1");
-#endif
 		cbVideoCodec->AppendString("MPEG4");
 		cbVideoCodec->SetStringSelection("H264");
 		cbVideoProfile->SetStringSelection("Main");
