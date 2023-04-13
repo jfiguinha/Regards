@@ -49,10 +49,10 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
-    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -68,11 +68,11 @@
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsPDF">
-    <Project Name="RegardsPDF_linux" Path="RegardsPDF_linux/RegardsPDF_linux.project"/>
+    <Project Name="RegardsPDF_linux" Path="RegardsPDF_linux/RegardsPDF_linux.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsVideoConverter">
-    <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project"/>
-    <Project Name="RegardsVideoConverter_linux" Path="RegardsVideoConverter_linux/RegardsVideoConverter_linux.project"/>
+    <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project" Active="No"/>
+    <Project Name="RegardsVideoConverter_linux" Path="RegardsVideoConverter_linux/RegardsVideoConverter_linux.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">

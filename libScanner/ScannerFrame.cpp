@@ -203,10 +203,22 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 
 void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
+#ifdef __APPLE__
+	if (mainInterface != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
+		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	else
+	{
+		Exit();
+	}
+#else
 	if (mainInterface != nullptr)
 	{
 		mainInterface->Close();
 	}
+#endif
 }
 
 void CScannerFrame::Exit()
@@ -217,10 +229,22 @@ void CScannerFrame::Exit()
 
 void CScannerFrame::OnClose()
 {
+#ifdef __APPLE__
+	if (mainInterface != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
+		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	else
+	{
+		Exit();
+	}
+#else
 	if (mainInterface != nullptr)
 	{
 		mainInterface->Close();
 	}
+#endif
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
