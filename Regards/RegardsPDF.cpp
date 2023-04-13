@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "header.h"
-#include <RegardsPDF.h>
+#include "RegardsPDF.h"
 #include <wx/window.h>
 #include <libPicture.h>
 #include <LibResource.h>
@@ -172,14 +172,6 @@ bool MyApp::OnInit()
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 	CLibPicture::Initx265Decoder();
-
-#ifdef GLUT
-#ifndef __APPLE__
-	int argc = 1;
-	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
-	glutInit(&argc, argv);
-#endif
-#endif
 
 #if not defined(WIN32) && defined(LIBBPG)
     printf("LoadBpgDll\n");

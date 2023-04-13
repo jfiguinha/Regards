@@ -169,14 +169,6 @@ bool MyApp::OnInit()
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 	CLibPicture::Initx265Decoder();
 
-#ifdef GLUT
-#ifndef __APPLE__
-	int argc = 1;
-	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
-	glutInit(&argc, argv);
-#endif
-#endif
-
 #if not defined(WIN32) && defined(LIBBPG)
     printf("LoadBpgDll\n");
     CLibPicture::LoadBpgDll();

@@ -98,7 +98,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	onExit = false;
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
-	//frameScanner = nullptr;
+#ifndef __WXMSW__
+	frameScanner = nullptr;
+#endif
 	viewerParam = new CMainParam();
 	CMainParamInit::Initialize(viewerParam);
 	Maximize();
@@ -343,7 +345,7 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 
 int CViewerFrame::ShowScanner()
 {
-	/*
+#ifdef __APPLE__
 	if (frameScanner != nullptr)
 	{
 		frameScanner->Show(true);
@@ -361,10 +363,14 @@ int CViewerFrame::ShowScanner()
 		frameScanner->Show(false);
 		this->Raise();
 	}
-	*/
-
+#else
+#ifdef __WXMSW__
 	wxString pathProgram = "RegardsPDF.exe";
+#else
+	wxString pathProgram = "./RegardsPDF";
+#endif
 	wxExecute(pathProgram);
+#endif
 	return 0;
 }
 
@@ -375,12 +381,12 @@ void CViewerFrame::OnScanner(wxCommandEvent& event)
 
 void CViewerFrame::HideScanner(wxCommandEvent& event)
 {
-	/*
+#ifdef __APPLE__
 	if (frameScanner != nullptr)
 	{
 		frameScanner->Show(false);
 	}
-	*/
+#endif
 }
 
 void CViewerFrame::OnExport(wxCommandEvent& event)

@@ -185,6 +185,13 @@ void GLTexture::GetData(uint8_t* data)
 	}
 }
 
+void GLTexture::DeleteInteropTexture()
+{
+	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
+	{
+		pimpl_->DeleteTextureInterop();
+	}
+}
 
 bool GLTexture::SetData(cv::UMat& bitmap)
 {

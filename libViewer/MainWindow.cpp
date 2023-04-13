@@ -773,9 +773,17 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
 	if (centralWnd->IsVideo())
 	{
-		//ExportVideo(this->centralWnd->GetFilename());
+#ifdef __APPLE__
+		ExportVideo(this->centralWnd->GetFilename());
+#else
+#ifdef __WXMSW__
 		wxString pathProgram = "RegardsVideoConverter.exe \"" + this->centralWnd->GetFilename() + "\"";
+#else
+		wxString pathProgram = "./RegardsVideoConverter \"" + this->centralWnd->GetFilename() + "\"";
+#endif
 		wxExecute(pathProgram);
+#endif
+		
 	}
 	else
 	{

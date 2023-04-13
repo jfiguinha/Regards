@@ -79,11 +79,6 @@ extern "C" {
 
 using namespace std;
 
-#ifndef __APPLE__
-#include <GL/glut.h>
-#endif
-
-
 #include <wx/glcanvas.h>
 int args[] = {
 	wx_GL_COMPAT_PROFILE,

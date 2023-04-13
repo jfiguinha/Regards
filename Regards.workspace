@@ -67,6 +67,13 @@
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="RegardsPDF">
+    <Project Name="RegardsPDF_linux" Path="RegardsPDF_linux/RegardsPDF_linux.project"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="RegardsVideoConverter">
+    <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project"/>
+    <Project Name="RegardsVideoConverter_linux" Path="RegardsVideoConverter_linux/RegardsVideoConverter_linux.project"/>
+  </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>
@@ -134,6 +141,9 @@
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="libVideoThumbnail" ConfigName="Debug"/>
       <Project Name="libheif" ConfigName="Debug"/>
+      <Project Name="libVideoConverter" ConfigName="Debug"/>
+      <Project Name="RegardsPDF_linux" ConfigName="Debug"/>
+      <Project Name="RegardsVideoConverter_linux" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -200,6 +210,9 @@
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="libVideoThumbnail" ConfigName="Release"/>
       <Project Name="libheif" ConfigName="Release"/>
+      <Project Name="libVideoConverter" ConfigName="Release"/>
+      <Project Name="RegardsPDF_linux" ConfigName="Release"/>
+      <Project Name="RegardsVideoConverter_linux" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

@@ -25,6 +25,7 @@ namespace Regards
 			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
+			void DeleteInteropTexture();
 			void Enable();
 			void SetData(cv::Mat& bitmap);
 			bool SetData(cv::UMat& bitmap);
