@@ -80,6 +80,8 @@ int MyApp::Close()
 	curl_global_cleanup();
 #endif
 
+	this->Exit();
+
 	CLibPicture::Uninitx265Decoder();
 
 	CLibPicture::UninitFreeImage();
