@@ -184,3 +184,6 @@
 /libVideoConverter/x64/Debug
 /RegardsPDF/x64/Debug
 /RegardsVideoConverter/x64/Debug
+/RegardsPDF/ARM64/Release
+/RegardsVideoConverter/ARM64/Release
+/libVideoConverter/ARM64/Release
