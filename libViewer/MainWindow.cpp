@@ -531,7 +531,7 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 	cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 }
 
-void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
+void CMainWindow::ExportVideo(const wxString& filename)
 {
 	if (!wxFileExists(filename))
 		return;
@@ -545,8 +545,8 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	int ret = 0;
 	//CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
 
-	wxString filepath = filenameOutput;
-	if (filenameOutput == "")
+	wxString filepath = "";
+	if (filepath == "")
 	{
 		wxFileName videoFilename(filename);
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
@@ -749,7 +749,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 			}
 		}
 	}
-	else if (!filenameOutput.empty())
+	else if (!filepath.empty())
 	{
 		wxCopyFile(filename, filepath);
 		wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
@@ -773,7 +773,9 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
 	if (centralWnd->IsVideo())
 	{
-		ExportVideo(this->centralWnd->GetFilename());
+		//ExportVideo(this->centralWnd->GetFilename());
+		wxString pathProgram = "RegardsVideoConverter.exe \"" + this->centralWnd->GetFilename() + "\"";
+		wxExecute(pathProgram);
 	}
 	else
 	{

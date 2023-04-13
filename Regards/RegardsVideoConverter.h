@@ -16,10 +16,9 @@
 #include <PrintEngine.h>
 #include <MainInterface.h>
 #include <RegardsConfigParam.h>
-#include <ScannerFrame.h>
+#include <VideoConverterFrame.h>
 #include "wx/sysopt.h"
 #include <wx/cmdline.h>
-#include <MyFrameIntro.h>
 #include <libPicture.h>
 #include <wx/textfile.h>
 #include <wx/display.h>
@@ -77,7 +76,7 @@ extern "C" {
 
 
 #endif
-using namespace Regards::Introduction;
+
 using namespace std;
 
 #ifndef __APPLE__
@@ -156,7 +155,7 @@ float clamp(float val, float minval, float maxval)
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp
-class MyApp : public wxApp, public ISCannerInterface
+class MyApp : public wxApp, public IVideoConverterInterface
 {
 public:
 	// override base class virtuals
@@ -212,32 +211,6 @@ public:
 #endif
 
 #endif
-	}
-
-	void ShowAbout() override
-	{
-		if (frameStart != nullptr)
-		{
-			frameStart->Show(true);
-			frameStart->Raise();
-		}
-		else
-		{
-			frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
-			frameStart->Centre(wxBOTH);
-			frameStart->Show(true);
-		}
-	}
-
-	void ShowViewer() override
-	{
-
-	}
-
-	void HideAbout() override
-	{
-		if (frameStart != nullptr)
-			frameStart->Show(false);
 	}
 
 
@@ -300,12 +273,12 @@ public:
 
 private:
 	CRegardsConfigParam* regardsParam;
-	CScannerFrame * framePDF = nullptr;
+	CVideoConverterFrame* frameVideoConverter;
 	wxString fileToOpen;
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
-	MyFrameIntro* frameStart = nullptr;
+
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member
 #endif

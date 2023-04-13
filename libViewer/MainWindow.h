@@ -122,7 +122,7 @@ namespace Regards::Viewer
 		void OnUpdateFolder(wxCommandEvent& event);
 
 		void Resize() override;
-		void ExportVideo(const wxString& filename, const wxString& filenameOutput = "");
+		void ExportVideo(const wxString& filename);
 		void ProcessIdle() override;
 		void OnIdle(wxIdleEvent& evt) override;
 		void OnEndThumbnail(wxCommandEvent& event);

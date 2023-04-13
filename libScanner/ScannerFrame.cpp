@@ -33,6 +33,11 @@ using namespace Regards::Scanner;
 #define MIN_ZOOM	0.1
 
 
+#ifdef __WXMSW__
+#include <gdiplus.h>
+wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
+#endif
+
 #ifndef wxHAS_IMAGES_IN_RESOURCES
 #ifdef __WXGTK__
 #include "../Resource/sample.xpm"
@@ -46,12 +51,15 @@ BEGIN_EVENT_TABLE(CScannerFrame, wxFrame)
 		EVT_CLOSE(CScannerFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
+
+
+
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CScannerFrame::CScannerFrame(const wxString& title, IMainInterface* mainInterface, const wxPoint& pos,
+CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface * mainInterface, const wxPoint& pos,
                              const wxSize& size,
                              long style) :
 	wxFrame(nullptr, FRAMESCANNER_ID, title, pos, size, style)
@@ -119,12 +127,7 @@ void CScannerFrame::OnCloseWindow(wxCloseEvent& event)
 {
 	if (mainInterface != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
-		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		Exit();
+		mainInterface->Close();
 	}
 }
 
@@ -202,12 +205,7 @@ void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
 	if (mainInterface != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
-		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		Exit();
+		mainInterface->Close();
 	}
 }
 
@@ -221,12 +219,7 @@ void CScannerFrame::OnClose()
 {
 	if (mainInterface != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
-		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		Exit();
+		mainInterface->Close();
 	}
 }
 
@@ -237,7 +230,7 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 }
 
 #ifdef __WXMSW__
-wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd)
+wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd)
 {
 	const UINT w = img->GetWidth();
 	const UINT h = img->GetHeight();

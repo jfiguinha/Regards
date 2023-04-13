@@ -1,9 +1,7 @@
 #pragma once
 
 #include "viewerPDF.h"
-#ifdef __WXMSW__
-#include <gdiplus.h>
-#else
+#ifndef __WXMSW__
 #ifndef __APPLE__
 #include <wx/wxscan.h>
 #endif
@@ -49,7 +47,7 @@ class CScannerFrame : public wxFrame
 {
 public:
 	// ctor(s)
-	CScannerFrame(const wxString &title, IMainInterface * mainInterface, const wxPoint &pos, const wxSize &size,
+	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size,
 		long style = wxDEFAULT_FRAME_STYLE);
 
     ~CScannerFrame();
@@ -72,9 +70,7 @@ private:
 	void OnCloseWindow(wxCloseEvent &event);
 	//void OnExportText(wxCommandEvent& event);
 	//void OnExportHTML(wxCommandEvent& event);
-#ifdef __WXMSW__
-	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
-#endif
+
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
    
@@ -95,7 +91,7 @@ private:
 	//Toolbar
 	Regards::Scanner::CCentralWindow * centralWindow;
 	//int m_imageCount;
-	IMainInterface * mainInterface;
+	ISCannerInterface * mainInterface;
 
 	DECLARE_EVENT_TABLE()
 };
