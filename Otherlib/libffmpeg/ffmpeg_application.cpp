@@ -17,6 +17,8 @@ extern "C" {
 }
 
 
+
+
 void CFFmpegApp::ExitFunction(int x)
 {
 	throw x;

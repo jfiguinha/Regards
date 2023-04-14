@@ -121,6 +121,12 @@ void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 		if (wxFileExists(fileOut))
 			wxRemoveFile(fileOut);
 	}
+
+
+	if (videoInterface != nullptr)
+	{
+		videoInterface->Close();
+	}
 }
 
 

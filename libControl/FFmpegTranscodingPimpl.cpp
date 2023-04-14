@@ -78,6 +78,7 @@ static const char* const av1_svt_profile_names[] =
 	"auto", "main", NULL // "high", "profesional"
 };
 
+
 const char* extract_metadata_internal(AVFormatContext* ic, AVStream* audio_st, AVStream* video_st, const char* key)
 {
 	char* value = NULL;
