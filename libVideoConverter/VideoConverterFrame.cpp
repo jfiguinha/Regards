@@ -132,6 +132,7 @@ void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 
 void CVideoConverterFrame::ExportVideo(wxString filename)
 {
+	bool exit_frame = true;
 	CLibPicture libPicture;
 	if (!wxFileExists(filename))
 	{
@@ -369,15 +370,12 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 					}
 				}
 			}
+
+
+			exit_frame = false;
 		}
 	}
-	else if (!filepath.empty())
-	{
-		wxCopyFile(filename, filepath);
-		wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
-		event.SetInt(0);
-		wxPostEvent(this, event);
-	}
+
 
 
 	if (ret < 0)
@@ -386,9 +384,22 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 		char message[255];
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
 		wxMessageBox(message, errorConversion, wxICON_ERROR);
+
+
+		exit_frame = true;
+
 	}
 
 	delete compressAudioVideoOption;
+
+	if (exit_frame)
+	{
+		if (videoInterface != nullptr)
+		{
+			videoInterface->Close();
+		}
+	}
+
 }
 
 void CVideoConverterFrame::OnCloseWindow(wxCloseEvent& event)
