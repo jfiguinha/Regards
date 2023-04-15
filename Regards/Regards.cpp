@@ -30,6 +30,7 @@ using namespace cv;
 using namespace Regards::Picture;
 
 
+
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
 	parser.SetDesc(g_cmdLineDesc);
