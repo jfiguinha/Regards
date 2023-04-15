@@ -23,7 +23,7 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
   ;Name and file
   Name "Regards Viewer 2.76.3"
-  OutFile "RegardsViewer2Setup.exe"
+  OutFile "RegardsViewer2_arm64_win.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES64\RegardsViewer2"
