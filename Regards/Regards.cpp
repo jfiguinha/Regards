@@ -130,7 +130,7 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	exit(0);
+	//exit(0);
 
 	return 0;
 }

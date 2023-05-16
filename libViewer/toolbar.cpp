@@ -27,6 +27,8 @@ using namespace Regards::Internet;
 #define IDM_NEWVERSION 163
 #define IDM_EXPORT_DIAPORAMA 164
 
+#define wxVERSION_UPDATE_EVENT 165
+
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
@@ -134,28 +136,54 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	export_diaporama_button->SetLibelleTooltip(export_diaporama);
 	navElement.push_back(export_diaporama_button);
 
-	if (NewVersionAvailable())
-	{
-		auto imageNewVersion = new CToolbarButton(themeToolbar.button);
-		imageNewVersion->SetButtonResourceId(L"IDB_REFRESH");
-		imageNewVersion->SetLibelle(lblNewVersion);
-		imageNewVersion->SetCommandId(IDM_NEWVERSION);
-		navElement.push_back(imageNewVersion);
-	}
+	imageNewVersion = new CToolbarButton(themeToolbar.button);
+	imageNewVersion->SetButtonResourceId(L"IDB_REFRESH");
+	imageNewVersion->SetLibelle(lblNewVersion);
+	imageNewVersion->SetVisible(false);
+	imageNewVersion->SetCommandId(IDM_NEWVERSION);
+	navElement.push_back(imageNewVersion);
+
+	
+	versionUpdate = new std::thread(NewVersionAvailable, this);
 
 	auto imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);
 	imageFirst->SetCommandId(IDM_QUITTER);
 	navElement.push_back(imageFirst);
+	
+	
+	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CToolbar::OnVersionUpdate));
 }
 
 CToolbar::~CToolbar()
 {
 }
 
-bool CToolbar::NewVersionAvailable()
+
+void CToolbar::OnVersionUpdate(wxCommandEvent& event)
 {
+	cout << "OnVersionUpdate" << endl;
+	
+	int hasUpdate = event.GetInt();
+	if (hasUpdate)
+	{
+		if(imageNewVersion != nullptr)
+			imageNewVersion->SetVisible(true);
+			
+		this->Refresh();
+	}
+
+	versionUpdate->join();
+	delete versionUpdate;
+	versionUpdate = nullptr;
+}
+
+
+void CToolbar::NewVersionAvailable(void * param)
+{
+	int hasUpdate = 0;
+	CToolbar * toolbar = (CToolbar *)param;
 	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
 	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
 	CCheckVersion _checkVersion(serverURL);
@@ -176,24 +204,13 @@ bool CToolbar::NewVersionAvailable()
 	{
 		if (localValueVersion < localServerVersion)
 		{
-			/*
-			wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-			wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE", 1);
-
-			int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, nullptr);
-			if (answer == wxYES)
-			{
-				wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
-				wxMimeTypesManager manager;
-				wxFileType* filetype = manager.GetFileTypeFromExtension("html");
-				wxString command = filetype->GetOpenCommand(siteweb);
-				wxExecute(command);
-			}
-			*/
-			return true;
+			hasUpdate = 1;
 		}
 	}
-	return false;
+	
+	wxCommandEvent event(wxVERSION_UPDATE_EVENT);
+	event.SetInt(hasUpdate);
+	wxPostEvent(toolbar, event);
 }
 
 void CToolbar::EventManager(const int& id)

@@ -14,6 +14,9 @@ namespace Regards::Viewer
 
 	private:
 		void EventManager(const int& id) override;
-		bool NewVersionAvailable();
+		static void NewVersionAvailable(void * param);
+		void OnVersionUpdate(wxCommandEvent& event);
+		std::thread * versionUpdate;
+		CToolbarButton * imageNewVersion = nullptr;
 	};
 }
