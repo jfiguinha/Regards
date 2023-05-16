@@ -56,7 +56,7 @@ namespace Regards::Viewer
 	{
 	public:
 		CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
-		             const wxString& fileToOpen = "");
+		             const wxString& openfile = "");
 		~CViewerFrame() override;
 		void SetText(const int& numPos, const wxString& libelle) override;
 		void SetRangeProgressBar(const int& range) override;

@@ -89,13 +89,14 @@ void CViewerFrame::SetViewerMode(const bool& mode)
 
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
-                           const wxString& fileToOpen)
+                           const wxString& openfile)
 	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
-	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
+	  size_(size), main_interface_(mainInterface), file_to_open_(openfile)
 {
 	mainWindow = nullptr;
 	fullscreen = false;
 	onExit = false;
+	wxString fileToOpen = openfile;
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
 #ifndef __WXMSW__
@@ -126,6 +127,12 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 
 	bool openFirstFile = true;
+	
+	
+	//Verify if file exist
+	if(!wxFileExists(fileToOpen))
+		fileToOpen = "";
+	
 	//SetIcon(wxIcon(wxT("regards.xpm")));
 	if (fileToOpen != "")
 		openFirstFile = false;
