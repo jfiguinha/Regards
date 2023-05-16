@@ -1049,7 +1049,7 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 		break;
 	}
 
-	MouseClick(xPos * scale_factor, yPos * scale_factor);
+	//MouseClick(xPos * scale_factor, yPos * scale_factor);
 }
 
 //-----------------------------------------------------------------
@@ -1323,7 +1323,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 		}
 	}
 
-	MouseMove(xPos * scale_factor, yPos * scale_factor);
+	//MouseMove(xPos * scale_factor, yPos * scale_factor);
 
 	//needToRefresh = true;
 }
