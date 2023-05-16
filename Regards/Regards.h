@@ -23,6 +23,8 @@
 #include <libPicture.h>
 #include <wx/textfile.h>
 #include <wx/display.h>
+#include <VideoConverterFrame.h>
+#include <ScannerFrame.h>
 //#define TEST_WINDOWMANAGER
 #ifdef __WXGTK__
  #include <X11/Xlib.h>   
@@ -159,7 +161,7 @@ float clamp(float val, float minval, float maxval)
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp
-class MyApp : public wxApp, public IMainInterface
+class MyApp : public wxApp, public IMainInterface, public IVideoConverterInterface
 {
 public:
 	// override base class virtuals
@@ -317,13 +319,20 @@ public:
 	wxString GetImageFilter() override;
 
 private:
-	CRegardsConfigParam* regardsParam;
-	MyFrameIntro* frameStart;
-	CViewerFrame* frameViewer;
+	CRegardsConfigParam* regardsParam= nullptr;
+	MyFrameIntro* frameStart= nullptr;
+	CViewerFrame* frameViewer= nullptr;
 	wxString fileToOpen;
+	wxString appName = "";
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
+	
+	CScannerFrame * framePDF = nullptr;
+	CVideoConverterFrame* frameVideoConverter = nullptr;
+	
+	bool startVideoConverter = false;
+	bool startRegardsPDF = false;
 
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member
@@ -339,10 +348,10 @@ IMPLEMENT_APP(MyApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-	{
-		wxCMD_LINE_PARAM, nullptr, nullptr, "input file", wxCMD_LINE_VAL_STRING,
-		wxCMD_LINE_PARAM_OPTIONAL
-	},
 
+	{
+		wxCMD_LINE_PARAM, nullptr, nullptr, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
+	},
+	{ wxCMD_LINE_OPTION, "p", "program", "Program Name" },
 	{wxCMD_LINE_NONE}
 };

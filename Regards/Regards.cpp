@@ -30,12 +30,15 @@ using namespace cv;
 using namespace Regards::Picture;
 
 
-
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
+	cout << "Application Parameter : " << endl;
 	parser.SetDesc(g_cmdLineDesc);
 	// must refuse '/' as parameter starter or cannot use "/path" style paths
 	parser.SetSwitchChars(wxT("-"));
+    parser.EnableLongOptions();
+    if (parser.Parse() != 0)
+        return;
 }
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
@@ -51,9 +54,17 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 	// and other command line parameters
 	if (files.Count() > 0)
+	{
 		fileToOpen = files[0];
+	}
+	
+	if(parser.Found("program", &appName))
+		cout << "App : " << appName << endl;
 	// then do what you need with them.
-
+	
+	cout << "Application Parameter : " << endl;
+	cout << "File : " << fileToOpen << endl;
+	
 	return true;
 }
 
@@ -118,6 +129,8 @@ int MyApp::Close()
 #if defined(__WXMSW__) && defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
+
+	exit(0);
 
 	return 0;
 }
@@ -305,11 +318,34 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
 
-	frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
-	frameStart->Centre(wxBOTH);
-	frameStart->Show(true);
+	if(appName == "RegardsConverter")
+	{
+		wxDisplay display;
+		wxRect screen = display.GetClientArea();
+		frameVideoConverter = new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
+		frameVideoConverter->Centre(wxBOTH);
+		frameVideoConverter->Show(false);
+	}
+	else if(appName == "RegardsPDF")
+	{
+		wxDisplay display;
+		wxRect screen = display.GetClientArea();
+		//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
+		framePDF = new CScannerFrame("RegardsPDF", this,  wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()));
+		framePDF->Centre(wxBOTH);
+		framePDF->Show(true);
+		framePDF->OnOpen();	
+	}
+	else
+	{
+		frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
+		frameStart->Centre(wxBOTH);
+		frameStart->Show(true);
 
-	CViewerFrame::SetViewerMode(true);
+		CViewerFrame::SetViewerMode(true);
+	}
+
+
 
 
 	// success: wxApp::OnRun() will be called which will enter the main message

@@ -367,7 +367,7 @@ int CViewerFrame::ShowScanner()
 #ifdef __WXMSW__
 	wxString pathProgram = "RegardsPDF.exe";
 #else
-	wxString pathProgram = "./RegardsPDF";
+	wxString pathProgram = "./RegardsViewer \"toto.pdf\" -p RegardsPDF";
 #endif
 	wxExecute(pathProgram);
 #endif
