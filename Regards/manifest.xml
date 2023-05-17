@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"> 
  <assemblyIdentity 
-  version="1.0.0.0" 
+  version="2.76.4.0" 
   processorArchitecture="X86" 
-  name="CompanyName.ProductName.YourApp" 
-  type="win32"
+  name="Figuinha.Regards.RegardsViewer" 
+  type="win64"
  /> 
- <description>Your application description here.</description> 
+ <description>Regards is a modern photo viewer.</description> 
  <dependency> 
   <dependentAssembly> 
    <assemblyIdentity 
