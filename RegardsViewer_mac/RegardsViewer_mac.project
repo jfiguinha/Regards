@@ -78,49 +78,6 @@
     <Project Name="libResource"/>
     <Project Name="libffmpeg"/>
   </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libheif"/>
-    <Project Name="libavif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libResource"/>
-    <Project Name="wxIA"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="libffmpeg"/>
-  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++17;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -129,6 +86,8 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libVideoConverter"/>
+        <IncludePath Value="../libScanner"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
@@ -175,6 +134,7 @@
         <Library Value="Email"/>
         <Library Value="Resource"/>
         <Library Value="Geolocalisation"/>
+        <Library Value="VideoConverter"/>
         <Library Value="Filtre"/>
         <Library Value="RegardsCL"/>
         <Library Value="RegardsGL"/>
@@ -367,6 +327,7 @@
         <LibraryPath Value="../libCompress/Release"/>
         <LibraryPath Value="../libDialog/Release"/>
         <LibraryPath Value="../libPicture/Release"/>
+        <LibraryPath Value="../libVideoConverter/Release"/>
         <LibraryPath Value="../libUtility/Release"/>
         <LibraryPath Value="../libGeolocalisation/Release"/>
         <LibraryPath Value="../libSqlData/Release"/>
@@ -440,4 +401,48 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
+    <Project Name="libavif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libResource"/>
+    <Project Name="wxIA"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libVideoConverter"/>
+  </Dependencies>
 </CodeLite_Project>

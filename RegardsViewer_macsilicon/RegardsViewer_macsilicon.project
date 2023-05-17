@@ -120,6 +120,7 @@
     <Project Name="wxIA"/>
     <Project Name="libRegardsBpg_mac"/>
     <Project Name="libffmpeg"/>
+    <Project Name="libVideoConverter"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -128,6 +129,8 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libVideoConverter"/>
+        <IncludePath Value="../libScanner"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
@@ -176,6 +179,7 @@
         <Library Value="Resource"/>
         <Library Value="Geolocalisation"/>
         <Library Value="Filtre"/>
+        <Library Value="VideoConverter"/>
         <Library Value="RegardsCL"/>
         <Library Value="SqlData"/>
         <Library Value="SqlEngine"/>
@@ -362,6 +366,7 @@
         <LibraryPath Value="../libDialog/Release"/>
         <LibraryPath Value="../libPicture/Release"/>
         <LibraryPath Value="../libUtility/Release"/>
+        <LibraryPath Value="../libVideoConverter/Release"/>
         <LibraryPath Value="../libGeolocalisation/Release"/>
         <LibraryPath Value="../libSqlData/Release"/>
         <LibraryPath Value="../libFiltre/Release"/>
