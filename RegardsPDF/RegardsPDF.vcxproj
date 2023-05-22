@@ -273,7 +273,7 @@
     <TargetName>RegardsPDF</TargetName>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
-    <EmbedManifest>false</EmbedManifest>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -573,13 +573,16 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
+      <AdditionalManifestFiles>%(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <OutputManifestFile />
     </Manifest>
     <PreBuildEvent>
       <Command>
       </Command>
     </PreBuildEvent>
     <ManifestResourceCompile>
-      <ResourceOutputFileName>../Regards/manifest.xml</ResourceOutputFileName>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">

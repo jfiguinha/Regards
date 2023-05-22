@@ -48,6 +48,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+
 #define ISOLATION_AWARE_ENABLED
 #endif
 
