@@ -246,14 +246,15 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 					CIcone* numActif = GetIconeById(numActifPhotoId);
 					if (numActif != nullptr)
 						rect = numActif->GetPos();
-					RefreshIcone(numActifPhotoId);
+				    RefreshIcone(numActifPhotoId);
 					refresh = true;
 				}
 
 				//Positionnement au milieu
-
+				/*
 				int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
 				int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
+
 
 				if (this->GetParent() != nullptr)
 				{
@@ -269,6 +270,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 				posLargeur = xPos;
 				posHauteur = yPos;
+				*/
 				//isMovingScroll = true;
 			}
 		}
