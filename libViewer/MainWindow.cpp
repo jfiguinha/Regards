@@ -1712,7 +1712,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0 || updateFolderThread != nullptr || !isCheckNewVersion)
+	if (nbProcessMD5 > 0 || updateFolderThread != nullptr)
 		return false;
 
 	return true;

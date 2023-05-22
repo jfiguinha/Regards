@@ -1734,7 +1734,7 @@ void CCentralWindow::SetVideo(const wxString& path)
 
 	if (windowMode == WINDOW_VIEWER)
 	{
-		if(showToolbar && isFullscreen)
+		if((showToolbar && isFullscreen) || !isFullscreen)
 			windowManager->ShowWindow(Pos::wxTOP);
 	}
 		
