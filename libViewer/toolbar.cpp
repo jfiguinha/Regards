@@ -6,11 +6,10 @@
 #include <window_id.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include "CheckVersion.h"
+
 #include <wx/mimetype.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-using namespace Regards::Internet;
 
 //
 #define IDM_WINDOWSEARCH 152
@@ -27,7 +26,7 @@ using namespace Regards::Internet;
 #define IDM_NEWVERSION 163
 #define IDM_EXPORT_DIAPORAMA 164
 
-#define wxVERSION_UPDATE_EVENT 165
+
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
@@ -144,7 +143,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	navElement.push_back(imageNewVersion);
 
 	
-	versionUpdate = new std::thread(NewVersionAvailable, this);
+	
 
 	auto imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
@@ -152,65 +151,16 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, 
 	imageFirst->SetCommandId(IDM_QUITTER);
 	navElement.push_back(imageFirst);
 	
-	
-	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CToolbar::OnVersionUpdate));
 }
 
 CToolbar::~CToolbar()
 {
 }
 
-
-void CToolbar::OnVersionUpdate(wxCommandEvent& event)
+void CToolbar::SetUpdateVisible(const bool& isVisible)
 {
-	cout << "OnVersionUpdate" << endl;
-	
-	int hasUpdate = event.GetInt();
-	if (hasUpdate)
-	{
-		if(imageNewVersion != nullptr)
-			imageNewVersion->SetVisible(true);
-			
-		this->Refresh();
-	}
-
-	versionUpdate->join();
-	delete versionUpdate;
-	versionUpdate = nullptr;
-}
-
-
-void CToolbar::NewVersionAvailable(void * param)
-{
-	int hasUpdate = 0;
-	CToolbar * toolbar = (CToolbar *)param;
-	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
-	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
-	CCheckVersion _checkVersion(serverURL);
-	wxString serverVersion = _checkVersion.GetLastVersion();
-	serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
-
-	long localValueVersion;
-	long localServerVersion;
-
-	localVersion.Replace(".", "");
-	serverVersion.Replace(".", "");
-
-	if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
-	if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
-
-
-	if (serverVersion != "error" && serverVersion != "")
-	{
-		if (localValueVersion < localServerVersion)
-		{
-			hasUpdate = 1;
-		}
-	}
-	
-	wxCommandEvent event(wxVERSION_UPDATE_EVENT);
-	event.SetInt(hasUpdate);
-	wxPostEvent(toolbar, event);
+	imageNewVersion->SetVisible(isVisible);
+	this->Refresh();
 }
 
 void CToolbar::EventManager(const int& id)

@@ -76,6 +76,8 @@ namespace Regards::Viewer
 
 	private:
 
+		static void NewVersionAvailable(void* param);
+
 		void ClickShowButton(const int& id, const int& refresh);
 
 		void SetDataToStatusBar(void* thumbnailMessage, const wxString& message);
@@ -96,7 +98,7 @@ namespace Regards::Viewer
 		void OnRefreshPicture(wxCommandEvent& event);
 		void OnScanner(wxCommandEvent& event);
 		void OnFaceAdd(wxCommandEvent& event);
-
+		void OnVersionUpdate(wxCommandEvent& event);
 		void UpdateStatusBarMessage(wxCommandEvent& event);
 
 		void OnDeleteFace(wxCommandEvent& event);
@@ -134,6 +136,8 @@ namespace Regards::Viewer
 		static void UpdateFolder(void * param);
 		void PhotoProcess(CPhotos* photo);
 
+
+		bool isCheckNewVersion = false;
 		wxString tempVideoFile = "";
 		wxString tempAudioVideoFile = "";
 		bool fullscreen;
@@ -142,7 +146,7 @@ namespace Regards::Viewer
 		CToolbar* toolbar;
 		CCentralWindow* centralWnd;
 		CToolbarViewerMode * toolbarViewerMode;
-
+		std::thread* versionUpdate = nullptr;
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 

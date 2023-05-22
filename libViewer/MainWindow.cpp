@@ -56,6 +56,7 @@
 #include "SqlFacePhoto.h"
 #include <FiltreEffetCPU.h>
 #include <MediaInfo.h>
+#include "CheckVersion.h"
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -109,7 +110,7 @@ CThreadVideoData::~CThreadVideoData()
 {
 }
 
-
+wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
 CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile)
@@ -192,6 +193,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
 	Connect(wxEVENT_UPDATEPHOTOFOLDER, wxCommandEventHandler(CMainWindow::OnUpdatePhotoFolder));
+	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CMainWindow::OnVersionUpdate));
 
 	/*----------------------------------------------------------------------
 	 *
@@ -226,6 +228,69 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 		_thread.join();
 	}
 
+
+	versionUpdate = new std::thread(NewVersionAvailable, this);
+	isCheckNewVersion = true;
+
+}
+
+
+void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
+{
+	cout << "OnVersionUpdate" << endl;
+
+	int hasUpdate = event.GetInt();
+	if (hasUpdate)
+	{
+		if (toolbar != nullptr)
+			toolbar->SetUpdateVisible(true);
+
+		
+	}
+
+	if (versionUpdate != nullptr)
+	{
+		versionUpdate->join();
+		delete versionUpdate;
+		versionUpdate = nullptr;
+	}
+
+	isCheckNewVersion = false;
+
+}
+
+
+void CMainWindow::NewVersionAvailable(void* param)
+{
+	int hasUpdate = 0;
+	CToolbar* toolbar = (CToolbar*)param;
+	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
+	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
+	CCheckVersion _checkVersion(serverURL);
+	wxString serverVersion = _checkVersion.GetLastVersion();
+	serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
+
+	long localValueVersion;
+	long localServerVersion;
+
+	localVersion.Replace(".", "");
+	serverVersion.Replace(".", "");
+
+	if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
+	if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
+
+
+	if (serverVersion != "error" && serverVersion != "")
+	{
+		if (localValueVersion < localServerVersion)
+		{
+			hasUpdate = 1;
+		}
+	}
+
+	wxCommandEvent event(wxVERSION_UPDATE_EVENT);
+	event.SetInt(hasUpdate);
+	wxPostEvent(toolbar, event);
 }
 
 void CMainWindow::ClickShowButton(const int& id, const int& refresh)
@@ -1647,7 +1712,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0 || updateFolderThread != nullptr)
+	if (nbProcessMD5 > 0 || updateFolderThread != nullptr || !isCheckNewVersion)
 		return false;
 
 	return true;

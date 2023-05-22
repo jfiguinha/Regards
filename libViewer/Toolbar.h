@@ -11,12 +11,12 @@ namespace Regards::Viewer
 	public:
 		CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
 		~CToolbar() override;
+		void SetUpdateVisible(const bool& isVisible);
 
 	private:
 		void EventManager(const int& id) override;
-		static void NewVersionAvailable(void * param);
-		void OnVersionUpdate(wxCommandEvent& event);
-		std::thread * versionUpdate;
+
+		
 		CToolbarButton * imageNewVersion = nullptr;
 	};
 }
