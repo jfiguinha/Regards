@@ -26,7 +26,7 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-
+extern string platformName;
 extern bool isOpenCLInitialized;
 
 //-----------------------------------------------------------------------------
@@ -434,7 +434,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
 
 	cl_platform_id platform = platforms[found];
-	std::string platformName = cv::ocl::PlatformInfo(&platform).name();
+	platformName = cv::ocl::PlatformInfo(&platform).name();
 
 	cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);

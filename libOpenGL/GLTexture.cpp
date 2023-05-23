@@ -13,6 +13,7 @@
 using namespace Regards::OpenGL;
 
 using namespace cv::ocl;
+extern string platformName;
 
 class CTextureGLPriv
 {
@@ -215,7 +216,14 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 		}
 		else
 		{
+#ifdef WIN32
+			if(platformName != "Intel(R) OpenCL HD Graphics")
+				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+
+#else
 			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+#endif
+			
 			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 		}
 

@@ -21,7 +21,7 @@
 #include <SqlEngine.h>
 #include <SqlLibExplorer.h>
 #include <LibResource.h>
-
+string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 0;

@@ -21,7 +21,7 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 
-
+string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 0;
