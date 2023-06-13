@@ -23,6 +23,7 @@ extern "C" {
     #include <libavcodec/avcodec.h>
     #include <libavcodec/packet.h>
     #include <libavutil/opt.h>
+    #include <libavutil/mem.h>
     #include <libavutil/imgutils.h>
     #include <libavutil/display.h>
     #include <libavutil/channel_layout.h>
@@ -460,7 +461,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 		return ret;
 	}
 
-	stream_ctx = static_cast<StreamContext*>(av_mallocz_array(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
+	stream_ctx = static_cast<StreamContext*>(av_calloc(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
 	if (!stream_ctx)
 		return AVERROR(ENOMEM);
 
@@ -563,7 +564,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 		return ret;
 	}
 
-	stream_ctx = static_cast<StreamContext*>(av_mallocz_array(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
+	stream_ctx = static_cast<StreamContext*>(av_calloc(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
 	if (!stream_ctx)
 		return AVERROR(ENOMEM);
 
