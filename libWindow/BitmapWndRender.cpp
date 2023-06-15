@@ -989,12 +989,13 @@ void CBitmapWndRender::FlipHorizontal()
 //-----------------------------------------------------------------
 void CBitmapWndRender::MouseClick(const int& xPos, const int& yPos)
 {
-	//
+	/*
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
 	parentRender->CaptureMouse();
 	parentRender->SetFocus();
+	*/
 }
 
 //-----------------------------------------------------------------
@@ -1049,7 +1050,7 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 		break;
 	}
 
-	//MouseClick(xPos * scale_factor, yPos * scale_factor);
+	MouseClick(xPos, yPos);
 }
 
 //-----------------------------------------------------------------
