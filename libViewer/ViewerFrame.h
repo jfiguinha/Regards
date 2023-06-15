@@ -92,6 +92,7 @@ namespace Regards::Viewer
 		void OnKeyUp(wxKeyEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		void OnHello(wxCommandEvent& event);
+		void OnOpenFile(wxTimerEvent& event);
 		void CheckAllProcessEnd(wxTimerEvent& event);
 		void OnClose(wxCloseEvent& event);
 		void OnConfiguration(wxCommandEvent& event);
@@ -138,8 +139,9 @@ namespace Regards::Viewer
 		static bool viewerMode;
 		bool onExit;
 		bool m_fsWatcher = true;
-
+		wxString fileToOpen ="";
 		wxTimer* endLoadPictureTimer;
+		wxTimer* loadPictureStartTimer;
 		wxTimer* loadPictureTimer;
 		wxTimer* eventFileSysTimer = nullptr;
 		wxString filenameTimer;

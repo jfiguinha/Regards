@@ -39,6 +39,7 @@ using namespace Regards::Picture;
 constexpr auto TIMER_LOADPICTURE = 2;
 constexpr auto TIMER_EVENTFILEFS = 3;
 constexpr auto TIMER_LOADPICTUREEND = 4;
+constexpr auto TIMER_LOADPICTURESTART = 5;
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -71,7 +72,7 @@ constexpr auto TIMER_LOADPICTUREEND = 4;
 #endif
 #endif
 
-
+FolderCatalogVector folderList;
 bool CViewerFrame::viewerMode = true;
 
 using namespace Regards::Viewer;
@@ -96,7 +97,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	mainWindow = nullptr;
 	fullscreen = false;
 	onExit = false;
-	wxString fileToOpen = openfile;
+	fileToOpen = openfile;
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
 #ifndef __WXMSW__
@@ -111,7 +112,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	this->mainInterface = mainInterface;
 	this->mainInterface->parent = this;
 
-	FolderCatalogVector folderList;
+	
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
 
@@ -138,14 +139,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 		openFirstFile = false;
 
 
-	wxString dirpath = "";
-	if (fileToOpen == "")
-	{
-		if (folderList.size() == 0)
-		{
-			dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
-		}
-	}
+
 
 
 	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile);
@@ -157,6 +151,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	eventFileSysTimer = new wxTimer(this, TIMER_EVENTFILEFS);
 	endLoadPictureTimer = new wxTimer(this, TIMER_LOADPICTUREEND);
+	loadPictureStartTimer = new wxTimer(this, TIMER_LOADPICTURESTART);
 	auto menuFile = new wxMenu;
 
 	wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize", 1);
@@ -250,6 +245,27 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	mainWindow->Bind(wxEVT_KEY_UP, &CViewerFrame::OnKeyUp, this);
 
+	mainInterface->HideAbout();
+
+	Connect(TIMER_LOADPICTUREEND, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerEndLoadPicture), nullptr, this);
+	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
+	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
+	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
+	
+	loadPictureStartTimer->Start(100, true);
+}
+
+void CViewerFrame::OnOpenFile(wxTimerEvent& event)
+{
+	wxString dirpath = "";
+	if (fileToOpen == "")
+	{
+		if (folderList.size() == 0)
+		{
+			dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
+		}
+	}
+
 	if (fileToOpen != "")
 	{
 		auto file = new wxString(fileToOpen);
@@ -269,13 +285,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
-	mainInterface->HideAbout();
-
-	Connect(TIMER_LOADPICTUREEND, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerEndLoadPicture), nullptr, this);
-	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
-	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
+	
 }
+
 
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
@@ -524,6 +536,7 @@ void CViewerFrame::Exit()
 		onExit = true;
 	}
 }
+
 
 void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
