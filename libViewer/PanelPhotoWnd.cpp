@@ -179,12 +179,13 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
 		int isShowDialog = aEvent.GetInt();
+		wxString* file = (wxString * )aEvent.GetClientData();
 		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
 
 		if (isChecked)
 		{
 			folderWnd->AddPath(getSelectPath);
-			const wxString firstFile = AddFolder(getSelectPath, !isShowDialog);
+			const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
 			evt.SetInt(0);
 			auto newPath = new wxString(firstFile);
 			evt.SetClientData(newPath);
@@ -195,6 +196,9 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 			folderWnd->RemovePath(getSelectPath);
 			RemoveFolder(getSelectPath);
 		}
+
+		if (file != nullptr)
+			delete file;
 
 
 		windowMain->GetEventHandler()->AddPendingEvent(evt);
@@ -250,7 +254,7 @@ void CPanelPhotoWnd::LoadInfo()
 
 //Add and Remove Folder Management
 
-wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool& showDialog)
+wxString CPanelPhotoWnd::AddFolder(const wxString& folder, wxString* file, const bool& showDialog)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString localFilename = "";
@@ -297,6 +301,8 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool& showDialo
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
+	if (file != nullptr)
+		localFilename = *file;
 
 	return localFilename;
 }

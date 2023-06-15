@@ -65,7 +65,7 @@ namespace Regards::Viewer
 		void SetText(const int& numPos, const wxString& libelle);
 		void SetRangeProgressBar(const int& range);
 		void SetPosProgressBar(const int& position);
-
+		void SetPictureMode();
 		void OpenFile(const wxString& fileToOpen);
 
 		bool GetProcessEnd() override;

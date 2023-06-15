@@ -234,6 +234,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 }
 
+void CMainWindow::SetPictureMode()
+{
+	if (toolbarViewerMode != nullptr)
+		toolbarViewerMode->SetPictureWindowPush();
+}
+
 
 void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 {
@@ -1742,6 +1748,7 @@ void CMainWindow::OnOpenFileOrFolder(wxCommandEvent& event)
 	auto file = static_cast<wxString*>(event.GetClientData());
 	if (file != nullptr)
 	{
+		init = true;
 		int type = event.GetInt();
 		if (type == 1)
 			OpenFile(*file);
@@ -1751,9 +1758,11 @@ void CMainWindow::OnOpenFileOrFolder(wxCommandEvent& event)
 		wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 		if (window != nullptr)
 		{
+			wxString * filePath = new wxString(*file);
 			wxCommandEvent evt(wxEVENT_SELCHANGED);
 			evt.SetExtraLong(1);
 			evt.SetInt(1);
+			evt.SetClientData(filePath);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 

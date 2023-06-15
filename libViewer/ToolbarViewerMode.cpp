@@ -84,23 +84,36 @@ CToolbarViewerMode::~CToolbarViewerMode()
 {
 }
 
+void CToolbarViewerMode::DisableAll()
+{
+	if(facemode != nullptr)
+		facemode->SetPush(false);
+	viewermode->SetPush(false);
+	explorermode->SetPush(false);
+	picturemode->SetPush(false);
+}
+
 void CToolbarViewerMode::SetFaceWindowPush()
 {
+	DisableAll();
 	facemode->SetPush(true);
 }
 
 void CToolbarViewerMode::SetViewerWindowPush()
 {
+	DisableAll();
 	viewermode->SetPush(true);
 }
 
 void CToolbarViewerMode::SetExplorerWindowPush()
 {
+	DisableAll();
 	explorermode->SetPush(true);
 }
 
 void CToolbarViewerMode::SetPictureWindowPush()
 {
+	DisableAll();
 	picturemode->SetPush(true);
 }
 

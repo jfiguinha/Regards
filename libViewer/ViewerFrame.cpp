@@ -252,7 +252,12 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
 	
-	loadPictureStartTimer->Start(100, true);
+	if (fileToOpen != "")
+	{
+		loadPictureStartTimer->Start(100, true);
+		mainWindow->SetPictureMode();
+	}
+	
 }
 
 void CViewerFrame::OnOpenFile(wxTimerEvent& event)

@@ -21,7 +21,7 @@ namespace Regards::Viewer
 	private:
 
 		void EventManager(const int& id) override;
-
+		void DisableAll();
 		CToolbarInterface* toolbarInterface = nullptr;
 		CToolbarTexte* facemode = nullptr;
 		CToolbarTexte* viewermode = nullptr;
