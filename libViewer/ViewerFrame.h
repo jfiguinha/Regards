@@ -121,7 +121,7 @@ namespace Regards::Viewer
 
 		bool repeatEvent = false;
 		int eventToLoop = 0;
-
+		FolderCatalogVector folderList;
 		IMainInterface* mainInterface;
 		CMainParam* viewerParam;
 		CMainTheme* viewerTheme;
@@ -140,6 +140,7 @@ namespace Regards::Viewer
 		bool onExit;
 		bool m_fsWatcher = true;
 		wxString fileToOpen ="";
+		
 		wxTimer* endLoadPictureTimer;
 		wxTimer* loadPictureStartTimer;
 		wxTimer* loadPictureTimer;

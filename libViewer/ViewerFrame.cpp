@@ -72,7 +72,7 @@ constexpr auto TIMER_LOADPICTURESTART = 5;
 #endif
 #endif
 
-FolderCatalogVector folderList;
+
 bool CViewerFrame::viewerMode = true;
 
 using namespace Regards::Viewer;
@@ -115,7 +115,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
-
+	
 
 	m_watcher = new wxFileSystemWatcher();
 	m_watcher->SetOwner(this);
