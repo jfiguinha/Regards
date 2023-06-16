@@ -119,13 +119,13 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
 
 void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
 {
-	/*
+	
 	ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
 	thumStruct->window = this;
 	thumStruct->filename = videoFilename;
 	thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
 	process_end = false;
-	*/
+	
 
 }
 
