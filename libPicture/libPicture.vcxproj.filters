@@ -130,6 +130,9 @@
     <ClCompile Include="OpenCVVideoPlayer.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="convertmattowxbmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -287,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="VideoPlayerInterface.h">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="convertmattowxbmp.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

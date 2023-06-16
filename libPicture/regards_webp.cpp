@@ -66,6 +66,7 @@ vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay
 		}
 
 		nbFrame = anim_info.frame_count;
+		//int i = 0;
 
 		// Decode frames.
 		while (WebPAnimDecoderHasMoreFrames(dec))
@@ -80,7 +81,10 @@ vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay
 
 			delay = timestamp - prev_frame_timestamp;
 
-			auto bitmapMatrix = cv::Mat(anim_info.canvas_height, anim_info.canvas_width, CV_8UC4, frame_rgba);
+			auto bitmapMatrix = cv::Mat(anim_info.canvas_height, anim_info.canvas_width, CV_8UC4);
+			memcpy(bitmapMatrix.data, frame_rgba, anim_info.canvas_height * anim_info.canvas_width * 4);
+
+
 			ApplyTransform(bitmapMatrix);
 			prev_frame_timestamp = timestamp;
 			pictureList.push_back(bitmapMatrix);
@@ -90,6 +94,13 @@ vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay
 End:
 	WebPAnimDecoderDelete(dec);
 
+	/*
+	for (int i = 0; i < nbFrame; i++)
+	{
+		wxString filename = "d:\\toto" + to_string(i) + ".jpg";
+		cv::imwrite(filename.ToStdString(), pictureList[i]);
+	}
+	*/
 	return pictureList;
 }
 

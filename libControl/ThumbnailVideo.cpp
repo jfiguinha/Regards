@@ -105,6 +105,7 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
 	process_end = true;
 
 	nbVideoThumbnailProcess--;
+
 	if (oldMovie == videoFilename)
 	{
 		ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
@@ -113,15 +114,19 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
 		thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
 		process_end = false;
 	}
+	
 }
 
 void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
 {
+	/*
 	ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
 	thumStruct->window = this;
 	thumStruct->filename = videoFilename;
 	thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
 	process_end = false;
+	*/
+
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -420,6 +425,16 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 	auto event = new wxCommandEvent(wxEVENT_ENDTHUMBNAIL);
 	event->SetClientData(label);
 	wxQueueEvent(label->window, event);
+}
+
+void CThumbnailVideo::ProcessVideo()
+{
+	ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+	thumStruct->window = this;
+	thumStruct->filename = videoFilename;
+	thumStruct->threadVideo = new thread(LoadMoviePicture, thumStruct);
+	process_end = false;
+	processThumbnailVideo = false;
 }
 
 void CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)

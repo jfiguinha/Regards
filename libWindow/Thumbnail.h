@@ -69,6 +69,8 @@ namespace Regards::Window
 		int GetTabValue();
 
 	protected:
+
+		virtual void ProcessVideo() {};
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
@@ -163,7 +165,7 @@ namespace Regards::Window
 		std::mutex lockIconeList;
 		CIconeList* iconeList;
 
-		//IconeVector pIconeList;
+		bool processThumbnailVideo = false;
 
 		int xNewSize;
 		int yNewSize;

@@ -20,6 +20,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include "ascii.h"
+#include "convertmattowxbmp.h"
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -233,6 +234,7 @@ bool CLibPicture::TestIsPicture(const wxString& szFileName)
 	return false;
 }
 
+
 wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
 {
 	cv::Mat im2;
@@ -279,6 +281,45 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
 	*/
 	return wx;
 }
+
+
+/*
+
+wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
+{
+	cv::Mat im2;
+	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+
+	wxBitmap bmp(im2.cols, im2.rows, 24);
+	ConvertMatBitmapTowxBitmap(im2, bmp);
+	wxImage * wx = new wxImage(bmp.ConvertToImage());
+
+
+	return wx;
+}
+
+
+wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
+{
+
+
+
+	cv::Mat im2;
+	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+
+	wxBitmap bmp(im2.cols, im2.rows, 24);
+	ConvertMatBitmapTowxBitmap(im2, bmp);
+	wxImage wx = bmp.ConvertToImage();
+
+
+	return wx;
+}
+
+*/
 
 bool CLibPicture::TestIsPDF(const wxString& szFileName)
 {

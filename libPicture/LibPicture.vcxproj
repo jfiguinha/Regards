@@ -587,6 +587,7 @@
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
+    <ClInclude Include="convertmattowxbmp.h" />
     <ClInclude Include="DecodeRawParameter.h" />
     <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="DiaporamaFusion.h" />
@@ -646,6 +647,7 @@
     <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
+    <ClCompile Include="convertmattowxbmp.cpp" />
     <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="DiaporamaFusion.cpp" />
     <ClCompile Include="DiaporamaMove.cpp" />

@@ -11,8 +11,11 @@ namespace Regards::Control
 		~CThumbnailVideo(void) override;
 		void SetFile(const wxString& videoFile, const int& size);
 		void SetVideoPosition(const int64_t& videoPos);
-
+		
 	private:
+
+		void ProcessVideo() override;
+
 		static void ProcessThumbnail(void* param);
 		static void LoadMoviePicture(void* param);
 		void ResizeThumbnail() override;
@@ -29,7 +32,7 @@ namespace Regards::Control
 		bool process_end;
 		wxString videoFilename;
 		int64_t oldvideoPos = 0;
-		bool processThumbnailVideo = false;
+
 
 		int iFormat = 0;
 	};

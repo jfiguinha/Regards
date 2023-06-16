@@ -911,6 +911,11 @@ void CThumbnail::ProcessIdle()
 
 	}
 
+	if (processThumbnailVideo)
+	{
+		ProcessVideo();
+	}
+
 }
 
 void CThumbnail::UpdateMessage(wxCommandEvent& event)
