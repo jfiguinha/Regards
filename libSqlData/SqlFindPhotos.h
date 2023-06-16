@@ -33,6 +33,8 @@ namespace Regards
 			bool GetAllVideo(PhotosVector* photosVector);
 			bool SearchPhotosByCriteria(PhotosVector* photosVector);
 
+			bool SearchPhotosByCriteriaFolder(PhotosVector* photosVector);
+
 		private:
 			bool FindIfViewExist();
 			int TraitementResultPhotoDataCriteria(CSqlResult* sqlResult);

@@ -113,7 +113,7 @@ CThreadVideoData::~CThreadVideoData()
 wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
-CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile)
+CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile, const wxString & fileToOpen)
 	: CWindowMain("CMainWindow", parent, id)
 {
 	fullscreen = false;
@@ -218,6 +218,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		firstFileToShow = localFilename = config->GetLastShowPicture();
+	if (fileToOpen != "")
+		firstFileToShow = localFilename = fileToOpen;
 
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	wxBusyInfo wait(libelle);
@@ -1349,6 +1351,10 @@ void CMainWindow::UpdateFolder(void * param)
 	sqlFindPhotos.SearchPhotosByCriteria(threadData->_pictures);
 
 	threadData->iconeListThumbnail = threadData->mainWindow->centralWnd->GetThumbnailPicture()->PregenerateList(threadData->_pictures);
+
+	threadData->_pictures->clear();
+	sqlFindPhotos.SearchPhotosByCriteriaFolder(threadData->_pictures);
+
 	threadData->iconeListLocal = threadData->mainWindow->centralWnd->GetListPicture()->GetPtThumbnailFolder()->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
 	
 	wxCommandEvent event(wxEVENT_UPDATEPHOTOFOLDER);
