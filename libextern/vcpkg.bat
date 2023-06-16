@@ -9,6 +9,7 @@ vcpkg install jasper:x64-windows --recurse
 vcpkg install exiv2[video,xmp]:x64-windows --recurse
 vcpkg install dav1d:x64-windows --recurse
 vcpkg install wxWidgets[webview]:x64-windows --recurse
+vcpkg install avcpp:x64-windows
 vcpkg install opencv[contrib,ipp,openmp,opengl,ffmpeg]:x64-windows --recurse
 vcpkg install freeimage:x64-windows --recurse
 vcpkg install aom:x64-windows --recurse
