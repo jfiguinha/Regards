@@ -252,22 +252,32 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
 	
-	if (fileToOpen != "")
-	{
-		loadPictureStartTimer->Start(10, true);
-		mainWindow->SetPictureMode();
-	}
+	loadPictureStartTimer->Start(10, true);
 	
 }
 
 void CViewerFrame::OnOpenFile(wxTimerEvent& event)
 {
+	CLibPicture libPicture;
 	wxString dirpath = "";
 	if (fileToOpen == "")
 	{
 		if (folderList.size() == 0)
 		{
+			wxArrayString files;
 			dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
+			wxDir::GetAllFiles(dirpath, &files, wxEmptyString, wxDIR_FILES);
+			if (files.size() > 0)
+				sort(files.begin(), files.end());
+
+			for (wxString file : files)
+			{
+				if (libPicture.TestImageFormat(file) != 0)
+				{
+					fileToOpen = file;
+					break;
+				}
+			}
 		}
 	}
 
@@ -278,18 +288,13 @@ void CViewerFrame::OnOpenFile(wxTimerEvent& event)
 		evt.SetInt(1);
 		evt.SetClientData(file);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+
+		if (dirpath == "")
+			mainWindow->SetPictureMode();
+		else
+			mainWindow->SetViewerMode();
 	}
-	else
-	{
-		if (folderList.size() == 0)
-		{
-			auto file = new wxString(dirpath);
-			wxCommandEvent evt(wxEVENT_OPENFILEORFOLDER);
-			evt.SetInt(2);
-			evt.SetClientData(file);
-			mainWindow->GetEventHandler()->AddPendingEvent(evt);
-		}
-	}
+
 	
 }
 

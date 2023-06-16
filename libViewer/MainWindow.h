@@ -66,6 +66,7 @@ namespace Regards::Viewer
 		void SetRangeProgressBar(const int& range);
 		void SetPosProgressBar(const int& position);
 		void SetPictureMode();
+		void SetViewerMode();
 		void OpenFile(const wxString& fileToOpen);
 
 		bool GetProcessEnd() override;
@@ -168,6 +169,7 @@ namespace Regards::Viewer
 		bool criteriaSendMessage;
 		bool checkVersion;
 		bool setViewerMode = false;
+		bool setPictureMode = false;
 		//CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
 		CFFmpegTranscoding* ffmpegEncoder = nullptr;
 		wxString fileOut = "";

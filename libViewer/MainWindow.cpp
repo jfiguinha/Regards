@@ -238,8 +238,20 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 void CMainWindow::SetPictureMode()
 {
+	setPictureMode = true;
+	processIdle = true;
+
 	if (toolbarViewerMode != nullptr)
 		toolbarViewerMode->SetPictureWindowPush();
+}
+
+void CMainWindow::SetViewerMode()
+{
+	setViewerMode = true;
+	processIdle = true;
+
+	if (toolbarViewerMode != nullptr)
+		toolbarViewerMode->SetViewerWindowPush();
 }
 
 
@@ -1500,6 +1512,19 @@ void CMainWindow::ProcessIdle()
 		hasDoneOneThings = true;
 	}
 
+	if (setPictureMode)
+	{
+		setPictureMode = false;
+		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (central != nullptr)
+		{
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(4);
+			wxPostEvent(central, event);
+		}
+	}
+
+
 	if (setViewerMode)
 	{
 		setViewerMode = false;
@@ -1507,7 +1532,7 @@ void CMainWindow::ProcessIdle()
 		if (central != nullptr)
 		{
 			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-			event.SetInt(4);
+			event.SetInt(1);
 			wxPostEvent(central, event);
 		}
 	}
@@ -1802,7 +1827,6 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	updateCriteria = true;
 	updateFolder = true;
 	processIdle = true;
-	setViewerMode = true;
 
 	centralWnd->LoadPicture(fileToOpen);
 }

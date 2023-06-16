@@ -913,7 +913,7 @@ void CThumbnail::ProcessIdle()
 
 	if (processThumbnailVideo)
 	{
-		ProcessVideo();
+		//ProcessVideo();
 	}
 
 }
