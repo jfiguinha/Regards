@@ -870,7 +870,7 @@ void CThumbnail::ProcessIdle()
 				*/
 			}
 		}
-		return;
+
 	}
 
 

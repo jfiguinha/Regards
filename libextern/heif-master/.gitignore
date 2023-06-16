@@ -1,0 +1,28 @@
+Bins/
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+
+# Linux
+*.a
+
+# Windows
+*.exe
+.project
+.vscode/
+
+*.bak
+*~
+
+*.gcov
+
+*.heic
+*_info.xml
+
+# IDE files
+*.user
+
+# MacOS
+.DS_Store
+.idea/

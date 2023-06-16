@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Heif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\EntityGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\EqivGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AlternativeTrackGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DecoderConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AACDecoderConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AVCDecoderConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\HEVCDecoderConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\JPEGDecoderConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Track.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AudioTrack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\VideoTrack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ImageSequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Sample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AudioSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\VideoSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ItemProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\RawProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DescriptiveProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\TransformativeProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MetaItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ExifItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MimeItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\XMPItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MPEG7Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\CodedImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AVCCodedImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\HEVCCodedImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\JPEGCodedImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DerivedImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\IdentityImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\GridImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\OverlayImageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ErrorCodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\H26xTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Heif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\EntityGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\EqivGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AlternativeTrackGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DecoderConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AACDecoderConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AVCDecoderConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\HEVCDecoderConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\JPEGDecoderConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Track.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AudioTrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\VideoTrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ImageSequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Sample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AudioSample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\VideoSample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ItemProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\RawProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DescriptiveProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\TransformativeProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MetaItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ExifItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MimeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\XMPItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\MPEG7Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\CodedImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\AVCCodedImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\HEVCCodedImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\JPEGCodedImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\DerivedImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\IdentityImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\GridImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\OverlayImageItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\ErrorCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\H26xTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\heif-master\srcs\api-cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F84EB05B-C169-3BA8-A422-E708C7AE6223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7EC064D8-FFFC-3F55-AA5A-D19A4B0D588F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

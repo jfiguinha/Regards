@@ -1,0 +1,10 @@
+^C:\DEVELOPPEMENT\GIT\REGARDS\LIBEXTERN\HEIF-MASTER\SRCS\COMMON\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/heif-master/srcs -BC:/developpement/git/Regards/libextern/heif-master/build --check-stamp-file C:/developpement/git/Regards/libextern/heif-master/build/common/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
