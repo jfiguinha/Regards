@@ -1068,7 +1068,7 @@ void CThumbnail::LoadPicture(void* param)
 					delete bitmap;
 			}
 		}
-		else
+		else //Not support video
 		{
 			threadLoadingBitmap->bitmapIcone = CLibResource::GetPhotoCancel();
 			wxString filename = threadLoadingBitmap->filename;
