@@ -1082,7 +1082,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 	wxClientDC dc(this);
 
 	isMoving = true;
-	//bool needtoRedraw = false;
+	bool needtoRedraw = false;
 	isMovingScroll = true;
 	bool isChecked = false;
 	if (numActifPhotoId != -1)
@@ -1141,15 +1141,15 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						{
 							numActif->muIcone.lock();
 							numActif->SetActive(false);
-							numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+							//numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 							numActif->muIcone.unlock();
 						}
 					}
 
 					//pBitmapIcone = FindElement(xPos, yPos);
-					if (pBitmapIcone != nullptr)
-						pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-					//needtoRedraw = true;
+					//if (pBitmapIcone != nullptr)
+					//	pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+					needtoRedraw = true;
 				}
 			}
 
@@ -1162,7 +1162,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 				if (pBitmapIcone != nullptr)
 				{
 					pBitmapIcone->SetActive(true);
-					pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+					//pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 				}
 				//needtoRedraw = true;
 			}
@@ -1170,12 +1170,12 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			pBitmapIcone->muIcone.unlock();
 		}
 
-		/*
+		
 		if (needtoRedraw)
 		{
 			needToRefresh = true;
 		}
-		*/
+		
 		refreshMouseMove->Start(1000, true);
 	}
 
