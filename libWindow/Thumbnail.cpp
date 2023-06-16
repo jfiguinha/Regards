@@ -841,6 +841,37 @@ void CThumbnail::ProcessIdle()
 		return;
 	}
 
+	if (processThumbnailVideo)
+	{
+		wxString filename = videoFilename;
+		pItemStringCompFonct _pf = &ItemFilenameCompFonct;
+		CIcone* icone = iconeList->FindElement(filename, &_pf);
+		if (icone != nullptr)
+		{
+			if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
+			{
+				const bool isProcess = pThumbnailData->IsProcess();
+				//const bool isLoad = pThumbnailData->IsLoad();
+				if (!isProcess) // && !isLoad)
+				{
+					ProcessThumbnail(pThumbnailData);
+					pThumbnailData->SetIsProcess(true);
+					nbProcess++;
+					processThumbnailVideo = false;
+				}
+				/*
+				else if(nbProcess == 0)
+				{
+					ProcessThumbnail(pThumbnailData);
+					pThumbnailData->SetIsProcess(true);
+					nbProcess++;
+					nbElement--;
+				}
+				*/
+			}
+		}
+		return;
+	}
 
 
 	int nbProcesseur = 1;
@@ -892,6 +923,7 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
+						/*
 						else if(nbProcess == 0)
 						{
 							ProcessThumbnail(pThumbnailData);
@@ -899,6 +931,7 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
+						*/
 					}
 				}
 			}
@@ -918,10 +951,7 @@ void CThumbnail::ProcessIdle()
 
 	}
 
-	if (processThumbnailVideo)
-	{
-		ProcessVideo();
-	}
+
 
 }
 
@@ -1070,7 +1100,7 @@ void CThumbnail::LoadPicture(void* param)
 		}
 		else //Not support video
 		{
-			threadLoadingBitmap->bitmapIcone = CLibResource::GetPhotoCancel();
+			threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 			wxString filename = threadLoadingBitmap->filename;
 			CSqlThumbnailVideo sqlThumbnailVideo;
 			for (int i = 0; i < 20; i++)

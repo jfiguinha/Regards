@@ -30,7 +30,7 @@ namespace Regards::Control
 		void InitWithDefaultPicture(const wxString& szFileName, const int& size);
 		int numItemSelected;
 		bool process_end;
-		wxString videoFilename;
+
 		int64_t oldvideoPos = 0;
 
 

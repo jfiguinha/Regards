@@ -166,7 +166,7 @@ namespace Regards::Window
 		CIconeList* iconeList;
 
 		bool processThumbnailVideo = false;
-
+		wxString videoFilename = "";
 		int xNewSize;
 		int yNewSize;
 		int thumbnailSizeX;

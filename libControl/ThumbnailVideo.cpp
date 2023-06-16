@@ -392,6 +392,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	processThumbnailVideo = true;
 
+	//nbElementInIconeList = 1;
+
 	needToRefresh = true;
 }
 
@@ -419,6 +421,24 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 				sqlThumbnailVideo.InsertThumbnail(label->filename, dest, bitmap->image.GetWidth(),
 				                                  bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
 				                                  bitmap->timePosition);
+		}
+	}
+	else //Not support video
+	{
+		wxImage image;
+		image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+		wxString filename = label->filename;
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		for (int i = 0; i < 20; i++)
+		{
+			wxMemoryOutputStream memOut;
+			image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
+			std::vector<uchar> buffer(memOut.GetLength());
+			memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+
+			sqlThumbnailVideo.InsertThumbnail(filename, buffer, image.GetWidth(),
+				image.GetHeight(), i, 0, ((float)i / 20.0) * 100.0,
+				i);
 		}
 	}
 

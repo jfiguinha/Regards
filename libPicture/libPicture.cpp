@@ -1418,7 +1418,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 		{
 			CThumbnailVideo thumbnail(szFileName, false);
 			int64_t duration = thumbnail.GetMovieDuration();
-			if (duration > 20)
+			if (duration > 20 || duration < 0)
 				return 20;
 			return duration;
 
