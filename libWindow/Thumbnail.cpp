@@ -892,6 +892,13 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
+						else if(nbProcess == 0)
+						{
+							ProcessThumbnail(pThumbnailData);
+							pThumbnailData->SetIsProcess(true);
+							nbProcess++;
+							nbElement--;
+						}
 					}
 				}
 			}
@@ -913,7 +920,7 @@ void CThumbnail::ProcessIdle()
 
 	if (processThumbnailVideo)
 	{
-		//ProcessVideo();
+		ProcessVideo();
 	}
 
 }
@@ -1059,6 +1066,23 @@ void CThumbnail::LoadPicture(void* param)
 
 				if (i != selectPicture)
 					delete bitmap;
+			}
+		}
+		else
+		{
+			threadLoadingBitmap->bitmapIcone = CLibResource::GetPhotoCancel();
+			wxString filename = threadLoadingBitmap->filename;
+			CSqlThumbnailVideo sqlThumbnailVideo;
+			for (int i = 0; i < 20; i++)
+			{
+				wxMemoryOutputStream memOut;
+				threadLoadingBitmap->bitmapIcone.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
+				std::vector<uchar> buffer(memOut.GetLength());
+				memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+
+				sqlThumbnailVideo.InsertThumbnail(filename, buffer, threadLoadingBitmap->bitmapIcone.GetWidth(),
+					threadLoadingBitmap->bitmapIcone.GetHeight(), i, 0, ((float)i / 20.0) * 100.0,
+					i);
 			}
 		}
 	}
