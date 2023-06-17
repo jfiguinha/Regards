@@ -150,12 +150,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Figuinha"
             VALUE "FileDescription", "RegardsPDF"
-            VALUE "FileVersion", "2.76.6.0"
+            VALUE "FileVersion", "2.76.7.0"
             VALUE "InternalName", "RegardsPDF.exe"
             VALUE "LegalCopyright", "Copyright (C) 2014 - 2023"
             VALUE "OriginalFilename", "RegardsPDF.exe"
             VALUE "ProductName", "RegardsPDF"
-            VALUE "ProductVersion", "2.76.6.0"
+            VALUE "ProductVersion", "2.76.7.0"
         END
     END
     BLOCK "VarFileInfo"
