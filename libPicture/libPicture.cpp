@@ -2095,42 +2095,51 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case EXR:
 			{
-				Array2D<Rgba> pixels;
-				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Box2i dw = file.dataWindow();
-				int width = dw.max.x - dw.min.x + 1;
-				int height = dw.max.y - dw.min.y + 1;
-				pixels.resizeErase(height, width);
-				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-				file.readPixels(dw.min.y, dw.max.y);
-
-				cv::Mat picture;
-
-				if (width > 0 && height > 0)
+				try
 				{
-					picture = cv::Mat(height, width, CV_8UC4);
-					int k = 0;
-					uint8_t* data = picture.data;
-					for (int i = 0; i < height; i++)
+					Array2D<Rgba> pixels;
+					RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+					Box2i dw = file.dataWindow();
+					int width = dw.max.x - dw.min.x + 1;
+					int height = dw.max.y - dw.min.y + 1;
+					pixels.resizeErase(height, width);
+					file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
+					file.readPixels(dw.min.y, dw.max.y);
+
+					cv::Mat picture;
+
+					if (width > 0 && height > 0)
 					{
-						for (int j = 0; j < width; j++, k += 4)
+						picture = cv::Mat(height, width, CV_8UC4);
+						int k = 0;
+						uint8_t* data = picture.data;
+						for (int i = 0; i < height; i++)
 						{
-							float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+							for (int j = 0; j < width; j++, k += 4)
+							{
+								float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+								float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+								float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+								float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 
-							data[k] = (int)(bvalue * 255.0);
-							data[k + 1] = (int)(gvalue * 255.0);
-							data[k + 2] = (int)(rvalue * 255.0);
-							data[k + 3] = (int)(avalue * 255.0);
+								data[k] = (int)(bvalue * 255.0);
+								data[k + 1] = (int)(gvalue * 255.0);
+								data[k + 2] = (int)(rvalue * 255.0);
+								data[k + 3] = (int)(avalue * 255.0);
+							}
 						}
-					}
 
-					bitmap->SetPicture(picture);
-					//bitmap->Flip();
-					bitmap->SetFilename(fileName);
+						bitmap->SetPicture(picture);
+						//bitmap->Flip();
+						bitmap->SetFilename(fileName);
+					}
+				
 				}
+				catch(...)
+				{
+					
+				}
+
 				break;
 			}
 
@@ -2722,10 +2731,17 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 	case EXR:
 		{
-			RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-			Box2i dw = file.dataWindow();
-			width = dw.max.x - dw.min.x + 1;
-			height = dw.max.y - dw.min.y + 1;
+			try
+			{
+				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+				Box2i dw = file.dataWindow();
+				width = dw.max.x - dw.min.x + 1;
+				height = dw.max.y - dw.min.y + 1;
+			}
+			catch(...)
+			{
+				
+			}
 		}
 		break;
 

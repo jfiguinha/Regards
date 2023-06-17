@@ -299,6 +299,8 @@ void CMainWindow::NewVersionAvailable(void* param)
 	if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
 	if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
 
+	printf("serverVersion %d \n", localServerVersion);
+	printf("localVersion %d \n", localValueVersion);
 
 	if (serverVersion != "error" && serverVersion != "")
 	{
