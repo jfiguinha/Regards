@@ -1,1 +1,0 @@
-C:\developpement\git\Regards\libextern\heif-master\build\common\common.dir\Debug\common.lib
