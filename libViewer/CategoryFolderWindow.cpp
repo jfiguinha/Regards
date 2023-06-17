@@ -461,7 +461,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	printf("FindPhotoCriteria %s datetime %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath),
 	       CConvertUtility::ConvertToUTF8(datetime));
 
-	if (datetime.Length() > 10)
+	if (datetime.Length() >= 10)
 	{
 		vector<wxString> vDateTime;
 		datetime = datetime.substr(0, 10);
