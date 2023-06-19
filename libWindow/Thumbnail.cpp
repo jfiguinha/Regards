@@ -923,7 +923,6 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
-						/*
 						else if(nbProcess == 0)
 						{
 							ProcessThumbnail(pThumbnailData);
@@ -931,7 +930,6 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
-						*/
 					}
 				}
 			}

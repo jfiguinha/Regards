@@ -130,6 +130,7 @@ public:
 	void OnTreeSelChange(wxTreeEvent& event);
 	void OnItemActivated(wxTreeEvent& event);
 	void OnSize(wxSizeEvent& event);
+	void OnMouseEnter(wxMouseEvent& event);
 
 	// Try to expand as much of the given path as possible.
 	virtual bool ExpandPath(const wxString& path);
