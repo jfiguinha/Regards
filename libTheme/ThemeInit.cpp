@@ -2,7 +2,7 @@
 #include "ThemeInit.h"
 #include "ThemeParam.h"
 #include <wx/stdpaths.h>
-
+#include <wx/settings.h>
 CThemeParam* CThemeInit::_singleton = nullptr;
 
 
@@ -31,20 +31,27 @@ void CThemeInit::Initialize(CThemeParam* param)
 		_singleton = param;
 		_singleton->OpenFile(filename);
 		*/
+        wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 		wxString filepath = wxStandardPaths::Get().GetExecutablePath();
-
+        bool isDarkTheme =  systemApp.IsDark();
 
 #ifdef WIN32
 
 		filepath = filepath.SubString(0, filepath.size() - 4);
-		filepath.append("theme");
+        if(isDarkTheme)
+            filepath.append("theme.dark");
+        else
+            filepath.append("theme.light");
 		_singleton = param;
 		_singleton->OpenFile(filepath);
 #else
 
         wxStandardPathsBase& stdp = wxStandardPaths::Get();
         wxString documentPath = stdp.GetDocumentsDir();
-        documentPath.append("/Regards.theme");
+        if(isDarkTheme)
+            documentPath.append("/Regards.theme.dark");
+        else
+            documentPath.append("/Regards.theme.light");
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif

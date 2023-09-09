@@ -140,6 +140,9 @@ namespace Regards::Viewer
 		bool onExit;
 		bool m_fsWatcher = true;
 		wxString fileToOpen ="";
+        
+        int oldWidth = 0;
+        int oldHeight = 0;
 		
 		wxTimer* endLoadPictureTimer;
 		wxTimer* loadPictureStartTimer;

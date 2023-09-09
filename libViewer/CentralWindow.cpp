@@ -1105,12 +1105,11 @@ void CCentralWindow::Resize()
 		else
 		{
 			if (windowManager != nullptr)
-				windowManager->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), GetWindowHeight());
+				windowManager->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight());
 		}
 	}
 
-	if (windowManager != nullptr)
-		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+    windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 
 	/*
 	if (updateRightPanel)

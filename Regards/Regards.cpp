@@ -153,6 +153,7 @@ bool MyApp::OnInit()
 
 #ifdef __APPLE__
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
+    //wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
 #endif
 
 	int retCode = sqlite3_config(SQLITE_CONFIG_SERIALIZED);

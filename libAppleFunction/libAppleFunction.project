@@ -15,11 +15,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ToggleFullscreen.cpp"/>
     <File Name="ReadImage.cpp"/>
     <File Name="SaveFileFormat.cpp"/>
     <File Name="SaveFromCFunction.mm"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ToggleFullscreenImpl.mm"/>
+    <File Name="ToggleFullscreenImpl.h"/>
+    <File Name="ToggleFullscreen.h"/>
     <File Name="ReadImageImpl.mm"/>
     <File Name="ReadImageImpl.h"/>
     <File Name="ReadImage.h"/>

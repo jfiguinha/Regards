@@ -231,7 +231,7 @@
         <Library Value="freeimage"/>
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
-        <Library Value="lept"/>
+        <Library Value="leptonica"/>
         <Library Value="tbb"/>
         <Library Value="aom"/>
         <Library Value="opencv_calib3d"/>

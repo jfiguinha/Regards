@@ -12,6 +12,7 @@
 #include <ConfigRegards.h>
 #include "MainThemeInit.h"
 #include "ViewerParam.h"
+#include <wx/display.h>
 #include "MainTheme.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
@@ -29,6 +30,9 @@
 #include <SqlFacePhoto.h>
 #include "window_mode_id.h"
 #include <wx/busyinfo.h>
+#ifdef __APPLE__
+#include <ToggleFullscreen.h>
+#endif
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -91,7 +95,7 @@ void CViewerFrame::SetViewerMode(const bool& mode)
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
                            const wxString& openfile)
-	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
+	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size, wxMAXIMIZE | wxFRAME_EX_METAL  | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
 	  size_(size), main_interface_(mainInterface), file_to_open_(openfile)
 {
 	mainWindow = nullptr;
@@ -742,14 +746,39 @@ void CViewerFrame::SetFullscreen()
 	if (mainWindow->SetFullscreenMode())
 	{
 		fullscreen = true;
+         //this->ShowFullscreen(true, wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR |wxFULLSCREEN_NOBORDER);
+#ifdef __APPLE__
+        int top = 0, left = 0;
+        CToggleScreen toggle;
+        toggle.ToggleFullscreen(this);
+        toggle.GetFullscreenSize(left, top);
+        oldWidth = mainWindow->GetWindowWidth();
+        oldHeight = mainWindow->GetWindowHeight();
+        //mainWindow->SetSize(0, 0, oldWidth, oldHeight);
+        //this->Maximize();
+        mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight() - top);
+
+        
+#else
 		this->ShowFullScreen(true);
+#endif
+        //this->CentreOnScreen();
+        //this->Maximize();
 	}
 }
 
 void CViewerFrame::SetScreen()
 {
 	fullscreen = false;
-	this->ShowFullScreen(false);
+	
+#ifdef __APPLE__
+    CToggleScreen toggle;
+    toggle.ToggleFullscreen(this);
+    mainWindow->SetSize(0, 0, oldWidth, oldHeight);
+    this->Maximize();
+#else
+    this->ShowFullScreen(false);
+#endif
 }
 
 void CViewerFrame::SetWindowTitle(const wxString& libelle)

@@ -38,19 +38,24 @@ void CMainThemeInit::Initialize(CMainTheme* param)
 		_singleton = param;
 		_singleton->OpenFile(filename);
 		*/
-
+         wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 		wxStandardPathsBase& stdp = wxStandardPaths::Get();
 		wxString documentPath = stdp.GetDocumentsDir();
-
+         bool isDarkTheme =  systemApp.IsDark();
 #ifdef WIN32
 
-		documentPath.append("\\Regards\\Regards.viewer.theme");
+        if(isDarkTheme)
+            documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+        else
+            documentPath.append("\\Regards\\Regards.viewer.light.theme");
 		_singleton = param;
 		_singleton->OpenFile(documentPath);
 #else
 
-
-        documentPath.append("/Regards/Regards.viewer.theme");
+        if(isDarkTheme)
+            documentPath.append("/Regards/Regards.viewer.dark.theme");
+        else
+            documentPath.append("/Regards/Regards.viewer.light.theme");
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif
