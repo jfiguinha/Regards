@@ -123,6 +123,8 @@ namespace Regards::Viewer
 		void RefreshFolderList(wxCommandEvent& event);
 		void OnUpdatePhotoFolder(wxCommandEvent& event);
 		void OnUpdateFolder(wxCommandEvent& event);
+        
+
 
 		void Resize() override;
 		void ExportVideo(const wxString& filename);

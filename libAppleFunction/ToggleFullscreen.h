@@ -24,7 +24,7 @@ public:
     CToggleScreen ( void );
     ~CToggleScreen( void );
     void ToggleFullscreen(wxFrame * frame, int screenNumber = 0);
-    void GetFullscreenSize(int & width, int & height);
+    void GetFullscreenSize(int & width, int & height, int & top, int & left);
 private:
     ToggleScreenImpl * _impl;
 };

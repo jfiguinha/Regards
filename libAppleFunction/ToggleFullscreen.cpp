@@ -28,10 +28,10 @@ void CToggleScreen::ToggleFullscreen(wxFrame * frame, int screenNumber)
         return _impl->ToggleFullscreen(frame, screenNumber);   
 }
 
-void CToggleScreen::GetFullscreenSize(int & width, int & height)
+void CToggleScreen::GetFullscreenSize(int & width, int & height, int & top, int & left)
 {
      if ( _impl )
-        return _impl->GetFullscreenSize(width, height);   
+        return _impl->GetFullscreenSize(width, height, top, left);   
 }
 
 

@@ -255,9 +255,16 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
-	
+	Connect(wxEVT_FULLSCREEN,  wxCommandEventHandler(CViewerFrame::OnWindowFullScreen));
 	loadPictureStartTimer->Start(10, true);
 	
+}
+
+void CViewerFrame::OnWindowFullScreen(wxCommandEvent & event)
+{
+    //printf("Process OnWindowFullScreen /n");
+    if(!fullscreen)
+        SetFullscreen();
 }
 
 void CViewerFrame::OnOpenFile(wxTimerEvent& event)
@@ -746,17 +753,24 @@ void CViewerFrame::SetFullscreen()
 	if (mainWindow->SetFullscreenMode())
 	{
 		fullscreen = true;
-         //this->ShowFullscreen(true, wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR |wxFULLSCREEN_NOBORDER);
+         //this->ShowFullScreen(true);//, wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR |wxFULLSCREEN_NOBORDER);
 #ifdef __APPLE__
-        int top = 0, left = 0;
+        int top = 0, left = 0, width = 0, height = 0;
         CToggleScreen toggle;
         toggle.ToggleFullscreen(this);
-        toggle.GetFullscreenSize(left, top);
+        /*
+        toggle.GetFullscreenSize(width, height, left, top);
         oldWidth = mainWindow->GetWindowWidth();
         oldHeight = mainWindow->GetWindowHeight();
         //mainWindow->SetSize(0, 0, oldWidth, oldHeight);
         //this->Maximize();
-        mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight() - top);
+        int sizeWeight = wxDisplay().GetGeometry().GetHeight() - (height + top);
+        double scaleFactor = GetContentScaleFactor();
+        printf("SetFullscreen left : %d top : %d sizeWeight : %d \n", left, top, sizeWeight);
+        printf("SetFullscreen width : %d height : %d scaleFactor : %f \n", wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight(), scaleFactor);
+        //mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight() - sizeWeight + 5);
+        */
+      //  mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight()- sizeWeight + 5);
 
         
 #else
@@ -774,8 +788,8 @@ void CViewerFrame::SetScreen()
 #ifdef __APPLE__
     CToggleScreen toggle;
     toggle.ToggleFullscreen(this);
-    mainWindow->SetSize(0, 0, oldWidth, oldHeight);
-    this->Maximize();
+   // mainWindow->SetSize(0, 0, oldWidth, oldHeight);
+   /// this->Maximize();
 #else
     this->ShowFullScreen(false);
 #endif

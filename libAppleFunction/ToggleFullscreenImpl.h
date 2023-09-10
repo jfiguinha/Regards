@@ -20,11 +20,13 @@ public:
     ~ToggleScreenImpl( void );
 
     void ToggleFullscreen(wxFrame * frame, int screenNumber);
-    void GetFullscreenSize(int & width, int & height);
+    void GetFullscreenSize(int & width, int & height, int & top, int & left);
 private:
 
       int _widthMax = 0;
       int _heightMax = 0;
+      int _top = 0;
+      int _left = 0;
 };
 
 
