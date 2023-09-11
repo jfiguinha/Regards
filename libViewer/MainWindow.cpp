@@ -222,15 +222,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle);
-	{
-		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-		threadData->mainWindow = this;
-		std::thread _thread(UpdateFolder, threadData);
-		_thread.join();
-	}
-
+	UpdateFolderStatic();
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
@@ -1067,10 +1059,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	//updateFolder = true;
-    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-    threadData->mainWindow = this;
-    UpdateFolder(threadData);
+	UpdateFolderStatic();
 	processIdle = true;
 }
 
@@ -1083,9 +1072,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-            CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-            threadData->mainWindow = this;
-            UpdateFolder(threadData);
+			UpdateFolderStatic();
             processIdle = true;
         }
 
@@ -1333,10 +1320,7 @@ void CMainWindow::RefreshFolder()
 		CSqlFindPhotos sqlFindPhotos;
 		sqlFindPhotos.SearchPhotos(sqlRequest);
 
-        CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-        threadData->mainWindow = this;
-        UpdateFolder(threadData);
-
+		UpdateFolderStatic();
 		updateCriteria = true;
 	}
 	refreshFolder = false;
@@ -1466,9 +1450,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-        CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-        threadData->mainWindow = this;
-        UpdateFolder(threadData);
+		UpdateFolderStatic();
 		numElementTraitement++;
 	}
 
@@ -1697,11 +1679,20 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-    threadData->mainWindow = this;
-    UpdateFolder(threadData);
+	UpdateFolderStatic();
 	processIdle = true;
 	this->Show(true);
+}
+
+void CMainWindow::UpdateFolderStatic()
+{
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle);
+	{
+		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+		threadData->mainWindow = this;
+		UpdateFolder(threadData);
+	}
 }
 
 void CMainWindow::TransitionEnd()
@@ -1835,9 +1826,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-    threadData->mainWindow = this;
-    UpdateFolder(threadData);
+	UpdateFolderStatic();
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);
