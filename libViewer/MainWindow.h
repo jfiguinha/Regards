@@ -164,7 +164,7 @@ namespace Regards::Viewer
 		bool needToReload;
 		int typeAffichage;
 		bool updateCriteria;
-		bool updateFolder;
+		//bool updateFolder;
 		bool refreshFolder;
 		int numElementTraitement;
 		bool start;

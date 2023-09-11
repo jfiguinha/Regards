@@ -123,7 +123,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	needToReload = false;
 	typeAffichage = THUMB_SHOW_ALL;
 	updateCriteria = true;
-	updateFolder = false;
+
 	refreshFolder = false;
 	numElementTraitement = 0;
 	start = true;
@@ -1067,7 +1067,10 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	updateFolder = true;
+	//updateFolder = true;
+    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+    threadData->mainWindow = this;
+    UpdateFolder(threadData);
 	processIdle = true;
 }
 
@@ -1080,7 +1083,9 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-            updateFolder = true;
+            CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+            threadData->mainWindow = this;
+            UpdateFolder(threadData);
             processIdle = true;
         }
 
@@ -1328,7 +1333,10 @@ void CMainWindow::RefreshFolder()
 		CSqlFindPhotos sqlFindPhotos;
 		sqlFindPhotos.SearchPhotos(sqlRequest);
 
-		updateFolder = true;
+        CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+        threadData->mainWindow = this;
+        UpdateFolder(threadData);
+
 		updateCriteria = true;
 	}
 	refreshFolder = false;
@@ -1411,7 +1419,6 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 		threadData = nullptr;
 
 
-		updateFolder = false;
 
 		firstFileToShow = "";
 		numElementTraitement = 0;
@@ -1459,7 +1466,9 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-		updateFolder = true;
+        CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+        threadData->mainWindow = this;
+        UpdateFolder(threadData);
 		numElementTraitement++;
 	}
 
@@ -1489,6 +1498,7 @@ void CMainWindow::ProcessIdle()
 		RefreshFolder();
 		hasDoneOneThings = true;
 	}
+    /*
 	else if (updateFolder)
 	{
 		muFolderThread.lock();
@@ -1496,19 +1506,13 @@ void CMainWindow::ProcessIdle()
 		{
 			CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
 			threadData->mainWindow = this;
-			/*
-			if (firstFileToShow != "")
-				localFilename = firstFileToShow;
-			else
-				localFilename = centralWnd->GetFilename();
-			*/
-
 			updateFolderThread = new std::thread(UpdateFolder, threadData);
+            //UpdateFolder(threadData);
 			updateFolder = false;
 		}
 		muFolderThread.unlock();
 		hasDoneOneThings = true;
-	}
+	}*/
 	else if (numElementTraitement < pictureSize)
 	{
 		CPhotos photo = CThumbnailBuffer::GetVectorValue(numElementTraitement);
@@ -1693,7 +1697,9 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-	updateFolder = true;
+    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+    threadData->mainWindow = this;
+    UpdateFolder(threadData);
 	processIdle = true;
 	this->Show(true);
 }
@@ -1829,7 +1835,9 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	updateFolder = true;
+    CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+    threadData->mainWindow = this;
+    UpdateFolder(threadData);
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);
