@@ -543,8 +543,8 @@ void wxCheckTree::On_Tree_Focus_Set(wxFocusEvent& event)
 
 void wxCheckTree::On_Tree_Focus_Lost(wxFocusEvent& event)
 {
-	unhighlight(this, last_kf);
-	Unselect();
+	//unhighlight(this, last_kf);
+	//Unselect();
 	event.Skip();
 }
 

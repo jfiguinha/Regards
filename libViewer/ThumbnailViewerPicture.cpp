@@ -1,4 +1,4 @@
-﻿#include <header.h>
+#include <header.h>
 #include "ThumbnailViewerPicture.h"
 #include "MainWindow.h"
 #include <ThumbnailDataSQL.h>
