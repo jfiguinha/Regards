@@ -169,39 +169,45 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 
 		delete folder;
 	}
+
 }
 
 void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
-	if (windowMain != nullptr)
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle, windowMain);
 	{
-		wxString getSelectPath = folderWnd->GetPath();
-		int isChecked = aEvent.GetExtraLong();
-		int isShowDialog = aEvent.GetInt();
-		wxString* file = (wxString * )aEvent.GetClientData();
-		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
-
-		if (isChecked)
+		
+		if (windowMain != nullptr)
 		{
-			folderWnd->AddPath(getSelectPath);
-			const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
-			evt.SetInt(0);
-			auto newPath = new wxString(firstFile);
-			evt.SetClientData(newPath);
+			wxString getSelectPath = folderWnd->GetPath();
+			int isChecked = aEvent.GetExtraLong();
+			int isShowDialog = aEvent.GetInt();
+			wxString* file = (wxString*)aEvent.GetClientData();
+			wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
+
+			if (isChecked)
+			{
+				folderWnd->AddPath(getSelectPath);
+				const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
+				evt.SetInt(0);
+				auto newPath = new wxString(firstFile);
+				evt.SetClientData(newPath);
+			}
+			else
+			{
+				evt.SetInt(1);
+				folderWnd->RemovePath(getSelectPath);
+				RemoveFolder(getSelectPath);
+			}
+
+			if (file != nullptr)
+				delete file;
+
+
+			windowMain->GetEventHandler()->AddPendingEvent(evt);
 		}
-		else
-		{
-			evt.SetInt(1);
-			folderWnd->RemovePath(getSelectPath);
-			RemoveFolder(getSelectPath);
-		}
-
-		if (file != nullptr)
-			delete file;
-
-
-		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -265,9 +271,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, wxString* file, const
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle, windowMain);
-	{
+
 		//Indication d'imporation des critères 
 		CSqlFolderCatalog sqlFolderCatalog;
 		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
@@ -282,7 +286,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, wxString* file, const
 			sqlInsertFile.AddFileFromFolder(this, nullptr, files, folder, idFolder, localFilename);
 			//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
 		}
-	}
+	
 
 
 	wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
@@ -312,7 +316,7 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle, windowMain);
+	//wxBusyInfo wait(libelle, windowMain);
 	if (!folder.IsEmpty())
 	{
 		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
