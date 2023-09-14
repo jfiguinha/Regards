@@ -19,6 +19,7 @@ CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface* paneInterface, con
 	titleBar->SetRefresh(refreshButton);
 	this->idPane = idPane;
 	this->themePane = theme;
+    titleBar->SetTheme((CThemeTitleBar*)&theme.themeTitle);
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPane::RefreshData));

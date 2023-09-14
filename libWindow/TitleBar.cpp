@@ -17,16 +17,19 @@ CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleB
 	this->titleBarInterface = titleBarInterface;
 	tooltip = CLibResource::LoadStringFromResource("LBLClose", 1);
 	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESHDATA", 1);
-	CreateBitmapCrossOff();
-	CreateBitmapCrossOn();
+
 	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_REFRESH", themeTitle.GetCroixWidth() - 2,
 	                                                     themeTitle.GetCroixHeight() - 2);
-	CreateBitmapRefreshOff();
-	CreateBitmapRefreshOn();
+
 	SetWindowHeight(this->themeTitle.GetHeight());
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleBar::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CTitleBar::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CTitleBar::OnLButtonDown));
+    
+    CreateBitmapCrossOff();
+	CreateBitmapCrossOn();
+	CreateBitmapRefreshOff();
+	CreateBitmapRefreshOn();
 }
 
 void CTitleBar::SetCenter(const bool& value)
@@ -59,6 +62,11 @@ void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
 {
 	this->themeTitle = *themeTitle;
 	SetWindowHeight(this->themeTitle.GetHeight());
+    
+	CreateBitmapCrossOff();
+	CreateBitmapCrossOn();
+	CreateBitmapRefreshOff();
+	CreateBitmapRefreshOn();
 }
 
 CTitleBar::~CTitleBar()

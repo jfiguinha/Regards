@@ -1,6 +1,7 @@
 #include "header.h"
 #include "ThemeInit.h"
 #include "ThemeParam.h"
+#include <FileUtility.h>
 #include <wx/stdpaths.h>
 #include <wx/settings.h>
 CThemeParam* CThemeInit::_singleton = nullptr;
@@ -25,6 +26,9 @@ void CThemeInit::Initialize(CThemeParam* param)
 {
 	if (nullptr == _singleton)
 	{
+        
+        
+        
 		/*
 		wxString filename = wxStandardPaths::Get().GetExecutablePath();
 		filename.append(L".theme");
@@ -36,6 +40,8 @@ void CThemeInit::Initialize(CThemeParam* param)
         bool isDarkTheme =  systemApp.IsDark();
 
 #ifdef WIN32
+
+        wxString 
 
 		filepath = filepath.SubString(0, filepath.size() - 4);
         if(isDarkTheme)

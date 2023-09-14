@@ -94,18 +94,22 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
 
                  if(dylibName == outputFilename)
                      continue;
-                
-                wxString fileToTest = folder_output_final + "/" + outputFilename;
-                if(wxFileExists(fileToTest) == TRUE)
+                     
+                printf("Test if File exists '%s' \n", outputLib.Trim().ToStdString().c_str());
+
+                if(wxFileExists(outputLib.Trim()))
                 {
-                      //printf("File exists  \n");
-                      continue;
+                      printf("File exists '%s' \n", outputLib.ToStdString().c_str());
+                }
+                else
+                {
+                     printf("File not exists '%s' \n", outputLib.ToStdString().c_str());
                 }
 
-                if(!wxFileExists(fileToTest) && libPath.find("3.2.0.2.1.dylib")==wxNOT_FOUND)
+                if(!wxFileExists(outputLib.Trim()) && libPath.find("3.2.0.2.1.dylib")==wxNOT_FOUND)
                 {
                    // printf("copyFile \n");
-                    copyFile[outputFilename] = toWrite + " " + fileToTest;
+                    copyFile[outputFilename] = toWrite + " " + outputLib;
                 }
 
                 wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
@@ -118,6 +122,18 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                   // printf("add install name \n");
                     
                 }
+                
+                if(lineText.find("@loader_path") != -1)
+                {
+                    int pos = lineText.find("(");
+                    wxString libPath = lineText.substr(0,pos - 1);
+                    
+                   installName = "install_name_tool -change " + libPath.Trim() + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
+                  // printf("add install name \n");
+                    
+                }
+                
+                printf("installName '%s' \n", installName.ToStdString().c_str());
                     
                 changeNameTool.push_back(installName);
                 findModification = true;

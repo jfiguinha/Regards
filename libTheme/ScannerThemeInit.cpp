@@ -1,6 +1,7 @@
 #include "header.h"
 #include "ScannerThemeInit.h"
 #include "ScannerTheme.h"
+#include <FileUtility.h>
 #include <wx/stdpaths.h>
 using namespace Regards::Scanner;
 
@@ -38,22 +39,47 @@ void CMainThemeInit::Initialize(CMainTheme* param)
 		_singleton = param;
 		_singleton->OpenFile(filename);
 		*/
-
+        
+        
+         wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 		wxStandardPathsBase& stdp = wxStandardPaths::Get();
 		wxString documentPath = stdp.GetDocumentsDir();
-
+         bool isDarkTheme =  systemApp.IsDark();
+         wxString resourceTheme = CFileUtility::GetResourcesFolderPath();
+         
 #ifdef WIN32
 
-		documentPath.append("\\Regards\\Regards.viewer.theme");
-		_singleton = param;
-		_singleton->OpenFile(documentPath);
+        if(isDarkTheme)
+            documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+        else
+            documentPath.append("\\Regards\\Regards.viewer.light.theme");
+            
+        if(isDarkTheme)
+            resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
+        else
+            resourceTheme.append("\\theme\\Regards.viewer.light.theme");
+            
+
 #else
 
+        if(isDarkTheme)
+            documentPath.append("/Regards/Regards.viewer.dark.theme");
+        else
+            documentPath.append("/Regards/Regards.viewer.light.theme");
+            
+        if(isDarkTheme)
+            resourceTheme.append("/theme/Regards.viewer.dark.theme");
+        else
+            resourceTheme.append("/theme/Regards.viewer.light.theme");
 
-        documentPath.append("/Regards/Regards.viewer.theme");
-        _singleton = param;
-        _singleton->OpenFile(documentPath);
 #endif
+
+        if(!wxFileExists(documentPath))
+            wxCopyFile(resourceTheme, documentPath);
+
+		_singleton = param;
+        _singleton->OpenFile(documentPath);
+
 	}
 }
 
