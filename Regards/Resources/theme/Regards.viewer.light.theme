@@ -112,9 +112,9 @@
 				<marge>2</marge>
 				<colorBack>rgb(228, 228, 228)</colorBack>
 				<colorBar>rgb(255, 255, 255)</colorBar>
-				<colorTriangle>rgb(197,197,197)</colorTriangle>
-				<colorBarActif>rgb(197,197,197)</colorBarActif>
-				<colorTriangleActif>rgb(197,197,197)</colorTriangleActif>
+				<colorTriangle>rgb(197, 197, 197)</colorTriangle>
+				<colorBarActif>rgb(197, 197, 197)</colorBarActif>
+				<colorTriangleActif>rgb(197, 197, 197)</colorTriangleActif>
 			</ThemeScrollBar>
 		</DefaultScrollTheme>
 		<DefaultPaneTheme>
@@ -134,7 +134,7 @@
 					<marge>5</marge>
 					<croixWidth>15</croixWidth>
 					<croixHeight>15</croixHeight>
-					<colorCross>rgb(0, 0, O)</colorCross>
+					<colorCross>rgb(0, 0, 0)</colorCross>
 					<colorBack>rgb(228, 228, 228)</colorBack>
 				</ThemeTitleBar>
 				<height>20</height>
