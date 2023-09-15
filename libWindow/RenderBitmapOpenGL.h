@@ -17,7 +17,7 @@ namespace Regards::OpenGL
 	public:
 		CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL);
 		~CRenderBitmapOpenGL();
-		void LoadingResource(const double& scale_factor);
+		void LoadingResource(const double& scale_factor, wxColor& colorActifReplacement);
 		void ShowArrowNext();
 		void ShowArrowPrevious();
 		void ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height, const int& left,

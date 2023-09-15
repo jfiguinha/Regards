@@ -40,9 +40,7 @@ void CThemeInit::Initialize(CThemeParam* param)
         bool isDarkTheme =  systemApp.IsDark();
 
 #ifdef WIN32
-
-        wxString 
-
+ 
 		filepath = filepath.SubString(0, filepath.size() - 4);
         if(isDarkTheme)
             filepath.append("theme.dark");

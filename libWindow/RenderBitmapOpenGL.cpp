@@ -32,10 +32,10 @@ GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum g
 	return renderOpenGL->FindShader(shaderName, glSlShaderType_i);
 }
 
-void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
+void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & colorActifReplacement)
 {
 	wxColor colorToReplace = wxColor(0, 0, 0);
-	wxColor colorActifReplacement = wxColor(255, 255, 255);
+	//wxColor colorActifReplacement = wxColor(255, 255, 255);
 	wxImage arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG", 32 * scale_factor, 32 * scale_factor);
 	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 	                      colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());

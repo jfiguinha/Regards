@@ -55,6 +55,7 @@ void CToolbarTexte::DrawShapeElement(wxDC* dc, const wxRect& rc)
 	if (themeTexte.GetRectangleSize() > 0)
 	{
 		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
+		penTop.SetColour(themeTexte.colorBack);
 		dc->SetPen(penTop);
 		dc->DrawLine(rc.x, rc.height, rc.width, rc.height);
 		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);

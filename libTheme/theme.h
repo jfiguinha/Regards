@@ -60,6 +60,7 @@ public:
 
 	wxColour colorFullscreen;
 	wxColour colorScreen;
+	wxColour colorArrow;
 };
 
 class CThemeFolder : public CTheme

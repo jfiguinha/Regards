@@ -53,7 +53,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(222, 222, 222)</colorBack>
 					<actifTop>rgb(197, 197, 197)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -443,6 +443,7 @@
 				<colorBack>rgb(0, 0, 0)</colorBack>
 				<colorFullscreen>rgb(0, 0, 0)</colorFullscreen>
 				<colorScreen>rgb(255, 255, 255)</colorScreen>
+				<colorArrow>rgb(197, 197, 197)</colorArrow>
 			</Theme>
 		</BitmapWindow>
 		<BitmapToolbar>

@@ -1750,7 +1750,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 	{
 		this->renderOpenGL = renderOpenGL;
 		renderBitmapOpenGL = new CRenderBitmapOpenGL(renderOpenGL);
-		renderBitmapOpenGL->LoadingResource(scale_factor);
+		renderBitmapOpenGL->LoadingResource(scale_factor, themeBitmap.colorArrow);
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 		filtreEffet = nullptr;

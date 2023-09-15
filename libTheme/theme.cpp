@@ -133,6 +133,14 @@ void CThemeBitmapWindow::LoadXML(xml_node<>* root_node)
 			node_name = child_node->name();
 			colorScreen.Set(value);
 		}
+
+		child_node = node->first_node("colorArrow");
+		if (child_node != nullptr)
+		{
+			value = child_node->value();
+			node_name = child_node->name();
+			colorArrow.Set(value);
+		}
 	}
 }
 
@@ -145,6 +153,8 @@ void CThemeBitmapWindow::SaveXML(xml_document<>& doc, xml_node<>* sectionPositio
 	                          CConvertUtility::ConvertToStdString(colorFullscreen.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "colorScreen",
 	                          CConvertUtility::ConvertToStdString(colorScreen.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorArrow",
+		CConvertUtility::ConvertToStdString(colorScreen.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -153,6 +163,7 @@ CThemeBitmapWindow::CThemeBitmapWindow()
 	colorBack.Set(128, 128, 128);
 	colorFullscreen.Set(0, 0, 0);
 	colorScreen.Set(128, 128, 128);
+	colorArrow.Set(255, 255, 255);
 }
 
 CThemeBitmapWindow::~CThemeBitmapWindow()
@@ -164,6 +175,7 @@ CThemeBitmapWindow& CThemeBitmapWindow::operator=(const CThemeBitmapWindow& othe
 	this->colorBack = other.colorBack;
 	this->colorFullscreen = other.colorFullscreen;
 	this->colorScreen = other.colorScreen;
+	this->colorArrow = other.colorArrow;
 	return *this;
 }
 
