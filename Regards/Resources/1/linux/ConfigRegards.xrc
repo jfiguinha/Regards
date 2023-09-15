@@ -306,6 +306,23 @@
 								<default>-1</default>
 								<pos>0,220</pos>
 								<size>190,70</size>
+							</object>		
+							<object class="wxStaticBox" name="sbWindowSkin">
+								<label>Window Skin</label>
+								<pos>200,150</pos>
+								<size>190,70</size>
+							</object>
+							<object class="wxComboBox" name="ID_RBSKINCOLOR">
+								<label>Window Skin</label>
+								<style>wxRA_SPECIFY_COLS</style>
+								<content>
+									<item>Auto</item>
+									<item>Light</item>
+									<item>Dark</item>
+								</content>
+								<default>-1</default>
+								<pos>210,240</pos>
+								<size>170,20</size>
 							</object>								
 						</object>
 					</object>

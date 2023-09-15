@@ -63,6 +63,8 @@ public:
 	wxRadioBox* rbFaceDetection;
 	//*)
 
+	wxComboBox* rbSkin;
+
 	wxTextCtrl* txtPicturePath;
 	wxButton* btPicturePath;
 	wxTextCtrl* txtVideoPath;

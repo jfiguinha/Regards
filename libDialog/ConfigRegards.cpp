@@ -66,6 +66,8 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbVideoEncoderHard = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOENCODERHARD")));
 	rbVideoDecoderHard = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEODECODERHARD")));
 
+	rbSkin = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBSKINCOLOR")));
+
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
@@ -231,6 +233,9 @@ void ConfigRegards::init()
 	}
 	else
 		rbVideoDecoderHard->SetSelection(0);
+
+	int skinMode = regardsParam->GetSkinWindowMode();
+	rbSkin->SetSelection(skinMode);
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -300,6 +305,9 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
+
+	int skinMode = rbSkin->GetSelection();
+	regardsParam->SetSkinWindowMode(skinMode);
 
 	int thumbnailProcess = scProcessThumbnail->GetValue();
 	int faceProcess = scProcessFace->GetValue();

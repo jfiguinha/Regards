@@ -224,7 +224,7 @@
 				<rowWidth>20</rowWidth>
 				<rowHeight>20</rowHeight>
 				<margeX>5</margeX>
-				<bgColorOne>rgb(197, 197, 197)</bgColorOne>
+				<bgColorOne>rgb(255, 255, 255)</bgColorOne>
 				<bgColorTwo>rgb(255, 255, 255)</bgColorTwo>
 				<bgColorBackground>rgb(0, 0, 0)</bgColorBackground>
 				<bgColorActif>rgb(255, 255, 255)</bgColorActif>

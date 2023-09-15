@@ -48,6 +48,16 @@ CRegardsConfigParam::CRegardsConfigParam()
 	useSuperResolution = 0;
 }
 
+int CRegardsConfigParam::GetSkinWindowMode()
+{
+	return skinWindowMode;
+}
+
+void CRegardsConfigParam::SetSkinWindowMode(const int& skinWindowMode)
+{
+	this->skinWindowMode = skinWindowMode;
+}
+
 int CRegardsConfigParam::GetBufferSize()
 {
 	return bufferSize;
@@ -685,6 +695,9 @@ void CRegardsConfigParam::SaveParameter()
 	xml_node<>* sectionIcon = node("Icon");
 	SetIconParameter(sectionIcon);
 	root->append_node(sectionIcon);
+	xml_node<>* windowMode = node("Window");
+	SetWindowParameter(sectionIcon);
+	root->append_node(windowMode);
 	// save the xml data to a file (could equally well use any other ostream)
 	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
 	if (file.is_open())
@@ -694,6 +707,24 @@ void CRegardsConfigParam::SaveParameter()
 	}
 }
 
+
+void CRegardsConfigParam::SetWindowParameter(xml_node<>* sectionPosition)
+{
+	sectionPosition->append_node(node("Mode", to_string(skinWindowMode)));
+}
+
+void CRegardsConfigParam::GetWindowParameter(xml_node<>* position_node)
+{
+	wxString value;
+	wxString nodeName;
+	xml_node<>* child_node = position_node->first_node("Mode");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		skinWindowMode = static_cast<int>(atoi(child_node->value()));
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //Loading Parameter
@@ -735,6 +766,10 @@ void CRegardsConfigParam::LoadParameter()
 	child_node = root_node->first_node("Icon");
 	if (child_node != nullptr)
 		GetIconParameter(child_node);
+
+	child_node = root_node->first_node("Window");
+	if (child_node != nullptr)
+		GetWindowParameter(child_node);
 }
 
 void CRegardsConfigParam::SetIconParameter(xml_node<>* sectionPosition)

@@ -2,7 +2,9 @@
 #include "ScannerThemeInit.h"
 #include "ScannerTheme.h"
 #include <FileUtility.h>
+#include <ParamInit.h>
 #include <wx/stdpaths.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Scanner;
 
 CMainTheme* CMainThemeInit::_singleton = nullptr;
@@ -39,7 +41,10 @@ void CMainThemeInit::Initialize(CMainTheme* param)
 		_singleton = param;
 		_singleton->OpenFile(filename);
 		*/
-        
+        int skinMode = 0;
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        if (regardsParam != nullptr)
+            skinMode = regardsParam->GetSkinWindowMode();
         
          wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 		wxStandardPathsBase& stdp = wxStandardPaths::Get();
@@ -49,28 +54,55 @@ void CMainThemeInit::Initialize(CMainTheme* param)
          
 #ifdef WIN32
 
-        if(isDarkTheme)
-            documentPath.append("\\Regards\\Regards.viewer.dark.theme");
-        else
-            documentPath.append("\\Regards\\Regards.viewer.light.theme");
-            
-        if(isDarkTheme)
-            resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
-        else
-            resourceTheme.append("\\theme\\Regards.viewer.light.theme");
+         if (skinMode == 0)
+         {
+             if (isDarkTheme)
+                 documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+             else
+                 documentPath.append("\\Regards\\Regards.viewer.light.theme");
+
+             if (isDarkTheme)
+                 resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
+             else
+                 resourceTheme.append("\\theme\\Regards.viewer.light.theme");
+         }
+         else if (skinMode == 1)
+         {
+             documentPath.append("\\Regards\\Regards.viewer.light.theme");
+             resourceTheme.append("\\theme\\Regards.viewer.light.theme");
+         }
+         else
+         {
+             documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+             resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
+         }
             
 
 #else
 
-        if(isDarkTheme)
-            documentPath.append("/Regards/Regards.viewer.dark.theme");
-        else
-            documentPath.append("/Regards/Regards.viewer.light.theme");
-            
-        if(isDarkTheme)
-            resourceTheme.append("/theme/Regards.viewer.dark.theme");
-        else
-            resourceTheme.append("/theme/Regards.viewer.light.theme");
+         if (skinMode == 0)
+         {
+
+             if (isDarkTheme)
+                 documentPath.append("/Regards/Regards.viewer.dark.theme");
+             else
+                 documentPath.append("/Regards/Regards.viewer.light.theme");
+
+             if (isDarkTheme)
+                 resourceTheme.append("/theme/Regards.viewer.dark.theme");
+             else
+                 resourceTheme.append("/theme/Regards.viewer.light.theme");
+         }
+         else if (skinMode == 1)
+         {
+             documentPath.append("/Regards/Regards.viewer.light.theme");
+             resourceTheme.append("/theme/Regards.viewer.light.theme");
+         }
+         else
+         {
+             documentPath.append("/Regards/Regards.viewer.dark.theme");
+             resourceTheme.append("/theme/Regards.viewer.dark.theme");
+         }
 
 #endif
 

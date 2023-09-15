@@ -118,6 +118,9 @@ public:
 	bool GetIsOpenCLOpenGLInteropSupport();
 	void SetIsOpenCLOpenGLInteropSupport(const int& openCLOpenGLInteropSupport);
 
+	int GetSkinWindowMode();
+	void SetSkinWindowMode(const int& skinWindowMode);
+
 protected:
 	void LoadParameter() override;
 	void SaveParameter() override;
@@ -145,6 +148,9 @@ protected:
 
 	void SetThumbnail(xml_node<>* sectionPosition);
 	void GetThumbnail(xml_node<>* position_node);
+
+	void SetWindowParameter(xml_node<>* sectionPosition);
+	void GetWindowParameter(xml_node<>* position_node);
 
 	int pictureSize;
 	int numLibPreview;
@@ -185,6 +191,7 @@ protected:
 
 	int numSuperResolution = 0;
 	int useSuperResolution = 0;
+	int skinWindowMode = 0;
 
 	int videoFaceDetection = 0;
 	int faceDetection = 1;
