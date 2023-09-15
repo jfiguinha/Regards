@@ -1076,6 +1076,7 @@ CThemeTree& CThemeTree::operator=(const CThemeTree& other)
 	this->bgColorTwo = other.bgColorTwo;
 	this->bgColorActif = other.bgColorActif;
 	this->colorBack = other.colorBack;
+	this->bgColorBackground = other.bgColorBackground;
 	return *this;
 }
 

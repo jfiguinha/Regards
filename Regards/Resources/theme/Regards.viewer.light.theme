@@ -226,7 +226,7 @@
 				<margeX>5</margeX>
 				<bgColorOne>rgb(197, 197, 197)</bgColorOne>
 				<bgColorTwo>rgb(255, 255, 255)</bgColorTwo>
-				<bgColorBackground>rgb(255, 255, 255)</bgColorBackground>
+				<bgColorBackground>rgb(0, 0, 0)</bgColorBackground>
 				<bgColorActif>rgb(255, 255, 255)</bgColorActif>
 				<colorBack/>
 			</ThemeTree>
