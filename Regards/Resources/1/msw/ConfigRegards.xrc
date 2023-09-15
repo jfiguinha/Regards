@@ -310,7 +310,7 @@
 							</object>	
 							<object class="wxStaticBox" name="sbWindowSkin">
 								<label>Window Skin</label>
-								<pos>200,150</pos>
+								<pos>200,220</pos>
 								<size>190,70</size>
 							</object>
 							<object class="wxComboBox" name="ID_RBSKINCOLOR">

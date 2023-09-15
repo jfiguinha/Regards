@@ -133,7 +133,7 @@
 					<height>30</height>
 					<marge>5</marge>
 					<croixWidth>15</croixWidth>
-					<croixHeight>30</croixHeight>
+					<croixHeight>15</croixHeight>
 					<colorCross>rgb(0, 0, 0)</colorCross>
 					<colorBack>rgb(45, 48, 56)</colorBack>
 				</ThemeTitleBar>

@@ -696,7 +696,7 @@ void CRegardsConfigParam::SaveParameter()
 	SetIconParameter(sectionIcon);
 	root->append_node(sectionIcon);
 	xml_node<>* windowMode = node("Window");
-	SetWindowParameter(sectionIcon);
+	SetWindowParameter(windowMode);
 	root->append_node(windowMode);
 	// save the xml data to a file (could equally well use any other ostream)
 	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
