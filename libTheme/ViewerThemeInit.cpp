@@ -59,9 +59,9 @@ void CMainThemeInit::Initialize(CMainTheme* param)
          if (skinMode == 0)
          {
              if (isDarkTheme)
-                 documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+                 documentPath.append("\\Regards\\Regards.dark.theme");
              else
-                 documentPath.append("\\Regards\\Regards.viewer.light.theme");
+                 documentPath.append("\\Regards\\Regards.light.theme");
 
              if (isDarkTheme)
                  resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
@@ -70,12 +70,12 @@ void CMainThemeInit::Initialize(CMainTheme* param)
          }
          else if (skinMode == 1)
          {
-             documentPath.append("\\Regards\\Regards.viewer.light.theme");
+             documentPath.append("\\Regards\\Regards.light.theme");
              resourceTheme.append("\\theme\\Regards.viewer.light.theme");
          }
          else
          {
-             documentPath.append("\\Regards\\Regards.viewer.dark.theme");
+             documentPath.append("\\Regards\\Regards.dark.theme");
              resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
          }
 
@@ -84,9 +84,9 @@ void CMainThemeInit::Initialize(CMainTheme* param)
          {
 
              if (isDarkTheme)
-                 documentPath.append("/Regards/Regards.viewer.dark.theme");
+                 documentPath.append("/Regards/Regards.dark.theme");
              else
-                 documentPath.append("/Regards/Regards.viewer.light.theme");
+                 documentPath.append("/Regards/Regards.light.theme");
 
              if (isDarkTheme)
                  resourceTheme.append("/theme/Regards.viewer.dark.theme");
@@ -95,12 +95,12 @@ void CMainThemeInit::Initialize(CMainTheme* param)
          }
          else if (skinMode == 1)
          {
-             documentPath.append("/Regards/Regards.viewer.light.theme");
+             documentPath.append("/Regards/Regards.light.theme");
              resourceTheme.append("/theme/Regards.viewer.light.theme");
          }
          else
          {
-             documentPath.append("/Regards/Regards.viewer.dark.theme");
+             documentPath.append("/Regards/Regards.dark.theme");
              resourceTheme.append("/theme/Regards.viewer.dark.theme");
          }
             
