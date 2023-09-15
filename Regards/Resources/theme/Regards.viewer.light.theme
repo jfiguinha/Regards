@@ -225,7 +225,7 @@
 				<rowHeight>20</rowHeight>
 				<margeX>5</margeX>
 				<bgColorOne>rgb(255, 255, 255)</bgColorOne>
-				<bgColorTwo>rgb(255, 255, 255)</bgColorTwo>
+				<bgColorTwo>rgb(196, 196, 196)</bgColorTwo>
 				<bgColorBackground>rgb(0, 0, 0)</bgColorBackground>
 				<bgColorActif>rgb(255, 255, 255)</bgColorActif>
 				<colorBack/>
@@ -443,7 +443,7 @@
 				<colorBack>rgb(0, 0, 0)</colorBack>
 				<colorFullscreen>rgb(0, 0, 0)</colorFullscreen>
 				<colorScreen>rgb(255, 255, 255)</colorScreen>
-				<colorArrow>rgb(197, 197, 197)</colorArrow>
+				<colorArrow>rgb(255, 255, 255)</colorArrow>
 			</Theme>
 		</BitmapWindow>
 		<BitmapToolbar>
