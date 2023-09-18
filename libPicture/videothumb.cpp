@@ -15,7 +15,7 @@ public:
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-#ifdef __WXGTK__
+#ifndef WIN32
 		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
 #else
 		videoThumbnailer = new CVideoPlayer(filename, false);

@@ -40,7 +40,7 @@ private:
 	int time_pos = 0;
 	wxImage frameOut;
 	int oldnumFrame = -1;
-#ifdef __WXGTK__
+#ifndef WIN32
 	bool useOpenCV = true;
 #else
 	bool useOpenCV = false;
