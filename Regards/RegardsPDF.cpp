@@ -20,6 +20,7 @@
 #include <FilterData.h>
 #include <SqlEngine.h>
 #include <SqlLibExplorer.h>
+#include <wx/dir.h>
 #include <LibResource.h>
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -109,6 +110,21 @@ int MyApp::Close()
 	return 0;
 }
 
+bool LocaleMakeDir(wxString folder)
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\" + folder);
+#else
+	documentPath.append("/" + folder);
+#endif
+
+	if (!wxDirExists(documentPath))
+	{
+		return wxDir::Make(documentPath);
+	}
+	return true;
+}
 
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
@@ -181,6 +197,27 @@ bool MyApp::OnInit()
 #ifndef NDEBUG
     ::wxMessageBox("toto");
 #endif
+
+	if (!LocaleMakeDir("Thumbnail"))
+	{
+		printf("Unable to make folder Thumbnail");
+		exit(0);
+	}
+	if (!LocaleMakeDir("ThumbnailVideo"))
+	{
+		printf("Unable to make folder ThumbnailVideo");
+		exit(0);
+	}
+	if (!LocaleMakeDir("temp"))
+	{
+		printf("Unable to make folder temp");
+		exit(0);
+	}
+	if (!LocaleMakeDir("Face"))
+	{
+		printf("Unable to make folder Face");
+		exit(0);
+	}
 
 	//task_scheduler_init init;
 	//int n = tbb::task_scheduler_init::default_num_threads();
