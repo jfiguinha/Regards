@@ -224,12 +224,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 {
-
-#ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < nbElementInIconeList; i++)
-#else
-	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
-#endif 
 	{
         try
         {
@@ -244,9 +239,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 
                 if (right >= 0 && left <= GetWindowWidth())
                 {
-                    localmu.lock();
                     RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-                    localmu.unlock();
                 }
             }
         }
@@ -255,9 +248,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
             
         }
 	}
-#ifdef USE_TBB_VECTOR   
-    );
-#endif
+
 	
 }
 

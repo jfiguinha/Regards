@@ -437,8 +437,8 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 		tr.begin(parent), tr.end(parent),
 		[&](const auto& data)
 		{
-			//CPhotos photo = static_cast<CPhotos>(val);
-			return data->GetKey() == key;
+			if(data != nullptr)
+				return data->GetKey() == key;
 		}
 	);
 

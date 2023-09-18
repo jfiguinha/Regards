@@ -897,96 +897,98 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		themeIcone.GetHeight()))
 	{
 		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
-		wxMemoryDC memDC(localmemBitmap_backup);
-
-		wxImage scale;
-
-
-		int tailleAffichageBitmapWidth = 0;
-		int tailleAffichageBitmapHeight = 0;
-		float ratio = 0.0;
-
-		if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
-			GetHeight() != themeIcone.GetHeight())
+		wxMemoryDC memDC;
+		
+		try
 		{
-			if (pThumbnailData != nullptr)
-			{
-				//image = pThumbnailData->GetwxImage();
-				if (!image.IsOk())
-				{
-					photoDefault = false;
-					/*
-					wxColor colorToReplace = wxColor(0, 0, 0);
-					wxColor colorActifReplacement = wxColor(255, 255, 255);
-					image = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", themeIcone.GetWidth(), themeIcone.GetHeight());
-					image.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-						colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-					*/
-					image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
-					returnValue = 1;
-				}
-				else
-					photoDefault = true;
+			memDC.SelectObject(localmemBitmap_backup);
 
-				if (flipHorizontal)
-					image = image.Mirror();
-				if (flipVertical)
-					image = image.Mirror(false);
-			}
-			if (image.IsOk())
-			{
-				GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth,
-				                   tailleAffichageBitmapHeight,
-				                   ratio);
+			wxImage scale;
 
-				if (config->GetThumbnailQuality() == 0)
-					scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-				else if (photoDefault)
-					scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-				else
+			int tailleAffichageBitmapWidth = 0;
+			int tailleAffichageBitmapHeight = 0;
+			float ratio = 0.0;
+
+			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
+				GetHeight() != themeIcone.GetHeight())
+			{
+				if (pThumbnailData != nullptr)
 				{
-					if (photoTemp.IsOk())
+					//image = pThumbnailData->GetwxImage();
+					if (!image.IsOk())
 					{
-						if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() !=
-							tailleAffichageBitmapHeight)
+						photoDefault = false;
+						image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
+						returnValue = 1;
+					}
+					else
+						photoDefault = true;
+
+					if (flipHorizontal)
+						image = image.Mirror();
+					if (flipVertical)
+						image = image.Mirror(false);
+				}
+				if (image.IsOk())
+				{
+					GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth,
+									   tailleAffichageBitmapHeight,
+									   ratio);
+
+					if (config->GetThumbnailQuality() == 0)
+						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+					else if (photoDefault)
+						scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+					else
+					{
+						if (photoTemp.IsOk())
+						{
+							if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() !=
+								tailleAffichageBitmapHeight)
+							{
+								wxColor colorToReplace = wxColor(0, 0, 0);
+								wxColor colorActifReplacement = wxColor(255, 255, 255);
+								photoTemp = CLibResource::CreatePictureFromSVG(
+									"IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+								photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+												  colorActifReplacement.Red(), colorActifReplacement.Green(),
+												  colorActifReplacement.Blue());
+							}
+						}
+						else
 						{
 							wxColor colorToReplace = wxColor(0, 0, 0);
 							wxColor colorActifReplacement = wxColor(255, 255, 255);
-							photoTemp = CLibResource::CreatePictureFromSVG(
-								"IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+							photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth,
+																		   tailleAffichageBitmapHeight);
 							photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-							                  colorActifReplacement.Red(), colorActifReplacement.Green(),
-							                  colorActifReplacement.Blue());
+											  colorActifReplacement.Red(), colorActifReplacement.Green(),
+											  colorActifReplacement.Blue());
 						}
+						scale = photoTemp;
 					}
-					else
-					{
-						wxColor colorToReplace = wxColor(0, 0, 0);
-						wxColor colorActifReplacement = wxColor(255, 255, 255);
-						photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth,
-						                                               tailleAffichageBitmapHeight);
-						photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-						                  colorActifReplacement.Red(), colorActifReplacement.Green(),
-						                  colorActifReplacement.Blue());
-					}
-					scale = photoTemp;
 				}
+
+				scaleBackup = scale;
+
+				scale.Destroy();
 			}
 
-			scaleBackup = scale;
+			RenderBitmap(&memDC, scaleBackup, state);
 
-			scale.Destroy();
+			memDC.SelectObject(wxNullBitmap);
+
+			image.Destroy();
+
+			redraw = false;
+		
 		}
-
-		RenderBitmap(&memDC, scaleBackup, state);
-
-		memDC.SelectObject(wxNullBitmap);
-
-		image.Destroy();
-
-		redraw = false;
-
+		catch(...)
+		{
+			
+		}
 		return localmemBitmap_backup;
+
 	}
 	return localmemBitmap_backup;
 }
