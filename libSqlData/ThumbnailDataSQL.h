@@ -40,7 +40,11 @@ private:
 	int time_pos = 0;
 	wxImage frameOut;
 	int oldnumFrame = -1;
+#ifdef __WXGTK__
 	bool useOpenCV = true;
+#else
+	bool useOpenCV = false;
+#endif
 	Regards::Video::CVideoPlayer* videoCapture = nullptr;
 	cv::VideoCapture* videoCaptureCV = nullptr;
 };

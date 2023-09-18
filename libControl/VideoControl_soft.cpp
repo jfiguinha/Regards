@@ -1754,9 +1754,9 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 
 		if (!isffmpegDecode)
 		{
-			muBitmap.lock();
+			//muBitmap.lock();
 			openclEffectYUV->TransfertData();
-			muBitmap.unlock();
+			//muBitmap.unlock();
 		}
 
 		delete avFrameData;

@@ -15,7 +15,12 @@ public:
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
+#ifdef __WXGTK__
 		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
+#else
+		videoThumbnailer = new CVideoPlayer(filename, false);
+#endif
+
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
 		rotation = videoThumbnailer->GetOrientation();
