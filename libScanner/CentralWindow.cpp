@@ -132,13 +132,10 @@ int CCentralWindow::OnOpen(const int& type)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-	}
+
 
 	if (type != ADDFILE)
 	{
@@ -338,25 +335,19 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString& listFile)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		temporyFile = tempFolder + "\\temporary_file.pdf";
-#else
-		temporyFile = tempFolder + "/temporary_file.pdf";
 #endif
 
-		if (wxFileExists(temporyFile))
-			wxRemoveFile(temporyFile);
-	}
+#ifdef WIN32
+	temporyFile = tempFolder + "\\temporary_file.pdf";
+#else
+	temporyFile = tempFolder + "/temporary_file.pdf";
+#endif
+
+	if (wxFileExists(temporyFile))
+		wxRemoveFile(temporyFile);
+
 
 	CLibPicture libPicture;
 

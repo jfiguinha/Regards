@@ -295,28 +295,22 @@ wxString CViewerPDF::SetImage(wxImage imageFile)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-		// handle the error here
-	}
-	else
-	{
+
 #ifdef WIN32
-		file = tempFolder + "\\temp.pdf";
+	file = tempFolder + "\\temp.pdf";
 #else
-		file = tempFolder + "/temp.pdf";
+	file = tempFolder + "/temp.pdf";
 #endif
 
-		if (wxFileExists(file))
-			wxRemoveFile(file);
+	if (wxFileExists(file))
+		wxRemoveFile(file);
 
-		//wxImage * imageTemp = new wxImage(imageFile);
-		imageFile.SaveFile(file);
-	}
+	//wxImage * imageTemp = new wxImage(imageFile);
+	imageFile.SaveFile(file);
+
 	return file;
 }
 

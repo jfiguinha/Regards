@@ -117,12 +117,16 @@ namespace Regards
 #endif
 #endif
 			map<wxString, bool> fileValid;
+			static map<wxString, int> movieDuration;
+			static mutex muDuration;
 #ifdef WIN32
 			CWic* wic = nullptr;
 #endif
 #ifdef __APPLE__
 			CReadMacOSImage * readimage = nullptr;
 #endif
+
+
 		};
 	}
 }

@@ -105,6 +105,9 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
 
+map<wxString, int> CLibPicture::movieDuration;
+mutex CLibPicture::muDuration;
+
 #if defined(LIBBPG) && not defined(WIN32)
 
 void * CLibPicture::lib_handle = nullptr;
@@ -1416,8 +1419,25 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	case AV1:
 	case MOV:
 		{
-			CThumbnailVideo thumbnail(szFileName, false);
-			int64_t duration = thumbnail.GetMovieDuration();
+			bool isFind = false;
+			int64_t duration = 0;
+			muDuration.lock();
+			std::map<wxString,int>::iterator it;
+			it = movieDuration.find(szFileName);
+			if (it != movieDuration.end())
+			{
+				duration = movieDuration[szFileName];
+				isFind = true;
+			}
+			muDuration.unlock();
+			if(!isFind)
+			{
+				CThumbnailVideo thumbnail(szFileName, false);
+				duration = thumbnail.GetMovieDuration();
+				muDuration.lock();
+				movieDuration[szFileName] = duration;
+				muDuration.unlock();
+			}
 			if (duration > 20 || duration < 0)
 				return 20;
 			return duration;

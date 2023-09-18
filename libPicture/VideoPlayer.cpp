@@ -272,7 +272,7 @@ public:
 	}
 
 
-	int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = true)
+	int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = false)
 	{
 		printf("Filename OpenVideoFile : %s \n", videoFilename);
 

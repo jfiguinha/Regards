@@ -71,15 +71,10 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-		// handle the error here
-	}
-	//Save
+
 
 	if (option == 0)
 	{
@@ -315,14 +310,10 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* i
 
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-		// handle the error here
-	}
+
 
 	//Save
 	if (option == 0)
@@ -405,25 +396,20 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
+
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\extract.pdf";
-#else
-		file = tempFolder + "/extract.pdf";
 #endif
 
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-	}
+#ifdef WIN32
+	file = tempFolder + "\\extract.pdf";
+#else
+	file = tempFolder + "/extract.pdf";
+#endif
+
+	if (wxFileExists(file))
+		wxRemoveFile(file);
+
 
 	QPDF inpdf;
 	inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
@@ -473,25 +459,18 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-		// handle the error here
-	}
-	else
-	{
+
 #ifdef WIN32
 		file = tempFolder + "\\add.pdf";
 #else
 		file = tempFolder + "/add.pdf";
 #endif
 
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-	}
+	if (wxFileExists(file))
+		wxRemoveFile(file);
 
 	if (file != "")
 	{
@@ -593,25 +572,19 @@ void CRegardsPDF::RemovePage(const wxString& filename, const vector<int>& listPa
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\delete.pdf";
-#else
-		file = tempFolder + "/delete.pdf";
 #endif
 
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-	}
+#ifdef WIN32
+	file = tempFolder + "\\delete.pdf";
+#else
+	file = tempFolder + "/delete.pdf";
+#endif
+
+	if (wxFileExists(file))
+		wxRemoveFile(file);
+
 
 	{
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);

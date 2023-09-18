@@ -15,7 +15,7 @@ public:
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-		videoThumbnailer = new CVideoPlayer(filename, false);
+		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
 		rotation = videoThumbnailer->GetOrientation();
@@ -81,7 +81,17 @@ public:
 	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
 	{
 		if (m_seekTimeInSecond > 0)
-			videoThumbnailer->SeekToPos(m_seekTimeInSecond);
+		{
+			try
+			{
+				videoThumbnailer->SeekToPos(m_seekTimeInSecond);
+			}
+			catch(...)
+			{
+				return;
+			}
+		}
+			
 
 		image = videoThumbnailer->GetVideoFrame();
 
@@ -131,7 +141,7 @@ public:
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardware)
 {
 	this->fileName = fileName;
-	pimpl = new CThumbnailVideoPimpl(fileName, useHardware);
+	pimpl = new CThumbnailVideoPimpl(fileName, false);
 }
 
 

@@ -24,17 +24,8 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	{
 		isVideo = true;
 	}
-}
-
-CThumbnailDataSQL::~CThumbnailDataSQL(void)
-{
-	if (videoCapture != nullptr)
-		delete videoCapture;
-}
-
-int CThumbnailDataSQL::GetNbFrame()
-{
-	if (isVideo) // && nbFrame < 20)
+	
+	if(isVideo)
 	{
 		CLibPicture libPicture;
 		if (libPicture.TestIsVideo(filename))
@@ -45,6 +36,16 @@ int CThumbnailDataSQL::GetNbFrame()
 			sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
 	}
+}
+
+CThumbnailDataSQL::~CThumbnailDataSQL(void)
+{
+	if (videoCapture != nullptr)
+		delete videoCapture;
+}
+
+int CThumbnailDataSQL::GetNbFrame()
+{
 	if (nbFrame > 0)
 		return nbFrame;
 	return 1;
@@ -60,18 +61,7 @@ bool CThumbnailDataSQL::TestBitmap()
 
 wxImage CThumbnailDataSQL::GetwxImage()
 {
-	CLibPicture libPicture;
-	if (isVideo) // && nbFrame < 20 )
-	{
-		CLibPicture libPicture;
-		if (libPicture.TestIsVideo(filename))
-			nbFrame = 20;
-		else
-		{
-			CSqlThumbnailVideo sqlThumbnailVideo;
-			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
-		}
-	}
+	//CLibPicture libPicture;
 
 	if (numFrame >= nbFrame)
 		numFrame = 0;
@@ -89,7 +79,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
-			if (libPicture.TestIsVideo(filename) && videoCapture == nullptr)
+			if (isVideo && (videoCapture == nullptr && videoCaptureCV == nullptr))
 			{
 				if (useOpenCV)
 					videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
@@ -99,7 +89,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			}
 
 			bool grabbed = false;
-			if (videoCapture != nullptr && videoCapture->IsOk())
+			if ((videoCapture != nullptr || videoCaptureCV != nullptr))
 			{
 				if (oldnumFrame != numFrame)
 				{
@@ -123,7 +113,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 							oldnumFrame = numFrame;
 						}
 					}
-					else
+					else if(videoCapture->IsOk())
 					{
 						/*
 						time_pos +=10;

@@ -34,10 +34,11 @@ void CWindowUtility::DrawTexte(wxDC* dc, const wxString& libelle, const int& xPo
 wxSize CWindowUtility::GetSizeTexte(wxDC* dc, const wxString& libelle, CThemeFont font)
 {
 	// Create a memory DC
-	wxMemoryDC temp_dc(dc);
+	
 	wxSize size;
 	try
 	{
+		wxMemoryDC temp_dc(nullptr);
  		wxFont _font(font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 		temp_dc.SetFont(_font);
 		size = temp_dc.GetTextExtent(libelle);
