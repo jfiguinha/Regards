@@ -7,10 +7,6 @@
 //
 
 #pragma once
-#include "ImageLoadingFormat.h"
-
-
-class CImageLoadingFormat;
 
 class CImageVideoThumbnail
 {
