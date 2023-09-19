@@ -10,7 +10,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/timestamp.h>
 }
-
+#include <OpenCVVideoPlayer.h>
 #include <wx/mstream.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
@@ -168,6 +168,6 @@ private:
 
 	cv::Mat frameOutput;
 	cv::Mat frameOutputWithoutEffect;
-	Regards::Video::CVideoPlayer* capture = nullptr;
+	Regards::Video::COpenCVVideoPlayer * capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

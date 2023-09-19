@@ -11,7 +11,7 @@ using namespace Regards::Sqlite;
 #include <FileUtility.h>
 #include <opencv2/videoio.hpp>
 #include <ConvertUtility.h>
-#include <VideoPlayer.h>
+#include <OpenCVVideoPlayer.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
@@ -40,8 +40,8 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)
 {
-	if (videoCapture != nullptr)
-		delete videoCapture;
+	if (videoCaptureCV != nullptr)
+		delete videoCaptureCV;
 }
 
 int CThumbnailDataSQL::GetNbFrame()
@@ -79,73 +79,33 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
-			if (isVideo && (videoCapture == nullptr && videoCaptureCV == nullptr))
+			if (isVideo && videoCaptureCV == nullptr)
 			{
-				if (useOpenCV)
-					videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
-				else
-					videoCapture = new CVideoPlayer(filename, false);
-				//fps = videoCapture->get(cv::CAP_PROP_FPS);
+				videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_FFMPEG);
 			}
 
 			bool grabbed = false;
-			if ((videoCapture != nullptr || videoCaptureCV != nullptr))
+			if (videoCaptureCV != nullptr)
 			{
 				if (oldnumFrame != numFrame)
 				{
-					if (useOpenCV)
-					{
-						if (!videoCaptureCV->read(cvImg))
-						{
-							videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
-							grabbed = videoCaptureCV->read(cvImg);
-							//time_pos = 0;
-						}
-						else
-							grabbed = true;
 
-						if (grabbed)
-						{
-							int w = cvImg.cols;
-							int h = cvImg.rows;
-							cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-							frameOut = wxImage(w, h, cvImg.data, true);
-							oldnumFrame = numFrame;
-						}
+					if (!videoCaptureCV->read(cvImg))
+					{
+						videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
+						grabbed = videoCaptureCV->read(cvImg);
+						//time_pos = 0;
 					}
-					else if(videoCapture->IsOk())
+					else
+						grabbed = true;
+
+					if (grabbed)
 					{
-						/*
-						time_pos +=10;
-						if (videoCapture->SeekToPos(time_pos) == -1)
-						{
-							videoCapture->SeekToBegin();
-							time_pos = 0;
-						}*/
-
-						//videoCapture->SkipFrame(20);
-						cvImg = videoCapture->GetVideoFrame();
-						if (cvImg.empty())
-						{
-							videoCapture->SeekToBegin();
-							cvImg = videoCapture->GetVideoFrame();
-							grabbed = true;
-							//time_pos = 0;
-						}
-						else
-							grabbed = true;
-
-						if (cvImg.empty())
-							grabbed = false;
-
-						if (grabbed)
-						{
-							int w = cvImg.cols;
-							int h = cvImg.rows;
-							//cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-							frameOut = CLibPicture::ConvertRegardsBitmapToWXImage(cvImg);
-							oldnumFrame = numFrame;
-						}
+						int w = cvImg.cols;
+						int h = cvImg.rows;
+						cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+						frameOut = wxImage(w, h, cvImg.data, true);
+						oldnumFrame = numFrame;
 					}
 				}
 				else

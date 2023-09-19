@@ -16,7 +16,6 @@
 #include <FiltreEffetCPU.h>
 #include <ConvertUtility.h>
 #include <MediaInfo.h>
-#include <VideoPlayer.h>
 #include <picture_utility.h>
 
 extern "C" {
@@ -2330,7 +2329,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new CVideoPlayer(input_file);
+	capture = new COpenCVVideoPlayer(input_file, cv::CAP_FFMPEG);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
@@ -2372,8 +2371,8 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 
 	if (capture != nullptr)
 		delete capture;
-
-	capture = new CVideoPlayer(input_file);
+	
+	capture = new COpenCVVideoPlayer(input, false);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 

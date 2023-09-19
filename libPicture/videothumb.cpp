@@ -1,8 +1,8 @@
 #include "header.h"
 #include "videothumb.h"
-#include "VideoPlayer.h"
 #include "ImageVideoThumbnail.h"
 #include "OpenCVVideoPlayer.h"
+#include <videothumbnailer.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
 using namespace Regards::Video;
@@ -15,11 +15,7 @@ public:
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-#ifndef WIN32
 		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
-#else
-		videoThumbnailer = new CVideoPlayer(filename, false);
-#endif
 
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();

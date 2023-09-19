@@ -23,7 +23,7 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-#include <VideoPlayer.h>
+#include <OpenCVVideoPlayer.h>
 extern bool processrecognitionison;
 extern bool isOpenCLInitialized;
 
@@ -492,7 +492,7 @@ void CListFace::FacialRecognition(void* param)
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
-		CVideoPlayer video(path->filename);
+		COpenCVVideoPlayer video(path->filename);
 		int width = 0;
 		int height = 0;
 		CImageLoadingFormat pictureData;

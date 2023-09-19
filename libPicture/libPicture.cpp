@@ -31,6 +31,7 @@
 #include <picture_utility.h>
 #include <picture_id.h>
 #include <LibResource.h>
+#include "OpenCVVideoPlayer.h"
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -74,7 +75,7 @@ using namespace Regards::exiv2;
 #include <wx/image.h>
 
 #include <FileUtility.h>
-#include <VideoPlayer.h>
+
 //Dialog Save
 #include <GifOption.h>
 #include <JpegOption.h>
@@ -1671,7 +1672,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 		//CThumbnailVideo video;
 		//video.SetFilename(szFileName);
 		//is_valid = video.IsOk();
-		CVideoPlayer capture(szFileName, false);
+		COpenCVVideoPlayer capture(szFileName, false);
 		if (capture.isOpened())
 		{
 			fileValid.insert(std::make_pair(szFileName, is_valid));

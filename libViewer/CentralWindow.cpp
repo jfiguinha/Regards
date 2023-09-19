@@ -33,7 +33,7 @@
 #include <ImageVideoThumbnail.h>
 #include <picture_utility.h>
 #include <wx/busyinfo.h>
-#include <VideoPlayer.h>
+#include <OpenCVVideoPlayer.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -1741,7 +1741,7 @@ void CCentralWindow::SetVideo(const wxString& path)
 	if (thumbnailVideo->GetFilename() != filename)
 	{
 		thumbnailVideo->SetFilename(filename);
-		CVideoPlayer videoPlayer(filename);
+		COpenCVVideoPlayer videoPlayer(filename);
 		if (videoPlayer.GetDuration() > 20)
 			thumbnailVideo->SetFile(filename, 20);
 		else

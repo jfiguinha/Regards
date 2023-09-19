@@ -18,17 +18,15 @@
 #define IFILTER_H
 
 #include "videoframe.h"
-
-namespace ffmpegthumbnailer
-{
+using namespace ffmpegthumbnailer;
 
 class IFilter
 {
 public:
 	virtual ~IFilter() {}
-    virtual void process(VideoFrame& frameData) = 0;
+    virtual void process(ffmpegthumbnailer::VideoFrame& frameData) = 0;
 };
 
-}
+
 
 #endif

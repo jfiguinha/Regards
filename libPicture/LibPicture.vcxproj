@@ -412,7 +412,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>POINTERHOLDER_TRANSITION;LIBRAW_NODLL;HAS_X265;HAVE_PID_T;LATEST_GREATEST_FFMPEG;FFMPEG;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;_CRT_SECURE_NO_WARNINGS;LIBRAW;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface;../libVideoThumbnail</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>

@@ -25,7 +25,6 @@
 
 
 using namespace std;
-
 namespace ffmpegthumbnailer
 {
 

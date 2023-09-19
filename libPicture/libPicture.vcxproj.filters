@@ -88,9 +88,6 @@
     <ClCompile Include="pfm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VideoPlayer.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailVideoExport.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
@@ -132,6 +129,9 @@
     </ClCompile>
     <ClCompile Include="convertmattowxbmp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +246,6 @@
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="VideoPlayer.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailVideoExport.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
@@ -293,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="convertmattowxbmp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
