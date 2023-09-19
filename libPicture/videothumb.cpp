@@ -2,7 +2,6 @@
 #include "videothumb.h"
 #include "ImageVideoThumbnail.h"
 #include "OpenCVVideoPlayer.h"
-#include <videothumbnailer.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
 using namespace Regards::Video;
