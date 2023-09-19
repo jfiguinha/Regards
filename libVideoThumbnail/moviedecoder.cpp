@@ -24,6 +24,7 @@ extern "C" {
 #ifdef LATEST_GREATEST_FFMPEG	
 #include <libavutil/display.h>
 #include <libavutil/opt.h>
+#include <libavutil/error.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
@@ -165,7 +166,15 @@ void MovieDecoder::initializeVideo()
         throw logic_error("Could not find video stream");
     }
 
-    m_pVideoCodecContext = m_pFormatContext->streams[m_VideoStream];
+    m_pVideoCodecContext = avcodec_alloc_context3(NULL);
+    if (!m_pVideoCodecContext)
+        return;
+
+    int ret = avcodec_parameters_to_context(m_pVideoCodecContext, m_pFormatContext->streams[m_VideoStream]->codecpar);
+    if (ret < 0)
+        return;
+
+   // m_pVideoCodecContext = m_pFormatContext->streams[m_VideoStream];
     m_pVideoCodec = (AVCodec *)avcodec_find_decoder(m_pFormatContext->streams[m_VideoStream]->codecpar->codec_id);
 
     if (m_pVideoCodec == nullptr)
@@ -233,7 +242,7 @@ void MovieDecoder::seek(int timeInSeconds)
     int ret = av_seek_frame(m_pFormatContext, -1, timestamp, 0);
     if (ret >= 0)
     {
-        avcodec_flush_buffers(m_pFormatContext->streams[m_VideoStream]->codecpar);
+        avcodec_flush_buffers(m_pVideoCodecContext);
     }
     else
     {
@@ -286,6 +295,7 @@ void MovieDecoder::decodeVideoFrame()
 
 bool MovieDecoder::decodeVideoPacket()
 {
+    int gotpicture = 0;
     if (m_pPacket->stream_index != m_VideoStream)
     {
         return false;
@@ -295,12 +305,20 @@ bool MovieDecoder::decodeVideoPacket()
 
     int frameFinished;
 
+    int ret = avcodec_receive_frame(m_pVideoCodecContext, m_pFrame);
+    if (ret == 0)
+        frameFinished = 1;
+    if (ret == AVERROR(EAGAIN))
+        ret = 0;
+    if (ret == 0)
+        ret = avcodec_send_packet(m_pVideoCodecContext, m_pPacket);
+    /*
     int bytesDecoded = avcodec_decode_video2(m_pVideoCodecContext, m_pFrame, &frameFinished, m_pPacket);
     if (bytesDecoded < 0)
     {
         throw logic_error("Failed to decode video frame: bytesDecoded < 0");
     }
-
+    */
     return frameFinished > 0;
 }
 
@@ -313,7 +331,7 @@ bool MovieDecoder::getVideoPacket()
     
     if (m_pPacket)
     {
-        av_free_packet(m_pPacket);
+        av_packet_unref(m_pPacket);
         delete m_pPacket;
     }
 
@@ -327,7 +345,7 @@ bool MovieDecoder::getVideoPacket()
             frameDecoded = m_pPacket->stream_index == m_VideoStream;
             if (!frameDecoded)
             {
-                av_free_packet(m_pPacket);
+                av_packet_unref(m_pPacket);
             }
         }
     }
