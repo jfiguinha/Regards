@@ -33,7 +33,7 @@ namespace Regards
 			                 wxString& longitude);
 
 		private:
-			Exiv2::URationalValue::AutoPtr GetGpsRationalValue(const wxString& gpsValue);
+			Exiv2::URationalValue::UniquePtr GetGpsRationalValue(const wxString& gpsValue);
 			wxString GetGpsfValue(const wxString& gpsValue);
 			wxMemoryInputStream* LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation);
 			void AddAsciiValue(wxString key, wxString value, Exiv2::ExifData& exifData);
@@ -42,7 +42,7 @@ namespace Regards
 			vector<CMetadata> ReadExif(Exiv2::ExifData& exifData);
 			vector<CMetadata> ReadIpct(Exiv2::IptcData& ipctData);
 			vector<CMetadata> ReadXmp(Exiv2::XmpData& xmpData);
-			Exiv2::Image::AutoPtr exif;
+			Exiv2::Image::UniquePtr exif;
 			bool isExif;
 			wxString filename;
 		};
