@@ -11,6 +11,7 @@
 #include "SqlFaceLabel.h"
 #include <libPicture.h>
 #include "SqlFaceRecognition.h"
+#include <libPicture.h>
 #include "SqlPhotoCategorieUsenet.h"
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -109,6 +110,8 @@ bool CSQLRemoveData::DeleteFolder(const int& numFolder)
 
 	CSqlFacePhoto sqlFacePhoto;
 	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
+
+	CLibPicture::RemoveVideo(listPhoto);
 
 	//Suppression des critères des photos
 	CSqlCriteria sqlCriteria;

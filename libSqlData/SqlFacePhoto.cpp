@@ -258,6 +258,7 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString>& listPhoto)
 			DeleteNumFace(facename.numFace);
 		});
 
+
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
 	RebuildLink();

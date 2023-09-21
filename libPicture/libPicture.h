@@ -101,6 +101,8 @@ namespace Regards
 
 			static int64_t GetVideoDuration(const wxString& szFileName);
 
+			static void RemoveVideo(vector<wxString>& listPhoto);
+
 			static map<wxString, Regards::Video::CThumbnailVideo*> movieList;
 			static mutex muMovie;
 			

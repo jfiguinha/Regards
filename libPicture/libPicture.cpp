@@ -2018,6 +2018,22 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, in
 	return true;
 }
 
+void CLibPicture::RemoveVideo(vector<wxString> & listPhoto)
+{
+	muMovie.lock();
+	for (wxString fileName : listPhoto)
+	{
+		std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+		it = movieList.find(fileName);
+		if (it != movieList.end())
+		{
+			movieList.erase(fileName);
+		}
+	}
+	muMovie.unlock();
+
+}
+
 cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 {
 	cv::Mat bitmapMatrix;
