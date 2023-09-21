@@ -19,6 +19,10 @@ class CReadMacOSImage;
 
 namespace Regards
 {
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
 	namespace Picture
 	{
 #ifdef WIN32
@@ -58,6 +62,8 @@ namespace Regards
 
 			CImageLoadingFormat* LoadVideoThumbnail(const wxString& szFileName, const int& percent, int& timePosition);
 
+			 
+
 			//CRegardsBitmap * LoadThumbnailFromBuffer(uint8_t * data, size_t size, const char * ext, const int &orientation);
 			bool TestIsExifCompatible(const wxString& filename);
 			int SavePictureOption(const int& format, int& option, int& quality);
@@ -93,6 +99,12 @@ namespace Regards
 			                                       const int& resizeWidth = 0, const int& resizeHeight = 0);
 			static int TestExtension(const wxString& ext);
 
+			static int64_t GetVideoDuration(const wxString& szFileName);
+
+			static map<wxString, Regards::Video::CThumbnailVideo*> movieList;
+			static mutex muMovie;
+			
+
 		private:
 			cv::Mat LoadFromFreeImage(const char* filename);
 			bool PictureDimensionFreeImage(const char* filename, int& width, int& height);
@@ -117,8 +129,7 @@ namespace Regards
 #endif
 #endif
 			map<wxString, bool> fileValid;
-			static map<wxString, int> movieDuration;
-			static mutex muDuration;
+
 #ifdef WIN32
 			CWic* wic = nullptr;
 #endif

@@ -9,9 +9,11 @@
 #include "SqlFindCriteria.h"
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
+#include <libPicture.h>
 #include "SqlFaceRecognition.h"
 #include "SqlPhotoCategorieUsenet.h"
 using namespace Regards::Sqlite;
+using namespace Regards::Picture;
 
 CSQLRemoveData::CSQLRemoveData()
 {
@@ -141,7 +143,6 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int>& listPhoto, CriteriaVecto
 	{
 		sqlThumbnail.DeleteThumbnail(photo);
 		sqlThumbnailVideo.DeleteThumbnail(photo);
-
 
 		//Suppression des critères des photos		
 		sqlPhotoCriteria.DeletePhoto(photo);

@@ -106,8 +106,8 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
 
-map<wxString, int> CLibPicture::movieDuration;
-mutex CLibPicture::muDuration;
+map<wxString, Regards::Video::CThumbnailVideo*> CLibPicture::movieList;
+mutex CLibPicture::muMovie;
 
 #if defined(LIBBPG) && not defined(WIN32)
 
@@ -1163,10 +1163,33 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				//RGBQUAD color = {0,0,0,0};
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
-				CThumbnailVideo video(szFileName, false);
-				cv::Mat mat = video.GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+				bool isFind = false;
+				int orientation = 0;
+				cv::Mat mat;
+				CThumbnailVideo* thumbnail = nullptr;
+				muMovie.lock();
+				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+				it = movieList.find(szFileName);
+				if (it != movieList.end())
+				{
+					thumbnail = movieList[szFileName];
+					mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+					orientation = thumbnail->GetOrientation();
+					isFind = true;
+				}
+				muMovie.unlock();
+				if (!isFind)
+				{
+					thumbnail = new CThumbnailVideo(szFileName, false);
+					muMovie.lock();
+					movieList[szFileName] = thumbnail;
+					mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+					orientation = thumbnail->GetOrientation();
+					muMovie.unlock();
+				}
+
 				bitmap->SetPicture(mat);
-				bitmap->SetOrientation(video.GetOrientation());
+				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(szFileName);
 				break;
 			}
@@ -1422,22 +1445,24 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 		{
 			bool isFind = false;
 			int64_t duration = 0;
-			muDuration.lock();
-			std::map<wxString,int>::iterator it;
-			it = movieDuration.find(szFileName);
-			if (it != movieDuration.end())
+			CThumbnailVideo* thumbnail = nullptr;
+			muMovie.lock();
+			std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+			it = movieList.find(szFileName);
+			if (it != movieList.end())
 			{
-				duration = movieDuration[szFileName];
+				thumbnail = movieList[szFileName];
+				duration = thumbnail->GetMovieDuration();
 				isFind = true;
 			}
-			muDuration.unlock();
+			muMovie.unlock();
 			if(!isFind)
 			{
-				CThumbnailVideo thumbnail(szFileName, false);
-				duration = thumbnail.GetMovieDuration();
-				muDuration.lock();
-				movieDuration[szFileName] = duration;
-				muDuration.unlock();
+				thumbnail = new CThumbnailVideo(szFileName, false);
+				duration = thumbnail->GetMovieDuration();
+				muMovie.lock();
+				movieList[szFileName] = thumbnail;
+				muMovie.unlock();
 			}
 			if (duration > 20 || duration < 0)
 				return 20;
@@ -1621,8 +1646,28 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case AV1:
 		case MOV:
 			{
-				CThumbnailVideo video(szFileName, true);
-				vector<CImageVideoThumbnail*> listVideo = video.GetVideoListFrame(widthThumbnail, heightThumbnail);
+				bool isFind = false;
+				CThumbnailVideo* thumbnail = nullptr;
+				vector<CImageVideoThumbnail*> listVideo;
+				muMovie.lock();
+				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+				it = movieList.find(szFileName);
+				if (it != movieList.end())
+				{
+					thumbnail = movieList[szFileName];
+					listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
+					isFind = true;
+				}
+				muMovie.unlock();
+				if (!isFind)
+				{
+					thumbnail = new CThumbnailVideo(szFileName, false);
+					muMovie.lock();
+					movieList[szFileName] = thumbnail;
+					listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
+					muMovie.unlock();
+				}
+
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);
@@ -1669,17 +1714,55 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	else
 	{
-		//CThumbnailVideo video;
-		//video.SetFilename(szFileName);
-		//is_valid = video.IsOk();
-		COpenCVVideoPlayer capture(szFileName, false);
-		if (capture.isOpened())
+		bool isFind = false;
+		int64_t duration = 0;
+		CThumbnailVideo* thumbnail = nullptr;
+		muMovie.lock();
+		std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+		it = movieList.find(szFileName);
+		if (it != movieList.end())
 		{
-			fileValid.insert(std::make_pair(szFileName, is_valid));
-			is_valid = true;
+			thumbnail = movieList[szFileName];
+			is_valid = thumbnail->isOk();
+			isFind = true;
+		}
+		muMovie.unlock();
+		if (!isFind)
+		{
+			thumbnail = new CThumbnailVideo(szFileName, false);
+			is_valid = thumbnail->isOk();
+			muMovie.lock();
+			movieList[szFileName] = thumbnail;
+			muMovie.unlock();
 		}
 	}
 	return is_valid;
+}
+
+int64_t CLibPicture::GetVideoDuration(const wxString& szFileName)
+{
+	bool isFind = false;
+	int64_t duration = 0;
+	CThumbnailVideo* thumbnail = nullptr;
+	muMovie.lock();
+	std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+	it = movieList.find(szFileName);
+	if (it != movieList.end())
+	{
+		thumbnail = movieList[szFileName];
+		duration = thumbnail->GetMovieDuration();
+		isFind = true;
+	}
+	muMovie.unlock();
+	if (!isFind)
+	{
+		thumbnail = new CThumbnailVideo(szFileName, false);
+		duration = thumbnail->GetMovieDuration();
+		muMovie.lock();
+		movieList[szFileName] = thumbnail;
+		muMovie.unlock();
+	}
+	return duration;
 }
 
 //--------------------------------------------------------------------------------------------
@@ -2602,11 +2685,34 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case Y4M:
 		case MOV:
 			{
-				CThumbnailVideo video(fileName, false);
+				bool isFind = false;
+				CThumbnailVideo* thumbnail = nullptr;
+				int orientation = 0;
 				int percent = ((float)numPicture / (float)20) * 100.0f;
-				cv::Mat mat = video.GetVideoFramePercent(percent, 0, 0);
+				cv::Mat mat;
+				muMovie.lock();
+				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+				it = movieList.find(fileName);
+				if (it != movieList.end())
+				{
+					thumbnail = movieList[fileName];
+					mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
+					orientation = thumbnail->GetOrientation();
+					isFind = true;
+				}
+				muMovie.unlock();
+				if (!isFind)
+				{
+					thumbnail = new CThumbnailVideo(fileName, false);
+					muMovie.lock();
+					movieList[fileName] = thumbnail;
+					mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
+					orientation = thumbnail->GetOrientation();
+					muMovie.unlock();
+				}
+
 				bitmap->SetPicture(mat);
-				bitmap->SetOrientation(video.GetOrientation());
+				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(fileName);
 			}
 			break;
@@ -2875,8 +2981,26 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case MOV:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CThumbnailVideo video(fileName, false);
-			video.GetVideoDimensions(width, height);
+			bool isFind = false;
+			CThumbnailVideo* thumbnail = nullptr;
+			muMovie.lock();
+			std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+			it = movieList.find(fileName);
+			if (it != movieList.end())
+			{
+				thumbnail = movieList[fileName];
+				thumbnail->GetVideoDimensions(width, height);
+				isFind = true;
+			}
+			muMovie.unlock();
+			if (!isFind)
+			{
+				thumbnail = new CThumbnailVideo(fileName, false);
+				muMovie.lock();
+				movieList[fileName] = thumbnail;
+				thumbnail->GetVideoDimensions(width, height);
+				muMovie.unlock();
+			}
 		}
 		break;
 #ifdef LIBHEIC

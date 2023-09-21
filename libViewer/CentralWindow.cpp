@@ -633,18 +633,20 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 		{
 			CLibPicture libPicture;
 			bool isVideoValid = true;
+			bool isVideo = false;
 
 			if (libPicture.TestIsVideo(filename))
 			{
 				isVideoValid = libPicture.TestIsVideoValid(filename);
+				isVideo = true;
 			}
 
-			if (libPicture.TestIsVideo(filename) && isVideoValid)
+			if (isVideo && isVideoValid)
 			{
 				StopMusic();
 				SetVideo(filename);
 			}
-			else if (libPicture.TestIsVideo(filename) && !isVideoValid)
+			else if (isVideo && !isVideoValid)
 			{
 				//CImageLoadingFormat* bitmap = libPicture.GetCancelPhoto(filename);
 				//SetBitmap(bitmap, false, false);
@@ -1741,11 +1743,12 @@ void CCentralWindow::SetVideo(const wxString& path)
 	if (thumbnailVideo->GetFilename() != filename)
 	{
 		thumbnailVideo->SetFilename(filename);
-		COpenCVVideoPlayer videoPlayer(filename);
-		if (videoPlayer.GetDuration() > 20)
+		int64_t duration = CLibPicture::GetVideoDuration(filename);
+
+		if (duration > 20)
 			thumbnailVideo->SetFile(filename, 20);
 		else
-			thumbnailVideo->SetFile(filename, videoPlayer.GetDuration());
+			thumbnailVideo->SetFile(filename, duration);
 	}
 
 	if (previewWindow != nullptr)

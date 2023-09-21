@@ -12,6 +12,7 @@ namespace Regards
 		public:
 			CThumbnailVideo(const wxString& fileName, const bool& useHardware);
 			~CThumbnailVideo();
+			bool isOk();
 			cv::Mat GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight);
 			cv::Mat GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight);
 			cv::Mat GetVideoFramePercent(const int& percent, const int& thumbnailWidth, const int& thumbnailHeight);

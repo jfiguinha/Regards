@@ -22,6 +22,11 @@ public:
 		m_videoMovieDuration = videoThumbnailer->GetDuration();
 	}
 
+	bool IsOpen()
+	{
+		return videoThumbnailer->isOpened();
+	}
+
 	~CThumbnailVideoPimpl()
 	{
 		//delete movieDecoder;
@@ -144,6 +149,10 @@ CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardwa
 	pimpl = new CThumbnailVideoPimpl(fileName, false);
 }
 
+bool CThumbnailVideo::isOk()
+{
+	return pimpl->IsOpen();
+}
 
 CThumbnailVideo::~CThumbnailVideo()
 {
