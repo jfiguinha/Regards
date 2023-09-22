@@ -699,10 +699,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 				transitionEnd = false;
 				bitmapWindow->ShrinkImage();
 				bitmapWindow->SetTransitionBitmap(bitmap);
-				if(!isDiaporama)
-					tempImage = bitmap;
-				else
-					tempImage = nullptr;
+				
 			}
 			else
 			{
@@ -711,17 +708,14 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 					bitmapWindow->StopTransition();
 					bitmapWindow->SetBitmap(bitmap, false);
 					bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
-					tempImage = bitmap;
+					//tempImage = bitmap;
 				}
 				else
 				{
 					transitionEnd = false;
 					bitmapWindow->ShrinkImage();
 					bitmapWindow->SetTransitionBitmap(bitmap);
-					if (!isDiaporama)
-						tempImage = bitmap;
-					else
-						tempImage = nullptr;
+					//tempImage = bitmap;
 				}
 			}
 			
@@ -732,8 +726,16 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 		}
 
-		if (firstPicture)
+		if (!isThumbnail)
+		{
+			tempImage = new CImageLoadingFormat();
+			*tempImage = *bitmap;
+		}
+		else
 			tempImage = nullptr;
+
+		//if (firstPicture)
+		//	tempImage = nullptr;
 
 		firstPicture = false;
 
@@ -1015,11 +1017,8 @@ CShowElement::~CShowElement()
 void CShowElement::SetDiaporamaMode()
 {
 	isDiaporama = true;
-
-	if (isVideo)
-		videoWindow->DiaporamaMode(true);
-	else
-		bitmapWindow->SetDiaporamaMode();
+	videoWindow->DiaporamaMode(true);
+	bitmapWindow->SetDiaporamaMode();
 
 	this->Resize();
 }
@@ -1027,10 +1026,8 @@ void CShowElement::SetDiaporamaMode()
 void CShowElement::SetNormalMode()
 {
 	isDiaporama = false;
-	if (isVideo)
-		videoWindow->DiaporamaMode(false);
-	else
-		bitmapWindow->SetNormalMode();
+	videoWindow->DiaporamaMode(false);
+	bitmapWindow->SetNormalMode();
 	this->Resize();
 }
 

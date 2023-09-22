@@ -1699,14 +1699,14 @@ void CMainWindow::TransitionEnd()
 {
 	centralWnd->TransitionEnd();
 
-	if (!centralWnd->IsDiaporamaStart())
-	{
+	//if (!centralWnd->IsDiaporamaStart())
+	//{
 		auto showBitmap = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (showBitmap != nullptr)
 		{
 			showBitmap->TransitionEnd();
 		}
-	}
+	//}
 }
 
 void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)

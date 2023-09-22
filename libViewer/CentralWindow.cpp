@@ -362,9 +362,10 @@ void CCentralWindow::TransitionEnd()
 {
 	if (isDiaporama)
 	{
-		CMainParam* viewerParam = CMainParamInit::getInstance();
-		const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+		//CMainParam* viewerParam = CMainParamInit::getInstance();
+		//const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		//diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+		diaporamaTimer->Start(1000, wxTIMER_ONE_SHOT);
 	}
 	if (musicPause && isDiaporama)
 	{

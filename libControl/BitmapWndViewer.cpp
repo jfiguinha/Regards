@@ -12,7 +12,7 @@
 #include <FilterData.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
-
+#include <ViewerParam.h>
 #include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>
@@ -22,6 +22,10 @@
 #include "DiaporamaEffect.h"
 #include <wx/busyinfo.h>
 #include <wx/activityindicator.h>
+#include <ViewerParam.h>
+#include <MainParam.h>
+#include <ParamInit.h>
+#include "ViewerParamInit.h"
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -232,7 +236,6 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
 	invertColor = false;
 	transitionTimer = nullptr;
 	clickTimer = nullptr;
-	etape = 0;
 	fixArrow = true;
 	nextPicture = nullptr;
 	startTransition = false;
@@ -310,10 +313,10 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
 	if (m_bTransition)
 	{
-		//if(isDiaporama)
-		//	etape += 1;
-		//else
-		etape += 10;
+		if (isDiaporama)
+			etape += 1;
+		else
+			etape += 10;
 
 
 		if (etape > 100)
@@ -324,8 +327,17 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 		}
 		else
 		{
+			CMainParam* viewerParam = CMainParamInit::getInstance();
+			const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+			//diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+
+			int delai = timeDelai * 10;
+
 			m_bTransition = true;
-			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+			if (isDiaporama)
+				transitionTimer->Start(delai, true);
+			else
+				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			needToRefresh = true;
 		}
 	}
@@ -512,11 +524,13 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
+	/*
 	if (isDiaporama)
 	{
 		SetBitmap(nextPicture, false);
 		nextPicture = nullptr;
 	}
+	*/
 
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
@@ -584,7 +598,14 @@ void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, con
 	startTransition = true;
 	m_bTransition = true;
 	etape = 0;
-	transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+
+	CMainParam* viewerParam = CMainParamInit::getInstance();
+	const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+	int delai = timeDelai * 10;
+	if (isDiaporama)
+		transitionTimer->Start(delai, true);
+	else
+		transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 }
 
 void CBitmapWndViewer::StopTransitionEffect(CImageLoadingFormat* bmpSecond)
