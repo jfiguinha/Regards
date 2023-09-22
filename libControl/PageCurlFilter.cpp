@@ -136,6 +136,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 				pictureNext = new GLTexture();
 
 			mat = bitmapNext.GetOpenCVPicture();
+			cv::flip(mat, mat, 0);
 			pictureNext->SetData(mat);
 		}
 	}
@@ -159,6 +160,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 				pictureFirst = new GLTexture();
 
 			mat = bitmapFirst.GetOpenCVPicture();
+			
 			pictureFirst->SetData(mat);
 		}
 	}
