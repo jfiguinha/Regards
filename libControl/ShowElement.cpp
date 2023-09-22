@@ -691,16 +691,18 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 
 		if (numEffect != 0)
 		{
-			if (firstPicture)
-				bitmap->Flip();
+			//if (firstPicture)
+			//	bitmap->Flip();
 
 			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;
-				bitmap->Flip();
 				bitmapWindow->ShrinkImage();
 				bitmapWindow->SetTransitionBitmap(bitmap);
-				tempImage = nullptr;
+				if(!isDiaporama)
+					tempImage = bitmap;
+				else
+					tempImage = nullptr;
 			}
 			else
 			{
@@ -709,22 +711,31 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 					bitmapWindow->StopTransition();
 					bitmapWindow->SetBitmap(bitmap, false);
 					bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
+					tempImage = bitmap;
 				}
 				else
 				{
 					transitionEnd = false;
-					bitmap->Flip();
 					bitmapWindow->ShrinkImage();
 					bitmapWindow->SetTransitionBitmap(bitmap);
-					tempImage = nullptr;
+					if (!isDiaporama)
+						tempImage = bitmap;
+					else
+						tempImage = nullptr;
 				}
 			}
+			
 		}
 		else
 		{
 			bitmapWindow->SetBitmap(bitmap, false);
 			bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 		}
+
+		if (firstPicture)
+			tempImage = nullptr;
+
+		firstPicture = false;
 
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
