@@ -13,7 +13,7 @@
 #include <SqlPhotos.h>
 #include <MetadataExiv2.h>
 #include <DeepLearning.h>
-
+#include "effect_id.h"
 #include "BitmapWndViewer.h"
 
 //--------------------------------------------------
@@ -461,7 +461,8 @@ void CShowElement::TransitionEnd()
 	transitionEnd = true;
 	if (tempImage != nullptr)
 	{
-		bitmapWindow->SetBitmap(tempImage);
+		if(reloadPictureAfterEffect)
+			bitmapWindow->SetBitmap(tempImage);
 		tempImage = nullptr;
 		transitionEnd = false;
 		if (pictureToolbar != nullptr)
@@ -726,10 +727,22 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 		}
 
-		if (!isThumbnail)
+		if (!isThumbnail && numEffect != 0)
 		{
 			tempImage = new CImageLoadingFormat();
 			*tempImage = *bitmap;
+			reloadPictureAfterEffect = true;
+			if (isDiaporama)
+			{
+				IAfterEffect* getPtEffect = CBitmapWndViewer::AfterEffectPt(numEffect);
+				if (getPtEffect != nullptr)
+				{
+					reloadPictureAfterEffect = getPtEffect->NeedToReload();
+					delete getPtEffect;
+				}
+					
+			}
+
 		}
 		else
 			tempImage = nullptr;

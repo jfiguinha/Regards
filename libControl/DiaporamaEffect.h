@@ -21,6 +21,11 @@ namespace Regards::Filter
 			return IDM_DIAPORAMA_TRANSITION;
 		}
 
+		bool NeedToReload() override
+		{
+			return false;
+		}
+
 		void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
 		                         CImageLoadingFormat* bmpSecond) override
 		{

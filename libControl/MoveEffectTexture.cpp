@@ -6,6 +6,8 @@
 #include "effect_id.h"
 using namespace Regards::Filter;
 
+
+
 void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL,
                                            IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
                                            const bool& isNext, float& ratio)

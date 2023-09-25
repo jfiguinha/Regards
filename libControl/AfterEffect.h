@@ -41,4 +41,9 @@ public:
 	};
 	virtual GLTexture* GetTexture(const int& numTexture) = 0;
 	virtual void DeleteTexture() = 0;
+
+	virtual bool NeedToReload()
+	{
+		return true;
+	}
 };

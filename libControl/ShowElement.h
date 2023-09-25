@@ -147,7 +147,7 @@ namespace Regards
 			int progressValue;
 			bool fullscreen;
 			bool showToolbar;
-
+			bool reloadPictureAfterEffect = false;
 			//--------------------------------------------------------------------------
 			//Video
 			//--------------------------------------------------------------------------

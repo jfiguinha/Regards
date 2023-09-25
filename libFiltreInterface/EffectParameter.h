@@ -11,5 +11,7 @@ public:
 	{
 	};
 
+
+
 	bool updateEffect = false;
 };

@@ -70,9 +70,11 @@ namespace Regards::Control
 		vector<int> GetListTimer() override;
 		void ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV);
 
+		static IAfterEffect* AfterEffectPt(const int& numFilter);
+
 	private:
 		bool IsOpenCLCompatible();
-		IAfterEffect* AfterEffectPt(const int& numFilter);
+		
 		void RenderTexture(const bool& invertPos) override;
 		bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) override;
 

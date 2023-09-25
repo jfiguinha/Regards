@@ -21,5 +21,6 @@ namespace Regards::Filter
 		void RenderMoveTexture(int& x, int& y, GLTexture* glTexture, const int& etape, const bool& isNext) override;
 
 		int GetTypeFilter() override;
+
 	};
 }
