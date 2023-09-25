@@ -461,8 +461,7 @@ void CShowElement::TransitionEnd()
 	transitionEnd = true;
 	if (tempImage != nullptr)
 	{
-		if(reloadPictureAfterEffect)
-			bitmapWindow->SetBitmap(tempImage);
+		bitmapWindow->SetBitmap(tempImage);
 		tempImage = nullptr;
 		transitionEnd = false;
 		if (pictureToolbar != nullptr)
@@ -729,11 +728,10 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 
 		if (!isThumbnail && numEffect != 0)
 		{
-			tempImage = new CImageLoadingFormat();
-			*tempImage = *bitmap;
-			reloadPictureAfterEffect = true;
+			bool reloadPictureAfterEffect = true;
 			if (isDiaporama)
 			{
+				
 				IAfterEffect* getPtEffect = CBitmapWndViewer::AfterEffectPt(numEffect);
 				if (getPtEffect != nullptr)
 				{
@@ -741,6 +739,11 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 					delete getPtEffect;
 				}
 					
+			}
+			if (reloadPictureAfterEffect)
+			{
+				tempImage = new CImageLoadingFormat();
+				*tempImage = *bitmap;
 			}
 
 		}
