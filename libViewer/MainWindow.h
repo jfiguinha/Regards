@@ -154,7 +154,7 @@ namespace Regards::Viewer
 		wxRect posWindow;
 
 		//std::mutex muFolderThread;
-		//std::thread* updateFolderThread = nullptr;
+		std::thread* updateFolderThread = nullptr;
 		wxString localFilename;
 		int nbProcessMD5;
 

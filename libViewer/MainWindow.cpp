@@ -1402,6 +1402,12 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 		delete threadData;
 		threadData = nullptr;
 
+		if (updateFolderThread != nullptr)
+		{
+			updateFolderThread->join();
+			delete updateFolderThread;
+			updateFolderThread = nullptr;
+		}
 
 
 		firstFileToShow = "";
@@ -1473,9 +1479,13 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (updateFolder)
 	{
-		UpdateFolderStatic();
-		updateFolder = false;
-		hasDoneOneThings = true;
+		if (updateFolderThread == nullptr)
+		{
+			UpdateFolderStatic();
+			updateFolder = false;
+			hasDoneOneThings = true;
+		}
+
 	}
 	else if (numElementTraitement < pictureSize)
 	{
@@ -1673,7 +1683,10 @@ void CMainWindow::UpdateFolderStatic()
 	{
 		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
 		threadData->mainWindow = this;
-		UpdateFolder(threadData);
+		updateFolderThread = new std::thread(UpdateFolder, threadData);
+		//CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+		//threadData->mainWindow = this;
+		//UpdateFolder(threadData);
 	}
 }
 
@@ -1732,7 +1745,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0)
+	if (nbProcessMD5 > 0 && updateFolderThread != nullptr)
 		return false;
 
 	return true;
