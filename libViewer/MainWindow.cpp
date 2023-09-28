@@ -222,7 +222,11 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
-	updateFolder = true;//UpdateFolderStatic();
+#ifdef WIN32
+	updateFolder = true;
+#else
+	UpdateFolderStatic();
+#endif
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
@@ -1059,7 +1063,11 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	updateFolder = true;//UpdateFolderStatic();
+#ifdef WIN32
+	updateFolder = true;
+#else
+	UpdateFolderStatic();
+#endif
 	processIdle = true;
 }
 
@@ -1072,7 +1080,11 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-			updateFolder = true;//UpdateFolderStatic();
+		#ifdef WIN32
+			updateFolder = true;
+		#else
+			UpdateFolderStatic();
+		#endif
             processIdle = true;
         }
 
@@ -1319,8 +1331,11 @@ void CMainWindow::RefreshFolder()
 
 		CSqlFindPhotos sqlFindPhotos;
 		sqlFindPhotos.SearchPhotos(sqlRequest);
-
-		updateFolder = true;//UpdateFolderStatic();
+	#ifdef WIN32
+		updateFolder = true;
+	#else
+		UpdateFolderStatic();
+	#endif
 		updateCriteria = true;
 	}
 	refreshFolder = false;
@@ -1447,7 +1462,11 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-		updateFolder = true;//UpdateFolderStatic();
+	#ifdef WIN32
+		updateFolder = true;
+	#else
+		UpdateFolderStatic();
+	#endif
 		numElementTraitement++;
 	}
 
@@ -1477,6 +1496,7 @@ void CMainWindow::ProcessIdle()
 		RefreshFolder();
 		hasDoneOneThings = true;
 	}
+#ifdef WIN32
 	else if (updateFolder)
 	{
 		if (updateFolderThread == nullptr)
@@ -1487,6 +1507,7 @@ void CMainWindow::ProcessIdle()
 		}
 
 	}
+#endif
 	else if (numElementTraitement < pictureSize)
 	{
 		CPhotos photo = CThumbnailBuffer::GetVectorValue(numElementTraitement);
@@ -1671,7 +1692,11 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-	updateFolder = true;//UpdateFolderStatic();
+#ifdef WIN32
+	updateFolder = true;
+#else
+	UpdateFolderStatic();
+#endif
 	processIdle = true;
 	this->Show(true);
 }
@@ -1681,12 +1706,15 @@ void CMainWindow::UpdateFolderStatic()
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	wxBusyInfo wait(libelle);
 	{
+#ifdef WIN32
 		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
 		threadData->mainWindow = this;
 		updateFolderThread = new std::thread(UpdateFolder, threadData);
-		//CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-		//threadData->mainWindow = this;
-		//UpdateFolder(threadData);
+#else
+		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
+		threadData->mainWindow = this;
+		UpdateFolder(threadData);
+#endif
 	}
 }
 
@@ -1821,7 +1849,11 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	updateFolder = true;//UpdateFolderStatic();
+#ifdef WIN32
+	updateFolder = true;
+#else
+	UpdateFolderStatic();
+#endif
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);
