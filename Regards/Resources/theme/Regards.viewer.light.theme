@@ -443,7 +443,7 @@
 				<colorBack>rgb(0, 0, 0)</colorBack>
 				<colorFullscreen>rgb(0, 0, 0)</colorFullscreen>
 				<colorScreen>rgb(255, 255, 255)</colorScreen>
-				<colorArrow>rgb(0, 0, 0)</colorArrow>
+				<colorArrow>rgb(156, 156, 156)</colorArrow>
 			</Theme>
 		</BitmapWindow>
 		<BitmapToolbar>
