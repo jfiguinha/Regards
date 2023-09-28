@@ -697,8 +697,12 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;
-				bitmapWindow->ShrinkImage();
-				bitmapWindow->SetTransitionBitmap(bitmap);
+				if (!isThumbnail)
+				{
+					bitmapWindow->ShrinkImage();
+					bitmapWindow->SetTransitionBitmap(bitmap);
+				}
+
 				
 			}
 			else
