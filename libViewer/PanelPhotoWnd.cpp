@@ -179,39 +179,38 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle, windowMain);
-	{
+
 		
-		if (windowMain != nullptr)
+	if (windowMain != nullptr)
+	{
+		wxString getSelectPath = folderWnd->GetPath();
+		int isChecked = aEvent.GetExtraLong();
+		int isShowDialog = aEvent.GetInt();
+		wxString* file = (wxString*)aEvent.GetClientData();
+		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
+
+		if (isChecked)
 		{
-			wxString getSelectPath = folderWnd->GetPath();
-			int isChecked = aEvent.GetExtraLong();
-			int isShowDialog = aEvent.GetInt();
-			wxString* file = (wxString*)aEvent.GetClientData();
-			wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
-
-			if (isChecked)
-			{
-				folderWnd->AddPath(getSelectPath);
-				const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
-				evt.SetInt(0);
-				auto newPath = new wxString(firstFile);
-				evt.SetClientData(newPath);
-			}
-			else
-			{
-				evt.SetInt(1);
-				folderWnd->RemovePath(getSelectPath);
-				RemoveFolder(getSelectPath);
-			}
-
-			if (file != nullptr)
-				delete file;
-
-
-			windowMain->GetEventHandler()->AddPendingEvent(evt);
+			folderWnd->AddPath(getSelectPath);
+			const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
+			evt.SetInt(0);
+			auto newPath = new wxString(firstFile);
+			evt.SetClientData(newPath);
 		}
+		else
+		{
+			evt.SetInt(1);
+			folderWnd->RemovePath(getSelectPath);
+			RemoveFolder(getSelectPath);
+		}
+
+		if (file != nullptr)
+			delete file;
+
+
+		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 }
 
 void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)

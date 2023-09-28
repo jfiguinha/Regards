@@ -153,8 +153,8 @@ namespace Regards::Viewer
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 
-		std::mutex muFolderThread;
-		std::thread* updateFolderThread = nullptr;
+		//std::mutex muFolderThread;
+		//std::thread* updateFolderThread = nullptr;
 		wxString localFilename;
 		int nbProcessMD5;
 
@@ -164,7 +164,7 @@ namespace Regards::Viewer
 		bool needToReload;
 		int typeAffichage;
 		bool updateCriteria;
-		//bool updateFolder;
+		bool updateFolder = false;
 		bool refreshFolder;
 		int numElementTraitement;
 		bool start;

@@ -53,6 +53,8 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 	return list;
 }
 
+#define USE_TBB_VECTOR
+
 CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 {
 	auto iconeListLocal = new CIconeList();
@@ -84,7 +86,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 		}
 		catch (...)
 		{
-			break;
+
 		}
 	}
 #ifdef USE_TBB_VECTOR
@@ -160,7 +162,7 @@ void CThumbnailViewerPicture::SetListeFile()
 		}
 		catch(...)
 		{
-			break;
+
 		}
 	}
 #ifdef USE_TBB_VECTOR

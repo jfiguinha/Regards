@@ -222,7 +222,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
-	UpdateFolderStatic();
+	updateFolder = true;//UpdateFolderStatic();
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
@@ -1059,7 +1059,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	UpdateFolderStatic();
+	updateFolder = true;//UpdateFolderStatic();
 	processIdle = true;
 }
 
@@ -1072,7 +1072,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-			UpdateFolderStatic();
+			updateFolder = true;//UpdateFolderStatic();
             processIdle = true;
         }
 
@@ -1320,7 +1320,7 @@ void CMainWindow::RefreshFolder()
 		CSqlFindPhotos sqlFindPhotos;
 		sqlFindPhotos.SearchPhotos(sqlRequest);
 
-		UpdateFolderStatic();
+		updateFolder = true;//UpdateFolderStatic();
 		updateCriteria = true;
 	}
 	refreshFolder = false;
@@ -1409,15 +1409,6 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 
 		init = true;
 	}
-
-	muFolderThread.lock();
-	if (updateFolderThread != nullptr)
-	{
-		updateFolderThread->join();
-		delete updateFolderThread;
-		updateFolderThread = nullptr;
-	}
-	muFolderThread.unlock();
 }
 
 //---------------------------------------------------------------
@@ -1450,7 +1441,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-		UpdateFolderStatic();
+		updateFolder = true;//UpdateFolderStatic();
 		numElementTraitement++;
 	}
 
@@ -1480,21 +1471,12 @@ void CMainWindow::ProcessIdle()
 		RefreshFolder();
 		hasDoneOneThings = true;
 	}
-    /*
 	else if (updateFolder)
 	{
-		muFolderThread.lock();
-		if(updateFolderThread == nullptr)
-		{
-			CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-			threadData->mainWindow = this;
-			updateFolderThread = new std::thread(UpdateFolder, threadData);
-            //UpdateFolder(threadData);
-			updateFolder = false;
-		}
-		muFolderThread.unlock();
+		UpdateFolderStatic();
+		updateFolder = false;
 		hasDoneOneThings = true;
-	}*/
+	}
 	else if (numElementTraitement < pictureSize)
 	{
 		CPhotos photo = CThumbnailBuffer::GetVectorValue(numElementTraitement);
@@ -1679,7 +1661,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-	UpdateFolderStatic();
+	updateFolder = true;//UpdateFolderStatic();
 	processIdle = true;
 	this->Show(true);
 }
@@ -1750,7 +1732,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0 || updateFolderThread != nullptr)
+	if (nbProcessMD5 > 0)
 		return false;
 
 	return true;
@@ -1826,7 +1808,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	UpdateFolderStatic();
+	updateFolder = true;//UpdateFolderStatic();
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);
