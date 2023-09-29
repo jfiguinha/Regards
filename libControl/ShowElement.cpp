@@ -697,13 +697,8 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;
-				if (!isThumbnail)
-				{
-					bitmapWindow->ShrinkImage();
-					bitmapWindow->SetTransitionBitmap(bitmap);
-				}
-
-				
+				bitmapWindow->ShrinkImage();
+				bitmapWindow->SetTransitionBitmap(bitmap);			
 			}
 			else
 			{
@@ -717,8 +712,13 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 				else
 				{
 					transitionEnd = false;
-					bitmapWindow->ShrinkImage();
-					bitmapWindow->SetTransitionBitmap(bitmap);
+					
+					if (isDiaporama)
+					{
+						bitmapWindow->SetTransitionBitmap(bitmap);
+						bitmapWindow->ShrinkImage();
+					}
+					
 					//tempImage = bitmap;
 				}
 			}
