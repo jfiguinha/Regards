@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="DateValidation.cpp"/>
     <File Name="utility.cpp"/>
     <File Name="picture_utility.cpp"/>
     <File Name="ConvertUtility.cpp"/>
@@ -36,6 +37,7 @@
     <File Name="wxmd5.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="DateValidation.hpp"/>
     <File Name="utility.h"/>
     <File Name="picture_utility.h"/>
     <File Name="ConvertUtility.h"/>
