@@ -20,7 +20,7 @@
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
-
+#include <DateValidation.hpp>
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -465,6 +465,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	{
 		vector<wxString> vDateTime;
 		datetime = datetime.substr(0, 10);
+
 		wxChar separator = datetime[4];
 		vDateTime = CConvertUtility::split(datetime, separator);
 

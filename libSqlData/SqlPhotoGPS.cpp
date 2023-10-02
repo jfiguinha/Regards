@@ -34,6 +34,18 @@ bool CSqlPhotoGPS::DeletePhoto(const int64_t& numPhoto)
 }
 
 
+bool CSqlPhotoGPS::DeleteListOfPhoto(const vector<wxString>& listPhoto)
+{
+
+	for (int i = 0; i < listPhoto.size(); i++)
+	{
+		DeletePhoto(i);
+	}
+
+	return false;
+}
+
+
 int CSqlPhotoGPS::GetFirstPhoto(int& numPhoto, wxString& filepath, int& numFolderId)
 {
 	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderId FROM PHOTOSGPS");

@@ -5,6 +5,7 @@
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
 #include "PictureMetadataExiv.h"
+#include <DateValidation.hpp>
 #include <libexif/exif-data.h>
 using namespace Regards::exiv2;
 
@@ -553,7 +554,13 @@ void CPictureMetadataExiv::ReadPicture(bool& hasGps, bool& hasDataTime, wxString
 			if (exifData.end() != md)
 			{
 				hasDataTime = true;
-				dateTimeInfos = toString(*md);
+				std::string dateTimenfo = toString(*md);
+				DateValidation dateValidation(dateTimenfo);
+				if (dateValidation.isValid())
+					dateTimeInfos = toString(*md);
+				else
+					hasDataTime = false;
+
 			}
 
 			md = exifData.findKey(gpsTag);

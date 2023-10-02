@@ -541,6 +541,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ConvertUtility.h" />
+    <ClInclude Include="DateValidation.hpp" />
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="picture_utility.h" />
     <ClInclude Include="RegistryAccess.h" />
@@ -566,6 +567,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="DateValidation.cpp" />
     <ClCompile Include="FileUtility.cpp" />
     <ClCompile Include="picture_utility.cpp" />
     <ClCompile Include="RegistryAccess.cpp" />
