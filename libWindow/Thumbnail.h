@@ -248,5 +248,7 @@ namespace Regards::Window
 		bool needToRefresh = false;
 
 		std::mutex muEraseList;
+		static std::map<wxString, bool> listFile;
+		static std::mutex muListFile;
 	};
 }

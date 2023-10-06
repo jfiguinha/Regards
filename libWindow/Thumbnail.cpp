@@ -22,6 +22,11 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
+std::map<wxString, bool> CThumbnail::listFile;
+std::mutex CThumbnail::muListFile;
+
+
+
 class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
@@ -776,6 +781,11 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	delete iconeListLocal;
 	iconeListLocal = nullptr;
 
+	muListFile.lock();
+	listFile.clear();
+	muListFile.unlock();
+
+
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -805,14 +815,29 @@ struct mytask {
 
 void CThumbnail::ProcessThumbnail(CThumbnailData* pThumbnailData)
 {
-	auto pLoadBitmap = new CThreadLoadingBitmap();
-	pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
-	pLoadBitmap->percent = pThumbnailData->GetPercent();
-	pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
-	pLoadBitmap->filename = pThumbnailData->GetFilename();
-	pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
-	pLoadBitmap->thumbnail = this;
-	pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+	bool process = false;
+	std::map<wxString, bool>::iterator it;
+	muListFile.lock();
+	it = listFile.find(pThumbnailData->GetFilename());
+	if (it == listFile.end())
+		process = true;
+	muListFile.unlock();
+	if(process)
+	{
+		auto pLoadBitmap = new CThreadLoadingBitmap();
+		pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
+		pLoadBitmap->percent = pThumbnailData->GetPercent();
+		pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
+		pLoadBitmap->filename = pThumbnailData->GetFilename();
+		pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
+		pLoadBitmap->thumbnail = this;
+		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+
+		muListFile.lock();
+		listFile[pThumbnailData->GetFilename()] = true;
+		muListFile.unlock();
+	}
+
 	pThumbnailData->SetIsProcess(true);
 }
 
@@ -923,6 +948,7 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
+						/*
 						else if(nbProcess == 0)
 						{
 							ProcessThumbnail(pThumbnailData);
@@ -930,6 +956,7 @@ void CThumbnail::ProcessIdle()
 							nbProcess++;
 							nbElement--;
 						}
+						*/
 					}
 				}
 			}
