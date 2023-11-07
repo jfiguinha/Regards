@@ -135,9 +135,6 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 
 	int orientation = GetOrientation();
 
-	if (orientation < 0)
-		orientation = 0;
-
 	if(orientation != 0 && orientation != 180)
 	{
 		cv::flip(frame, frame, -1);
