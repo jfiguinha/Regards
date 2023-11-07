@@ -42,6 +42,8 @@ namespace Regards
 			std::string filename;
 			cv::VideoCapture* capture;
 			bool isOpen = false;
+			int height = 0;
+			int width = 0;
 		};
 	}
 }

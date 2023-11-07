@@ -12,6 +12,15 @@ COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName, const bool& use
 
 	isOpen = capture->isOpened();
 
+	cv::Mat frame;
+
+	if (isOpen)
+		*capture >> frame;
+
+	cv::Size s = frame.size();
+	height = s.height;
+	width = s.width;
+
 }
 
 COpenCVVideoPlayer::~COpenCVVideoPlayer()
@@ -68,16 +77,12 @@ int COpenCVVideoPlayer::GetTotalFrame()
 
 int COpenCVVideoPlayer::GetWidth()
 {
-	if (isOpen)
-		return capture->get(CAP_PROP_FRAME_WIDTH);
-	return 0;
+	return width;
 }
 
 int COpenCVVideoPlayer::GetHeight()
 {
-	if (isOpen)
-		return capture->get(CAP_PROP_FRAME_HEIGHT);
-	return 0;
+	return height;
 }
 
 bool COpenCVVideoPlayer::IsOk()
@@ -103,7 +108,10 @@ int COpenCVVideoPlayer::GetOrientation()
 {
 	if (!isOpen)
 		return 0;
-	return capture->get(CAP_PROP_ORIENTATION_META);
+	int orientation = capture->get(CAP_PROP_ORIENTATION_META);
+	if (orientation < -360 || orientation > 360)
+		orientation = 0;
+	return orientation;
 }
 
 int COpenCVVideoPlayer::SeekToPos(const int& sec)
@@ -125,7 +133,12 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 	*capture >> frame;
 	cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
-	if(GetOrientation() != 0 && GetOrientation() != 180)
+	int orientation = GetOrientation();
+
+	if (orientation < 0)
+		orientation = 0;
+
+	if(orientation != 0 && orientation != 180)
 	{
 		cv::flip(frame, frame, -1);
 	}
