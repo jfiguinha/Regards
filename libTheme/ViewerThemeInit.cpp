@@ -10,7 +10,7 @@
 using namespace Regards::Viewer;
 
 CMainTheme* CMainThemeInit::_singleton = nullptr;
-
+wxString CMainThemeInit::documentPath = "";
 
 CMainThemeInit::CMainThemeInit()
 {
@@ -50,7 +50,7 @@ void CMainThemeInit::Initialize(CMainTheme* param)
         
          wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 		wxStandardPathsBase& stdp = wxStandardPaths::Get();
-		wxString documentPath = stdp.GetDocumentsDir();
+		 documentPath = stdp.GetDocumentsDir();
          bool isDarkTheme =  systemApp.IsDark();
          wxString resourceTheme = CFileUtility::GetResourcesFolderPath();
          
@@ -117,6 +117,7 @@ void CMainThemeInit::SaveTheme()
 {
 	if (nullptr != _singleton)
 	{
-		_singleton->SaveFile();
+        if (!wxFileExists(documentPath))
+		    _singleton->SaveFile();
 	}
 }

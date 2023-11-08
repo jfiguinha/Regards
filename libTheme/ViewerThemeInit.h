@@ -18,6 +18,7 @@ namespace Regards
 
 		private:
 			static CMainTheme* _singleton;
+			static wxString documentPath;
 		};
 	}
 }
