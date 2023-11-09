@@ -120,13 +120,18 @@ void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 	bbBuffer.SelectObject(wxNullBitmap);
 
 
+	
+
 #ifdef __APPLE__
    // bitmap->SetPosition(xPos, yPos);
     bitmap->SetBitmap(_localBmp);
 #else
-	wxPoint pt = bitmap->GetPosition();
-	wxClientDC dc(this);
-	dc.DrawBitmap(_localBmp, pt.x, pt.y);
+	//wxPoint pt = bitmap->GetPosition();
+	//wxClientDC dc(this);
+	//dc.DrawBitmap(_localBmp, pt.x, pt.y);
+
+	bitmap->SetBitmap(_localBmp);
+
 #endif
 	delete bmp;
 }

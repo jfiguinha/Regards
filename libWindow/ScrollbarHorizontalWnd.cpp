@@ -665,8 +665,9 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC* dc)
 
 void CScrollbarHorizontalWnd::PaintNow()
 {
-	wxClientDC dc(this);
-	DrawElement(&dc);
+	//wxClientDC dc(this);
+	//DrawElement(&dc);
+	this->Refresh();
 }
 
 void CScrollbarHorizontalWnd::on_paint(wxPaintEvent& event)

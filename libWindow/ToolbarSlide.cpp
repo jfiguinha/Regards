@@ -153,10 +153,11 @@ void CToolbarSlide::UnclickElement(wxWindow* window, const int& x, const int& y)
 	}
 }
 
-bool CToolbarSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y)
+bool CToolbarSlide::MouseOver(const int& x, const int& y)
 {
 	if (mouseBlock)
 	{
+		/*
 		wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlider.font);
 		int xSlide = x - this->x - renderLast.x;
 		if ((xSlide >= positionSlider.x && xSlide <= (positionSlider.x + positionSlider.width)))
@@ -174,6 +175,8 @@ bool CToolbarSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y)
 
 			return true;
 		}
+		*/
+		return true;
 	}
 	return false;
 }

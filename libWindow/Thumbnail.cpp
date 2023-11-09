@@ -541,9 +541,9 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 		{
-			wxClientDC dc(this);
-			icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-			//needToRefresh = true;
+			//wxClientDC dc(this);
+			//icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+			needToRefresh = true;
 		}
 			
 	}
@@ -637,7 +637,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 	//RefreshIcone(numSelectPhotoId);
 
 	CLibPicture libPicture;
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	{
 		CIcone* icone = GetIconeById(numActifPhotoId);
 		if (icone != nullptr)
@@ -654,7 +654,10 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+				{
+					needToRefresh = true;
+					//icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+				}
 			}
 		}
 	}
@@ -663,7 +666,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 {
 	CLibPicture libPicture;
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	{
 		CIcone* icone = GetIconeById(numSelectPhotoId);
 		if (icone != nullptr)
@@ -679,7 +682,12 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+				{
+					needToRefresh = true;
+					//icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+					//break;
+				}
+					
 			}
 		}
 	}
@@ -1163,7 +1171,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 	refreshMouseMove->Stop();
 
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 
 	isMoving = true;
 	bool needtoRedraw = false;
@@ -1351,7 +1359,7 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
-	wxClientDC winDC(this);
+	//wxClientDC winDC(this);
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -1401,7 +1409,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	}
 	else
 	{
-		FindOtherElement(&winDC, xPos, yPos);
+		FindOtherElement(xPos, yPos);
 	}
 
 	if (numActifPhotoId != -1 && enableDragAndDrop && isIconeSelected)
@@ -1485,6 +1493,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 
 void CThumbnail::on_paint(wxPaintEvent& event)
 {
+	wxBufferedPaintDC dc(this);
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 
@@ -1493,7 +1502,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 
 	if (threadDataProcess == false)
 	{
-		wxBufferedPaintDC dc(this);
+		
 		wxRect rc = GetWindowRect();
 		//UpdateScroll();
 		FillRect(&dc, rc, themeThumbnail.colorBack);
@@ -1534,7 +1543,6 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 	TestMaxY();
 
 	render = true;
-	wxBufferedPaintDC dc(this);
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 

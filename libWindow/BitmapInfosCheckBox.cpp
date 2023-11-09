@@ -50,8 +50,10 @@ void CBitmapInfosCheckBox::UpdateScreenRatio()
 
 void CBitmapInfosCheckBox::Redraw()
 {
-	wxClientDC dc(this);
-	DrawInformations(&dc);
+	//wxClientDC dc(this);
+	//DrawInformations(&dc);
+
+	this->Refresh();
 }
 
 void CBitmapInfosCheckBox::SetCheckboxVisible(const bool& checkboxVisibility)

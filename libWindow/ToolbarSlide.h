@@ -22,7 +22,7 @@ namespace Regards::Window
 		int GetWidth() override;
 		int GetHeight() override;
 		void SetBackgroundBitmap(const wxBitmap& background);
-		bool MouseOver(wxDC* context, const int& x, const int& y) override;
+		bool MouseOver(const int& x, const int& y) override;
 		void UnclickElement(wxWindow* window, const int& x, const int& y) override;
 		void ClickElement(wxWindow* window, const int& x, const int& y) override;
 		int GetPositionValue();

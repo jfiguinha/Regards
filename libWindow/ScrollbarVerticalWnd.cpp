@@ -713,8 +713,10 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 
 void CScrollbarVerticalWnd::PaintNow()
 {
-	wxClientDC dc(this);
-	DrawElement(&dc);
+	//wxClientDC dc(this);
+	//DrawElement(&dc);
+
+	this->Refresh();
 }
 
 void CScrollbarVerticalWnd::on_paint(wxPaintEvent& event)

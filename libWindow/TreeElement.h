@@ -25,12 +25,12 @@ namespace Regards::Window
 		bool IsVisible();
 
 
-		virtual void MouseOver(wxDC* context, const int& x, const int& y, bool& update)
+		virtual void MouseOver(const int& x, const int& y, bool& update)
 		{
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 		};
 
-		virtual void MouseOut(wxDC* context, const int& x, const int& y, bool& update)
+		virtual void MouseOut( const int& x, const int& y, bool& update)
 		{
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 		};

@@ -27,9 +27,11 @@ void CTitleIntro::UpdateScreenRatio()
 
 int CTitleIntro::GetHeight()
 {
-	wxClientDC dc(this);
-	wxSize size = GetSizeTexte(&dc, title, themeFont.font);
-	return size.y;
+	//wxClientDC dc(this);
+	//wxSize size = GetSizeTexte(&dc, title, themeFont.font);
+	//return size.y;
+
+	return height;
 }
 
 void CTitleIntro::on_paint(wxPaintEvent& event)
@@ -44,4 +46,7 @@ void CTitleIntro::on_paint(wxPaintEvent& event)
 	wxSize size = GetSizeTexte(&dc, title, themeFont.font);
 	int posX = (GetWindowWidth() - size.x) / 2;
 	DrawTexte(&dc, title, posX, 0, themeFont.font);
+
+	height = size.y;
+
 }

@@ -50,14 +50,14 @@ wxString CCriteriaTree::GetFilename()
 	return filename;
 }
 
-void CCriteriaTree::MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
+void CCriteriaTree::MouseOver(CPositionElement* element, const int& x, const int& y,
                               const int& posLargeur, const int& posHauteur, bool& update)
 {
 	if (element != nullptr)
 	{
 		CTreeElement* treeElement = element->GetTreeElement();
 		if (treeElement != nullptr)
-			treeElement->MouseOver(deviceContext, x, y, update);
+			treeElement->MouseOver(x, y, update);
 	}
 }
 

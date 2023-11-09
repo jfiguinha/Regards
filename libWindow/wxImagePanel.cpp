@@ -43,8 +43,9 @@ void wxImagePanel::paintEvent(wxPaintEvent& evt)
 void wxImagePanel::paintNow()
 {
 	// depending on your system you may need to look at double-buffered dcs
-	wxClientDC dc(this);
-	render(dc);
+	//wxClientDC dc(this);
+	//render(dc);
+	this->Refresh();
 }
 
 /*

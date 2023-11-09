@@ -43,7 +43,7 @@ namespace Regards::Window
 
 		bool FindElement(const int& xPos, const int& yPos);
 
-		virtual bool MouseOver(wxDC* context, const int& x, const int& y)
+		virtual bool MouseOver(const int& x, const int& y)
 		{
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 			return false;

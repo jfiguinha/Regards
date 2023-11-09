@@ -422,7 +422,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 	}
 }
 
-void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
+void CThumbnailFace::FindOtherElement( const int& x, const int& y)
 {
 	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)

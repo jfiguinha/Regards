@@ -339,18 +339,18 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	try
 	{
 		bool update = false;
 		CPositionElement* element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
 		if (element != nullptr)
 		{
-			treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
+			treeControl->MouseOver(element, xPos, yPos, posLargeur, posHauteur, update);
 		}
 		else
 		{
-			treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
+			treeControl->MouseOut(element, xPos, yPos, posLargeur, posHauteur, update);
 			wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
 		}
 		if (update)

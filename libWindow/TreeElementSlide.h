@@ -18,7 +18,7 @@ namespace Regards::Window
 		void SetTabValue(vector<CTreeElementValue*>* value);
 		void SetExifKey(const wxString& exifKey);
 		void SetVisible(const bool& visible) override;
-		void MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update) override;
+		void MouseOver(const int& x, const int& y, bool& update) override;
 		void ClickElement(wxWindow* window, const int& x, const int& y) override;
 		void UnclickElement(wxWindow* window, const int& x, const int& y) override;
 		void SetInitValue(CTreeElementValue* value);

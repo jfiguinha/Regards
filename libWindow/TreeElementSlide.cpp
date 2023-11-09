@@ -148,7 +148,7 @@ void CTreeElementSlide::CalculZoomPosition(const int& x)
 }
 
 
-void CTreeElementSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update)
+void CTreeElementSlide::MouseOver(const int& x, const int& y, bool& update)
 {
 	if (mouseBlock)
 	{
@@ -205,7 +205,7 @@ void CTreeElementSlide::ClickRightPage(const int& x)
 
 bool CTreeElementSlide::FindCirclePos(wxWindow* window, const int& y, const int& x)
 {
-	wxClientDC dc(window);
+	//wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlide.font);
 
 	if ((x >= (positionButton.x + slidePos.x) && x <= ((positionButton.x + positionButton.width) + slidePos.x)) && (y >=

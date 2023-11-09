@@ -131,7 +131,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 	bool needToRedraw = false;
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	int i = 0;
 
 	for (CToolbarElement* nav : navElement)
@@ -142,7 +142,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 			{
 				if (nav->FindElement(xPos, yPos))
 				{
-					if (nav->MouseOver(&dc, xPos, yPos))
+					if (nav->MouseOver(xPos, yPos))
 						needToRedraw = true;
 
 					if (nav->SetActif())
@@ -172,7 +172,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 
 void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 {
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -235,7 +235,7 @@ void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 {
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -249,7 +249,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 			{
 				nav->ClickElement(this, xPos, yPos);
 				nav->SetPush(true);
-				RedrawElement(&dc, nav);
+				//RedrawElement(&dc, nav);
 				navPush = nav;
 
 				if (navPush->GetRepeatable())
@@ -265,8 +265,9 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 			else
 			{
 				nav->SetPush(false);
-				RedrawElement(&dc, nav);
+				//RedrawElement(&dc, nav);
 			}
+			this->Refresh();
 		}
 	}
 
@@ -279,7 +280,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 
 void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 {
-	wxClientDC dc(this);
+	//wxClientDC dc(this);
 
 	//if (pushButton->IsRunning())
 	//	pushButton->Stop();
@@ -288,12 +289,18 @@ void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 	if (HasCapture())
 		ReleaseMouse();
 
+	bool refresh = false;
+
 	for (CToolbarElement* nav : navElement)
 
 	{
 		if (nav->SetInactif())
-			RedrawElement(&dc, nav);
+			refresh = true;
+			//RedrawElement(&dc, nav);
 	}
+
+	if (refresh)
+		this->Refresh();
 }
 
 void CToolbarWindow::OnMouseHover(wxMouseEvent& event)

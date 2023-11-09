@@ -505,7 +505,7 @@ CInfosSeparationBar* CThumbnailFolder::FindSeparatorElement(const int& xPos, con
 }
 
 
-void CThumbnailFolder::FindOtherElement(wxDC* dc, const int& x, const int& y)
+void CThumbnailFolder::FindOtherElement( const int& x, const int& y)
 {
 	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)

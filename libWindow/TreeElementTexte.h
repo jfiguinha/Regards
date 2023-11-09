@@ -23,7 +23,7 @@ namespace Regards::Window
 			themeTexte.SetHeight(height);
 		}
 
-		void MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update) override;
+		void MouseOver(const int& x, const int& y, bool& update) override;
 		void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
 		void SetLibelle(const wxString& libelle);
 		void SetClick(const bool& value);

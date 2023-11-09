@@ -38,8 +38,9 @@ void CBitmapInfosGps::UpdateScreenRatio()
 
 void CBitmapInfosGps::Redraw()
 {
-	wxClientDC dc(this);
-	DrawInformations(&dc);
+	//wxClientDC dc(this);
+	//DrawInformations(&dc);
+	this->Refresh();
 }
 
 void CBitmapInfosGps::DrawInformations(wxDC* dc)

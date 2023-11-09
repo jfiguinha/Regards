@@ -246,7 +246,7 @@ CInfosSeparationBar* CThumbnailFileSelection::FindSeparatorElement(const int& xP
 }
 
 
-void CThumbnailFileSelection::FindOtherElement(wxDC* dc, const int& x, const int& y)
+void CThumbnailFileSelection::FindOtherElement( const int& x, const int& y)
 {
 	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)

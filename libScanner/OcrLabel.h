@@ -35,7 +35,7 @@ namespace Regards
 			bool GetCheckState(const wxString& exifKey, const wxString& key);
 			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 			                    const int& posLargeur, const int& posHauteur) override;
-			void MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
+			void MouseOver(CPositionElement* element, const int& x, const int& y,
 			               const int& posLargeur, const int& posHauteur, bool& update) override;
 
 			void CreateElement();

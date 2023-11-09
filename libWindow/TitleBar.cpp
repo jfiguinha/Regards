@@ -39,6 +39,10 @@ void CTitleBar::SetCenter(const bool& value)
 
 void CTitleBar::Redraw()
 {
+
+	this->Refresh();
+
+	/*
 	wxRect rect = GetWindowRect();
 
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
@@ -56,6 +60,7 @@ void CTitleBar::Redraw()
 	}
 	else
 		DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
+	*/
 }
 
 void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
@@ -100,19 +105,23 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-			wxClientDC dc(this);
-			dc.DrawBitmap(m_croixOn, rcFermer.x, rcFermer.y, false);
+			//wxClientDC dc(this);
+			//dc.DrawBitmap(m_croixOn, rcFermer.x, rcFermer.y, false);
 
 			this->SetToolTip(tooltip);
+
+			this->Refresh();
 		}
 		else if (mouseCapture)
 		{
-			wxClientDC dc(this);
-			dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
+			//wxClientDC dc(this);
+			//dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
 
 			wxSetCursor(wxNullCursor);
 
 			mouseCapture = false;
+
+			this->Refresh();
 		}
 	}
 
@@ -125,19 +134,23 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-			wxClientDC dc(this);
-			dc.DrawBitmap(m_refreshOn, rcRefresh.x, rcRefresh.y, false);
+			//wxClientDC dc(this);
+			//dc.DrawBitmap(m_refreshOn, rcRefresh.x, rcRefresh.y, false);
 
 			this->SetToolTip(refreshtip.c_str());
+
+			this->Refresh();
 		}
 		else if (mouseCapture)
 		{
-			wxClientDC dc(this);
-			dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
+			//wxClientDC dc(this);
+			//dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
 
 			wxSetCursor(wxNullCursor);
 
 			mouseCapture = false;
+
+			this->Refresh();
 		}
 	}
 }

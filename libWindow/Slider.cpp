@@ -73,21 +73,25 @@ void CSlider::DrawShapeElement(wxDC* dc, const wxRect& rc)
 
 void CSlider::SetTotalSecondTime(const int64_t& secondTime)
 {
-	wxClientDC winDC(this);
+	//wxClientDC winDC(this);
 	totalTimeInMilliseconds = secondTime;
 	secondTotalTime = static_cast<float>(secondTime) / static_cast<float>(1000);
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
-	DrawTexte(&winDC, totalTime, positionTexteTotal.x, positionTexteTotal.y, themeSlider.font);
+	//DrawTexte(&winDC, totalTime, positionTexteTotal.x, positionTexteTotal.y, themeSlider.font);
+
+	this->Refresh();
 }
 
 void CSlider::SetPastTime(const int64_t& secondTime)
 {
-	wxClientDC winDC(this);
+	//wxClientDC winDC(this);
 	totalPastTimeInMilliseconds = secondTime;
 	secondTimePast = static_cast<float>(secondTime) / static_cast<float>(1000);
 	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 	//Draw(&winDC);
-	DrawTimePast(&winDC, timePast);
+	//DrawTimePast(&winDC, timePast);
+
+	this->Refresh();
 }
 
 void CSlider::SetPastSecondTime(const int64_t& secondTime)
@@ -302,8 +306,10 @@ void CSlider::OnMouseLeave(wxMouseEvent& event)
  */
 void CSlider::PaintNow()
 {
-	wxClientDC dc(this);
-	Draw(&dc);
+	//wxClientDC dc(this);
+	//Draw(&dc);
+
+	this->Refresh();
 }
 
 void CSlider::on_paint(wxPaintEvent& event)
