@@ -1,7 +1,6 @@
 #include "header.h"
 #include "ToolbarTexte.h"
 #include "WindowMain.h"
-
 using namespace Regards::Window;
 
 CToolbarTexte::CToolbarTexte(const CThemeToolbarTexte& theme)
@@ -16,7 +15,6 @@ CToolbarTexte::CToolbarTexte(const CThemeToolbarTexte& theme)
 	themeTexte.SetTailleX(DEFAULT_SIZEX);
 	themeTexte.SetTailleY(DEFAULT_SIZEY);
 	themeTexte = theme;
-
 }
 
 void CToolbarTexte::Resize(const int& tailleX, const int& tailleY)
@@ -27,7 +25,6 @@ void CToolbarTexte::Resize(const int& tailleX, const int& tailleY)
 
 CToolbarTexte::~CToolbarTexte()
 {
-
 }
 
 void CToolbarTexte::SetLibelle(const wxString& libelle)
@@ -38,9 +35,10 @@ void CToolbarTexte::SetLibelle(const wxString& libelle)
 
 int CToolbarTexte::GetWidth()
 {
-
-	wxSize size = CWindowMain::GetSizeTexte(libelle, themeTexte.font);
-
+	wxBitmap bitmap(250, 250);
+	wxMemoryDC dc(bitmap);
+	wxSize size = CWindowMain::GetSizeTexte(&dc, libelle, themeTexte.font);
+	dc.SelectObject(wxNullBitmap);
 	if (size.x > themeTexte.GetTailleX())
 		return (size.x + 10);
 
@@ -79,7 +77,7 @@ void CToolbarTexte::DrawElement(wxDC* dc, const int& x, const int& y, const wxCo
 	{
 		CThemeFont font = themeTexte.font;
 		font.SetColorFont(color);
-		wxSize size = CWindowMain::GetSizeTexte(libelle, font);
+		wxSize size = CWindowMain::GetSizeTexte(dc, libelle, font);
 		int xPos = x + (GetWidth() - size.x) / 2;
 		int yPos = y + (GetHeight() - size.y) / 2;
 		CWindowMain::DrawTexte(dc, libelle, xPos, yPos, font);

@@ -5,7 +5,6 @@
 
 class CThumbnailData;
 class CRegardsConfigParam;
-class CMemBitmap;
 
 namespace Regards::Window
 {
@@ -136,7 +135,6 @@ namespace Regards::Window
 		wxImage bitmapDelete;
 		bool useBackgroundColor;
 		wxColour backgroundColor;
-		static CMemBitmap * pimpl;
 
 		wxString tempImageVector;
 		bool pictureLoad;
@@ -164,7 +162,7 @@ namespace Regards::Window
 		wxImage pictureLoading;
 		wxImage transparent;
 		wxImage scaleBackup;
-		//wxBitmap localmemBitmap_backup;
+		wxBitmap localmemBitmap_backup;
 		bool redraw = true;
 	};
 

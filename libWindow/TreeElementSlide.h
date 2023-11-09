@@ -4,8 +4,6 @@
 #include "TreeElementSlideInterface.h"
 using namespace Regards::Window;
 
-class CMemBitmap;
-
 namespace Regards::Window
 {
 	class CTreeElementSlide : public CTreeElement
@@ -75,8 +73,6 @@ namespace Regards::Window
 		wxImage buttonMoins;
 		wxRect positionButton;
 		wxRect positionSlider;
-
-		CMemBitmap* pimpl;
 
 		vector<CTreeElementValue*>* tabValue;
 		wxString exifKey;

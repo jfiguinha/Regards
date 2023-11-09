@@ -9,8 +9,6 @@ using namespace Regards::Window;
 #include <wx/combobox.h>
 #endif
 
-class CMemBitmap;
-
 namespace Regards::Window
 {
 	class CTreeElementListBox : public CTreeElement
@@ -56,7 +54,7 @@ namespace Regards::Window
 		wxString GetPositionValue();
 		void TestMaxMinValue();
 
-		CMemBitmap* pimpl;
+
 		CTreeElementSlideInterface* eventInterface;
 		vector<CMetadata> tabValue;
 		wxString exifKey;

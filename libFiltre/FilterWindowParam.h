@@ -15,7 +15,6 @@ class CFiltreEffet;
 class CRegardsBitmap;
 class CImageLoadingFormat;
 class IBitmapDisplay;
-class CMemBitmap;
 
 namespace Regards::OpenGL
 {
@@ -98,7 +97,6 @@ protected:
 	cv::Mat source;
 	wxString filename = "";
 	int orientation;
-	CMemBitmap* membitmap;
 	GLSLShader* m_pShader;
 	static bool supportOpenCL;
 };

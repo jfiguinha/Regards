@@ -30,7 +30,6 @@
 #include <wx/filename.h>
 #include <ImageLoadingFormat.h>
 #include <WindowMain.h>
-#include <membitmap.h>
 #include <config_id.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
@@ -51,7 +50,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	thumbToolbar = nullptr;
 	thumbToolbarZoom = nullptr;
 	thumbnailFolder = nullptr;
-	pimpl = new CMemBitmap(0, 0);
 	typeAffichage = SHOW_ALL;
 	std::vector<int> value = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
 	wxRect rect;
@@ -134,8 +132,6 @@ CListPicture::~CListPicture()
 
 	if (windowManager != nullptr)
 		delete(windowManager);
-
-	delete pimpl;
 }
 
 int CListPicture::GetThumbnailHeight()
@@ -212,11 +208,11 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 			wxString libelle = indexGenerator.GetIndexTitle();
 			int bitmapWidth = nbPictureLine * width;
 			int bitmapHeight = getNbLine * height;
-			//auto bitmap = wxBitmap(bitmapWidth, bitmapHeight + heightLibelle);
-
-			pimpl->SetWindowSize(bitmapWidth, bitmapHeight + heightLibelle);
-			pimpl->sourceDCContext.Clear();
-			pimpl->sourceDCContext.SetBackground(color);
+			auto bitmap = wxBitmap(bitmapWidth, bitmapHeight + heightLibelle);
+			wxMemoryDC memdc;
+			memdc.SelectObject(bitmap);
+			memdc.SetBackground(color);
+			memdc.Clear();
 
 			CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 			CThemeThumbnail themeThumbnail;
@@ -224,8 +220,8 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 
 			CThemeIcone themeIcone = themeThumbnail.themeIcone;
 			themeIcone.font.SetColorFont(fontColor);
-			wxSize size = GetSizeTexte(libelle, themeIcone.font);
-			DrawTexte(&pimpl->sourceDCContext, libelle, (bitmapWidth - size.x) / 2, (heightLibelle - size.y) / 2, themeIcone.font);
+			wxSize size = GetSizeTexte(&memdc, libelle, themeIcone.font);
+			DrawTexte(&memdc, libelle, (bitmapWidth - size.x) / 2, (heightLibelle - size.y) / 2, themeIcone.font);
 
 
 			for (int i = 0; i < listItem.size(); i++)
@@ -240,11 +236,14 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				pBitmapIcone->SetTheme(themeIcone);
 				pBitmapIcone->SetSizeIcone(width, height);
 				pBitmapIcone->SetWindowPos(x, y);
-				pBitmapIcone->RenderIcone(&pimpl->sourceDCContext, 0, 0, false, false);
+				pBitmapIcone->RenderIcone(&memdc, 0, 0, false, false);
 				delete pBitmapIcone;
 			}
 
-			wxImage picture = pimpl->memBitmap.ConvertToImage();
+			memdc.SelectObject(wxNullBitmap);
+
+
+			wxImage picture = bitmap.ConvertToImage();
 
 			auto imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(picture);

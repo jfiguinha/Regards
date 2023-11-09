@@ -13,19 +13,16 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
-#include <membitmap.h>
 
 bool CFilterWindowParam::supportOpenCL = false;
 
 CFilterWindowParam::CFilterWindowParam(): m_pShader(nullptr)
 {
 	supportOpenCL = cv::ocl::haveOpenCL();
-	membitmap = new CMemBitmap(0, 0);
 }
 
 CFilterWindowParam::~CFilterWindowParam()
 {
-	delete membitmap;
 }
 
 void CFilterWindowParam::InitFilterOpenCLCompatible()
@@ -50,12 +47,14 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter* effectParameter, IBi
 	if (m_cDessin != nullptr)
 	{
 		wxImage image = filtreEffet->GetwxImage();
-		membitmap->SetImage(image);
 
-		Drawing(&membitmap->sourceDCContext, bitmapViewer, m_cDessin);
-
+		auto bitmap = wxBitmap(image);
+		wxMemoryDC dc;
+		dc.SelectObject(bitmap);
+		Drawing(&dc, bitmapViewer, m_cDessin);
+		dc.SelectObject(wxNullBitmap);
 		auto imageLoad = new CImageLoadingFormat();
-		auto local_image = new wxImage(membitmap->memBitmap.ConvertToImage());
+		auto local_image = new wxImage(bitmap.ConvertToImage());
 		imageLoad->SetPicture(*local_image);
 		filtreEffet->SetBitmap(imageLoad);
 		delete imageLoad;

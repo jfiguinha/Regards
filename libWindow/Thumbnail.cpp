@@ -1485,7 +1485,6 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 
 void CThumbnail::on_paint(wxPaintEvent& event)
 {
-	wxBufferedPaintDC dc(this);
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 
@@ -1494,7 +1493,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 
 	if (threadDataProcess == false)
 	{
-
+		wxBufferedPaintDC dc(this);
 		wxRect rc = GetWindowRect();
 		//UpdateScroll();
 		FillRect(&dc, rc, themeThumbnail.colorBack);
@@ -1535,7 +1534,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 	TestMaxY();
 
 	render = true;
-	
+	wxBufferedPaintDC dc(this);
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 
@@ -1573,7 +1572,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 				CThemeIcone themeIcone;
 				CThemeFont themeFont = themeIcone.font;
 				themeFont.SetFontSize(18);
-				wxSize size = GetSizeTexte(libelle, themeFont);
+				wxSize size = GetSizeTexte(&dc, libelle, themeFont);
 				int localx = xPosDrag - (bitmapIconDrag.GetWidth() / 2);
 				int localy = yPosDrag - (bitmapIconDrag.GetHeight() / 2);
 

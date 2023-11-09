@@ -1,9 +1,6 @@
 #include <header.h>
 #include "WindowUtility.h"
-#include <membitmap.h>
 using namespace Regards::Window;
-
-
 
 void CWindowUtility::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
 {
@@ -34,22 +31,18 @@ void CWindowUtility::DrawTexte(wxDC* dc, const wxString& libelle, const int& xPo
 	}
 }
 
-wxSize CWindowUtility::GetSizeTexte(const wxString& libelle, CThemeFont font)
+wxSize CWindowUtility::GetSizeTexte(wxDC* dc, const wxString& libelle, CThemeFont font)
 {
 	// Create a memory DC
-	static mutex muBitmap;
-	static CMemBitmap membitmap(500, 100);
+	
 	wxSize size;
 	try
 	{
-		//membitmap.SetWindowSize(500, 100);
-		//wxMemoryDC temp_dc(dc);
+		wxMemoryDC temp_dc(dc);
  		wxFont _font(font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-		muBitmap.lock();
-		membitmap.sourceDCContext.SetFont(_font);
-		size = membitmap.sourceDCContext.GetTextExtent(libelle);
-		membitmap.sourceDCContext.SetFont(wxNullFont);
-		muBitmap.unlock();
+		temp_dc.SetFont(_font);
+		size = temp_dc.GetTextExtent(libelle);
+		temp_dc.SetFont(wxNullFont);
 	}
 	catch (...)
 	{

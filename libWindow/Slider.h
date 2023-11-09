@@ -2,8 +2,6 @@
 #include "WindowMain.h"
 //#include "SliderInterface.h"
 
-class CMemBitmap;
-
 namespace Regards::Window
 {
 	class CSliderInterface;
@@ -67,6 +65,5 @@ namespace Regards::Window
 		int positionYSlider;
 
 		CThemeSlider themeSlider;
-		CMemBitmap* pimpl;
 	};
 }

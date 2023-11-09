@@ -4,8 +4,6 @@
 #include "WindowOpenGLMain.h"
 #include "WindowToAdd.h"
 
-class CMemBitmap;
-
 namespace Regards::Window
 {
 	class CPanelWithClickToolbar;
@@ -85,6 +83,5 @@ namespace Regards::Window
 		bool showSeparationBar;
 		CThemeSplitter themeSplitter;
 		int separationBarSize = 0;
-		CMemBitmap* pimpl;
 	};
 }

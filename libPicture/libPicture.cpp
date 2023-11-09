@@ -32,7 +32,6 @@
 #include <picture_id.h>
 #include <LibResource.h>
 #include "OpenCVVideoPlayer.h"
-#include <membitmap.h>
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -161,7 +160,6 @@ static FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 
 CLibPicture::CLibPicture()
 {
-	pimpl = new CMemBitmap(0,0);
 	svgWidth = 1024;
 	svgHeight = 1024;
 	configRegards = CParamInit::getInstance();
@@ -181,7 +179,6 @@ CLibPicture::~CLibPicture()
 #ifdef __APPLE__
     delete readimage;
 #endif
-	delete pimpl;
 }
 
 
@@ -2549,21 +2546,23 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				rc.y = 0;
 				rc.width = svgWidth;
 				rc.height = svgHeight;
-
-				pimpl->SetWindowSize(svgWidth, svgHeight);
+				wxBitmap localmemBitmap_backup = wxBitmap(svgWidth, svgHeight);
+				wxMemoryDC memDC(localmemBitmap_backup);
 				wxBrush brush(*wxWHITE, wxBRUSHSTYLE_SOLID);
-				pimpl->sourceDCContext.SetBrush(brush);
-				pimpl->sourceDCContext.SetPen(wxPen(*wxWHITE, 1)); // 10-pixels-thick pink outline
-				pimpl->sourceDCContext.DrawRectangle(rc);
-				pimpl->sourceDCContext.SetPen(wxNullPen);
-				pimpl->sourceDCContext.SetBrush(wxNullBrush);
+				memDC.SetBrush(brush);
+				memDC.SetPen(wxPen(*wxWHITE, 1)); // 10-pixels-thick pink outline
+				memDC.DrawRectangle(rc);
+				memDC.SetPen(wxNullPen);
+				memDC.SetBrush(wxNullBrush);
 
-				pimpl->sourceDCContext.DrawBitmap(img, 0, 0);
+				memDC.DrawBitmap(img, 0, 0);
+
+				memDC.SelectObject(wxNullBitmap);
 
 				img.Destroy();
 
 
-				wxImage local = pimpl->memBitmap.ConvertToImage();
+				wxImage local = localmemBitmap_backup.ConvertToImage();
 				bitmap->SetPicture(local);
 			}
 			break;

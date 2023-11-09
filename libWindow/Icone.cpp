@@ -8,7 +8,6 @@
 #include "WindowMain.h"
 #include <config_id.h>
 #include <wx/sstream.h>
-#include <membitmap.h>
 #ifdef WIN32
 #endif
 #include <RegardsConfigParam.h>
@@ -17,8 +16,6 @@
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
-
-CMemBitmap* CIcone::pimpl = nullptr;
 
 wxImage CIcone::videoCadre;
 wxImage CIcone::photoTemp;
@@ -78,8 +75,6 @@ CIcone& CIcone::operator=(const CIcone& other)
 	// check for self-assignment
 	if (&other == this)
 		return *this;
-
-
 
 	//---------------------------------------------------
 	//Theme
@@ -228,8 +223,6 @@ CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 	useBackgroundColor = false;
 	thumbnailIconeCache = config->GetThumbnailIconeCache();
 	redraw = true;
-	if (pimpl == nullptr)
-		pimpl = new CMemBitmap(0, 0);
 }
 
 void CIcone::SetBackgroundColor(const wxColour& backgroundColor)
@@ -358,7 +351,7 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 				wxSize sizeTexte;
 				do
 				{
-					sizeTexte = CWindowMain::GetSizeTexte(libelle, themeFont);
+					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
 					if (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)))
 						themeFont.SetFontSize(themeFont.GetFontRealSize() - 1);
 				}
@@ -564,7 +557,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 				wxSize sizeTexte;
 				do
 				{
-					sizeTexte = CWindowMain::GetSizeTexte(libelle, themeFont);
+					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
 					if (sizeTexte.x > themeIcone.GetWidth())
 						themeFont.SetFontSize(themeFont.GetFontSize() - 1);
 				}
@@ -900,14 +893,15 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		image = pThumbnailData->GetwxImage();
 	}
 
-	if (redraw || (themeIcone.GetWidth() != pimpl->memBitmap.GetWidth() || pimpl->memBitmap.GetHeight() !=
+	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() !=
 		themeIcone.GetHeight()))
 	{
-
-		pimpl->SetWindowSize(themeIcone.GetWidth(), themeIcone.GetHeight());
+		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
+		wxMemoryDC memDC;
 		
 		try
 		{
+			memDC.SelectObject(localmemBitmap_backup);
 
 			wxImage scale;
 
@@ -980,23 +974,23 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 				scale.Destroy();
 			}
 
-			RenderBitmap(&pimpl->sourceDCContext, scaleBackup, state);
+			RenderBitmap(&memDC, scaleBackup, state);
+
+			memDC.SelectObject(wxNullBitmap);
 
 			image.Destroy();
 
 			redraw = false;
-
-			pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 		
 		}
 		catch(...)
 		{
 			
 		}
-		return pimpl->memBitmap;
+		return localmemBitmap_backup;
 
 	}
-	return pimpl->memBitmap;
+	return localmemBitmap_backup;
 }
 
 //----------------------------------------------------------------------------------

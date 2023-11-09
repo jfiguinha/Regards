@@ -20,7 +20,7 @@
 #include <Draw.h>
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
-#include <membitmap.h>
+
 
 //#include "ExportOdt.h"
 #ifdef __APPLE__
@@ -67,8 +67,6 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	auto hsizer = new wxBoxSizer(wxHORIZONTAL);
 	hsizer->Add(listOcr, 1, wxEXPAND | wxALL, 5);
 	hsizer->Add(ocrLabelWnd, 2, wxEXPAND | wxALL, 5);
-
-	pimpl = new CMemBitmap(0,0);
 
 
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
@@ -117,8 +115,6 @@ COcrWnd::~COcrWnd()
 	{
 		wndViewer->RemoveListener();
 	}
-
-	delete pimpl;
 }
 
 CImageLoadingFormat* COcrWnd::ApplyMouseMoveEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
@@ -176,12 +172,17 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDispl
 	imageLoad->SetPicture(mat);
 	wxImage image = imageLoad->GetwxImage();
 
-	pimpl->SetImage(image);
+	auto bitmap = wxBitmap(image);
+	wxMemoryDC dc;
+	dc.SelectObject(bitmap);
 
-	Drawing(&pimpl->sourceDCContext, bitmapViewer, dessin);
+	//wxImage render = filtreEffet->GetwxImage();
 
+	Drawing(&dc, bitmapViewer, dessin);
 
-	wxImage local_image(pimpl->memBitmap.ConvertToImage());
+	dc.SelectObject(wxNullBitmap);
+
+	wxImage local_image(bitmap.ConvertToImage());
 	imageLoad->SetPicture(local_image);
 	filtreEffet->SetBitmap(imageLoad);
 }

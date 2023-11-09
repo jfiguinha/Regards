@@ -1,6 +1,5 @@
 #include "header.h"
 #include "TreeElementTexte.h"
-#include <WindowUtility.h>
 using namespace Regards::Window;
 
 mutex CTreeElementTexte::muTexteSize;
@@ -64,7 +63,14 @@ void CTreeElementTexte::SetLibelle(const wxString& libelle)
 
 wxSize CTreeElementTexte::GetSizeText()
 {
-	return CWindowUtility::GetSizeTexte(libelle, themeTexte.font);
+	wxSize size;
+	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+	wxBitmap bitmap(250, 250);
+	wxMemoryDC dc(bitmap);
+	dc.SetFont(font);
+	size = dc.GetTextExtent(libelle);
+	dc.SelectObject(wxNullBitmap);
+	return size;
 }
 
 void CTreeElementTexte::DrawText(wxDC* dc, const int& xPos, const int& yPos)

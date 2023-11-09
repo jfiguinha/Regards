@@ -67,7 +67,7 @@ namespace Regards::Window
 		static void DrawTexte(wxDC* dc, const wxString& libelle, const int& xPos, const int& yPos,
 		                      const CThemeFont& font);
 
-		static wxSize GetSizeTexte(const wxString& libelle, const CThemeFont& font);
+		static wxSize GetSizeTexte(wxDC* dc, const wxString& libelle, const CThemeFont& font);
 
 		virtual wxString GetWaitingMessage() { return wxString(); };
 

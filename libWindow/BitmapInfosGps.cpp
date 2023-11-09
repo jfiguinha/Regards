@@ -58,8 +58,8 @@ void CBitmapInfosGps::DrawInformations(wxDC* dc)
 
 	wxString message = L"Latitude : " + latitude + "-" + refLat + " - Longitude : " + longitude + "-" + refLong;
 
-	wxSize size = GetSizeTexte(localisation, bitmapInfosTheme.themeFont);
-	wxSize sizeMessage = GetSizeTexte(message, bitmapInfosTheme.themeFont);
+	wxSize size = GetSizeTexte(dc, localisation, bitmapInfosTheme.themeFont);
+	wxSize sizeMessage = GetSizeTexte(dc, message, bitmapInfosTheme.themeFont);
 
 	DrawTexte(dc, localisation, (GetWindowWidth() - size.x) / 2, ((GetWindowHeight() / 2) - size.y) / 2,
 	          bitmapInfosTheme.themeFont);

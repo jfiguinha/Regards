@@ -2,7 +2,6 @@
 #include "InfosSeparationBar.h"
 #include <ConvertUtility.h>
 #include "WindowMain.h"
-#include <membitmap.h>
 using namespace Regards::Window;
 //const unsigned int cuStackSize = 128 * 1024;
 
@@ -86,7 +85,6 @@ void CInfosSeparationBar::SetWidth(const int& width)
 CInfosSeparationBar::CInfosSeparationBar(const CThemeInfosSeparationBar& theme): _xPos(0), _yPos(0), width(0)
 {
 	this->theme = theme;
-	pimpl = new CMemBitmap(0, 0);
 }
 
 
@@ -94,7 +92,6 @@ CInfosSeparationBar::~CInfosSeparationBar(void)
 {
 	listElement.clear();
 	listElement.reserve(0);
-	delete pimpl;
 }
 
 void CInfosSeparationBar::RenderTitle(wxDC* dc)
@@ -120,7 +117,7 @@ void CInfosSeparationBar::RenderTitle(wxDC* dc)
 		{
 			if (title != L"")
 			{
-				wxSize size = CWindowMain::GetSizeTexte( title, theme.themeFont);
+				wxSize size = CWindowMain::GetSizeTexte(dc, title, theme.themeFont);
 				int localy = y + posY + (sizeOfY - size.y) / 2;
 				int localx = x + (width - size.x) / 2;
 				CWindowMain::DrawTexte(dc, title, localx, localy, theme.themeFont);
@@ -157,9 +154,11 @@ int  CInfosSeparationBar::GetNbElementY()
 
 void CInfosSeparationBar::Render(wxDC* dc, const int& posLargeur, const int& posHauteur)
 {
-	pimpl->SetWindowSize(GetWidth(), GetHeight());
-	RenderIcone(&pimpl->sourceDCContext, posLargeur, posHauteur);
-	dc->DrawBitmap(pimpl->memBitmap, _xPos + posLargeur, _yPos + posHauteur);
+	wxBitmap memBitmap(GetWidth(), GetHeight());
+	wxMemoryDC memDC(memBitmap);
+	RenderIcone(&memDC, posLargeur, posHauteur);
+	memDC.SelectObject(wxNullBitmap);
+	dc->DrawBitmap(memBitmap, _xPos + posLargeur, _yPos + posHauteur);
 }
 
 //----------------------------------------------------------------------------------

@@ -88,7 +88,7 @@ void CWaitingWindow::on_paint(wxPaintEvent& event)
 	FillRect(&dc, rc, wxColour("white"));
 	font.SetColorFont(wxColour("black"));
 
-	const wxSize size = GetSizeTexte(textToShow, font);
+	const wxSize size = GetSizeTexte(&dc, textToShow, font);
 	const int xPos = (GetWindowWidth() / scale_factor - size.x) / 2;
 
 	const wxAnimation animation = m_animationCtrl->GetAnimation();

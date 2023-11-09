@@ -94,7 +94,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 
 void CThumbnailToolBarZoom::DrawPreviousElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
-	wxSize element = GetSizeTexte(libelle, themeFont);
+	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 
 	int posY = (GetWindowHeight() - element.y) / 2;
 
@@ -108,7 +108,7 @@ void CThumbnailToolBarZoom::DrawPreviousElement(wxDC* dc, const wxString& libell
 
 void CThumbnailToolBarZoom::DrawNextElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
-	wxSize element = GetSizeTexte(libelle, themeFont);
+	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 	int posY = (GetWindowHeight() - element.y) / 2;
 	int posX = (GetWindowWidth() - element.x);
 
@@ -122,7 +122,7 @@ void CThumbnailToolBarZoom::DrawNextElement(wxDC* dc, const wxString& libelle, c
 
 void CThumbnailToolBarZoom::DrawElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont)
 {
-	wxSize element = GetSizeTexte(libelle, themeFont);
+	wxSize element = GetSizeTexte(dc, libelle, themeFont);
 	int posY = (GetWindowHeight() - element.y) / 2;
 	int posX_center = (GetWindowWidth() - element.x) / 2;
 	DrawTexte(dc, libelle, posX_center, posY, themeFont);

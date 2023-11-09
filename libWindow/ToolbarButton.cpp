@@ -5,7 +5,6 @@
 #include "WindowMain.h"
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
-#include <membitmap.h>
 
 CToolbarButton::CToolbarButton(const CThemeToolbarButton& theme)
 {
@@ -24,7 +23,6 @@ CToolbarButton::CToolbarButton(const CThemeToolbarButton& theme)
 	colorToReplace = wxColor(0, 0, 0);
 	colorActifReplacement = themeButton.colorActifReplacement;
 	colorInactifReplacement = themeButton.replaceColor;
-	pimpl = new CMemBitmap(0, 0);
 }
 
 void CToolbarButton::Resize(const int& tailleX, const int& tailleY)
@@ -36,7 +34,6 @@ void CToolbarButton::Resize(const int& tailleX, const int& tailleY)
 
 CToolbarButton::~CToolbarButton()
 {
-	delete pimpl;
 }
 
 void CToolbarButton::SetLibelle(const wxString& libelle)
@@ -164,7 +161,7 @@ void CToolbarButton::DrawElement(wxDC* dc, const int& x, const int& y, const boo
 
 		if (libelle != L"")
 		{
-			wxSize size = CWindowMain::GetSizeTexte(libelle, themeButton.font);
+			wxSize size = CWindowMain::GetSizeTexte(dc, libelle, themeButton.font);
 			int x_pos = x + (width - size.x) / 2;
 			int y_pos = y + height + (diffHeight - size.y) / 2;
 			if (!inactif)
@@ -264,16 +261,14 @@ void CToolbarButton::CreatePushButton(wxDC* dc, const int& x, const int& y)
 		rc.width = GetWidth();
 		rc.height = GetHeight();
 
-		pimpl->SetWindowSize(GetWidth(), GetHeight());
+		wxBitmap imageBackground(GetWidth(), GetHeight());
+		wxMemoryDC memDC(imageBackground);
+		memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
+		memDC.SelectObject(wxNullBitmap);
 
-		//wxBitmap imageBackground(GetWidth(), GetHeight());
-		//wxMemoryDC memDC(imageBackground);
-		pimpl->sourceDCContext.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+		wxBackground = imageBackground.ConvertToImage();
 
-		wxBackground = pimpl->memBitmap.ConvertToImage();
-
-		dc->DrawBitmap(pimpl->memBitmap, x, y);
+		dc->DrawBitmap(imageBackground, x, y);
 
 		int size = themeButton.GetRectangleSize() / 2;
 
@@ -302,16 +297,15 @@ void CToolbarButton::CreateActifButton(wxDC* dc, const int& x, const int& y)
 		rc.width = GetWidth();
 		rc.height = GetHeight();
 
+		wxBitmap imageBackground(GetWidth(), GetHeight());
+		wxMemoryDC memDC(imageBackground);
+		memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
+		memDC.SelectObject(wxNullBitmap);
 
-		pimpl->SetWindowSize(GetWidth(), GetHeight());
-
-		pimpl->sourceDCContext.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
-
-		wxBackground = pimpl->memBitmap.ConvertToImage();
+		wxBackground = imageBackground.ConvertToImage();
 
 
-		dc->DrawBitmap(pimpl->memBitmap, x, y);
+		dc->DrawBitmap(imageBackground, x, y);
 
 
 		int size = themeButton.GetRectangleSize() / 2;

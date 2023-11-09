@@ -4,7 +4,7 @@
 #include "WindowMain.h"
 #include "TreeElementSlideInterface.h"
 #include "TreeElementControlInterface.h"
-#include <membitmap.h>
+
 namespace Regards::Window
 {
 	class CScrollInterface;
@@ -91,13 +91,11 @@ namespace Regards::Window
 		CTreeControl* treeControl;
 
 		//Buffer
-		//wxBitmap backgroundBuffer;
+		wxBitmap backgroundBuffer;
 		// bool bufferUpdate;
 		int posHauteur;
 		int posLargeur;
 
 		int isMoving;
-
-		CMemBitmap* pimpl;
 	};
 }

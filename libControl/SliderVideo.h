@@ -11,7 +11,6 @@ using namespace Regards::Window;
 #define SCREENFORMATID 5
 #define REPEATID 6
 class CRegardsBitmap;
-class CMemBitmap;
 
 namespace Regards::Video
 {
@@ -82,7 +81,6 @@ namespace Regards::Video
 		wxImage buttonVolumeDown;
 		wxImage buttonSpeaker;
 		wxImage button;
-		CMemBitmap* sliderVideoPimpl = nullptr;
 
 		/*
             wxString buttonPlayVector;

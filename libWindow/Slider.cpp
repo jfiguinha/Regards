@@ -5,7 +5,7 @@
 #include <wx/dcbuffer.h>
 #include <ClosedHandCursor.h>
 #include <wx/sstream.h>
-#include <membitmap.h>
+
 #include "ScrollbarHorizontalWnd.h"
 #include "SliderInterface.h"
 using namespace Regards::Window;
@@ -25,7 +25,6 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
 	: CWindowMain("CSlider", parent, id)
 {
 	//CLoadingResource loadingResource;
-	pimpl = new CMemBitmap(0, 0);
 	positionButton = wxRect(0, 0, 0, 0);
 	hCursorHand = CResourceCursor::GetClosedHand();
 	secondTimePast = 0;
@@ -48,7 +47,6 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
 
 CSlider::~CSlider()
 {
-	delete pimpl;
 }
 
 void CSlider::DrawShapeElement(wxDC* dc, const wxRect& rc)
@@ -102,7 +100,7 @@ void CSlider::SetPastSecondTime(const int64_t& secondTime)
 
 int CSlider::DrawTotalTime(wxDC* context, const wxString& libelle)
 {
-	wxSize filenameSize = GetSizeTexte(libelle, themeSlider.font);
+	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = GetWindowWidth() - filenameSize.x - 5;
 	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, themeSlider.font);
@@ -111,7 +109,7 @@ int CSlider::DrawTotalTime(wxDC* context, const wxString& libelle)
 
 int CSlider::DrawTimePast(wxDC* context, const wxString& libelle)
 {
-	wxSize filenameSize = GetSizeTexte( libelle, themeSlider.font);
+	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = 5;
 	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, themeSlider.font);
@@ -124,29 +122,31 @@ void CSlider::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
-		pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
 
-		FillRect(&pimpl->sourceDCContext, rc, themeSlider.colorBack);
+		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
+		wxMemoryDC sourceDCContext(memBitmap);
+		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 
 		//Ecriture du temps passé
-		int sizeLibelleX = DrawTimePast(&pimpl->sourceDCContext, timePast);
+		int sizeLibelleX = DrawTimePast(&sourceDCContext, timePast);
 		positionSlider.x = 10 + sizeLibelleX + 5;
 
 		//Ecriture du temps restant
-		int x = DrawTotalTime(&pimpl->sourceDCContext, totalTime);
+		int x = DrawTotalTime(&sourceDCContext, totalTime);
 		positionSlider.width = x - positionSlider.x - 5;
 		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
 
-		DrawShapeElement(&pimpl->sourceDCContext, positionSlider);
+		DrawShapeElement(&sourceDCContext, positionSlider);
 		CalculPositionButton();
 
 		if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.
 			GetButtonHeight()))
 			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
 			                                            themeSlider.GetButtonHeight());
-		pimpl->sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
+		sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
+		sourceDCContext.SelectObject(wxNullBitmap);
 
 #ifdef __WXGTK__
     double scale_factor = context->GetContentScaleFactor();
@@ -156,13 +156,13 @@ void CSlider::Draw(wxDC* context)
 
 		if (scale_factor != 1.0)
 		{
-			wxImage image = pimpl->memBitmap.ConvertToImage();
+			wxImage image = memBitmap.ConvertToImage();
 			wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
 			context->DrawBitmap(resized, 0, 0);
 		}
 		else
 		{
-			context->DrawBitmap(pimpl->memBitmap, 0, 0);
+			context->DrawBitmap(memBitmap, 0, 0);
 		}
 	}
 }

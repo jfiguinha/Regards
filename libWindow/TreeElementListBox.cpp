@@ -2,20 +2,19 @@
 #include "TreeElementListBox.h"
 #include <wx/sstream.h>
 #include <LibResource.h>
-#include <membitmap.h>
 using namespace Regards::Window;
 
 CTreeElementListBox::CTreeElementListBox(CTreeElementSlideInterface* eventInterface)
 {
 	this->eventInterface = eventInterface;
 	position = 0;
-	pimpl = new CMemBitmap(0, 0);
 }
 
 wxBitmap CTreeElementListBox::CreateTriangle(const int& width, const int& height, const wxColor& color,
                                              const wxColor& colorBack)
 {
-	pimpl->SetWindowSize(width, height);
+	auto bitmapBuffer = wxBitmap(width, height);
+	wxMemoryDC memDC(bitmapBuffer);
 	wxBrush brushHatch(color);
 
 	wxRect rc;
@@ -23,17 +22,17 @@ wxBitmap CTreeElementListBox::CreateTriangle(const int& width, const int& height
 	rc.width = width;
 	rc.y = 0;
 	rc.height = height;
-	CWindowMain::FillRect(&pimpl->sourceDCContext, rc, colorBack);
+	CWindowMain::FillRect(&memDC, rc, colorBack);
 
-	pimpl->sourceDCContext.SetBrush(brushHatch);
+	memDC.SetBrush(brushHatch);
 	wxPoint star[3];
 	star[0] = wxPoint(0, 0);
 	star[1] = wxPoint(width, 0);
 	star[2] = wxPoint(width / 2, height);
-	pimpl->sourceDCContext.DrawPolygon(WXSIZEOF(star), star, 0, 0);
-	pimpl->sourceDCContext.SetBrush(wxNullBrush);
-	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
-	return pimpl->memBitmap;
+	memDC.DrawPolygon(WXSIZEOF(star), star, 0, 0);
+	memDC.SetBrush(wxNullBrush);
+	memDC.SelectObject(wxNullBitmap);
+	return bitmapBuffer;
 }
 
 CTreeElementListBox& CTreeElementListBox::operator=(const CTreeElementListBox& other)
@@ -53,7 +52,6 @@ CTreeElementListBox& CTreeElementListBox::operator=(const CTreeElementListBox& o
 
 CTreeElementListBox::~CTreeElementListBox()
 {
-	delete pimpl;
 }
 
 void CTreeElementListBox::SetElementPos(const int& x, const int& y)
@@ -122,19 +120,21 @@ void CTreeElementListBox::ClickElement(wxWindow* window, const int& x, const int
 void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const int& y)
 {
 	//bool oldRender = true;
-	pimpl->SetWindowSize(themeTreeListBox.GetWidth(), themeTreeListBox.GetHeight());
+
+	auto bitmapBuffer = wxBitmap(themeTreeListBox.GetWidth(), themeTreeListBox.GetHeight());
+	wxMemoryDC memDC(bitmapBuffer);
 
 	wxRect rc;
 	rc.x = 0;
 	rc.width = themeTreeListBox.GetWidth();
 	rc.y = 0;
 	rc.height = themeTreeListBox.GetHeight();
-	CWindowMain::FillRect(&pimpl->sourceDCContext, rc, themeTreeListBox.color);
+	CWindowMain::FillRect(&memDC, rc, themeTreeListBox.color);
 
-	wxSize renderElement = CWindowMain::GetSizeTexte(GetPositionValue(), themeTreeListBox.font);
+	wxSize renderElement = CWindowMain::GetSizeTexte(deviceContext, GetPositionValue(), themeTreeListBox.font);
 
 	int yMedium = (themeTreeListBox.GetHeight() - renderElement.y) / 2;
-	CWindowMain::DrawTexte(&pimpl->sourceDCContext, GetPositionValue(), 0, yMedium, themeTreeListBox.font);
+	CWindowMain::DrawTexte(&memDC, GetPositionValue(), 0, yMedium, themeTreeListBox.font);
 
 	if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeTreeListBox.GetButtonWidth() || buttonMoins.GetHeight()
 		!= themeTreeListBox.GetButtonHeight()))
@@ -157,18 +157,18 @@ void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const i
 	moinsPos.y = (themeTreeListBox.GetHeight() - themeTreeListBox.GetButtonHeight()) / 2;
 	moinsPos.width = themeTreeListBox.GetButtonWidth();
 	moinsPos.height = themeTreeListBox.GetButtonHeight();
-	pimpl->sourceDCContext.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
+	memDC.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
 
 	plusPos.x = moinsPos.x + buttonMoins.GetWidth() + 2 * themeTreeListBox.GetMarge();
 	plusPos.y = (themeTreeListBox.GetHeight() - themeTreeListBox.GetButtonHeight()) / 2;
 	plusPos.width = themeTreeListBox.GetButtonWidth();
 	plusPos.height = themeTreeListBox.GetButtonHeight();
-	pimpl->sourceDCContext.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
+	memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
 
 
 	//memDC.DrawBitmap(buttonPlus, plusPos.x, plusPos.y);
 
-	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+	memDC.SelectObject(wxNullBitmap);
 
-	deviceContext->DrawBitmap(pimpl->memBitmap, x, y);
+	deviceContext->DrawBitmap(bitmapBuffer, x, y);
 }

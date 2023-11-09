@@ -4,7 +4,6 @@
 #include "MainTheme.h"
 #include "WindowToAdd.h"
 #include "SeparationBar.h"
-#include <membitmap.h>
 using namespace Regards::Window;
 
 #define WINDOW_MINSIZE 100
@@ -33,8 +32,6 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	//#else
 	fastRender = false;
 	//#endif
-
-	pimpl = new CMemBitmap(0, 0);
 }
 
 
@@ -962,7 +959,8 @@ void CWindowManager::Init()
 
 void CWindowManager::GenerateRenderBitmap()
 {
-	pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
+	renderBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
+	wxMemoryDC dCWindowManager(renderBitmap);
 
 	for (CWindowToAdd* windowToAdd : listWindow)
 	{
@@ -975,7 +973,7 @@ void CWindowManager::GenerateRenderBitmap()
 				if (_wnd->IsShown())
 				{
 					wxWindowDC dc(_wnd);
-					pimpl->sourceDCContext.Blit(windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width,
+					dCWindowManager.Blit(windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width,
 					                     windowToAdd->rect.height, &dc, 0, 0);
 				}
 			}
@@ -984,7 +982,7 @@ void CWindowManager::GenerateRenderBitmap()
 				if (windowToAdd->separationBar != nullptr)
 				{
 					wxWindowDC dc(windowToAdd->separationBar->separationBar);
-					pimpl->sourceDCContext.Blit(windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y,
+					dCWindowManager.Blit(windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y,
 					                     windowToAdd->separationBar->rect.width,
 					                     windowToAdd->separationBar->rect.height, &dc, 0, 0);
 				}
@@ -993,7 +991,7 @@ void CWindowManager::GenerateRenderBitmap()
 	}
 
 
-	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+	dCWindowManager.SelectObject(wxNullBitmap);
 }
 
 void CWindowManager::SetSeparationBarVisible(const bool& visible)
@@ -1032,7 +1030,6 @@ void CWindowManager::OnLButtonUp()
 
 CWindowManager::~CWindowManager()
 {
-	delete pimpl;
 }
 
 CWindowToAdd* CWindowManager::FindWindow(Pos position)

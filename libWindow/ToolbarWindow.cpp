@@ -1,7 +1,6 @@
 #include "header.h"
 #include "ToolbarWindow.h"
 #include <wx/dcbuffer.h>
-#include <membitmap.h>
 using namespace Regards::Window;
 
 #define TIMER_PUSHID 1
@@ -16,7 +15,6 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 	saveLastPush = false;
 	m_bIconeOn = false;
 	numButtonActif = -1;
-	pimpl = new CMemBitmap(0, 0);
 	navPush = nullptr;
 	pushButton = new wxTimer(this, TIMER_PUSHID);
 	themeToolbar = theme;
@@ -55,8 +53,6 @@ CToolbarWindow::~CToolbarWindow()
 	}
 	EmptyNavigator();
 	delete(pushButton);
-
-	delete pimpl;
 }
 
 
@@ -218,21 +214,22 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	pimpl->SetWindowSize(nav->GetWidth(), nav->GetHeight());
+	wxBitmap pictureBuffer(nav->GetWidth(), nav->GetHeight());
+	wxMemoryDC memDC(pictureBuffer);
 
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
 	rc.width = nav->GetWidth();
 	rc.height = nav->GetHeight();
-	DrawBackground(&pimpl->sourceDCContext, rc);
+	DrawBackground(&memDC, rc);
 
-	nav->DrawButton(&pimpl->sourceDCContext, 0, 0);
-	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+	nav->DrawButton(&memDC, 0, 0);
+	memDC.SelectObject(wxNullBitmap);
 
-	if (pimpl->memBitmap.IsOk())
+	if (pictureBuffer.IsOk())
 	{
-		dc->DrawBitmap(pimpl->memBitmap, nav->GetXPos(), nav->GetYPos());
+		dc->DrawBitmap(pictureBuffer, nav->GetXPos(), nav->GetYPos());
 	}
 }
 
@@ -334,17 +331,17 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext)
 {
 	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
-		pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
-
+		background.Create(GetWindowWidth(), GetWindowHeight());
+		wxMemoryDC memDC(background);
 		wxRect rc = GetWindowRect();
-		DrawBackground(&pimpl->sourceDCContext, rc);
+		DrawBackground(&memDC, rc);
 		//CWindowMain::FillRect(&memDC, rc, themeToolbar.colorTop);
-		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+		memDC.SelectObject(wxNullBitmap);
 
 
 
-		backPicture = pimpl->memBitmap.ConvertToImage();
-		deviceContext->DrawBitmap(pimpl->memBitmap, 0, 0);
+		backPicture = background.ConvertToImage();
+		deviceContext->DrawBitmap(background, 0, 0);
 	}
 }
 

@@ -131,7 +131,7 @@ int CSliderVideoSelection::DrawTimePast(wxDC* context, const wxString& libelle)
 {
 	CThemeFont font = themeSlider.font;
 	font.SetColorFont(wxColour(0, 0, 0));
-	wxSize filenameSize = GetSizeTexte(libelle, font);
+	wxSize filenameSize = GetSizeTexte(context, libelle, font);
 	int x = 1;
 	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, font);
@@ -142,7 +142,7 @@ int CSliderVideoSelection::DrawTotalTimeLibelle(wxDC* context, const wxString& l
 {
 	CThemeFont font = themeSlider.font;
 	font.SetColorFont(wxColour(0, 0, 0));
-	wxSize totalTimeSize = GetSizeTexte(libelle, font);
+	wxSize totalTimeSize = GetSizeTexte(context, libelle, font);
 
 	int y = (GetWindowHeight() - totalTimeSize.y) / 2;
 	int x = GetWindowWidth() - (totalTimeSize.x + 1);

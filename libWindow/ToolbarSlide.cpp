@@ -157,7 +157,7 @@ bool CToolbarSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y)
 {
 	if (mouseBlock)
 	{
-		wxSize renderLast = CWindowMain::GetSizeTexte(to_string(GetLastValue()), themeSlider.font);
+		wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlider.font);
 		int xSlide = x - this->x - renderLast.x;
 		if ((xSlide >= positionSlider.x && xSlide <= (positionSlider.x + positionSlider.width)))
 		{
@@ -324,8 +324,8 @@ void CToolbarSlide::DrawButton(wxDC* dc, const int& x, const int& y)
 		//int first = GetFirstValue();
 		//int last = GetLastValue();
 
-		wxSize renderFirst = CWindowMain::GetSizeTexte(to_string(GetPositionValue()), themeSlider.font);
-		wxSize renderLast = CWindowMain::GetSizeTexte(to_string(GetLastValue()), themeSlider.font);
+		wxSize renderFirst = CWindowMain::GetSizeTexte(dc, to_string(GetPositionValue()), themeSlider.font);
+		wxSize renderLast = CWindowMain::GetSizeTexte(dc, to_string(GetLastValue()), themeSlider.font);
 
 		posRectangle.x = renderLast.x;
 		posRectangle.width = themeSlider.GetWidth() - (posRectangle.x * 2);

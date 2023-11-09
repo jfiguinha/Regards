@@ -171,7 +171,7 @@ void CSliderVideoPreview::Stop()
 
 int CSliderVideoPreview::DrawTimePast(wxDC* context, const wxString& libelle)
 {
-	wxSize filenameSize = GetSizeTexte(libelle, themeSlider.font);
+	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = themeSlider.GetMarge() + themeSlider.GetButtonPlayWidth();
 	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, themeSlider.font);
@@ -180,7 +180,7 @@ int CSliderVideoPreview::DrawTimePast(wxDC* context, const wxString& libelle)
 
 int CSliderVideoPreview::DrawVolumeLibelle(wxDC* context, const wxString& libelle)
 {
-	wxSize volumeSize = GetSizeTexte(libelle, themeSlider.font);
+	wxSize volumeSize = GetSizeTexte(context, libelle, themeSlider.font);
 
 	int y = (GetWindowHeight() - volumeSize.y) / 2;
 	int x = GetWindowWidth() - (volumeSize.x + themeSlider.GetMarge() / 2) - themeSlider.GetButtonVolumeUpWidth();
@@ -193,7 +193,7 @@ int CSliderVideoPreview::DrawVolumeLibelle(wxDC* context, const wxString& libell
 
 int CSliderVideoPreview::DrawTotalTimeLibelle(wxDC* context, const wxString& libelle, const int& volumePos)
 {
-	wxSize totalTimeSize = GetSizeTexte(libelle, themeSlider.font);
+	wxSize totalTimeSize = GetSizeTexte(context, libelle, themeSlider.font);
 
 	int y = (GetWindowHeight() - totalTimeSize.y) / 2;
 	int x = GetWindowWidth() - (volumePos + themeSlider.GetMarge()) - (totalTimeSize.x + themeSlider.GetMarge() / 2) -
