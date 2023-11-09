@@ -12,6 +12,7 @@
 #include <LibResource.h>
 #include <picture_utility.h>
 #include <WindowUtility.h>
+#include <membitmap.h>
 
 extern "C" {
 #include <libavutil/error.h>
@@ -39,6 +40,7 @@ END_EVENT_TABLE()
 using namespace Regards::Picture;
 using namespace Regards::Video;
 
+
 static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& minute, int& second)
 {
 	long timeToSplitlocal = timeToSplit;
@@ -52,6 +54,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 {
 	isOk = false;
+	pimpl = new CMemBitmap(0,0);
 	videoEffectParameter = new CVideoEffectParameter();
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
@@ -228,14 +231,15 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 		x = (340 - picture.GetWidth()) / 2;
 		y = (240 - picture.GetHeight()) / 2;
 
-		wxBitmap test_bitmap(340, 240);
-		wxMemoryDC temp_dc;
-		temp_dc.SelectObject(test_bitmap);
+		pimpl->SetWindowSize(340, 240);
+
+		//wxBitmap test_bitmap(340, 240);
+		//wxMemoryDC temp_dc;
+		//temp_dc.SelectObject(test_bitmap);
 		CWindowUtility winUtility;
-		winUtility.FillRect(&temp_dc, wxRect(0, 0, 340, 240), *wxBLACK);
-		temp_dc.DrawBitmap(picture, x, y);
-		temp_dc.SelectObject(wxNullBitmap);
-		bitmap->SetBitmap(test_bitmap);
+		winUtility.FillRect(&pimpl->sourceDCContext, wxRect(0, 0, 340, 240), *wxBLACK);
+		pimpl->sourceDCContext.DrawBitmap(picture, x, y);
+		bitmap->SetBitmap(pimpl->memBitmap);
 	}
 }
 
@@ -592,6 +596,8 @@ CompressionAudioVideoOption::~CompressionAudioVideoOption()
 
 	if (videoEffectParameter != nullptr)
 		delete videoEffectParameter;
+
+	delete pimpl;
 }
 
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)

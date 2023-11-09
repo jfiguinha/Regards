@@ -2,6 +2,7 @@
 #include "TitleBarInterface.h"
 #include "WindowMain.h"
 
+class CMemBitmap;
 
 namespace Regards::Window
 {
@@ -35,6 +36,7 @@ namespace Regards::Window
 		bool isRefresh;
 		bool isClosable;
 		bool isCenter;
+
 		wxBitmap m_croixOff;
 		wxBitmap m_croixOn;
 		wxBitmap m_refreshOn;
@@ -48,5 +50,6 @@ namespace Regards::Window
 		wxString refreshtip;
 		CTitleBarInterface* titleBarInterface;
 		CThemeTitleBar themeTitle;
+		CMemBitmap* pimpl;
 	};
 }

@@ -1,7 +1,8 @@
 #pragma once
 #include <theme.h>
 #include "ToolbarElement.h"
-//#include "SliderInterface.h"
+
+class CMemBitmap;
 
 namespace Regards::Window
 {
@@ -22,7 +23,7 @@ namespace Regards::Window
 		int GetWidth() override;
 		int GetHeight() override;
 		void SetBackgroundBitmap(const wxBitmap& background);
-		bool MouseOver(const int& x, const int& y) override;
+		bool MouseOver(wxDC* context, const int& x, const int& y) override;
 		void UnclickElement(wxWindow* window, const int& x, const int& y) override;
 		void ClickElement(wxWindow* window, const int& x, const int& y) override;
 		int GetPositionValue();
@@ -41,7 +42,7 @@ namespace Regards::Window
 		int GetFirstValue();
 		int GetLastValue();
 
-
+		CMemBitmap* pimpl;
 		wxBitmap background;
 		CSliderInterface* eventInterface;
 		CThemeSlider themeSlider;

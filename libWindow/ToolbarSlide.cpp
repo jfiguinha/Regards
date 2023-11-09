@@ -4,6 +4,7 @@
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
 #include "SliderInterface.h"
+#include <membitmap.h>
 using namespace Regards::Window;
 
 CToolbarSlide::CToolbarSlide(const CThemeSlider& themeSlider, CSliderInterface* eventInterface)
@@ -17,6 +18,7 @@ CToolbarSlide::CToolbarSlide(const CThemeSlider& themeSlider, CSliderInterface* 
 	hCursorHand = CResourceCursor::GetClosedHand();
 	mouseBlock = false;
 	captureBall = false;
+	pimpl = new CMemBitmap(0, 0);
 }
 
 void CToolbarSlide::Resize(const int& tailleX, const int& tailleY)
@@ -27,6 +29,7 @@ void CToolbarSlide::Resize(const int& tailleX, const int& tailleY)
 
 CToolbarSlide::~CToolbarSlide()
 {
+	delete pimpl;
 }
 
 int CToolbarSlide::GetWidth()
@@ -153,12 +156,11 @@ void CToolbarSlide::UnclickElement(wxWindow* window, const int& x, const int& y)
 	}
 }
 
-bool CToolbarSlide::MouseOver(const int& x, const int& y)
+bool CToolbarSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y)
 {
 	if (mouseBlock)
 	{
-		/*
-		wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlider.font);
+		wxSize renderLast = CWindowMain::GetSizeTexte(to_string(GetLastValue()), themeSlider.font);
 		int xSlide = x - this->x - renderLast.x;
 		if ((xSlide >= positionSlider.x && xSlide <= (positionSlider.x + positionSlider.width)))
 		{
@@ -175,8 +177,6 @@ bool CToolbarSlide::MouseOver(const int& x, const int& y)
 
 			return true;
 		}
-		*/
-		return true;
 	}
 	return false;
 }
@@ -271,14 +271,14 @@ void CToolbarSlide::RenderSlide(wxDC* dc, const int& width, const int& height, c
 {
 	if (dc != nullptr)
 	{
-		auto bitmapBuffer = wxBitmap(width, height);
-		wxMemoryDC memDC(bitmapBuffer);
+		pimpl->SetWindowSize(width, height);
+
 		wxRect rc;
 		rc.x = 0;
 		rc.width = width;
 		rc.y = 0;
 		rc.height = height;
-		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+		CWindowMain::FillRect(&pimpl->sourceDCContext, rc, themeSlider.colorBack);
 
 		if (colorBackground)
 		{
@@ -287,12 +287,12 @@ void CToolbarSlide::RenderSlide(wxDC* dc, const int& width, const int& height, c
 			wx_rect.width = width;
 			wx_rect.y = 0;
 			wx_rect.height = height;
-			CWindowMain::FillRect(&memDC, wx_rect, themeSlider.colorBack);
+			CWindowMain::FillRect(&pimpl->sourceDCContext, wx_rect, themeSlider.colorBack);
 		}
 		else
 		{
-			if (background.IsOk())
-				memDC.DrawBitmap(background, 0, 0);
+			if (pimpl->memBitmap.IsOk())
+				pimpl->sourceDCContext.DrawBitmap(background, 0, 0);
 		}
 
 		positionSlider.x = themeSlider.GetButtonWidth();
@@ -300,11 +300,11 @@ void CToolbarSlide::RenderSlide(wxDC* dc, const int& width, const int& height, c
 		positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
 
-		DrawShapeElement(&memDC, positionSlider);
+		DrawShapeElement(&pimpl->sourceDCContext, positionSlider);
 
-		memDC.SelectObject(wxNullBitmap);
+		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
-		dc->DrawBitmap(bitmapBuffer, x, y);
+		dc->DrawBitmap(pimpl->memBitmap, x, y);
 	}
 }
 
@@ -313,8 +313,8 @@ void CToolbarSlide::DrawButton(wxDC* dc, const int& x, const int& y)
 	//bool oldRender = true;
 	if (dc != nullptr)
 	{
-		auto bitmapBuffer = wxBitmap(themeSlider.GetWidth(), themeSlider.GetHeight());
-		wxMemoryDC memDC(bitmapBuffer);
+
+		pimpl->SetWindowSize(themeSlider.GetWidth(), themeSlider.GetHeight());
 
 
 		wxRect rc;
@@ -322,29 +322,29 @@ void CToolbarSlide::DrawButton(wxDC* dc, const int& x, const int& y)
 		rc.width = themeSlider.GetWidth();
 		rc.y = 0;
 		rc.height = themeSlider.GetHeight();
-		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+		CWindowMain::FillRect(&pimpl->sourceDCContext, rc, themeSlider.colorBack);
 
 		//int first = GetFirstValue();
 		//int last = GetLastValue();
 
-		wxSize renderFirst = CWindowMain::GetSizeTexte(dc, to_string(GetPositionValue()), themeSlider.font);
-		wxSize renderLast = CWindowMain::GetSizeTexte(dc, to_string(GetLastValue()), themeSlider.font);
+		wxSize renderFirst = CWindowMain::GetSizeTexte(to_string(GetPositionValue()), themeSlider.font);
+		wxSize renderLast = CWindowMain::GetSizeTexte(to_string(GetLastValue()), themeSlider.font);
 
 		posRectangle.x = renderLast.x;
 		posRectangle.width = themeSlider.GetWidth() - (posRectangle.x * 2);
 		posRectangle.y = 0;
 		posRectangle.height = themeSlider.GetHeight();
 
-		RenderSlide(&memDC, posRectangle.width, posRectangle.height, posRectangle.x, posRectangle.y);
+		RenderSlide(&pimpl->sourceDCContext, posRectangle.width, posRectangle.height, posRectangle.x, posRectangle.y);
 
 		int yMedium = (themeSlider.GetHeight() - renderFirst.y) / 2;
-		CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);
+		CWindowMain::DrawTexte(&pimpl->sourceDCContext, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);
 
 		yMedium = (themeSlider.GetHeight() - renderLast.y) / 2;
-		CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium,
+		CWindowMain::DrawTexte(&pimpl->sourceDCContext, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium,
 		                       themeSlider.font);
 
-		memDC.SelectObject(wxNullBitmap);
+		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
 		if (!colorBackground)
 		{
@@ -352,12 +352,12 @@ void CToolbarSlide::DrawButton(wxDC* dc, const int& x, const int& y)
 #ifdef __APPLE__
            colour.Set(themeSlider.colorBack.Red(),themeSlider.colorBack.Green(), themeSlider.colorBack.Blue(), 0);
 #endif
-			bitmapBuffer.SetMask(new wxMask(bitmapBuffer, colour));
-			dc->DrawBitmap(bitmapBuffer, x, y, true);
+			pimpl->memBitmap.SetMask(new wxMask(pimpl->memBitmap, colour));
+			dc->DrawBitmap(pimpl->memBitmap, x, y, true);
 		}
 		else
 		{
-			dc->DrawBitmap(bitmapBuffer, x, y, false);
+			dc->DrawBitmap(pimpl->memBitmap, x, y, false);
 		}
 
 		CalculPositionButton();

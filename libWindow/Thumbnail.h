@@ -94,7 +94,7 @@ namespace Regards::Window
 		{
 		};
 
-		virtual void FindOtherElement(const int& x, const int& y)
+		virtual void FindOtherElement(wxDC* dc, const int& x, const int& y)
 		{
 		};
 

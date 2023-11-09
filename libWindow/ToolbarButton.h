@@ -4,6 +4,7 @@
 using namespace Regards::Window;
 
 class CRegardsBitmap;
+class CMemBitmap;
 
 namespace Regards::Window
 {
@@ -50,6 +51,8 @@ namespace Regards::Window
 		wxImage button;
 		CThemeToolbarButton themeButton;
 		wxImage wxBackground;
+
+		CMemBitmap* pimpl;
 
 		wxColor colorToReplace;
 		wxColor colorActifReplacement;

@@ -1,5 +1,6 @@
 #include "header.h"
 #include "TreeElementTexte.h"
+#include <WindowUtility.h>
 using namespace Regards::Window;
 
 mutex CTreeElementTexte::muTexteSize;
@@ -39,7 +40,7 @@ void CTreeElementTexte::SetTheme(CThemeTreeTexte* theme)
 	themeTexte = *theme;
 }
 
-void CTreeElementTexte::MouseOver(const int& x, const int& y, bool& update)
+void CTreeElementTexte::MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update)
 {
 	if (canUpdate)
 		wxSetCursor(wxCursor(wxCURSOR_IBEAM));
@@ -63,14 +64,7 @@ void CTreeElementTexte::SetLibelle(const wxString& libelle)
 
 wxSize CTreeElementTexte::GetSizeText()
 {
-	wxSize size;
-	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-	wxBitmap bitmap(250, 250);
-	wxMemoryDC dc(bitmap);
-	dc.SetFont(font);
-	size = dc.GetTextExtent(libelle);
-	dc.SelectObject(wxNullBitmap);
-	return size;
+	return CWindowUtility::GetSizeTexte(libelle, themeTexte.font);
 }
 
 void CTreeElementTexte::DrawText(wxDC* dc, const int& xPos, const int& yPos)

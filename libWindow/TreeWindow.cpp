@@ -1,7 +1,7 @@
 #include "header.h"
 #include "TreeWindow.h"
 
-
+#include <membitmap.h>
 #include "ScrollbarWnd.h"
 #include <wx/dcbuffer.h>
 #include "TreeControl.h"
@@ -24,6 +24,8 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree& them
 	posHauteur = 0;
 	posLargeur = 0;
 	themeTree = theme;
+
+	pimpl = new CMemBitmap(0, 0);
 	//defaultPageSize = 50;
 
 	//Buffer
@@ -177,6 +179,7 @@ void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 */
 CTreeWindow::~CTreeWindow()
 {
+	delete pimpl;
 }
 
 int CTreeWindow::GetWidth()
@@ -339,18 +342,18 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	//wxClientDC dc(this);
+	wxClientDC dc(this);
 	try
 	{
 		bool update = false;
 		CPositionElement* element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
 		if (element != nullptr)
 		{
-			treeControl->MouseOver(element, xPos, yPos, posLargeur, posHauteur, update);
+			treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
 		}
 		else
 		{
-			treeControl->MouseOut(element, xPos, yPos, posLargeur, posHauteur, update);
+			treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
 			wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
 		}
 		if (update)
@@ -491,20 +494,19 @@ void CTreeWindow::GenerateScreenBuffer()
 
 	//printf("CTreeWindow::OnPaint bufferUpdate \n");
 
-	auto background = wxBitmap(width, height);
+	pimpl->SetWindowSize(width, height);
 
-	wxMemoryDC memDC(background);
 
-	GenerateBackgroundBitmap(&memDC, posLargeur, posHauteur);
+	GenerateBackgroundBitmap(&pimpl->sourceDCContext, posLargeur, posHauteur);
 	if (treeControl != nullptr)
-		treeControl->GenerateWindowBitmap(&memDC, width, height, posLargeur, posHauteur);
+		treeControl->GenerateWindowBitmap(&pimpl->sourceDCContext, width, height, posLargeur, posHauteur);
 
 	if (treeControl != nullptr)
 		treeControl->AfterDrawBitmap();
 
-	memDC.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
-	backgroundBuffer = background;
+	//backgroundBuffer = pimpl->memBitmap;
 
 	oldPosLargeur = posLargeur;
 	oldPosHauteur = posHauteur;
@@ -537,9 +539,9 @@ void CTreeWindow::on_paint(wxPaintEvent& event)
 {
 	//printf("CTreeWindow::OnPaint \n");
 	wxPaintDC dc(this);
-	if (backgroundBuffer.IsOk())
+	if (pimpl->memBitmap.IsOk())
 	{
 		//printf("CTreeWindow::OnPaint not bufferUpdate \n");
-		dc.DrawBitmap(backgroundBuffer, 0, 0);
+		dc.DrawBitmap(pimpl->memBitmap, 0, 0);
 	}
 }

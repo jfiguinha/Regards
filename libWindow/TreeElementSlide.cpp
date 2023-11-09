@@ -3,6 +3,7 @@
 #include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
+#include <membitmap.h>
 using namespace Regards::Window;
 
 
@@ -20,6 +21,7 @@ CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface* eventInterface)
 	button.Create(0, 0);
 	buttonPlus.Create(0, 0);
 	buttonMoins.Create(0, 0);
+	pimpl = new CMemBitmap(0, 0);
 }
 
 CTreeElementSlide& CTreeElementSlide::operator=(const CTreeElementSlide& other)
@@ -42,6 +44,7 @@ CTreeElementSlide& CTreeElementSlide::operator=(const CTreeElementSlide& other)
 
 CTreeElementSlide::~CTreeElementSlide()
 {
+	delete pimpl;
 }
 
 
@@ -148,7 +151,7 @@ void CTreeElementSlide::CalculZoomPosition(const int& x)
 }
 
 
-void CTreeElementSlide::MouseOver(const int& x, const int& y, bool& update)
+void CTreeElementSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update)
 {
 	if (mouseBlock)
 	{
@@ -205,7 +208,7 @@ void CTreeElementSlide::ClickRightPage(const int& x)
 
 bool CTreeElementSlide::FindCirclePos(wxWindow* window, const int& y, const int& x)
 {
-	//wxClientDC dc(window);
+	wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlide.font);
 
 	if ((x >= (positionButton.x + slidePos.x) && x <= ((positionButton.x + positionButton.width) + slidePos.x)) && (y >=
@@ -275,8 +278,7 @@ bool CTreeElementSlide::MouseBlock()
 
 void CTreeElementSlide::RenderSlide(wxDC* dc, const int& width, const int& height, const int& x, const int& y)
 {
-	auto bitmapBuffer = wxBitmap(width, height);
-	wxMemoryDC memDC(bitmapBuffer);
+	pimpl->SetWindowSize(width, height);
 
 	this->height = height;
 
@@ -285,14 +287,14 @@ void CTreeElementSlide::RenderSlide(wxDC* dc, const int& width, const int& heigh
 	rc.width = width;
 	rc.y = 0;
 	rc.height = height;
-	CWindowMain::FillRect(&memDC, rc, themeSlide.color);
+	CWindowMain::FillRect(&pimpl->sourceDCContext, rc, themeSlide.color);
 
 	positionSlider.x = themeSlide.GetButtonWidth();
 	positionSlider.width = width - (themeSlide.GetButtonWidth() * 2);
 	positionSlider.y = themeSlide.GetMarge();
 	positionSlider.height = height - (themeSlide.GetMarge() * 2);
 
-	DrawShapeElement(&memDC, positionSlider);
+	DrawShapeElement(&pimpl->sourceDCContext, positionSlider);
 
 	CalculPositionButton();
 
@@ -301,12 +303,12 @@ void CTreeElementSlide::RenderSlide(wxDC* dc, const int& width, const int& heigh
 		GetButtonHeight()))
 		button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlide.GetButtonWidth(),
 		                                            themeSlide.GetButtonHeight());
-	memDC.DrawBitmap(button, positionButton.x, positionButton.y);
+	pimpl->sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
 
-	memDC.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
-	dc->DrawBitmap(bitmapBuffer, x, y);
+	dc->DrawBitmap(pimpl->memBitmap, x, y);
 }
 
 
@@ -389,37 +391,34 @@ CTreeElementValue* CTreeElementSlide::GetPositionValue()
 
 void CTreeElementSlide::DrawElement(wxDC* deviceContext, const int& x, const int& y)
 {
-	//bool oldRender = true;
-
-	auto bitmapBuffer = wxBitmap(themeSlide.GetWidth(), themeSlide.GetHeight());
-	wxMemoryDC memDC(bitmapBuffer);
+	pimpl->SetWindowSize(themeSlide.GetWidth(), themeSlide.GetHeight());
 
 	wxRect rc;
 	rc.x = 0;
 	rc.width = themeSlide.GetWidth();
 	rc.y = 0;
 	rc.height = themeSlide.GetHeight();
-	CWindowMain::FillRect(&memDC, rc, themeSlide.color);
+	CWindowMain::FillRect(&pimpl->sourceDCContext, rc, themeSlide.color);
 
 	//int first = GetFirstValue();
 	//int last = GetLastValue();
 
 	wxSize renderFirst =
-		CWindowMain::GetSizeTexte(deviceContext, GetPositionValue()->GetStringValue(), themeSlide.font);
-	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, GetLastValue()->GetStringValue(), themeSlide.font);
+		CWindowMain::GetSizeTexte(GetPositionValue()->GetStringValue(), themeSlide.font);
+	wxSize renderLast = CWindowMain::GetSizeTexte(GetLastValue()->GetStringValue(), themeSlide.font);
 
 	slidePos.x = renderLast.x + themeSlide.GetButtonWidth();
 	slidePos.y = 0;
 	slidePos.width = themeSlide.GetWidth() - (renderLast.x + renderLast.x) - (themeSlide.GetButtonWidth() * 2);
 	slidePos.height = themeSlide.GetHeight();
 
-	RenderSlide(&memDC, slidePos.width, themeSlide.GetHeight(), slidePos.x, 0);
+	RenderSlide(&pimpl->sourceDCContext, slidePos.width, themeSlide.GetHeight(), slidePos.x, 0);
 
 	int yMedium = (themeSlide.GetHeight() - renderFirst.y) / 2;
-	CWindowMain::DrawTexte(&memDC, GetPositionValue()->GetStringValue(), 0, yMedium, themeSlide.font);
+	CWindowMain::DrawTexte(&pimpl->sourceDCContext, GetPositionValue()->GetStringValue(), 0, yMedium, themeSlide.font);
 
 	yMedium = (themeSlide.GetHeight() - renderLast.y) / 2;
-	CWindowMain::DrawTexte(&memDC, GetLastValue()->GetStringValue(), themeSlide.GetWidth() - renderLast.x, yMedium,
+	CWindowMain::DrawTexte(&pimpl->sourceDCContext, GetLastValue()->GetStringValue(), themeSlide.GetWidth() - renderLast.x, yMedium,
 	                       themeSlide.font);
 
 	moinsPos.x = renderLast.x + themeSlide.GetMarge();
@@ -431,7 +430,7 @@ void CTreeElementSlide::DrawElement(wxDC* deviceContext, const int& x, const int
 		themeSlide.GetButtonHeight()))
 		buttonMoins = CLibResource::CreatePictureFromSVG("IDB_MINUS", themeSlide.GetButtonWidth(),
 		                                                 themeSlide.GetButtonHeight());
-	memDC.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
+	pimpl->sourceDCContext.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
 
 
 	plusPos.x = themeSlide.GetWidth() - renderLast.x - themeSlide.GetButtonWidth() - themeSlide.GetMarge();
@@ -444,9 +443,9 @@ void CTreeElementSlide::DrawElement(wxDC* deviceContext, const int& x, const int
 		themeSlide.GetButtonHeight()))
 		buttonPlus = CLibResource::CreatePictureFromSVG("IDB_PLUS", themeSlide.GetButtonWidth(),
 		                                                themeSlide.GetButtonHeight());
-	memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
+	pimpl->sourceDCContext.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
 
-	memDC.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
-	deviceContext->DrawBitmap(bitmapBuffer, x, y);
+	deviceContext->DrawBitmap(pimpl->memBitmap, x, y);
 }

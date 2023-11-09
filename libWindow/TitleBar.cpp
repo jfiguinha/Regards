@@ -5,6 +5,7 @@
 #include <wx/bitmap.h>
 #include <LibResource.h>
 #include <wx/dcbuffer.h>
+#include <membitmap.h>
 using namespace Regards::Window;
 
 CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleBarInterface) :
@@ -20,6 +21,8 @@ CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleB
 
 	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_REFRESH", themeTitle.GetCroixWidth() - 2,
 	                                                     themeTitle.GetCroixHeight() - 2);
+
+	pimpl = new CMemBitmap(0, 0);
 
 	SetWindowHeight(this->themeTitle.GetHeight());
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleBar::on_paint));
@@ -39,10 +42,6 @@ void CTitleBar::SetCenter(const bool& value)
 
 void CTitleBar::Redraw()
 {
-
-	this->Refresh();
-
-	/*
 	wxRect rect = GetWindowRect();
 
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
@@ -51,7 +50,7 @@ void CTitleBar::Redraw()
 	FillRect(&dc, rect, themeTitle.colorBack);
 	dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
 	dc.DrawBitmap(m_refreshButton, rcRefresh.x, rcRefresh.y, false);
-	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
+	wxSize size = GetSizeTexte(libelle, themeTitle.font);
 	int yPos = (this->GetWindowHeight() - size.y) / 2;
 	int xPos = (this->GetWindowWidth() - size.x) / 2;
 	if (isCenter)
@@ -60,7 +59,6 @@ void CTitleBar::Redraw()
 	}
 	else
 		DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
-	*/
 }
 
 void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
@@ -76,6 +74,7 @@ void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
 
 CTitleBar::~CTitleBar()
 {
+	delete pimpl;
 }
 
 int CTitleBar::SetTooltipText(const wxString& tooltip)
@@ -105,23 +104,19 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-			//wxClientDC dc(this);
-			//dc.DrawBitmap(m_croixOn, rcFermer.x, rcFermer.y, false);
+			wxClientDC dc(this);
+			dc.DrawBitmap(m_croixOn, rcFermer.x, rcFermer.y, false);
 
 			this->SetToolTip(tooltip);
-
-			this->Refresh();
 		}
 		else if (mouseCapture)
 		{
-			//wxClientDC dc(this);
-			//dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
+			wxClientDC dc(this);
+			dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
 
 			wxSetCursor(wxNullCursor);
 
 			mouseCapture = false;
-
-			this->Refresh();
 		}
 	}
 
@@ -134,23 +129,19 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 			wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-			//wxClientDC dc(this);
-			//dc.DrawBitmap(m_refreshOn, rcRefresh.x, rcRefresh.y, false);
+			wxClientDC dc(this);
+			dc.DrawBitmap(m_refreshOn, rcRefresh.x, rcRefresh.y, false);
 
 			this->SetToolTip(refreshtip.c_str());
-
-			this->Refresh();
 		}
 		else if (mouseCapture)
 		{
-			//wxClientDC dc(this);
-			//dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
+			wxClientDC dc(this);
+			dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
 
 			wxSetCursor(wxNullCursor);
 
 			mouseCapture = false;
-
-			this->Refresh();
 		}
 	}
 }
@@ -214,7 +205,7 @@ void CTitleBar::on_paint(wxPaintEvent& event)
 		dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
 	}
 
-	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
+	wxSize size = GetSizeTexte( libelle, themeTitle.font);
 	int yPos = (this->GetWindowHeight() - size.y) / 2;
 	if (isCenter)
 	{
@@ -258,8 +249,8 @@ void CTitleBar::CreateBitmapCrossOn()
 	rcBitmap.y = 0;
 	rcBitmap.width = themeTitle.GetCroixWidth();
 	rcBitmap.height = themeTitle.GetCroixHeight();
-	m_croixOn = wxBitmap(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), 32);
-	wxMemoryDC memorydc(m_croixOn);
+
+	pimpl->SetWindowSize(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
 
 	wxPen pen(themeTitle.colorCross, 2);
 
@@ -272,24 +263,26 @@ void CTitleBar::CreateBitmapCrossOn()
 	wxPen penLight(colorLight, 2);
 	wxPen penDark(colorDark, 2);
 
-	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
+	FillRect(&pimpl->sourceDCContext, rcBitmap, themeTitle.colorBack);
 
-	memorydc.SetPen(pen);
-	memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
-	memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
-	memorydc.SetPen(wxNullPen);
+	pimpl->sourceDCContext.SetPen(pen);
+	pimpl->sourceDCContext.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
+	pimpl->sourceDCContext.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
+	pimpl->sourceDCContext.SetPen(wxNullPen);
 
-	memorydc.SetPen(penLight);
-	memorydc.DrawLine(0, 0, themeTitle.GetCroixWidth(), 0);
-	memorydc.DrawLine(0, 0, 0, themeTitle.GetCroixHeight());
-	memorydc.SetPen(wxNullPen);
+	pimpl->sourceDCContext.SetPen(penLight);
+	pimpl->sourceDCContext.DrawLine(0, 0, themeTitle.GetCroixWidth(), 0);
+	pimpl->sourceDCContext.DrawLine(0, 0, 0, themeTitle.GetCroixHeight());
+	pimpl->sourceDCContext.SetPen(wxNullPen);
 
-	memorydc.SetPen(penDark);
-	memorydc.DrawLine(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), 0);
-	memorydc.DrawLine(0, themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
-	memorydc.SetPen(wxNullPen);
+	pimpl->sourceDCContext.SetPen(penDark);
+	pimpl->sourceDCContext.DrawLine(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), 0);
+	pimpl->sourceDCContext.DrawLine(0, themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
+	pimpl->sourceDCContext.SetPen(wxNullPen);
 
-	memorydc.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+
+	m_croixOn = pimpl->memBitmap;
 }
 
 void CTitleBar::CreateBitmapCrossOff()
@@ -300,16 +293,18 @@ void CTitleBar::CreateBitmapCrossOff()
 	rcBitmap.width = themeTitle.GetCroixWidth();
 	rcBitmap.height = themeTitle.GetCroixHeight();
 
-	m_croixOff = wxBitmap(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), 32);
-	wxMemoryDC memorydc(m_croixOff);
+	pimpl->SetWindowSize(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
+
 	wxPen pen(themeTitle.colorCross, 2);
-	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
+	FillRect(&pimpl->sourceDCContext, rcBitmap, themeTitle.colorBack);
 
 
-	memorydc.SetPen(pen);
-	memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
-	memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
-	memorydc.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SetPen(pen);
+	pimpl->sourceDCContext.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
+	pimpl->sourceDCContext.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+
+	m_croixOff = pimpl->memBitmap;
 }
 
 
@@ -320,8 +315,8 @@ void CTitleBar::CreateBitmapRefreshOn()
 	rcBitmap.y = 0;
 	rcBitmap.width = themeTitle.GetCroixWidth();
 	rcBitmap.height = themeTitle.GetCroixHeight();
-	m_refreshOn = wxBitmap(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), 32);
-	wxMemoryDC memorydc(m_refreshOn);
+
+	pimpl->SetWindowSize(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
 
 	wxPen pen(themeTitle.colorCross, 2);
 
@@ -331,24 +326,26 @@ void CTitleBar::CreateBitmapRefreshOn()
 	wxColour colorDark;
 	colorDark.Set(themeTitle.colorBack.Red() - 20, themeTitle.colorBack.Green() - 20, themeTitle.colorBack.Blue() - 20);
 
-	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
+	FillRect(&pimpl->sourceDCContext, rcBitmap, themeTitle.colorBack);
 
-	memorydc.DrawBitmap(m_refreshButton, 2, 2, false);
+	pimpl->sourceDCContext.DrawBitmap(m_refreshButton, 2, 2, false);
 
 	wxPen penLight(colorLight, 2);
 	wxPen penDark(colorDark, 2);
 
-	memorydc.SetPen(penLight);
-	memorydc.DrawLine(0, 0, themeTitle.GetCroixWidth(), 0);
-	memorydc.DrawLine(0, 0, 0, themeTitle.GetCroixHeight());
-	memorydc.SetPen(wxNullPen);
+	pimpl->sourceDCContext.SetPen(penLight);
+	pimpl->sourceDCContext.DrawLine(0, 0, themeTitle.GetCroixWidth(), 0);
+	pimpl->sourceDCContext.DrawLine(0, 0, 0, themeTitle.GetCroixHeight());
+	pimpl->sourceDCContext.SetPen(wxNullPen);
 
-	memorydc.SetPen(penDark);
-	memorydc.DrawLine(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), 0);
-	memorydc.DrawLine(0, themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
-	memorydc.SetPen(wxNullPen);
+	pimpl->sourceDCContext.SetPen(penDark);
+	pimpl->sourceDCContext.DrawLine(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), 0);
+	pimpl->sourceDCContext.DrawLine(0, themeTitle.GetCroixHeight(), themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
+	pimpl->sourceDCContext.SetPen(wxNullPen);
 
-	memorydc.SelectObject(wxNullBitmap);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+
+	m_refreshOn = pimpl->memBitmap;
 }
 
 void CTitleBar::CreateBitmapRefreshOff()
@@ -359,8 +356,11 @@ void CTitleBar::CreateBitmapRefreshOff()
 	rcBitmap.width = themeTitle.GetCroixWidth();
 	rcBitmap.height = themeTitle.GetCroixHeight();
 
-	m_refreshOff = wxBitmap(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight(), 32);
-	wxMemoryDC memorydc(m_refreshOff);
-	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
-	memorydc.DrawBitmap(m_refreshButton, 2, 2, false);
+	pimpl->SetWindowSize(themeTitle.GetCroixWidth(), themeTitle.GetCroixHeight());
+
+	FillRect(&pimpl->sourceDCContext, rcBitmap, themeTitle.colorBack);
+	pimpl->sourceDCContext.DrawBitmap(m_refreshButton, 2, 2, false);
+
+
+	m_refreshOff = pimpl->memBitmap;
 }

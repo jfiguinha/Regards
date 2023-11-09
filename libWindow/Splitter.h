@@ -2,6 +2,8 @@
 #include "IMoveWindow.h"
 #include "WindowMain.h"
 
+class CMemBitmap;
+
 namespace Regards::Window
 {
 	class CSplitter : public CWindowMain, public IMoveWindow
@@ -52,7 +54,7 @@ namespace Regards::Window
 
 		bool fixPosition;
 
-		wxBitmap renderBitmap;
+		//wxBitmap renderBitmap;
 
 		int taille;
 		int posWindow;
@@ -68,5 +70,6 @@ namespace Regards::Window
 		int windowMinimalSize;
 		bool showSeparationBar;
 		CThemeSplitter themeSplitter;
+		CMemBitmap* pimpl;
 	};
 }

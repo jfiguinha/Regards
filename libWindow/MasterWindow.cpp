@@ -105,21 +105,21 @@ CMasterWindow::~CMasterWindow(void)
 
 void CMasterWindow::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
 {
-	CWindowUtility winUtility;
-	winUtility.FillRect(dc, rc, color);
+	//CWindowUtility winUtility;
+	CWindowUtility::FillRect(dc, rc, color);
 }
 
 void CMasterWindow::DrawTexte(wxDC* dc, const wxString& libelle, const int& xPos, const int& yPos,
                               const CThemeFont& font)
 {
-	CWindowUtility winUtility;
-	winUtility.DrawTexte(dc, libelle, xPos, yPos, font);
+	//CWindowUtility winUtility;
+	CWindowUtility::DrawTexte(dc, libelle, xPos, yPos, font);
 }
 
-wxSize CMasterWindow::GetSizeTexte(wxDC* dc, const wxString& libelle, const CThemeFont& font)
+wxSize CMasterWindow::GetSizeTexte(const wxString& libelle, const CThemeFont& font)
 {
-	CWindowUtility winUtility;
-	return winUtility.GetSizeTexte(dc, libelle, font);
+	//CWindowUtility winUtility;
+	return CWindowUtility::GetSizeTexte(libelle, font);
 }
 
 

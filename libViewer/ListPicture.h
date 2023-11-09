@@ -5,6 +5,7 @@
 using namespace Regards::Window;
 
 class CThumbnailData;
+class CMemBitmap;
 
 namespace Regards
 {
@@ -74,6 +75,7 @@ namespace Regards
 			void CreateFolder(const wxString& newFolder);
 
 			int typeAffichage;
+			CMemBitmap* pimpl;
 		};
 	}
 }

@@ -6,6 +6,7 @@
 using namespace Regards::Window;
 
 class CRegardsBitmap;
+class CMemBitmap;
 
 namespace Regards::Scanner
 {
@@ -63,6 +64,7 @@ namespace Regards::Scanner
 		wxChoice* choice;
 		vector<ChOcrElement*> listRect;
 		CPage* pageInfo;
+		CMemBitmap* pimpl;
 		//wxBitmap bmpSelection;
 		//CRegardsBitmap * bitmapBackground;
 	};

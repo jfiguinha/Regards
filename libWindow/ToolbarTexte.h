@@ -24,6 +24,7 @@ namespace Regards::Window
 		void CreatePushButton(wxDC* dc, const int& x, const int& y);
 		void DrawShapeElement(wxDC* deviceContext, const wxRect& rc);
 
+
 		bool drawShape;
 		int width;
 		int height;

@@ -740,7 +740,7 @@ void CFiltreEffect::ClickOnElement(CPositionElement* element, wxWindow* window, 
 	}
 }
 
-void CFiltreEffect::MouseOver(CPositionElement* element, const int& x, const int& y,
+void CFiltreEffect::MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
                               const int& posLargeur, const int& posHauteur, bool& update)
 {
 	CTreeElement* treeElement = element->GetTreeElement();
@@ -755,13 +755,10 @@ void CFiltreEffect::MouseOver(CPositionElement* element, const int& x, const int
 		//
 		if (treeElementSlide->MouseBlock())
 		{
-			treeElementSlide->MouseOver((x + posLargeur) - (element->GetX() + xPos),
+			treeElementSlide->MouseOver(deviceContext, (x + posLargeur) - (element->GetX() + xPos),
 			                            (y + posHauteur) - element->GetY(), update);
-			/*
-			treeElementSlide->DrawElement(element->GetX() + xPos) - posLargeur,
+			treeElementSlide->DrawElement(deviceContext, (element->GetX() + xPos) - posLargeur,
 			                              element->GetY() - posHauteur);
-			*/
-
 		}
 	}
 }

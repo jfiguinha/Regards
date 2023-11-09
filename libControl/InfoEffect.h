@@ -30,7 +30,7 @@ namespace Regards::Control
 
 		void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 		                    const int& posLargeur, const int& posHauteur) override;
-		void MouseOver(CPositionElement* element, const int& x, const int& y,
+		void MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
 		               const int& posLargeur, const int& posHauteur, bool& update) override;
 
 		void CreateElement();

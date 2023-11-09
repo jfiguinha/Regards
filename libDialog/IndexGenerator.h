@@ -10,6 +10,8 @@
 //*)
 
 
+class CMemBitmap;
+
 class IndexGenerator : public wxDialog
 {
 public:
@@ -52,6 +54,7 @@ private:
 	void OnbtColorClick(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 
+	CMemBitmap* pimpl;
 	wxColour colour;
 };
 

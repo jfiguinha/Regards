@@ -1,6 +1,7 @@
 #include "header.h"
 #include "ToolbarWindow.h"
 #include <wx/dcbuffer.h>
+#include <membitmap.h>
 using namespace Regards::Window;
 
 #define TIMER_PUSHID 1
@@ -15,6 +16,7 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 	saveLastPush = false;
 	m_bIconeOn = false;
 	numButtonActif = -1;
+	pimpl = new CMemBitmap(0, 0);
 	navPush = nullptr;
 	pushButton = new wxTimer(this, TIMER_PUSHID);
 	themeToolbar = theme;
@@ -53,6 +55,8 @@ CToolbarWindow::~CToolbarWindow()
 	}
 	EmptyNavigator();
 	delete(pushButton);
+
+	delete pimpl;
 }
 
 
@@ -131,7 +135,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 	bool needToRedraw = false;
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	//wxClientDC dc(this);
+	wxClientDC dc(this);
 	int i = 0;
 
 	for (CToolbarElement* nav : navElement)
@@ -142,7 +146,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 			{
 				if (nav->FindElement(xPos, yPos))
 				{
-					if (nav->MouseOver(xPos, yPos))
+					if (nav->MouseOver(&dc, xPos, yPos))
 						needToRedraw = true;
 
 					if (nav->SetActif())
@@ -172,7 +176,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 
 void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 {
-	//wxClientDC dc(this);
+	wxClientDC dc(this);
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -214,28 +218,27 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	wxBitmap pictureBuffer(nav->GetWidth(), nav->GetHeight());
-	wxMemoryDC memDC(pictureBuffer);
+	pimpl->SetWindowSize(nav->GetWidth(), nav->GetHeight());
 
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
 	rc.width = nav->GetWidth();
 	rc.height = nav->GetHeight();
-	DrawBackground(&memDC, rc);
+	DrawBackground(&pimpl->sourceDCContext, rc);
 
-	nav->DrawButton(&memDC, 0, 0);
-	memDC.SelectObject(wxNullBitmap);
+	nav->DrawButton(&pimpl->sourceDCContext, 0, 0);
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
-	if (pictureBuffer.IsOk())
+	if (pimpl->memBitmap.IsOk())
 	{
-		dc->DrawBitmap(pictureBuffer, nav->GetXPos(), nav->GetYPos());
+		dc->DrawBitmap(pimpl->memBitmap, nav->GetXPos(), nav->GetYPos());
 	}
 }
 
 void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 {
-	//wxClientDC dc(this);
+	wxClientDC dc(this);
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -249,7 +252,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 			{
 				nav->ClickElement(this, xPos, yPos);
 				nav->SetPush(true);
-				//RedrawElement(&dc, nav);
+				RedrawElement(&dc, nav);
 				navPush = nav;
 
 				if (navPush->GetRepeatable())
@@ -265,9 +268,8 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 			else
 			{
 				nav->SetPush(false);
-				//RedrawElement(&dc, nav);
+				RedrawElement(&dc, nav);
 			}
-			this->Refresh();
 		}
 	}
 
@@ -280,7 +282,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 
 void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 {
-	//wxClientDC dc(this);
+	wxClientDC dc(this);
 
 	//if (pushButton->IsRunning())
 	//	pushButton->Stop();
@@ -289,18 +291,12 @@ void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 	if (HasCapture())
 		ReleaseMouse();
 
-	bool refresh = false;
-
 	for (CToolbarElement* nav : navElement)
 
 	{
 		if (nav->SetInactif())
-			refresh = true;
-			//RedrawElement(&dc, nav);
+			RedrawElement(&dc, nav);
 	}
-
-	if (refresh)
-		this->Refresh();
 }
 
 void CToolbarWindow::OnMouseHover(wxMouseEvent& event)
@@ -338,17 +334,17 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext)
 {
 	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
-		background.Create(GetWindowWidth(), GetWindowHeight());
-		wxMemoryDC memDC(background);
+		pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
+
 		wxRect rc = GetWindowRect();
-		DrawBackground(&memDC, rc);
+		DrawBackground(&pimpl->sourceDCContext, rc);
 		//CWindowMain::FillRect(&memDC, rc, themeToolbar.colorTop);
-		memDC.SelectObject(wxNullBitmap);
+		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
 
 
 
-		backPicture = background.ConvertToImage();
-		deviceContext->DrawBitmap(background, 0, 0);
+		backPicture = pimpl->memBitmap.ConvertToImage();
+		deviceContext->DrawBitmap(pimpl->memBitmap, 0, 0);
 	}
 }
 

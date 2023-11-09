@@ -599,6 +599,7 @@
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MasterWindow.h" />
+    <ClInclude Include="membitmap.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="RenderBitmapOpenGL.h" />
     <ClInclude Include="RenderOpenGL.h" />

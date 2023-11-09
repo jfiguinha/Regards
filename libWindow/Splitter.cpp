@@ -1,6 +1,7 @@
 #include "header.h"
 #include "Splitter.h"
 #include "SeparationBar.h"
+#include <membitmap.h>
 using namespace Regards::Window;
 
 CSplitter::CSplitter(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme, const bool& horizontal)
@@ -35,6 +36,7 @@ CSplitter::CSplitter(wxWindow* parent, wxWindowID id, const CThemeSplitter& them
 	fastRender = false;
 #endif
 	diff = 0;
+	pimpl = new CMemBitmap(0, 0);
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CSplitter::OnPaint));
 }
 
@@ -45,28 +47,31 @@ void CSplitter::GenerateHorizontalRenderBitmap()
 
 	//int posX = 0;
 	int posY = 0;
-	renderBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
-	wxMemoryDC dcSplitter(renderBitmap);
+
+
+	pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
 
 	if (window1->IsShown())
 	{
 		wxWindowDC dc(window1);
-		dcSplitter.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posY += dc.GetSize().GetHeight();
 	}
 
 	if (separationBar->IsShown())
 	{
 		wxWindowDC dc(separationBar);
-		dcSplitter.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posY += dc.GetSize().GetHeight();
 	}
 	if (window2->IsShown())
 	{
 		wxWindowDC dc(window2);
-		dcSplitter.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 	}
-	dcSplitter.SelectObject(wxNullBitmap);
+
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+	//dcSplitter.SelectObject(wxNullBitmap);
 }
 
 /*
@@ -90,29 +95,30 @@ void CSplitter::GenerateVerticalRenderBitmap()
 
 	int posX = 0;
 	//int posY = 0;
-	renderBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
-	wxMemoryDC dcSplitter(renderBitmap);
+	pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
 
 	if (window1->IsShown())
 	{
 		wxWindowDC dc(window1);
-		dcSplitter.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posX += dc.GetSize().GetWidth();
 	}
 
 	if (separationBar->IsShown())
 	{
 		wxWindowDC dc(separationBar);
-		dcSplitter.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posX += dc.GetSize().GetWidth();
 	}
 
 	if (window2->IsShown())
 	{
 		wxWindowDC dc(window2);
-		dcSplitter.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
+		pimpl->sourceDCContext.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 	}
-	dcSplitter.SelectObject(wxNullBitmap);
+
+	pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+	//dcSplitter.SelectObject(wxNullBitmap);
 }
 
 void CSplitter::SetWindow(wxWindow* window1, wxWindow* window2)
@@ -201,6 +207,7 @@ bool CSplitter::IsAllClose()
 CSplitter::~CSplitter()
 {
 	delete(separationBar);
+	delete pimpl;
 }
 
 
@@ -238,7 +245,7 @@ void CSplitter::SetWindow2FixPosition(const bool& fixPosition, const int& window
 void CSplitter::DrawSeparationBar(const int& x, const int& y, const int& width, const int& height)
 {
 	wxWindowDC dc(this);
-	dc.DrawBitmap(renderBitmap, 0, 0);
+	dc.DrawBitmap(pimpl->memBitmap, 0, 0);
 
 	if (horizontal)
 	{

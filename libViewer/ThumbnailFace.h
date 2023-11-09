@@ -39,7 +39,7 @@ namespace Regards::Viewer
 		                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement);
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void OnPictureClick(CThumbnailData* data) override;
-		void FindOtherElement( const int& x, const int& y) override;
+		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		CIcone* FindElement(const int& xPos, const int& yPos);

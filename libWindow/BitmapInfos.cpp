@@ -153,10 +153,8 @@ void CBitmapInfos::UpdateScreenRatio()
 
 void CBitmapInfos::Redraw()
 {
-	//wxClientDC dc(this);
-	//DrawInformations(&dc);
-
-	this->Refresh();
+	wxClientDC dc(this);
+	DrawInformations(&dc);
 }
 
 void CBitmapInfos::DrawInformations(wxDC* dc)
@@ -168,7 +166,7 @@ void CBitmapInfos::DrawInformations(wxDC* dc)
 	wxString libelle = CFileUtility::GetFileName(filename);
 	CThemeFont font = bitmapInfosTheme.themeFont;
 	font.SetFontSize(bitmapInfosTheme.themeFont.GetFontSize() / scale_factor);
-	wxSize size = GetSizeTexte(dc, libelle, font);
+	wxSize size = GetSizeTexte(libelle, font);
 
 	DrawTexte(dc, libelle, (GetWindowWidth() / scale_factor - size.x) / 2, 0, font);
 
@@ -183,7 +181,7 @@ void CBitmapInfos::DrawInformations(wxDC* dc)
 		message = dateInfos;
 	}
 
-	size = GetSizeTexte(dc, message, font);
+	size = GetSizeTexte(message, font);
 	DrawTexte(dc, message, (GetWindowWidth() / scale_factor - size.x) / 2, (GetWindowHeight() / scale_factor) / 2,
 	          font);
 }

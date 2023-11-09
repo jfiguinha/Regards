@@ -170,7 +170,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	else if (bitmapCheckOff.IsOk())
 		deviceContext->DrawBitmap(bitmapCheckOff, xPos, yPos);
 
-	wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
+	wxSize size = CWindowMain::GetSizeTexte(libelleSelectAll, theme.themeFont);
 
 	xPos = xPos + 5 + bitmapCheckOn.GetWidth();
 	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
@@ -190,7 +190,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	rcSelectIcone.width = bitmapCheckOn.GetWidth();
 	rcSelectIcone.height = bitmapCheckOn.GetHeight();
 
-	size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
+	size = CWindowMain::GetSizeTexte(libelleSelectAll, theme.themeFont);
 
 	xPos = xPos + 5 + bitmapCheckOn.GetWidth();
 	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
@@ -208,7 +208,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	rcDeleteIcone.width = bitmapDelete.GetWidth();
 	rcDeleteIcone.height = bitmapDelete.GetHeight();
 
-	sizeDelete = CWindowMain::GetSizeTexte(deviceContext, libelleDelete, theme.themeFont);
+	sizeDelete = CWindowMain::GetSizeTexte(libelleDelete, theme.themeFont);
 
 	xPos = xPos + 5 + bitmapDelete.GetWidth();
 	yPos = y + (theme.GetHeight() - sizeDelete.y) - (bitmapDelete.GetHeight() - sizeDelete.y) / 2;

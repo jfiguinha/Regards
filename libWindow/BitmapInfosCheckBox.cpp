@@ -50,10 +50,8 @@ void CBitmapInfosCheckBox::UpdateScreenRatio()
 
 void CBitmapInfosCheckBox::Redraw()
 {
-	//wxClientDC dc(this);
-	//DrawInformations(&dc);
-
-	this->Refresh();
+	wxClientDC dc(this);
+	DrawInformations(&dc);
 }
 
 void CBitmapInfosCheckBox::SetCheckboxVisible(const bool& checkboxVisibility)
@@ -89,7 +87,7 @@ void CBitmapInfosCheckBox::DrawInformations(wxDC* dc)
 	wxString message = L"";
 	wxString libelle = CFileUtility::GetFileName(filename);
 
-	wxSize size = GetSizeTexte(dc, libelle, bitmapInfosTheme.themeFont);
+	wxSize size = GetSizeTexte(libelle, bitmapInfosTheme.themeFont);
 
 	if (!checkboxVisibility)
 		DrawTexte(dc, libelle, (GetWindowWidth() - size.x) / 2, (GetWindowHeight() - size.y) / 2,
@@ -128,7 +126,7 @@ void CBitmapInfosCheckBox::DrawInformations(wxDC* dc)
 		else if (bitmapCheckOff.IsOk())
 			dc->DrawBitmap(bitmapCheckOff, xPos, yPos);
 
-		size = GetSizeTexte(dc, libelleSelectAll, bitmapInfosTheme.themeFont);
+		size = GetSizeTexte(libelleSelectAll, bitmapInfosTheme.themeFont);
 
 		int x = xPos + 5 + bitmapCheckOn.GetWidth();
 		int y = (GetWindowHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;

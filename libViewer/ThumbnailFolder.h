@@ -35,7 +35,7 @@ namespace Regards::Viewer
 		void GenerateThumbnail();
 		static void  ExecuteThumbnailGen(void* param);
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
-		void FindOtherElement( const int& x, const int& y) override;
+		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		void RenderIconeWithVScroll(wxDC* dc) override;

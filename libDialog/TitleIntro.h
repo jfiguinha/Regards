@@ -19,6 +19,5 @@ namespace Regards::Introduction
 
 		wxString title;
 		CThemeIntroLogo themeFont;
-		int height = 0;
 	};
 }

@@ -38,7 +38,7 @@ namespace Regards
 			};
 
 		private:
-			void MouseOver(CPositionElement* element, const int& x, const int& y, const int& posLargeur,
+			void MouseOver(wxDC* dc, CPositionElement* element, const int& x, const int& y, const int& posLargeur,
 			               const int& posHauteur, bool& update) override;
 			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 			                    const int& posLargeur, const int& posHauteur) override;

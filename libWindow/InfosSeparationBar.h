@@ -4,6 +4,7 @@
 //#include <Photos.h>
 class CRegardsBitmap;
 class CThumbnailData;
+class CMemBitmap;
 
 
 namespace Regards::Window
@@ -58,6 +59,7 @@ namespace Regards::Window
 
 		wxString title;
 		wxRect titleRectPos;
+		CMemBitmap* pimpl;
 	};
 
 	class CItemPosSeparationBar

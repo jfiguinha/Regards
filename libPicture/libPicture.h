@@ -16,6 +16,7 @@ class CImageLoadingFormat;
 class CPictureData;
 class CRegardsConfigParam;
 class CReadMacOSImage;
+class CMemBitmap;
 
 namespace Regards
 {
@@ -123,6 +124,7 @@ namespace Regards
 			int svgWidth;
 			int svgHeight;
 			CRegardsConfigParam* configRegards;
+			CMemBitmap* pimpl;
 
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)

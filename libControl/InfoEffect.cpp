@@ -130,14 +130,14 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 	}
 }
 
-void CInfoEffect::MouseOver(CPositionElement* element, const int& x, const int& y,
+void CInfoEffect::MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
                             const int& posLargeur, const int& posHauteur, bool& update)
 {
 	int xPos = 0;
 	if (element->GetRow() > 0)
 		xPos = GetWidthRow(element->GetRow() - 1);
 
-	element->GetTreeElement()->MouseOver(element->GetX() + xPos, element->GetY(), update);
+	element->GetTreeElement()->MouseOver(deviceContext, element->GetX() + xPos, element->GetY(), update);
 }
 
 wxString CInfoEffect::GetFilename()

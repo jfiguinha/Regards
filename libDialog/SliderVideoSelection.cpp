@@ -5,6 +5,8 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
+#include <membitmap.h>
+#include <wx/dcbuffer.h>
 
 CSliderVideoSelection::CSliderVideoSelection(wxWindow* parent, wxWindowID id, wxWindow* eventWnd,
                                              const CThemeSlider& themeSlider)
@@ -41,10 +43,13 @@ CSliderVideoSelection::CSliderVideoSelection(wxWindow* parent, wxWindowID id, wx
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CSliderVideoSelection::OnMouseLeave));
 
 	button.Create(0, 0);
+
+	pimpl = new CMemBitmap(0, 0);
 }
 
 CSliderVideoSelection::~CSliderVideoSelection()
 {
+	delete pimpl;
 }
 
 bool CSliderVideoSelection::IsMouseOver()
@@ -131,7 +136,7 @@ int CSliderVideoSelection::DrawTimePast(wxDC* context, const wxString& libelle)
 {
 	CThemeFont font = themeSlider.font;
 	font.SetColorFont(wxColour(0, 0, 0));
-	wxSize filenameSize = GetSizeTexte(context, libelle, font);
+	wxSize filenameSize = GetSizeTexte(libelle, font);
 	int x = 1;
 	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, font);
@@ -142,7 +147,7 @@ int CSliderVideoSelection::DrawTotalTimeLibelle(wxDC* context, const wxString& l
 {
 	CThemeFont font = themeSlider.font;
 	font.SetColorFont(wxColour(0, 0, 0));
-	wxSize totalTimeSize = GetSizeTexte(context, libelle, font);
+	wxSize totalTimeSize = GetSizeTexte(libelle, font);
 
 	int y = (GetWindowHeight() - totalTimeSize.y) / 2;
 	int x = GetWindowWidth() - (totalTimeSize.x + 1);
@@ -163,21 +168,20 @@ void CSliderVideoSelection::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
+		pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
 
-		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
-		wxMemoryDC sourceDCContext(memBitmap);
-		FillRect(&sourceDCContext, rc, this->GetBackgroundColour());
+		FillRect(&pimpl->sourceDCContext, rc, this->GetBackgroundColour());
 
 		//Ecriture du temps pass�
-		int timePastSize = DrawTimePast(&sourceDCContext, timePast);
-		int totalTimeSize = DrawTotalTimeLibelle(&sourceDCContext, totalTime);
+		int timePastSize = DrawTimePast(&pimpl->sourceDCContext, timePast);
+		int totalTimeSize = DrawTotalTimeLibelle(&pimpl->sourceDCContext, totalTime);
 
 		//Ecriture du slider
 		positionSlider.x = themeSlider.GetMarge() + timePastSize;
 		positionSlider.width = GetWindowWidth() - (2 * themeSlider.GetMarge() + totalTimeSize + timePastSize);
 		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
-		DrawShapeElement(&sourceDCContext, positionSlider);
+		DrawShapeElement(&pimpl->sourceDCContext, positionSlider);
 
 
 		CalculPositionButton();
@@ -187,17 +191,19 @@ void CSliderVideoSelection::Draw(wxDC* context)
 			GetButtonHeight()))
 			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
 			                                            themeSlider.GetButtonHeight());
-		sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
+		pimpl->sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
 
 		if (!buttonTo.IsOk() || (buttonTo.GetWidth() != themeSlider.GetButtonWidth() || buttonTo.GetHeight() !=
 			themeSlider.GetButtonHeight()))
 			buttonTo = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
 			                                              themeSlider.GetButtonHeight());
-		sourceDCContext.DrawBitmap(buttonTo, positionButtonTo.x, positionButtonTo.y);
+		pimpl->sourceDCContext.DrawBitmap(buttonTo, positionButtonTo.x, positionButtonTo.y);
 
-		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &sourceDCContext, 0, 0);
-		sourceDCContext.SelectObject(wxNullBitmap);
+		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &pimpl->sourceDCContext, 0, 0);
+
+		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
+		//sourceDCContext.SelectObject(wxNullBitmap);
 	}
 }
 
@@ -404,16 +410,12 @@ void CSliderVideoSelection::OnLButtonUp(wxMouseEvent& event)
 
 void CSliderVideoSelection::on_paint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
+	wxBufferedPaintDC dc(this);
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
 
-	wxBitmap memBitmap(width, height);
-	wxMemoryDC memDC(memBitmap);
-	//wxBufferedPaintDC dc(this);
-	Draw(&memDC);
-	memDC.SelectObject(wxNullBitmap);
-	dc.DrawBitmap(memBitmap, 0, 0);
+	Draw(&dc);
+
 }

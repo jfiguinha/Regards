@@ -31,7 +31,7 @@ namespace Regards::Window
 		                  const int& typeValue = 1, const int& type = TYPE_SLIDE) override;
 
 	protected:
-		void MouseOver(CPositionElement* element, const int& x, const int& y,
+		void MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
 		               const int& posLargeur, const int& posHauteur, bool& update) override;
 		void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 		                    const int& posLargeur, const int& posHauteur) override;

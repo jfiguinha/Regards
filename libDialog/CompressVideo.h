@@ -10,6 +10,7 @@
 //(*Headers(TiffOption)
 //*)
 class CRegardsBitmap;
+class CMemBitmap;
 
 class CompressVideo : public wxDialog
 {
@@ -41,7 +42,9 @@ private:
 	void OnSetValueMaxProgressBar(wxCommandEvent& event);
 	void OnSetText(wxCommandEvent& event);
 	void OnSetBitmap(wxCommandEvent& event);
-	wxBitmap _localBmp;
+
+	CMemBitmap* pimpl;
+
 	//*)
 	bool isOk;
 	int rotation = 0;

@@ -198,6 +198,7 @@
     <ClInclude Include="font_quality.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="lang_id.h" />
+    <ClInclude Include="membitmap.h" />
     <ClInclude Include="nanosvg.h" />
     <ClInclude Include="nanosvgrast.h" />
     <ClInclude Include="picture_id.h" />

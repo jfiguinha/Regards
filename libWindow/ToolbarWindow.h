@@ -2,6 +2,8 @@
 #include "ToolbarButton.h"
 #include "WindowMain.h"
 
+class CMemBitmap;
+
 namespace Regards::Window
 {
 #define NAVIGATOR_LEFT 1
@@ -44,6 +46,8 @@ namespace Regards::Window
 
 		wxBitmap hbmNavigator;
 
+		CMemBitmap* pimpl;
+
 		VectorNavigatorElement navElement;
 		CToolbarElement* navPush;
 		CThemeToolbar themeToolbar;
@@ -59,7 +63,7 @@ namespace Regards::Window
 		bool m_bMouseMove;
 		bool m_bMouseOver;
 
-		wxBitmap background;
+		//wxBitmap background;
 		wxImage backPicture;
 		wxTimer* pushButton;
 	};
