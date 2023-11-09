@@ -4,7 +4,6 @@
 using namespace Regards::Window;
 
 class CRegardsBitmap;
-class CMemBitmap;
 
 class CSliderVideoSelection : public CWindowMain
 {
@@ -90,5 +89,4 @@ private:
 
 	CThemeSliderVideo themeSlider;
 	wxWindow* eventWnd;
-	CMemBitmap* pimpl;
 };

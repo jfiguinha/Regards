@@ -12,7 +12,6 @@ using namespace Regards::Window;
 #define SCREENFORMATID 5
 
 class CRegardsBitmap;
-class CMemBitmap;
 
 namespace Regards::Control
 {
@@ -112,7 +111,5 @@ namespace Regards::Control
 
 		bool buttonPreviousActif = false;
 		wxRect positionPreviousButton;
-
-		CMemBitmap* pimpl;
 	};
 }

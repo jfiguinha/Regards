@@ -29,7 +29,6 @@ class CVideoOptionCompress;
 class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
-class CMemBitmap;
 
 namespace Regards::Video
 {
@@ -153,8 +152,5 @@ private:
 	//bool skipEvent = false;
 	//bool previewShow = false;
 	CShowPreview* showBitmapWindow;
-
-	CMemBitmap * pimpl;
-
 	DECLARE_EVENT_TABLE()
 };

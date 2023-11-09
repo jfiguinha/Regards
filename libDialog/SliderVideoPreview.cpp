@@ -5,8 +5,6 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include <membitmap.h>
-#include <wx/dcbuffer.h>
 using namespace Regards::Control;
 
 wxDEFINE_EVENT(TIMER_MOUSE, wxTimerEvent);
@@ -51,8 +49,6 @@ CSliderVideoPreview::CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSlide
 	m_animation = new wxActivityIndicator(this, wxID_ANY);
 	m_animation->SetSize(wxSize(this->CSliderVideoPreview::GetHeight(), this->CSliderVideoPreview::GetHeight()));
 	m_animation->SetBackgroundColour(themeSlider.colorBack);
-
-	pimpl = new CMemBitmap(0,0);
 }
 
 void CSliderVideoPreview::OnMouseClickTimer(wxTimerEvent& event)
@@ -220,14 +216,15 @@ void CSliderVideoPreview::Draw(wxDC* context)
 	{
 		wxRect rc = GetWindowRect();
 
-		pimpl->SetWindowSize(GetWindowWidth(), GetWindowHeight());
 
-		FillRect(&pimpl->sourceDCContext, rc, themeSlider.colorBack);
+		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
+		wxMemoryDC sourceDCContext(memBitmap);
+		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 
 		//Ecriture du temps pass�
-		int timePastSize = DrawTimePast(&pimpl->sourceDCContext, timePast);
+		int timePastSize = DrawTimePast(&sourceDCContext, timePast);
 		int volumeSize = 0; // DrawVolumeLibelle(&sourceDCContext, libelleVolume);
-		int totalTimeSize = DrawTotalTimeLibelle(&pimpl->sourceDCContext, totalTime, volumeSize);
+		int totalTimeSize = DrawTotalTimeLibelle(&sourceDCContext, totalTime, volumeSize);
 
 		//Ecriture du slider
 		positionSlider.x = themeSlider.GetMarge() + timePastSize + themeSlider.GetMarge() + themeSlider.
@@ -237,7 +234,7 @@ void CSliderVideoPreview::Draw(wxDC* context)
 			GetButtonVolumeDownWidth()) - positionSlider.x;
 		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
-		DrawShapeElement(&pimpl->sourceDCContext, positionSlider);
+		DrawShapeElement(&sourceDCContext, positionSlider);
 
 
 		CalculPositionButton();
@@ -246,18 +243,16 @@ void CSliderVideoPreview::Draw(wxDC* context)
 			GetButtonHeight()))
 			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
 			                                            themeSlider.GetButtonHeight());
-		pimpl->sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
+		sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
 		int xButtonPos = positionSlider.x + positionSlider.width + (totalTimeSize + themeSlider.GetMarge());
-		InsertPreviousButton(xButtonPos, &pimpl->sourceDCContext);
+		InsertPreviousButton(xButtonPos, &sourceDCContext);
 
 		xButtonPos += themeSlider.GetButtonSpeakerWidth() + 5;
-		InsertNextButton(xButtonPos, &pimpl->sourceDCContext);
+		InsertNextButton(xButtonPos, &sourceDCContext);
 
-		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &pimpl->sourceDCContext, 0, 0);
-
-		pimpl->sourceDCContext.SelectObject(wxNullBitmap);
-		//sourceDCContext.SelectObject(wxNullBitmap);
+		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &sourceDCContext, 0, 0);
+		sourceDCContext.SelectObject(wxNullBitmap);
 	}
 }
 
@@ -510,12 +505,16 @@ void CSliderVideoPreview::OnLButtonUp(wxMouseEvent& event)
 
 void CSliderVideoPreview::on_paint(wxPaintEvent& event)
 {
-	wxBufferedPaintDC dc(this);
+	wxPaintDC dc(this);
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
 
-	
-	Draw(&dc);
+	wxBitmap memBitmap(width, height);
+	wxMemoryDC memDC(memBitmap);
+	//wxBufferedPaintDC dc(this);
+	Draw(&memDC);
+	memDC.SelectObject(wxNullBitmap);
+	dc.DrawBitmap(memBitmap, 0, 0);
 }

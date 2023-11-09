@@ -6,7 +6,6 @@
 #include <wx/dcmemory.h>
 #include <wx/msgdlg.h>
 #include <LibResource.h>
-#include <membitmap.h>
 //*)
 
 //(*IdInit(IndexGenerator)
@@ -39,16 +38,20 @@ IndexGenerator::IndexGenerator(wxWindow* parent)
 	Connect(XRCID("ID_BUTTON2"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&IndexGenerator::OnbtCancelClick);
 	Connect(XRCID("ID_BUTTON3"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&IndexGenerator::OnbtColorClick);
 
-	pimpl = new CMemBitmap(StaticBitmap1->GetSize().x, StaticBitmap1->GetSize().y);
-	pimpl->sourceDCContext.SetBackground(*wxBLACK_BRUSH);
-	pimpl->sourceDCContext.Clear(); //fills the entire bitmap with green colour
-	StaticBitmap1->SetBitmap(pimpl->memBitmap);
+	wxBitmap bitmap(StaticBitmap1->GetSize().x, StaticBitmap1->GetSize().y);
+	wxMemoryDC memdc;
+	memdc.SelectObject(bitmap);
+	memdc.SetBackground(*wxBLACK_BRUSH);
+	memdc.Clear(); //fills the entire bitmap with green colour
+	memdc.SelectObject(wxNullBitmap);
+	StaticBitmap1->SetBitmap(bitmap);
 	//*)
 }
 
 IndexGenerator::~IndexGenerator()
 {
-	delete pimpl;
+	//(*Destroy(IndexGenerator)
+	//*)
 }
 
 
@@ -114,11 +117,14 @@ void IndexGenerator::OnbtColorClick(wxCommandEvent& event)
 		wxColourData color = colorDialog.GetColourData();
 		colour = color.GetColour();
 
-		pimpl->SetWindowSize(StaticBitmap1->GetSize().x, StaticBitmap1->GetSize().y);
-		pimpl->sourceDCContext.SetBackground(*wxBLACK_BRUSH);
-		pimpl->sourceDCContext.Clear(); //fills the entire bitmap with green colour
-		StaticBitmap1->SetBitmap(pimpl->memBitmap);
 
+		wxBitmap bitmap(StaticBitmap1->GetSize().x, StaticBitmap1->GetSize().y);
+		wxMemoryDC memdc;
+		memdc.SelectObject(bitmap);
+		memdc.SetBackground(colour);
+		memdc.Clear(); //fills the entire bitmap with green colour
+		memdc.SelectObject(wxNullBitmap);
+		StaticBitmap1->SetBitmap(bitmap);
 	}
 }
 

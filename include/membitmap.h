@@ -24,11 +24,9 @@ public:
 
 	void SetWindowSize(int width, int height)
 	{
-		if (this->width != width || this->height != height)
-		{
-			memBitmap = wxBitmap(width, height, 32);
-			sourceDCContext.SelectObjectAsSource(memBitmap);
-		}
+		memBitmap = wxBitmap(width, height, 32);
+		sourceDCContext.SelectObjectAsSource(memBitmap);
+
 
 	}
 

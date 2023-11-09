@@ -1,8 +1,7 @@
 #pragma once
 #include <theme.h>
 #include "ToolbarElement.h"
-
-class CMemBitmap;
+//#include "SliderInterface.h"
 
 namespace Regards::Window
 {
@@ -42,7 +41,7 @@ namespace Regards::Window
 		int GetFirstValue();
 		int GetLastValue();
 
-		CMemBitmap* pimpl;
+
 		wxBitmap background;
 		CSliderInterface* eventInterface;
 		CThemeSlider themeSlider;

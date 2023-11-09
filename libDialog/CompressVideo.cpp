@@ -2,7 +2,7 @@
 #include "CompressVideo.h"
 #include <window_id.h>
 #include <wx/dcmemory.h>
-#include <membitmap.h>
+
 
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(CompressVideo)
@@ -48,9 +48,7 @@ CompressVideo::CompressVideo(wxWindow* parent, int rotation)
 	bitmap->Show(false);
 #endif
 	wxSize size = bitmap->GetSize();
-	pimpl = new CMemBitmap(size.GetWidth(), size.GetHeight());
-
-
+	_localBmp = wxBitmap(size.GetWidth(), size.GetHeight(), -1);
 }
 
 void CompressVideo::OnSetBitmap(wxCommandEvent& event)
@@ -59,7 +57,8 @@ void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 	if (size.GetWidth() == 16)
 	{
 		bitmap->SetSize(344, 240);
-		pimpl->SetWindowSize(size.GetWidth(), size.GetHeight());
+		size = wxSize(344, 240);
+		_localBmp = wxBitmap(size.GetWidth(), size.GetHeight(), -1);
 	}
 
 	auto bmp = static_cast<wxImage*>(event.GetClientData());
@@ -113,20 +112,21 @@ void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 	int yPos = (size.GetHeight() - scale.GetHeight()) / 2;
 
 
-
-	pimpl->sourceDCContext.SetBackground(*wxBLACK_BRUSH);
-	pimpl->sourceDCContext.Clear();
-	pimpl->sourceDCContext.DrawBitmap(scale, xPos, yPos);
-
+	wxMemoryDC bbBuffer;
+	bbBuffer.SelectObject(_localBmp);
+	bbBuffer.SetBackground(*wxBLACK_BRUSH);
+	bbBuffer.Clear();
+	bbBuffer.DrawBitmap(scale, xPos, yPos);
+	bbBuffer.SelectObject(wxNullBitmap);
 
 
 #ifdef __APPLE__
    // bitmap->SetPosition(xPos, yPos);
-    bitmap->SetBitmap(pimpl->memBitmap);
+    bitmap->SetBitmap(_localBmp);
 #else
 	wxPoint pt = bitmap->GetPosition();
 	wxClientDC dc(this);
-	dc.DrawBitmap(pimpl->memBitmap, pt.x, pt.y);
+	dc.DrawBitmap(_localBmp, pt.x, pt.y);
 #endif
 	delete bmp;
 }
