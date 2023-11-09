@@ -18,6 +18,8 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
+CMemBitmap* CIcone::pimpl = nullptr;
+
 wxImage CIcone::videoCadre;
 wxImage CIcone::photoTemp;
 
@@ -77,7 +79,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	if (&other == this)
 		return *this;
 
-	pimpl = new CMemBitmap(0, 0);
+
 
 	//---------------------------------------------------
 	//Theme
@@ -226,7 +228,8 @@ CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 	useBackgroundColor = false;
 	thumbnailIconeCache = config->GetThumbnailIconeCache();
 	redraw = true;
-	pimpl = new CMemBitmap(0, 0);
+	if (pimpl == nullptr)
+		pimpl = new CMemBitmap(0, 0);
 }
 
 void CIcone::SetBackgroundColor(const wxColour& backgroundColor)
@@ -602,8 +605,6 @@ CIcone::~CIcone(void)
 			delete pThumbnailData;
 		pThumbnailData = nullptr;
 	}
-
-	delete pimpl;
 }
 
 //----------------------------------------------------------------------------------

@@ -136,7 +136,7 @@ namespace Regards::Window
 		wxImage bitmapDelete;
 		bool useBackgroundColor;
 		wxColour backgroundColor;
-		CMemBitmap* pimpl;
+		static CMemBitmap * pimpl;
 
 		wxString tempImageVector;
 		bool pictureLoad;
