@@ -189,6 +189,7 @@
         <Library Value="Window"/>
         <Library Value="SqlData"/>
         <Library Value="SqlEngine"/>
+        <Library Value="sqlite3"/>
         <Library Value="Picture"/>
         <Library Value="Utility"/>
         <Library Value="heif"/>
