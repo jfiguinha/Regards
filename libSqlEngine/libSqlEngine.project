@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libSqlEngine" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Sqlite">
-    <File Name="sqlite3ext.h"/>
-    <File Name="sqlite3.h"/>
-    <File Name="sqlite3.c"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
