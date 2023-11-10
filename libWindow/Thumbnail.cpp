@@ -22,11 +22,6 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
-std::map<wxString, bool> CThumbnail::listFile;
-std::mutex CThumbnail::muListFile;
-
-
-
 class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
@@ -37,12 +32,18 @@ class CImageLoadingFormat;
 #define TIMER_REFRESH_THUMBNAIL 10
 #define TIMER_REFRESH_ACTIF 8
 #define TIMER_REFRESH_SELECT 9
-
 #define TIMER_TIME_REFRESH 1000 / 25
+
 
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 
+class CListToClean
+{
+public:
+	CIconeList* list;
+	std::time_t timeToAdd;
+};
 
 class CThreadLoadingBitmap
 {
@@ -491,6 +492,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	refreshSelectTimer->Start(timeSelect, TRUE);
 }
 
+
 void CThumbnail::OnTimerRefreshThumbnail(wxTimerEvent & event)
 {
 	this->Refresh();
@@ -776,9 +778,13 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
-	iconeListLocal->EraseThumbnailList();
+	CListToClean* listToAdd = new CListToClean();
+	time(&listToAdd->timeToAdd);
+	listToAdd->list = iconeListLocal;
+	//listToAdd->timeToAdd = std::chrono::system_clock::now();
+	listToErrase.push_back(listToAdd);
 
-	delete iconeListLocal;
+
 	iconeListLocal = nullptr;
 
 	muListFile.lock();
@@ -1064,6 +1070,30 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 	{
 		ExecuteTimer(numActifPhotoId, refreshActifTimer);
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
+	}
+
+
+	if (!listToErrase.empty())
+	{
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (CListToClean* element : listToErrase)
+		{
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 2)
+			{
+				element->list->EraseThumbnailList();
+				delete element->list;
+				element->list = nullptr;
+
+				listToErrase.erase(listToErrase.begin() + i);
+			}
+			else
+				i++;
+
+		}
+
 	}
 
 	VideoProcessThumbnail();

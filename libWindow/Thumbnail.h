@@ -5,14 +5,18 @@
 #include <wx/activityindicator.h>
 #include "WindowMain.h"
 #include <wx/animate.h>
+#include <queue>
 using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
+
+class CListToClean;
 
 namespace Regards::Window
 {
 	class CScrollbarHorizontalWnd;
 	class CScrollbarVerticalWnd;
+
 
 	class CThumbnail : public CWindowMain
 	{
@@ -134,6 +138,7 @@ namespace Regards::Window
 		void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 		void OnAnimation(wxTimerEvent& event);
 		void OnRefreshIconeSelect(wxTimerEvent& event);
+		void OnTimerCleanMemory(wxTimerEvent& event);
 		void OnRefreshIconeActif(wxTimerEvent& event);
 		void OnTimerClick(wxTimerEvent& event);
 		void OnTimerRefreshThumbnail(wxTimerEvent& event);
@@ -248,7 +253,8 @@ namespace Regards::Window
 		bool needToRefresh = false;
 
 		std::mutex muEraseList;
-		static std::map<wxString, bool> listFile;
-		static std::mutex muListFile;
+		std::vector<CListToClean *> listToErrase;
+		std::map<wxString, bool> listFile;
+		std::mutex muListFile;
 	};
 }
