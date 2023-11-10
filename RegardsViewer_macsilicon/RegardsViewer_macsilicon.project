@@ -184,6 +184,7 @@
         <Library Value="RegardsCL"/>
         <Library Value="SqlData"/>
         <Library Value="SqlEngine"/>
+        <Library Value="sqlite3"/>
         <Library Value="Picture"/>
         <Library Value="DeepLearning"/>
         <Library Value="Window"/>
