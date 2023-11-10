@@ -171,11 +171,7 @@ bool MyApp::OnInit()
     //wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
 #endif
 
-	int retCode = sqlite3_config(SQLITE_CONFIG_SERIALIZED);
-	if (retCode == SQLITE_OK)
-	{
-		printf("SQLite in serialized mode \n");
-	}
+
 
 #ifdef WIN32
 	LCID lcid = GetThreadLocale();
