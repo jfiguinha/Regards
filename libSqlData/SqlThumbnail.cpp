@@ -71,7 +71,7 @@ bool CSqlThumbnail::InsertThumbnail(const wxString& path, std::vector<uchar>& da
 		fileOut.Write(data.data(), data.size());
 		fileOut.Close();
 		returnValue = ExecuteRequestWithNoResult(
-			"INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
+			"INSERT or REPLACE INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
 			+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 	}
 
