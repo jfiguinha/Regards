@@ -115,8 +115,6 @@ bool CSQLRemoveData::DeleteFolder(const int& numFolder)
 	CSqlPhotoGPS sqlPhotoGps;
 	sqlPhotoGps.DeleteListOfPhoto(listPhoto);
 
-	CLibPicture::RemoveVideo(listPhoto);
-
 	//Suppression des critères des photos
 	CSqlCriteria sqlCriteria;
 	sqlCriteria.DeleteCriteriaAlone();

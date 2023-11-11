@@ -12,6 +12,7 @@ COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName, const bool& use
 
 	isOpen = capture->isOpened();
 
+	/*
 	cv::Mat frame;
 
 	if (isOpen)
@@ -20,7 +21,7 @@ COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName, const bool& use
 	cv::Size s = frame.size();
 	height = s.height;
 	width = s.width;
-
+	*/
 }
 
 COpenCVVideoPlayer::~COpenCVVideoPlayer()

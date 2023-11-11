@@ -1818,6 +1818,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	}
 	else if (iFormat == HEIC)
 	{
+		/*
 		int angle = 0;
 		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName), angle);
 		if (!bitmap.empty())
@@ -1835,6 +1836,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		{
 			notThumbnail = true;
 		}
+		*/
 	}
 	else
 	{
@@ -1843,13 +1845,13 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		printf("CLibPicture::LoadThumbnail \n");
 		int orientation = -1;
 		wxString extension;
-		wxMemoryInputStream* memFile = nullptr;
+		wxImage jpegImage;
 		CMetadataExiv2 pictureMetadata(fileName);
 		if (pictureMetadata.HasThumbnail())
 		{
-			memFile = pictureMetadata.DecodeThumbnail(extension, orientation);
+			jpegImage = pictureMetadata.DecodeThumbnail(extension, orientation);
 		}
-		if (memFile == nullptr && !fromExifOnly)
+		if (!jpegImage.IsOk() && !fromExifOnly)
 		{
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
@@ -1860,12 +1862,10 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				//imageLoading->ApplyExifOrientation();
 			}
 		}
-		else if (memFile != nullptr)
+		else if (jpegImage.IsOk())
 		{
 			printf("File to process : %s \n", CConvertUtility::ConvertToUTF8(fileName));
-			//auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
-			wxImage jpegImage;
-			jpegImage.LoadFile(*memFile, wxBITMAP_TYPE_JPEG);
+
 			if (jpegImage.GetWidth() > 0 && jpegImage.GetHeight() > 0)
 			{
 				imageLoading = new CImageLoadingFormat();
@@ -1881,7 +1881,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			{
 				notThumbnail = true;
 			}
-			delete memFile;
+
 		}
 
 
@@ -2144,6 +2144,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				cv::Mat picture;
 				int orientation = 0;
+				/*
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
@@ -2160,7 +2161,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay,
 					                            numPicture);
 				}
-
+				*/
 				if (!picture.empty())
 				{
 					bitmap->SetPicture(picture);

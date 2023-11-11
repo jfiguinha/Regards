@@ -22,7 +22,7 @@ namespace Regards
 			int GetOrientation();
 			vector<CMetadata> GetMetadata();
 			bool CopyMetadata(const wxString& output);
-			wxMemoryInputStream* DecodeThumbnail(wxString& extension, int& orientation);
+			wxImage DecodeThumbnail(wxString& extension, int& orientation);
 			void SetDateTime(const wxString& dateTime);
 			void SetOrientation(const int& orientation);
 			void SetGpsInfos(const wxString& latitudeRef, const wxString& longitudeRef, const wxString& latitude,
@@ -35,7 +35,7 @@ namespace Regards
 		private:
 			Exiv2::URationalValue::UniquePtr GetGpsRationalValue(const wxString& gpsValue);
 			wxString GetGpsfValue(const wxString& gpsValue);
-			wxMemoryInputStream* LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation);
+			wxImage LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation);
 			void AddAsciiValue(wxString key, wxString value, Exiv2::ExifData& exifData);
 			void AddRationalValue(wxString keyName, wxString value, Exiv2::ExifData& exifData);
 			wxString GetQuickTimeDate(int64_t dateQuicktime);

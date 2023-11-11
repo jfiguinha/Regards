@@ -2,6 +2,7 @@
 #include "videothumb.h"
 #include "ImageVideoThumbnail.h"
 #include "OpenCVVideoPlayer.h"
+#include "VideoPlayer.h"
 #include <libPicture.h>
 #include <ConvertUtility.h>
 using namespace Regards::Video;
@@ -10,27 +11,39 @@ using namespace Regards::Picture;
 class CThumbnailVideoPimpl
 {
 public:
-	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware) 
+	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardwares)
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-		videoThumbnailer = new COpenCVVideoPlayer(filename, false);
 
-		width = videoThumbnailer->GetWidth();
-		height = videoThumbnailer->GetHeight();
-		rotation = videoThumbnailer->GetOrientation();
-		m_videoMovieDuration = videoThumbnailer->GetDuration();
+		CVideoPlayer *	_videoThumbnailer = new CVideoPlayer(filename, false);
+		width = _videoThumbnailer->GetWidth();
+		height = _videoThumbnailer->GetHeight();
+		rotation = _videoThumbnailer->GetOrientation();
+		m_videoMovieDuration = _videoThumbnailer->GetDuration();
+		isOk = _videoThumbnailer->IsOk();
+		_videoThumbnailer->GetAspectRatio(ascpectNominator, ascpectDenominator);
+		delete _videoThumbnailer;
+
+		
+	}
+
+	void GeneratePointer()
+	{
+		if (videoThumbnailer == nullptr)
+			videoThumbnailer = new COpenCVVideoPlayer(filename, false);
 	}
 
 	bool IsOpen()
 	{
-		return videoThumbnailer->isOpened();
+
+		return isOk;
 	}
 
 	~CThumbnailVideoPimpl()
 	{
-		//delete movieDecoder;
-		delete videoThumbnailer;
+		if(videoThumbnailer != nullptr)
+			delete videoThumbnailer;
 	}
 
 	void SetPercent(const int& percent)
@@ -61,9 +74,7 @@ public:
 		{
 			int srcWidth = width;
 			int srcHeight = height;
-			int ascpectNominator = 0;
-			int ascpectDenominator = 0;
-			videoThumbnailer->GetAspectRatio(ascpectNominator, ascpectDenominator);
+
 
 			if (ascpectNominator != 0 && ascpectDenominator != 0)
 			{
@@ -85,6 +96,8 @@ public:
 
 	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
 	{
+		GeneratePointer();
+
 		if (m_seekTimeInSecond > 0)
 		{
 			try
@@ -121,12 +134,16 @@ public:
 		//CPictureUtility::ApplyTransform(image);
 	}
 
+	int ascpectNominator = 0;
+	int ascpectDenominator = 0;
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
 	IVideoPlayer* videoThumbnailer = nullptr;
+	IVideoPlayer* videoThumbnailerInfos = nullptr;
 	int width = 0;
 	int height = 0;
 	int rotation = 0;
+	bool isOk = false;
 	wxString filename = "";
 };
 

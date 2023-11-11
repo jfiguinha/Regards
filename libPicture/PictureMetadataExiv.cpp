@@ -754,11 +754,10 @@ vector<CMetadata> CPictureMetadataExiv::GetMetadata()
 	return metadataList;
 }
 
-
-wxMemoryInputStream* CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension,
+wxImage CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension,
 	int& orientation)
 {
-	wxMemoryInputStream* cxMemFile = nullptr;
+	wxImage image;
 	if (dataIn != nullptr)
 	{
 		Exiv2::ExifThumb thumb(*dataIn);
@@ -775,15 +774,16 @@ wxMemoryInputStream* CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData
 				orientation = atoi(value.c_str());
 			}
 
-			cxMemFile = new wxMemoryInputStream(data.data(), data.size());
+			wxMemoryInputStream cxMemFile(data.data(), data.size());
+			image.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
 		}
 	}
-	return cxMemFile;
+	return image;
 }
 
-wxMemoryInputStream* CPictureMetadataExiv::DecodeThumbnail(wxString& extension, int& orientation)
+wxImage CPictureMetadataExiv::DecodeThumbnail(wxString& extension, int& orientation)
 {
-	wxMemoryInputStream* bitmap = nullptr;
+	wxImage bitmap;
 	try
 	{
 		Exiv2::ExifData& exifData = exif->exifData();

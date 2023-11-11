@@ -204,9 +204,10 @@ vector<CMetadata> CMetadataExiv2::GetMetadata()
 }
 
 
-wxMemoryInputStream* CMetadataExiv2::DecodeThumbnail(wxString& extension, int& orientation)
+wxImage CMetadataExiv2::DecodeThumbnail(wxString& extension, int& orientation)
 {
+	wxImage image;
 	if (metaExiv != nullptr)
-		return metaExiv->DecodeThumbnail(extension, orientation);
-	return nullptr;
+		image = metaExiv->DecodeThumbnail(extension, orientation);
+	return image;
 }

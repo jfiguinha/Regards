@@ -57,6 +57,18 @@ public:
 
 	~CThreadLoadingBitmap()
 	{
+		if (_thread != nullptr)
+		{
+			_thread->join();
+			delete _thread;
+			_thread = nullptr;
+		}
+		if (_threadVideo != nullptr)
+		{
+			_threadVideo->join();
+			delete _threadVideo;
+			_threadVideo = nullptr;
+		}
 	};
 
 	int percent;
@@ -1120,9 +1132,22 @@ void CThumbnail::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
+	threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+	/*
+	CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+	if (imageLoad != nullptr)
+	{
+		threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
+		delete imageLoad;
+	}
+	*/
+	//threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+
+	
 	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
 		TestIsAnimation(threadLoadingBitmap->filename))
 	{
+
 		vector<CImageVideoThumbnail*> listVideo;
 		libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo, true, true);
 
