@@ -162,7 +162,7 @@ namespace Regards::Window
 		wxImage pictureLoading;
 		wxImage transparent;
 		wxImage scaleBackup;
-		
+		wxBitmap localmemBitmap_backup;
 		bool redraw = true;
 	};
 

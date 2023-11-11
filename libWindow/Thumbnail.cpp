@@ -1081,9 +1081,9 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		for (CListToClean* element : listToErrase)
 		{
 			int diff = difftime(ending, element->timeToAdd);
-			if (diff > 2)
+			if (diff > 5)
 			{
-				element->list->EraseThumbnailList();
+				//element->list->EraseThumbnailList();
 				delete element->list;
 				element->list = nullptr;
 
