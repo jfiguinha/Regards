@@ -56,7 +56,8 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
                 return nullptr;
             }
 		}
-		delete memFile;
+        if(memFile != nullptr)
+            delete memFile;
 	}
 	else
 	{

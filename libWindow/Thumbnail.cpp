@@ -1238,7 +1238,6 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 		if (pBitmapIcone != nullptr)
 		{
-			pBitmapIcone->muIcone.lock();
 
 			if (pBitmapIcone->GetData() != nullptr)
 				iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
@@ -1253,16 +1252,9 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						
 						if (numActif != nullptr)
 						{
-							numActif->muIcone.lock();
 							numActif->SetActive(false);
-							//numActif->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-							numActif->muIcone.unlock();
 						}
 					}
-
-					//pBitmapIcone = FindElement(xPos, yPos);
-					//if (pBitmapIcone != nullptr)
-					//	pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
 					needtoRedraw = true;
 				}
 			}
@@ -1280,8 +1272,6 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 				}
 				//needtoRedraw = true;
 			}
-
-			pBitmapIcone->muIcone.unlock();
 		}
 
 		

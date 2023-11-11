@@ -171,17 +171,6 @@ void CIconeList::EraseThumbnailList()
 	{
 		if (pIcone != nullptr)
 		{
-			pIcone->muIcone.lock();
-		}
-	}
-
-
-	for (CIcone* pIcone : pIconeList)
-	{
-		if (pIcone != nullptr)
-		{
-			pIcone->muIcone.unlock();
-
 			delete(pIcone);
 			pIcone = nullptr;
 		}

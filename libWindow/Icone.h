@@ -99,7 +99,7 @@ namespace Regards::Window
 			return pictureLoad;
 		}
 
-		std::mutex muIcone;
+		//std::mutex muIcone;
 
 	private:
 		void RenderPictureBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);
@@ -162,7 +162,7 @@ namespace Regards::Window
 		wxImage pictureLoading;
 		wxImage transparent;
 		wxImage scaleBackup;
-		wxBitmap localmemBitmap_backup;
+		
 		bool redraw = true;
 	};
 

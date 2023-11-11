@@ -257,7 +257,7 @@ bool CSqlLib::ExecuteSQLSelect(const wxString& query, CSqlResult* sqlResult)
 	else
 		sqlResult->SetStatement(pRes);
 
-    printf("CSqlLib::ExecuteSQLSelect : %s \n", m_strLastError.ToStdString().c_str());
+    //printf("CSqlLib::ExecuteSQLSelect : %s \n", m_strLastError.ToStdString().c_str());
 	//sync.unlock();
 	return m_bReturn;
 }
