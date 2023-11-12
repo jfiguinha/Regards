@@ -1496,11 +1496,25 @@ CImageLoadingFormat* CLibPicture::GetCancelPhoto(const wxString& szFileName, con
 	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
 #endif
 
-	CLibPicture libPicture;
-	auto bitmap = libPicture.LoadPicture(photoCancel);
-	if (widthThumbnail > 0 && heightThumbnail > 0)
-		bitmap->Resize(widthThumbnail, heightThumbnail, 0);
-	bitmap->SetFilename(szFileName);
+	CImageLoadingFormat* bitmap = new CImageLoadingFormat();
+	try
+	{
+		cv::Mat matPicture =
+			cv::imread(CConvertUtility::ConvertToStdString(photoCancel), cv::IMREAD_COLOR);
+		if (!matPicture.empty())
+		{
+			bitmap->SetFilename(szFileName);
+			bitmap->SetPicture(matPicture);
+			if (widthThumbnail > 0 && heightThumbnail > 0)
+				bitmap->Resize(widthThumbnail, heightThumbnail, 0);
+		}
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 
 	return bitmap;
 }
@@ -2109,7 +2123,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				cv::Mat picture;
 				int orientation = 0;
-				/*
+				
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
@@ -2126,7 +2140,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay,
 					                            numPicture);
 				}
-				*/
+				
 				if (!picture.empty())
 				{
 					bitmap->SetPicture(picture);
