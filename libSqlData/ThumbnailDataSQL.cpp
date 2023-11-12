@@ -19,23 +19,24 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	: CThumbnailData(filename)
 {
 
+	videoCaptureCV = nullptr;
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
 		isVideo = true;
 	}
-	
+
 	if(isVideo)
 	{
-		CLibPicture libPicture;
 		if (libPicture.TestIsVideo(filename))
 			nbFrame = 20;
 		else
 		{
 			CSqlThumbnailVideo sqlThumbnailVideo;
-			sqlThumbnailVideo.GetNbThumbnail(filename);
+			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
 	}
+
 }
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)
@@ -49,6 +50,29 @@ int CThumbnailDataSQL::GetNbFrame()
 	if (nbFrame > 0)
 		return nbFrame;
 	return 1;
+}
+
+
+void CThumbnailDataSQL::SetMouseOn()
+{
+	if (isVideo && videoCaptureCV == nullptr)
+	{
+		videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_FFMPEG);
+		videoCaptureCV->set(cv::CAP_PROP_POS_FRAMES, videoFramePos);
+	}
+
+	mouseOn = true;
+}
+
+void CThumbnailDataSQL::SetMouseOut()
+{
+	mouseOn = false;
+
+	if (videoCaptureCV != nullptr)
+		delete videoCaptureCV;
+	videoCaptureCV = nullptr;
+
+	oldVideoFrame = videoFramePos;
 }
 
 bool CThumbnailDataSQL::TestBitmap()
@@ -79,39 +103,31 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
-			if (isVideo && videoCaptureCV == nullptr)
-			{
-				videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_FFMPEG);
-			}
-
 			bool grabbed = false;
-			if (videoCaptureCV != nullptr)
+			if (mouseOn)
 			{
-				if (oldnumFrame != numFrame)
+				if (!videoCaptureCV->read(cvImg))
 				{
-
-					if (!videoCaptureCV->read(cvImg))
-					{
-						videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
-						grabbed = videoCaptureCV->read(cvImg);
-						//time_pos = 0;
-					}
-					else
-						grabbed = true;
-
-					if (grabbed)
-					{
-						int w = cvImg.cols;
-						int h = cvImg.rows;
-						cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-						frameOut = wxImage(w, h, cvImg.data, true);
-						oldnumFrame = numFrame;
-					}
+					videoFramePos = 0;
+					videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
+					grabbed = videoCaptureCV->read(cvImg);
 				}
 				else
+				{
+					videoFramePos++;
 					grabbed = true;
+				}
+
+				if (grabbed)
+				{
+					int w = cvImg.cols;
+					int h = cvImg.rows;
+					cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+					frameOut = wxImage(w, h, cvImg.data, true);
+				}
 			}
 
+			
 			if (!grabbed)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;

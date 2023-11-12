@@ -1166,31 +1166,13 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bool isFind = false;
 				int orientation = 0;
 				cv::Mat mat;
-				CThumbnailVideo* thumbnail = nullptr;
-				muMovie.lock();
-				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-				it = movieList.find(szFileName);
-				if (it != movieList.end())
-				{
-					thumbnail = movieList[szFileName];
-					mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
-					orientation = thumbnail->GetOrientation();
-					isFind = true;
-				}
-				muMovie.unlock();
-				if (!isFind)
-				{
-					thumbnail = new CThumbnailVideo(szFileName, false);
-					muMovie.lock();
-					movieList[szFileName] = thumbnail;
-					mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
-					orientation = thumbnail->GetOrientation();
-					muMovie.unlock();
-				}
-
+				CThumbnailVideo* thumbnail = new CThumbnailVideo(szFileName, false);
+				mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(szFileName);
+				delete thumbnail;
 				break;
 			}
 		default: ;
@@ -1647,31 +1629,14 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case MOV:
 			{
 				bool isFind = false;
-				CThumbnailVideo* thumbnail = nullptr;
+				CThumbnailVideo* thumbnail = new CThumbnailVideo(szFileName, false);
 				vector<CImageVideoThumbnail*> listVideo;
-				muMovie.lock();
-				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-				it = movieList.find(szFileName);
-				if (it != movieList.end())
-				{
-					thumbnail = movieList[szFileName];
-					listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
-					isFind = true;
-				}
-				muMovie.unlock();
-				if (!isFind)
-				{
-					thumbnail = new CThumbnailVideo(szFileName, false);
-					muMovie.lock();
-					movieList[szFileName] = thumbnail;
-					listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
-					muMovie.unlock();
-				}
-
+				listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);
 				}
+				delete thumbnail;
 				break;
 			}
 
@@ -1818,7 +1783,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	}
 	else if (iFormat == HEIC)
 	{
-		/*
+
 		int angle = 0;
 		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName), angle);
 		if (!bitmap.empty())
@@ -1836,7 +1801,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		{
 			notThumbnail = true;
 		}
-		*/
+
 	}
 	else
 	{
@@ -2703,34 +2668,17 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case MOV:
 			{
 				bool isFind = false;
-				CThumbnailVideo* thumbnail = nullptr;
+				CThumbnailVideo* thumbnail = new CThumbnailVideo(fileName, false);
 				int orientation = 0;
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				cv::Mat mat;
-				muMovie.lock();
-				std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-				it = movieList.find(fileName);
-				if (it != movieList.end())
-				{
-					thumbnail = movieList[fileName];
-					mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
-					orientation = thumbnail->GetOrientation();
-					isFind = true;
-				}
-				muMovie.unlock();
-				if (!isFind)
-				{
-					thumbnail = new CThumbnailVideo(fileName, false);
-					muMovie.lock();
-					movieList[fileName] = thumbnail;
-					mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
-					orientation = thumbnail->GetOrientation();
-					muMovie.unlock();
-				}
-
+				thumbnail = movieList[fileName];
+				mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
+				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(fileName);
+				delete thumbnail;
 			}
 			break;
 

@@ -28,6 +28,9 @@ public:
 		return false;
 	}
 
+	void SetMouseOn();
+	void SetMouseOut();
+
 	void SetBitmap(wxImage bitmap) override;
 	wxImage GetwxImage() override;
 	int GetNbFrame() override;
@@ -40,5 +43,8 @@ private:
 	int time_pos = 0;
 	wxImage frameOut;
 	int oldnumFrame = -1;
+	int oldVideoFrame = 0;
+	int videoFramePos = 0;
+	bool mouseOn = false;
 	cv::VideoCapture* videoCaptureCV = nullptr;
 };

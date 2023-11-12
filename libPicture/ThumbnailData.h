@@ -49,6 +49,9 @@ public:
 		return image;
 	};
 
+	virtual void SetMouseOn() {};
+	virtual void SetMouseOut() {};
+
 	void SetForceRefresh(const bool& refresh);
 	bool GetForceRefresh();
 
