@@ -101,10 +101,14 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	}
 	else
 	{
+		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
+			return frameOut;
+
+
 		if (numFrame < nbFrame)
 		{
 			bool grabbed = false;
-			if (mouseOn)
+			if (mouseOn && isVideo && videoCaptureCV != nullptr)
 			{
 				if (!videoCaptureCV->read(cvImg))
 				{

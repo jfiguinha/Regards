@@ -1024,9 +1024,17 @@ void CIcone::SetActive(const bool& value)
 	if (state != SELECTEDICONE)
 	{
 		if (value)
+		{
 			state = ACTIFICONE;
+			pThumbnailData->SetMouseOn();
+			
+		}	
 		else
+		{
 			state = INACTIFICONE;
+			pThumbnailData->SetMouseOut();
+		}
+
 	}
 
 	redraw = true;
