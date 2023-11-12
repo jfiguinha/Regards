@@ -19,6 +19,8 @@ public:
 		CVideoPlayer *	_videoThumbnailer = new CVideoPlayer(filename, false);
 		width = _videoThumbnailer->GetWidth();
 		height = _videoThumbnailer->GetHeight();
+		videowidth = _videoThumbnailer->GetWidth();
+		videoheight = _videoThumbnailer->GetHeight();
 		rotation = _videoThumbnailer->GetOrientation();
 		m_videoMovieDuration = _videoThumbnailer->GetDuration();
 		isOk = _videoThumbnailer->IsOk();
@@ -72,8 +74,8 @@ public:
 		}
 		else
 		{
-			int srcWidth = width;
-			int srcHeight = height;
+			int srcWidth = videowidth;
+			int srcHeight = videoheight;
 
 
 			if (ascpectNominator != 0 && ascpectDenominator != 0)
@@ -113,8 +115,8 @@ public:
 
 		image = videoThumbnailer->GetVideoFrame();
 
-		width = image.size().width;
-		height = image.size().height;
+		videowidth = image.size().width;
+		videoheight = image.size().height;
 
 		if (thumbnailWidth > 0 && thumbnailHeight > 0)
 		{
@@ -145,6 +147,8 @@ public:
 	IVideoPlayer* videoThumbnailerInfos = nullptr;
 	int width = 0;
 	int height = 0;
+	int videowidth = 0;
+	int videoheight = 0;
 	int rotation = 0;
 	bool isOk = false;
 	wxString filename = "";
