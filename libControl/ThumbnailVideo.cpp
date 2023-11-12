@@ -411,36 +411,39 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 		{
 			CImageVideoThumbnail* bitmap = listVideo[i];
 
-			unsigned long outputsize = 0;
+			if (bitmap->image.IsOk())
+			{
+				wxString localName = sqlThumbnailVideo.InsertThumbnail(label->filename, bitmap->image.GetWidth(),
+					bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
+					bitmap->timePosition);
 
-			wxMemoryOutputStream memOut;
-			bitmap->image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
-			std::vector<uchar> dest(memOut.GetLength());
-			memOut.CopyTo(&dest.at(0), memOut.GetLength());
-			if (dest.size())
-				sqlThumbnailVideo.InsertThumbnail(label->filename, dest, bitmap->image.GetWidth(),
-				                                  bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
-				                                  bitmap->timePosition);
+				bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+			}
 		}
 	}
 	else //Not support video
 	{
 		wxImage image;
 		image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-		wxString filename = label->filename;
-		CSqlThumbnailVideo sqlThumbnailVideo;
-		for (int i = 0; i < 20; i++)
+		if (image.IsOk())
 		{
-			wxMemoryOutputStream memOut;
-			image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
-			std::vector<uchar> buffer(memOut.GetLength());
-			memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+			wxString filename = label->filename;
+			CSqlThumbnailVideo sqlThumbnailVideo;
+			for (int i = 0; i < 20; i++)
+			{
+				wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, image.GetWidth(),
+					image.GetHeight(), i, 0, ((float)i / 20.0) * 100.0,
+					i);
 
-			sqlThumbnailVideo.InsertThumbnail(filename, buffer, image.GetWidth(),
-				image.GetHeight(), i, 0, ((float)i / 20.0) * 100.0,
-				i);
+				image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+			}
 		}
 	}
+
+	for (CImageVideoThumbnail* bitmap : listVideo)
+		delete bitmap;
+
+	listVideo.clear();
 
 	auto event = new wxCommandEvent(wxEVENT_ENDTHUMBNAIL);
 	event->SetClientData(label);

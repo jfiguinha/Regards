@@ -775,7 +775,7 @@ wxImage CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxS
 			}
 
 			wxMemoryInputStream cxMemFile(data.data(), data.size());
-			image.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
+			image.LoadFile(cxMemFile, wxBITMAP_TYPE_ANY);
 		}
 	}
 	return image;

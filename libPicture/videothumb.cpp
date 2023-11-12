@@ -113,6 +113,9 @@ public:
 
 		image = videoThumbnailer->GetVideoFrame();
 
+		width = image.size().width;
+		height = image.size().height;
+
 		if (thumbnailWidth > 0 && thumbnailHeight > 0)
 		{
 			int rotation = videoThumbnailer->GetOrientation();

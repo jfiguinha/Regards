@@ -28,7 +28,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			isFromExif = true;
 			picture = new CImageLoadingFormat();
 			wxImage jpegImage;
-			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
+			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_ANY);
 			picture->SetPicture(jpegImage);
 			picture->SetFilename(fileName);
 			//CPictureMetadataExiv metadata(fileName);

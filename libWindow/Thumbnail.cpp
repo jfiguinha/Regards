@@ -1133,16 +1133,6 @@ void CThumbnail::LoadPicture(void* param)
 		return;
 
 	threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-	/*
-	CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-	if (imageLoad != nullptr)
-	{
-		threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
-		delete imageLoad;
-	}
-	*/
-	//threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-
 	
 	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
 		TestIsAnimation(threadLoadingBitmap->filename))
@@ -1161,21 +1151,19 @@ void CThumbnail::LoadPicture(void* param)
 				CImageVideoThumbnail* bitmap = listVideo[i];
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 
-				wxMemoryOutputStream memOut;
-				bitmap->image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
-				std::vector<uchar> buffer(memOut.GetLength());
-				memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+				if (bitmap->image.IsOk())
+				{
+					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
+						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
+						bitmap->timePosition);
 
-				if (buffer.size() > 0)
-					sqlThumbnailVideo.InsertThumbnail(filename, buffer, bitmap->image.GetWidth(),
-					                                  bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
-					                                  bitmap->timePosition);
+					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+				}
+
 
 				if (i == selectPicture)
 					threadLoadingBitmap->bitmapIcone = bitmap->image;
 
-				if (i != selectPicture)
-					delete bitmap;
 			}
 		}
 		else //Not support video
@@ -1185,16 +1173,23 @@ void CThumbnail::LoadPicture(void* param)
 			CSqlThumbnailVideo sqlThumbnailVideo;
 			for (int i = 0; i < 20; i++)
 			{
-				wxMemoryOutputStream memOut;
-				threadLoadingBitmap->bitmapIcone.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
-				std::vector<uchar> buffer(memOut.GetLength());
-				memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+				CImageVideoThumbnail* bitmap = listVideo[i];
 
-				sqlThumbnailVideo.InsertThumbnail(filename, buffer, threadLoadingBitmap->bitmapIcone.GetWidth(),
-					threadLoadingBitmap->bitmapIcone.GetHeight(), i, 0, ((float)i / 20.0) * 100.0,
-					i);
+				if (bitmap->image.IsOk())
+				{
+					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
+						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
+						bitmap->timePosition);
+
+					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+				}
 			}
 		}
+
+		for (CImageVideoThumbnail* bitmap : listVideo)
+			delete bitmap;
+
+		listVideo.clear();
 	}
 	else
 	{
@@ -1205,6 +1200,9 @@ void CThumbnail::LoadPicture(void* param)
 			delete imageLoad;
 		}
 	}
+
+
+
 
 	auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);

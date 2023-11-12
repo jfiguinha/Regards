@@ -44,7 +44,7 @@ bool CSqlThumbnailVideo::TestThumbnail(const int& numPhoto, const int& numVideo)
 }
 
 
-bool CSqlThumbnailVideo::InsertThumbnail(const wxString& path, std::vector<uchar>& dest, const int& width,
+wxString CSqlThumbnailVideo::InsertThumbnail(const wxString& path, const int& width,
                                          const int& height, const int& numPicture, const int& rotation,
                                          const int& percent, const int& timePosition)
 {
@@ -58,18 +58,13 @@ bool CSqlThumbnailVideo::InsertThumbnail(const wxString& path, std::vector<uchar
 	if (!wxFileExists(thumbnail))
 	{
 		type = 2;
-		wxFile fileOut;
-		fileOut.Create(thumbnail, true);
-		fileOut.Write(dest.data(), dest.size());
-		fileOut.Close();
-
-		return ExecuteRequestWithNoResult(
+		ExecuteRequestWithNoResult(
 			"INSERT INTO VIDEOTHUMBNAIL (NumPhoto, FullPath, numVideo, rotation, percent, timePosition, width, height) VALUES("
 			+ to_string(numPhoto) + ",'" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," +
 			to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) +
 			")");
 	}
-	return false;
+	return thumbnail;
 }
 
 void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& numVideo,
