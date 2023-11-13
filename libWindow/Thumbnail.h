@@ -146,7 +146,7 @@ namespace Regards::Window
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 
-		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
+		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* DÃ©finit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
@@ -252,8 +252,8 @@ namespace Regards::Window
 
 		bool needToRefresh = false;
 
-		//std::mutex muEraseList;
-		//std::vector<CListToClean *> listToErrase;
+		std::mutex muEraseList;
+		std::vector<CListToClean *> listToErrase;
 		std::map<wxString, bool> listFile;
 		std::mutex muListFile;
 	};

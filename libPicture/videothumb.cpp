@@ -16,7 +16,7 @@ public:
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
-		CVideoPlayer *	_videoThumbnailer = new CVideoPlayer(filename, false);
+		COpenCVVideoPlayer *	_videoThumbnailer = new COpenCVVideoPlayer(filename, false);
 		width = _videoThumbnailer->GetWidth();
 		height = _videoThumbnailer->GetHeight();
 		videowidth = _videoThumbnailer->GetWidth();

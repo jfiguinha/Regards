@@ -78,11 +78,15 @@ int COpenCVVideoPlayer::GetTotalFrame()
 
 int COpenCVVideoPlayer::GetWidth()
 {
+	if (isOpen)
+		return capture->get(CAP_PROP_FRAME_WIDTH);
 	return width;
 }
 
 int COpenCVVideoPlayer::GetHeight()
 {
+	if (isOpen)
+		return capture->get(CAP_PROP_FRAME_HEIGHT);
 	return height;
 }
 
