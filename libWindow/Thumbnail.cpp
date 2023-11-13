@@ -112,6 +112,12 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
 	StopAllProcess(title, message, this);
 
+
+	muListFile.lock();
+	listFile.clear();
+	muListFile.unlock();
+
+
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseThumbnail();
 
@@ -138,7 +144,11 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 
 	SetStopProcess(false);
 
+	nbProcess = 0;
+
 	processIdle = true;
+
+	this->Refresh();
 }
 
 void CThumbnail::SetCheck(const bool& check)
