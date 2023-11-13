@@ -89,7 +89,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                 
                 wxString outputFilename = libPath;
                 outputFilename = listOflib[listOflib.size() - 1];
-                outputFilename.Replace("-3.2.0.2.1.dylib", "-3.2.dylib");
+                outputFilename.Replace("-3.2.0.2.2.dylib", "-3.2.dylib");
                 wxString outputLib = folder_output_final + "/" + outputFilename;
 
                  if(dylibName == outputFilename)
