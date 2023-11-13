@@ -564,6 +564,29 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 	
 }
 
+void CThumbnail::RefreshIconeVideo(const int& idPhoto)
+{
+	CIcone* icone = GetIconeById(idPhoto);
+	if (icone != nullptr)
+	{
+		wxRect rc = icone->GetPos();
+		int left = rc.x - posLargeur;
+		int right = rc.x - posLargeur + themeThumbnail.themeIcone.GetWidth();
+		int top = rc.y - posHauteur;
+		int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
+
+		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+		{
+			wxClientDC dc(this);
+			icone->SetNumFrame(-1);
+			icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+			//needToRefresh = true;
+		}
+
+	}
+
+}
+
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	int idPhoto = event.GetId();
@@ -1142,7 +1165,7 @@ void CThumbnail::LoadPicture(void* param)
 		{
 			CSqlThumbnailVideo sqlThumbnailVideo;
 
-			int selectPicture = listVideo.size() / 2;
+			//int selectPicture = listVideo.size() / 2;
 			for (int i = 0; i < listVideo.size(); i++)
 			{
 				CImageVideoThumbnail* bitmap = listVideo[i];
@@ -1158,7 +1181,7 @@ void CThumbnail::LoadPicture(void* param)
 				}
 
 
-				if (i == selectPicture)
+				if (i == 0)
 					threadLoadingBitmap->bitmapIcone = bitmap->image;
 
 			}
@@ -1842,18 +1865,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					pThumbnailData->SetIsLoading(false);
 				}
 
-				if (pThumbnailData != nullptr)
-				{
-					if (pThumbnailData->GetForceRefresh())
-						needToRefresh = true;
-					else
-						RefreshIcone(threadLoadingBitmap->photoId);
-				}
-				else
-					RefreshIcone(threadLoadingBitmap->photoId);
-
-                //RefreshIcone(threadLoadingBitmap->photoId);
-                //needToRefresh = true;
+				RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 

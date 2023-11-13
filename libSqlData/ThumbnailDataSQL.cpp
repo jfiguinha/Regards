@@ -29,9 +29,14 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	if(isVideo)
 	{
 		if (libPicture.TestIsVideo(filename))
+		{
 			nbFrame = 20;
+		}
 		else
 		{
+			isAnimation = true;
+			isVideo = false;
+
 			CSqlThumbnailVideo sqlThumbnailVideo;
 			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
@@ -85,7 +90,11 @@ bool CThumbnailDataSQL::TestBitmap()
 
 wxImage CThumbnailDataSQL::GetwxImage()
 {
-	//CLibPicture libPicture;
+	if (isAnimation && nbFrame == 0)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
+	}
 
 	if (numFrame >= nbFrame)
 		numFrame = 0;
@@ -99,7 +108,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename.Clone());
 	}
-	else
+	else if (isVideo)
 	{
 		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
 			return frameOut;
@@ -131,7 +140,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				}
 			}
 
-			
+
 			if (!grabbed)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
@@ -149,11 +158,36 @@ wxImage CThumbnailDataSQL::GetwxImage()
 #else
 					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
 #endif
-					frameOut.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
+					wxImage cancel;
+					cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
+					return cancel;
 				}
 			}
 		}
 	}
+	else if (isAnimation)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+		if (!frameOut.IsOk())
+		{
+			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
+		}
+
+		if (!frameOut.IsOk())
+		{
+			numFrame = 0;
+#ifdef WIN32
+			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+			wxImage cancel;
+			cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
+			return cancel;
+		}
+	}
+
 	return frameOut;
 }
 
@@ -165,18 +199,11 @@ void CThumbnailDataSQL::SetBitmap(wxImage bitmap)
 		CSqlThumbnail sqlThumbnail;
 		if (!TestBitmap())
 		{
-			int compressMethod = 0;
-			unsigned long outputsize = 0;
-			//bitmap->Flip();
-			wxMemoryOutputStream memOut;
-			bitmap.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
-			std::vector<uchar> buffer(memOut.GetLength());
-			memOut.CopyTo(&buffer.at(0), memOut.GetLength());
 			wxFileName file(filename);
 			wxULongLong sizeFile = file.GetSize();
 			wxString hash = sizeFile.ToString();
-			if (memOut.GetSize() > 0)
-				sqlThumbnail.InsertThumbnail(filename, buffer, bitmap.GetWidth(), bitmap.GetHeight(), hash);
+			wxString localName = sqlThumbnail.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), hash);
+			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
 	}
 }

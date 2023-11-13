@@ -39,6 +39,7 @@ private:
 	bool TestBitmap() override;
 	int nbFrame = 0;
 	bool isVideo = false;
+	bool isAnimation = false;
 	cv::Mat cvImg;
 	int time_pos = 0;
 	wxImage frameOut;

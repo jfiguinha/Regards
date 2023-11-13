@@ -15,7 +15,7 @@ namespace Regards
 		public:
 			CSqlThumbnail();
 			~CSqlThumbnail() override;
-			bool InsertThumbnail(const wxString& path, std::vector<uchar>& data, const int& width, const int& height,
+			wxString InsertThumbnail(const wxString& path, const int& width, const int& height,
 			                     const wxString& hash);
 			wxImage GetThumbnail(const wxString& path);
 			CImageLoadingFormat* GetPictureThumbnail(const wxString& path);

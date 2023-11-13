@@ -145,7 +145,7 @@ namespace Regards::Window
 		void OnTimerMove(wxTimerEvent& event);
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
-
+		void RefreshIconeVideo(const int& idPhoto);
 		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);

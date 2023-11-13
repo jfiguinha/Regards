@@ -51,7 +51,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString& path)
 }
 
 
-bool CSqlThumbnail::InsertThumbnail(const wxString& path, std::vector<uchar>& data, const int& width, const int& height,
+wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, const int& height,
                                     const wxString& hash)
 {
 	bool returnValue = true;
@@ -66,16 +66,12 @@ bool CSqlThumbnail::InsertThumbnail(const wxString& path, std::vector<uchar>& da
 
 	if (!wxFileExists(thumbnail))
 	{
-		wxFile fileOut;
-		fileOut.Create(thumbnail, true);
-		fileOut.Write(data.data(), data.size());
-		fileOut.Close();
 		returnValue = ExecuteRequestWithNoResult(
 			"INSERT or IGNORE INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
 			+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 	}
 
-	return returnValue;
+	return thumbnail;
 }
 
 vector<int> CSqlThumbnail::GetAllPhotoThumbnail()

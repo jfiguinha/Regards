@@ -25,7 +25,7 @@ namespace Regards::Window
 		void StopLoadingPicture();
 		void SetPictureLoading(const wxImage& imageLoading);
 		void SetBackgroundColor(const wxColour& backgroundColor);
-
+		void SetNumFrame(const int& numFrame);
 		void ShowSelectButton(const bool& show)
 		{
 			showSelected = show;

@@ -1019,6 +1019,13 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
 	return returnValue;
 }
 
+void CIcone::SetNumFrame(const int& numFrame)
+{
+	if (pThumbnailData != nullptr)
+		pThumbnailData->SetNumFrame(numFrame);
+}
+
+
 void CIcone::SetActive(const bool& value)
 {
 	if (state != SELECTEDICONE)
@@ -1026,16 +1033,19 @@ void CIcone::SetActive(const bool& value)
 		if (value)
 		{
 			state = ACTIFICONE;
-			pThumbnailData->SetMouseOn();
 			
 		}	
 		else
 		{
 			state = INACTIFICONE;
-			pThumbnailData->SetMouseOut();
 		}
 
 	}
+
+	if (value)
+		pThumbnailData->SetMouseOn();
+	else
+		pThumbnailData->SetMouseOut();
 
 	redraw = true;
 }
