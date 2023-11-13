@@ -35,10 +35,18 @@ void CPicturePanel::CalculateHistogram(cv::Mat& pBitmap, cv::Mat& histogram, con
 {
 	cv::Mat hist;
 	cv::Mat src;
+     wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
 	int hist_w = histogram.size().width, hist_h = histogram.size().height;
 	cv::Mat image = pBitmap;
 	cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
+    bool isDarkTheme =  systemApp.IsDark();
 	auto color = cv::Scalar(255, 255, 255);
+    
+    if(!isDarkTheme)
+    {
+        color = cv::Scalar(0, 0, 0);
+    }
+        
 
 	if (colorChoice == 0)
 	{

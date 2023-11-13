@@ -502,6 +502,8 @@ void CThumbnailEffect::ProcessIdle()
 void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 {
 	nbProcess--;
+        if(nbProcess < 0)
+            nbProcess = 0;
 
 	auto threadLoadingBitmap = static_cast<CThreadBitmapEffect*>(event.GetClientData());
 	if (threadLoadingBitmap == nullptr)

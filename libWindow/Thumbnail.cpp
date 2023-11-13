@@ -823,7 +823,7 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	listFile.clear();
 	muListFile.unlock();
 
-
+    nbProcess = 0;
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -1843,6 +1843,8 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 	if (threadDataProcess != false)
 	{
 		nbProcess--;
+        if(nbProcess < 0)
+            nbProcess = 0;
 
 		if (threadLoadingBitmap != nullptr)
 		{

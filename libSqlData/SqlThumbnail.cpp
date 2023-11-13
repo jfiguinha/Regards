@@ -84,6 +84,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 
 wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 {
+    printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
 	wxLogNull logNo;
 	type = 6;
 	wxString fullpath(path);
@@ -94,13 +95,19 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	wxImage image;
 	if (wxFileExists(thumbnail))
 	{
-		image = CThumbnailBuffer::GetPicture(thumbnail);
-		//image = CLibPicture::ReadThumbnail(thumbnail);
-		//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+        image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
 	}
 	else
 	{
-		printf("error GetThumbnail");
+		printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
+        /*
+#ifdef WIN32
+        wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+        wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+        image.LoadFile(photoCancel, wxBITMAP_TYPE_ANY);
+        */
 	}
 	return image;
 }
