@@ -100,11 +100,6 @@ namespace Regards
 			static int TestExtension(const wxString& ext);
 
 			static int64_t GetVideoDuration(const wxString& szFileName);
-
-			static void RemoveVideo(vector<wxString>& listPhoto);
-
-			static map<wxString, Regards::Video::CThumbnailVideo*> movieList;
-			static mutex muMovie;
 			
 
 		private:
@@ -130,7 +125,7 @@ namespace Regards
 			static void* lib_handle;
 #endif
 #endif
-			map<wxString, bool> fileValid;
+
 
 #ifdef WIN32
 			CWic* wic = nullptr;

@@ -1200,19 +1200,18 @@ void CThumbnail::LoadPicture(void* param)
 		{
 			threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 			wxString filename = threadLoadingBitmap->filename;
+
+			wxBitmap bitmap;
+			bitmap.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+
 			CSqlThumbnailVideo sqlThumbnailVideo;
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 1; i++)
 			{
-				CImageVideoThumbnail* bitmap = listVideo[i];
+				wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(),
+					bitmap.GetHeight(), i, 0, i * 5,
+					i);
 
-				if (bitmap->image.IsOk())
-				{
-					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
-						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
-						bitmap->timePosition);
-
-					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-				}
+				bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 			}
 		}
 

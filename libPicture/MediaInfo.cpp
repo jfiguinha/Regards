@@ -128,14 +128,69 @@ vector<CMetadata> CMediaInfo::SplitByLine(const wstring& value)
 vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 {
 	vector<CMetadata> metadata;
-	//Information about MediaInfo
 	MediaInfo MI;
-	String To_Display = MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-std:wstring value = MI.Inform();
+	//String To_Display = MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));	
+	std:wstring value = MI.Inform();
 	metadata = SplitByLine(value);
 	MI.Close();
 	return metadata;
+}
+
+int64_t CMediaInfo::GetVideoDuration(const wxString& filename)
+{
+	int64_t duration = 0;
+	MediaInfo MI;
+	wstring To_Display;
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
+	To_Display = MI.Get(Stream_General, 0, __T("Duration"), Info_Text, Info_Name).c_str();
+	MI.Close();
+	if (To_Display != "")
+	{
+		try
+		{
+			duration =  std::stoull(To_Display);
+			duration = duration / 1000;
+		}
+		catch (...)
+		{
+		}
+	}
+
+	return duration;
+}
+
+void CMediaInfo::GetVideoDimensions(const wxString& filename, int& width, int& height)
+{
+	MediaInfo MI;
+	wstring to_width;
+	wstring to_height;
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
+	to_width = MI.Get(Stream_Video, 0, __T("Width"), Info_Text, Info_Name).c_str();
+	to_height = MI.Get(Stream_Video, 0, __T("Height"), Info_Text, Info_Name).c_str();
+	MI.Close();
+	if (to_width != "")
+	{
+		try
+		{
+			width = std::stoi(to_width);
+		}
+		catch (...)
+		{
+		}
+	}
+
+	if (to_height != "")
+	{
+		try
+		{
+			height = std::stoi(to_height);
+		}
+		catch (...)
+		{
+		}
+	}
+
 }
 
 int CMediaInfo::GetVideoRotation(const wxString& filename)

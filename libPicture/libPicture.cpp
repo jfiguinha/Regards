@@ -97,6 +97,8 @@ using namespace Regards::exiv2;
 #define TYPE_IMAGE_REGARDSIMAGE 2
 #define OR ||
 
+#include "MediaInfo.h"
+
 //using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::Video;
@@ -105,9 +107,6 @@ using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
-
-map<wxString, Regards::Video::CThumbnailVideo*> CLibPicture::movieList;
-mutex CLibPicture::muMovie;
 
 #if defined(LIBBPG) && not defined(WIN32)
 
@@ -1425,31 +1424,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	case AV1:
 	case MOV:
 		{
-			bool isFind = false;
-			int64_t duration = 0;
-			CThumbnailVideo* thumbnail = nullptr;
-			muMovie.lock();
-			std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-			it = movieList.find(szFileName);
-			if (it != movieList.end())
-			{
-				thumbnail = movieList[szFileName];
-				duration = thumbnail->GetMovieDuration();
-				isFind = true;
-			}
-			muMovie.unlock();
-			if(!isFind)
-			{
-				thumbnail = new CThumbnailVideo(szFileName, false);
-				duration = thumbnail->GetMovieDuration();
-				muMovie.lock();
-				movieList[szFileName] = thumbnail;
-				muMovie.unlock();
-			}
-			if (duration > 20 || duration < 0)
-				return 20;
-			return duration;
-
+			return GetVideoDuration(szFileName);		
 			break;
 		}
 	default: ;
@@ -1686,62 +1661,16 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
 	bool is_valid;
+	int64 duration = GetVideoDuration(szFileName);
+	if (duration > 1)
+		return true;
+	return false;
 
-	if (fileValid.find(szFileName) != fileValid.end())
-	{
-		is_valid = fileValid[szFileName];
-	}
-	else
-	{
-		bool isFind = false;
-		int64_t duration = 0;
-		CThumbnailVideo* thumbnail = nullptr;
-		muMovie.lock();
-		std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-		it = movieList.find(szFileName);
-		if (it != movieList.end())
-		{
-			thumbnail = movieList[szFileName];
-			is_valid = thumbnail->isOk();
-			isFind = true;
-		}
-		muMovie.unlock();
-		if (!isFind)
-		{
-			thumbnail = new CThumbnailVideo(szFileName, false);
-			is_valid = thumbnail->isOk();
-			muMovie.lock();
-			movieList[szFileName] = thumbnail;
-			muMovie.unlock();
-		}
-	}
-	return is_valid;
 }
 
 int64_t CLibPicture::GetVideoDuration(const wxString& szFileName)
 {
-	bool isFind = false;
-	int64_t duration = 0;
-	CThumbnailVideo* thumbnail = nullptr;
-	muMovie.lock();
-	std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-	it = movieList.find(szFileName);
-	if (it != movieList.end())
-	{
-		thumbnail = movieList[szFileName];
-		duration = thumbnail->GetMovieDuration();
-		isFind = true;
-	}
-	muMovie.unlock();
-	if (!isFind)
-	{
-		thumbnail = new CThumbnailVideo(szFileName, false);
-		duration = thumbnail->GetMovieDuration();
-		muMovie.lock();
-		movieList[szFileName] = thumbnail;
-		muMovie.unlock();
-	}
-	return duration;
+	return CMediaInfo::GetVideoDuration(szFileName);
 }
 
 //--------------------------------------------------------------------------------------------
@@ -1997,21 +1926,6 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, in
 	return true;
 }
 
-void CLibPicture::RemoveVideo(vector<wxString> & listPhoto)
-{
-	muMovie.lock();
-	for (wxString fileName : listPhoto)
-	{
-		std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
-		it = movieList.find(fileName);
-		if (it != movieList.end())
-		{
-			movieList.erase(fileName);
-		}
-	}
-	muMovie.unlock();
-
-}
 
 cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 {
@@ -2686,7 +2600,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				int orientation = 0;
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				cv::Mat mat;
-				thumbnail = movieList[fileName];
 				mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
@@ -2959,6 +2872,8 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case Y4M:
 	case MOV:
 		{
+			CMediaInfo::GetVideoDimensions(fileName, width, height);
+			/*
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			bool isFind = false;
 			CThumbnailVideo* thumbnail = nullptr;
@@ -2980,6 +2895,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 				thumbnail->GetVideoDimensions(width, height);
 				muMovie.unlock();
 			}
+			*/
 		}
 		break;
 #ifdef LIBHEIC
