@@ -2106,10 +2106,15 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	{
 		fps = capture->GetFps();
-		width = capture->GetWidth();
-		height = capture->GetHeight();
 		bool success = capture->SeekToPos(timeInSeconds);
 		frameOutput = capture->GetVideoFrame(false);
+
+		cv::Size s = frameOutput.size();
+		height = s.height;
+		width = s.width;
+
+		//width = capture->GetWidth();
+		//height = capture->GetHeight();
 	}
 
 
@@ -2381,9 +2386,15 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 		rotate = capture->GetOrientation();
 		fps = capture->GetFps();
 		totalFrame = capture->GetTotalFrame();
-		width = capture->GetWidth();
-		height = capture->GetHeight();
+		//width = capture->GetWidth();
+		//height = capture->GetHeight();
 		duration = capture->GetDuration();
+
+		Mat decodeFrame = capture->GetVideoFrame(false);
+
+		cv::Size s = decodeFrame.size();
+		height = s.height;
+		width = s.width;
 	}
 
 	if ((ret = OpenFile(input, output)) < 0)
@@ -2606,10 +2617,17 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 		{
 			fps = capture->GetFps();
-			width = capture->GetWidth();
-			height = capture->GetHeight();
+			//width = capture->GetWidth();
+			//height = capture->GetHeight();
 			bool success = capture->SeekToPos(timeInSeconds);
 			decodeFrame = capture->GetVideoFrame(false);
+
+			cv::Size s = decodeFrame.size();
+			height = s.height;
+			width = s.width;
+
+			//width = capture->GetWidth();
+			//height = capture->GetHeight();
 		}
 
 		decodeFrame.copyTo(frameOutputWithoutEffect);
