@@ -20,7 +20,5 @@ public:
 	static void GetVideoDimensions(const wxString& filename, int & width, int & height);
 	static int64_t GetVideoDuration(const wxString& filename);
 
-private:
-	static vector<CMetadata> SplitByLine(const wstring& value);
-	static std::wstring delUnnecessary(std::wstring& str);
+     
 };

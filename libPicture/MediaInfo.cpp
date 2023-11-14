@@ -1,5 +1,9 @@
 #include "header.h"
 #include "MediaInfo.h"
+#include <picture_utility.h>
+#include <wx/file.h>
+
+
 /*  Copyright (c) MediaArea.net SARL. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license that can
@@ -13,12 +17,16 @@
 //
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#ifdef MEDIAINFO_LIBRARY
+#ifdef __WXGTK__
+
 #include "MediaInfo/MediaInfo.h" //Staticly-loaded library (.lib or .a or .so)
 #define MediaInfoNameSpace MediaInfoLib;
+
 #else //MEDIAINFO_LIBRARY
+
 #include "MediaInfoDLL/MediaInfoDLL.h" //Dynamicly-loaded library (.dll or .so)
 #define MediaInfoNameSpace MediaInfoDLL;
+
 #endif //MEDIAINFO_LIBRARY
 #include <string>
 #include <vector>
@@ -37,209 +45,266 @@ using namespace MediaInfoNameSpace;
 #endif //_UNICODE
 #endif //__MINGW32
 
-// trim from end
-/*
-static inline std::wstring &rtrim(std::wstring &s) {
-	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-	return s;
-}
-*/
-static inline std::wstring rtrim(std::wstring& s)
+class CMediaRetrieve
 {
-	auto no_space = [](char ch) -> bool
-	{
-		return !std::isspace<char>(ch, std::locale::classic());
-	};
-	s.erase(std::find_if(s.rbegin(), s.rend(), no_space).base(), s.end());
-	return s;
-}
+public:
+    CMediaRetrieve()
+    {
+        MI.Open_Buffer_Init();
+    }
+    
+    ~CMediaRetrieve()
+    {
+        MI.Close();
+    }
+    
+    MediaInfo MI;
+    bool isOk = false;
+    
+    std::wstring rtrim(std::wstring& s)
+    {
+        auto no_space = [](char ch) -> bool
+        {
+            return !std::isspace<char>(ch, std::locale::classic());
+        };
+        s.erase(std::find_if(s.rbegin(), s.rend(), no_space).base(), s.end());
+        return s;
+    }
 
 
-std::wstring CMediaInfo::delUnnecessary(std::wstring& str)
-{
-	size_t size = str.length();
-	for (int j = 0; j <= size; j++)
-	{
-		for (int i = 0; i <= j; i++)
-		{
-			if (str[i] == ' ' && str[i + 1] == ' ')
-			{
-				str.erase(str.begin() + i);
-			}
-			else if (str[0] == ' ')
-			{
-				str.erase(str.begin());
-			}
-			else if (str[i] == '\0' && str[i - 1] == ' ')
-			{
-				str.erase(str.end() - 1);
-			}
-		}
-	}
-	return str;
-}
+    std::wstring delUnnecessary(std::wstring& str)
+    {
+        size_t size = str.length();
+        for (int j = 0; j <= size; j++)
+        {
+            for (int i = 0; i <= j; i++)
+            {
+                if (str[i] == ' ' && str[i + 1] == ' ')
+                {
+                    str.erase(str.begin() + i);
+                }
+                else if (str[0] == ' ')
+                {
+                    str.erase(str.begin());
+                }
+                else if (str[i] == '\0' && str[i - 1] == ' ')
+                {
+                    str.erase(str.end() - 1);
+                }
+            }
+        }
+        return str;
+    }
 
-vector<CMetadata> CMediaInfo::SplitByLine(const wstring& value)
-{
-	wstring categorie;
-	wstring data = value;
-	vector<CMetadata> listOfLine;
-	size_t position;
-	do
-	{
-#ifdef WIN32
-		position = data.find(L"\r\n");
-#else
-        position = data.find(L"\n");
-#endif
-		if (position != std::string::npos)
-		{
-			wstring line = data.substr(0, position);
-#ifdef WIN32
-			position += 2;
-#else
-			position++;
-#endif
-			if (line != L"")
-			{
-				size_t pos = line.find(L":");
-				if (pos != std::string::npos)
-				{
-					CMetadata metadata;
-					wstring key = line.substr(0, pos);
-					pos += 2;
-					key = categorie + L"." + rtrim(key);
-					metadata.key = key;
-					metadata.value = line.substr(pos, line.length() - pos);
-					listOfLine.push_back(metadata);
-				}
-				else
-					categorie = line;
-			}
 
-			data = data.substr(position, value.length() - position);
-		}
-	}
-	while (position != std::string::npos);
-	return listOfLine;
-}
+    vector<CMetadata> SplitByLine(const wstring& value)
+    {
+        wstring categorie;
+        wstring data = value;
+        vector<CMetadata> listOfLine;
+        size_t position;
+        do
+        {
+    #ifdef WIN32
+            position = data.find(L"\r\n");
+    #else
+            position = data.find(L"\n");
+    #endif
+            if (position != std::string::npos)
+            {
+                wstring line = data.substr(0, position);
+    #ifdef WIN32
+                position += 2;
+    #else
+                position++;
+    #endif
+                if (line != L"")
+                {
+                    size_t pos = line.find(L":");
+                    if (pos != std::string::npos)
+                    {
+                        CMetadata metadata;
+                        wstring key = line.substr(0, pos);
+                        pos += 2;
+                        key = categorie + L"." + rtrim(key);
+                        metadata.key = key;
+                        metadata.value = line.substr(pos, line.length() - pos);
+                        listOfLine.push_back(metadata);
+                    }
+                    else
+                        categorie = line;
+                }
+
+                data = data.substr(position, value.length() - position);
+            }
+        }
+        while (position != std::string::npos);
+        return listOfLine;
+    }
+    
+    void OpenFile(wxString fileName)
+    {
+        printf("MediaInfo OpenFile \n");
+        if (wxFile::Exists(fileName))
+        {
+            wxFile file(fileName);
+            size_t _fileSize = 4096;
+            uint8_t * _compressedImage = new uint8_t[_fileSize];
+            
+            if (file.IsOpened())
+            {
+                size_t read_from_file;
+                do
+                {
+                    read_from_file = file.Read(_compressedImage, _fileSize);
+                    if(read_from_file == 0)
+                        break;
+
+                    //Sending the buffer to MediaInfo
+                    if (MI.Open_Buffer_Continue(_compressedImage, read_from_file) == 0) //Test bit 1 from the result
+                        break;
+
+                }while (read_from_file > 0);
+                
+                MI.Open_Buffer_Finalize();
+            }
+            
+            delete[] _compressedImage;
+            file.Close();    
+            isOk = true;
+        }
+    }
+        
+    vector<CMetadata> GetMetadata()
+    {
+        std:wstring value = MI.Inform();
+        return SplitByLine(value);       
+    }
+    
+    int64 GetDuration()
+    {
+        int64 duration = 0;
+        std:wstring To_Display = MI.Get(Stream_General, 0, __T("Duration"), Info_Text, Info_Name).c_str();
+        if (To_Display != "")
+        {
+            try
+            {
+                duration =  std::stoull(To_Display);
+                duration = duration / 1000;
+            }
+            catch (...)
+            {
+            }
+        }
+        return duration;
+    }
+
+    void GetVideoDimensions(int& width, int& height)
+    {
+
+        wstring to_width;
+        wstring to_height;
+        to_width = MI.Get(Stream_Video, 0, __T("Width"), Info_Text, Info_Name).c_str();
+        to_height = MI.Get(Stream_Video, 0, __T("Height"), Info_Text, Info_Name).c_str();
+      //  MI.Close();
+        if (to_width != "")
+        {
+            try
+            {
+                width = std::stoi(to_width);
+            }
+            catch (...)
+            {
+            }
+        }
+
+        if (to_height != "")
+        {
+            try
+            {
+                height = std::stoi(to_height);
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    int GetVideoRotation()
+    {
+        wstring To_Display;
+        To_Display = MI.Get(Stream_Video, 0, __T("Rotation"), Info_Text, Info_Name).c_str();
+
+        if (To_Display != "")
+        {
+            try
+            {
+                return std::stoi(To_Display);
+            }
+            catch (...)
+            {
+            }
+        }
+        return 0;
+    }
+
+    wxString GetColorRange()
+    {
+        wstring To_Display = L"";
+        To_Display = MI.Get(Stream_Video, 0, __T("colour_range"), Info_Text, Info_Name).c_str();
+        return To_Display;
+    }
+
+    wxString GetColorSpace()
+    {
+        wstring To_Display = L"";
+        To_Display = MI.Get(Stream_Video, 0, __T("matrix_coefficients"), Info_Text, Info_Name).c_str();
+        return To_Display;
+    }
+
+};
 
 
 vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 {
 	vector<CMetadata> metadata;
-	MediaInfo MI;
-	//String To_Display = MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));	
-	std:wstring value = MI.Inform();
-	metadata = SplitByLine(value);
-	MI.Close();
-	return metadata;
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+	return mediaRetrieve.GetMetadata();
 }
 
 int64_t CMediaInfo::GetVideoDuration(const wxString& filename)
 {
-	int64_t duration = 0;
-	MediaInfo MI;
-	wstring To_Display;
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	To_Display = MI.Get(Stream_General, 0, __T("Duration"), Info_Text, Info_Name).c_str();
-	MI.Close();
-	if (To_Display != "")
-	{
-		try
-		{
-			duration =  std::stoull(To_Display);
-			duration = duration / 1000;
-		}
-		catch (...)
-		{
-		}
-	}
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+    return mediaRetrieve.GetDuration();
 
-	return duration;
 }
 
 void CMediaInfo::GetVideoDimensions(const wxString& filename, int& width, int& height)
 {
-	MediaInfo MI;
-	wstring to_width;
-	wstring to_height;
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	to_width = MI.Get(Stream_Video, 0, __T("Width"), Info_Text, Info_Name).c_str();
-	to_height = MI.Get(Stream_Video, 0, __T("Height"), Info_Text, Info_Name).c_str();
-	MI.Close();
-	if (to_width != "")
-	{
-		try
-		{
-			width = std::stoi(to_width);
-		}
-		catch (...)
-		{
-		}
-	}
-
-	if (to_height != "")
-	{
-		try
-		{
-			height = std::stoi(to_height);
-		}
-		catch (...)
-		{
-		}
-	}
-
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+    return mediaRetrieve.GetVideoDimensions(width,height);
 }
 
 int CMediaInfo::GetVideoRotation(const wxString& filename)
 {
-	MediaInfo MI;
-	wstring To_Display;
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	To_Display = MI.Get(Stream_Video, 0, __T("Rotation"), Info_Text, Info_Name).c_str();
-	MI.Close();
-	if (To_Display != "")
-	{
-		try
-		{
-			return std::stoi(To_Display);
-		}
-		catch (...)
-		{
-		}
-	}
-
-	return 0;
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+    return mediaRetrieve.GetVideoRotation();
 }
 
 wxString CMediaInfo::GetColorRange(const wxString& filename)
 {
-#ifndef _DEBUG
-	MediaInfo MI;
-	wstring To_Display;
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	To_Display = MI.Get(Stream_Video, 0, __T("colour_range"), Info_Text, Info_Name).c_str();
-	MI.Close();
-	if (To_Display != "")
-		return To_Display;
-#endif
-
-	return "";
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+    return mediaRetrieve.GetColorRange();
 }
 
 wxString CMediaInfo::GetColorSpace(const wxString& filename)
 {
-#ifndef _DEBUG
-	MediaInfo MI;
-	wstring To_Display;
-	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-	To_Display = MI.Get(Stream_Video, 0, __T("matrix_coefficients"), Info_Text, Info_Name).c_str();
-	MI.Close();
-	if (To_Display != "")
-		return To_Display;
-#endif
-
-	return "";
+    CMediaRetrieve mediaRetrieve;
+    mediaRetrieve.OpenFile(filename);
+    return mediaRetrieve.GetColorSpace();
 }

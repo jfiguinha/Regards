@@ -112,6 +112,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
 	StopAllProcess(title, message, this);
 
+    stopToGetNbElement = false;
 
 	muListFile.lock();
 	listFile.clear();
@@ -828,6 +829,8 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	listToAdd->list = iconeListLocal;
 	//listToAdd->timeToAdd = std::chrono::system_clock::now();
 	listToErrase.push_back(listToAdd);
+    
+    stopToGetNbElement = false;
 
 	muListFile.lock();
 	listFile.clear();
@@ -957,9 +960,9 @@ void CThumbnail::ProcessIdle()
 	//int nbProcesseur = thread::hardware_concurrency();
 	vector<wxString> photoList;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
-	//sqlPhoto.UpdatePhotoList();
-	//if (nbPhotoElement <= 0)
-	nbPhotoElement = sqlPhoto.GetPhotoElement();
+
+    if(!stopToGetNbElement)
+        nbPhotoElement = sqlPhoto.GetPhotoElement();
 
 	//nbProcesseur = 1;
 	if (nbPhotoElement > 0)
@@ -1010,6 +1013,8 @@ void CThumbnail::ProcessIdle()
 			}
 		}
 	}
+    else
+        stopToGetNbElement = true;
 
 	if (photoList.empty())
 	{
