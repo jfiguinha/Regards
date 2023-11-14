@@ -958,17 +958,17 @@ void CThumbnail::ProcessIdle()
 	vector<wxString> photoList;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	//sqlPhoto.UpdatePhotoList();
-	if(nbElement == 0)
-		nbElement = sqlPhoto.GetPhotoElement();
+	//if (nbPhotoElement <= 0)
+	nbPhotoElement = sqlPhoto.GetPhotoElement();
 
 	//nbProcesseur = 1;
-	if (nbElement > 0)
+	if (nbPhotoElement > 0)
 	{
 		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
 		if (photoList.size() > 0)
 		{
 			auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
-			event->SetExtraLong(nbElement);
+			event->SetExtraLong(nbPhotoElement);
 			wxQueueEvent(this, event);
 
 
@@ -994,7 +994,7 @@ void CThumbnail::ProcessIdle()
 							ProcessThumbnail(pThumbnailData);
 							pThumbnailData->SetIsProcess(true);
 							nbProcess++;
-							nbElement--;
+							//nbElement--;
 						}
 						/*
 						else if(nbProcess == 0)
@@ -1851,6 +1851,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 	}
 	if (threadDataProcess != false)
 	{
+		nbPhotoElement--;
 		nbProcess--;
         if(nbProcess < 0)
             nbProcess = 0;

@@ -166,6 +166,7 @@ namespace Regards::Window
 		bool isMouseOnWindow = false;
 		bool enableTimer = true;
 		int nbElement = 0;
+		int nbPhotoElement = 0;
 		//Variable
 		std::mutex lockIconeList;
 		CIconeList* iconeList;
