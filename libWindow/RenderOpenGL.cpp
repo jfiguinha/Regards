@@ -15,12 +15,13 @@
 
 using namespace Regards::OpenGL;
 
-CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
+CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas, bool openclOpenGLInterop)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
 	textureDisplay = nullptr;
 	width = 0;
 	height = 0;
+	textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
 }
 
 
@@ -129,19 +130,19 @@ GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And
 }
 
 
+void CRenderOpenGL::SetData(cv::Mat& bitmap)
+{
+	textureDisplay->SetData(bitmap);
+}
+
+bool CRenderOpenGL::SetData(cv::UMat& bitmap)
+{
+	return textureDisplay->SetData(bitmap);
+}
+
+
 GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop)
 {
-	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))
-	{
-		cl_int err;
-
-		if (textureDisplay != nullptr)
-			delete(textureDisplay);
-		textureDisplay = nullptr;
-
-		textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
-	}
-
 	return textureDisplay;
 }
 

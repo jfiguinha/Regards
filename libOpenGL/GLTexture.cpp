@@ -150,7 +150,7 @@ GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOp
 	height = nHeight;
 	this->format = format;
 	this->openclOpenGLInterop = openclOpenGLInterop;
-	Create(nWidth, nHeight, nullptr);
+//	Create(nWidth, nHeight, nullptr);
 }
 
 int GLTexture::GetWidth()
@@ -266,15 +266,17 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	}
 
-	if (m_nTextureID)
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else if (m_nTextureID)
 	{
 		glEnable(GL_TEXTURE_2D);
 		width = bitmapMatrix.size().width;
 		height = bitmapMatrix.size().height;
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
@@ -303,22 +305,27 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	//int nError = glGetError();
 	if (0 != m_nTextureID)
 	{
-		// if this texture already exists then delete it.
-		Delete();
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+	else
+	{
+		glEnable(GL_TEXTURE_2D);
 
-	glEnable(GL_TEXTURE_2D);
+		glGenTextures(1, &m_nTextureID);
+		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
-	glGenTextures(1, &m_nTextureID);
-	//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
-
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	return (GL_NO_ERROR == glGetError());
 }
@@ -358,7 +365,7 @@ void GLTexture::Delete()
 		glDeleteTextures(1, &m_nTextureID);
 		m_nTextureID = 0;
 	}
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	checkErrors("GLTexture::Delete()");
 }
 

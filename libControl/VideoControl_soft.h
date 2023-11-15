@@ -155,9 +155,8 @@ protected:
 
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
-	GLTexture* RenderToGLTexture();
-	GLTexture* RenderToTexture(cv::Mat& bitmap);
-	GLTexture* RenderToTexture(COpenCLEffectVideo* openclEffect);
+	void RenderToGLTexture();
+	void RenderToTexture(COpenCLEffectVideo* openclEffect);
 	//GLTexture* RenderFFmpegToTexture();
 
 	void ZoomOn();
@@ -173,8 +172,8 @@ protected:
 
 	void TestMaxX();
 	void TestMaxY();
-	GLTexture* RenderFFmpegToTexture(cv::Mat& source);
-	GLTexture* DisplayTexture(GLTexture* glTexture);
+	void RenderFFmpegToTexture(cv::Mat& source);
+
 	void StopVideoThread(wxCommandEvent& event);
 	float CalculRatio(const int& pictureWidth, const int& pictureHeight);
 	void SetSoundVolume(const int& soundVolume);

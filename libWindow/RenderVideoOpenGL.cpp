@@ -33,9 +33,10 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 }
 
 
-void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter,
+void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter,
                                           const wxFloatRect& rect, const float& iTime, const bool& inverted)
 {
+	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	glTexture->Enable();
 
 	int width_local = glTexture->GetWidth();

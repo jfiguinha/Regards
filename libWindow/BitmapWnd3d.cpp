@@ -456,8 +456,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 
 	if (renderOpenGL == nullptr)
 	{
-		renderOpenGL = new CRenderOpenGL(this);
-		renderOpenGL->Init(this);
+
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if (regardsParam != nullptr)
@@ -501,6 +500,9 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 				}
 			}
 		}
+
+		renderOpenGL = new CRenderOpenGL(this, openclOpenGLInterop);
+		renderOpenGL->Init(this);
 		regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 		bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 	}
