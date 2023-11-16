@@ -8,7 +8,6 @@ unzip vcpkg-2022.08.15.zip
 cd vcpkg-2022.08.15
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
-./vcpkg install exiv2[video,xmp]
 cd ..
 
 git clone https://github.com/Microsoft/vcpkg.git
@@ -31,6 +30,7 @@ cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
+./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
 ./vcpkg install libexif

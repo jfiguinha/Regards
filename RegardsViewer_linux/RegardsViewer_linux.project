@@ -168,7 +168,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread;;$(shell ../libextern/wxconfig_lib.sh);">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
         <Library Value="Viewer"/>
@@ -390,8 +390,8 @@
         <Library Value="jxl"/>
         <Library Value="jxl_threads"/>
         <Library Value="jxl_dec"/>
-        <Library Value="brotlicommon-static"/>
-        <Library Value="brotlienc-static"/>
+        <Library Value="brotlicommon"/>
+        <Library Value="brotlienc"/>
         <Library Value="hwy"/>
         <Library Value="pcre2-32"/>
         <Library Value="Xfixes"/>
