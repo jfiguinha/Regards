@@ -11,6 +11,10 @@ cd vcpkg-2022.08.15
 cd ..
 
 git clone https://github.com/Microsoft/vcpkg.git
+
+cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
+cp -r vcpkg_ports/libavif ./vcpkg/ports
+
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install ffnvcodec
