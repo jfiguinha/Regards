@@ -45,6 +45,9 @@ using namespace MediaInfoNameSpace;
 #endif //_UNICODE
 #endif //__MINGW32
 
+
+
+
 class CMediaRetrieve
 {
 public:
@@ -265,46 +268,177 @@ public:
 };
 
 
+
+static map<wxString, CMediaRetrieve*> movieList;
+static mutex muMovie;
+
 vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 {
-	vector<CMetadata> metadata;
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-	return mediaRetrieve.GetMetadata();
+    vector<CMetadata> metadata;
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        metadata = mediaRetrieve->GetMetadata();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        metadata = mediaRetrieve->GetMetadata();
+        muMovie.unlock();
+    }
+
+	return metadata;
 }
 
 int64_t CMediaInfo::GetVideoDuration(const wxString& filename)
 {
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-    return mediaRetrieve.GetDuration();
+    int64_t duration = 0;
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        duration = mediaRetrieve->GetDuration();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        duration = mediaRetrieve->GetDuration();
+        muMovie.unlock();
+    }
+
+
+    return duration;
 
 }
 
 void CMediaInfo::GetVideoDimensions(const wxString& filename, int& width, int& height)
 {
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-    return mediaRetrieve.GetVideoDimensions(width,height);
+    int64_t duration = 0;
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        mediaRetrieve->GetVideoDimensions(width, height);
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        mediaRetrieve->GetVideoDimensions(width, height);
+        muMovie.unlock();
+    }
+
 }
 
 int CMediaInfo::GetVideoRotation(const wxString& filename)
 {
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-    return mediaRetrieve.GetVideoRotation();
+    int rotation = 0;
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        rotation = mediaRetrieve->GetVideoRotation();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        rotation = mediaRetrieve->GetVideoRotation();
+        muMovie.unlock();
+    }
+
+
+    return rotation;
 }
 
 wxString CMediaInfo::GetColorRange(const wxString& filename)
 {
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-    return mediaRetrieve.GetColorRange();
+    wxString colorRange = "";
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        colorRange = mediaRetrieve->GetColorRange();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        colorRange = mediaRetrieve->GetColorRange();
+        muMovie.unlock();
+    }
+
+    return colorRange;
 }
 
 wxString CMediaInfo::GetColorSpace(const wxString& filename)
 {
-    CMediaRetrieve mediaRetrieve;
-    mediaRetrieve.OpenFile(filename);
-    return mediaRetrieve.GetColorSpace();
+    wxString colorRange = "";
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        colorRange = mediaRetrieve->GetColorSpace();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        colorRange = mediaRetrieve->GetColorSpace();
+        muMovie.unlock();
+    }
+
+    return colorRange;
+
 }

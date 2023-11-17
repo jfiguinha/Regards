@@ -1424,7 +1424,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	case AV1:
 	case MOV:
 		{
-			return GetVideoDuration(szFileName);		
+			return CMediaInfo::GetVideoDuration(szFileName);
 			break;
 		}
 	default: ;
@@ -1661,16 +1661,11 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
 	bool is_valid;
-	int64 duration = GetVideoDuration(szFileName);
-	if (duration > 1)
+	int64 duration = CMediaInfo::GetVideoDuration(szFileName);
+	if (duration > 0)
 		return true;
 	return false;
 
-}
-
-int64_t CLibPicture::GetVideoDuration(const wxString& szFileName)
-{
-	return CMediaInfo::GetVideoDuration(szFileName);
 }
 
 //--------------------------------------------------------------------------------------------

@@ -99,8 +99,7 @@ namespace Regards
 			                                       const int& resizeWidth = 0, const int& resizeHeight = 0);
 			static int TestExtension(const wxString& ext);
 
-			static int64_t GetVideoDuration(const wxString& szFileName);
-			
+	
 
 		private:
 			cv::Mat LoadFromFreeImage(const char* filename);
