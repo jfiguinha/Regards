@@ -133,7 +133,7 @@ UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 		catch (Exception& e)
 		{
 			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
 	}
@@ -146,7 +146,7 @@ UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 		catch (Exception& e)
 		{
 			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
 	}
@@ -185,7 +185,7 @@ void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "BilateralEffect exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -222,7 +222,7 @@ void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, co
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "NlMeans exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -257,7 +257,7 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Bm3d exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -332,7 +332,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "BrightnessAndContrastAuto exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -353,7 +353,7 @@ void COpenCLFilter::Fusion(UMat& inputData, const UMat& secondPictureData, const
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Fusion exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -420,7 +420,7 @@ void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -444,7 +444,7 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, 
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "PhotoFiltre exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -461,7 +461,7 @@ void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue,
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "RGBFilter exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -514,7 +514,7 @@ void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "FiltreMosaic exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -528,7 +528,7 @@ void COpenCLFilter::Blur(const int& radius, UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Blur exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -542,7 +542,7 @@ void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, UMat& in
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "GaussianBlur exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -637,7 +637,7 @@ void COpenCLFilter::Emboss(UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Emboss exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -665,7 +665,7 @@ void COpenCLFilter::Sharpen(UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Sharpen exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -693,7 +693,7 @@ void COpenCLFilter::SharpenStrong(UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "SharpenStrong exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -715,7 +715,7 @@ void COpenCLFilter::Edge(UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Edge exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -770,7 +770,7 @@ void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "ErodeDilate exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -965,7 +965,7 @@ void COpenCLFilter::Median(UMat& inputData)
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "Median exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -1500,8 +1500,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "COpenCLFilter::Interpolation exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        cv::Mat image(widthOut, heightOut, CV_8UC3, cv::Scalar(0, 0, 0));
+        image.copyTo(cvImage);
 	}
 
 

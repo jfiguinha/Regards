@@ -1203,7 +1203,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	isInit = true;
 	inverted = true;
-
+    
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	//wxPaintDC dc(this);
@@ -2020,13 +2020,20 @@ void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
+    
+    
+   
+    if(!(widthOutput == 0 || heightOutput == 0))
+    {
+        openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+                                               (int)GetZoomRatio() * 100);
 
-	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
-	                                       (int)GetZoomRatio() * 100);
-
-	cv::UMat data = openclEffect->GetUMat(false);
-	if (!renderOpenGL->SetData(data))
-		openclOpenGLInterop = false;
+        cv::UMat data = openclEffect->GetUMat(false);
+        if (!renderOpenGL->SetData(data))
+            openclOpenGLInterop = false;       
+    }
+    else
+         printf("RenderToTexture : width %d height %d \n", widthOutput, heightOutput);
 
 }
 
