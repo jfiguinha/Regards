@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../Otherlib/libffplay/graphdump.c" ExcludeProjConfig=""/>
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
@@ -76,47 +77,6 @@
     <Project Name="libffmpeg"/>
     <Project Name="libVideoConverter"/>
   </Dependencies>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="libScanner"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-    <Project Name="libResource"/>
-    <Project Name="libffmpeg"/>
-    <Project Name="libVideoConverter"/>
-  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions;" C_Options=";-Wall" Assembler="">
@@ -143,6 +103,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../Otherlib/libffplay"/>
         <IncludePath Value="../libWindow"/>
         <IncludePath Value="../libPrint"/>
         <IncludePath Value="../libPicture"/>
@@ -172,6 +133,7 @@
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
         <Library Value="Viewer"/>
+        <Library Value="ffplay"/>
         <Library Value="ffmpeg"/>
         <Library Value="Scanner"/>
         <Library Value="VideoConverter"/>
@@ -439,6 +401,7 @@
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
         <LibraryPath Value="../Otherlib/libffmpeg/Debug"/>
+        <LibraryPath Value="../Otherlib/libffplay/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
@@ -578,4 +541,46 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libVideoConverter"/>
+    <Project Name="ffplay"/>
+  </Dependencies>
 </CodeLite_Project>
