@@ -21,7 +21,13 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 #include <ffplaycore.h>
-#include <ffplaycpp.h>
+
+extern "C"
+{
+    #include <ffplay.h>
+}
+
+//#include <ffplaycpp.h>
 
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -32,7 +38,30 @@ using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
 
-extern int Start(int argc, char **argv);
+
+static void RenderFunctionOpenGL(void * data,float ratio)
+{
+    
+}
+
+static void RenderSetPos(int64_t pos)
+{
+    
+}
+
+int StartMovie()
+{
+    SetData  _pf = &RenderFunctionOpenGL;
+    int argc = 1;
+    char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
+    int value = OpenMovie("/home/figuinha/Documents/test.mp4", argc, argv);  
+}
+
+int StopMovieThread()
+{
+    StopMovie();
+}
+
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -376,8 +405,14 @@ bool MyApp::OnInit()
 	}
     else if(appName == "test")
     {
+        ListFunction functionList;
+        functionList.setData = &RenderFunctionOpenGL;
+        functionList.setPos = &RenderSetPos;
+        
         for(int i = 0;i < 100;i++)
         {
+            std::thread * startMovie = nullptr;
+            std::thread * stopMovie = nullptr;
             /*
             std:string filename = "/home/figuinha/Documents/video.mkv";
             CVideoPlayer * capture = new CVideoPlayer(filename);
@@ -407,16 +442,28 @@ bool MyApp::OnInit()
             delete ffmfc;
             */
 
-			/*
-            std:string filename = "/home/figuinha/Documents/test.mp4";
-             printf("Open Video File %s \n", filename.c_str());
-            int argc = 1;
-            char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
-            int value = Start(argc, argv);
-			*/
+            startMovie = new std::thread(StartMovie);
+            wxSleep(5);
+            stopMovie = new std::thread(StopMovieThread);
+            stopMovie->join();
+            startMovie->join();
+            delete stopMovie;
+            delete startMovie;
+            //int argc = 1;
+            //char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
+            //int value = OpenMovie("/home/figuinha/Documents/test.mp4", argc, argv);
+			
 
+            /*
 			CFFPlayCpp ffplay;
+#ifdef WIN32
 			ffplay.StartMovie("D:\\download\\test.mp4");
+#else
+            wxString filename = "/home/figuinha/Documents/test.mp4";
+            ffplay.StartMovie(filename);
+#endif
+            */
+              
         }
         exit(0);
     }
