@@ -163,7 +163,7 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	//exit(0);
+	SDL_Quit();
 
 	return 0;
 }

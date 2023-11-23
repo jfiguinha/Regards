@@ -198,7 +198,12 @@ public:
 #ifdef WIN32
 		//putenv("SDL_AUDIODRIVER=DirectSound");
 #endif
-		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
+		int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
+        /* Try to work around an occasional ALSA buffer underflow issue when the
+         * period size is NPOT due to ALSA resampling by forcing the buffer size. */
+        if (!SDL_getenv("SDL_AUDIO_ALSA_SET_BUFFER_SIZE"))
+            SDL_setenv("SDL_AUDIO_ALSA_SET_BUFFER_SIZE","1", 1);
+            
 		//------SDL------------------------
 		//³õÊ¼»¯
 		if (SDL_Init(flags))
