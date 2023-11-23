@@ -21,11 +21,7 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 #include <ffplaycore.h>
-
-extern "C"
-{
-    #include "ffplay.h"
-}
+#include <ffplaycpp.h>
 
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -410,11 +406,17 @@ bool MyApp::OnInit()
             sleep(1);
             delete ffmfc;
             */
+
+			/*
             std:string filename = "/home/figuinha/Documents/test.mp4";
              printf("Open Video File %s \n", filename.c_str());
             int argc = 1;
             char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
             int value = Start(argc, argv);
+			*/
+
+			CFFPlayCpp ffplay;
+			ffplay.StartMovie("D:\\download\\test.mp4");
         }
         exit(0);
     }
