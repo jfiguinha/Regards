@@ -55,8 +55,8 @@
 #include "libavfilter/buffersrc.h"
 
 
-#include <SDL.h>
-#include <SDL_thread.h>
+#include <SDL2\SDL.h>
+#include <SDL2\SDL_thread.h>
 
 #include "cmdutils.h"
 #include "ffplay_renderer.h"
@@ -209,6 +209,7 @@ typedef struct Decoder {
 
 typedef struct VideoState {
     SDL_Thread *read_tid;
+    ListFunction* pf;
     const AVInputFormat *iformat;
     int abort_request;
     int force_refresh;
@@ -3139,6 +3140,7 @@ static int read_thread(void *arg)
 }
 
 static VideoState *stream_open(const char *filename,
+                                ListFunction* pf,
                                const AVInputFormat *iformat)
 {
     VideoState *is;
@@ -3146,6 +3148,7 @@ static VideoState *stream_open(const char *filename,
     is = av_mallocz(sizeof(VideoState));
     if (!is)
         return NULL;
+    is->pf = pf;
     is->last_video_stream = is->video_stream = -1;
     is->last_audio_stream = is->audio_stream = -1;
     is->last_subtitle_stream = is->subtitle_stream = -1;
@@ -3645,6 +3648,7 @@ static int opt_codec(void *optctx, const char *opt, const char *arg)
 
 static int dummy;
 
+
 static const OptionDef options[] = {
     CMDUTILS_COMMON_OPTIONS
     { "x", HAS_ARG, { .func_arg = opt_width }, "force displayed width", "width" },
@@ -3699,6 +3703,7 @@ static const OptionDef options[] = {
     { NULL, },
 };
 
+
 static void show_usage(void)
 {
     av_log(NULL, AV_LOG_INFO, "Simple media player\n");
@@ -3737,25 +3742,21 @@ void show_help_default(const char *opt, const char *arg)
            );
 }
 
-void SetListFunction(ListFunction * pf)
-{
-    functionList = pf;
-}
-
 /* Called from the main */
-int OpenMovie(const char * filename,  int argc, char **argv)
+int OpenMovie(const char * filename, ListFunction* pf,  int argc, char **argv)
 {
     int flags, ret;
     VideoState *is;
     
+    /*
     av_log_set_flags(AV_LOG_SKIP_REPEATED);
+    
     parse_loglevel(argc, argv, options);
-
 
     ret = parse_options(NULL, argc, argv, options, opt_input_file);
     if (ret < 0)
         exit(ret == AVERROR_EXIT ? 0 : 1);
-        
+     */
     input_filename = filename;
 
     if (!input_filename) {
@@ -3839,7 +3840,7 @@ int OpenMovie(const char * filename,  int argc, char **argv)
         }
     }
 
-    is = stream_open(input_filename, file_iformat);
+    is = stream_open(input_filename, pf, file_iformat);
     if (!is) {
         av_log(NULL, AV_LOG_FATAL, "Failed to initialize VideoState!\n");
         do_exit(NULL);

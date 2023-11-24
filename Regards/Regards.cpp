@@ -51,15 +51,27 @@ static void RenderSetPos(int64_t pos)
 
 int StartMovie()
 {
-    SetData  _pf = &RenderFunctionOpenGL;
+
+	ListFunction functionList;
+	functionList.setData = &RenderFunctionOpenGL;
+	functionList.setPos = &RenderSetPos;
+#ifdef WIN32
+	int argc = 1;
+	char* argv[1] = { wxString("D:\\download\\test.mp4").char_str() };
+	int value = OpenMovie("D:\\download\\test.mp4", &functionList, argc, argv);
+#else
     int argc = 1;
     char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
-    int value = OpenMovie("/home/figuinha/Documents/test.mp4", argc, argv);  
+    int value = OpenMovie("/home/figuinha/Documents/test.mp4", &functionList, argc, argv);
+#endif
+
+	return 0;
 }
 
 int StopMovieThread()
 {
-    StopMovie();
+    //StopMovie();
+	return 0;
 }
 
 
@@ -405,9 +417,7 @@ bool MyApp::OnInit()
 	}
     else if(appName == "test")
     {
-        ListFunction functionList;
-        functionList.setData = &RenderFunctionOpenGL;
-        functionList.setPos = &RenderSetPos;
+
         
         for(int i = 0;i < 100;i++)
         {
