@@ -19,7 +19,7 @@
 #define VK_NO_PROTOTYPES
 #define VK_ENABLE_BETA_EXTENSIONS
 
-#include "config.h"
+//#include "config.h"
 #include "ffplay_renderer.h"
 
 #if (SDL_VERSION_ATLEAST(2, 0, 6) && CONFIG_LIBPLACEBO)

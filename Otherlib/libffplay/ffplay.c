@@ -23,8 +23,8 @@
  * simple media player based on the FFmpeg libraries
  */
 
-#include "config.h"
-#include "config_components.h"
+//#include "config.h"
+//#include "config_components.h"
 #include <inttypes.h>
 #include <math.h>
 #include <limits.h>

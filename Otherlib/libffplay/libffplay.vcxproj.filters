@@ -33,11 +33,11 @@
     <ClCompile Include="ffplay_renderer.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="cmdutils.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="opt_common.c">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="cmdutils.c">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
