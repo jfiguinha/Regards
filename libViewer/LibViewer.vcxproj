@@ -303,7 +303,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg;../Otherlib/libffplay</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
       <StringPooling>true</StringPooling>

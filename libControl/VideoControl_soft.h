@@ -5,6 +5,7 @@
 
 extern "C" {
 #include <libswscale/swscale.h>
+#include <ffplay_struct.h>
 }
 
 #include "WindowMain.h"
@@ -37,22 +38,22 @@ namespace Regards
 	}
 }
 
-class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInterface
+class CVideoControlSoft : public IBitmapRenderInterface
 {
 public:
 	CVideoControlSoft(CWindowMain* windowMain, wxWindow * window, IVideoInterface* eventPlayer);
-	~CVideoControlSoft() override;
-	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) override;
-	void SetParent(wxWindow* parent) override;
+	~CVideoControlSoft() ;
+	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) ;
+	void SetParent(wxWindow* parent) ;
 	void ReloadResource();
 	bool IsPause();
-	void SetVideoDuration(const int64_t& duration, const int64_t& startTime) override;
+	
 	void SetCurrentclock(wxString message);
-	void SetPos(int64_t pos) override;
+
 	//void SetVideoPosition(const int64_t & pos);
-	//void VolumeUp() override;
-	//void VolumeDown() override;
-	int GetVolume() override;
+	//void VolumeUp() ;
+	//void VolumeDown() ;
+	int GetVolume() ;
 	void SetVolume(const int& pos);
 	void ChangeVideoFormat();
 	int GetZoomIndex();
@@ -63,7 +64,7 @@ public:
 	vector<int> GetZoomValue();
 	virtual cv::Mat SavePicture(bool& isFromBuffer);
 	bool IsFFmpegDecode();
-	void VideoStart(wxCommandEvent& event);
+	void OnVideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter* effectParameter);
 	void UpdateFiltre(CEffectParameter* effectParameter);
 	CEffectParameter* GetParameter();
@@ -71,19 +72,30 @@ public:
 	void OnStop(wxString photoName);
 	void OnPause();
 	int PlayMovie(const wxString& movie, const bool& play);
-	int ChangeAudioStream(int newStreamAudio) override;
+	int ChangeAudioStream(int newStreamAudio) ;
 	int ChangeSubtitleStream(int newStreamSubtitle);
-	int getWidth() override;
-	int getHeight() override;
+	int getWidth() ;
+	int getHeight() ;
 
-	void SetSubtitulePicture(cv::Mat& picture) override;
-	void DeleteSubtitulePicture() override;
+	void SetSubtitulePicture(cv::Mat& picture) ;
+	void DeleteSubtitulePicture() ;
 
 	bool GetPausedValue();
 	void RedrawFrame();
-	void SetRotation(const int& rotation) override;
-	void SetData(void* data, const float& sample_aspect_ratio, void* WIN32Context) override;
-	void UpdateScreenRatio() override;
+	void SetRotation(const int& rotation) ;
+	
+	void UpdateScreenRatio() ;
+
+	//Function to export to ffplay
+
+	static void SetData(void* data, void * parent, float sample_aspect_ratio);
+	static void SetPos(void* parent, int64_t pos);
+	static void SetVideoDuration(void* parent, int64_t duration, int64_t startTime);
+	static void VideoStart(void* parent, int64_t duration, int64_t startTime);
+	static void VideoEnd(void* parent);
+	/// <summary>
+	/// 
+	/// </summary>
 
 	void Rotate90();
 	void Rotate270();
@@ -91,30 +103,30 @@ public:
 	void FlipHorizontal();
 	void PlayFirstMovie(const bool& firstMovie);
 
-	void OnIdle(wxIdleEvent& evt) override;
-	void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
-	void OnPaint2D(wxWindow* gdi) override;
-	void OnMouseMove(wxMouseEvent& event) override;
-	void OnLButtonDown(wxMouseEvent& event) override;
-	void OnRButtonDown(wxMouseEvent& event) override;
-	void OnLButtonUp(wxMouseEvent& event) override;
+	void OnIdle(wxIdleEvent& evt) ;
+	void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) ;
+	void OnPaint2D(wxWindow* gdi) ;
+	void OnMouseMove(wxMouseEvent& event) ;
+	void OnLButtonDown(wxMouseEvent& event) ;
+	void OnRButtonDown(wxMouseEvent& event) ;
+	void OnLButtonUp(wxMouseEvent& event) ;
 
-	void OnLDoubleClick(wxMouseEvent& event) override
+	void OnLDoubleClick(wxMouseEvent& event) 
 	{
 	};
 
-	void OnMouseWheel(wxMouseEvent& event) override
+	void OnMouseWheel(wxMouseEvent& event) 
 	{
 	};
-	void OnKeyDown(wxKeyEvent& event) override;
-	void OnKeyUp(wxKeyEvent& event) override;
+	void OnKeyDown(wxKeyEvent& event) ;
+	void OnKeyUp(wxKeyEvent& event) ;
 
-	void OnTimer(wxTimerEvent& event) override;
-	void OnCommand(wxCommandEvent& event) override;
-	vector<int> GetListTimer() override;
-	vector<int> GetListCommand() override;
-	void SetEndProgram(const bool& endProgram) override;
-	int UpdateResized() override;
+	void OnTimer(wxTimerEvent& event) ;
+	void OnCommand(wxCommandEvent& event) ;
+	vector<int> GetListTimer() ;
+	vector<int> GetListCommand() ;
+	void SetEndProgram(const bool& endProgram) ;
+	int UpdateResized() ;
     
     wxString GetAcceleratorHardware();
 
@@ -151,9 +163,9 @@ protected:
 	void MoveRight();
 
 
-	bool GetProcessEnd() override;
+	bool GetProcessEnd() ;
 
-	void Resize() override;
+	void Resize() ;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	void RenderToGLTexture();
 	void RenderToTexture(COpenCLEffectVideo* openclEffect);
@@ -291,6 +303,6 @@ protected:
 	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
-    
+	ListFunction functionList;
     bool startVideoAfterProblem = false;
 };

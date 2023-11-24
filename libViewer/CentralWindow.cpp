@@ -1808,7 +1808,7 @@ void CCentralWindow::OnStopAudio(wxCommandEvent& event)
 	if (musicDiaporama != "" && !ffmfcQuit)
 	{
 		ffmfc->Quit();
-		ffmfc->SetFile(nullptr, CConvertUtility::ConvertToStdString(musicDiaporama), "", false, 100);
+		ffmfc->SetFile(CConvertUtility::ConvertToStdString(musicDiaporama), nullptr, "", false, 100);
 		musicStop = false;
 	}
 }
@@ -1822,7 +1822,7 @@ void CCentralWindow::StartMusic()
 		musicDiaporama = config->GetMusicDiaporama();
 	if (ffmfc == nullptr && !musicDiaporama.empty() && wxFileExists(musicDiaporama))
 	{
-		ffmfc = new CFFmfc(this, wxNewId());
+		ffmfc = new CFFmfc();
 	}
 
 
@@ -1830,7 +1830,7 @@ void CCentralWindow::StartMusic()
 	{
 		if (!musicDiaporama.empty() && musicStop)
 		{
-			ffmfc->SetFile(nullptr, CConvertUtility::ConvertToStdString(musicDiaporama), "", false, 100);
+			ffmfc->SetFile(CConvertUtility::ConvertToStdString(musicDiaporama), nullptr, "", false, 100);
 			musicStop = false;
 			ffmfc->SetTimePosition(musicPosition);
 		}

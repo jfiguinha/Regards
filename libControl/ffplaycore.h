@@ -15,82 +15,31 @@
  */
 
 #pragma once
-#include "VideoControlInterface.h"
-#include "ffmfcpimpl.h"
+#include "ffplay_struct.h"
 
-class CBitmapToShow
+class CFFmfc
 {
 public:
-	CBitmapToShow(): width(0), height(0), aspect_ratio(0)
-	{
-		data = nullptr;
-	}
+	CFFmfc();
+	~CFFmfc();
 
-	uint8_t* data;
-	int width;
-	int height;
-	float aspect_ratio;
-	//SDL_Rect displayRect;
-};
-
-class CFFmfc : public wxWindow
-{
-public:
-	CFFmfc(wxWindow* parent, wxWindowID id);
-	~CFFmfc() override;
-
-	//Send Command "Pause"
-	void Pause();
-	//Send Command "Step"
-	void Seek_step();
-	//Send Command "Seek"
-	void Seek(int time);
-	//Send Command "AspectRatio"
-	void Aspectratio(int num, int den);
-	//Send Command "WindowSize"
-	void Size(int percentage);
-
-	void Change_audio_stream(int newStreamIndex);
-	void Change_subtitle_stream(int newStreamIndex);
-	//Send Command "Quit"
-	bool Quit();
-	void VolumeUp();
-	void VolumeDown();
-	int GetVolume();
-	void SetVolume(const int& pos);
 	void SetTimePosition(int64_t time);
-	int64_t GetTimePosition();
-	//Main function
-	int SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
-	            const bool& isOpenGLDecoding, const int& volume);
-	void Play();
-	//Reset
-	int Reset_index();
-	//Seek Bar
-	void Seek_bar(int pos);
-	//Video display Size
+	bool Quit();
+	int SetFile(const wxString& filename, ListFunction * functionList, const wxString& acceleratorHardware, const bool& isOpenGLDecoding, const int& volume);
+	void PlayPause();
+	void Change_subtitle_stream(int newStreamIndex);
+	void Change_audio_stream(int newStreamIndex);
+	void SetVolume(const int& pos);
+	int GetVolume();
 	void VideoDisplaySize(int width, int height);
-	void SetOutputMode(int outputMode);
-	void SetVideoParameter(int angle, int flipV, int flipH);
-	wxString Getfilename();
+	int64_t GetTimePosition();
 
-private:
-	void StopEvent(wxCommandEvent& event);
-	void ExitEvent(wxCommandEvent& event);
-	void RefreshEvent(wxCommandEvent& event);
-	void SeekBarEvent(wxCommandEvent& event);
-	void PositionSeekEvent(wxCommandEvent& event);
-	void PositionEvent(wxCommandEvent& event);
-	void ChangeVolumeEvent(wxCommandEvent& event);
-	void AspectEvent(wxCommandEvent& event);
-	void PauseEvent(wxCommandEvent& event);
-	void PlayEvent(wxCommandEvent& event);
-	void StepEvent(wxCommandEvent& event);
-	void QuitEvent(wxCommandEvent& event);
-	void ChangeAudioEvent(wxCommandEvent& event);
-	void ChangeSubtitleEvent(wxCommandEvent& event);
+	static int StartMovie(void* arg);
 
 	wxString filename;
-	CFFmfcPimpl::VideoState* cur_stream;
-	CFFmfcPimpl* _pimpl;
+	std::thread* startMovie = nullptr;
+	ListFunction* functionList;
+	wxString acceleratorHardware;
+	bool isOpenGLDecoding;
+	int volume = 0;
 };

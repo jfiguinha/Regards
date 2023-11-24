@@ -20,14 +20,7 @@
 #include <ParamInit.h>
 #include <FilterWindowParam.h>
 #include <FilterData.h>
-#include <ffplaycore.h>
 
-extern "C"
-{
-    #include <ffplay.h>
-}
-
-//#include <ffplaycpp.h>
 
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -37,42 +30,6 @@ int numElementToLoad = 0;
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
-
-
-static void RenderFunctionOpenGL(void * data,float ratio)
-{
-    
-}
-
-static void RenderSetPos(int64_t pos)
-{
-    
-}
-
-int StartMovie()
-{
-
-	ListFunction functionList;
-	functionList.setData = &RenderFunctionOpenGL;
-	functionList.setPos = &RenderSetPos;
-#ifdef WIN32
-	int argc = 1;
-	char* argv[1] = { wxString("D:\\download\\test.mp4").char_str() };
-	int value = OpenMovie("D:\\download\\test.mp4", &functionList, argc, argv);
-#else
-    int argc = 1;
-    char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
-    int value = OpenMovie("/home/figuinha/Documents/test.mp4", &functionList, argc, argv);
-#endif
-
-	return 0;
-}
-
-int StopMovieThread()
-{
-    //StopMovie();
-	return 0;
-}
 
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -414,68 +371,6 @@ bool MyApp::OnInit()
 		framePDF->Centre(wxBOTH);
 		framePDF->Show(true);
 		framePDF->OnOpen();	
-	}
-    else if(appName == "test")
-    {
-
-        
-        for(int i = 0;i < 100;i++)
-        {
-            std::thread * startMovie = nullptr;
-            std::thread * stopMovie = nullptr;
-            /*
-            std:string filename = "/home/figuinha/Documents/video.mkv";
-            CVideoPlayer * capture = new CVideoPlayer(filename);
-            printf("Open Video File %s \n", filename.c_str());
-            bool isOpen = capture->isOpened();
-            if(isOpen)
-            {
-                 for(int i = 0;i < 100;i++)
-                 {
-                    cv::Mat frame = capture->GetVideoFrame();
-                    cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
-                     printf("Capture Frame Video File %d \n", i);
-                 }
-
-	
-            }
-            delete capture;
-            */
-            /*
-            wxString filename = "/home/figuinha/Documents/test.mp4";          
-            CFFmfc * ffmfc = new CFFmfc(nullptr, wxID_ANY);
-            ffmfc->SetFile(nullptr, filename, "none", true, 0);
-            ffmfc->Play();
-            sleep(10);
-            ffmfc->Quit();
-            sleep(1);
-            delete ffmfc;
-            */
-
-            startMovie = new std::thread(StartMovie);
-            wxSleep(5);
-            stopMovie = new std::thread(StopMovieThread);
-            stopMovie->join();
-            startMovie->join();
-            delete stopMovie;
-            delete startMovie;
-            //int argc = 1;
-            //char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
-            //int value = OpenMovie("/home/figuinha/Documents/test.mp4", argc, argv);
-			
-
-            /*
-			CFFPlayCpp ffplay;
-#ifdef WIN32
-			ffplay.StartMovie("D:\\download\\test.mp4");
-#else
-            wxString filename = "/home/figuinha/Documents/test.mp4";
-            ffplay.StartMovie(filename);
-#endif
-            */
-              
-        }
-        exit(0);
     }
 	else
 	{

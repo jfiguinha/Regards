@@ -2,7 +2,6 @@
 #include "header.h"
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
-
 #include "ffplaycore.h"
 #include "ffmpegToBitmap.h"
 #ifdef __APPLE__
@@ -13,6 +12,18 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
+
+extern "C" {
+#include "libavutil/imgutils.h"
+#include <libavutil/opt.h>
+#include <libavutil/pixfmt.h>
+#include <libswscale/swscale.h>
+#include <libavfilter/avfilter.h>
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+}
+
+
 #include <opencv2/xphoto.hpp>
 #include <picture_utility.h>
 #include "ScrollbarWnd.h"
@@ -25,6 +36,7 @@
 #include <MediaInfo.h>
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
+
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
@@ -93,7 +105,12 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 	pause = false;
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
-
+	functionList.setData = &SetData;
+	functionList.setPos = &SetPos;
+	functionList.videoStart = &VideoStart;
+	functionList.videoEnd = &VideoEnd;
+	functionList.setVideoDuration = &SetVideoDuration;
+	functionList.wxWindowParent = this;
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
     
@@ -168,7 +185,7 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 		StopVideoThread(event);
 		break;
 	case EVENT_VIDEOSTART:
-		VideoStart(event);
+		OnVideoStart(event);
 		break;
 	case wxEVENT_LEFTPOSITION:
 		OnLeftPosition(event);
@@ -204,7 +221,7 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
 	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
 	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
-	ffmfc = new CFFmfc(parentRender, wxID_ANY);
+	ffmfc = new CFFmfc();
 }
 
 void CVideoControlSoft::DiaporamaMode(const bool& value)
@@ -923,9 +940,18 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
     CRegardsConfigParam* config = CParamInit::getInstance();
     if (config != nullptr)
         hardwareDecoder = config->GetHardwareDecoder();
+
+	/*
+	
+	static void SetData(void* data, void * parent, const float& sample_aspect_ratio);
+	static void SetPos(void* parent, int64_t pos);
+	static void SetVideoDuration(void* parent, const int64_t& duration, const int64_t& startTime);
+	*/
+
+	
+
     
-	ffmfc->SetFile(this, filename,
-                   isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
+	ffmfc->SetFile(filename, &functionList, isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
 }
 
 wxString CVideoControlSoft::GetAcceleratorHardware()
@@ -981,7 +1007,7 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 
 
-		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
+		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->filename)
 		{
 			PlayMovie(filename, true);
 		}
@@ -1135,17 +1161,28 @@ int CVideoControlSoft::Play(const wxString& movie)
 }
 
 
-void CVideoControlSoft::VideoStart(wxCommandEvent& event)
+
+void CVideoControlSoft::OnVideoStart(wxCommandEvent& event)
 {
 	eventPlayer->OnVideoStart();
 	if (startVideo)
 	{
-		ffmfc->Play();
 		pause = false;
 		videoEnd = false;
 		videoStart = true;
 		fpsTimer->Start(1000);
 		ShrinkVideo();
+
+		DataTimeDuration* dtTime = (DataTimeDuration*)event.GetClientData();
+		if (dtTime != nullptr)
+		{
+			startingTime = dtTime->startTime;
+
+			if (eventPlayer != nullptr)
+				eventPlayer->SetVideoDuration(dtTime->duration);
+
+			delete dtTime;
+		}
 
 		wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
@@ -1357,7 +1394,7 @@ void CVideoControlSoft::OnPlay()
 
 		if (pause && !_videoEnd)
 		{
-			ffmfc->Pause();
+			ffmfc->PlayPause();
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1584,7 +1621,7 @@ void CVideoControlSoft::OnPause()
 	{
 		if (!pause)
 		{
-			ffmfc->Pause();
+			ffmfc->PlayPause();
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1622,24 +1659,7 @@ void CVideoControlSoft::OnSetPos(wxCommandEvent& event)
 }
 
 
-void CVideoControlSoft::SetPos(int64_t pos)
-{
-	int64_t videoPosition = (pos * 1000) - startingTime;
-	videoPosition = videoPosition / 1000;
-	wxCommandEvent evt(wxEVENT_UPDATEPOSMOVIETIME);
-	evt.SetExtraLong(videoPosition);
-	parentRender->GetEventHandler()->AddPendingEvent(evt);
-}
 
-void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t& startTime)
-{
-	DataTimeDuration * dtTime = new DataTimeDuration();
-	dtTime->duration = duration;
-	dtTime->startTime = startTime;
-	wxCommandEvent evt(wxEVENT_UPDATEMOVIETIME);
-	evt.SetClientData(dtTime);
-	parentRender->GetEventHandler()->AddPendingEvent(evt);
-}
 
 /*
 void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
@@ -1748,6 +1768,8 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		needToRefresh = false;
 		muRefresh.unlock();
 
+		videoRenderStart = true;
+
 		if (!isffmpegDecode)
 		{
 			//muBitmap.lock();
@@ -1762,32 +1784,91 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 
 }
 
+void CVideoControlSoft::SetPos(void* parent, int64_t pos)
+{
+	CVideoControlSoft* soft = (CVideoControlSoft*)parent;
+	if (soft != nullptr)
+	{
+		int64_t videoPosition = (pos * 1000) - soft->startingTime;
+		videoPosition = videoPosition / 1000;
+		wxCommandEvent evt(wxEVENT_UPDATEPOSMOVIETIME);
+		evt.SetExtraLong(videoPosition);
+		soft->parentRender->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 
-void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
+void CVideoControlSoft::SetVideoDuration(void* parent, int64_t duration, int64_t startTime)
+{
+	CVideoControlSoft* soft = (CVideoControlSoft*)parent;
+	if (soft != nullptr)
+	{
+		DataTimeDuration* dtTime = new DataTimeDuration();
+		dtTime->duration = duration;
+		dtTime->startTime = startTime;
+		wxCommandEvent evt(wxEVENT_UPDATEMOVIETIME);
+		evt.SetClientData(dtTime);
+		soft->parentRender->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+}
+
+void CVideoControlSoft::VideoEnd(void* parent)
+{
+	CVideoControlSoft* soft = (CVideoControlSoft*)parent;
+	if (soft != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
+		soft->parentRender->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CVideoControlSoft::VideoStart(void* wxWindow, int64_t duration, int64_t startTime)
+{
+	CVideoControlSoft* soft = (CVideoControlSoft*)wxWindow;
+	if (soft != nullptr)
+	{
+		DataTimeDuration* dtTime = new DataTimeDuration();
+		dtTime->duration = duration;
+		dtTime->startTime = startTime;
+		wxCommandEvent event(EVENT_VIDEOSTART);
+		event.SetClientData(dtTime);
+		wxPostEvent(soft->parentRender, event);
+	}
+}
+
+
+void CVideoControlSoft::SetData(void* parent, void* data, float sample_aspect_ratio)
 {
 	bool sendMessage = false;
 	bool isCPU = true;
-	if (IsSupportOpenCL())
-		isCPU = IsCPUContext();
-
-	CDataAVFrame* avFrameData = new CDataAVFrame();
-
-	//printf("Set Data Begin \n");
-
-	videoRenderStart = true;
 	auto src_frame = static_cast<AVFrame*>(data);
-	avFrameData->sample_aspect_ratio = sample_aspect_ratio;
+	CVideoControlSoft* soft = (CVideoControlSoft*)parent;
+	if (soft != nullptr && src_frame->width > 0 && src_frame->height > 0)
+	{
 
-	SetFrameData(src_frame);
-	//avFrameData->matFrame = GetBitmapRGBA(src_frame);
-	avFrameData->width = src_frame->width;
-	avFrameData->height = src_frame->height;
-	//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
+		if (soft->IsSupportOpenCL())
+			isCPU = soft->IsCPUContext();
+
+		CDataAVFrame* avFrameData = new CDataAVFrame();
+
+		//printf("Set Data Begin \n");
 
 
-	wxCommandEvent event(wxEVENT_UPDATEFRAME);
-	event.SetClientData(avFrameData);
-	wxPostEvent(parentRender, event);
+		
+		avFrameData->sample_aspect_ratio = sample_aspect_ratio;
+
+		soft->SetFrameData(src_frame);
+		//avFrameData->matFrame = GetBitmapRGBA(src_frame);
+		avFrameData->width = src_frame->width;
+		avFrameData->height = src_frame->height;
+		//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
+
+
+		wxCommandEvent event(wxEVENT_UPDATEFRAME);
+		event.SetClientData(avFrameData);
+		wxPostEvent(soft->parentRender, event);
+	}
+
 }
 
 void CVideoControlSoft::Resize()

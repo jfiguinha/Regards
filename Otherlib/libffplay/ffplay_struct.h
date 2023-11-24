@@ -1,9 +1,10 @@
+#pragma once
 
-typedef void(*SetData)(void*,float);
-typedef void(*SetPos)(int64_t);
-typedef void(*SetVideoDuration)(int64_t, int64_t);
-
-
+typedef void(*SetData)(void*, void*, float);
+typedef void(*SetPos)(void*, int64_t);
+typedef void(*SetVideoDuration)(void*, int64_t, int64_t);
+typedef void(*VideoStart)(void*, int64_t, int64_t);
+typedef void(*VideoEnd)(void*);
 /*
 	virtual void SetPos(int64_t pos) = 0;
 	virtual void SetData(void* data, const float& sample_aspect_ratio, void* WIN32Context) = 0;
@@ -28,6 +29,8 @@ typedef struct ListFunction
 {
     SetData setData;
     SetPos setPos;
+	VideoStart videoStart;
     SetVideoDuration setVideoDuration;
+	VideoEnd videoEnd;
     void * wxWindowParent;
 }ListFunction;
