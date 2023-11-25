@@ -49,7 +49,7 @@ public:
 	{
 	}
 	float sample_aspect_ratio = 0.0;
-	cv::Mat matFrame;
+	//cv::Mat matFrame;
 	int width;
 	int height;
 
@@ -1697,6 +1697,7 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 
 cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 {
+
 	cv::Mat bitmapData = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 	if (localContext == nullptr)
@@ -1726,7 +1727,7 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	          &convertedFrameBuffer, &linesize);
 
 
-	//cv::flip(bitmapData, bitmapData, 0);
+
 	return bitmapData;
 }
 
@@ -1770,18 +1771,18 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();
 
-	CDataAVFrame* avFrameData = new CDataAVFrame();
+	CDataAVFrame* avFrameData_new = new CDataAVFrame();
 
 	//printf("Set Data Begin \n");
 
 	videoRenderStart = true;
 	auto src_frame = static_cast<AVFrame*>(data);
-	avFrameData->sample_aspect_ratio = sample_aspect_ratio;
+	avFrameData_new->sample_aspect_ratio = sample_aspect_ratio;
 
 	SetFrameData(src_frame);
 	//avFrameData->matFrame = GetBitmapRGBA(src_frame);
-	avFrameData->width = src_frame->width;
-	avFrameData->height = src_frame->height;
+	avFrameData_new->width = src_frame->width;
+	avFrameData_new->height = src_frame->height;
 	//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
 
