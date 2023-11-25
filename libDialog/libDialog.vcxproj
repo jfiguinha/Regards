@@ -279,7 +279,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre;../Otherlib/libffplay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

@@ -67,6 +67,9 @@
     <ClCompile Include="BitmapToolbar.cpp">
       <Filter>Bitmap</Filter>
     </ClCompile>
+    <ClCompile Include="ffmfcpimpl.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
     <ClCompile Include="ffmpegToBitmap.cpp">
       <Filter>Video\Core</Filter>
     </ClCompile>
@@ -187,6 +190,9 @@
       <Filter>Bitmap</Filter>
     </ClInclude>
     <ClInclude Include="VideoInterface.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmfcpimpl.h">
       <Filter>Video\Core</Filter>
     </ClInclude>
     <ClInclude Include="ffmpegToBitmap.h">

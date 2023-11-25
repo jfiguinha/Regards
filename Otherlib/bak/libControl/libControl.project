@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libControl" InternalType="Library" Version="11000">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }, {
+  "name": "Release",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Display">
+    <File Name="ShowElement.h"/>
+    <File Name="ShowElement.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Video">
+    <File Name="VideoCompressOption.h"/>
+    <VirtualDirectory Name="Encoder">
+      <File Name="FFmpegTranscodingPimpl.h"/>
+      <File Name="FFmpegTranscodingPimpl.cpp"/>
+      <File Name="ffmpeg_transcoding.h"/>
+      <File Name="ffmpeg_transcoding.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Core">
+      <File Name="SlideToolbar.h"/>
+      <File Name="SlideToolbar.cpp"/>
+      <File Name="ffmfcpimpl.cpp"/>
+      <File Name="ffplaycore.cpp"/>
+      <File Name="ffmpegToBitmap.h"/>
+      <File Name="ffmpegToBitmap.cpp"/>
+      <File Name="ffmpeg.h"/>
+      <File Name="ffmfcpimpl.h"/>
+      <File Name="ffplaycore.h"/>
+      <File Name="SliderVideo.h"/>
+      <File Name="SliderVideo.cpp"/>
+      <File Name="VideoControlInterface.h"/>
+      <File Name="VideoControl_soft.h"/>
+      <File Name="VideoControl_soft.cpp"/>
+      <File Name="VideoInterface.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Datastructure">
+    <File Name="ModificationManager.h"/>
+    <File Name="ModificationManager.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Criteria">
+    <File Name="CriteriaTreeWnd.cpp"/>
+    <File Name="CriteriaTree.cpp"/>
+    <File Name="CriteriaTreeWnd.h"/>
+    <File Name="CriteriaTree.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Infos">
+    <File Name="InfosFileWnd.cpp"/>
+    <File Name="InfosFile.cpp"/>
+    <File Name="InfosFileWnd.h"/>
+    <File Name="InfosFile.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Print">
+    <File Name="PrintEngine.h"/>
+    <File Name="PrintEngine.cpp"/>
+    <File Name="BitmapPrintout.cpp"/>
+    <File Name="BitmapPrintout.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="ShowBitmap">
+    <VirtualDirectory Name="PostEffect">
+      <File Name="NoneEffectTextureEffect.h"/>
+      <File Name="MoveEffectTexture.h"/>
+      <File Name="MoveEffectTexture.cpp"/>
+      <File Name="DiaporamaEffect.h"/>
+      <File Name="PageCurlFilter.h"/>
+      <File Name="PageCurlFilter.cpp"/>
+      <File Name="BitmapViewerImpl.h"/>
+      <File Name="BitmapFusionFilter.h"/>
+      <File Name="BitmapFusionFilter.cpp"/>
+      <File Name="BitmapFusionEffectParameter.h"/>
+      <File Name="AfterEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Toolbar">
+      <File Name="BitmapToolbar.h"/>
+      <File Name="BitmapToolbar.cpp"/>
+    </VirtualDirectory>
+    <File Name="BitmapWndViewer.cpp"/>
+    <File Name="BitmapWndViewer.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Effect">
+    <VirtualDirectory Name="Infos">
+      <File Name="InfoEffectWnd.h"/>
+      <File Name="InfoEffectWnd.cpp"/>
+      <File Name="InfoEffect.h"/>
+      <File Name="InfoEffect.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Toolbar">
+      <File Name="FiltreToolbar.h"/>
+      <File Name="FiltreToolbar.cpp"/>
+    </VirtualDirectory>
+    <File Name="FiltreEffectWnd.h"/>
+    <File Name="FiltreEffectWnd.cpp"/>
+    <File Name="FiltreEffect.h"/>
+    <File Name="FiltreEffect.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Thumbnail">
+    <VirtualDirectory Name="Video">
+      <File Name="ThumbnailVideo.h"/>
+      <File Name="ThumbnailVideo.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Effect">
+      <File Name="ThumbnailViewerEffectWnd.h"/>
+      <File Name="ThumbnailViewerEffectWnd.cpp"/>
+      <File Name="ThumbnailViewerEffect.h"/>
+      <File Name="ThumbnailViewerEffect.cpp"/>
+      <File Name="ThumbnailEffect.cpp"/>
+      <File Name="ThumbnailEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="include">
+      <File Name="ThumbnailVerticalSeparator.h"/>
+      <File Name="ThumbnailVerticalListFile.h"/>
+      <File Name="ThumbnailVertical.h"/>
+      <File Name="ThumbnailHorizontal.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="src">
+      <File Name="ThumbnailVerticalSeparator.cpp"/>
+      <File Name="ThumbnailVerticalListFile.cpp"/>
+      <File Name="ThumbnailVertical.cpp"/>
+      <File Name="ThumbnailHorizontal.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="InfosSeparationBarEffect.cpp"/>
+    <File Name="SplitterWithPanel.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="effect.h"/>
+    <File Name="EffectVideoWnd.h"/>
+    <File Name="InfosSeparationBarEffect.h"/>
+    <File Name="SplitterWithPanel.h"/>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../libVideoThumbnail"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libExif"/>
+        <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libFiltreInterface"/>
+        <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libFiltre"/>
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../libWindow"/>
+        <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libWindowMain"/>
+        <IncludePath Value="../libEmail"/>
+        <IncludePath Value="../libOpenCL"/>
+        <IncludePath Value="../libOpenCLEngine"/>
+        <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../CxImage"/>
+        <IncludePath Value="../libDialog"/>
+        <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
+        <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../Otherlib/libffmpeg"/>
+        <Preprocessor Value="OPENGL"/>
+        <Preprocessor Value="GLEW_STATIC"/>
+        <Preprocessor Value="DXVA2"/>
+        <Preprocessor Value="OPENCL"/>
+        <Preprocessor Value="YUV"/>
+        <Preprocessor Value="SDL2"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;;-O0" C_Options="-ggdb;;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3;" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="-s;" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

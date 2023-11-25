@@ -22,7 +22,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="video">
       <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project" Active="No"/>
-      <Project Name="ffplay" Path="Otherlib/libffplay/libffplay.project"/>
+      <Project Name="libffplay" Path="Otherlib/libffplay/libffplay.project" Active="No"/>
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
     <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
@@ -144,7 +144,6 @@
       <Project Name="RegardsPDF_linux" ConfigName="Debug"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Debug"/>
       <Project Name="ffplay" ConfigName="Debug"/>
-      <Project Name="ffplay" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -214,7 +213,6 @@
       <Project Name="libVideoConverter" ConfigName="Release"/>
       <Project Name="RegardsPDF_linux" ConfigName="Release"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Release"/>
-      <Project Name="ffplay" ConfigName="Release"/>
       <Project Name="ffplay" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>

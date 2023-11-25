@@ -21,7 +21,6 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 
-
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -31,6 +30,7 @@ using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
 
+extern int Start(int argc, char **argv);
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -132,7 +132,7 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	SDL_Quit();
+	//exit(0);
 
 	return 0;
 }
@@ -371,6 +371,47 @@ bool MyApp::OnInit()
 		framePDF->Centre(wxBOTH);
 		framePDF->Show(true);
 		framePDF->OnOpen();	
+	}
+    else if(appName == "test")
+    {
+        for(int i = 0;i < 100;i++)
+        {
+            /*
+            std:string filename = "/home/figuinha/Documents/video.mkv";
+            CVideoPlayer * capture = new CVideoPlayer(filename);
+            printf("Open Video File %s \n", filename.c_str());
+            bool isOpen = capture->isOpened();
+            if(isOpen)
+            {
+                 for(int i = 0;i < 100;i++)
+                 {
+                    cv::Mat frame = capture->GetVideoFrame();
+                    cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+                     printf("Capture Frame Video File %d \n", i);
+                 }
+
+	
+            }
+            delete capture;
+            */
+            /*
+            wxString filename = "/home/figuinha/Documents/test.mp4";          
+            CFFmfc * ffmfc = new CFFmfc(nullptr, wxID_ANY);
+            ffmfc->SetFile(nullptr, filename, "none", true, 0);
+            ffmfc->Play();
+            sleep(10);
+            ffmfc->Quit();
+            sleep(1);
+            delete ffmfc;
+           
+            std:string filename = "/home/figuinha/Documents/test.mp4";
+             printf("Open Video File %s \n", filename.c_str());
+            int argc = 1;
+            char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
+            int value = Start(argc, argv);
+			 */
+        }
+        exit(0);
     }
 	else
 	{

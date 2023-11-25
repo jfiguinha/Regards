@@ -65,7 +65,6 @@
 #endif
 
 
-
 static int init_report(const char* env);
 
 AVDictionary* sws_dict;

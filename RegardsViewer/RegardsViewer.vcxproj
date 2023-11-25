@@ -339,7 +339,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>wxUSE_WEBVIEW_EDGE_STATIC ;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../Otherlib/libffplay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -386,9 +386,8 @@ XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbbmalloc_proxy_debug.dll" $(
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\freetyped.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\tiffd.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libexpatd.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libde265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\de265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\aom.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -594,7 +593,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../Otherlib/libffplay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -1228,9 +1227,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sqlite3.dll"
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libffmpeg\libffmpeg.vcxproj">
       <Project>{ce591fa1-6863-4410-a259-2567261afa51}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libffplay\libffplay.vcxproj">
-      <Project>{61b52c92-a469-4d9a-ad17-5f1fd7095bf1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
