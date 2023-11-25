@@ -1787,7 +1787,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 
 
 	wxCommandEvent event(wxEVENT_UPDATEFRAME);
-	event.SetClientData(avFrameData);
+	event.SetClientData(avFrameData_new);
 	wxPostEvent(parentRender, event);
 }
 
