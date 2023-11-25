@@ -1,0 +1,6 @@
+﻿  1>Building Custom Rule C:/developpement/git/Regards/libextern/heif-master/srcs/examples/CMakeLists.txt
+  Compilateur d'optimisation Microsoft (R) C/C++ version 19.35.32215 pour x64
+  Copyright (C) Microsoft Corporation. Tous droits réservés.
+  cl /c /I"C:\developpement\git\Regards\libextern\heif-master\build" /I"C:\developpement\git\Regards\libextern\heif-master\srcs\reader\..\api\common" /I"C:\developpement\git\Regards\libextern\heif-master\srcs\reader\..\api\reader" /I"C:\developpement\git\Regards\libextern\heif-master\srcs\writer\..\api\common" /I"C:\developpement\git\Regards\libextern\heif-master\srcs\writer\..\api\writer" /Zi /W4 /WX- /diagnostics:column /MP /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D HEIF_USE_SHARED_LIB /D "CMAKE_INTDIR=\"Debug\"" /Gm- /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"example_shared.dir\Debug\\" /Fd"example_shared.dir\Debug\vc143.pdb" /external:W4 /Gd /TP /errorReport:prompt "C:\developpement\git\Regards\libextern\heif-master\srcs\examples\example.cpp"
+  example.cpp
+  example_shared.vcxproj -> C:\developpement\git\Regards\libextern\heif-master\build\bin\Debug\example_shared.exe
