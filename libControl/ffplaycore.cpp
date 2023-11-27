@@ -317,12 +317,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 	_pimpl->parent = this;
 	Reset_index();
 
-	if (_pimpl->display_disable)
-	{
-		_pimpl->video_disable = 1;
-	}
-
-
 	_pimpl->autoexit = 1;
 
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(CConvertUtility::ConvertToUTF8(filename), _pimpl->file_iformat);
@@ -336,6 +330,8 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 		_pimpl->g_is->width = _pimpl->dlg->getWidth();
 		_pimpl->g_is->height = _pimpl->dlg->getHeight();
 	}
+
+
 
 
 	wxCommandEvent event(EVENT_VIDEOSTART);
