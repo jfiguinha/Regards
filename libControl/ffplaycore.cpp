@@ -7,8 +7,8 @@
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-	_pimpl = nullptr;
-	Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
+	_pimpl = new CFFmfcPimpl();
+	//Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
 	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
 	Connect(FF_STOP_EVENT, wxCommandEventHandler(CFFmfc::StopEvent));
 	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
@@ -32,7 +32,7 @@ CFFmfc::~CFFmfc()
 
 void CFFmfc::RefreshEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark == 0)
+	if (cur_stream != nullptr)
 	{
 		double remaining_time = 0;
 		_pimpl->video_refresh(cur_stream, &remaining_time);
@@ -44,18 +44,9 @@ void CFFmfc::RefreshEvent(wxCommandEvent& event)
 
 void CFFmfc::PositionEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark)
-	{
-		auto ts = static_cast<int64_t*>(event.GetClientData());
-		delete ts;
-		return;
-	}
-
 	auto ts = static_cast<int64_t*>(event.GetClientData());
-	if (ts != nullptr)
+	if (cur_stream != nullptr)
 	{
-		//if (*ts > 0)
-		//{
 		if (_pimpl->g_is->ic != nullptr)
 		{
 			if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
@@ -63,69 +54,70 @@ void CFFmfc::PositionEvent(wxCommandEvent& event)
 			_pimpl->stream_seek(cur_stream, *ts, 0, 0);
 			_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
 		}
-		//}
-		delete ts;
 	}
+
+	delete ts;
+
 }
 
 void CFFmfc::ChangeVolumeEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark)
-		return;
-
-	//toggle_pause(cur_stream);
-	int newaudioIndex = event.GetInt();
-	_pimpl->percentVolume = newaudioIndex;
-	printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
+	if (cur_stream != nullptr)
+	{
+		int newaudioIndex = event.GetInt();
+		_pimpl->percentVolume = newaudioIndex;
+		printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
+	}
 }
 
 
 void CFFmfc::ChangeAudioEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark)
-		return;
-
-	//toggle_pause(cur_stream);
-	int newaudioIndex = event.GetInt();
-	_pimpl->stream_change_stream(cur_stream, AVMEDIA_TYPE_AUDIO, newaudioIndex);
+	if (cur_stream != nullptr)
+	{
+		int newaudioIndex = event.GetInt();
+		_pimpl->stream_change_stream(cur_stream, AVMEDIA_TYPE_AUDIO, newaudioIndex);
+	}
 	//toggle_play(cur_stream);
 }
 
 void CFFmfc::ChangeSubtitleEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark)
-		return;
-
-	//toggle_pause(cur_stream);
-	int newSubtitleIndex = event.GetInt();
-	_pimpl->stream_change_stream(cur_stream, AVMEDIA_TYPE_SUBTITLE, newSubtitleIndex);
-	//toggle_play(cur_stream);
+	if (cur_stream != nullptr)
+	{
+		//toggle_pause(cur_stream);
+		int newSubtitleIndex = event.GetInt();
+		_pimpl->stream_change_stream(cur_stream, AVMEDIA_TYPE_SUBTITLE, newSubtitleIndex);
+		//toggle_play(cur_stream);
+	}
 }
 
 
 void CFFmfc::AspectEvent(wxCommandEvent& event)
 {
-	if (_pimpl->exit_remark)
+	auto size = static_cast<wxSize*>(event.GetClientData());
+
+	if (cur_stream != nullptr)
 	{
-		auto size = static_cast<wxSize*>(event.GetClientData());
 		if (size != nullptr)
-			delete size;
-		return;
+		{
+			_pimpl->screen_width = _pimpl->g_is->width = size->x;
+			_pimpl->screen_height = _pimpl->g_is->height = size->y;
+			_pimpl->g_is->force_refresh = 1;
+
+		}
 	}
 
-	auto size = static_cast<wxSize*>(event.GetClientData());
 	if (size != nullptr)
-	{
-		_pimpl->screen_width = _pimpl->g_is->width = size->x;
-		_pimpl->screen_height = _pimpl->g_is->height = size->y;
-		_pimpl->g_is->force_refresh = 1;
 		delete size;
-	}
 }
 
 void CFFmfc::ExitEvent(wxCommandEvent& event)
 {
-	_pimpl->do_exit(cur_stream);
+	if (cur_stream != nullptr)
+	{
+		Quit();
+	}
 }
 
 void CFFmfc::QuitEvent(wxCommandEvent& event)
@@ -190,20 +182,13 @@ void CFFmfc::SetVideoParameter(int angle, int flipV, int flipH)
 bool CFFmfc::Quit()
 {
 	bool isExitNow = false;
-	if (_pimpl->g_is)
+	if (cur_stream != nullptr)
 	{
 		_pimpl->StopStream();
-		wxCommandEvent evt(FF_EXIT_EVENT);
-		evt.SetClientData(cur_stream);
-		this->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		_pimpl->StopStream();
-		_pimpl->do_exit(nullptr);
+		_pimpl->do_exit(cur_stream);
+		cur_stream = nullptr;
 		isExitNow = true;
 	}
-
 	return isExitNow;
 }
 
@@ -319,19 +304,8 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
-	//Save volume infos;
-	/*
-	int volume = 100;
 
-	if (_pimpl != nullptr)
-	{
-		volume = _pimpl->volume;
-		delete _pimpl;
-	}
-	*/
-
-	if (_pimpl == nullptr)
-		_pimpl = new CFFmfcPimpl();
+	Quit();
 
 	this->filename = filename;
 
@@ -342,9 +316,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();
-	//ÍË³ö·ûºÅÖÃÁã
-	_pimpl->exit_remark = 0;
-
 
 	if (_pimpl->display_disable)
 	{
@@ -354,8 +325,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 
 	_pimpl->autoexit = 1;
 
-	av_init_packet(&_pimpl->flush_pkt);
-	_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(CConvertUtility::ConvertToUTF8(filename), _pimpl->file_iformat);
 	if (!_pimpl->g_is)
 	{

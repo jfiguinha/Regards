@@ -79,6 +79,6 @@ private:
 	void ChangeSubtitleEvent(wxCommandEvent& event);
 
 	wxString filename;
-	CFFmfcPimpl::VideoState* cur_stream;
-	CFFmfcPimpl* _pimpl;
+	CFFmfcPimpl::VideoState* cur_stream = nullptr;
+	CFFmfcPimpl* _pimpl = nullptr;
 };

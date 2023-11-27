@@ -296,7 +296,6 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 //ÍË³ö
 void CFFmfcPimpl::do_exit(VideoState* is)
 {
-	exit_remark = 1;
 	if (is)
 	{
 		stream_close(is);

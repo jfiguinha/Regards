@@ -128,8 +128,8 @@ protected:
 	void OnPauseMovie(wxCommandEvent& event);
 	void OnVideoDuration(wxCommandEvent& event);
 	void OnShowFPS(wxTimerEvent& event);
-	void OnPlayStart(wxTimerEvent& event);
-	void OnPlayStop(wxTimerEvent& event);
+	//void OnPlayStart(wxTimerEvent& event);
+	//void OnPlayStop(wxTimerEvent& event);
 	void OnSetPos(wxCommandEvent& event);
 	void OnSetData(wxCommandEvent& event);
 
@@ -213,7 +213,7 @@ protected:
 	wxString msgFrame;
 	CWindowMain* windowMain;
 	wxTimer* fpsTimer;
-	wxTimer* playStartTimer;
+	//
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;
@@ -276,7 +276,7 @@ protected:
 	int oldheightDenoise = 0;
 	bool isInit = false;
 	bool firstMovie = true;
-	wxTimer* playStopTimer;
+	
 	
 	bool needToRefresh = false;
 	std::mutex muRefresh;
@@ -291,6 +291,9 @@ protected:
 	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
+
+	//wxTimer* playStopTimer;
+	//wxTimer* playStartTimer;
     
     bool startVideoAfterProblem = false;
 };

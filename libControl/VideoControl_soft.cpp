@@ -30,8 +30,8 @@ using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
 
 #define TIMER_FPS 0x10001
-#define TIMER_PLAYSTART 0x10002
-#define TIMER_PLAYSTOP 0x10003
+//#define TIMER_PLAYSTART 0x10002
+//#define TIMER_PLAYSTOP 0x10003
 
 extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
@@ -102,9 +102,9 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 vector<int> CVideoControlSoft::GetListTimer()
 {
 	vector<int> list;
-	list.push_back(TIMER_PLAYSTOP);
+	//list.push_back(TIMER_PLAYSTOP);
 	list.push_back(TIMER_FPS);
-	list.push_back(TIMER_PLAYSTART);
+	//list.push_back(TIMER_PLAYSTART);
 	return list;
 }
 
@@ -136,15 +136,15 @@ void CVideoControlSoft::OnTimer(wxTimerEvent& event)
 {
 	switch (event.GetId())
 	{
-	case TIMER_PLAYSTOP:
-		OnPlayStop(event);
-		break;
+	//case TIMER_PLAYSTOP:
+	//	OnPlayStop(event);
+	//	break;
 	case TIMER_FPS:
 		OnShowFPS(event);
 		break;
-	case TIMER_PLAYSTART:
-		OnPlayStart(event);
-		break;
+	//case TIMER_PLAYSTART:
+	//	OnPlayStart(event);
+	//	break;
 	}
 }
 
@@ -202,8 +202,8 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 	parentRender = parent;
 
 	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
-	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
-	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
+	//playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
+	//playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
 	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
 
@@ -219,11 +219,12 @@ void CVideoControlSoft::RepeatVideo()
 	else
 		repeatVideo = true;
 }
-
+/*
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
 	OnStop(filename);
 }
+*/
 
 bool CVideoControlSoft::IsPause()
 {
@@ -879,7 +880,7 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	//
 	if (endProgram && videoRenderStart && !quitWindow)
 	{
-		fpsTimer->Stop();
+		//fpsTimer->Stop();
 		quitWindow = true;
 		exit = true;
 		if (!videoEnd)
@@ -917,6 +918,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 	nbFrame = 0;
 }
 
+/*
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
     wxString hardwareDecoder = "";
@@ -927,7 +929,7 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 	ffmfc->SetFile(this, filename,
                    isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
 }
-
+*/
 wxString CVideoControlSoft::GetAcceleratorHardware()
 {
     wxString hardwareDecoder = "";
@@ -950,14 +952,14 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 			eventPlayer->OnPositionVideo(0);
 			eventPlayer->OnVideoEnd();
 		}
-		fpsTimer->Stop();
+		//fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
 		//}
 	}
 	else
 	{
-		fpsTimer->Stop();
+		//fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
 		videoEnd = true;
@@ -967,7 +969,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 
 void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 {
-	//OnStop(filename);
+
 	if (!stopVideo)
 	{
 		//this->OnPause();
@@ -979,6 +981,8 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
+
+		OnStop(filename);
 
 
 		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
@@ -1002,20 +1006,20 @@ CVideoControlSoft::~CVideoControlSoft()
 		_threadVideo->join();
 		delete _threadVideo;
 	}
-
+	/*
 	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
 	if (playStopTimer->IsRunning())
 		playStopTimer->Stop();
-
+	*/
 	if (hq3d != nullptr)
 		delete hq3d;
 
 	if (openCVStabilization != nullptr)
 		delete openCVStabilization;
 
-	delete playStartTimer;
+	//delete playStartTimer;
 	delete fpsTimer;
 
 	if (renderBitmapOpenGL != nullptr)
@@ -1096,12 +1100,13 @@ int CVideoControlSoft::Play(const wxString& movie)
             delete openCVStabilization;
 
         openCVStabilization = nullptr;
-
+		/*
         if (playStopTimer->IsRunning())
             playStopTimer->Stop();
 
         if (playStartTimer->IsRunning())
             playStartTimer->Stop();
+		*/
         startVideo = true;
         stopVideo = false;
         videoStartRender = false;
@@ -1124,8 +1129,16 @@ int CVideoControlSoft::Play(const wxString& movie)
         videoEffectParameter.ratioSelect = 0;
         muVideoEffect.unlock();
 
+		wxString hardwareDecoder = "";
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			hardwareDecoder = config->GetHardwareDecoder();
+
+		ffmfc->SetFile(this, filename,
+			isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
+
         firstMovie = false;
-        parentRender->Refresh();
+        //parentRender->Refresh();
     }
     else if (movie != filename)
     {
@@ -1297,6 +1310,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	canvas->SwapBuffers();
 
+	/*
 	if (!videoStartRender)
     {
         if(firstElementToShow)
@@ -1304,7 +1318,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         else
             playStartTimer->Start(100, true);
     }
-		
+	*/
 	videoStartRender = true;
 }
 
@@ -1380,8 +1394,8 @@ void CVideoControlSoft::OnPlay()
 
 void CVideoControlSoft::OnStop(wxString photoName)
 {
-	if (playStartTimer->IsRunning())
-		playStartTimer->Stop();
+	//if (playStartTimer->IsRunning())
+	//	playStartTimer->Stop();
 
 	exit = true;
 	stopVideo = true;
