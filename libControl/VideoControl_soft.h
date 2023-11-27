@@ -21,7 +21,7 @@ using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
-class CDataAVFrame;
+
 class Chqdn3d;
 
 namespace Regards
@@ -291,9 +291,6 @@ protected:
 	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
-
-	std::mutex muFrameData;
-	CDataAVFrame* avFrameData = nullptr;
     
     bool startVideoAfterProblem = false;
 };

@@ -8,7 +8,10 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
 	_pimpl = nullptr;
+	Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
+	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
 	Connect(FF_STOP_EVENT, wxCommandEventHandler(CFFmfc::StopEvent));
+	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
 	Connect(FF_PLAY_EVENT, wxCommandEventHandler(CFFmfc::PlayEvent));
 	Connect(FF_ASPECT_EVENT, wxCommandEventHandler(CFFmfc::AspectEvent));
@@ -17,8 +20,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	Connect(CHANGE_SUBTITLE, wxCommandEventHandler(CFFmfc::ChangeSubtitleEvent));
 	Connect(VOLUME_EVENT, wxCommandEventHandler(CFFmfc::ChangeVolumeEvent));
 	Connect(SET_POSITION, wxCommandEventHandler(CFFmfc::PositionEvent));
-
-
+	Connect(FF_REFRESH_EVENT, wxCommandEventHandler(CFFmfc::RefreshEvent));
 }
 
 CFFmfc::~CFFmfc()
@@ -28,6 +30,16 @@ CFFmfc::~CFFmfc()
 }
 
 
+void CFFmfc::RefreshEvent(wxCommandEvent& event)
+{
+	if (_pimpl->exit_remark == 0)
+	{
+		double remaining_time = 0;
+		_pimpl->video_refresh(cur_stream, &remaining_time);
+		//video_refresh_timer(event.user.data1);
+		//_pimpl->g_is->refresh = 0;
+	}
+}
 
 
 void CFFmfc::PositionEvent(wxCommandEvent& event)
@@ -111,10 +123,26 @@ void CFFmfc::AspectEvent(wxCommandEvent& event)
 	}
 }
 
+void CFFmfc::ExitEvent(wxCommandEvent& event)
+{
+	_pimpl->do_exit(cur_stream);
+}
+
+void CFFmfc::QuitEvent(wxCommandEvent& event)
+{
+	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
+	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+}
+
 void CFFmfc::StopEvent(wxCommandEvent& event)
 {
 	wxCommandEvent evt(wxEVENT_STOPVIDEO);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+}
+
+void CFFmfc::StepEvent(wxCommandEvent& event)
+{
+	_pimpl->step_to_next_frame(cur_stream);
 }
 
 void CFFmfc::PauseEvent(wxCommandEvent& event)
@@ -126,6 +154,8 @@ void CFFmfc::PlayEvent(wxCommandEvent& event)
 {
 	_pimpl->toggle_play(cur_stream);
 }
+
+
 
 //¸´Î»
 //Reset
@@ -177,6 +207,8 @@ bool CFFmfc::Quit()
 	return isExitNow;
 }
 
+
+
 //·¢ËÍ¡°ÔÝÍ£¡±ÃüÁî
 //Send Command "Pause"
 void CFFmfc::Pause()
@@ -202,6 +234,22 @@ void CFFmfc::Play()
 	wxCommandEvent evt(FF_PLAY_EVENT);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
+
+//·¢ËÍ¡°¿í¸ß±È¡±ÃüÁî
+//Send Command "AspectRatio"
+void CFFmfc::Aspectratio(int num, int den)
+{
+	//int w=g_is->width;
+	int h = _pimpl->g_is->height;
+	int w_re = h * num / den;
+	auto size = new wxSize();
+	size->x = w_re;
+	size->y = h;
+	wxCommandEvent evt(FF_ASPECT_EVENT);
+	evt.SetClientData(size);
+	this->GetEventHandler()->AddPendingEvent(evt);
+}
+
 
 //--------------------------------------------------------------
 //
@@ -257,6 +305,8 @@ void CFFmfc::SetTimePosition(int64_t time)
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
+
+
 wxString CFFmfc::Getfilename()
 {
 	return this->filename;
@@ -269,7 +319,16 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
+	//Save volume infos;
+	/*
+	int volume = 100;
 
+	if (_pimpl != nullptr)
+	{
+		volume = _pimpl->volume;
+		delete _pimpl;
+	}
+	*/
 
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
@@ -295,8 +354,8 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 
 	_pimpl->autoexit = 1;
 
-	//av_init_packet(&_pimpl->flush_pkt);
-	//_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
+	av_init_packet(&_pimpl->flush_pkt);
+	_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(CConvertUtility::ConvertToUTF8(filename), _pimpl->file_iformat);
 	if (!_pimpl->g_is)
 	{
@@ -311,6 +370,7 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 
 
 	wxCommandEvent event(EVENT_VIDEOSTART);
+	//event.SetId(EVENT_VIDEOSTART);
 	wxPostEvent(_pimpl->parent->GetParent(), event);
 
 	return 0;

@@ -42,20 +42,12 @@ public:
 	//Send Command "Pause"
 	void Pause();
 	//Send Command "Step"
-	//void Seek_step();
-	//Send Command "Seek"
-	//void Seek(int time);
-	//Send Command "AspectRatio"
-	//void Aspectratio(int num, int den);
-	//Send Command "WindowSize"
-	//void Size(int percentage);
+	void Aspectratio(int num, int den);
 
 	void Change_audio_stream(int newStreamIndex);
 	void Change_subtitle_stream(int newStreamIndex);
 	//Send Command "Quit"
 	bool Quit();
-	//void VolumeUp();
-	//void VolumeDown();
 	int GetVolume();
 	void SetVolume(const int& pos);
 	void SetTimePosition(int64_t time);
@@ -66,23 +58,23 @@ public:
 	void Play();
 	//Reset
 	int Reset_index();
-	//Seek Bar
-	//void Seek_bar(int pos);
 	//Video display Size
 	void VideoDisplaySize(int width, int height);
-	//void SetOutputMode(int outputMode);
+
 	void SetVideoParameter(int angle, int flipV, int flipH);
 	wxString Getfilename();
 
 private:
 	void StopEvent(wxCommandEvent& event);
-
+	void ExitEvent(wxCommandEvent& event);
+	void RefreshEvent(wxCommandEvent& event);
 	void PositionEvent(wxCommandEvent& event);
 	void ChangeVolumeEvent(wxCommandEvent& event);
 	void AspectEvent(wxCommandEvent& event);
 	void PauseEvent(wxCommandEvent& event);
 	void PlayEvent(wxCommandEvent& event);
-
+	void StepEvent(wxCommandEvent& event);
+	void QuitEvent(wxCommandEvent& event);
 	void ChangeAudioEvent(wxCommandEvent& event);
 	void ChangeSubtitleEvent(wxCommandEvent& event);
 

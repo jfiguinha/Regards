@@ -283,7 +283,6 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 
 	av_free(is);
 
-    is = nullptr;
 
 	wxCommandEvent evt(FF_QUIT_EVENT);
 	parent->GetEventHandler()->AddPendingEvent(evt);
@@ -554,7 +553,7 @@ double CFFmfcPimpl::vp_duration(VideoState* is, Frame* vp, Frame* nextvp)
 /* called to display each frame */
 void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 {
-	auto is = g_is;
+	auto is = static_cast<VideoState*>(opaque);
 	double time;
 
 	Frame *sp, *sp2;

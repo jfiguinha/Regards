@@ -407,7 +407,7 @@ public:
 		int (*hwaccel_retrieve_data)(AVCodecContext* s, AVFrame* frame);
 		AVPixelFormat hwaccel_pix_fmt;
 		AVPixelFormat hwaccel_retrieved_pix_fmt;
-		//AVBufferRef* hw_frames_ctx;
+		AVBufferRef* hw_frames_ctx;
 		AVCodecContext* avctx;
 		AVCodec* codec;
 	};
@@ -689,7 +689,7 @@ public:
 	/* current context */
 	int64_t audio_callback_time = 0;
 
-	//AVPacket flush_pkt;
+	AVPacket flush_pkt;
 
 
 	int seek_bar_pos = 0;
