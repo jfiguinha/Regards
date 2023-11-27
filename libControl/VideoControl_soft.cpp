@@ -1032,9 +1032,9 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (thumbnailVideo != nullptr)
 		delete thumbnailVideo;
 
-	if (localContext != nullptr)
-		sws_freeContext(localContext);
-	localContext = nullptr;
+    if (localContext != nullptr)
+        sws_freeContext(localContext);
+    localContext = nullptr;
 }
 
 void CVideoControlSoft::SetSubtitulePicture(cv::Mat& picture)
@@ -1641,21 +1641,6 @@ void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t&
 	parentRender->GetEventHandler()->AddPendingEvent(evt);
 }
 
-/*
-void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
-{
-	ffmfc->SetTimePosition(pos * 1000 * 1000);
-	if (pause && thumbnailVideo != nullptr)
-	{
-		muBitmap.lock();
-
-		pictureVideo = thumbnailVideo->GetVideoFrame(pos,0,0);
-
-		muBitmap.unlock();
-		this->Refresh();
-	}
-}
-*/
 void CVideoControlSoft::SetCurrentclock(wxString message)
 {
 	this->message = message;
@@ -1668,17 +1653,6 @@ void CVideoControlSoft::SetVolume(const int& pos)
 	SetSoundVolume(pos);
 }
 
-/*
-void CVideoControlSoft::VolumeUp()
-{
-	ffmfc->VolumeUp();
-}
-
-void CVideoControlSoft::VolumeDown()
-{
-	ffmfc->VolumeDown();
-}
-*/
 int CVideoControlSoft::GetVolume()
 {
 	return ffmfc->GetVolume();
@@ -1699,7 +1673,8 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 {
 
 	cv::Mat bitmapData = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
-
+    
+    
 	if (localContext == nullptr)
 	{
 		localContext = sws_alloc_context();
@@ -1727,7 +1702,7 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	          &convertedFrameBuffer, &linesize);
 
 
-
+    
 	return bitmapData;
 }
 

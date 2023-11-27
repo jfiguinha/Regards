@@ -22,7 +22,6 @@
     </VirtualDirectory>
     <VirtualDirectory Name="video">
       <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project" Active="No"/>
-      <Project Name="libffplay" Path="Otherlib/libffplay/libffplay.project" Active="No"/>
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
     <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
