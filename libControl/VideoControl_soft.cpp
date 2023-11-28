@@ -1167,6 +1167,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
 
+
 	if (IsSupportOpenCL())
 	{
 		if (openclEffectYUV == nullptr)
@@ -2058,7 +2059,7 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 		ApplyOpenCVEffect(bitmapOut);
 	}
 
-	//renderOpenGL->SetData(bitmapOut);
+	renderOpenGL->SetData(bitmapOut);
 
 }
 
@@ -2147,6 +2148,8 @@ int CVideoControlSoft::GetSoundVolume()
 
 int CVideoControlSoft::IsSupportOpenCL()
 {
+    return 0;
+    
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
