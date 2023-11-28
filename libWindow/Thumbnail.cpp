@@ -16,7 +16,7 @@
 #include <ThumbnailData.h>
 #include "ThumbnailMessage.h"
 #include <libPicture.h>
-
+#include <ThumbnailDataStorage.h>
 
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -824,11 +824,16 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
+    
 	CListToClean* listToAdd = new CListToClean();
 	time(&listToAdd->timeToAdd);
 	listToAdd->list = iconeListLocal;
 	//listToAdd->timeToAdd = std::chrono::system_clock::now();
 	listToErrase.push_back(listToAdd);
+    
+    
+    //iconeListLocal->EraseThumbnailList();
+    //delete iconeListLocal;
     
     stopToGetNbElement = false;
 
@@ -1122,6 +1127,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	if (!listToErrase.empty())
 	{
+       // printf("CThumbnail::listToErrase \n");
 		int i = 0;
 		time_t ending;
 		time(&ending);
@@ -1130,6 +1136,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			int diff = difftime(ending, element->timeToAdd);
 			if (diff > 5)
 			{
+                //printf("List To erase : %d \n",i);
 				//element->list->EraseThumbnailList();
 				delete element->list;
 				element->list = nullptr;

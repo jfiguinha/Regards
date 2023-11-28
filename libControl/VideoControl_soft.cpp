@@ -30,8 +30,8 @@ using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
 
 #define TIMER_FPS 0x10001
-//#define TIMER_PLAYSTART 0x10002
-//#define TIMER_PLAYSTOP 0x10003
+#define TIMER_PLAYSTART 0x10002
+#define TIMER_PLAYSTOP 0x10003
 
 extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
@@ -76,7 +76,7 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 	startingTime = 0;
 	old_width = 0;
 	old_height = 0;
-	thumbnailVideo = nullptr;
+
 	pause = false;
 	config = nullptr;
 	angle = 0;
@@ -102,9 +102,9 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 vector<int> CVideoControlSoft::GetListTimer()
 {
 	vector<int> list;
-	//list.push_back(TIMER_PLAYSTOP);
+	list.push_back(TIMER_PLAYSTOP);
 	list.push_back(TIMER_FPS);
-	//list.push_back(TIMER_PLAYSTART);
+	list.push_back(TIMER_PLAYSTART);
 	return list;
 }
 
@@ -136,15 +136,15 @@ void CVideoControlSoft::OnTimer(wxTimerEvent& event)
 {
 	switch (event.GetId())
 	{
-	//case TIMER_PLAYSTOP:
-	//	OnPlayStop(event);
-	//	break;
+	case TIMER_PLAYSTOP:
+		OnPlayStop(event);
+		break;
 	case TIMER_FPS:
 		OnShowFPS(event);
 		break;
-	//case TIMER_PLAYSTART:
-	//	OnPlayStart(event);
-	//	break;
+	case TIMER_PLAYSTART:
+		OnPlayStart(event);
+		break;
 	}
 }
 
@@ -202,8 +202,8 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 	parentRender = parent;
 
 	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
-	//playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
-	//playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
+	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
+	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
 	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
 
@@ -219,12 +219,11 @@ void CVideoControlSoft::RepeatVideo()
 	else
 		repeatVideo = true;
 }
-/*
+
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
 	OnStop(filename);
 }
-*/
 
 bool CVideoControlSoft::IsPause()
 {
@@ -371,20 +370,6 @@ void CVideoControlSoft::TestMaxY()
 }
 
 
-void CVideoControlSoft::GenerateThumbnailVideo(void* data)
-{
-	auto videoSoft = static_cast<CVideoControlSoft*>(data);
-	videoSoft->muBitmap.lock();
-	videoSoft->pictureFrame = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
-	//if(!videoSoft->pictureVideo.empty())
-	//	cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
-	videoSoft->muBitmap.unlock();
-	videoSoft->threadVideoEnd = true;
-	videoSoft->muRefresh.lock();
-	videoSoft->needToRefresh = true;
-	videoSoft->muRefresh.unlock();
-}
-
 void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 {
 	long pos = event.GetExtraLong();
@@ -400,22 +385,7 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 		openCVStabilization->Init();
 
 	ffmfc->SetTimePosition(timeToSeek);
-	if (pause && thumbnailVideo != nullptr)
-	{
-		thumbnailFromBitmap = true;
-		if (threadVideoEnd)
-		{
-			if (_threadVideo != nullptr)
-			{
-				_threadVideo->join();
-				delete _threadVideo;
-			}
-			_threadVideo = new thread(GenerateThumbnailVideo, this);
-			threadVideoEnd = false;
-		}
-	}
-	else
-		thumbnailFromBitmap = false;
+
 }
 
 void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
@@ -880,7 +850,7 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	//
 	if (endProgram && videoRenderStart && !quitWindow)
 	{
-		//fpsTimer->Stop();
+		fpsTimer->Stop();
 		quitWindow = true;
 		exit = true;
 		if (!videoEnd)
@@ -918,7 +888,6 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 	nbFrame = 0;
 }
 
-/*
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
     wxString hardwareDecoder = "";
@@ -929,7 +898,7 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 	ffmfc->SetFile(this, filename,
                    isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
 }
-*/
+
 wxString CVideoControlSoft::GetAcceleratorHardware()
 {
     wxString hardwareDecoder = "";
@@ -952,14 +921,14 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 			eventPlayer->OnPositionVideo(0);
 			eventPlayer->OnVideoEnd();
 		}
-		//fpsTimer->Stop();
+		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
 		//}
 	}
 	else
 	{
-		//fpsTimer->Stop();
+		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
 		videoEnd = true;
@@ -969,7 +938,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 
 void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 {
-
+	//OnStop(filename);
 	if (!stopVideo)
 	{
 		//this->OnPause();
@@ -981,8 +950,6 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
-
-		OnStop(filename);
 
 
 		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
@@ -1001,25 +968,27 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 
 CVideoControlSoft::~CVideoControlSoft()
 {
+    /*
 	if (_threadVideo != nullptr)
 	{
 		_threadVideo->join();
 		delete _threadVideo;
 	}
-	/*
+    */
+
 	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
 	if (playStopTimer->IsRunning())
 		playStopTimer->Stop();
-	*/
+
 	if (hq3d != nullptr)
 		delete hq3d;
 
 	if (openCVStabilization != nullptr)
 		delete openCVStabilization;
 
-	//delete playStartTimer;
+	delete playStartTimer;
 	delete fpsTimer;
 
 	if (renderBitmapOpenGL != nullptr)
@@ -1033,8 +1002,8 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (ffmfc)
 		delete ffmfc;
 
-	if (thumbnailVideo != nullptr)
-		delete thumbnailVideo;
+	//if (thumbnailVideo != nullptr)
+	//	delete thumbnailVideo;
 
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
@@ -1076,6 +1045,7 @@ void CVideoControlSoft::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
 
 int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
+    
     if(movie != filename)
     {
         isHardwareDecoder = true;
@@ -1087,26 +1057,25 @@ int CVideoControlSoft::Play(const wxString& movie)
 {
     if (videoEnd || stopVideo)
     {
-        if (thumbnailVideo != nullptr)
-            delete thumbnailVideo;
+        //if (thumbnailVideo != nullptr)
+        //    delete thumbnailVideo;
 
         if (localContext != nullptr)
             sws_freeContext(localContext);
         localContext = nullptr;
 
-        thumbnailVideo = new CThumbnailVideo(movie, true);
+        //thumbnailVideo = new CThumbnailVideo(movie, true);
 
         if (openCVStabilization != nullptr)
             delete openCVStabilization;
 
         openCVStabilization = nullptr;
-		/*
+
         if (playStopTimer->IsRunning())
             playStopTimer->Stop();
 
         if (playStartTimer->IsRunning())
             playStartTimer->Stop();
-		*/
         startVideo = true;
         stopVideo = false;
         videoStartRender = false;
@@ -1129,16 +1098,8 @@ int CVideoControlSoft::Play(const wxString& movie)
         videoEffectParameter.ratioSelect = 0;
         muVideoEffect.unlock();
 
-		wxString hardwareDecoder = "";
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-			hardwareDecoder = config->GetHardwareDecoder();
-
-		ffmfc->SetFile(this, filename,
-			isHardwareDecoder ? hardwareDecoder : "none", isOpenGLDecoding, GetSoundVolume());
-
         firstMovie = false;
-        //parentRender->Refresh();
+        parentRender->Refresh();
     }
     else if (movie != filename)
     {
@@ -1216,7 +1177,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	isInit = true;
 	inverted = true;
-    
+
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	//wxPaintDC dc(this);
@@ -1248,6 +1209,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		if (!fpsTimer->IsRunning())
 			fpsTimer->Start(1000);
 	}
+    
 
 
 	if (videoRenderStart)
@@ -1304,13 +1266,12 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	}
 	else
 	{
-		printf("renderBitmapOpenGL->CreateScreenRender \n");
+		//printf("renderBitmapOpenGL->CreateScreenRender \n");
 		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 	}
 
 	canvas->SwapBuffers();
 
-	/*
 	if (!videoStartRender)
     {
         if(firstElementToShow)
@@ -1318,8 +1279,9 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         else
             playStartTimer->Start(100, true);
     }
-	*/
+		
 	videoStartRender = true;
+
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1361,7 +1323,6 @@ void CVideoControlSoft::ErrorDecodingFrame()
 
 void CVideoControlSoft::OnPlay()
 {
-	thumbnailFromBitmap = false;
 	if (videoStart)
 	{
 		bool _videoEnd = videoEnd;
@@ -1394,8 +1355,8 @@ void CVideoControlSoft::OnPlay()
 
 void CVideoControlSoft::OnStop(wxString photoName)
 {
-	//if (playStartTimer->IsRunning())
-	//	playStartTimer->Stop();
+	if (playStartTimer->IsRunning())
+		playStartTimer->Stop();
 
 	exit = true;
 	stopVideo = true;
@@ -1655,21 +1616,7 @@ void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t&
 	parentRender->GetEventHandler()->AddPendingEvent(evt);
 }
 
-/*
-void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
-{
-	ffmfc->SetTimePosition(pos * 1000 * 1000);
-	if (pause && thumbnailVideo != nullptr)
-	{
-		muBitmap.lock();
 
-		pictureVideo = thumbnailVideo->GetVideoFrame(pos,0,0);
-
-		muBitmap.unlock();
-		this->Refresh();
-	}
-}
-*/
 void CVideoControlSoft::SetCurrentclock(wxString message)
 {
 	this->message = message;
@@ -1682,17 +1629,6 @@ void CVideoControlSoft::SetVolume(const int& pos)
 	SetSoundVolume(pos);
 }
 
-/*
-void CVideoControlSoft::VolumeUp()
-{
-	ffmfc->VolumeUp();
-}
-
-void CVideoControlSoft::VolumeDown()
-{
-	ffmfc->VolumeDown();
-}
-*/
 int CVideoControlSoft::GetVolume()
 {
 	return ffmfc->GetVolume();
@@ -2005,11 +1941,13 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 
 void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
+    
+    //printf("CVideoControlSoft::RenderToTexture \n");
 
 	if (openclEffect == nullptr)
 		return;
 
-	GLTexture* glTexture = nullptr;
+	//GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
 	inverted = true;
@@ -2034,20 +1972,17 @@ void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-    
-    
-   
-    if(!(widthOutput == 0 || heightOutput == 0))
-    {
-        openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
-                                               (int)GetZoomRatio() * 100);
 
-        cv::UMat data = openclEffect->GetUMat(false);
-        if (!renderOpenGL->SetData(data))
-            openclOpenGLInterop = false;       
-    }
-    else
-         printf("RenderToTexture : width %d height %d \n", widthOutput, heightOutput);
+	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+	                                       (int)GetZoomRatio() * 100);
+                                        
+    cv::UMat data = openclEffect->GetUMat(false);
+    if (!renderOpenGL->SetData(data))
+        openclOpenGLInterop = false;
+
+    int nError = glGetError();
+    //printf("CVideoControlSoft::RenderToTexture Error : %d \n", nError);
+
 
 }
 
@@ -2088,6 +2023,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 
 void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 {
+    //printf("RenderFFmpegToTexture \n");
 	int widthOutput = 0;
 	int heightOutput = 0;
 	inverted = true;
@@ -2100,7 +2036,7 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 	if (pictureFrame.empty())
 		return;
 
-	GLTexture* glTexture = nullptr;
+	//GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
 
 	int filterInterpolation = 0;
@@ -2122,7 +2058,7 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 		ApplyOpenCVEffect(bitmapOut);
 	}
 
-	renderOpenGL->SetData(bitmapOut);
+	//renderOpenGL->SetData(bitmapOut);
 
 }
 
@@ -2344,13 +2280,14 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 
 void CVideoControlSoft::RenderToGLTexture()
 {
-	// printf("RenderToBitmap  \n"); 
+    //printf("RenderToGLTexture  \n"); 
 	std::clock_t start;
 	start = std::clock();
 	double duration;
 
 	if (!isffmpegDecode)
 	{
+       //  printf("RenderToGLTexture RenderToTexture  \n"); 
 		muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
@@ -2362,6 +2299,7 @@ void CVideoControlSoft::RenderToGLTexture()
 	}
 	else
 	{
+        //printf("RenderToGLTexture RenderFFmpegToTexture  \n"); 
 		cv::Mat bitmap;
 		muBitmap.lock();
 		pictureFrame.copyTo(bitmap);

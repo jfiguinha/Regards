@@ -20,7 +20,7 @@
 #include <ParamInit.h>
 #include <FilterWindowParam.h>
 #include <FilterData.h>
-
+#include <ffplaycore.h>
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -374,27 +374,10 @@ bool MyApp::OnInit()
 	}
     else if(appName == "test")
     {
-        for(int i = 0;i < 100;i++)
+        for(int i = 0;i < 10;i++)
         {
             /*
-            std:string filename = "/home/figuinha/Documents/video.mkv";
-            CVideoPlayer * capture = new CVideoPlayer(filename);
-            printf("Open Video File %s \n", filename.c_str());
-            bool isOpen = capture->isOpened();
-            if(isOpen)
-            {
-                 for(int i = 0;i < 100;i++)
-                 {
-                    cv::Mat frame = capture->GetVideoFrame();
-                    cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
-                     printf("Capture Frame Video File %d \n", i);
-                 }
-
-	
-            }
-            delete capture;
-            */
-            /*
+            printf("Boucle : %d \n",i);
             wxString filename = "/home/figuinha/Documents/test.mp4";          
             CFFmfc * ffmfc = new CFFmfc(nullptr, wxID_ANY);
             ffmfc->SetFile(nullptr, filename, "none", true, 0);
@@ -403,13 +386,16 @@ bool MyApp::OnInit()
             ffmfc->Quit();
             sleep(1);
             delete ffmfc;
-           
-            std:string filename = "/home/figuinha/Documents/test.mp4";
-             printf("Open Video File %s \n", filename.c_str());
-            int argc = 1;
-            char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
-            int value = Start(argc, argv);
-			 */
+            */
+            printf("Boucle : %d \n",i);
+            wxImage image;
+            wxString thumbnail = "/home/figuinha/Documents/Regards/ThumbnailVideo/514_0.jpg";
+            if (wxFileExists(thumbnail))
+            {
+                image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
+            }
+            sleep(5);
+
         }
         exit(0);
     }

@@ -128,15 +128,15 @@ protected:
 	void OnPauseMovie(wxCommandEvent& event);
 	void OnVideoDuration(wxCommandEvent& event);
 	void OnShowFPS(wxTimerEvent& event);
-	//void OnPlayStart(wxTimerEvent& event);
-	//void OnPlayStop(wxTimerEvent& event);
+	void OnPlayStart(wxTimerEvent& event);
+	void OnPlayStop(wxTimerEvent& event);
 	void OnSetPos(wxCommandEvent& event);
 	void OnSetData(wxCommandEvent& event);
 
     void ErrorDecodingFrame();
     
 	void CalculPositionPicture(const float& x, const float& y);
-	static void GenerateThumbnailVideo(void* data);
+	//static void GenerateThumbnailVideo(void* data);
 	int IsSupportOpenCL();
 
 	bool ApplyOpenCVEffect(cv::Mat& image);
@@ -213,7 +213,7 @@ protected:
 	wxString msgFrame;
 	CWindowMain* windowMain;
 	wxTimer* fpsTimer;
-	//
+	wxTimer* playStartTimer;
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;
@@ -228,10 +228,10 @@ protected:
 
 	bool videoRender = false;;
 	bool videoStartRender = false;
-	thread* _threadVideo = nullptr;
-	bool threadVideoEnd = true;
-	GLTexture* glTextureSrc = nullptr;
-	cv::Mat bitmap;
+	//thread* _threadVideo = nullptr;
+	//bool threadVideoEnd = true;
+	//GLTexture* glTextureSrc = nullptr;
+	//cv::Mat bitmap;
 	COpenCLEffectVideo* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
@@ -269,14 +269,13 @@ protected:
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
-	CThumbnailVideo* thumbnailVideo;
-	bool thumbnailFromBitmap = false;
+
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
 	bool isInit = false;
 	bool firstMovie = true;
-	
+	wxTimer* playStopTimer;
 	
 	bool needToRefresh = false;
 	std::mutex muRefresh;
@@ -291,9 +290,6 @@ protected:
 	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
-
-	//wxTimer* playStopTimer;
-	//wxTimer* playStartTimer;
     
     bool startVideoAfterProblem = false;
 };

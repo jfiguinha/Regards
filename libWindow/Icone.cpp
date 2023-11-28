@@ -11,8 +11,10 @@
 #ifdef WIN32
 #endif
 #include <RegardsConfigParam.h>
-
+#include <ThumbnailDataStorage.h>
+#include <ThumbnailDataSQL.h>
 #include <libPicture.h>
+#include <SqlFaceThumbnail.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
@@ -592,10 +594,47 @@ void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 
 CIcone::~CIcone(void)
 {
+    //printf("CIcone::~CIcone \n");
 	if (deleteData)
 	{
-		if (pThumbnailData != nullptr)
-			delete pThumbnailData;
+        //printf("CIcone::~CIcone deleteData \n");
+        switch(pThumbnailData->GetType())
+        {
+
+            case 1:
+            {
+               // printf("CIcone::~CIcone deleteData 1\n");
+                CThumbnailDataStorage * dataStorage = (CThumbnailDataStorage *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            case 4:
+            {
+               // printf("CIcone::~CIcone deleteData 4\n");
+                CSqlFaceThumbnail * dataStorage = (CSqlFaceThumbnail *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            case 2:
+            {
+                //printf("CIcone::~CIcone deleteData 2\n");
+                CThumbnailDataSQL * dataStorage = (CThumbnailDataSQL *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            default:
+            {
+                //printf("CIcone::~CIcone deleteData default\n");
+                if (pThumbnailData != nullptr)
+                    delete pThumbnailData;
+                break;
+            }
+        }
+        
+
 		pThumbnailData = nullptr;
 	}
 }

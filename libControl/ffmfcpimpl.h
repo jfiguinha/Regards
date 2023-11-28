@@ -689,13 +689,16 @@ public:
 	/* current context */
 	int64_t audio_callback_time = 0;
 
+	//AVPacket flush_pkt;
+
+
 	int seek_bar_pos = 0;
 	int64_t time_position = 0;
 	int video_angle = 0;
 	int video_flipV = 0;
 	int video_flipH = 0;
 	//×¨ÃÅÉèÖÃµÄ±ê¼Ç£¬ÔÚ³ÌÐò½«ÒªÍË³öµÄÊ±ºò»áÖÃ1
-	//int exit_remark = 0;
+	int exit_remark = 0;
 
 	//---------------------------------
 	//static SDL_Surface *screen;

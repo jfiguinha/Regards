@@ -144,7 +144,6 @@ public:
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
 	IVideoPlayer* videoThumbnailer = nullptr;
-	IVideoPlayer* videoThumbnailerInfos = nullptr;
 	int width = 0;
 	int height = 0;
 	int videowidth = 0;

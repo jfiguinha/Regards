@@ -60,10 +60,10 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
-	//printf("convertToGLTexture2D \n");
+	printf("convertToGLTexture2D \n");
 	bool isOk = true;
 
-	//printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
+	printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
 	cl_int status = 0;
 
 	if (isOpenCLCompatible)
@@ -195,7 +195,7 @@ void GLTexture::DeleteInteropTexture()
 }
 
 bool GLTexture::SetData(cv::UMat& bitmap)
-{
+{   
 	bool isOk = false;
 
 	if (pimpl_ == nullptr && openclOpenGLInterop)
@@ -255,7 +255,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 }
 
 void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
-{
+{  
 	if (!m_nTextureID)
 	{
 		glGenTextures(1, &m_nTextureID);
@@ -278,6 +278,9 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+    
+    int nError = glGetError();
+    printf(" GLTexture::SetTextureData : %d \n", nError);
 }
 
 void GLTexture::SetData(cv::Mat& bitmap)
@@ -326,6 +329,9 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+    
+    int nError = glGetError();
+    printf(" GLTexture::Create : %d \n", nError);
 
 	return (GL_NO_ERROR == glGetError());
 }

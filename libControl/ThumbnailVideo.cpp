@@ -372,6 +372,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			if (thumbnail != nullptr)
 				delete thumbnail;
 		}
+        
+        listThumbnail.clear();
 
 		processIdle = true;
 	}
@@ -384,6 +386,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
+    printf("CThumbnailVideo::InitWithDefaultPicture \n");
+    //oldIconeList->EraseThumbnailList();
+    //delete oldIconeList;
 	EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
@@ -483,8 +488,8 @@ void CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)
 
 #ifdef __WXGTK__
     //cout << "CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)" << endl;
-    wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
-    wxQueueEvent(this, eventRefresh);
+    //wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+    //wxQueueEvent(this, eventRefresh);
 #endif
 }
 
