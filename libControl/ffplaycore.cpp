@@ -285,8 +285,7 @@ bool CFFmfc::Quit()
 		_pimpl->StopStream();
 		wxCommandEvent evt(FF_EXIT_EVENT);
 		evt.SetClientData(cur_stream);
-		this->GetEventHandler()->AddPendingEvent(evt);
-        
+		this->GetEventHandler()->AddPendingEvent(evt);       
 	}
 	else
 	{

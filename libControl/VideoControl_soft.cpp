@@ -1211,10 +1211,13 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			fpsTimer->Start(1000);
 	}
     
-
+    
+    renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 
 	if (videoRenderStart)
 	{
+        
+        
 		if (!pictureFrame.empty() && !IsSupportOpenCL())
 		{
 			muBitmap.lock();
@@ -1223,9 +1226,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		}
 		else
 			RenderToGLTexture();
-
-
-		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 
 		//printf("DisplayTexture not openGLDecoding \n");
 		muVideoEffect.lock();
@@ -1265,11 +1265,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		}
 
 	}
-	else
-	{
-		//printf("renderBitmapOpenGL->CreateScreenRender \n");
-		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
-	}
+
 
 	canvas->SwapBuffers();
 
@@ -2060,7 +2056,6 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 	}
 
 	renderOpenGL->SetData(bitmapOut);
-
 }
 
 void CVideoControlSoft::Rotate90()
