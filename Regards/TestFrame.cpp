@@ -6,6 +6,16 @@
 
 #define TIMER_FPS 0x10001
 
+
+#ifndef wxHAS_IMAGES_IN_RESOURCES
+#ifdef __WXGTK__
+#include "../Resource/sample.xpm"
+#else
+#include "../../Resource/sample.xpm"
+#endif
+#endif
+
+
 // constants:
 enum
 {
@@ -45,10 +55,6 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 {
 
 	SetIcon(wxICON(sample));
-#ifndef __WXMSW__
-	frameScanner = nullptr;
-#endif
-
 
 	bool openFirstFile = true;
 	videoWindow = new CVideoControlSoft(nullptr, this, nullptr);

@@ -308,11 +308,16 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 		printf("\n");
 
 	av_log(nullptr, AV_LOG_QUIET, "%s", "");
+    
+    SDL_CloseAudioDevice(audio_dev);
 }
 
 /* display the current picture, if any */
 void CFFmfcPimpl::video_display(VideoState* is)
 {
+    printf("CFFmfcPimpl::video_display \n");
+    
+    
 	int ret = 0;
 	Frame* vp;
 	Frame* sp = NULL;
@@ -1985,6 +1990,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres)
 			av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
+        /*
         if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
             if (acceleratorHardware != "" && acceleratorHardware != "none")
@@ -1993,7 +1999,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
                 isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
             }
         }
-
+        */
 
 		if (!isSuccess)
 		{
@@ -2915,6 +2921,10 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 	av_frame_unref(input);
 	av_frame_move_ref(input, output);
 	av_frame_free(&output);
+    
+    
+    
+   
 
 	return 0;
 

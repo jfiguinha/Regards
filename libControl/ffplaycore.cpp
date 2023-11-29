@@ -277,12 +277,14 @@ void CFFmfc::SetVideoParameter(int angle, int flipV, int flipH)
 //·¢ËÍ¡°ÍË³ö¡±ÃüÁî
 //Send Command "Quit"
 bool CFFmfc::Quit()
-{
+{  
     printf("CFFmfc::Quit \n");
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
 		_pimpl->StopStream();
+        //_pimpl->do_exit(cur_stream);
+        //isExitNow = true;
 		wxCommandEvent evt(FF_EXIT_EVENT);
 		evt.SetClientData(cur_stream);
 		this->GetEventHandler()->AddPendingEvent(evt);       
@@ -468,17 +470,7 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
-	//Save volume infos;
-	/*
-	int volume = 100;
-
-	if (_pimpl != nullptr)
-	{
-		volume = _pimpl->volume;
-		delete _pimpl;
-	}
-	*/
-
+    
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
 
@@ -502,6 +494,9 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 
 
 	_pimpl->autoexit = 1;
+    
+    
+     
 
 	//av_init_packet(&_pimpl->flush_pkt);
 	//_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
@@ -523,4 +518,5 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 	wxPostEvent(_pimpl->parent->GetParent(), event);
 
 	return 0;
+
 }

@@ -163,6 +163,7 @@ void CRenderOpenGL::CreateScreenRender(const int& width, const int& height, cons
 		this->width = width;
 		this->height = height;
 		ReSizeGLScene(width, height);
+        
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_TEXTURE_2D);
@@ -171,13 +172,11 @@ void CRenderOpenGL::CreateScreenRender(const int& width, const int& height, cons
         gluOrtho2D(0, width, 0, height);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-
-        glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
-        //glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 	}
 
+    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
 
 }
 

@@ -374,7 +374,7 @@ bool MyApp::OnInit()
 	}
 	else if (appName == "test")
 	{
-		wxString filename = "D:\\download\\test.mp4";
+		wxString filename = "/home/figuinha/Documents/test2.mp4";//"D:\\download\\test.mp4";
 		testFrame = new CTestFrame("TestFrame", wxDefaultPosition, wxSize(640, 480));
 		testFrame->Centre(wxBOTH);
 		testFrame->Show(true);
