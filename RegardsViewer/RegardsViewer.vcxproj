@@ -339,7 +339,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>wxUSE_WEBVIEW_EDGE_STATIC ;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -1143,6 +1143,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sqlite3.dll"
     <ClInclude Include="..\Regards\openexr_3\half.h" />
     <ClInclude Include="..\Regards\Regards.h" />
     <ClInclude Include="..\Regards\SqlInit.h" />
+    <ClInclude Include="..\Regards\TestFrame.h" />
     <ClInclude Include="..\Regards\toFloat.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -1277,6 +1278,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sqlite3.dll"
     <ClCompile Include="..\Regards\Regards.cpp">
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
     </ClCompile>
+    <ClCompile Include="..\Regards\TestFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc" />

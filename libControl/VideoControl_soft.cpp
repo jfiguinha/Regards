@@ -1111,7 +1111,8 @@ int CVideoControlSoft::Play(const wxString& movie)
 
 void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 {
-	eventPlayer->OnVideoStart();
+	if(eventPlayer != nullptr)
+		eventPlayer->OnVideoStart();
 	if (startVideo)
 	{
 		ffmfc->Play();
@@ -1352,6 +1353,15 @@ void CVideoControlSoft::OnPlay()
 
 void CVideoControlSoft::OnStop(wxString photoName)
 {
+
+	standByMovie = photoName;
+
+	QuitMovie();
+}
+
+
+void CVideoControlSoft::QuitMovie()
+{
 	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
@@ -1364,7 +1374,7 @@ void CVideoControlSoft::OnStop(wxString photoName)
 			ffmfc->Quit();
 		}
 	}
-	standByMovie = photoName;
+
 
 	wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
@@ -1373,6 +1383,7 @@ void CVideoControlSoft::OnStop(wxString photoName)
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
+
 
 float CVideoControlSoft::GetLargeurMax()
 {

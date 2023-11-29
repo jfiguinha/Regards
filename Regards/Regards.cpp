@@ -372,33 +372,57 @@ bool MyApp::OnInit()
 		framePDF->Show(true);
 		framePDF->OnOpen();	
 	}
-    else if(appName == "test")
-    {
-        for(int i = 0;i < 10;i++)
-        {
-            /*
-            printf("Boucle : %d \n",i);
-            wxString filename = "/home/figuinha/Documents/test.mp4";          
-            CFFmfc * ffmfc = new CFFmfc(nullptr, wxID_ANY);
-            ffmfc->SetFile(nullptr, filename, "none", true, 0);
-            ffmfc->Play();
-            sleep(10);
-            ffmfc->Quit();
-            sleep(1);
-            delete ffmfc;
-            */
-            printf("Boucle : %d \n",i);
-            wxImage image;
-            wxString thumbnail = "/home/figuinha/Documents/Regards/ThumbnailVideo/514_0.jpg";
-            if (wxFileExists(thumbnail))
-            {
-                image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
-            }
-            sleep(5);
+	else if (appName == "test")
+	{
+		wxString filename = "D:\\download\\test.mp4";
+		testFrame = new CTestFrame("TestFrame", wxDefaultPosition, wxSize(640, 480));
+		testFrame->Centre(wxBOTH);
+		testFrame->Show(true);
+		testFrame->PlayMovie(filename);
 
-        }
-        exit(0);
-    }
+
+	}
+	else if (appName == "toto")
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			/*
+			std:string filename = "/home/figuinha/Documents/video.mkv";
+			CVideoPlayer * capture = new CVideoPlayer(filename);
+			printf("Open Video File %s \n", filename.c_str());
+			bool isOpen = capture->isOpened();
+			if(isOpen)
+			{
+				 for(int i = 0;i < 100;i++)
+				 {
+					cv::Mat frame = capture->GetVideoFrame();
+					cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+					 printf("Capture Frame Video File %d \n", i);
+				 }
+
+
+			}
+			delete capture;
+			*/
+			/*
+			wxString filename = "/home/figuinha/Documents/test.mp4";
+			CFFmfc * ffmfc = new CFFmfc(nullptr, wxID_ANY);
+			ffmfc->SetFile(nullptr, filename, "none", true, 0);
+			ffmfc->Play();
+			sleep(10);
+			ffmfc->Quit();
+			sleep(1);
+			delete ffmfc;
+
+			std:string filename = "/home/figuinha/Documents/test.mp4";
+			 printf("Open Video File %s \n", filename.c_str());
+			int argc = 1;
+			char* argv[1] = {wxString("/home/figuinha/Documents/test.mp4").char_str()};
+			int value = Start(argc, argv);
+			 */
+		}
+
+	}
 	else
 	{
 		frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);

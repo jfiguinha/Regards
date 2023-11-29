@@ -25,6 +25,7 @@
 #include <wx/display.h>
 #include <VideoConverterFrame.h>
 #include <ScannerFrame.h>
+#include "TestFrame.h"
 //#define TEST_WINDOWMANAGER
 #ifdef __WXGTK__
  #include <X11/Xlib.h>   
@@ -330,6 +331,8 @@ private:
 	
 	CScannerFrame * framePDF = nullptr;
 	CVideoConverterFrame* frameVideoConverter = nullptr;
+	CTestFrame* testFrame = nullptr;
+	
 	
 	bool startVideoConverter = false;
 	bool startRegardsPDF = false;

@@ -55,6 +55,8 @@ public:
 	int GetVolume() override;
 	void SetVolume(const int& pos);
 	void ChangeVideoFormat();
+
+	void QuitMovie();
 	int GetZoomIndex();
 	void SetZoomIndex(const int& pos);
 	void ShrinkVideo();

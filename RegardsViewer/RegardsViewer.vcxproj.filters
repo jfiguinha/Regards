@@ -19,6 +19,9 @@
     <Filter Include="OpenExr">
       <UniqueIdentifier>{bf851384-528e-4cb6-9a7c-1189e52ec28b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoFrame_test">
+      <UniqueIdentifier>{6440b07b-ce7f-4915-b9f2-c20c7834b0b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -38,6 +41,9 @@
     </ClInclude>
     <ClInclude Include="..\Regards\openexr_3\half.h">
       <Filter>OpenExr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Regards\TestFrame.h">
+      <Filter>VideoFrame_test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +162,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Regards\TestFrame.cpp">
+      <Filter>VideoFrame_test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
