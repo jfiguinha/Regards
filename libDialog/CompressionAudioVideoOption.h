@@ -32,7 +32,7 @@ class CVideoEffectParameter;
 
 namespace Regards::Video
 {
-	class CThumbnailVideo;
+	class CVideoThumb;
 }
 
 class CompressionAudioVideoOption : public wxDialog
@@ -140,7 +140,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	Regards::Video::CThumbnailVideo* ffmpegTranscoding = nullptr;
+	Regards::Video::CVideoThumb * ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif

@@ -1165,7 +1165,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bool isFind = false;
 				int orientation = 0;
 				cv::Mat mat;
-				CThumbnailVideo* thumbnail = new CThumbnailVideo(szFileName, false);
+				CVideoThumb* thumbnail = new CVideoThumb(szFileName, false);
 				mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
@@ -1618,7 +1618,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case MOV:
 			{
 				bool isFind = false;
-				CThumbnailVideo* thumbnail = new CThumbnailVideo(szFileName, false);
+				CVideoThumb* thumbnail = new CVideoThumb(szFileName, false);
 				vector<CImageVideoThumbnail*> listVideo;
 				listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
@@ -2591,7 +2591,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case MOV:
 			{
 				bool isFind = false;
-				CThumbnailVideo* thumbnail = new CThumbnailVideo(fileName, false);
+				CVideoThumb* thumbnail = new CVideoThumb(fileName, false);
 				int orientation = 0;
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				cv::Mat mat;
@@ -2871,9 +2871,9 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			/*
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			bool isFind = false;
-			CThumbnailVideo* thumbnail = nullptr;
+			CVideoThumb* thumbnail = nullptr;
 			muMovie.lock();
-			std::map<wxString, Regards::Video::CThumbnailVideo*>::iterator it;
+			std::map<wxString, Regards::Video::CVideoThumb*>::iterator it;
 			it = movieList.find(fileName);
 			if (it != movieList.end())
 			{
@@ -2884,7 +2884,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			muMovie.unlock();
 			if (!isFind)
 			{
-				thumbnail = new CThumbnailVideo(fileName, false);
+				thumbnail = new CVideoThumb(fileName, false);
 				muMovie.lock();
 				movieList[fileName] = thumbnail;
 				thumbnail->GetVideoDimensions(width, height);

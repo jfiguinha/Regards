@@ -8,15 +8,18 @@
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
-class CThumbnailVideoPimpl
+class CVideoThumbPimpl
 {
 public:
-	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardwares)
+	CVideoThumbPimpl(const wxString& fileName, const bool & useOpenCV)
 	{
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
-        videoThumbnailer = new CVideoPlayer(filename);
+		if(useOpenCV)
+			videoThumbnailer = new COpenCVVideoPlayer(filename);
+		else
+			videoThumbnailer = new CVideoPlayer(filename);
         isOk = videoThumbnailer->IsOk();
         if(isOk)
         {
@@ -37,7 +40,7 @@ public:
 		return isOk;
 	}
 
-	~CThumbnailVideoPimpl()
+	~CVideoThumbPimpl()
 	{
 		if(videoThumbnailer != nullptr)
 			delete videoThumbnailer;
@@ -148,23 +151,23 @@ public:
 	wxString filename = "";
 };
 
-CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardware)
+CVideoThumb::CVideoThumb(const wxString& fileName, const bool& useOpenCV)
 {
 	this->fileName = fileName;
-	pimpl = new CThumbnailVideoPimpl(fileName, false);
+	pimpl = new CVideoThumbPimpl(fileName, useOpenCV);
 }
 
-bool CThumbnailVideo::isOk()
+bool CVideoThumb::isOk()
 {
 	return pimpl->IsOpen();
 }
 
-CThumbnailVideo::~CThumbnailVideo()
+CVideoThumb::~CVideoThumb()
 {
 	delete pimpl;
 }
 
-int CThumbnailVideo::GetOrientation()
+int CVideoThumb::GetOrientation()
 {
 	int rotation = pimpl->rotation;
 	if (rotation == -90)
@@ -174,13 +177,13 @@ int CThumbnailVideo::GetOrientation()
 	return rotation;
 }
 
-void CThumbnailVideo::GetVideoDimensions(int& width, int& height)
+void CVideoThumb::GetVideoDimensions(int& width, int& height)
 {
 	width = pimpl->width;
 	height = pimpl->height;
 }
 
-cv::Mat CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CVideoThumb::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
 	try
@@ -194,7 +197,7 @@ cv::Mat CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thu
 	return image;
 }
 
-cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth,
+cv::Mat CVideoThumb::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth,
                                           const int& thumbnailHeight)
 {
 	cv::Mat image;
@@ -209,7 +212,7 @@ cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& 
 	return image;
 }
 
-cv::Mat CThumbnailVideo::GetVideoFramePercent(const int& percent, const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CVideoThumb::GetVideoFramePercent(const int& percent, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
 
@@ -225,12 +228,12 @@ cv::Mat CThumbnailVideo::GetVideoFramePercent(const int& percent, const int& thu
 }
 
 
-int64_t CThumbnailVideo::GetMovieDuration()
+int64_t CVideoThumb::GetMovieDuration()
 {
 	return pimpl->m_videoMovieDuration;
 }
 
-vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail)
+vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail)
 {
 	vector<CImageVideoThumbnail*> listPicture;
 

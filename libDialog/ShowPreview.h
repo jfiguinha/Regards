@@ -23,7 +23,7 @@ namespace Regards
 
 	namespace Video
 	{
-		class CThumbnailVideo;
+		class CVideoThumb;
 	}
 
 	namespace Control
@@ -85,7 +85,7 @@ namespace Regards
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-			Video::CThumbnailVideo* videoOriginal = nullptr;
+			Video::CVideoThumb * videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscoding* transcodeFFmpeg = nullptr;
 			cv::Mat decodeFrame;

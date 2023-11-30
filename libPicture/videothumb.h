@@ -1,17 +1,17 @@
 #pragma once
 
 class CImageVideoThumbnail;
-class CThumbnailVideoPimpl;
+class CVideoThumbPimpl;
 
 namespace Regards
 {
 	namespace Video
 	{
-		class CThumbnailVideo
+		class CVideoThumb
 		{
 		public:
-			CThumbnailVideo(const wxString& fileName, const bool& useHardware);
-			~CThumbnailVideo();
+			CVideoThumb(const wxString& fileName, const bool& useOpenCV);
+			~CVideoThumb();
 			bool isOk();
 			cv::Mat GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight);
 			cv::Mat GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight);
@@ -22,7 +22,7 @@ namespace Regards
 			int64_t GetMovieDuration();
 
 		private:
-			CThumbnailVideoPimpl* pimpl;
+			CVideoThumbPimpl* pimpl;
 			wxString fileName;
 		};
 	}
