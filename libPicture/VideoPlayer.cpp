@@ -302,7 +302,7 @@ public:
 		return avformat_seek_file(input_ctx, video_stream, INT64_MIN, 0, INT64_MAX, 0);
 	}
 
-	cv::Mat GetVideoFrame(const bool& applyOrientation)
+	cv::Mat GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 	{
 		if (input_ctx == nullptr)
 			return cv::Mat();
@@ -340,9 +340,12 @@ public:
 			cv::Mat src = videoFrame;
 			cv::Mat dst;
 			//Rotate Frame
-			if (rotation == 90)
+			if (rotation == 270)
 			{
-				cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
+				if(invertRotation)
+					cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
+				else
+					cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
 				// Rotate clockwise 270 degrees
 				// transpose(src, dst);
 				// flip(dst, src, 0);
@@ -352,9 +355,13 @@ public:
 				// Rotate clockwise 180 degrees
 				flip(src, src, -1);
 			}
-			else if (rotation == 270)
+			else if (rotation == 90)
 			{
-				cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
+				if (invertRotation)
+					cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
+				else
+					cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
+				
 				// Rotate clockwise 90 degrees
 				// transpose(src, dst);
 				// flip(dst, src, 1);
@@ -382,6 +389,13 @@ void CVideoPlayer::SeekToBegin()
 {
 	if (IsOk())
 		pimpl->SeekToBegin();
+	/*
+	if (pimpl != nullptr)
+		delete pimpl;
+	pimpl = new CVideoPlayerPimpl();
+	int ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
+	*/
+
 }
 
 void CVideoPlayer::SkipFrame(const int& nbFrame)
@@ -392,7 +406,7 @@ void CVideoPlayer::SkipFrame(const int& nbFrame)
 
 bool CVideoPlayer::IsOk()
 {
-	return isOk;
+	return pimpl->isOpened();
 }
 
 int CVideoPlayer::GetFps()
@@ -460,18 +474,14 @@ CVideoPlayer::CVideoPlayer(const wxString& filename) : IVideoPlayer(filename)
 	int ret = 0;
 	pimpl = new CVideoPlayerPimpl();
 	ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
-
-	if (ret > 0)
-		isOk = true;
+	this->filename = filename;
 }
 
-cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation)
+cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 {
-	if (isOk)
+	if (IsOk())
 	{
-		cv::Mat mat = pimpl->GetVideoFrame(applyOrientation);
-		if (mat.empty())
-			isOk = false;
+		cv::Mat mat = pimpl->GetVideoFrame(applyOrientation, invertRotation);
 		return mat;
 	}
 	return cv::Mat();
@@ -479,5 +489,6 @@ cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 
 CVideoPlayer::~CVideoPlayer()
 {
-	delete pimpl;
+	if(pimpl != nullptr)
+		delete pimpl;
 }

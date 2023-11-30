@@ -34,7 +34,7 @@ namespace Regards
 			void GetAspectRatio(int& ascpectNominator, int& ascpectDenominator) override;
 
 			int GetOrientation() override;
-			cv::Mat GetVideoFrame(const bool& applyOrientation = true) override;
+			cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool& invertRotation = true) override;
 			
 
 		private:

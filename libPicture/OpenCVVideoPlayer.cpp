@@ -132,7 +132,7 @@ int COpenCVVideoPlayer::SeekToPos(const int& sec)
 	return 0;
 }
 
-cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation)
+cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 {
 	cv::Mat frame;
 	*capture >> frame;

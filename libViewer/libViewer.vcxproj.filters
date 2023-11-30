@@ -209,9 +209,6 @@
     <ClCompile Include="ThumbnailToolBarZoom.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailViewerVideo.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationToolbar.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -292,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="ToolbarViewerMode.cpp">
       <Filter>Toolbar\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerVideo.cpp">
+      <Filter>Thumbnail\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

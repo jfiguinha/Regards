@@ -113,12 +113,13 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			bool grabbed = false;
 			if (mouseOn && isVideo && videoCaptureCV != nullptr)
 			{
-                cvImg = videoCaptureCV->GetVideoFrame();
-				if (!videoCaptureCV->IsOk())
+                cvImg = videoCaptureCV->GetVideoFrame(true, false);
+				if (cvImg.empty())
 				{
 					videoFramePos = 0;
 					videoCaptureCV->SeekToBegin();
-					cvImg = videoCaptureCV->GetVideoFrame();
+					cvImg = videoCaptureCV->GetVideoFrame(true, false);
+					grabbed = true;
 				}
 				else
 				{

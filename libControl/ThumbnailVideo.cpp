@@ -559,6 +559,7 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	int nbImage = libPicture.GetNbImage(videoFilename);
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFilename, nbImage);
+	ProcessVideo();
 }
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)

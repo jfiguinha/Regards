@@ -41,7 +41,7 @@ namespace Regards
 			virtual void GetAspectRatio(int& ascpectNominator, int& ascpectDenominator) = 0;
 
 			virtual int GetOrientation() = 0;
-			virtual cv::Mat GetVideoFrame(const bool& applyOrientation = true) = 0;
+			virtual cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool& invertRotation = true) = 0;
 
 		};
 	}
