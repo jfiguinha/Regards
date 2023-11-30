@@ -387,9 +387,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	nbElementInIconeList = iconeList->GetNbElement();
 
     printf("CThumbnailVideo::InitWithDefaultPicture \n");
-    //oldIconeList->EraseThumbnailList();
-    //delete oldIconeList;
-	EraseThumbnailList(oldIconeList);
+    oldIconeList->EraseThumbnailList();
+    delete oldIconeList;
+	//EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 
@@ -503,10 +503,9 @@ void CThumbnailVideo::ResizeThumbnail()
 	process_end = false;
 }
 
-
-void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
+void CThumbnailVideo::EraseThumbnail(long value)
 {
-	long value = event.GetExtraLong();
+
 	if (value == 1)
 	{
 		CSqlThumbnailVideo sqlThumbnailvideo;
@@ -560,6 +559,12 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 	int nbImage = libPicture.GetNbImage(videoFilename);
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFilename, nbImage);
+}
+
+void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
+{
+    long value = event.GetExtraLong();
+    EraseThumbnail(value);
 }
 
 

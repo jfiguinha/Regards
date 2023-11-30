@@ -71,10 +71,11 @@ namespace Regards::Window
 		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
-
+        virtual void ProcessVideo() {};
+        
 	protected:
 
-		virtual void ProcessVideo() {};
+		
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);

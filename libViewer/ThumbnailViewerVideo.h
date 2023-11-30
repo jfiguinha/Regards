@@ -4,7 +4,7 @@ using namespace Regards::Control;
 
 namespace Regards::Viewer
 {
-	class CThumbnailViewerVideo : public CThumbnailVideo
+	class CThumbnailViewerVideo : public Regards::Control::CThumbnailVideo
 	{
 	public:
 		CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,

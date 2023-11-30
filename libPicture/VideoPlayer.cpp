@@ -57,16 +57,17 @@ using namespace Regards::Video;
 class CVideoPlayerPimpl
 {
 public:
-	static AVBufferRef* hw_device_ctx;
-	static enum AVPixelFormat hw_pix_fmt;
+
+
+	int video_stream, ret;
+
+	AVCodecContext* decoder_ctx = nullptr;
+	//AVCodec* decoder = nullptr;
+	AVPacket* packet = nullptr;
 	SwsContext* localContext = nullptr;
 	AVFormatContext* input_ctx = nullptr;
-	int video_stream, ret;
-	AVStream* video = nullptr;
-	AVCodecContext* decoder_ctx = nullptr;
-	AVCodec* decoder = nullptr;
-	AVPacket* packet = nullptr;
-	enum AVHWDeviceType type;
+    
+    
 	int i;
 	cv::Mat videoFrame;
 	int rotation = 0;
@@ -119,49 +120,16 @@ public:
 		av_packet_free(&packet);
 		avcodec_free_context(&decoder_ctx);
 		avformat_close_input(&input_ctx);
-		av_buffer_unref(&hw_device_ctx);
 		if (localContext != nullptr)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 	}
 
-	static int hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType type)
-	{
-		int err = 0;
-
-		if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
-		                                  nullptr, nullptr, 0)) < 0)
-		{
-			fprintf(stderr, "Failed to create specified HW device.\n");
-			return err;
-		}
-		ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
-
-		return err;
-	}
-
-	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts)
-	{
-		const enum AVPixelFormat* p;
-
-		for (p = pix_fmts; *p != -1; p++)
-		{
-			if (*p == hw_pix_fmt)
-				return *p;
-		}
-
-		fprintf(stderr, "Failed to get HW surface format.\n");
-		return AV_PIX_FMT_NONE;
-	}
 
 	int decode_write(AVCodecContext* avctx, AVPacket* packet, bool& decode_video)
 	{
 		decode_video = false;
-		AVFrame *frame = nullptr, *sw_frame = nullptr;
-		AVFrame* tmp_frame = nullptr;
-		uint8_t* buffer = nullptr;
-		int size;
-		int ret = 0;
+		AVFrame *frame = nullptr;
 
 		ret = avcodec_send_packet(avctx, packet);
 		if (ret < 0)
@@ -172,7 +140,7 @@ public:
 
 		while (true)
 		{
-			if (!(frame = av_frame_alloc()) || !(sw_frame = av_frame_alloc()))
+			if (!(frame = av_frame_alloc()))
 			{
 				fprintf(stderr, "Can not alloc frame\n");
 				ret = AVERROR(ENOMEM);
@@ -183,7 +151,6 @@ public:
 			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 			{
 				av_frame_free(&frame);
-				av_frame_free(&sw_frame);
 				return 0;
 			}
 			if (ret < 0)
@@ -192,26 +159,11 @@ public:
 				goto fail;
 			}
 
-			if (frame->format == hw_pix_fmt && hw_decode)
-			{
-				/* retrieve data from GPU to CPU */
-				if ((ret = av_hwframe_transfer_data(sw_frame, frame, 0)) < 0)
-				{
-					fprintf(stderr, "Error transferring the data to system memory\n");
-					goto fail;
-				}
-				tmp_frame = sw_frame;
-			}
-			else
-				tmp_frame = frame;
-
-			GetBitmapRGBA(tmp_frame);
+			GetBitmapRGBA(frame);
 			decode_video = true;
 
 		fail:
 			av_frame_free(&frame);
-			av_frame_free(&sw_frame);
-			av_freep(&buffer);
 			if (ret < 0)
 				return ret;
 		}
@@ -272,139 +224,54 @@ public:
 	}
 
 
-	int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = false)
+	int OpenVideoFile(const char* videoFilename)
 	{
+        AVCodec* decoder = nullptr;
 		printf("Filename OpenVideoFile : %s \n", videoFilename);
 
-		this->hw_decode = hw_decode;
-		if (hw_decode)
-		{
-			type = av_hwdevice_find_type_by_name(hardwareDevice);
-			if (type == AV_HWDEVICE_TYPE_NONE)
-			{
-				fprintf(stderr, "Device type %s is not supported.\n", hardwareDevice);
-				fprintf(stderr, "Available device types:");
-				while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-					fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-				fprintf(stderr, "\n");
-				return -1;
-			}
+        packet = av_packet_alloc();
+        if (!packet)
+        {
+            fprintf(stderr, "Failed to allocate AVPacket\n");
+            return -1;
+        }
 
-			packet = av_packet_alloc();
-			if (!packet)
-			{
-				fprintf(stderr, "Failed to allocate AVPacket\n");
-				return -1;
-			}
+        // open the input file 
+        if (avformat_open_input(&input_ctx, videoFilename, nullptr, nullptr) != 0)
+        {
+            fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
+            return -1;
+        }
 
-			// open the input file 
-			if (avformat_open_input(&input_ctx, videoFilename, nullptr, nullptr) != 0)
-			{
-				fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
-				return -1;
-			}
+        if (avformat_find_stream_info(input_ctx, nullptr) < 0)
+        {
+            fprintf(stderr, "Cannot find input stream information.\n");
+            return -1;
+        }
 
-			if (avformat_find_stream_info(input_ctx, nullptr) < 0)
-			{
-				fprintf(stderr, "Cannot find input stream information.\n");
-				return -1;
-			}
+        ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
+
+        if (ret < 0)
+        {
+            fprintf(stderr, "Cannot find a video stream in the input file\n");
+            return -1;
+        }
+        video_stream = ret;
 
 
-            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
-
-			if (ret < 0)
-			{
-				fprintf(stderr, "Cannot find a video stream in the input file\n");
-				return -1;
-			}
-			video_stream = ret;
-
-			for (i = 0;; i++)
-			{
-				const AVCodecHWConfig* config = avcodec_get_hw_config(decoder, i);
-				if (!config)
-				{
-					fprintf(stderr, "Decoder %s does not support device type %s.\n",
-					        decoder->name, av_hwdevice_get_type_name(type));
-					return -1;
-				}
-				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-					config->device_type == type)
-				{
-					hw_pix_fmt = config->pix_fmt;
-					break;
-				}
-			}
-
-			if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
-				return AVERROR(ENOMEM);
+        if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
+            return AVERROR(ENOMEM);
 
 
-			video = input_ctx->streams[video_stream];
-			if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
-				return -1;
+        AVStream * video = input_ctx->streams[video_stream];
+        if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
+            return -1;
 
-			decoder_ctx->get_format = get_hw_format;
-
-			if (hw_decoder_init(decoder_ctx, type) < 0)
-				return -1;
-
-			if ((ret = avcodec_open2(decoder_ctx, decoder, nullptr)) < 0)
-			{
-				fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
-				return -1;
-			}
-		}
-		else
-		{
-			packet = av_packet_alloc();
-			if (!packet)
-			{
-				fprintf(stderr, "Failed to allocate AVPacket\n");
-				return -1;
-			}
-
-			// open the input file 
-			if (avformat_open_input(&input_ctx, videoFilename, nullptr, nullptr) != 0)
-			{
-				fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
-				return -1;
-			}
-
-			if (avformat_find_stream_info(input_ctx, nullptr) < 0)
-			{
-				fprintf(stderr, "Cannot find input stream information.\n");
-				return -1;
-			}
-
-			ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
-
-
-           
-
-			if (ret < 0)
-			{
-				fprintf(stderr, "Cannot find a video stream in the input file\n");
-				return -1;
-			}
-			video_stream = ret;
-
-
-			if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
-				return AVERROR(ENOMEM);
-
-
-			video = input_ctx->streams[video_stream];
-			if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
-				return -1;
-
-			if ((ret = avcodec_open2(decoder_ctx, decoder, nullptr)) < 0)
-			{
-				fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
-				return -1;
-			}
-		}
+        if ((ret = avcodec_open2(decoder_ctx, decoder, nullptr)) < 0)
+        {
+            fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
+            return -1;
+        }
 
 		rotation = get_rotation(video);
 		widthVideo = decoder_ctx->width;
@@ -417,9 +284,9 @@ public:
 			nbFps = static_cast<double>(nbFrames) / durationInSec;
 		else
 			nbFps = 30;
-		videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC4);
+		
+        videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC4);
 
-		cv::Mat temp = GetVideoFrame(true);
 		isOpen = true;
 
 		return 1;
@@ -492,6 +359,8 @@ public:
 				// transpose(src, dst);
 				// flip(dst, src, 1);
 			}
+            else 
+                return videoFrame;
 			return dst;
 		}
 
@@ -508,9 +377,6 @@ public:
 		skipFrame = nbFrame;
 	}
 };
-
-AVBufferRef* CVideoPlayerPimpl::hw_device_ctx = nullptr;
-enum AVPixelFormat CVideoPlayerPimpl::hw_pix_fmt;
 
 void CVideoPlayer::SeekToBegin()
 {
@@ -589,38 +455,11 @@ int CVideoPlayer::SeekToPos(const int& sec)
 	return -1;
 }
 
-CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware) : IVideoPlayer(filename, useHardware)
+CVideoPlayer::CVideoPlayer(const wxString& filename) : IVideoPlayer(filename)
 {
 	int ret = 0;
 	pimpl = new CVideoPlayerPimpl();
-	wxString decoderHardware = "";
-
-	if (useHardware)
-	{
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-		{
-			decoderHardware = config->GetHardwareDecoder();
-		}
-
-		if (decoderHardware != "")
-		{
-			ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware),
-			                           CConvertUtility::ConvertToUTF8(filename));
-
-			if (ret <= 0)
-			{
-				delete pimpl;
-				pimpl = new CVideoPlayerPimpl();
-			}
-
-		}
-
-		if (ret <= 0)
-			ret = pimpl->OpenVideoFile("", CConvertUtility::ConvertToUTF8(filename), false);
-	}
-	else
-		ret = pimpl->OpenVideoFile("", CConvertUtility::ConvertToUTF8(filename), useHardware);
+	ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
 
 	if (ret > 0)
 		isOk = true;

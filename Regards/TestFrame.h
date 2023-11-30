@@ -1,10 +1,12 @@
 #pragma once
 #include <BitmapWnd3d.h>
 #include <VideoControl_soft.h>
-#include "ScrollbarWnd.h"
+#include <ThumbnailViewerVideo.h>
+#include <ScrollbarWnd.h>
+using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Video;
-
+using namespace Regards::Viewer;
 class CVideoControlSoft;
 
 namespace Regards
@@ -13,7 +15,6 @@ namespace Regards
 	{
 		class CBitmapWnd3D;
 	}
-
 }
 class CTestFrame : public wxFrame
 {
@@ -25,9 +26,15 @@ public:
 	void OnSize(wxSizeEvent& event);
 	void OnStop(wxTimerEvent& event);
 private:
+    
+#ifdef SHOW_VIDEO
 	CVideoControlSoft* videoWindow;
 	CBitmapWnd3D* bitmapWindowRender;
+#endif
+    CScrollbarWnd* scrollVideoWindow;
+    Regards::Viewer::CThumbnailViewerVideo * thumbnailVideo;
 	wxString filename = "";
 	wxTimer* stopMovie;
+    int i = 0;
 };
 

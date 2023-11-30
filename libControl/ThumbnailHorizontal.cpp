@@ -54,7 +54,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 	for (wxString fileEntry : files)
 	{
 		wxString filename = fileEntry;
-		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity, true);
 		thumbnailData->SetNumPhotoId(i);
 		thumbnailData->SetNumElement(i);
 

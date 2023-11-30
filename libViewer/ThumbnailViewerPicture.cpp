@@ -72,7 +72,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 		{
 			CPhotos fileEntry = _pictures->at(i);
 			wxString filename = fileEntry.GetPath();
-			auto thumbnailData = new CThumbnailDataSQL(filename, false);
+			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
 			thumbnailData->SetNumPhotoId(fileEntry.GetId());
 			thumbnailData->SetNumElement(i);
 
@@ -148,7 +148,7 @@ void CThumbnailViewerPicture::SetListeFile()
 		{
 			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
 			wxString filename = fileEntry.GetPath();
-			auto thumbnailData = new CThumbnailDataSQL(filename, false);
+			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
 			thumbnailData->SetNumPhotoId(fileEntry.GetId());
 			thumbnailData->SetNumElement(i);
 

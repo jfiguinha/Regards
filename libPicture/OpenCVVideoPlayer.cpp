@@ -5,7 +5,7 @@
 using namespace Regards::Video;
 using namespace cv;
 
-COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName, const bool& useHardware) : IVideoPlayer(fileName, useHardware)
+COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(fileName)
 {
 	filename = CConvertUtility::ConvertToStdString(fileName);
 	capture = new cv::VideoCapture(filename, cv::CAP_FFMPEG);

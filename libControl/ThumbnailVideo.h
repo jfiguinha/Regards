@@ -11,11 +11,12 @@ namespace Regards::Control
 		~CThumbnailVideo(void) override;
 		void SetFile(const wxString& videoFile, const int& size);
 		void SetVideoPosition(const int64_t& videoPos);
-		
+		void EraseThumbnail(long value);
+        void ProcessVideo() override;
+
 	private:
 
-		void ProcessVideo() override;
-
+		
 		static void ProcessThumbnail(void* param);
 		static void LoadMoviePicture(void* param);
 		void ResizeThumbnail() override;

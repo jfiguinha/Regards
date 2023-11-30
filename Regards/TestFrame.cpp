@@ -3,6 +3,12 @@
 #include <window_id.h>
 #include <ViewerParam.h>
 #include <LibResource.h>
+#include <ThumbnailViewerVideo.h>
+#include <SqlThumbnailVideo.h>
+#include "ViewerParamInit.h"
+#include <LibResource.h>
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 
 #define TIMER_FPS 0x10001
 
@@ -54,12 +60,21 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size)
 {
 
+    CThemeThumbnail themeVideo;
 	SetIcon(wxICON(sample));
-
+    CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 	bool openFirstFile = true;
+#ifdef SHOW_VIDEO
 	videoWindow = new CVideoControlSoft(nullptr, this, nullptr);
 	bitmapWindowRender = new CBitmapWnd3D(this, wxUSE_ANY);
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
+#endif
+    viewerTheme->GetThumbnailTheme(&themeVideo);
+    thumbnailVideo = new Regards::Viewer::CThumbnailViewerVideo(this, THUMBNAILVIDEOWINDOW, themeVideo, true);
+    scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
+    scrollVideoWindow->HideVerticalScroll();
+    scrollVideoWindow->SetPageSize(200);
+    scrollVideoWindow->SetLineSize(200);
 
 	auto menuFile = new wxMenu;
 
@@ -141,10 +156,15 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	wxFrameBase::SetMenuBar(menuBar);
 
 	wxWindow::SetLabel(wxT("Regards Viewer"));
-
+#ifdef SHOW_VIDEO
 	videoWindow->PlayFirstMovie(false);
 	bitmapWindowRender->Show(true);
 	videoWindow->ShrinkVideo();
+#endif
+
+    thumbnailVideo->Show(true);
+    scrollVideoWindow->Show(true);
+
 
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CTestFrame::OnStop), nullptr, this);
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CTestFrame::OnSize));
@@ -154,43 +174,70 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 
 void CTestFrame::OnStop(wxTimerEvent& event)
 {
+ #ifdef SHOW_VIDEO   
 	videoWindow->QuitMovie();
 	wxSleep(1);
 	videoWindow->PlayMovie(filename, true);
-	stopMovie->StartOnce(10000);
+	
+#endif
+
+    i++;
+    //wxCommandEvent eventRefresh(wxEVENT_REFRESHDATA);
+    //wxPostEvent(thumbnailVideo, eventRefresh);
+    thumbnailVideo->EraseThumbnail(1);
+    thumbnailVideo->SetFile(filename, 20);
+    thumbnailVideo->ProcessVideo();
+    stopMovie->StartOnce(10000);
+    
+    if(i == 5)
+        exit(0);
 }
 
 void CTestFrame::OnSize(wxSizeEvent& event)
 {
 	int _width = event.GetSize().GetX();
 	int _height = event.GetSize().GetY();
-
+#ifdef SHOW_VIDEO
 	bitmapWindowRender->SetSize(0, 0, _width, _height);
 	bitmapWindowRender->Refresh();
+#endif
+
+	scrollVideoWindow->SetSize(0, 0, _width, _height);
+	scrollVideoWindow->Refresh();
 
 }
 
 
 void CTestFrame::PlayMovie(const wxString& openfile)
 {
+#ifdef SHOW_VIDEO
 	videoWindow->PlayMovie(openfile, true);
-	filename = openfile;
-	stopMovie->StartOnce(10000);
+#endif
+
+    thumbnailVideo->SetFile(openfile, 20);
+    filename = openfile;
+    stopMovie->StartOnce(10000);
 }
 
 void CTestFrame::StopMovie()
 {
+#ifdef SHOW_VIDEO
 	videoWindow->QuitMovie();
+#endif
 }
 
 CTestFrame::~CTestFrame()
 {
-
+#ifdef SHOW_VIDEO
 	if (videoWindow != nullptr)
 		delete(videoWindow);
 
 	if (bitmapWindowRender != nullptr)
 		delete(bitmapWindowRender);
+#endif
+	if (thumbnailVideo != nullptr)
+		delete(thumbnailVideo);
 
-
+	if (scrollVideoWindow != nullptr)
+		delete(scrollVideoWindow);
 }

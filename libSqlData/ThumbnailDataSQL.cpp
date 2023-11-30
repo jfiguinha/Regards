@@ -11,15 +11,15 @@ using namespace Regards::Sqlite;
 #include <FileUtility.h>
 #include <opencv2/videoio.hpp>
 #include <ConvertUtility.h>
-#include <OpenCVVideoPlayer.h>
+#include <VideoPlayer.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
-CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
+CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity, const bool & generateVideoPlayer)
 	: CThumbnailData(filename)
 {
 
-	videoCaptureCV = nullptr;
+    this->generateVideoPlayer = generateVideoPlayer;
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
@@ -31,6 +31,8 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 		if (libPicture.TestIsVideo(filename))
 		{
 			nbFrame = 20;
+            this->generateVideoPlayer = true;
+            videoCaptureCV = new CVideoPlayer(filename);
 		}
 		else
 		{
@@ -60,11 +62,6 @@ int CThumbnailDataSQL::GetNbFrame()
 
 void CThumbnailDataSQL::SetMouseOn()
 {
-	if (isVideo && videoCaptureCV == nullptr)
-	{
-		videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_FFMPEG);
-		videoCaptureCV->set(cv::CAP_PROP_POS_FRAMES, videoFramePos);
-	}
 
 	mouseOn = true;
 }
@@ -72,10 +69,6 @@ void CThumbnailDataSQL::SetMouseOn()
 void CThumbnailDataSQL::SetMouseOut()
 {
 	mouseOn = false;
-
-	if (videoCaptureCV != nullptr)
-		delete videoCaptureCV;
-	videoCaptureCV = nullptr;
 
 	oldVideoFrame = videoFramePos;
 }
@@ -100,7 +93,8 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		numFrame = 0;
 
 	//numFrame = max(numFrame, 0);
-
+    if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
+        return frameOut;
 
 	if (numFrame == 0 && nbFrame == 0)
 	{
@@ -108,7 +102,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename.Clone());
 	}
-	else if (isVideo)
+	else if (isVideo && generateVideoPlayer)
 	{
 		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
 			return frameOut;
@@ -119,11 +113,12 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			bool grabbed = false;
 			if (mouseOn && isVideo && videoCaptureCV != nullptr)
 			{
-				if (!videoCaptureCV->read(cvImg))
+                cvImg = videoCaptureCV->GetVideoFrame();
+				if (!videoCaptureCV->IsOk())
 				{
 					videoFramePos = 0;
-					videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
-					grabbed = videoCaptureCV->read(cvImg);
+					videoCaptureCV->SeekToBegin();
+					cvImg = videoCaptureCV->GetVideoFrame();
 				}
 				else
 				{
@@ -165,6 +160,28 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			}
 		}
 	}
+    else if(isVideo && !generateVideoPlayer)
+    {
+        CSqlThumbnailVideo sqlThumbnailVideo;
+        frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+        if (!frameOut.IsOk())
+        {
+            frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
+        }
+
+        if (!frameOut.IsOk())
+        {
+            numFrame = 0;
+#ifdef WIN32
+            wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+            wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+            wxImage cancel;
+            cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
+            return cancel;
+        }
+    }
 	else if (isAnimation)
 	{
 		CSqlThumbnailVideo sqlThumbnailVideo;

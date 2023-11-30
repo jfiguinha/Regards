@@ -37,7 +37,7 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 	for (wxString fileEntry : files)
 	{
 		wxString filename = fileEntry;
-		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity, true);
 		thumbnailData->SetNumPhotoId(i);
 		thumbnailData->SetNumElement(i);
 
@@ -115,7 +115,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 
 	for (wxString fileEntry : listFile)
 	{
-		auto thumbnailData = new CThumbnailDataSQL(fileEntry, testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(fileEntry, testValidity, true);
 		//thumbnailData->SetStorage(pStorage->GetStoragePt());
 		thumbnailData->SetNumElement(i);
 		thumbnailData->SetNumPhotoId(i);
@@ -178,7 +178,7 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 
 	for (CPhotos photo : photoVector)
 	{
-		auto thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
 		thumbnailData->SetNumPhotoId(photo.GetId());
 		thumbnailData->SetNumElement(i);
 

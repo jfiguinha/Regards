@@ -14,7 +14,7 @@ namespace Regards
 		class COpenCVVideoPlayer : public IVideoPlayer
 		{
 		public:
-			COpenCVVideoPlayer(const wxString& filename, const bool& useHardware = true);
+			COpenCVVideoPlayer(const wxString& filename);
 			virtual ~COpenCVVideoPlayer() override;
 
 			bool isOpened() override;

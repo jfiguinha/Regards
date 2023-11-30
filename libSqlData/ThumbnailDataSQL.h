@@ -15,7 +15,7 @@ namespace Regards
 class CThumbnailDataSQL : public CThumbnailData
 {
 public:
-	CThumbnailDataSQL(const wxString& filename, const bool& testValidity);
+	CThumbnailDataSQL(const wxString& filename, const bool& testValidity, const bool & generateVideoPlayer);
 	~CThumbnailDataSQL(void) override;
 
 	int GetType() override
@@ -47,5 +47,6 @@ private:
 	int oldVideoFrame = 0;
 	int videoFramePos = 0;
 	bool mouseOn = false;
-	cv::VideoCapture* videoCaptureCV = nullptr;
+    bool generateVideoPlayer = false;
+	Regards::Video::CVideoPlayer * videoCaptureCV = nullptr;
 };

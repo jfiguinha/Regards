@@ -14,7 +14,7 @@ namespace Regards
 		class IVideoPlayer
 		{
 		public:
-			IVideoPlayer(const wxString& filename, const bool& useHardware = true)
+			IVideoPlayer(const wxString& filename)
 			{
 				
 			}

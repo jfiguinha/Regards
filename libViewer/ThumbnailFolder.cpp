@@ -75,7 +75,7 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(CIconeList* icone
 		try
 	{
 		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
+		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, true);
 		thumbnailData->SetNumPhotoId(photo.GetId());
 		thumbnailData->SetNumElement(local_nbElement + i);
 
@@ -125,7 +125,7 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 		try
 		{
 			CPhotos photo = _pictures->at(i);
-			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
+			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
 			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(local_nbElement + i);
 
@@ -418,7 +418,7 @@ void CThumbnailFolder::SetListeFile()
 		{
 			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
 			wxString filename = fileEntry.GetPath();
-			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false);
+			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
 			thumbnailData->SetNumPhotoId(fileEntry.GetId());
 			thumbnailData->SetNumElement(i);
 

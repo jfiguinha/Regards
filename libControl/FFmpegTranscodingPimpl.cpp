@@ -2334,7 +2334,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new COpenCVVideoPlayer(input_file, cv::CAP_FFMPEG);
+	capture = new COpenCVVideoPlayer(input_file);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
@@ -2377,7 +2377,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	if (capture != nullptr)
 		delete capture;
 	
-	capture = new COpenCVVideoPlayer(input, false);
+	capture = new COpenCVVideoPlayer(input);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 

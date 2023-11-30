@@ -16,29 +16,24 @@ public:
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
-		COpenCVVideoPlayer *	_videoThumbnailer = new COpenCVVideoPlayer(filename, false);
-		width = _videoThumbnailer->GetWidth();
-		height = _videoThumbnailer->GetHeight();
-		videowidth = _videoThumbnailer->GetWidth();
-		videoheight = _videoThumbnailer->GetHeight();
-		rotation = _videoThumbnailer->GetOrientation();
-		m_videoMovieDuration = _videoThumbnailer->GetDuration();
-		isOk = _videoThumbnailer->IsOk();
-		_videoThumbnailer->GetAspectRatio(ascpectNominator, ascpectDenominator);
-		delete _videoThumbnailer;
+        videoThumbnailer = new CVideoPlayer(filename);
+        isOk = videoThumbnailer->IsOk();
+        if(isOk)
+        {
+            width = videoThumbnailer->GetWidth();
+            height = videoThumbnailer->GetHeight();
+            videowidth = videoThumbnailer->GetWidth();
+            videoheight = videoThumbnailer->GetHeight();
+            rotation = videoThumbnailer->GetOrientation();
+            m_videoMovieDuration = videoThumbnailer->GetDuration();
+            videoThumbnailer->GetAspectRatio(ascpectNominator, ascpectDenominator);
+        }
 
 		
 	}
 
-	void GeneratePointer()
-	{
-		if (videoThumbnailer == nullptr)
-			videoThumbnailer = new COpenCVVideoPlayer(filename, false);
-	}
-
 	bool IsOpen()
 	{
-
 		return isOk;
 	}
 
@@ -98,7 +93,7 @@ public:
 
 	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
 	{
-		GeneratePointer();
+		//GeneratePointer();
 
 		if (m_seekTimeInSecond > 0)
 		{

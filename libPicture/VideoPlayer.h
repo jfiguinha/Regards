@@ -15,7 +15,7 @@ namespace Regards
 		class CVideoPlayer : public IVideoPlayer
 		{
 		public:
-			CVideoPlayer(const wxString& filename, const bool& useHardware = true);
+			CVideoPlayer(const wxString& filename);
 			virtual ~CVideoPlayer();
 
 			bool isOpened() override;
