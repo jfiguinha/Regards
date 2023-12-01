@@ -2154,8 +2154,6 @@ int CVideoControlSoft::GetSoundVolume()
 
 int CVideoControlSoft::IsSupportOpenCL()
 {
-    return 0;
-    
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)

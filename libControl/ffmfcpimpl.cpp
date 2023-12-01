@@ -1927,7 +1927,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		goto fail;
 	avctx->pkt_timebase = ic->streams[stream_index]->time_base;
 
-	/*
+	
 	if (acceleratorHardware != "")
 	{
 		if (avctx->codec_id == AV_CODEC_ID_AV1 && acceleratorHardware == "cuda")
@@ -1938,7 +1938,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		{
 			codec = (AVCodec*)avcodec_find_decoder_by_name("av1_qsv");
 		}
-	}*/
+	}
 
 	if (codec == nullptr)
 		codec = (AVCodec*)avcodec_find_decoder(avctx->codec_id);
@@ -1990,16 +1990,16 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres)
 			av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
-        /*
+        
         if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
             if (acceleratorHardware != "" && acceleratorHardware != "none")
             {
+                printf("Test hardware decoding : %s ! \n", acceleratorHardware);
                 AVStream* video = ic->streams[stream_index];
                 isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
             }
         }
-        */
 
 		if (!isSuccess)
 		{
