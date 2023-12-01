@@ -14,7 +14,7 @@
 
 
 #ifndef wxHAS_IMAGES_IN_RESOURCES
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__APPLE__) 
 #include "../Resource/sample.xpm"
 #else
 #include "../../Resource/sample.xpm"

@@ -1995,7 +1995,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
         {
             if (acceleratorHardware != "" && acceleratorHardware != "none")
             {
-                printf("Test hardware decoding : %s ! \n", acceleratorHardware);
+                printf("Test hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
                 AVStream* video = ic->streams[stream_index];
                 isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
             }
