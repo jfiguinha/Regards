@@ -161,7 +161,7 @@ void CFFmfc::ChangeVolumeEvent(wxCommandEvent& event)
 	//toggle_pause(cur_stream);
 	int newaudioIndex = event.GetInt();
 	_pimpl->percentVolume = newaudioIndex;
-	printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
+	//printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
 }
 
 
@@ -470,6 +470,7 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
+    printf("CFFmfc::SetFile \n");
     
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
@@ -479,7 +480,7 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 	_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = isOpenGLDecoding;
 	_pimpl->percentVolume = volume;
-	printf("SetFile Volume index : %d \n", _pimpl->percentVolume);
+	//printf("SetFile Volume index : %d \n", _pimpl->percentVolume);
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();

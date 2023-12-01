@@ -315,7 +315,7 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 /* display the current picture, if any */
 void CFFmfcPimpl::video_display(VideoState* is)
 {
-    printf("CFFmfcPimpl::video_display \n");
+    //printf("CFFmfcPimpl::video_display \n");
     
     
 	int ret = 0;

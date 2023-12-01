@@ -825,15 +825,14 @@ void CThumbnail::AfterSetList()
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
     
-	CListToClean* listToAdd = new CListToClean();
-	time(&listToAdd->timeToAdd);
-	listToAdd->list = iconeListLocal;
-	//listToAdd->timeToAdd = std::chrono::system_clock::now();
-	listToErrase.push_back(listToAdd);
+	//CListToClean* listToAdd = new CListToClean();
+	//time(&listToAdd->timeToAdd);
+	//listToAdd->list = iconeListLocal;
+	//listToErrase.push_back(listToAdd);
     
     
-    //iconeListLocal->EraseThumbnailList();
-    //delete iconeListLocal;
+    iconeListLocal->EraseThumbnailList();
+    delete iconeListLocal;
     
     stopToGetNbElement = false;
 
@@ -1124,7 +1123,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
 	}
 
-
+/*
 	if (!listToErrase.empty())
 	{
        // printf("CThumbnail::listToErrase \n");
@@ -1149,7 +1148,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		}
 
 	}
-	
+	*/
 	VideoProcessThumbnail();
 }
 

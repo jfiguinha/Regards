@@ -144,9 +144,7 @@ AVDictionary** MovieStreamInfo::setup_find_stream_info_opts(AVFormatContext* s, 
 void MovieStreamInfo::initialize(const string& filename)
 {
 	AVDictionary* codec_opts = nullptr;
-	//av_register_all();
-	//avcodec_register_all();
-	//avformat_network_init();
+
 	AVDictionary** opts;
 	string inputFile = filename == "-" ? "pipe:" : filename;
 	//m_AllowSeek = (filename != "-") && (filename.find("rtsp://") != 0) && (filename.find("udp://") != 0);

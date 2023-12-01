@@ -64,6 +64,7 @@
 
 extern "C" {
 #include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
 
 #if CONFIG_AVFILTER
 #endif
@@ -186,11 +187,6 @@ public:
 		for (auto i = 0; i < 256; i++)
 			value[i] = static_cast<float>(i);
 
-#ifdef FFMPEG
-		avformat_network_init();
-		//av_register_all();
-		//avfilter_register_all();
-#endif
 
 
 #ifdef SDL2

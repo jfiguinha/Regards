@@ -69,13 +69,15 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	bitmapWindowRender = new CBitmapWnd3D(this, wxUSE_ANY);
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 #endif
+
+#ifdef SHOW_THUMBNAIL
     viewerTheme->GetThumbnailTheme(&themeVideo);
     thumbnailVideo = new Regards::Viewer::CThumbnailViewerVideo(this, THUMBNAILVIDEOWINDOW, themeVideo, true);
     scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
     scrollVideoWindow->HideVerticalScroll();
     scrollVideoWindow->SetPageSize(200);
     scrollVideoWindow->SetLineSize(200);
-
+#endif
 	auto menuFile = new wxMenu;
 
 	wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize", 1);
@@ -161,10 +163,10 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	bitmapWindowRender->Show(true);
 	videoWindow->ShrinkVideo();
 #endif
-
+#ifdef SHOW_THUMBNAIL
     thumbnailVideo->Show(true);
     scrollVideoWindow->Show(true);
-
+#endif
 
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CTestFrame::OnStop), nullptr, this);
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CTestFrame::OnSize));
@@ -182,11 +184,13 @@ void CTestFrame::OnStop(wxTimerEvent& event)
 #endif
 
     i++;
-    //wxCommandEvent eventRefresh(wxEVENT_REFRESHDATA);
-    //wxPostEvent(thumbnailVideo, eventRefresh);
+
+#ifdef SHOW_THUMBNAIL
     thumbnailVideo->EraseThumbnail(1);
     thumbnailVideo->SetFile(filename, 20);
     thumbnailVideo->ProcessVideo();
+#endif    
+
     stopMovie->StartOnce(10000);
     
     if(i == 5)
@@ -201,10 +205,10 @@ void CTestFrame::OnSize(wxSizeEvent& event)
 	bitmapWindowRender->SetSize(0, 0, _width, _height);
 	bitmapWindowRender->Refresh();
 #endif
-
+#ifdef SHOW_THUMBNAIL
 	scrollVideoWindow->SetSize(0, 0, _width, _height);
 	scrollVideoWindow->Refresh();
-
+#endif
 }
 
 
@@ -213,8 +217,9 @@ void CTestFrame::PlayMovie(const wxString& openfile)
 #ifdef SHOW_VIDEO
 	videoWindow->PlayMovie(openfile, true);
 #endif
-
+#ifdef SHOW_THUMBNAIL
     thumbnailVideo->SetFile(openfile, 20);
+#endif
     filename = openfile;
     stopMovie->StartOnce(10000);
 }
@@ -235,9 +240,11 @@ CTestFrame::~CTestFrame()
 	if (bitmapWindowRender != nullptr)
 		delete(bitmapWindowRender);
 #endif
+#ifdef SHOW_THUMBNAIL
 	if (thumbnailVideo != nullptr)
 		delete(thumbnailVideo);
 
 	if (scrollVideoWindow != nullptr)
 		delete(scrollVideoWindow);
+#endif
 }

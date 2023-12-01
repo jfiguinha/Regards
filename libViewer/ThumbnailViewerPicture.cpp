@@ -53,7 +53,6 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 	return list;
 }
 
-#define USE_TBB_VECTOR
 
 CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 {

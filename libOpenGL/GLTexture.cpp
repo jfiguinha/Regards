@@ -60,10 +60,10 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
-	printf("convertToGLTexture2D \n");
+	//printf("convertToGLTexture2D \n");
 	bool isOk = true;
 
-	printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
+	//printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
 	cl_int status = 0;
 
 	if (isOpenCLCompatible)
@@ -280,7 +280,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 	}
     
     int nError = glGetError();
-    printf(" GLTexture::SetTextureData : %d \n", nError);
+   // printf(" GLTexture::SetTextureData : %d \n", nError);
 }
 
 void GLTexture::SetData(cv::Mat& bitmap)
@@ -331,7 +331,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	}
     
     int nError = glGetError();
-    printf(" GLTexture::Create : %d \n", nError);
+   // printf(" GLTexture::Create : %d \n", nError);
 
 	return (GL_NO_ERROR == glGetError());
 }
@@ -357,7 +357,7 @@ void GLTexture::Delete()
 {
 	checkErrors("GLTexture::Delete()");
 	//glDisable(GL_TEXTURE_2D);
-	printf("Delete Texture id : %d \n", m_nTextureID);
+	//printf("Delete Texture id : %d \n", m_nTextureID);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 

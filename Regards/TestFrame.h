@@ -9,6 +9,8 @@ using namespace Regards::Video;
 using namespace Regards::Viewer;
 class CVideoControlSoft;
 
+#define SHOW_VIDEO
+
 namespace Regards
 {
 	namespace Window
@@ -31,8 +33,10 @@ private:
 	CVideoControlSoft* videoWindow;
 	CBitmapWnd3D* bitmapWindowRender;
 #endif
+#ifdef SHOW_THUMBNAIL
     CScrollbarWnd* scrollVideoWindow;
     Regards::Viewer::CThumbnailViewerVideo * thumbnailVideo;
+#endif
 	wxString filename = "";
 	wxTimer* stopMovie;
     int i = 0;
