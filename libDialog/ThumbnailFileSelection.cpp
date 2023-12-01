@@ -121,10 +121,17 @@ void CThumbnailFileSelection::InitTypeAffichage(const int& typeAffichage)
 
 void CThumbnailFileSelection::Init(const wxString& filename, const int& typeAffichage)
 {
+    
+    for(CImageVideoThumbnail * image : photoVector)
+    {
+        delete image;
+        image = nullptr;
+    }
+    
 	photoVector.clear();
 
 	CLibPicture libPicture;
-	libPicture.LoadAllVideoThumbnail(filename, &photoVector, true, true);
+	photoVector = libPicture.LoadAllVideoThumbnail(filename, true, true);
 
 	if (photoVector.size() > 0)
 	{

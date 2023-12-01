@@ -21,6 +21,7 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 #include <ffplaycore.h>
+#include <ImageVideoThumbnail.h>
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -379,7 +380,27 @@ bool MyApp::OnInit()
 		testFrame->Centre(wxBOTH);
 		testFrame->Show(true);
 		testFrame->PlayMovie(filename);
-
+	}
+	else if (appName == "thumbnailtest")
+	{
+        for(int j = 0;j < 10;j++)
+        {
+            printf("thumbnailtest %d \n", j);
+            int i = 0;
+            wxString filename = "/home/figuinha/Documents/test2.mp4";//"D:\\download\\test.mp4";
+            CLibPicture libPicture;
+            vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(filename, true, true);
+            for(CImageVideoThumbnail * image : listVideo)
+            {
+                wxString filename = "/home/figuinha/Documents/test" + to_string(i) + ".jpg";
+                image->image.SaveFile(filename);
+                i++;
+                printf("thumbnailtest %s \n", filename.ToStdString().c_str());
+                delete image;
+            }
+            listVideo.clear();   
+            sleep(2);
+        }
 
 	}
 	else if (appName == "toto")

@@ -406,8 +406,7 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 {
 	ThumbnailVideoThread* label = static_cast<ThumbnailVideoThread*>(param);
 	CLibPicture libPicture;
-	vector<CImageVideoThumbnail*> listVideo;
-	libPicture.LoadAllVideoThumbnail(label->filename, &listVideo, true, true);
+	vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(label->filename, true, true);
 
 	if (listVideo.size() > 0)
 	{

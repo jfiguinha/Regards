@@ -1180,8 +1180,7 @@ void CThumbnail::LoadPicture(void* param)
 		TestIsAnimation(threadLoadingBitmap->filename))
 	{
 
-		vector<CImageVideoThumbnail*> listVideo;
-		libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo, true, true);
+		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
 
 		if (listVideo.size() > 0)
 		{

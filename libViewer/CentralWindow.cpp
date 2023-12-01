@@ -1701,7 +1701,7 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	videoThumbnail.clear();
 
 	if (iFormat != TIFF && iFormat != PDF)
-		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail, false, false);
+		videoThumbnail = libPicture.LoadAllVideoThumbnail(filename, false, false);
 
 	animationPosition = 0;
 

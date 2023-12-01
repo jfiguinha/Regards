@@ -325,9 +325,16 @@ void CViewerPDF::LoadFile(const wxString& filename)
 
 	if (libPicture.TestIsPDF(this->filename))
 	{
+        
+        for(CImageVideoThumbnail * image : pageThumbnail)
+        {
+            delete image;
+            image = nullptr;
+        }
+    
 		pageThumbnail.clear();
 
-		libPicture.LoadAllVideoThumbnail(filename, &pageThumbnail, true, true);
+		pageThumbnail = libPicture.LoadAllVideoThumbnail(filename, true, true);
 
 		thumbnailVideo->SetFile(filename, pageThumbnail);
 

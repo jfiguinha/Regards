@@ -1249,13 +1249,14 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 }
 
 
-void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
+vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& szFileName,
                                        const int& bitmapType, const int& width, const int& height,
                                        const bool& compressJpeg, const bool& isThumbnail)
 {
 	wxImage image;
 	wxBitmapType bitmapTypeWxWidget = {};
 	CRegardsPDF* regardsPdf = nullptr;
+    vector<CImageVideoThumbnail*> listThumbnail;
 	//int iFormat = TestImageFormat(szFileName);
 	//bool needresize = true;
 	int m_ani_images = 0;
@@ -1282,7 +1283,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 		imageVideoThumbnail->delay = 4;
 		imageVideoThumbnail->percent = 100.0f;
 		imageVideoThumbnail->timePosition = 0;
-		listThumbnail->push_back(imageVideoThumbnail);
+		listThumbnail.push_back(imageVideoThumbnail);
 	}
 	else
 	{
@@ -1341,12 +1342,14 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 				imageVideoThumbnail->percent = static_cast<int>(static_cast<float>(i) / static_cast<float>(
 					m_ani_images)) * 100.0f;
 				imageVideoThumbnail->timePosition = i;
-				listThumbnail->push_back(imageVideoThumbnail);
+				listThumbnail.push_back(imageVideoThumbnail);
 			}
 		}
 	}
 	if (regardsPdf != nullptr)
 		delete regardsPdf;
+        
+    return listThumbnail;
 }
 
 int CLibPicture::GetNbImage(const wxString& szFileName)
@@ -1494,9 +1497,10 @@ CImageLoadingFormat* CLibPicture::GetCancelPhoto(const wxString& szFileName, con
 	return bitmap;
 }
 
-void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
+vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName,
                                         const bool& compressJpeg, const bool& isThumbnail)
 {
+    vector<CImageVideoThumbnail*> listThumbnail;
 	int iFormat = TestImageFormat(szFileName);
 #ifdef WIN32
 
@@ -1544,7 +1548,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 					imageVideoThumbnail->percent = static_cast<int>((static_cast<float>(i) / static_cast<float>(
 						listPicture.size())) * 100.0f);
 					imageVideoThumbnail->timePosition = i;
-					listThumbnail->push_back(imageVideoThumbnail);
+					listThumbnail.push_back(imageVideoThumbnail);
 				}
 				listPicture.clear();
 			}
@@ -1554,7 +1558,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case TIFF:
 		case PDF:
 		case ANI:
-			LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail, compressJpeg,
+			listThumbnail = LoadwxImageThumbnail(szFileName, iFormat, widthThumbnail, heightThumbnail, compressJpeg,
 			                     isThumbnail);
 			break;
 
@@ -1583,7 +1587,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 						imageVideoThumbnail->percent = (static_cast<float>(i) / static_cast<float>(_cxImage->
 							GetNumFrames())) * 100.0f;
 						imageVideoThumbnail->timePosition = i;
-						listThumbnail->push_back(imageVideoThumbnail);
+						listThumbnail.push_back(imageVideoThumbnail);
 					}
 				}
 				else
@@ -1597,7 +1601,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 					imageVideoThumbnail->percent = (static_cast<float>(0) / static_cast<float>(_cxImage->
 						GetNumFrames())) * 100.0f;
 					imageVideoThumbnail->timePosition = 0;
-					listThumbnail->push_back(imageVideoThumbnail);
+					listThumbnail.push_back(imageVideoThumbnail);
 					delete image;
 				}
 				delete _cxImage;
@@ -1623,7 +1627,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 				listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
-					listThumbnail->push_back(cxVideo);
+					listThumbnail.push_back(cxVideo);
 				}
 				delete thumbnail;
 				break;
@@ -1639,7 +1643,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 				imageVideoThumbnail->delay = 0;
 				imageVideoThumbnail->percent = 0;
 				imageVideoThumbnail->timePosition = 0;
-				listThumbnail->push_back(imageVideoThumbnail);
+				listThumbnail.push_back(imageVideoThumbnail);
 				delete imageLoad;
 			}
 		}
@@ -1654,8 +1658,10 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		imageVideoThumbnail->delay = 0;
 		imageVideoThumbnail->percent = 0;
 		imageVideoThumbnail->timePosition = 0;
-		listThumbnail->push_back(imageVideoThumbnail);
+		listThumbnail.push_back(imageVideoThumbnail);
 	}
+    
+    return listThumbnail;
 }
 
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)

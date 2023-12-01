@@ -57,8 +57,7 @@ namespace Regards
 			vector<CImageVideoThumbnail*> LoadDefaultVideoThumbnail(const wxString& szFileName, const int& size);
 			CImageLoadingFormat* LoadThumbnail(const wxString& szFileName, const bool& fromExifOnly = false);
 			//vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg);
-			void LoadAllVideoThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
-			                           const bool& compressJpeg, const bool& isThumbnail);
+			vector<CImageVideoThumbnail*> LoadAllVideoThumbnail(const wxString& szFileName,const bool& compressJpeg, const bool& isThumbnail);
 
 			CImageLoadingFormat* LoadVideoThumbnail(const wxString& szFileName, const int& percent, int& timePosition);
 
@@ -104,7 +103,7 @@ namespace Regards
 		private:
 			cv::Mat LoadFromFreeImage(const char* filename);
 			bool PictureDimensionFreeImage(const char* filename, int& width, int& height);
-			void LoadwxImageThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
+			vector<CImageVideoThumbnail*> LoadwxImageThumbnail(const wxString& szFileName,
 			                          const int& bitmapType, const int& width, const int& height,
 			                          const bool& compressJpeg, const bool& isThumbnail);
 
