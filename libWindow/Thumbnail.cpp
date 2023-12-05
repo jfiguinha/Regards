@@ -567,10 +567,12 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 		{
-			wxClientDC dc(this);
-			icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-			//needToRefresh = true;
+			//wxClientDC dc(this);
+			//icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+			needToRefresh = true;
+			//return;
 		}
+
 			
 	}
 	
@@ -1868,7 +1870,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					pThumbnailData->SetIsLoading(false);
 				}
 
-				RefreshIcone(threadLoadingBitmap->photoId);
+			//	RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 
@@ -1907,8 +1909,10 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
 
-		needToRefresh = true;
+		
 	}
 
 	nbProcess = max(nbProcess, 0);
+
+	needToRefresh = true;
 }
