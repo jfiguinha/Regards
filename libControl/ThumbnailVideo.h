@@ -29,7 +29,7 @@ namespace Regards::Control
 
 		int64_t oldvideoPos = 0;
 
-
+		bool videoThumbnailOk = false;
 		int iFormat = 0;
 	};
 }

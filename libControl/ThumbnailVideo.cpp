@@ -231,6 +231,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 				delete thumbnail;
 		}
 		processIdle = false;
+		videoThumbnailOk = true;
 	}
 	else
 	{
@@ -287,6 +288,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
         listThumbnail.clear();
 
 		processIdle = true;
+		videoThumbnailOk = false;
 	}
 
 
@@ -353,7 +355,7 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 			}
 		}
 	}
-
+	videoThumbnailOk = true;
 	process_end = true;
 
 	nbVideoThumbnailProcess--;
@@ -361,7 +363,8 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 
 void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
 {
-	UpdateVideoThumbnail();
+	if (!videoThumbnailOk)
+		UpdateVideoThumbnail();
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -429,6 +432,7 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	threadDataProcess = true;
 	processIdle = true;
 	needToRefresh = true;
+	videoThumbnailOk = false;
 
 	bool findFile = false;
 	std::map<wxString, bool>::iterator it;
@@ -467,4 +471,5 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 	threadDataProcess = true;
 	processIdle = true;
 	needToRefresh = true;
+
 }
