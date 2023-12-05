@@ -74,8 +74,6 @@ namespace Regards::Window
         virtual void ProcessVideo() {};
         
 	protected:
-
-		virtual void UpdateVideoThumbnail(){};
         
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);

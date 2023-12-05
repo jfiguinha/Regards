@@ -35,6 +35,8 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 	numItemSelected = -1;
 	process_end = true;
 	enableTimer = false;
+	Connect(wxEVENT_REFRESHVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::UpdateVideoThumbnail));
+	
 }
 
 
@@ -351,10 +353,15 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 			}
 		}
 	}
-    
+
 	process_end = true;
 
 	nbVideoThumbnailProcess--;
+}
+
+void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
+{
+	UpdateVideoThumbnail();
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -422,6 +429,21 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	threadDataProcess = true;
 	processIdle = true;
 	needToRefresh = true;
+
+	bool findFile = false;
+	std::map<wxString, bool>::iterator it;
+	muListFile.lock();
+	it = listFile.find(videoFilename);
+	if (it != listFile.end())
+		findFile = true;
+	muListFile.unlock();
+
+	if (findFile)
+	{
+		muListFile.lock();
+		listFile.erase(it);
+		muListFile.unlock();
+	}
 }
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)

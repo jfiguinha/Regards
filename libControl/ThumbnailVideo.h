@@ -13,18 +13,14 @@ namespace Regards::Control
 		void SetVideoPosition(const int64_t& videoPos);
 		void EraseThumbnail(long value);
 
-
-    protected:
-        
-        void UpdateVideoThumbnail()  override;
     
 	private:
 
 		void ResizeThumbnail() override;
 		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 		void EraseThumbnail(wxCommandEvent& event) override;
-
-        
+		void UpdateVideoThumbnail(wxCommandEvent& event);
+		void UpdateVideoThumbnail();
 
 		int FindNumItem(const int& videoPos);
 		void InitWithDefaultPicture(const wxString& szFileName, const int& size);

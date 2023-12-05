@@ -1877,7 +1877,13 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
         
         if(threadLoadingBitmap->isAnimationOrVideo)
         {
-            UpdateVideoThumbnail();
+            //UpdateVideoThumbnail();
+			wxWindow* mainWnd = this->FindWindowById(THUMBNAILVIDEOWINDOW);
+			if (mainWnd != nullptr)
+			{
+				wxCommandEvent eventChange(wxEVENT_REFRESHVIDEOTHUMBNAIL);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
         }
 
 

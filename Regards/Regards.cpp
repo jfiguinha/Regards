@@ -399,9 +399,26 @@ bool MyApp::OnInit()
                 delete image;
             }
             listVideo.clear();   
-            sleep(2);
+            //sleep(2);
         }
 
+	}
+	else if (appName == "video")
+	{
+		wxArrayString files;
+		wxString resourcePath = "D:\\stop motion\\lave";
+		wxString outputPath = "D:\\stop motion\\lave_roter";
+		int i = 0;
+		wxDir::GetAllFiles(resourcePath, &files, _T("*.png"), wxDIR_FILES);
+		for (wxString file : files)
+		{
+			cv::Mat picture = cv::imread(file.ToStdString());
+			cv::rotate(picture, picture, ROTATE_90_COUNTERCLOCKWISE);
+			wxFileName fileName(file);
+			wxString file_out = outputPath + "\\" + fileName.GetName() + ".png";
+			cv::imwrite(file_out.ToStdString(), picture);
+		}
+		exit(0);
 	}
 	else if (appName == "toto")
 	{
