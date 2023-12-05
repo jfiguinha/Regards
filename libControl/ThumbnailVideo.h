@@ -12,7 +12,7 @@ namespace Regards::Control
 		void SetFile(const wxString& videoFile, const int& size);
 		void SetVideoPosition(const int64_t& videoPos);
 		void EraseThumbnail(long value);
-        void ProcessVideo() override;
+
 
     protected:
         
@@ -20,8 +20,6 @@ namespace Regards::Control
     
 	private:
 
-		void EndThumbnail(wxCommandEvent& event);
-		static void LoadMoviePicture(void* param);
 		void ResizeThumbnail() override;
 		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 		void EraseThumbnail(wxCommandEvent& event) override;
