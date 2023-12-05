@@ -1213,6 +1213,19 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 
 	const bool isAnimation = TestIsAnimation(szFileName);
 
+	//Default Picture
+	 
+
+#ifdef WIN32
+	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\loading.png";
+#else
+	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/loading.png";
+#endif
+	wxImage image;
+	wxImage image_resample;
+	image.LoadFile(photoCancel);
+	image_resample = image.ResampleBilinear(widthThumbnail, heightThumbnail);
+
 
 	for (auto i = 0; i < size; i++)
 	{
@@ -1222,19 +1235,9 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 
 		cxVideo->rotation = rotation;
 		cxVideo->percent = percent;
-
-#ifdef WIN32
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\loading.png";
-#else
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/loading.png";
-#endif
-
-		//picture->Resize(widthThumbnail, heightThumbnail, 0);
-		//picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
-		cxVideo->image.LoadFile(photoCancel);
-		cxVideo->image = cxVideo->image.ResampleBilinear(widthThumbnail, heightThumbnail);
+		cxVideo->image = image_resample;
 		cxVideo->filename = szFileName;
-		//cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap(), false);
+
 		if (isAnimation)
 			cxVideo->timePosition = i;
 		else
