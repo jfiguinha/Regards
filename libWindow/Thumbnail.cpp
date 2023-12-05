@@ -76,6 +76,7 @@ public:
 	int typeElement;
 	int photoId;
 	int timePosition;
+    bool isAnimationOrVideo = false;
 	wxImage bitmapIcone;
 	thread* _thread;
 	thread* _threadVideo;
@@ -1177,6 +1178,7 @@ void CThumbnail::LoadPicture(void* param)
 					threadLoadingBitmap->bitmapIcone = bitmap->image;
 
 			}
+            threadLoadingBitmap->isAnimationOrVideo = true;
 		}
 		else //Not support video
 		{
@@ -1872,6 +1874,11 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 
 			threadLoadingBitmap->_thread = nullptr;
 		}
+        
+        if(threadLoadingBitmap->isAnimationOrVideo)
+        {
+            UpdateVideoThumbnail();
+        }
 
 
 		if (threadLoadingBitmap != nullptr)
@@ -1880,6 +1887,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 			threadLoadingBitmap = nullptr;
 		}
 
+        /*
 		CLibPicture libPicture;
 		if (libPicture.TestIsVideo(*filename) || libPicture.TestIsPDF(*filename) || libPicture.
 			TestIsAnimation(*filename))
@@ -1893,7 +1901,8 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 			}
 		}
 		else
-			delete filename;
+        */
+        delete filename;
 
 		//needToRefresh = true;
 	}

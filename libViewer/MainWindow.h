@@ -130,7 +130,6 @@ namespace Regards::Viewer
 		void ExportVideo(const wxString& filename);
 		void ProcessIdle() override;
 		void OnIdle(wxIdleEvent& evt) override;
-		void OnEndThumbnail(wxCommandEvent& event);
 		static void CheckMD5(void* param);
 		void UpdateFolderStatic();
 

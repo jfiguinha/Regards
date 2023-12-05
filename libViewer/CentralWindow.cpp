@@ -392,15 +392,6 @@ void CCentralWindow::StartDiaporama(wxCommandEvent& event)
 	isDiaporama = true;
 }
 
-void CCentralWindow::OnEndThumbnail()
-{
-	if (isVideo || isAnimation)
-	{
-		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
-		thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
-
 void CCentralWindow::OnVideoStop(wxCommandEvent& event)
 {
 	if (videoStart && isDiaporama)

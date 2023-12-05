@@ -14,18 +14,19 @@ namespace Regards::Control
 		void EraseThumbnail(long value);
         void ProcessVideo() override;
 
+    protected:
+        
+        void UpdateVideoThumbnail()  override;
+    
 	private:
 
-		
-		static void ProcessThumbnail(void* param);
+		void EndThumbnail(wxCommandEvent& event);
 		static void LoadMoviePicture(void* param);
 		void ResizeThumbnail() override;
 		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 		void EraseThumbnail(wxCommandEvent& event) override;
-		void EndVideoThumbnail(wxCommandEvent& event);
-		void EndUpdateVideoThumbnail(wxCommandEvent& event);
 
-		void EndThumbnail(wxCommandEvent& event);
+        
 
 		int FindNumItem(const int& videoPos);
 		void InitWithDefaultPicture(const wxString& szFileName, const int& size);

@@ -104,7 +104,6 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 			void SetListeFile(const wxString& filename, CThreadPhotoLoading* threadData);
 			int LoadPicture(const wxString& filename, const bool& refresh = false);
-			void OnEndThumbnail();
 			bool IsVideo();
 			void SaveParameter() override;
 			bool IsCompatibleFullscreen();

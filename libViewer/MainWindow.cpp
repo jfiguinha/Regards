@@ -185,7 +185,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
 	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
-	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnEndThumbnail));
 	Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
@@ -1736,15 +1735,6 @@ bool CMainWindow::GetProcessEnd()
 		return false;
 
 	return true;
-}
-
-void CMainWindow::OnEndThumbnail(wxCommandEvent& event)
-{
-	localFilename = centralWnd->GetFilename();
-	auto thumbName = static_cast<wxString*>(event.GetClientData());
-	if (*thumbName == localFilename)
-		centralWnd->OnEndThumbnail();
-	delete thumbName;
 }
 
 void CMainWindow::OnScanner(wxCommandEvent& event)
