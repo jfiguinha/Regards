@@ -22,7 +22,6 @@ namespace Regards::Viewer
 		CInfosSeparationBarExplorer* AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 	protected:
 
-		void VideoProcessThumbnail() override;
 		void OnPictureClick(CThumbnailData* data) override;
 		void ResizeThumbnail() override;
 		static bool compareInterval(int i1, int i2);

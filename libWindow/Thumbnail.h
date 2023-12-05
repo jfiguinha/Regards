@@ -153,9 +153,6 @@ namespace Regards::Window
 		
 		void update_render_icone(wxCommandEvent& event);
 
-		virtual void VideoProcessThumbnail()
-		{
-		};
 		//------------------------------------------------------------
 		//Variable
 		//------------------------------------------------------------

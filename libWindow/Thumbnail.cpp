@@ -1122,34 +1122,6 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		ExecuteTimer(numActifPhotoId, refreshActifTimer);
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
 	}
-
-/*
-	if (!listToErrase.empty())
-	{
-       // printf("CThumbnail::listToErrase \n");
-		int i = 0;
-		time_t ending;
-		time(&ending);
-		for (CListToClean* element : listToErrase)
-		{
-			int diff = difftime(ending, element->timeToAdd);
-			if (diff > 5)
-			{
-                //printf("List To erase : %d \n",i);
-				//element->list->EraseThumbnailList();
-				delete element->list;
-				element->list = nullptr;
-
-				listToErrase.erase(listToErrase.begin() + i);
-			}
-			else
-				i++;
-
-		}
-
-	}
-	*/
-	VideoProcessThumbnail();
 }
 
 bool CThumbnail::GetProcessEnd()

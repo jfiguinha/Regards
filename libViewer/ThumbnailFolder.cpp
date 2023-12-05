@@ -713,18 +713,6 @@ void CThumbnailFolder::GenerateThumbnail()
 	} while (i < nbValue);
 }
 
-void CThumbnailFolder::VideoProcessThumbnail()
-{
-	muThumb.lock();
-	if(thread_thumbnail == nullptr && listElementToShow.size() > 0)
-	{
-		thread_thumbnail = new std::thread(ExecuteThumbnailGen, this);
-		nbVideoThumbnailProcess = 1;
-	}
-	muThumb.unlock();
-
-}
-
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
 	muVector.lock();
