@@ -107,6 +107,8 @@ using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
+extern wxImage defaultPicture;
+
 
 #if defined(LIBBPG) && not defined(WIN32)
 
