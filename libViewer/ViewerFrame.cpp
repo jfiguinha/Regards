@@ -313,7 +313,8 @@ void CViewerFrame::OnOpenFile(wxTimerEvent& event)
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle);
+	wxBusyCursor busy;
+	//wxBusyInfo wait(libelle);
 
 	bool folderChange = false;
 

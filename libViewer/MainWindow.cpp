@@ -1668,7 +1668,8 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 void CMainWindow::UpdateFolderStatic()
 {
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle);
+	//wxBusyInfo wait(libelle);
+	wxBusyCursor busy;
 	{
 		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
 		threadData->mainWindow = this;
