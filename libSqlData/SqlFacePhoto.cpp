@@ -351,8 +351,6 @@ wxImage CSqlFacePhoto::GetFace(const int& numFace)
 	if (wxFileExists(thumbnail))
 	{
 		image = CThumbnailBuffer::GetPicture(thumbnail);
-		//	image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
-		//image = CLibPicture::ReadThumbnail(thumbnail);
 	}
 
 

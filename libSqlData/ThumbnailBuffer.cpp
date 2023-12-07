@@ -138,8 +138,8 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
 
         if (it == listPicture.end())
         {
-            image = listPicture[filename] = Regards::Picture::CLibPicture::ReadThumbnail(filename);
-
+            image.LoadFile(filename, wxBITMAP_TYPE_ANY);
+            listPicture[filename] = image;
             muListFile.lock();
             listFile.push_back(filename);
             muListFile.unlock();
@@ -172,7 +172,8 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
     }
     else
     {
-         image = Regards::Picture::CLibPicture::ReadThumbnail(filename);
+        image.LoadFile(filename, wxBITMAP_TYPE_ANY);
+        listPicture[filename] = image;
     }
 	
 	return image;
