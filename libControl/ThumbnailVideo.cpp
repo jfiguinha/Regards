@@ -242,6 +242,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 				delete thumbnail;
 		}
 		processIdle = false;
+
 	}
 	else
 	{
@@ -298,6 +299,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
         listThumbnail.clear();
 
 		processIdle = true;
+
 	}
 
 
@@ -371,6 +373,7 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 
 void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
 {
+	//if (!videoThumbnailOk)
 	UpdateVideoThumbnail();
 }
 
@@ -426,6 +429,7 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	processIdle = true;
 	needToRefresh = true;
 
+
 	bool findFile = false;
 	std::map<wxString, bool>::iterator it;
 	muListFile.lock();
@@ -463,4 +467,5 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 	threadDataProcess = true;
 	processIdle = true;
 	needToRefresh = true;
+
 }

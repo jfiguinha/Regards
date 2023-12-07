@@ -28,8 +28,6 @@ namespace Regards::Control
 		bool process_end;
 
 		int64_t oldvideoPos = 0;
-
-
 		int iFormat = 0;
 	};
 }

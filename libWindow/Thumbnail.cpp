@@ -569,10 +569,12 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 		{
-			wxClientDC dc(this);
-			icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-			//needToRefresh = true;
+			//wxClientDC dc(this);
+			//icone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
+			needToRefresh = true;
+			//return;
 		}
+
 			
 	}
 	
@@ -832,18 +834,25 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	//time(&listToAdd->timeToAdd);
 	//listToAdd->list = iconeListLocal;
 	//listToErrase.push_back(listToAdd);
-    
-    
-    iconeListLocal->EraseThumbnailList();
-    delete iconeListLocal;
-    
-    stopToGetNbElement = false;
+
+	if (iconeListLocal != nullptr)
+	{
+		if (iconeListLocal->GetNbElement() > 0)
+			iconeListLocal->EraseThumbnailList();
+
+		delete iconeListLocal;
+
+		iconeListLocal = nullptr;
+	}
+
+
+	stopToGetNbElement = false;
 
 	muListFile.lock();
 	listFile.clear();
 	muListFile.unlock();
 
-    nbProcess = 0;
+	nbProcess = 0;
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -1823,7 +1832,7 @@ void CThumbnail::InitScrollingPos()
 
 void CThumbnail::update_render_icone(wxCommandEvent& event)
 {
-	auto filename = new wxString();
+
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(event.GetClientData());
 	if (threadLoadingBitmap == nullptr)
 	{
@@ -1842,7 +1851,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 			{
 				CThumbnailData* pThumbnailData = nullptr;
 				CIcone* icone = GetIconeById(threadLoadingBitmap->photoId);
-				*filename = threadLoadingBitmap->filename;
+
 				if (icone != nullptr && pThumbnailData == nullptr)
 					pThumbnailData = icone->GetData();
 
@@ -1857,7 +1866,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					pThumbnailData->SetIsLoading(false);
 				}
 
-				RefreshIcone(threadLoadingBitmap->photoId);
+			//	RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 
@@ -1889,24 +1898,6 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 			threadLoadingBitmap = nullptr;
 		}
 
-        /*
-		CLibPicture libPicture;
-		if (libPicture.TestIsVideo(*filename) || libPicture.TestIsPDF(*filename) || libPicture.
-			TestIsAnimation(*filename))
-		{
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			if (mainWnd != nullptr)
-			{
-				wxCommandEvent eventChange(wxEVENT_ENDVIDEOTHUMBNAIL);
-				eventChange.SetClientData(filename);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
-		}
-		else
-        */
-        delete filename;
-
-		//needToRefresh = true;
 	}
 	else
 	{
@@ -1914,8 +1905,10 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
 
-		needToRefresh = true;
+		
 	}
 
 	nbProcess = max(nbProcess, 0);
+
+	needToRefresh = true;
 }
