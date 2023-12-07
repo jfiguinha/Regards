@@ -32,7 +32,8 @@ namespace Regards
 
 			void Disable()
 			{
-				glDisable(GL_TEXTURE_2D);
+				//glDisable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 
 			int GetTextureID()

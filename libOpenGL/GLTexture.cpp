@@ -256,6 +256,8 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 {  
+	//glEnable(GL_TEXTURE_2D);
+
 	if (!m_nTextureID)
 	{
 		glGenTextures(1, &m_nTextureID);
@@ -266,18 +268,15 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	}
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else if (m_nTextureID)
-	{
-		glEnable(GL_TEXTURE_2D);
-		width = bitmapMatrix.size().width;
-		height = bitmapMatrix.size().height;
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+	
+	width = bitmapMatrix.size().width;
+	height = bitmapMatrix.size().height;
+	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
     
     int nError = glGetError();
    // printf(" GLTexture::SetTextureData : %d \n", nError);
@@ -308,15 +307,12 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	//int nError = glGetError();
 	if (0 != m_nTextureID)
 	{
-		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
 	{
-		glEnable(GL_TEXTURE_2D);
-
 		glGenTextures(1, &m_nTextureID);
 		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
@@ -356,9 +352,7 @@ void GLTexture::checkErrors(std::string desc)
 void GLTexture::Delete()
 {
 	checkErrors("GLTexture::Delete()");
-	//glDisable(GL_TEXTURE_2D);
-	//printf("Delete Texture id : %d \n", m_nTextureID);
-	glEnable(GL_TEXTURE_2D);
+
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 
 	if (pimpl_ && openclOpenGLInterop)
@@ -377,6 +371,6 @@ void GLTexture::Delete()
 
 void GLTexture::Enable()
 {
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 }
