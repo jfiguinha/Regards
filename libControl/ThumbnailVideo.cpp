@@ -20,6 +20,8 @@ using namespace Regards::Picture;
 #define wxEVENT_ENDTHUMBNAIL 1002
 #define wxEVENT_ENDUPDATEVIDEOTHUMBNAIL 1003
 
+extern wxImage defaultPicture;
+
 struct ThumbnailVideoThread
 {
 	CThumbnailVideo* window;
@@ -175,6 +177,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	auto iconeListLocal = new CIconeList();
 	CLibPicture libPicture;
 
+        
 	if (iFormat < 100)
 		typeElement = TYPEMULTIPAGE;
 
@@ -194,6 +197,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			//thumbnailData->SetStorage(nullptr);
 			thumbnailData->SetNumPhotoId(i);
 			thumbnailData->SetNumElement(i);
+            
 			thumbnailData->SetTypeElement(typeElement);
 			thumbnailData->SetPercent(percent);
 			if (typeElement == TYPEMULTIPAGE)
@@ -203,7 +207,14 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			try
 			{
 				if (thumbnail->image.IsOk())
+                {
 					thumbnailData->SetBitmap(thumbnail->image);
+                    thumbnailData->SetIsDefault(false);
+                }
+                else
+                {
+                    thumbnailData->SetBitmap(defaultPicture);
+                }
 			}
 			catch (...)
 			{
@@ -253,7 +264,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 			if (!thumbnail->image.IsOk())
 			{
-				thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+				thumbnail->image = defaultPicture;
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);
@@ -317,39 +328,38 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 {
 	if (videoFilename != "")
 	{
-		CLibPicture libPicture;
 		CSqlThumbnailVideo sqlThumbnailVideo;
 		int nbResult = sqlThumbnailVideo.GetNbThumbnail(videoFilename);
 		if (nbResult > 0)
 		{
 			for (int i = 0; i < nbResult; i++)
 			{
-				auto thumbnail = new CImageVideoThumbnail();
-				sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
-				thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
-				//thumbnail->timePosition = i;
-				//thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
-
-				if (!thumbnail->image.IsOk())
+                CIcone* pBitmapIcone = iconeList->GetElement(i);
+ 				if (pBitmapIcone != nullptr)
 				{
-					thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-				}
+					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData()); 
+                    if (thumbnailData != nullptr) 
+                    {
+                        if(thumbnailData->GetIsDefault())
+                        {
+                            auto thumbnail = new CImageVideoThumbnail();
+                            sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
+                            thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
+                            
+                            if (thumbnail->image.IsOk())
+                            {
+                                thumbnailData->SetIsDefault(false);
+                                thumbnailData->SetBitmap(thumbnail->image);
+                            }
+                                
+                            
+                            thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-
-				CIcone* pBitmapIcone = iconeList->GetElement(i);
-				if (pBitmapIcone != nullptr)
-				{
-					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
-					if (thumbnailData != nullptr)
-					{
-						if (thumbnail->image.IsOk())
-							thumbnailData->SetBitmap(thumbnail->image);
-						thumbnailData->SetTimePosition(thumbnail->timePosition);
-					}
-				}
-
-				if (thumbnail != nullptr)
-					delete thumbnail;
+                            if (thumbnail != nullptr)
+                                delete thumbnail;       
+                        }                     
+                    }
+                }
 			}
 		}
 	}
@@ -380,22 +390,6 @@ void CThumbnailVideo::EraseThumbnail(long value)
 
 		CSqlThumbnail sqlThumbnail;
 		sqlThumbnail.DeleteThumbnail(videoFilename);
-
-		for (int i = 0; i < nbElementInIconeList; i++)
-		{
-			CIcone* pIcone = iconeList->GetElement(i);
-			if (pIcone != nullptr)
-			{
-				CThumbnailData* pThumbnailData = pIcone->GetData();
-				if (pThumbnailData != nullptr)
-				{
-					pThumbnailData->InitLoadState();
-					wxString filename = pThumbnailData->GetFilename();
-					pThumbnailData->SetIsProcess(false);
-					pThumbnailData->SetIsLoading(false);
-				}
-			}
-		}
 	}
 	thumbnailPos = 0;
 
@@ -405,16 +399,18 @@ void CThumbnailVideo::EraseThumbnail(long value)
 		wxString filelocalName = iconeList->GetFilename(i);
 		if (videoFilename == filelocalName)
 		{
-			CIcone* icone = iconeList->GetElement(i);
-			if (icone != nullptr)
+			CIcone* pIcone = iconeList->GetElement(i);
+			if (pIcone != nullptr)
 			{
-				CThumbnailData* pThumbnailData = icone->GetData();
+				CThumbnailDataStorage * pThumbnailData = (CThumbnailDataStorage *)pIcone->GetData();
 				if (pThumbnailData != nullptr)
 				{
-					pThumbnailData->SetIsLoading(false);
+					pThumbnailData->InitLoadState();
+                    pThumbnailData->SetBitmap(defaultPicture);
+                    pThumbnailData->SetIsDefault(true);
+					wxString filename = pThumbnailData->GetFilename();
 					pThumbnailData->SetIsProcess(false);
-					pThumbnailData->RemoveBitmap();
-					break;
+					pThumbnailData->SetIsLoading(false);
 				}
 			}
 		}

@@ -16,8 +16,11 @@ public:
 	void RemoveBitmap() override;
 	void SetBitmap(wxImage bitmap) override;
 	wxImage GetwxImage() override;
+    bool GetIsDefault();
+    void SetIsDefault(const bool &isDefault);
 
 private:
 	bool TestBitmap() override;
 	wxImage localbitmap;
+    bool isDefault = true;
 };

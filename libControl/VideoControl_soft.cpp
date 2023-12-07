@@ -1916,6 +1916,7 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 
 void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc)
 {
+
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else
@@ -1924,6 +1925,8 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 
 	widthOutput = static_cast<int>(GetBitmapWidth());
 	heightOutput = static_cast<int>(GetBitmapHeight());
+    
+    
 
 	int left = 0, top = 0;
 	int tailleAffichageWidth = widthOutput;
@@ -1939,59 +1942,52 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 	else
 		top = 0;
 
-	//wxRect rc(0, 0, 0, 0);
-	//if (angle == 90 || angle == 270)
-	//	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false, false);
-	//else
-
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true, true);
+
 }
 
 void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
     
-    //printf("CVideoControlSoft::RenderToTexture \n");
-
 	if (openclEffect == nullptr)
 		return;
 
-	//GLTexture* glTexture = nullptr;
-	wxRect rect;
-	int filterInterpolation = 0;
-	inverted = true;
-	//if (angle == 90 || angle == 270)
-	//	inverted = false;
-
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-
-	if (regardsParam != nullptr)
-		filterInterpolation = regardsParam->GetInterpolationType();
-
-
-	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
-		effectEnable)
-	{
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
-		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
-	}
 
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
-	                                       (int)GetZoomRatio() * 100);
-                                        
-    cv::UMat data = openclEffect->GetUMat(false);
-    if (!renderOpenGL->SetData(data))
-        openclOpenGLInterop = false;
+    if(widthOutput > 0 && heightOutput > 0)
+    {
+        wxRect rect;
+        int filterInterpolation = 0;
+        inverted = true;
 
-    int nError = glGetError();
-    //printf("CVideoControlSoft::RenderToTexture Error : %d \n", nError);
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+        if (regardsParam != nullptr)
+            filterInterpolation = regardsParam->GetInterpolationType();
 
 
+        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+            effectEnable)
+        {
+            if (openCVStabilization == nullptr)
+                openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+            openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
+        }
+
+        openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+                                               (int)GetZoomRatio() * 100);
+                                            
+        cv::UMat data = openclEffect->GetUMat(false);
+        if (!renderOpenGL->SetData(data))
+            openclOpenGLInterop = false;
+
+        int nError = glGetError();
+
+    }
 }
 
 bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
@@ -2044,29 +2040,33 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
 	if (pictureFrame.empty())
 		return;
 
-	//GLTexture* glTexture = nullptr;
-	CRgbaquad backColor;
+    if(widthOutput > 0 && heightOutput > 0)
+    {
+            //GLTexture* glTexture = nullptr;
+        CRgbaquad backColor;
 
-	int filterInterpolation = 0;
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-		filterInterpolation = regardsParam->GetInterpolationType();
+        int filterInterpolation = 0;
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        if (regardsParam != nullptr)
+            filterInterpolation = regardsParam->GetInterpolationType();
 
 
-	cv::Mat cvImage;
+        cv::Mat cvImage;
 
-	cv::cvtColor(pictureFrame, cvImage, cv::COLOR_BGRA2BGR);
+        cv::cvtColor(pictureFrame, cvImage, cv::COLOR_BGRA2BGR);
 
-	cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
-	                                                   flipH, flipV, angle, (int)GetZoomRatio() * 100);
+        cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
+                                                           flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
-	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
-		effectEnable)
-	{
-		ApplyOpenCVEffect(bitmapOut);
-	}
+        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+            effectEnable)
+        {
+            ApplyOpenCVEffect(bitmapOut);
+        }
 
-	renderOpenGL->SetData(bitmapOut);
+        renderOpenGL->SetData(bitmapOut);   
+    }
+
 }
 
 void CVideoControlSoft::Rotate90()

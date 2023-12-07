@@ -12,6 +12,8 @@ using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
+extern wxImage defaultPicture;
+
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, const wxWindowID idCTreeWithScrollbarInterface,
                                                  const CThemeThumbnail& themeThumbnail,
                                                  const bool& testValidity)
@@ -54,7 +56,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 		if (!thumbnail->image.IsOk())
 		{
-			thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+			thumbnail->image = defaultPicture;
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -167,7 +169,7 @@ void CThumbnailFileSelection::SetListeFile()
 
 		if (!thumbnail->image.IsOk())
 		{
-			thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+			thumbnail->image = defaultPicture;
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);

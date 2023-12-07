@@ -13,6 +13,8 @@ using namespace Regards::Window;
 using namespace Regards::Picture;
 #define wxTIMER_PROCESS 1001
 
+extern wxImage defaultPicture;
+
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                          const bool& testValidity)
 	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
@@ -156,7 +158,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 
 			if (!thumbnail->image.IsOk())
 			{
-				thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+				thumbnail->image = defaultPicture;
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);

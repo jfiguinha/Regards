@@ -51,6 +51,8 @@ using namespace Regards::FiltreEffet;
 extern bool firstElementToShow;
 extern int numElementToLoad;
 
+extern wxImage defaultPicture;
+
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
                                const CThemeSplitter& theme, const bool& horizontal)
 	: CWindowMain("CentralWindow", parent, id)
@@ -1761,10 +1763,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 
 	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
 	{
-		if (bitmap != nullptr)
-			delete bitmap;
-
-		bitmap = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+		bitmap->SetPicture(defaultPicture);
 	}
 	bitmap->SetFilename(pictureData->picture);
 

@@ -13,6 +13,16 @@ CThumbnailDataStorage::~CThumbnailDataStorage(void)
 {
 }
 
+bool CThumbnailDataStorage::GetIsDefault()
+{
+    return isDefault;
+}
+
+void CThumbnailDataStorage::SetIsDefault(const bool &isDefault)
+{
+    this->isDefault = isDefault;
+}
+
 bool CThumbnailDataStorage::TestBitmap()
 {
 	return localbitmap.IsOk();

@@ -112,6 +112,8 @@ extern float clamp(float val, float minval, float maxval);
 
 void * CLibPicture::lib_handle = nullptr;
 
+extern wxImage defaultPicture;
+
 void CLibPicture::LoadBpgDll()
 {
      printf("LoadBpgDll\n");
@@ -1280,7 +1282,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& 
 	if (m_ani_images == 0)
 	{
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
-		imageVideoThumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel());
+		imageVideoThumbnail->image = defaultPicture;
 		imageVideoThumbnail->filename = szFileName;
 		imageVideoThumbnail->rotation = 0;
 		imageVideoThumbnail->delay = 4;

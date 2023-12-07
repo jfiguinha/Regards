@@ -38,6 +38,8 @@ class CImageLoadingFormat;
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 
+extern wxImage defaultPicture;
+
 class CListToClean
 {
 public:
@@ -1146,7 +1148,7 @@ void CThumbnail::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
-	threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+	threadLoadingBitmap->bitmapIcone = defaultPicture;
 	
 	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
 		TestIsAnimation(threadLoadingBitmap->filename))
@@ -1182,21 +1184,15 @@ void CThumbnail::LoadPicture(void* param)
 		}
 		else //Not support video
 		{
-			threadLoadingBitmap->bitmapIcone.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+			threadLoadingBitmap->bitmapIcone = defaultPicture;
 			wxString filename = threadLoadingBitmap->filename;
 
-			wxBitmap bitmap;
-			bitmap.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+			wxBitmap bitmap = wxBitmap(defaultPicture);
+			
 
 			CSqlThumbnailVideo sqlThumbnailVideo;
-			for (int i = 0; i < 1; i++)
-			{
-				wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(),
-					bitmap.GetHeight(), i, 0, i * 5,
-					i);
-
-				bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-			}
+			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
+            bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
 
 		for (CImageVideoThumbnail* bitmap : listVideo)

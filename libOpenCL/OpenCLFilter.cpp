@@ -1502,6 +1502,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		const char* err_msg = e.what();
 		std::cout << "COpenCLFilter::Interpolation exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        std::cout << "width : " << widthOut << "height : " <<  heightOut << std::endl;
         cv::Mat image(widthOut, heightOut, CV_8UC3, cv::Scalar(0, 0, 0));
         image.copyTo(cvImage);
 	}
