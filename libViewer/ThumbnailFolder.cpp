@@ -73,23 +73,23 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(CIconeList* icone
 #endif
 	{
 		try
-	{
-		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, true);
-		thumbnailData->SetNumPhotoId(photo.GetId());
-		thumbnailData->SetNumElement(local_nbElement + i);
+		{
+			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, true);
+			thumbnailData->SetNumPhotoId(photo.GetId());
+			thumbnailData->SetNumElement(local_nbElement + i);
 
-		CIcone* pBitmapIcone = new CIcone();
-		pBitmapIcone->ShowSelectButton(true);
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeListLocal->AddElement(pBitmapIcone);
-	}
-	catch (...)
-	{
-		break;
-	}
+			CIcone* pBitmapIcone = new CIcone();
+			pBitmapIcone->ShowSelectButton(true);
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
+		}
+		catch (...)
+		{
+
+		}
 	}
 #ifdef USE_TBB_VECTOR  
 	);
@@ -138,7 +138,7 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 		}
 		catch(...)
 		{
-			break;
+
 		}
 	}
 #ifdef USE_TBB_VECTOR  
@@ -407,10 +407,10 @@ void CThumbnailFolder::SetListeFile()
 	threadDataProcess = false;
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
+
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
 #else
-    int size = photoVector->size();
 	tbb::parallel_for(0, size, 1, [=](int i)    
 #endif    
 	{
@@ -433,12 +433,14 @@ void CThumbnailFolder::SetListeFile()
 		}
 		catch(...)
 		{
-			break;
+
 		}
 	}
 #ifdef USE_TBB_VECTOR  
     );
 #endif
+
+	iconeListLocal->SortById();
 
 
 	lockIconeList.lock();

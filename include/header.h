@@ -38,6 +38,9 @@
 #endif
 
 
+#define CL_TARGET_OPENCL_VERSION 120
+
+
 //#define WX_PRECOMP
 #if defined(__WXMSW__) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
@@ -48,6 +51,7 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
+#define USE_TBB_VECTOR
 #endif
 
 
@@ -69,6 +73,7 @@
 #include <CL/cl_gl.h>
 #endif
 #endif
+
 
 
 #include <thread>
@@ -99,4 +104,4 @@ using namespace std;
     (wxMAJOR_VERSION == (major) && wxMINOR_VERSION > (minor)) || \
     (wxMAJOR_VERSION == (major) && wxMINOR_VERSION == (minor) && wxRELEASE_NUMBER >= (release)))
 
-#define CL_TARGET_OPENCL_VERSION 120
+
