@@ -251,7 +251,7 @@ namespace Regards::Window
 		bool needToRefresh = false;
         bool stopToGetNbElement = false;
 		std::mutex muEraseList;
-		//std::vector<CListToClean *> listToErrase;
+		std::vector<CListToClean *> listToErrase;
 		std::map<wxString, bool> listFile;
 		std::mutex muListFile;
 	};

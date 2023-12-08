@@ -830,11 +830,12 @@ void CThumbnail::AfterSetList()
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
     
-	//CListToClean* listToAdd = new CListToClean();
-	//time(&listToAdd->timeToAdd);
-	//listToAdd->list = iconeListLocal;
-	//listToErrase.push_back(listToAdd);
+	CListToClean* listToAdd = new CListToClean();
+	time(&listToAdd->timeToAdd);
+	listToAdd->list = iconeListLocal;
+	listToErrase.push_back(listToAdd);
 
+    /*
 	if (iconeListLocal != nullptr)
 	{
 		if (iconeListLocal->GetNbElement() > 0)
@@ -844,7 +845,7 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 
 		iconeListLocal = nullptr;
 	}
-
+    */
 
 	stopToGetNbElement = false;
 
@@ -1133,6 +1134,27 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 	{
 		ExecuteTimer(numActifPhotoId, refreshActifTimer);
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
+	}
+    
+    if (!listToErrase.empty())
+	{
+        
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (CListToClean* element : listToErrase)
+		{
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 5)
+			{
+                printf("CThumbnail::listToErrase %i \n", i);
+				delete element->list;
+				element->list = nullptr;
+				listToErrase.erase(listToErrase.begin() + i);
+			}
+			else
+				i++;
+		}
 	}
 }
 
