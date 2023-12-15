@@ -59,15 +59,14 @@ namespace Regards::Viewer
 
 		void SaveParameter() override;
 
-		CIconeList * GetIconeList(CThreadPhotoLoading* threadData);
-		CIconeList* GetPreGenerateList(CThreadPhotoLoading* threadData);
-
 		bool GetInit()
 		{
 			return init;
 		}
 
 	private:
+
+		void UpdateFolderStatic();
 
 		static void NewVersionAvailable(void* param);
 
@@ -113,7 +112,7 @@ namespace Regards::Viewer
 		void SetScreenEvent(wxCommandEvent& event);
 		void OnExportDiaporama(wxCommandEvent& event);
 		void RefreshFolderList(wxCommandEvent& event);
-		void OnUpdatePhotoFolder(wxCommandEvent& event);
+
 		void OnUpdateFolder(wxCommandEvent& event);
         
 
@@ -162,7 +161,7 @@ namespace Regards::Viewer
 
 		CExportDiaporama* exportDiaporama = nullptr;
 		wxString firstFileToShow = "";
-		//wxString oldRequest = "";
+		wxString oldRequest = "";
 		bool init = true;
 
 		CFolderProcess* folderProcess = nullptr;

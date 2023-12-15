@@ -39,12 +39,12 @@ namespace Regards::Viewer
 		~CFolderProcess();
 		void UpdateCriteria(bool criteriaSendMessage);
 		void RefreshFolder(bool& folderChange, int& nbFile);
-		void UpdateFolderStatic();
+		//void UpdateFolderStatic();
 
 
 	private:
 		CMainWindow* mainWindow;
-		void UpdateFolder(CThreadPhotoLoading* threadData);
+		//void UpdateFolder(CThreadPhotoLoading* threadData);
 
 		wxString oldRequest = "";
 	};

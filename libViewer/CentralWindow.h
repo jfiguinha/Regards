@@ -103,7 +103,7 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-			void SetListeFile(const wxString& filename, CThreadPhotoLoading* threadData);
+			void SetListeFile(const wxString& filename, const int& typeAffichage);
 			int LoadPicture(const wxString& filename, const bool& refresh = false);
 			bool IsVideo();
 			void SaveParameter() override;
@@ -114,15 +114,6 @@ namespace Regards
 			bool IsDiaporamaStart();
 
 
-			CListPicture* GetListPicture()
-			{
-				return listPicture;
-			}
-
-			CThumbnailViewerPicture* GetThumbnailPicture()
-			{
-				return thumbnailPicture;
-			}
 
 		private:
 			int GetPhotoId(const wxString& filename);

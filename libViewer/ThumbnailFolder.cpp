@@ -198,8 +198,17 @@ CIconeList * CThumbnailFolder::PrepareTypeAffichage(PhotosVector * _pictures, co
 }
 
 
-void CThumbnailFolder::ApplyTypeAffichage(CIconeList* iconeListLocal, InfosSeparationBarVector* _listSeparator, int typeAffichage)
+void CThumbnailFolder::ApplyTypeAffichage(const int& typeAffichage)
 {
+
+
+	PhotosVector _pictures;
+	CSqlFindPhotos sqlFindPhotos;
+	sqlFindPhotos.SearchPhotosByCriteriaFolder(&_pictures);
+	InfosSeparationBarVector* _listSeparator = new InfosSeparationBarVector();
+	CIconeList* iconeListLocal = PrepareTypeAffichage(&_pictures, typeAffichage, _listSeparator);
+
+
 	CIconeList* oldIconeList = iconeList;
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -238,7 +247,7 @@ void CThumbnailFolder::ApplyTypeAffichage(CIconeList* iconeListLocal, InfosSepar
 
 	if (oldIconeList != nullptr)
 	{
-		EraseThumbnailList(oldIconeList);
+		delete oldIconeList;
 		oldIconeList = nullptr;
 	}
 

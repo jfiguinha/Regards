@@ -29,7 +29,7 @@ namespace Regards
 			int GetNumItem();
 			void SetActifItem(const int& numItem, const bool& move);
 			int GetThumbnailHeight();
-			void SetListeFile(CThreadPhotoLoading* threadData);
+			void SetListeFile(const int& typeAffichage);
 			void ChangeTypeAffichage(const long& typeAffichage);
 			void Resize() override;
 

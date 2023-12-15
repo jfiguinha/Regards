@@ -24,7 +24,7 @@ namespace Regards::Viewer
 		void Init(const int& typeAffichage = SHOW_ALL);
 		void SetListeFile();
 		vector<wxString> GetFileList();
-		void ApplyListeFile(CIconeList* iconeListLocal);
+		void ApplyListeFile();
 
 		CIconeList* PregenerateList(PhotosVector * _pictures);
 

@@ -98,11 +98,17 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 }
 
 
-void CThumbnailViewerPicture::ApplyListeFile(CIconeList * iconeListLocal)
+void CThumbnailViewerPicture::ApplyListeFile()
 {
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
-	
+
+	PhotosVector _pictures;
+	CSqlFindPhotos sqlFindPhotos;
+	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
+
+	CIconeList* iconeListLocal = PregenerateList(&_pictures);
+
 	lockIconeList.lock();
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();

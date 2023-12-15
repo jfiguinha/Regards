@@ -160,7 +160,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
-	Connect(wxEVENT_UPDATEPHOTOFOLDER, wxCommandEventHandler(CMainWindow::OnUpdatePhotoFolder));
+
 	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CMainWindow::OnVersionUpdate));
 
 	/*----------------------------------------------------------------------
@@ -189,22 +189,14 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
-	folderProcess->UpdateFolderStatic();
+	UpdateFolderStatic();
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
 
 }
 
-CIconeList* CMainWindow::GetPreGenerateList(CThreadPhotoLoading* threadData)
-{
-	return centralWnd->GetThumbnailPicture()->PregenerateList(threadData->_pictures);
-}
 
-CIconeList* CMainWindow::GetIconeList(CThreadPhotoLoading* threadData)
-{
-	return centralWnd->GetListPicture()->GetPtThumbnailFolder()->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
-}
 
 void CMainWindow::SetPictureMode()
 {
@@ -659,7 +651,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	folderProcess->UpdateFolderStatic();
+	UpdateFolderStatic();
 	//processIdle = true;
 }
 
@@ -672,7 +664,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-			folderProcess->UpdateFolderStatic();
+			UpdateFolderStatic();
         }
 
 	}
@@ -849,19 +841,45 @@ bool CMainWindow::FindPreviousValidFile()
 	return isFound;
 }
 
-
-
-void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
+void CMainWindow::UpdateFolderStatic()
 {
-	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)event.GetClientData();
-	if(threadData != nullptr)
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	//wxBusyInfo wait(libelle);
+	wxBusyCursor busy;
 	{
+		wxString requestSql = "";
+		CSqlFindPhotos sqlFindPhotos;
+
+		auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(CATEGORYFOLDERWINDOWID));
+		if (categoryFolder != nullptr)
+			requestSql = categoryFolder->GetSqlRequest();
+
+		if (requestSql != "" && this->GetInit())
+		{
+			if (oldRequest != requestSql)
+				sqlFindPhotos.SearchPhotos(requestSql);
+			oldRequest = requestSql;
+		}
+
+		int typeAffichage = 0;
+
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+		{
+			typeAffichage = config->GetTypeAffichage();
+		}
+
+
+		PhotosVector * _pictures = new PhotosVector();
+
+		sqlFindPhotos.SearchPhotosByCriteriaFolder(_pictures);
+
 		if (firstFileToShow != "")
 			localFilename = firstFileToShow;
 		else
 			localFilename = centralWnd->GetFilename();
 
-		CThumbnailBuffer::InitVectorList(threadData->_pictures);
+		CThumbnailBuffer::InitVectorList(_pictures);
 
 		if (firstFileToShow == "")
 		{
@@ -878,18 +896,7 @@ void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
 		}
 
-		centralWnd->SetListeFile(localFilename, threadData);
-
-		delete threadData;
-		threadData = nullptr;
-
-		if (updateFolderThread != nullptr)
-		{
-			updateFolderThread->join();
-			delete updateFolderThread;
-			updateFolderThread = nullptr;
-		}
-
+		centralWnd->SetListeFile(localFilename, typeAffichage);
 
 		firstFileToShow = "";
 		numElementTraitement = 0;
@@ -928,7 +935,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-		folderProcess->UpdateFolderStatic();
+		UpdateFolderStatic();
 		numElementTraitement++;
 		processIdle = true;
 	}
@@ -963,7 +970,7 @@ void CMainWindow::ProcessIdle()
 		folderProcess->RefreshFolder(folderChange, nbFile);
 		if (folderChange || nbFile > 0)
 		{
-			folderProcess->UpdateFolderStatic();
+			UpdateFolderStatic();
 			updateCriteria = true;
 			processIdle = true;
 		}
@@ -1129,7 +1136,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-	folderProcess->UpdateFolderStatic();
+	UpdateFolderStatic();
 	processIdle = true;
 	this->Show(true);
 }
@@ -1246,7 +1253,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	folderProcess->UpdateFolderStatic();
+	UpdateFolderStatic();
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);
