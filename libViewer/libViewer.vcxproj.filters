@@ -58,6 +58,9 @@
     <Filter Include="Window\Keyword Management">
       <UniqueIdentifier>{0cb48d58-8402-42b1-a7b6-ef33346be6c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExportDiaporama">
+      <UniqueIdentifier>{6c4340b1-d81d-4918-a8c9-8e2d0b230e0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="ToolbarViewerMode.h">
       <Filter>Toolbar\include</Filter>
     </ClInclude>
+    <ClInclude Include="ExportDiaporama.h">
+      <Filter>ExportDiaporama</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -292,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="ThumbnailViewerVideo.cpp">
       <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDiaporama.cpp">
+      <Filter>ExportDiaporama</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

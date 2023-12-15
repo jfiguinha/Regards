@@ -18,7 +18,7 @@ namespace Regards::Viewer
 {
 	class CMainWindow;
 	class CImageList;
-
+	class CExportDiaporama;
 	class CToolbar;
 	class CMainParam;
 	class CCentralWindow;
@@ -171,6 +171,7 @@ namespace Regards::Viewer
 		bool checkVersion;
 		bool setViewerMode = false;
 		bool setPictureMode = false;
+		CExportDiaporama* exportDiaporama = nullptr;
 		//CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
 		CFFmpegTranscoding* ffmpegEncoder = nullptr;
 		wxString fileOut = "";

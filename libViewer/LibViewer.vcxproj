@@ -615,6 +615,7 @@
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="CriteriaWindow.h" />
+    <ClInclude Include="ExportDiaporama.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
     <ClInclude Include="KeywordManagementWindow.h" />
     <ClInclude Include="KeywordWnd.h" />
@@ -664,6 +665,7 @@
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="CriteriaWindow.cpp" />
+    <ClCompile Include="ExportDiaporama.cpp" />
     <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InfosSeparationBarFace.cpp" />
