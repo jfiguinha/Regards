@@ -164,7 +164,7 @@ void CListPicture::SetListeFile(const int& typeAffichage)
 {
 	if (thumbnailFolder != nullptr)
 	{
-		thumbnailFolder->ApplyTypeAffichage(typeAffichage);
+		thumbnailFolder->InitTypeAffichage(typeAffichage);
 		thumbnailFolder->SetCheck(true);
 	}
 }

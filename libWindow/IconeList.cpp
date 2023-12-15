@@ -190,3 +190,16 @@ void CIconeList::SortById()
 {
 	tbb::parallel_sort(pIconeList.begin(), pIconeList.end(), compareInterval);
 }
+
+
+// Compares two intervals
+// according to starting times.
+bool compareFilename(CIcone* i1, CIcone* i2)
+{
+	return (i1->GetFilename() < i2->GetFilename());
+}
+
+void CIconeList::SortByFilename()
+{
+	tbb::parallel_sort(pIconeList.begin(), pIconeList.end(), compareFilename);
+}

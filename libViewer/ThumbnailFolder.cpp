@@ -159,133 +159,6 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	return infosSeparationBar;
 }
 
-CIconeList * CThumbnailFolder::PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage,  InfosSeparationBarVector * listSeparator)
-{
-	CIconeList* iconeListLocal = new CIconeList();
-	int i = 0;
-	int typeLocal = typeAffichage;
-
-	if (typeLocal == SHOW_ALL)
-	{
-		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-		CInfosSeparationBarExplorer * infosSeparationBar = AddSeparatorBar(_pictures, iconeListLocal, libellePhoto, i);
-		if (_pictures->size() > 0)
-			listSeparator->push_back(infosSeparationBar);
-	}
-	else if (typeLocal == SHOW_BYYEAR)
-	{
-		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
-	}
-	else if (typeLocal == SHOW_BYMONTH)
-	{
-		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
-	}
-	else if (typeLocal == SHOW_BYLOCALISATION)
-	{
-		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
-	}
-	else if (typeLocal == SHOW_BYDAY)
-	{
-		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(listSeparator, _pictures, iconeListLocal, this, i);
-	}
-
-
-	return iconeListLocal;
-}
-
-
-void CThumbnailFolder::ApplyTypeAffichage(const int& typeAffichage)
-{
-
-
-	PhotosVector _pictures;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotosByCriteriaFolder(&_pictures);
-	InfosSeparationBarVector* _listSeparator = new InfosSeparationBarVector();
-	CIconeList* iconeListLocal = PrepareTypeAffichage(&_pictures, typeAffichage, _listSeparator);
-
-
-	CIconeList* oldIconeList = iconeList;
-	//---------------------------------
-	//Sauvegarde de l'état
-	//---------------------------------
-	vector<CThumbnailData*> listSelectItem;
-	threadDataProcess = false;
-	GetSelectItem(listSelectItem);
-
-	InfosSeparationBarVector* old = listSeparator;
-	
-	CMainParam* config = CMainParamInit::getInstance();
-	if (config != nullptr)
-	{
-		config->SetTypeAffichage(typeAffichage);
-	}
-	
-	lockIconeList.lock();
-	iconeList = iconeListLocal;
-	listSeparator = _listSeparator;
-	lockIconeList.unlock();
-
-	//------------------------------------------------------------------
-	//Cleaning old Element
-	//------------------------------------------------------------------
-	if (old != nullptr)
-	{
-		for (CInfosSeparationBar* infosSeparationBar : *old)
-		{
-			delete(infosSeparationBar);
-		}
-
-		old->clear();
-		delete old;
-	}
-	
-
-	if (oldIconeList != nullptr)
-	{
-		delete oldIconeList;
-		oldIconeList = nullptr;
-	}
-
-	nbElementInIconeList = iconeList->GetNbElement();
-
-	//---------------------------------
-	//Application de l'tat
-	//---------------------------------
-
-	if (listSelectItem.size() > 0)
-	{
-		for (CThumbnailData* data : listSelectItem)
-		{
-			int itemId = GetNumItemById(data->GetNumPhotoId());
-			CIcone* icone = iconeList->GetElement(itemId);
-			if (icone != nullptr)
-			{
-				icone->SetChecked(true);
-				icone->SetSelected(true);
-			}
-		}
-	}
-
-	AfterSetList();
-
-	thumbnailPos = 0;
-
-	threadDataProcess = true;
-
-	widthThumbnail = 0;
-	heightThumbnail = 0;
-	ResizeThumbnail();
-
-	needToRefresh = true;
-}
-
-
-
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
 	CIconeList* iconeListLocal = new CIconeList();
@@ -363,7 +236,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	if (oldIconeList != nullptr)
 	{
-		EraseThumbnailList(oldIconeList);
+		delete oldIconeList;
 		oldIconeList = nullptr;
 	}
 

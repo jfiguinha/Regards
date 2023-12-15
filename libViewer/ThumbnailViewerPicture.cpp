@@ -54,11 +54,11 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 }
 
 
-CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
+CIconeList * CThumbnailViewerPicture::PregenerateList()
 {
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-	int size = _pictures->size();
+	int size = CThumbnailBuffer::GetVectorSize();
 
 	//std::map<int, CIcone *>
 #ifndef USE_TBB_VECTOR
@@ -69,10 +69,10 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 	{
 		try
 		{
-			CPhotos fileEntry = _pictures->at(i);
-			wxString filename = fileEntry.GetPath();
+			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+			wxString filename = photo.GetPath();
 			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-			thumbnailData->SetNumPhotoId(fileEntry.GetId());
+			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(i);
 
 			auto pBitmapIcone = new CIcone();
@@ -80,7 +80,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-
+			pBitmapIcone->SetFilename(filename);
 			iconeListLocal->AddElement(pBitmapIcone);
 		}
 		catch (...)
@@ -92,7 +92,22 @@ CIconeList * CThumbnailViewerPicture::PregenerateList(PhotosVector * _pictures)
 	);
 #endif
 
-	iconeListLocal->SortById();
+	iconeListLocal->SortByFilename();
+
+#ifndef USE_TBB_VECTOR
+	for (auto i = 0; i < size; i++)
+#else
+	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
+	{
+		CIcone * icone = iconeListLocal->GetElement(i);
+		icone->SetNumElement(i);
+		CThumbnailDataSQL* data = (CThumbnailDataSQL*)icone->GetData();
+		data->SetNumElement(i);
+	}
+#ifdef USE_TBB_VECTOR
+	);
+#endif
 
 	return iconeListLocal;
 }
@@ -103,11 +118,12 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
+	/*
 	PhotosVector _pictures;
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
-
-	CIconeList* iconeListLocal = PregenerateList(&_pictures);
+	*/
+	CIconeList* iconeListLocal = PregenerateList();
 
 	lockIconeList.lock();
 	iconeList = iconeListLocal;

@@ -246,7 +246,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		refresh = true;
 	}
 
-	numActifPhotoId = iconeList->GetPhotoId(numItem);
+	numActifPhotoId = idPhoto;// iconeList->GetPhotoId(numItem);
 	isMovingScroll = false;
 
 	if (move)

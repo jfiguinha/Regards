@@ -15,11 +15,11 @@ namespace Regards::Viewer
 		CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailFolder(void) override;
-
+		void InitTypeAffichage(const int& typeAffichage);
 		void Init(const int& typeAffichage);
-		void ApplyTypeAffichage(const int & typeAffichage);
+		//void ApplyTypeAffichage(const int & typeAffichage);
 		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
-		CIconeList* PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage, InfosSeparationBarVector* listSeparator);
+		//CIconeList* PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage, InfosSeparationBarVector* listSeparator);
 		CInfosSeparationBarExplorer* AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 
 	protected:
@@ -42,7 +42,7 @@ namespace Regards::Viewer
 		void RenderIconeWithVScroll(wxDC* dc) override;
 
 		void UpdateScrollWithVScroll() override;
-		void InitTypeAffichage(const int& typeAffichage);
+		
 
 		InfosSeparationBarVector * listSeparator = nullptr;
 		std::vector<int> listElementToShow;
