@@ -39,6 +39,8 @@
 #include <ThumbnailFolder.h>
 #include <MainTheme.h>
 #include <MainThemeInit.h>
+#include "FolderProcess.h"
+#include "md5check.h"
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -47,23 +49,6 @@ using namespace Regards::Sqlite;
 
 bool firstTime = true;
 
-class CThreadMD5
-{
-public:
-	CThreadMD5()
-	{
-		thread = nullptr;
-		mainWindow = nullptr;
-	}
-
-	~CThreadMD5()
-	{
-	}
-
-	wxString filename;
-	std::thread* thread;
-	wxWindow* mainWindow;
-};
 
 class CFolderFiles
 {
@@ -111,6 +96,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	start = true;
 	criteriaSendMessage = false;
 	checkVersion = true;
+	folderProcess = new CFolderProcess(this);
 
 
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
@@ -156,7 +142,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_PICTUREVIDEOCLICK, wxCommandEventHandler(CMainWindow::PictureVideoClick));
 	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
 	Connect(wxEVENT_REFRESHPICTURE, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
-	Connect(wxEVENT_MD5CHECKING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::Md5Checking));
+	Connect(wxEVENT_MD5CHECKING, wxCommandEventHandler(CMainWindow::Md5Checking));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
@@ -203,13 +189,22 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
-	UpdateFolderStatic();
+	folderProcess->UpdateFolderStatic();
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
 
 }
 
+CIconeList* CMainWindow::GetPreGenerateList(CThreadPhotoLoading* threadData)
+{
+	return centralWnd->GetThumbnailPicture()->PregenerateList(threadData->_pictures);
+}
+
+CIconeList* CMainWindow::GetIconeList(CThreadPhotoLoading* threadData)
+{
+	return centralWnd->GetListPicture()->GetPtThumbnailFolder()->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
+}
 
 void CMainWindow::SetPictureMode()
 {
@@ -664,7 +659,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	UpdateFolderStatic();
+	folderProcess->UpdateFolderStatic();
 	//processIdle = true;
 }
 
@@ -677,7 +672,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
         int typeAffichage = config->GetTypeAffichage();          
         if(typeAffichage != SHOW_ALL)
         {
-			UpdateFolderStatic();
+			folderProcess->UpdateFolderStatic();
         }
 
 	}
@@ -854,125 +849,7 @@ bool CMainWindow::FindPreviousValidFile()
 	return isFound;
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::UpdateCriteria()
-{
-	wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
-	if (window)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
-		evt.SetExtraLong((criteriaSendMessage == true) ? 1 : 0);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	criteriaSendMessage = false;
-	updateCriteria = false;
-}
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::RefreshFolder()
-{
-	FolderCatalogVector folderList;
-	CSqlFindFolderCatalog folderCatalog;
-	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
-
-	bool folderChange = false;
-
-	//Test de la validité des répertoires
-	for (CFolderCatalog folderlocal : folderList)
-	{
-		if (!wxDirExists(folderlocal.GetFolderPath()))
-		{
-			//Remove Folder
-			CSQLRemoveData::DeleteFolder(folderlocal.GetNumFolder());
-			folderChange = true;
-		}
-	}
-
-	//Test de la validité des fichiers
-	PhotosVector photoList;
-	CSqlFindPhotos findphotos;
-	findphotos.GetAllPhotos(&photoList);
-	for (CPhotos photo : photoList)
-	{
-		if (!wxFileExists(photo.GetPath()))
-		{
-			//Remove Folder
-			CSQLRemoveData::DeletePhoto(photo.GetId());
-			folderChange = true;
-		}
-	}
-
-	int nbFile = 0;
-
-	for (CFolderCatalog folderlocal : folderList)
-	{
-		wxString fichier;
-		CSqlInsertFile sqlInsertFile;
-		nbFile += sqlInsertFile.ImportFileFromFolder(folderlocal.GetFolderPath(), folderlocal.GetNumFolder(),
-		                                             fichier);
-	}
-
-	if (folderChange || nbFile > 0)
-	{
-		auto viewerParam = CMainParamInit::getInstance();
-		wxString sqlRequest = viewerParam->GetLastSqlRequest();
-
-		CSqlFindPhotos sqlFindPhotos;
-		sqlFindPhotos.SearchPhotos(sqlRequest);
-		UpdateFolderStatic();
-		updateCriteria = true;
-		processIdle = true;
-	}
-	refreshFolder = false;
-	numElementTraitement = 0;
-}
-
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::UpdateFolder(void * param)
-{
-	CThreadPhotoLoading* threadData = (CThreadPhotoLoading*)param;
-	wxString requestSql = "";
-	CSqlFindPhotos sqlFindPhotos;
-
-	auto categoryFolder = static_cast<CCategoryFolderWindow*>(FindWindowById(
-		CATEGORYFOLDERWINDOWID));
-	if (categoryFolder != nullptr)
-		requestSql = categoryFolder->GetSqlRequest();
-
-
-	
-	if (requestSql != "" && threadData->mainWindow->init)
-	{
-		if (threadData->mainWindow->oldRequest != requestSql)
-			sqlFindPhotos.SearchPhotos(requestSql);
-		threadData->mainWindow->oldRequest = requestSql;
-	}
-
-	CMainParam* config = CMainParamInit::getInstance();
-	if (config != nullptr)
-	{
-		threadData->typeAffichage = config->GetTypeAffichage();
-	}
-
-	sqlFindPhotos.SearchPhotosByCriteria(threadData->_pictures);
-
-	threadData->iconeListThumbnail = threadData->mainWindow->centralWnd->GetThumbnailPicture()->PregenerateList(threadData->_pictures);
-
-	threadData->_pictures->clear();
-	sqlFindPhotos.SearchPhotosByCriteriaFolder(threadData->_pictures);
-
-	threadData->iconeListLocal = threadData->mainWindow->centralWnd->GetListPicture()->GetPtThumbnailFolder()->PrepareTypeAffichage(threadData->_pictures, threadData->typeAffichage, threadData->_listSeparator);
-	
-	wxCommandEvent event(wxEVENT_UPDATEPHOTOFOLDER);
-	event.SetClientData(threadData);
-	wxPostEvent(threadData->mainWindow, event);
-}
 
 void CMainWindow::OnUpdatePhotoFolder(wxCommandEvent& event)
 {
@@ -1039,7 +916,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 				auto path = new CThreadMD5();
 				path->filename = photo->GetPath();
 				path->mainWindow = this;
-				path->thread = new thread(CheckMD5, path);
+				path->thread = new thread(CMd5Check::CheckMD5, path);
 				nbProcessMD5++;
 			}
 			else
@@ -1051,7 +928,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 		//Remove file
 		CSQLRemoveData::DeletePhoto(photo->GetId());
 		updateCriteria = true;
-		UpdateFolderStatic();
+		folderProcess->UpdateFolderStatic();
 		numElementTraitement++;
 		processIdle = true;
 	}
@@ -1074,12 +951,25 @@ void CMainWindow::ProcessIdle()
 
 	if (updateCriteria)
 	{
-		UpdateCriteria();
+		folderProcess->UpdateCriteria(criteriaSendMessage);
+		criteriaSendMessage = false;
+		updateCriteria = false;
 		hasDoneOneThings = true;
 	}
 	else if (refreshFolder)
 	{
-		RefreshFolder();
+		int nbFile = 0;
+		bool folderChange = false;
+		folderProcess->RefreshFolder(folderChange, nbFile);
+		if (folderChange || nbFile > 0)
+		{
+			folderProcess->UpdateFolderStatic();
+			updateCriteria = true;
+			processIdle = true;
+		}
+		refreshFolder = false;
+		numElementTraitement = 0;
+
 		hasDoneOneThings = true;
 	}
 	else if (numElementTraitement < pictureSize)
@@ -1159,33 +1049,6 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 	}
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::CheckMD5(void* param)
-{
-	auto path = static_cast<CThreadMD5*>(param);
-	if (path != nullptr)
-	{
-		CSqlThumbnail sqlThumbnail;
-		CSqlThumbnailVideo sqlThumbnailVideo;
-		wxFileName file(path->filename);
-		wxULongLong sizeFile = file.GetSize();
-		wxString md5file = sizeFile.ToString();
-
-		bool result = sqlThumbnail.TestThumbnail(path->filename, md5file);
-		if (!result)
-		{
-			//Remove thumbnail
-			sqlThumbnail.DeleteThumbnail(path->filename);
-			sqlThumbnailVideo.DeleteThumbnail(path->filename);
-		}
-
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_MD5CHECKING);
-		evt.SetClientData(path);
-		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
 
 //---------------------------------------------------------------
 //
@@ -1266,22 +1129,12 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
-	UpdateFolderStatic();
+	folderProcess->UpdateFolderStatic();
 	processIdle = true;
 	this->Show(true);
 }
 
-void CMainWindow::UpdateFolderStatic()
-{
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	//wxBusyInfo wait(libelle);
-	wxBusyCursor busy;
-	{
-		CThreadPhotoLoading* threadData = new CThreadPhotoLoading();
-		threadData->mainWindow = this;
-		UpdateFolder(threadData);
-	}
-}
+
 
 void CMainWindow::TransitionEnd()
 {
@@ -1393,7 +1246,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	UpdateFolderStatic();
+	folderProcess->UpdateFolderStatic();
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);

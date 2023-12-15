@@ -1,6 +1,7 @@
 #pragma once
 #include <ThumbnailVertical.h>
-#include "InfosSeparationBarExplorer.h"
+#include "TreatmentData.h"
+
 #include "Photos.h"
 using namespace Regards::Control;
 
@@ -8,7 +9,7 @@ namespace Regards::Viewer
 {
 	class CMainFrame;
 
-	class CThumbnailFolder : public CThumbnailVertical
+	class CThumbnailFolder : public CThumbnailVertical, public ISeparatorClass
 	{
 	public:
 		CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
@@ -17,9 +18,10 @@ namespace Regards::Viewer
 
 		void Init(const int& typeAffichage);
 		void ApplyTypeAffichage(CIconeList* iconeListLocal, InfosSeparationBarVector* _listSeparator, int typeAffichage);
-		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
+		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
 		CIconeList* PrepareTypeAffichage(PhotosVector * _pictures, const int& typeAffichage, InfosSeparationBarVector* listSeparator);
 		CInfosSeparationBarExplorer* AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
+
 	protected:
 
 		void OnPictureClick(CThumbnailData* data) override;

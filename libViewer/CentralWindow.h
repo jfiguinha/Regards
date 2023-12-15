@@ -5,6 +5,7 @@ using namespace Regards::Window;
 //using namespace Regards::Control;
 class CImageLoadingFormat;
 class CPictureElement;
+class CThreadPhotoLoading;
 class CImageVideoThumbnail;
 class CFFmfc;
 #define CATALOG_FILTER 2
@@ -66,7 +67,7 @@ namespace Regards
 			thread* myThread;
 		};
 
-		class CThreadPhotoLoading;
+		
 		class CPanelPhotoWnd;
 		class CListFace;
 		class CListPicture;

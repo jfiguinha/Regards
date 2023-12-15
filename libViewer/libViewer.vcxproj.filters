@@ -195,6 +195,9 @@
     <ClInclude Include="md5check.h">
       <Filter>FolderProcess</Filter>
     </ClInclude>
+    <ClInclude Include="FolderProcess.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -309,6 +312,9 @@
       <Filter>ExportDiaporama</Filter>
     </ClCompile>
     <ClCompile Include="md5check.cpp">
+      <Filter>FolderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderProcess.cpp">
       <Filter>FolderProcess</Filter>
     </ClCompile>
   </ItemGroup>

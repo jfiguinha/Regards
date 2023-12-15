@@ -1,44 +1,51 @@
 #pragma once
+#include "InfosSeparationBarExplorer.h"
+#include "TreatmentData.h"
 
-class CThreadMD5
-{
-public:
-	CThreadMD5()
-	{
-		thread = nullptr;
-		mainWindow = nullptr;
-	}
 
-	~CThreadMD5()
-	{
-	}
 
-	wxString filename;
-	std::thread* thread;
-	wxWindow* mainWindow;
-};
 
 namespace Regards::Viewer
 {
 	class CMainWindow;
+}
 
+	class CThreadPhotoLoading
+	{
+	public:
+		CThreadPhotoLoading()
+		{
+			_pictures = new PhotosVector();
+			_listSeparator = new InfosSeparationBarVector();
+		}
+
+		~CThreadPhotoLoading() {};
+
+		CMainWindow* mainWindow;
+		CIconeList* iconeListLocal;
+		InfosSeparationBarVector* _listSeparator;
+		CIconeList* iconeListThumbnail;
+		int typeAffichage;
+		PhotosVector* _pictures;
+	};
+
+
+namespace Regards::Viewer
+{
 	class CFolderProcess
 	{
 	public:
 		CFolderProcess(CMainWindow* mainWindow);
 		~CFolderProcess();
-		void PhotoProcess(CPhotos* photo);
-		void RefreshFolder();
-		void UpdateFolder(void* param);
-		void OnUpdatePhotoFolder(CThreadPhotoLoading* threadData);
+		void UpdateCriteria(bool criteriaSendMessage);
+		void RefreshFolder(bool& folderChange, int& nbFile);
 		void UpdateFolderStatic();
-		static void CheckMD5(void* param);
-		void Md5Checking(CThreadMD5* path);
 
-		int nbProcessMD5;
-		int numElementTraitement;
 
 	private:
 		CMainWindow* mainWindow;
+		void UpdateFolder(CThreadPhotoLoading* threadData);
+
+		wxString oldRequest = "";
 	};
 }

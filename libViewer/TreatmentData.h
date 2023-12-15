@@ -1,16 +1,24 @@
 #pragma once
 #include <header.h>
 #include "ThumbnailBuffer.h"
+#include "InfosSeparationBarExplorer.h"
 #include "ConvertUtility.h"
-#include "ThumbnailFolder.h"
+#include <IconeList.h>
+
 using namespace Regards::Viewer;
+
+class ISeparatorClass
+{
+public:
+	virtual CInfosSeparationBarExplorer* AddSeparatorBar(PhotosVector* _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) = 0;
+};
 
 class CTreatmentData
 {
 public:
 	virtual ~CTreatmentData() = default;
 
-	void MainTreatment(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, CIconeList* iconeListLocal, CThumbnailFolder* folder, int& numElement)
+	void MainTreatment(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
@@ -35,7 +43,7 @@ public:
 	};
 
 
-	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, CThumbnailFolder* folder, int& numElement)
+	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
@@ -62,7 +70,7 @@ public:
 	virtual wxString GenerateLibelle() = 0;
 	virtual void UpdateVariable(const CPhotos& photos) = 0;
 
-	void CreateSeparatorBar(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, const wxString& libelle, CThumbnailFolder* folder)
+	void CreateSeparatorBar(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, const wxString& libelle, ISeparatorClass * folder)
 	{
 		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(_pictures, iconeListLocal, libelle, numElement);
 		if (infosSeparationBar->listElement.size() > 0)
@@ -70,7 +78,7 @@ public:
 		listPhoto.clear();
 	};
 
-	void CreateSeparatorBar(InfosSeparationBarVector* listSeparator, const wxString& libelle, CThumbnailFolder* folder)
+	void CreateSeparatorBar(InfosSeparationBarVector* listSeparator, const wxString& libelle, ISeparatorClass * folder)
 	{
 		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(&listPhoto, iconeListLocal, libelle, numElement);
 		if (infosSeparationBar->listElement.size() > 0)

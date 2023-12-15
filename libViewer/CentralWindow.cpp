@@ -34,6 +34,7 @@
 #include <picture_utility.h>
 #include <wx/busyinfo.h>
 #include <OpenCVVideoPlayer.h>
+#include "FolderProcess.h"
 #include <MediaInfo.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;

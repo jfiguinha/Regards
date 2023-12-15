@@ -13,6 +13,7 @@ class CPictureCategorie;
 class IStatusBarInterface;
 class CFFmpegTranscoding;
 class CompressionAudioVideoOption;
+class CThreadPhotoLoading;
 
 namespace Regards::Viewer
 {
@@ -23,25 +24,8 @@ namespace Regards::Viewer
 	class CMainParam;
 	class CCentralWindow;
 	class CToolbarViewerMode;
+	class CFolderProcess;
 
-	class CThreadPhotoLoading
-	{
-	public:
-		CThreadPhotoLoading()
-		{
-			_pictures = new PhotosVector();
-			_listSeparator = new InfosSeparationBarVector();
-		}
-
-		~CThreadPhotoLoading(){};
-
-		CMainWindow* mainWindow;
-		CIconeList* iconeListLocal;
-		InfosSeparationBarVector* _listSeparator;
-		CIconeList* iconeListThumbnail;
-		int typeAffichage;
-		PhotosVector * _pictures;
-	};
 
 
 
@@ -74,6 +58,14 @@ namespace Regards::Viewer
 		wxString GetFilename();
 
 		void SaveParameter() override;
+
+		CIconeList * GetIconeList(CThreadPhotoLoading* threadData);
+		CIconeList* GetPreGenerateList(CThreadPhotoLoading* threadData);
+
+		bool GetInit()
+		{
+			return init;
+		}
 
 	private:
 
@@ -130,12 +122,8 @@ namespace Regards::Viewer
 		void ExportVideo(const wxString& filename);
 		void ProcessIdle() override;
 		void OnIdle(wxIdleEvent& evt) override;
-		static void CheckMD5(void* param);
-		void UpdateFolderStatic();
 
-		void UpdateCriteria();
-		void RefreshFolder();
-		static void UpdateFolder(void * param);
+
 		void PhotoProcess(CPhotos* photo);
 
 
@@ -171,17 +159,12 @@ namespace Regards::Viewer
 		bool checkVersion;
 		bool setViewerMode = false;
 		bool setPictureMode = false;
+
 		CExportDiaporama* exportDiaporama = nullptr;
-		////CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
-		//CFFmpegTranscoding* ffmpegEncoder = nullptr;
-		//wxString fileOut = "";
-		//wxString fileOutAudio = "";
-		//wxString fileOutVideo = "";
-		//wxString filepathVideo = "";
 		wxString firstFileToShow = "";
-		//bool needToRemux = false;
-		//bool isAudio = false;
-		bool init = false;
-		wxString oldRequest = "";
+		//wxString oldRequest = "";
+		bool init = true;
+
+		CFolderProcess* folderProcess = nullptr;
 	};
 }
