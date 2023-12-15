@@ -1,63 +1,44 @@
 #include <header.h>
-#include <ffmpeg_transcoding.h>
 #include "MainWindow.h"
 #include <LibResource.h>
 #include "ExportDiaporama.h"
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <PrintEngine.h>
 #include <libPicture.h>
-#include "ThumbnailFolder.h"
 #include "window_mode_id.h"
-#include "ThemeParam.h"
 #include <ImageLoadingFormat.h>
-#include "MainThemeInit.h"
 #include <SqlFaceRecognition.h>
-#include "ListPicture.h"
-#include "MainTheme.h"
 #include "ThumbnailViewerPicture.h"
-#include "PanelInfosWnd.h"
 #include "ThumbnailBuffer.h"
 #include "SqlFindPhotos.h"
 #include <SqlThumbnail.h>
-#include <wx/textdlg.h>
-#include "PreviewWnd.h"
-#include <wx/busyinfo.h>
 #include <BitmapWndViewer.h>
-#include <BitmapWnd3d.h>
 #include "Toolbar.h"
 #include "ToolbarViewerMode.h"
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
 #include "FileUtility.h"
 #include "CategoryFolderWindow.h"
-#include <VideoControl_soft.h>
-#include <wx/dir.h>
 #include <wx/filename.h>
-#include <filesystem>
 #include <window_id.h>
 #include <SqlFindFolderCatalog.h>
 #include <SQLRemoveData.h>
-#include <wx/display.h>
 #include <SqlInsertFile.h>
 #include "StatusText.h"
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
-#include <ffmpeg_application.h>
 #include <ShowElement.h>
 #include <wx/filedlg.h>
-#include <CompressionAudioVideoOption.h>
-#include <VideoCompressOption.h>
-#include <ParamInit.h>
 #include <SqlFaceLabel.h>
-#include <ThumbnailVideoExport.h>
-#include <ffplaycore.h>
-#include <ConvertUtility.h>
 #include "SqlFacePhoto.h"
 #include <FiltreEffetCPU.h>
-#include <MediaInfo.h>
 #include "CheckVersion.h"
+#include <IBitmapWnd.h>
+#include <ListPicture.h>
+#include <ThumbnailFolder.h>
+#include <MainTheme.h>
+#include <MainThemeInit.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -161,7 +142,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	 * Manage Event
 	 *
 	 ----------------------------------------------------------------------*/
-	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
+
 	Connect(wxEVENT_FACEINFOSUPDATE, wxCommandEventHandler(CMainWindow::OnFaceInfosUpdate));
 	Connect(wxEVENT_SETSCREEN, wxCommandEventHandler(CMainWindow::SetScreenEvent));
 	Connect(wxEVENT_INFOS, wxCommandEventHandler(CMainWindow::OnUpdateInfos));
@@ -1316,18 +1297,6 @@ void CMainWindow::TransitionEnd()
 	//}
 }
 
-void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
-{
-	auto infoUpdate = static_cast<CFaceInfosUpdate*>(event.GetClientData());
-	if (infoUpdate != nullptr)
-	{
-		//statusBarViewer->SetText(2, infoUpdate->message_2);
-		statusBarViewer->SetText(2, infoUpdate->message_3);
-		statusBarViewer->SetRangeProgressBar(infoUpdate->photolistSize);
-		statusBarViewer->SetPosProgressBar(infoUpdate->photolistSize - infoUpdate->listPhotoSize);
-		delete infoUpdate;
-	}
-}
 
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {

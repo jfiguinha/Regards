@@ -113,7 +113,7 @@ namespace Regards::Viewer
 		void Md5Checking(wxCommandEvent& event);
 		void PrintPreview(wxCommandEvent& event);
 
-		void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
+
 		void OnFaceInfosUpdate(wxCommandEvent& event);
 		void OnExportFile(wxCommandEvent& event);
 		void OnUpdateExifThumbnail(wxCommandEvent& event);
@@ -172,15 +172,15 @@ namespace Regards::Viewer
 		bool setViewerMode = false;
 		bool setPictureMode = false;
 		CExportDiaporama* exportDiaporama = nullptr;
-		//CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
-		CFFmpegTranscoding* ffmpegEncoder = nullptr;
-		wxString fileOut = "";
-		wxString fileOutAudio = "";
-		wxString fileOutVideo = "";
-		wxString filepathVideo = "";
+		////CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
+		//CFFmpegTranscoding* ffmpegEncoder = nullptr;
+		//wxString fileOut = "";
+		//wxString fileOutAudio = "";
+		//wxString fileOutVideo = "";
+		//wxString filepathVideo = "";
 		wxString firstFileToShow = "";
-		bool needToRemux = false;
-		bool isAudio = false;
+		//bool needToRemux = false;
+		//bool isAudio = false;
 		bool init = false;
 		wxString oldRequest = "";
 	};

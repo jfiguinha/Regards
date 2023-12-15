@@ -620,6 +620,7 @@
     <ClInclude Include="KeywordManagementWindow.h" />
     <ClInclude Include="KeywordWnd.h" />
     <ClInclude Include="KeywordWndToolbar.h" />
+    <ClInclude Include="md5check.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ImageList.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="ListFace.cpp" />
     <ClCompile Include="ListPicture.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="md5check.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="PanelPhotoWnd.cpp" />
     <ClCompile Include="PicturePanel.cpp" />

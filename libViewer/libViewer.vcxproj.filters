@@ -61,6 +61,9 @@
     <Filter Include="ExportDiaporama">
       <UniqueIdentifier>{6c4340b1-d81d-4918-a8c9-8e2d0b230e0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FolderProcess">
+      <UniqueIdentifier>{2d5a6d89-1f75-43db-aa20-0161895a854e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="ExportDiaporama.h">
       <Filter>ExportDiaporama</Filter>
     </ClInclude>
+    <ClInclude Include="md5check.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -301,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="ExportDiaporama.cpp">
       <Filter>ExportDiaporama</Filter>
+    </ClCompile>
+    <ClCompile Include="md5check.cpp">
+      <Filter>FolderProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
