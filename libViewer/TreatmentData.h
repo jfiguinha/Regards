@@ -4,7 +4,8 @@
 #include "InfosSeparationBarExplorer.h"
 #include "ConvertUtility.h"
 #include <IconeList.h>
-
+#include <wx/filename.h>
+#include <map>
 using namespace Regards::Viewer;
 
 class ISeparatorClass
@@ -18,79 +19,114 @@ class CTreatmentData
 public:
 	virtual ~CTreatmentData() = default;
 
-	void MainTreatment(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
-	{
-		this->numElement = numElement;
-		this->iconeListLocal = iconeListLocal;
-		bool first = true;
-		int size = _pictures->size();
-		for (int i = 0;i < size;i++)
-		{
-			CPhotos photos = _pictures->at(i);
-			if (TestParameter(photos))
-			{
-				if (!first)
-				{
-					CreateSeparatorBar(listSeparator, &listPhoto, GenerateLibelle(), folder);
-				}
-				first = false;
-				UpdateVariable(photos);
-			}
-			listPhoto.push_back(photos);
-		}
-
-		CreateSeparatorBar(listSeparator, &listPhoto, GenerateLibelle(), folder);
-	};
-
+	virtual void SortList(vector<std::pair<wxString, PhotosVector*>> & listMap) {};
+	virtual void SortList(PhotosVector * listPhotos) {};
 
 	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
+		std::map<wxString, PhotosVector *> listMap;
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
 		int size = CThumbnailBuffer::GetVectorSize();
 		for (int i = 0; i < size; i++)
 		{
+			
 			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
-			if (TestParameter(photos))
+			UpdateVariable(photos);
+			wxString libelle = GenerateLibelle();
+			std::map<wxString, PhotosVector*>::iterator it = listMap.find(libelle);
+			if (it != listMap.end())
 			{
-				if (!first)
-				{
-					CreateSeparatorBar(listSeparator, GenerateLibelle(), folder);
-				}
-				first = false;
-				UpdateVariable(photos);
+				PhotosVector* listVector = listMap[libelle];
+				listVector->push_back(photos);
 			}
-			listPhoto.push_back(photos);
+			else
+			{
+				PhotosVector* listVector = new PhotosVector();
+				listMap[libelle] = listVector;
+				listVector->push_back(photos);
+
+			}
 		}
 
-		CreateSeparatorBar(listSeparator,  GenerateLibelle(), folder);
+		vector<std::pair<wxString, PhotosVector*>> myvector{ listMap.begin(), listMap.end() };
+		SortList(myvector);
+
+		for (auto it : myvector)
+		{
+			wxString libelle = it.first;
+			PhotosVector* listVector = it.second;
+
+			SortList(listVector);
+
+			CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, libelle, numElement);
+			if (infosSeparationBar->listElement.size() > 0)
+				listSeparator->push_back(infosSeparationBar);
+			listVector->clear();
+			delete listVector;
+			//CreateSeparatorBar(listSeparator, listVector, GenerateLibelle(), folder);
+		}
+		listMap.clear();
+		myvector.clear();
 	};
 
 	virtual bool TestParameter(const CPhotos& photos) = 0;
 	virtual wxString GenerateLibelle() = 0;
 	virtual void UpdateVariable(const CPhotos& photos) = 0;
 
-	void CreateSeparatorBar(InfosSeparationBarVector * listSeparator, PhotosVector * _pictures, const wxString& libelle, ISeparatorClass * folder)
-	{
-		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(_pictures, iconeListLocal, libelle, numElement);
-		if (infosSeparationBar->listElement.size() > 0)
-			listSeparator->push_back(infosSeparationBar);
-		listPhoto.clear();
-	};
 
-	void CreateSeparatorBar(InfosSeparationBarVector* listSeparator, const wxString& libelle, ISeparatorClass * folder)
-	{
-		CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(&listPhoto, iconeListLocal, libelle, numElement);
-		if (infosSeparationBar->listElement.size() > 0)
-			listSeparator->push_back(infosSeparationBar);
-		listPhoto.clear();
-	};
 
 protected:
-	PhotosVector listPhoto;
+	//PhotosVector listPhoto;
 	bool first = true;
 	int numElement = 0;
 	CIconeList* iconeListLocal = nullptr;
+};
+
+class CTreatmentDataFolder : public CTreatmentData
+{
+public:
+	bool TestParameter(const CPhotos& photos) override
+	{
+		wxFileName fname(photos.path);
+		return fname.GetPath() != dirName;
+	};
+
+	wxString GenerateLibelle() override
+	{
+		return dirName;
+	}
+
+	// Comparator function to sort pairs 
+// according to second value 
+	static bool cmp(pair<wxString, PhotosVector*>& a, pair<wxString, PhotosVector*>& b)
+	{
+		return a.first < b.first;
+	}
+
+	static bool cmp_path(CPhotos & a, CPhotos & b)
+	{
+		return a.GetPath() < b.GetPath();
+	}
+
+	void SortList(PhotosVector* listPhotos) override
+	{
+		std::sort(listPhotos->begin(), listPhotos->end(), cmp_path);
+	}
+
+	void SortList(vector<std::pair<wxString, PhotosVector*>>& listMap) override
+	{
+		std::sort(listMap.begin(), listMap.end(), cmp);
+	}
+
+	void UpdateVariable(const CPhotos& photos) override
+	{
+		wxFileName fname(photos.path);
+		dirName = fname.GetPath();
+	}
+
+private:
+	wxString dirName = "";
 };
 
 class CTreatmentDataYear : public CTreatmentData

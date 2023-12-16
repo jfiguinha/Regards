@@ -31,11 +31,12 @@ public:
 	wxString monthName;
 	wxString dayName;
 	wxString gpsInfos;
+	wxString path;
 
 private:
 	int numId;
 	int numFolderId;
-	wxString path;
+	
 	wxString createDate;
 
 	int criteriaInsert;

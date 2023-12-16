@@ -39,6 +39,7 @@ int CThumbnailBuffer::GetVectorSize()
     return vectorSize;
 }
 
+
 wxString CThumbnailBuffer::FindPhotoById(int id)
 {
     wxString file = "";

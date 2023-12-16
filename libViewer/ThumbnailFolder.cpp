@@ -159,6 +159,19 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	return infosSeparationBar;
 }
 
+
+// Compares two intervals
+// according to starting times.
+bool CThumbnailFolder::compareFilename(CPhotos i1, CPhotos i2)
+{
+	return (i1.GetPath() < i2.GetPath());
+}
+
+void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
+{
+	//std::sort(vector->begin(), vector->end(), compareFilename);
+}
+
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
 	CIconeList* iconeListLocal = new CIconeList();
@@ -179,10 +192,15 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	if (typeLocal == SHOW_ALL)
 	{
+		//PhotosVector* listPhotos = CThumbnailBuffer::GetPhotoVector();
+		/*
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
 		CInfosSeparationBarExplorer* infosSeparationBar = AddSeparatorBar(iconeListLocal, libellePhoto, i);
 		if (size > 0)
 			_listSeparator->push_back(infosSeparationBar);
+		*/
+		CTreatmentDataFolder dataYear;
+		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
