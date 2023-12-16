@@ -33,6 +33,14 @@ const std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
 #endif
 }
 
+wxString CConvertUtility::GenerateValue(const int& value, const size_t & n)
+{
+	string str = to_string(value);
+	int precision = n - std::min(n, str.size());
+	std::string s = std::string(precision, '0').append(str);
+	return s;
+}
+
 const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
 {
 #ifdef __APPLE__

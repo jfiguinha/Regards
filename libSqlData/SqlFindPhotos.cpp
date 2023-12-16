@@ -19,19 +19,12 @@ CSqlFindPhotos::~CSqlFindPhotos()
 {
 }
 
-bool CSqlFindPhotos::SearchPhotosByCriteria(PhotosVector* photosVector)
-{
-	typeResult = 2;
-	m_photosVector = photosVector;
-	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW Order By FullPath";// Order By Year desc, Month desc, Day desc, DayOfWeek desc, FullPath";
-	return (ExecuteRequest(sqlRequest) != -1) ? true : false;
-}
 
 bool CSqlFindPhotos::SearchPhotosByCriteriaFolder(PhotosVector* photosVector)
 {
 	typeResult = 2;
 	m_photosVector = photosVector;
-	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW  Order By Year desc, Month desc, Day desc, DayOfWeek desc, FullPath";
+	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW";//  Order By Year, Month asc, Day asc, DayOfWeek asc, FullPath";
 	return (ExecuteRequest(sqlRequest) != -1) ? true : false;
 }
 

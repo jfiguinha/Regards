@@ -2453,7 +2453,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 						size_t data_len = width * height * 4;
 						returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, picture.data, data_len, width,
 						                                 height,
-						                                 true);
+						                                 false);
 					}
 #else
 				int returnValue = 0;

@@ -8,6 +8,7 @@
 #include <map>
 using namespace Regards::Viewer;
 
+
 class ISeparatorClass
 {
 public:
@@ -18,13 +19,23 @@ class CTreatmentData
 {
 public:
 	virtual ~CTreatmentData() = default;
-
-	virtual void SortList(vector<std::pair<wxString, PhotosVector*>> & listMap) {};
+	virtual wxString GenerateValue() = 0;
 	virtual void SortList(PhotosVector * listPhotos) {};
+
+	static bool cmp(pair<wxString, PhotosVector*>& a, pair<wxString, PhotosVector*>& b)
+	{
+		return a.first > b.first;
+	}
+
+	virtual void SortList(vector<std::pair<wxString, PhotosVector*>>& listMap)
+	{
+		std::sort(listMap.begin(), listMap.end(), cmp);
+	}
 
 	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
 		std::map<wxString, PhotosVector *> listMap;
+		std::map<wxString, wxString> listLibelle;
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
 		int size = CThumbnailBuffer::GetVectorSize();
@@ -33,17 +44,21 @@ public:
 			
 			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
 			UpdateVariable(photos);
+
 			wxString libelle = GenerateLibelle();
-			std::map<wxString, PhotosVector*>::iterator it = listMap.find(libelle);
+			wxString value = GenerateValue();
+
+			std::map<wxString, PhotosVector*>::iterator it = listMap.find(value);
 			if (it != listMap.end())
 			{
-				PhotosVector* listVector = listMap[libelle];
+				PhotosVector* listVector = listMap[value];
 				listVector->push_back(photos);
 			}
 			else
 			{
 				PhotosVector* listVector = new PhotosVector();
-				listMap[libelle] = listVector;
+				listMap[value] = listVector;
+				listLibelle[value] = libelle;
 				listVector->push_back(photos);
 
 			}
@@ -54,12 +69,12 @@ public:
 
 		for (auto it : myvector)
 		{
-			wxString libelle = it.first;
+			wxString value = it.first;
 			PhotosVector* listVector = it.second;
 
 			SortList(listVector);
 
-			CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, libelle, numElement);
+			CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, listLibelle[value], numElement);
 			if (infosSeparationBar->listElement.size() > 0)
 				listSeparator->push_back(infosSeparationBar);
 			listVector->clear();
@@ -97,12 +112,11 @@ public:
 		return dirName;
 	}
 
-	// Comparator function to sort pairs 
-// according to second value 
-	static bool cmp(pair<wxString, PhotosVector*>& a, pair<wxString, PhotosVector*>& b)
+	wxString GenerateValue() override
 	{
-		return a.first < b.first;
+		return dirName;
 	}
+
 
 	static bool cmp_path(CPhotos & a, CPhotos & b)
 	{
@@ -112,11 +126,6 @@ public:
 	void SortList(PhotosVector* listPhotos) override
 	{
 		std::sort(listPhotos->begin(), listPhotos->end(), cmp_path);
-	}
-
-	void SortList(vector<std::pair<wxString, PhotosVector*>>& listMap) override
-	{
-		std::sort(listMap.begin(), listMap.end(), cmp);
 	}
 
 	void UpdateVariable(const CPhotos& photos) override
@@ -142,6 +151,11 @@ public:
 		return to_string(year);
 	}
 
+	wxString GenerateValue() override
+	{
+		return CConvertUtility::GenerateValue(year, 4);
+	}
+
 	void UpdateVariable(const CPhotos& photos) override
 	{
 		year = photos.year;
@@ -157,11 +171,16 @@ public:
 	bool TestParameter(const CPhotos& photos) override
 	{
 		return photos.year != year || photos.month != month;
-	};
+	}
 
 	wxString GenerateLibelle() override
 	{
 		return monthName + L" " + to_string(year);
+	}
+
+	wxString GenerateValue() override
+	{
+		return CConvertUtility::GenerateValue(year, 4) + CConvertUtility::GenerateValue(month,2);
 	}
 
 	void UpdateVariable(const CPhotos& photos) override
@@ -184,6 +203,11 @@ public:
 	{
 		return photos.year != year || photos.month != month || photos.day != day;
 	};
+
+	wxString GenerateValue() override
+	{
+		return CConvertUtility::GenerateValue(year, 4) + CConvertUtility::GenerateValue(month, 2) + CConvertUtility::GenerateValue(day, 2);
+	}
 
 	wxString GenerateLibelle() override
 	{
@@ -215,6 +239,11 @@ public:
 		return photos.year != year || photos.month != month || photos.day != day || photos.gpsInfos !=
 			libelleLocalisation;
 	};
+
+	wxString GenerateValue() override
+	{
+		return CConvertUtility::GenerateValue(year, 4) + CConvertUtility::GenerateValue(month, 2) + CConvertUtility::GenerateValue(day, 2) + "@" + libelleLocalisation;
+	}
 
 	wxString GenerateLibelle() override
 	{

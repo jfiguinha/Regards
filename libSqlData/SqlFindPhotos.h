@@ -31,7 +31,7 @@ namespace Regards
 			bool SearchPhotos(vector<wxString> * fileList);
 			bool GetAllPhotos(PhotosVector* photosVector);
 			bool GetAllVideo(PhotosVector* photosVector);
-			bool SearchPhotosByCriteria(PhotosVector* photosVector);
+			//bool SearchPhotosByCriteria(PhotosVector* photosVector);
 
 			bool SearchPhotosByCriteriaFolder(PhotosVector* photosVector);
 
