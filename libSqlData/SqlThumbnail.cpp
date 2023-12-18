@@ -84,7 +84,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 
 wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 {
-    printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
+    //printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
 	wxLogNull logNo;
 	type = 6;
 	wxString fullpath(path);

@@ -58,6 +58,8 @@
     <File Name="include/wx/wxscan.h"/>
     <File Name="include/wx/wxsanedlg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;-std=gnu++14;$(shell ../../libextern/wxconfig_cpp.sh);-pthread;-Wno-narrowing;-fpermissive" C_Options=";-Wall;" Assembler="">
@@ -112,7 +114,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" C_Options="-O2" Assembler="" Required="yes" PreCompiledHeader="../../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -151,6 +153,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
