@@ -36,6 +36,7 @@
 #include <OpenCVVideoPlayer.h>
 #include "FolderProcess.h"
 #include <MediaInfo.h>
+#include <ThumbnailFolder.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -250,6 +251,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_STOPDIAPORAMA, wxCommandEventHandler(CCentralWindow::StopDiaporama));
 	Connect(wxEVENT_STARTDIAPORAMA, wxCommandEventHandler(CCentralWindow::StartDiaporama));
 
+	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CCentralWindow::OnRefreshThumbnail));
+
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
 	windowManager->HideWindow(Pos::wxTOP, false);
@@ -262,6 +265,31 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
+}
+
+void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
+{
+	if (listPicture != nullptr)
+	{
+		CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+		if (ptFolder->IsShown())
+			ptFolder->Refresh();
+	}
+	if (listFace != nullptr)
+	{
+		if (listFace->IsShown())
+			listFace->Refresh();
+	}
+	if (thumbnailPicture != nullptr)
+	{
+		if (thumbnailPicture->IsShown())
+			thumbnailPicture->Refresh();
+	}
+	if (thumbnailVideo != nullptr)
+	{
+		if(thumbnailVideo->IsShown())
+			thumbnailVideo->Refresh();
+	}
 }
 
 

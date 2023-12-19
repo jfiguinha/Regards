@@ -151,6 +151,8 @@ namespace Regards
 			void StartAnimation();
 			bool SetAnimation(const wxString& filename);
 
+			void OnRefreshThumbnail(wxCommandEvent& event);
+
 			CListPicture* listPicture;
 			CThumbnailViewerPicture* thumbnailPicture;
 			CPanelPhotoWnd* panelPhotoWnd;

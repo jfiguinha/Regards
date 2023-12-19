@@ -527,7 +527,14 @@ void CThumbnail::OnTimerRefreshThumbnail(wxTimerEvent & event)
 	rc.width = this->GetWidth();
 	rc.height = this->GetHeight();
 	this->Refresh();
-	//InvalidateRect(this->GetHWND(), NULL, TRUE);
+
+	wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+	
 }
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
@@ -1049,6 +1056,9 @@ void CThumbnail::ProcessIdle()
 		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
 		event->SetExtraLong(nbElement);
 		wxQueueEvent(this, event);
+
+
+	//	PaintNow();
 
 	}
 

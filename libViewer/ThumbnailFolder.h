@@ -29,12 +29,11 @@ namespace Regards::Viewer
 		void SortVectorByFilename(PhotosVector* vector);
 	private:
 
-		void EndGenThumbnail(wxCommandEvent& event);
+
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void SetListeFile();
-		void GenerateThumbnail();
-		static void  ExecuteThumbnailGen(void* param);
+
 		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 		CIcone* FindElement(const int& xPos, const int& yPos) override;
@@ -45,12 +44,12 @@ namespace Regards::Viewer
 		
 
 		InfosSeparationBarVector * listSeparator = nullptr;
-		std::vector<int> listElementToShow;
+		//std::vector<int> listElementToShow;
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;
-		std::mutex muVector;
-		std::mutex muThumb;
-		std::thread* thread_thumbnail = nullptr;
+		//std::mutex muVector;
+		//std::mutex muThumb;
+		//std::thread* thread_thumbnail = nullptr;
 	};
 }

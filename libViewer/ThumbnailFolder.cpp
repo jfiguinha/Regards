@@ -28,7 +28,6 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 	heightThumbnail = 0;
 	nbVideoThumbnailProcess = 0;
 	preprocess_thumbnail = true;
-	Connect(wxEVENT_ENDGENTHUMB, wxCommandEventHandler(CThumbnailFolder::EndGenThumbnail));
 }
 
 
@@ -539,88 +538,9 @@ CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
-void  CThumbnailFolder::ExecuteThumbnailGen(void * param)
-{
-	CThumbnailFolder* thumb = (CThumbnailFolder*)param;
-	if(thumb != nullptr)
-	{
-		thumb->GenerateThumbnail();
-
-		wxCommandEvent eventChange(wxEVENT_ENDGENTHUMB);
-		thumb->GetEventHandler()->AddPendingEvent(eventChange);
-	}
-}
-
-void CThumbnailFolder::EndGenThumbnail(wxCommandEvent& event)
-{
-	muThumb.lock();
-	if(thread_thumbnail != nullptr)
-	{
-		thread_thumbnail->join();
-		delete thread_thumbnail;
-		thread_thumbnail = nullptr;
-	}
-	muThumb.unlock();
-
-	nbVideoThumbnailProcess = 0;
-}
-
-void CThumbnailFolder::GenerateThumbnail()
-{
-	//for (const auto& [key, value] : listElementToShow)
-	//{
-
-	int i = 0;
-	int nbValue = 0;
-	do
-	{
-		CIcone* pBitmapIcone = nullptr;
-		muVector.lock();
-		nbValue = listElementToShow.size();
-		if(i < nbValue)
-			pBitmapIcone = iconeList->GetElement(listElementToShow[i]);
-		muVector.unlock();
-
-		if (pBitmapIcone != nullptr)
-		{
-			wxRect rc = pBitmapIcone->GetPos();
-			int nbProcesseur = 1;
-			if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
-				nbProcesseur = config->GetThumbnailProcess();
-
-			if (pBitmapIcone != nullptr)
-			{
-				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
-				{
-					const bool isProcess = pThumbnailData->IsProcess();
-					//const bool isLoad = pThumbnailData->IsLoad();
-					if (!isProcess) // && !isLoad)
-					{
-						if (nbProcess < (nbProcesseur + 2))
-						{
-							pThumbnailData->SetForceRefresh(true);
-							ProcessThumbnail(pThumbnailData);
-							pThumbnailData->SetIsProcess(true);
-							nbProcess++;
-						}
-					}
-				}
-			}
-
-		}
-		else
-			break;
-		i++;
-
-	} while (i < nbValue);
-}
 
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 {
-	muVector.lock();
-	listElementToShow.clear();
-	muVector.unlock();
-
 	if (listSeparator == nullptr)
 		return;
 
@@ -665,15 +585,6 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 								start = true;
 
 							RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
-
-							CThumbnailData* pThumbnailData = pBitmapIcone->GetData();
-							const bool isProcess = pThumbnailData->IsProcess();
-							if(!isProcess)
-							{
-								muVector.lock();
-								listElementToShow.push_back(numElement);
-								muVector.unlock();
-							}
 								
 						}
 						else if (start)
