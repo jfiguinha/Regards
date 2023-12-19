@@ -109,7 +109,8 @@ public:
 
 	wxString GenerateLibelle() override
 	{
-		return dirName;
+        wxString seg = fname.GetDirs().back();
+		return seg;
 	}
 
 	wxString GenerateValue() override
@@ -130,12 +131,13 @@ public:
 
 	void UpdateVariable(const CPhotos& photos) override
 	{
-		wxFileName fname(photos.path);
+		fname = wxFileName(photos.path);
 		dirName = fname.GetPath();
 	}
 
 private:
 	wxString dirName = "";
+    wxFileName fname;
 };
 
 class CTreatmentDataYear : public CTreatmentData

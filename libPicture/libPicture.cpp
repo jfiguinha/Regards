@@ -1758,7 +1758,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	{
 #endif
 
-		printf("CLibPicture::LoadThumbnail \n");
+		//printf("CLibPicture::LoadThumbnail \n");
 		int orientation = -1;
 		wxString extension;
 		wxImage jpegImage;
