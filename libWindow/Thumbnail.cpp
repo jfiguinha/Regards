@@ -521,7 +521,13 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 
 void CThumbnail::OnTimerRefreshThumbnail(wxTimerEvent & event)
 {
+	wxRect rc;
+	rc.x = 0;
+	rc.y = 0;
+	rc.width = this->GetWidth();
+	rc.height = this->GetHeight();
 	this->Refresh();
+	//InvalidateRect(this->GetHWND(), NULL, TRUE);
 }
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
@@ -1111,10 +1117,11 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	if (needToRefresh)
 	{
+		
 		if(this->IsShown())
 			if(!refreshThumbnail->IsRunning())
 				refreshThumbnail->StartOnce(50);
-		//this->Refresh();
+
 		needToRefresh = false;
 	}
 
@@ -1566,8 +1573,23 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 	needToRefresh = true;
 }
 
+
 void CThumbnail::on_paint(wxPaintEvent& event)
 {
+	wxBufferedPaintDC dc(this);
+	Render(dc);
+}
+
+
+void CThumbnail::PaintNow()
+{
+	wxClientDC dc(this);
+	Render(dc);
+}
+
+void CThumbnail::Render(wxDC& dc)
+{
+
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 
@@ -1576,7 +1598,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 
 	if (threadDataProcess == false)
 	{
-		wxBufferedPaintDC dc(this);
+		
 		wxRect rc = GetWindowRect();
 		//UpdateScroll();
 		FillRect(&dc, rc, themeThumbnail.colorBack);
@@ -1617,7 +1639,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 	TestMaxY();
 
 	render = true;
-	wxBufferedPaintDC dc(this);
+	
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 
@@ -1629,6 +1651,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 	oldPosLargeur = posLargeur;
 	oldPosHauteur = posHauteur;
 
+
 	if (this->GetParent() != nullptr && moveOnPaint)
 	{
 		auto size = new wxSize();
@@ -1638,6 +1661,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 		evt.SetClientData(size);
 		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 
 	if (mouseClickBlock && mouseClickMove && enableDragAndDrop)
 	{

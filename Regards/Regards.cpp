@@ -411,8 +411,8 @@ bool MyApp::OnInit()
 	else if (appName == "video")
 	{
 		wxArrayString files;
-		wxString resourcePath = "D:\\stop motion\\camion_poubelle";
-		wxString outputPath = "D:\\stop motion\\camion_poubelle_roter";
+		wxString resourcePath = "D:\\stop motion\\hopital";
+		wxString outputPath = "D:\\stop motion\\hopital_roter";
 		int i = 0;
 		wxDir::GetAllFiles(resourcePath, &files, _T("*.png"), wxDIR_FILES);
 		for (wxString file : files)
