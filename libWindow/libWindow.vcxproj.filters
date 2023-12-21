@@ -285,6 +285,9 @@
     <ClInclude Include="RenderVideoOpenGL.h">
       <Filter>OpenGL\Render</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadLoadingBitmap.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">

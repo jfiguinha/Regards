@@ -15,7 +15,7 @@ namespace Regards::Control
 		int GetNumCatalog();
 		int GetNumCategorie();
 		wxString GetKey();
-		wxString GetWaitingMessage() override;
+
 
 	protected:
 		void SetListeFile(const vector<wxString>& files);

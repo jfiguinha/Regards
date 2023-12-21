@@ -31,6 +31,7 @@ namespace Regards::Window
 			showSelected = show;
 		};
 
+		void RefreshIcone();
 		void ReinitPos();
 		void InitPos();
 		void SetPos(const int& x, const int& y);

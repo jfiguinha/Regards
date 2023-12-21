@@ -12,6 +12,7 @@ public:
 	static int GetVectorSize();
 	static bool FindValidFile(wxString localFilename);
 	static wxString FindPhotoById(int id);
+	static wxString FindPhotoByPath(wxString path);
 
 private:
 

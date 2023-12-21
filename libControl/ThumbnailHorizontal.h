@@ -14,7 +14,6 @@ namespace Regards::Control
 		~CThumbnailHorizontal(void) override;
 		void SetListeFile(const vector<wxString>& files);
 		void InitPosition();
-		wxString GetWaitingMessage() override;
 
 	protected:
 		void RenderIcone(wxDC* deviceContext) override;

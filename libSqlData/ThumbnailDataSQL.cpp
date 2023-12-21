@@ -208,20 +208,3 @@ wxImage CThumbnailDataSQL::GetwxImage()
 
 	return frameOut;
 }
-
-void CThumbnailDataSQL::SetBitmap(wxImage bitmap)
-{
-	if (bitmap.IsOk())
-	{
-		//Enregistrement en base de données
-		CSqlThumbnail sqlThumbnail;
-		if (!TestBitmap())
-		{
-			wxFileName file(filename);
-			wxULongLong sizeFile = file.GetSize();
-			wxString hash = sizeFile.ToString();
-			wxString localName = sqlThumbnail.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), hash);
-			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-		}
-	}
-}

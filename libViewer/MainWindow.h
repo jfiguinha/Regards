@@ -114,8 +114,8 @@ namespace Regards::Viewer
 		void RefreshFolderList(wxCommandEvent& event);
 
 		void OnUpdateFolder(wxCommandEvent& event);
-        
-
+		void OnRefreshThumbnail(wxCommandEvent& event);
+		void OnProcessThumbnail(wxCommandEvent& event);
 
 		void Resize() override;
 		void ExportVideo(const wxString& filename);
@@ -124,6 +124,20 @@ namespace Regards::Viewer
 
 
 		void PhotoProcess(CPhotos* photo);
+
+		//------------------------------------------------------
+		void UpdateMessage(wxCommandEvent& event);
+		void ProcessThumbnail();
+		static void LoadPicture(void* param);
+		void ProcessThumbnail(const wxString& filename, int type);
+		void UpdateThumbnailIcone(wxCommandEvent& event);
+		int nbElementInIconeList = 0;
+		int nbPhotoElement = 0;
+		int nbElement = 0;
+		int nbProcess = 0;
+		bool stopToGetNbElement = false;
+		int thumbnailPos = 0;
+		std::map<wxString, bool> listFile;
 
 
 		bool isCheckNewVersion = false;

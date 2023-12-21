@@ -176,6 +176,11 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	listProcessWindow.push_back(this);
 }
 
+CThumbnailFace* CListFace::GetThumbnailFace()
+{
+	return thumbnailFace;
+}
+
 vector<int> CListFace::GetFaceSelectID()
 {
 	return thumbnailFace->GetFaceSelectID();

@@ -621,6 +621,7 @@
     <ClInclude Include="Slider.h" />
     <ClInclude Include="Splitter.h" />
     <ClInclude Include="StatusBarInterface.h" />
+    <ClInclude Include="ThreadLoadingBitmap.h" />
     <ClInclude Include="Thumbnail.h" />
     <ClInclude Include="ThumbnailMessage.h" />
     <ClInclude Include="TitleBar.h" />

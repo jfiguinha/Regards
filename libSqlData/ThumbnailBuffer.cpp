@@ -39,6 +39,30 @@ int CThumbnailBuffer::GetVectorSize()
     return vectorSize;
 }
 
+wxString CThumbnailBuffer::FindPhotoByPath(wxString path)
+{
+    wxString file = "";
+    bool isFound = false;
+    muNewVector.lock();
+
+    auto p = std::find_if(
+        newPhotosVectorList->begin(), newPhotosVectorList->end(),
+        [&](const auto& val)
+    {
+        auto photo = static_cast<CPhotos>(val);
+        return photo.GetPath() == path;
+    }
+    );
+
+    if (p != newPhotosVectorList->end())
+    {
+        file = p->GetPath();
+        isFound = true;
+    }
+    muNewVector.unlock();
+
+    return file;
+}
 
 wxString CThumbnailBuffer::FindPhotoById(int id)
 {

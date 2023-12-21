@@ -17,11 +17,6 @@ CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindo
 	key = L"";
 }
 
-wxString CThumbnailVerticalListFile::GetWaitingMessage()
-{
-	return "Window CThumbnailVerticalListFile waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " +
-		to_string(nbProcess);
-}
 
 void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 {

@@ -17,7 +17,7 @@
 #include "ThumbnailMessage.h"
 #include <libPicture.h>
 #include <ThumbnailDataStorage.h>
-
+#include <ThreadLoadingBitmap.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
@@ -35,9 +35,6 @@ class CImageLoadingFormat;
 #define TIMER_TIME_REFRESH 1000 / 25
 
 
-wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
-wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
-
 extern wxImage defaultPicture;
 
 class CListToClean
@@ -47,43 +44,6 @@ public:
 	std::time_t timeToAdd;
 };
 
-class CThreadLoadingBitmap
-{
-public:
-	CThreadLoadingBitmap(): percent(0), typeElement(0), photoId(0), timePosition(0), _threadVideo(nullptr)
-	{
-		_thread = nullptr;
-		thumbnail = nullptr;
-	}
-	;
-
-	~CThreadLoadingBitmap()
-	{
-		if (_thread != nullptr)
-		{
-			_thread->join();
-			delete _thread;
-			_thread = nullptr;
-		}
-		if (_threadVideo != nullptr)
-		{
-			_threadVideo->join();
-			delete _threadVideo;
-			_threadVideo = nullptr;
-		}
-	};
-
-	int percent;
-	wxString filename;
-	int typeElement;
-	int photoId;
-	int timePosition;
-    bool isAnimationOrVideo = false;
-	wxImage bitmapIcone;
-	thread* _thread;
-	thread* _threadVideo;
-	CThumbnail* thumbnail;
-};
 
 #define WM_NEWFOLDER 501
 #define WM_DISPLAYPICTURE 502
@@ -117,10 +77,6 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 
     stopToGetNbElement = false;
 
-	muListFile.lock();
-	listFile.clear();
-	muListFile.unlock();
-
 
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseThumbnail();
@@ -148,11 +104,14 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 
 	SetStopProcess(false);
 
-	nbProcess = 0;
+	wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHTHUMBNAIL);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
 
-	processIdle = true;
-
-	this->Refresh();
+	//this->Refresh();
 }
 
 void CThumbnail::SetCheck(const bool& check)
@@ -179,6 +138,22 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData*>& vectorData)
 		}
 	}
 }
+
+bool CThumbnail::ItemCompFonctPath(wxString filepath, CIcone* icone)
+/* Définit une fonction. */
+{
+	CThumbnailData* pThumbnailData = icone->GetData();
+	if (pThumbnailData->GetFilename() == filepath)
+		return true;
+	return false;
+}
+
+CIcone* CThumbnail::GetIconeByPath(const wxString & filepath)
+{
+	pItemStringCompFonct _pf = &ItemCompFonctPath;
+	return iconeList->FindElement(filepath, &_pf);
+}
+
 
 bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */
@@ -217,13 +192,6 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	bool refresh = false;
 
-	/*
-	if (numOldItem == numItem)
-	{
-		//printf("toto is back !!!!");
-		return;
-	}
-	*/
 	if (numItem >= nbElementInIconeList)
 		return;
 
@@ -281,29 +249,6 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 				    RefreshIcone(numActifPhotoId);
 					refresh = true;
 				}
-
-				//Positionnement au milieu
-				/*
-				int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
-				int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
-
-
-				if (this->GetParent() != nullptr)
-				{
-					auto size = new wxSize();
-					wxCommandEvent evt(wxEVENT_SETPOSITION);
-					size->x = xPos;
-					size->y = yPos;
-					evt.SetClientData(size);
-					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-
-					refresh = true;
-				}
-
-				posLargeur = xPos;
-				posHauteur = yPos;
-				*/
-				//isMovingScroll = true;
 			}
 		}
 	}
@@ -428,7 +373,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	thumbnailPos = 0;
 	oldPosLargeur = 0;
 	oldPosHauteur = 0;
-	nbProcess = 0;
+
 	allThreadEnd = true;
 	showLoadingBitmap = false;
 	stepLoading = 0;
@@ -463,9 +408,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CThumbnail::OnMouseWheel));
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CThumbnail::OnKeyUp));
-	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::update_render_icone));
-	Connect(EVENT_UPDATEMESSAGE, wxCommandEventHandler(CThumbnail::UpdateMessage));
-
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CThumbnail::OnLeaveWindow));
 
@@ -848,25 +790,8 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	listToAdd->list = iconeListLocal;
 	listToErrase.push_back(listToAdd);
 
-    /*
-	if (iconeListLocal != nullptr)
-	{
-		if (iconeListLocal->GetNbElement() > 0)
-			iconeListLocal->EraseThumbnailList();
-
-		delete iconeListLocal;
-
-		iconeListLocal = nullptr;
-	}
-    */
-
 	stopToGetNbElement = false;
 
-	muListFile.lock();
-	listFile.clear();
-	muListFile.unlock();
-
-	nbProcess = 0;
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -894,198 +819,9 @@ struct mytask {
 };
 #endif
 
-void CThumbnail::ProcessThumbnail(CThumbnailData* pThumbnailData)
-{
-	bool process = false;
-	std::map<wxString, bool>::iterator it;
-	muListFile.lock();
-	it = listFile.find(pThumbnailData->GetFilename());
-	if (it == listFile.end())
-		process = true;
-	muListFile.unlock();
-	if(process)
-	{
-		auto pLoadBitmap = new CThreadLoadingBitmap();
-		pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
-		pLoadBitmap->percent = pThumbnailData->GetPercent();
-		pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
-		pLoadBitmap->filename = pThumbnailData->GetFilename();
-		pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
-		pLoadBitmap->thumbnail = this;
-		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
-
-		muListFile.lock();
-		listFile[pThumbnailData->GetFilename()] = true;
-		muListFile.unlock();
-	}
-
-	pThumbnailData->SetIsProcess(true);
-}
-
-bool CThumbnail::ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */
-{
-	wxString dataFilename = "";
-	if (icone != nullptr)
-	{
-		CThumbnailData* data = icone->GetData();
-		if (data != nullptr)
-			dataFilename = data->GetFilename();
-	}
-
-	if (filename == dataFilename)
-	{
-		return true;
-	}
-	return false;
-}
-
-void CThumbnail::ProcessIdle()
-{
-	if (nbElementInIconeList == 0 || threadDataProcess == false)
-	{
-		processIdle = false;
-		return;
-	}
-
-	if (processThumbnailVideo)
-	{
-		wxString filename = videoFilename;
-		pItemStringCompFonct _pf = &ItemFilenameCompFonct;
-		CIcone* icone = iconeList->FindElement(filename, &_pf);
-		if (icone != nullptr)
-		{
-			if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
-			{
-				const bool isProcess = pThumbnailData->IsProcess();
-				//const bool isLoad = pThumbnailData->IsLoad();
-				if (!isProcess) // && !isLoad)
-				{
-					ProcessThumbnail(pThumbnailData);
-					pThumbnailData->SetIsProcess(true);
-					nbProcess++;
-					processThumbnailVideo = false;
-				}
-				/*
-				else if(nbProcess == 0)
-				{
-					ProcessThumbnail(pThumbnailData);
-					pThumbnailData->SetIsProcess(true);
-					nbProcess++;
-					nbElement--;
-				}
-				*/
-			}
-		}
-
-	}
-
-
-	int nbProcesseur = 1;
-	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
-		nbProcesseur = config->GetThumbnailProcess();
-
-	if (nbProcess >= nbProcesseur)
-		return;
-
-	//int nbProcesseur = thread::hardware_concurrency();
-	vector<wxString> photoList;
-	CSqlPhotosWithoutThumbnail sqlPhoto;
-
-    if(!stopToGetNbElement)
-        nbPhotoElement = sqlPhoto.GetPhotoElement();
-
-	//nbProcesseur = 1;
-	if (nbPhotoElement > 0)
-	{
-		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
-		if (photoList.size() > 0)
-		{
-			auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
-			event->SetExtraLong(nbPhotoElement);
-			wxQueueEvent(this, event);
-
-
-			for (int j = 0; nbProcess < nbProcesseur; j++)
-			{
-				if (j >= photoList.size())
-					break;
-
-				if (nbElementInIconeList == 0 || threadDataProcess == false)
-					return;
-
-				wxString filename = photoList[j];
-				pItemStringCompFonct _pf = &ItemFilenameCompFonct;
-				CIcone* icone = iconeList->FindElement(filename, &_pf);
-				if (icone != nullptr)
-				{
-					if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
-					{
-						const bool isProcess = pThumbnailData->IsProcess();
-						//const bool isLoad = pThumbnailData->IsLoad();
-						if (!isProcess) // && !isLoad)
-						{
-							ProcessThumbnail(pThumbnailData);
-							pThumbnailData->SetIsProcess(true);
-							nbProcess++;
-							//nbElement--;
-						}
-						/*
-						else if(nbProcess == 0)
-						{
-							ProcessThumbnail(pThumbnailData);
-							pThumbnailData->SetIsProcess(true);
-							nbProcess++;
-							nbElement--;
-						}
-						*/
-					}
-				}
-			}
-		}
-	}
-    else
-        stopToGetNbElement = true;
-
-	if (photoList.empty())
-	{
-		nbElement = 0;
-		processIdle = false;
-		needToRefresh = true;
-
-
-		auto event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
-		event->SetExtraLong(nbElement);
-		wxQueueEvent(this, event);
-
-
-	//	PaintNow();
-
-	}
 
 
 
-}
-
-void CThumbnail::UpdateMessage(wxCommandEvent& event)
-{
-	const int nbPhoto = event.GetExtraLong();
-	const auto thumbnailMessage = new CThumbnailMessage();
-	thumbnailMessage->nbPhoto = nbPhoto;
-	thumbnailMessage->thumbnailPos = thumbnailPos;
-	thumbnailMessage->nbElement = nbElementInIconeList;
-	thumbnailMessage->typeMessage = 3;
-	wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWnd != nullptr)
-	{
-		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-		eventChange.SetClientData(thumbnailMessage);
-		eventChange.SetInt(3);
-		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-	}
-
-
-	thumbnailPos++;
-}
 
 void CThumbnail::ExecuteTimer(const int& numId, wxTimer* refresh)
 {
@@ -1135,9 +871,6 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		needToRefresh = false;
 	}
 
-	if (processIdle)
-		StartThread();
-
 	if (enableTimer && !isMouseOnWindow)
 	{
 		if (refreshActifTimer->IsRunning())
@@ -1177,93 +910,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 bool CThumbnail::GetProcessEnd()
 {
-	if (nbProcess > 0 && nbVideoThumbnailProcess > 0)
-		return false;
 	return true;
-}
-
-wxString CThumbnail::GetWaitingMessage()
-{
-	return "Window Thumbnail waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
-}
-
-
-void CThumbnail::LoadPicture(void* param)
-{
-	//std::thread* t1 = nullptr;
-	CLibPicture libPicture;
-	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
-	if (threadLoadingBitmap == nullptr)
-		return;
-
-	threadLoadingBitmap->bitmapIcone = defaultPicture;
-	
-	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
-		TestIsAnimation(threadLoadingBitmap->filename))
-	{
-
-		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
-
-		if (listVideo.size() > 0)
-		{
-			CSqlThumbnailVideo sqlThumbnailVideo;
-
-			//int selectPicture = listVideo.size() / 2;
-			for (int i = 0; i < listVideo.size(); i++)
-			{
-				CImageVideoThumbnail* bitmap = listVideo[i];
-				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
-
-				if (bitmap->image.IsOk())
-				{
-					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
-						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
-						bitmap->timePosition);
-
-					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-				}
-
-
-				if (i == 0)
-					threadLoadingBitmap->bitmapIcone = bitmap->image;
-
-			}
-            threadLoadingBitmap->isAnimationOrVideo = true;
-		}
-		else //Not support video
-		{
-			threadLoadingBitmap->bitmapIcone = defaultPicture;
-			wxString filename = threadLoadingBitmap->filename;
-
-			wxBitmap bitmap = wxBitmap(defaultPicture);
-			
-
-			CSqlThumbnailVideo sqlThumbnailVideo;
-			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
-            bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-		}
-
-		for (CImageVideoThumbnail* bitmap : listVideo)
-			delete bitmap;
-
-		listVideo.clear();
-	}
-	else
-	{
-		CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-		if (imageLoad != nullptr)
-		{
-			threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
-			delete imageLoad;
-		}
-	}
-
-
-
-
-	auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
-	event->SetClientData(threadLoadingBitmap);
-	wxQueueEvent(threadLoadingBitmap->thumbnail, event);
 }
 
 void CThumbnail::OnMouseMove(wxMouseEvent& event)
@@ -1377,9 +1024,10 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
 
+	
 	if (preprocess_thumbnail)
 	{
-        if (value == 1 && nbProcess < (nbProcesseur + 2))
+		if (value == 1)
 		{
 			if (pBitmapIcone != nullptr)
 			{
@@ -1389,16 +1037,24 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 					//const bool isLoad = pThumbnailData->IsLoad();
 					if (!isProcess) // && !isLoad)
 					{
-						ProcessThumbnail(pThumbnailData);
+						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+						if (window != nullptr)
+						{
+							wxString* localName = new wxString(pBitmapIcone->GetFilename());
+							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+							evt.SetClientData(localName);
+							evt.SetInt(0);
+							window->GetEventHandler()->AddPendingEvent(evt);
+						}
 						pThumbnailData->SetIsProcess(true);
-						nbProcess++;
 					}
 				}
 			}
 		}
 	}
+	
 
-	//this->UpdateScroll();
+
 }
 
 void CThumbnail::UpdateScreenRatio()
@@ -1886,85 +1542,40 @@ void CThumbnail::InitScrollingPos()
 }
 
 
-void CThumbnail::update_render_icone(wxCommandEvent& event)
+void CThumbnail::UpdateRenderIcone(CThreadLoadingBitmap * threadLoadingBitmap)
 {
 
-	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(event.GetClientData());
 	if (threadLoadingBitmap == nullptr)
 	{
 		return;
 	}
 	if (threadDataProcess != false)
 	{
-		nbPhotoElement--;
-		nbProcess--;
-        if(nbProcess < 0)
-            nbProcess = 0;
-
 		if (threadLoadingBitmap != nullptr)
 		{
 			if (threadLoadingBitmap->bitmapIcone.IsOk())
 			{
 				CThumbnailData* pThumbnailData = nullptr;
-				CIcone* icone = GetIconeById(threadLoadingBitmap->photoId);
-
-				if (icone != nullptr && pThumbnailData == nullptr)
-					pThumbnailData = icone->GetData();
-
-				if (icone != nullptr && pThumbnailData != nullptr)
+				CIcone* icone = GetIconeByPath(threadLoadingBitmap->filename);
+				if (icone != nullptr)
 				{
-					if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
+					if (pThumbnailData == nullptr)
+						pThumbnailData = icone->GetData();
+
+					if (pThumbnailData != nullptr)
 					{
-						pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
+						if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
+						{
+							pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
+						}
+						pThumbnailData->SetIsProcess(true);
+						pThumbnailData->SetIsLoading(false);
+						icone->RefreshIcone();
 					}
-					pThumbnailData->SetIsProcess(true);
-					pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
-					pThumbnailData->SetIsLoading(false);
 				}
-
-			//	RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
-
-		if (threadLoadingBitmap->_thread != nullptr)
-		{
-			if (threadLoadingBitmap->_thread->joinable())
-				threadLoadingBitmap->_thread->join();
-
-			delete threadLoadingBitmap->_thread;
-
-			threadLoadingBitmap->_thread = nullptr;
-		}
-        
-        if(threadLoadingBitmap->isAnimationOrVideo)
-        {
-            //UpdateVideoThumbnail();
-			wxWindow* mainWnd = this->FindWindowById(THUMBNAILVIDEOWINDOW);
-			if (mainWnd != nullptr)
-			{
-				wxCommandEvent eventChange(wxEVENT_REFRESHVIDEOTHUMBNAIL);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
-        }
-
-
-		if (threadLoadingBitmap != nullptr)
-		{
-			delete threadLoadingBitmap;
-			threadLoadingBitmap = nullptr;
-		}
-
-	}
-	else
-	{
-		auto wx_command_event = new wxCommandEvent(EVENT_ICONEUPDATE);
-		wx_command_event->SetClientData(threadLoadingBitmap);
-		wxQueueEvent(this, wx_command_event);
-
-		
 	}
 
-	nbProcess = max(nbProcess, 0);
-
-	needToRefresh = true;
+	//needToRefresh = true;
 }

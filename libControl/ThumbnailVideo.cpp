@@ -367,8 +367,6 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 	}
 
 	process_end = true;
-
-	nbVideoThumbnailProcess--;
 }
 
 void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
@@ -429,21 +427,17 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	processIdle = true;
 	needToRefresh = true;
 
-
-	bool findFile = false;
-	std::map<wxString, bool>::iterator it;
-	muListFile.lock();
-	it = listFile.find(videoFilename);
-	if (it != listFile.end())
-		findFile = true;
-	muListFile.unlock();
-
-	if (findFile)
+	wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+	if (window != nullptr)
 	{
-		muListFile.lock();
-		listFile.erase(it);
-		muListFile.unlock();
+		wxString* localName = new wxString(videoFilename);
+		wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+		evt.SetClientData(localName);
+		evt.SetInt(1);
+		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	
 }
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)

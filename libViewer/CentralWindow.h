@@ -120,6 +120,8 @@ namespace Regards
 
 			bool GetProcessEnd() override;
 
+			void RefreshThumbnail(int type);
+
 			void StartLoadingPicture();
 			void OnVideoEnd(wxCommandEvent& event);
 			void Resize() override;
@@ -151,6 +153,7 @@ namespace Regards
 			void StartAnimation();
 			bool SetAnimation(const wxString& filename);
 
+			void UpdateThumbnailIcone(wxCommandEvent& event);
 			void OnRefreshThumbnail(wxCommandEvent& event);
 
 			CListPicture* listPicture;

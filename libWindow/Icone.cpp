@@ -914,6 +914,13 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 	
 }
 
+void CIcone::RefreshIcone()
+{
+	photoDefault = false;
+	redraw = true;
+	localmemBitmap_backup = wxBitmap(0,0);
+}
+
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
                                 const bool& forceRedraw)
 {  

@@ -89,12 +89,6 @@ CThumbnailEffect::~CThumbnailEffect(void)
 		delete imageLoading;
 }
 
-wxString CThumbnailEffect::GetWaitingMessage()
-{
-	return "Window CThumbnailEffect waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " +
-		to_string(nbProcess);
-}
-
 wxString CThumbnailEffect::GetFilename()
 {
 	return filename;

@@ -16,7 +16,7 @@ namespace Regards::Control
 		void SetFile(const wxString& filename, CImageLoadingFormat* imageLoading);
 		//void SetIconeSize(const int &width, const int &height);
 		wxString GetFilename();
-		wxString GetWaitingMessage() override;
+
 		void UpdateScroll() override;
 	private:
 		//virtual void SetTheme();
@@ -44,6 +44,7 @@ namespace Regards::Control
 		wxString hdrEffect;
 		wxString videoLabelEffect;
 		CImageLoadingFormat* imageLoading;
+		int nbProcess = 0;
 
 	};
 }

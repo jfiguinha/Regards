@@ -37,6 +37,8 @@
 #include "FolderProcess.h"
 #include <MediaInfo.h>
 #include <ThumbnailFolder.h>
+#include <ThreadLoadingBitmap.h>
+#include <ThumbnailFace.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -252,6 +254,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_STARTDIAPORAMA, wxCommandEventHandler(CCentralWindow::StartDiaporama));
 
 	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CCentralWindow::OnRefreshThumbnail));
+	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CCentralWindow::UpdateThumbnailIcone));
 
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
@@ -267,7 +270,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
 }
 
-void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
+void CCentralWindow::RefreshThumbnail(int type)
 {
 	if (listPicture != nullptr)
 	{
@@ -287,9 +290,47 @@ void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
 	}
 	if (thumbnailVideo != nullptr)
 	{
-		if(thumbnailVideo->IsShown())
+		if (type == 1)
+		{
+			auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
+			wxQueueEvent(thumbnailVideo, event);
+		}
+
+		if (thumbnailVideo->IsShown())
 			thumbnailVideo->Refresh();
 	}
+}
+
+void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
+{
+	RefreshThumbnail(event.GetInt());
+}
+
+void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
+{
+	CThreadLoadingBitmap* threadLoadingBitmap = (CThreadLoadingBitmap*)event.GetClientData();
+	if (listPicture != nullptr)
+	{
+		CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+		ptFolder->UpdateRenderIcone(threadLoadingBitmap);
+	}
+	if (listFace != nullptr)
+	{
+		CThumbnailFace * thumbFace = listFace->GetThumbnailFace();
+		thumbFace->UpdateRenderIcone(threadLoadingBitmap);
+	}
+	if (thumbnailPicture != nullptr)
+	{
+		thumbnailPicture->UpdateRenderIcone(threadLoadingBitmap);
+	}
+	if (thumbnailVideo != nullptr)
+	{
+		thumbnailVideo->UpdateRenderIcone(threadLoadingBitmap);
+	}
+
+	RefreshThumbnail(threadLoadingBitmap->type);
+
+	delete threadLoadingBitmap;
 }
 
 

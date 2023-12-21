@@ -39,8 +39,12 @@
 #include <ThumbnailFolder.h>
 #include <MainTheme.h>
 #include <MainThemeInit.h>
+#include <SqlPhotosWithoutThumbnail.h>
+#include <ParamInit.h>
 #include "FolderProcess.h"
 #include "md5check.h"
+#include <ImageVideoThumbnail.h>
+#include <ThreadLoadingBitmap.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -79,6 +83,8 @@ CThreadVideoData::~CThreadVideoData()
 
 wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
+
+extern wxImage defaultPicture;
 
 CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile, const wxString & fileToOpen)
 	: CWindowMain("CMainWindow", parent, id)
@@ -160,9 +166,11 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
-
+	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CMainWindow::UpdateThumbnailIcone));
 	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CMainWindow::OnVersionUpdate));
-
+	Connect(wxEVENT_UPDATEMESSAGE, wxCommandEventHandler(CMainWindow::UpdateMessage));
+	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnRefreshThumbnail));
+	Connect(wxEVENT_ICONETHUMBNAILGENERATION, wxCommandEventHandler(CMainWindow::OnProcessThumbnail));
 	/*----------------------------------------------------------------------
 	 *
 	 * Manage Event
@@ -196,7 +204,20 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 }
 
+void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
+{
+	nbProcess = 0;
+	listFile.clear();
+	processIdle = true;
+}
 
+void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
+{
+	nbProcess--;
+	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
+	localevent->SetClientData(event.GetClientData());
+	wxQueueEvent(centralWnd, localevent);
+}
 
 void CMainWindow::SetPictureMode()
 {
@@ -897,10 +918,11 @@ void CMainWindow::UpdateFolderStatic()
 		}
 
 		centralWnd->SetListeFile(localFilename, typeAffichage);
-
+		listFile.clear();
+		thumbnailPos = 0;
 		firstFileToShow = "";
 		numElementTraitement = 0;
-
+		nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 		init = true;
 	}
 }
@@ -1011,10 +1033,217 @@ void CMainWindow::ProcessIdle()
 		}
 	}
 
-	if (!hasDoneOneThings)
-		processIdle = false;
+	ProcessThumbnail();
 
 }
+
+void CMainWindow::ProcessThumbnail()
+{
+	if (nbElementInIconeList == 0)
+	{
+		return;
+	}
+
+	int nbProcesseur = 1;
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
+		nbProcesseur = config->GetThumbnailProcess();
+
+	if (nbProcess >= nbProcesseur)
+		return;
+
+	//int nbProcesseur = thread::hardware_concurrency();
+	vector<wxString> photoList;
+	CSqlPhotosWithoutThumbnail sqlPhoto;
+
+	//if (!stopToGetNbElement)
+		nbPhotoElement = sqlPhoto.GetPhotoElement();
+
+	//nbProcesseur = 1;
+	if (nbPhotoElement > 0)
+	{
+		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
+		if (photoList.size() > 0)
+		{
+			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+			event->SetExtraLong(nbPhotoElement);
+			wxQueueEvent(this, event);
+
+
+			for (int j = 0; nbProcess < nbProcesseur; j++)
+			{
+				if (j >= photoList.size())
+					break;
+
+				wxString filename = photoList[j];
+				std::map<wxString, bool>::iterator it = listFile.find(filename);
+				if (it == listFile.end())
+				{
+					ProcessThumbnail(filename,0);
+					listFile[filename] = true;
+					nbProcess++;
+				}
+			}
+		}
+	}
+
+
+	if (photoList.empty())
+	{
+		nbElement = 0;
+		processIdle = false;
+		needToRefresh = true;
+
+
+		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+		event->SetExtraLong(nbElement);
+		wxQueueEvent(this, event);
+
+
+	}
+	else
+		processIdle = true;
+}
+
+void CMainWindow::UpdateMessage(wxCommandEvent& event)
+{
+	const int nbPhoto = event.GetExtraLong();
+	const auto thumbnailMessage = new CThumbnailMessage();
+	thumbnailMessage->nbPhoto = nbPhoto;
+	thumbnailMessage->thumbnailPos = thumbnailPos;
+	thumbnailMessage->nbElement = nbElementInIconeList;
+	thumbnailMessage->typeMessage = 3;
+	wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWnd != nullptr)
+	{
+		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+		eventChange.SetClientData(thumbnailMessage);
+		eventChange.SetInt(3);
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	}
+
+
+	thumbnailPos++;
+}
+
+void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
+{
+	nbProcess++;
+	wxString* filename = (wxString*)event.GetClientData();
+	wxString localName = wxString(*filename);
+	int type = event.GetInt();
+	if (type == 1)
+	{
+		ProcessThumbnail(localName, type);
+	}
+	else
+	{
+		std::map<wxString, bool>::iterator it = listFile.find(localName);
+		if (it == listFile.end())
+		{
+			ProcessThumbnail(localName, type);
+			listFile[localName] = true;
+		}
+	}
+	delete filename;
+}
+
+void CMainWindow::ProcessThumbnail(const wxString & filename, int type)
+{
+
+	auto pLoadBitmap = new CThreadLoadingBitmap();
+	pLoadBitmap->filename = filename;
+	pLoadBitmap->window = this;
+	pLoadBitmap->type = type;
+	pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+
+}
+
+
+void CMainWindow::LoadPicture(void* param)
+{
+	//std::thread* t1 = nullptr;
+	CLibPicture libPicture;
+	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
+	if (threadLoadingBitmap == nullptr)
+		return;
+
+	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
+		TestIsAnimation(threadLoadingBitmap->filename))
+	{
+
+		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
+
+		if (listVideo.size() > 0)
+		{
+			CSqlThumbnailVideo sqlThumbnailVideo;
+
+			//int selectPicture = listVideo.size() / 2;
+			for (int i = 0; i < listVideo.size(); i++)
+			{
+				CImageVideoThumbnail* bitmap = listVideo[i];
+				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
+
+				if (bitmap->image.IsOk())
+				{
+					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
+						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
+						bitmap->timePosition);
+
+					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+				}
+
+
+				if (i == 0)
+					threadLoadingBitmap->bitmapIcone = bitmap->image;
+
+			}
+			threadLoadingBitmap->isAnimationOrVideo = true;
+		}
+		else //Not support video
+		{
+			threadLoadingBitmap->bitmapIcone = defaultPicture;
+			wxString filename = threadLoadingBitmap->filename;
+
+			wxBitmap bitmap = wxBitmap(defaultPicture);
+
+
+			CSqlThumbnailVideo sqlThumbnailVideo;
+			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
+			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+		}
+
+		for (CImageVideoThumbnail* bitmap : listVideo)
+			delete bitmap;
+
+		listVideo.clear();
+	}
+	else
+	{
+		CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+		if (imageLoad != nullptr)
+		{
+			threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
+			delete imageLoad;
+		}
+	}
+
+
+	if (threadLoadingBitmap->bitmapIcone.IsOk())
+	{
+		//Enregistrement en base de données
+		CSqlThumbnail sqlThumbnail;
+		wxFileName file(threadLoadingBitmap->filename);
+		wxULongLong sizeFile = file.GetSize();
+		wxString hash = sizeFile.ToString();
+		wxString localName = sqlThumbnail.InsertThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->bitmapIcone.GetWidth(), threadLoadingBitmap->bitmapIcone.GetHeight(), hash);
+		threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+	}
+
+	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);
+	event->SetClientData(threadLoadingBitmap);
+	wxQueueEvent(threadLoadingBitmap->window, event);
+}
+
 
 //---------------------------------------------------------------
 //

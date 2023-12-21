@@ -11,7 +11,6 @@ namespace Regards::Control
 		                   const bool& testValidity);
 		~CThumbnailVertical(void) override;
 		void SetNoVScroll(const bool& noVscroll);
-		wxString GetWaitingMessage() override;
 
 	protected:
 		void RenderIcone(wxDC* dc) override;

@@ -16,12 +16,6 @@ CThumbnailHorizontal::~CThumbnailHorizontal(void)
 {
 }
 
-wxString CThumbnailHorizontal::GetWaitingMessage()
-{
-	return "Window CThumbnailHorizontal waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " +
-		to_string(nbProcess);
-}
-
 void CThumbnailHorizontal::InitPosition()
 {
 	wxWindow* parent = this->GetParent();

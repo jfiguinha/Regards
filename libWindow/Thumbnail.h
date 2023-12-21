@@ -6,6 +6,7 @@
 #include "WindowMain.h"
 #include <wx/animate.h>
 #include <queue>
+#include "ThreadLoadingBitmap.h"
 using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -32,6 +33,8 @@ namespace Regards::Window
 		int GetNbElement();
 		int GetNumPhotoId(const int& numItem);
 		int GetNumItem();
+
+		void UpdateRenderIcone(CThreadLoadingBitmap* threadLoadingBitmap);
 
 		int GetHauteur()
 		{
@@ -64,8 +67,7 @@ namespace Regards::Window
 		void SetTheme(CThemeThumbnail* theme);
 
 		void UpdateScreenRatio() override;
-		wxString GetWaitingMessage() override;
-		static void LoadPicture(void* param);
+
 		void Resize() override;
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
@@ -81,11 +83,11 @@ namespace Regards::Window
 		int GetNumItemById(const int& idPhoto);
 		void EraseThumbnailList(CIconeList* iconeListLocal);
 		int GetNbIconSelected();
-		void ProcessThumbnail(CThumbnailData* pThumbnailData);
+
 		virtual void EraseThumbnail(wxCommandEvent& event);
 		void StartLoadingPicture(wxCommandEvent& event);
 		void StopLoadingPicture(wxCommandEvent& event);
-		void UpdateMessage(wxCommandEvent& event);
+
 		void OnScrollMove(wxCommandEvent& event);
 		void OnKeyUp(wxKeyEvent& event);
 		void TestMaxX();
@@ -116,7 +118,6 @@ namespace Regards::Window
 		{
 		};
 
-		void ProcessIdle() override;
 		void OnIdle(wxIdleEvent& evt) override;
 		void on_paint(wxPaintEvent& event);
 		void OnMouseMove(wxMouseEvent& event);
@@ -152,6 +153,10 @@ namespace Regards::Window
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
 		void update_render_icone(wxCommandEvent& event);
+
+
+		CIcone* GetIconeByPath(const wxString& filepath);
+		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
 
 		//------------------------------------------------------------
 		//Variable
@@ -190,7 +195,7 @@ namespace Regards::Window
 
 		int positionSize;
 		bool controlKeyPush = false;
-		int nbVideoThumbnailProcess = 0;
+
 
 		//wxBitmap bitmapFolder;
 		wxBitmap bitmapPhoto;
@@ -207,7 +212,7 @@ namespace Regards::Window
 		int controlWidth;
 		int controlHeight;
 		int thumbnailPos;
-		int nbProcess;
+
 
 		int timeActif = 0;
 		int timeSelect = 0;
@@ -253,7 +258,6 @@ namespace Regards::Window
         bool stopToGetNbElement = false;
 		std::mutex muEraseList;
 		std::vector<CListToClean *> listToErrase;
-		std::map<wxString, bool> listFile;
-		std::mutex muListFile;
+
 	};
 }

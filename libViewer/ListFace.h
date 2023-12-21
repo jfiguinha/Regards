@@ -45,6 +45,7 @@ namespace Regards
 			int ImagePrecedente();
 			int GetNumItem();
 			vector<int> GetFaceSelectID();
+			CThumbnailFace* GetThumbnailFace();
 
 		private:
 			static void FacialDetectionRecognition(void* param);
