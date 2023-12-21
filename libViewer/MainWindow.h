@@ -177,7 +177,7 @@ namespace Regards::Viewer
 		wxString firstFileToShow = "";
 		wxString oldRequest = "";
 		bool init = true;
-
+		vector<wxString> photoList;
 		CFolderProcess* folderProcess = nullptr;
 	};
 }

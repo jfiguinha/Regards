@@ -917,6 +917,10 @@ void CMainWindow::UpdateFolderStatic()
 				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
 		}
 
+		
+		CSqlPhotosWithoutThumbnail sqlPhoto;
+		sqlPhoto.GetPhotoList(&photoList);
+
 		centralWnd->SetListeFile(localFilename, typeAffichage);
 		listFile.clear();
 		thumbnailPos = 0;
@@ -1051,41 +1055,27 @@ void CMainWindow::ProcessThumbnail()
 	if (nbProcess >= nbProcesseur)
 		return;
 
-	//int nbProcesseur = thread::hardware_concurrency();
-	vector<wxString> photoList;
-	CSqlPhotosWithoutThumbnail sqlPhoto;
 
-	//if (!stopToGetNbElement)
-		nbPhotoElement = sqlPhoto.GetPhotoElement();
-
-	//nbProcesseur = 1;
-	if (nbPhotoElement > 0)
+	for (wxString path : photoList)
 	{
-		sqlPhoto.GetPhotoList(&photoList, nbProcesseur);
-		if (photoList.size() > 0)
+		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+		event->SetExtraLong(photoList.size());
+		wxQueueEvent(this, event);
+
+		std::map<wxString, bool>::iterator it = listFile.find(path);
+		if (it == listFile.end())
 		{
-			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-			event->SetExtraLong(nbPhotoElement);
-			wxQueueEvent(this, event);
-
-
-			for (int j = 0; nbProcess < nbProcesseur; j++)
-			{
-				if (j >= photoList.size())
-					break;
-
-				wxString filename = photoList[j];
-				std::map<wxString, bool>::iterator it = listFile.find(filename);
-				if (it == listFile.end())
-				{
-					ProcessThumbnail(filename,0);
-					listFile[filename] = true;
-					nbProcess++;
-				}
-			}
+			ProcessThumbnail(path, 0);
+			listFile[path] = true;
+			nbProcess++;
 		}
-	}
 
+		photoList.erase(photoList.begin());
+
+		if (nbProcess == nbProcesseur)
+			break;
+
+	}
 
 	if (photoList.empty())
 	{
