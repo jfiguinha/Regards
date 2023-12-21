@@ -60,19 +60,22 @@ wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, 
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
-
-	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-	if (wxFileExists(thumbnail))
-		wxRemoveFile(thumbnail);
-
-	if (!wxFileExists(thumbnail))
+	if (numPhoto > 0)
 	{
-		returnValue = ExecuteRequestWithNoResult(
-			"INSERT or IGNORE INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
-			+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		if (wxFileExists(thumbnail))
+			wxRemoveFile(thumbnail);
+
+		if (!wxFileExists(thumbnail))
+		{
+			returnValue = ExecuteRequestWithNoResult(
+				"INSERT or IGNORE INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
+				+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
+		}
+		return thumbnail;
 	}
 
-	return thumbnail;
+	return "";
 }
 
 vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
@@ -92,26 +95,18 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 
-	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+
 	wxImage image;
+	if (numPhoto == 0)
+		return image;
+
+	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+	
 	if (wxFileExists(thumbnail))
 	{
         image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
 	}
-	else
-	{
-		printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
-		wxImage bitmap = CLoadingResource::LoadImageResource("IDB_PHOTO");
-		return bitmap;
-        /*
-#ifdef WIN32
-        wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-        wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-        image.LoadFile(photoCancel, wxBITMAP_TYPE_ANY);
-        */
-	}
+
 	return image;
 }
 
@@ -121,24 +116,29 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-
 	CImageLoadingFormat* picture = nullptr;
-	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-	if (wxFileExists(thumbnail))
+	if (numPhoto > 0)
 	{
-		picture = new CImageLoadingFormat();
-		wxImage image = CThumbnailBuffer::GetPicture(thumbnail);
-		//CLibPicture libPicture;
-		//picture = libPicture.LoadPicture(thumbnail);
-		picture->SetPicture(image);
-		if (picture != nullptr)
-			picture->SetFilename(thumbnail);
-		else
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		if (wxFileExists(thumbnail))
 		{
-			printf("error");
-			DeleteThumbnail(numPhoto);
+			picture = new CImageLoadingFormat();
+			wxImage image = CThumbnailBuffer::GetPicture(thumbnail);
+			//CLibPicture libPicture;
+			//picture = libPicture.LoadPicture(thumbnail);
+			picture->SetPicture(image);
+			if (picture != nullptr)
+				picture->SetFilename(thumbnail);
+			else
+			{
+				printf("error");
+				DeleteThumbnail(numPhoto);
+			}
 		}
 	}
+
+	
+
 	return picture;
 }
 

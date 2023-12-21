@@ -114,7 +114,6 @@ extern wxImage defaultPicture;
 
 void * CLibPicture::lib_handle = nullptr;
 
-extern wxImage defaultPicture;
 
 void CLibPicture::LoadBpgDll()
 {
@@ -1475,11 +1474,7 @@ uint32_t CLibPicture::GetFrameDelay(const wxString& szFileName)
 CImageLoadingFormat* CLibPicture::GetCancelPhoto(const wxString& szFileName, const int& widthThumbnail,
                                                  const int& heightThumbnail)
 {
-#ifdef WIN32
-	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
+	wxString photoCancel = CLibResource::GetPhotoCancel();
 
 	CImageLoadingFormat* bitmap = new CImageLoadingFormat();
 	try
@@ -2659,7 +2654,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		//delete bitmap;
 		//bitmap = LoadPicture(CPictureUtility::GetPhotoCancel());
 
-		cv::Mat picture = cv::imread(CConvertUtility::ConvertToStdString(CPictureUtility::GetPhotoCancel()));
+		cv::Mat picture = cv::imread(CConvertUtility::ConvertToStdString(CLibResource::GetPhotoCancel()));
 		bitmap->SetPicture(picture);
 		bitmap->SetFilename(fileName);
 	}

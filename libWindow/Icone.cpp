@@ -925,7 +925,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
                                 const bool& forceRedraw)
 {  
    
-	wxImage image;
+	wxImage image = CLoadingResource::LoadImageResource("IDB_PHOTO");
 	if (forceRedraw)
 		redraw = true;
 
@@ -939,6 +939,8 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 	{
 		image = pThumbnailData->GetwxImage();
 	}
+
+	
 
 	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() !=
 		themeIcone.GetHeight()))

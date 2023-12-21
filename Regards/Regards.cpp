@@ -161,8 +161,11 @@ bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
 
-    
-    defaultPicture.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+    defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+
+	defaultPictureThumbnail.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+
+	defaultPictureThumbnailVideo.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future

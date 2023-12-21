@@ -741,7 +741,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 
 		if (errorPhoto)
 		{
-			pictureToLoad = CPictureUtility::GetPhotoCancel();
+			pictureToLoad = CLibResource::GetPhotoCancel();
 			needToLoadPicture = true;
 			StartLoadingPicture();
 		}

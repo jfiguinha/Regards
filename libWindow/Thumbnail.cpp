@@ -35,8 +35,6 @@ class CImageLoadingFormat;
 #define TIMER_TIME_REFRESH 1000 / 25
 
 
-extern wxImage defaultPicture;
-
 class CListToClean
 {
 public:
@@ -1040,7 +1038,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
 						if (window != nullptr)
 						{
-							wxString* localName = new wxString(pBitmapIcone->GetFilename());
+							wxString* localName = new wxString(pThumbnailData->GetFilename());
 							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
 							evt.SetClientData(localName);
 							evt.SetInt(0);
@@ -1569,6 +1567,7 @@ void CThumbnail::UpdateRenderIcone(CThreadLoadingBitmap * threadLoadingBitmap)
 							pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
 						}
 						pThumbnailData->SetIsProcess(true);
+						//pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
 						pThumbnailData->SetIsLoading(false);
 						icone->RefreshIcone();
 					}

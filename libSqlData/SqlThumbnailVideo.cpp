@@ -11,7 +11,7 @@
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-extern wxImage defaultPicture;
+extern wxImage defaultPictureThumbnailVideo;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
 	: CSqlExecuteRequest(L"RegardsDB"), nbElement(0), numPhoto(0)
@@ -92,7 +92,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
 			videoThumbnail->image.LoadFile(thumbnail);
 			if (!videoThumbnail->image.IsOk())
 			{
-				videoThumbnail->image = defaultPicture;
+				videoThumbnail->image = defaultPictureThumbnailVideo;
 			}
 			videoThumbnail->filename = thumbnail;
 		}

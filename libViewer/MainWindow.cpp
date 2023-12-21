@@ -1139,12 +1139,18 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 
 void CMainWindow::ProcessThumbnail(const wxString & filename, int type)
 {
-
-	auto pLoadBitmap = new CThreadLoadingBitmap();
-	pLoadBitmap->filename = filename;
-	pLoadBitmap->window = this;
-	pLoadBitmap->type = type;
-	pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+	if (filename != "")
+	{
+		auto pLoadBitmap = new CThreadLoadingBitmap();
+		pLoadBitmap->filename = filename;
+		pLoadBitmap->window = this;
+		pLoadBitmap->type = type;
+		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+	}
+	else
+	{
+		printf("error");
+	}
 
 }
 
@@ -1226,7 +1232,8 @@ void CMainWindow::LoadPicture(void* param)
 		wxULongLong sizeFile = file.GetSize();
 		wxString hash = sizeFile.ToString();
 		wxString localName = sqlThumbnail.InsertThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->bitmapIcone.GetWidth(), threadLoadingBitmap->bitmapIcone.GetHeight(), hash);
-		threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+		if(localName != "")
+			threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 	}
 
 	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);

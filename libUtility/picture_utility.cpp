@@ -203,12 +203,3 @@ void CPictureUtility::VerifRectSize(cv::Rect& rect, cv::Mat& matSrc)
 	}
 }
 
-
-wxString CPictureUtility::GetPhotoCancel()
-{
-#ifdef WIN32
-	return CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-	return CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-}

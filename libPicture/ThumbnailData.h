@@ -1,5 +1,5 @@
 #pragma once
-
+#include <LoadingResource.h>
 class CRegardsBitmap;
 
 #define TYPEPHOTO 1
@@ -46,6 +46,7 @@ public:
 	virtual wxImage GetwxImage()
 	{
 		wxImage image;
+		image = CLoadingResource::LoadImageResource("IDB_PHOTO");
 		return image;
 	};
 
