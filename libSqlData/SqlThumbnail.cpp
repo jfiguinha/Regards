@@ -6,6 +6,7 @@
 #include <wx/file.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
+#include <LoadingResource.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -100,6 +101,8 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	else
 	{
 		printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
+		wxImage bitmap = CLoadingResource::LoadImageResource("IDB_PHOTO");
+		return bitmap;
         /*
 #ifdef WIN32
         wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";

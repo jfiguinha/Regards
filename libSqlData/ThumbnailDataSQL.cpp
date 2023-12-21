@@ -10,6 +10,7 @@ using namespace Regards::Sqlite;
 #include <wx/filename.h>
 #include <FileUtility.h>
 #include <opencv2/videoio.hpp>
+#include <LoadingResource.h>
 #include <ConvertUtility.h>
 #include <VideoPlayer.h>
 using namespace Regards::Video;
@@ -149,14 +150,8 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				if (!frameOut.IsOk())
 				{
 					numFrame = 0;
-#ifdef WIN32
-					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-					wxImage cancel;
-					cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
-					return cancel;
+					wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
+					return bitmap;
 				}
 			}
 		}
@@ -173,14 +168,8 @@ wxImage CThumbnailDataSQL::GetwxImage()
         if (!frameOut.IsOk())
         {
             numFrame = 0;
-#ifdef WIN32
-            wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-            wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-            wxImage cancel;
-            cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
-            return cancel;
+			wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
+            return bitmap;
         }
     }
 	else if (isAnimation)
@@ -195,14 +184,8 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		if (!frameOut.IsOk())
 		{
 			numFrame = 0;
-#ifdef WIN32
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-			wxImage cancel;
-			cancel.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
-			return cancel;
+			wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
+			return bitmap;
 		}
 	}
 
