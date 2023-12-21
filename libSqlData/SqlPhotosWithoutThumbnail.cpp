@@ -32,7 +32,10 @@ void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList, int n
 	this->nbElement = nbElement;
 	this->photoList = photoList;
 	typeResult = 0;
-	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW LIMIT " + to_string(nbElement));
+	if(nbElement > 0)
+		ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW LIMIT " + to_string(nbElement));
+	else
+		ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW");
 }
 
 int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)

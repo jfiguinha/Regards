@@ -919,7 +919,7 @@ void CMainWindow::UpdateFolderStatic()
 
 		
 		CSqlPhotosWithoutThumbnail sqlPhoto;
-		sqlPhoto.GetPhotoList(&photoList);
+		sqlPhoto.GetPhotoList(&photoList,0);
 
 		centralWnd->SetListeFile(localFilename, typeAffichage);
 		listFile.clear();
