@@ -129,7 +129,7 @@ namespace Regards::Viewer
 		void UpdateMessage(wxCommandEvent& event);
 		void ProcessThumbnail();
 		static void LoadPicture(void* param);
-		void ProcessThumbnail(const wxString& filename, int type);
+		void ProcessThumbnail(wxString filename, int type);
 		void UpdateThumbnailIcone(wxCommandEvent& event);
 		int nbElementInIconeList = 0;
 		int nbPhotoElement = 0;

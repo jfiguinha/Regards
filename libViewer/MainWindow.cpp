@@ -1055,27 +1055,41 @@ void CMainWindow::ProcessThumbnail()
 	if (nbProcess >= nbProcesseur)
 		return;
 
-
+	vector<int> pos;
+	int i = 0;
+	int last = 0;
 	for (wxString path : photoList)
 	{
-		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-		event->SetExtraLong(photoList.size());
-		wxQueueEvent(this, event);
-
-		std::map<wxString, bool>::iterator it = listFile.find(path);
-		if (it == listFile.end())
+		if (path != "")
 		{
-			ProcessThumbnail(path, 0);
-			listFile[path] = true;
-			nbProcess++;
+
+			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+			event->SetExtraLong(photoList.size());
+			wxQueueEvent(this, event);
+
+
+			std::map<wxString, bool>::iterator it = listFile.find(path);
+			if (it == listFile.end())
+			{
+				ProcessThumbnail(path, 0);
+				listFile[path] = true;
+				nbProcess++;
+			}
+			if (nbProcess == nbProcesseur)
+				break;
+
+			
+		}
+		else
+		{
+			printf("error");
 		}
 
-		photoList.erase(photoList.begin());
-
-		if (nbProcess == nbProcesseur)
-			break;
-
+		last++;
 	}
+
+	photoList.erase(photoList.begin(), photoList.begin() + last);
+
 
 	if (photoList.empty())
 	{
@@ -1137,7 +1151,7 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	delete filename;
 }
 
-void CMainWindow::ProcessThumbnail(const wxString & filename, int type)
+void CMainWindow::ProcessThumbnail(wxString filename, int type)
 {
 	if (filename != "")
 	{
