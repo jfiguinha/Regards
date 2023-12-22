@@ -890,18 +890,18 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		int i = 0;
 		time_t ending;
 		time(&ending);
-		for (CListToClean* element : listToErrase)
+		for (int i = 0; i < listToErrase.size(); i++)
 		{
+			CListToClean* element = listToErrase[i];
 			int diff = difftime(ending, element->timeToAdd);
 			if (diff > 5)
 			{
-                printf("CThumbnail::listToErrase %i \n", i);
+				printf("CThumbnail::listToErrase %i \n", i);
 				delete element->list;
 				element->list = nullptr;
 				listToErrase.erase(listToErrase.begin() + i);
+				i--;
 			}
-			else
-				i++;
 		}
 	}
 }
