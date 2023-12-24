@@ -145,7 +145,7 @@ const char* pick_option(int* c, char** v, const char* o, const char* d)
 }
 
 wxImage defaultPicture;
-
+wxImage defaultPictureThumbnailVideo;
 float value[256];
 
 float clamp(float val, float minval, float maxval)
