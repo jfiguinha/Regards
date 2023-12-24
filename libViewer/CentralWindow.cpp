@@ -280,8 +280,9 @@ void CCentralWindow::RefreshThumbnail(int type)
 	}
 	if (listFace != nullptr)
 	{
-		if (listFace->IsShown())
-			listFace->Refresh();
+		CThumbnailFace * ptListFace = listFace->GetThumbnailFace();
+		if (ptListFace->IsShown())
+			ptListFace->Refresh();
 	}
 	if (thumbnailPicture != nullptr)
 	{
@@ -317,7 +318,8 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 	if (listFace != nullptr)
 	{
 		CThumbnailFace * thumbFace = listFace->GetThumbnailFace();
-		thumbFace->UpdateRenderIcone(threadLoadingBitmap);
+		if(thumbFace != nullptr)
+			thumbFace->UpdateRenderIcone(threadLoadingBitmap);
 	}
 	if (thumbnailPicture != nullptr)
 	{
