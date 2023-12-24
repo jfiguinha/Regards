@@ -73,6 +73,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->SetNumFace(faceName);
 
+
 	for (auto i = 0; i < listPhotoFace.size(); i++)
 	{
 		CFaceFilePath numFace = listPhotoFace.at(i);
@@ -99,6 +100,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		pBitmapIcone->SetShowDelete(true);
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
+
 
 	if (listPhotoFace.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
@@ -131,12 +133,17 @@ void CThumbnailFace::init()
 	std::vector<CFaceName> listFace = sqlFindFacePhoto.GetListFaceName();
 	for (int i = 0; i < listFace.size(); i++)
 	{
-		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.
-			GetListPhotoFace(listFace.at(i).numFace, pertinence);
+		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
 		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	for (int i = 0; i < iconeListLocal->GetNbElement(); i++)
+	int size = iconeListLocal->GetNbElement();
+
+#ifndef USE_TBB_VECTOR
+	for (auto i = 0; i < size; i++)
+#else
+	tbb::parallel_for(0, size, 1, [=](int i)
+#endif
 	{
 		int photo = iconeListLocal->GetPhotoId(i);
 		CIcone * ico = iconeList->FindElementPhotoId(photo);
@@ -150,8 +157,10 @@ void CThumbnailFace::init()
 			}
 
 		}
-
 	}
+#ifdef USE_TBB_VECTOR  
+	);
+#endif
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
