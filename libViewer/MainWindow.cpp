@@ -213,6 +213,7 @@ void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 
 void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
+    printf("CMainWindow::UpdateThumbnailIcone \n");
 	nbProcess--;
 	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	localevent->SetClientData(event.GetClientData());
@@ -1043,6 +1044,9 @@ void CMainWindow::ProcessIdle()
 
 void CMainWindow::ProcessThumbnail()
 {
+    printf("CMainWindow::ProcessThumbnail() : nbElementInIconeList %d \n", nbElementInIconeList);
+    printf("CMainWindow::ProcessThumbnail() : nbProcess %d \n", nbProcess);
+    
 	if (nbElementInIconeList == 0)
 	{
 		return;
@@ -1069,7 +1073,6 @@ void CMainWindow::ProcessThumbnail()
 		{
 			ProcessThumbnail(path, 0);
 			listFile[path] = true;
-			nbProcess++;
 		}
 
 		photoList.erase(photoList.begin() + i);
@@ -1121,7 +1124,7 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
-	nbProcess++;
+	
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
 	int type = event.GetInt();
@@ -1145,6 +1148,7 @@ void CMainWindow::ProcessThumbnail(wxString filename, int type)
 {
 	if (filename != "")
 	{
+        nbProcess++;
 		auto pLoadBitmap = new CThreadLoadingBitmap();
 		pLoadBitmap->filename = filename;
 		pLoadBitmap->window = this;
