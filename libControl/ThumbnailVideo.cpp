@@ -326,6 +326,12 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	needToRefresh = true;
 }
 
+void CThumbnailVideo::UpdateVideoThumbnail(const wxString& videoFile)
+{
+	if (videoFilename == videoFile)
+		UpdateVideoThumbnail();
+}
+
 void CThumbnailVideo::UpdateVideoThumbnail()
 {
 	if (videoFilename != "")

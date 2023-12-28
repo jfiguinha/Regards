@@ -328,6 +328,7 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 	if (thumbnailVideo != nullptr)
 	{
 		thumbnailVideo->UpdateRenderIcone(threadLoadingBitmap);
+		thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
 	}
 
 	RefreshThumbnail(threadLoadingBitmap->type);
