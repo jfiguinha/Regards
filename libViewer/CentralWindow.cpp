@@ -1734,6 +1734,9 @@ void CCentralWindow::StartLoadingPicture()
 
 bool CCentralWindow::SetAnimation(const wxString& filename)
 {
+    
+    printf("CCentralWindow::SetAnimation : %s \n", filename.ToStdString().c_str());
+    
 	if (windowMode == WINDOW_VIEWER)
 		windowManager->ShowWindow(Pos::wxTOP);
 	StopAnimation();
@@ -1747,12 +1750,12 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	oldFilename = L"";
 	int iFormat = libPicture.TestImageFormat(filename);
 	nbThumbnail = libPicture.GetNbImage(filename);
-	if (thumbnailVideo->GetFilename() != filename)
-	{
+	//if (thumbnailVideo->GetFilename() != filename)
+	//{
 		thumbnailVideo->SetFilename(filename);
 		if (nbThumbnail > 0)
 			thumbnailVideo->SetFile(filename, nbThumbnail);
-	}
+	//}
 
 	if (videoThumbnail.size() > 0)
 	{

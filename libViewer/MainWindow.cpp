@@ -1044,8 +1044,8 @@ void CMainWindow::ProcessIdle()
 
 void CMainWindow::ProcessThumbnail()
 {
-    printf("CMainWindow::ProcessThumbnail() : nbElementInIconeList %d \n", nbElementInIconeList);
-    printf("CMainWindow::ProcessThumbnail() : nbProcess %d \n", nbProcess);
+    //printf("CMainWindow::ProcessThumbnail() : nbElementInIconeList %d \n", nbElementInIconeList);
+    //printf("CMainWindow::ProcessThumbnail() : nbProcess %d \n", nbProcess);
     
 	if (nbElementInIconeList == 0)
 	{
