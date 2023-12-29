@@ -186,7 +186,7 @@ public:
     
     int64 GetDuration()
     {
-        int64 duration = 0;
+        int64 duration = -1000;
         std:wstring To_Display = MI.Get(Stream_General, 0, __T("Duration"), Info_Text, Info_Name).c_str();
         if (To_Display != "")
         {
