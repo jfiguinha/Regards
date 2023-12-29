@@ -18,6 +18,11 @@ bool CInfosSeparationBarExplorer::GetShow()
 	return open;
 }
 
+void CInfosSeparationBarExplorer::ShowExpandIcon(const bool& showExpandIcon)
+{
+	this->showExpandIcon = showExpandIcon;
+}
+
 
 CInfosSeparationBarExplorer::CInfosSeparationBarExplorer(const CThemeInfosSeparationBar& theme)
 	: CInfosSeparationBar(theme)
@@ -33,10 +38,14 @@ void CInfosSeparationBarExplorer::OnClick(const int& x, const int& y)
 	{
 		isSelected = !isSelected;
 	}
-	if ((rcShowSelect.x < x && x < (rcShowSelect.x + rcShowSelect.width)) && (rcShowSelect.y < y && y < (rcShowSelect.y + rcShowSelect.height)))
+	if (showExpandIcon)
 	{
-		open = !open;
+		if ((rcShowSelect.x < x && x < (rcShowSelect.x + rcShowSelect.width)) && (rcShowSelect.y < y && y < (rcShowSelect.y + rcShowSelect.height)))
+		{
+			open = !open;
+		}
 	}
+
 }
 
 void CInfosSeparationBarExplorer::CreateIcone(wxImage & bitmap, const wxString & name)
@@ -64,31 +73,56 @@ void CInfosSeparationBarExplorer::RenderIcone(wxDC* deviceContext, const int& po
 	int xPos = x;
 	int yPos = y + (theme.GetHeight() - bitmapCheckOn.GetHeight());
 
-	rcSelect.x = _xPos + xPos + bitmapCheckOn.GetWidth() + 10 + posLargeur;
-	rcSelect.y = _yPos + yPos + posHauteur;
-	rcSelect.width = bitmapCheckOn.GetWidth();
-	rcSelect.height = bitmapCheckOn.GetHeight();
-
-	rcShowSelect.x = _xPos + xPos + posLargeur;
-	rcShowSelect.y = _yPos + yPos + posHauteur;
-	rcShowSelect.width = bitmapCheckOn.GetWidth();
-	rcShowSelect.height = bitmapCheckOn.GetHeight();
 	
+	if (showExpandIcon)
+	{
 
-	if (isSelected)
-		deviceContext->DrawBitmap(bitmapCheckOn, xPos + bitmapCheckOn.GetWidth() + 10, yPos);
+		rcSelect.x = _xPos + xPos + bitmapCheckOn.GetWidth() + 10 + posLargeur;
+		rcSelect.y = _yPos + yPos + posHauteur;
+		rcSelect.width = bitmapCheckOn.GetWidth();
+		rcSelect.height = bitmapCheckOn.GetHeight();
+
+		rcShowSelect.x = _xPos + xPos + posLargeur;
+		rcShowSelect.y = _yPos + yPos + posHauteur;
+		rcShowSelect.width = bitmapCheckOn.GetWidth();
+		rcShowSelect.height = bitmapCheckOn.GetHeight();
+
+		if (isSelected)
+			deviceContext->DrawBitmap(bitmapCheckOn, xPos + bitmapCheckOn.GetWidth() + 10, yPos);
+		else
+			deviceContext->DrawBitmap(bitmapCheckOff, xPos + bitmapCheckOn.GetWidth() + 10, yPos);
+
+		if (open)
+			deviceContext->DrawBitmap(bitmapFolderContract, xPos, yPos);
+		else
+			deviceContext->DrawBitmap(bitmapFolderExpand, xPos, yPos);
+
+		wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
+
+		xPos = xPos + bitmapCheckOn.GetWidth() + 30 + bitmapCheckOn.GetWidth();
+		yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
+	}
 	else
-		deviceContext->DrawBitmap(bitmapCheckOff, xPos + bitmapCheckOn.GetWidth() + 10, yPos);
+	{
+		rcSelect.x = _xPos + xPos + posLargeur;
+		rcSelect.y = _yPos + yPos + posHauteur;
+		rcSelect.width = bitmapCheckOn.GetWidth();
+		rcSelect.height = bitmapCheckOn.GetHeight();
 
-	if (open)
-		deviceContext->DrawBitmap(bitmapFolderExpand, xPos, yPos);
-	else
-		deviceContext->DrawBitmap(bitmapFolderContract, xPos, yPos);
+		if (isSelected)
+			deviceContext->DrawBitmap(bitmapCheckOn, xPos, yPos);
+		else
+			deviceContext->DrawBitmap(bitmapCheckOff, xPos, yPos);
 
-	wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
+		wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
 
-	xPos = xPos + bitmapCheckOn.GetWidth() + 30 + bitmapCheckOn.GetWidth();
-	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
+		xPos = xPos + 10 + bitmapCheckOn.GetWidth();
+		yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
+
+		
+	}
+
 
 	CWindowMain::DrawTexte(deviceContext, libelleSelectAll, xPos, yPos, theme.themeFont);
+
 }

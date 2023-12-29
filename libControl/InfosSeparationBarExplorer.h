@@ -14,7 +14,7 @@ namespace Regards::Window
 		void OnClick(const int& x, const int& y) override;
 		bool GetSelected();
 		bool GetShow();
-
+		void ShowExpandIcon(const bool& showExpandIcon);
 	protected:
 
 		void CreateIcone(wxImage& bitmap, const wxString& name);
@@ -25,6 +25,7 @@ namespace Regards::Window
 		wxImage bitmapFolderExpand;
 		wxImage bitmapFolderContract;
 		wxString libelleSelectAll;
+		bool showExpandIcon = true;
 		bool isSelected;
 		wxRect rcSelect;
 		wxRect rcShowSelect;

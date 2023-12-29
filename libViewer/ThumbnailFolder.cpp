@@ -111,7 +111,7 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
-
+	infosSeparationBar->ShowExpandIcon(true);
 	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = _pictures->size();
 #ifndef USE_TBB_VECTOR
