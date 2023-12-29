@@ -240,7 +240,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 			for (int i = 0; i < listSeparator->size(); i++)
 			{
 				CInfosSeparationBarExplorer* infosSeparationNew = (CInfosSeparationBarExplorer*)listSeparator->at(i);
-				if (infosSeparationNew->GetTitle() == infosExplorerOld->GetTitle())
+				if (infosSeparationNew->GetLongTitle() == infosExplorerOld->GetLongTitle())
 				{
 					infosSeparationNew->SetSelected(infosExplorerOld->GetSelected());
 					infosSeparationNew->SetShow(infosExplorerOld->GetShow());

@@ -32,6 +32,11 @@ public:
 		std::sort(listMap.begin(), listMap.end(), cmp);
 	}
 
+	virtual void SortList(InfosSeparationBarVector* listSeparator)
+	{
+
+	}
+
 	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
 		std::map<wxString, PhotosVector *> listMap;
@@ -75,12 +80,15 @@ public:
 			SortList(listVector);
 
 			CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, listLibelle[value], numElement);
+			infosSeparationBar->SetLongTitle(value);
 			if (infosSeparationBar->listElement.size() > 0)
 				listSeparator->push_back(infosSeparationBar);
 			listVector->clear();
 			delete listVector;
 			//CreateSeparatorBar(listSeparator, listVector, GenerateLibelle(), folder);
 		}
+
+		SortList(listSeparator);
 		listMap.clear();
 		myvector.clear();
 	};
@@ -121,7 +129,7 @@ public:
 
 	static bool cmp_path(CPhotos & a, CPhotos & b)
 	{
-		return a.GetPath() < b.GetPath();
+		return a.GetPath() <  b.GetPath();
 	}
 
 	void SortList(PhotosVector* listPhotos) override
@@ -133,6 +141,16 @@ public:
 	{
 		fname = wxFileName(photos.path);
 		dirName = fname.GetPath();
+	}
+
+	static bool cmp_path_separator(CInfosSeparationBar * a, CInfosSeparationBar * b)
+	{
+		return a->GetLongTitle() < b->GetLongTitle();
+	}
+
+	void SortList(InfosSeparationBarVector* listSeparator) override
+	{
+		std::sort(listSeparator->begin(), listSeparator->end(), cmp_path_separator);
 	}
 
 private:

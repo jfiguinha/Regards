@@ -21,8 +21,17 @@ namespace Regards::Window
 			return title;
 		}
 
+		const wxString& GetLongTitle()
+		{
+			return longTitle;
+		}
+
 		void Clear();
 		void SetTitle(const wxString& title);
+		void SetLongTitle(const wxString& title)
+		{
+			longTitle = title;
+		}
 		void SetWindowPos(const int& x, const int& y);
 		void SetWidth(const int& width);
 		virtual void OnClick(const int& x, const int& y);
@@ -56,7 +65,7 @@ namespace Regards::Window
 
 		CThemeInfosSeparationBar theme;
 		
-
+		wxString longTitle;
 		wxString title;
 		wxRect titleRectPos;
 	};
