@@ -13,6 +13,8 @@ namespace Regards::Window
 		void RenderIcone(wxDC* deviceContext, const int& posLargeur, const int& posHauteur) override;
 		void OnClick(const int& x, const int& y) override;
 		bool GetSelected();
+		void SetSelected(const bool & selected);
+		void SetShow(const bool& show);
 		bool GetShow();
 		void ShowExpandIcon(const bool& showExpandIcon);
 	protected:

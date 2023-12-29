@@ -18,6 +18,16 @@ bool CInfosSeparationBarExplorer::GetShow()
 	return open;
 }
 
+void CInfosSeparationBarExplorer::SetSelected(const bool& selected)
+{
+	this->isSelected = selected;
+}
+
+void CInfosSeparationBarExplorer::SetShow(const bool& show)
+{
+	this->open = show;
+}
+
 void CInfosSeparationBarExplorer::ShowExpandIcon(const bool& showExpandIcon)
 {
 	this->showExpandIcon = showExpandIcon;

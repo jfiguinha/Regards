@@ -190,13 +190,6 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	if (typeLocal == SHOW_ALL)
 	{
-		//PhotosVector* listPhotos = CThumbnailBuffer::GetPhotoVector();
-		/*
-		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-		CInfosSeparationBarExplorer* infosSeparationBar = AddSeparatorBar(iconeListLocal, libellePhoto, i);
-		if (size > 0)
-			_listSeparator->push_back(infosSeparationBar);
-		*/
 		CTreatmentDataFolder dataYear;
 		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
@@ -234,6 +227,8 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	listSeparator = _listSeparator;
 	lockIconeList.unlock();
 
+
+
 	//------------------------------------------------------------------
 	//Cleaning old Element
 	//------------------------------------------------------------------
@@ -241,6 +236,18 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	{
 		for (CInfosSeparationBar* infosSeparationBar : *old)
 		{
+			CInfosSeparationBarExplorer* infosExplorerOld = (CInfosSeparationBarExplorer*)infosSeparationBar;
+			for (int i = 0; i < listSeparator->size(); i++)
+			{
+				CInfosSeparationBarExplorer* infosSeparationNew = (CInfosSeparationBarExplorer*)listSeparator->at(i);
+				if (infosSeparationNew->GetTitle() == infosExplorerOld->GetTitle())
+				{
+					infosSeparationNew->SetSelected(infosExplorerOld->GetSelected());
+					infosSeparationNew->SetShow(infosExplorerOld->GetShow());
+					break;
+				}
+			}
+
 			delete(infosSeparationBar);
 		}
 
@@ -579,18 +586,18 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 
 		if (infosSeparationBar != nullptr)
 		{
-			int numElement = infosSeparationBar->listElement.at(0);
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
-			wxRect rc = pBitmapIcone->GetPos();
+			//int numElement = infosSeparationBar->listElement.at(0);
+			//CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+			//wxRect rc = pBitmapIcone->GetPos();
 			//int nbElement_localX = infosSeparationBar->GetNbElementX();
-			int nbElement_localY = infosSeparationBar->GetNbElementY();
+			//int nbElement_localY = infosSeparationBar->GetNbElementY();
 
 			//int width_size = nbElement_localX * themeThumbnail.themeIcone.GetWidth();
-			int height_size =rc.y + (nbElement_localY * themeThumbnail.themeIcone.GetHeight()) - posHauteur;
-			int start_height = rc.y - posHauteur;
+			//int height_size =rc.y + (nbElement_localY * themeThumbnail.themeIcone.GetHeight()) - posHauteur;
+			//int start_height = rc.y - posHauteur;
 
-			if (height_size > 0 && start_height < GetWindowHeight())
-			{
+			//if (start_height < GetWindowHeight())
+			//{
 				bool start = false;
 				infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
@@ -623,11 +630,7 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 						}
 					}
 				}
-				else
-				{
-
-				}
-			}
+			//}
 		}
 	}
 }
