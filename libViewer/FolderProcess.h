@@ -1,14 +1,14 @@
 #pragma once
+#include "MainWindow.h"
 #include "InfosSeparationBarExplorer.h"
 #include "TreatmentData.h"
 
-
+using namespace Regards::Window;
 
 
 namespace Regards::Viewer
 {
 	class CMainWindow;
-}
 
 	class CThreadPhotoLoading
 	{
@@ -21,7 +21,7 @@ namespace Regards::Viewer
 
 		~CThreadPhotoLoading() {};
 
-		CMainWindow* mainWindow;
+		Regards::Viewer::CMainWindow* mainWindow;
 		CIconeList* iconeListLocal;
 		InfosSeparationBarVector* _listSeparator;
 		CIconeList* iconeListThumbnail;
@@ -29,9 +29,6 @@ namespace Regards::Viewer
 		PhotosVector* _pictures;
 	};
 
-
-namespace Regards::Viewer
-{
 	class CFolderProcess
 	{
 	public:

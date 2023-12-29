@@ -6,7 +6,7 @@
 #include <IconeList.h>
 #include <wx/filename.h>
 #include <map>
-using namespace Regards::Viewer;
+using namespace Regards::Window;
 
 
 class ISeparatorClass

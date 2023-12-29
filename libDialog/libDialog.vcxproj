@@ -602,7 +602,6 @@
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
     <ClCompile Include="infoAbout.cpp" />
-    <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="IntroTheme.cpp" />
     <ClCompile Include="MoveFaceDialog.cpp" />
     <ClCompile Include="MyCentralWindowIntro.cpp" />
@@ -629,7 +628,6 @@
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="IndexGenerator.h" />
     <ClInclude Include="infoAbout.h" />
-    <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="IntroTheme.h" />
     <ClInclude Include="MoveFaceDialog.h" />
     <ClInclude Include="MyCentralWindowIntro.h" />

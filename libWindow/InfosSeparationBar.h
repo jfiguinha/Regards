@@ -55,6 +55,7 @@ namespace Regards::Window
 		int nbElementY = 0;
 
 		CThemeInfosSeparationBar theme;
+		
 
 		wxString title;
 		wxRect titleRectPos;

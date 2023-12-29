@@ -1013,7 +1013,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
-	if (pBitmapIcone == nullptr)
+	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
 
 	int nbProcesseur = 1;
@@ -1021,7 +1021,6 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 		nbProcesseur = config->GetThumbnailProcess();
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
-
 	
 	if (preprocess_thumbnail)
 	{

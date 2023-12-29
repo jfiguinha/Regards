@@ -48,6 +48,7 @@ namespace Regards::Viewer
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;
+		bool updateThumbnail = false;
 		//std::mutex muVector;
 		//std::mutex muThumb;
 		//std::thread* thread_thumbnail = nullptr;

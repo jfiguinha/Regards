@@ -31,6 +31,8 @@ namespace Regards::Window
 			showSelected = show;
 		};
 
+		bool GetVisibility();
+		void SetVisibility(const bool& visible);
 		void RefreshIcone();
 		void ReinitPos();
 		void InitPos();
@@ -165,6 +167,7 @@ namespace Regards::Window
 		wxImage scaleBackup;
 		wxBitmap localmemBitmap_backup;
 		bool redraw = true;
+		bool visible = true;
 	};
 
 	using IconeVector = tbb::concurrent_vector<CIcone*>;

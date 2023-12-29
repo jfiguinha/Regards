@@ -1049,6 +1049,8 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
                         const bool& flipVertical, const bool& forceRedraw)
 {
 	int returnValue = 0;
+	if (!visible)
+		return 0;
 
 
 	if (pThumbnailData != nullptr)
@@ -1065,6 +1067,15 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
 
 	dc->DrawBitmap(localmemBitmap, x + posLargeur, y + posHauteur);
 	return returnValue;
+}
+
+bool CIcone::GetVisibility()
+{
+	return visible;
+}
+void CIcone::SetVisibility(const bool & visible)
+{
+	this->visible = visible;
 }
 
 void CIcone::SetNumFrame(const int& numFrame)

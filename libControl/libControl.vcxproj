@@ -622,6 +622,8 @@
     <ClInclude Include="InfosFile.h" />
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
+    <ClInclude Include="InfosSeparationBarExplorer.h" />
+    <ClInclude Include="InfosSeparationBarFace.h" />
     <ClInclude Include="MFTEncoding.h" />
     <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="MoveEffectTexture.h" />
@@ -671,6 +673,8 @@
     <ClCompile Include="InfosFile.cpp" />
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
+    <ClCompile Include="InfosSeparationBarExplorer.cpp" />
+    <ClCompile Include="InfosSeparationBarFace.cpp" />
     <ClCompile Include="MFTEncoding.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="MoveEffectTexture.cpp" />

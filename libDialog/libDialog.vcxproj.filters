@@ -96,9 +96,6 @@
     <ClCompile Include="ThumbnailSelection.cpp">
       <Filter>SelectPage\Thumbnail</Filter>
     </ClCompile>
-    <ClCompile Include="InfosSeparationBarExplorer.cpp">
-      <Filter>SelectPage</Filter>
-    </ClCompile>
     <ClCompile Include="Association.cpp">
       <Filter>Association</Filter>
     </ClCompile>
@@ -175,9 +172,6 @@
     </ClInclude>
     <ClInclude Include="ThumbnailSelection.h">
       <Filter>SelectPage\Thumbnail</Filter>
-    </ClInclude>
-    <ClInclude Include="InfosSeparationBarExplorer.h">
-      <Filter>SelectPage</Filter>
     </ClInclude>
     <ClInclude Include="Association.h">
       <Filter>Association</Filter>

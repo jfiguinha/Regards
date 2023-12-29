@@ -1,6 +1,6 @@
 #pragma once
 #include <ThumbnailVertical.h>
-#include "InfosSeparationBarExplorer.h"
+#include <InfosSeparationBarExplorer.h>
 using namespace Regards::Control;
 
 class CImageVideoThumbnail;

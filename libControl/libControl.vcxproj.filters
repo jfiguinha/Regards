@@ -115,6 +115,12 @@
     <ClCompile Include="ThumbnailVerticalSeparator.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
+    <ClCompile Include="InfosSeparationBarExplorer.cpp">
+      <Filter>SeparatorBar</Filter>
+    </ClCompile>
+    <ClCompile Include="InfosSeparationBarFace.cpp">
+      <Filter>SeparatorBar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -255,6 +261,12 @@
     <ClInclude Include="ThumbnailVerticalSeparator.h">
       <Filter>Thumbnail\header</Filter>
     </ClInclude>
+    <ClInclude Include="InfosSeparationBarExplorer.h">
+      <Filter>SeparatorBar</Filter>
+    </ClInclude>
+    <ClInclude Include="InfosSeparationBarFace.h">
+      <Filter>SeparatorBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -304,6 +316,9 @@
     </Filter>
     <Filter Include="Display">
       <UniqueIdentifier>{b246463e-52ad-47aa-9d15-1a27a40b0a56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SeparatorBar">
+      <UniqueIdentifier>{060f7c46-b343-4e33-b03f-a3c9884340ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

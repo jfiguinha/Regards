@@ -407,12 +407,14 @@ CInfosSeparationBar* CThumbnailFolder::FindSeparatorElement(const int& xPos, con
 
 void CThumbnailFolder::FindOtherElement(wxDC* dc, const int& x, const int& y)
 {
+	bool updateShowFile = false;
 	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)
 	{
 		CInfosSeparationBarExplorer* explorer = (CInfosSeparationBarExplorer*)separator;
 		if (explorer != nullptr)
 		{
+			bool status = explorer->GetShow();
 			explorer->OnClick(x, y);
 			//explorer->RenderIcone(dc);
 
@@ -429,6 +431,9 @@ void CThumbnailFolder::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 				//icone->RenderIcone(dc);
 			}
+
+			if (status != explorer->GetShow())
+				updateThumbnail = true;
 		}
 	}
 }
@@ -463,6 +468,7 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	for (CInfosSeparationBar* infosSeparationBar : *listSeparator)
 	{
+		CInfosSeparationBarExplorer* infosExplorer = (CInfosSeparationBarExplorer*)infosSeparationBar;
 		int nbElement_localX = 0;
 		int nbElement_localY = 0;
 
@@ -471,40 +477,56 @@ void CThumbnailFolder::ResizeThumbnail()
 
 		y += infosSeparationBar->GetHeight();
 
-		for (auto numElement : infosSeparationBar->listElement)
+		if (infosExplorer->GetShow())
 		{
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
-			if (pBitmapIcone != nullptr)
+			for (auto numElement : infosSeparationBar->listElement)
 			{
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetWindowPos(x, y);
-
-				x += themeThumbnail.themeIcone.GetWidth();
-
-				nbElement_localX++;
-				nbElementX++;
-				if (nbElementX == nbElementByRow)
+				CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+				if (pBitmapIcone != nullptr)
 				{
-					nbElementX = 0;
-					x = 0;
-					nbElementY++;
-					nbElement_localY++;
-					y += themeThumbnail.themeIcone.GetHeight();
+					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+					pBitmapIcone->SetWindowPos(x, y);
+					pBitmapIcone->SetVisibility(true);
+					x += themeThumbnail.themeIcone.GetWidth();
+
+					nbElement_localX++;
+					nbElementX++;
+					if (nbElementX == nbElementByRow)
+					{
+						nbElementX = 0;
+						x = 0;
+						nbElementY++;
+						nbElement_localY++;
+						y += themeThumbnail.themeIcone.GetHeight();
+					}
+				}
+			}
+
+			if (nbElementX != 0)
+			{
+				nbElementX = 0;
+				x = 0;
+				nbElementY++;
+				nbElement_localY++;
+				y += themeThumbnail.themeIcone.GetHeight();
+			}
+
+
+			infosSeparationBar->SetNbElementX(nbElement_localX);
+			infosSeparationBar->SetNbElementY(nbElement_localY);
+		}
+		else
+		{
+			for (auto numElement : infosSeparationBar->listElement)
+			{
+				CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+				if (pBitmapIcone != nullptr)
+				{
+					pBitmapIcone->SetVisibility(false);
 				}
 			}
 		}
 
-		if (nbElementX != 0)
-		{
-			nbElementX = 0;
-			x = 0;
-			nbElementY++;
-			nbElement_localY++;
-			y += themeThumbnail.themeIcone.GetHeight();
-		}
-
-		infosSeparationBar->SetNbElementX(nbElement_localX);
-		infosSeparationBar->SetNbElementY(nbElement_localY);
 	}
 
 	widthThumbnail = GetWindowWidth();
@@ -515,17 +537,20 @@ void CThumbnailFolder::ResizeThumbnail()
 
 bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
-	if (icone != nullptr && parent != nullptr)
+	if (icone->GetVisibility())
 	{
-		auto folder = (CThumbnailFolder*)parent;
-		wxRect rc = icone->GetPos();
-		int left = rc.x - folder->posLargeur;
-		int right = rc.x + rc.width - folder->posLargeur;
-		int top = rc.y - folder->posHauteur;
-		int bottom = rc.y + rc.height - folder->posHauteur;
-		if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+		if (icone != nullptr && parent != nullptr)
 		{
-			return true;
+			auto folder = (CThumbnailFolder*)parent;
+			wxRect rc = icone->GetPos();
+			int left = rc.x - folder->posLargeur;
+			int right = rc.x + rc.width - folder->posLargeur;
+			int top = rc.y - folder->posHauteur;
+			int bottom = rc.y + rc.height - folder->posHauteur;
+			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -543,10 +568,14 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 	if (listSeparator == nullptr)
 		return;
 
+	if (updateThumbnail)
+		ResizeThumbnail();
+	updateThumbnail = false;
+
 	for (auto i = 0; i < listSeparator->size(); i++)
 	{
 
-		CInfosSeparationBar* infosSeparationBar = listSeparator->at(i);
+		CInfosSeparationBarExplorer * infosSeparationBar = (CInfosSeparationBarExplorer *)listSeparator->at(i);
 
 		if (infosSeparationBar != nullptr)
 		{
@@ -562,33 +591,41 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 
 			if (height_size > 0 && start_height < GetWindowHeight())
 			{
+				bool start = false;
 				infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
-				bool start = false;
-				for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
+				if (infosSeparationBar->GetShow())
 				{
-					int numElement = infosSeparationBar->listElement.at(j);
-					CIcone* pBitmapIcone = iconeList->GetElement(numElement);
-					if (pBitmapIcone != nullptr)
+					
+					for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 					{
-						wxRect rc = pBitmapIcone->GetPos();
-						//if visible
-						int left = rc.x - posLargeur;
-						int right = rc.x + rc.width - posLargeur;
-						int top = rc.y - posHauteur;
-						int bottom = rc.y + rc.height - posHauteur;
-
-						if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+						int numElement = infosSeparationBar->listElement.at(j);
+						CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+						if (pBitmapIcone != nullptr)
 						{
-							if (!start)
-								start = true;
+							wxRect rc = pBitmapIcone->GetPos();
+							//if visible
+							int left = rc.x - posLargeur;
+							int right = rc.x + rc.width - posLargeur;
+							int top = rc.y - posHauteur;
+							int bottom = rc.y + rc.height - posHauteur;
 
-							RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
-								
+							if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+							{
+								if (!start)
+									start = true;
+
+								RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
+
+							}
+							else if (start)
+								break;
 						}
-						else if (start)
-							break;
 					}
+				}
+				else
+				{
+
 				}
 			}
 		}
@@ -603,6 +640,7 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
+
 
 	if (listSeparator == nullptr)
 		return;
