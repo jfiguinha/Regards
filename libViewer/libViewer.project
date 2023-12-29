@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="FolderProcess">
-    <File Name="md5check.h"/>
-    <File Name="md5check.cpp"/>
-    <File Name="FolderProcess.h"/>
-    <File Name="FolderProcess.cpp"/>
-    <File Name="ExportDiaporama.h"/>
-    <File Name="ExportDiaporama.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -34,6 +26,14 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="FolderProcess">
+    <File Name="md5check.h"/>
+    <File Name="md5check.cpp"/>
+    <File Name="FolderProcess.h"/>
+    <File Name="FolderProcess.cpp"/>
+    <File Name="ExportDiaporama.h"/>
+    <File Name="ExportDiaporama.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Keyword">
     <File Name="ToolbarKeyword.cpp"/>
     <File Name="KeywordWndToolbar.cpp"/>
@@ -87,9 +87,7 @@
     <File Name="ViewerFrame.cpp"/>
     <File Name="CategoryFolderWindow.cpp"/>
     <File Name="CategoryWnd.cpp"/>
-    <File Name="InfosSeparationBarExplorer.cpp"/>
     <File Name="ListPicture.cpp"/>
-    <File Name="InfosSeparationBarFace.cpp"/>
     <File Name="ListFace.cpp"/>
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
@@ -110,9 +108,7 @@
     <File Name="Toolbar.h"/>
     <File Name="CategoryFolderWindow.h"/>
     <File Name="CategoryWnd.h"/>
-    <File Name="InfosSeparationBarExplorer.h"/>
     <File Name="ListPicture.h"/>
-    <File Name="InfosSeparationBarFace.h"/>
     <File Name="ListFace.h"/>
     <File Name="AnimationToolbar.h"/>
     <File Name="ViewerFrame.h"/>

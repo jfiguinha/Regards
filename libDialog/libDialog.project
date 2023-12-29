@@ -63,10 +63,8 @@
     </VirtualDirectory>
     <File Name="ValidationToolbar.cpp"/>
     <File Name="SelectPage.cpp"/>
-    <File Name="InfosSeparationBarExplorer.cpp"/>
     <File Name="ValidationToolbar.h"/>
     <File Name="SelectPage.h"/>
-    <File Name="InfosSeparationBarExplorer.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
