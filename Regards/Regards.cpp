@@ -160,11 +160,7 @@ bool LocaleMakeDir(wxString folder)
 bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
-	int svgWidth = 256;
-	int svgHeight = 256;
-    defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 
-	defaultPictureThumbnailVideo = CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight);
 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
@@ -361,6 +357,10 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
+	int svgWidth = 256;
+	int svgHeight = 256;
+    defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+	defaultPictureThumbnailVideo = CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight);
 
 	if(appName == "RegardsConverter")
 	{
