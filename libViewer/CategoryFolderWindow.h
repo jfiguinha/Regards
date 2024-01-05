@@ -49,7 +49,6 @@ namespace Regards::Viewer
 		bool refreshFolder;
 
 		bool needToSendMessage;
-		bool threadDataProcess;
 		bool noCategoryMessage;
 		bool categoryMessage;
 		bool startUpdateCriteria = false;

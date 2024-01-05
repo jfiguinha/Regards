@@ -93,7 +93,6 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
 
 	update = true;
-	threadDataProcess = true;
 	noCategoryMessage = false;
 	categoryMessage = false;
 	processIdle = true;
@@ -197,13 +196,13 @@ void CCategoryFolderWindow::ProcessIdle()
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
 
-	if (nbPhotos == 0 && numProcess < nbProcesseur && threadDataProcess)
+	if (nbPhotos == 0 && numProcess < nbProcesseur)
 	{
 		CSqlInsertFile sqlInsertFile;
 		nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
 	}
 
-	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
+	if (nbPhotos > 0 && numProcess < nbProcesseur)
 	{
 		startUpdateCriteria = true;
 		//Put in a thread
@@ -232,7 +231,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		else
 			nbPhotos = 0;
 	}
-	else if (!traitementEnd && threadDataProcess)
+	else if (!traitementEnd)
 	{
 		//Nettoyage des criteres non utilises
 		CSqlCriteria criteria;
@@ -278,7 +277,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		update = true;
 		refreshFolder = false;
-		threadDataProcess = true;
+
 	}
 	else if (nbPhotos == 0)
 	{
