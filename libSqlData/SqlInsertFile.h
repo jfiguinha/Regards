@@ -28,6 +28,7 @@ namespace Regards
 			int GetNbPhotosToProcess();
 			void UpdatePhotoProcess(const int& numPhoto);
 			CPhotos GetPhotoToProcess();
+            void GetPhotoToProcessList(PhotosVector* photosVector);
 			CPhotos GetPhoto(const int& numPhoto);
 			void ImportFileFromFolder(const vector<wxString>& listFile, const int& idFolder);
 			int GetNumPhoto(const wxString& filepath);
@@ -35,7 +36,7 @@ namespace Regards
 
 		private:
 			int TraitementResult(CSqlResult* sqlResult) override;
-			PhotosVector* m_photosVector;
+			PhotosVector * m_photosVector;
 			CPhotos photoLocal;
 			vector<wxString>* listPathFile;
 			vector<int>* listPhoto;

@@ -425,7 +425,7 @@ void CThumbnailEffect::LoadPicture(void* param)
 
 void CThumbnailEffect::ProcessIdle()
 {
-	printf("CThumbnailEffect::ProcessIdle() \n");
+	//printf("CThumbnailEffect::ProcessIdle() \n");
 	//int nbProcesseur = thread::hardware_concurrency();
 	int nbProcesseur = 1;
 	CRegardsConfigParam* config = CParamInit::getInstance();

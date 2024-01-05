@@ -248,7 +248,7 @@ void CKeywordWnd::ClickOnElement(CPositionElement* element, wxWindow* window, co
 
 void CKeywordWnd::UpdateScreenRatio()
 {
-	printf("CKeywordWnd::UpdateScreenRatio() \n");
+	//printf("CKeywordWnd::UpdateScreenRatio() \n");
 	UpdateElement();
 	eventControl->UpdateTreeControl();
 }

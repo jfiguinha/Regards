@@ -1033,7 +1033,7 @@ wxString wxGenericDirCtrl::GetPath(wxTreeItemId itemId) const
 
 wxString wxGenericDirCtrl::GetPath() const
 {
-	printf(" wxGenericDirCtrl GetPath\n");
+	//printf(" wxGenericDirCtrl GetPath\n");
 
 	// Allow calling GetPath() in multiple selection from OnSelFilter
 	if (m_treeCtrl->HasFlag(wxTR_MULTIPLE))

@@ -5,6 +5,7 @@ using namespace Regards::Window;
 
 class CFindPhotoCriteria;
 class CFolderCatalog;
+class CCategoryFolderWindowPimpl;
 
 namespace Regards::Viewer
 {
@@ -38,26 +39,7 @@ namespace Regards::Viewer
 		void OnTimerRefresh(wxTimerEvent& event);
 		void ProcessIdle() override;
 
-		CCategoryWnd* catalogWndOld;
-		CMainParam* explorerconfig;
-		int oldPos;
-		bool update;
-		//int numImageFace;
-		bool traitementEnd;
-		int numProcess;
-		int nbProcesseur;
-		bool refreshFolder;
-
-		bool needToSendMessage;
-		bool noCategoryMessage;
-		bool categoryMessage;
-		bool startUpdateCriteria = false;
-		int nbPhotos = 0;
-
-		wxString urlServer;
-		bool gpsLocalisationFinish;
-		int nbGpsFile;
-		wxTimer* refreshTimer;
-
+        CCategoryFolderWindowPimpl * pimpl;
+    
 	};
 }

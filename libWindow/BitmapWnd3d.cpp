@@ -265,7 +265,7 @@ cl_device_id GetListOfDevice(cl_platform_id platform, cl_device_type device_type
 			continue;
 
 		found = i;
-		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+		//printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 		break;
 	}
 

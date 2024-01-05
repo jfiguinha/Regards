@@ -278,7 +278,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, wxString* file, const
 		CSqlFolderCatalog sqlFolderCatalog;
 		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
 
-		printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
+		//printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
 
 		if (idFolder == -1)
 		{

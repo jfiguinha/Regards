@@ -77,7 +77,7 @@ void CPane::Resize()
 #endif
 #endif
 
-	printf("CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
+	//printf("CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
 	if (titleBarVisible)
 	{
 		titleBar->SetSize(0, 0, GetWindowWidth(), titleBar->GetWindowHeight());

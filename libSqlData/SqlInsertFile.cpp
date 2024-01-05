@@ -35,6 +35,13 @@ CPhotos CSqlInsertFile::GetPhotoToProcess()
 	return photoLocal;
 }
 
+void CSqlInsertFile::GetPhotoToProcessList(PhotosVector* photosVector)
+{
+ 	type = 0;
+    m_photosVector = photosVector;
+	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0"); 
+}
+
 CPhotos CSqlInsertFile::GetPhoto(const int& numPhoto)
 {
 	type = 4;

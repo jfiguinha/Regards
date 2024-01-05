@@ -218,7 +218,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			}
 			catch (...)
 			{
-				printf("toto");
+				//printf("toto");
 			}
 
 
@@ -310,7 +310,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-    printf("CThumbnailVideo::InitWithDefaultPicture \n");
+    //printf("CThumbnailVideo::InitWithDefaultPicture \n");
     oldIconeList->EraseThumbnailList();
     delete oldIconeList;
 	//EraseThumbnailList(oldIconeList);
@@ -457,7 +457,7 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 {
 	process_end = false;
     
-    printf("CThumbnailVideo::SetFile : %s \n", videoFile.ToStdString().c_str());
+   // printf("CThumbnailVideo::SetFile : %s \n", videoFile.ToStdString().c_str());
 
 	CLibPicture libPicture;
 	iFormat = libPicture.TestImageFormat(videoFile);

@@ -49,7 +49,7 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 			fileGeolocalisation.SetFile(*filename, notGeo);
 			if (typeData == 1)
 			{
-				printf("CBitmapInfos OnTimerGPSUpdate \n");
+				//printf("CBitmapInfos OnTimerGPSUpdate \n");
 				gpsInfos = fileGeolocalisation.GetGpsInformation();
 			}
 			else if (typeData == 2)
@@ -66,7 +66,7 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 
 void CBitmapInfos::SetFilename(const wxString& libelle)
 {
-	printf("SetFilename \n");
+	//printf("SetFilename \n");
 	if (filename != libelle)
 	{
 		gpsInfos = "";
@@ -80,7 +80,7 @@ void CBitmapInfos::SetFilename(const wxString& libelle)
 
 void CBitmapInfos::UpdateData()
 {
-	printf("UpdateData \n");
+	//printf("UpdateData \n");
 	gpsInfos = "";
 
 	//Recherche dans la base de données des critères sur le fichier

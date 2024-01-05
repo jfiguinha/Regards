@@ -409,7 +409,7 @@ void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
 {
 	//int isMoving = event.GetInt();
-	printf("Is moving !!");
+	//printf("Is moving !!");
 }
 
 void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
@@ -520,7 +520,7 @@ float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& picture
 	                                                     parentRender->GetSize().GetHeight());
 	int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
-	printf("Ratio %f \n", newRatio);
+	//printf("Ratio %f \n", newRatio);
 	muVideoEffect.lock();
 
 	//Calcul Zoom Index
@@ -528,7 +528,7 @@ float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& picture
 	{
 		for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
 		{
-			printf("Ratio %f \n", videoEffectParameter.tabZoom[i]);
+			//printf("Ratio %f \n", videoEffectParameter.tabZoom[i]);
 			if (newRatio < videoEffectParameter.tabZoom[i])
 			{
 				//ratio = videoEffectParameter.tabZoom[i];
@@ -538,7 +538,7 @@ float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& picture
 		}
 	}
 
-	printf("Ratio index %d \n", zoomSelect);
+	//printf("Ratio index %d \n", zoomSelect);
 
 	videoEffectParameter.zoomSelect = zoomSelect;
 

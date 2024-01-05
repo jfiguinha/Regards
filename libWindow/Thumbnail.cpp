@@ -896,7 +896,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			int diff = difftime(ending, element->timeToAdd);
 			if (diff > 5)
 			{
-				printf("CThumbnail::listToErrase %i \n", i);
+				//printf("CThumbnail::listToErrase %i \n", i);
 				delete element->list;
 				element->list = nullptr;
 				listToErrase.erase(listToErrase.begin() + i);
@@ -1474,7 +1474,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
 	int move;
 
-	printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
+	//printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
 
 	if (event.GetWheelRotation() > 0)
 		move = 0;

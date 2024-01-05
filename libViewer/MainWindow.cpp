@@ -213,7 +213,7 @@ void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 
 void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
-    printf("CMainWindow::UpdateThumbnailIcone \n");
+    //printf("CMainWindow::UpdateThumbnailIcone \n");
 	nbProcess--;
 	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	localevent->SetClientData(event.GetClientData());

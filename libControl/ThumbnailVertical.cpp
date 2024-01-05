@@ -178,8 +178,8 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 		thumbnailSizeY = nbElementEnY * themeThumbnail.themeIcone.GetHeight();
 	}
 
-	printf("CThumbnailVertical::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
-	printf("CThumbnailVertical::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
+	//printf("CThumbnailVertical::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
+	//printf("CThumbnailVertical::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
 	if (nbElementInIconeList >= 0)

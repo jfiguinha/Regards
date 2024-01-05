@@ -99,7 +99,7 @@ void ldhighlight(wxTreeCtrl* m_treeCtrl1, wxTreeItemId& id)
 		}
 		else if (wxCheckTree::CHECKED <= i && i < wxCheckTree::CHECKED_DISABLED)
 		{
-			printf("ldhighlight CHECKED \n");
+			//printf("ldhighlight CHECKED \n");
 			m_treeCtrl1->SetItemState(id, wxCheckTree::CHECKED_LEFT_DOWN);
 		}
 	}
@@ -374,7 +374,7 @@ void wxCheckTree::On_Left_Down(wxMouseEvent& event)
 	wxTreeItemId id = HitTest(event.GetPosition(), flags);
 	int i = GetItemState(id);
 
-	printf("wxCheckTree On_Left_Down\n");
+	//printf("wxCheckTree On_Left_Down\n");
 
 	if (id.IsOk() && i >= 0 && on_check_or_label(flags))
 	{

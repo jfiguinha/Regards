@@ -22,7 +22,7 @@ CInfoAbout::CInfoAbout(const CThemeTree& theme)
 
 void CInfoAbout::UpdateScreenRatio()
 {
-	printf("CCategoryWnd::UpdateScreenRatio() \n");
+	//printf("CCategoryWnd::UpdateScreenRatio() \n");
 	eventControl->UpdateTreeControl();
 }
 

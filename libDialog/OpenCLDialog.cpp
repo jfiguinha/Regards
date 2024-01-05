@@ -124,7 +124,7 @@ void OpenCLDialog::OnInit(wxInitDialogEvent& event)
 	{
 		vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
 
-		printf("Select Device Index : %d \n", indexDevice);
+		//printf("Select Device Index : %d \n", indexDevice);
 		for (OpenCLDevice* openCLDevice : listDevice)
 		{
 			cbOpenCLDevice->Append(openCLDevice->deviceName);

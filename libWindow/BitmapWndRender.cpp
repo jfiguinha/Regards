@@ -747,7 +747,7 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 void CBitmapWndRender::ReinitPicture()
 {
 	//
-	printf("CBitmapWndRender::SetBitmap \n");
+	//printf("CBitmapWndRender::SetBitmap \n");
 
 	bitmapLoad = true;
 	bitmapUpdate = true;
@@ -755,9 +755,9 @@ void CBitmapWndRender::ReinitPicture()
 	flipHorizontal = 0;
 	angle = 0;
 
-	printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
+	//printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 
-	printf("CBitmapWndRender::SetBitmap  muBitmap.unlock()\n");
+	//printf("CBitmapWndRender::SetBitmap  muBitmap.unlock()\n");
 	toolOption = MOVEPICTURE;
 	ShrinkImage(false);
 	AfterSetBitmap();
@@ -770,7 +770,7 @@ void CBitmapWndRender::ReinitPicture()
 void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
 {
 	//
-	printf("CBitmapWndRender::SetBitmap \n");
+	//printf("CBitmapWndRender::SetBitmap \n");
 	//if (copyBmpSrc != nullptr)
 	//	delete copyBmpSrc;
 	//copyBmpSrc = nullptr;
@@ -795,19 +795,19 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 			angle = 0;
 
 
-			printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
+			//printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 			muBitmap.lock();
 			if (source != nullptr)
 			{
 				delete source;
-				printf("CBitmapWndRender::SetBitmap   delete source\n");
+				//printf("CBitmapWndRender::SetBitmap   delete source\n");
 				source = nullptr;
 			}
 
 			source = bitmapIn;
 			//source = nullptr;
 			muBitmap.unlock();
-			printf("CBitmapWndRender::SetBitmap  muBitmap.unlock()\n");
+			//printf("CBitmapWndRender::SetBitmap  muBitmap.unlock()\n");
 			toolOption = MOVEPICTURE;
 			bitmapwidth = bitmapIn->GetWidth();
 			bitmapheight = bitmapIn->GetHeight();
@@ -1551,7 +1551,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	}
 	muBitmap.unlock();
 
-	printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+	//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 	//UpdateScrollBar();
 
@@ -1572,7 +1572,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		ApplyPreviewEffect(widthOutput, heightOutput);
 
-		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 		cv::UMat data = filtreEffet->GetUMat();
@@ -1589,7 +1589,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 {
-	printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
+	//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
 
 	CRgbaquad color;
 
@@ -1622,13 +1622,13 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
 		                                           themeBitmap.colorBack.Blue()));
 
-		printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
+		//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
 		ApplyPreviewEffect(widthOutput, heightOutput);
 
-		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 		cv::Mat bitmap = filtreEffet->GetMat();
 
@@ -1643,8 +1643,8 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 		if (glTexture != nullptr)
 			glTexture->SetData(bitmap);
-		else
-			printf("CBitmapWndRender GetDisplayTexture Error \n");
+		//else
+		//	printf("CBitmapWndRender GetDisplayTexture Error \n");
 	}
 	RenderTexture(true);
 }
@@ -1687,7 +1687,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 
 	if (source != nullptr)
 	{
-		printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
+		//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
 
 		CRgbaquad color;
 
@@ -1761,12 +1761,12 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 	{
 		if (!IsSupportOpenCL())
 		{
-			printf("CBitmapWndRender OnPaint RenderToScreenWithoutOpenCLSupport\n");
+			//printf("CBitmapWndRender OnPaint RenderToScreenWithoutOpenCLSupport\n");
 			RenderToScreenWithoutOpenCLSupport();
 		}
 		else
 		{
-			printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
+			//printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}
 

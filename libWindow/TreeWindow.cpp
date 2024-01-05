@@ -434,14 +434,14 @@ void CTreeWindow::OnLDoubleClick(wxMouseEvent& event)
 
 void CTreeWindow::UpdateTreeControl()
 {
-	printf("CTreeWindow::UpdateTreeControl \n");
+	//printf("CTreeWindow::UpdateTreeControl \n");
 	GenerateScreenBuffer();
 	needToRefresh = true;
 }
 
 void CTreeWindow::UpdateScreenRatio()
 {
-	printf("CTreeWindow::UpdateScreenRatio \n");
+	//printf("CTreeWindow::UpdateScreenRatio \n");
 	//bufferUpdate = true;
 	if (this->treeControl != nullptr)
 		this->treeControl->UpdateScreenRatio();
@@ -452,7 +452,7 @@ void CTreeWindow::UpdateScreenRatio()
 
 void CTreeWindow::SetTreeControl(CTreeControl* treeControl)
 {
-	printf("CTreeWindow::SetTreeControl \n");
+	//printf("CTreeWindow::SetTreeControl \n");
 	this->treeControl = treeControl;
 	GenerateScreenBuffer();
 	needToRefresh = true;

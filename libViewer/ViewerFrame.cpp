@@ -496,7 +496,7 @@ void CViewerFrame::OnClose(wxCloseEvent& event)
 
 void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
 {
-	printf("OnFileSystemModified \n");
+	//printf("OnFileSystemModified \n");
 	const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
 	mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	eventFileSysTimer->Stop();

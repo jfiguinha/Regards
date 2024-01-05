@@ -451,8 +451,8 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 			break;
 	}
 
-	printf("CThumbnailFileSelection::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
-	printf("CThumbnailFileSelection::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
+	//printf("CThumbnailFileSelection::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
+	//printf("CThumbnailFileSelection::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
 	if (nbElementInIconeList >= 0)

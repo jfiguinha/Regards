@@ -655,8 +655,8 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 		int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
 
-		printf("MouseClick xPos : %d xPosImage : %d \n", xPos, yPos);
-		printf("Arrow yPos : %d yPosImage : %d Arrow Width : %d \n", yPosTop, yPosBottom, arrowPrevious.GetWidth());
+		//printf("MouseClick xPos : %d xPosImage : %d \n", xPos, yPos);
+		//printf("Arrow yPos : %d yPosImage : %d Arrow Width : %d \n", yPosTop, yPosBottom, arrowPrevious.GetWidth());
 
 		if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 		{

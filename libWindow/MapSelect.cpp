@@ -61,7 +61,7 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 	if (mapDialog == nullptr)
 		mapDialog = new CMapDialogBox(window);
 	mapDialog->SetUrl(url);
-	printf("CMapSelect::SelectNewMapLocalisation 1 \n");
+	//printf("CMapSelect::SelectNewMapLocalisation 1 \n");
 	if (mapDialog->ShowModal() == wxID_OK)
 	{
 		wxString getMapUrl = mapDialog->GetUrl();

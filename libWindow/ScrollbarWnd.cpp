@@ -338,8 +338,8 @@ void CScrollbarWnd::Resize()
 
 	if (!_useScaleFactor)
 		scale_factor = 1.0f;
-	printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight);
-	printf("CScrollbarWnd::Resize() controlWidth : %d pictureWidth : %d \n", controlWidth, pictureWidth);
+	//printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight);
+	//printf("CScrollbarWnd::Resize() controlWidth : %d pictureWidth : %d \n", controlWidth, pictureWidth);
 	if (scrollHorizontal != nullptr && scrollVertical != nullptr)
 	{
 		bool valueH = false;

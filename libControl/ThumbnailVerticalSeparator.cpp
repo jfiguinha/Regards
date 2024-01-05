@@ -200,7 +200,7 @@ void CThumbnailVerticalSeparator::RenderIconeWithVScroll(wxDC* deviceContext)
 
 void CThumbnailVerticalSeparator::UpdateScrollWithVScroll()
 {
-	printf("CThumbnailFace::UpdateScrollWithVScroll \n");
+	//printf("CThumbnailFace::UpdateScrollWithVScroll \n");
 	//bool update = false;
 	int oldthumbnailSizeX = thumbnailSizeX;
 	int oldthumbnailSizeY = thumbnailSizeY;
@@ -247,8 +247,8 @@ void CThumbnailVerticalSeparator::UpdateScrollWithVScroll()
 	}
 
 
-	printf("CThumbnailFace::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
-	printf("CThumbnailFace::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
+	//printf("CThumbnailFace::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
+	//printf("CThumbnailFace::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 
 	//bool refresh = false;
