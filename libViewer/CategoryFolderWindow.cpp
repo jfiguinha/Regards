@@ -128,7 +128,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	if (config != nullptr)
 		pimpl->nbProcesseur = config->GetExifProcess();
 
-
+	time(&start);
 
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
@@ -354,7 +354,13 @@ void CCategoryFolderWindow::ProcessIdle()
 	int numFolderId = 0;
 	wxString photoPath = "";
 	CSqlPhotoGPS photoGPS;
-	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur)
+
+	time_t ending;
+	time(&ending);
+
+	int diff = difftime(ending, start);
+
+	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= 3)
 	{
 		int nbGpsFileByMinute = 60;
 		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
@@ -375,9 +381,15 @@ void CCategoryFolderWindow::ProcessIdle()
 			pimpl->nbGpsFile++;
 			pimpl->numProcessGps++;
 			processIdle = true;
+			time(&start);
+
 		}
 		
 		//
+	}
+	else if (diff < 3)
+	{
+		processIdle = true;
 	}
 	
 }
@@ -625,13 +637,6 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 		if (findPhotoCriteria->fromGps)
 		{
 			pimpl->gpsLocalisationFinish = true;
-			int nbGpsFileByMinute = 60;
-			printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
-			CRegardsConfigParam* param = CParamInit::getInstance();
-			if (param != nullptr)
-				nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
-
-			pimpl->nbGpsFile = nbGpsFileByMinute;
 		}
 	}
 
@@ -646,6 +651,7 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	{
 		pimpl->numProcessGps--;
 		pimpl->numProcessGps = max(pimpl->numProcess, 0);
+		time(&start);
 	}
 	else
 	{

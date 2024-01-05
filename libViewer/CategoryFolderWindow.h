@@ -38,7 +38,7 @@ namespace Regards::Viewer
 		void RefreshThreadFolder(CFolderCatalog* folder);
 		void OnTimerRefresh(wxTimerEvent& event);
 		void ProcessIdle() override;
-
+		time_t start;
         CCategoryFolderWindowPimpl * pimpl;
     
 	};
