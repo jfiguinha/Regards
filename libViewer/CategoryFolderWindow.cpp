@@ -229,10 +229,6 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 
 	}
 
-
-
-
-
 	processIdle = true;
 }
 
