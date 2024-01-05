@@ -51,7 +51,7 @@ bool CSqlPhotoGPS::DeleteListOfPhoto(const vector<wxString>& listPhoto)
  {
     type = 1;
     m_photoGpsVec = photoGpsVec;
-	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderId FROM PHOTOSGPS Limit 1");
+	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderId FROM PHOTOSGPS");
 	return nbResult;   
  }
 
