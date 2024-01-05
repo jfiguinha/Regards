@@ -45,6 +45,7 @@ public:
         update = false;
         traitementEnd = true;
         numProcess = 0;
+		numProcessGps = 0;
         nbProcesseur = 1;
         refreshFolder = false;
         needToSendMessage = false;
@@ -70,6 +71,7 @@ public:
     //int numImageFace;
     bool traitementEnd;
     int numProcess;
+	int numProcessGps;
     int nbProcesseur;
     bool refreshFolder;
 
@@ -101,6 +103,7 @@ public:
 	thread* phthread;
 	bool hasGps;
 	bool fromGps;
+	bool isOk = true;
 };
 
 CFindPhotoCriteria::CFindPhotoCriteria()
@@ -346,11 +349,12 @@ void CCategoryFolderWindow::ProcessIdle()
 	//GPS Traitement
 	//Thread by Thread
 	//---------------------------------------------------------------------------------------------------------------
+
 	int numPhoto = 0;
 	int numFolderId = 0;
 	wxString photoPath = "";
 	CSqlPhotoGPS photoGPS;
-	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0)
+	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur)
 	{
 		int nbGpsFileByMinute = 60;
 		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
@@ -369,11 +373,13 @@ void CCategoryFolderWindow::ProcessIdle()
 			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
 			pimpl->gpsLocalisationFinish = false;
 			pimpl->nbGpsFile++;
+			pimpl->numProcessGps++;
 			processIdle = true;
 		}
 		
 		//
 	}
+	
 }
 
 
@@ -461,9 +467,15 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 	{
 		printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		fileGeolocalisation.Geolocalisation(&listCriteriaPhoto);
-		photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew,
-		                                      fileGeolocalisation.HasGps(),
-		                                      findPhotoCriteria->numFolderId);
+		if(listCriteriaPhoto.listCriteria.size() > 0)
+			photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew,
+												  fileGeolocalisation.HasGps(),
+												  findPhotoCriteria->numFolderId);
+		else
+		{
+			findPhotoCriteria->isOk = false;
+			printf("Error gps informations \n");
+		}
 	}
 
 	findPhotoCriteria->hasGps = fileGeolocalisation.HasGps();
@@ -588,35 +600,58 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
     
 	auto findPhotoCriteria = static_cast<CFindPhotoCriteria*>(event.GetClientData());
 
-	if (findPhotoCriteria->criteriaNew)
+	if (findPhotoCriteria->isOk)
 	{
-		UpdateCriteria(true);
-	}
+		if (findPhotoCriteria->criteriaNew)
+		{
+			UpdateCriteria(true);
+		}
 
+		if ((findPhotoCriteria->hasGps && findPhotoCriteria->fromGps) || !findPhotoCriteria->hasGps)
+		{
+			CSqlPhotos sqlPhoto;
+			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
+		}
+
+		if (findPhotoCriteria->fromGps)
+		{
+			CSqlPhotoGPS photoGPS;
+			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
+			pimpl->gpsLocalisationFinish = true;
+		}
+	}
+	else
+	{
+		if (findPhotoCriteria->fromGps)
+		{
+			pimpl->gpsLocalisationFinish = true;
+			int nbGpsFileByMinute = 60;
+			printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
+			CRegardsConfigParam* param = CParamInit::getInstance();
+			if (param != nullptr)
+				nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
+
+			pimpl->nbGpsFile = nbGpsFileByMinute;
+		}
+	}
 
 	if (findPhotoCriteria->phthread != nullptr)
 		findPhotoCriteria->phthread->join();
-
-	if ((findPhotoCriteria->hasGps && findPhotoCriteria->fromGps) || !findPhotoCriteria->hasGps)
-	{
-		CSqlPhotos sqlPhoto;
-		sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
-	}
-
-	if (findPhotoCriteria->fromGps)
-	{
-		CSqlPhotoGPS photoGPS;
-		photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
-		pimpl->gpsLocalisationFinish = true;
-	}
 
 	if (findPhotoCriteria->phthread != nullptr)
 		delete findPhotoCriteria->phthread;
 	delete findPhotoCriteria;
     
+	if (findPhotoCriteria->fromGps)
+	{
+		pimpl->numProcessGps--;
+		pimpl->numProcessGps = max(pimpl->numProcess, 0);
+	}
+	else
+	{
+		pimpl->numProcess--;
+		pimpl->numProcess = max(pimpl->numProcess, 0);
+	}
 
-    
-	pimpl->numProcess--;
-	pimpl->numProcess = max(pimpl->numProcess, 0);
 	processIdle = true;
 }

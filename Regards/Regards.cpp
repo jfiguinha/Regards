@@ -26,7 +26,7 @@
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
-int numElementToLoad = 0;
+int numElementToLoad = 5;
 
 using namespace cv;
 using namespace Regards::Picture;

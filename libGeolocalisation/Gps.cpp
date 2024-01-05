@@ -192,6 +192,9 @@ bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitud
 		ImportationGeoPlugin(xml);
 
 		free(data.data);
+
+		if(xml.size() == 0)
+			returnValue = false;
 	}
 	catch (...)
 	{
