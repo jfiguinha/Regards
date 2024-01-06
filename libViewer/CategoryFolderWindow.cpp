@@ -30,6 +30,8 @@ using namespace Regards::Sqlite;
 using namespace Regards::Internet;
 #define NUMCATALOGID 1
 
+#define TIMETOWAITINTERNET 3
+
 wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 
 
@@ -87,6 +89,8 @@ public:
     int nbGpsFile;
     wxTimer* refreshTimer;
     std::mutex muVector;
+	GpsPhoto fileToGetGps;
+	int nbPhotoGps = 0;
 };
 
 class CFindPhotoCriteria
@@ -104,6 +108,7 @@ public:
 	bool hasGps;
 	bool fromGps;
 	bool isOk = true;
+	GpsPhoto _photoGPS;
 };
 
 CFindPhotoCriteria::CFindPhotoCriteria()
@@ -212,6 +217,10 @@ void CCategoryFolderWindow::init()
 	CSqlInsertFile sql_insert_file;
 	pimpl->m_photosVector.clear();
 	sql_insert_file.GetPhotoToProcessList(&pimpl->m_photosVector);
+
+	CSqlPhotoGPS photoGPS;
+	pimpl->nbPhotoGps = photoGPS.GetFirstPhoto(pimpl->fileToGetGps.numPhoto, pimpl->fileToGetGps.filepath, pimpl->fileToGetGps.numFolderId);
+
 	pimpl->muVector.unlock();
 }
 
@@ -350,6 +359,7 @@ void CCategoryFolderWindow::ProcessIdle()
 	//Thread by Thread
 	//---------------------------------------------------------------------------------------------------------------
 
+	/*
 	int numPhoto = 0;
 	int numFolderId = 0;
 	wxString photoPath = "";
@@ -391,7 +401,42 @@ void CCategoryFolderWindow::ProcessIdle()
 	{
 		processIdle = true;
 	}
-	
+	*/
+
+	time_t ending;
+	time(&ending);
+
+	int diff = difftime(ending, start);
+
+	if (pimpl->nbGpsFile > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
+	{
+		int nbGpsFileByMinute = 60;
+		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
+		CRegardsConfigParam* param = CParamInit::getInstance();
+		if (param != nullptr)
+			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
+
+		if (pimpl->gpsLocalisationFinish && pimpl->nbGpsFile < nbGpsFileByMinute)
+		{
+			auto findPhotoCriteria = new CFindPhotoCriteria();
+			findPhotoCriteria->urlServer = pimpl->urlServer;
+			findPhotoCriteria->mainWindow = this;
+			findPhotoCriteria->numPhoto = pimpl->fileToGetGps.numPhoto;
+			findPhotoCriteria->photoPath = pimpl->fileToGetGps.filepath;
+			findPhotoCriteria->numFolderId = pimpl->fileToGetGps.numFolderId;
+			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
+			pimpl->gpsLocalisationFinish = false;
+			pimpl->nbGpsFile++;
+			pimpl->numProcessGps++;
+			processIdle = true;
+			time(&start);
+
+		}
+	}
+	else if (diff < TIMETOWAITINTERNET)
+	{
+		processIdle = true;
+	}
 }
 
 
@@ -534,6 +579,11 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 		//Insert GPS info into GPS table
 		CSqlPhotoGPS photoGPS;
 		photoGPS.InsertPhoto(listCriteriaPhoto.numPhotoId, listCriteriaPhoto.photoPath, findPhotoCriteria->numFolderId);
+
+		findPhotoCriteria->_photoGPS.numPhoto = listCriteriaPhoto.numPhotoId;
+		findPhotoCriteria->_photoGPS.filepath = listCriteriaPhoto.photoPath;
+		findPhotoCriteria->_photoGPS.numFolderId = findPhotoCriteria->numFolderId;
+		
 	}
 	findPhotoCriteria->hasGps = geoloc.HasGps();
 	findPhotoCriteria->fromGps = false;
@@ -623,6 +673,8 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 		{
 			CSqlPhotos sqlPhoto;
 			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
+
+
 		}
 
 		if (findPhotoCriteria->fromGps)
@@ -630,6 +682,9 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 			CSqlPhotoGPS photoGPS;
 			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
 			pimpl->gpsLocalisationFinish = true;
+
+			pimpl->fileToGetGps = findPhotoCriteria->_photoGPS;
+			pimpl->nbGpsFile = 1;
 		}
 	}
 	else
@@ -645,7 +700,7 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 
 	if (findPhotoCriteria->phthread != nullptr)
 		delete findPhotoCriteria->phthread;
-	delete findPhotoCriteria;
+
     
 	if (findPhotoCriteria->fromGps)
 	{
@@ -658,6 +713,8 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 		pimpl->numProcess--;
 		pimpl->numProcess = max(pimpl->numProcess, 0);
 	}
+
+	delete findPhotoCriteria;
 
 	processIdle = true;
 }
