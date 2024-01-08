@@ -1123,21 +1123,24 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 {
 	const int nbPhoto = event.GetExtraLong();
 	const auto thumbnailMessage = new CThumbnailMessage();
-	thumbnailMessage->nbPhoto = nbPhoto;
-	thumbnailMessage->thumbnailPos = thumbnailPos;
-	thumbnailMessage->nbElement = nbElementInIconeList;
-	thumbnailMessage->typeMessage = 3;
-	wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWnd != nullptr)
+	if (nbPhoto > 0)
 	{
-		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-		eventChange.SetClientData(thumbnailMessage);
-		eventChange.SetInt(3);
-		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+		thumbnailMessage->nbPhoto = nbPhoto;
+		thumbnailMessage->thumbnailPos = thumbnailPos;
+		thumbnailMessage->nbElement = nbElementInIconeList;
+		thumbnailMessage->typeMessage = 3;
+		wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
+		if (mainWnd != nullptr)
+		{
+			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+			eventChange.SetClientData(thumbnailMessage);
+			eventChange.SetInt(3);
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+		}
+		thumbnailPos++;
 	}
 
-
-	thumbnailPos++;
+	
 }
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
