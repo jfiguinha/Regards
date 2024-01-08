@@ -172,10 +172,6 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 
 		delete folder;
 	}
-	if (categoryFolderWnd != nullptr)
-	{
-		categoryFolderWnd->init();
-	}
 }
 
 void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)

@@ -21,7 +21,7 @@ using namespace std;
 #include "wx/dialog.h"
 #include "wx/dirdlg.h"
 #include "wx/choice.h"
-
+#include "wx/artprov.h"
 // dll export macros
 #ifdef WXMAKINGDLL_DIRECTORYCTRL
 #define WXDLLIMPEXP_DIRECTORYCTRL WXEXPORT
@@ -336,6 +336,9 @@ public:
 protected:
 	void Create(const wxSize& sz); // create on first use
 
+    wxBitmap GetIcon(const wxArtID& id, const wxSize& sz);
+    wxBitmap LoadBitmap(const wxString &icon);
+    
 	wxImageList* m_smallImageList;
 	wxHashTable* m_HashTable;
 	wxSize m_size;

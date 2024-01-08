@@ -1528,6 +1528,28 @@ wxFileIconsTable::~wxFileIconsTable()
 	if (m_smallImageList) delete m_smallImageList;
 }
 
+wxBitmap wxFileIconsTable::GetIcon(const wxArtID& id, const wxSize& sz)
+{
+    wxBitmap bmp = wxArtProvider::GetBitmap(id, wxART_CMN_DIALOG, sz);
+    return bmp;
+}
+
+
+wxBitmap wxFileIconsTable::LoadBitmap(const wxString &icon)
+{
+    wxBitmap bmp;
+    wxString resourcePath = CFileUtility::GetResourcesFolderPathWithExt("bitmap");
+#ifdef WIN32
+	resourcePath.append("\\");
+#else
+    resourcePath.append("/");
+#endif
+    wxString icon = resourcePath.append(icon);
+    bmp.LoadFile(icon);
+    
+    return bmp;
+}
+
 // delayed initialization - wait until first use (wxArtProv not created yet)
 void wxFileIconsTable::Create(const wxSize& sz)
 {
@@ -1536,13 +1558,19 @@ void wxFileIconsTable::Create(const wxSize& sz)
 	m_smallImageList = new wxImageList(sz.x, sz.y);
 
 	// folder:
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_FOLDER,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    wxBitmap bmp = GetIcon(wxART_FOLDER,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("folder.png");
+    }
+    m_smallImageList->Add(bmp);
 	// folder_open
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_FOLDER_OPEN,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("folder_open.png");
+    }
+    m_smallImageList->Add(bmp);
 
 
 	wxImage image = CLibResource::CreatePictureFromSVG("IDB_COMPUTER", sz.GetWidth(), sz.GetHeight());
@@ -1550,25 +1578,45 @@ void wxFileIconsTable::Create(const wxSize& sz)
 	m_smallImageList->Add(bitmap);
 
 	// drive
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_HARDDISK,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_HARDDISK,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("harddisk.png");
+    }
+    m_smallImageList->Add(bmp);
+    
 	// cdrom
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_CDROM,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_CDROM,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("cdrom.png");
+    }
+    m_smallImageList->Add(bmp);
+
 	// floppy
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_FLOPPY,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_FLOPPY,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("floppy.png");
+    }
+    m_smallImageList->Add(bmp);
+
 	// removeable
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_REMOVABLE,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_REMOVABLE,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("removable.png");
+    }
+    m_smallImageList->Add(bmp);
+
 	// file
-	m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE,
-	                                               wxART_CMN_DIALOG,
-	                                               sz));
+    bmp = GetIcon(wxART_NORMAL_FILE,sz);
+    if(!bmp.IsOk())
+    {
+        bmp = LoadBitmap("normal.png");
+    }
+    m_smallImageList->Add(bmp);
+
 	// executable
 	if (GetIconID(wxEmptyString, wxT("application/x-executable")) == file)
 	{

@@ -11,6 +11,7 @@ public:
 	static wxString GetFolder(const wxString& szFilePath);
 	static wxString GetProgramFolderPath();
 	static wxString GetResourcesFolderPath();
+    static wxString GetResourcesFolderPathWithExt(const wxString & folder);
 	static wxString GetFileTime(const wxString& szFileName);
 	static wxString GetDocumentFolderPath();
 	static wxString GetThumbnailPath(const wxString& path);

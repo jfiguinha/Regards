@@ -13,6 +13,18 @@ CFileUtility::~CFileUtility(void)
 {
 }
 
+wxString CFileUtility::GetResourcesFolderPathWithExt(const wxString & folder)
+{
+    wxString path = GetResourcesFolderPath();
+#ifdef WIN32
+	path.append("\\");
+#else
+    path.append("/");
+#endif
+    path.append(folder);
+    return path;
+}
+
 wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const bool& removeFile)
 {
 	wxString file;

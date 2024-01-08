@@ -156,6 +156,20 @@ bool LocaleMakeDir(wxString folder)
 	return true;	
 }
 
+wxBitmap GetIcon(const wxArtID& id, const wxSize& sz)
+{
+    wxBitmap bmp = wxArtProvider::GetBitmap(id, wxART_CMN_DIALOG, sz);
+    return bmp;
+}
+
+void SaveIcon(const wxArtID& id, wxString filename)
+{
+    wxSize m_size = wxSize(16, 16);
+    wxBitmap bmp = GetIcon(id, m_size);
+    wxImage image = bmp.ConvertToImage();
+    image.SaveFile(filename, wxBITMAP_TYPE_PNG);
+}
+
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
@@ -177,7 +191,20 @@ bool MyApp::OnInit()
     //wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
 #endif
 
+    /*
+    wxInitAllImageHandlers();
 
+	// folder:
+    SaveIcon(wxART_FOLDER, "folder.png");
+    SaveIcon(wxART_FOLDER_OPEN, "folder_open.png");
+    SaveIcon(wxART_HARDDISK, "harddisk.png");   
+    SaveIcon(wxART_CDROM, "cdrom.png"); 
+    SaveIcon(wxART_FLOPPY, "floppy.png"); 
+    SaveIcon(wxART_REMOVABLE, "removable.png"); 
+    SaveIcon(wxART_NORMAL_FILE, "normal.png");                                       
+
+    exit(0);
+    */
 
 #ifdef WIN32
 	LCID lcid = GetThreadLocale();
