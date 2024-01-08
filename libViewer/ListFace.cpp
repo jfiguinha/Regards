@@ -156,6 +156,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
+	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
 	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CListFace::OnRefreshFolder));
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
@@ -303,8 +304,6 @@ void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
 }
 
 
-
-
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
 	auto path = static_cast<CThreadFace*>(event.GetClientData());
@@ -321,6 +320,8 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 		}
 
 		nbFace = path->nbFace;
+
+		
 
 		//Update criteria
 		if (path->nbFace > 0)
@@ -346,6 +347,10 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		this->GetEventHandler()->AddPendingEvent(evt);
+
+		muListFace.lock();
+		nbNbFace += nbFace;
+		muListFace.unlock();
 	}
 	processIdle = true;
 }
@@ -385,7 +390,6 @@ void CListFace::FacialDetectionRecognition(void* param)
 	std::vector<int> listFace;
 	if (filename == "")
 	{
-		CSqlFindFacePhoto facePhoto;
 		int i = 0;
 		for (int numFace : listFace)
 		{
@@ -417,6 +421,7 @@ void CListFace::FacialDetectionRecognition(void* param)
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 }
 
 void CListFace::FacialRecognitionReload()
@@ -676,13 +681,14 @@ void CListFace::ProcessIdle()
 		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 	}
 	
-
-	CSqlFindFacePhoto faceRecognition;
-	std::vector<int> listFace = faceRecognition.GetListFaceToRecognize();
+	muListFace.lock();
+	int nbFaceLocal = nbNbFace;
+	muListFace.unlock();
 
 	if (nbProcessFaceRecognition == 0)
 	{
-		if (listFace.size() > 0)
+		
+		if (nbFaceLocal > 0)
 		{
 			auto path = new CThreadFace();
 			path->mainWindow = this;
@@ -696,9 +702,9 @@ void CListFace::ProcessIdle()
 					CDeepLearning::CleanRecognition();
 				cleanDatabase = false;
 				auto thumbnailMessage = new CThumbnailMessage();
-				thumbnailMessage->nbPhoto = listFace.size();
+				thumbnailMessage->nbPhoto = nbFaceLocal;
 				thumbnailMessage->thumbnailPos = nbProcessFaceRecognition;
-				thumbnailMessage->nbElement = listFace.size();
+				thumbnailMessage->nbElement = nbFaceLocal;
 				thumbnailMessage->typeMessage = 5;
 				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
@@ -706,11 +712,13 @@ void CListFace::ProcessIdle()
 				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 			}
 		}
+
+		
 	}
 
 	//Recognize Face
 
-	if (listPhoto.size() == 0 && listFace.size() == 0)
+	if (listPhoto.size() == 0 && nbFaceLocal == 0)
 	{
 		processIdle = false;
 	}
@@ -779,6 +787,13 @@ void CListFace::OnRefreshFolder(wxCommandEvent& event)
 	CSqlFacePhoto facePhoto;
 	listPhoto = facePhoto.GetPhotoListTreatment();
 	muListPhoto.unlock();
+
+	muListFace.lock();
+	CSqlFindFacePhoto faceRecognition;
+	nbNbFace = faceRecognition.GetNbListFaceToRecognize();
+	muListFace.unlock();
+
+
 }
 
 void CListFace::ThumbnailZoomOn(wxCommandEvent& event)

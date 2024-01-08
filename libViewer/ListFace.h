@@ -80,6 +80,10 @@ namespace Regards
 			bool cleanDatabase = false;
 			vector<wxString> listPhoto;
 			mutex muListPhoto;
+
+			mutex muListFace;
+			int nbNbFace;
+			
 			//std::thread * threadResource = nullptr;
 		};
 	}

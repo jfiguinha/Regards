@@ -51,6 +51,14 @@ std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceName(const wxString& photoP
 	return listFaceName;
 }
 
+int CSqlFindFacePhoto::GetNbListFaceToRecognize()
+{
+	type = 6;
+	ExecuteRequest(
+		"SELECT count(*) as NbElement FROM FACEPHOTO WHERE FACEPHOTO.NumFace not in(SELECT DISTINCT NumFace From FACE_RECOGNITION)");
+	return nbFaceList;
+}
+
 std::vector<int> CSqlFindFacePhoto::GetListFaceToRecognize()
 {
 	type = 5;
@@ -140,6 +148,16 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult* sqlResult)
 					listNumFace.push_back(sqlResult->ColumnDataInt(i));
 					break;
 				default: ;
+				}
+			}
+			else if (type == 6)
+			{
+				switch (i)
+				{
+				case 0:
+					nbFaceList = sqlResult->ColumnDataInt(i);
+					break;
+				default:;
 				}
 			}
 		}
