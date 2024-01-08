@@ -197,6 +197,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
+
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
+
 	UpdateFolderStatic();
 
 	versionUpdate = new std::thread(NewVersionAvailable, this);
@@ -929,6 +936,17 @@ void CMainWindow::UpdateFolderStatic()
 		numElementTraitement = 0;
 		nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 		init = true;
+
+
+		if (faceDetection)
+		{
+			wxWindow* window = this->FindWindowById(LISTFACEID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
 	}
 }
 

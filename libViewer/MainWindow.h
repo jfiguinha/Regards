@@ -172,6 +172,7 @@ namespace Regards::Viewer
 		bool checkVersion;
 		bool setViewerMode = false;
 		bool setPictureMode = false;
+		int faceDetection = 0;
 
 		CExportDiaporama* exportDiaporama = nullptr;
 		wxString firstFileToShow = "";

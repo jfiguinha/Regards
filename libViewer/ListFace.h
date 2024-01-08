@@ -53,7 +53,7 @@ namespace Regards
 			void OnIdle(wxIdleEvent& evt) override;
 			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
-
+			void OnRefreshFolder(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
@@ -78,6 +78,8 @@ namespace Regards
 			int nbProcessFaceRecognition = 0;
 			bool resourceLoaded = false;
 			bool cleanDatabase = false;
+			vector<wxString> listPhoto;
+			mutex muListPhoto;
 			//std::thread * threadResource = nullptr;
 		};
 	}

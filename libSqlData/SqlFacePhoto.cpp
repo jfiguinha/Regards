@@ -290,7 +290,7 @@ vector<wxString> CSqlFacePhoto::GetPhotoListTreatment()
 {
 	listPhoto.clear();
 	type = 1;
-	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE FullPath not in (select FullPath FROM FACE_PROCESSING)");
+	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE FullPath not in (select FullPath FROM FACE_PROCESSING) ");
 	return listPhoto;
 }
 

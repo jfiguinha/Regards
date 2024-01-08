@@ -156,8 +156,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
-	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
-
+	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CListFace::OnRefreshFolder));
+	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
 	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxCommandEventHandler(CListFace::ThumbnailZoomPosition));
@@ -175,6 +175,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	isLoadingResource = false;
 	listProcessWindow.push_back(this);
 }
+
+
 
 CThumbnailFace* CListFace::GetThumbnailFace()
 {
@@ -634,12 +636,16 @@ void CListFace::ProcessIdle()
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
 	//Find picture to examine
-	CSqlFacePhoto facePhoto;
-	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
+
 
 	//Find Face 
+	int listPhotoSize = 0;
+	bool processPhoto = false;
+	muListPhoto.lock();
 
-	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
+	listPhotoSize = listPhoto.size();
+
+	if (nbProcessFacePhoto < nbProcesseur && listPhotoSize > 0)
 	{
 		CSqlFacePhoto sqlFacePhoto;
 		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
@@ -650,20 +656,26 @@ void CListFace::ProcessIdle()
 		path->thread = new thread(FacialRecognition, path);
 		nbProcessFacePhoto++;
 
+		processPhoto = true;
 
-		if (sendMessageStatus)
-		{
-			auto thumbnailMessage = new CThumbnailMessage();
-			thumbnailMessage->nbPhoto = listPhoto.size();
-			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
-			thumbnailMessage->nbElement = listPhoto.size();
-			thumbnailMessage->typeMessage = 4;
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-			eventChange.SetClientData(thumbnailMessage);
-			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-		}
+		listPhoto.erase(listPhoto.begin());
 	}
+
+	muListPhoto.unlock();
+
+	if(processPhoto && sendMessageStatus)
+	{
+		auto thumbnailMessage = new CThumbnailMessage();
+		thumbnailMessage->nbPhoto = listPhotoSize;
+		thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
+		thumbnailMessage->nbElement = listPhotoSize;
+		thumbnailMessage->typeMessage = 4;
+		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+		eventChange.SetClientData(thumbnailMessage);
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	}
+	
 
 	CSqlFindFacePhoto faceRecognition;
 	std::vector<int> listFace = faceRecognition.GetListFaceToRecognize();
@@ -758,6 +770,15 @@ void CListFace::SetActifItem(const int& numItem, const bool& move)
 {
 	if (thumbnailFace != nullptr)
 		thumbnailFace->SetActifItem(numItem, move);
+}
+
+void CListFace::OnRefreshFolder(wxCommandEvent& event)
+{
+	//Update Photo List
+	muListPhoto.lock();
+	CSqlFacePhoto facePhoto;
+	listPhoto = facePhoto.GetPhotoListTreatment();
+	muListPhoto.unlock();
 }
 
 void CListFace::ThumbnailZoomOn(wxCommandEvent& event)
