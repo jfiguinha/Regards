@@ -516,6 +516,7 @@ void CListFace::FacialRecognition(void* param)
 		COpenCVVideoPlayer video(path->filename);
 		int width = 0;
 		int height = 0;
+		path->nbFace = 0;
 		CImageLoadingFormat pictureData;
 		int totalFrame = video.GetTotalFrame();
 		for (int i = 0; i < totalFrame; i++)
@@ -556,13 +557,6 @@ void CListFace::FacialRecognition(void* param)
 		CImageLoadingFormat* pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 		if (pictureOK && pictureData != nullptr)
 		{
-			/*
-			if (libPicture.TestIsVideo(path->filename))
-			{
-				pictureData->VertFlipBuf();
-			}
-			*/
-
 			pictureData->SetFilename(path->filename);
 
 			listFace = CDeepLearning::FindFace(pictureData->GetOpenCVPicture(), path->filename, fastDetection);
