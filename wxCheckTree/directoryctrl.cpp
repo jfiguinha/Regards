@@ -1544,8 +1544,8 @@ wxBitmap wxFileIconsTable::LoadBitmap(const wxString &icon)
 #else
     resourcePath.append("/");
 #endif
-    wxString icon = resourcePath.append(icon);
-    bmp.LoadFile(icon);
+    wxString path_icon = resourcePath.append(icon);
+    bmp.LoadFile(path_icon);
     
     return bmp;
 }
