@@ -321,8 +321,6 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 
 		nbFace = path->nbFace;
 
-		
-
 		//Update criteria
 		if (path->nbFace > 0)
 		{
@@ -339,18 +337,29 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 	}
 
 	if (type == 0)
+	{
 		nbProcessFacePhoto--;
+
+		muListFace.lock();
+		nbNbFace += nbFace;
+		muListFace.unlock();
+	}
 	else
+	{
 		nbProcessFaceRecognition--;
+
+		muListFace.lock();
+		nbNbFace--;
+		muListFace.unlock();
+	}
+		
 
 	if (nbFace > 0)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		this->GetEventHandler()->AddPendingEvent(evt);
 
-		muListFace.lock();
-		nbNbFace += nbFace;
-		muListFace.unlock();
+
 	}
 	processIdle = true;
 }
@@ -718,7 +727,7 @@ void CListFace::ProcessIdle()
 
 	//Recognize Face
 
-	if (listPhoto.size() == 0 && nbFaceLocal == 0)
+	if (listPhotoSize == 0 && nbFaceLocal == 0)
 	{
 		processIdle = false;
 	}
