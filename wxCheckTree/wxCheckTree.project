@@ -23,6 +23,7 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libPicture"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
