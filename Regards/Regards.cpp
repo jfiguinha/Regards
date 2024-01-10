@@ -192,8 +192,9 @@ bool MyApp::OnInit()
 #endif
 
     /*
-    wxInitAllImageHandlers();
+  
 
+	wxInitAllImageHandlers();
 	// folder:
     SaveIcon(wxART_FOLDER, "folder.png");
     SaveIcon(wxART_FOLDER_OPEN, "folder_open.png");

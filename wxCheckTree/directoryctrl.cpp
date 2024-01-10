@@ -21,6 +21,7 @@
 #include "FileUtility.h"
 #include <wx/dcscreen.h>
 #include <LibResource.h>
+#include <libPicture.h>
 
 
 #ifndef WX_PRECOMP
@@ -82,6 +83,8 @@
 #endif
 
 extern WXDLLEXPORT_DATA(const char) wxFileSelectorDefaultWildcardStr[];
+
+using namespace Regards::Picture;
 
 // If compiled under Windows, this macro can cause problems
 #ifdef GetFirstChild
@@ -1545,7 +1548,12 @@ wxBitmap wxFileIconsTable::LoadBitmap(const wxString &icon)
     resourcePath.append("/");
 #endif
     wxString path_icon = resourcePath.append(icon);
-    bmp.LoadFile(path_icon);
+	if (!bmp.LoadFile(path_icon))
+	{
+		cv::Mat icon = cv::imread(path_icon.ToStdString());
+		wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(icon);
+		bmp = wxBitmap(image);
+	}
     
     return bmp;
 }
@@ -1557,20 +1565,13 @@ void wxFileIconsTable::Create(const wxSize& sz)
 	m_HashTable = new wxHashTable(wxKEY_STRING);
 	m_smallImageList = new wxImageList(sz.x, sz.y);
 
+#ifndef __WXGTK__
 	// folder:
-    wxBitmap bmp = GetIcon(wxART_FOLDER,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("folder.png");
-    }
-    m_smallImageList->Add(bmp);
+	wxBitmap bmp = GetIcon(wxART_FOLDER, sz);
+	m_smallImageList->Add(bmp);
 	// folder_open
-    bmp = GetIcon(wxART_FOLDER_OPEN,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("folder_open.png");
-    }
-    m_smallImageList->Add(bmp);
+	bmp = GetIcon(wxART_FOLDER_OPEN, sz);
+	m_smallImageList->Add(bmp);
 
 
 	wxImage image = CLibResource::CreatePictureFromSVG("IDB_COMPUTER", sz.GetWidth(), sz.GetHeight());
@@ -1578,44 +1579,59 @@ void wxFileIconsTable::Create(const wxSize& sz)
 	m_smallImageList->Add(bitmap);
 
 	// drive
-    bmp = GetIcon(wxART_HARDDISK,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("harddisk.png");
-    }
-    m_smallImageList->Add(bmp);
-    
+	bmp = GetIcon(wxART_HARDDISK, sz);
+	m_smallImageList->Add(bmp);
+
 	// cdrom
-    bmp = GetIcon(wxART_CDROM,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("cdrom.png");
-    }
-    m_smallImageList->Add(bmp);
+	bmp = GetIcon(wxART_CDROM, sz);
+	m_smallImageList->Add(bmp);
 
 	// floppy
-    bmp = GetIcon(wxART_FLOPPY,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("floppy.png");
-    }
-    m_smallImageList->Add(bmp);
+	bmp = GetIcon(wxART_FLOPPY, sz);
+	m_smallImageList->Add(bmp);
 
 	// removeable
-    bmp = GetIcon(wxART_REMOVABLE,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("removable.png");
-    }
-    m_smallImageList->Add(bmp);
+	bmp = GetIcon(wxART_REMOVABLE, sz);
+	m_smallImageList->Add(bmp);
 
 	// file
-    bmp = GetIcon(wxART_NORMAL_FILE,sz);
-    if(!bmp.IsOk())
-    {
-        bmp = LoadBitmap("normal.png");
-    }
-    m_smallImageList->Add(bmp);
+	bmp = GetIcon(wxART_NORMAL_FILE, sz);
+	m_smallImageList->Add(bmp);
+
+#else
+	// folder:
+	wxBitmap bmp = LoadBitmap("folder.png");
+	m_smallImageList->Add(bmp);
+	
+	bmp = LoadBitmap("folder_open.png");
+	m_smallImageList->Add(bmp);
+
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_COMPUTER", sz.GetWidth(), sz.GetHeight());
+	wxBitmap bitmap(image.ConvertToDisabled());
+	m_smallImageList->Add(bitmap);
+
+	// drive
+	bmp = LoadBitmap("harddisk.png");
+	m_smallImageList->Add(bmp);
+
+	// cdrom
+	bmp = LoadBitmap("cdrom.png");
+	m_smallImageList->Add(bmp);
+
+	// floppy
+	bmp = LoadBitmap("floppy.png");
+	m_smallImageList->Add(bmp);
+
+	// removeable
+	bmp = LoadBitmap("removable.png");
+	m_smallImageList->Add(bmp);
+
+	// file
+	bmp = LoadBitmap("normal.png");
+	m_smallImageList->Add(bmp);
+#endif
+
+
 
 	// executable
 	if (GetIconID(wxEmptyString, wxT("application/x-executable")) == file)
