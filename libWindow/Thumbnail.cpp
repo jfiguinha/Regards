@@ -438,7 +438,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::OnRefreshThumbnail));
-	processIdle = true;
+	processIdle = false;
 
 	listProcessWindow.push_back(this);
 
@@ -868,6 +868,9 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 		needToRefresh = false;
 	}
+
+	if (processIdle)
+		StartThread();
 
 	if (enableTimer && !isMouseOnWindow)
 	{

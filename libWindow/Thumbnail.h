@@ -74,8 +74,10 @@ namespace Regards::Window
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
         virtual void ProcessVideo() {};
-        
+		
 	protected:
+
+		//void ProcessIdle() {} override;
 		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);

@@ -44,6 +44,9 @@ namespace Regards::Control
 		wxString hdrEffect;
 		wxString videoLabelEffect;
 		CImageLoadingFormat* imageLoading;
+
+
+
 		int nbProcess = 0;
 
 	};
