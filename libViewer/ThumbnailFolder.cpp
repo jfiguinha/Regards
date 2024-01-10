@@ -303,7 +303,6 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 	else
 		InitTypeAffichage(typeAffichage);
 
-	processIdle = true;
 }
 
 void CThumbnailFolder::SetListeFile()
@@ -363,7 +362,7 @@ void CThumbnailFolder::SetListeFile()
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-	processIdle = true;
+
 	needToRefresh = true;
 }
 

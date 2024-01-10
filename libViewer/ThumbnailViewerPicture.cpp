@@ -41,7 +41,7 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
 void CThumbnailViewerPicture::Init(const int& typeAffichage)
 {
 	SetListeFile();
-	processIdle = true;
+
 }
 
 vector<wxString> CThumbnailViewerPicture::GetFileList()
@@ -141,8 +141,6 @@ void CThumbnailViewerPicture::ApplyListeFile()
 
 	threadDataProcess = true;
 
-	processIdle = true;
-
 	needToRefresh = true;
 }
 
@@ -206,8 +204,6 @@ void CThumbnailViewerPicture::SetListeFile()
 	ResizeThumbnail();
 
 	threadDataProcess = true;
-
-	processIdle = true;
 
 	needToRefresh = true;
 }

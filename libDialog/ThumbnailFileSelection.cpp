@@ -142,7 +142,7 @@ void CThumbnailFileSelection::Init(const wxString& filename, const int& typeAffi
 		else
 			InitTypeAffichage(typeAffichage);
 	}
-	processIdle = true;
+
 }
 
 void CThumbnailFileSelection::SetListeFile()
@@ -199,7 +199,7 @@ void CThumbnailFileSelection::SetListeFile()
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-	processIdle = true;
+
 	needToRefresh = true;
 }
 

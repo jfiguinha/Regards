@@ -241,7 +241,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			if (thumbnail != nullptr)
 				delete thumbnail;
 		}
-		processIdle = false;
+
 
 	}
 	else
@@ -297,8 +297,6 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 		}
         
         listThumbnail.clear();
-
-		processIdle = true;
 
 	}
 
@@ -430,7 +428,6 @@ void CThumbnailVideo::EraseThumbnail(long value)
 	InitWithDefaultPicture(videoFilename, nbImage);
 	process_end = false;
 	threadDataProcess = true;
-	processIdle = true;
 	needToRefresh = true;
 
 	wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
@@ -467,7 +464,6 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 	videoFilename = videoFile;
 	process_end = false;
 	threadDataProcess = true;
-	processIdle = true;
 	needToRefresh = true;
 
 }
