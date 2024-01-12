@@ -91,6 +91,8 @@ using namespace Regards::Picture;
 #undef GetFirstChild
 #endif
 
+#define __USE_REGARDS_ICON__
+
 bool wxIsDriveAvailable(const wxString& dirName);
 
 // ----------------------------------------------------------------------------
@@ -1550,7 +1552,7 @@ wxBitmap wxFileIconsTable::LoadBitmap(const wxString &icon)
     wxString path_icon = resourcePath.append(icon);
 	if (!bmp.LoadFile(path_icon))
 	{
-		cv::Mat icon = cv::imread(path_icon.ToStdString());
+		cv::Mat icon = cv::imread(path_icon.ToStdString(), cv::IMREAD_UNCHANGED);
 		wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(icon);
 		bmp = wxBitmap(image);
 	}
@@ -1565,7 +1567,7 @@ void wxFileIconsTable::Create(const wxSize& sz)
 	m_HashTable = new wxHashTable(wxKEY_STRING);
 	m_smallImageList = new wxImageList(sz.x, sz.y);
 
-#ifndef __WXGTK__
+#ifndef __USE_REGARDS_ICON__
 	// folder:
 	wxBitmap bmp = GetIcon(wxART_FOLDER, sz);
 	m_smallImageList->Add(bmp);

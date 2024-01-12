@@ -240,7 +240,7 @@ bool CLibPicture::TestIsPicture(const wxString& szFileName)
 	return false;
 }
 
-
+/*
 wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
 {
 	cv::Mat im2;
@@ -255,36 +255,48 @@ wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
 	unsigned char* s = im2.data;
 	unsigned char* d = wx->GetData();
 	memcpy(d, s, imsize);
-	/*
-	for (long i = 0; i < imsize; i++)
-	{
-		d[i] = s[i];
-	}
-	*/
+
 	return wx;
 }
-
-
+*/
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
 {
+	wxImage wx;
 	cv::Mat im2;
+	cv::Mat alpha;
 	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else if (img.channels() == 4) 
+	{ 
+		cvtColor(img, im2, cv::COLOR_BGRA2RGB); 
+		cv::Mat rgbchannel[4];
+		cv::split(img, rgbchannel);
+		alpha = rgbchannel[3];
+	}
 	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
 
 	//cv::flip(im2, im2, 0);
 
 	long imsize = im2.rows * im2.cols * im2.channels();
-	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = im2.data;
-	unsigned char* d = wx.GetData();
-	memcpy(d, s, imsize);
-	/*
-	for (long i = 0; i < imsize; i++)
+	if (img.channels() == 4)
 	{
-		d[i] = s[i];
+		wx = wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+		unsigned char* s = im2.data;
+		unsigned char* d = wx.GetData();
+		memcpy(d, s, imsize);
+
+		unsigned char* wxalpha = new unsigned char[im2.rows * im2.cols];
+		wx.SetAlpha(wxalpha);
+		memcpy(wxalpha, alpha.data, im2.rows * im2.cols);
+
 	}
-	*/
+	else
+	{
+		wx = wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+		unsigned char* s = im2.data;
+		unsigned char* d = wx.GetData();
+		memcpy(d, s, imsize);
+	}
+
 	return wx;
 }
 

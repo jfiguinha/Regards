@@ -83,7 +83,7 @@ namespace Regards
 			static void UninitFreeImage();
 
 			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat& img);
-			static wxImage* ConvertRegardsBitmapToWXImagePt(cv::Mat& img);
+			//static wxImage* ConvertRegardsBitmapToWXImagePt(cv::Mat& img);
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
 #else
