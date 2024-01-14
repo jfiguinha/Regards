@@ -31,6 +31,7 @@ namespace Regards
 			bool InsertPhoto(const int& numPhoto, const wxString& filepath, const int& numFolderId);
 			bool DeletePhoto(const int64_t& numPhoto);
 			int GetFirstPhoto(int& numPhoto, wxString& filepath, int& numFolderId);
+			int GetNbPhoto();
             int GetListPhoto(GpsPhotosVector * photoGpsVec);
 			bool DeleteListOfPhoto(const vector<wxString>& listPhoto);
 		private:
@@ -39,6 +40,7 @@ namespace Regards
 			int numFolderId;
 			wxString filepath;
 			int nbResult;
+			int nbResultRequest = 0;
             int type = 0;
             GpsPhotosVector * m_photoGpsVec;
 		};

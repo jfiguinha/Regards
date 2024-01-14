@@ -228,8 +228,12 @@ void CCategoryFolderWindow::init()
 	pimpl->m_photosVector.clear();
 	sql_insert_file.GetPhotoToProcessList(&pimpl->m_photosVector);
 
+	nbPhotoToProcess = pimpl->m_photosVector.size();
+
 	CSqlPhotoGPS photoGPS;
 	pimpl->nbPhotoGps = photoGPS.GetFirstPhoto(pimpl->fileToGetGps.numPhoto, pimpl->fileToGetGps.filepath, pimpl->fileToGetGps.numFolderId);
+
+	nbPhotoGpsToProcess = 1;
 
 	pimpl->muVector.unlock();
 }
@@ -305,6 +309,24 @@ void CCategoryFolderWindow::ProcessIdle()
 			sql_insert_file.UpdatePhotoProcess(photo.GetId());
 			pimpl->traitementEnd = false;
             pimpl->m_photosVector.erase(pimpl->m_photosVector.begin());
+
+			{
+				auto thumbnailMessage = new CThumbnailMessage();
+				thumbnailMessage->thumbnailPos = nbPhotoToProcess - pimpl->m_photosVector.size();
+				thumbnailMessage->nbElement = nbPhotoToProcess;
+				thumbnailMessage->typeMessage = 0;
+				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				if (mainWnd != nullptr)
+				{
+					wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+					eventChange.SetClientData(thumbnailMessage);
+					mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+				}
+				else
+					delete thumbnailMessage;
+			}
+
+
 		}
 
 		pimpl->muVector.unlock();
@@ -328,9 +350,16 @@ void CCategoryFolderWindow::ProcessIdle()
 			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 1;
-			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);  // NOLINT(clang-diagnostic-shorten-64-to-32)
-			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-			eventChange.SetClientData(thumbnailMessage);
+
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			if (mainWnd != nullptr)
+			{
+				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+				eventChange.SetClientData(thumbnailMessage);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
+			else
+				delete thumbnailMessage;
 		}
 
 		for (CFolderCatalog folder_catalog : catalogfolderVector)
@@ -432,6 +461,22 @@ void CCategoryFolderWindow::ProcessIdle()
 		nbGpsRequest++;
 		processIdle = true;
 		time(&start);
+
+		{
+			auto thumbnailMessage = new CThumbnailMessage();
+			thumbnailMessage->thumbnailPos = 1;
+			thumbnailMessage->nbElement = nbPhotoGpsToProcess;
+			thumbnailMessage->typeMessage = 6;
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			if (mainWnd != nullptr)
+			{
+				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+				eventChange.SetClientData(thumbnailMessage);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
+			else
+				delete thumbnailMessage;
+		}
 	}
 
 	if(pimpl->nbGpsFile > 0)
@@ -680,6 +725,9 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
 			CSqlPhotoGPS photoGPS;
 			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
+
+			nbPhotoGpsToProcess = photoGPS.GetNbPhoto();
+			
 			if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0)
 			{
 				GpsPhoto firstPhoto;

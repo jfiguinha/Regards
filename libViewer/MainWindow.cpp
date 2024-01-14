@@ -657,6 +657,14 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 				SetDataToStatusBar(event.GetClientData(), picture);
 			}
 			break;
+
+		case 6:
+			{
+				const wxString picture = "Geolocalisation GPS progress : ";
+				SetDataToStatusBar(event.GetClientData(), picture);
+			}
+		break;
+
 		default: ;
 		}
 	}

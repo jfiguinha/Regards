@@ -55,6 +55,14 @@ bool CSqlPhotoGPS::DeleteListOfPhoto(const vector<wxString>& listPhoto)
 	return nbResult;   
  }
 
+ int CSqlPhotoGPS::GetNbPhoto()
+ {
+     type = 2;
+     nbResultRequest = 0;
+     ExecuteRequest("SELECT count(*) as nb FROM PHOTOSGPS");
+     return nbResultRequest;
+ }
+
 int CSqlPhotoGPS::GetFirstPhoto(int& numPhoto, wxString& filepath, int& numFolderId)
 {
     type = 0;
@@ -114,8 +122,24 @@ int CSqlPhotoGPS::TraitementResult(CSqlResult* sqlResult)
                 }
                 m_photoGpsVec->push_back(gpsPhoto);
                 nbResult++;
+                break;
             }
-            break;
+           
+            case 2:
+            {
+                for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+                {
+                    switch (i)
+                    {
+                    case 0:
+                        nbResultRequest = sqlResult->ColumnDataInt(i);
+                        break;
+                    default:;
+                    }
+                }
+                nbResult++;
+                break;
+            }
         }
         
         if(type == 0)
