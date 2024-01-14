@@ -40,6 +40,8 @@ namespace Regards::Viewer
 		void OnTimerRefresh(wxTimerEvent& event);
 		void ProcessIdle() override;
 		time_t start;
+		int nbGpsRequest = 0;
+		int nbGpsFileByMinute = 60;
         CCategoryFolderWindowPimpl * pimpl;
     
 	};

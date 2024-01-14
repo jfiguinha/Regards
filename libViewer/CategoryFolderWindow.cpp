@@ -156,6 +156,12 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	pimpl->refreshTimer->Start(60000, wxTIMER_CONTINUOUS);
 	pimpl->refreshTimer->Start();
 
+	
+	printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
+
 	init();
 
 	listProcessWindow.push_back(this);
@@ -169,7 +175,7 @@ void CCategoryFolderWindow::OnRefreshFolder(wxCommandEvent& event)
 void CCategoryFolderWindow::OnTimerRefresh(wxTimerEvent& event)
 {
 	printf(" CCategoryFolderWindow::OnTimerRefresh %d \n", pimpl->nbGpsFile);
-	//pimpl->nbGpsFile = 0;
+	nbGpsRequest = 0;
 	processIdle = true;
 }
 
@@ -413,34 +419,20 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	int diff = difftime(ending, start);
 
-	if (pimpl->nbGpsFile > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
+	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
 	{
-		/*
-		int nbGpsFileByMinute = 60;
-		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
-		*/
-		if (pimpl->gpsLocalisationFinish)
-		{
-			auto findPhotoCriteria = new CFindPhotoCriteria();
-			findPhotoCriteria->urlServer = pimpl->urlServer;
-			findPhotoCriteria->mainWindow = this;
-			findPhotoCriteria->numPhoto = pimpl->fileToGetGps.numPhoto;
-			findPhotoCriteria->photoPath = pimpl->fileToGetGps.filepath;
-			findPhotoCriteria->numFolderId = pimpl->fileToGetGps.numFolderId;
-			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
-			pimpl->gpsLocalisationFinish = false;
-			pimpl->numProcessGps++;
-			processIdle = true;
-			time(&start);
-
-		}
-	}
-	else if (diff < TIMETOWAITINTERNET)
-	{
+		auto findPhotoCriteria = new CFindPhotoCriteria();
+		findPhotoCriteria->urlServer = pimpl->urlServer;
+		findPhotoCriteria->mainWindow = this;
+		findPhotoCriteria->numPhoto = pimpl->fileToGetGps.numPhoto;
+		findPhotoCriteria->photoPath = pimpl->fileToGetGps.filepath;
+		findPhotoCriteria->numFolderId = pimpl->fileToGetGps.numFolderId;
+		findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
+		pimpl->gpsLocalisationFinish = false;
+		pimpl->numProcessGps++;
+		nbGpsRequest++;
 		processIdle = true;
+		time(&start);
 	}
 
 	if(pimpl->nbGpsFile > 0)
