@@ -145,7 +145,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CCategoryFolderWindow::OnIdle));
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CCategoryFolderWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
-
+	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CCategoryFolderWindow::OnRefreshFolder));
 	pimpl->update = true;
 	pimpl->noCategoryMessage = false;
 	pimpl->categoryMessage = false;
@@ -161,10 +161,15 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	listProcessWindow.push_back(this);
 }
 
+void CCategoryFolderWindow::OnRefreshFolder(wxCommandEvent& event)
+{
+	init();
+}
+
 void CCategoryFolderWindow::OnTimerRefresh(wxTimerEvent& event)
 {
 	printf(" CCategoryFolderWindow::OnTimerRefresh %d \n", pimpl->nbGpsFile);
-	pimpl->nbGpsFile = 0;
+	//pimpl->nbGpsFile = 0;
 	processIdle = true;
 }
 
@@ -410,13 +415,14 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	if (pimpl->nbGpsFile > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
 	{
+		/*
 		int nbGpsFileByMinute = 60;
 		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
 		CRegardsConfigParam* param = CParamInit::getInstance();
 		if (param != nullptr)
 			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
-
-		if (pimpl->gpsLocalisationFinish && pimpl->nbGpsFile < nbGpsFileByMinute)
+		*/
+		if (pimpl->gpsLocalisationFinish)
 		{
 			auto findPhotoCriteria = new CFindPhotoCriteria();
 			findPhotoCriteria->urlServer = pimpl->urlServer;
@@ -426,7 +432,6 @@ void CCategoryFolderWindow::ProcessIdle()
 			findPhotoCriteria->numFolderId = pimpl->fileToGetGps.numFolderId;
 			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
 			pimpl->gpsLocalisationFinish = false;
-			pimpl->nbGpsFile++;
 			pimpl->numProcessGps++;
 			processIdle = true;
 			time(&start);
@@ -437,6 +442,9 @@ void CCategoryFolderWindow::ProcessIdle()
 	{
 		processIdle = true;
 	}
+
+	if(pimpl->nbGpsFile > 0)
+		processIdle = true;
 }
 
 
@@ -524,10 +532,12 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 	{
 		printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		fileGeolocalisation.Geolocalisation(&listCriteriaPhoto);
-		if(listCriteriaPhoto.listCriteria.size() > 0)
+		if (listCriteriaPhoto.listCriteria.size() > 0)
+		{
 			photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew,
-												  fileGeolocalisation.HasGps(),
-												  findPhotoCriteria->numFolderId);
+				fileGeolocalisation.HasGps(),
+				findPhotoCriteria->numFolderId);
+		}
 		else
 		{
 			findPhotoCriteria->isOk = false;
@@ -669,29 +679,54 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 			UpdateCriteria(true);
 		}
 
-		if ((findPhotoCriteria->hasGps && findPhotoCriteria->fromGps) || !findPhotoCriteria->hasGps)
+		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)
+		{
+
+			int numPhoto = 0;
+			int numFolderId = 0;
+			wxString photoPath = "";
+			CSqlPhotos sqlPhoto;
+			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
+			CSqlPhotoGPS photoGPS;
+			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
+			if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0)
+			{
+				GpsPhoto firstPhoto;
+				firstPhoto.numPhoto = numPhoto;
+				firstPhoto.filepath = photoPath;
+				firstPhoto.numFolderId = numFolderId;
+				pimpl->gpsLocalisationFinish = true;
+				pimpl->fileToGetGps = firstPhoto;
+				pimpl->nbGpsFile = 1;
+			}
+			else
+			{
+				pimpl->nbGpsFile = 0;
+			}
+
+		}
+		else if (!findPhotoCriteria->hasGps)
 		{
 			CSqlPhotos sqlPhoto;
 			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
-
-
-		}
-
-		if (findPhotoCriteria->fromGps)
-		{
 			CSqlPhotoGPS photoGPS;
 			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
+		}
+		else if (findPhotoCriteria->hasGps && pimpl->nbGpsFile == 0)
+		{
 			pimpl->gpsLocalisationFinish = true;
-
 			pimpl->fileToGetGps = findPhotoCriteria->_photoGPS;
 			pimpl->nbGpsFile = 1;
 		}
+		
 	}
 	else
 	{
 		if (findPhotoCriteria->fromGps)
 		{
 			pimpl->gpsLocalisationFinish = true;
+			//pimpl->fileToGetGps = findPhotoCriteria->_photoGPS;
+			pimpl->nbGpsFile = 1;
 		}
 	}
 

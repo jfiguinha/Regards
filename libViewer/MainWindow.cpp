@@ -947,6 +947,12 @@ void CMainWindow::UpdateFolderStatic()
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
+
+		if (categoryFolder != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+			categoryFolder->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 }
 

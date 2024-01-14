@@ -30,6 +30,7 @@ namespace Regards::Viewer
 		void OnUpdateGpsInfos(wxCommandEvent& event);
 		void CriteriaPhotoUpdate(wxCommandEvent& event);
 		void RefreshCriteriaSearch(wxCommandEvent& event);
+		void OnRefreshFolder(wxCommandEvent& event);
 		void OnIdle(wxIdleEvent& evt) override;
 		bool GetProcessEnd() override;
 
