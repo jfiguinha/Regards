@@ -158,7 +158,6 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 
 	
 	printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
-	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 		nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
 
