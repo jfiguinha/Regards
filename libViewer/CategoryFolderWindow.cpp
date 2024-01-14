@@ -779,7 +779,7 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	if (findPhotoCriteria->fromGps)
 	{
 		pimpl->numProcessGps--;
-		pimpl->numProcessGps = max(pimpl->numProcess, 0);
+		pimpl->numProcessGps = max(pimpl->numProcessGps, 0);
 		time(&start);
 	}
 	else
