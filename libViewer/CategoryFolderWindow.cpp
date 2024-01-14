@@ -314,6 +314,7 @@ void CCategoryFolderWindow::ProcessIdle()
 				auto thumbnailMessage = new CThumbnailMessage();
 				thumbnailMessage->thumbnailPos = nbPhotoToProcess - pimpl->m_photosVector.size();
 				thumbnailMessage->nbElement = nbPhotoToProcess;
+				thumbnailMessage->nbPhoto = pimpl->m_photosVector.size();
 				thumbnailMessage->typeMessage = 0;
 				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 				if (mainWnd != nullptr)
@@ -465,6 +466,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		{
 			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->thumbnailPos = 1;
+			thumbnailMessage->nbPhoto = nbPhotoGpsToProcess;
 			thumbnailMessage->nbElement = nbPhotoGpsToProcess;
 			thumbnailMessage->typeMessage = 6;
 			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
