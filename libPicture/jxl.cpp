@@ -79,6 +79,25 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 		{
 			// Get the ICC color profile of the pixel data
 			size_t icc_size;
+#ifdef __APPLE__
+			if (JXL_DEC_SUCCESS !=
+				JxlDecoderGetICCProfileSize(
+					dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
+			{
+				fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+				return false;
+			}
+            
+            icc_profile->resize(icc_size);
+			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(
+				dec.get(),
+				JXL_COLOR_PROFILE_TARGET_DATA,
+				icc_profile->data(), icc_profile->size()))
+			{
+				fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+				return false;
+			}
+#else
 			if (JXL_DEC_SUCCESS !=
 				JxlDecoderGetICCProfileSize(
 					dec.get(), &format, JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
@@ -86,7 +105,8 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 				return false;
 			}
-			icc_profile->resize(icc_size);
+            
+            icc_profile->resize(icc_size);
 			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(
 				dec.get(), &format,
 				JXL_COLOR_PROFILE_TARGET_DATA,
@@ -95,6 +115,8 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
 				return false;
 			}
+#endif
+
 		}
 		else if (status == JXL_DEC_NEED_IMAGE_OUT_BUFFER)
 		{
@@ -341,11 +363,19 @@ void* CJxl::DecodeJpegDim(FILE* file)
 			JxlPixelFormat format = {4, JXL_TYPE_FLOAT, JXL_LITTLE_ENDIAN, 0};
 			printf("color profile:\n");
 
+#ifdef __APPLE__
+			JxlColorEncoding color_encoding;
+			if (JXL_DEC_SUCCESS ==
+				JxlDecoderGetColorAsEncodedProfile(dec,
+				                                   JXL_COLOR_PROFILE_TARGET_ORIGINAL,
+				                                   &color_encoding))
+#else
 			JxlColorEncoding color_encoding;
 			if (JXL_DEC_SUCCESS ==
 				JxlDecoderGetColorAsEncodedProfile(dec, &format,
 				                                   JXL_COLOR_PROFILE_TARGET_ORIGINAL,
 				                                   &color_encoding))
+#endif
 			{
 				printf("  format: JPEG XL encoded color profile\n");
 				const char* const cs_string[4] = {
@@ -413,6 +443,16 @@ void* CJxl::DecodeJpegDim(FILE* file)
 				// instead.
 				printf("  format: ICC profile\n");
 				size_t profile_size;
+#ifdef __APPLE__
+				if (JXL_DEC_SUCCESS !=
+					JxlDecoderGetICCProfileSize(dec,
+					                            JXL_COLOR_PROFILE_TARGET_ORIGINAL,
+					                            &profile_size))
+				{
+					fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+					continue;
+				}
+#else
 				if (JXL_DEC_SUCCESS !=
 					JxlDecoderGetICCProfileSize(dec, &format,
 					                            JXL_COLOR_PROFILE_TARGET_ORIGINAL,
@@ -421,6 +461,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 					continue;
 				}
+#endif
 				printf("  ICC profile size: %zu\n", profile_size);
 				if (profile_size < 132)
 				{
@@ -428,6 +469,17 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					continue;
 				}
 				auto profile = static_cast<uint8_t*>(malloc(profile_size));
+#ifdef __APPLE__
+				if (JXL_DEC_SUCCESS !=
+					JxlDecoderGetColorAsICCProfile(dec,
+					                               JXL_COLOR_PROFILE_TARGET_ORIGINAL,
+					                               profile, profile_size))
+				{
+					fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+					free(profile);
+					continue;
+				}
+#else
 				if (JXL_DEC_SUCCESS !=
 					JxlDecoderGetColorAsICCProfile(dec, &format,
 					                               JXL_COLOR_PROFILE_TARGET_ORIGINAL,
@@ -437,6 +489,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					free(profile);
 					continue;
 				}
+#endif
 				printf("  CMM type: \"%.4s\"\n", profile + 4);
 				printf("  color space: \"%.4s\"\n", profile + 16);
 				printf("  rendering intent: %d\n", static_cast<int>(profile[67]));
@@ -536,7 +589,16 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 		fprintf(stderr, "JxlEncoderSetColorEncoding failed\n");
 		return false;
 	}
-
+#ifdef __APPLE__
+	if (JXL_ENC_SUCCESS !=
+		JxlEncoderAddImageFrame(JxlEncoderFrameSettingsCreate(enc.get(), nullptr),
+		                        &pixel_format, matFloat.data,
+		                        matFloat.rows * matFloat.cols * 4 * sizeof(float)))
+	{
+		fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
+		return false;
+	}
+#else
 	if (JXL_ENC_SUCCESS !=
 		JxlEncoderAddImageFrame(JxlEncoderOptionsCreate(enc.get(), nullptr),
 		                        &pixel_format, matFloat.data,
@@ -545,7 +607,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 		fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
 		return false;
 	}
-
+#endif
 	compressed->resize(64);
 	uint8_t* next_out = compressed->data();
 	size_t avail_out = compressed->size() - (next_out - compressed->data());

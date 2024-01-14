@@ -29,9 +29,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../Regards/TestFrame.cpp"/>
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="../Regards/TestFrame.h"/>
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
@@ -128,12 +130,12 @@
       <Compiler Options=";-std=gnu++17;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libVideoConverter"/>
-        <IncludePath Value="../libScanner"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libVideoConverter"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
@@ -149,6 +151,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../Otherlib/libffplay"/>
         <IncludePath Value="../libWindow"/>
         <IncludePath Value="../libPrint"/>
         <IncludePath Value="../libPicture"/>
@@ -161,10 +164,14 @@
         <IncludePath Value="../libExplorer"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libWindowMain"/>
+        <IncludePath Value="../libVideoFFMpeg"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libDeepLearning"/>
-        <IncludePath Value="../libOpenCLEngine"/>
+        <IncludePath Value="../libScanner"/>
+        <IncludePath Value="../Otherlib/wxIA/include"/>
+        <IncludePath Value="../Otherlib/wxIA/WIA"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
