@@ -653,14 +653,14 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 
 		case 5:
 			{
-				const wxString picture = "Face Recognition progress : ";
+				const wxString picture = CLibResource::LoadStringFromResource(L"LBLFACERECOGNITIONPROCESS", 1);
 				SetDataToStatusBar(event.GetClientData(), picture);
 			}
 			break;
 
 		case 6:
 			{
-				const wxString picture = "Geolocalisation GPS progress : ";
+				const wxString picture = CLibResource::LoadStringFromResource(L"LBLGEOLOCALISATIONGPS", 1);
 				SetDataToStatusBar(event.GetClientData(), picture);
 			}
 		break;

@@ -589,7 +589,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 		fprintf(stderr, "JxlEncoderSetColorEncoding failed\n");
 		return false;
 	}
-#ifdef __APPLE__
+
 	if (JXL_ENC_SUCCESS !=
 		JxlEncoderAddImageFrame(JxlEncoderFrameSettingsCreate(enc.get(), nullptr),
 		                        &pixel_format, matFloat.data,
@@ -598,16 +598,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 		fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
 		return false;
 	}
-#else
-	if (JXL_ENC_SUCCESS !=
-		JxlEncoderAddImageFrame(JxlEncoderOptionsCreate(enc.get(), nullptr),
-		                        &pixel_format, matFloat.data,
-		                        matFloat.rows * matFloat.cols * 4 * sizeof(float)))
-	{
-		fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
-		return false;
-	}
-#endif
+
 	compressed->resize(64);
 	uint8_t* next_out = compressed->data();
 	size_t avail_out = compressed->size() - (next_out - compressed->data());
