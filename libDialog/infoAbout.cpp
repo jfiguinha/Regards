@@ -195,7 +195,7 @@ void CInfoAbout::Init()
 	auto opencv = new CTreeData();
 	opencv->SetIsParent(false);
 	opencv->SetKey("OpenCV");
-	opencv->SetValue("4.6");
+	opencv->SetValue("4.8");
 	tr.append_child(child, opencv);
 
 	CreateElement();
