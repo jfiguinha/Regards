@@ -10,10 +10,10 @@ cd vcpkg-2022.08.15
 ./vcpkg install wxWidgets
 cd ..
 
-git clone https://github.com/Microsoft/vcpkg.git
+unzip vcpkg-2023.08.09.zip
+mv vcpkg-2023.08.09 vcpkg
 
 cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
-cp -r vcpkg_ports/libavif ./vcpkg/ports
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
@@ -29,6 +29,7 @@ PATH="$HOME/bin:$PATH" make -j
 make install
 cd ..
 cd ..
+
 cd vcpkg
 ./vcpkg install libavif
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
