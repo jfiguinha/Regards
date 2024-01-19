@@ -1,7 +1,7 @@
 #include "header.h"
 #include "MetadataExiv2.h"
 #include <FreeImage.h>
-#ifndef WIN32
+#ifdef __APPLE__
 #include "PictureMetadataExiv_new.h"
 #else
 #include "PictureMetadataExiv.h"

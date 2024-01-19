@@ -1,5 +1,5 @@
 #pragma once
-#ifdef WIN32
+#ifndef __APPLE__
 #include <Metadata.h>
 #include <exiv2/image.hpp>
 #include <exiv2/iptc.hpp>

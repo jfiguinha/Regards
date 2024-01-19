@@ -211,8 +211,8 @@
         <Library Value="EGL"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
-        <Library Value="INIReader"/>
-        <Library Value="inih"/>
+        <Library Value="exiv2-xmp"/>
+        <Library Value="crypto"/>
         <Library Value="Jbig"/>
         <Library Value="xml2"/>
         <Library Value="raw_r"/>

@@ -1,5 +1,5 @@
 #include "header.h"
-#ifdef WIN32
+#ifndef __APPLE__
 #include <FreeImage.h>
 #include <ximage.h>
 #include <ConvertUtility.h>
