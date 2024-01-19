@@ -5,7 +5,7 @@
 #include <ConvertUtility.h>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
-#include "PictureMetadataExiv.h"
+#include "PictureMetadataExiv_new.h"
 #include <DateValidation.hpp>
 #include <libexif/exif-data.h>
 using namespace Regards::exiv2;

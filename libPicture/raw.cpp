@@ -9,7 +9,11 @@
 #include <turbojpeg.h>
 #endif
 #include <ConvertUtility.h>
+#ifndef WIN32
+#include "PictureMetadataExiv_new.h"
+#else
 #include "PictureMetadataExiv.h"
+#endif
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
 
