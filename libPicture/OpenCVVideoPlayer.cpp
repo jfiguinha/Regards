@@ -72,7 +72,7 @@ int COpenCVVideoPlayer::GetFps()
 int COpenCVVideoPlayer::GetTotalFrame()
 {
 	if (isOpen)
-		return capture->get(CAP_PROP_FPS);
+		return capture->get(CAP_PROP_FRAME_COUNT);
 	return 0;
 }
 
