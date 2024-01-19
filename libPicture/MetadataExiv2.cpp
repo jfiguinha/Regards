@@ -1,7 +1,11 @@
 #include "header.h"
 #include "MetadataExiv2.h"
 #include <FreeImage.h>
+#ifndef WIN32
+#include "PictureMetadataExiv_new.h"
+#else
 #include "PictureMetadataExiv.h"
+#endif
 #include <ximage.h>
 #include <libPicture.h>
 #include <MediaInfo.h>

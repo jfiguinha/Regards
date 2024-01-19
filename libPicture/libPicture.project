@@ -61,6 +61,8 @@
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
+    <File Name="PictureMetadataExiv_new.h"/>
+    <File Name="PictureMetadataExiv_new.cpp"/>
     <File Name="ThumbnailData.h"/>
     <File Name="Metadata.h"/>
     <File Name="MediaInfo.h"/>
