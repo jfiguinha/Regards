@@ -1,5 +1,5 @@
 #pragma once
-#ifdef __APPLE__
+#ifdef __NEW_EXIV2__
 #include <Metadata.h>
 #include <exiv2/image.hpp>
 #include <exiv2/iptc.hpp>

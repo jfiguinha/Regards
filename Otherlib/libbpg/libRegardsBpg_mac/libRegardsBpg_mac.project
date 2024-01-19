@@ -51,7 +51,7 @@
         <Library Value="avcodec_bpg"/>
         <Library Value="avutil_bpg"/>
         <Library Value="z"/>
-        <Library Value="png"/>
+        <Library Value="png16"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

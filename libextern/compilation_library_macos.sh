@@ -1,15 +1,64 @@
-#!/bin/bash
-NBPROC=$(sysctl -n hw.ncpu)
+#/bin/bash
+NBPROC=$(nproc)
 echo $NBPROC
 
-#decompression
-unzip heif-master.zip
+#LOCALPATH=$HOME/developpement/git/Regards/libextern
+LOCALPATH=$(pwd)
+echo $LOCALPATH
+
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+
+unzip vcpkg-2023.08.09.zip
+mv vcpkg-2023.08.09 vcpkg
+
+cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
+
+cd vcpkg
+./bootstrap-vcpkg.sh
+./vcpkg install ffnvcodec
+cd ..
+unzip SVT-AV1-master.zip
+cd SVT-AV1-master/Build
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+cd ..
+cd ..
+
+cd vcpkg
+./vcpkg install libavif
+./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
+./vcpkg install tbb
+./vcpkg install exiv2[video,xmp]
+./vcpkg install libmediainfo
+./vcpkg install libde265
+./vcpkg install libexif
+./vcpkg install sdl2
+./vcpkg install jasper
+./vcpkg install libraw
+./vcpkg install poppler
+./vcpkg install sqlite3
+./vcpkg install freeimage
+./vcpkg install libjxl
+./vcpkg install libepoxy
+cd ..
 
 #Compile heif-master
+unzip heif-master.zip
 mv heif-3.6.2 heif-master
 cd heif-master/srcs 
-cmake ../srcs 
+cmake ../srcs -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC
 cd ..
 cd ..
+
+rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libpng.a
+
+
+
+
 

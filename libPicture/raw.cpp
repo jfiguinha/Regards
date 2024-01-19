@@ -9,7 +9,7 @@
 #include <turbojpeg.h>
 #endif
 #include <ConvertUtility.h>
-#ifdef __APPLE__
+#ifdef __NEW_EXIV2__
 #include "PictureMetadataExiv_new.h"
 #else
 #include "PictureMetadataExiv.h"

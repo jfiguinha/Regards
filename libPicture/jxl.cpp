@@ -79,7 +79,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 		{
 			// Get the ICC color profile of the pixel data
 			size_t icc_size;
-#ifdef __APPLE__
+#ifdef __NEW_JXL__
 			if (JXL_DEC_SUCCESS !=
 				JxlDecoderGetICCProfileSize(
 					dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
@@ -363,7 +363,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 			JxlPixelFormat format = {4, JXL_TYPE_FLOAT, JXL_LITTLE_ENDIAN, 0};
 			printf("color profile:\n");
 
-#ifdef __APPLE__
+#ifdef __NEW_JXL__
 			JxlColorEncoding color_encoding;
 			if (JXL_DEC_SUCCESS ==
 				JxlDecoderGetColorAsEncodedProfile(dec,
@@ -443,7 +443,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 				// instead.
 				printf("  format: ICC profile\n");
 				size_t profile_size;
-#ifdef __APPLE__
+#ifdef __NEW_JXL__
 				if (JXL_DEC_SUCCESS !=
 					JxlDecoderGetICCProfileSize(dec,
 					                            JXL_COLOR_PROFILE_TARGET_ORIGINAL,
@@ -469,7 +469,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					continue;
 				}
 				auto profile = static_cast<uint8_t*>(malloc(profile_size));
-#ifdef __APPLE__
+#ifdef __NEW_JXL__
 				if (JXL_DEC_SUCCESS !=
 					JxlDecoderGetColorAsICCProfile(dec,
 					                               JXL_COLOR_PROFILE_TARGET_ORIGINAL,

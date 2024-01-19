@@ -222,12 +222,14 @@ void show_help_options(const OptionDef* options, const char* msg, int req_flags,
 	printf("\n");
 }
 
+#ifndef __APPLE__
 const AVClass* av_opt_child_class_iterate(const AVClass* parent, void** iter)
 {
 	if (parent->child_class_iterate)
 		return parent->child_class_iterate(iter);
 	return NULL;
 }
+#endif
 
 void show_help_children(const AVClass* class, int flags)
 {
@@ -756,13 +758,14 @@ static void finish_group(OptionParseContext* octx, int group_idx,
 	memset(&octx->cur_group, 0, sizeof(octx->cur_group));
 }
 
+#ifndef __APPLE__
 void* av_mallocz_array(size_t nmemb, size_t size)
 {
 	if (!size || nmemb >= INT_MAX / size)
 		return NULL;
 	return av_mallocz(nmemb * size);
 }
-
+#endif
 
 /*
  * Add an option instance to currently parsed group.

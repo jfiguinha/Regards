@@ -1,5 +1,5 @@
 #include "header.h"
-#ifndef __APPLE__
+#ifndef __NEW_EXIV2__
 #include <FreeImage.h>
 #include <ximage.h>
 #include <ConvertUtility.h>

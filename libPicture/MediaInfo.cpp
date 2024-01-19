@@ -17,7 +17,7 @@
 //
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#if defined(__WXGTK__) || defined(__ARM64__)
+#if defined(__WXGTK__) || defined(__ARM64__) || defined(__APPLE__)
 
 #include "MediaInfo/MediaInfo.h" //Staticly-loaded library (.lib or .a or .so)
 #define MediaInfoNameSpace MediaInfoLib;

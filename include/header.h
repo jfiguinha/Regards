@@ -75,7 +75,7 @@
 #endif
 #endif
 
-
+#define wxUSE_DIRDLG 1
 
 #include <thread>
 #include <mutex>
