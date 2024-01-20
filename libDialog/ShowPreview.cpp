@@ -159,14 +159,34 @@ void CShowPreview::ShowPicture(cv::Mat& bitmap, const wxString& label)
 
 void CShowPreview::ShowOriginal()
 {
-	cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrameOriginal, orientation);
+	//cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrameOriginal, orientation);
+	//ShowPicture(mat, "Original Video");
+	cv::Mat mat = decodeFrameOriginal;
+	if (orientation != 0)
+	{
+		cv::flip(decodeFrameOriginal, mat, -1);
+		//cv::rotate(decodeFrameOriginal, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
+		//cv::rotate(mat, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
+		//cv::flip(decodeFrame, mat, 1);
+	}
 	ShowPicture(mat, "Original Video");
+	//ShowPicture(decodeFrameOriginal, "Original Video");
 }
 
 void CShowPreview::ShowNew()
 {
-	cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrame, orientation);
-	ShowPicture(mat, "Export Video");
+	//cv::Mat mat = CPictureUtility::ApplyRotationVideo(decodeFrame, orientation);
+	//ShowPicture(mat, "Export Video");
+	cv::Mat mat = decodeFrame;
+	if (orientation != 0)
+	{
+		cv::flip(decodeFrame, mat, -1);
+		//cv::rotate(decodeFrame, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
+		//cv::rotate(mat, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
+		//cv::flip(decodeFrame, mat, 1);
+	}
+		
+	ShowPicture(mat, "Original Video");
 }
 
 void CShowPreview::OnShowOriginal(wxCommandEvent& event)
