@@ -258,7 +258,7 @@
     <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\cvplot\inc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\cvplot\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\cvplot\inc;$(IncludePath)</IncludePath>
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
     <LibraryPath>C:\Program Files\LLVM\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>

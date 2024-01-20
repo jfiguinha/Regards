@@ -242,7 +242,7 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
     <LibraryPath>C:\Program Files\LLVM\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>

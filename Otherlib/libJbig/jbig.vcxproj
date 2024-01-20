@@ -223,7 +223,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files\LLVM\include;$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\ffmpeg-master\include;$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\LLVM\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
