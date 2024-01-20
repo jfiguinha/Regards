@@ -940,11 +940,10 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\libde265\build\libde265\Debug\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\libcurl-d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf28.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\debug\qpdf*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\rav1e\bin\rav1e.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\avif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\opus.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -960,6 +959,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\freetype.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\de265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\opencv_*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\av*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -997,7 +997,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\brotli
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\mediainfod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\wx*ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\FreeImaged.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\leptonica-1.82.0d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\leptonica-*d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\libprotobufd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
