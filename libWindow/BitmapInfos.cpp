@@ -131,9 +131,15 @@ void CBitmapInfos::SetDateInfos(const wxString& dataInfos, char seperator)
 		int year = atoi(vDateTime[0]);
 		int month = atoi(vDateTime[1]);
 		int day = atoi(vDateTime[2]);
-		int ijour = Dayofweek(day, month, year);
-		dateInfos = DayName.at(ijour) + L" " + to_string(day) + L" " + MonthName.at(month - 1) + L", " + to_string(year)
-			+ L" ";
+
+		if (year == 0 || month == 0 || day == 0)
+			dateInfos = "Invalid Date Infos";
+		else
+		{
+			int ijour = Dayofweek(day, month, year);
+			dateInfos = DayName.at(ijour) + L" " + to_string(day) + L" " + MonthName.at(month - 1) + L", " + to_string(year)
+				+ L" ";
+		}
 	}
 }
 
