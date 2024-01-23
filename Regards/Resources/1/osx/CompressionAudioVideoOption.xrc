@@ -92,8 +92,13 @@
 								<pos>15,300</pos>
 								<checked>1</checked>
 							</object>
+							<object class="wxStaticText" name="ID_STVIDEOPRESET">
+								<label>Preset :</label>
+								<pos>190,240</pos>
+								<size>80,13</size>
+							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
-								<pos>200,240</pos>
+								<pos>250,240</pos>
 								<value>Medium</value>
 								<content>
 									<item>VeryFast</item>
