@@ -32,7 +32,7 @@ cd ..
 
 cd vcpkg
 ./vcpkg install libavif
-./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
+./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus,fdk-aac,qsv,amf]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp]
