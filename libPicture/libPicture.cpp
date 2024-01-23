@@ -32,6 +32,7 @@
 #include <picture_id.h>
 #include <LibResource.h>
 #include "OpenCVVideoPlayer.h"
+#include "VideoPlayer.h"
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -1681,7 +1682,9 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
 	bool is_valid;
-	int64 duration = CMediaInfo::GetVideoDuration(szFileName);
+	CVideoPlayer videoPlayer(szFileName);
+	int duration = videoPlayer.GetDuration();
+	//int64 duration = CMediaInfo::GetVideoDuration(szFileName);
 	if (duration > 0)
 		return true;
 	return false;

@@ -790,16 +790,22 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		   motion of the chroma plane doesnt match the luma plane */
 		pCodecCtx->mb_decision = 2;
 	}
-
+	videoCompressOption->videoPreset.LowerCase();
+	wxString preset = videoCompressOption->videoPreset;
 
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H264 && videoCompressOption->videoPreset != "" && encoderName == "")
 	{
 		av_dict_set(&param, "start_time_realtime", nullptr, 0);
-		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
+		av_opt_set(pCodecCtx->priv_data, "preset", preset, 0);
 		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
 		av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
 	}
 
+	if (codec_id == AV_CODEC_ID_AV1 && videoCompressOption->videoPreset != "")
+	{
+		av_opt_set(pCodecCtx->priv_data, "preset", preset, 0);
+	}
+	
 
 	/*
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H265 && encoderName == ""  && videoCompressOption->videoPreset != "")
@@ -2539,7 +2545,7 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			c->height = pSourceCodecCtx->height;
 			c->framerate = pSourceCodecCtx->framerate;
 			c->time_base = pSourceCodecCtx->time_base;
-			c->bit_rate = videoCompressOption->videoBitRate;
+			c->bit_rate = 1000 * videoCompressOption->videoBitRate;
 			c->gop_size = framerate;
 			c->max_b_frames = 0;
 			c->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
@@ -2570,6 +2576,12 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			if (sd)
 				av_display_rotation_set((int32_t*)sd, rotate);
 		}
+
+		if (codec_id == AV_CODEC_ID_H265 && videoCompressOption->videoPreset != "")
+		{
+			av_opt_set(c->priv_data, "preset", videoCompressOption->videoPreset, 0);
+		}
+		
 
 		const int ret = avcodec_open2(c, p_codec, &param);
 		if (ret < 0)

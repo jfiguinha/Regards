@@ -373,18 +373,19 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoProfile->AppendString("Main Still Picture");
 		cbVideoPreset->AppendString("None");
 		/*
-		cbVideoPreset->AppendString("UltraFast");
+		cbVideoPreset->AppendString("ultrafast");
 		cbVideoPreset->AppendString("SuperFast");
 		cbVideoPreset->AppendString("VeryFast");
 		cbVideoPreset->AppendString("Faster");
-		cbVideoPreset->AppendString("Fast");
+		cbVideoPreset->AppendString("Fast");*
+		*/
 		cbVideoPreset->AppendString("Medium");
 		cbVideoPreset->AppendString("Slow");
 		cbVideoPreset->AppendString("Slower");
 		cbVideoPreset->AppendString("VerySlow");
 		cbVideoPreset->AppendString("Placebo");
-		*/
-		cbVideoPreset->SetLabel("None");
+		
+		cbVideoPreset->SetLabel("Slow");
 		cbVideoProfile->SetLabel("Main");
 	}
 	else if (codec == "AV1")
@@ -392,8 +393,22 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoProfile->AppendString("Auto");
 		cbVideoProfile->AppendString("Main");
 		cbVideoProfile->AppendString("High");
-		cbVideoPreset->AppendString("None");
-		cbVideoPreset->SetLabel("None");
+
+		cbVideoPreset->AppendString("0");
+		cbVideoPreset->AppendString("1");
+		cbVideoPreset->AppendString("2");
+		cbVideoPreset->AppendString("3");
+		cbVideoPreset->AppendString("4");
+		cbVideoPreset->AppendString("5");
+		cbVideoPreset->AppendString("6");
+		cbVideoPreset->AppendString("7");
+		cbVideoPreset->AppendString("8");
+		cbVideoPreset->AppendString("9");
+		cbVideoPreset->AppendString("10");
+		cbVideoPreset->AppendString("11");
+		cbVideoPreset->AppendString("12");
+		cbVideoPreset->SetLabel("7");
+
 		cbVideoProfile->SetLabel("Main");
 	}
 	else if (codec == "MPEG4")
