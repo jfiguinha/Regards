@@ -296,7 +296,7 @@
     <LibraryPath>$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\heif-master\lib\arm64\Debug;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Debug;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\LLVM\lib;$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -935,16 +935,15 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Shcore.lib;srcdav1d.lib;sqlite3.lib;libx265.lib;Ws2_32.lib;lz4d.lib;Userenv.lib;de265.lib;heif.lib;avif.lib;exiv2.lib;poppler.lib;mediainfo-static.lib;zenlib.lib;zlibd.lib;poppler-cpp.lib;qpdf.lib;raw_rd.lib;psapi.lib;aom.lib;opencv_calib3d4d.lib;opencv_objdetect4d.lib;opencv_core4d.lib;opencv_video4d.lib;opencv_dnn4d.lib;opencv_xfeatures2d4d.lib;opencv_features2d4d.lib;opencv_imgproc4d.lib;opencv_dnn_superres4d.lib;opencv_imgcodecs4d.lib;opencv_highgui4d.lib;opencv_flann4d.lib;opencv_face4d.lib;opencv_xphoto4d.lib;opencv_photo4d.lib;opencv_videoio4d.lib;opencv_tracking4d.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.83.1d.lib;tesseract53d.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32ud.lib;wxbase32ud_net.lib;wxbase32ud_xml.lib;turbojpeg.lib;wxmsw32ud_core.lib;wxmsw32ud_adv.lib;wxmsw32ud_html.lib;wxmsw32ud_gl.lib;wxmsw32ud_xrc.lib;wxmsw32ud_qa.lib;wxmsw32ud_aui.lib;wxmsw32ud_ribbon.lib;wxmsw32ud_stc.lib;wxmsw32ud_propgrid.lib;wxmsw32ud_richtext.lib;wxmsw32ud_webview.lib;SDL2d.lib;epoxy.lib;libcurl-d.lib;iconv.lib;openjp2.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpatd.lib;FreeImaged.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1_d.lib;Imath-3_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;srcdav1d.lib;sqlite3.lib;libx265.lib;Ws2_32.lib;lz4d.lib;Userenv.lib;de265.lib;heif.lib;avif.lib;exiv2.lib;poppler.lib;mediainfod.lib;zend.lib;zlibd.lib;poppler-cpp.lib;qpdf.lib;raw_rd.lib;psapi.lib;aom.lib;opencv_calib3d4d.lib;opencv_objdetect4d.lib;opencv_core4d.lib;opencv_video4d.lib;opencv_dnn4d.lib;opencv_xfeatures2d4d.lib;opencv_features2d4d.lib;opencv_imgproc4d.lib;opencv_dnn_superres4d.lib;opencv_imgcodecs4d.lib;opencv_highgui4d.lib;opencv_flann4d.lib;opencv_face4d.lib;opencv_xphoto4d.lib;opencv_photo4d.lib;opencv_videoio4d.lib;opencv_tracking4d.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.83.1d.lib;tesseract53d.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32ud.lib;wxbase32ud_net.lib;wxbase32ud_xml.lib;turbojpeg.lib;wxmsw32ud_core.lib;wxmsw32ud_adv.lib;wxmsw32ud_html.lib;wxmsw32ud_gl.lib;wxmsw32ud_xrc.lib;wxmsw32ud_qa.lib;wxmsw32ud_aui.lib;wxmsw32ud_ribbon.lib;wxmsw32ud_stc.lib;wxmsw32ud_propgrid.lib;wxmsw32ud_richtext.lib;wxmsw32ud_webview.lib;SDL2d.lib;epoxy.lib;libcurl-d.lib;iconv.lib;openjp2.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpatd.lib;FreeImaged.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1_d.lib;Imath-3_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\libde265\build\libde265\Debug\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\libcurl-d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf28.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\debug\qpdf*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\rav1e\bin\rav1e.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\avif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\opus.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -960,6 +959,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\freetype.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\de265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\opencv_*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\av*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -997,7 +997,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\brotli
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\mediainfod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\wx*ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\FreeImaged.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\leptonica-1.82.0d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\leptonica-*d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\libprotobufd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -1021,7 +1021,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\vorbis
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\libx264-164.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\ogg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\sqlite3.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-</Command>
+XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -1135,7 +1135,8 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\vorbis.dll" 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\vorbisenc.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libx264-164.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\ogg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sqlite3.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sqlite3.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
