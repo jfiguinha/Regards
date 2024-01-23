@@ -19,8 +19,8 @@ cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install ffnvcodec
 cd ..
-unzip SVT-AV1-master.zip
-cd SVT-AV1-master/Build
+unzip SVT-AV1-v1.8.0.zip
+cd SVT-AV1-v1.8.0/Build
 PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
