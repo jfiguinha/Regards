@@ -181,7 +181,7 @@ void hb_limit_rational(int* x, int* y, int num, int den, int limit)
 	*y = den;
 }
 
-/*
+
 static int apply_vpx_preset(AVDictionary** av_opts, const wxString& preset)
 {
 	if (preset == "")
@@ -236,7 +236,7 @@ static int apply_vpx_preset(AVDictionary** av_opts, const wxString& preset)
 }
 
 // VP8 and VP9 have some options in common and some different
-/*
+
 static int apply_vp8_preset(AVDictionary** av_opts, const wxString& preset)
 {
 	return apply_vpx_preset(av_opts, preset);
@@ -247,7 +247,7 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 	av_dict_set(av_opts, "row-mt", "1", 0);
 	return apply_vpx_preset(av_opts, preset);
 }
-*/
+
 
 #ifdef WIN32
 wxString listencoderHardware[] = {"nvenc", "amf", "qsv", "mf", "libmfx", "opencl"};
@@ -1140,7 +1140,13 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 	{
 		av_dict_set(&param, "gops_per_idr", "1", 0);
 	}
-
+    
+    if (codec_id == AV_CODEC_ID_VP8)
+        apply_vp8_preset(&param, videoCompressOption->videoPreset);
+        
+    if (codec_id == AV_CODEC_ID_VP9)
+        apply_vp9_preset(&param, videoCompressOption->videoPreset);
+        
 	return param;
 }
 
