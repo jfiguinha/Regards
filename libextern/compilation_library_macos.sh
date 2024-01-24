@@ -15,22 +15,22 @@ cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install ffnvcodec
+./vcpkg install libavif
+
 cd ..
 unzip SVT-AV1-v1.8.0.zip
 cd SVT-AV1-v1.8.0/Build
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
 cd ..
 cd ..
 
 cd vcpkg
-./vcpkg install libavif
-./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus]
+./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,opencl,openjpeg,opus,fdk-aac] --allow-unsupported
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp]

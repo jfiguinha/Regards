@@ -535,6 +535,12 @@
         }
       ]
     },
+    "qsv": {
+      "description": "Intel QSV Codec",
+      "dependencies": [
+        "mfx-dispatch"
+      ]
+    },
     "sdl2": {
       "description": "Sdl2 support",
       "dependencies": [
@@ -592,9 +598,6 @@
     },
     "swresample": {
       "description": "Build the swresample library"
-    },
-    "qsv": {
-      "description": "Build the qsv library"
     },
     "swscale": {
       "description": "Build the swscale library"
