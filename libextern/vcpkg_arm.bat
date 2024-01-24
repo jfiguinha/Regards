@@ -10,7 +10,7 @@ vcpkg install libraw:arm64-windows --recurse
 vcpkg install jasper:arm64-windows --recurse
 vcpkg install wxwidgets[webview]:arm64-windows --recurse
 vcpkg install exiv2[video,xmp]:arm64-windows --recurse
-vcpkg install ffmpeg[gpl,aom,x264,x265,vpx,webp,vorbis,mp3lame,opencl,openjpeg,opus]:arm64-windows
+vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,opencl,openjpeg,opus,fdk-aac]:arm64-windows --recurse
 vcpkg install opencv[contrib,ipp,openmp,opengl,ffmpeg]:arm64-windows --recurse
 vcpkg install poppler:arm64-windows --recurse
 vcpkg install libmediainfo:arm64-windows --recurse
