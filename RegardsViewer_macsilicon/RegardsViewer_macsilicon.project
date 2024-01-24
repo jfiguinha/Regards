@@ -300,6 +300,7 @@
         <Library Value="vorbisenc"/>
         <Library Value="openh264"/>
         <Library Value="sharpyuv"/>
+        <Library Value="fdk-aac"/>
         <Library Value="zstd"/>
         <Library Value="zen"/>
         <Library Value="tinyxml2"/>
