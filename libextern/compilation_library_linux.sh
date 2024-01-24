@@ -4,12 +4,6 @@ echo $NBPROC
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2022.08.15.zip
-cd vcpkg-2022.08.15
-./bootstrap-vcpkg.sh
-./vcpkg install wxWidgets
-cd ..
-
 unzip vcpkg-2023.08.09.zip
 mv vcpkg-2023.08.09 vcpkg
 
@@ -30,9 +24,22 @@ make install
 cd ..
 cd ..
 
+tar -xf MediaSDK-intel-mediasdk-22.1.0.tar.gz
+cd MediaSDK-intel-mediasdk-22.1.0
+mkdir build
+cd build
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j12
+make install
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j12
+make install
+cd ..
+cd ..
+
 cd vcpkg
 ./vcpkg install libavif
-./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus,fdk-aac,qsv,amf]
+./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus,fdk-aac,amf,qsv]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp]

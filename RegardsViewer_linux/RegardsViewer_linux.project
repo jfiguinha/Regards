@@ -224,6 +224,8 @@
         <Library Value="swresample"/>
         <Library Value="swscale"/>
         <Library Value="webp"/>
+        <Library Value="mfx"/>
+        <Library Value="mfxhw64"/>
         <Library Value="opus"/>
         <Library Value="vorbisenc"/>
         <Library Value="vorbis"/>
@@ -338,6 +340,7 @@
         <Library Value="pangocairo-1.0"/>
         <Library Value="pango-1.0"/>
         <Library Value="fribidi"/>
+        <Library Value="fdk-aac"/>
         <Library Value="harfbuzz"/>
         <Library Value="atk-1.0"/>
         <Library Value="cairo-gobject"/>
@@ -472,6 +475,7 @@
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc.* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbbmalloc_proxy.* ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/libmfx/bin/lib*.* ./Debug</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
@@ -555,6 +559,7 @@
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/libmfx/bin/lib*.* ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
