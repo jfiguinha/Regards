@@ -55,6 +55,8 @@ public:
 	wxComboBox* cbAudioQuality;
 
 	wxCheckBox* ckVideoHardware;
+	wxComboBox* cbVideoHardware;
+
 	wxComboBox* cbAudioCodec;
 
 

@@ -45,6 +45,16 @@
 								<pos>15,80</pos>
 								<label>Hardware Encoder</label>
 							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOHARDWARE">
+								<pos>200,80</pos>
+								<size>100,30</size>
+								<value>QSV</value>
+								<content>
+									<item>QSV</item>
+									<item>AMF</item>
+									<item>NVDEC</item>
+								</content>
+							</object>
 							<object class="wxStaticText" name="ID_STVIDEOCODEC">
 								<label>Video :</label>
 								<pos>32,110</pos>

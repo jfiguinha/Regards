@@ -12,7 +12,8 @@
 #include <LibResource.h>
 #include <picture_utility.h>
 #include <WindowUtility.h>
-
+#include <ffmpeg_application.h>
+#include <ParamInit.h>
 extern "C" {
 #include <libavutil/error.h>
 }
@@ -75,6 +76,11 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	bitmap = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEO")));
 	ckVideoAutocontrast = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOAUTOCONTRAST")));
 	ckVideoStabilization = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOSTABILIZATION")));
+
+
+	cbVideoHardware = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOHARDWARE")));
+
+
 #ifdef USE_PREVIEW_INTEGRATE
 #ifndef __APPLE__
 	bitmapPreview = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW")));
@@ -199,6 +205,29 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
+
+#ifndef __APPLE__
+	cbVideoHardware->Clear();
+
+	wxString encoderHardware = "";
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		encoderHardware = config->GetHardwareEncoder();
+
+	std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
+	if (listHard.size() > 0)
+	{
+		for (wxString hardware : listHard)
+			cbVideoCodec->AppendString(hardware);
+
+		cbVideoCodec->SetStringSelection(encoderHardware);
+	}
+#else
+
+	cbVideoCodec->AppendString("videotoolbox");
+	cbVideoCodec->SetStringSelection("videotoolbox");
+
+#endif
 
 #ifdef __APPLE__
 	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, viewerTheme);
@@ -660,7 +689,7 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress* vid
 		videoOptionCompress->videoEffectParameter.contrast = contrastFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.brightness = lightFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.ColorBoostEnable = ckcolorBoost->GetValue();
-
+		
 		videoOptionCompress->videoEffectParameter.color_boost[0] = redFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.color_boost[1] = greenFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.color_boost[2] = blueFilter->GetValue();
@@ -711,6 +740,11 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress* vid
 		videoOptionCompress->startTime = sliderVideoPosition->GetTimeStart();
 		videoOptionCompress->audioDirectCopy = rbAudioDirectCopy->GetSelection();
 		videoOptionCompress->videoDirectCopy = rbVideoDirectCopy->GetSelection();
+
+
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			config->SetHardwareEncoder(cbVideoHardware->GetStringSelection());
 
 		if (videoOptionCompress->videoDirectCopy)
 			videoOptionCompress->videoEffectParameter.effectEnable = false;

@@ -250,14 +250,14 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 
 
 #ifdef WIN32
-wxString listencoderHardware[] = {"nvenc", "amf", "qsv", "mf", "libmfx", "opencl"};
-int sizeListEncoderHardware = 6;
+wxString listencoderHardware[] = {"nvenc", "amf", "qsv"};
+int sizeListEncoderHardware = 3;
 #elif defined(__APPLE__)
-wxString listencoderHardware[] = { "videotoolbox", "opencl" };
+wxString listencoderHardware[] = { "videotoolbox" };
 int sizeListEncoderHardware = 1;
 #else
-wxString listencoderHardware[] = { "nvenc", "vaapi", "libmfx", "opencl" };
-int sizeListEncoderHardware = 4;
+wxString listencoderHardware[] = { "nvenc", "amf", "qsv" };
+int sizeListEncoderHardware =3;
 #endif
 
 
@@ -1439,21 +1439,15 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 						if (encoderHardware != "")
 							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
 					}
-					if (enc_ctx != nullptr)
+					if (!enc_ctx)
 					{
-						for (int i = 0; i < sizeListEncoderHardware; i++)
-						{
-							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, listencoderHardware[i]);
-							if (enc_ctx)
-							{
-								encoderHardware = listencoderHardware[i];
-								break;
-							}
-						}
+						wxMessageBox(wxT("Hardware Encoder not found for this codec. Cpu compression only."), wxT("Hardware Encoder Error"), wxICON_ERROR);
+						encoderHardware = ""; //MediaFoundation
+						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
+
 					}
 				}
-
-				if (!enc_ctx)
+				else 
 				{
 					encoderHardware = ""; //MediaFoundation
 					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);

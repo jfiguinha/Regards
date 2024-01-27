@@ -111,6 +111,16 @@ int opt_max_alloc(void* optctx, const char* opt, const char* arg);
 
 int opt_codec_debug(void* optctx, const char* opt, const char* arg);
 
+void print_codecs(int encoder);
+
+unsigned get_codecs_sorted(const AVCodecDescriptor*** rcodecs);
+
+
+const AVCodec* next_codec_for_id(enum AVCodecID id, void** iter,
+    int encoder);
+
+char get_media_type_char(enum AVMediaType type);
+
 /**
  * Limit the execution time.
  */

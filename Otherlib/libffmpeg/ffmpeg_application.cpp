@@ -14,6 +14,7 @@ extern "C" {
 #include "ffmpeg.h"
 #include <libavcodec/avcodec.h>
 #include <libavutil/avassert.h>
+#include "cmdutils.h"
 }
 
 
@@ -265,4 +266,69 @@ int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const
 	ExecuteFFmpeg();
 
 	return 0;
+}
+
+std::vector<wxString> CFFmpegApp::GetHardwareList()
+{
+	std::vector<wxString> list;
+	enum AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
+	while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+	{
+		wxString encoder = av_hwdevice_get_type_name(type);
+		if(encoder == "cuda")
+			list.push_back("nvenc");
+		else if(encoder == "qsv")
+			list.push_back("qsv");
+		else if (encoder == "amf")
+			list.push_back("amf");
+	}
+
+	return list;
+}
+
+std::vector<std::string> CFFmpegApp::GetListOfCodec()
+{
+	std::vector<std::string> list;
+//	print_codecs(1);
+	bool encoder = true;
+
+	const AVCodecDescriptor** codecs;
+	unsigned i, nb_codecs = get_codecs_sorted(&codecs);
+
+	printf("%s:\n"
+		" V..... = Video\n"
+		" A..... = Audio\n"
+		" S..... = Subtitle\n"
+		" .F.... = Frame-level multithreading\n"
+		" ..S... = Slice-level multithreading\n"
+		" ...X.. = Codec is experimental\n"
+		" ....B. = Supports draw_horiz_band\n"
+		" .....D = Supports direct rendering method 1\n"
+		" ------\n",
+		encoder ? "Encoders" : "Decoders");
+	for (i = 0; i < nb_codecs; i++)
+	{
+		const AVCodecDescriptor* desc = codecs[i];
+		const AVCodec* codec;
+		void* iter = NULL;
+
+		while ((codec = next_codec_for_id(desc->id, &iter, encoder)))
+		{
+			printf(" %c", get_media_type_char(desc->type));
+			printf((codec->capabilities & AV_CODEC_CAP_FRAME_THREADS) ? "F" : ".");
+			printf((codec->capabilities & AV_CODEC_CAP_SLICE_THREADS) ? "S" : ".");
+			printf((codec->capabilities & AV_CODEC_CAP_EXPERIMENTAL) ? "X" : ".");
+			printf((codec->capabilities & AV_CODEC_CAP_DRAW_HORIZ_BAND) ? "B" : ".");
+			printf((codec->capabilities & AV_CODEC_CAP_DR1) ? "D" : ".");
+
+			printf(" %-20s %s", codec->name, codec->long_name ? codec->long_name : "");
+			if (strcmp(codec->name, desc->name))
+				printf(" (codec %s)", desc->name);
+
+			printf("\n");
+		}
+	}
+	av_free(codecs);
+
+	return list;
 }

@@ -34,6 +34,10 @@ public:
 	int ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const wxString& inputAudioFile,
 	                               const wxString& outputFile);
 
+	std::vector<std::string> GetListOfCodec();
+
+	static std::vector<wxString> GetHardwareList();
+
 private:
 	void ExecuteFFmpeg();
 	bool showProgressWindow = true;

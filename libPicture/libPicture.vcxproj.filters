@@ -22,9 +22,6 @@
     <ClCompile Include="MetadataExiv2.cpp">
       <Filter>libexif</Filter>
     </ClCompile>
-    <ClCompile Include="PictureMetadataExiv.cpp">
-      <Filter>libexif</Filter>
-    </ClCompile>
     <ClCompile Include="ImageLoadingFormat.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
@@ -133,6 +130,12 @@
     <ClCompile Include="VideoPlayer.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="PictureMetadataExiv_new.cpp">
+      <Filter>libexif</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureMetadataExiv.cpp">
+      <Filter>libexif</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -163,9 +166,6 @@
       <Filter>libraw</Filter>
     </ClInclude>
     <ClInclude Include="MetadataExiv2.h">
-      <Filter>libexif</Filter>
-    </ClInclude>
-    <ClInclude Include="PictureMetadataExiv.h">
       <Filter>libexif</Filter>
     </ClInclude>
     <ClInclude Include="ImageLoadingFormat.h">
@@ -293,6 +293,12 @@
     </ClInclude>
     <ClInclude Include="VideoPlayer.h">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureMetadataExiv_new.h">
+      <Filter>libexif</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureMetadataExiv.h">
+      <Filter>libexif</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

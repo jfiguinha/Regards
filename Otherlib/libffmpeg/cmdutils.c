@@ -1544,7 +1544,7 @@ int show_devices(void* optctx, const char* opt, const char* arg)
         printf("\n");                                                        \
     }
 
-static void print_codec(const AVCodec* c)
+void print_codec(const AVCodec* c)
 {
 	int encoder = av_codec_is_encoder(c);
 
@@ -1651,7 +1651,7 @@ static void print_codec(const AVCodec* c)
 	}
 }
 
-static char get_media_type_char(enum AVMediaType type)
+char get_media_type_char(enum AVMediaType type)
 {
 	switch (type)
 	{
@@ -1664,7 +1664,7 @@ static char get_media_type_char(enum AVMediaType type)
 	}
 }
 
-static const AVCodec* next_codec_for_id(enum AVCodecID id, void** iter,
+const AVCodec* next_codec_for_id(enum AVCodecID id, void** iter,
                                         int encoder)
 {
 	const AVCodec* c;
@@ -1685,7 +1685,7 @@ static int compare_codec_desc(const void* a, const void* b)
 	return (*da)->type != (*db)->type ? FFDIFFSIGN((*da)->type, (*db)->type) : strcmp((*da)->name, (*db)->name);
 }
 
-static unsigned get_codecs_sorted(const AVCodecDescriptor*** rcodecs)
+unsigned get_codecs_sorted(const AVCodecDescriptor*** rcodecs)
 {
 	const AVCodecDescriptor* desc = NULL;
 	const AVCodecDescriptor** codecs;
