@@ -1437,20 +1437,20 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 					{
 						wxString encoderHardware = config->GetHardwareEncoder();
 						if (encoderHardware != "")
-							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
+							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
 					}
 					if (!enc_ctx)
 					{
 						wxMessageBox(wxT("Hardware Encoder not found for this codec. Cpu compression only."), wxT("Hardware Encoder Error"), wxICON_ERROR);
 						encoderHardware = ""; //MediaFoundation
-						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
+						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
 
 					}
 				}
 				else 
 				{
 					encoderHardware = ""; //MediaFoundation
-					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
+					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
 				}
 			}
 			else
@@ -1643,6 +1643,13 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 			enc_pkt.stream_index = stream_index;
 
 			int outputIndex = streamCorrespondant[stream_index];
+
+			/*
+			if (ofmt_ctx->streams[outputIndex]->time_base.den != ifmt_ctx->streams[outputIndex]->time_base.den)
+				ofmt_ctx->streams[outputIndex]->time_base.den = ifmt_ctx->streams[outputIndex]->time_base.den;
+			if (ofmt_ctx->streams[outputIndex]->time_base.num != ifmt_ctx->streams[outputIndex]->time_base.num)
+				ofmt_ctx->streams[outputIndex]->time_base.num = ifmt_ctx->streams[outputIndex]->time_base.num;
+			*/
 
 			if (ofmt_ctx->streams[outputIndex]->time_base.den == ifmt_ctx->streams[outputIndex]->time_base.den
 				&& ofmt_ctx->streams[outputIndex]->time_base.num == ifmt_ctx->streams[outputIndex]->time_base.num)
@@ -2490,7 +2497,7 @@ void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* f
 }
 
 AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pSourceCodecCtx,
-                                                           AVStream* streamVideo, wxString encoderName)
+                                                           AVStream* streamVideo, AVStream* streamVideoToEncode, wxString encoderName)
 {
 	AVCodecContext* c = nullptr;
 	wxString encoderHardName = "";
@@ -2544,7 +2551,14 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			c->width = pSourceCodecCtx->width;
 			c->height = pSourceCodecCtx->height;
 			c->framerate = pSourceCodecCtx->framerate;
-			c->time_base = pSourceCodecCtx->time_base;
+			c->time_base = streamVideoToEncode->time_base;
+
+
+			streamVideo->codecpar->framerate = streamVideoToEncode->codecpar->framerate;
+			streamVideo->r_frame_rate = streamVideoToEncode->r_frame_rate;
+			streamVideo->time_base = streamVideoToEncode->time_base;
+			streamVideo->avg_frame_rate = streamVideoToEncode->avg_frame_rate;
+
 			c->bit_rate = 1000 * videoCompressOption->videoBitRate;
 			c->gop_size = framerate;
 			c->max_b_frames = 0;
@@ -2580,6 +2594,12 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 		if (codec_id == AV_CODEC_ID_H265 && videoCompressOption->videoPreset != "")
 		{
 			av_opt_set(c->priv_data, "preset", videoCompressOption->videoPreset, 0);
+		}
+
+		if (c->time_base.den <= 0 || c->time_base.num <= 0)
+		{
+			c->time_base.num = c->framerate.den;
+			c->time_base.den = c->framerate.num;
 		}
 		
 
@@ -2663,13 +2683,13 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 			if (encoderHardware != "none")
 			{
-				c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, encoderHardware);
+				c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, nullptr, encoderHardware);
 			}
 		}
 
 		if (!c)
 		{
-			c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, encoderHardware);
+			c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, nullptr, encoderHardware);
 		}
 
 

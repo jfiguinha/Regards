@@ -95,7 +95,7 @@ private:
 
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
 
-	AVCodecContext* OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo,
+	AVCodecContext* OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, AVStream* streamVideoToEncode, 
 	                                  wxString encoderName);
 	void SetParamFromVideoCodec(AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx);
 	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, const wxString& encoderName);
