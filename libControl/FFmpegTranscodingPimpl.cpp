@@ -2656,14 +2656,14 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 		if (videoCompressOption->videoHardware)
 		{
-			for (int i = 0; i < sizeListEncoderHardware; i++)
+			wxString encoderHardware = "";
+			CRegardsConfigParam* config = CParamInit::getInstance();
+			if (config != nullptr)
+				encoderHardware = config->GetHardwareEncoder();
+
+			if (encoderHardware != "none")
 			{
-				c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, listencoderHardware[i]);
-				if (c)
-				{
-					encoderHardware = listencoderHardware[i];
-					break;
-				}
+				c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, encoderHardware);
 			}
 		}
 

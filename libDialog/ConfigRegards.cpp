@@ -98,14 +98,24 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 		if (config != nullptr)
 			encoderHardware = config->GetHardwareEncoder();
 
+		bool findEncoder = false;
 		std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
 		if (listHard.size() > 0)
 		{
 			for (wxString hardware : listHard)
+			{
 				rbVideoEncoderHard->AppendString(hardware);
+				if (hardware == encoderHardware)
+					findEncoder = true;
+			}
 
-			rbVideoEncoderHard->SetStringSelection(encoderHardware);
+			if (encoderHardware == "none" || !findEncoder)
+				rbVideoEncoderHard->SetStringSelection(listHard[0]);
+			else
+				rbVideoEncoderHard->SetStringSelection(encoderHardware);
 		}
+		else
+			rbVideoEncoderHard->SetStringSelection("none");
 	}
 #else
 

@@ -214,18 +214,29 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	if (config != nullptr)
 		encoderHardware = config->GetHardwareEncoder();
 
+	bool findEncoder = false;
 	std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
 	if (listHard.size() > 0)
 	{
 		for (wxString hardware : listHard)
-			cbVideoCodec->AppendString(hardware);
+		{
+			cbVideoHardware->AppendString(hardware);
+			if (hardware == encoderHardware)
+				findEncoder = true;
+		}
+			
 
-		cbVideoCodec->SetStringSelection(encoderHardware);
+		if(encoderHardware == "none" || !findEncoder)
+			cbVideoHardware->SetStringSelection(listHard[0]);
+		else
+			cbVideoHardware->SetStringSelection(encoderHardware);
 	}
+	else
+		cbVideoHardware->SetStringSelection("none");
 #else
 
-	cbVideoCodec->AppendString("videotoolbox");
-	cbVideoCodec->SetStringSelection("videotoolbox");
+	cbVideoHardware->AppendString("videotoolbox");
+	cbVideoHardware->SetStringSelection("videotoolbox");
 
 #endif
 
