@@ -5,6 +5,7 @@
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
+#include <ffmpeg_application.h>
 using namespace Regards::Viewer;
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
@@ -88,6 +89,30 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 		txtVideoPath->SetValue(config->GetPathForVideoEdit());
 	if (config != nullptr)
 		txtPicturePath->SetValue(config->GetPathForPictureEdit());
+
+#ifndef __APPLE__
+	rbVideoEncoderHard->Clear();
+	{
+		wxString encoderHardware = "";
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			encoderHardware = config->GetHardwareEncoder();
+
+		std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
+		if (listHard.size() > 0)
+		{
+			for (wxString hardware : listHard)
+				rbVideoEncoderHard->AppendString(hardware);
+
+			rbVideoEncoderHard->SetStringSelection(encoderHardware);
+		}
+	}
+#else
+
+	rbVideoEncoderHard->AppendString("videotoolbox");
+	rbVideoEncoderHard->SetStringSelection("videotoolbox");
+
+#endif
 
 	SetAutoLayout(TRUE);
 }
