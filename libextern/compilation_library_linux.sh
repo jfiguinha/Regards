@@ -2,12 +2,13 @@
 NBPROC=$(nproc)
 echo $NBPROC
 
+LOCALPATH=$(pwd)
+echo $LOCALPATH
+
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2023.08.09.zip
-mv vcpkg-2023.08.09 vcpkg
-
-cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
+unzip vcpkg-2024.01.12.zip
+mv vcpkg-2024.01.12 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
@@ -15,10 +16,10 @@ cd vcpkg
 cd ..
 unzip SVT-AV1-v1.8.0.zip
 cd SVT-AV1-v1.8.0/Build
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
 cd ..
@@ -28,10 +29,10 @@ tar -xf MediaSDK-intel-mediasdk-22.1.0.tar.gz
 cd MediaSDK-intel-mediasdk-22.1.0
 mkdir build
 cd build
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j12
 make install
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j12
 make install
 cd ..
@@ -54,9 +55,6 @@ cd vcpkg
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
 cd ..
-
-#decompress tbb
-tar -xf oneapi-tbb-2021.7.0.tar.gz
 
 #Compile heif-master
 unzip heif-master.zip

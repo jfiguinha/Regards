@@ -8,9 +8,13 @@ brew upgrade
 xcode-select --install
 brew install -v cmake
 brew install -v nasm
+brew install -v pkg-config
+brew install -v autoconf
+brew install -v automake
+brew install -v libtool
 brew install -v qpdf
 brew install -v wxwidgets
-brew install -v pkg-config
+
 
 #Install External Library
 cd libextern

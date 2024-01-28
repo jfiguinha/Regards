@@ -1,19 +1,10 @@
-vcpkg_minimum_required(VERSION 2022-10-12) # for ${VERSION}
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ffmpeg/ffmpeg
-    REF n${VERSION}
-    SHA512 1b90c38b13149f2de7618ad419adc277afd5e65bbf52b849a7245aec0f92f73189c8547599dba8408b8828a767c1120f132727b57cd6231cd8b81de2471a4b8b
+    REF "n${VERSION}"
+    SHA512 abb9207364553248278f8e23e3d565da51ecb0ae9b20edda41624b314541bc3f53a8d6aac7fa5455168d2323d5d70d5a8acbe059f33423fbc2563e1a6cd0348b
     HEAD_REF master
     PATCHES
-        0002-avcodec-libsvtav1-remove-compressed_ten_bit_format-a.patch
-        0003-avcodec-libsvtav1-replace-vbv_bufsize-with-maximum_b.patch
-        0004-avcodec-libsvtav1-only-set-max_buf_sz-if-both-bitrat.patch
-        0005-avcodec-libsvtav1-don-t-force-a-default-value-for-de.patch
-        0006-avcodec-libsvtav1-use-larger-of-bit-rate-and-max-rat.patch
-        0007-hwcontext_vulkan-remove-optional-encode-decode-exten.patch
-        0008-libavcodec-libsvtav1-Allow-1-for-preset-option.patch
         0001-create-lib-libraries.patch
         0002-fix-msvc-link.patch #upstreamed in future version
         0003-fix-windowsinclude.patch
@@ -28,7 +19,6 @@ vcpkg_from_github(
         0015-Fix-xml2-detection.patch
         0020-fix-aarch64-libswscale.patch
         0022-fix-iconv.patch
-        0024-fix-gcc13-binutils.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
@@ -67,8 +57,9 @@ elseif(VCPKG_TARGET_IS_WINDOWS)
 elseif(VCPKG_TARGET_IS_OSX)
     string(APPEND OPTIONS " --target-os=darwin --enable-appkit --enable-avfoundation --enable-coreimage --enable-audiotoolbox --enable-videotoolbox")
 elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Android")
-    string(APPEND OPTIONS " --target-os=android")
-else()
+    string(APPEND OPTIONS " --target-os=android --enable-jni --enable-mediacodec")
+elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "QNX")
+    string(APPEND OPTIONS " --target-os=qnx")
 endif()
 
 if(VCPKG_TARGET_IS_OSX)

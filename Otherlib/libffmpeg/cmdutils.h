@@ -111,15 +111,6 @@ int opt_max_alloc(void* optctx, const char* opt, const char* arg);
 
 int opt_codec_debug(void* optctx, const char* opt, const char* arg);
 
-void print_codecs(int encoder);
-
-unsigned get_codecs_sorted(const AVCodecDescriptor*** rcodecs);
-
-
-const AVCodec* next_codec_for_id(enum AVCodecID id, void** iter,
-    int encoder);
-
-char get_media_type_char(enum AVMediaType type);
 
 /**
  * Limit the execution time.
@@ -546,7 +537,7 @@ void* grow_array(void* array, int elem_size, int* size, int new_size);
 
 #define GET_CH_LAYOUT_NAME(ch_layout)\
     char name[16];\
-    snprintf(name, sizeof(name), "0x%"PRIx64, ch_layout);
+    snprintf(name, sizeof(name), "0x%" PRIx64, ch_layout);
 
 #define GET_CH_LAYOUT_DESC(ch_layout)\
     char name[128];\

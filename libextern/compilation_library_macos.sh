@@ -8,10 +8,8 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2023.08.09.zip
-mv vcpkg-2023.08.09 vcpkg
-
-cp -r vcpkg_ports/ffmpeg ./vcpkg/ports
+unzip vcpkg-2024.01.12.zip
+mv vcpkg-2024.01.12 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh

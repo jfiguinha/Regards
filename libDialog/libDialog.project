@@ -111,6 +111,7 @@
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../Otherlib/libffmpeg"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libDeepLearning"/>

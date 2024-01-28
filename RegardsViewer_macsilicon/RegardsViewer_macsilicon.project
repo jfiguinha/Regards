@@ -205,8 +205,9 @@
         <Library Value="wx_osx_cocoau_gl-3.2"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
-        <Library Value="exiv2-xmp"/>
-        <Library Value="liblibexif"/>
+        <Library Value="exif"/>
+        <Library Value="INIReader"/>
+        <Library Value="inih"/>
         <Library Value="avif"/>
         <Library Value="iconv"/>
         <Library Value="expat"/>
@@ -281,9 +282,9 @@
         <Library Value="jxl_dec"/>
         <Library Value="jxl_threads"/>
         <Library Value="hwy"/>
-        <Library Value="brotlidec-static"/>
-        <Library Value="brotlienc-static"/>
-        <Library Value="brotlicommon-static"/>
+        <Library Value="brotlidec"/>
+        <Library Value="brotlienc"/>
+        <Library Value="brotlicommon"/>
         <Library Value="jpegxr"/>
         <Library Value="jxrglue"/>
         <Library Value="freetype"/>
