@@ -210,7 +210,6 @@
         <Library Value="EGL"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
-        <Library Value="exiv2-xmp"/>
         <Library Value="crypto"/>
         <Library Value="Jbig"/>
         <Library Value="xml2"/>
@@ -224,13 +223,6 @@
         <Library Value="swresample"/>
         <Library Value="swscale"/>
         <Library Value="webp"/>
-        <Library Value="mfx"/>
-        <Library Value="mfxhw64"/>
-        <Library Value="opus"/>
-        <Library Value="vorbisenc"/>
-        <Library Value="vorbis"/>
-        <Library Value="ogg"/>
-        <Library Value="openh264"/>
         <Library Value="xcb"/>
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
@@ -327,8 +319,9 @@
         <Library Value="wx_baseu-3.2"/>
         <Library Value="wxscintilla-3.2"/>
         <Library Value="openjp2"/>
-        <Library Value="liblibexif"/>
-        <Library Value="dav1d"/>
+        <Library Value="exif"/>
+        <Library Value="INIReader"/>
+        <Library Value="inih"/>
         <Library Value="png"/>
         <Library Value="z"/>
         <Library Value="tiff"/>
@@ -340,7 +333,6 @@
         <Library Value="pangocairo-1.0"/>
         <Library Value="pango-1.0"/>
         <Library Value="fribidi"/>
-        <Library Value="fdk-aac"/>
         <Library Value="harfbuzz"/>
         <Library Value="atk-1.0"/>
         <Library Value="cairo-gobject"/>
@@ -366,14 +358,7 @@
         <Library Value="Xi"/>
         <Library Value="Xrandr"/>
         <Library Value="Xxf86vm"/>
-        <Library Value="brotlidec"/>
-        <Library Value="vpx"/>
-        <Library Value="mp3lame"/>
-        <Library Value="x264"/>
         <Library Value="z"/>
-        <Library Value="va"/>
-        <Library Value="va-x11"/>
-        <Library Value="va-drm"/>
         <Library Value="vdpau"/>
         <Library Value="bz2"/>
         <Library Value="lcms2"/>
@@ -395,8 +380,9 @@
         <Library Value="jxl"/>
         <Library Value="jxl_threads"/>
         <Library Value="jxl_dec"/>
-        <Library Value="brotlicommon"/>
+        <Library Value="brotlidec"/>
         <Library Value="brotlienc"/>
+        <Library Value="brotlicommon"/>
         <Library Value="hwy"/>
         <Library Value="pcre2-32"/>
         <Library Value="Xfixes"/>
@@ -410,7 +396,6 @@
         <Library Value="gomp"/>
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
-        <Library Value="SvtAv1Enc"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
       </Linker>
@@ -559,10 +544,18 @@
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.7.0/lib/intel64/gcc4.8/libtbb.* ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/libmfx/bin/lib*.* ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavformat.so.60 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavfilter.so.9 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.60 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.60 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.58 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.4 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.7 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.57 ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
+        <Command Enabled="yes">sh patch_release.sh</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

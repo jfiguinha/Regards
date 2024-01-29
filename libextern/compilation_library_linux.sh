@@ -12,35 +12,8 @@ mv vcpkg-2024.01.12 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install ffnvcodec
-cd ..
-unzip SVT-AV1-v1.8.0.zip
-cd SVT-AV1-v1.8.0/Build
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j
-make install
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j
-make install
-cd ..
-cd ..
-
-tar -xf MediaSDK-intel-mediasdk-22.1.0.tar.gz
-cd MediaSDK-intel-mediasdk-22.1.0
-mkdir build
-cd build
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j12
-make install
-PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j12
-make install
-cd ..
-cd ..
-
-cd vcpkg
+./vcpkg install x265
 ./vcpkg install libavif
-./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,nvcodec,opencl,openjpeg,opus,fdk-aac,amf,qsv]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp]
@@ -54,7 +27,9 @@ cd vcpkg
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
+./vcpkg install aom
 cd ..
+
 
 #Compile heif-master
 unzip heif-master.zip
@@ -64,6 +39,9 @@ cmake ../srcs -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC
 cd ..
 cd ..
+
+unzip ffmpeg-master_linux.zip
+mv ffmpeg-master_linux ffmpeg-master
 
 #Compile qpdf
 FILE=release-qpdf-10.3.2.zip
@@ -92,10 +70,4 @@ rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/lib/libpng.a
 rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/include/nanosvg.h
 rm $LOCALPATH/vcpkg-2022.08.15/installed/x64-linux/include/nanosvgrast.h
 rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libpng.a
-rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libhardfbuzz.a
-rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libhardfbuzz-subset.a
-
-unzip rav1e-0.5.0-beta.2-ubuntu.zip
-
-
 
