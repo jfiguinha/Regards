@@ -466,6 +466,7 @@
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
         <Command Enabled="yes">rm ./Package/RegardsViewer/*.o</Command>
         <Command Enabled="yes">rm ./Package/RegardsViewer/*.o.d</Command>
+        <Command Enabled="yes">sh patch_debug.sh</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
