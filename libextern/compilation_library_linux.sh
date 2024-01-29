@@ -16,6 +16,7 @@ cd vcpkg
 ./vcpkg install libavif
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
+./vcpkg install opencl
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
