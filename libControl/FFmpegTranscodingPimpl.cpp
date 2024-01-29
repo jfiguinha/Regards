@@ -1906,11 +1906,11 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		if (dst_hardware == nullptr)
 		{
 			dst_hardware = av_frame_alloc();
-			dst_hardware->format = AV_PIX_FMT_YUV420P;
+			dst_hardware->format = outputFormat;
 			dst_hardware->width = stream->dec_frame->width;
 			dst_hardware->height = stream->dec_frame->height;
 			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
-			               AV_PIX_FMT_YUV420P, 1);
+			               outputFormat, 1);
 		}
 		av_frame_copy_props(dst_hardware, tmp_frame);
 
@@ -1938,7 +1938,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
 			av_opt_set_int(scaleContext, "dstw", tmp_frame->width, 0);
 			av_opt_set_int(scaleContext, "dsth", tmp_frame->height, 0);
-			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+			av_opt_set_int(scaleContext, "dst_format", outputFormat, 0);
 			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
 			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
@@ -1948,11 +1948,11 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 			}
 
 
-			dst_hardware->format = AV_PIX_FMT_YUV420P;
+			dst_hardware->format = outputFormat;
 			dst_hardware->width = stream->dec_frame->width;
 			dst_hardware->height = stream->dec_frame->height;
 			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
-			               AV_PIX_FMT_YUV420P, 1);
+			               outputFormat, 1);
 		}
 		av_frame_copy_props(dst_hardware, tmp_frame);
 
@@ -2144,13 +2144,13 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	}
 
 	StreamContext* stream = &stream_ctx[videoStreamIndex];
-	frame->format = AV_PIX_FMT_YUV420P;
+	frame->format = outputFormat;
 	frame->width = stream->dec_ctx->width;
 	frame->height = stream->dec_ctx->height;
 
 	/* the image can be allocated by any means and av_image_alloc() is
 	 * just the most convenient way if av_malloc() is to be used */
-	ret = av_image_alloc(frame->data, frame->linesize, frame->width, frame->height, AV_PIX_FMT_YUV420P, 32);
+	ret = av_image_alloc(frame->data, frame->linesize, frame->width, frame->height, outputFormat, 32);
 	if (ret < 0)
 	{
 		fprintf(stderr, "Could not allocate raw picture buffer\n");
@@ -2166,7 +2166,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
 		av_opt_set_int(scaleContext, "dstw", frame->width, 0);
 		av_opt_set_int(scaleContext, "dsth", frame->height, 0);
-		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+		av_opt_set_int(scaleContext, "dst_format", outputFormat, 0);
 		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
 		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
@@ -2547,7 +2547,13 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			framerate = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
 			c->codec_id = codec_id;
 			c->codec_type = AVMEDIA_TYPE_VIDEO;
-			c->pix_fmt = AV_PIX_FMT_YUV420P;
+            if(encoderName == "qsv")
+                c->pix_fmt = AV_PIX_FMT_NV12;
+            else
+                c->pix_fmt = AV_PIX_FMT_YUV420P;
+                
+            
+                
 			c->width = pSourceCodecCtx->width;
 			c->height = pSourceCodecCtx->height;
 			c->framerate = streamVideoToEncode->r_frame_rate;
@@ -2575,7 +2581,10 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 		else
 		{
 			c->codec_type = AVMEDIA_TYPE_VIDEO;
-			c->pix_fmt = AV_PIX_FMT_YUV420P;
+            if(encoderName == "qsv")
+                c->pix_fmt = AV_PIX_FMT_NV12;
+            else
+                c->pix_fmt = AV_PIX_FMT_YUV420P;
 			c->width = width;
 			c->height = height;
 			c->time_base = {1, (int)fps};
@@ -2586,6 +2595,9 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			if (videoCompressOption->videoQualityOrBitRate == 0)
 				c->compression_level = videoCompressOption->videoCompressionValue;
 		}
+        
+        outputFormat = c->pix_fmt;
+        
 		AVDictionary* param = setEncoderParam(codec_id, c, encoderHardName);
 
 		if (rotate != 0 && streamVideo != nullptr)

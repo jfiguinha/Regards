@@ -170,4 +170,5 @@ private:
 	cv::Mat frameOutputWithoutEffect;
 	Regards::Video::COpenCVVideoPlayer * capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
+    AVPixelFormat outputFormat = AV_PIX_FMT_YUV420P;
 };
