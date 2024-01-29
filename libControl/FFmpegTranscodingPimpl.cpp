@@ -322,8 +322,15 @@ CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
 
 	if (dst_hardware != nullptr)
 	{
-		av_freep(&dst_hardware->data[0]);
 		av_frame_free(&dst_hardware);
+	}
+
+	if (frame_buffer_nv12 != nullptr)
+		av_free(frame_buffer_nv12);
+
+	if (convert_dst_hardware != nullptr)
+	{
+		av_frame_free(&convert_dst_hardware);
 	}
 
 	if (scaleContext != nullptr)
@@ -331,6 +338,12 @@ CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
 
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
+
+
+	if (convertContext != nullptr)
+		sws_freeContext(convertContext);
+
+
 
 	if (capture != nullptr)
 		delete capture;
@@ -760,6 +773,7 @@ int CFFmpegTranscodingPimpl::EncodeFrame(const int& stream_index, int& positionM
 		ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo, write);
 		if (ret < 0)
 			goto fail;
+
 
 	fail:
 		av_frame_free(&sw_frame);
@@ -1614,6 +1628,10 @@ int CFFmpegTranscodingPimpl::encode_write_frame_withoutpos(AVFrame* filt_frame, 
 	return ret;
 }
 
+
+
+
+
 int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned int stream_index)
 {
 	StreamContext* stream = &stream_ctx[stream_index];
@@ -1625,6 +1643,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 	enc_pkt.data = nullptr;
 	enc_pkt.size = 0;
 	av_init_packet(&enc_pkt);
+
 
 	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
 
@@ -1693,8 +1712,54 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame* frame, unsigned 
 	}
 
 	if (write)
-		ret = encode_write_frame(frame, stream_index);
+	{
 
+
+		if (outputFormat == AV_PIX_FMT_NV12)
+		{
+			if (convert_dst_hardware == nullptr)
+			{
+				convert_dst_hardware = av_frame_alloc();
+				int in_width = frame->width;
+				int in_height = frame->height;
+				convert_dst_hardware->width = in_width;
+				convert_dst_hardware->height = in_height;
+				convert_dst_hardware->format = AV_PIX_FMT_NV12;
+				frame_buffer_nv12 = (uint8_t*)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_NV12, in_width, in_height, 1));
+				av_image_fill_arrays(convert_dst_hardware->data, convert_dst_hardware->linesize, frame_buffer_nv12, AV_PIX_FMT_NV12, in_width, in_height, 1);
+
+
+				convertContext = sws_alloc_context();
+
+				av_opt_set_int(convertContext, "srcw", frame->width, 0);
+				av_opt_set_int(convertContext, "srch", frame->height, 0);
+				av_opt_set_int(convertContext, "src_format", frame->format, 0);
+				av_opt_set_int(convertContext, "dstw", frame->width, 0);
+				av_opt_set_int(convertContext, "dsth", frame->height, 0);
+				av_opt_set_int(convertContext, "dst_format", outputFormat, 0);
+				av_opt_set_int(convertContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+				if (sws_init_context(convertContext, nullptr, nullptr) < 0)
+				{
+					sws_freeContext(convertContext);
+					throw std::logic_error("Failed to initialise scale context");
+				}
+			}
+
+
+			av_frame_copy_props(convert_dst_hardware, frame);
+
+			sws_scale(convertContext, frame->data, frame->linesize, 0, frame->height,
+				convert_dst_hardware->data, convert_dst_hardware->linesize);
+
+			ret = encode_write_frame(convert_dst_hardware, stream_index);
+		}
+		else
+		{
+			ret = encode_write_frame(frame, stream_index);
+		}
+		
+	}
 	return ret;
 }
 
@@ -1938,7 +2003,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
 			av_opt_set_int(scaleContext, "dstw", tmp_frame->width, 0);
 			av_opt_set_int(scaleContext, "dsth", tmp_frame->height, 0);
-			av_opt_set_int(scaleContext, "dst_format", outputFormat, 0);
+			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
 			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
 			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
@@ -2749,7 +2814,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
 			av_opt_set_int(scaleContext, "dstw", frame->width, 0);
 			av_opt_set_int(scaleContext, "dsth", frame->height, 0);
-			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+			av_opt_set_int(scaleContext, "dst_format", outputFormat, 0);
 			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
 			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)

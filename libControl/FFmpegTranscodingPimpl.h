@@ -91,6 +91,7 @@ private:
 	int encode_write_frame_withoutpos(AVFrame* filt_frame, unsigned int stream_index);
 	void VideoTreatment(AVFrame*& tmp_frame, StreamContext* stream);
 	int ProcessEncodeFile(AVFrame* dst);
+
 	int ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds);
 
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
@@ -147,8 +148,10 @@ private:
 	int height = 0;
 	AVFrame* dst = nullptr;
 	AVFrame* dst_hardware = nullptr;
+	AVFrame* convert_dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
 	SwsContext* localContext = nullptr;
+	SwsContext* convertContext = nullptr;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
 	bool showpreview = false;
@@ -158,7 +161,7 @@ private:
 
 	wxString outputFile;
 	std::map<int, int> streamCorrespondant;
-
+	uint8_t* frame_buffer_nv12 = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;
 	int nbFrame = 0;
 
