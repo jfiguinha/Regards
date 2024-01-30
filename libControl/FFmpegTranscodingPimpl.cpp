@@ -828,9 +828,11 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 			//medium, slow, slower, veryslow, placebo
 		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
 		//tune: psnr, ssim, zerolatency, fastdecode
-		//av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
+		av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
 		//profile: main, main10, mainstillpicture
-		//av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
+		av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
+        
+        av_opt_set(pCodecCtx->priv_data, "forced_idr", "1", 0);
 	}
 	*/
 	if (videoCompressOption->videoQualityOrBitRate == 0)
@@ -1050,7 +1052,22 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 			av_dict_set(&param, "profile", "main", 0);
 		}
 		*/
-		pCodecCtx->max_b_frames = 16;
+        
+        //tune: psnr, ssim, zerolatency, fastdecode
+        //av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
+
+        av_opt_set(pCodecCtx->priv_data, "forced_idr", "1", 0);
+        
+         pCodecCtx->max_b_frames = 8;
+         
+        //printf("videoCompressOption->videoPreset : %s \n", videoCompressOption->videoPreset);
+        /*
+        if(videoCompressOption->videoPreset == "fast" || videoCompressOption->videoPreset == "faster" || videoCompressOption->videoPreset == "veryfast"
+          || videoCompressOption->videoPreset == "superfast"  || videoCompressOption->videoPreset == "ultrafast")
+            pCodecCtx->max_b_frames = 8;
+        else
+            pCodecCtx->max_b_frames = 16;
+        */
 	}
 
 	if (codec_id == AV_CODEC_ID_AV1)// && encoderName == "")
@@ -1628,15 +1645,20 @@ int CFFmpegTranscodingPimpl::encode_write_frame_withoutpos(AVFrame* filt_frame, 
 	return ret;
 }
 
-
-
-
+#define X265_TYPE_AUTO          0x0000 
 
 int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned int stream_index)
 {
 	StreamContext* stream = &stream_ctx[stream_index];
 	int ret;
 	AVPacket enc_pkt;
+   
+   /*
+    if (stream->codecpar->codec_id == AV_CODEC_ID_H265)
+    {
+        filt_frame->pict_type = X265_TYPE_AUTO;
+    }
+     * */
 
 	//av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
 	/* encode filtered frame */
@@ -1725,9 +1747,10 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame* frame, unsigned 
 				convert_dst_hardware->width = in_width;
 				convert_dst_hardware->height = in_height;
 				convert_dst_hardware->format = AV_PIX_FMT_NV12;
-				frame_buffer_nv12 = (uint8_t*)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_NV12, in_width, in_height, 1));
-				av_image_fill_arrays(convert_dst_hardware->data, convert_dst_hardware->linesize, frame_buffer_nv12, AV_PIX_FMT_NV12, in_width, in_height, 1);
-
+				//frame_buffer_nv12 = (uint8_t*)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_NV12, in_width, in_height, 1));
+				//av_image_fill_arrays(convert_dst_hardware->data, convert_dst_hardware->linesize, frame_buffer_nv12, AV_PIX_FMT_NV12, in_width, in_height, 1);
+                av_image_alloc(convert_dst_hardware->data, convert_dst_hardware->linesize, frame->width, frame->height,
+                               AV_PIX_FMT_NV12, 1);
 
 				convertContext = sws_alloc_context();
 
@@ -2638,6 +2661,7 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			c->bit_rate = 1000 * videoCompressOption->videoBitRate;
 			c->gop_size = framerate;
 			c->max_b_frames = 0;
+
 			c->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
 
 			if (videoCompressOption->videoQualityOrBitRate == 0)
