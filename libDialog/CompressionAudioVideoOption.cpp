@@ -410,13 +410,18 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoProfile->AppendString("Main");
 		cbVideoProfile->AppendString("Main Still Picture");
 
+		cbVideoPreset->AppendString("UltraFast");
+		cbVideoPreset->AppendString("SuperFast");
+		cbVideoPreset->AppendString("VeryFast");
+		cbVideoPreset->AppendString("Faster");
+		cbVideoPreset->AppendString("Fast");
 		cbVideoPreset->AppendString("Medium");
 		cbVideoPreset->AppendString("Slow");
 		cbVideoPreset->AppendString("Slower");
 		cbVideoPreset->AppendString("VerySlow");
 		cbVideoPreset->AppendString("Placebo");
 		
-		cbVideoPreset->SetStringSelection("Slow");
+		cbVideoPreset->SetStringSelection("Medium");
 		cbVideoProfile->SetStringSelection("Main");
 	}
 	else if (codec == "AV1")
