@@ -44,6 +44,16 @@ cd ..
 unzip ffmpeg-master_linux.zip
 mv ffmpeg-master_linux ffmpeg-master
 
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libavcodec.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libavdevice.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libavfilter.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libavformat.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libavutil.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libpostproc.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libswresample.so
+patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg-master/lib/libswscale.so
+
+
 #Compile qpdf
 FILE=release-qpdf-10.3.2.zip
 if [ ! -f FILE ]; then
