@@ -176,12 +176,17 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int& numCatalog, vector<int>& 
 	//if(FindIfViewExist())
 	//	ExecuteRequestWithNoResult("DROP VIEW PHOTOSSEARCHCRITERIA");
 
-	reqSQIn = "CREATE VIEW PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) AS ";
+	reqSQIn = "CREATE VIEW PHOTOSSEARCHCRITERIA (NumPhoto, NumFolder, FullPath, CreateDate, GeoGps) AS ";
 	reqSQIn += "SELECT * FROM (";
-	reqSQIn += "SELECT NumPhoto, FullPath, \"" + createDate + "\" as CreateDate, \"" + libelle +
+	reqSQIn += "SELECT NumPhoto, NumFolderCatalog, FullPath, \"" + createDate + "\" as CreateDate, \"" + libelle +
 		"\" as GeoGps FROM PHOTOS WHERE CriteriaInsert = 0";
+    if (listFolder.size() > 0)
+    {
+       reqSQIn.append(" and NumFolderCatalog in (");
+       reqSQIn.append(GetSearchSQL(listFolder));
+    }
 	reqSQIn += " UNION ";
-	reqSQIn += "SELECT distinct PH.NumPhoto, PH.FullPath, ";
+	reqSQIn += "SELECT distinct PH.NumPhoto, PH.NumFolderCatalog, PH.FullPath, ";
 	reqSQIn +=
 		"(select Libelle FROM PHOTOS as PHOTO INNER JOIN FOLDERCATALOG as FC ON PHOTO.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PHOTO.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria  where PHOTO.NumPhoto = PH.NumPhoto AND NUMCATEGORIE = 3) as CreateDate, ";
 	reqSQIn +=
