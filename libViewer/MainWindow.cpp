@@ -968,9 +968,11 @@ void CMainWindow::UpdateFolderThread(CMainWindow * mainWindow)
 
 void CMainWindow::UpdateFolderStatic()
 {
-    //wxBusyCursor busy;
+    //
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	//wxBusyInfo wait(libelle);
+
+	wxBusyCursor busy;
 	{
         // Start thread t1
         std::thread t1(UpdateFolderThread, this);
@@ -1424,8 +1426,8 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 	updateCriteria = true;
 
 
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle);
+	//wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyCursor busy;
 	{
 		photoList.clear();
 		CSqlPhotosWithoutThumbnail sqlPhoto;
