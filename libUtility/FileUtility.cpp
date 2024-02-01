@@ -256,6 +256,19 @@ wxString CFileUtility::GetDocumentFolderPath()
 	return documentPath;
 }
 
+ wxString CFileUtility::GetDocumentFolderPathWithExt(const wxString & folder)
+ {
+     wxString documentFolder = GetDocumentFolderPath();
+#ifdef WIN32
+	documentFolder.append("\\");
+#else
+	documentFolder.append("/");
+#endif
+    documentFolder.append(folder);
+    
+    return documentFolder;
+ }
+
 wxString CFileUtility::GetProgramFolderPath()
 {
 #ifdef WIN32

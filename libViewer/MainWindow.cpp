@@ -42,6 +42,7 @@
 #include <SqlPhotosWithoutThumbnail.h>
 #include <ParamInit.h>
 #include "FolderProcess.h"
+#include <wx/busyinfo.h>
 #include "md5check.h"
 #include <ImageVideoThumbnail.h>
 #include <ThreadLoadingBitmap.h>

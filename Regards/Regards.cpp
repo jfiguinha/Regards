@@ -236,19 +236,12 @@ bool MyApp::OnInit()
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 #endif
 
-	sqlite3_initialize();
-
-	wxInitAllImageHandlers();
-
-	CLibPicture::InitFreeImage();
-
-	wxSocketBase::Initialize();
-
-	CPrintEngine::Initialize();
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-	CLibPicture::Initx265Decoder();
-	
+    
+    wxString regardsdb_path = CFileUtility::GetResourcesFolderPathWithExt("regards.db");
+    wxString regardsdocumentdb_path = CFileUtility::GetDocumentFolderPathWithExt("regards.db");
+
 	if(!LocaleMakeDir("Thumbnail"))
 	{
 		printf("Unable to make folder Thumbnail");
@@ -269,6 +262,23 @@ bool MyApp::OnInit()
 		printf("Unable to make folder Face");
 		exit(0);
 	}	
+    
+    if(!wxFileExists(regardsdocumentdb_path))
+        wxCopyFile(regardsdb_path, regardsdocumentdb_path);
+
+	sqlite3_initialize();
+
+	wxInitAllImageHandlers();
+
+	CLibPicture::InitFreeImage();
+
+	wxSocketBase::Initialize();
+
+	CPrintEngine::Initialize();
+
+	CLibPicture::Initx265Decoder();
+	
+
 
 
 #ifdef GLUT
