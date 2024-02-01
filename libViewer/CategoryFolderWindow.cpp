@@ -483,6 +483,9 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	if(pimpl->nbGpsFile > 0)
 		processIdle = true;
+
+
+
 }
 
 
@@ -792,5 +795,14 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 
 	delete findPhotoCriteria;
 
+	/*
+	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWnd != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
+		evt.SetExtraLong(-1);
+		this->GetEventHandler()->AddPendingEvent(evt);
+	}
+	*/
 	processIdle = true;
 }

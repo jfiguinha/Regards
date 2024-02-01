@@ -699,11 +699,11 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
-        int typeAffichage = config->GetTypeAffichage();          
-        if(typeAffichage != SHOW_ALL)
-        {
+       // int typeAffichage = config->GetTypeAffichage();          
+        //if(typeAffichage != SHOW_ALL)
+        //{
 			UpdateFolderStatic();
-        }
+      //  }
 
 	}
 }
@@ -938,10 +938,7 @@ void CMainWindow::UpdateFolderThread(CMainWindow * mainWindow)
             localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
     }
 
-    photoList.clear();
-    
-    CSqlPhotosWithoutThumbnail sqlPhoto;
-    sqlPhoto.GetPhotoList(&photoList,0);
+
 
     centralWnd->SetListeFile(localFilename, typeAffichage);
     listFile.clear();
@@ -973,7 +970,7 @@ void CMainWindow::UpdateFolderStatic()
 {
     //wxBusyCursor busy;
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-	wxBusyInfo wait(libelle);
+	//wxBusyInfo wait(libelle);
 	{
         // Start thread t1
         std::thread t1(UpdateFolderThread, this);
@@ -981,6 +978,7 @@ void CMainWindow::UpdateFolderStatic()
         // Wait for t1 to finish
         t1.join();
 	}
+
 }
 
 //---------------------------------------------------------------
@@ -1424,6 +1422,17 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 
 	updateCriteria = true;
+
+
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	wxBusyInfo wait(libelle);
+	{
+		photoList.clear();
+		CSqlPhotosWithoutThumbnail sqlPhoto;
+		sqlPhoto.GetPhotoList(&photoList, 0);
+	}
+
+
 	UpdateFolderStatic();
 	processIdle = true;
 	//this->Show(true);
