@@ -933,6 +933,7 @@ void CMainWindow::UpdateFolderStatic()
 				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
 		}
 
+        photoList.clear();
 		
 		CSqlPhotosWithoutThumbnail sqlPhoto;
 		sqlPhoto.GetPhotoList(&photoList,0);
