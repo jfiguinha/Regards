@@ -67,8 +67,7 @@ namespace Regards::Viewer
 	private:
 
 		void UpdateFolderStatic();
-        void UpdateFolder();
-        static void UpdateFolderThread(CMainWindow * mainWindow);
+
 		static void NewVersionAvailable(void* param);
 
 		void ClickShowButton(const int& id, const int& refresh);

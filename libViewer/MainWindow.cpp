@@ -879,106 +879,90 @@ bool CMainWindow::FindPreviousValidFile()
 	return isFound;
 }
 
-void CMainWindow::UpdateFolderThread(CMainWindow * mainWindow)
-{
-    if(mainWindow != nullptr)
-    {
-        mainWindow->UpdateFolder();
-    }
-}
-
- void CMainWindow::UpdateFolder()
- {
-    wxString requestSql = "";
-    CSqlFindPhotos sqlFindPhotos;
-
-    auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(CATEGORYFOLDERWINDOWID));
-    if (categoryFolder != nullptr)
-        requestSql = categoryFolder->GetSqlRequest();
-
-    if (requestSql != "" && this->GetInit())
-    {
-        if (oldRequest != requestSql)
-            sqlFindPhotos.SearchPhotos(requestSql);
-        oldRequest = requestSql;
-    }
-
-    int typeAffichage = 0;
-
-    CMainParam* config = CMainParamInit::getInstance();
-    if (config != nullptr)
-    {
-        typeAffichage = config->GetTypeAffichage();
-    }
-
-
-    PhotosVector * _pictures = new PhotosVector();
-
-    sqlFindPhotos.SearchPhotosByCriteriaFolder(_pictures);
-
-    if (firstFileToShow != "")
-        localFilename = firstFileToShow;
-    else
-        localFilename = centralWnd->GetFilename();
-
-    CThumbnailBuffer::InitVectorList(_pictures);
-
-    if (firstFileToShow == "")
-    {
-        bool isFound = false;
-
-        if (!isFound && CThumbnailBuffer::GetVectorSize() > 0 && localFilename != "")
-        {
-            isFound = FindNextValidFile();
-            if (!isFound)
-                isFound = FindPreviousValidFile();
-        }
-
-        if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
-            localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
-    }
-
-
-
-    centralWnd->SetListeFile(localFilename, typeAffichage);
-    listFile.clear();
-    thumbnailPos = 0;
-    firstFileToShow = "";
-    numElementTraitement = 0;
-    nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
-    init = true;
-
-
-    if (faceDetection)
-    {
-        wxWindow* window = this->FindWindowById(LISTFACEID);
-        if (window != nullptr)
-        {
-            wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
-            window->GetEventHandler()->AddPendingEvent(evt);
-        }
-    }
-
-    if (categoryFolder != nullptr)
-    {
-        wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
-        categoryFolder->GetEventHandler()->AddPendingEvent(evt);
-    }  
- }
 
 void CMainWindow::UpdateFolderStatic()
 {
     //
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+	//wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	//wxBusyInfo wait(libelle);
 
 	wxBusyCursor busy;
 	{
-        // Start thread t1
-        std::thread t1(UpdateFolderThread, this);
-     
-        // Wait for t1 to finish
-        t1.join();
+		wxString requestSql = "";
+		CSqlFindPhotos sqlFindPhotos;
+
+		auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(CATEGORYFOLDERWINDOWID));
+		if (categoryFolder != nullptr)
+			requestSql = categoryFolder->GetSqlRequest();
+
+		if (requestSql != "" && this->GetInit())
+		{
+			if (oldRequest != requestSql)
+				sqlFindPhotos.SearchPhotos(requestSql);
+			oldRequest = requestSql;
+		}
+
+		int typeAffichage = 0;
+
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+		{
+			typeAffichage = config->GetTypeAffichage();
+		}
+
+
+		PhotosVector* _pictures = new PhotosVector();
+
+		sqlFindPhotos.SearchPhotosByCriteriaFolder(_pictures);
+
+		if (firstFileToShow != "")
+			localFilename = firstFileToShow;
+		else
+			localFilename = centralWnd->GetFilename();
+
+		CThumbnailBuffer::InitVectorList(_pictures);
+
+		if (firstFileToShow == "")
+		{
+			bool isFound = false;
+
+			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0 && localFilename != "")
+			{
+				isFound = FindNextValidFile();
+				if (!isFound)
+					isFound = FindPreviousValidFile();
+			}
+
+			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
+				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+		}
+
+
+
+		centralWnd->SetListeFile(localFilename, typeAffichage);
+		listFile.clear();
+		thumbnailPos = 0;
+		firstFileToShow = "";
+		numElementTraitement = 0;
+		nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
+		init = true;
+
+
+		if (faceDetection)
+		{
+			wxWindow* window = this->FindWindowById(LISTFACEID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+
+		if (categoryFolder != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+			categoryFolder->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 
 }
