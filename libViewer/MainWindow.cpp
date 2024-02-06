@@ -882,6 +882,7 @@ bool CMainWindow::FindPreviousValidFile()
 
 void CMainWindow::UpdateFolderStatic()
 {
+    printf("CMainWindow::UpdateFolderStatic() \n");
     //
 	//wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	//wxBusyInfo wait(libelle);

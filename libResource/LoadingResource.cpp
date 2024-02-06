@@ -14,8 +14,11 @@ cv::Mat CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 */
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {
+    wxImage out;
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
-	wxImage out;
-	out.LoadFile(resourcePath, wxBITMAP_TYPE_ANY);
+    if(wxFileExists(resourcePath))
+    {
+        out.LoadFile(resourcePath, wxBITMAP_TYPE_ANY);
+    }
 	return out;
 }
