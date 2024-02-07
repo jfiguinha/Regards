@@ -54,12 +54,14 @@ static HEVCEncoderContext* x265_open(const HEVCEncodeParams* params)
 	if (!s->api)
 	{
 		fprintf(stderr, "x265 supports bit depths of 8, 10 or 12.\n");
+        free(s);
 		return NULL;
 	}
 #if 0
     /* Note: the x265 library included in libbpg supported gray encoding */
     if (params->chroma_format == BPG_FORMAT_GRAY) {
         fprintf(stderr, "x265 does not support monochrome (or alpha) data yet. Plase use the jctvc encoder.\n");
+        free(s);
         return NULL;
     }
 #endif

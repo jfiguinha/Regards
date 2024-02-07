@@ -728,13 +728,6 @@ CThumbnail::~CThumbnail()
 	if (m_animation != nullptr)
 		delete m_animation;
 
-    /*
-	if (iconeList != nullptr)
-	{
-		delete iconeList;
-	}
-     */
-
 	if (m_waitingAnimation != nullptr)
 		delete m_waitingAnimation;
 }
