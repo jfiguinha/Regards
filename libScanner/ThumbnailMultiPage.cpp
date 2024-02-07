@@ -187,10 +187,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 		processIdle = false;
 	}
 
-
-	lockIconeList.lock();
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

@@ -221,13 +221,8 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		config->SetTypeAffichage(typeAffichage);
 	}
 
-
-	lockIconeList.lock();
 	iconeList = iconeListLocal;
 	listSeparator = _listSeparator;
-	lockIconeList.unlock();
-
-
 
 	//------------------------------------------------------------------
 	//Cleaning old Element
@@ -346,11 +341,8 @@ void CThumbnailFolder::SetListeFile()
 
 	iconeListLocal->SortById();
 
-
-	lockIconeList.lock();
 	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

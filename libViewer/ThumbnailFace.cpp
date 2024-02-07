@@ -162,10 +162,9 @@ void CThumbnailFace::init()
 	);
 #endif
 
-	lockIconeList.lock();
+
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

@@ -125,9 +125,8 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	*/
 	CIconeList* iconeListLocal = PregenerateList();
 
-	lockIconeList.lock();
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
+
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
@@ -190,10 +189,8 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	iconeListLocal->SortById();
 
-	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

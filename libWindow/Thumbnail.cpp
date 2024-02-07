@@ -728,10 +728,12 @@ CThumbnail::~CThumbnail()
 	if (m_animation != nullptr)
 		delete m_animation;
 
+    /*
 	if (iconeList != nullptr)
 	{
 		delete iconeList;
 	}
+     */
 
 	if (m_waitingAnimation != nullptr)
 		delete m_waitingAnimation;
@@ -1309,9 +1311,7 @@ void CThumbnail::Render(wxDC& dc)
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 
-	lockIconeList.lock();
 	RenderIcone(&dc);
-	lockIconeList.unlock();
 
 	render = false;
 	oldPosLargeur = posLargeur;

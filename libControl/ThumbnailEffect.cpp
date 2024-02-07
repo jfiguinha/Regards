@@ -340,11 +340,8 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 		}
 	}
 
-
-	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

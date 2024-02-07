@@ -173,7 +173,7 @@ namespace Regards::Window
 		int nbElement = 0;
 		int nbPhotoElement = 0;
 		//Variable
-		std::mutex lockIconeList;
+		//std::mutex lockIconeList;
 		CIconeList* iconeList;
 
 		bool processThumbnailVideo = false;

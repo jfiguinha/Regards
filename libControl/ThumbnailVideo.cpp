@@ -300,11 +300,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	}
 
-
-	lockIconeList.lock();
 	auto oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

@@ -99,11 +99,8 @@ void CThumbnailFileSelection::InitTypeAffichage(const int& typeAffichage)
 		AddSeparatorBar(iconeListLocal, libellePhoto, i);
 	}
 
-
-	lockIconeList.lock();
 	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
@@ -182,11 +179,8 @@ void CThumbnailFileSelection::SetListeFile()
 		x += themeThumbnail.themeIcone.GetWidth();
 	}
 
-
-	lockIconeList.lock();
 	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
-	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
