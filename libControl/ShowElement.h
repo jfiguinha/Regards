@@ -130,11 +130,16 @@ namespace Regards
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
 
-			CScrollbarWnd* scrollbar;
-			CBitmapToolbar* pictureToolbar;
-			CBitmapWndViewer* bitmapWindow;
-			CBitmapWnd3D* bitmapWindowRender;
-			CBitmapInterface* bitmapInterface;
+			std::unique_ptr<CScrollbarWnd> scrollbar;
+			std::unique_ptr<CBitmapToolbar> pictureToolbar;
+			std::unique_ptr<CBitmapWndViewer> bitmapWindow;
+			std::unique_ptr<CBitmapWnd3D> bitmapWindowRender;
+            std::unique_ptr<CSlideToolbar> slideToolbar;
+			std::unique_ptr<CSliderVideo> videoSlider;
+			std::unique_ptr<CVideoControlSoft> videoWindow;
+            
+			CWindowMain* windowMain;
+            CBitmapInterface* bitmapInterface;
 			CRegardsConfigParam* configRegards;
 			CImageLoadingFormat* tempImage;
 			bool defaultToolbar;
@@ -160,10 +165,7 @@ namespace Regards
 			void ShowSliderToolbar(const bool& show);
 			void ShowSlider(const bool& show);
 			void InitControl();
-			CSlideToolbar* slideToolbar;
-			CSliderVideo* videoSlider;
-			CVideoControlSoft* videoWindow;
-			CWindowMain* windowMain;
+
 			bool showToolbarSup = false;
 			bool play;
 			bool toolbarOutside;
