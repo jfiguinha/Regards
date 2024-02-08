@@ -20,7 +20,7 @@ CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindo
 
 void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 {
-	iconeList->EraseThumbnailList();
+	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	threadDataProcess = false;
 	int i = 0;
@@ -37,7 +37,7 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		thumbnailData->SetNumElement(i);
 
 
-		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -46,14 +46,18 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		if (i == 0)
 			pBitmapIcone->SetSelected(true);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
 	}
 
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+
 	nbElementInIconeList = iconeList->GetNbElement();
 
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 	threadDataProcess = true;
@@ -86,7 +90,7 @@ wxString CThumbnailVerticalListFile::GetKey()
 
 void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, const bool& showSelectButton)
 {
-	iconeList->EraseThumbnailList();
+	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	CreateOrLoadStorageFile();
 	threadDataProcess = false;
@@ -109,14 +113,14 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 		thumbnailData->SetNumElement(i);
 		thumbnailData->SetNumPhotoId(i);
 
-		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->ShowSelectButton(showSelectButton);
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		nbElementX++;
@@ -131,7 +135,12 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 		i++;
 	}
 
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+
 	nbElementInIconeList = iconeList->GetNbElement();
+
+	EraseThumbnailList(oldIconeList);
 
 	thumbnailPos = 0;
 	threadDataProcess = true;
@@ -142,7 +151,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 {
 	InitScrollingPos();
-	iconeList->EraseThumbnailList();
+	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
 	int i = 0;
 	int x = 0;
@@ -163,13 +172,13 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		thumbnailData->SetNumPhotoId(photo.GetId());
 		thumbnailData->SetNumElement(i);
 
-		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		nbElementX++;
@@ -184,8 +193,12 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		i++;
 	}
 
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+
 	nbElementInIconeList = iconeList->GetNbElement();
 
+	EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 

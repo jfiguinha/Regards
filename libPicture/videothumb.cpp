@@ -154,7 +154,7 @@ public:
 CVideoThumb::CVideoThumb(const wxString& fileName, const bool& useOpenCV)
 {
 	this->fileName = fileName;
-	pimpl = std::unique_ptr<CVideoThumbPimpl>(new CVideoThumbPimpl(fileName, useOpenCV));
+	pimpl = new CVideoThumbPimpl(fileName, useOpenCV);
 }
 
 bool CVideoThumb::isOk()
@@ -164,7 +164,7 @@ bool CVideoThumb::isOk()
 
 CVideoThumb::~CVideoThumb()
 {
-
+	delete pimpl;
 }
 
 int CVideoThumb::GetOrientation()

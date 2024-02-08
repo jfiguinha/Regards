@@ -24,7 +24,7 @@ namespace Regards::Viewer
 		~CThumbnailFace(void) override;
 		void init();
 		void MoveFace(const wxString& faceName);
-		void DeleteIcone(std::shared_ptr<CIcone> numSelect) override;
+		void DeleteIcone(CIcone* numSelect) override;
 		vector<int> GetFaceSelectID();
 	protected:
 		void OnMouseRelease(const int& x, const int& y) override;
@@ -33,16 +33,16 @@ namespace Regards::Viewer
 	private:
 		void DeleteEmptyFace();
 		int FindSeparatorFace(const int& xPos, const int& yPos);
-		static bool ItemCompFonctWithVScroll(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
-		static bool ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
-		void AddSeparatorBar(std::shared_ptr<CIconeList> iconeListLocal, const wxString& libelle, const CFaceName& faceName,
+		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
 		                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement);
-		std::shared_ptr<CIcone> FindElementWithVScroll(const int& xPos, const int& yPos) override;
+		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void OnPictureClick(CThumbnailData* data) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
-		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos);
+		CIcone* FindElement(const int& xPos, const int& yPos);
 
 
 

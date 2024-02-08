@@ -84,7 +84,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		faceDetection = regardsParam->GetFaceDetection();
 	}
 
-	windowManager = std::unique_ptr<CWindowManager>(new CWindowManager(this, wxID_ANY, theme));
+	windowManager = new CWindowManager(this, wxID_ANY, theme);
 
 	if (config != nullptr)
 	{
@@ -117,8 +117,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 
-		panelPhotoWnd = std::unique_ptr<CPanelPhotoWnd>(new CPanelPhotoWnd(windowManager.get(), CRITERIAFOLDERWINDOWID));
-		windowManager->AddPanel(panelPhotoWnd.get(), Pos::wxLEFT, false, widthInfosWindow, left, libelle, "PanelPhotoSearch",
+		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
+		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, widthInfosWindow, left, libelle, "PanelPhotoSearch",
 		                        true, PHOTOSEEARCHPANEL, true, true);
 	}
 
@@ -147,13 +147,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		thumbnailVideo = std::unique_ptr<CThumbnailViewerVideo>(new CThumbnailViewerVideo(windowManager.get(), THUMBNAILVIDEOWINDOW, themeVideo, checkValidity));
-		scrollVideoWindow = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(windowManager.get(), thumbnailVideo.get(), wxID_ANY));
+		thumbnailVideo = new CThumbnailViewerVideo(windowManager, THUMBNAILVIDEOWINDOW, themeVideo, checkValidity);
+		scrollVideoWindow = new CScrollbarWnd(windowManager, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
 
-		windowManager->AddPanel(scrollVideoWindow.get(), Pos::wxTOP, true,
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true,
 		                        themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
 		                        "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true, true);
 	}
@@ -183,14 +183,14 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewer_theme->GetThumbnailTheme(&themeThumbnail);
 		viewer_theme->GetClickToolbarTheme(&themetoolbar);
 
-		thumbnailPicture = std::unique_ptr<CThumbnailViewerPicture>(new CThumbnailViewerPicture(windowManager.get(), THUMBNAILVIEWERPICTURE, themeThumbnail,
-		                                               checkValidity));
-		scrollPictureWindow = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(windowManager.get(), thumbnailPicture.get(), wxID_ANY));
+		thumbnailPicture = new CThumbnailViewerPicture(windowManager, THUMBNAILVIEWERPICTURE, themeThumbnail,
+		                                               checkValidity);
+		scrollPictureWindow = new CScrollbarWnd(windowManager, thumbnailPicture, wxID_ANY);
 		scrollPictureWindow->HideVerticalScroll();
 		scrollPictureWindow->SetPageSize(200);
 		scrollPictureWindow->SetLineSize(200);
 		thumbnailPicture->SetNoVScroll(true);
-		windowManager->AddPanel(scrollPictureWindow.get(), Pos::wxBOTTOM, true,
+		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true,
 		                        themeThumbnail.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
 		                        "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
 	}
@@ -203,25 +203,25 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
-		panelInfosWindow = std::unique_ptr<CPanelInfosWnd>(new CPanelInfosWnd(windowManager.get(), PANELINFOSWNDID));
+		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID);
 
-		panelInfosClick = windowManager->AddPanel(panelInfosWindow.get(), Pos::wxRIGHT, false, widthInfosWindow, right,
+		panelInfosClick = windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, right,
 		                                          libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 	}
 
-	previewWindow = std::unique_ptr<CPreviewWnd>(new CPreviewWnd(windowManager.get(), PREVIEWVIEWERID));
-	windowManager->AddWindow(previewWindow.get(), Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
+	previewWindow = new CPreviewWnd(windowManager, PREVIEWVIEWERID);
+	windowManager->AddWindow(previewWindow, Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
 
 	if (viewerTheme != nullptr)
 	{
-		listPicture = std::unique_ptr<CListPicture>(new CListPicture(windowManager.get(), LISTPICTUREID));
+		listPicture = new CListPicture(windowManager, LISTPICTUREID);
 		listPicture->Show(false);
 	}
 
 	if (viewerTheme != nullptr)
 	{
-		listFace = std::unique_ptr<CListFace>(new CListFace(windowManager.get(), LISTFACEID));
+		listFace = new CListFace(windowManager, LISTFACEID);
 		listFace->Show(false);
 	}
 
@@ -294,7 +294,7 @@ void CCentralWindow::RefreshThumbnail(int type)
 		if (type == 1)
 		{
 			auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
-			wxQueueEvent(thumbnailVideo.get(), event);
+			wxQueueEvent(thumbnailVideo, event);
 		}
 
 		if (thumbnailVideo->IsShown())
@@ -1288,6 +1288,9 @@ CCentralWindow::~CCentralWindow()
 	if (config != nullptr)
 		config->SetLastShowPicture(filename);
 
+	if (windowManager != nullptr)
+		delete windowManager;
+
 	if (diaporamaTimer->IsRunning())
 		diaporamaTimer->Stop();
 
@@ -1433,7 +1436,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 
 			panelInfosWindow->Show(true);
-			panelInfosClick->SetWindow(panelInfosWindow.get());
+			panelInfosClick->SetWindow(panelInfosWindow);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Informations");
 
@@ -1466,7 +1469,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 					windowManager->HideWindow(Pos::wxTOP);
 
 				listFace->Show(true);
-				panelInfosClick->SetWindow(listFace.get());
+				panelInfosClick->SetWindow(listFace);
 				panelInfosClick->Show(true);
 				panelInfosClick->SetTitle("Face List");
 
@@ -1496,7 +1499,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				windowManager->HideWindow(Pos::wxTOP);
 
 			listPicture->Show(true);
-			panelInfosClick->SetWindow(listPicture.get());
+			panelInfosClick->SetWindow(listPicture);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Picture List");
 

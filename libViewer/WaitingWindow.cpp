@@ -8,7 +8,7 @@ CWaitingWindow::CWaitingWindow(wxWindow* parent, wxWindowID id) : CWindowMain("C
 	textToShow = "Please wait ...";
 	const wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	//m_animation = new wxAnimation(resourcePath + "/loading.gif");
-	m_animationCtrl = std::unique_ptr<wxAnimationCtrl>(new wxAnimationCtrl(this, wxID_ANY));
+	m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
 	m_animationCtrl->Show(true);
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CWaitingWindow::on_paint));
 
@@ -28,8 +28,9 @@ CWaitingWindow::CWaitingWindow(wxWindow* parent, wxWindowID id) : CWindowMain("C
 
 CWaitingWindow::~CWaitingWindow()
 {
-
-}
+	if (m_animationCtrl != nullptr)
+		delete m_animationCtrl;
+};
 
 void CWaitingWindow::UpdateScreenRatio()
 {

@@ -19,7 +19,7 @@ MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, cons
 
 	SetIcon(wxICON(sample));
 	this->mainInterface = mainInterface;
-	std::unique_ptr<CIntroTheme> introTheme = std::unique_ptr<CIntroTheme>(new CIntroTheme());
+	auto introTheme = new CIntroTheme();
 
 
 	titleIntro = nullptr;
@@ -29,15 +29,17 @@ MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, cons
 		introTheme->GetScrollTheme(&themeScroll);
 		introTheme->GetTreeTheme(&theme);
 
-		myCentralWindow = std::unique_ptr<CMyCentralWindowIntro>(new CMyCentralWindowIntro(this, wxID_ANY, themeScroll, theme));
+		myCentralWindow = new CMyCentralWindowIntro(this, wxID_ANY, themeScroll, theme);
 		introTheme->GetAboutTexteTheme(&themeIntro);
 
-		titleIntro = std::unique_ptr<CTitleIntro>(new CTitleIntro(this, wxID_ANY, themeIntro));
+		titleIntro = new CTitleIntro(this, wxID_ANY, themeIntro);
 		titleIntro->SetTitle(appTitle);
 
+
+		delete introTheme;
 	}
 
-	diaporamaTimer = std::unique_ptr<wxTimer>(new wxTimer(this, wxTIMER_DIAPORAMA));
+	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MyFrameIntro::OnClose));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(MyFrameIntro::on_size));
@@ -62,9 +64,13 @@ void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 
 MyFrameIntro::~MyFrameIntro()
 {
+	delete(myCentralWindow);
+	if (titleIntro != nullptr)
+		delete(titleIntro);
+
 	if (diaporamaTimer->IsRunning())
 		diaporamaTimer->Stop();
-
+	delete diaporamaTimer;
 }
 
 void MyFrameIntro::OnClose(wxCloseEvent& event)

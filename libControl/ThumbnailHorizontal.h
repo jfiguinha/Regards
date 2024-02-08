@@ -18,7 +18,7 @@ namespace Regards::Control
 	protected:
 		void RenderIcone(wxDC* deviceContext) override;
 		void UpdateScroll() override;
-		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
+		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		//void SetActiveScroll(bool visible);
 		//void UpdateThumbnail();
 	};

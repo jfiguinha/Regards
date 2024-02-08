@@ -8,14 +8,15 @@ CMyCentralWindowIntro::CMyCentralWindowIntro(wxWindow* parent, wxWindowID id, co
                                              const CThemeTree& theme) :
 	CTreeWithScrollbar("CMyCentralWindowIntro", parent, id, themeScroll, theme)
 {
-
-	infoAbout = std::unique_ptr<CInfoAbout>(new CInfoAbout(theme));
-	treeWindow->SetTreeControl(infoAbout.get());
+	infoAbout = nullptr;
+	infoAbout = new CInfoAbout(theme);
+	treeWindow->SetTreeControl(infoAbout);
 	infoAbout->Init();
 }
 
 
 CMyCentralWindowIntro::~CMyCentralWindowIntro()
 {
-
+	if (infoAbout != nullptr)
+		delete(infoAbout);
 }

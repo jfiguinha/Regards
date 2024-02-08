@@ -40,7 +40,7 @@ namespace Regards
 		private:
 
 			std::string filename;
-			std::unique_ptr<cv::VideoCapture> capture;
+			cv::VideoCapture* capture;
 			bool isOpen = false;
 			int height = 0;
 			int width = 0;

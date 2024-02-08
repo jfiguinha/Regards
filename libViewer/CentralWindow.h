@@ -156,25 +156,27 @@ namespace Regards
 			void UpdateThumbnailIcone(wxCommandEvent& event);
 			void OnRefreshThumbnail(wxCommandEvent& event);
 
-			std::unique_ptr<CListPicture> listPicture;
-			std::unique_ptr<CThumbnailViewerPicture> thumbnailPicture;
-			std::unique_ptr<CPanelPhotoWnd> panelPhotoWnd;
+			CListPicture* listPicture;
+			CThumbnailViewerPicture* thumbnailPicture;
+			CPanelPhotoWnd* panelPhotoWnd;
 			CMainParam* viewerconfig;
 			
-			CPanelWithClickToolbar * panelInfosClick;
+			CPanelWithClickToolbar* panelInfosClick;
 			bool isNext = false;
 			//Face List
-			std::unique_ptr<CListFace> listFace;
+#ifndef __NOFACE_DETECTION__
+			CListFace* listFace;
+#endif
 
 			bool loadPicture = false;
 			wxString filename;
 			//int numElement;
 			int faceDetection = 0;
-			std::unique_ptr<CScrollbarWnd> scrollVideoWindow;
-			std::unique_ptr<CThumbnailViewerVideo> thumbnailVideo;
-			std::unique_ptr<CPanelInfosWnd> panelInfosWindow;
-			std::unique_ptr<CPreviewWnd> previewWindow;
-			std::unique_ptr<CScrollbarWnd> scrollPictureWindow;
+			CScrollbarWnd* scrollVideoWindow;
+			CThumbnailViewerVideo* thumbnailVideo;
+			CPanelInfosWnd* panelInfosWindow;
+			CPreviewWnd* previewWindow;
+			CScrollbarWnd* scrollPictureWindow;
 			
 
 			//Window List
@@ -185,7 +187,7 @@ namespace Regards
 			void SetVideo(const wxString& path);
 			void ShowPicture(CBitmapReturn* pictureData, const int& redraw);
 
-			std::unique_ptr<CWindowManager> windowManager;
+			CWindowManager* windowManager;
 			int windowMode;
 			int oldWindowMode = -1;
 			wxTimer* animationTimer;

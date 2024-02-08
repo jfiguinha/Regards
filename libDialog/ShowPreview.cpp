@@ -61,7 +61,9 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
 
-	previewToolbar = std::unique_ptr<CPreviewToolbar>(new CPreviewToolbar(this, wxID_ANY, BITMAPWINDOWVIEWERIDDLG, themeToolbar, false));
+	previewToolbar = nullptr;
+
+	previewToolbar = new CPreviewToolbar(this, wxID_ANY, BITMAPWINDOWVIEWERIDDLG, themeToolbar, false);
 	previewToolbar->SetTabValue(value);
 
 	if (config != nullptr)
@@ -69,22 +71,22 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 
 	themeBitmap.colorScreen = wxColour("black");
 
-	bitmapWindow = std::unique_ptr<CBitmapWndRender>(new CBitmapWndRender(previewToolbar.get(), 0, themeBitmap));
-	bitmapWindowRender = std::unique_ptr<CBitmapWnd3D>(new CBitmapWnd3D(this, BITMAPWINDOWVIEWERIDDLG));
-	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow.get());
+	bitmapWindow = new CBitmapWndRender(previewToolbar, 0, themeBitmap);
+	bitmapWindowRender = new CBitmapWnd3D(this, BITMAPWINDOWVIEWERIDDLG);
+	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 	bitmapWindow->SetTabValue(value);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
 
-	scrollbar = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(this, bitmapWindowRender.get(), wxID_ANY, "BitmapScroll"));
+	scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
 	if (config != nullptr)
 	{
 		config->GetVideoSliderTheme(&themeSlider);
 	}
 
-	sliderVideo = std::unique_ptr<CSliderVideoPreview>(new CSliderVideoPreview(this, wxID_ANY, this, themeSlider));
+	sliderVideo = new CSliderVideoPreview(this, wxID_ANY, this, themeSlider);
 
 	Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowPreview::OnViewerZoomIn));
 	Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowPreview::OnViewerZoomOut));
@@ -104,8 +106,10 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	progressValue = 0;
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	//videoOriginal
 
-	transcodeFFmpeg = std::unique_ptr<CFFmpegTranscoding>(new CFFmpegTranscoding());
+
+	transcodeFFmpeg = new CFFmpegTranscoding();
 }
 
 void CShowPreview::SetParameter(const wxString& videoFilename,
@@ -117,13 +121,19 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	progressValue = 0;
 	filename = videoFilename;
 
-	std::unique_ptr<CVideoThumb> videoOriginal = std::unique_ptr<CVideoThumb>(new CVideoThumb(filename, true));
+	if (videoOriginal != nullptr)
+		delete videoOriginal;
+
+	videoOriginal = new CVideoThumb(filename, true);
 	timeTotal = videoOriginal->GetMovieDuration();
 	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	MoveSlider(0);
+	//transcodeFFmpeg->GetFrameOutput(decodeFrameOriginal);
+	//decodeFrameOriginal = videoOriginal->GetVideoFramePos(0, 0, 0);
 
+	MoveSlider(0);
+	//this->Resize();
 }
 
 void CShowPreview::ShowPicture(cv::Mat& bitmap, const wxString& label)
@@ -381,6 +391,15 @@ void CShowPreview::OnMoveBottom(wxCommandEvent& event)
 
 CShowPreview::~CShowPreview()
 {
+	delete(previewToolbar);
+	delete(bitmapWindowRender);
+	delete(bitmapWindow);
+	delete(scrollbar);
+	delete(sliderVideo);
+
+	if (transcodeFFmpeg != nullptr)
+		delete transcodeFFmpeg;
+
 	if (threadStart != nullptr)
 	{
 		threadStart->join();

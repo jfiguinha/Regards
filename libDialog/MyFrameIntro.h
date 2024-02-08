@@ -18,9 +18,9 @@ namespace Regards::Introduction
 		void on_size(wxSizeEvent& event);
 		void OnTimeShowViewer(wxTimerEvent& event);
 
-		std::unique_ptr<CTitleIntro> titleIntro;
-		std::unique_ptr<CMyCentralWindowIntro> myCentralWindow;
+		CTitleIntro* titleIntro;
+		CMyCentralWindowIntro* myCentralWindow;
 		ISCannerInterface* mainInterface;
-		std::unique_ptr<wxTimer> diaporamaTimer;
+		wxTimer* diaporamaTimer;
 	};
 }

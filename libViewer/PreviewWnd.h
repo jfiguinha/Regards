@@ -73,11 +73,12 @@ namespace Regards
 			void OnShowToolbar(wxCommandEvent& event);
 			void StartAnimation(wxCommandEvent& event);
 
-			std::unique_ptr<CShowElement> showElement;
-			std::unique_ptr<CAnimationToolbar> animationToolbar;
-			std::unique_ptr<CPreviewToolbar> previewToolbar;
-			std::unique_ptr<CBitmapInfos> bitmapInfos;
-			std::unique_ptr<CFiltreToolbar> filtreToolbar;
+			CShowElement* showElement;
+
+			CAnimationToolbar* animationToolbar;
+			CPreviewToolbar* previewToolbar;
+			CBitmapInfos* bitmapInfos;
+			CFiltreToolbar* filtreToolbar;
 
 			bool isAnimation;
 			bool isBitmap;

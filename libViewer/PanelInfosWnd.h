@@ -62,16 +62,16 @@ namespace Regards
 			void DisplayURL(const wxString& url);
 			void HistogramUpdate();
 
-			std::unique_ptr<CInfosFileWnd> infosFileWnd;
-			std::unique_ptr<CInfoEffectWnd> historyEffectWnd;
-			std::unique_ptr<CThumbnailViewerEffectWnd> thumbnailEffectWnd;
-			std::unique_ptr<CFiltreEffectScrollWnd> filtreEffectWnd;
-			std::unique_ptr<CCriteriaWindow> criteriaTreeWnd;
-			std::unique_ptr<CPicturePanel> picturePanel;
+			CInfosFileWnd* infosFileWnd;
+			CInfoEffectWnd* historyEffectWnd;
+			CThumbnailViewerEffectWnd* thumbnailEffectWnd;
+			CFiltreEffectScrollWnd* filtreEffectWnd;
+			CCriteriaWindow* criteriaTreeWnd;
+			CPicturePanel* picturePanel;
 
-			std::unique_ptr<wxWebView> webBrowser;
-			std::unique_ptr<CToolbarInfos> infosToolbar;
-			std::unique_ptr<CModificationManager> modificationManager;
+			wxWebView* webBrowser = nullptr;
+			CToolbarInfos* infosToolbar;
+			CModificationManager* modificationManager;
 
 			bool isThumbnail;
 			bool isVideo;

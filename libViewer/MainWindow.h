@@ -144,11 +144,11 @@ namespace Regards::Viewer
 		wxString tempVideoFile = "";
 		wxString tempAudioVideoFile = "";
 		bool fullscreen;
-		std::unique_ptr<wxGauge> progressBar;
-		std::unique_ptr<wxStatusBar> statusBar;
-		std::unique_ptr<CToolbar> toolbar;
-		std::unique_ptr<CCentralWindow> centralWnd;
-		std::unique_ptr<CToolbarViewerMode> toolbarViewerMode;
+		wxGauge* progressBar;
+		wxStatusBar* statusBar;
+		CToolbar* toolbar;
+		CCentralWindow* centralWnd;
+		CToolbarViewerMode * toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
@@ -174,11 +174,11 @@ namespace Regards::Viewer
 		bool setPictureMode = false;
 		int faceDetection = 0;
 
-		CExportDiaporama * exportDiaporama = nullptr;
+		CExportDiaporama* exportDiaporama = nullptr;
 		wxString firstFileToShow = "";
 		wxString oldRequest = "";
 		bool init = true;
 		vector<wxString> photoList;
-		std::unique_ptr<CFolderProcess> folderProcess;
+		CFolderProcess* folderProcess = nullptr;
 	};
 }

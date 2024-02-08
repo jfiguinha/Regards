@@ -49,7 +49,7 @@ public:
 #define WM_UPDATESTATUSBAR 504
 #define WM_LOADTHUMBNAIL 505
 
-bool CThumbnail::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	wxRect rc = icone->GetPos();
 	if ((rc.x < xPos && xPos < rc.width) && (rc.y < yPos && yPos < rc.height))
@@ -60,7 +60,7 @@ bool CThumbnail::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone
 }
 
 
-std::shared_ptr<CIcone> CThumbnail::FindElement(const int& xPos, const int& yPos)
+CIcone* CThumbnail::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -84,7 +84,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> pIcone = iconeList->GetElement(i);
+		CIcone* pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
 		{
 			CThumbnailData* pThumbnailData = pIcone->GetData();
@@ -116,7 +116,7 @@ void CThumbnail::SetCheck(const bool& check)
 {
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> pIcone = iconeList->GetElement(i);
+		CIcone* pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
 		{
 			pIcone->ShowSelectButton(check);
@@ -128,7 +128,7 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData*>& vectorData)
 {
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> pIcone = iconeList->GetElement(i);
+		CIcone* pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
 		{
 			if (pIcone->IsChecked())
@@ -137,7 +137,7 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData*>& vectorData)
 	}
 }
 
-bool CThumbnail::ItemCompFonctPath(wxString filepath, std::shared_ptr<CIcone> icone)
+bool CThumbnail::ItemCompFonctPath(wxString filepath, CIcone* icone)
 /* Définit une fonction. */
 {
 	CThumbnailData* pThumbnailData = icone->GetData();
@@ -146,14 +146,14 @@ bool CThumbnail::ItemCompFonctPath(wxString filepath, std::shared_ptr<CIcone> ic
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnail::GetIconeByPath(const wxString & filepath)
+CIcone* CThumbnail::GetIconeByPath(const wxString & filepath)
 {
 	pItemStringCompFonct _pf = &ItemCompFonctPath;
 	return iconeList->FindElement(filepath, &_pf);
 }
 
 
-bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent)
+bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	CThumbnailData* pThumbnailData = icone->GetData();
@@ -162,7 +162,7 @@ bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, std::shared_ptr<CIcone
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnail::GetIconeById(const int& idPhoto)
+CIcone* CThumbnail::GetIconeById(const int& idPhoto)
 {
 	pItemCompFonct _pf = &ItemCompFonctPhotoId;
 	return iconeList->FindElement(idPhoto, 0, &_pf, this);
@@ -171,7 +171,7 @@ std::shared_ptr<CIcone> CThumbnail::GetIconeById(const int& idPhoto)
 int CThumbnail::GetNumItemById(const int& idPhoto)
 {
 	pItemCompFonct _pf = &ItemCompFonctPhotoId;
-	std::shared_ptr<CIcone> icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
+	CIcone* icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
 	if (icone != nullptr)
 		return icone->GetNumElement();
 	return 0;
@@ -195,7 +195,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	if (numSelectPhotoId != -1)
 	{
-		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 		RefreshIcone(numSelectPhotoId);
@@ -205,7 +205,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	if (numActifPhotoId != -1)
 	{
-		std::shared_ptr<CIcone> numActif = GetIconeById(numActifPhotoId);
+		CIcone* numActif = GetIconeById(numActifPhotoId);
 		if (numActif != nullptr)
 			numActif->SetSelected(false);
 		RefreshIcone(numActifPhotoId);
@@ -241,7 +241,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 				if (numActifPhotoId != -1)
 				{
-					std::shared_ptr<CIcone> numActif = GetIconeById(numActifPhotoId);
+					CIcone* numActif = GetIconeById(numActifPhotoId);
 					if (numActif != nullptr)
 						rect = numActif->GetPos();
 				    RefreshIcone(numActifPhotoId);
@@ -255,7 +255,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	if (numSelectPhotoId != -1)
 	{
-		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(true);
 		RefreshIcone(numSelectPhotoId);
@@ -371,7 +371,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	thumbnailPos = 0;
 	oldPosLargeur = 0;
 	oldPosHauteur = 0;
-    iconeList = std::shared_ptr<CIconeList>(new CIconeList());
 
 	allThreadEnd = true;
 	showLoadingBitmap = false;
@@ -380,7 +379,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	render = false;
 	check = false;
 	threadDataProcess = true;
-
+	iconeList = new CIconeList();
 	this->testValidity = testValidity;
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
@@ -512,7 +511,7 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int& positi
 
 void CThumbnail::RefreshIcone(const int& idPhoto)
 {
-	std::shared_ptr<CIcone> icone = GetIconeById(idPhoto);
+	CIcone* icone = GetIconeById(idPhoto);
 	if (icone != nullptr)
 	{
 		wxRect rc = icone->GetPos();
@@ -536,7 +535,7 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 
 void CThumbnail::RefreshIconeVideo(const int& idPhoto)
 {
-	std::shared_ptr<CIcone> icone = GetIconeById(idPhoto);
+	CIcone* icone = GetIconeById(idPhoto);
 	if (icone != nullptr)
 	{
 		wxRect rc = icone->GetPos();
@@ -646,7 +645,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 	CLibPicture libPicture;
 	wxClientDC dc(this);
 	{
-		std::shared_ptr<CIcone> icone = GetIconeById(numActifPhotoId);
+		CIcone* icone = GetIconeById(numActifPhotoId);
 		if (icone != nullptr)
 		{
 			CThumbnailData* data = icone->GetData();
@@ -672,7 +671,7 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 	CLibPicture libPicture;
 	wxClientDC dc(this);
 	{
-		std::shared_ptr<CIcone> icone = GetIconeById(numSelectPhotoId);
+		CIcone* icone = GetIconeById(numSelectPhotoId);
 		if (icone != nullptr)
 		{
 			CThumbnailData* data = icone->GetData();
@@ -757,7 +756,7 @@ void CThumbnail::AfterSetList()
 {
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
+		CIcone* icone = iconeList->GetElement(i);
 		if (icone != nullptr)
 		{
 			CThumbnailData* data = icone->GetData();
@@ -776,6 +775,17 @@ void CThumbnail::AfterSetList()
 	}
 }
 
+void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
+{
+    
+	CListToClean* listToAdd = new CListToClean();
+	time(&listToAdd->timeToAdd);
+	listToAdd->list = iconeListLocal;
+	listToErrase.push_back(listToAdd);
+
+	stopToGetNbElement = false;
+
+}
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
 {
@@ -810,7 +820,7 @@ void CThumbnail::ExecuteTimer(const int& numId, wxTimer* refresh)
 {
 	CLibPicture libPicture;
 	bool actifActif = false;
-	std::shared_ptr<CIcone> icone = GetIconeById(numId);
+	CIcone* icone = GetIconeById(numId);
 	if (icone != nullptr)
 	{
 		CThumbnailData* data = icone->GetData();
@@ -872,7 +882,26 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
 	}
     
-
+    if (!listToErrase.empty())
+	{
+        
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (int i = 0; i < listToErrase.size(); i++)
+		{
+			CListToClean* element = listToErrase[i];
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 5)
+			{
+				//printf("CThumbnail::listToErrase %i \n", i);
+				delete element->list;
+				element->list = nullptr;
+				listToErrase.erase(listToErrase.begin() + i);
+				i--;
+			}
+		}
+	}
 }
 
 bool CThumbnail::GetProcessEnd()
@@ -895,7 +924,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 	bool isChecked = false;
 	if (numActifPhotoId != -1)
 	{
-		std::shared_ptr<CIcone> numActif = GetIconeById(numActifPhotoId);
+		CIcone* numActif = GetIconeById(numActifPhotoId);
 		if (numActif != nullptr)
 			isChecked = numActif->IsChecked();
 	}
@@ -927,7 +956,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		int iconePhotoId = -1;
 		wxSetCursor(wxCursor(wxCURSOR_HAND));
 
-		std::shared_ptr<CIcone> pBitmapIcone = FindElement(xPos, yPos);
+		CIcone* pBitmapIcone = FindElement(xPos, yPos);
 		
 
 		if (pBitmapIcone != nullptr)
@@ -942,7 +971,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 				{
 					if (numActifPhotoId != -1)
 					{
-						std::shared_ptr<CIcone> numActif = GetIconeById(numActifPhotoId);
+						CIcone* numActif = GetIconeById(numActifPhotoId);
 						
 						if (numActif != nullptr)
 						{
@@ -980,7 +1009,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 }
 
-void CThumbnail::RenderBitmap(wxDC* deviceContext, std::shared_ptr<CIcone> pBitmapIcone, const int& posLargeur, const int& posHauteur)
+void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
 	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
@@ -1038,7 +1067,7 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	if (std::shared_ptr<CIcone> pBitmapIcone = FindElement(xPos, yPos); pBitmapIcone != nullptr)
+	if (CIcone* pBitmapIcone = FindElement(xPos, yPos); pBitmapIcone != nullptr)
 	{
 		auto pThumbnailData = pBitmapIcone->GetData();
 		if (pThumbnailData != nullptr)
@@ -1081,7 +1110,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	mouseClickBlock = true;
 	bool isIconeSelected = false;
 	int iconePhotoId = -1;
-	std::shared_ptr<CIcone> pBitmapIcone = FindElement(xPos, yPos);
+	CIcone* pBitmapIcone = FindElement(xPos, yPos);
 	if (pBitmapIcone != nullptr)
 		if (pBitmapIcone->GetData() != nullptr)
 		{
@@ -1092,7 +1121,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 
 	if (numSelectPhotoId != -1)
 	{
-		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 	}
@@ -1136,7 +1165,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		if (numActifPhotoId != -1)
 		{
 			int returnValue = 0;
-			std::shared_ptr<CIcone> numActif = GetIconeById(numActifPhotoId);
+			CIcone* numActif = GetIconeById(numActifPhotoId);
 			bitmapIconDrag = numActif->GetBitmapIcone(returnValue, false, true);
 		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
@@ -1154,7 +1183,7 @@ int CThumbnail::GetNbIconSelected()
 	int nbElement = nbElementInIconeList;
 	for (int i = 0; i < nbElement; i++)
 	{
-		std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
+		CIcone* icone = iconeList->GetElement(i);
 		if (icone->IsChecked())
 			nbCheck++;
 	}
@@ -1168,7 +1197,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 
 	if (numloadingIconePhotoId != -1)
 	{
-		std::shared_ptr<CIcone> loadingIcone = GetIconeById(numloadingIconePhotoId);
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
 		if (loadingIcone != nullptr)
 			loadingIcone->StopLoadingPicture();
 	}
@@ -1184,7 +1213,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 
 	if (numloadingIconePhotoId != -1)
 	{
-		std::shared_ptr<CIcone> loadingIcone = GetIconeById(numloadingIconePhotoId);
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
 		if (loadingIcone != nullptr)
 			loadingIcone->StartLoadingPicture();
 	}
@@ -1194,7 +1223,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 {
 	if (numloadingIconePhotoId != -1)
 	{
-		std::shared_ptr<CIcone> loadingIcone = GetIconeById(numloadingIconePhotoId);
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
 		if (loadingIcone != nullptr)
 		{
 			loadingIcone->StopLoadingPicture();
@@ -1256,7 +1285,7 @@ void CThumbnail::Render(wxDC& dc)
 
 	if (numSelectPhotoId != -1 && !isMovingScroll && moveOnPaint)
 	{
-		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 		{
 			wxRect rect = numSelect->GetPos();
@@ -1520,7 +1549,7 @@ void CThumbnail::UpdateRenderIcone(CThreadLoadingBitmap * threadLoadingBitmap)
 			if (threadLoadingBitmap->bitmapIcone.IsOk())
 			{
 				CThumbnailData* pThumbnailData = nullptr;
-				std::shared_ptr<CIcone> icone = GetIconeByPath(threadLoadingBitmap->filename);
+				CIcone* icone = GetIconeByPath(threadLoadingBitmap->filename);
 				if (icone != nullptr)
 				{
 					if (pThumbnailData == nullptr)

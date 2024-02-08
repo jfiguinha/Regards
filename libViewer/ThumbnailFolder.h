@@ -17,8 +17,8 @@ namespace Regards::Viewer
 		~CThumbnailFolder(void) override;
 		
 		void Init(const int& typeAffichage);
-		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, std::shared_ptr<CIconeList> iconeListLocal, const wxString& libelle, int& nbElement) override;
-		CInfosSeparationBarExplorer * AddSeparatorBar(std::shared_ptr<CIconeList> iconeListLocal, const wxString& libelle, int& nbElement);
+		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
+		CInfosSeparationBarExplorer * AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 
 	protected:
 		void InitTypeAffichage(const int& typeAffichage);
@@ -30,13 +30,13 @@ namespace Regards::Viewer
 	private:
 
 
-		static bool ItemCompFonctWithVScroll(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
-		static bool ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
+		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void SetListeFile();
 
-		std::shared_ptr<CIcone> FindElementWithVScroll(const int& xPos, const int& yPos) override;
+		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
-		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
+		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		void RenderIconeWithVScroll(wxDC* dc) override;
 

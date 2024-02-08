@@ -170,7 +170,7 @@ namespace Regards::Window
 		bool visible = true;
 	};
 
-	using IconeVector = tbb::concurrent_vector<std::shared_ptr<CIcone>>;
-	using pItemCompFonct = bool(*)(int, int, std::shared_ptr<CIcone>, CWindowMain*);
-	using pItemStringCompFonct = bool(*)(wxString, std::shared_ptr<CIcone>);
+	using IconeVector = tbb::concurrent_vector<CIcone*>;
+	using pItemCompFonct = bool(*)(int, int, CIcone*, CWindowMain*);
+	using pItemStringCompFonct = bool(*)(wxString, CIcone*);
 }

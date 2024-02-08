@@ -25,8 +25,8 @@ namespace Regards::Control
 		float CalculRatio(const int& width, const int& height, const int& tailleBitmapWidth,
 		                  const int& tailleBitmapHeight);
 		CInfosSeparationBarEffect* CreateNewSeparatorBar(const wxString& libelle);
-		static bool ItemCompFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent);
-		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
+		static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
+		CIcone* FindElement(const int& xPos, const int& yPos) override;
 		void ProcessIdle() override;
 		static void LoadPicture(void* param);
 		void UpdateRenderIcone(wxCommandEvent& event);

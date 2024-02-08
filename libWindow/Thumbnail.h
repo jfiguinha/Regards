@@ -69,8 +69,8 @@ namespace Regards::Window
 		void UpdateScreenRatio() override;
 
 		void Resize() override;
-		static bool ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
-		static bool ItemCompFonctPhotoId(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
         virtual void ProcessVideo() {};
@@ -81,9 +81,9 @@ namespace Regards::Window
 		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
-		std::shared_ptr<CIcone> GetIconeById(const int& idPhoto);
+		CIcone* GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
-
+		void EraseThumbnailList(CIconeList* iconeListLocal);
 		int GetNbIconSelected();
 
 		virtual void EraseThumbnail(wxCommandEvent& event);
@@ -95,7 +95,7 @@ namespace Regards::Window
 		void TestMaxX();
 		void TestMaxY();
 
-		virtual void DeleteIcone(std::shared_ptr<CIcone> numSelect)
+		virtual void DeleteIcone(CIcone* numSelect)
 		{
 		};
 
@@ -114,7 +114,7 @@ namespace Regards::Window
 		{
 		};
 
-		virtual std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos);
+		virtual CIcone* FindElement(const int& xPos, const int& yPos);
 
 		virtual void ResizeThumbnail()
 		{
@@ -139,7 +139,7 @@ namespace Regards::Window
 		virtual void OnPictureClick(CThumbnailData* data) = 0;
 		void InitScrollingPos();
 		virtual void AfterSetList();
-		void RenderBitmap(wxDC* deviceContext, std::shared_ptr<CIcone> pBitmapIcone, const int& posLargeur, const int& posHauteur);
+		void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 		void OnAnimation(wxTimerEvent& event);
 		void OnRefreshIconeSelect(wxTimerEvent& event);
 		void OnTimerCleanMemory(wxTimerEvent& event);
@@ -150,15 +150,15 @@ namespace Regards::Window
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 		void RefreshIconeVideo(const int& idPhoto);
-		static bool ItemFilenameCompFonct(wxString filename, std::shared_ptr<CIcone> icone) /* Définit une fonction. */;
+		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
 		void update_render_icone(wxCommandEvent& event);
 
 
-		std::shared_ptr<CIcone> GetIconeByPath(const wxString& filepath);
-		static bool ItemCompFonctPath(wxString filepath, std::shared_ptr<CIcone> icone);
+		CIcone* GetIconeByPath(const wxString& filepath);
+		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
 
 		//------------------------------------------------------------
 		//Variable
@@ -174,7 +174,7 @@ namespace Regards::Window
 		int nbPhotoElement = 0;
 		//Variable
 		//std::mutex lockIconeList;
-		std::shared_ptr<CIconeList> iconeList;
+		CIconeList* iconeList;
 
 		bool processThumbnailVideo = false;
 		wxString videoFilename = "";
@@ -258,7 +258,8 @@ namespace Regards::Window
 
 		bool needToRefresh = false;
         bool stopToGetNbElement = false;
-
+		std::mutex muEraseList;
+		std::vector<CListToClean *> listToErrase;
 
 	};
 }

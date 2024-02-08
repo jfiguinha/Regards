@@ -15,7 +15,6 @@ namespace Regards::Introduction
 		~CMyCentralWindowIntro() override;
 
 	private:
-        std::unique_ptr<CInfoAbout> infoAbout;
-
+		CInfoAbout* infoAbout;
 	};
 }

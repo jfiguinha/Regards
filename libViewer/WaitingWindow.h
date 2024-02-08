@@ -21,7 +21,7 @@ namespace Regards::Viewer
 	private:
 		void on_paint(wxPaintEvent& event);
 
-		std::unique_ptr<wxAnimationCtrl> m_animationCtrl;
+		wxAnimationCtrl* m_animationCtrl;
 		wxString textToShow;
 	};
 }

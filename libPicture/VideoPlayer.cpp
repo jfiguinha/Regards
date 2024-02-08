@@ -472,7 +472,7 @@ int CVideoPlayer::SeekToPos(const int& sec)
 CVideoPlayer::CVideoPlayer(const wxString& filename) : IVideoPlayer(filename)
 {
 	int ret = 0;
-	pimpl = std::unique_ptr<CVideoPlayerPimpl>(new CVideoPlayerPimpl());
+	pimpl = new CVideoPlayerPimpl();
 	ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
 	this->filename = filename;
 }
@@ -489,5 +489,6 @@ cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& in
 
 CVideoPlayer::~CVideoPlayer()
 {
-
+	if(pimpl != nullptr)
+		delete pimpl;
 }

@@ -72,7 +72,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
-		windowManager = std::unique_ptr<CWindowManager>(new CWindowManager(this, wxID_ANY, theme));
+		windowManager = new CWindowManager(this, wxID_ANY, theme);
 	}
 
 	if (viewerTheme != nullptr)
@@ -82,13 +82,13 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		viewerTheme->GetScrollTheme(&theme);
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFolder = std::unique_ptr<CThumbnailFolder>(new CThumbnailFolder(windowManager.get(), THUMBNAILFOLDER, themeThumbnail, checkValidity));
-		thumbscrollbar = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(windowManager.get(), thumbnailFolder.get(), wxID_ANY));
+		thumbnailFolder = new CThumbnailFolder(windowManager, THUMBNAILFOLDER, themeThumbnail, checkValidity);
+		thumbscrollbar = new CScrollbarWnd(windowManager, thumbnailFolder, wxID_ANY);
 		thumbscrollbar->ShowVerticalScroll();
 		thumbnailFolder->SetNoVScroll(false);
 		thumbnailFolder->SetCheck(true);
 		thumbnailFolder->ChangeTabValue(value, positionTab);
-		windowManager->AddWindow(thumbscrollbar.get(), Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
+		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -96,11 +96,11 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		CThemeToolbar theme;
 		//viewerTheme->GetThumbnailToolbarTheme(theme);
 		viewerTheme->GetBitmapToolbarTheme(&theme);
-		thumbToolbar = std::unique_ptr<CThumbnailToolBar>(new CThumbnailToolBar(windowManager.get(), wxID_ANY, theme, false));
+		thumbToolbar = new CThumbnailToolBar(windowManager, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
 		thumbToolbar->SetTrackBarPosition(positionTab - 1);
 
-		windowManager->AddWindow(thumbToolbar.get(), Pos::wxBOTTOM, true, thumbToolbar->GetHeight(), rect, wxID_ANY, false);
+		windowManager->AddWindow(thumbToolbar, Pos::wxBOTTOM, true, thumbToolbar->GetHeight(), rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -108,8 +108,8 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		CThemeToolBarZoom theme;
 		viewerTheme->GetThumbnailToolbarZoomTheme(theme);
 		//viewerTheme->GetBitmapToolbarTheme(&theme);
-		thumbToolbarZoom = std::unique_ptr<CThumbnailToolBarZoom>(new CThumbnailToolBarZoom(windowManager.get(), wxID_ANY, theme));
-		windowManager->AddWindow(thumbToolbarZoom.get(), Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY,
+		thumbToolbarZoom = new CThumbnailToolBarZoom(windowManager, wxID_ANY, theme);
+		windowManager->AddWindow(thumbToolbarZoom, Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY,
 		                         false);
 	}
 
@@ -130,6 +130,9 @@ CListPicture::~CListPicture()
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		config->SetSlideFolderPos(positionTab);
+
+	if (windowManager != nullptr)
+		delete(windowManager);
 }
 
 int CListPicture::GetThumbnailHeight()

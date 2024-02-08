@@ -56,13 +56,13 @@ void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
 	}
 }
 
-CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(std::shared_ptr<CIconeList> iconeList, const wxString& libelle, int& nbElement)
+CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
 {
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 
-	int local_nbElement = iconeList->GetNbElement();
+	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = CThumbnailBuffer::GetVectorSize();
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
@@ -77,12 +77,12 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(std::shared_ptr<C
 			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(local_nbElement + i);
 
-			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			CIcone* pBitmapIcone = new CIcone();
 			pBitmapIcone->ShowSelectButton(true);
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 		}
 		catch (...)
 		{
@@ -93,7 +93,7 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(std::shared_ptr<C
 	);
 #endif
 
-	iconeList->SortById();
+	iconeListLocal->SortById();
 
 	for (auto i = 0; i < size; i++)
 	{
@@ -106,13 +106,13 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(std::shared_ptr<C
 }
 
 
-CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _pictures, std::shared_ptr<CIconeList> iconeList, const wxString& libelle, int& nbElement)
+CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
 {
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->ShowExpandIcon(true);
-	int local_nbElement = iconeList->GetNbElement();
+	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = _pictures->size();
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
@@ -127,12 +127,12 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(local_nbElement + i);
 
-			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			CIcone* pBitmapIcone = new CIcone();
 			pBitmapIcone->ShowSelectButton(true);
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 		}
 		catch(...)
 		{
@@ -143,7 +143,7 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
     );
 #endif
 
-	iconeList->SortById();
+	iconeListLocal->SortById();
 
 	for (auto i = 0; i < size; i++)
 	{
@@ -172,9 +172,10 @@ void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
 
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
-    iconeList->EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = iconeList;
 	//---------------------------------
-	//Sauvegarde de l'état
+	//Sauvegarde de l'état
 	//---------------------------------
 	vector<CThumbnailData*> listSelectItem;
 	threadDataProcess = false;
@@ -190,27 +191,27 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	if (typeLocal == SHOW_ALL)
 	{
 		CTreatmentDataFolder dataYear;
-		dataYear.MainTreatment(_listSeparator, iconeList, this, i);
+		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
 		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(_listSeparator, iconeList, this, i);
+		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
 		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(_listSeparator, iconeList, this, i);
+		dataMonth.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
 		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(_listSeparator, iconeList, this, i);
+		dataLocalisation.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
 		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(_listSeparator, iconeList, this, i);
+		dataDay.MainTreatment(_listSeparator, iconeListLocal, this, i);
 	}
 
 
@@ -220,6 +221,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		config->SetTypeAffichage(typeAffichage);
 	}
 
+	iconeList = iconeListLocal;
 	listSeparator = _listSeparator;
 
 	//------------------------------------------------------------------
@@ -248,6 +250,13 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		delete old;
 	}
 
+	
+
+	if (oldIconeList != nullptr)
+	{
+		delete oldIconeList;
+		oldIconeList = nullptr;
+	}
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
@@ -260,7 +269,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		for (CThumbnailData* data : listSelectItem)
 		{
 			int itemId = GetNumItemById(data->GetNumPhotoId());
-			std::shared_ptr<CIcone> icone = iconeList->GetElement(itemId);
+			CIcone* icone = iconeList->GetElement(itemId);
 			if (icone != nullptr)
 			{
 				icone->SetChecked(true);
@@ -293,7 +302,7 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 
 void CThumbnailFolder::SetListeFile()
 {
-	iconeList->EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
 	threadDataProcess = false;
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
@@ -313,13 +322,13 @@ void CThumbnailFolder::SetListeFile()
 			thumbnailData->SetNumElement(i);
 
 
-			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			CIcone* pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
 
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 		}
 		catch(...)
 		{
@@ -330,9 +339,14 @@ void CThumbnailFolder::SetListeFile()
     );
 #endif
 
-	iconeList->SortById();
+	iconeListLocal->SortById();
+
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
 
 	nbElementInIconeList = iconeList->GetNbElement();
+
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
@@ -345,7 +359,7 @@ void CThumbnailFolder::SetListeFile()
 }
 
 
-bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent)
+bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -359,7 +373,7 @@ bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, std::shared_ptr<CI
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailFolder::FindElementWithVScroll(const int& xPos, const int& yPos)
+CIcone* CThumbnailFolder::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -404,7 +418,7 @@ void CThumbnailFolder::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 			for (auto numElement : separator->listElement)
 			{
-				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
+				CIcone* icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (explorer->GetSelected())
@@ -465,7 +479,7 @@ void CThumbnailFolder::ResizeThumbnail()
 		{
 			for (auto numElement : infosSeparationBar->listElement)
 			{
-				std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
+				CIcone* pBitmapIcone = iconeList->GetElement(numElement);
 				if (pBitmapIcone != nullptr)
 				{
 					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -503,7 +517,7 @@ void CThumbnailFolder::ResizeThumbnail()
 		{
 			for (auto numElement : infosSeparationBar->listElement)
 			{
-				std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
+				CIcone* pBitmapIcone = iconeList->GetElement(numElement);
 				if (pBitmapIcone != nullptr)
 				{
 					pBitmapIcone->SetVisibility(false);
@@ -519,7 +533,7 @@ void CThumbnailFolder::ResizeThumbnail()
 	UpdateScroll();
 }
 
-bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone->GetVisibility())
 	{
@@ -540,7 +554,7 @@ bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone>
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
+CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -572,7 +586,7 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
                 for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
                 {
                     int numElement = infosSeparationBar->listElement.at(j);
-                    std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
+                    CIcone* pBitmapIcone = iconeList->GetElement(numElement);
                     if (pBitmapIcone != nullptr)
                     {
                         wxRect rc = pBitmapIcone->GetPos();

@@ -39,11 +39,23 @@ wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelInfosWnd", parent, id), id_(id)
 {
-
+	infosFileWnd = nullptr;
 	firstTime = true;
+	historyEffectWnd = nullptr;
+	thumbnailEffectWnd = nullptr;
+	filtreEffectWnd = nullptr;
+	criteriaTreeWnd = nullptr;
+
+	webBrowser = nullptr;
+	infosToolbar = nullptr;
+	picturePanel = nullptr;
+	//Effect Parameter
+	modificationManager = nullptr;
+
 	isThumbnail = false;
 	isVideo = false;
 	filename = L"";
+	//bitmap = new CRegardsBitmap();
 	width = 0;
 	height = 0;
 	url = "http://www.google.fr";
@@ -63,7 +75,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	wxString folder = CFileUtility::GetDocumentFolderPath();
 
-	modificationManager = std::unique_ptr<CModificationManager>(new CModificationManager(folder));
+	modificationManager = new CModificationManager(folder);
 
 	if (viewerTheme != nullptr)
 	{
@@ -73,14 +85,14 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeTree theme;
 		viewerTheme->GetTreeTheme(&theme);
 
-		infosFileWnd = std::unique_ptr<CInfosFileWnd>(new CInfosFileWnd(this, wxID_ANY, themeScroll, theme));
+		infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
 
 		infosFileWnd->Show(false);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(infosFileWnd.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(infosFileWnd);
 		tabInfosFile->SetId(WM_INFOS);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 	}
 
 	if (viewerTheme != nullptr)
@@ -91,24 +103,23 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
 
-		filtreEffectWnd = std::unique_ptr<CFiltreEffectScrollWnd>(
-            new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID));
+		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
 		filtreEffectWnd->Show(false);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(filtreEffectWnd.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(filtreEffectWnd);
 		tabInfosFile->SetId(WM_EFFECTPARAMETER);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 
-		auto tabInfosFileVideo = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFileVideo->SetWindow(filtreEffectWnd.get());
+		auto tabInfosFileVideo = new CTabWindowData();
+		tabInfosFileVideo->SetWindow(filtreEffectWnd);
 		tabInfosFileVideo->SetId(WM_VIDEOEFFECT);
-		listWindow.push_back(tabInfosFileVideo.get());
+		listWindow.push_back(tabInfosFileVideo);
 
-		auto tabInfosFileAudioVideo = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFileAudioVideo->SetWindow(filtreEffectWnd.get());
+		auto tabInfosFileAudioVideo = new CTabWindowData();
+		tabInfosFileAudioVideo->SetWindow(filtreEffectWnd);
 		tabInfosFileAudioVideo->SetId(WM_AUDIOVIDEO);
-		listWindow.push_back(tabInfosFileAudioVideo.get());
+		listWindow.push_back(tabInfosFileAudioVideo);
 	}
 
 	if (viewerTheme != nullptr)
@@ -118,13 +129,13 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
-		historyEffectWnd = std::unique_ptr<CInfoEffectWnd>(new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID));
+		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
 		historyEffectWnd->Show(false);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(historyEffectWnd.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(historyEffectWnd);
 		tabInfosFile->SetId(WM_HISTORY);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 	}
 
 	if (viewerTheme != nullptr)
@@ -144,15 +155,15 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		if (main_param != nullptr)
 			checkValidity = main_param->GetCheckThumbnailValidity();
 
-		thumbnailEffectWnd = std::unique_ptr<CThumbnailViewerEffectWnd>(new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID,
-		                                                   checkValidity));
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID,
+		                                                   checkValidity);
 
 		thumbnailEffectWnd->Show(false);
 
-		auto tabInfosFileEffect = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFileEffect->SetWindow(thumbnailEffectWnd.get());
+		auto tabInfosFileEffect = new CTabWindowData();
+		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
 		tabInfosFileEffect->SetId(WM_EFFECT);
-		listWindow.push_back(tabInfosFileEffect.get());
+		listWindow.push_back(tabInfosFileEffect);
 	}
 
 	if (webBrowser == nullptr)
@@ -170,13 +181,13 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		}
 #endif
 
-		webBrowser = std::unique_ptr<wxWebView>(wxWebView::New(this, wxID_ANY));
+		webBrowser = wxWebView::New(this, wxID_ANY);
 		webBrowser->Show(false);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(webBrowser.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(webBrowser);
 		tabInfosFile->SetId(WM_MAPS);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 	}
 
 	if (picturePanel == nullptr)
@@ -184,13 +195,13 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		picturePanel =  std::unique_ptr<CPicturePanel>(new CPicturePanel(this, wxID_ANY, themeThumbnail));
+		picturePanel = new CPicturePanel(this, wxID_ANY, themeThumbnail);
 		picturePanel->Show(false);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(picturePanel.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(picturePanel);
 		tabInfosFile->SetId(WM_HISTOGRAM);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 	}
 
 
@@ -198,7 +209,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetInfosToolbarTheme(&theme);
-		infosToolbar = std::unique_ptr<CToolbarInfos>(new CToolbarInfos(this, wxID_ANY, theme, this, false));
+		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -208,15 +219,15 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 		CThemeSplitter themeSplitter;
 		viewerTheme->GetSplitterTheme(&themeSplitter);
-		criteriaTreeWnd = std::unique_ptr<CCriteriaWindow>(new CCriteriaWindow(this, wxID_ANY, themeSplitter));
+		criteriaTreeWnd = new CCriteriaWindow(this, wxID_ANY, themeSplitter);
 
-		auto tabInfosFile = std::unique_ptr<CTabWindowData>(new CTabWindowData());
-		tabInfosFile->SetWindow(criteriaTreeWnd.get());
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(criteriaTreeWnd);
 		tabInfosFile->SetId(WM_CRITERIA);
-		listWindow.push_back(tabInfosFile.get());
+		listWindow.push_back(tabInfosFile);
 	}
 
-	toolbarWindow = infosToolbar.get();
+	toolbarWindow = infosToolbar;
 
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
@@ -239,7 +250,15 @@ wxString CPanelInfosWnd::GetFilename()
 
 CPanelInfosWnd::~CPanelInfosWnd()
 {
-
+	delete(infosFileWnd);
+	delete(historyEffectWnd);
+	delete(filtreEffectWnd);
+	delete(criteriaTreeWnd);
+	delete(thumbnailEffectWnd);
+	delete(infosToolbar);
+	delete(webBrowser);
+	delete(picturePanel);
+	delete(modificationManager);
 }
 
 void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
@@ -366,12 +385,12 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd.get(), filename, false, PANELINFOSWNDID, PREVIEWVIEWERID);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, filename, false, PANELINFOSWNDID, PREVIEWVIEWERID);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 {
-	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd.get());
+	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ClickShowButton(WM_EFFECT);
 }
 
@@ -445,7 +464,7 @@ void CPanelInfosWnd::HistoryUpdate()
 		if (bitmapViewer != nullptr)
 		{
 			CImageLoadingFormat* bitmap = bitmapViewer->GetBitmap(true);
-			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager.get());
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
 		}
 	}
 }
@@ -482,7 +501,7 @@ void CPanelInfosWnd::LoadInfo()
 	case WM_AUDIOVIDEO:
 		if (!thumbnailEffectWnd->IsShown())
 			thumbnailEffectWnd->Show(true);
-		filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd.get(), filename, isVideo, PANELINFOSWNDID,
+		filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID,
 		                             PREVIEWVIEWERID);
 		AudioVideoUpdate();
 		infosToolbar->SetAudioVideoPush();
@@ -492,7 +511,7 @@ void CPanelInfosWnd::LoadInfo()
 	case WM_VIDEOEFFECT:
 		if (!thumbnailEffectWnd->IsShown())
 			thumbnailEffectWnd->Show(true);
-		filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd.get(), filename, isVideo, PANELINFOSWNDID,
+		filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID,
 		                             PREVIEWVIEWERID);
 		VideoEffectUpdate();
 		infosToolbar->SetVideoEffectPush();

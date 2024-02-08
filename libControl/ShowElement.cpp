@@ -128,8 +128,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	pictureToolbar = nullptr;
 
-	pictureToolbar = std::unique_ptr<CBitmapToolbar>(
-        new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false, exportPicture));
+	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false, exportPicture);
 	pictureToolbar->SetTabValue(value);
 
 	if (config != nullptr)
@@ -137,18 +136,18 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	//			CBitmapWndRender(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 
-	bitmapWindow = std::unique_ptr<CBitmapWndViewer>(new CBitmapWndViewer(pictureToolbar.get(), mainViewerId, themeBitmap, bitmapInterface));
+	bitmapWindow = new CBitmapWndViewer(pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	bitmapWindow->SetTabValue(value);
 
-	bitmapWindowRender = std::unique_ptr<CBitmapWnd3D>(new CBitmapWnd3D(this, bitmapViewerId));
-	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow.get());
+	bitmapWindowRender = new CBitmapWnd3D(this, bitmapViewerId);
+	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
 
 	scrollbar = nullptr;
 
-	scrollbar = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(this, bitmapWindowRender.get(), wxID_ANY, "BitmapScroll"));
+	scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowElement::OnIdle));
 	Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowElement::OnViewerDblClick));
@@ -191,9 +190,9 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	}
 
 	softRender = true;
-	videoWindow = std::unique_ptr<CVideoControlSoft>(new CVideoControlSoft(windowMain, this, this));
-	bitmapWindowRender->SetBitmapRenderInterface(videoWindow.get());
-	bitmapWindowRender->UpdateRenderInterface(bitmapWindow.get());
+	videoWindow = new CVideoControlSoft(windowMain, this, this);
+	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
+	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 
 	if (config != nullptr)
 	{
@@ -207,8 +206,8 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	}
 
 
-	videoSlider = std::unique_ptr<CSliderVideo>(new CSliderVideo(this, wxID_ANY, this, themeSlider));
-	slideToolbar = std::unique_ptr<CSlideToolbar>(new CSlideToolbar(this, wxID_ANY, themeToolbar));
+	videoSlider = new CSliderVideo(this, wxID_ANY, this, themeSlider);
+	slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
 
 	for (int i = 0; i < 101; i++)
 		sound_value.push_back(i);
@@ -632,7 +631,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 	pictureToolbar->Show(true);
 	slideToolbar->Show(false);
 	videoSlider->Show(false);
-	bitmapWindowRender->UpdateRenderInterface(bitmapWindow.get());
+	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 
 	if (tempImage != nullptr && !isThumbnail)
 	{
@@ -946,7 +945,7 @@ void CShowElement::OnValueChange(wxCommandEvent& event)
 
 CVideoControlSoft* CShowElement::GetVideoControl()
 {
-	return videoWindow.get();
+	return videoWindow;
 }
 
 void CShowElement::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -1026,6 +1025,13 @@ case VOLUMEDOWNBUTTONID:
 
 CShowElement::~CShowElement()
 {
+	delete(scrollbar);
+	delete(videoSlider);
+	delete(slideToolbar);
+	delete(pictureToolbar);
+	//delete(videoWindow);
+	//delete(bitmapWindowRender);
+	delete(bitmapWindow);
 }
 
 void CShowElement::SetDiaporamaMode()
@@ -1219,7 +1225,7 @@ bool CShowElement::SetVideo(const wxString& filename, const int& rotation, const
 	pictureToolbar->Show(false);
 	slideToolbar->Show(true);
 	videoSlider->Show(true);
-	bitmapWindowRender->UpdateRenderInterface(videoWindow.get());
+	bitmapWindowRender->UpdateRenderInterface(videoWindow);
 
 	videoTotalTime = 0;
 	videoPosOld = 0;

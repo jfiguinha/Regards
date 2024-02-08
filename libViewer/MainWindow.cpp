@@ -103,7 +103,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	start = true;
 	criteriaSendMessage = false;
 	checkVersion = true;
-	folderProcess = std::unique_ptr<CFolderProcess>(new CFolderProcess(this));
+	folderProcess = new CFolderProcess(this);
 
 
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
@@ -113,12 +113,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbar = std::unique_ptr<CToolbar>(new CToolbar(this, wxID_ANY, theme, false));
+		toolbar = new CToolbar(this, wxID_ANY, theme, false);
 
 		CThemeToolbar theme_infos;
 		viewerTheme->GetInfosToolbarTheme(&theme_infos);
 		theme_infos.position = NAVIGATOR_CENTER;
-		toolbarViewerMode = std::unique_ptr<CToolbarViewerMode>(new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false));
+		toolbarViewerMode = new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false);
 		//wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface, const bool& vertical
 	}
 
@@ -126,7 +126,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
-		centralWnd = std::unique_ptr<CCentralWindow>(new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false));
+		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false);
 	}
 	this->statusBarViewer = statusbar;
 
@@ -178,13 +178,14 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	 *
 	 ----------------------------------------------------------------------*/
 
-	statusBar = std::unique_ptr<wxStatusBar>(new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar"));
+	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
 
-	progressBar = std::unique_ptr<wxGauge>(new wxGauge(statusBar.get(), wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, statusBar->GetSize().y), wxGA_HORIZONTAL));
+	progressBar = new wxGauge(statusBar, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, statusBar->GetSize().y),
+	                          wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
 	//refreshFolder = true;
@@ -224,7 +225,7 @@ void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 	nbProcess--;
 	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	localevent->SetClientData(event.GetClientData());
-	wxQueueEvent(centralWnd.get(), localevent);
+	wxQueueEvent(centralWnd, localevent);
 }
 
 void CMainWindow::SetPictureMode()
@@ -1213,7 +1214,7 @@ void CMainWindow::LoadPicture(void* param)
 		TestIsAnimation(threadLoadingBitmap->filename))
 	{
 
-		vector<CImageVideoThumbnail *> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
+		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
 
 		if (listVideo.size() > 0)
 		{
@@ -1253,6 +1254,9 @@ void CMainWindow::LoadPicture(void* param)
 			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
 			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
+
+		for (CImageVideoThumbnail* bitmap : listVideo)
+			delete bitmap;
 
 		listVideo.clear();
 	}
@@ -1331,7 +1335,8 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 //---------------------------------------------------------------
 CMainWindow::~CMainWindow()
 {
-
+	delete(centralWnd);
+	delete(toolbar);
 }
 
 //---------------------------------------------------------------
