@@ -1213,7 +1213,7 @@ void CMainWindow::LoadPicture(void* param)
 		TestIsAnimation(threadLoadingBitmap->filename))
 	{
 
-		vector<std::unique_ptr<CImageVideoThumbnail>> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
+		vector<CImageVideoThumbnail *> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
 
 		if (listVideo.size() > 0)
 		{
@@ -1222,7 +1222,7 @@ void CMainWindow::LoadPicture(void* param)
 			//int selectPicture = listVideo.size() / 2;
 			for (int i = 0; i < listVideo.size(); i++)
 			{
-				CImageVideoThumbnail* bitmap = listVideo[i].get();
+				CImageVideoThumbnail* bitmap = listVideo[i];
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 
 				if (bitmap->image.IsOk())

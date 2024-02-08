@@ -39,7 +39,7 @@ namespace Regards
 			
 
 		private:
-			CVideoPlayerPimpl* pimpl;
+			std::unique_ptr<CVideoPlayerPimpl> pimpl;
 			wxString filename;
 		};
 	}

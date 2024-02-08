@@ -17,17 +17,14 @@ CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowI
                                                      bool checkValidity)
 	: CWindowMain("CThumbnailViewerEffectWnd", parent, id)
 {
-	thumbnailEffectScroll = nullptr;
-	thumbnailEffect = nullptr;
-
-	thumbnailEffect = new CThumbnailViewerEffect(this, wxID_ANY, themeThumbnail, checkValidity, panelInfosId);
-	thumbnailEffectScroll = new CScrollbarWnd(this, thumbnailEffect, wxID_ANY);
+	thumbnailEffect = std::unique_ptr<CThumbnailViewerEffect>(
+    new CThumbnailViewerEffect(this, wxID_ANY, themeThumbnail, checkValidity, panelInfosId));
+	thumbnailEffectScroll = std::unique_ptr<CScrollbarWnd>(new CScrollbarWnd(this, thumbnailEffect.get(), wxID_ANY));
 }
 
 CThumbnailViewerEffectWnd::~CThumbnailViewerEffectWnd(void)
 {
-	delete(thumbnailEffect);
-	delete(thumbnailEffectScroll);
+
 }
 
 void CThumbnailViewerEffectWnd::UpdateScreenRatio()

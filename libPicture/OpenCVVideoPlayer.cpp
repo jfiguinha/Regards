@@ -8,7 +8,7 @@ using namespace cv;
 COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(fileName)
 {
 	filename = CConvertUtility::ConvertToStdString(fileName);
-	capture = new cv::VideoCapture(filename, cv::CAP_FFMPEG);
+	capture = std::unique_ptr<cv::VideoCapture>(new cv::VideoCapture(filename, cv::CAP_FFMPEG));
 
 	isOpen = capture->isOpened();
 
@@ -26,7 +26,7 @@ COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(
 
 COpenCVVideoPlayer::~COpenCVVideoPlayer()
 {
-	delete capture;
+
 }
 
 

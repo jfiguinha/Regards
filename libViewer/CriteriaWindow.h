@@ -27,8 +27,8 @@ namespace Regards
 			void UpdateScreenRatio() override;
 
 		private:
-			CCriteriaTreeWnd* criteriaTreeWnd;
-			CKeywordWndToolbar* keywordWnd = nullptr;
+			std::unique_ptr<CCriteriaTreeWnd> criteriaTreeWnd;
+			std::unique_ptr<CKeywordWndToolbar> keywordWnd;
 			wxString url = "";
 			wxString filename = "";
 		};

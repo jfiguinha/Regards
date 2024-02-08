@@ -27,7 +27,7 @@ namespace Regards::Control
 		void SetFile(const wxString& filename);
 
 	private:
-		CScrollbarWnd* thumbnailEffectScroll;
-		CThumbnailViewerEffect* thumbnailEffect;
+		std::unique_ptr<CScrollbarWnd> thumbnailEffectScroll;
+		std::unique_ptr<CThumbnailViewerEffect> thumbnailEffect;
 	};
 }

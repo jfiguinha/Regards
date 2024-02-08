@@ -75,19 +75,18 @@ namespace Regards
 
 			static void ThreadLoading(void* data);
 
-			CScrollbarWnd* scrollbar;
-			CPreviewToolbar* previewToolbar;
-			CSliderVideoPreview* sliderVideo;
-			CBitmapWndRender* bitmapWindow;
-			CBitmapWnd3D* bitmapWindowRender;
+			std::unique_ptr<CScrollbarWnd> scrollbar;
+			std::unique_ptr<CPreviewToolbar> previewToolbar;
+			std::unique_ptr<CSliderVideoPreview> sliderVideo;
+			std::unique_ptr<CBitmapWndRender> bitmapWindow;
+			std::unique_ptr<CBitmapWnd3D> bitmapWindowRender;
 			CRegardsConfigParam* configRegards;
 
 			bool defaultToolbar;
 			bool defaultViewer;
-			//bool bitmapWndLocal;
-			Video::CVideoThumb * videoOriginal = nullptr;
+
 			CVideoOptionCompress videoOptionCompress;
-			CFFmpegTranscoding* transcodeFFmpeg = nullptr;
+			std::unique_ptr<CFFmpegTranscoding> transcodeFFmpeg;
 			cv::Mat decodeFrame;
 			cv::Mat decodeFrameOriginal;
 

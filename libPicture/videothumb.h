@@ -22,7 +22,7 @@ namespace Regards
 			int64_t GetMovieDuration();
 
 		private:
-			CVideoThumbPimpl* pimpl;
+			std::unique_ptr<CVideoThumbPimpl> pimpl;
 			wxString fileName;
 		};
 	}

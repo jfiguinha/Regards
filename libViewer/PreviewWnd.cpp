@@ -42,27 +42,27 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal
 	{
 		CThemeBitmapInfos theme;
 		viewerTheme->GetBitmapInfosTheme(&theme);
-		bitmapInfos = new CBitmapInfos(this, wxID_ANY, theme);
+		bitmapInfos = std::unique_ptr<CBitmapInfos>(new CBitmapInfos(this, wxID_ANY, theme));
 	}
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetPreviewToolbarTheme(&theme);
-		previewToolbar = new CPreviewToolbar(this, wxID_ANY, theme, this, false);
-		animationToolbar = new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this, false);
+		previewToolbar = std::unique_ptr<CPreviewToolbar>(new CPreviewToolbar(this, wxID_ANY, theme, this, false));
+		animationToolbar = std::unique_ptr<CAnimationToolbar>(new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this, false));
 	}
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetFiltreToolbarTheme(&theme);
-		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
+		filtreToolbar = std::unique_ptr<CFiltreToolbar>(new CFiltreToolbar(this, wxID_ANY, theme, false));
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 	}
 
-	showElement = new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this,
-	                               viewerTheme, true);
+	showElement = std::unique_ptr<CShowElement>(new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this,
+	                               viewerTheme, true));
 
 
 	isVideo = false;
@@ -87,11 +87,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal
 
 CPreviewWnd::~CPreviewWnd()
 {
-	delete(showElement);
-	delete(previewToolbar);
-	delete(animationToolbar);
-	delete(bitmapInfos);
-	delete(filtreToolbar);
+
 }
 
 void CPreviewWnd::StartAnimation(wxCommandEvent& event)
