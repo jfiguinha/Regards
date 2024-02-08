@@ -12,7 +12,7 @@ using namespace Regards::Window;
 class ISeparatorClass
 {
 public:
-	virtual CInfosSeparationBarExplorer* AddSeparatorBar(PhotosVector* _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) = 0;
+	virtual CInfosSeparationBarExplorer* AddSeparatorBar(PhotosVector* _pictures, std::shared_ptr<CIconeList> iconeListLocal, const wxString& libelle, int& nbElement) = 0;
 };
 
 class CTreatmentData
@@ -37,7 +37,7 @@ public:
 
 	}
 
-	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
+	void MainTreatment(InfosSeparationBarVector* listSeparator, std::shared_ptr<CIconeList> iconeListLocal, ISeparatorClass * folder, int& numElement)
 	{
 		std::map<wxString, PhotosVector *> listMap;
 		std::map<wxString, wxString> listLibelle;
@@ -103,7 +103,7 @@ protected:
 	//PhotosVector listPhoto;
 	bool first = true;
 	int numElement = 0;
-	CIconeList* iconeListLocal = nullptr;
+	std::shared_ptr<CIconeList> iconeListLocal = nullptr;
 };
 
 class CTreatmentDataFolder : public CTreatmentData

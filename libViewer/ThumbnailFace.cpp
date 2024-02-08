@@ -64,7 +64,7 @@ void CThumbnailFace::OnPictureClick(CThumbnailData* data)
 }
 
 
-void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
+void CThumbnailFace::AddSeparatorBar(std::shared_ptr<CIconeList> iconeList, const wxString& libelle, const CFaceName& faceName,
                                      const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement)
 {
 	auto infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
@@ -77,7 +77,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 	for (auto i = 0; i < listPhotoFace.size(); i++)
 	{
 		CFaceFilePath numFace = listPhotoFace.at(i);
-		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
+		infosSeparationBar->listElement.push_back(iconeList->GetNbElement());
 
 		auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
 		thumbnailData->SetNumPhotoId(numFace.numPhoto);
@@ -92,13 +92,13 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		}
 
 
-		auto pBitmapIcone = new CIcone();
+		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetShowDelete(true);
-		iconeListLocal->AddElement(pBitmapIcone);
+		iconeList->AddElement(pBitmapIcone);
 	}
 
 
@@ -108,8 +108,8 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 void CThumbnailFace::init()
 {
-	auto iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	iconeList->EraseThumbnailList();
+
 	auto viewerParam = CMainParamInit::getInstance();
 	threadDataProcess = false;
 	double pertinence = 0.0;
@@ -134,10 +134,10 @@ void CThumbnailFace::init()
 	for (int i = 0; i < listFace.size(); i++)
 	{
 		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
-		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
+		AddSeparatorBar(iconeList, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	int size = iconeListLocal->GetNbElement();
+	int size = iconeList->GetNbElement();
 
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
@@ -145,11 +145,11 @@ void CThumbnailFace::init()
 	tbb::parallel_for(0, size, 1, [=](int i)
 #endif
 	{
-		int photo = iconeListLocal->GetPhotoId(i);
-		CIcone * ico = iconeList->FindElementPhotoId(photo);
+		int photo = iconeList->GetPhotoId(i);
+		std::shared_ptr<CIcone> ico = iconeList->FindElementPhotoId(photo);
 		if (ico != nullptr)
 		{
-			CIcone* iconew = iconeListLocal->GetElement(i);
+			std::shared_ptr<CIcone> iconew = iconeList->GetElement(i);
 			if (iconew != nullptr)
 			{
 				iconew->SetChecked(ico->IsChecked());
@@ -162,13 +162,7 @@ void CThumbnailFace::init()
 	);
 #endif
 
-
-	oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-
 	nbElementInIconeList = iconeList->GetNbElement();
-
-	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
@@ -183,7 +177,7 @@ void CThumbnailFace::init()
 	needToRefresh = true;
 }
 
-bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
+bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -197,7 +191,7 @@ bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWind
 	return false;
 }
 
-CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -262,7 +256,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 			for (int i = 0; i < separatorBar->listElement.size(); i++)
 			{
 				int numElement = separatorBar->listElement.at(i);
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (icone->IsChecked())
@@ -308,7 +302,7 @@ vector<int> CThumbnailFace::GetFaceSelectID()
 			for (int i = 0; i < separatorBar->listElement.size(); i++)
 			{
 				int numElement = separatorBar->listElement.at(i);
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					bool needToMove = false;
@@ -391,7 +385,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 				for (int i = 0; i < separatorBar->listElement.size(); i++)
 				{
 					int numElement = separatorBar->listElement.at(i);
-					CIcone* icone = iconeList->GetElement(numElement);
+					std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 					if (icone != nullptr)
 					{
 						bool needToMove = false;
@@ -442,7 +436,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 			for (auto numElement : separator->listElement)
 			{
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (faceSeparator->GetSelected())
@@ -457,7 +451,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 	}
 }
 
-void CThumbnailFace::DeleteIcone(CIcone* numSelect)
+void CThumbnailFace::DeleteIcone(std::shared_ptr<CIcone> numSelect)
 {
 	auto face_thumbnail = static_cast<CSqlFaceThumbnail*>(numSelect->GetData());
 	if (face_thumbnail != nullptr)
@@ -475,7 +469,7 @@ void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 	}
 }
 
-bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -493,7 +487,7 @@ bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMai
 	return false;
 }
 
-CIcone* CThumbnailFace::FindElement(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 {
 	if (!threadDataProcess)
 		return nullptr;

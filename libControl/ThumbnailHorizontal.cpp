@@ -37,7 +37,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 {
 	this->SetFocus();
 	InitScrollingPos();
-	auto iconeListLocal = new CIconeList();
+	iconeList->EraseThumbnailList();
 	threadDataProcess = false;
 	int i = 0;
 	int x = 0;
@@ -53,7 +53,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		thumbnailData->SetNumElement(i);
 
 
-		auto pBitmapIcone = new CIcone();
+		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -62,18 +62,13 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		if (i == 0)
 			pBitmapIcone->SetSelected(true);
 
-		iconeListLocal->AddElement(pBitmapIcone);
+		iconeList->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
 	}
-
-	auto oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-
+    
 	nbElementInIconeList = iconeList->GetNbElement();
-
-	EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 	AfterSetList();
@@ -88,7 +83,7 @@ void CThumbnailHorizontal::RenderIcone(wxDC* deviceContext)
 
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
+		std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			int left = x;
@@ -147,7 +142,7 @@ void CThumbnailHorizontal::UpdateScroll()
 }
 
 
-CIcone* CThumbnailHorizontal::FindElement(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailHorizontal::FindElement(const int& xPos, const int& yPos)
 {
 	int x = posLargeur + xPos;
 	if (x > thumbnailSizeX)

@@ -94,7 +94,7 @@ wxString CThumbnailEffect::GetFilename()
 	return filename;
 }
 
-bool CThumbnailEffect::ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailEffect::ItemCompFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	wxRect rc = icone->GetPos();
 	if ((rc.x < x && x < (rc.width + rc.x)) && (rc.y < y && y < (rc.height + rc.y)))
@@ -104,7 +104,7 @@ bool CThumbnailEffect::ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* p
 	return false;
 }
 
-CIcone* CThumbnailEffect::FindElement(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailEffect::FindElement(const int& xPos, const int& yPos)
 {
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
@@ -161,8 +161,11 @@ void CThumbnailEffect::GetBitmapDimension(const int& width, const int& height, i
 
 void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* imageLoading)
 {
-	auto iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	//std::shared_ptr<CIconeList> iconeList;
+    
+    
+    iconeList->EraseThumbnailList();
+
 	threadDataProcess = false;
 	processIdle = false;
 	this->imageLoading = imageLoading;
@@ -188,7 +191,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 	if (picture.TestIsVideo(filename))
 	{
 		CInfosSeparationBarEffect* videoEffect = CreateNewSeparatorBar(videoLabelEffect);
-		int numElement = iconeListLocal->GetNbElement();
+		int numElement = iconeList->GetNbElement();
 
 		wxImage pBitmap = loadingResource.LoadImageResource("IDB_BLACKROOM");
 		auto thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_FILTRE_VIDEO));
@@ -198,11 +201,11 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 		thumbnailData->SetBitmap(pBitmap);
 
-		auto pBitmapIcone = new CIcone();
+		std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeListLocal->AddElement(pBitmapIcone);
+		iconeList->AddElement(pBitmapIcone);
 
 		isAllProcess = true;
 	}
@@ -221,7 +224,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 		for (int numEffect = FILTER_START; numEffect < FILTER_END; numEffect++)
 		{
-			int numElement = iconeListLocal->GetNbElement();
+			int numElement = iconeList->GetNbElement();
 			auto thumbnailData = new CThumbnailDataStorage(filename);
 			thumbnailData->SetNumElement(i++);
 			thumbnailData->SetNumPhotoId(numEffect);
@@ -311,18 +314,18 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 				break;
 			}
 			thumbnailData->SetNumPhotoId(numEffect);
-			auto pBitmapIcone = new CIcone();
+			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
+			iconeList->AddElement(pBitmapIcone);
 		}
 
 
 		if (format == 4)
 		{
 			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
-			int numElement = iconeListLocal->GetNbElement();
+			int numElement = iconeList->GetNbElement();
 			auto thumbnailData = new CThumbnailDataStorage(filename);
 			wxImage image = loadingResource.LoadImageResource("IDB_BLACKROOM");
 			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
@@ -332,22 +335,15 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			thumbnailData->SetBitmap(image);
 
-			auto pBitmapIcone = new CIcone();
+			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
+			iconeList->AddElement(pBitmapIcone);
 		}
 	}
 
-	oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-
 	nbElementInIconeList = iconeList->GetNbElement();
-
-	//EraseThumbnailList(oldIconeList);
-    oldIconeList->EraseThumbnailList();
-    delete oldIconeList;
 
 	threadDataProcess = true;
 	processIdle = true;
@@ -439,7 +435,7 @@ void CThumbnailEffect::ProcessIdle()
 	{
 		for (auto i = 0; i < nbElementInIconeList; i++)
 		{
-			CIcone* icone = iconeList->GetElement(i);
+			std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
 			if (icone != nullptr)
 			{
 				CThumbnailData* pThumbnailData = icone->GetData();
@@ -470,7 +466,7 @@ void CThumbnailEffect::ProcessIdle()
 	isAllProcess = true;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone* icone = iconeList->GetElement(i);
+		std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
 		if (icone != nullptr)
 		{
 			bool isLoad = false;
@@ -514,7 +510,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 				if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
 					return;
 
-				CIcone* icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
 				if (icone != nullptr)
 				{
 					bool needToRefresh = false;

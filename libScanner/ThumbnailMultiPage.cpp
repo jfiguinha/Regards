@@ -50,7 +50,7 @@ int CThumbnailMultiPage::FindNumItem(const int& videoPos)
 	int numItem = 0;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone* icone = iconeList->GetElement(i);
+		std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
 		if (icone != nullptr)
 		{
 			CThumbnailData* data = icone->GetData();
@@ -85,12 +85,12 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t& videoPos)
 
 	if (numSelectPhotoId != -1)
 	{
-		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 	}
 
-	CIcone* pIcone = iconeList->GetElement(numItem);
+	std::shared_ptr<CIcone> pIcone = iconeList->GetElement(numItem);
 	if (pIcone != nullptr)
 	{
 		pIcone->SetSelected(true);
@@ -137,7 +137,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 	int y = 0;
 	int typeElement = TYPEMULTIPAGE;
 	threadDataProcess = false;
-	auto iconeListLocal = new CIconeList();
+	iconeList->EraseThumbnailList();
 
 	if (videoThumbnail.size() > 0)
 	{
@@ -163,7 +163,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 
 			thumbnailData->SetBitmap(thumbnail->image);
 
-			auto pBitmapIcone = new CIcone();
+			std::shared_ptr<CIcone> pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 			pBitmapIcone->SetNumElement(i);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -175,7 +175,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 				numSelectPhotoId = i;
 			}
 
-			iconeListLocal->AddElement(pBitmapIcone);
+			iconeList->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
@@ -186,8 +186,6 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 		}
 		processIdle = false;
 	}
-
-	iconeList = iconeListLocal;
 
 	nbElementInIconeList = iconeList->GetNbElement();
 

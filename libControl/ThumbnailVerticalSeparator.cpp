@@ -61,7 +61,7 @@ void CThumbnailVerticalSeparator::ResizeThumbnail()
 
 		for (auto numElement : infosSeparationBar->listElement)
 		{
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+			std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -137,7 +137,7 @@ void CThumbnailVerticalSeparator::ResizeThumbnailWithVScroll()
 
 		for (auto numElement : infosSeparationBar->listElement)
 		{
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+			std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -177,7 +177,7 @@ void CThumbnailVerticalSeparator::RenderIconeWithVScroll(wxDC* deviceContext)
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
 			int numElement = infosSeparationBar->listElement.at(j);
-			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+			std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();
