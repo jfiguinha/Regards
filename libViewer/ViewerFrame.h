@@ -123,12 +123,12 @@ namespace Regards::Viewer
 		int eventToLoop = 0;
 		FolderCatalogVector folderList;
 		IMainInterface* mainInterface;
-		CMainParam* viewerParam;
-		CMainTheme* viewerTheme;
-		CMainWindow* mainWindow;
-		wxTimer* exitTimer;
+		std::unique_ptr<CMainParam> viewerParam;
+		std::unique_ptr<CMainTheme> viewerTheme;
+		std::unique_ptr<CMainWindow> mainWindow;
+		std::unique_ptr<wxTimer> exitTimer;
 		bool pictureEndLoading = true;
-		CWaitingWindow* mainWindowWaiting;
+		std::unique_ptr<CWaitingWindow> mainWindowWaiting;
 		wxPreviewFrameModalityKind m_previewModality;
 		bool fullscreen;
 		const wxString& title_;
@@ -144,16 +144,16 @@ namespace Regards::Viewer
         int oldWidth = 0;
         int oldHeight = 0;
 		
-		wxTimer* endLoadPictureTimer;
-		wxTimer* loadPictureStartTimer;
-		wxTimer* loadPictureTimer;
-		wxTimer* eventFileSysTimer = nullptr;
+		std::unique_ptr<wxTimer> endLoadPictureTimer;
+		std::unique_ptr<wxTimer> loadPictureStartTimer;
+		std::unique_ptr<wxTimer> loadPictureTimer;
+		std::unique_ptr<wxTimer> eventFileSysTimer;
 		wxString filenameTimer;
 		int nbTime;
 #ifndef __WXMSW__
-		CScannerFrame* frameScanner;
+		std::unique_ptr<CScannerFrame> frameScanner;
 #endif
 		//CImageLoadingFormat * picture;
-		wxFileSystemWatcher* m_watcher;
+		std::unique_ptr<wxFileSystemWatcher> m_watcher;
 	};
 }

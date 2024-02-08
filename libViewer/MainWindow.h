@@ -179,6 +179,6 @@ namespace Regards::Viewer
 		wxString oldRequest = "";
 		bool init = true;
 		vector<wxString> photoList;
-		CFolderProcess * folderProcess = nullptr;
+		std::unique_ptr<CFolderProcess> folderProcess;
 	};
 }

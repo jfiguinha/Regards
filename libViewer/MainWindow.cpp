@@ -103,7 +103,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	start = true;
 	criteriaSendMessage = false;
 	checkVersion = true;
-	folderProcess = new CFolderProcess(this);
+	folderProcess = std::unique_ptr<CFolderProcess>(new CFolderProcess(this));
 
 
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
@@ -1213,7 +1213,7 @@ void CMainWindow::LoadPicture(void* param)
 		TestIsAnimation(threadLoadingBitmap->filename))
 	{
 
-		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
+		vector<std::unique_ptr<CImageVideoThumbnail>> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
 
 		if (listVideo.size() > 0)
 		{
@@ -1222,7 +1222,7 @@ void CMainWindow::LoadPicture(void* param)
 			//int selectPicture = listVideo.size() / 2;
 			for (int i = 0; i < listVideo.size(); i++)
 			{
-				CImageVideoThumbnail* bitmap = listVideo[i];
+				CImageVideoThumbnail* bitmap = listVideo[i].get();
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 
 				if (bitmap->image.IsOk())
@@ -1253,9 +1253,6 @@ void CMainWindow::LoadPicture(void* param)
 			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
 			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
-
-		for (CImageVideoThumbnail* bitmap : listVideo)
-			delete bitmap;
 
 		listVideo.clear();
 	}

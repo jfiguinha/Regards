@@ -107,11 +107,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #ifndef __WXMSW__
 	frameScanner = nullptr;
 #endif
-	viewerParam = new CMainParam();
-	CMainParamInit::Initialize(viewerParam);
+	viewerParam = std::unique_ptr<CMainParam>(new CMainParam());
+	CMainParamInit::Initialize(viewerParam.get());
 	Maximize();
-	viewerTheme = new CMainTheme();
-	CMainThemeInit::Initialize(viewerTheme);
+	viewerTheme = std::unique_ptr<CMainTheme>(new CMainTheme());
+	CMainThemeInit::Initialize(viewerTheme.get());
 
 	this->mainInterface = mainInterface;
 	this->mainInterface->parent = this;
@@ -121,13 +121,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
 	
 
-	m_watcher = new wxFileSystemWatcher();
+	m_watcher = std::unique_ptr<wxFileSystemWatcher>(new wxFileSystemWatcher());
 	m_watcher->SetOwner(this);
 	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
 
 	CheckDatabase(folderList);
 
-	exitTimer = new wxTimer(this, wxTIMER_EXIT);
+	exitTimer = std::unique_ptr<wxTimer>(new wxTimer(this, wxTIMER_EXIT));
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
 
 
@@ -146,16 +146,16 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 
 
-	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile, fileToOpen);
+	mainWindow = std::unique_ptr<CMainWindow>(new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile, fileToOpen));
 
 	//mainWindow->Show(true);
 	//mainWindowWaiting->Show(false);
 	//preview = nullptr;
 	m_previewModality = wxPreviewFrame_AppModal;
-	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
-	eventFileSysTimer = new wxTimer(this, TIMER_EVENTFILEFS);
-	endLoadPictureTimer = new wxTimer(this, TIMER_LOADPICTUREEND);
-	loadPictureStartTimer = new wxTimer(this, TIMER_LOADPICTURESTART);
+	loadPictureTimer = std::unique_ptr<wxTimer>(new wxTimer(this, TIMER_LOADPICTURE));
+	eventFileSysTimer =  std::unique_ptr<wxTimer>(new wxTimer(this, TIMER_EVENTFILEFS));
+	endLoadPictureTimer =  std::unique_ptr<wxTimer>(new wxTimer(this, TIMER_LOADPICTUREEND));
+	loadPictureStartTimer =  std::unique_ptr<wxTimer>(new wxTimer(this, TIMER_LOADPICTURESTART));
 	auto menuFile = new wxMenu;
 
 	wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize", 1);
@@ -543,7 +543,7 @@ void CViewerFrame::Exit()
 		CWindowMain::SetEndProgram();
 		eventFileSysTimer->Stop();
 		loadPictureTimer->Stop();
-		mainWindowWaiting = new CWaitingWindow(this, wxID_ANY);
+		mainWindowWaiting = std::unique_ptr<CWaitingWindow>(new CWaitingWindow(this, wxID_ANY));
 		mainWindow->Show(false);
 		mainWindowWaiting->Show(true);
 		mainWindowWaiting->SetSize(0, 0, mainWindow->GetWindowWidth(), mainWindow->GetWindowHeight());
@@ -809,36 +809,19 @@ CViewerFrame::~CViewerFrame()
 	if (exitTimer->IsRunning())
 		exitTimer->Stop();
 
-	delete exitTimer;
-
 	if (loadPictureTimer->IsRunning())
 		loadPictureTimer->Stop();
 
-	delete(loadPictureTimer);
 
 	if (eventFileSysTimer->IsRunning())
 		eventFileSysTimer->Stop();
 
-	delete(eventFileSysTimer);
 
 	if (endLoadPictureTimer->IsRunning())
 		endLoadPictureTimer->Stop();
-	delete(endLoadPictureTimer);
 
-	if (mainWindow != nullptr)
-		delete(mainWindow);
-
-	if (mainWindowWaiting != nullptr)
-		delete(mainWindowWaiting);
-
-	if (viewerTheme != nullptr)
-		delete(viewerTheme);
 
 	viewerParam->SaveFile();
-
-
-	if (viewerParam != nullptr)
-		delete(viewerParam);
 
 
 	if (!onExit)
