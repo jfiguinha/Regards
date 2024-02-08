@@ -113,12 +113,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbar = new CToolbar(this, wxID_ANY, theme, false);
+		toolbar = std::unique_ptr<CToolbar>(new CToolbar(this, wxID_ANY, theme, false));
 
 		CThemeToolbar theme_infos;
 		viewerTheme->GetInfosToolbarTheme(&theme_infos);
 		theme_infos.position = NAVIGATOR_CENTER;
-		toolbarViewerMode = new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false);
+		toolbarViewerMode = std::unique_ptr<CToolbarViewerMode>(new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false));
 		//wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface, const bool& vertical
 	}
 
@@ -126,7 +126,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
-		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false);
+		centralWnd = std::unique_ptr<CCentralWindow>(new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false));
 	}
 	this->statusBarViewer = statusbar;
 
@@ -178,14 +178,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	 *
 	 ----------------------------------------------------------------------*/
 
-	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
+	statusBar = std::unique_ptr<wxStatusBar>(new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar"));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
 
-	progressBar = new wxGauge(statusBar, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, statusBar->GetSize().y),
-	                          wxGA_HORIZONTAL);
+	progressBar = std::unique_ptr<wxGauge>(new wxGauge(statusBar.get(), wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, statusBar->GetSize().y), wxGA_HORIZONTAL));
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
 	//refreshFolder = true;
@@ -225,7 +224,7 @@ void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 	nbProcess--;
 	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	localevent->SetClientData(event.GetClientData());
-	wxQueueEvent(centralWnd, localevent);
+	wxQueueEvent(centralWnd.get(), localevent);
 }
 
 void CMainWindow::SetPictureMode()
@@ -1335,8 +1334,7 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 //---------------------------------------------------------------
 CMainWindow::~CMainWindow()
 {
-	delete(centralWnd);
-	delete(toolbar);
+
 }
 
 //---------------------------------------------------------------
