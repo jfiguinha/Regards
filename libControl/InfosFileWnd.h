@@ -39,7 +39,6 @@ namespace Regards::Control
 		static void GenerateTreeInfos(CThreadLoadInfos* threadInfos);
 
 		CInfosFile* infosFile;
-		CInfosFile* oldInfosFileControl;
 		wxString filename;
 	};
 }

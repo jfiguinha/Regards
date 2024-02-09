@@ -17,15 +17,15 @@ CInfosFileWnd::CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScroll
                              const CThemeTree& theme)
 	: CTreeWithScrollbar("CInfosFileWnd", parent, id, themeScroll, theme)
 {
+	//infosFile = nullptr;
 	infosFile = nullptr;
-	oldInfosFileControl = nullptr;
 	Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CInfosFileWnd::UpdateTreeInfosEvent));
 }
 
 CInfosFileWnd::~CInfosFileWnd(void)
 {
-	if (oldInfosFileControl != nullptr)
-		delete(oldInfosFileControl);
+	if (infosFile != nullptr)
+		delete(infosFile);
 }
 
 void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
@@ -41,8 +41,8 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 
 		treeWindow->SetTreeControl(threadInfos->infosFileWnd);
 
-		delete(oldInfosFileControl);
-		oldInfosFileControl = threadInfos->infosFileWnd;
+		delete(infosFile);
+		infosFile = threadInfos->infosFileWnd;
 	}
 
 	threadInfos->threadLoadInfos->join();
