@@ -30,7 +30,7 @@ CCategoryWnd::CCategoryWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElem
 	idElement(0)
 {
 	sqlRequest = "";
-	treeDataModify = nullptr;
+
 	widthPosition = 0;
 	oldsqlRequest = "";
 	themeTree = *theme;

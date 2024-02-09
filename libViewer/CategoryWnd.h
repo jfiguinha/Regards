@@ -77,7 +77,6 @@ namespace Regards
 			int yPos;
 			wxString sqlRequest;
 			wxString oldsqlRequest;
-			CTreeDataCategory* treeDataModify;
 			wxString stateValue;
 			wxString stateTriangleValue;
 			vector<wxString> MonthName;

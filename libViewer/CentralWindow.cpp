@@ -1288,14 +1288,17 @@ CCentralWindow::~CCentralWindow()
 	if (config != nullptr)
 		config->SetLastShowPicture(filename);
 
-	if (windowManager != nullptr)
-		delete windowManager;
-
 	if (diaporamaTimer->IsRunning())
 		diaporamaTimer->Stop();
 
 	delete(diaporamaTimer);
-
+    delete(thumbnailVideo);
+    delete(panelInfosWindow);
+    delete(previewWindow);
+    delete(scrollPictureWindow);
+    delete(scrollVideoWindow);
+    delete(windowManager);
+    
 	if (ffmfc != nullptr)
 		delete ffmfc;
 }

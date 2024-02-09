@@ -769,7 +769,15 @@ CListFace::~CListFace()
 	if (config != nullptr)
 		config->SetSlideFacePos(positionTab);
 
+    printf("~CListFace() \n");
+
+    delete(thumbscrollbar);
+    delete(thumbFaceToolbar);
+    delete( thumbFacePertinenceToolbar);
+    delete(thumbnailFace);
 	delete(windowManager);
+    
+    printf("~CListFace() end \n");
 }
 
 int CListFace::GetThumbnailHeight()

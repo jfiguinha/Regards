@@ -1335,6 +1335,9 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 //---------------------------------------------------------------
 CMainWindow::~CMainWindow()
 {
+    delete(toolbarViewerMode);
+    delete(progressBar);
+	delete(statusBar);
 	delete(centralWnd);
 	delete(toolbar);
 }
@@ -1470,7 +1473,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0 && updateFolderThread != nullptr)
+	if (nbProcessMD5 > 0)
 		return false;
 
 	return true;

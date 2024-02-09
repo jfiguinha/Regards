@@ -131,6 +131,13 @@ CListPicture::~CListPicture()
 	if (config != nullptr)
 		config->SetSlideFolderPos(positionTab);
 
+    printf("~CListPicture() \n");
+    delete(thumbscrollbar);
+    delete(thumbToolbar);
+    delete(thumbToolbarZoom);
+    delete(thumbnailFolder);
+    printf("~CListPicture() end \n");
+
 	if (windowManager != nullptr)
 		delete(windowManager);
 }

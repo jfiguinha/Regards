@@ -884,7 +884,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
     
     if (!listToErrase.empty())
 	{
-        
+        printf("CThumbnail::listToErrase Nb Element : %i \n", listToErrase.size());
 		int i = 0;
 		time_t ending;
 		time(&ending);
@@ -894,7 +894,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			int diff = difftime(ending, element->timeToAdd);
 			if (diff > 5)
 			{
-				//printf("CThumbnail::listToErrase %i \n", i);
+				printf("CThumbnail::listToErrase %i \n", i);
 				delete element->list;
 				element->list = nullptr;
 				listToErrase.erase(listToErrase.begin() + i);
