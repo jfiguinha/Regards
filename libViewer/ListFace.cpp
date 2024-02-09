@@ -770,11 +770,10 @@ CListFace::~CListFace()
 		config->SetSlideFacePos(positionTab);
 
     printf("~CListFace() \n");
-
-    delete(thumbscrollbar);
-    delete(thumbFaceToolbar);
-    delete( thumbFacePertinenceToolbar);
     delete(thumbnailFace);
+    delete(thumbFaceToolbar);
+    delete(thumbscrollbar);
+    delete(thumbFacePertinenceToolbar);
 	delete(windowManager);
     
     printf("~CListFace() end \n");

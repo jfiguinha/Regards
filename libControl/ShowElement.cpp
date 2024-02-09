@@ -1025,13 +1025,15 @@ case VOLUMEDOWNBUTTONID:
 
 CShowElement::~CShowElement()
 {
-	delete(scrollbar);
+    printf("~CShowElement \n");
 	delete(videoSlider);
 	delete(slideToolbar);
 	delete(pictureToolbar);
-	//delete(videoWindow);
-	//delete(bitmapWindowRender);
+	delete(videoWindow);
+	delete(bitmapWindowRender);
 	delete(bitmapWindow);
+    delete(scrollbar);
+    printf("~CShowElement end \n");
 }
 
 void CShowElement::SetDiaporamaMode()

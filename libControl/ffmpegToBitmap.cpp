@@ -85,10 +85,13 @@ void CffmpegToBitmap::DeleteData()
 {
 	if (nullptr != scaleContext)
 		sws_freeContext(scaleContext);
+    scaleContext = nullptr;
 }
 
 CffmpegToBitmap::~CffmpegToBitmap()
 {
+	if (nullptr != scaleContext)
+		sws_freeContext(scaleContext);
 }
 
 int CffmpegToBitmap::GetThumbnailWidth()

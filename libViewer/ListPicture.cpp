@@ -131,15 +131,19 @@ CListPicture::~CListPicture()
 	if (config != nullptr)
 		config->SetSlideFolderPos(positionTab);
 
-    printf("~CListPicture() \n");
-    delete(thumbscrollbar);
-    delete(thumbToolbar);
-    delete(thumbToolbarZoom);
-    delete(thumbnailFolder);
-    printf("~CListPicture() end \n");
 
-	if (windowManager != nullptr)
-		delete(windowManager);
+     printf("~CListPicture() thumbToolbar \n");
+    delete(thumbToolbar);
+     printf("~CListPicture() thumbToolbarZoom \n");
+    delete(thumbToolbarZoom);
+     printf("~CListPicture() thumbnailFolder \n");
+    delete(thumbnailFolder);
+    printf("~CListPicture() thumbscrollbar \n");
+    delete(thumbscrollbar);
+    printf("~CListPicture() windowManager \n");
+	delete(windowManager);
+        
+    printf("~CListPicture() end \n");
 }
 
 int CListPicture::GetThumbnailHeight()
