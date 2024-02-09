@@ -778,12 +778,22 @@ void CThumbnail::AfterSetList()
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
     
-	CListToClean* listToAdd = new CListToClean();
-	time(&listToAdd->timeToAdd);
-	listToAdd->list = iconeListLocal;
-	listToErrase.push_back(listToAdd);
+	if (iconeListLocal->GetNbElement() == 0)
+	{
+		iconeListLocal->EraseThumbnailList();
+		delete iconeListLocal;
+		iconeListLocal = nullptr;
+	}
+	else
+	{
+		CListToClean* listToAdd = new CListToClean();
+		time(&listToAdd->timeToAdd);
+		listToAdd->list = iconeListLocal;
+		listToErrase.push_back(listToAdd);
 
-	stopToGetNbElement = false;
+		stopToGetNbElement = false;
+	}
+
 
 }
 

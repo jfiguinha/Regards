@@ -34,6 +34,11 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 	
 }
 
+PhotosVector* CThumbnailBuffer::GetVectorList()
+{
+    return newPhotosVectorList;
+}
+
 int CThumbnailBuffer::GetVectorSize()
 {
     return vectorSize;

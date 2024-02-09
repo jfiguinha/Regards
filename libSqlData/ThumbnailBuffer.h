@@ -1,5 +1,7 @@
 #pragma once
 #include "Photos.h"
+
+
 class CThumbnailBuffer
 {
 
@@ -13,6 +15,7 @@ public:
 	static bool FindValidFile(wxString localFilename);
 	static wxString FindPhotoById(int id);
 	static wxString FindPhotoByPath(wxString path);
+	static PhotosVector * GetVectorList();
 
 private:
 

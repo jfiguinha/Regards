@@ -880,6 +880,8 @@ bool CMainWindow::FindPreviousValidFile()
 }
 
 
+
+
 void CMainWindow::UpdateFolderStatic()
 {
     printf("CMainWindow::UpdateFolderStatic() \n");
@@ -921,32 +923,54 @@ void CMainWindow::UpdateFolderStatic()
 		else
 			localFilename = centralWnd->GetFilename();
 
-		CThumbnailBuffer::InitVectorList(_pictures);
-
-		if (firstFileToShow == "")
+		//Compare two vector
+		bool noupdate = false;
+		PhotosVector* oldVectorPicture = CThumbnailBuffer::GetVectorList();
+		if (oldVectorPicture != nullptr)
 		{
-			bool isFound = false;
-
-			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0 && localFilename != "")
+			if (_pictures->size() == oldVectorPicture->size())
 			{
-				isFound = FindNextValidFile();
-				if (!isFound)
-					isFound = FindPreviousValidFile();
-			}
+				auto isEqual = std::equal(
+					_pictures->begin(),
+					_pictures->end(),
+					oldVectorPicture->begin(),
+					[](CPhotos & l, CPhotos & r) {
+						return (l.path == r.path); });
 
-			if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
-				localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+				if(isEqual)
+					noupdate = true;
+			}
 		}
 
+		if (!noupdate)
+		{
+			CThumbnailBuffer::InitVectorList(_pictures);
+
+			if (firstFileToShow == "")
+			{
+				bool isFound = false;
+
+				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0 && localFilename != "")
+				{
+					isFound = FindNextValidFile();
+					if (!isFound)
+						isFound = FindPreviousValidFile();
+				}
+
+				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
+					localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+			}
 
 
-		centralWnd->SetListeFile(localFilename, typeAffichage);
-		listFile.clear();
-		thumbnailPos = 0;
-		firstFileToShow = "";
-		numElementTraitement = 0;
-		nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
-		init = true;
+			centralWnd->SetListeFile(localFilename, typeAffichage);
+			listFile.clear();
+			thumbnailPos = 0;
+			firstFileToShow = "";
+			numElementTraitement = 0;
+			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
+			init = true;
+		}
+
 
 
 		if (faceDetection)
