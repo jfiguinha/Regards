@@ -46,7 +46,7 @@ CThumbnailVideo::~CThumbnailVideo(void)
 {
 }
 
-bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -66,7 +66,7 @@ int CThumbnailVideo::FindNumItem(const int& videoPos)
 {
 	int numItem = 0;
 	pItemCompFonct _pf = &ItemCompFonct;
-	CIcone* icone = iconeList->FindElement(videoPos, 0, &_pf, this);
+	std::shared_ptr<CIcone> icone = iconeList->FindElement(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
 	{
 		if (iFormat < 100)
@@ -108,12 +108,12 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 
 	if (numSelectPhotoId != -1)
 	{
-		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		std::shared_ptr<CIcone> numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 	}
 
-	CIcone* pIcone = iconeList->GetElement(numItem);
+	std::shared_ptr<CIcone> pIcone = iconeList->GetElement(numItem);
 	if (pIcone != nullptr)
 	{
 		pIcone->SetSelected(true);
@@ -222,7 +222,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			}
 
 
-			auto pBitmapIcone = new CIcone();
+			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 			pBitmapIcone->SetNumElement(i);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -271,7 +271,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)
 				thumbnailData->SetLibelle("Page : " + to_string(j + 1) + "/" + to_string(size));
-			auto pBitmapIcone = new CIcone();
+                
+			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 			pBitmapIcone->SetNumElement(j);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -337,7 +338,7 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 		{
 			for (int i = 0; i < nbResult; i++)
 			{
-                CIcone* pBitmapIcone = iconeList->GetElement(i);
+                std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
  				if (pBitmapIcone != nullptr)
 				{
 					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData()); 
@@ -401,7 +402,7 @@ void CThumbnailVideo::EraseThumbnail(long value)
 		wxString filelocalName = iconeList->GetFilename(i);
 		if (videoFilename == filelocalName)
 		{
-			CIcone* pIcone = iconeList->GetElement(i);
+			std::shared_ptr<CIcone> pIcone = iconeList->GetElement(i);
 			if (pIcone != nullptr)
 			{
 				CThumbnailDataStorage * pThumbnailData = (CThumbnailDataStorage *)pIcone->GetData();

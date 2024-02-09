@@ -11,15 +11,15 @@ namespace Regards::Window
 		};
 		virtual ~CIconeList();
 		int GetNbElement();
-		CIcone* GetElement(const int& numElement);
+		std::shared_ptr<CIcone> GetElement(const int& numElement);
 		int GetPhotoId(const int& numElement);
 		void EraseThumbnailList();
-		void AddElement(CIcone* icone);
+		void AddElement(std::shared_ptr<CIcone> icone);
 		wxString GetFilename(const int& numElement);
-		CIcone* FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
+		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
 		void SortById();
-		CIcone* FindElementPhotoId(const int& photoId);
-		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
+		std::shared_ptr<CIcone> FindElementPhotoId(const int& photoId);
+		std::shared_ptr<CIcone> FindElement(wxString filename, pItemStringCompFonct * _pf);
 		void SortByFilename();
 	private:
 		IconeVector pIconeList;

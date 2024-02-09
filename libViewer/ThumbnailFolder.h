@@ -30,13 +30,13 @@ namespace Regards::Viewer
 	private:
 
 
-		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
-		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompFonctWithVScroll(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
 		void SetListeFile();
 
-		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
+		std::shared_ptr<CIcone> FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
-		CIcone* FindElement(const int& xPos, const int& yPos) override;
+		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		void RenderIconeWithVScroll(wxDC* dc) override;
 

@@ -87,7 +87,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	//Variable
 	//---------------------------------------------------
 	//int interpolationMethod;
-	deleteData = true;
+
 	pThumbnailData = new CThumbnailData(other.pThumbnailData->GetFilename());
 	*pThumbnailData = *other.pThumbnailData;
 	themeIcone = other.themeIcone;
@@ -194,7 +194,6 @@ wxImage CIcone::LoadImageResource(const wxString& resourceName)
 
 CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 {
-	deleteData = true;
 	pThumbnailData = nullptr;
 	showSelected = false;
 	isChecked = false;
@@ -594,58 +593,17 @@ void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 
 CIcone::~CIcone(void)
 {
-    //printf("CIcone::~CIcone \n");
-	if (deleteData)
-	{
-        //printf("CIcone::~CIcone deleteData \n");
-        switch(pThumbnailData->GetType())
-        {
-
-            case 1:
-            {
-               // printf("CIcone::~CIcone deleteData 1\n");
-                CThumbnailDataStorage * dataStorage = (CThumbnailDataStorage *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            case 4:
-            {
-               // printf("CIcone::~CIcone deleteData 4\n");
-                CSqlFaceThumbnail * dataStorage = (CSqlFaceThumbnail *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            case 2:
-            {
-                //printf("CIcone::~CIcone deleteData 2\n");
-                CThumbnailDataSQL * dataStorage = (CThumbnailDataSQL *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            default:
-            {
-                //printf("CIcone::~CIcone deleteData default\n");
-                if (pThumbnailData != nullptr)
-                    delete pThumbnailData;
-                break;
-            }
-        }
-        
-
-		pThumbnailData = nullptr;
-	}
+    if (pThumbnailData != nullptr)
+        delete pThumbnailData;
+    pThumbnailData = nullptr;
 }
 
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CIcone::SetData(CThumbnailData* thumbnailData, const bool& deleteData)
+void CIcone::SetData(CThumbnailData* thumbnailData)
 {
 	pThumbnailData = thumbnailData;
-	this->deleteData = deleteData;
 }
 
 
@@ -675,12 +633,6 @@ CThumbnailData* CIcone::GetCopyData()
 	auto data = new CThumbnailData(pThumbnailData->GetFilename());
 	*data = *pThumbnailData;
 	return data;
-}
-
-
-bool CIcone::DataNeedToBeDelete()
-{
-	return deleteData;
 }
 
 void CIcone::CalculPosition(const wxImage& render)

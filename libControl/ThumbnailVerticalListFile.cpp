@@ -37,7 +37,7 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		thumbnailData->SetNumElement(i);
 
 
-		auto pBitmapIcone = new CIcone();
+		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -113,7 +113,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 		thumbnailData->SetNumElement(i);
 		thumbnailData->SetNumPhotoId(i);
 
-		auto pBitmapIcone = new CIcone();
+		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->ShowSelectButton(showSelectButton);
 		pBitmapIcone->SetData(thumbnailData);
@@ -172,7 +172,7 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		thumbnailData->SetNumPhotoId(photo.GetId());
 		thumbnailData->SetNumElement(i);
 
-		auto pBitmapIcone = new CIcone();
+		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

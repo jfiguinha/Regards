@@ -18,7 +18,7 @@ CThumbnailVertical::~CThumbnailVertical(void)
 = default;
 
 
-CIcone* CThumbnailVertical::FindElementWithVScroll(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailVertical::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	int x = posLargeur + xPos;
 	int y = posHauteur + yPos;
@@ -34,7 +34,7 @@ CIcone* CThumbnailVertical::FindElementWithVScroll(const int& xPos, const int& y
 	return iconeList->GetElement(numElement);
 }
 
-CIcone* CThumbnailVertical::FindElementWithoutVScroll(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailVertical::FindElementWithoutVScroll(const int& xPos, const int& yPos)
 {
 	int x = posLargeur + xPos;
 	if (x > thumbnailSizeX)
@@ -48,7 +48,7 @@ CIcone* CThumbnailVertical::FindElementWithoutVScroll(const int& xPos, const int
 	return iconeList->GetElement(numElement);
 }
 
-CIcone* CThumbnailVertical::FindElement(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailVertical::FindElement(const int& xPos, const int& yPos)
 {
 	if (noVscroll)
 		return FindElementWithoutVScroll(xPos, yPos);
@@ -76,7 +76,7 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC* deviceContext)
 
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
+		std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -120,7 +120,7 @@ void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC* deviceContext)
 
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
+		std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

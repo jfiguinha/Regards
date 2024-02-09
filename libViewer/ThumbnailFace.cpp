@@ -92,7 +92,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		}
 
 
-		auto pBitmapIcone = new CIcone();
+		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
@@ -146,10 +146,10 @@ void CThumbnailFace::init()
 #endif
 	{
 		int photo = iconeListLocal->GetPhotoId(i);
-		CIcone * ico = iconeList->FindElementPhotoId(photo);
+		std::shared_ptr<CIcone> ico = iconeList->FindElementPhotoId(photo);
 		if (ico != nullptr)
 		{
-			CIcone* iconew = iconeListLocal->GetElement(i);
+			std::shared_ptr<CIcone> iconew = iconeListLocal->GetElement(i);
 			if (iconew != nullptr)
 			{
 				iconew->SetChecked(ico->IsChecked());
@@ -183,7 +183,7 @@ void CThumbnailFace::init()
 	needToRefresh = true;
 }
 
-bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
+bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -197,7 +197,7 @@ bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWind
 	return false;
 }
 
-CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -262,7 +262,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 			for (int i = 0; i < separatorBar->listElement.size(); i++)
 			{
 				int numElement = separatorBar->listElement.at(i);
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (icone->IsChecked())
@@ -308,7 +308,7 @@ vector<int> CThumbnailFace::GetFaceSelectID()
 			for (int i = 0; i < separatorBar->listElement.size(); i++)
 			{
 				int numElement = separatorBar->listElement.at(i);
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					bool needToMove = false;
@@ -391,7 +391,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 				for (int i = 0; i < separatorBar->listElement.size(); i++)
 				{
 					int numElement = separatorBar->listElement.at(i);
-					CIcone* icone = iconeList->GetElement(numElement);
+					std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 					if (icone != nullptr)
 					{
 						bool needToMove = false;
@@ -442,7 +442,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 			for (auto numElement : separator->listElement)
 			{
-				CIcone* icone = iconeList->GetElement(numElement);
+				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (faceSeparator->GetSelected())
@@ -457,7 +457,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 	}
 }
 
-void CThumbnailFace::DeleteIcone(CIcone* numSelect)
+void CThumbnailFace::DeleteIcone(std::shared_ptr<CIcone> numSelect)
 {
 	auto face_thumbnail = static_cast<CSqlFaceThumbnail*>(numSelect->GetData());
 	if (face_thumbnail != nullptr)
@@ -475,7 +475,7 @@ void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 	}
 }
 
-bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -493,7 +493,7 @@ bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMai
 	return false;
 }
 
-CIcone* CThumbnailFace::FindElement(const int& xPos, const int& yPos)
+std::shared_ptr<CIcone> CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 {
 	if (!threadDataProcess)
 		return nullptr;

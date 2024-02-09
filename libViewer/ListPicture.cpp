@@ -241,7 +241,8 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				CThumbnailData* data = listItem[i];
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
-				auto pBitmapIcone = new CIcone();
+                
+				auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
 				pBitmapIcone->SetNumElement(data->GetNumElement());
 				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);
@@ -249,7 +250,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				pBitmapIcone->SetSizeIcone(width, height);
 				pBitmapIcone->SetWindowPos(x, y);
 				pBitmapIcone->RenderIcone(&memdc, 0, 0, false, false);
-				delete pBitmapIcone;
+
 			}
 
 			memdc.SelectObject(wxNullBitmap);

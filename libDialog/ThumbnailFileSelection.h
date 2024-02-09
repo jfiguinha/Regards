@@ -22,13 +22,13 @@ namespace Regards::Scanner
 		void ResizeThumbnail() override;
 
 	private:
-		static bool ItemCompWithVScrollFonct(int x, int y, CIcone* icone, CWindowMain* parent);
-		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompWithVScrollFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent);
 		void SetListeFile();
 		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
-		CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
+		std::shared_ptr<CIcone> FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
-		CIcone* FindElement(const int& xPos, const int& yPos) override;
+		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
 		void RenderIconeWithVScroll(wxDC* dc) override;
 		void UpdateScrollWithVScroll() override;
