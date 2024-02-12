@@ -65,12 +65,9 @@
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="RegardsPDF">
-    <Project Name="RegardsPDF_linux" Path="RegardsPDF_linux/RegardsPDF_linux.project" Active="No"/>
-  </VirtualDirectory>
+  <VirtualDirectory Name="RegardsPDF"/>
   <VirtualDirectory Name="RegardsVideoConverter">
     <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project" Active="No"/>
-    <Project Name="RegardsVideoConverter_linux" Path="RegardsVideoConverter_linux/RegardsVideoConverter_linux.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">

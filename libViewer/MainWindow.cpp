@@ -206,7 +206,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	}
 
 	UpdateFolderStatic();
-
+    CSqlPhotosWithoutThumbnail sqlPhoto;
+    sqlPhoto.GetPhotoList(&photoList, 0);
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
 
