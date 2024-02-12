@@ -279,7 +279,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -549,7 +549,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>
@@ -566,7 +566,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libControl;../libPicture;../libOpenGL;../libOpenCL;../libWindowMain;../libTheme;../libUtility;../libWindow;../libResource;../libSqlData;../libParameter;../libFiltreInterface;../libFiltre;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
