@@ -96,7 +96,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
                            const bool& exportPicture)
 	: CWindowMain("ShowBitmap", parent, id)
 {
-	transitionEnd = false;
+	transitionEnd = true;
 	tempImage = nullptr;
 	scrollbar = nullptr;
 	pictureToolbar = nullptr;
@@ -108,7 +108,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	fullscreen = false;
 	showToolbar = true;
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
-
+	firstElement = true;
 
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
@@ -463,7 +463,7 @@ void CShowElement::TransitionEnd()
 	{
 		bitmapWindow->SetBitmap(tempImage);
 		tempImage = nullptr;
-		transitionEnd = false;
+		//transitionEnd = false;
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 		//bitmapWindow->Refresh();
@@ -729,6 +729,8 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			bitmapWindow->SetBitmap(bitmap, false);
 			bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
 		}
+
+		firstElement = false;
 
 		if (!isThumbnail && numEffect != 0)
 		{
