@@ -109,7 +109,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
 extern wxImage defaultPicture;
-std::map<wxString, int> CLibPicture::ListOfMovie;
+std::map<wxString, VideoData> CLibPicture::ListOfMovie;
 
 
 #if defined(LIBBPG) && not defined(WIN32)
@@ -1686,32 +1686,35 @@ int CLibPicture::GetVideoDuration(const wxString& szFileName)
 	bool is_valid;
 	if (ListOfMovie.find(szFileName) != ListOfMovie.end())
 	{
-		duration = ListOfMovie[szFileName];
+		VideoData data = ListOfMovie[szFileName];
+		duration = data.duration;
 	}
 	else
 	{
 		CVideoPlayer videoPlayer(szFileName);
-		duration = videoPlayer.GetDuration();
-		ListOfMovie[szFileName] = duration;
+		VideoData data;
+		data.duration = videoPlayer.GetDuration();
+		data.nbFrame = videoPlayer.GetTotalFrame();
+		ListOfMovie[szFileName] = data;
 	}
 	return duration;
 }
 
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
-	int duration = 0;
-	bool is_valid;
+	VideoData data;
 	if (ListOfMovie.find(szFileName) != ListOfMovie.end())
 	{
-		duration = ListOfMovie[szFileName];
+		data = ListOfMovie[szFileName];
 	}
 	else
 	{
 		CVideoPlayer videoPlayer(szFileName);
-		duration = videoPlayer.GetDuration();
-		ListOfMovie[szFileName] = duration;
+		data.duration = videoPlayer.GetDuration();
+		data.nbFrame = videoPlayer.GetTotalFrame();
+		ListOfMovie[szFileName] = data;
 	}
-	if (duration > 0)
+	if (data.duration > 0 || data.nbFrame > 0)
 		return true;
 	return false;
 

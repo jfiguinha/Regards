@@ -28,7 +28,13 @@ namespace Regards
 #ifdef WIN32
 		class CWic;
 #endif
+		
 
+		struct VideoData
+		{
+			int nbFrame;
+			int duration;
+		};
 
 		class CLibPicture
 		{
@@ -115,7 +121,7 @@ namespace Regards
 			int svgWidth;
 			int svgHeight;
 			CRegardsConfigParam* configRegards;
-			static std::map<wxString, int> ListOfMovie;
+			static std::map<wxString, VideoData> ListOfMovie;
 
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
