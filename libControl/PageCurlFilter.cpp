@@ -101,6 +101,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 	if (initTexture || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
 	{
 		init = true;
+		initTexture = false;
 	}
 
 	{
@@ -148,7 +149,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 		}
 	}
 
-	initTexture = false;
+	
 }
 
 

@@ -23,9 +23,10 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 	int heightOutput = bitmapTemp.size().height * newRatio;
 
 
-	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+	if(initTexture || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
 	{
 		GenerateEffectTexture(nextPicture, bmpViewer);
+		initTexture = false;
 	}
 
 	if (isNext)

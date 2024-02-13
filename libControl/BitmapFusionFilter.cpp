@@ -60,6 +60,8 @@ CImageLoadingFormat* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CIm
 void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
                                               CImageLoadingFormat* bmpSecond)
 {
+	initTexture = true;
+
 	if (start)
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
 	else
@@ -92,8 +94,12 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 	const int widthOutput = bitmapTemp.GetWidth() * newRatio;
 	const int heightOutput = bitmapTemp.GetHeight() * newRatio;
 
-	//if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
-	GenerateEffectTexture(nextPicture, bmpViewer);
+	if (initTexture || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+	{
+		GenerateEffectTexture(nextPicture, bmpViewer);
+		initTexture = false;
+	}
+	
 
 	if (renderOpenGL != nullptr)
 		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor,

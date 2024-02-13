@@ -30,5 +30,6 @@ namespace Regards::Filter
 		int width;
 		int height;
 		wxRect out;
+		bool initTexture = false;
 	};
 }
