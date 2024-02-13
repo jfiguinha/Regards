@@ -1,6 +1,7 @@
 #include "header.h"
 #include "MediaInfo.h"
 #include <picture_utility.h>
+#include <wx/wfstream.h>
 #include <wx/file.h>
 
 
@@ -161,10 +162,54 @@ public:
         printf("MediaInfo OpenFile \n");
         if (wxFile::Exists(fileName))
         {
-            size_t taille = MI.Open(CConvertUtility::ConvertToStdWstring(fileName));
+            size_t taille = 0;// MI.Open(CConvertUtility::ConvertToStdWstring(fileName));
             if (taille == 0)
             {
                 MI.Open_Buffer_Init();
+                wxFile file(fileName);
+
+                __int64 filesize = file.Length();
+
+
+                unsigned char From_Buffer[1316];
+                MI.Open_Buffer_Init(filesize);
+
+                size_t From_Buffer_Size = 0;
+
+                __int64 last_seek_target, seek_target = -5;
+
+                //wxFileInputStream inStream(file);
+
+                //if (file.IsSeekable())
+                {
+                    do
+                    {
+                        if (seek_target >= 0)
+                            last_seek_target = seek_target;
+
+                        From_Buffer_Size = file.Read(From_Buffer, 1316);
+
+                        if(From_Buffer_Size <= 0)
+                            break;
+
+                        size_t result = MI.Open_Buffer_Continue(From_Buffer, From_Buffer_Size);
+                        if ((result & 0x08) == 0x08) // 8 = all done
+                            break;
+
+                        seek_target = MI.Open_Buffer_Continue_GoTo_Get();
+                        if (seek_target >= 0)
+                        {
+                            file.Seek(seek_target);
+                        }
+                        else if (seek_target >= filesize)
+                            break;
+                    } while (From_Buffer_Size > 0 && last_seek_target != seek_target);
+                }
+
+
+                MI.Open_Buffer_Finalize();
+
+                /*
                 wxFile file(fileName);
                 size_t _fileSize = 65536;
                 uint8_t* _compressedImage = new uint8_t[_fileSize];
@@ -183,11 +228,12 @@ public:
                             break;
 
                     } while (read_from_file > 0);
-
+                   
                     MI.Open_Buffer_Finalize();
                 }
 
                 delete[] _compressedImage;
+                 */
                 file.Close();
             }
             isOk = true;
