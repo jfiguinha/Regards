@@ -172,8 +172,8 @@ public:
                 unsigned char* From_Buffer = new unsigned char[4096]; //Note: you can do your own buffer
                 size_t From_Buffer_Size; //The size of the read file buffer
 
-                int64 F_Size = file.Length();
-                int64 posSeek = 0;
+                int64_t F_Size = file.Length();
+                int64_t posSeek = 0;
                 //Preparing to fill MediaInfo with a buffer
                 MI.Open_Buffer_Init(F_Size, 0);
 
@@ -189,7 +189,7 @@ public:
                         break;
 
                     //Testing if there is a MediaInfo request to go elsewhere
-                    if (MI.Open_Buffer_Continue_GoTo_Get() != (MediaInfo_int64u)-1)
+                    if (MI.Open_Buffer_Continue_GoTo_Get() != -1)
                     {
                         posSeek = MI.Open_Buffer_Continue_GoTo_Get();
                         file.Seek(posSeek);   //Position the file
