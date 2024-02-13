@@ -168,14 +168,14 @@ public:
                 MI.Open_Buffer_Init();
                 wxFile file(fileName);
 
-                __int64 filesize = file.Length();
+                int64 filesize = file.Length();
 
                 unsigned char From_Buffer[1316];
                 MI.Open_Buffer_Init(filesize);
 
                 size_t From_Buffer_Size = 0;
 
-                __int64 last_seek_target, seek_target = -5;
+                int64 last_seek_target, seek_target = -5;
 
                 do
                 {
