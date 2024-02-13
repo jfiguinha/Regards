@@ -170,7 +170,6 @@ public:
 
                 __int64 filesize = file.Length();
 
-
                 unsigned char From_Buffer[1316];
                 MI.Open_Buffer_Init(filesize);
 
