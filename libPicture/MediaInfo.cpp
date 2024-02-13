@@ -166,7 +166,7 @@ public:
             {
                 MI.Open_Buffer_Init();
                 wxFile file(fileName);
-                size_t _fileSize = 4096;
+                size_t _fileSize = 65536;
                 uint8_t* _compressedImage = new uint8_t[_fileSize];
 
                 if (file.IsOpened())
