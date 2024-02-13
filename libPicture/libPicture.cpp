@@ -1680,6 +1680,23 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
     return listThumbnail;
 }
 
+int CLibPicture::GetVideoDuration(const wxString& szFileName)
+{
+	int duration = 0;
+	bool is_valid;
+	if (ListOfMovie.find(szFileName) != ListOfMovie.end())
+	{
+		duration = ListOfMovie[szFileName];
+	}
+	else
+	{
+		CVideoPlayer videoPlayer(szFileName);
+		duration = videoPlayer.GetDuration();
+		ListOfMovie[szFileName] = duration;
+	}
+	return duration;
+}
+
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
 	int duration = 0;

@@ -1235,8 +1235,7 @@ void CMainWindow::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
-	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.
-		TestIsAnimation(threadLoadingBitmap->filename))
+	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
 	{
 
 		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);

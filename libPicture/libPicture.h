@@ -61,7 +61,7 @@ namespace Regards
 
 			CImageLoadingFormat* LoadVideoThumbnail(const wxString& szFileName, const int& percent, int& timePosition);
 
-			 
+			static int GetVideoDuration(const wxString& szFileName);
 
 			//CRegardsBitmap * LoadThumbnailFromBuffer(uint8_t * data, size_t size, const char * ext, const int &orientation);
 			bool TestIsExifCompatible(const wxString& filename);

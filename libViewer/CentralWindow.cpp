@@ -1763,7 +1763,8 @@ void CCentralWindow::SetVideo(const wxString& path)
 
 	if (thumbnailVideo->GetFilename() != filename)
 	{
-		int64_t duration = CMediaInfo::GetVideoDuration(filename); 
+		int duration = CLibPicture::GetVideoDuration(filename);
+		//int64_t duration = CMediaInfo::GetVideoDuration(filename); 
 
 		if (duration > 20)
 			thumbnailVideo->SetFile(filename, 20);
