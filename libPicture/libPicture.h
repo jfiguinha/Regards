@@ -115,6 +115,7 @@ namespace Regards
 			int svgWidth;
 			int svgHeight;
 			CRegardsConfigParam* configRegards;
+			static std::map<wxString, int> ListOfMovie;
 
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)

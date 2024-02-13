@@ -24,12 +24,12 @@ using namespace Regards::Filter;
 
 CBitmapFusionFilter::CBitmapFusionFilter(): _bmpSecond(nullptr), width(0), height(0)
 {
-	pictureNext = new GLTexture();
+
 }
 
 CBitmapFusionFilter::~CBitmapFusionFilter()
 {
-	CBitmapFusionFilter::DeleteTexture();
+
 }
 
 int CBitmapFusionFilter::GetTypeFilter()
@@ -60,8 +60,6 @@ CImageLoadingFormat* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CIm
 void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
                                               CImageLoadingFormat* bmpSecond)
 {
-	DeleteTexture();
-
 	if (start)
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
 	else
@@ -94,8 +92,8 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 	const int widthOutput = bitmapTemp.GetWidth() * newRatio;
 	const int heightOutput = bitmapTemp.GetHeight() * newRatio;
 
-	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
-		GenerateEffectTexture(nextPicture, bmpViewer);
+	//if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+	GenerateEffectTexture(nextPicture, bmpViewer);
 
 	if (renderOpenGL != nullptr)
 		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor,
@@ -110,13 +108,6 @@ void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat* bitmap)
 	cv::flip(mat, mat, 0);
 	pictureNext->SetData(mat);
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
-}
-
-void CBitmapFusionFilter::DeleteTexture()
-{
-	if (pictureNext != nullptr)
-		delete(pictureNext);
-	pictureNext = nullptr;
 }
 
 GLTexture* CBitmapFusionFilter::GetTexture(const int& numTexture)

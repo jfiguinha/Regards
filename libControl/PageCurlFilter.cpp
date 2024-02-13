@@ -21,12 +21,12 @@ using namespace Regards::OpenGL;
 CPageCurlFilter::CPageCurlFilter()
 {
 	initTexture = true;
-	pictureFirst = new GLTexture();
+
 }
 
 CPageCurlFilter::~CPageCurlFilter()
 {
-	CPageCurlFilter::DeleteTexture();
+
 }
 
 void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
@@ -71,20 +71,9 @@ int CPageCurlFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_PAGECURL;
 }
 
-void CPageCurlFilter::DeleteTexture()
-{
-	if (pictureNext != nullptr)
-		delete(pictureNext);
-	pictureNext = nullptr;
-
-	if (pictureFirst != nullptr)
-		delete(pictureFirst);
-	pictureFirst = nullptr;
-}
 
 void CPageCurlFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 {
-	DeleteTexture();
 
 	bmpViewer->StartTransitionEffect(bmpSecond, false);
 }
@@ -132,9 +121,6 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 			}
 			delete bitmapOut;
 
-			if (pictureNext == nullptr)
-				pictureNext = new GLTexture();
-
 			mat = bitmapNext.GetOpenCVPicture();
 			cv::flip(mat, mat, 0);
 			pictureNext->SetData(mat);
@@ -156,8 +142,6 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 				bitmapFirst.Flip();
 			}
 			delete bitmapOut;
-			if (pictureFirst == nullptr)
-				pictureFirst = new GLTexture();
 
 			mat = bitmapFirst.GetOpenCVPicture();
 			

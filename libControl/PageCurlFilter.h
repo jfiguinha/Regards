@@ -15,7 +15,7 @@ namespace Regards::Filter
 		int GetTypeFilter() override;
 
 		GLTexture* GetTexture(const int& numTexture) override;
-		void DeleteTexture() override;
+
 		void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
 		                         CImageLoadingFormat* bmpSecond) override;
 
@@ -33,7 +33,7 @@ namespace Regards::Filter
 		virtual void RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
 		                           const int& width, const int& height, const int& left, const int& top);
 
-		GLTexture* pictureFirst;
+	
 		bool initTexture = false;
 	};
 }

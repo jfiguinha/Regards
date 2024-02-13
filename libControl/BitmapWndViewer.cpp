@@ -353,7 +353,6 @@ CBitmapWndViewer::~CBitmapWndViewer()
 
 	if (afterEffect != nullptr)
 	{
-		afterEffect->DeleteTexture();
 		delete(afterEffect);
 		afterEffect = nullptr;
 	}
@@ -779,14 +778,6 @@ void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 	}
 }
 
-void CBitmapWndViewer::DeleteTexture()
-{
-	if (afterEffect != nullptr)
-		afterEffect->DeleteTexture();
-
-	if (renderOpenGL != nullptr)
-		renderOpenGL->DeleteTexture();
-}
 
 void CBitmapWndViewer::KeyPress(const int& key)
 {

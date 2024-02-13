@@ -1254,7 +1254,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		}
 		else if (subtilteUpdate)
 		{
-			renderBitmapOpenGL->DeleteSubtitle();
+			//renderBitmapOpenGL->DeleteSubtitle();
 			subtilteUpdate = false;
 		}
 

@@ -15,6 +15,9 @@ using namespace Regards::OpenGL;
 class IAfterEffect
 {
 public:
+
+	IAfterEffect();
+
 	virtual ~IAfterEffect()
 	{
 	};
@@ -40,10 +43,14 @@ public:
 		return false;
 	};
 	virtual GLTexture* GetTexture(const int& numTexture) = 0;
-	virtual void DeleteTexture() = 0;
 
 	virtual bool NeedToReload()
 	{
 		return true;
 	}
+
+protected:
+
+	static GLTexture* pictureNext;
+	static GLTexture* pictureFirst;
 };

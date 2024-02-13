@@ -109,6 +109,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 extern float clamp(float val, float minval, float maxval);
 
 extern wxImage defaultPicture;
+std::map<wxString, int> CLibPicture::ListOfMovie;
 
 
 #if defined(LIBBPG) && not defined(WIN32)
@@ -1681,10 +1682,18 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
+	int duration = 0;
 	bool is_valid;
-	CVideoPlayer videoPlayer(szFileName);
-	int duration = videoPlayer.GetDuration();
-	//int64 duration = CMediaInfo::GetVideoDuration(szFileName);
+	if (ListOfMovie.find(szFileName) != ListOfMovie.end())
+	{
+		duration = ListOfMovie[szFileName];
+	}
+	else
+	{
+		CVideoPlayer videoPlayer(szFileName);
+		duration = videoPlayer.GetDuration();
+		ListOfMovie[szFileName] = duration;
+	}
 	if (duration > 0)
 		return true;
 	return false;

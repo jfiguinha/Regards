@@ -25,17 +25,11 @@ namespace Regards::OpenGL
 	public:
 		CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL);
 		~CRenderVideoOpenGL();
-
-		void DeleteVideoTexture();
 		GLTexture* GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop);
-
 
 		GLTexture* GetVideoTexturePt();
 		void SetSubtitle(cv::Mat& subtitle);
 		void ShowSubtitle();
-		void DeleteSubtitle();
-
-
 		void RenderWithEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 		                      const float& iTime,
 		                      const bool& inverted);

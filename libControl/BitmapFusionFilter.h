@@ -16,7 +16,7 @@ namespace Regards::Filter
 		                 IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext,
 		                 float& ratio) override;
 		GLTexture* GetTexture(const int& numTexture) override;
-		void DeleteTexture() override;
+
 
 	protected:
 		virtual void GenerateTexture(CImageLoadingFormat* bitmap);
@@ -25,7 +25,7 @@ namespace Regards::Filter
 
 		CImageLoadingFormat* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
 		                                                        IBitmapDisplay* bmpViewer);
-		GLTexture* pictureNext;
+
 		CImageLoadingFormat* _bmpSecond;
 		int width;
 		int height;

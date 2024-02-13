@@ -46,7 +46,7 @@ namespace Regards::OpenGL
 		                    const int& top, const bool& inverted = false);
 
 		void Print(int x, int y, const char* string);
-		void DeleteTexture();
+
 		void Init(wxGLCanvas* canvas);
 		bool IsInit();
 		int GetWidth();

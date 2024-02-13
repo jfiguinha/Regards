@@ -18,7 +18,6 @@ using namespace Regards::OpenGL;
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas, bool openclOpenGLInterop)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
-	textureDisplay = nullptr;
 	width = 0;
 	height = 0;
 	textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
@@ -85,13 +84,6 @@ CRenderOpenGL::~CRenderOpenGL()
 wxGLContext* CRenderOpenGL::GetGLContext()
 {
 	return this;
-}
-
-void CRenderOpenGL::DeleteTexture()
-{
-	if (textureDisplay != nullptr)
-		delete(textureDisplay);
-	textureDisplay = nullptr;
 }
 
 void CRenderOpenGL::Print(int x, int y, const char* text)

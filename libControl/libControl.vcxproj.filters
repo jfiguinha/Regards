@@ -121,6 +121,9 @@
     <ClCompile Include="InfosSeparationBarFace.cpp">
       <Filter>SeparatorBar</Filter>
     </ClCompile>
+    <ClCompile Include="AfterEffect.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">

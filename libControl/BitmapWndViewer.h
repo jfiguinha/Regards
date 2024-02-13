@@ -79,7 +79,7 @@ namespace Regards::Control
 		bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) override;
 
 		void AfterRender() override;
-		void DeleteTexture() override;
+
 
 		void SetDessinRatio();
 		void DeterminePos(wxRect& rc, const int& nTailleAffichageWidth, const int& nTailleAffichageHeight,

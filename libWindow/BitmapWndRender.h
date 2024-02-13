@@ -230,9 +230,6 @@ namespace Regards::Window
 		virtual int GetRawBitmapHeight();
 		int GetOrientation() override;
 
-		virtual void DeleteTexture()
-		{
-		};
 
 		float CalculRatio(const int& pictureWidth, const int& pictureHeight);
 

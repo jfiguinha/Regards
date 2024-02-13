@@ -29,7 +29,13 @@ CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
 
 CRenderVideoOpenGL::~CRenderVideoOpenGL()
 {
-	DeleteVideoTexture();
+	if (textureVideo != nullptr)
+		delete(textureVideo);
+	textureVideo = nullptr;
+
+	if (textureSubtitle != nullptr)
+		delete(textureSubtitle);
+	textureSubtitle = nullptr;
 }
 
 
@@ -174,11 +180,12 @@ void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter
 
 void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 {
-	if (textureSubtitle != nullptr)
-		delete(textureSubtitle);
-	textureSubtitle = nullptr;
+	//if (textureSubtitle != nullptr)
+	//
+	//textureSubtitle = nullptr;
 
-	textureSubtitle = new GLTexture();
+	if(textureSubtitle == nullptr)
+		textureSubtitle = new GLTexture();
 	textureSubtitle->SetData(subtitle);
 }
 
@@ -200,30 +207,10 @@ void CRenderVideoOpenGL::ShowSubtitle()
 	}
 }
 
-void CRenderVideoOpenGL::DeleteSubtitle()
-{
-	if (textureSubtitle != nullptr)
-		delete(textureSubtitle);
-	textureSubtitle = nullptr;
-}
-
-void CRenderVideoOpenGL::DeleteVideoTexture()
-{
-	if (textureVideo != nullptr)
-		delete(textureVideo);
-	textureVideo = nullptr;
-
-	if (textureSubtitle != nullptr)
-		delete(textureSubtitle);
-	textureSubtitle = nullptr;
-}
-
 GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop)
 {
-	if (textureVideo != nullptr)
-		delete(textureVideo);
-
-	textureVideo = new GLTexture(width, height, isOpenCLOpenGLInterop);
+	if (textureVideo == nullptr)
+		textureVideo = new GLTexture(width, height, isOpenCLOpenGLInterop);
 
 	return textureVideo;
 }
