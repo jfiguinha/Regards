@@ -165,43 +165,42 @@ public:
             size_t taille = MI.Open(CConvertUtility::ConvertToStdWstring(fileName));
             if (taille == 0)
             {
-                MI.Open_Buffer_Init();
+                //From: preparing an example file for reading
                 wxFile file(fileName);
 
-                int64 filesize = file.Length();
+                //From: preparing a memory buffer for reading
+                unsigned char* From_Buffer = new unsigned char[4096]; //Note: you can do your own buffer
+                size_t From_Buffer_Size; //The size of the read file buffer
 
-                unsigned char From_Buffer[1316];
-                MI.Open_Buffer_Init(filesize);
+                int64 F_Size = file.Length();
+                int64 posSeek = 0;
+                //Preparing to fill MediaInfo with a buffer
+                MI.Open_Buffer_Init(F_Size, 0);
 
-                size_t From_Buffer_Size = 0;
-
-                int64 last_seek_target, seek_target = -5;
-
+                //The parsing loop
                 do
                 {
-                    if (seek_target >= 0)
-                        last_seek_target = seek_target;
+                    //Reading data somewhere, do what you want for this.
+                    From_Buffer_Size = file.Read(From_Buffer, 4096);
 
-                    From_Buffer_Size = file.Read(From_Buffer, 1316);
-
-                    if (From_Buffer_Size <= 0)
+                    //Sending the buffer to MediaInfo
+                    size_t Status = MI.Open_Buffer_Continue(From_Buffer, From_Buffer_Size);
+                    if (Status & 0x08) //Bit3=Finished
                         break;
 
-                    size_t result = MI.Open_Buffer_Continue(From_Buffer, From_Buffer_Size);
-                    if ((result & 0x08) == 0x08) // 8 = all done
-                        break;
-
-                    seek_target = MI.Open_Buffer_Continue_GoTo_Get();
-                    if (seek_target >= 0)
+                    //Testing if there is a MediaInfo request to go elsewhere
+                    if (MI.Open_Buffer_Continue_GoTo_Get() != (MediaInfo_int64u)-1)
                     {
-                        file.Seek(seek_target);
+                        posSeek = MI.Open_Buffer_Continue_GoTo_Get();
+                        file.Seek(posSeek);   //Position the file
+                        MI.Open_Buffer_Init(F_Size, file.Tell());                          //Informing MediaInfo we have seek
                     }
-                    else if (seek_target >= filesize)
-                        break;
-                } while (From_Buffer_Size > 0 && last_seek_target != seek_target);
+                } while (From_Buffer_Size > 0);
 
-                MI.Open_Buffer_Finalize();
+                //Finalizing
+                MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
 
+                delete[] From_Buffer;
                 file.Close();
 
                 isOk = true;
