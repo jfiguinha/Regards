@@ -1,4 +1,4 @@
-#include <header.h>
+﻿#include <header.h>
 #include "GLTexture.h"
 #ifdef __APPLE__
 #include <OpenCL/cl_gl.h>
@@ -268,14 +268,28 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		width = bitmapMatrix.size().width;
+		height = bitmapMatrix.size().height;
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else if(width != bitmapMatrix.size().width || height != bitmapMatrix.size().height)
+	{
+		width = bitmapMatrix.size().width;
+		height = bitmapMatrix.size().height;
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	
-	width = bitmapMatrix.size().width;
-	height = bitmapMatrix.size().height;
-	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
     
     int nError = glGetError();

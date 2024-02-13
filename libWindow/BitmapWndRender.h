@@ -331,5 +331,9 @@ namespace Regards::Window
 		wxWindow* parentRender = nullptr;
 
 		double scale_factor = 1.0f;
+
+
+		int widthOutputOld = 0;
+		int heightOutputOld = 0;
 	};
 }

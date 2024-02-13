@@ -1565,19 +1565,28 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			if (!bitmapIsLoad)
 				filtreEffet->SetBitmap(source);
 			BeforeInterpolationBitmap();
-			updateFilter = false;
+			
 		}
 
-		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-		ApplyPreviewEffect(widthOutput, heightOutput);
-
 		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
+		{
+			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
-		cv::UMat data = filtreEffet->GetUMat();
-		if (!glTexture->SetData(data))
-			isOpenCLOpenGLInterop = false;
+			ApplyPreviewEffect(widthOutput, heightOutput);
+
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+			cv::UMat data = filtreEffet->GetUMat();
+			if (!glTexture->SetData(data))
+				isOpenCLOpenGLInterop = false;
+		}
+
+
+
+		updateFilter = false;
+
+		widthOutputOld = widthOutput;
+		heightOutputOld = heightOutput;
 	}
 
 	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
