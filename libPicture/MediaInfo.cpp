@@ -64,7 +64,7 @@ class CMediaRetrieve
 public:
     CMediaRetrieve()
     {
-        MI.Open_Buffer_Init();
+       
     }
     
     ~CMediaRetrieve()
@@ -161,30 +161,35 @@ public:
         printf("MediaInfo OpenFile \n");
         if (wxFile::Exists(fileName))
         {
-            wxFile file(fileName);
-            size_t _fileSize = 4096;
-            uint8_t * _compressedImage = new uint8_t[_fileSize];
-            
-            if (file.IsOpened())
+            size_t taille = MI.Open(CConvertUtility::ConvertToStdWstring(fileName));
+            if (taille == 0)
             {
-                size_t read_from_file;
-                do
+                MI.Open_Buffer_Init();
+                wxFile file(fileName);
+                size_t _fileSize = 4096;
+                uint8_t* _compressedImage = new uint8_t[_fileSize];
+
+                if (file.IsOpened())
                 {
-                    read_from_file = file.Read(_compressedImage, _fileSize);
-                    if(read_from_file == 0)
-                        break;
+                    size_t read_from_file;
+                    do
+                    {
+                        read_from_file = file.Read(_compressedImage, _fileSize);
+                        if (read_from_file == 0)
+                            break;
 
-                    //Sending the buffer to MediaInfo
-                    if (MI.Open_Buffer_Continue(_compressedImage, read_from_file) == 0) //Test bit 1 from the result
-                        break;
+                        //Sending the buffer to MediaInfo
+                        if (MI.Open_Buffer_Continue(_compressedImage, read_from_file) == 0) //Test bit 1 from the result
+                            break;
 
-                }while (read_from_file > 0);
-                
-                MI.Open_Buffer_Finalize();
+                    } while (read_from_file > 0);
+
+                    MI.Open_Buffer_Finalize();
+                }
+
+                delete[] _compressedImage;
+                file.Close();
             }
-            
-            delete[] _compressedImage;
-            file.Close();    
             isOk = true;
         }
     }
