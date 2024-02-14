@@ -132,8 +132,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,79,6,0
- PRODUCTVERSION 2,79,6,0
+ FILEVERSION 2,79,7,0
+ PRODUCTVERSION 2,79,7,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -150,12 +150,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Figuinha"
             VALUE "FileDescription", "RegardsVideoConverter"
-            VALUE "FileVersion", "2.79.6.0"
+            VALUE "FileVersion", "2.79.7.0"
             VALUE "InternalName", "RegardsVideoConverter.exe"
             VALUE "LegalCopyright", "Copyright (C) 2014 - 2024"
             VALUE "OriginalFilename", "RegardsVideoConverter.exe"
             VALUE "ProductName", "RegardsVideoConverter"
-            VALUE "ProductVersion", "2.79.6.0"
+            VALUE "ProductVersion", "2.79.7.0"
         END
     END
     BLOCK "VarFileInfo"

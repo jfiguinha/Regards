@@ -19,11 +19,6 @@ extern "C" {
 
 #include <VideoStabilization.h>
 
-namespace Regards::Video
-{
-	class CVideoPlayer;
-}
-
 
 using namespace Regards::OpenCV;
 class CRegardsBitmap;

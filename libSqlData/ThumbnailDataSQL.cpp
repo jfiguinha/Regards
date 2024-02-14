@@ -12,7 +12,7 @@ using namespace Regards::Sqlite;
 #include <opencv2/videoio.hpp>
 #include <LoadingResource.h>
 #include <ConvertUtility.h>
-#include <VideoPlayer.h>
+#include <OpenCVVideoPlayer.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
@@ -33,7 +33,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 		{
 			nbFrame = 20;
             this->generateVideoPlayer = true;
-            videoCaptureCV = new CVideoPlayer(filename);
+            videoCaptureCV = new COpenCVVideoPlayer(filename);
 		}
 		else
 		{
