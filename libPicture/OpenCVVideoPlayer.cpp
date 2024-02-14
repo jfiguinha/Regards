@@ -138,12 +138,16 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bo
 	*capture >> frame;
 	cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
-	int orientation = GetOrientation();
-
-	if(orientation != 0 && orientation != 180)
+	if (!invertRotation)
 	{
-		cv::flip(frame, frame, -1);
+		int orientation = GetOrientation();
+
+		if (orientation != 0 && orientation != 180)
+		{
+			cv::flip(frame, frame, -1);
+		}
 	}
+
 	
 
 	return frame;

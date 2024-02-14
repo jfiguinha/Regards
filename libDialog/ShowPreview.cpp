@@ -186,7 +186,7 @@ void CShowPreview::ShowNew()
 		//cv::flip(decodeFrame, mat, 1);
 	}
 		
-	ShowPicture(mat, "Original Video");
+	ShowPicture(mat, "New Video");
 }
 
 void CShowPreview::OnShowOriginal(wxCommandEvent& event)

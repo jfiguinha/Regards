@@ -724,7 +724,7 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				bitmapwidth = bitmapIn->GetWidth();
 				bitmapheight = bitmapIn->GetHeight();
 				bitmapUpdate = true;
-
+				
 				muBitmap.lock();
 				if (source != nullptr)
 				{
@@ -739,6 +739,7 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 					ShrinkImage(false);
 			}
 			//RefreshWindow();
+			updateFilter = true;
 			parentRender->Refresh();
 		}
 	}
