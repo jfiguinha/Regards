@@ -307,9 +307,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	nbElementInIconeList = iconeList->GetNbElement();
 
     //printf("CThumbnailVideo::InitWithDefaultPicture \n");
-    oldIconeList->EraseThumbnailList();
-    delete oldIconeList;
-	//EraseThumbnailList(oldIconeList);
+    //oldIconeList->EraseThumbnailList();
+    //delete oldIconeList;
+    EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 

@@ -169,7 +169,7 @@ public:
                 wxFile file(fileName);
 
                 //From: preparing a memory buffer for reading
-                unsigned char* From_Buffer = new unsigned char[4096]; //Note: you can do your own buffer
+                uchar From_Buffer[4096]; //Note: you can do your own buffer
                 size_t From_Buffer_Size; //The size of the read file buffer
 
                 int64 F_Size = file.Length();
@@ -200,7 +200,7 @@ public:
                 //Finalizing
                 MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
 
-                delete[] From_Buffer;
+                //delete[] From_Buffer;
                 file.Close();
 
                 isOk = true;

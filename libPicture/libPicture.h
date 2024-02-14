@@ -112,6 +112,7 @@ namespace Regards
 
 			void ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap);
 
+            bool useOpenCVThumb = true;
 			int svgWidth;
 			int svgHeight;
 			CRegardsConfigParam* configRegards;

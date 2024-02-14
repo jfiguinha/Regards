@@ -345,9 +345,9 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	//EraseThumbnailList(oldIconeList);
-    oldIconeList->EraseThumbnailList();
-    delete oldIconeList;
+	EraseThumbnailList(oldIconeList);
+    //oldIconeList->EraseThumbnailList();
+    //delete oldIconeList;
 
 	threadDataProcess = true;
 	processIdle = true;

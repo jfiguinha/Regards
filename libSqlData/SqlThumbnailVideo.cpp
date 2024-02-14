@@ -6,6 +6,7 @@
 #include <wx/file.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
+#include <LoadingResource.h>
 #include <FileUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Sqlite;
@@ -115,7 +116,8 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	}
 	else
 	{
-		printf("error GetThumbnail");
+        image = CLoadingResource::LoadImageResource("IDB_PHOTO");
+		printf("GetThumbnail Error \n");
 	}
 	return image;
 }
