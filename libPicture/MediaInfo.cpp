@@ -189,7 +189,7 @@ public:
                         break;
 
                     //Testing if there is a MediaInfo request to go elsewhere
-                    if (MI.Open_Buffer_Continue_GoTo_Get() != (MediaInfo_int64u)-1)
+                    if (MI.Open_Buffer_Continue_GoTo_Get() != -1)
                     {
                         posSeek = MI.Open_Buffer_Continue_GoTo_Get();
                         file.Seek(posSeek);   //Position the file
