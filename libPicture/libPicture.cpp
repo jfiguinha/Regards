@@ -1682,7 +1682,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 
 int CLibPicture::GetVideoDuration(const wxString& szFileName)
 {
-	int duration = 0;
+	int64_t duration = 0;
 	bool is_valid;
 	if (listMovieDuration.find(szFileName) != listMovieDuration.end())
 	{
@@ -1690,7 +1690,7 @@ int CLibPicture::GetVideoDuration(const wxString& szFileName)
 	}
 	else
 	{
-		int64_t duration = CMediaInfo::GetVideoDuration(szFileName);
+		duration = CMediaInfo::GetVideoDuration(szFileName);
 		listMovieDuration[szFileName] = duration;
 	}
 	return duration;
@@ -1705,7 +1705,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	else
 	{
-		int64_t duration = CMediaInfo::GetVideoDuration(szFileName);
+		duration = CMediaInfo::GetVideoDuration(szFileName);
 		listMovieDuration[szFileName] = duration;
 	}
 	if (duration > 0)
