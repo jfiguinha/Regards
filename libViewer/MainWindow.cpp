@@ -218,6 +218,8 @@ void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 	nbProcess = 0;
 	listFile.clear();
 	processIdle = true;
+	CSqlPhotosWithoutThumbnail sqlPhoto;
+	sqlPhoto.GetPhotoList(&photoList, 0);
 }
 
 void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
@@ -1188,9 +1190,10 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
-	
+
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
+
 	int type = event.GetInt();
 	if (type == 1)
 	{
@@ -1198,14 +1201,18 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	}
 	else
 	{
+		
 		std::map<wxString, bool>::iterator it = listFile.find(localName);
 		if (it == listFile.end())
 		{
 			ProcessThumbnail(localName, type);
 			listFile[localName] = true;
 		}
+
 	}
 	delete filename;
+	processIdle = true;
+
 }
 
 void CMainWindow::ProcessThumbnail(wxString filename, int type)
@@ -1235,7 +1242,7 @@ void CMainWindow::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
-	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
+	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename) || libPicture.TestIsVideo(threadLoadingBitmap->filename))
 	{
 
 		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);

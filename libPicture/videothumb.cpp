@@ -13,6 +13,7 @@ class CVideoThumbPimpl
 public:
 	CVideoThumbPimpl(const wxString& fileName, const bool & useOpenCV)
 	{
+		this->useOpenCV = useOpenCV;
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
@@ -128,9 +129,12 @@ public:
 			calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
 			resize(image, image, cv::Size(scaledWidth, scaledHeight));
-			if(rotation == 90 || rotation == 270)
+			if(!useOpenCV)
 			{
-				cv::flip(image, image, -1);
+				if(rotation == 90 || rotation == 270)
+				{
+					cv::flip(image, image, -1);
+				}
 			}
 		}
 
@@ -149,10 +153,12 @@ public:
 	int rotation = 0;
 	bool isOk = false;
 	wxString filename = "";
+	bool useOpenCV = false;
 };
 
 CVideoThumb::CVideoThumb(const wxString& fileName, const bool& useOpenCV)
 {
+	
 	this->fileName = fileName;
 	pimpl = new CVideoThumbPimpl(fileName, useOpenCV);
 }
