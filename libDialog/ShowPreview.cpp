@@ -279,7 +279,7 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CVideoThumb video(fileTemp, false);
+			CVideoThumb video(fileTemp, true);
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 #ifndef WIN32_MFT
 			//cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);
