@@ -30,12 +30,6 @@ namespace Regards
 #endif
 		
 
-		struct VideoData
-		{
-			int nbFrame;
-			int duration;
-		};
-
 		class CLibPicture
 		{
 		public:
@@ -121,7 +115,7 @@ namespace Regards
 			int svgWidth;
 			int svgHeight;
 			CRegardsConfigParam* configRegards;
-			static std::map<wxString, VideoData> ListOfMovie;
+			static std::map<wxString, int64_t> listMovieDuration;
 
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
