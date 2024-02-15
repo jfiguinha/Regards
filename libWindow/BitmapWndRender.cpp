@@ -1566,6 +1566,8 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			if (!bitmapIsLoad)
 				filtreEffet->SetBitmap(source);
 			BeforeInterpolationBitmap();
+
+			updateFilter = true;
 			
 		}
 
