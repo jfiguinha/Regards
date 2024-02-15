@@ -1616,48 +1616,50 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			filtreEffet->SetBitmap(source);
 	}
 
-	if (updateFilter)
-	{
-		BeforeInterpolationBitmap();
-		updateFilter = false;
-	}
 
-	/*
-	if (loadBitmap || updateFilter || glTextureSrc == nullptr)
-	{
-		loadBitmap = false;
-	}
-	*/
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-		                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-		                                           themeBitmap.colorBack.Blue()));
+		if (widthOutput < 0 || heightOutput < 0)
+			return;
 
-		//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
 
-		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-		ApplyPreviewEffect(widthOutput, heightOutput);
-
-		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-
-		cv::Mat bitmap = filtreEffet->GetMat();
-
-		if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
+		if (updateFilter)
 		{
-			float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput,
-			                                                    heightOutput);
-			cv::resize(bitmap, bitmap, cv::Size(bitmap.size().width * percent, bitmap.size().height * percent));
+			BeforeInterpolationBitmap();
+			updateFilter = true;
 		}
 
+		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
+		{
+			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
-		if (glTexture != nullptr)
-			glTexture->SetData(bitmap);
-		//else
-		//	printf("CBitmapWndRender GetDisplayTexture Error \n");
+			ApplyPreviewEffect(widthOutput, heightOutput);
+
+			//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+
+			cv::Mat bitmap = filtreEffet->GetMat();
+
+			if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
+			{
+				float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput,
+					heightOutput);
+				cv::resize(bitmap, bitmap, cv::Size(bitmap.size().width * percent, bitmap.size().height * percent));
+			}
+
+
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+			if (glTexture != nullptr)
+				glTexture->SetData(bitmap);
+		}
+
 	}
+
+	updateFilter = false;
+
+	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+			themeBitmap.colorBack.Blue()));
+
 	RenderTexture(true);
 }
 
