@@ -1,5 +1,6 @@
 ﻿#include <header.h>
 #include "GLTexture.h"
+#include <epoxy/gl.h>
 #ifdef __APPLE__
 #include <OpenCL/cl_gl.h>
 #include <OpenCL/cl_gl_ext.h>
@@ -127,11 +128,17 @@ GLTexture::GLTexture(void)
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;
+	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 }
 
 GLTexture::~GLTexture(void)
 {
 	Delete();
+
+	if (pboSupported)
+	{
+		glDeleteBuffers(1, pboIds);
+	}
 
 	if (pimpl_ != nullptr)
 		delete pimpl_;
@@ -150,6 +157,7 @@ GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOp
 	height = nHeight;
 	this->format = format;
 	this->openclOpenGLInterop = openclOpenGLInterop;
+	pboSupported = false;// epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 //	Create(nWidth, nHeight, nullptr);
 }
 
@@ -254,6 +262,19 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 	return isOk;
 }
 
+void GLTexture::InitPbo(const cv::Mat& bitmapMatrix)
+{
+	int rows = bitmapMatrix.rows;
+	int cols = bitmapMatrix.cols;
+	int num_el = rows * cols;
+	int len = num_el * bitmapMatrix.elemSize1();
+
+	glGenBuffers(1, pboIds);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, len, 0, GL_STREAM_DRAW);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+}
+
 void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 {  
 	//glEnable(GL_TEXTURE_2D);
@@ -271,22 +292,80 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 
 		width = bitmapMatrix.size().width;
 		height = bitmapMatrix.size().height;
+
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		if (pboSupported)
+		{
+			InitPbo(bitmapMatrix);
+			SetDataToPBO(bitmapMatrix);
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+		}
+		else
+		{
+			
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+			
+		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else if(width != bitmapMatrix.size().width || height != bitmapMatrix.size().height)
 	{
+		if (pboSupported)
+		{
+			glDeleteBuffers(1, pboIds);
+
+			InitPbo(bitmapMatrix);
+		}
+
 		width = bitmapMatrix.size().width;
 		height = bitmapMatrix.size().height;
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+
+
+		if (pboSupported)
+		{
+
+			SetDataToPBO(bitmapMatrix);
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+			// copy pixels from PBO to texture object
+			// Use offset instead of ponter.
+			
+			
+		}
+		else
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		}
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+		if (pboSupported)
+		{
+			SetDataToPBO(bitmapMatrix);
+			// copy pixels from PBO to texture object
+			// Use offset instead of ponter.
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, 0);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+		}
+		else
+		{
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+
+		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
@@ -294,6 +373,37 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
     
     int nError = glGetError();
    // printf(" GLTexture::SetTextureData : %d \n", nError);
+}
+
+void GLTexture::SetDataToPBO(const cv::Mat& bitmapMatrix)
+{
+	int rows = bitmapMatrix.rows;
+	int cols = bitmapMatrix.cols;
+	int num_el = rows * cols;
+	int len = num_el * bitmapMatrix.elemSize1();
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
+	// map the buffer object into client's memory
+	// Note that glMapBuffer() causes sync issue.
+	// If GPU is working with this buffer, glMapBuffer() will wait(stall)
+	// for GPU to finish its job. To avoid waiting (stall), you can call
+	// first glBufferData() with NULL pointer before glMapBuffer().
+	// If you do that, the previous data in PBO will be discarded and
+	// glMapBuffer() returns a new allocated pointer immediately
+	// even if GPU is still working with the previous data.
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, len, 0, GL_STREAM_DRAW);
+	GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+	if (ptr)
+	{
+		// update data directly on the mapped buffer
+		//memcpy(ptr, bitmapMatrix.data, len);
+		for (int i = 0; i < len; i++)
+		{
+			*ptr = bitmapMatrix.data[i];
+			++ptr;
+		}
+		glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);  // release pointer to mapping buffer
+	}
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 }
 
 void GLTexture::SetData(cv::Mat& bitmap)

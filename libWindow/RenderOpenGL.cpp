@@ -20,7 +20,8 @@ CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas, bool openclOpenGLInterop)
 {
 	width = 0;
 	height = 0;
-	textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
+	this->openclOpenGLInterop = openclOpenGLInterop;
+	textureDisplay = nullptr;
 }
 
 
@@ -39,10 +40,17 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 	if (!isInit)
 	{
 		SetCurrent(*canvas);
+
+		int epoxyversion = epoxy_gl_version();
+		bool pboSupported = epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");;
+		
 		myGLVersion = 0;
 		version = glGetString(GL_VERSION);
 		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
 		isInit = true;
+
+
+		textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
 	}
 }
 

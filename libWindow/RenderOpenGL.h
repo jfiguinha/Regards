@@ -76,5 +76,6 @@ namespace Regards::OpenGL
 		vector<COpenGLShader*> listShader;
 		bool isInit = false;
 		IMouseUpdate* mouseUpdate;
+		bool openclOpenGLInterop = false;
 	};
 }

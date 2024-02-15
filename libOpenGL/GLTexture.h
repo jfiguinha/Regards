@@ -52,13 +52,16 @@ namespace Regards
 			void SetTextureData(const cv::Mat& bitmapMatrix);
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
-
+			void SetDataToPBO(const cv::Mat& bitmapMatrix);
+			void InitPbo(const cv::Mat& bitmapMatrix);
 			CTextureGLPriv* pimpl_ = nullptr;
 
 			bool openclOpenGLInterop = false;
 			int width;
 			int height;
 			GLenum format;
+			bool pboSupported = false;
+			GLuint pboIds[1];
 		};
 	}
 }
