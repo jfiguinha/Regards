@@ -1590,13 +1590,15 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		widthOutputOld = widthOutput;
 		heightOutputOld = heightOutput;
+
+		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+				themeBitmap.colorBack.Blue()));
+
+		RenderTexture(invert);
 	}
 
-	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-	                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-	                                           themeBitmap.colorBack.Blue()));
 
-	RenderTexture(invert);
 }
 
 void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
@@ -1652,15 +1654,16 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 				glTexture->SetData(bitmap);
 		}
 
+
+		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+				themeBitmap.colorBack.Blue()));
+
+		RenderTexture(true);
 	}
 
 	updateFilter = false;
 
-	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-			themeBitmap.colorBack.Blue()));
-
-	RenderTexture(true);
 }
 
 void CBitmapWndRender::OnIdle(wxIdleEvent& evt)
