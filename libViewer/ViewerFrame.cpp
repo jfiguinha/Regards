@@ -386,7 +386,9 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 
 int CViewerFrame::ShowScanner()
 {
+    wxString pathProgram  = "";
 #ifdef __APPLE__
+    /*
 	if (frameScanner != nullptr)
 	{
 		frameScanner->Show(true);
@@ -403,16 +405,18 @@ int CViewerFrame::ShowScanner()
 	{
 		frameScanner->Show(false);
 		this->Raise();
-	}
+	}*/
+    pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p RegardsPDF";
 #else
 #ifdef __WXMSW__
-	wxString pathProgram = "RegardsPDF.exe";
+	pathProgram = "RegardsPDF.exe";
 #else
-	wxString pathProgram = "./RegardsViewer -p RegardsPDF";
+	pathProgram = "./RegardsViewer -p RegardsPDF";
 #endif
-	//wxExecute(pathProgram);
-	wxString pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p RegardsPDF";
 #endif
+
+
+    wxExecute(pathProgram);
 	return 0;
 }
 
