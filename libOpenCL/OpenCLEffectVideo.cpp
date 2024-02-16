@@ -29,10 +29,12 @@ COpenCLEffectVideo::COpenCLEffectVideo()
 	openclFilter = new COpenCLFilter();
 	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
+	clExecCtx.bind();
 }
 
 void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
 {
+	clExecCtx.bind();
 	if (frame.channels() == 4)
 		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 	else
@@ -55,6 +57,7 @@ void COpenCLEffectVideo::TransfertData()
 
 cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 {
+	clExecCtx.bind();
 	cv::UMat output;
 
 	if (src)
@@ -78,6 +81,7 @@ cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 
 void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 {
+	clExecCtx.bind();
 	if (frame.channels() == 4)
 		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 	else
@@ -89,6 +93,7 @@ void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 
 cv::Mat COpenCLEffectVideo::GetMatrix(const bool& src)
 {
+	clExecCtx.bind();
 	cv::Mat output;
 
 	if (src)
@@ -120,12 +125,14 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 
 void COpenCLEffectVideo::ConvertToBgr()
 {
+	clExecCtx.bind();
 	if (!paramSrc.empty())
 		cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
 }
 
 void COpenCLEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
 {
+	clExecCtx.bind();
 	if (videoEffectParameter->rotation != 0)
 	{
 		if (videoEffectParameter->rotation == 90 || videoEffectParameter->rotation == -270)
@@ -147,7 +154,7 @@ void COpenCLEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter,
                                            COpenCVStabilization* openCVStabilization)
 {
-	//context->GetContextForOpenCV().bind();
+	clExecCtx.bind();
 	bool frameStabilized = false;
 
 	if (videoEffectParameter->stabilizeVideo)
@@ -187,8 +194,10 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
                                                   const int& flipH, const int& flipV, const int& angle,
                                                   const int& bicubic, int ratio)
 {
-	if (!cv::ocl::Context::getDefault(false).empty() && !paramSrc.empty())
+	if (!clExecCtx.empty() && !paramSrc.empty())
 	{
+		clExecCtx.bind();
+
 		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, bicubic, paramSrc, flipH, flipV, angle,
 		                                          ratio);
 		interpolatePicture = true;
@@ -197,6 +206,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 
 void COpenCLEffectVideo::AutoContrast()
 {
+	clExecCtx.bind();
 	if (interpolatePicture)
 	{
 		openclFilter->BrightnessAndContrastAuto(paramOutput, 1.0);
@@ -210,6 +220,8 @@ void COpenCLEffectVideo::AutoContrast()
 
 void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter* videoEffectParameter)
 {
+	clExecCtx.bind();
+
 	if (videoEffectParameter->ColorBoostEnable)
 	{
 		if (interpolatePicture)
@@ -299,6 +311,7 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
                                  const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
                                  const int& colorRange, const int& colorSpace)
 {
+	clExecCtx.bind();
 	cv::UMat out;
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
@@ -366,6 +379,7 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 	const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
 	const int& colorRange, const int& colorSpace)
 {
+	clExecCtx.bind();
 	cv::UMat out;
 	vector<COpenCLParameter*> vecParam;
 
@@ -438,13 +452,15 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
 {
+	clExecCtx.bind();
 	cv::cvtColor(yuv, paramSrc, cv::COLOR_RGBA2BGR);
 }
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& linesize, const int& nWidth, const int& nHeight)
 {
+	clExecCtx.bind();
 	cv::UMat out;
-
+	clExecCtx.bind();
 	if (nWidth != linesize)
 	{
 		cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR_NV12);
@@ -463,6 +479,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
                                     const int& colorSpace)
 {
 	cv::UMat out;
+	clExecCtx.bind();
 
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
@@ -533,6 +550,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,
                                     const int& nWidth, const int& nHeight)
 {
+	clExecCtx.bind();
 	cv::UMat u_resized, v_resized;
 	cv::resize(u, u_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
 	cv::resize(v, v_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
@@ -559,6 +577,7 @@ void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv
 
 void COpenCLEffectVideo::GetYUV420P(uint8_t* & y, uint8_t* & u, uint8_t* & v, const int& nWidth, const int& nHeight)
 {
+	clExecCtx.bind();
 	cv::Mat _y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, y);
 	cv::Mat _u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, u);
 	cv::Mat _v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, v);
@@ -588,6 +607,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t* & y, uint8_t* & u, uint8_t* & v, co
 
 void COpenCLEffectVideo::FlipVertical()
 {
+
 	if (interpolatePicture)
 	{
 		openclFilter->Flip("FlipVertical", paramOutput);
@@ -641,6 +661,7 @@ uint8_t* COpenCLEffectVideo::HQDn3D(uint8_t * y, int width, int height, const do
 // LumSpac, temporalLumaDefault, temporalSpatialLumaDefault
 void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
+	clExecCtx.bind();
 	try
 	{
 		cv::UMat ycbcr;

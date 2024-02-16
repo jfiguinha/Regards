@@ -125,7 +125,7 @@ void CTextureGLPriv::DeleteTextureInterop()
 
 GLTexture::GLTexture(void)
 {
-	m_nTextureID = 0;
+	m_nTextureID = -1;
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;

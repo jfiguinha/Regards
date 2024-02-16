@@ -85,6 +85,7 @@ bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 
 UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 {
+	clExecCtx.bind();
 	isUsed = true;
 	UMat outputImage;
 
@@ -176,6 +177,7 @@ COpenCLFilter::~COpenCLFilter()
 
 void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat dest;
@@ -194,6 +196,7 @@ void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int
 void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
                             const int& searchWindowSize)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat ycbcr;
@@ -230,6 +233,7 @@ void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, co
 
 void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat ycbcr;
@@ -265,6 +269,7 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 
 void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPercent)
 {
+	clExecCtx.bind();
 	try
 	{
 		int histSize = 256;
@@ -343,6 +348,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 //----------------------------------------------------------------------------
 void COpenCLFilter::Fusion(UMat& inputData, const UMat& secondPictureData, const float& pourcentage)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat dst;
@@ -361,6 +367,7 @@ void COpenCLFilter::Fusion(UMat& inputData, const UMat& secondPictureData, const
 
 void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat cvDestBgra;
@@ -427,6 +434,7 @@ void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		float coeff = static_cast<float>(intensity) / 100.0f;
@@ -451,6 +459,7 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, 
 
 void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat out;
@@ -468,6 +477,7 @@ void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue,
 
 void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat dest;
@@ -521,6 +531,7 @@ void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 
 void COpenCLFilter::Blur(const int& radius, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		blur(inputData, inputData, Size(radius, radius));
@@ -535,6 +546,7 @@ void COpenCLFilter::Blur(const int& radius, UMat& inputData)
 
 void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		cv::GaussianBlur(inputData, inputData, Size(boxSize, boxSize), radius);
@@ -551,6 +563,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
                                       const int& size,
                                       UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDestBgra;
 	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
@@ -622,6 +635,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 
 void COpenCLFilter::Emboss(UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		// Construct kernel (all entries initialized to 0)
@@ -644,6 +658,7 @@ void COpenCLFilter::Emboss(UMat& inputData)
 
 void COpenCLFilter::Sharpen(UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		// Construct kernel (all entries initialized to 0)
@@ -672,6 +687,7 @@ void COpenCLFilter::Sharpen(UMat& inputData)
 
 void COpenCLFilter::SharpenStrong(UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		Mat kernel(3, 3, CV_32F, Scalar(0));
@@ -700,6 +716,7 @@ void COpenCLFilter::SharpenStrong(UMat& inputData)
 
 void COpenCLFilter::Edge(UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		UMat dest;
@@ -722,6 +739,7 @@ void COpenCLFilter::Edge(UMat& inputData)
 
 void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxString& functionName, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDestBgra;
 	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
@@ -760,6 +778,7 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 
 void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		if (functionName == "Erode")
@@ -777,6 +796,7 @@ void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
 
 void COpenCLFilter::Posterize(const float& level, const float& gamma, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDestBgra;
 	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
@@ -822,6 +842,7 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, UMat& inpu
 
 void COpenCLFilter::LensDistortion(const float& strength, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDestBgra;
 	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
@@ -870,6 +891,7 @@ void COpenCLFilter::LensDistortion(const float& strength, UMat& inputData)
 
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 {
+	clExecCtx.bind();
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(u.handle(ACCESS_READ));
 
@@ -912,6 +934,7 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 
 void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDest;
 	UMat cvDestBgra;
@@ -958,6 +981,7 @@ void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 
 void COpenCLFilter::Median(UMat& inputData)
 {
+	clExecCtx.bind();
 	try
 	{
 		medianBlur(inputData, inputData, 3);
@@ -972,6 +996,7 @@ void COpenCLFilter::Median(UMat& inputData)
 
 void COpenCLFilter::Noise(UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDestBgra;
 	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
@@ -1011,6 +1036,7 @@ void COpenCLFilter::Noise(UMat& inputData)
 
 void COpenCLFilter::Flip(const wxString& functionName, UMat& inputData)
 {
+	clExecCtx.bind();
 	if (functionName == "FlipVertical")
 	{
 		flip(inputData, inputData, 0);
@@ -1023,6 +1049,7 @@ void COpenCLFilter::Flip(const wxString& functionName, UMat& inputData)
 
 void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat dest;
 	UMat cvDest;
 	UMat cvDestBgra;
@@ -1074,6 +1101,7 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputDa
 
 void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat cvDest;
 	try
 	{
@@ -1091,6 +1119,7 @@ void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double
 
 void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat cvDest;
 	try
 	{
@@ -1133,6 +1162,7 @@ void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 uint8_t * COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
 	Mat& inputData)
 {
+	clExecCtx.bind();
 	uint8_t* dataOut = nullptr;
 	if (hq3d == nullptr)
 		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
@@ -1157,6 +1187,7 @@ uint8_t * COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLum
 void COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault,
                            UMat& inputData)
 {
+	clExecCtx.bind();
 	if (hq3d == nullptr)
 		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 	else if (oldLevelDenoise != LumSpac || inputData.cols != oldwidthDenoise || inputData.rows != oldheightDenoise)
@@ -1203,6 +1234,7 @@ void COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefa
 void COpenCLFilter::Rotate(const wxString& functionName, const int& widthOut, const int& heightOut, const double& angle,
                            UMat& inputData)
 {
+	clExecCtx.bind();
 	UMat cvDest;
 	// get rotation matrix for rotating the image around its center in pixel coordinates
 	const Point2f center((inputData.cols - 1) / 2.0, (inputData.rows - 1) / 2.0);
@@ -1289,6 +1321,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
                                       vector<COpenCLParameter*>& vecParam, const int& width, const int& height,
                                       cl_mem& outBuffer)
 {
+	clExecCtx.bind();
 	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
 	ocl::ProgramSource programSource(kernelSource);
 	ocl::Context context = clExecCtx.getContext();//ocl::Context::getDefault(false);
@@ -1335,6 +1368,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
                                       vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
+	clExecCtx.bind();
 	UMat paramSrc;
 
 
@@ -1353,6 +1387,7 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
                                   UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
+	clExecCtx.bind();
 	UMat cvImage;
 	//inputData.copyTo(cvImage);
 

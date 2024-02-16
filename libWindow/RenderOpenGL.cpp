@@ -407,22 +407,15 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
             
 			if (regardsParam->GetIsOpenCLSupport())
 			{
-				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
+				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 				{
                      printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
-						if (testOpenCLOpenGLInterop && regardsParam->GetIsOpenCLOpenGLInteropSupport())
-						{
-							initializeContextFromGL();
-							isOpenCLInitialized = true;
-							openclOpenGLInterop = true;
-							cv::ocl::Device(clExecCtx.getContext().device(0));
-						}
-						else
-						{
-							CreateDefaultOpenCLContext();
-						}
+						initializeContextFromGL();
+						isOpenCLInitialized = true;
+						openclOpenGLInterop = true;
+						cv::ocl::Device(clExecCtx.getContext().device(0));
 					}
 					catch (cv::Exception& e)
 					{
