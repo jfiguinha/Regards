@@ -34,10 +34,11 @@ namespace Regards::OpenGL
 	class CRenderOpenGL : public wxGLContext
 	{
 	public:
-		CRenderOpenGL(wxGLCanvas* canvas, bool openclOpenGLInterop);
+		CRenderOpenGL(wxGLCanvas* canvas);
 		~CRenderOpenGL() override;
 		GLTexture* GetGLTexture();
 		wxGLContext* GetGLContext();
+		bool GetOpenGLInterop();
 		void SetData(cv::Mat& bitmap);
 		bool SetData(cv::UMat& bitmap);
 		void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
@@ -67,6 +68,8 @@ namespace Regards::OpenGL
 		GLTexture* GetTextureDisplay();
 
 	protected:
+
+		void initializeContextFromGL();
 		GLTexture* textureDisplay;
 		int width;
 		int height;

@@ -295,7 +295,7 @@ namespace Regards::Window
 		CRenderBitmapOpenGL* renderBitmapOpenGL = nullptr;
 		//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
 		GLTexture* glTexture = nullptr;
-		GLTexture* glTextureSrc = nullptr;
+		//GLTexture* glTextureSrc = nullptr;
 
 		CRenderOpenGL* renderOpenGL = nullptr;
 		//Preview Parameter
