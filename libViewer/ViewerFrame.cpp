@@ -411,7 +411,7 @@ int CViewerFrame::ShowScanner()
 	wxString pathProgram = "./RegardsViewer -p RegardsPDF";
 #endif
 	//wxExecute(pathProgram);
-	wxString pathProgram = "./RegardsViewer -p RegardsPDF";
+	wxString pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p RegardsPDF";
 #endif
 	return 0;
 }
