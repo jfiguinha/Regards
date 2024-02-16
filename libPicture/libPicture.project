@@ -31,6 +31,7 @@
     <File Name="RegardsPDF.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
+    <File Name="aspectratio.h"/>
     <File Name="OpenCVVideoPlayer.h"/>
     <File Name="OpenCVVideoPlayer.cpp"/>
     <File Name="VideoPlayer.cpp"/>

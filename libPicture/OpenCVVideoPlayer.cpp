@@ -24,6 +24,17 @@ COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(
 	*/
 }
 
+AspectRatio COpenCVVideoPlayer::GetAspectRatio()
+{
+    AspectRatio aspectRatio;
+  	if (isOpen)
+    {
+        aspectRatio.num = capture->get(CAP_PROP_SAR_NUM);
+        aspectRatio.den = capture->get(CAP_PROP_SAR_DEN);  
+    }
+    return aspectRatio;
+}
+
 COpenCVVideoPlayer::~COpenCVVideoPlayer()
 {
 	delete capture;

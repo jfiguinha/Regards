@@ -36,7 +36,7 @@ namespace Regards
 
 			int GetOrientation() override;
 			cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool & invertRotation = true) override;
-			
+			 AspectRatio GetAspectRatio() override;
 
 		private:
 			CVideoPlayerPimpl* pimpl;

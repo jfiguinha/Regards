@@ -291,6 +291,14 @@ public:
 
 		return 1;
 	}
+    
+    AspectRatio GetAspectRatio()
+    {
+        AspectRatio aspectRatio;
+        aspectRatio.num = decoder_ctx->sample_aspect_ratio.num;
+		aspectRatio.den = decoder_ctx->sample_aspect_ratio.den;
+        return aspectRatio;
+    }
 
 	int GetDuration()
 	{
@@ -396,6 +404,16 @@ void CVideoPlayer::SeekToBegin()
 	int ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
 	*/
 
+}
+
+AspectRatio CVideoPlayer::GetAspectRatio()
+{
+    AspectRatio aspectRatio;
+  	if (IsOk())
+    {
+        pimpl->GetAspectRatio();
+    }
+    return aspectRatio;
 }
 
 void CVideoPlayer::SkipFrame(const int& nbFrame)

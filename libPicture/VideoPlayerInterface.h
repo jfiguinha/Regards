@@ -1,11 +1,12 @@
 #pragma once
-#pragma once
+#include "aspectratio.h"
 
 namespace cv
 {
 	class Mat;
 	class VideoCapture;
 }
+
 
 namespace Regards
 {
@@ -23,6 +24,8 @@ namespace Regards
 			{
 				
 			};
+            
+            virtual AspectRatio GetAspectRatio() = 0;
 
 			virtual bool isOpened() = 0;
 			virtual void SeekToBegin() = 0;

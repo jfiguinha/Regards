@@ -94,6 +94,11 @@ public:
 			}
 		}
 	}
+    
+    AspectRatio GetAspectRatio()
+    {
+        videoThumbnailer->GetAspectRatio();
+    }
 
 	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
 	{
@@ -171,6 +176,11 @@ bool CVideoThumb::isOk()
 CVideoThumb::~CVideoThumb()
 {
 	delete pimpl;
+}
+
+AspectRatio CVideoThumb::GetAspectRatio()
+{
+    return pimpl->GetAspectRatio();
 }
 
 int CVideoThumb::GetOrientation()

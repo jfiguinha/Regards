@@ -28,6 +28,8 @@ namespace Regards
 			int GetTotalFrame() override;
 			int GetWidth() override;
 			int GetHeight() override; 
+            
+            AspectRatio GetAspectRatio() override;
 
 			bool IsOk() override;
 
