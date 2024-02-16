@@ -25,6 +25,7 @@
 #include <MediaInfo.h>
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
+#include <aspectratio.h>
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
@@ -206,6 +207,8 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
 	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
+
+
 
 void CVideoControlSoft::DiaporamaMode(const bool& value)
 {
@@ -1076,6 +1079,24 @@ int CVideoControlSoft::Play(const wxString& movie)
 
         if (playStartTimer->IsRunning())
             playStartTimer->Stop();
+        
+        /*
+        CVideoThumb videoThumb(movie, true);
+        AspectRatio aspectRatio = videoThumb.GetAspectRatio();
+        
+            
+        printf("video_aspect_ratio %d %d \n",aspectRatio.num, aspectRatio.den);
+        /*
+        for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
+        {
+             printf("video_aspect_ratio %f \n",videoEffectParameter.tabZoom[i]);
+            if(video_aspect_ratio < videoEffectParameter.tabZoom[i])
+            {
+                videoEffectParameter.zoomSelect = i - 1;
+                break;
+            }
+        }
+        */
         startVideo = true;
         stopVideo = false;
         videoStartRender = false;
@@ -1116,6 +1137,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 	if (startVideo)
 	{
 		ffmfc->Play();
+        
 		pause = false;
 		videoEnd = false;
 		videoStart = true;
@@ -1705,6 +1727,19 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		muRefresh.lock();
 		needToRefresh = false;
 		muRefresh.unlock();
+        
+        /*
+        printf("video_aspect_ratio %f \n",video_aspect_ratio);
+        for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
+        {
+             printf("video_aspect_ratio %f \n",videoEffectParameter.tabZoom[i]);
+            if(video_aspect_ratio == videoEffectParameter.tabZoom[i])
+            {
+                videoEffectParameter.zoomSelect = i;
+                break;
+            }
+        }
+        */
 
 		if (!isffmpegDecode)
 		{
