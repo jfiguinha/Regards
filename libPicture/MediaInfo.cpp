@@ -269,17 +269,15 @@ public:
         wstring To_Display;
         To_Display = MI.Get(Stream_Video, 0, __T("Display_aspect_ratio"), Info_Text, Info_Name).c_str();
         if (To_Display == "")
-        {
+        {          
             vector<CMetadata> vectorMeta = GetMetadata();
-            auto val = std::find(vectorMeta.begin(), vectorMeta.end(), [](CMetadata meta)
-                {
-                    return (meta.key == "Video.Display aspect ratio");
-
-                });
-
-            if (val != vectorMeta.end()) 
+            for (CMetadata meta : vectorMeta)
             {
-                To_Display = val->value;
+                if (meta.key == "Video.Display aspect ratio")
+                {
+                    To_Display = meta.value;
+                    break;
+                }
             }
         }
        
