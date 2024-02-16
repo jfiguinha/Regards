@@ -130,6 +130,7 @@ GLTexture::GLTexture(void)
 	height = 0;
 	format = GL_BGRA_EXT;
 	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
+	openclOpenGLInterop = false;
 }
 
 GLTexture::~GLTexture(void)
@@ -210,7 +211,12 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 	if (pimpl_ == nullptr && openclOpenGLInterop)
 		pimpl_ = new CTextureGLPriv();
 
+	if (bitmap.size().width != width || height != bitmap.size().height)
+	{
+		Delete();
+		m_nTextureID = -1;
 
+	}
 
 	if (m_nTextureID == -1)
 	{
@@ -229,16 +235,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	else if (bitmap.size().width != width || height != bitmap.size().height)
-	{
-		width = bitmap.size().width;
-		height = bitmap.size().height;
 
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-	}
 
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
@@ -508,20 +505,25 @@ void GLTexture::Delete()
 {
 	checkErrors("GLTexture::Delete()");
 
-	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-
-	if (pimpl_ && openclOpenGLInterop)
+	if (m_nTextureID != -1)
 	{
-		pimpl_->DeleteTextureInterop();
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+
+		if (pimpl_ && openclOpenGLInterop)
+		{
+			pimpl_->DeleteTextureInterop();
+		}
+
+		if (0 != m_nTextureID)
+		{
+			glDeleteTextures(1, &m_nTextureID);
+			m_nTextureID = 0;
+		}
+		glBindTexture(GL_TEXTURE_2D, 0);
+		checkErrors("GLTexture::Delete()");
 	}
 
-	if (0 != m_nTextureID)
-	{
-		glDeleteTextures(1, &m_nTextureID);
-		m_nTextureID = 0;
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	checkErrors("GLTexture::Delete()");
+
 }
 
 void GLTexture::Enable()
