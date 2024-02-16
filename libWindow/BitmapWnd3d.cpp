@@ -193,9 +193,10 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 		openclOpenGLInterop = renderOpenGL->GetOpenGLInterop();
 		bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 	}
-	else
-		clExecCtx.bind();
-	//renderOpenGL->SetCurrent(*this);
+	//else
+	//	clExecCtx.bind();
+	
+    renderOpenGL->SetCurrent(*this);
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
 }

@@ -329,7 +329,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
-
+    /*
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
 	{
 		if (!ocl::haveOpenCL())
@@ -384,7 +384,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		}
 	}
-
+    */
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

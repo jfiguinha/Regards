@@ -61,10 +61,10 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
-	//printf("convertToGLTexture2D \n");
+	printf("convertToGLTexture2D \n");
 	bool isOk = true;
 
-	//printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
+	printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
 	cl_int status = 0;
 
 	if (isOpenCLCompatible)
@@ -206,6 +206,9 @@ void GLTexture::DeleteInteropTexture()
 
 bool GLTexture::SetData(cv::UMat& bitmap)
 {   
+    
+    printf("GLTexture::SetData isOpenCLOpenGLInterop \n");
+    
 	bool isOk = false;
 
 	if (pimpl_ == nullptr && openclOpenGLInterop)

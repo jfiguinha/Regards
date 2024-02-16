@@ -42,13 +42,15 @@
     <File Name="WindowUtility.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Render">
-    <File Name="GLcontext.h"/>
-    <File Name="RenderVideoOpenGL.h"/>
-    <File Name="RenderVideoOpenGL.cpp"/>
-    <File Name="RenderOpenGL.h"/>
-    <File Name="RenderOpenGL.cpp"/>
-    <File Name="RenderBitmapOpenGL.h"/>
-    <File Name="RenderBitmapOpenGL.cpp"/>
+    <VirtualDirectory Name="OpenGLRender">
+      <File Name="RenderVideoOpenGL.cpp"/>
+      <File Name="RenderOpenGL.h"/>
+      <File Name="RenderOpenGL.cpp"/>
+      <File Name="RenderBitmapOpenGL.h"/>
+      <File Name="RenderBitmapOpenGL.cpp"/>
+      <File Name="RenderVideoOpenGL.h"/>
+      <File Name="GLcontext.h"/>
+    </VirtualDirectory>
     <File Name="IBitmapRenderInterface.h"/>
     <File Name="BitmapWndRender.h"/>
     <File Name="BitmapWndRender.cpp"/>

@@ -31,8 +31,8 @@ CRegardsConfigParam::CRegardsConfigParam()
 	nbGpsFileByMinute = 60;
 	numLanguage = 1;
 	numInterpolation = 0;
-	openCLSupport = 0;
-	openCLOpenGLInteropSupport = 0;
+	openCLSupport = 1;
+	openCLOpenGLInteropSupport = 1;
 	detectOrientation = 0;
 	autoContrast = 0;
 	videoDecoderHardware = "none";

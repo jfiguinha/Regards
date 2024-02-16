@@ -10,7 +10,19 @@
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
+#endif`
+
+#ifdef __APPLE__
+#include <OpenCL/cl_gl.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenCL/cl_gl_ext.h>
+#elif defined(__WXGTK__)
+#if wxUSE_GLCANVAS_EGL == 1
+#include <EGL/egl.h>
 #endif
+#endif
+
+
 #include <utility.h>
 
 #include <ParamInit.h>
@@ -152,7 +164,7 @@ void CRenderOpenGL::initializeContextFromGL()
 {
 #if defined(__APPLE__) || defined(__MACOSX)
 
-
+    printf("initializeContextFromGL 1\n");
 	cl_uint numPlatforms;
 	cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
 	if (status != CL_SUCCESS)
@@ -166,7 +178,7 @@ void CRenderOpenGL::initializeContextFromGL()
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
 
 	// TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
-
+     printf("initializeContextFromGL 2\n");
 	int found = -1;
 	cl_device_id device = NULL;
 	device = GetListOfDevice(platforms[0], CL_DEVICE_TYPE_GPU, found);
@@ -179,6 +191,8 @@ void CRenderOpenGL::initializeContextFromGL()
 	// get OpenGL share group
 	CGLContextObj cgl_current_context = CGLGetCurrentContext();
 	CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_context);
+    
+     printf("initializeContextFromGL 3\n");
 
 	cl_context_properties properties[] = {
 		CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
@@ -193,6 +207,8 @@ void CRenderOpenGL::initializeContextFromGL()
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
 	}
 
+     printf("initializeContextFromGL 4\n");
+
 	cl_platform_id platform = platforms[0];
 	std::string platformName = cv::ocl::PlatformInfo(&platform).name();
 
@@ -200,8 +216,8 @@ void CRenderOpenGL::initializeContextFromGL()
 	clReleaseDevice(device);
 	clReleaseContext(context);
 	clExecCtx.bind();
-	return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
 
+     printf("initializeContextFromGL 5\n");
 #else
 
 	cl_uint numPlatforms;
@@ -356,14 +372,18 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		int epoxyversion = epoxy_gl_version();
 		bool pboSupported = epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 
+        printf("CRenderOpenGL::Init \n");
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if (regardsParam != nullptr)
 		{
+             printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
+            
 			if (regardsParam->GetIsOpenCLSupport() && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 			{
 				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
 				{
+                     printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
 						initializeContextFromGL();
@@ -395,9 +415,13 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 							cv::ocl::Device(context.device(0));
 						}
 
-						
-					}
 
+					}
+                    
+                      if (!isOpenCLInitialized)
+                      {
+                            regardsParam->SetIsOpenCLSupport(false);
+                      }
 					regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 				}
 			}
