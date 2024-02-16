@@ -605,9 +605,9 @@ void CPictureMetadataExiv::ReadPicture(bool& hasGps, bool& hasDataTime, wxString
 	}
 }
 
-vector<CMetadata> CPictureMetadataExiv::ReadExif(Exiv2::ExifData& exifData)
+tbb::concurrent_vector<CMetadata> CPictureMetadataExiv::ReadExif(Exiv2::ExifData& exifData)
 {
-	vector<CMetadata> metadataList;
+	tbb::concurrent_vector<CMetadata> metadataList;
 	//int item = 0;
 	//int index = 0;
 	wxString exifinfos;
@@ -645,9 +645,9 @@ vector<CMetadata> CPictureMetadataExiv::ReadExif(Exiv2::ExifData& exifData)
 	return metadataList;
 }
 
-vector<CMetadata> CPictureMetadataExiv::ReadXmp(Exiv2::XmpData& xmpData)
+tbb::concurrent_vector<CMetadata> CPictureMetadataExiv::ReadXmp(Exiv2::XmpData& xmpData)
 {
-	vector<CMetadata> metadataList;
+	tbb::concurrent_vector<CMetadata> metadataList;
 	wxString altitude;
 	wxString exifinfos;
 	wxString informations;
@@ -678,9 +678,9 @@ vector<CMetadata> CPictureMetadataExiv::ReadXmp(Exiv2::XmpData& xmpData)
 	return metadataList;
 }
 
-vector<CMetadata> CPictureMetadataExiv::ReadIpct(Exiv2::IptcData& ipctData)
+tbb::concurrent_vector<CMetadata> CPictureMetadataExiv::ReadIpct(Exiv2::IptcData& ipctData)
 {
-	vector<CMetadata> metadataList;
+	tbb::concurrent_vector<CMetadata> metadataList;
 	//int item = 0;
 	//int index = 0;
 	wxString exifinfos;
@@ -718,9 +718,9 @@ vector<CMetadata> CPictureMetadataExiv::ReadIpct(Exiv2::IptcData& ipctData)
 	return metadataList;
 }
 
-vector<CMetadata> CPictureMetadataExiv::GetMetadata()
+tbb::concurrent_vector<CMetadata> CPictureMetadataExiv::GetMetadata()
 {
-	vector<CMetadata> metadataList;
+	tbb::concurrent_vector<CMetadata> metadataList;
 	if (isExif && exif.get() != nullptr)
 	{
 		try

@@ -232,18 +232,22 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 	//exiv2::CMetadataExiv2 pictureMetadata(filename);
 	if (libPicture.TestIsVideo(filename))
 	{
-		vector<CMetadata> listMeta = CMediaInfo::ReadMetadata(filename);
-		for (CMetadata metadata : listMeta)
+		tbb::concurrent_vector<CMetadata> vectorMeta = CMediaInfo::ReadMetadata(filename);
 		{
-			if (metadata.key == "General.com.apple.quicktime.creationdate")
+			tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.creationdate"; });
+			if (it != vectorMeta.end())
 			{
 				//Create Date
 				hasDataTime = true;
-				dateTimeInfos = metadata.value;
+				dateTimeInfos = it->value;
 			}
-			if (metadata.key == "General.com.apple.quicktime.location.ISO6709")
+
+		}
+		{
+			tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.location.ISO6709"; });
+			if (it != vectorMeta.end())
 			{
-				wxString exifinfos = metadata.value;
+				wxString exifinfos = it->value;
 				hasGps = true;
 				wxString listValue[3];
 				wchar_t listRef[3];

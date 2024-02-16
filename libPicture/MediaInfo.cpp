@@ -112,11 +112,11 @@ public:
     }
 
 
-    vector<CMetadata> SplitByLine(const wstring& value)
+    tbb::concurrent_vector<CMetadata> SplitByLine(const wstring& value)
     {
         wstring categorie;
         wstring data = value;
-        vector<CMetadata> listOfLine;
+        tbb::concurrent_vector<CMetadata> listOfLine;
         size_t position;
         do
         {
@@ -208,7 +208,7 @@ public:
         }
     }
         
-    vector<CMetadata> GetMetadata()
+    tbb::concurrent_vector<CMetadata> GetMetadata()
     {
         std:wstring value = MI.Inform();
         return SplitByLine(value);       
@@ -270,7 +270,13 @@ public:
         To_Display = MI.Get(Stream_Video, 0, __T("Display_aspect_ratio"), Info_Text, Info_Name).c_str();
         if (To_Display == "")
         {          
-            vector<CMetadata> vectorMeta = GetMetadata();
+            tbb::concurrent_vector<CMetadata> vectorMeta = GetMetadata();
+            tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "Video.Display aspect ratio"; });
+            if (it != vectorMeta.end())
+            {
+                To_Display = it->value;
+            }
+            /*
             for (CMetadata meta : vectorMeta)
             {
                 if (meta.key == "Video.Display aspect ratio")
@@ -278,7 +284,7 @@ public:
                     To_Display = meta.value;
                     break;
                 }
-            }
+            }*/
         }
        
 
@@ -338,9 +344,9 @@ public:
 static map<wxString, CMediaRetrieve*> movieList;
 static mutex muMovie;
 
-vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
+tbb::concurrent_vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 {
-    vector<CMetadata> metadata;
+    tbb::concurrent_vector<CMetadata> metadata;
     bool isFind = false;
     std::map<wxString, CMediaRetrieve*>::iterator it;
     muMovie.lock();

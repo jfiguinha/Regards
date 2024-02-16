@@ -14,7 +14,7 @@
 class CMediaInfo
 {
 public:
-	static vector<CMetadata> ReadMetadata(const wxString& filename);
+	static  tbb::concurrent_vector<CMetadata> ReadMetadata(const wxString& filename);
 	static int GetVideoRotation(const wxString& filename);
 	static wxString GetColorRange(const wxString& filename);
 	static wxString GetColorSpace(const wxString& filename);

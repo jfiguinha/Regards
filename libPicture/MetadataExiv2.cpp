@@ -192,7 +192,7 @@ void CMetadataExiv2::ReadPicture(bool& hasGps, bool& hasDataTime, wxString& date
 		metaExiv->ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitude, longitude);
 }
 
-vector<CMetadata> CMetadataExiv2::GetMetadata()
+tbb::concurrent_vector<CMetadata> CMetadataExiv2::GetMetadata()
 {
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(filename))
@@ -203,7 +203,7 @@ vector<CMetadata> CMetadataExiv2::GetMetadata()
 	if (metaExiv != nullptr)
 		return metaExiv->GetMetadata();
 
-	vector<CMetadata> meta;
+	tbb::concurrent_vector<CMetadata> meta;
 	return meta;
 }
 

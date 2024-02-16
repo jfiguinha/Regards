@@ -21,7 +21,7 @@ namespace Regards
 			bool HasExif();
 			bool HasThumbnail();
 			int GetOrientation();
-			vector<CMetadata> GetMetadata();
+			tbb::concurrent_vector<CMetadata> GetMetadata();
 			bool CopyMetadata(const wxString& output);
 			wxImage DecodeThumbnail(wxString& extension, int& orientation);
 			void SetDateTime(const wxString& dateTime);
@@ -40,9 +40,9 @@ namespace Regards
 			void AddAsciiValue(wxString key, wxString value, Exiv2::ExifData& exifData);
 			void AddRationalValue(wxString keyName, wxString value, Exiv2::ExifData& exifData);
 			wxString GetQuickTimeDate(int64_t dateQuicktime);
-			vector<CMetadata> ReadExif(Exiv2::ExifData& exifData);
-			vector<CMetadata> ReadIpct(Exiv2::IptcData& ipctData);
-			vector<CMetadata> ReadXmp(Exiv2::XmpData& xmpData);
+			tbb::concurrent_vector<CMetadata> ReadExif(Exiv2::ExifData& exifData);
+			tbb::concurrent_vector<CMetadata> ReadIpct(Exiv2::IptcData& ipctData);
+			tbb::concurrent_vector<CMetadata> ReadXmp(Exiv2::XmpData& xmpData);
 			Exiv2::Image::UniquePtr exif;
 			bool isExif;
 			wxString filename;
