@@ -22,14 +22,13 @@
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
-cv::ocl::OpenCLExecutionContext local;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
 	openclFilter = new COpenCLFilter();
 	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-	local = cv::ocl::OpenCLExecutionContext::getCurrent();
 }
 
 void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
@@ -301,16 +300,15 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
                                  const int& colorRange, const int& colorSpace)
 {
 	cv::UMat out;
-	local.bind();
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)local.getContext().ptr(), bufferY, sizeY, flag);
+	inputY->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
 	vecParam.push_back(inputY);
 
 	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)local.getContext().ptr(), bufferUV, sizeUV, flag);
+	inputUV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
 	vecParam.push_back(inputUV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
@@ -360,8 +358,6 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 		}
 	}
 
-	//out.copyTo(convertSrc);
-	local.bind();
 	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
@@ -371,7 +367,6 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 	const int& colorRange, const int& colorSpace)
 {
 	cv::UMat out;
-	local.bind();
 	vector<COpenCLParameter*> vecParam;
 
 	auto clBuffer = static_cast<cl_mem>(y.handle(cv::ACCESS_READ));
@@ -387,7 +382,7 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 
 	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)local.getContext().ptr(), bufferUV, sizeUV, flag);
+	inputUV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
 	vecParam.push_back(inputUV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
@@ -437,8 +432,7 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 		}
 	}
 
-	//out.copyTo(convertSrc);
-	local.bind();
+
 	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
@@ -469,22 +463,21 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
                                     const int& colorSpace)
 {
 	cv::UMat out;
-	local.bind();
-	
+
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)local.getContext().ptr(), bufferY, sizeY, flag);
+	inputY->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
 	vecParam.push_back(inputY);
 
 	COpenCLParameterByteArray* inputU = new COpenCLParameterByteArray();
 	inputU->SetLibelle("inputU");
-	inputU->SetValue((cl_context)local.getContext().ptr(), bufferU, sizeU, flag);
+	inputU->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferU, sizeU, flag);
 	vecParam.push_back(inputU);
 
 	COpenCLParameterByteArray* inputV = new COpenCLParameterByteArray();
 	inputV->SetLibelle("inputV");
-	inputV->SetValue((cl_context)local.getContext().ptr(), bufferV, sizeV, flag);
+	inputV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferV, sizeV, flag);
 	vecParam.push_back(inputV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
@@ -534,9 +527,6 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 		}
 	}
 
-	//out.copyTo(convertSrc);
-	//cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
-	local.bind();
 	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
 }
 

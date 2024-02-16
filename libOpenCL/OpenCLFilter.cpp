@@ -28,7 +28,7 @@ using namespace dnn_superres;
 bool isUsed = false;
 std::mutex muDnnSuperResImpl;
 int numTexture = -1;
-
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 class CSuperSampling
 {
@@ -1291,7 +1291,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 {
 	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
 	ocl::ProgramSource programSource(kernelSource);
-	ocl::Context context = ocl::Context::getDefault(false);
+	ocl::Context context = clExecCtx.getContext();//ocl::Context::getDefault(false);
 
 	// Compile the kernel code
 	String errmsg;

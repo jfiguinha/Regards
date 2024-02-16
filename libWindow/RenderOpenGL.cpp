@@ -389,6 +389,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 						initializeContextFromGL();
 						isOpenCLInitialized = true;
 						openclOpenGLInterop = true;
+                        cv::ocl::Device(clExecCtx.getContext().device(0));
 					}
 					catch (cv::Exception& e)
 					{
@@ -415,13 +416,13 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 							cv::ocl::Device(context.device(0));
 						}
 
-
+                        clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
 					}
                     
-                      if (!isOpenCLInitialized)
-                      {
-                            regardsParam->SetIsOpenCLSupport(false);
-                      }
+                    if (!isOpenCLInitialized)
+                    {
+                        regardsParam->SetIsOpenCLSupport(false);
+                    }
 					regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 				}
 			}
