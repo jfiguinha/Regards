@@ -263,6 +263,44 @@ public:
         }
     }
 
+    AspectRatio GetVideoAspectRatio()
+    {
+        AspectRatio aspectRatio;
+        wstring To_Display;
+        To_Display = MI.Get(Stream_Video, 0, __T("Display_aspect_ratio"), Info_Text, Info_Name).c_str();
+        if (To_Display == "")
+        {
+            vector<CMetadata> vectorMeta = GetMetadata();
+            auto val = std::find(vectorMeta.begin(), vectorMeta.end(), [](CMetadata meta)
+                {
+                    return (meta.key == "Video.Display aspect ratio");
+
+                });
+
+            if (val != vectorMeta.end()) 
+            {
+                To_Display = val->value;
+            }
+        }
+       
+
+        if (To_Display != "")
+        {
+            try
+            {
+                std::vector<wxString> list = CConvertUtility::split(To_Display, ':');
+                aspectRatio.num = std::stoi(list[0].ToStdString());
+                aspectRatio.den = std::stoi(list[1].ToStdString());
+                return aspectRatio;
+            }
+            catch (...)
+            {
+            }
+        }
+        return aspectRatio;
+    }
+
+
     int GetVideoRotation()
     {
         wstring To_Display;
@@ -359,6 +397,37 @@ int64_t CMediaInfo::GetVideoDuration(const wxString& filename)
     return duration;
 
 }
+
+AspectRatio CMediaInfo::GetVideoAspectRatio(const wxString& filename)
+{
+    AspectRatio aspectRatio = { 0,0 };
+    bool isFind = false;
+    std::map<wxString, CMediaRetrieve*>::iterator it;
+    muMovie.lock();
+    CMediaRetrieve* mediaRetrieve = nullptr;
+    it = movieList.find(filename);
+    if (it != movieList.end())
+    {
+        mediaRetrieve = movieList[filename];
+        aspectRatio = mediaRetrieve->GetVideoAspectRatio();
+        isFind = true;
+    }
+    muMovie.unlock();
+    if (!isFind)
+    {
+        mediaRetrieve = new CMediaRetrieve();
+        mediaRetrieve->OpenFile(filename);
+        muMovie.lock();
+        movieList[filename] = mediaRetrieve;
+        aspectRatio = mediaRetrieve->GetVideoAspectRatio();
+        muMovie.unlock();
+    }
+
+
+    return aspectRatio;
+
+}
+
 
 void CMediaInfo::GetVideoDimensions(const wxString& filename, int& width, int& height)
 {

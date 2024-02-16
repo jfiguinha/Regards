@@ -97,7 +97,7 @@ public:
     
     AspectRatio GetAspectRatio()
     {
-        videoThumbnailer->GetAspectRatio();
+       return videoThumbnailer->GetAspectRatio();
     }
 
 	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)

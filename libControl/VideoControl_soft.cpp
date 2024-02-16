@@ -1079,24 +1079,30 @@ int CVideoControlSoft::Play(const wxString& movie)
 
         if (playStartTimer->IsRunning())
             playStartTimer->Stop();
-        
-        /*
-        CVideoThumb videoThumb(movie, true);
-        AspectRatio aspectRatio = videoThumb.GetAspectRatio();
-        
-            
-        printf("video_aspect_ratio %d %d \n",aspectRatio.num, aspectRatio.den);
-        /*
-        for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
-        {
-             printf("video_aspect_ratio %f \n",videoEffectParameter.tabZoom[i]);
-            if(video_aspect_ratio < videoEffectParameter.tabZoom[i])
-            {
-                videoEffectParameter.zoomSelect = i - 1;
-                break;
-            }
-        }
-        */
+
+
+		muVideoEffect.lock();
+		videoEffectParameter.ratioSelect = 0;
+		muVideoEffect.unlock();
+
+		AspectRatio aspectRatio = CMediaInfo::GetVideoAspectRatio(movie);
+		if (aspectRatio.den != 0 && aspectRatio.num != 0)
+		{
+			float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
+			printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
+			for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
+			{
+				printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
+				if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
+				{
+					muVideoEffect.lock();
+					videoEffectParameter.ratioSelect = i - 1;
+					muVideoEffect.unlock();
+					break;
+				}
+			}
+		}
+
         startVideo = true;
         stopVideo = false;
         videoStartRender = false;
@@ -1115,9 +1121,7 @@ int CVideoControlSoft::Play(const wxString& movie)
         colorRange = CMediaInfo::GetColorRange(movie);
         colorSpace = CMediaInfo::GetColorSpace(movie);
 
-        muVideoEffect.lock();
-        videoEffectParameter.ratioSelect = 0;
-        muVideoEffect.unlock();
+
 
         firstMovie = false;
         parentRender->Refresh();
