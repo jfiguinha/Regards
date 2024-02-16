@@ -293,8 +293,11 @@ public:
             try
             {
                 std::vector<wxString> list = CConvertUtility::split(To_Display, ':');
-                aspectRatio.num = std::stoi(list[0].ToStdString());
-                aspectRatio.den = std::stoi(list[1].ToStdString());
+                if (list.size() == 2)
+                {
+                    aspectRatio.num = std::stoi(list[0].ToStdString());
+                    aspectRatio.den = std::stoi(list[1].ToStdString());
+                }
                 return aspectRatio;
             }
             catch (...)
