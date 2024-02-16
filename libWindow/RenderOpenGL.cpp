@@ -412,7 +412,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
                      printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
-						if (testOpenCLOpenGLInterop)
+						if (testOpenCLOpenGLInterop && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 						{
 							initializeContextFromGL();
 							isOpenCLInitialized = true;

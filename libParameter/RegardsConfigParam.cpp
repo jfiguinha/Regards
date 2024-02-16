@@ -32,7 +32,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numLanguage = 1;
 	numInterpolation = 0;
 	openCLSupport = 1;
-	openCLOpenGLInteropSupport = 1;
+	openCLOpenGLInteropSupport = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
 	videoDecoderHardware = "none";

@@ -253,61 +253,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
-
-	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
-	{
-		if (!ocl::haveOpenCL())
-		{
-			cout << "OpenCL is not avaiable..." << endl;
-		}
-		else
-		{
-			ocl::Context context;
-			if (!context.create(ocl::Device::TYPE_GPU))
-				isOpenCLInitialized = false;
-			else
-				isOpenCLInitialized = true;
-
-			if (!isOpenCLInitialized)
-			{
-				if (!context.create(ocl::Device::TYPE_CPU))
-					isOpenCLInitialized = false;
-				else
-					isOpenCLInitialized = true;
-			}
-
-			cout << context.ndevices() << " GPU devices are detected." << endl;
-			//This bit provides an overview of the OpenCL devices you have in your computer
-			for (int i = 0; i < context.ndevices(); i++)
-			{
-				ocl::Device device = context.device(i);
-#if defined(WIN32)
-				char message[255];
-				sprintf(message, "name: % s \n", device.name().c_str());
-				OutputDebugStringA(message);
-				sprintf(message, "OpenCL_C_Version: % s \n", device.OpenCL_C_Version().c_str());
-				OutputDebugStringA(message);
-#else
-				
-				cout << "name:              " << device.name() << endl;
-				cout << "available:         " << device.available() << endl;
-				cout << "imageSupport:      " << device.imageSupport() << endl;
-				cout << "OpenCL_C_Version:  " << device.OpenCL_C_Version() << endl;
-				cout << endl;
-#endif
-			}
-
-			if (isOpenCLInitialized)
-			{
-				ocl::Device(context.device(1));
-			}
-		}
-
-		if (!isOpenCLInitialized)
-		{
-			regardsParam->SetIsOpenCLSupport(false);
-		}
-	}
+	isOpenCLInitialized = false;
 
 
 #ifdef WIN32
