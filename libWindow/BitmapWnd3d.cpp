@@ -27,7 +27,7 @@ extern cv::ocl::OpenCLExecutionContext clExecCtx;
 //
 //-----------------------------------------------------------------------------
 
-CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
+CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id, const bool& testOpenCLOpenGLInterop)
 	: CWindowOpenGLMain("CBitmapWnd3D", parent, id)
 {
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd3D::OnPaint));
@@ -42,6 +42,7 @@ CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd3D::OnMouseCaptureLost));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWnd3D::OnIdle));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CBitmapWnd3D::OnMouseLeave));
+	this->testOpenCLOpenGLInterop = testOpenCLOpenGLInterop;
 }
 
 void CBitmapWnd3D::OnMouseLeave(wxMouseEvent& event)
@@ -188,7 +189,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	if (renderOpenGL == nullptr)
 	{
 
-		renderOpenGL = new CRenderOpenGL(this);
+		renderOpenGL = new CRenderOpenGL(this, testOpenCLOpenGLInterop);
 		renderOpenGL->Init(this);
 		openclOpenGLInterop = renderOpenGL->GetOpenGLInterop();
 		bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);

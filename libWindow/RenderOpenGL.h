@@ -34,7 +34,7 @@ namespace Regards::OpenGL
 	class CRenderOpenGL : public wxGLContext
 	{
 	public:
-		CRenderOpenGL(wxGLCanvas* canvas);
+		CRenderOpenGL(wxGLCanvas* canvas, const bool & testOpenCLOpenGLInterop = true);
 		~CRenderOpenGL() override;
 		GLTexture* GetGLTexture();
 		wxGLContext* GetGLContext();
@@ -68,7 +68,7 @@ namespace Regards::OpenGL
 		GLTexture* GetTextureDisplay();
 
 	protected:
-
+		void CreateDefaultOpenCLContext();
 		void initializeContextFromGL();
 		GLTexture* textureDisplay;
 		int width;
@@ -80,5 +80,6 @@ namespace Regards::OpenGL
 		bool isInit = false;
 		IMouseUpdate* mouseUpdate;
 		bool openclOpenGLInterop = false;
+		bool testOpenCLOpenGLInterop = true;
 	};
 }

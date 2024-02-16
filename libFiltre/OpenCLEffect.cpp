@@ -8,7 +8,7 @@
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
-
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 #define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
@@ -108,6 +108,7 @@ int COpenCLEffect::WaveFilter(int x, int y, short height, int scale, int radius)
 
 void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 {
+
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
 		cv::Mat local = bitmap->GetOpenCVPicture();

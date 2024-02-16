@@ -214,34 +214,33 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 	if (pimpl_ == nullptr && openclOpenGLInterop)
 		pimpl_ = new CTextureGLPriv();
 
-	if (bitmap.size().width != width || height != bitmap.size().height)
-	{
-		Delete();
-		m_nTextureID = -1;
-
-	}
-
-	if (m_nTextureID == -1)
-	{
-		width = bitmap.size().width;
-		height = bitmap.size().height;
-		glGenTextures(1, &m_nTextureID);
-		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-
-
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
+
+		if (bitmap.size().width != width || height != bitmap.size().height)
+		{
+			Delete();
+			m_nTextureID = -1;
+
+		}
+
+		if (m_nTextureID == -1)
+		{
+			width = bitmap.size().width;
+			height = bitmap.size().height;
+			glGenTextures(1, &m_nTextureID);
+			//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+			glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
 		cv::UMat bitmapMatrix;
 		if (bitmap.channels() == 3)
 		{
@@ -310,7 +309,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 {  
 	//glEnable(GL_TEXTURE_2D);
 
-	if (!m_nTextureID)
+	if (m_nTextureID == -1)
 	{
 		glGenTextures(1, &m_nTextureID);
 		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);

@@ -39,13 +39,14 @@ extern cv::ocl::OpenCLExecutionContext clExecCtx;
 extern bool isOpenCLInitialized;
 using namespace Regards::OpenGL;
 
-CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
+CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas, const bool& testOpenCLOpenGLInterop)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
 	width = 0;
 	height = 0;
 	this->openclOpenGLInterop = false;
 	textureDisplay = nullptr;
+	this->testOpenCLOpenGLInterop = testOpenCLOpenGLInterop;
 }
 
 
@@ -362,6 +363,31 @@ void CRenderOpenGL::initializeContextFromGL()
 #endif
 }
 
+void CRenderOpenGL::CreateDefaultOpenCLContext()
+{
+	openclOpenGLInterop = false;
+	cv::ocl::Context context;
+	if (!context.create(cv::ocl::Device::TYPE_GPU))
+		isOpenCLInitialized = false;
+	else
+		isOpenCLInitialized = true;
+
+	if (!isOpenCLInitialized)
+	{
+		if (!context.create(cv::ocl::Device::TYPE_CPU))
+			isOpenCLInitialized = false;
+		else
+			isOpenCLInitialized = true;
+	}
+
+	if (isOpenCLInitialized)
+	{
+		cv::ocl::Device(context.device(0));
+	}
+
+	clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+}
+
 
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
@@ -379,52 +405,42 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		{
              printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
             
-			if (regardsParam->GetIsOpenCLSupport() && regardsParam->GetIsOpenCLOpenGLInteropSupport())
+			if (regardsParam->GetIsOpenCLSupport())
 			{
 				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
 				{
                      printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
-						initializeContextFromGL();
-						isOpenCLInitialized = true;
-						openclOpenGLInterop = true;
-                        cv::ocl::Device(clExecCtx.getContext().device(0));
+						if (testOpenCLOpenGLInterop)
+						{
+							initializeContextFromGL();
+							isOpenCLInitialized = true;
+							openclOpenGLInterop = true;
+							cv::ocl::Device(clExecCtx.getContext().device(0));
+						}
+						else
+						{
+							CreateDefaultOpenCLContext();
+						}
 					}
 					catch (cv::Exception& e)
 					{
 						const char* err_msg = e.what();
 						std::cout << "exception caught: " << err_msg << std::endl;
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-						openclOpenGLInterop = false;
-						cv::ocl::Context context;
-						if (!context.create(cv::ocl::Device::TYPE_GPU))
-							isOpenCLInitialized = false;
-						else
-							isOpenCLInitialized = true;
-
-						if (!isOpenCLInitialized)
-						{
-							if (!context.create(cv::ocl::Device::TYPE_CPU))
-								isOpenCLInitialized = false;
-							else
-								isOpenCLInitialized = true;
-						}
-
-						if (isOpenCLInitialized)
-						{
-							cv::ocl::Device(context.device(0));
-						}
-
-                        clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+						CreateDefaultOpenCLContext();
 					}
-                    
-                    if (!isOpenCLInitialized)
-                    {
-                        regardsParam->SetIsOpenCLSupport(false);
-                    }
-					regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+
 				}
+
+
+
+				if (!isOpenCLInitialized)
+				{
+					regardsParam->SetIsOpenCLSupport(false);
+				}
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 			}
 		}
 		

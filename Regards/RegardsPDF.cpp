@@ -26,7 +26,7 @@ string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 0;
-
+cv::ocl::OpenCLExecutionContext clExecCtx;
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Print;
