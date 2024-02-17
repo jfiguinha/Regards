@@ -30,6 +30,8 @@ static Net net_2; // And finally we load the DNN responsible for face recognitio
 static Net net_3; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFacePCN::muDnnAccess;
 bool CDetectFacePCN::isload = false;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 
 CDetectFacePCN::CDetectFacePCN(void)
 {
@@ -47,8 +49,13 @@ CDetectFacePCN::~CDetectFacePCN(void)
 void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listOfFace,
                                 std::vector<cv::Rect>& pointOfFace)
 {
+
+
 	if (!isload)
 		return;
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
 
 	Mat frameOpenCVDNN;
 	cvtColor(source, frameOpenCVDNN, COLOR_BGRA2BGR);
@@ -118,6 +125,9 @@ int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 	if (!isload)
 		return 0;
 
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+
 	int angle = 0;
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
@@ -170,14 +180,8 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
 
 	try
 	{
-		/*
-	   bool openCLCompatible = false;
-	   CRegardsConfigParam* config = CParamInit::getInstance();
-	   if (config != nullptr)
-	   {
-		   if (config->GetIsOpenCLSupport())
-		       openCLCompatible = true;
-	   }*/
+		if (!clExecCtx.empty())
+			clExecCtx.bind();
 
 #ifdef WIN32
 		wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";
@@ -293,6 +297,9 @@ std::vector<FaceBox> CDetectFacePCN::NMS(std::vector<FaceBox>& _faces, bool _loc
 	if (_faces.size() == 0)
 		return _faces;
 
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+
 	std::sort(_faces.begin(), _faces.end(), compareFaceByScore);
 	vector<int> flag(_faces.size(), 0);
 	for (int i = 0; i < _faces.size(); i++)
@@ -345,6 +352,9 @@ std::vector<FaceBox> CDetectFacePCN::PCN_1(cv::Mat _img, cv::Mat _paddedImg, cv:
 	int minFace = _minFaceSize * 1.4; // - size 20 + 40%
 	float currentScale = minFace / static_cast<float>(netSize);
 	int stride = 8;
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
 
 	cv::Mat resizedImg = resizeImg(_img, currentScale);
 
@@ -433,6 +443,9 @@ std::vector<FaceBox> CDetectFacePCN::PCN_2(cv::Mat _img, cv::Mat _img180, cv::dn
 	//_dim = 24 ---> network size
 	if (_faces.size() == 0)
 		return _faces;
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
 
 	std::vector<cv::Mat> dataList;
 	int height = _img.rows;
@@ -546,6 +559,9 @@ std::vector<FaceBox> CDetectFacePCN::PCN_3(cv::Mat _img, cv::Mat _img180, cv::Ma
 {
 	if (_faces.size() == 0)
 		return _faces;
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
 
 	std::vector<cv::Mat> dataList;
 	int height = _img.rows;

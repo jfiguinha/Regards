@@ -28,6 +28,8 @@ using namespace std;
 const double cosine_similar_thresh = 0.363;
 std::map<int, Mat> listScore;
 
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 struct FaceValueIntegration
 {
 	double pertinence;
@@ -583,6 +585,10 @@ double GetNumFaceCompatibleScore(const int& numFace, vector<CFaceRecognitionData
 {
 	double score = 0.0;
 	int nbElement = 0;
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+
 	for (CFaceRecognitionData picture : faceRecognitonVec)
 	{
 		if (picture.numFaceCompatible == numFace)
