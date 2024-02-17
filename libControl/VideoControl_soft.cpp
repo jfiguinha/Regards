@@ -36,6 +36,7 @@ using namespace Regards::Sqlite;
 
 extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 class CDataAVFrame
 {
@@ -2207,6 +2208,10 @@ int CVideoControlSoft::IsSupportOpenCL()
 
 void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 {
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+
 	int enableopenCL = 0;
 	bool isCPU = true;
 	if (IsSupportOpenCL())

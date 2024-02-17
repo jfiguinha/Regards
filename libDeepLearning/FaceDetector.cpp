@@ -586,9 +586,6 @@ double GetNumFaceCompatibleScore(const int& numFace, vector<CFaceRecognitionData
 	double score = 0.0;
 	int nbElement = 0;
 
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
-
 	for (CFaceRecognitionData picture : faceRecognitonVec)
 	{
 		if (picture.numFaceCompatible == numFace)

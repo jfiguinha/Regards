@@ -34,6 +34,8 @@ using namespace Regards::Video;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
 
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 //#define CAFFE
 
 class CThreadFace
@@ -388,6 +390,10 @@ void CListFace::LoadResource(void* param)
 
 void CListFace::FacialDetectionRecognition(void* param)
 {
+
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+
 	auto path = static_cast<CThreadFace*>(param);
 	wxString filename = path->filename;
 

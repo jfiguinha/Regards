@@ -54,9 +54,6 @@ void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listO
 	if (!isload)
 		return;
 
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
-
 	Mat frameOpenCVDNN;
 	cvtColor(source, frameOpenCVDNN, COLOR_BGRA2BGR);
 	//int frameHeight = frameOpenCVDNN.rows;
@@ -124,9 +121,6 @@ int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 {
 	if (!isload)
 		return 0;
-
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
 
 	int angle = 0;
 	int frameHeight = frameOpenCVDNN.rows;
@@ -297,8 +291,6 @@ std::vector<FaceBox> CDetectFacePCN::NMS(std::vector<FaceBox>& _faces, bool _loc
 	if (_faces.size() == 0)
 		return _faces;
 
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
 
 	std::sort(_faces.begin(), _faces.end(), compareFaceByScore);
 	vector<int> flag(_faces.size(), 0);
@@ -352,9 +344,6 @@ std::vector<FaceBox> CDetectFacePCN::PCN_1(cv::Mat _img, cv::Mat _paddedImg, cv:
 	int minFace = _minFaceSize * 1.4; // - size 20 + 40%
 	float currentScale = minFace / static_cast<float>(netSize);
 	int stride = 8;
-
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
 
 	cv::Mat resizedImg = resizeImg(_img, currentScale);
 
@@ -443,9 +432,6 @@ std::vector<FaceBox> CDetectFacePCN::PCN_2(cv::Mat _img, cv::Mat _img180, cv::dn
 	//_dim = 24 ---> network size
 	if (_faces.size() == 0)
 		return _faces;
-
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
 
 	std::vector<cv::Mat> dataList;
 	int height = _img.rows;
@@ -559,9 +545,6 @@ std::vector<FaceBox> CDetectFacePCN::PCN_3(cv::Mat _img, cv::Mat _img180, cv::Ma
 {
 	if (_faces.size() == 0)
 		return _faces;
-
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
 
 	std::vector<cv::Mat> dataList;
 	int height = _img.rows;

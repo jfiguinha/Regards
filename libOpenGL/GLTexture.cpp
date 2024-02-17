@@ -216,7 +216,6 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
-
 		if (bitmap.size().width != width || height != bitmap.size().height)
 		{
 			Delete();
@@ -237,7 +236,6 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
