@@ -7,15 +7,15 @@ class CVideoConverterFrame : public wxFrame
 {
 public:
 	// ctor(s)
-	CVideoConverterFrame(const wxString &title, const wxPoint &pos, const wxSize &size, IVideoConverterInterface * videoInterface,	wxString fileToOpen, long style = wxDEFAULT_FRAME_STYLE);
+	CVideoConverterFrame(const wxString &title, const wxPoint &pos, const wxSize &size, IVideoConverterInterface * videoInterface, long style = wxDEFAULT_FRAME_STYLE);
     ~CVideoConverterFrame();
-
+	void ExportVideo(wxString filename);
 
 
 private:
 	void OnEndDecompressFile(wxCommandEvent& event);
 	void OnCloseWindow(wxCloseEvent& event);
-	void ExportVideo(wxString filename);
+	
 	IVideoConverterInterface* videoInterface;
 
 	//CompressionAudioVideoOption* compressAudioVideoOption = nullptr;

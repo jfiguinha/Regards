@@ -407,9 +407,10 @@ bool MyApp::OnInit()
 	{
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
-		frameVideoConverter = new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
+		frameVideoConverter = new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(50,50), this);
 		frameVideoConverter->Centre(wxBOTH);
-		frameVideoConverter->Show(false);
+		frameVideoConverter->Show(true);
+		frameVideoConverter->ExportVideo(fileToOpen);
 	}
 	else if(appName == "RegardsPDF")
 	{

@@ -285,11 +285,10 @@ bool MyApp::OnInit()
 
 	wxDisplay display;
 	wxRect screen = display.GetClientArea();
-	frameVideoConverter = new CVideoConverterFrame("Regards Viewer", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
+	frameVideoConverter = new CVideoConverterFrame("Regards Viewer", wxDefaultPosition, wxSize(100, 100), this);
 	frameVideoConverter->Centre(wxBOTH);
 	frameVideoConverter->Show(false);
-
-
+	frameVideoConverter->ExportVideo(fileToOpen);
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the
 	// application would exit immediately.

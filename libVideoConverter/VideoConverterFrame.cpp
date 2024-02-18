@@ -40,13 +40,13 @@ using namespace Regards::Picture;
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CVideoConverterFrame::CVideoConverterFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IVideoConverterInterface* videoInterface, wxString fileToOpen, long style) :
+CVideoConverterFrame::CVideoConverterFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IVideoConverterInterface* videoInterface,  long style) :
 	wxFrame(nullptr, FRAMEVIDEOCONVERTER_ID, title, pos, size, style)
 {
 	SetIcon(wxICON(sample));
 	this->videoInterface = videoInterface;
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CVideoConverterFrame::OnEndDecompressFile));
-	ExportVideo(fileToOpen);
+	
 
 }
 
