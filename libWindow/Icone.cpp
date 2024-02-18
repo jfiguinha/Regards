@@ -875,7 +875,7 @@ void CIcone::RefreshIcone()
 {
 	photoDefault = false;
 	redraw = true;
-	localmemBitmap_backup = wxBitmap(0,0);
+	localmemBitmap_backup = wxBitmap(20,20);
 }
 
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
@@ -913,9 +913,12 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
-			bool isOk = scaleBackup.IsOk();
-			int scaleWidth = scaleBackup.GetWidth();
-			int scaleHeight = scaleBackup.GetHeight();
+			if (scaleBackup.IsOk())
+			{
+				bool isOk = scaleBackup.IsOk();
+				int scaleWidth = scaleBackup.GetWidth();
+				int scaleHeight = scaleBackup.GetHeight();
+			}
 
 
 			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);

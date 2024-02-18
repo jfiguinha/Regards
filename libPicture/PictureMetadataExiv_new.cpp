@@ -21,7 +21,7 @@ CPictureMetadataExiv::CPictureMetadataExiv(const wxString& filename)
 	{
 		this->filename = filename;
 		exif = Exiv2::ImageFactory::open(CConvertUtility::ConvertToStdString(filename));
-		assert(exif.get() != 0);
+		//assert(exif.get() != 0);
 		exif->readMetadata();
 		isExif = true;
 	}
@@ -41,7 +41,7 @@ CPictureMetadataExiv::CPictureMetadataExiv(uint8_t* data, const long& size)
 	try
 	{
 		exif = Exiv2::ImageFactory::open(data, size);
-		assert(exif.get() != 0);
+		//assert(exif.get() != 0);
 		exif->readMetadata();
 		isExif = true;
 	}
