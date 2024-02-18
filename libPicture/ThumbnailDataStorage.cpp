@@ -32,13 +32,16 @@ void CThumbnailDataStorage::RemoveBitmap()
 {
 }
 
-wxImage CThumbnailDataStorage::GetwxImage()
+wxImage CThumbnailDataStorage::GetwxImage(bool& isDefault)
 {
 	if (TestBitmap())
 	{
+		isDefault = false;
 		return localbitmap;
 	}
-	return wxImage();
+	else
+		isDefault = true;
+	return GetDefaultPicture();
 }
 
 void CThumbnailDataStorage::SetBitmap(wxImage bitmap)

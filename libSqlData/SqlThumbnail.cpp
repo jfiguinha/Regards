@@ -86,7 +86,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 	return listPhoto;
 }
 
-wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
+wxImage CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 {
     //printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
 	wxLogNull logNo;
@@ -106,6 +106,11 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path)
 	{
         image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
 	}
+
+	if (!image.IsOk())
+		isDefault = true;
+	else
+		isDefault = false;
 
 	return image;
 }

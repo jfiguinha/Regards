@@ -82,7 +82,7 @@ bool CThumbnailDataSQL::TestBitmap()
 	return sqlThumbnail.TestThumbnail(filename.Clone(), sizeFile.ToString());
 }
 
-wxImage CThumbnailDataSQL::GetwxImage()
+wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 {
 	if (isAnimation && nbFrame == 0)
 	{
@@ -101,10 +101,14 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		CSqlThumbnail sqlThumbnail;
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
-		frameOut = sqlThumbnail.GetThumbnail(filename.Clone());
+		frameOut = sqlThumbnail.GetThumbnail(filename.Clone(), isDefault);
+		if (isDefault)
+			frameOut = GetDefaultPicture();
 	}
 	else if (isVideo && generateVideoPlayer)
 	{
+		isDefault = false;
+
 		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
 			return frameOut;
 
@@ -141,17 +145,10 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			if (!grabbed)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
-				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
-				if (!frameOut.IsOk())
+				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+				if (isDefault)
 				{
-					frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
-				}
-
-				if (!frameOut.IsOk())
-				{
-					numFrame = 0;
-					wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
-					return bitmap;
+					frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
 				}
 			}
 		}
@@ -159,35 +156,30 @@ wxImage CThumbnailDataSQL::GetwxImage()
     else if(isVideo && !generateVideoPlayer)
     {
         CSqlThumbnailVideo sqlThumbnailVideo;
-        frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
-        if (!frameOut.IsOk())
+        frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+        if (isDefault)
         {
-            frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
-        }
-
-        if (!frameOut.IsOk())
-        {
-            numFrame = 0;
-			wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
-            return bitmap;
+            frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
         }
     }
 	else if (isAnimation)
 	{
 		CSqlThumbnailVideo sqlThumbnailVideo;
-		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
-		if (!frameOut.IsOk())
+		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+		if (isDefault)
 		{
-			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
-		}
-
-		if (!frameOut.IsOk())
-		{
-			numFrame = 0;
-			wxImage bitmap = CLoadingResource::LoadImageResource("IDB_MOVIE");
-			return bitmap;
+			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
 		}
 	}
+
+
+	if (isDefault)
+	{
+		frameOut.Clear();
+		
+		return GetDefaultPicture();
+	}
+		
 
 	return frameOut;
 }

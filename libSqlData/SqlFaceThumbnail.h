@@ -24,7 +24,7 @@ public:
 		return numFace;
 	}
 
-	wxImage GetwxImage() override;
+	wxImage GetwxImage(bool& isDefault) override;
 
 private:
 	bool TestBitmap() override;

@@ -43,11 +43,10 @@ public:
 	{
 	};
 
-	virtual wxImage GetwxImage()
+	virtual wxImage GetwxImage(bool& isDefault)
 	{
-		wxImage image;
-		image = CLoadingResource::LoadImageResource("IDB_PHOTO");
-		return image;
+		isDefault = true;
+		return GetDefaultPicture();
 	};
 
 	virtual void SetMouseOn() {};
@@ -122,6 +121,14 @@ protected:
 	{
 		return false;
 	};
+
+	wxImage GetDefaultPicture()
+	{
+		wxImage image;
+		image = CLoadingResource::LoadImageResource("IDB_PHOTO");
+		return image;
+	}
+
 	int numCatalog;
 	bool pictureLoad;
 	bool pictureLoading;

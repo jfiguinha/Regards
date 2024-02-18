@@ -337,7 +337,7 @@ int CSqlFacePhoto::GetNumFace(const wxString& path, const int& numberface)
 	return numFace;
 }
 
-wxImage CSqlFacePhoto::GetFace(const int& numFace)
+wxImage CSqlFacePhoto::GetFace(const int& numFace, bool& isDefault)
 {
 	wxLogNull logNo;
 	/*
@@ -353,12 +353,13 @@ wxImage CSqlFacePhoto::GetFace(const int& numFace)
 		image = CThumbnailBuffer::GetPicture(thumbnail);
 	}
 
-
 	if (!image.IsOk())
 	{
 		DeleteNumFace(numFace);
-		image = defaultPicture;
+		isDefault = true;
 	}
+	else
+		isDefault = false;
 
 	return image.Mirror(false);
 }

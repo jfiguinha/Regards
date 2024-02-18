@@ -100,7 +100,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
 	}
 }
 
-wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVideo)
+wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVideo, bool & isDefault)
 {
 	wxLogNull logNo;
 	type = 6;
@@ -113,11 +113,11 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	if (wxFileExists(thumbnail))
 	{
 		image = CThumbnailBuffer::GetPicture(thumbnail);
+		isDefault = false;
 	}
 	else
 	{
-        image = CLoadingResource::LoadImageResource("IDB_PHOTO");
-		printf("GetThumbnail Error \n");
+		isDefault = true;
 	}
 	return image;
 }

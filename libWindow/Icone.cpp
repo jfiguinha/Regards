@@ -761,10 +761,10 @@ wxIMAGE_QUALITY_HIGH
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
-	/*/
-	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
+	
+	cv::Mat matrix = CLibPicture::mat_from_wx(*src);
 	cv::resize(matrix, matrix, cv::Size(width, height));
-	return wxImage(width, height, matrix.data, true);
+	return CLibPicture::ConvertRegardsBitmapToWXImage(matrix);
 
 	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
     
@@ -881,20 +881,19 @@ void CIcone::RefreshIcone()
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
                                 const bool& forceRedraw)
 {  
-   
 	wxImage image = CLoadingResource::LoadImageResource("IDB_PHOTO");
 	if (forceRedraw)
 		redraw = true;
 
 	if (!photoDefault)
 	{
-		image = pThumbnailData->GetwxImage();
+		image = pThumbnailData->GetwxImage(photoDefault);
 		if (image.IsOk())
 			redraw = true;
 	}
 	else
 	{
-		image = pThumbnailData->GetwxImage();
+		image = pThumbnailData->GetwxImage(photoDefault);
 	}
 
 	
@@ -928,7 +927,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					//image = pThumbnailData->GetwxImage();
 					if (!image.IsOk())
 					{
-						photoDefault = false;
+						
 						image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
 						returnValue = 1;
 					}

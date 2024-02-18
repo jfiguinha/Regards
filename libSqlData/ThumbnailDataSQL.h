@@ -31,7 +31,7 @@ public:
 	void SetMouseOn();
 	void SetMouseOut();
 
-	wxImage GetwxImage() override;
+	wxImage GetwxImage(bool& isDefault) override;
 	int GetNbFrame() override;
 
 private:

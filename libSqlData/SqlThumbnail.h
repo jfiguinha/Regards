@@ -17,7 +17,7 @@ namespace Regards
 			~CSqlThumbnail() override;
 			wxString InsertThumbnail(const wxString& path, const int& width, const int& height,
 			                     const wxString& hash);
-			wxImage GetThumbnail(const wxString& path);
+			wxImage GetThumbnail(const wxString& path, bool& isDefault);
 			CImageLoadingFormat* GetPictureThumbnail(const wxString& path);
 			bool DeleteThumbnail(const wxString& path);
 			bool DeleteThumbnail(const int& numPhoto);

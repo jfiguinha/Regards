@@ -13,11 +13,15 @@ CSqlFaceThumbnail::~CSqlFaceThumbnail(void)
 {
 }
 
-wxImage CSqlFaceThumbnail::GetwxImage()
+wxImage CSqlFaceThumbnail::GetwxImage(bool& isDefault)
 {
+
 	CSqlFacePhoto sqlThumbnail;
 	// printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
-	return sqlThumbnail.GetFace(numFace);
+	wxImage image= sqlThumbnail.GetFace(numFace, isDefault);
+	if (isDefault)
+		image = GetDefaultPicture();
+	return image;
 }
 
 bool CSqlFaceThumbnail::TestBitmap()
