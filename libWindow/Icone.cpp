@@ -761,6 +761,11 @@ wxIMAGE_QUALITY_HIGH
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
+	/*/
+	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
+	cv::resize(matrix, matrix, cv::Size(width, height));
+	return wxImage(width, height, matrix.data, true);
+
 	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
     
     /*
@@ -909,9 +914,14 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
+			bool isOk = scaleBackup.IsOk();
+			int scaleWidth = scaleBackup.GetWidth();
+			int scaleHeight = scaleBackup.GetHeight();
 
-			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
-				GetHeight() != themeIcone.GetHeight())
+
+			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
+
+			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != tailleAffichageBitmapWidth || scaleBackup.GetHeight() != tailleAffichageBitmapHeight)
 			{
 				if (pThumbnailData != nullptr)
 				{
@@ -970,7 +980,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					}
 				}
 
-				scaleBackup = scale;
+				scaleBackup = wxImage(scale);
 
 				scale.Destroy();
 			}

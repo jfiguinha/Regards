@@ -395,6 +395,16 @@ void CWindowManager::UnInit()
 {
 }
 
+void CWindowManager::SetWindowSize(Pos position, bool fixe, int size)
+{
+	CWindowToAdd* window = FindWindow(position);
+	if (window != nullptr)
+	{
+		window->fixe = fixe;
+		window->size = size;
+	}
+}
+
 void CWindowManager::Init_bottom()
 {
 	int width = GetSize().x;
@@ -454,6 +464,7 @@ void CWindowManager::Init_bottom()
 
 		if (bottom->fixe)
 		{
+			wxSize size = bottom->GetSize();
 			default_height = bottom->size;
 		}
 

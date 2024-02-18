@@ -803,6 +803,16 @@ void CThumbnail::SetIconeSize(const int& width, const int& height)
 	themeThumbnail.themeIcone.SetHeight(height);
 
 	ResizeThumbnail();
+
+	/*
+	wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ICONESIZEREFRESH);
+		evt.SetInt(height);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+	*/
 }
 
 #ifdef TBB

@@ -256,6 +256,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CCentralWindow::OnRefreshThumbnail));
 	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CCentralWindow::UpdateThumbnailIcone));
 
+	Connect(wxEVENT_ICONESIZEREFRESH, wxCommandEventHandler(CCentralWindow::UpdateThumbnailIconeSize));
+
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
 	windowManager->HideWindow(Pos::wxTOP, false);
@@ -1542,8 +1544,37 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 void CCentralWindow::UpdateScreenRatio()
 {
+	CThemePane theme_pane;
+	CThemeThumbnail themeVideo;
+
+	int size = scrollPictureWindow->GetHeight();
+	int size_new_video = themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2;
+
+	windowManager->SetWindowSize(Pos::wxBOTTOM, true, size_new_video);
+	windowManager->SetWindowSize(Pos::wxTOP, true, size_new_video);
+	windowManager->Init();
+
 	if (windowManager != nullptr)
 		windowManager->UpdateScreenRatio();
+
+	windowManager->Resize();
+
+}
+
+void  CCentralWindow::UpdateThumbnailIconeSize(wxCommandEvent& event)
+{
+
+	CThemePane theme_pane;
+	CThemeThumbnail themeVideo;
+	
+	int height = event.GetInt();
+	int size = scrollPictureWindow->GetHeight();
+	int size_new_video = themeVideo.themeIcone.GetHeight()  + theme_pane.GetHeight() * 2;
+
+	windowManager->SetWindowSize(Pos::wxBOTTOM, true, size_new_video);
+	windowManager->SetWindowSize(Pos::wxTOP, true, size_new_video);
+	windowManager->Resize();
+	
 }
 
 void CCentralWindow::OnAnimationStop(wxCommandEvent& event)

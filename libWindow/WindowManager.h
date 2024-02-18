@@ -43,6 +43,7 @@ namespace Regards::Window
 		void Init();
 		void ResetPosition();
 		wxRect GetWindowSize(Pos position);
+		void SetWindowSize(Pos position, bool fixe, int size);
 		bool GetWindowIsShow(Pos position);
 
 	protected:

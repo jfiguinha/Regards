@@ -35,6 +35,8 @@ namespace Regards::Window
 
 		void SetWindow(CWindowOpenGLMain* window, bool isPanel);
 
+		wxSize GetSize();
+
 		wxRect rect;
 		wxRect rect_old;
 		Pos position;

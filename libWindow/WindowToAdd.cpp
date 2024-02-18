@@ -50,3 +50,19 @@ void CWindowToAdd::SetWindow(CWindowOpenGLMain* window, bool isPanel)
 	this->windowOpengl = window;
 	this->isPanel = isPanel;
 }
+
+wxSize CWindowToAdd::GetSize()
+{
+	wxSize size;
+	if (this->window != nullptr)
+	{
+		size.x = this->window->GetWidth();
+		size.y = this->window->GetHeight();
+	}
+	if (this->windowOpengl != nullptr)
+	{
+		size.x = this->windowOpengl->GetWidth();
+		size.y = this->windowOpengl->GetHeight();
+	}
+	return size;
+}

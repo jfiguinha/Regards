@@ -140,6 +140,7 @@ namespace Regards
 
 			void StopDiaporama(wxCommandEvent& event);
 			void StartDiaporama(wxCommandEvent& event);
+			void UpdateThumbnailIconeSize(wxCommandEvent& event);
 
 			void OnVideoStop(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
