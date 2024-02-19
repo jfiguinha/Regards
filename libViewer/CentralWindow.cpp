@@ -31,11 +31,6 @@
 #include <ShowElement.h>
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
-#include <picture_utility.h>
-#include <wx/busyinfo.h>
-#include <OpenCVVideoPlayer.h>
-#include "FolderProcess.h"
-#include <MediaInfo.h>
 #include <ThumbnailFolder.h>
 #include <ThreadLoadingBitmap.h>
 #include <ThumbnailFace.h>
@@ -54,7 +49,6 @@ using namespace Regards::FiltreEffet;
 
 extern bool firstElementToShow;
 extern int numElementToLoad;
-
 extern wxImage defaultPicture;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,

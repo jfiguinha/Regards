@@ -22,6 +22,7 @@ using namespace Regards::Picture;
 
 extern wxImage defaultPicture;
 
+
 struct ThumbnailVideoThread
 {
 	CThumbnailVideo* window;

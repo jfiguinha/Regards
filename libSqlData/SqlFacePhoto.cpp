@@ -15,8 +15,6 @@
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-extern wxImage defaultPicture;
-
 CSqlFacePhoto::CSqlFacePhoto()
 	: CSqlExecuteRequest(L"RegardsDB"), numFace(0), type(0)
 {

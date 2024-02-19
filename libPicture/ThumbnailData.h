@@ -12,7 +12,7 @@ class CRegardsBitmap;
 #define TYPEMULTIPAGE 8
 #define SQLITE 1
 
-extern wxImage defaultPicture;
+extern wxImage defaultPictureThumbnailPicture;
 extern wxImage defaultPictureThumbnailVideo;
 
 class CImageLoadingFormat;
@@ -129,7 +129,7 @@ protected:
 	{
 		if (isVideo || isAnimation)
 			return defaultPictureThumbnailVideo;
-		return defaultPicture;
+		return defaultPictureThumbnailPicture;
 	}
 
 	int numCatalog;

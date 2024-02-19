@@ -12,7 +12,6 @@ using namespace Regards::Scanner;
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define wxTIMER_PROCESS 1001
-
 extern wxImage defaultPicture;
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
