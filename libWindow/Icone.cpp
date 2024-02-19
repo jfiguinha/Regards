@@ -931,13 +931,13 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 
 	if (!photoDefault)
 	{
-		image = pThumbnailData->GetwxImage();
+		image = pThumbnailData->GetwxImage(photoDefault);
 		if (image.IsOk())
 			redraw = true;
 	}
 	else
 	{
-		image = pThumbnailData->GetwxImage();
+		image = pThumbnailData->GetwxImage(photoDefault);
 	}
 
 	
