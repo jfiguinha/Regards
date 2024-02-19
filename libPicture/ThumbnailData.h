@@ -119,6 +119,16 @@ public:
 		this->libelle = libelle;
 	}
 
+	bool IsVideo()
+	{
+		return isVideo;
+	}
+
+	bool IsAnimation()
+	{
+		return isAnimation;
+	}
+
 protected:
 	virtual bool TestBitmap()
 	{

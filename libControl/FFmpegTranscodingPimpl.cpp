@@ -2210,6 +2210,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		bool success = capture->SeekToPos(timeInSeconds);
 		frameOutput = capture->GetVideoFrame(false);
 
+		if (frameOutput.empty())
+			return -22;
+
 		cv::Size s = frameOutput.size();
 		height = s.height;
 		width = s.width;
@@ -2492,6 +2495,8 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 		duration = capture->GetDuration();
 
 		Mat decodeFrame = capture->GetVideoFrame(false);
+		if (decodeFrame.empty())
+			return -22;
 
 		cv::Size s = decodeFrame.size();
 		height = s.height;
@@ -2762,6 +2767,8 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			//height = capture->GetHeight();
 			bool success = capture->SeekToPos(timeInSeconds);
 			decodeFrame = capture->GetVideoFrame(false);
+			if (decodeFrame.empty())
+				return -22;
 
 			cv::Size s = decodeFrame.size();
 			height = s.height;

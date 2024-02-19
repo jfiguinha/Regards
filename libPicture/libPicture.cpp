@@ -1184,6 +1184,9 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				cv::Mat mat;
 				CVideoThumb* thumbnail = new CVideoThumb(szFileName, useOpenCVThumb);
 				mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+				if (mat.empty())
+					mat = CLibPicture::mat_from_wx(defaultPicture);
+
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(orientation);
@@ -2607,6 +2610,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				cv::Mat mat;
 				mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
+				if (mat.empty())
+					mat = CLibPicture::mat_from_wx(defaultPicture);
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(orientation);

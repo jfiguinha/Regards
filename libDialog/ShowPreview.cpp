@@ -25,6 +25,8 @@ using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::exiv2;
 
+extern wxImage defaultPicture;
+
 
 void CShowPreview::UpdateScreenRatio()
 {
@@ -284,6 +286,9 @@ void CShowPreview::ThreadLoading(void* data)
 		{
 			CVideoThumb video(fileTemp, true);
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
+			if (showPreview->decodeFrame.empty())
+				showPreview->decodeFrame = CLibPicture::mat_from_wx(defaultPicture);
+
 #ifndef WIN32_MFT
 			//cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);
 #endif

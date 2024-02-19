@@ -764,108 +764,6 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 	cv::resize(matrix, matrix, cv::Size(width, height));
 	return CLibPicture::ConvertRegardsBitmapToWXImage(matrix);
 
-	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
-
-	/*
-	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
-	cv::resize(matrix, matrix, cv::Size(width, height));
-	return wxImage(width, height, matrix.data, true);
-	*/
-
-	// This function implements a Bicubic B-Spline algorithm for resampling.
-	// This method is certainly a little slower than wxImage's default pixel
-	// replication method, however for most reasonably sized images not being
-	// upsampled too much on a fairly average CPU this difference is hardly
-	// noticeable and the results are far more pleasing to look at.
-	//
-	// This particular bicubic algorithm does pixel weighting according to a
-	// B-Spline that basically implements a Gaussian bell-like weighting
-	// kernel. Because of this method the results may appear a bit blurry when
-	// upsampling by large factors.  This is basically because a slight
-	// gaussian blur is being performed to get the smooth look of the upsampled
-	// image.
-
-	// Edge pixels: 3-4 possible solutions
-	// - (Wrap/tile) Wrap the image, take the color value from the opposite
-	// side of the image.
-	// - (Mirror)    Duplicate edge pixels, so that pixel at coordinate (2, n),
-	// where n is nonpositive, will have the value of (2, 1).
-	// - (Ignore)    Simply ignore the edge pixels and apply the kernel only to
-	// pixels which do have all neighbours.
-	// - (Clamp)     Choose the nearest pixel along the border. This takes the
-	// border pixels and extends them out to infinity.
-	//
-	// NOTE: below the y_offset and x_offset variables are being set for edge
-	// pixels using the "Mirror" method mentioned above
-
-	wxImage ret_image;
-	if (src != nullptr)
-	{
-		ret_image.Create(width, height, false);
-
-		const unsigned char* src_data = src->GetData();
-		unsigned char* dst_data = ret_image.GetData();
-
-
-		wxCHECK_MSG(dst_data, ret_image, wxS("unable to create image"));
-
-		// Precalculate weights
-		wxVector<BicubicPrecalc> vPrecalcs(height);
-		wxVector<BicubicPrecalc> hPrecalcs(width);
-
-		ResampleBicubicPrecalc(vPrecalcs, src->GetHeight());
-		ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
-
-		tbb::parallel_for(0, height, 1, [=](int dsty)
-			{
-				// We need to calculate the source pixel to interpolate from - Y-axis
-				const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
-
-				for (int dstx = 0; dstx < width; dstx++)
-				{
-					int dst_pixel_index = dsty * width * 3 + dstx * 3;
-					// X-axis of pixel to interpolate from
-					const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
-
-					// Sums for each color channel
-					double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
-
-					// Here we actually determine the RGBA values for the destination pixel
-					for (int k = -1; k <= 2; k++)
-					{
-						// Y offset
-						const int y_offset = vPrecalc.offset[k + 1];
-
-						// Loop across the X axis
-						for (int i = -1; i <= 2; i++)
-						{
-							// X offset
-							const int x_offset = hPrecalc.offset[i + 1];
-
-							// Calculate the exact position where the source data
-							// should be pulled from based on the x_offset and y_offset
-							int src_pixel_index = y_offset * src->GetWidth() + x_offset;
-
-							// Calculate the weight for the specified pixel according
-							// to the bicubic b-spline kernel we're using for
-							// interpolation
-							const double
-								pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
-
-							sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
-							sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
-							sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
-						}
-					}
-					dst_data[dst_pixel_index + 0] = static_cast<unsigned char>(sum_r + 0.5);
-					dst_data[dst_pixel_index + 1] = static_cast<unsigned char>(sum_g + 0.5);
-					dst_data[dst_pixel_index + 2] = static_cast<unsigned char>(sum_b + 0.5);
-				}
-			});
-
-	}
-
-	return ret_image;
 
 }
 
@@ -895,6 +793,17 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 	{
 		image = pThumbnailData->GetwxImage(photoDefault);
 		returnValue = 1;
+	}
+
+	if (!image.IsOk())
+	{
+		if(pThumbnailData->IsVideo() || pThumbnailData->IsAnimation())
+		{
+			image = defaultPictureThumbnailVideo;
+		}
+		else
+			image = defaultPictureThumbnailPicture;
+		photoDefault = true;
 	}
 
 

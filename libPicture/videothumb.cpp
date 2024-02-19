@@ -8,6 +8,8 @@
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
+extern wxImage defaultPicture;
+
 class CVideoThumbPimpl
 {
 public:
@@ -118,30 +120,35 @@ public:
 			
 
 		image = videoThumbnailer->GetVideoFrame();
-
-		videowidth = image.size().width;
-		videoheight = image.size().height;
-
-		if (thumbnailWidth > 0 && thumbnailHeight > 0)
+		if (image.empty())
+			image = CLibPicture::mat_from_wx(defaultPicture);
+		else
 		{
-			int rotation = videoThumbnailer->GetOrientation();
+			videowidth = image.size().width;
+			videoheight = image.size().height;
 
-			int scaledSize = 0;
-			bool maintainAspectRatio = true;
-
-			int scaledWidth = thumbnailWidth;
-			int scaledHeight = thumbnailHeight;
-			calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
-
-			resize(image, image, cv::Size(scaledWidth, scaledHeight));
-			if(!useOpenCV)
+			if (thumbnailWidth > 0 && thumbnailHeight > 0)
 			{
-				if(rotation == 90 || rotation == 270)
+				int rotation = videoThumbnailer->GetOrientation();
+
+				int scaledSize = 0;
+				bool maintainAspectRatio = true;
+
+				int scaledWidth = thumbnailWidth;
+				int scaledHeight = thumbnailHeight;
+				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+
+				resize(image, image, cv::Size(scaledWidth, scaledHeight));
+				if (!useOpenCV)
 				{
-					cv::flip(image, image, -1);
+					if (rotation == 90 || rotation == 270)
+					{
+						cv::flip(image, image, -1);
+					}
 				}
 			}
 		}
+
 
 		//CPictureUtility::ApplyTransform(image);
 	}

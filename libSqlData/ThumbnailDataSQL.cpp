@@ -152,10 +152,6 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
-				if (isDefault)
-				{
-					frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
-				}
 			}
 		}
 	}
