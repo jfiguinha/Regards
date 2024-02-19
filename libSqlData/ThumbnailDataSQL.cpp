@@ -95,11 +95,12 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 	if (numFrame >= nbFrame)
 		numFrame = 0;
 
-	//numFrame = max(numFrame, 0);
-    if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
+	if(!defaultPicture)
     {
-        isDefault = defaultPicture;
-        return frameOut;
+        if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
+        {
+            return frameOut;
+        }
     }
 
 	if (numFrame == 0 && nbFrame == 0)
