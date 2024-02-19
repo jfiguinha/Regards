@@ -879,7 +879,7 @@ void CIcone::RefreshIcone()
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
 	const bool& forceRedraw)
 {
-	wxImage image = CLoadingResource::LoadImageResource("IDB_PHOTO");
+	wxImage image = wxImage(20,20);
 	if (forceRedraw)
 		redraw = true;
 

@@ -12,6 +12,9 @@ class CRegardsBitmap;
 #define TYPEMULTIPAGE 8
 #define SQLITE 1
 
+extern wxImage defaultPicture;
+extern wxImage defaultPictureThumbnailVideo;
+
 class CImageLoadingFormat;
 
 class CThumbnailData
@@ -124,9 +127,9 @@ protected:
 
 	wxImage GetDefaultPicture()
 	{
-		wxImage image;
-		image = CLoadingResource::LoadImageResource("IDB_PHOTO");
-		return image;
+		if (isVideo || isAnimation)
+			return defaultPictureThumbnailVideo;
+		return defaultPicture;
 	}
 
 	int numCatalog;
@@ -147,6 +150,8 @@ protected:
 	bool forceRefresh = false;
 	int numFrame = 0;
 	wxString libelle;
+	bool isVideo = false;
+	bool isAnimation = false;
 };
 
 /*
