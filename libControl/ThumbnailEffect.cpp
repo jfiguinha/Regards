@@ -94,7 +94,7 @@ wxString CThumbnailEffect::GetFilename()
 	return filename;
 }
 
-bool CThumbnailEffect::ItemCompFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailEffect::ItemCompFonct(int x, int y, CIcone *  icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	wxRect rc = icone->GetPos();
 	if ((rc.x < x && x < (rc.width + rc.x)) && (rc.y < y && y < (rc.height + rc.y)))
@@ -104,7 +104,7 @@ bool CThumbnailEffect::ItemCompFonct(int x, int y, std::shared_ptr<CIcone> icone
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailEffect::FindElement(const int& xPos, const int& yPos)
+CIcone * CThumbnailEffect::FindElement(const int& xPos, const int& yPos)
 {
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
@@ -198,7 +198,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 		thumbnailData->SetBitmap(pBitmap);
 
-		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -311,7 +311,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 				break;
 			}
 			thumbnailData->SetNumPhotoId(numEffect);
-			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -332,7 +332,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			thumbnailData->SetBitmap(image);
 
-			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -439,7 +439,7 @@ void CThumbnailEffect::ProcessIdle()
 	{
 		for (auto i = 0; i < nbElementInIconeList; i++)
 		{
-			std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
+			CIcone *  icone = iconeList->GetElement(i);
 			if (icone != nullptr)
 			{
 				CThumbnailData* pThumbnailData = icone->GetData();
@@ -470,7 +470,7 @@ void CThumbnailEffect::ProcessIdle()
 	isAllProcess = true;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> icone = iconeList->GetElement(i);
+		CIcone *  icone = iconeList->GetElement(i);
 		if (icone != nullptr)
 		{
 			bool isLoad = false;
@@ -514,7 +514,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 				if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
 					return;
 
-				std::shared_ptr<CIcone> icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
+				CIcone *  icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
 				if (icone != nullptr)
 				{
 					bool needToRefresh = false;

@@ -242,7 +242,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
                 
-				auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+				auto pBitmapIcone = new CIcone();
 				pBitmapIcone->SetNumElement(data->GetNumElement());
 				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);

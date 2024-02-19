@@ -61,7 +61,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 		thumbnailData->SetBitmap(thumbnail->image);
 
-		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetData(thumbnailData);
@@ -171,7 +171,7 @@ void CThumbnailFileSelection::SetListeFile()
 
 		thumbnailData->SetBitmap(thumbnail->image);
         
-		auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -203,7 +203,7 @@ vector<int> CThumbnailFileSelection::GetSelectItem()
 	vector<int> listElement;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		std::shared_ptr<CIcone> pIcone = iconeList->GetElement(i);
+		CIcone *  pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
 		{
 			if (pIcone->IsChecked())
@@ -213,7 +213,7 @@ vector<int> CThumbnailFileSelection::GetSelectItem()
 	return listElement;
 }
 
-bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent)
+bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone *  icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	wxRect rc = icone->GetPos();
@@ -224,7 +224,7 @@ bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, std::shared
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailFileSelection::FindElementWithVScroll(const int& xPos, const int& yPos)
+CIcone *  CThumbnailFileSelection::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompWithVScrollFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -263,7 +263,7 @@ void CThumbnailFileSelection::FindOtherElement(wxDC* dc, const int& x, const int
 
 			for (auto numElement : separator->listElement)
 			{
-				std::shared_ptr<CIcone> icone = iconeList->GetElement(numElement);
+				CIcone *  icone = iconeList->GetElement(numElement);
 				if (icone != nullptr)
 				{
 					if (explorer->GetSelected())
@@ -314,7 +314,7 @@ void CThumbnailFileSelection::ResizeThumbnail()
 
 		for (auto numElement : infosSeparationBar->listElement)
 		{
-			std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
+			CIcone *  pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -347,7 +347,7 @@ void CThumbnailFileSelection::ResizeThumbnail()
 	UpdateScroll();
 }
 
-bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent)
+bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -366,7 +366,7 @@ bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, std::shared_ptr<
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailFileSelection::FindElement(const int& xPos, const int& yPos)
+CIcone *  CThumbnailFileSelection::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -383,7 +383,7 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC* deviceContext)
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
 			int numElement = infosSeparationBar->listElement.at(j);
-			std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(numElement);
+			CIcone *  pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();

@@ -17,7 +17,7 @@ namespace Regards::Control
 	private:
 		void UpdateVideoThumbnail();
 		void ResizeThumbnail() override;
-		static bool ItemCompFonct(int x, int y, std::shared_ptr<CIcone> icone, CWindowMain* parent);
+		static bool ItemCompFonct(int x, int y, CIcone * icone, CWindowMain* parent);
 		void EraseThumbnail(wxCommandEvent& event) override;
 		void UpdateVideoThumbnail(wxCommandEvent& event);
 		

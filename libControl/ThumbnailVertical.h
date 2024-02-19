@@ -20,9 +20,9 @@ namespace Regards::Control
 		virtual void UpdateScrollWithoutVScroll();
 		virtual void UpdateScrollWithVScroll();
 
-		std::shared_ptr<CIcone> FindElement(const int& xPos, const int& yPos) override;
-		virtual std::shared_ptr<CIcone> FindElementWithVScroll(const int& xPos, const int& yPos);
-		virtual std::shared_ptr<CIcone> FindElementWithoutVScroll(const int& xPos, const int& yPos);
+		CIcone * FindElement(const int& xPos, const int& yPos) override;
+		virtual CIcone * FindElementWithVScroll(const int& xPos, const int& yPos);
+		virtual CIcone * FindElementWithoutVScroll(const int& xPos, const int& yPos);
 
 		bool noVscroll;
 		const bool& test_validity_;

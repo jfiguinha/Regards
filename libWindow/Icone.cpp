@@ -87,7 +87,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	//Variable
 	//---------------------------------------------------
 	//int interpolationMethod;
-
+	deleteData = true;
 	pThumbnailData = new CThumbnailData(other.pThumbnailData->GetFilename());
 	*pThumbnailData = *other.pThumbnailData;
 	themeIcone = other.themeIcone;
@@ -194,6 +194,7 @@ wxImage CIcone::LoadImageResource(const wxString& resourceName)
 
 CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 {
+	deleteData = true;
 	pThumbnailData = nullptr;
 	showSelected = false;
 	isChecked = false;
@@ -593,17 +594,58 @@ void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 
 CIcone::~CIcone(void)
 {
-    if (pThumbnailData != nullptr)
-        delete pThumbnailData;
-    pThumbnailData = nullptr;
+    //printf("CIcone::~CIcone \n");
+	if (deleteData)
+	{
+        //printf("CIcone::~CIcone deleteData \n");
+        switch(pThumbnailData->GetType())
+        {
+
+            case 1:
+            {
+               // printf("CIcone::~CIcone deleteData 1\n");
+                CThumbnailDataStorage * dataStorage = (CThumbnailDataStorage *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            case 4:
+            {
+               // printf("CIcone::~CIcone deleteData 4\n");
+                CSqlFaceThumbnail * dataStorage = (CSqlFaceThumbnail *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            case 2:
+            {
+                //printf("CIcone::~CIcone deleteData 2\n");
+                CThumbnailDataSQL * dataStorage = (CThumbnailDataSQL *)pThumbnailData;
+                if (dataStorage != nullptr)
+                    delete dataStorage;
+                break;
+            }
+            default:
+            {
+                //printf("CIcone::~CIcone deleteData default\n");
+                if (pThumbnailData != nullptr)
+                    delete pThumbnailData;
+                break;
+            }
+        }
+        
+
+		pThumbnailData = nullptr;
+	}
 }
 
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CIcone::SetData(CThumbnailData* thumbnailData)
+void CIcone::SetData(CThumbnailData* thumbnailData, const bool& deleteData)
 {
 	pThumbnailData = thumbnailData;
+	this->deleteData = deleteData;
 }
 
 
@@ -633,6 +675,12 @@ CThumbnailData* CIcone::GetCopyData()
 	auto data = new CThumbnailData(pThumbnailData->GetFilename());
 	*data = *pThumbnailData;
 	return data;
+}
+
+
+bool CIcone::DataNeedToBeDelete()
+{
+	return deleteData;
 }
 
 void CIcone::CalculPosition(const wxImage& render)
@@ -761,11 +809,6 @@ wxIMAGE_QUALITY_HIGH
 // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
-	
-	cv::Mat matrix = CLibPicture::mat_from_wx(*src);
-	cv::resize(matrix, matrix, cv::Size(width, height));
-	return CLibPicture::ConvertRegardsBitmapToWXImage(matrix);
-
 	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
     
     /*
@@ -875,25 +918,26 @@ void CIcone::RefreshIcone()
 {
 	photoDefault = false;
 	redraw = true;
-	localmemBitmap_backup = wxBitmap(20,20);
+	localmemBitmap_backup = wxBitmap(0,0);
 }
 
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
                                 const bool& forceRedraw)
 {  
+   
 	wxImage image = CLoadingResource::LoadImageResource("IDB_PHOTO");
 	if (forceRedraw)
 		redraw = true;
 
 	if (!photoDefault)
 	{
-		image = pThumbnailData->GetwxImage(photoDefault);
+		image = pThumbnailData->GetwxImage();
 		if (image.IsOk())
 			redraw = true;
 	}
 	else
 	{
-		image = pThumbnailData->GetwxImage(photoDefault);
+		image = pThumbnailData->GetwxImage();
 	}
 
 	
@@ -913,24 +957,16 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
-			if (scaleBackup.IsOk())
-			{
-				bool isOk = scaleBackup.IsOk();
-				int scaleWidth = scaleBackup.GetWidth();
-				int scaleHeight = scaleBackup.GetHeight();
-			}
 
-
-			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
-
-			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != tailleAffichageBitmapWidth || scaleBackup.GetHeight() != tailleAffichageBitmapHeight)
+			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
+				GetHeight() != themeIcone.GetHeight())
 			{
 				if (pThumbnailData != nullptr)
 				{
 					//image = pThumbnailData->GetwxImage();
 					if (!image.IsOk())
 					{
-						
+						photoDefault = false;
 						image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
 						returnValue = 1;
 					}
@@ -982,7 +1018,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					}
 				}
 
-				scaleBackup = wxImage(scale);
+				scaleBackup = scale;
 
 				scale.Destroy();
 			}

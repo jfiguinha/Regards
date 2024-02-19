@@ -60,7 +60,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	CIconeList* oldIconeList = nullptr;
 	int size = CThumbnailBuffer::GetVectorSize();
 
-	//std::map<int, std::shared_ptr<CIcone>>
+	//std::map<int, CIcone * >
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
 #else
@@ -75,7 +75,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 			thumbnailData->SetNumPhotoId(photo.GetId());
 			thumbnailData->SetNumElement(i);
 
-			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -100,7 +100,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	tbb::parallel_for(0, size, 1, [=](int i)
 #endif
 	{
-		std::shared_ptr<CIcone> icone = iconeListLocal->GetElement(i);
+		CIcone *  icone = iconeListLocal->GetElement(i);
 		icone->SetNumElement(i);
 		CThumbnailDataSQL* data = (CThumbnailDataSQL*)icone->GetData();
 		data->SetNumElement(i);
@@ -155,7 +155,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
 
-	//std::map<int, std::shared_ptr<CIcone>>
+	//std::map<int, CIcone * >
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
 #else
@@ -170,7 +170,7 @@ void CThumbnailViewerPicture::SetListeFile()
 			thumbnailData->SetNumPhotoId(fileEntry.GetId());
 			thumbnailData->SetNumElement(i);
 
-			auto pBitmapIcone = std::shared_ptr<CIcone>(new CIcone());
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -223,7 +223,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 	tbb::parallel_for(0, nbElementInIconeList, 1, [=](int i)
 #endif    
 	{
-		std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
+		CIcone *  pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -244,7 +244,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 	{
         try
         {
-            std::shared_ptr<CIcone> pBitmapIcone = iconeList->GetElement(i);
+            CIcone *  pBitmapIcone = iconeList->GetElement(i);
             if (pBitmapIcone != nullptr)
             {
                 pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -269,7 +269,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 }
 
 
-bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, std::shared_ptr<CIcone> icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	CThumbnailViewerPicture* viewerPicture = (CThumbnailViewerPicture*)parent;
 	wxRect rc = icone->GetPos();
@@ -284,9 +284,9 @@ bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, std::shared_ptr<
 	return false;
 }
 
-std::shared_ptr<CIcone> CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
+CIcone *  CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
-	std::shared_ptr<CIcone> icone = iconeList->FindElement(xPos, yPos, &_pf, this);
+	CIcone *  icone = iconeList->FindElement(xPos, yPos, &_pf, this);
 	return icone;
 }

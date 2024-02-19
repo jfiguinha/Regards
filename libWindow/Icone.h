@@ -41,10 +41,9 @@ namespace Regards::Window
 		CIcone& operator=(const CIcone& other);
 		inline bool operator==(const CIcone& n1);
 
-		void SetData(CThumbnailData* thumbnailData);
+		void SetData(CThumbnailData* thumbnailData, const bool& deleteData = true);
 		CThumbnailData* GetData();
-
-
+		bool DataNeedToBeDelete();
 		CThumbnailData* GetCopyData();
 		void SetTheme(CThemeIcone theme);
 
@@ -154,7 +153,7 @@ namespace Regards::Window
 		int y;
 		int oldx;
 		int oldy;
-
+		bool deleteData;
 		int thumbnailIconeCache;
 		CRegardsConfigParam* config;
 		wxString filename;
@@ -171,7 +170,7 @@ namespace Regards::Window
 		bool visible = true;
 	};
 
-	using IconeVector = tbb::concurrent_vector<std::shared_ptr<CIcone>>;
-	using pItemCompFonct = bool(*)(int, int, std::shared_ptr<CIcone>, CWindowMain*);
-	using pItemStringCompFonct = bool(*)(wxString, std::shared_ptr<CIcone>);
+	using IconeVector = tbb::concurrent_vector<CIcone*>;
+	using pItemCompFonct = bool(*)(int, int, CIcone*, CWindowMain*);
+	using pItemStringCompFonct = bool(*)(wxString, CIcone*);
 }
