@@ -99,9 +99,9 @@ float4 GetColorFromYUV(const __global uchar *inputY, const __global uchar *input
 			matrix[2].z = 0;
 		}	
 		
-		color.x = (matrix[0].x * (yComp - 16) + matrix[0].y * (uComp-128) + matrix[0].z * (vComp-128));
+		color.z = (matrix[0].x * (yComp - 16) + matrix[0].y * (uComp-128) + matrix[0].z * (vComp-128));
 		color.y = (matrix[1].x * (yComp - 16) + matrix[1].y * (uComp-128) + matrix[1].z * (vComp-128));
-		color.z = (matrix[2].x * (yComp - 16) + matrix[2].y * (uComp-128) + matrix[2].z * (vComp-128));
+		color.x = (matrix[2].x * (yComp - 16) + matrix[2].y * (uComp-128) + matrix[2].z * (vComp-128));
 		color.w = 255.0f;
 
 		float4 minimal = 0.0;

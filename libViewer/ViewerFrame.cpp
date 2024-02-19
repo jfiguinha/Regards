@@ -409,7 +409,7 @@ int CViewerFrame::ShowScanner()
     pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p RegardsPDF";
 #else
 #ifdef __WXMSW__
-	pathProgram = "RegardsPDF.exe";
+	pathProgram = "RegardsViewer.exe -p RegardsPDF";
 #else
 	pathProgram = "./RegardsViewer -p RegardsPDF";
 #endif

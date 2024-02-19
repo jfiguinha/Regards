@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGeolocalisation", "libGe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libWindow", "libWindow\libWindow.vcxproj", "{F25C7926-ABE0-4A0B-A1DE-3D7452A6AC73}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibControl", "libControl\libControl.vcxproj", "{D1AD7321-2AA9-4FEB-938E-578F51FF3F4F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libControl", "libControl\libControl.vcxproj", "{D1AD7321-2AA9-4FEB-938E-578F51FF3F4F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSqlData", "libSqlData\libSqlData.vcxproj", "{0CEA9FAE-6276-4CEE-A7D6-C80605F0384A}"
 EndProject

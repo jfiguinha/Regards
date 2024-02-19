@@ -486,7 +486,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		cout << "Path Program" << pathProgram << endl;
 #else
 #ifdef __WXMSW__
-        pathProgram = "RegardsVideoConverter.exe \"" + this->centralWnd->GetFilename() + "\"";
+        pathProgram = "RegardsViewer.exe \"" + this->centralWnd->GetFilename() + "\"  -p RegardsConverter";
 #else
         pathProgram = "./RegardsViewer \"" + this->centralWnd->GetFilename() + "\" -p RegardsConverter";
 		cout << "Path Program" << pathProgram << endl;
