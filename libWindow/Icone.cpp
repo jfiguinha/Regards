@@ -888,10 +888,13 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		image = pThumbnailData->GetwxImage(photoDefault);
 		if (image.IsOk())
 			redraw = true;
+
+		returnValue = 0;
 	}
 	else
 	{
 		image = pThumbnailData->GetwxImage(photoDefault);
+		returnValue = 1;
 	}
 
 
@@ -930,7 +933,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					{
 
 						image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
-						returnValue = 1;
+						
 					}
 					else
 						photoDefault = true;

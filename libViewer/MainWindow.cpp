@@ -1209,9 +1209,9 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 		std::map<wxString, bool>::iterator it = listFile.find(localName);
 		if (it != listFile.end())
 		{
-			ProcessThumbnail(localName, type);
 			listFile[localName] = true;
 		}
+		ProcessThumbnail(localName, type);
 
 	}
 	delete filename;
