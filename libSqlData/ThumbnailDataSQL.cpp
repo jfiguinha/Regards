@@ -20,6 +20,8 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	: CThumbnailData(filename)
 {
 
+    frameOut = GetDefaultPicture();
+    
     this->generateVideoPlayer = generateVideoPlayer;
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
@@ -95,7 +97,10 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 
 	//numFrame = max(numFrame, 0);
     if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
+    {
+        isDefault = defaultPicture;
         return frameOut;
+    }
 
 	if (numFrame == 0 && nbFrame == 0)
 	{
@@ -172,14 +177,11 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 		}
 	}
 
-
-	if (isDefault)
-	{
-		frameOut.Clear();
-		
-		return GetDefaultPicture();
-	}
-		
+    defaultPicture = isDefault;
+    if(isDefault)
+    {
+        frameOut = GetDefaultPicture();
+    }
 
 	return frameOut;
 }

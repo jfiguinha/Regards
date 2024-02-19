@@ -8,13 +8,9 @@
 #include "VideoStabilization.h"
 
 #ifdef __APPLE__
-#include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
 #elif defined(__WXGTK__)
 #include <GL/glx.h>
-#include <CL/cl_gl.h>
-#else
-#include <CL/cl_gl.h>
 #endif
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>

@@ -10,10 +10,6 @@
 #include <RegardsConfigParam.h>
 #include <opencv2/core/ocl.hpp>
 #include <LibResource.h>
-#if defined __APPLE__
-#include <OpenCL/cl_gl.h>
-#else
-#endif
 
 using namespace Regards::OpenCL;
 using namespace cv;

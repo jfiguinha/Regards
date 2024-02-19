@@ -42,6 +42,7 @@ private:
 	cv::Mat cvImg;
 	int time_pos = 0;
 	wxImage frameOut;
+    bool defaultPicture = true;
 	int oldnumFrame = -1;
 	int oldVideoFrame = 0;
 	int videoFramePos = 0;

@@ -11,9 +11,7 @@
 #include <utility.h>
 
 #ifdef __APPLE__
-#include <OpenCL/cl_gl.h>
 #include <OpenGL/OpenGL.h>
-#include <OpenCL/cl_gl_ext.h>
 #elif defined(__WXGTK__)
 #if wxUSE_GLCANVAS_EGL == 1
 #include <EGL/egl.h>

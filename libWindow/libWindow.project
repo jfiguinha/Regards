@@ -202,6 +202,7 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../libOpenCL"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
