@@ -87,7 +87,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	//Variable
 	//---------------------------------------------------
 	//int interpolationMethod;
-	deleteData = true;
+
 	pThumbnailData = new CThumbnailData(other.pThumbnailData->GetFilename());
 	*pThumbnailData = *other.pThumbnailData;
 	themeIcone = other.themeIcone;
@@ -192,9 +192,8 @@ wxImage CIcone::LoadImageResource(const wxString& resourceName)
 	return bitmap;
 }
 
-CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
+CIcone::CIcone() : numElement(0), oldx(0), oldy(0)
 {
-	deleteData = true;
 	pThumbnailData = nullptr;
 	showSelected = false;
 	isChecked = false;
@@ -356,8 +355,7 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
 					if (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)))
 						themeFont.SetFontSize(themeFont.GetFontRealSize() - 1);
-				}
-				while (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)));
+				} while (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)));
 
 				int xPos = (themeIcone.GetWidth() - sizeTexte.x) / 2;
 				//int yPos = bitmapScale.GetHeight() + themeIcone.GetMarge() + ((themeIcone.GetHeight() - (bitmapScale.GetHeight() + themeIcone.GetMarge())) - sizeTexte.y) / 2;
@@ -372,14 +370,14 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 				GetWidth() != themeIcone.GetCheckboxWidth()))
 			{
 				bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", themeIcone.GetCheckboxWidth(),
-				                                                   themeIcone.GetCheckboxHeight());
+					themeIcone.GetCheckboxHeight());
 			}
 
 			if (!bitmapCheckOff.IsOk() || (bitmapCheckOff.GetHeight() != themeIcone.GetCheckboxHeight() ||
 				bitmapCheckOff.GetWidth() != themeIcone.GetCheckboxWidth()))
 			{
 				bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", themeIcone.GetCheckboxWidth(),
-				                                                    themeIcone.GetCheckboxHeight());
+					themeIcone.GetCheckboxHeight());
 			}
 
 			switch (type)
@@ -387,18 +385,18 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 			case INACTIFICONE:
 				if (isChecked && bitmapCheckOn.IsOk())
 					memDC->DrawBitmap(bitmapCheckOn.ConvertToDisabled(), themeIcone.GetMarge(),
-					                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
+						themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
 				else if (bitmapCheckOff.IsOk())
 					memDC->DrawBitmap(bitmapCheckOff.ConvertToDisabled(), themeIcone.GetMarge(),
-					                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
+						themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
 				break;
 			default:
 				if (isChecked && bitmapCheckOn.IsOk())
 					memDC->DrawBitmap(bitmapCheckOn, themeIcone.GetMarge(),
-					                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
+						themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
 				else if (bitmapCheckOff.IsOk())
 					memDC->DrawBitmap(bitmapCheckOff, themeIcone.GetMarge(),
-					                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
+						themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
 				break;
 			}
 		}
@@ -409,12 +407,12 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 				GetWidth() != themeIcone.GetCheckboxWidth()))
 			{
 				bitmapDelete = CLibResource::CreatePictureFromSVG("IDB_DELETE", themeIcone.GetCheckboxWidth(),
-				                                                  themeIcone.GetCheckboxHeight());
+					themeIcone.GetCheckboxHeight());
 				bitmapDelete = bitmapDelete.ConvertToDisabled();
 			}
 
 			memDC->DrawBitmap(bitmapDelete, themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge()),
-			                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapDelete.GetHeight());
+				themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapDelete.GetHeight());
 		}
 	}
 
@@ -481,7 +479,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 	case ACTIFICONE:
 		memDC->GradientFillLinear(rc, themeIcone.colorTop, themeIcone.colorBottom);
 		break;
-	default: ;
+	default:;
 	}
 
 	switch (type)
@@ -497,7 +495,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 		if (bitmapImageCadreActif.IsOk())
 			memDC->DrawBitmap(bitmapImageCadreActif, 0, 0);
 		break;
-	default: ;
+	default:;
 	}
 
 	//Size Thumbnail Max
@@ -534,7 +532,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 
 				if (bitmapImageCadreActif.IsOk())
 					memDC->DrawBitmap(bitmapImageCadreActif, 0,
-					                  themeIcone.GetHeight() - bitmapImageCadreVideo.GetHeight());
+						themeIcone.GetHeight() - bitmapImageCadreVideo.GetHeight());
 			}
 			else
 			{
@@ -547,7 +545,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 			memDC->DrawBitmap(bitmapImageActif, posXThumbnail, y_pos);
 			memDC->DrawBitmap(bitmapImageCadreActif, 0, themeIcone.GetHeight() - bitmapImageCadreVideo.GetHeight());
 			break;
-		default: ;
+		default:;
 		}
 
 		if (!themeIcone.showOnlyThumbnail)
@@ -562,8 +560,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
 					if (sizeTexte.x > themeIcone.GetWidth())
 						themeFont.SetFontSize(themeFont.GetFontSize() - 1);
-				}
-				while (sizeTexte.x > themeIcone.GetWidth());
+				} while (sizeTexte.x > themeIcone.GetWidth());
 
 				int xPos = (themeIcone.GetWidth() - sizeTexte.x) / 2;
 				int y = (themeIcone.GetHeight() - (bitmapImageCadreVideo.GetHeight() * 2 + bitmapImageActif.GetHeight()
@@ -576,10 +573,10 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 		{
 			if (isChecked)
 				memDC->DrawBitmap(bitmapCheckOn, themeIcone.GetMarge(),
-				                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
+					themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
 			else
 				memDC->DrawBitmap(bitmapCheckOff, themeIcone.GetMarge(),
-				                  themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
+					themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
 		}
 	}
 }
@@ -594,58 +591,17 @@ void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 
 CIcone::~CIcone(void)
 {
-    //printf("CIcone::~CIcone \n");
-	if (deleteData)
-	{
-        //printf("CIcone::~CIcone deleteData \n");
-        switch(pThumbnailData->GetType())
-        {
-
-            case 1:
-            {
-               // printf("CIcone::~CIcone deleteData 1\n");
-                CThumbnailDataStorage * dataStorage = (CThumbnailDataStorage *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            case 4:
-            {
-               // printf("CIcone::~CIcone deleteData 4\n");
-                CSqlFaceThumbnail * dataStorage = (CSqlFaceThumbnail *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            case 2:
-            {
-                //printf("CIcone::~CIcone deleteData 2\n");
-                CThumbnailDataSQL * dataStorage = (CThumbnailDataSQL *)pThumbnailData;
-                if (dataStorage != nullptr)
-                    delete dataStorage;
-                break;
-            }
-            default:
-            {
-                //printf("CIcone::~CIcone deleteData default\n");
-                if (pThumbnailData != nullptr)
-                    delete pThumbnailData;
-                break;
-            }
-        }
-        
-
-		pThumbnailData = nullptr;
-	}
+	if (pThumbnailData != nullptr)
+		delete pThumbnailData;
+	pThumbnailData = nullptr;
 }
 
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CIcone::SetData(CThumbnailData* thumbnailData, const bool& deleteData)
+void CIcone::SetData(CThumbnailData* thumbnailData)
 {
 	pThumbnailData = thumbnailData;
-	this->deleteData = deleteData;
 }
 
 
@@ -675,12 +631,6 @@ CThumbnailData* CIcone::GetCopyData()
 	auto data = new CThumbnailData(pThumbnailData->GetFilename());
 	*data = *pThumbnailData;
 	return data;
-}
-
-
-bool CIcone::DataNeedToBeDelete()
-{
-	return deleteData;
 }
 
 void CIcone::CalculPosition(const wxImage& render)
@@ -744,10 +694,10 @@ namespace
 		for (int k = -1; k <= 2; k++)
 		{
 			precalc.offset[k + 1] = srcpixd + k < 0.0
-				                        ? 0
-				                        : srcpixd + k >= oldDim
-				                        ? oldDim - 1
-				                        : static_cast<int>(srcpixd + k);
+				? 0
+				: srcpixd + k >= oldDim
+				? oldDim - 1
+				: static_cast<int>(srcpixd + k);
 
 			precalc.weight[k + 1] = spline_weight(k - dd);
 		}
@@ -783,35 +733,40 @@ namespace
 } // anonymous namespace
 
 /*
- * 
- * wxIMAGE_QUALITY_NEAREST 	
+ *
+ * wxIMAGE_QUALITY_NEAREST
 Simplest and fastest algorithm.
 
-wxIMAGE_QUALITY_BILINEAR 	
+wxIMAGE_QUALITY_BILINEAR
 Compromise between wxIMAGE_QUALITY_NEAREST and wxIMAGE_QUALITY_BICUBIC.
 
-wxIMAGE_QUALITY_BICUBIC 	
+wxIMAGE_QUALITY_BICUBIC
 Highest quality but slowest execution time.
 
-wxIMAGE_QUALITY_BOX_AVERAGE 	
+wxIMAGE_QUALITY_BOX_AVERAGE
 Use surrounding pixels to calculate an average that will be used for new pixels.
 
 This method is typically used when reducing the size of an image.
 
-wxIMAGE_QUALITY_NORMAL 	
+wxIMAGE_QUALITY_NORMAL
 Default image resizing algorithm used by wxImage::Scale().
 
 Currently the same as wxIMAGE_QUALITY_NEAREST.
 
-wxIMAGE_QUALITY_HIGH 
+wxIMAGE_QUALITY_HIGH
  * */
 
-// This is the bicubic resampling algorithm
+ // This is the bicubic resampling algorithm
 wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 {
+
+	cv::Mat matrix = CLibPicture::mat_from_wx(*src);
+	cv::resize(matrix, matrix, cv::Size(width, height));
+	return CLibPicture::ConvertRegardsBitmapToWXImage(matrix);
+
 	//return src->Rescale(width, height,  wxIMAGE_QUALITY_NORMAL);
-    
-    /*
+
+	/*
 	cv::Mat matrix = cv::Mat(src->GetHeight(), src->GetWidth(), CV_8UC3, src->GetData());
 	cv::resize(matrix, matrix, cv::Size(width, height));
 	return wxImage(width, height, matrix.data, true);
@@ -862,69 +817,68 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 		ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
 
 		tbb::parallel_for(0, height, 1, [=](int dsty)
-		{
-			// We need to calculate the source pixel to interpolate from - Y-axis
-			const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
-
-		for (int dstx = 0; dstx < width; dstx++)
-		{
-			int dst_pixel_index = dsty * width * 3 + dstx * 3;
-			// X-axis of pixel to interpolate from
-			const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
-
-			// Sums for each color channel
-			double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
-
-			// Here we actually determine the RGBA values for the destination pixel
-			for (int k = -1; k <= 2; k++)
 			{
-				// Y offset
-				const int y_offset = vPrecalc.offset[k + 1];
+				// We need to calculate the source pixel to interpolate from - Y-axis
+				const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
 
-				// Loop across the X axis
-				for (int i = -1; i <= 2; i++)
+				for (int dstx = 0; dstx < width; dstx++)
 				{
-					// X offset
-					const int x_offset = hPrecalc.offset[i + 1];
+					int dst_pixel_index = dsty * width * 3 + dstx * 3;
+					// X-axis of pixel to interpolate from
+					const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
 
-					// Calculate the exact position where the source data
-					// should be pulled from based on the x_offset and y_offset
-					int src_pixel_index = y_offset * src->GetWidth() + x_offset;
+					// Sums for each color channel
+					double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
 
-					// Calculate the weight for the specified pixel according
-					// to the bicubic b-spline kernel we're using for
-					// interpolation
-					const double
-						pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
+					// Here we actually determine the RGBA values for the destination pixel
+					for (int k = -1; k <= 2; k++)
+					{
+						// Y offset
+						const int y_offset = vPrecalc.offset[k + 1];
 
-					sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
-					sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
-					sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
+						// Loop across the X axis
+						for (int i = -1; i <= 2; i++)
+						{
+							// X offset
+							const int x_offset = hPrecalc.offset[i + 1];
+
+							// Calculate the exact position where the source data
+							// should be pulled from based on the x_offset and y_offset
+							int src_pixel_index = y_offset * src->GetWidth() + x_offset;
+
+							// Calculate the weight for the specified pixel according
+							// to the bicubic b-spline kernel we're using for
+							// interpolation
+							const double
+								pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
+
+							sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
+							sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
+							sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
+						}
+					}
+					dst_data[dst_pixel_index + 0] = static_cast<unsigned char>(sum_r + 0.5);
+					dst_data[dst_pixel_index + 1] = static_cast<unsigned char>(sum_g + 0.5);
+					dst_data[dst_pixel_index + 2] = static_cast<unsigned char>(sum_b + 0.5);
 				}
-			}
-			dst_data[dst_pixel_index + 0] = static_cast<unsigned char>(sum_r + 0.5);
-			dst_data[dst_pixel_index + 1] = static_cast<unsigned char>(sum_g + 0.5);
-			dst_data[dst_pixel_index + 2] = static_cast<unsigned char>(sum_b + 0.5);
-		}
-		});
+			});
 
 	}
 
 	return ret_image;
-	
+
 }
 
 void CIcone::RefreshIcone()
 {
 	photoDefault = false;
 	redraw = true;
-	localmemBitmap_backup = wxBitmap(0,0);
+	localmemBitmap_backup = wxBitmap(20, 20);
 }
 
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
-                                const bool& forceRedraw)
-{  
-   
+	const bool& forceRedraw)
+{
 	wxImage image = CLoadingResource::LoadImageResource("IDB_PHOTO");
 	if (forceRedraw)
 		redraw = true;
@@ -940,14 +894,14 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		image = pThumbnailData->GetwxImage(photoDefault);
 	}
 
-	
+
 
 	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() !=
 		themeIcone.GetHeight()))
 	{
 		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
 		wxMemoryDC memDC;
-		
+
 		try
 		{
 			memDC.SelectObject(localmemBitmap_backup);
@@ -957,16 +911,24 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
+			if (scaleBackup.IsOk())
+			{
+				bool isOk = scaleBackup.IsOk();
+				int scaleWidth = scaleBackup.GetWidth();
+				int scaleHeight = scaleBackup.GetHeight();
+			}
 
-			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.
-				GetHeight() != themeIcone.GetHeight())
+
+			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
+
+			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != tailleAffichageBitmapWidth || scaleBackup.GetHeight() != tailleAffichageBitmapHeight)
 			{
 				if (pThumbnailData != nullptr)
 				{
 					//image = pThumbnailData->GetwxImage();
 					if (!image.IsOk())
 					{
-						photoDefault = false;
+
 						image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
 						returnValue = 1;
 					}
@@ -981,8 +943,8 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 				if (image.IsOk())
 				{
 					GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth,
-									   tailleAffichageBitmapHeight,
-									   ratio);
+						tailleAffichageBitmapHeight,
+						ratio);
 
 					if (config->GetThumbnailQuality() == 0)
 						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
@@ -1000,8 +962,8 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 								photoTemp = CLibResource::CreatePictureFromSVG(
 									"IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 								photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-												  colorActifReplacement.Red(), colorActifReplacement.Green(),
-												  colorActifReplacement.Blue());
+									colorActifReplacement.Red(), colorActifReplacement.Green(),
+									colorActifReplacement.Blue());
 							}
 						}
 						else
@@ -1009,16 +971,16 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 							wxColor colorToReplace = wxColor(0, 0, 0);
 							wxColor colorActifReplacement = wxColor(255, 255, 255);
 							photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth,
-																		   tailleAffichageBitmapHeight);
+								tailleAffichageBitmapHeight);
 							photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-											  colorActifReplacement.Red(), colorActifReplacement.Green(),
-											  colorActifReplacement.Blue());
+								colorActifReplacement.Red(), colorActifReplacement.Green(),
+								colorActifReplacement.Blue());
 						}
 						scale = photoTemp;
 					}
 				}
 
-				scaleBackup = scale;
+				scaleBackup = wxImage(scale);
 
 				scale.Destroy();
 			}
@@ -1030,11 +992,11 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			image.Destroy();
 
 			redraw = false;
-		
+
 		}
-		catch(...)
+		catch (...)
 		{
-			
+
 		}
 		return localmemBitmap_backup;
 
@@ -1046,7 +1008,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 //
 //----------------------------------------------------------------------------------
 int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, const bool& flipHorizontal,
-                        const bool& flipVertical, const bool& forceRedraw)
+	const bool& flipVertical, const bool& forceRedraw)
 {
 	int returnValue = 0;
 	if (!visible)
@@ -1073,7 +1035,7 @@ bool CIcone::GetVisibility()
 {
 	return visible;
 }
-void CIcone::SetVisibility(const bool & visible)
+void CIcone::SetVisibility(const bool& visible)
 {
 	this->visible = visible;
 }
@@ -1092,8 +1054,8 @@ void CIcone::SetActive(const bool& value)
 		if (value)
 		{
 			state = ACTIFICONE;
-			
-		}	
+
+		}
 		else
 		{
 			state = INACTIFICONE;
@@ -1122,7 +1084,7 @@ void CIcone::SetChecked(const bool& value)
 }
 
 float CIcone::CalculRatio(const int& width, const int& height, const int& tailleBitmapWidth,
-                          const int& tailleBitmapHeight)
+	const int& tailleBitmapHeight)
 {
 	float newRatio;
 	//int left = 0;
@@ -1149,7 +1111,7 @@ float CIcone::CalculRatio(const int& width, const int& height, const int& taille
 }
 
 void CIcone::GetBitmapDimension(const int& width, const int& height, int& tailleAffichageBitmapWidth,
-                                int& tailleAffichageBitmapHeight, float& newRatio)
+	int& tailleAffichageBitmapHeight, float& newRatio)
 {
 	newRatio = CalculRatio(width, height, GetWidth(), GetHeight());
 

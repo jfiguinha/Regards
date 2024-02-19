@@ -41,14 +41,15 @@ namespace Regards::Window
 		CIcone& operator=(const CIcone& other);
 		inline bool operator==(const CIcone& n1);
 
-		void SetData(CThumbnailData* thumbnailData, const bool& deleteData = true);
+		void SetData(CThumbnailData* thumbnailData);
 		CThumbnailData* GetData();
-		bool DataNeedToBeDelete();
+
+
 		CThumbnailData* GetCopyData();
 		void SetTheme(CThemeIcone theme);
 
 		wxBitmap GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false,
-		                        const bool& forceRedraw = false);
+			const bool& forceRedraw = false);
 		//------------------------------------------
 		//Theme
 		//------------------------------------------
@@ -93,7 +94,7 @@ namespace Regards::Window
 		}
 
 		int RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, const bool& flipHorizontal,
-		                const bool& flipVertical, const bool& forceRedraw = false);
+			const bool& flipVertical, const bool& forceRedraw = false);
 
 		bool IsChecked();
 
@@ -111,9 +112,9 @@ namespace Regards::Window
 
 		void CalculPosition(const wxImage& render);
 		void GetBitmapDimension(const int& width, const int& height, int& tailleAffichageBitmapWidth,
-		                        int& tailleAffichageBitmapHeight, float& newRatio);
+			int& tailleAffichageBitmapHeight, float& newRatio);
 		float CalculRatio(const int& width, const int& height, const int& tailleBitmapWidth,
-		                  const int& tailleBitmapHeight);
+			const int& tailleBitmapHeight);
 		wxImage LoadImageResource(const wxString& resourceName);
 		wxImage GenerateVideoIcone();
 		wxImage ResampleBicubic(wxImage* Src, int width, int height);
@@ -153,7 +154,7 @@ namespace Regards::Window
 		int y;
 		int oldx;
 		int oldy;
-		bool deleteData;
+
 		int thumbnailIconeCache;
 		CRegardsConfigParam* config;
 		wxString filename;
@@ -170,7 +171,7 @@ namespace Regards::Window
 		bool visible = true;
 	};
 
-	using IconeVector = tbb::concurrent_vector<CIcone*>;
-	using pItemCompFonct = bool(*)(int, int, CIcone*, CWindowMain*);
-	using pItemStringCompFonct = bool(*)(wxString, CIcone*);
+	using IconeVector = tbb::concurrent_vector<CIcone *>;
+	using pItemCompFonct = bool(*)(int, int, CIcone *, CWindowMain*);
+	using pItemStringCompFonct = bool(*)(wxString,CIcone *);
 }
