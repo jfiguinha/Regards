@@ -1197,7 +1197,6 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
-
 	int type = event.GetInt();
 	if (type == 1)
 	{
@@ -1205,14 +1204,16 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	}
 	else
 	{
-		
 		std::map<wxString, bool>::iterator it = listFile.find(localName);
-		if (it != listFile.end())
+		if (it == listFile.end())
 		{
+			std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(),  localName);
+			if (itPhoto != photoList.end())
+				photoList.erase(itPhoto);
+
+			ProcessThumbnail(localName, type);
 			listFile[localName] = true;
 		}
-		ProcessThumbnail(localName, type);
-
 	}
 	delete filename;
 	processIdle = true;

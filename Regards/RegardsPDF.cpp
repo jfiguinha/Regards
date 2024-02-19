@@ -22,6 +22,8 @@
 #include <SqlLibExplorer.h>
 #include <wx/dir.h>
 #include <LibResource.h>
+#include <OpenCLContext.h>
+
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -30,6 +32,7 @@ cv::ocl::OpenCLExecutionContext clExecCtx;
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Print;
+using namespace Regards::OpenCL;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -134,7 +137,7 @@ bool MyApp::OnInit()
 	int svgWidth = 256;
 	int svgHeight = 256;
 	defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-
+	defaultPictureThumbnailPicture = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", svgWidth, svgHeight);
 	defaultPictureThumbnailVideo = CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight);
 
 	// call the base class initialization method, currently it only parses a
@@ -262,46 +265,7 @@ bool MyApp::OnInit()
 		}
 		else
 		{
-			ocl::Context context;
-			if (!context.create(ocl::Device::TYPE_GPU))
-				isOpenCLInitialized = false;
-			else
-				isOpenCLInitialized = true;
-
-			if (!isOpenCLInitialized)
-			{
-				if (!context.create(ocl::Device::TYPE_CPU))
-					isOpenCLInitialized = false;
-				else
-					isOpenCLInitialized = true;
-			}
-
-			cout << context.ndevices() << " GPU devices are detected." << endl;
-			//This bit provides an overview of the OpenCL devices you have in your computer
-			for (int i = 0; i < context.ndevices(); i++)
-			{
-				ocl::Device device = context.device(i);
-#if defined(WIN32)
-				char message[255];
-				sprintf(message, "name: % s \n", device.name().c_str());
-				OutputDebugStringA(message);
-				sprintf(message, "OpenCL_C_Version: % s \n", device.OpenCL_C_Version().c_str());
-				OutputDebugStringA(message);
-#else
-
-				cout << "name:              " << device.name() << endl;
-				cout << "available:         " << device.available() << endl;
-				cout << "imageSupport:      " << device.imageSupport() << endl;
-				cout << "OpenCL_C_Version:  " << device.OpenCL_C_Version() << endl;
-				cout << endl;
-#endif
-			}
-
-			if (isOpenCLInitialized)
-			{
-				ocl::Device(context.device(0));
-				clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
-			}
+			COpenCLContext::CreateDefaultOpenCLContext();
 		}
 
 		if (!isOpenCLInitialized)
@@ -309,6 +273,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		}
 	}
+
 
 
 #ifdef WIN32
