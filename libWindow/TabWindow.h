@@ -89,7 +89,7 @@ namespace Regards::Window
 
 	private:
 		void OnSize(wxSizeEvent& event) override;
-		void on_paint(wxPaintEvent& event);
+
 
 	protected:
 		void Resize() override;

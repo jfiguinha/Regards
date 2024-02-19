@@ -23,6 +23,9 @@ namespace Regards::Window
 		int GetNumFace();
 
 	protected:
+
+		void RenderTitle(wxDC* dc) override;
+
 		wxImage bitmapCheckOn;
 		wxImage bitmapCheckOff;
 		wxImage bitmapDelete;

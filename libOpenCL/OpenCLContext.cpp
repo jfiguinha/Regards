@@ -330,9 +330,8 @@ void COpenCLContext::initializeContextFromGL()
 
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
-	clReleaseDevice(device);
-	clReleaseContext(context);
-	clExecCtx.bind();
+
+
 
 #endif
 }

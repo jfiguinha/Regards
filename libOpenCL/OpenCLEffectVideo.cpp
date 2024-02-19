@@ -371,7 +371,19 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 		}
 	}
 
-	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+	try
+	{
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+	}
+	catch (cv::Exception& e)
+	{
+		cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+
+		const char* err_msg = e.what();
+		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 
@@ -446,8 +458,19 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 		}
 	}
 
+	try
+	{
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+	}
+	catch (cv::Exception& e)
+	{
+		cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 
-	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+		const char* err_msg = e.what();
+		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
@@ -544,7 +567,19 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 		}
 	}
 
-	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
+	try
+	{
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+	}
+	catch (cv::Exception& e)
+	{
+		cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
+		cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+
+		const char* err_msg = e.what();
+		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,

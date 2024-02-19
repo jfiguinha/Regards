@@ -7,18 +7,9 @@ CTabWindow::CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID 
 	: CWindowMain(windowName, parent, id)
 {
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CTabWindow::OnSize));
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CTabWindow::on_paint));
+
 }
 
-void CTabWindow::on_paint(wxPaintEvent& event)
-{
-	if (width == 0 || height == 0)
-		return;
-
-	wxPaintDC dc(this);
-	const wxRect rc = GetRect();
-	this->FillRect(&dc, rc, themeBitmap.colorScreen);
-}
 
 CTabWindow::~CTabWindow()
 {

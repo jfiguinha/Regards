@@ -385,6 +385,7 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
 #endif
 
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(wxGenericDirCtrl::OnMouseEnter));
+	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(wxGenericDirCtrl::OnEraseBackground));
 
 	// treeStyle |= wxTR_HIDE_ROOT;
 
@@ -454,6 +455,10 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
 	DoResize();
 
 	return true;
+}
+
+void wxGenericDirCtrl::OnEraseBackground(wxEraseEvent& event)
+{
 }
 
 wxGenericDirCtrl::~ wxGenericDirCtrl()

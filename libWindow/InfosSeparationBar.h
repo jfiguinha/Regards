@@ -54,7 +54,7 @@ namespace Regards::Window
 
 	protected:
 		virtual void RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur);
-		void RenderTitle(wxDC* dc);
+		virtual void RenderTitle(wxDC* dc);
 
 		int _xPos;
 		int _yPos;

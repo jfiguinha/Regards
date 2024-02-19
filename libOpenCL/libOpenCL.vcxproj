@@ -597,6 +597,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="OpenCLContext.h" />
     <ClInclude Include="OpenCLEffectVideo.h" />
     <ClInclude Include="OpenCLFilter.h" />
     <ClInclude Include="OpenCLParameter.h" />
@@ -609,6 +610,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="OpenCLContext.cpp" />
     <ClCompile Include="OpenCLEffectVideo.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />

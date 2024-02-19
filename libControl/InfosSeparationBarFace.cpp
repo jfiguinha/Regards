@@ -3,9 +3,8 @@
 #include "InfosSeparationBarFace.h"
 #include <WindowMain.h>
 #include <ChangeLabel.h>
-#include <wx/sstream.h>
+#include <ConvertUtility.h>
 #include <LibResource.h>
-#include <wx/textdlg.h>
 #include <SqlFaceLabel.h>
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
@@ -72,7 +71,7 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 	{
 		isSelectIcone = !isSelectIcone;
 	}
-	else if ((rcDeleteIcone.x < x && x < (rcDeleteIcone.x + rcDeleteIcone.width + sizeDelete.GetWidth())) && ((rcDeleteIcone.y) < y && y < (
+	else if ((rcDeleteIcone.x < x && x < (rcDeleteIcone.x + rcDeleteIcone.width)) && ((rcDeleteIcone.y) < y && y < (
 		rcDeleteIcone.y + rcDeleteIcone.height)))
 	{
 		auto windowMain = static_cast<CWindowMain*>(parentWindow->FindWindowById(MAINVIEWERWINDOWID));
@@ -112,12 +111,53 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 	}
 }
 
+void CInfosSeparationBarFace::RenderTitle(wxDC* dc)
+{
+	wxRect rc;
+	int x = 0;
+	int y = 0;
+	rc.x = 0;
+	rc.y = 0;
+	rc.width = width;
+	rc.height = GetHeight();
+	CWindowMain::FillRect(dc, rc, theme.colorBack);
+
+	int posY = 0;
+	//int i = 0;
+
+	vector<wxString> listOfTexte = CConvertUtility::split(title, '@');
+	if (listOfTexte.size() > 0)
+	{
+		int sizeOfY = GetHeight() / listOfTexte.size();
+
+		for (wxString title : listOfTexte)
+		{
+			if (title != L"")
+			{
+				wxSize size = CWindowMain::GetSizeTexte(dc, title, theme.themeFont);
+				int localy = 0;
+				int localx = x + (width - size.x) / 2;
+				CWindowMain::DrawTexte(dc, title, localx, localy, theme.themeFont);
+				posY += sizeOfY;
+
+				titleRectPos.x = localx;
+				titleRectPos.y = localy;
+				titleRectPos.width = size.x;
+				titleRectPos.height = size.y;
+			}
+		}
+	}
+}
+
+
 
 void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLargeur, const int& posHauteur)
 {
 	RenderTitle(deviceContext);
 	int x = 0;
 	int y = 0;
+	int marge_text = 5;
+	int marge_sepa = 20;
 
 	if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != theme.GetCheckboxHeight() || bitmapCheckOn.GetWidth() !=
 		theme.GetCheckboxWidth()))
@@ -153,7 +193,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	if (bitmapEdit.IsOk())
 		deviceContext->DrawBitmap(bitmapEdit, titleRectPos.x + titleRectPos.width + 5, titleRectPos.y);
 
-	xPosEdit = _xPos + posLargeur + titleRectPos.x + titleRectPos.width + 5;
+	xPosEdit = _xPos + posLargeur + titleRectPos.x + titleRectPos.width + marge_text;
 	yPosEdit = _yPos + posHauteur + titleRectPos.y;
 
 	int xPos = x;
@@ -171,12 +211,12 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 
 	wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
 
-	xPos = xPos + 5 + bitmapCheckOn.GetWidth();
+	xPos = xPos + marge_text + bitmapCheckOn.GetWidth();
 	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
 
 	CWindowMain::DrawTexte(deviceContext, libelleSelectAll, xPos, yPos, theme.themeFont);
 
-	xPos += size.x + 5;
+	xPos += size.x + marge_sepa;
 	yPos = y + (theme.GetHeight() - bitmapCheckOn.GetHeight());
 
 	if (isSelectIcone && bitmapCheckOn.IsOk())
@@ -191,12 +231,12 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 
 	size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
 
-	xPos = xPos + 5 + bitmapCheckOn.GetWidth();
+	xPos = xPos + marge_text + bitmapCheckOn.GetWidth();
 	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
 
 	CWindowMain::DrawTexte(deviceContext, libelleSelectIcone, xPos, yPos, theme.themeFont);
 
-	xPos += size.x + 5;
+	xPos += size.x + marge_sepa;
 	yPos = y + (theme.GetHeight() - bitmapDelete.GetHeight());
 
 	if (bitmapDelete.IsOk())
@@ -209,7 +249,7 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 
 	sizeDelete = CWindowMain::GetSizeTexte(deviceContext, libelleDelete, theme.themeFont);
 
-	xPos = xPos + 5 + bitmapDelete.GetWidth();
+	xPos = xPos + marge_text + bitmapDelete.GetWidth();
 	yPos = y + (theme.GetHeight() - sizeDelete.y) - (bitmapDelete.GetHeight() - sizeDelete.y) / 2;
 
 	CWindowMain::DrawTexte(deviceContext, libelleDelete, xPos, yPos, theme.themeFont);

@@ -39,6 +39,9 @@
     <ClInclude Include="VideoStabilization.h">
       <Filter>VideoStabilization</Filter>
     </ClInclude>
+    <ClInclude Include="OpenCLContext.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideo.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp">
       <Filter>VideoStabilization</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCLContext.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

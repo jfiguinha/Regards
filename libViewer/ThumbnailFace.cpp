@@ -27,6 +27,7 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 	flipVertical = true;
 	enableDragAndDrop = true;
 	moveOnPaint = false;
+	Connect(wxEVENT_SELECTALLICONE, wxCommandEventHandler(CThumbnailFace::OnSelectIcon));
 }
 
 
@@ -62,6 +63,7 @@ void CThumbnailFace::OnPictureClick(CThumbnailData* data)
 		}
 	}
 }
+
 
 
 void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
@@ -438,24 +440,40 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 		auto faceSeparator = static_cast<CInfosSeparationBarFace*>(separator);
 		if (faceSeparator != nullptr)
 		{
+			bool select = faceSeparator->GetSelected();
 			faceSeparator->OnClick(x, y);
-
-			for (auto numElement : separator->listElement)
+			if (select != faceSeparator->GetSelected())
 			{
-				CIcone *  icone = iconeList->GetElement(numElement);
-				if (icone != nullptr)
-				{
-					if (faceSeparator->GetSelected())
-						icone->SetChecked(true);
-					else
-						icone->SetChecked(false);
-				}
+				auto eventChange = new wxCommandEvent(wxEVENT_SELECTALLICONE);
+				eventChange->SetClientData(faceSeparator);
+				wxQueueEvent(this, eventChange);
+			}
+			mouseClickBlock = false;
+		}
+	}
+}
 
-				//icone->RenderIcone(dc);
+void CThumbnailFace::OnSelectIcon(wxCommandEvent& event)
+{
+	
+	auto faceSeparator = static_cast<CInfosSeparationBarFace*>(event.GetClientData());
+	if (faceSeparator != nullptr)
+	{
+		for (auto numElement : faceSeparator->listElement)
+		{
+			CIcone* icone = iconeList->GetElement(numElement);
+			if (icone != nullptr)
+			{
+				if (faceSeparator->GetSelected())
+					icone->SetChecked(true);
+				else
+					icone->SetChecked(false);
 			}
 		}
 	}
 }
+
+
 
 void CThumbnailFace::DeleteIcone(CIcone *  numSelect)
 {
