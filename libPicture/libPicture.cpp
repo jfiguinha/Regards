@@ -2166,7 +2166,10 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				break;
 			}
 
-		case JPEG:
+
+#ifndef __APPLE__
+        case JPEG:
+#endif
 		case PNM:
 		case WEBP:
 		case BMP:
@@ -2260,35 +2263,17 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
-
-		case IFF:
+#ifdef __APPLE__
+        case JPEG:
+#endif
+        case ANI:
+        case XPM:
+        case ICO:
+        case CUR:
+        case IFF:
 			{
 				wxImage image;
-				image.LoadFile(fileName, wxBITMAP_TYPE_IFF);
-				bitmap->SetPicture(image);
-			}
-			break;
-
-		case ICO:
-			{
-				wxImage image;
-				image.LoadFile(fileName, wxBITMAP_TYPE_ICON);
-				bitmap->SetPicture(image);
-			}
-			break;
-
-		case CUR:
-			{
-				wxImage image;
-				image.LoadFile(fileName, wxBITMAP_TYPE_CUR);
-				bitmap->SetPicture(image);
-			}
-			break;
-
-		case XPM:
-			{
-				wxImage image;
-				image.LoadFile(fileName, wxBITMAP_TYPE_XPM);
+				image.LoadFile(fileName, wxBITMAP_TYPE_ANY);
 				bitmap->SetPicture(image);
 			}
 			break;
@@ -2414,14 +2399,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
-		case ANI:
-			{
-				wxImage image;
-				wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
-				image.LoadFile(fileName, bitmapType, numPicture);
-				bitmap->SetPicture(image);
-			}
-			break;
+
 
 		case GIF:
 			{
