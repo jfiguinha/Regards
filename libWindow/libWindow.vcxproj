@@ -558,7 +558,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libFiltre;../libFiltreInterface;../libGeolocalisation;../libWindowMain;../libTheme;../libUtility;../libOpenGL;../libResource;../libPicture;../libSqlData;../libParameter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libFiltre;../libFiltreInterface;../libGeolocalisation;../libWindowMain;../libTheme;../libUtility;../libOpenGL;../libResource;../libPicture;../libSqlData;../libParameter;../libOpenCL</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

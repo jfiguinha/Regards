@@ -354,12 +354,6 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 			isOpenCLInitialized = true;
 	}
 
-	if (isOpenCLInitialized)
-	{
-		cv::ocl::Device(context.device(0));
-	}
-
-
 	clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
 	platformName = clExecCtx.getDevice().vendorName();
 }
