@@ -48,7 +48,7 @@ namespace Regards::Window
 		CThumbnailData* GetCopyData();
 		void SetTheme(CThemeIcone theme);
 
-		wxBitmap GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false,
+		void GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false,
 			const bool& forceRedraw = false);
 		//------------------------------------------
 		//Theme
@@ -103,7 +103,7 @@ namespace Regards::Window
 			return pictureLoad;
 		}
 
-		//std::mutex muIcone;
+		wxBitmap GetCopyIcone(); 
 
 	private:
 		void RenderPictureBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);

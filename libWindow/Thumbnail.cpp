@@ -1185,9 +1185,8 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 
 		if (numActifPhotoId != -1)
 		{
-			int returnValue = 0;
 			CIcone *  numActif = GetIconeById(numActifPhotoId);
-			bitmapIconDrag = numActif->GetBitmapIcone(returnValue, false, true);
+			bitmapIconDrag = numActif->GetCopyIcone();
 		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
 		auto alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];

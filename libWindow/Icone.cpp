@@ -770,6 +770,11 @@ wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
 
 }
 
+wxBitmap CIcone::GetCopyIcone()
+{
+    return wxBitmap(localmemBitmap_backup);
+}
+
 void CIcone::RefreshIcone()
 {
 	photoDefault = false;
@@ -777,7 +782,7 @@ void CIcone::RefreshIcone()
 	localmemBitmap_backup = wxBitmap(20, 20);
 }
 
-wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
+void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
 	const bool& forceRedraw)
 {
 	wxImage image = wxImage(20,20);
@@ -913,10 +918,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		{
 
 		}
-		return localmemBitmap_backup;
-
 	}
-	return localmemBitmap_backup;
 }
 
 //----------------------------------------------------------------------------------
@@ -939,10 +941,8 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
 		}
 	}
 
-	wxBitmap localmemBitmap = GetBitmapIcone(returnValue, flipHorizontal, flipVertical, forceRedraw);
-
-
-	dc->DrawBitmap(localmemBitmap, x + posLargeur, y + posHauteur);
+	GetBitmapIcone(returnValue, flipHorizontal, flipVertical, forceRedraw);
+	dc->DrawBitmap(localmemBitmap_backup, x + posLargeur, y + posHauteur);
 	return returnValue;
 }
 
