@@ -346,14 +346,14 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	else
 		isOpenCLInitialized = true;
 
-	if (!isOpenCLInitialized)
+
+	if (isOpenCLInitialized)
 	{
-		if (!context.create(cv::ocl::Device::TYPE_CPU))
-			isOpenCLInitialized = false;
-		else
-			isOpenCLInitialized = true;
+		cv::ocl::Device(context.device(0));
+		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+		platformName = clExecCtx.getDevice().vendorName();
 	}
 
-	clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
-	platformName = clExecCtx.getDevice().vendorName();
+
+
 }
