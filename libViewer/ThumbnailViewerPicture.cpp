@@ -189,6 +189,7 @@ void CThumbnailViewerPicture::ApplyListeFile()
 
 void CThumbnailViewerPicture::SetListeFile()
 {
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	threadDataProcess = false;
@@ -217,7 +218,6 @@ void CThumbnailViewerPicture::SetListeFile()
 
 		if (it == pIconeList.end())
 		{
-			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 			wxString filename = photo.GetPath();
 			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
 			thumbnailData->SetNumPhotoId(photo.GetId());
@@ -254,7 +254,27 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
+	//------------------------------------
+	for (CIcone* ico : pIconeListToClean)
+	{
+		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+
+			});
+
+		if (it != pIconeList.end())
+			pIconeList.erase(it);
+	}
+
 	EraseThumbnailList(oldIconeList);
+	EraseIconeList(pIconeListToClean);
+	//----------------------------------------------------------
+
+	//EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
