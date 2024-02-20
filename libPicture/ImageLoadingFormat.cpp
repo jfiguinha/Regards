@@ -395,31 +395,46 @@ FIBITMAP* CImageLoadingFormat::GetFreeImage()
 
 void CImageLoadingFormat::SetPicture(wxImage& image)
 {
-	_image = CLibPicture::mat_from_wx(image);
-	if (_image.channels() == 1)
-		cvtColor(_image, _image, cv::COLOR_GRAY2BGRA);
+	if (image.IsOk())
+	{
+		_image = CLibPicture::mat_from_wx(image);
+		if (_image.channels() == 1)
+			cvtColor(_image, _image, cv::COLOR_GRAY2BGRA);
+	}
 }
 
 cv::Mat CImageLoadingFormat::GetFloatImage()
 {
 	cv::Mat img2;
-	_image.convertTo(img2, CV_32FC4, 1.0 / 255);
+	if (IsOk())
+	{
+		_image.convertTo(img2, CV_32FC4, 1.0 / 255);
+	}
+
 	return img2;
 }
 
 void CImageLoadingFormat::SetPicture(cv::Mat& image)
 {
-	if (image.channels() == 3)
-		cvtColor(image, _image, cv::COLOR_BGR2BGRA);
-	else if (image.channels() == 1)
-		cvtColor(image, _image, cv::COLOR_GRAY2BGRA);
-	else
-		image.copyTo(_image);
+	if (!image.empty())
+	{
+		if (image.channels() == 3)
+			cvtColor(image, _image, cv::COLOR_BGR2BGRA);
+		else if (image.channels() == 1)
+			cvtColor(image, _image, cv::COLOR_GRAY2BGRA);
+		else
+			image.copyTo(_image);
+	}
+
+
 }
 
 void CImageLoadingFormat::SetPicture(cv::Mat& image, const int& exif, const wxString& fileIn,
                                      const bool& convertToRGB24)
 {
+	if (image.empty())
+		return;
+
 	SetPicture(image);
 
 	if (convertToRGB24)
@@ -445,7 +460,8 @@ void CImageLoadingFormat::SaveToJpeg(const wxString& filename)
 */
 void CImageLoadingFormat::ConvertToBGR()
 {
-	cvtColor(_image, _image, cv::COLOR_RGBA2BGRA);
+	if (IsOk())
+		cvtColor(_image, _image, cv::COLOR_RGBA2BGRA);
 }
 
 
