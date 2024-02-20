@@ -35,6 +35,13 @@ using namespace Regards::Internet;
 wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 
 
+class CListToClean
+{
+public:
+	CCategoryWnd * catalogWndOld;
+	std::time_t timeToAdd;
+};
+
 class CCategoryFolderWindowPimpl
 {
 public:
@@ -91,6 +98,7 @@ public:
     std::mutex muVector;
 	GpsPhoto fileToGetGps;
 	int nbPhotoGps = 0;
+    std::vector<CListToClean *> listToErrase;
 };
 
 class CFindPhotoCriteria
@@ -248,9 +256,17 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
 		catalogWnd->Init();
 		treeWindow->SetTreeControl(catalogWnd);
-		delete(pimpl->catalogWndOld);
+        
+        CListToClean* listToAdd = new CListToClean();
+        listToAdd->catalogWndOld = pimpl->catalogWndOld;
+
 		pimpl->catalogWndOld = catalogWnd;
 		pimpl->update = true;
+        
+       
+		time(&listToAdd->timeToAdd);
+		
+		pimpl->listToErrase.push_back(listToAdd);
 
 
 	}
@@ -514,6 +530,29 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 		if (pimpl->refreshTimer->IsRunning())
 			pimpl->refreshTimer->Stop();
 	}
+    
+    
+    if (!pimpl->listToErrase.empty())
+	{
+       // printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (int i = 0; i < pimpl->listToErrase.size(); i++)
+		{
+			CListToClean* element = pimpl->listToErrase[i];
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 5)
+			{
+				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
+				delete element->catalogWndOld;
+				element->catalogWndOld = nullptr;
+				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
+				i--;
+			}
+		}
+	}
+    
 
 	StartThread();
 }

@@ -591,6 +591,9 @@ void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 
 CIcone::~CIcone(void)
 {
+   // if (pThumbnailData != nullptr)
+    //    printf("delete CIcone : %s \n", pThumbnailData->GetFilename().ToStdString().c_str());
+    
 	if (pThumbnailData != nullptr)
 		delete pThumbnailData;
 	pThumbnailData = nullptr;
