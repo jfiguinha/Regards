@@ -237,22 +237,21 @@ wxString CFileUtility::GetThumbnailPath(const wxString& path)
 
 wxString CFileUtility::GetDocumentFolderPath()
 {
-	wxStandardPathsBase& stdp = wxStandardPaths::Get();
-	wxString documentPath = stdp.GetDocumentsDir();
-
+ 
+    wxString documentPath = wxStandardPaths::Get().GetDocumentsDir();
 
 #ifdef WIN32
-	//documentPath = "d:\\Regards";
+    //documentPath = "d:\\Regards";
 
-	documentPath.append("\\Regards");
+    documentPath.append("\\Regards");
 #else
-	documentPath.append("/Regards");
+    documentPath.append("/Regards");
 #endif
 
-	if (!wxDir::Exists(documentPath))
-	{
-		wxDir::Make(documentPath);
-	}
+    if (!wxDir::Exists(documentPath))
+    {
+        wxDir::Make(documentPath);
+    }
 	return documentPath;
 }
 
@@ -268,6 +267,7 @@ wxString CFileUtility::GetDocumentFolderPath()
     
     return documentFolder;
  }
+
 
 wxString CFileUtility::GetProgramFolderPath()
 {

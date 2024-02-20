@@ -27,6 +27,24 @@ make install
 cd ..
 cd ..
 
+FILE=v1.0.4.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.0.4.zip
+    unzip v1.0.4.zip
+fi
+
+cd libavif-1.0.4
+mkdir build
+cd build
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx" -DCMAKE_BUILD_TYPE=Release -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx/debug" -DCMAKE_BUILD_TYPE=Debug -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+cd ..
+cd ..
+
 cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,opencl,openjpeg,opus,fdk-aac] --allow-unsupported
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]

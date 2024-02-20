@@ -281,7 +281,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 		return 1;
 	}
 
-	if (showDeleted)
+	if (showDeleted && bitmapDelete.IsOk())
 	{
 		checkPos.x = themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge());
 		checkPos.width = checkPos.x + bitmapDelete.GetWidth();

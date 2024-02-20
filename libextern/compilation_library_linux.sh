@@ -13,7 +13,6 @@ mv vcpkg-2024.01.12 vcpkg
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install x265
-./vcpkg install libavif
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install opencl
@@ -30,6 +29,26 @@ cd vcpkg
 ./vcpkg install libepoxy
 ./vcpkg install aom
 cd ..
+
+
+FILE=v1.0.4.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.0.4.zip
+    unzip v1.0.4.zip
+fi
+
+cd libavif-1.0.4
+mkdir build
+cd build
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux" -DCMAKE_BUILD_TYPE=Release -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/x64-linux/debug" -DCMAKE_BUILD_TYPE=Debug -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
+PATH="$HOME/bin:$PATH" make -j
+make install
+cd ..
+cd ..
+
 
 
 #Compile heif-master

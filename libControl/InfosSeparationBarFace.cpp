@@ -82,8 +82,8 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 			windowMain->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-	else if ((xPosEdit < x && x < (xPosEdit + bitmapEdit.GetWidth())) && (yPosEdit < y && y < (yPosEdit + bitmapEdit.
-		GetHeight())))
+	else if (bitmapEdit.IsOk() && ((xPosEdit < x && x < (xPosEdit + bitmapEdit.GetWidth())) && (yPosEdit < y && y < (yPosEdit + bitmapEdit.
+		GetHeight()))))
 	{
 		//Modification du titre
 		ChangeLabel changeLabel(parentWindow);
