@@ -81,26 +81,51 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		CFaceFilePath numFace = listPhotoFace.at(i);
 		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
 
-		auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
-		thumbnailData->SetNumPhotoId(numFace.numPhoto);
-		thumbnailData->SetNumElement(nbElement++);
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone * e)
+			{ 
+				CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *) e->GetData();
+				return thumbnailData->GetNumFace() == numFace.numFace;
+			
+		});
 
-		CLibPicture libPicture;
-		if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+		if (it == pIconeList.end())
 		{
-			CSqlFacePhoto facePhoto;
-			int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
-			thumbnailData->SetNumFrame(positionVideo);
+			auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
+			thumbnailData->SetNumPhotoId(numFace.numPhoto);
+			thumbnailData->SetNumElement(nbElement++);
+
+			CLibPicture libPicture;
+			if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+			{
+				CSqlFacePhoto facePhoto;
+				int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
+				thumbnailData->SetNumFrame(positionVideo);
+			}
+
+
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->ShowSelectButton(true);
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			pBitmapIcone->SetShowDelete(true);
+			iconeListLocal->AddElement(pBitmapIcone);
+
+			pIconeList.push_back(pBitmapIcone);
+		}
+		else
+		{
+			CIcone* icone = (CIcone *)*it;
+			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)icone->GetData();
+			thumbnailData->SetNumElement(nbElement++);
+			icone->SetNumElement(thumbnailData->GetNumElement());
+
+			iconeListLocal->AddElement(icone);
 		}
 
 
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->ShowSelectButton(true);
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetShowDelete(true);
-		iconeListLocal->AddElement(pBitmapIcone);
+		
+
 	}
 
 
@@ -110,6 +135,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 void CThumbnailFace::init()
 {
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	auto viewerParam = CMainParamInit::getInstance();
@@ -170,7 +196,44 @@ void CThumbnailFace::init()
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
+	for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
+		int numFace = thumbnailData->GetNumFace();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
+			if (thumbnailData->GetNumFace() == numFace)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
+
+	for (CIcone* ico : pIconeListToClean)
+	{
+		CSqlFaceThumbnail* _clean = (CSqlFaceThumbnail*)ico->GetData();
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
+				return thumbnailData->GetNumFace() == _clean->GetNumFace();
+
+			});
+
+		if(it != pIconeList.end())
+			pIconeList.erase(it);
+	}
+
 	EraseThumbnailList(oldIconeList);
+	EraseIconeList(pIconeListToClean);
 
 	AfterSetList();
 
