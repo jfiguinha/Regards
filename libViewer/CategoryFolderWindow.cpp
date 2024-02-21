@@ -501,6 +501,27 @@ void CCategoryFolderWindow::ProcessIdle()
 		processIdle = true;
 
 
+	if (!pimpl->listToErrase.empty())
+	{
+		// printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (int i = 0; i < pimpl->listToErrase.size(); i++)
+		{
+			CListToClean* element = pimpl->listToErrase[i];
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 5)
+			{
+				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
+				delete element->catalogWndOld;
+				element->catalogWndOld = nullptr;
+				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
+				i--;
+			}
+		}
+	}
+
 
 }
 
@@ -531,27 +552,6 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 			pimpl->refreshTimer->Stop();
 	}
     
-    
-    if (!pimpl->listToErrase.empty())
-	{
-       // printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
-		int i = 0;
-		time_t ending;
-		time(&ending);
-		for (int i = 0; i < pimpl->listToErrase.size(); i++)
-		{
-			CListToClean* element = pimpl->listToErrase[i];
-			int diff = difftime(ending, element->timeToAdd);
-			if (diff > 5)
-			{
-				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
-				delete element->catalogWndOld;
-				element->catalogWndOld = nullptr;
-				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
-				i--;
-			}
-		}
-	}
     
 
 	StartThread();
