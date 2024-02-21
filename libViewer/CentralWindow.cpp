@@ -91,6 +91,16 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		windowMode = 1;
 	}
 
+
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
+    if(!faceDetection && windowMode == WINDOW_FACE)
+    {
+        windowMode = 1;
+    }
+
 	//Verify left position panel is correct
 	if (left.width < 50)
 		left = {0, 0, 0, 0};
