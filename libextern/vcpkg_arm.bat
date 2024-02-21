@@ -1,4 +1,4 @@
-vcpkg install libavif:arm64-windows
+vcpkg install libavif[aom]:arm64-windows
 vcpkg install libheif:arm64-windows
 vcpkg install sdl2:arm64-windows --recurse
 vcpkg install sqlite3:arm64-windows --recurse

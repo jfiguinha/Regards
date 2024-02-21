@@ -16,6 +16,6 @@ vcpkg install opencl:x64-windows
 vcpkg install libexif:x64-windows
 vcpkg install libjxl:x64-windows
 vcpkg install tbb:x64-windows
-vcpkg install libavif:x64-windows
+vcpkg install libavif[aom,core]:x64-windows
 vcpkg install libheif:x64-windows
 vcpkg install x265:x64-windows

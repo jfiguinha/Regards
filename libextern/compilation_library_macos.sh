@@ -13,7 +13,7 @@ mv vcpkg-2024.01.12 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install libavif
+./vcpkg install libavif[aom,core]
 
 cd ..
 unzip SVT-AV1-v1.8.0.zip
@@ -22,24 +22,6 @@ PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/
 PATH="$HOME/bin:$PATH" make -j
 make install
 PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx/debug" -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j
-make install
-cd ..
-cd ..
-
-FILE=v1.0.4.zip
-if [ ! -f FILE ]; then
-    wget https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.0.4.zip
-    unzip v1.0.4.zip
-fi
-
-cd libavif-1.0.4
-mkdir build
-cd build
-PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx" -DCMAKE_BUILD_TYPE=Release -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
-PATH="$HOME/bin:$PATH" make -j
-make install
-PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx/debug" -DCMAKE_BUILD_TYPE=Debug -DAVIF_BUILD_APPS=OFF -DAVIF_CODEC_AOM=ON -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
 cd ..
