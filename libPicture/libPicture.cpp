@@ -948,7 +948,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 			//CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
-			CHeic::SavePicture(CConvertUtility::ConvertToStdString(fileName), image, data, size, quality, hasExif);
+			CHeic::SavePicture(CConvertUtility::ConvertToUTF8(fileName), image, data, size, quality, hasExif);
 
 			if (data != nullptr)
 				delete[] data;
@@ -981,7 +981,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 
-			CAvif::SavePicture(CConvertUtility::ConvertToStdString(fileName), image, data, size, quality, hasExif);
+			CAvif::SavePicture(CConvertUtility::ConvertToUTF8(fileName), image, data, size, quality, hasExif);
 			if (data != nullptr)
 				delete[] data;
 			break;
@@ -1392,12 +1392,12 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 #ifdef LIBHEIC
 	case AVIF:
 		{
-			return CAvif::GetNbFrame(CConvertUtility::ConvertToStdString(szFileName));
+			return CAvif::GetNbFrame(CConvertUtility::ConvertToUTF8(szFileName));
 		}
 		break;
 	case HEIC:
 		{
-			return CHeic::GetNbFrame(CConvertUtility::ConvertToStdString(szFileName));
+			return CHeic::GetNbFrame(CConvertUtility::ConvertToUTF8(szFileName));
 		}
 		break;
 #endif
@@ -1467,10 +1467,10 @@ uint32_t CLibPicture::GetFrameDelay(const wxString& szFileName)
 	{
 #ifdef LIBHEIC
 	case AVIF:
-		return CAvif::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
+		return CAvif::GetDelay(CConvertUtility::ConvertToUTF8(szFileName));
 
 	case HEIC:
-		return CHeic::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
+		return CHeic::GetDelay(CConvertUtility::ConvertToUTF8(szFileName));
 
 #endif
 
@@ -1551,10 +1551,10 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 				bool isMaster;
 				vector<cv::Mat> listPicture;
 				if (iFormat == HEIC)
-					listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), isMaster,
+					listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToUTF8(szFileName), isMaster,
 					                                   delay);
 				else if (iFormat == AVIF)
-					listPicture = CAvif::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), delay);
+					listPicture = CAvif::GetAllPicture(CConvertUtility::ConvertToUTF8(szFileName), delay);
 				else if (iFormat == WEBP)
 					listPicture = CRegardsWebp::GetAllPicture(szFileName, delay);
 				for (auto i = 0; i < listPicture.size(); i++)
@@ -1772,7 +1772,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	{
 
 		int angle = 0;
-		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName), angle);
+		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToUTF8(fileName), angle);
 		if (!bitmap.empty())
 		{
 			imageLoading = new CImageLoadingFormat();
@@ -2050,17 +2050,17 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
-						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName),
+						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToUTF8(fileName),
 						                                     orientation);
 
 					if (picture.empty())
-						picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), orientation);
+						picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation);
 				}
 				else
 				{
 					int delay = 4;
 					bool isMaster;
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay,
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isMaster, delay,
 					                            numPicture);
 				}
 				
@@ -2078,12 +2078,12 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 				if (numPicture == 0)
 				{
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName));
 				}
 				else
 				{
 					int delay = 4;
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName), delay, numPicture);
+					picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
 				}
 
 				if (!picture.empty())
@@ -2743,14 +2743,14 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case HEIC:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CHeic::GetPictureDimension(CConvertUtility::ConvertToStdString(fileName), width, height);
+			CHeic::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
 	case AVIF:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CAvif::GetPictureDimension(CConvertUtility::ConvertToStdString(fileName), width, height);
+			CAvif::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
