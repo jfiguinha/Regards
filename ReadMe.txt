@@ -55,6 +55,88 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+<b>News for 2.80.0 :</b><br>
+- Correct bug on avif format
+- Update icon management
+- Correct bug on video display orientation
+- Correct crash if picture has a wrong date
+- Correct bug and add some optimization
+- Correct bug on filter preview
+- Correct bug on video thumbnail
+- Correct crash on some video
+- Correct video metadata information
+- Update opengl Texture management
+- Update MediaInfo File access
+- Some minor update for performance boost
+- Correct bug on search criteria
+- Update RegardsConverter program with new encoder option
+- Linux : Add support for qsv and amf for video encoding
+- Add Preset option for video encoding
+- Update SVT-AV1 encoder to 1.8.0 (x2 faster)
+<b>News for 2.79.0 :</b><br>
+- Export video bug is corrected
+- Correct some bugs on gps geolocalization
+- Correct bug on update criteria
+- Correct error on thumbnail effect
+- Correct bug and add some optimizations
+- Correct bug thumbnail picture generator
+- Correct bug on cpu usage on video decoding
+- Work on memory bug with opencv capture on linux
+- Add Expand and contract for each separation bar for explorer mode
+<b>News for 2.78.0 :</b><br>
+- Correct bug and some optimization
+- Correct bug on memory usage
+- Correct bug on animation and video thumbnail
+- Correct crash on linux
+- Correct theme error
+- Correct bug on video thumbnail rotation
+- Correct crash on mac os with incorrect datetime on photo
+- Correct bug with gps management
+- Correct bug on diaporama and transition effect
+- Correct bug on video thumbnail management
+- Optimize access to video
+- Stop Apple Intel Version
+- Stop Linux Ubuntu 20
+<b>News for 2.77.0 :</b><br>
+- Support dark, light and auto mode
+- Add support for AV1 encoding
+- External application for video export
+- External application for PDF and Scan
+- Correct bug :
+- Fullscreen mac os
+- Correct bug on opengl opencl interop
+- Folder focus correct mac os
+- Crash on select or deselect folder update
+- picture display correctly when you past an image path on command line
+- thumbnail generation for video
+- thumbnail generator stop
+- webp animation
+- exr crash
+- Correct crash bug when you start the app with a file that doesn't exist.
+- Correct zoom moving on video
+- New version detection doesn't block app
+- Correct bug on scan application
+- Correct crash on export video
+- Correct crash on video export when you choose a hardware encoder
+<b>News for 2.76.0 :</b><br>
+Bug Correction :
+- Correct bug on effect thumbnail
+- Correct screen tab bug show on fullscreen
+- Correct bug on manage event when you watch a movie
+- Correct bug on video display on opencl compatible device
+- Correct a crash when video is played a long time on linux
+- Correct bug with face thumbnail invert
+- Correct crash with update thumbnail
+- Correct font display
+- Correct crash on Explorer Mode
+- Correct crash on Unvalid Raw File
+Optimisation :
+- Optimisation for large amount of pictures
+- Optimisation for large picture show
+- Update lib version
+- Update Face List management
+- Improve video fluidity
+- Add Create Face Name option
 <b>News for 2.63.5 :</b><br>
 - Add video encoder tool. Support mkv and mp4.<br>
 - Update ffmpeg lib with the latest version<br>
