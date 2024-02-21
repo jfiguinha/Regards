@@ -55,64 +55,115 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
-<b>News for 2.63.5 :</b><br>
-- Add video encoder tool. Support mkv and mp4.<br>
-- Update ffmpeg lib with the latest version<br>
-- Correct memory bug on video decoder software.<br>
-<b>News for 2.63.4 :</b><br>
-- Correct bug on display bleeding<br>
-- Correct rotation video bug on software decompression<br>
-- Add new button for linking external program for video and picture edition<br>
-<b>News for 2.63.3 :</b><br>
-- Correct bug on video playback with dxva2<br>
-- Correct bug with diaporama after video playback<br>
-- Correct bug on Vertical Flip which call Save<br>
-- Correct crash when you keep push down space bar after video thumbnail<br>
-<b>News for 2.63.2 :</b><br>
-- Correct bug on scrollbar disapear on Thumbnail video and Thumbnail effect<br>
-- Add support for opengl interpolation for no opencl devices<br>
-- Correct movie crash play on qemu linux distrib<br>
-<b>News for 2.63.1 :</b><br>
-- Correct bug on window display<br>
-<b>News for 2.63.0 :</b><br>
-Correct bug : <br>
-- Correct background process Face, Thumbnail and Criteria<br>
-- Correct event loop scrolling in thumbnail paint event<br>
-- Correct Thumbnail Face orientation on Face mode<br>
-- Correct bug on video ratio management<br>
-- Correct several bug on window display<br>
-Modification : <br>
-- Modification on criteria management. Add Red cross for deleting<br>
-<b>News for 2.62.9 :</b><br>
-- Bug correction :<br>
-- On linux, correct slider visibility for picture compression<br>
-- Correct bug on showing dialog box for delete keyword<br>
-- Correct bug on delete criteria<br>
-- Correct bug on saving picture file<br>
-- Update dialog box display<br>
-<b>News for 2.62.8 :</b><br>
-- New function : <br>
-- Add zoom and rotation for video<br>
-- Add saving option for video picture when the video is paused<br>
-- Bug Correction : <br>
-- Correct bug on image lib for saving and loading<br>
-- Correct bug on playing video on mac os<br>
-- Correct bug on stop video<br>
-<b>News for 2.62.7 :</b><br>
-- Correct audio crash on playing video<br>
-<b>News for 2.62.6 :</b><br>
-- Correct memory bug<br>
-- Faster movie play<br>
-<b>News for 2.62.5 :</b><br>
-- Correct freeze bug on playing video<br>
-News for 2.62.4 :
+News for 2.80.0 :
+- Correct bug on avif format
+- Update icon management
+- Correct bug on video display orientation
+- Correct crash if picture has a wrong date
+- Correct bug and add some optimization
+- Correct bug on filter preview
+- Correct bug on video thumbnail
+- Correct crash on some video
+- Correct video metadata information
+- Update opengl Texture management
+- Update MediaInfo File access
+- Some minor update for performance boost
+- Correct bug on search criteria
+- Update RegardsConverter program with new encoder option
+- Linux : Add support for qsv and amf for video encoding
+- Add Preset option for video encoding
+- Update SVT-AV1 encoder to 1.8.0 (x2 faster)
+News for 2.79.0 :
+- Export video bug is corrected
+- Correct some bugs on gps geolocalization
+- Correct bug on update criteria
+- Correct error on thumbnail effect
+- Correct bug and add some optimizations
+- Correct bug thumbnail picture generator
+- Correct bug on cpu usage on video decoding
+- Work on memory bug with opencv capture on linux
+- Add Expand and contract for each separation bar for explorer mode
+News for 2.78.0 :
+- Correct bug and some optimization
+- Correct bug on memory usage
+- Correct bug on animation and video thumbnail
+- Correct crash on linux
+- Correct theme error
+- Correct bug on video thumbnail rotation
+- Correct crash on mac os with incorrect datetime on photo
+- Correct bug with gps management
+- Correct bug on diaporama and transition effect
+- Correct bug on video thumbnail management
+- Optimize access to video
+- Stop Apple Intel Version
+- Stop Linux Ubuntu 20
+News for 2.77.0 :
+- Support dark, light and auto mode
+- Add support for AV1 encoding
+- External application for video export
+- External application for PDF and Scan
+- Correct bug :
+- Fullscreen mac os
+- Correct bug on opengl opencl interop
+- Folder focus correct mac os
+- Crash on select or deselect folder update
+- picture display correctly when you past an image path on command line
+- thumbnail generation for video
+- thumbnail generator stop
+- webp animation
+- exr crash
+- Correct crash bug when you start the app with a file that doesn't exist.
+- Correct zoom moving on video
+- New version detection doesn't block app
+- Correct bug on scan application
+- Correct crash on export video
+- Correct crash on video export when you choose a hardware encoder
+News for 2.76.0 :
+Bug Correction :
+- Correct bug on effect thumbnail
+- Correct screen tab bug show on fullscreen
+- Correct bug on manage event when you watch a movie
+- Correct bug on video display on opencl compatible device
+- Correct a crash when video is played a long time on linux
+- Correct bug with face thumbnail invert
+- Correct crash with update thumbnail
+- Correct font display
+- Correct crash on Explorer Mode
+- Correct crash on Unvalid Raw File
+Optimisation :
+- Optimisation for large amount of pictures
+- Optimisation for large picture show
+- Update lib version
+- Update Face List management
+- Improve video fluidity
+- Add Create Face Name option
+News for 2.63.0 :
+- Correct background process Face, Thumbnail and Criteria
+- Correct event loop scrolling in thumbnail paint event
+- Correct Thumbnail Face orientation on Face mode
+- Correct bug on video ratio management
+- Correct several bug on window display
+- Modification on criteria management. Add Red cross for deleting
+- On linux, correct slider visibility for picture compression
+- Correct bug on showing dialog box for delete keyword
+- Correct bug on delete criteria
+- Correct bug on saving picture file
+- Update dialog box display
+New function :
+- Add zoom and rotation for video
+- Add saving option for video picture when the video is paused
+Bug Correction :
+- Correct bug on image lib for saving and loading
+- Correct bug on playing video on mac os
+- Correct bug on stop video
+- Correct audio crash on playing video
+- Correct memory bug
+- Faster movie play
+- Correct freeze bug on playing video
 - Add new transition effect : none, fading, move, page curl.
 - Add auto contrast correction on picture display.
 - All this option is available on Regards configuration dialog.
 - Correct DXVA2 video playback on windows.
-News for 2.62.3 :
-- Correct bug on window position
-News for 2.62.1 :
 - Correct bug on window position
 - Prevent crash bug with update notification on linux
 News for 2.62.0 :

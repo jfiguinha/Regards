@@ -17,9 +17,9 @@ CAvif::~CAvif()
 {
 }
 
-void LoadDataFromFile(const string& filename, avifRWData& raw)
+void LoadDataFromFile(const char * filename, avifRWData& raw)
 {
-	FILE* f = fopen(filename.c_str(), "rb");
+	FILE* f = fopen(filename, "rb");
 	if (!f)
 		return;
 	fseek(f, 0, SEEK_END);
@@ -31,16 +31,16 @@ void LoadDataFromFile(const string& filename, avifRWData& raw)
 	fclose(f);
 }
 
-int CAvif::GetDelay(const string& filename)
+int CAvif::GetDelay(const char * filename)
 {
 	int delay = 0;
 	// Decode it
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -62,16 +62,16 @@ cleanup:
 	return delay;
 }
 
-int CAvif::GetNbFrame(const string& filename)
+int CAvif::GetNbFrame(const char * filename)
 {
 	int nbFrame = 0;
 	// Decode it
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -94,15 +94,15 @@ cleanup:
 }
 
 
-void CAvif::GetPictureDimension(const string& filename, int& width, int& height)
+void CAvif::GetPictureDimension(const char * filename, int& width, int& height)
 {
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -131,7 +131,7 @@ cleanup:
 }
 
 
-cv::Mat CAvif::GetThumbnailPicture(const string& filename)
+cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 {
 	cv::Mat picture;
 	auto* reader = Reader::Create();
@@ -140,7 +140,7 @@ cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 	Array<ImageId> itemIds;
 
 
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		reader->getFileInformation(info);
@@ -213,16 +213,16 @@ cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 	return picture;
 }
 
-cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPicture)
+cv::Mat CAvif::GetPicture(const char * filename, int& delay, const int& numPicture)
 {
 	cv::Mat out;
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -277,7 +277,7 @@ cleanup:
 }
 
 
-void CAvif::SavePicture(const string& filename, cv::Mat& source, uint8_t* data, const long& size,
+void CAvif::SavePicture(const char * filename, cv::Mat& source, uint8_t* data, const long& size,
                         const int& compression, const bool& hasExif)
 {
 	if (!source.empty())
@@ -349,7 +349,7 @@ void CAvif::SavePicture(const string& filename, cv::Mat& source, uint8_t* data, 
 }
 
 
-vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
+vector<cv::Mat> CAvif::GetAllPicture(const char * filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
 	int returnCode = 1;
@@ -357,9 +357,9 @@ vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -415,7 +415,7 @@ cleanup:
 	return listPicture;
 }
 
-cv::Mat CAvif::GetPicture(const string& filename)
+cv::Mat CAvif::GetPicture(const char * filename)
 {
 	cv::Mat out;
 
@@ -424,9 +424,9 @@ cv::Mat CAvif::GetPicture(const string& filename)
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -469,7 +469,7 @@ cleanup:
 }
 
 // static
-bool CAvif::HasExifMetaData(const string& filename)
+bool CAvif::HasExifMetaData(const char * filename)
 {
 	bool exifData = false;
 
@@ -479,9 +479,9 @@ bool CAvif::HasExifMetaData(const string& filename)
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
@@ -551,7 +551,7 @@ static const unsigned int image_data_offset = 20;
 #define image_data_len (image_jpg_len - image_data_offset)
 
 // static
-void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& size)
+void CAvif::GetMetadata(const char * filename, uint8_t*& data, unsigned int& size)
 {
 	int returnCode = 1;
 
@@ -559,9 +559,9 @@ void CAvif::GetMetadata(const string& filename, uint8_t*& data, unsigned int& si
 	avifDecoder* decoder = avifDecoderCreate();
 
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename.c_str());
+	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename.c_str());
+		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 

@@ -34,20 +34,20 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 		unsigned int size = 0;
 		if (type == HEIC)
 		{
-			CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), buffer, size);
+			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
 			if (size > 0)
 			{
 				buffer = new uint8_t[size + 1];
-				CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), buffer, size);
+				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
 			}
 		}
 		else if (type == AVIF)
 		{
-			CAvif::GetMetadata(CConvertUtility::ConvertToStdString(filename), buffer, size);
+			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
 			if (size > 0)
 			{
 				buffer = new uint8_t[size + 1];
-				CAvif::GetMetadata(CConvertUtility::ConvertToStdString(filename), buffer, size);
+				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
 			}
 		}
 
@@ -121,22 +121,22 @@ void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		{
 			if (size > 0)
 			{
-				CAvif::GetMetadata(CConvertUtility::ConvertToStdString(filename), data, size);
+				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 			}
 			else if (size == 0)
 			{
-				CAvif::GetMetadata(CConvertUtility::ConvertToStdString(filename), data, size);
+				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 			}
 		}
 		else if (type == HEIC)
 		{
 			if (size > 0)
 			{
-				CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), data, size);
+				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 			}
 			else if (size == 0)
 			{
-				CHeic::GetMetadata(CConvertUtility::ConvertToStdString(filename), data, size);
+				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 			}
 		}
 	}

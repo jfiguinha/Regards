@@ -339,7 +339,7 @@ cv::Mat DecodeFrame(void* data, int length, void* externDecoder)
 	return picture;
 }
 
-vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const string& filename)
+vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const char * filename)
 {
 	vector<cv::Mat> listPicture;
 
@@ -402,14 +402,14 @@ vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const s
 	return listPicture;
 }
 
-vector<cv::Mat> CHeic::GetAllPicture(const string& filename, bool& isMasterSequence, int& delay)
+vector<cv::Mat> CHeic::GetAllPicture(const char * filename, bool& isMasterSequence, int& delay)
 {
 	vector<cv::Mat> listPicture;
 	auto* reader = Reader::Create();
 	Array<uint32_t> item_ids;
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		if (reader->getFileInformation(info) == ErrorCode::OK)
@@ -492,7 +492,7 @@ vector<cv::Mat> CHeic::GetAllPicture(const string& filename, bool& isMasterSeque
 	return listPicture;
 }
 
-void CHeic::SavePicture(const string& filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
+void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
                         const int& compression, const bool& hasExif)
 {
 #ifdef HAS_X265
@@ -549,7 +549,7 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat& source, uint8_t*& da
 			}
 			heif_image_handle_release(image_handle);
 
-			heif_context_write_to_file(ctx, filenameOut.c_str());
+			heif_context_write_to_file(ctx, filenameOut);
 
 			heif_context_free(ctx);
 		}
@@ -558,14 +558,14 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat& source, uint8_t*& da
 }
 
 
-uint32_t CHeic::GetDelay(const string& filename)
+uint32_t CHeic::GetDelay(const char * filename)
 {
 	uint32_t delay = 0;
 	auto* reader = Reader::Create();
 	Array<uint32_t> itemIds;
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		if (reader->getFileInformation(info) == ErrorCode::OK)
@@ -602,14 +602,14 @@ uint32_t CHeic::GetDelay(const string& filename)
 	return delay;
 }
 
-cv::Mat CHeic::GetPicture(const string& filename, bool& isMasterSequence, int& delay, const int& numPicture)
+cv::Mat CHeic::GetPicture(const char * filename, bool& isMasterSequence, int& delay, const int& numPicture)
 {
 	cv::Mat bitmapSrc;
 	auto* reader = Reader::Create();
 	Array<uint32_t> itemIds;
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		//de265_error err = de265_error::DE265_OK;
 		FileInformation info;
@@ -699,12 +699,12 @@ cv::Mat CHeic::GetPicture(const string& filename, bool& isMasterSequence, int& d
 	return bitmapSrc;
 }
 
-int CHeic::GetNbFrame(const string& filename)
+int CHeic::GetNbFrame(const char * filename)
 {
 	int nbId = 0;
 	auto* reader = Reader::Create();
 
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		reader->getFileInformation(info);
@@ -811,7 +811,7 @@ struct mytask
 	x265Frame* frame;
 };
 
-cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
+cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 {
 	struct PictureEncoder
 	{
@@ -821,7 +821,7 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 	auto* reader = Reader::Create();
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		if (reader->getFileInformation(info) != ErrorCode::OK)
@@ -1023,7 +1023,7 @@ END:
 	try
 	{
 		heif_context* ctx = heif_context_alloc();
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
+		heif_context_read_from_file(ctx, filename, nullptr);
 
 		// get a handle to the primary image
 		heif_image_handle* handle;
@@ -1058,11 +1058,11 @@ END:
 	return picture;
 }
 
-void CHeic::GetPictureDimension(const string& filename, int& width, int& height)
+void CHeic::GetPictureDimension(const char * filename, int& width, int& height)
 {
 	Array<ImageId> itemIds;
 	auto* reader = Reader::Create();
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		if (reader->getFileInformation(info) != ErrorCode::OK)
@@ -1094,7 +1094,7 @@ void CHeic::GetPictureDimension(const string& filename, int& width, int& height)
 	}
 }
 
-cv::Mat CHeic::GetThumbnailPicture(const string& filename, int& orientation)
+cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 {
 	cv::Mat picture;
 	auto* reader = Reader::Create();
@@ -1102,7 +1102,7 @@ cv::Mat CHeic::GetThumbnailPicture(const string& filename, int& orientation)
 	auto itemData = new uint8_t[itemSize];
 	Array<ImageId> itemIds;
 
-	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		reader->getFileInformation(info);
@@ -1207,11 +1207,11 @@ static const unsigned int image_jpg_len = sizeof(image_jpg);
 static const unsigned int image_data_offset = 20;
 #define image_data_len (image_jpg_len - image_data_offset)
 
-void CHeic::GetMetadata(const string& filename, uint8_t*& data, unsigned int& size)
+void CHeic::GetMetadata(const char * filename, uint8_t*& data, unsigned int& size)
 {
 	auto* reader = Reader::Create();
 
-	if (reader->initialize(filename.c_str()) != ErrorCode::OK)
+	if (reader->initialize(filename) != ErrorCode::OK)
 	{
 		cout << "Can't find input file: " << filename << ". "
 			<< "Please download it from https://github.com/nokiatech/heif_conformance "
