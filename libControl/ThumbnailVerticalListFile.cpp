@@ -81,6 +81,27 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 	iconeList = iconeListLocal;
 
 	nbElementInIconeList = iconeList->GetNbElement();
+    
+    for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+		int photoId = thumbnailData->GetNumPhotoId();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+			if (thumbnailData->GetNumPhotoId() == photoId)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
 
 	//------------------------------------
 	for (CIcone* ico : pIconeListToClean)
@@ -232,6 +253,27 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 	iconeList = iconeListLocal;
 
 	nbElementInIconeList = iconeList->GetNbElement();
+    
+    for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+		int photoId = thumbnailData->GetNumPhotoId();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+			if (thumbnailData->GetNumPhotoId() == photoId)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
 
 	//------------------------------------
 	for (CIcone* ico : pIconeListToClean)
@@ -358,6 +400,27 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 	iconeList = iconeListLocal;
 
 	nbElementInIconeList = iconeList->GetNbElement();
+
+    for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+		int photoId = thumbnailData->GetNumPhotoId();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+			if (thumbnailData->GetNumPhotoId() == photoId)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
 
 	//------------------------------------
 	for (CIcone* ico : pIconeListToClean)

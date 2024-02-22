@@ -928,10 +928,11 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
  
     if (!listToErrase.empty())
 	{
-        //printf("CThumbnail::listToErrase Nb Element : %i \n", listToErrase.size());
+       
 		int i = 0;
 		time_t ending;
 		time(&ending);
+        printf("%s CThumbnail::listToErrase Nb Element : %i  \n", ctime(&ending), listToErrase.size());
 		for (int i = 0; i < listToErrase.size(); i++)
 		{
 			CListToClean* element = listToErrase[i];
@@ -940,7 +941,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			{
 				if (element->type == 0)
 				{
-					//printf("CThumbnail::listToErrase %i \n", i);
+					printf("CThumbnail::listToErrase %i \n", i);
 					delete element->list;
 					element->list = nullptr;
 					listToErrase.erase(listToErrase.begin() + i);
@@ -948,6 +949,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				}
 				else if (element->type == 1)
 				{
+                    printf("CThumbnail::pIconeListToClean %i \n", i);
 					for (CIcone* ico : element->pIconeListToClean)
 					{
 						delete ico;
@@ -957,7 +959,9 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 					listToErrase.erase(listToErrase.begin() + i);
 					i--;
 				}
+                
 			}
+            
 		}
 	}
 }
