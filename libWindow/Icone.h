@@ -161,9 +161,10 @@ namespace Regards::Window
 		int width;
 		int height;
 		bool showLoading;
+         wxImage photoTemp;
 		wxImage * pictureLoading = nullptr;
-		//wxImage transparent;
-		//wxImage scaleBackup;
+		wxImage * transparent = nullptr;
+		wxImage * scaleBackup = nullptr;
 		wxBitmap * localmemBitmap_backup = nullptr;
 		bool redraw = true;
 		bool visible = true;

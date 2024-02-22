@@ -918,6 +918,15 @@ void CMainWindow::UpdateFolderStatic()
 		PhotosVector* _pictures = new PhotosVector();
 
 		sqlFindPhotos.SearchPhotosByCriteriaFolder(_pictures);
+        
+        if(_pictures->size() == 0)
+        {
+            wxString resourcePath = CFileUtility::GetResourcesFolderPathWithExt("viewer.png");
+            CPhotos photo;
+            photo.SetId(-1);
+            photo.SetPath(resourcePath);
+            _pictures->push_back(photo);
+        }
 
 		if (firstFileToShow != "")
 			localFilename = firstFileToShow;

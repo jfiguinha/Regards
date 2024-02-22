@@ -209,8 +209,11 @@ CIcone::CIcone() : numElement(0), oldx(0), oldy(0)
 	state = INACTIFICONE;
 	isChecked = false;
 	numLib = LIBCPU;
-    pictureLoading = new wxImage(5,5);
-    localmemBitmap_backup = new wxBitmap(5,5);
+    pictureLoading = new wxImage();
+
+    localmemBitmap_backup = new wxBitmap();
+    transparent = new wxImage();
+	scaleBackup = new wxImage();
 	config = CParamInit::getInstance();
 	if (config != nullptr)
 		numLib = config->GetEffectLibrary();
@@ -299,7 +302,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 
 void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& type)
 {
-    wxImage transparent;
+
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
@@ -419,23 +422,24 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 
 	if (showLoading && pictureLoading->IsOk())
 	{
-		if (!transparent.IsOk() || (transparent.GetWidth() != bitmapScale.GetWidth() || transparent.GetHeight() !=
+		if (!transparent->IsOk() || (transparent->GetWidth() != bitmapScale.GetWidth() || transparent->GetHeight() !=
 			bitmapScale.GetHeight()))
 		{
-			transparent = wxImage(bitmapScale.GetWidth(), bitmapScale.GetHeight());
-			transparent.InitAlpha();
+            delete transparent;
+			transparent = new wxImage(bitmapScale.GetWidth(), bitmapScale.GetHeight());
+			transparent->InitAlpha();
 			for (int y = 0; y < bitmapScale.GetHeight(); y++)
 			{
 				for (int x = 0; x < bitmapScale.GetWidth(); x++)
 				{
-					transparent.SetRGB(x, y, 255, 255, 255);
-					transparent.SetAlpha(x, y, 128);
+					transparent->SetRGB(x, y, 255, 255, 255);
+					transparent->SetAlpha(x, y, 128);
 				}
 			}
 		}
 
-		if (transparent.IsOk())
-			memDC->DrawBitmap(transparent, posXThumbnail, themeIcone.GetMarge());
+		if (transparent->IsOk())
+			memDC->DrawBitmap(*transparent, posXThumbnail, themeIcone.GetMarge());
 
 
 		//wxImage picture = pictureLoading.Scale(bitmapScale.GetWidth() / 2, bitmapScale.GetHeight() /2);
@@ -594,6 +598,14 @@ CIcone::~CIcone(void)
 {
    // if (pThumbnailData != nullptr)
     //    printf("delete CIcone : %s \n", pThumbnailData->GetFilename().ToStdString().c_str());
+
+        
+    if (transparent != nullptr)
+        delete transparent;
+        
+	if (scaleBackup != nullptr)
+        delete scaleBackup;
+        
     if (pictureLoading!= nullptr)
         delete pictureLoading;
     if (localmemBitmap_backup!= nullptr)
@@ -686,8 +698,7 @@ wxBitmap CIcone::GetCopyIcone()
 void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
 	const bool& forceRedraw)
 {
-    wxImage scaleBackup;
-    wxImage photoTemp;
+   
 	wxImage image = wxImage(20,20);
 	if (forceRedraw)
 		redraw = true;
@@ -735,17 +746,10 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
-			if (scaleBackup.IsOk())
-			{
-				bool isOk = scaleBackup.IsOk();
-				int scaleWidth = scaleBackup.GetWidth();
-				int scaleHeight = scaleBackup.GetHeight();
-			}
-
 
 			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
 
-			if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != tailleAffichageBitmapWidth || scaleBackup.GetHeight() != tailleAffichageBitmapHeight)
+			if (!scaleBackup->IsOk() || !photoDefault || scaleBackup->GetWidth() != tailleAffichageBitmapWidth || scaleBackup->GetHeight() != tailleAffichageBitmapHeight)
 			{
 				if (pThumbnailData != nullptr)
 				{
@@ -804,12 +808,13 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 					}
 				}
 
-				scaleBackup = wxImage(scale);
+                delete scaleBackup;
+				scaleBackup = new wxImage(scale);
 
 				scale.Destroy();
 			}
 
-			RenderBitmap(&memDC, scaleBackup, state);
+			RenderBitmap(&memDC, *scaleBackup, state);
 
 			memDC.SelectObject(wxNullBitmap);
 

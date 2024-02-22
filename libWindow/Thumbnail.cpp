@@ -779,11 +779,7 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
 {
-    
-    iconeListLocal->EraseThumbnailList();
-    delete iconeListLocal;
-    iconeListLocal = nullptr;
-    /*
+
     if(iconeListLocal != nullptr)
     {
         printf("EraseThumbnailList : %d \n", iconeListLocal->GetNbElement());
@@ -803,14 +799,13 @@ void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
 
             stopToGetNbElement = false;
         }
-    }*/
+    }
 }
 
 
 
 void CThumbnail::EraseIconeList(std::vector<CIcone*> * pIconeListToClean)
 {
-    /*
     if(pIconeListToClean != nullptr)
     {
         printf("EraseIconeList : %d \n", pIconeListToClean->size());
@@ -829,7 +824,7 @@ void CThumbnail::EraseIconeList(std::vector<CIcone*> * pIconeListToClean)
             listToErrase.push_back(listToAdd);
         }
     }
-    */
+    /*
     
     for (CIcone* ico : *pIconeListToClean)
     {
@@ -839,7 +834,7 @@ void CThumbnail::EraseIconeList(std::vector<CIcone*> * pIconeListToClean)
     pIconeListToClean->clear();
     delete pIconeListToClean;
     pIconeListToClean = nullptr;
-    
+    */
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)

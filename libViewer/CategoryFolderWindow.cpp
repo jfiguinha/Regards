@@ -261,14 +261,22 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr && treeWindow != nullptr)
 	{
-		CCategoryWnd * catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
+		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
         if(catalogWnd != nullptr)
         {
             catalogWnd->Init();
             treeWindow->SetTreeControl(catalogWnd);
-            delete(pimpl->catalogWndOld);
+            
+            CListToClean* listToAdd = new CListToClean();
+            listToAdd->catalogWndOld = pimpl->catalogWndOld;
+
             pimpl->catalogWndOld = catalogWnd;
-            pimpl->update = true;        
+            pimpl->update = true;
+           
+            time(&listToAdd->timeToAdd);
+            
+            pimpl->listToErrase.push_back(listToAdd);
+    
         }
 	}
 
