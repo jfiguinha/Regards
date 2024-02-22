@@ -165,6 +165,20 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 	return element;
 }
 
+void CIconeList::EraseThumbnailListWithIconeDelete()
+{
+	for (CIcone* pIcone : pIconeList)
+	{
+		if (pIcone != nullptr)
+		{
+			delete(pIcone);
+			pIcone = nullptr;
+		}
+	}
+	pIconeList.clear();
+}
+
+
 void CIconeList::EraseThumbnailList()
 {
 	/*/

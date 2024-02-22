@@ -171,6 +171,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
 {
+	std::vector<CIcone*> pIconeListToClean;
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEVIDEO;
@@ -188,62 +189,118 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	{
 		for (int i = 0; i < nbResult; i++)
 		{
+
+
 			auto thumbnail = new CImageVideoThumbnail();
 			sqlThumbnailVideo.GetPictureThumbnail(szFileName, i, thumbnail);
 			thumbnail->percent = (static_cast<float>(i) / static_cast<float>(nbResult)) * 100.0f;
 			//thumbnail->timePosition = i;
 
-			float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
-			auto thumbnailData = new CThumbnailDataStorage(szFileName);
-			//thumbnailData->SetStorage(nullptr);
-			thumbnailData->SetNumPhotoId(i);
-			thumbnailData->SetNumElement(i);
-            
-			thumbnailData->SetTypeElement(typeElement);
-			thumbnailData->SetPercent(percent);
-			if (typeElement == TYPEMULTIPAGE)
-				thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(nbResult));
-			thumbnailData->SetTimePosition(thumbnail->timePosition);
+			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+				{
+					CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)e->GetData();
+					return thumbnailData->GetNumPhotoId() == i;
 
-			try
+				});
+
+			if (it == pIconeList.end())
 			{
-				if (thumbnail->image.IsOk())
-                {
-					thumbnailData->SetBitmap(thumbnail->image);
-                    thumbnailData->SetIsDefault(false);
-                }
-                else
-                {
-                    thumbnailData->SetBitmap(defaultPicture);
-                }
+				float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
+				auto thumbnailData = new CThumbnailDataStorage(szFileName);
+				//thumbnailData->SetStorage(nullptr);
+				thumbnailData->SetNumPhotoId(i);
+				thumbnailData->SetNumElement(i);
+
+				thumbnailData->SetTypeElement(typeElement);
+				thumbnailData->SetPercent(percent);
+				if (typeElement == TYPEMULTIPAGE)
+					thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(nbResult));
+				thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+				try
+				{
+					if (thumbnail->image.IsOk())
+					{
+						thumbnailData->SetBitmap(thumbnail->image);
+						thumbnailData->SetIsDefault(false);
+					}
+					else
+					{
+						thumbnailData->SetBitmap(defaultPicture);
+					}
+				}
+				catch (...)
+				{
+					//printf("toto");
+				}
+
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(i);
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(x, y);
+
+				if (i == 0)
+				{
+					pBitmapIcone->SetSelected(true);
+					numSelectPhotoId = i;
+				}
+				iconeListLocal->AddElement(pBitmapIcone);
+				pIconeList.push_back(pBitmapIcone);
+
+
 			}
-			catch (...)
+			else
 			{
-				//printf("toto");
+				CIcone* pBitmapIcone = (CIcone*)*it;
+				CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)pBitmapIcone->GetData();
+
+				float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
+
+				thumbnailData->SetFilename(szFileName);
+				thumbnailData->SetTypeElement(typeElement);
+				thumbnailData->SetPercent(percent);
+				if (typeElement == TYPEMULTIPAGE)
+					thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(nbResult));
+				thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+				try
+				{
+					if (thumbnail->image.IsOk())
+					{
+						thumbnailData->SetBitmap(thumbnail->image);
+						thumbnailData->SetIsDefault(false);
+					}
+					else
+					{
+						thumbnailData->SetBitmap(defaultPicture);
+					}
+				}
+				catch (...)
+				{
+					//printf("toto");
+				}
+
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(x, y);
+
+				if (i == 0)
+				{
+					pBitmapIcone->SetSelected(true);
+					numSelectPhotoId = i;
+				}
+
+				iconeListLocal->AddElement(pBitmapIcone);
+
+
 			}
-
-
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(i);
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
-
-			if (i == 0)
-			{
-				pBitmapIcone->SetSelected(true);
-				numSelectPhotoId = i;
-			}
-
-			iconeListLocal->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
 			if (thumbnail != nullptr)
 				delete thumbnail;
 		}
-
-
 	}
 	else
 	{
@@ -256,38 +313,85 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 		{
 			float percent = (static_cast<float>(j) / static_cast<float>(size)) * 100.0f;
 			CImageVideoThumbnail* thumbnail = listThumbnail[j];
-			auto thumbnailData = new CThumbnailDataStorage(szFileName);
-			//thumbnailData->SetStorage(nullptr);
-			thumbnailData->SetNumPhotoId(j);
-			thumbnailData->SetNumElement(j);
-			thumbnailData->SetTypeElement(typeElement);
-			thumbnailData->SetPercent(percent);
-			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-			if (!thumbnail->image.IsOk())
+
+			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+				{
+					CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)e->GetData();
+					return thumbnailData->GetNumPhotoId() == j;
+
+				});
+
+			if (it == pIconeList.end())
 			{
-				thumbnail->image = defaultPicture;
+
+				auto thumbnailData = new CThumbnailDataStorage(szFileName);
+				//thumbnailData->SetStorage(nullptr);
+				thumbnailData->SetNumPhotoId(j);
+				thumbnailData->SetNumElement(j);
+				thumbnailData->SetTypeElement(typeElement);
+				thumbnailData->SetPercent(percent);
+				thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+				if (!thumbnail->image.IsOk())
+				{
+					thumbnail->image = defaultPicture;
+				}
+
+				thumbnailData->SetBitmap(thumbnail->image);
+				if (typeElement == TYPEMULTIPAGE)
+					thumbnailData->SetLibelle("Page : " + to_string(j + 1) + "/" + to_string(size));
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(j);
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(x, y);
+
+				if (j == 0)
+				{
+					pBitmapIcone->SetSelected(true);
+					numSelectPhotoId = j;
+				}
+
+				iconeListLocal->AddElement(pBitmapIcone);
+				pIconeList.push_back(pBitmapIcone);
+
+				x += themeThumbnail.themeIcone.GetWidth();
+			}
+			else
+			{
+				CIcone* pBitmapIcone = (CIcone*)*it;
+				CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)pBitmapIcone->GetData();
+				thumbnailData->SetFilename(szFileName);
+				thumbnailData->SetTypeElement(typeElement);
+				thumbnailData->SetPercent(percent);
+				thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+				if (!thumbnail->image.IsOk())
+				{
+					thumbnail->image = defaultPicture;
+				}
+
+				thumbnailData->SetBitmap(thumbnail->image);
+				if (typeElement == TYPEMULTIPAGE)
+					thumbnailData->SetLibelle("Page : " + to_string(j + 1) + "/" + to_string(size));
+
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(x, y);
+
+				if (j == 0)
+				{
+					pBitmapIcone->SetSelected(true);
+					numSelectPhotoId = j;
+				}
+
+				iconeListLocal->AddElement(pBitmapIcone);
+
+				x += themeThumbnail.themeIcone.GetWidth();
 			}
 
-			thumbnailData->SetBitmap(thumbnail->image);
-			if (typeElement == TYPEMULTIPAGE)
-				thumbnailData->SetLibelle("Page : " + to_string(j + 1) + "/" + to_string(size));
-                
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(j);
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
 
-			if (j == 0)
-			{
-				pBitmapIcone->SetSelected(true);
-				numSelectPhotoId = j;
-			}
-
-			iconeListLocal->AddElement(pBitmapIcone);
-
-			x += themeThumbnail.themeIcone.GetWidth();
 		}
 
 
@@ -307,10 +411,48 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-    //printf("CThumbnailVideo::InitWithDefaultPicture \n");
-    //oldIconeList->EraseThumbnailList();
-    //delete oldIconeList;
-    EraseThumbnailList(oldIconeList);
+	for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)ico->GetData();
+		int numPhotoId = thumbnailData->GetNumPhotoId();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)ico->GetData();
+			if (thumbnailData->GetNumPhotoId() == numPhotoId)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
+
+	//------------------------------------
+	for (CIcone* ico : pIconeListToClean)
+	{
+		CThumbnailDataStorage* _clean = (CThumbnailDataStorage*)ico->GetData();
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataStorage* thumbnailData = (CThumbnailDataStorage*)e->GetData();
+				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+
+			});
+
+		if (it != pIconeList.end())
+			pIconeList.erase(it);
+	}
+
+	EraseThumbnailList(oldIconeList);
+	EraseIconeList(pIconeListToClean);
+	//----------------------------------------------------------
+	// 
+	//EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 
