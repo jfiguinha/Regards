@@ -21,7 +21,6 @@ namespace Regards::Window
 		CIcone* FindElementPhotoId(const int& photoId);
 		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
 		void SortByFilename();
-		void EraseThumbnailListWithIconeDelete();
 	private:
 		IconeVector pIconeList;
 		//mutex muList;

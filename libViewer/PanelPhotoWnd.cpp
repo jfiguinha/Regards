@@ -109,7 +109,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
-	categoryFolderWnd->UpdateCriteriaWnd(false);
+	categoryFolderWnd->UpdateCriteria(false);
 }
 
 CPanelPhotoWnd::~CPanelPhotoWnd()
@@ -132,7 +132,7 @@ void CPanelPhotoWnd::UpdateCriteria(wxCommandEvent& event)
 		long needToSendMessage = event.GetExtraLong();
 		if (needToSendMessage < 2)
 		{
-			categoryFolderWnd->UpdateCriteriaWnd((needToSendMessage == 1) ? true : false);
+			categoryFolderWnd->UpdateCriteria((needToSendMessage == 1) ? true : false);
 		}
 		else if (needToSendMessage == 2)
 		{

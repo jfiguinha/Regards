@@ -21,14 +21,12 @@ namespace Regards::Viewer
 
 		void InitSaveParameter();
 		void init();
-		void UpdateCriteriaWnd(const bool& need_to_send_message);
+		void UpdateCriteria(const bool& need_to_send_message);
 		wxString GetWaitingMessage() override;
 		void RefreshCriteriaSearch();
 		wxString GetSqlRequest();
 
 	private:
-        
-        void UpdateCriteria(const bool& need_to_send_message);
 		void OnUpdateGpsInfos(wxCommandEvent& event);
 		void CriteriaPhotoUpdate(wxCommandEvent& event);
 		void RefreshCriteriaSearch(wxCommandEvent& event);
@@ -46,7 +44,6 @@ namespace Regards::Viewer
 		int nbGpsFileByMinute = 60;
 		int nbPhotoToProcess = 0;
 		int nbPhotoGpsToProcess = 0;
-        bool updateCriteriaMessage = false;
         CCategoryFolderWindowPimpl * pimpl;
     
 	};

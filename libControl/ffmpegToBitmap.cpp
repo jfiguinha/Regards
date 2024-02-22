@@ -1,12 +1,16 @@
 #include "header.h"
 #include "ffmpegToBitmap.h"
 #include <stdexcept>
+#include <cassert>
 
 extern "C" {
 #include "libavutil/imgutils.h"
 #include <libavutil/opt.h>
 #include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
+#include <libavfilter/avfilter.h>
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 }
 
 AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;

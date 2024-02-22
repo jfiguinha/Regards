@@ -1,12 +1,18 @@
 // ReSharper disable All
 #include <header.h>
 #include "ThumbnailVideo.h"
+#include <Thumbnail.h>
 #include <ThumbnailDataStorage.h>
+#include "ScrollbarHorizontalWnd.h"
+#include "ScrollbarWnd.h"
 #include <libPicture.h>
 #include <SqlThumbnailVideo.h>
+#include <picture_id.h>
 #include <SqlThumbnail.h>
+#include <SqlPhotosWithoutThumbnail.h>
+#include <LibResource.h>
 #include <ImageVideoThumbnail.h>
-
+#include <picture_utility.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -301,13 +307,19 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	oldIconeList->EraseThumbnailListWithIconeDelete();
-	delete oldIconeList;
+    //printf("CThumbnailVideo::InitWithDefaultPicture \n");
+    //oldIconeList->EraseThumbnailList();
+    //delete oldIconeList;
+    EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
-	processIdle = true;
 
 	UpdateScroll();
+
+	processThumbnailVideo = true;
+
+	//nbElementInIconeList = 1;
+
 	needToRefresh = true;
 }
 

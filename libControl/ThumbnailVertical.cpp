@@ -1,6 +1,7 @@
 // ReSharper disable All
 #include <header.h>
 #include "ThumbnailVertical.h"
+#include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 

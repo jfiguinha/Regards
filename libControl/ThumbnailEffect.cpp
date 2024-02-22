@@ -7,10 +7,13 @@
 #include <RegardsConfigParam.h>
 #include <LibResource.h>
 #include <FiltreEffet.h>
+#include "wx/stdpaths.h"
+#include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
 #include <FilterData.h>
 #include <LoadingResource.h>
+#include <picture_id.h>
 #include <ImageLoadingFormat.h>
 
 
@@ -342,17 +345,17 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	oldIconeList->EraseThumbnailListWithIconeDelete();
-	delete oldIconeList;
-
-	ResizeThumbnail();
+	EraseThumbnailList(oldIconeList);
+    //oldIconeList->EraseThumbnailList();
+    //delete oldIconeList;
 
 	threadDataProcess = true;
 	processIdle = true;
 
 	UpdateScroll();
 	needToRefresh = true;
-	
+    
+    ResizeThumbnail();
 }
 
 void CThumbnailEffect::LoadPicture(void* param)

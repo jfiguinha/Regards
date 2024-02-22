@@ -2,6 +2,8 @@
 #include "ThumbnailVerticalListFile.h"
 #include <ThumbnailDataSQL.h>
 #include <Photos.h>
+#include "ScrollbarHorizontalWnd.h"
+#include "ScrollbarWnd.h"
 using namespace Regards::Control;
 
 CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id,
@@ -18,7 +20,7 @@ CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindo
 
 void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	threadDataProcess = false;
@@ -80,29 +82,8 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -154,7 +135,7 @@ wxString CThumbnailVerticalListFile::GetKey()
 
 void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, const bool& showSelectButton)
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	CreateOrLoadStorageFile();
@@ -252,29 +233,8 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -303,7 +263,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	InitScrollingPos();
 	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
@@ -366,6 +326,32 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		}
 
 		i++;
+
+		/*
+		auto thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
+		thumbnailData->SetNumPhotoId(photo.GetId());
+		thumbnailData->SetNumElement(i);
+
+		auto pBitmapIcone = new CIcone();
+		pBitmapIcone->SetNumElement(i);
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetWindowPos(x, y);
+
+		iconeListLocal->AddElement(pBitmapIcone);
+
+		x += themeThumbnail.themeIcone.GetWidth();
+		nbElementX++;
+		if (nbElementX == nbElementByRow)
+		{
+			nbElementX = 0;
+			x = -posLargeur;
+			nbElementY++;
+			y += themeThumbnail.themeIcone.GetHeight();
+		}
+
+		i++;
+		*/
 	}
 
 	CIconeList* oldIconeList = iconeList;
@@ -373,29 +359,8 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

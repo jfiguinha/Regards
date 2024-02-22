@@ -20,6 +20,7 @@
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
+#include <DateValidation.hpp>
 #include <Photos.h>
 #include <SqlPhotoGPS.h>
 using namespace std;
@@ -193,22 +194,13 @@ void CCategoryFolderWindow::RefreshCriteriaSearch()
 	init();
 }
 
-void CCategoryFolderWindow::UpdateCriteriaWnd(const bool& need_to_send_message)
-{
-    processIdle = true;
-    updateCriteriaMessage = need_to_send_message;
-    pimpl->update = true;  
-}
-
 void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 {
 	auto filename = static_cast<wxString*>(event.GetClientData());
 	if (filename != nullptr)
 		delete filename;
-        
-    processIdle = true;
-    updateCriteriaMessage = false;
-    pimpl->update = true;
+
+	UpdateCriteria(false);
 }
 
 void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
@@ -234,9 +226,9 @@ void CCategoryFolderWindow::InitSaveParameter()
 
 void CCategoryFolderWindow::init()
 {
-    processIdle = true;
-    updateCriteriaMessage = false;
-    pimpl->update = true;
+	UpdateCriteria(false);
+	pimpl->update = true;
+	processIdle = true;
 
 	pimpl->muVector.lock();
 	//Get List of Photo to process
@@ -262,22 +254,21 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 	if (windowMain != nullptr && treeWindow != nullptr)
 	{
 		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
-        if(catalogWnd != nullptr)
-        {
-            catalogWnd->Init();
-            treeWindow->SetTreeControl(catalogWnd);
-            
-            CListToClean* listToAdd = new CListToClean();
-            listToAdd->catalogWndOld = pimpl->catalogWndOld;
+		catalogWnd->Init();
+		treeWindow->SetTreeControl(catalogWnd);
+        
+        CListToClean* listToAdd = new CListToClean();
+        listToAdd->catalogWndOld = pimpl->catalogWndOld;
 
-            pimpl->catalogWndOld = catalogWnd;
-            pimpl->update = true;
-           
-            time(&listToAdd->timeToAdd);
-            
-            pimpl->listToErrase.push_back(listToAdd);
-    
-        }
+		pimpl->catalogWndOld = catalogWnd;
+		pimpl->update = true;
+        
+       
+		time(&listToAdd->timeToAdd);
+		
+		pimpl->listToErrase.push_back(listToAdd);
+
+
 	}
 
 	processIdle = true;
@@ -357,11 +348,6 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		pimpl->muVector.unlock();
 	}
-    else if(pimpl->update)
-    {
-        UpdateCriteria(updateCriteriaMessage);
-        pimpl->update = false;
-    }
 	else if (!pimpl->traitementEnd)
 	{
 		//Nettoyage des criteres non utilises
@@ -514,6 +500,29 @@ void CCategoryFolderWindow::ProcessIdle()
 	if(pimpl->nbGpsFile > 0)
 		processIdle = true;
 
+
+	if (!pimpl->listToErrase.empty())
+	{
+		// printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
+		int i = 0;
+		time_t ending;
+		time(&ending);
+		for (int i = 0; i < pimpl->listToErrase.size(); i++)
+		{
+			CListToClean* element = pimpl->listToErrase[i];
+			int diff = difftime(ending, element->timeToAdd);
+			if (diff > 5)
+			{
+				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
+				delete element->catalogWndOld;
+				element->catalogWndOld = nullptr;
+				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
+				i--;
+			}
+		}
+	}
+
+
 }
 
 
@@ -536,7 +545,6 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 		evt.SetExtraLong(-1);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
-
 
 	if (endProgram)
 	{
@@ -569,9 +577,8 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 	{
 		//Refresh Criteria 
 		//Mise à jour de l'affichage de l'arborescence
-        processIdle = true;
-        updateCriteriaMessage = true;
-        pimpl->update = true;
+		UpdateCriteria(true);
+		processIdle = true;
 	}
 }
 
@@ -749,9 +756,7 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	{
 		if (findPhotoCriteria->criteriaNew)
 		{
-            processIdle = true;
-            updateCriteriaMessage = true;
-            pimpl->update = true;
+			UpdateCriteria(true);
 		}
 
 		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)

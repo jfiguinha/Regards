@@ -99,7 +99,7 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
     {
         if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
         {
-            return wxImage(frameOut);
+            return frameOut;
         }
     }
 
@@ -116,7 +116,7 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 		isDefault = false;
 
 		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
-			return wxImage(frameOut);
+			return frameOut;
 
 
 		if (numFrame < nbFrame)
@@ -180,5 +180,5 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
         frameOut = GetDefaultPicture();
     }
 
-	return wxImage(frameOut);
+	return frameOut;
 }

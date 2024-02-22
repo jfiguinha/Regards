@@ -117,7 +117,7 @@ namespace Regards::Window
 			const int& tailleBitmapHeight);
 		wxImage LoadImageResource(const wxString& resourceName);
 		wxImage GenerateVideoIcone();
-
+		wxImage ResampleBicubic(wxImage* Src, int width, int height);
 		int GetBitmapWidth();
 		int GetBitmapHeight();
 
@@ -132,6 +132,8 @@ namespace Regards::Window
 		//int interpolationMethod;
 		CThumbnailData* pThumbnailData;
 
+		static wxImage videoCadre;
+		static wxImage photoTemp;
 		wxImage bitmapCheckOn;
 		wxImage bitmapCheckOff;
 		wxImage bitmapDelete;
@@ -161,11 +163,10 @@ namespace Regards::Window
 		int width;
 		int height;
 		bool showLoading;
-         wxImage photoTemp;
-		wxImage * pictureLoading = nullptr;
-		wxImage * transparent = nullptr;
-		wxImage * scaleBackup = nullptr;
-		wxBitmap * localmemBitmap_backup = nullptr;
+		wxImage pictureLoading;
+		wxImage transparent;
+		wxImage scaleBackup;
+		wxBitmap localmemBitmap_backup;
 		bool redraw = true;
 		bool visible = true;
 	};

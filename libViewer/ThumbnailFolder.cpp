@@ -2,13 +2,19 @@
 #include <header.h>
 #include "ThumbnailFolder.h"
 #include "MainWindow.h"
+#include <LibResource.h>
 #include <ThumbnailDataSQL.h>
+#include <SqlFindPhotos.h>
+#include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
+#include <SqlPhotosWithoutThumbnail.h>
 #include "TreatmentData.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <config_id.h>
+#include <ParamInit.h>
 #include "ThumbnailBuffer.h"
+#include <RegardsConfigParam.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -209,11 +215,10 @@ void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
 
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
-    std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = iconeList;
 	//---------------------------------
-	//Sauvegarde de l'état
+	//Sauvegarde de l'état
 	//---------------------------------
 	vector<CThumbnailData*> listSelectItem;
 	threadDataProcess = false;
@@ -287,55 +292,15 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		old->clear();
 		delete old;
 	}
-    
-    printf("ThumbnailFolder pIconeList : %d \n", pIconeList.size());
 
-	for (CIcone* ico : pIconeList)
+	
+
+	if (oldIconeList != nullptr)
 	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
+		delete oldIconeList;
+		oldIconeList = nullptr;
 	}
-    
-    
-     printf("ThumbnailFolder pIconeListToClean : %d \n", pIconeListToClean->size());
 
-	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
-	{
-		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
-
-			});
-
-		if (it != pIconeList.end())
-			pIconeList.erase(it);
-	}
-    
-    printf("ThumbnailFolder pIconeList : %d \n", pIconeList.size());
-
-
-	EraseThumbnailList(oldIconeList);
-	EraseIconeList(pIconeListToClean);
-    
 	nbElementInIconeList = iconeList->GetNbElement();
 
 	//---------------------------------
@@ -380,7 +345,7 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 
 void CThumbnailFolder::SetListeFile()
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	CIconeList* iconeListLocal = new CIconeList();
 	threadDataProcess = false;
 	thumbnailPos = 0;
@@ -447,29 +412,8 @@ void CThumbnailFolder::SetListeFile()
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

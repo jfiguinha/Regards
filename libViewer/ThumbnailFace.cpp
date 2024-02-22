@@ -5,6 +5,8 @@
 #include "ViewerParam.h"
 #include <SqlFaceThumbnail.h>
 #include <SqlFindFacePhoto.h>
+#include <ScrollbarHorizontalWnd.h>
+#include <ScrollbarWnd.h>
 #include <InfosSeparationBarFace.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>
@@ -133,7 +135,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 void CThumbnailFace::init()
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	auto viewerParam = CMainParamInit::getInstance();
@@ -212,10 +214,10 @@ void CThumbnailFace::init()
 		}
 
 		if (!find)
-			pIconeListToClean->push_back(ico);
+			pIconeListToClean.push_back(ico);
 	}
 
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CSqlFaceThumbnail* _clean = (CSqlFaceThumbnail*)ico->GetData();
 

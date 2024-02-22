@@ -40,7 +40,7 @@ class CListToClean
 public:
 	int type = 0;
 	CIconeList* list;
-	std::vector<CIcone*> * pIconeListToClean;
+	std::vector<CIcone*> pIconeListToClean;
 	std::time_t timeToAdd;
 };
 
@@ -777,64 +777,47 @@ void CThumbnail::AfterSetList()
 	}
 }
 
-void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
+void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
+    
+	if (iconeListLocal->GetNbElement() == 0)
+	{
+		iconeListLocal->EraseThumbnailList();
+		delete iconeListLocal;
+		iconeListLocal = nullptr;
+	}
+	else
+	{
+		CListToClean* listToAdd = new CListToClean();
+		time(&listToAdd->timeToAdd);
+		listToAdd->list = iconeListLocal;
+		listToErrase.push_back(listToAdd);
 
-    if(iconeListLocal != nullptr)
-    {
-        printf("EraseThumbnailList : %d \n", iconeListLocal->GetNbElement());
+		stopToGetNbElement = false;
+	}
 
-        if (iconeListLocal->GetNbElement() == 0)
-        {
-            iconeListLocal->EraseThumbnailList();
-            delete iconeListLocal;
-            iconeListLocal = nullptr;
-        }
-        else
-        {
-            CListToClean* listToAdd = new CListToClean();
-            time(&listToAdd->timeToAdd);
-            listToAdd->list = iconeListLocal;
-            listToErrase.push_back(listToAdd);
 
-            stopToGetNbElement = false;
-        }
-    }
 }
 
 
 
-void CThumbnail::EraseIconeList(std::vector<CIcone*> * pIconeListToClean)
+void CThumbnail::EraseIconeList(std::vector<CIcone*> pIconeListToClean)
 {
-    if(pIconeListToClean != nullptr)
-    {
-        printf("EraseIconeList : %d \n", pIconeListToClean->size());
 
-        if (pIconeListToClean->size() == 0)
-        {
-            pIconeListToClean->clear();
-            delete pIconeListToClean;
-        }
-        else
-        {
-            CListToClean* listToAdd = new CListToClean();
-            time(&listToAdd->timeToAdd);
-            listToAdd->type = 1;
-            listToAdd->pIconeListToClean = pIconeListToClean;
-            listToErrase.push_back(listToAdd);
-        }
-    }
-    /*
-    
-    for (CIcone* ico : *pIconeListToClean)
-    {
-        delete ico;
-        ico = nullptr;
-    }
-    pIconeListToClean->clear();
-    delete pIconeListToClean;
-    pIconeListToClean = nullptr;
-    */
+	if (pIconeListToClean.size() == 0)
+	{
+		pIconeListToClean.clear();
+	}
+	else
+	{
+		CListToClean* listToAdd = new CListToClean();
+		time(&listToAdd->timeToAdd);
+		listToAdd->type = 1;
+		listToAdd->pIconeListToClean = pIconeListToClean;
+		listToErrase.push_back(listToAdd);
+	}
+
+
 }
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
@@ -949,68 +932,6 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		int i = 0;
 		time_t ending;
 		time(&ending);
-        std::vector<CListToClean *>::iterator it = listToErrase.end();
-        for(;;)
-        {
-            printf("Thumbnail listToErrase : %d \n", listToErrase.size());
-            
-            it = std::find_if(listToErrase.begin(), listToErrase.end(), [&](CListToClean * e)
-			{
-				int diff = difftime(ending, e->timeToAdd);
-				return diff > 5;
-
-			});
-            
-            if (it != listToErrase.end())
-            {
-                printf("Thumbnail find listToErrase : %d \n", listToErrase.size());
-                
-                CListToClean* element = *it;
-                
-                if (element->type == 0)
-				{
-					printf("Thumbnail element->list : \n");
-					delete element->list;
-					element->list = nullptr;
-				}
-				else if (element->type == 1)
-				{
-                    printf("Thumbnail pIconeListToClean : %d \n", element->pIconeListToClean->size());
-                    
-					for (CIcone* ico : *element->pIconeListToClean)
-					{
-						delete ico;
-						ico = nullptr;
-					}
-                    
-                    printf("Thumbnail pIconeListToClean end 1 \n");
-                    
-					element->pIconeListToClean->clear();
-                    delete element->pIconeListToClean;
-                    
-                    printf("Thumbnail pIconeListToClean end 2 \n");
-                    
-                    element->pIconeListToClean = nullptr;
-				}
-                
-                 printf("Thumbnail find listToErrase 2 \n");
-                
-                
-                delete element;
-                element = nullptr;
-                
-                printf("Thumbnail find listToErrase 3 \n");
-                
-                listToErrase.erase(it);
-                
-                printf("Thumbnail find listToErrase 4 \n");
-            }
-            else
-                break;
-               
-        }
-        
-        /*
 		for (int i = 0; i < listToErrase.size(); i++)
 		{
 			CListToClean* element = listToErrase[i];
@@ -1027,26 +948,17 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				}
 				else if (element->type == 1)
 				{
-                    printf("Thumbnail pIconeListToClean : %d \n", element->pIconeListToClean->size());
-                    
-					for (CIcone* ico : *element->pIconeListToClean)
+					for (CIcone* ico : element->pIconeListToClean)
 					{
 						delete ico;
 						ico = nullptr;
 					}
-					element->pIconeListToClean->clear();
-                    delete element->pIconeListToClean;
-                    
-                    printf("Thumbnail pIconeListToClean : %d \n", element->pIconeListToClean->size());
-                    
-                    element->pIconeListToClean = nullptr;
+					element->pIconeListToClean.clear();
 					listToErrase.erase(listToErrase.begin() + i);
 					i--;
 				}
-                delete element;
-                element = nullptr;
 			}
-		}*/
+		}
 	}
 }
 

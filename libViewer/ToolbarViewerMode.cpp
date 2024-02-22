@@ -62,20 +62,17 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 	picturemode->SetCommandId(WINDOW_PICTURE);
 	picturemode->SetLibelle(picturemode_label);
 	navElement.push_back(picturemode);
+    
+    if (!faceDetection && windowMode == WINDOW_FACE)
+    {
+        windowMode = WINDOW_VIEWER;
+    }
 
 	switch (windowMode)
 	{
 	case WINDOW_FACE:
-    	if (faceDetection)
-        {
-            facemode->SetPush(true);
-            break;
-        }
-        else
-        {
-            viewermode->SetPush(true);
-            break;
-        }
+        facemode->SetPush(true);
+        break;
 	case WINDOW_VIEWER:
 		viewermode->SetPush(true);
 		break;

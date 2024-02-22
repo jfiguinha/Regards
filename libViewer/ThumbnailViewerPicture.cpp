@@ -2,6 +2,8 @@
 #include "ThumbnailViewerPicture.h"
 #include "MainWindow.h"
 #include <ThumbnailDataSQL.h>
+#include <ScrollbarHorizontalWnd.h>
+#include <ScrollbarWnd.h>
 #include "ThumbnailBuffer.h"
 #include <SqlFindPhotos.h>
 using namespace Regards::Viewer;
@@ -136,7 +138,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 
 void CThumbnailViewerPicture::ApplyListeFile()
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
@@ -152,29 +154,8 @@ void CThumbnailViewerPicture::ApplyListeFile()
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -208,7 +189,7 @@ void CThumbnailViewerPicture::ApplyListeFile()
 
 void CThumbnailViewerPicture::SetListeFile()
 {
-	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
+	std::vector<CIcone*> pIconeListToClean;
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	threadDataProcess = false;
@@ -273,29 +254,8 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int numPhotoId = thumbnailData->GetNumPhotoId();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == numPhotoId)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean->push_back(ico);
-	}
-
 	//------------------------------------
-	for (CIcone* ico : *pIconeListToClean)
+	for (CIcone* ico : pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

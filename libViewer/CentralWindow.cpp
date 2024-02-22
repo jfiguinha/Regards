@@ -90,8 +90,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		windowMode = 1;
 	}
-
-
+    
 	if (regardsParam != nullptr)
 	{
 		faceDetection = regardsParam->GetFaceDetection();
