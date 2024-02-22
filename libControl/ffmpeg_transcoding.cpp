@@ -2,7 +2,6 @@
 #include "ffmpeg_transcoding.h"
 #include "FFmpegTranscodingPimpl.h"
 #include <CompressVideo.h>
-#include "ffmpegToBitmap.h"
 #include "VideoCompressOption.h"
 #include <window_id.h>
 #include <LibResource.h>

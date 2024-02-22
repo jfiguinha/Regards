@@ -2,8 +2,6 @@
 #include "ThumbnailVerticalListFile.h"
 #include <ThumbnailDataSQL.h>
 #include <Photos.h>
-#include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarWnd.h"
 using namespace Regards::Control;
 
 CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id,

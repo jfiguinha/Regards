@@ -1,24 +1,17 @@
 // ReSharper disable All
 #include "header.h"
 #include "VideoControl_soft.h"
-#include <wx/dcbuffer.h>
-
 #include "ffplaycore.h"
-#include "ffmpegToBitmap.h"
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #include <OpenCL/opencl.h>
-#include <utility.h>
 #else
 #include <CL/cl.h>
-#include <utility.h>
 #endif
-#include <opencv2/xphoto.hpp>
 #include <picture_utility.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
-#include <videothumb.h>
 #include <hqdn3d.h>
 #include <SqlPhotos.h>
 #include <RegardsConfigParam.h>

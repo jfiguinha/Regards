@@ -5,8 +5,6 @@
 #include "ViewerParam.h"
 #include <SqlFaceThumbnail.h>
 #include <SqlFindFacePhoto.h>
-#include <ScrollbarHorizontalWnd.h>
-#include <ScrollbarWnd.h>
 #include <InfosSeparationBarFace.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>

@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ThumbnailToolBarZoom.h"
 #include <LibResource.h>
-#include "ListPicture.h"
 #include <window_id.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"

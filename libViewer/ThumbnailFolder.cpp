@@ -2,19 +2,13 @@
 #include <header.h>
 #include "ThumbnailFolder.h"
 #include "MainWindow.h"
-#include <LibResource.h>
 #include <ThumbnailDataSQL.h>
-#include <SqlFindPhotos.h>
-#include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
-#include <SqlPhotosWithoutThumbnail.h>
 #include "TreatmentData.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <config_id.h>
-#include <ParamInit.h>
 #include "ThumbnailBuffer.h"
-#include <RegardsConfigParam.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
