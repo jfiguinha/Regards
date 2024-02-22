@@ -348,13 +348,14 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 	oldIconeList->EraseThumbnailListWithIconeDelete();
 	delete oldIconeList;
 
+	ResizeThumbnail();
 
 	threadDataProcess = true;
 	processIdle = true;
 
 	UpdateScroll();
 	needToRefresh = true;
-	ResizeThumbnail();
+	
 }
 
 void CThumbnailEffect::LoadPicture(void* param)
