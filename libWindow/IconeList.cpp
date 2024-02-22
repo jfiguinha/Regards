@@ -174,7 +174,7 @@ void CIconeList::EraseThumbnailListWithIcon()
 			delete(pIcone);
 			pIcone = nullptr;
 		}
-	}*
+	}
 	pIconeList.clear();   
 }
 
