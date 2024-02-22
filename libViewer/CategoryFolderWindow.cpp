@@ -256,19 +256,12 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
 		catalogWnd->Init();
 		treeWindow->SetTreeControl(catalogWnd);
-        
-        CListToClean* listToAdd = new CListToClean();
-        listToAdd->catalogWndOld = pimpl->catalogWndOld;
-
+        CCategoryWnd * old = pimpl->catalogWndOld;
 		pimpl->catalogWndOld = catalogWnd;
 		pimpl->update = true;
         
-       
-		time(&listToAdd->timeToAdd);
-		
-		pimpl->listToErrase.push_back(listToAdd);
-
-
+        delete old;
+        old = nullptr;
 	}
 
 	processIdle = true;

@@ -777,9 +777,16 @@ void CThumbnail::AfterSetList()
 	}
 }
 
-void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
+void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
 {
-    
+    if(iconeListLocal != nullptr)
+    {
+        iconeListLocal->EraseThumbnailList();
+        delete iconeListLocal;
+        iconeListLocal = nullptr;    
+    }
+
+    /*
 	if (iconeListLocal->GetNbElement() == 0)
 	{
 		iconeListLocal->EraseThumbnailList();
@@ -795,14 +802,16 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 
 		stopToGetNbElement = false;
 	}
-
+    */
 
 }
 
 
 
-void CThumbnail::EraseIconeList(std::vector<CIcone*> pIconeListToClean)
+void CThumbnail::EraseIconeList(std::vector<CIcone*> & pIconeListToClean)
 {
+    
+
 
 	if (pIconeListToClean.size() == 0)
 	{
@@ -810,11 +819,19 @@ void CThumbnail::EraseIconeList(std::vector<CIcone*> pIconeListToClean)
 	}
 	else
 	{
+        /*
 		CListToClean* listToAdd = new CListToClean();
 		time(&listToAdd->timeToAdd);
 		listToAdd->type = 1;
 		listToAdd->pIconeListToClean = pIconeListToClean;
 		listToErrase.push_back(listToAdd);
+        */
+        for (CIcone* ico : pIconeListToClean)
+        {
+            delete ico;
+            ico = nullptr;
+        }
+        pIconeListToClean.clear();
 	}
 
 
