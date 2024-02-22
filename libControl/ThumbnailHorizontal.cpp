@@ -35,7 +35,7 @@ void CThumbnailHorizontal::InitPosition()
 
 void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	this->SetFocus();
 	InitScrollingPos();
 	auto iconeListLocal = new CIconeList();
@@ -116,11 +116,11 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

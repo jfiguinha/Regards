@@ -40,7 +40,7 @@ class CListToClean
 public:
 	int type = 0;
 	CIconeList* list;
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean;
 	std::time_t timeToAdd;
 };
 
@@ -779,14 +779,6 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
 {
-    if(iconeListLocal != nullptr)
-    {
-        iconeListLocal->EraseThumbnailList();
-        delete iconeListLocal;
-        iconeListLocal = nullptr;    
-    }
-
-    /*
 	if (iconeListLocal->GetNbElement() == 0)
 	{
 		iconeListLocal->EraseThumbnailList();
@@ -802,36 +794,24 @@ void CThumbnail::EraseThumbnailList(CIconeList * iconeListLocal)
 
 		stopToGetNbElement = false;
 	}
-    */
-
 }
 
 
 
-void CThumbnail::EraseIconeList(std::vector<CIcone*> & pIconeListToClean)
+void CThumbnail::EraseIconeList(std::vector<CIcone*> * pIconeListToClean)
 {
-    
-
-
-	if (pIconeListToClean.size() == 0)
+	if (pIconeListToClean->size() == 0)
 	{
-		pIconeListToClean.clear();
+		pIconeListToClean->clear();
+        delete pIconeListToClean;
 	}
 	else
 	{
-        /*
 		CListToClean* listToAdd = new CListToClean();
 		time(&listToAdd->timeToAdd);
 		listToAdd->type = 1;
 		listToAdd->pIconeListToClean = pIconeListToClean;
 		listToErrase.push_back(listToAdd);
-        */
-        for (CIcone* ico : pIconeListToClean)
-        {
-            delete ico;
-            ico = nullptr;
-        }
-        pIconeListToClean.clear();
 	}
 
 
@@ -965,15 +945,19 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				}
 				else if (element->type == 1)
 				{
-					for (CIcone* ico : element->pIconeListToClean)
+					for (CIcone* ico : *element->pIconeListToClean)
 					{
 						delete ico;
 						ico = nullptr;
 					}
-					element->pIconeListToClean.clear();
+					element->pIconeListToClean->clear();
+                    delete element->pIconeListToClean;
+                    element->pIconeListToClean = nullptr;
 					listToErrase.erase(listToErrase.begin() + i);
 					i--;
 				}
+                delete element;
+                element = nullptr;
 			}
 		}
 	}

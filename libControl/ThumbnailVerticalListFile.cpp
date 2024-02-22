@@ -18,7 +18,7 @@ CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindo
 
 void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	threadDataProcess = false;
@@ -98,11 +98,11 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -154,7 +154,7 @@ wxString CThumbnailVerticalListFile::GetKey()
 
 void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, const bool& showSelectButton)
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	CreateOrLoadStorageFile();
@@ -270,11 +270,11 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -303,7 +303,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	InitScrollingPos();
 	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
@@ -391,11 +391,11 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

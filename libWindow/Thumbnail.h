@@ -84,7 +84,7 @@ namespace Regards::Window
 		CIcone *  GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
 		void EraseThumbnailList(CIconeList* iconeListLocal);
-		void EraseIconeList(std::vector<CIcone*> & pIconeListToClean);
+		void EraseIconeList(std::vector<CIcone*> * pIconeListToClean);
 		int GetNbIconSelected();
 
 		virtual void EraseThumbnail(wxCommandEvent& event);

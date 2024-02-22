@@ -136,7 +136,7 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 
 void CThumbnailViewerPicture::ApplyListeFile()
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
@@ -170,11 +170,11 @@ void CThumbnailViewerPicture::ApplyListeFile()
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 
@@ -208,7 +208,7 @@ void CThumbnailViewerPicture::ApplyListeFile()
 
 void CThumbnailViewerPicture::SetListeFile()
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	threadDataProcess = false;
@@ -291,11 +291,11 @@ void CThumbnailViewerPicture::SetListeFile()
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
 	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
 

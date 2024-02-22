@@ -133,7 +133,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 void CThumbnailFace::init()
 {
-	std::vector<CIcone*> pIconeListToClean;
+	std::vector<CIcone*> * pIconeListToClean = new std::vector<CIcone*>();
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	auto viewerParam = CMainParamInit::getInstance();
@@ -212,10 +212,10 @@ void CThumbnailFace::init()
 		}
 
 		if (!find)
-			pIconeListToClean.push_back(ico);
+			pIconeListToClean->push_back(ico);
 	}
 
-	for (CIcone* ico : pIconeListToClean)
+	for (CIcone* ico : *pIconeListToClean)
 	{
 		CSqlFaceThumbnail* _clean = (CSqlFaceThumbnail*)ico->GetData();
 
