@@ -297,6 +297,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	if (oldIconeList != nullptr)
 	{
+		oldIconeList->EraseThumbnailListWithIconeDelete();
 		delete oldIconeList;
 		oldIconeList = nullptr;
 	}
