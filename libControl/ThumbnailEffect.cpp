@@ -354,6 +354,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 	UpdateScroll();
 	needToRefresh = true;
+	ResizeThumbnail();
 }
 
 void CThumbnailEffect::LoadPicture(void* param)
