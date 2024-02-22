@@ -305,13 +305,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	delete oldIconeList;
 
 	threadDataProcess = true;
+	processIdle = true;
 
 	UpdateScroll();
-
-	processThumbnailVideo = true;
-
-	//nbElementInIconeList = 1;
-
 	needToRefresh = true;
 }
 
