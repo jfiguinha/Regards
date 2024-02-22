@@ -19,8 +19,6 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
-wxImage CIcone::videoCadre;
-wxImage CIcone::photoTemp;
 
 void CIcone::ReinitPos()
 {
@@ -114,8 +112,8 @@ CIcone& CIcone::operator=(const CIcone& other)
 	width = other.width;
 	height = other.height;
 	showLoading = other.showLoading;
-	pictureLoading = other.pictureLoading;
-	transparent = other.transparent;
+//	pictureLoading = other.pictureLoading;
+	//transparent = other.transparent;
 	return *this;
 }
 
@@ -157,7 +155,6 @@ void CIcone::SetSizeIcone(const int& width, const int& height)
 	{
 		themeIcone.SetWidth(width);
 		themeIcone.SetHeight(height);
-		scaleBackup.Destroy();
 		photoDefault = false;
 		redraw = true;
 	}
@@ -212,7 +209,8 @@ CIcone::CIcone() : numElement(0), oldx(0), oldy(0)
 	state = INACTIFICONE;
 	isChecked = false;
 	numLib = LIBCPU;
-
+    pictureLoading = new wxImage(5,5);
+    localmemBitmap_backup = new wxBitmap(5,5);
 	config = CParamInit::getInstance();
 	if (config != nullptr)
 		numLib = config->GetEffectLibrary();
@@ -247,22 +245,24 @@ void CIcone::StopLoadingPicture()
 
 void CIcone::SetPictureLoading(const wxImage& imageLoading)
 {
-	pictureLoading = imageLoading;
+    delete pictureLoading;
+	pictureLoading = new wxImage(imageLoading);
 }
 
 wxImage CIcone::GenerateVideoIcone()
 {
+    wxImage videoCadre;
 	if (!videoCadre.IsOk())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
 	}
 	else if (videoCadre.GetWidth() != themeIcone.GetWidth())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
 	}
-	return videoCadre;
+    return videoCadre;
 }
 
 int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur)
@@ -299,6 +299,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 
 void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& type)
 {
+    wxImage transparent;
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
@@ -416,7 +417,7 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 		}
 	}
 
-	if (showLoading && pictureLoading.IsOk())
+	if (showLoading && pictureLoading->IsOk())
 	{
 		if (!transparent.IsOk() || (transparent.GetWidth() != bitmapScale.GetWidth() || transparent.GetHeight() !=
 			bitmapScale.GetHeight()))
@@ -439,12 +440,12 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& t
 
 		//wxImage picture = pictureLoading.Scale(bitmapScale.GetWidth() / 2, bitmapScale.GetHeight() /2);
 
-		int xLocal = posXThumbnail + (bitmapScale.GetWidth() - pictureLoading.GetWidth()) / 2;
-		int yLocal = themeIcone.GetMarge() + (bitmapScale.GetHeight() - pictureLoading.GetHeight()) / 2;
+		int xLocal = posXThumbnail + (bitmapScale.GetWidth() - pictureLoading->GetWidth()) / 2;
+		int yLocal = themeIcone.GetMarge() + (bitmapScale.GetHeight() - pictureLoading->GetHeight()) / 2;
 		//if(pictureLoading.HasMask())
 
-		if (pictureLoading.IsOk())
-			memDC->DrawBitmap(pictureLoading.ConvertToGreyscale(), xLocal, yLocal, true);
+		if (pictureLoading->IsOk())
+			memDC->DrawBitmap(pictureLoading->ConvertToGreyscale(), xLocal, yLocal, true);
 	}
 }
 
@@ -501,7 +502,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 	//Size Thumbnail Max
 	int heightThumbnailMax = (themeIcone.GetHeight() - 40) - (bitmapImageCadreVideo.GetHeight() * 2);
 	if (bitmapScale.GetHeight() > heightThumbnailMax)
-		bitmapImageActif = ResampleBicubic(&bitmapScale, bitmapScale.GetWidth(), heightThumbnailMax);
+		bitmapImageActif = bitmapScale.ResampleBicubic(bitmapScale.GetWidth(), heightThumbnailMax);
 	else
 		bitmapImageActif = bitmapScale;
 
@@ -593,7 +594,10 @@ CIcone::~CIcone(void)
 {
    // if (pThumbnailData != nullptr)
     //    printf("delete CIcone : %s \n", pThumbnailData->GetFilename().ToStdString().c_str());
-    
+    if (pictureLoading!= nullptr)
+        delete pictureLoading;
+    if (localmemBitmap_backup!= nullptr)
+        delete localmemBitmap_backup;
 	if (pThumbnailData != nullptr)
 		delete pThumbnailData;
 	pThumbnailData = nullptr;
@@ -665,126 +669,25 @@ void CIcone::CalculPosition(const wxImage& render)
 }
 
 
-namespace
-{
-	struct BicubicPrecalc
-	{
-		double weight[4];
-		int offset[4];
-	};
 
-
-	// The following two local functions are for the B-spline weighting of the
-	// bicubic sampling algorithm
-	double spline_cube(double value)
-	{
-		return value <= 0.0 ? 0.0 : value * value * value;
-	}
-
-	double spline_weight(double value)
-	{
-		return (spline_cube(value + 2) -
-			4 * spline_cube(value + 1) +
-			6 * spline_cube(value) -
-			4 * spline_cube(value - 1)) / 6;
-	}
-
-
-	void DoCalc(BicubicPrecalc& precalc, double srcpixd, int oldDim)
-	{
-		const double dd = srcpixd - static_cast<int>(srcpixd);
-
-		for (int k = -1; k <= 2; k++)
-		{
-			precalc.offset[k + 1] = srcpixd + k < 0.0
-				? 0
-				: srcpixd + k >= oldDim
-				? oldDim - 1
-				: static_cast<int>(srcpixd + k);
-
-			precalc.weight[k + 1] = spline_weight(k - dd);
-		}
-	}
-
-	void ResampleBicubicPrecalc(wxVector<BicubicPrecalc>& aWeight, int oldDim)
-	{
-		const int newDim = aWeight.size();
-		wxASSERT(oldDim > 0 && newDim > 0);
-
-		if (newDim > 1)
-		{
-			// We want to map pixels in the range [0..newDim-1]
-			// to the range [0..oldDim-1]
-			const double scale_factor = static_cast<double>(oldDim - 1) / (newDim - 1);
-
-			for (int dstd = 0; dstd < newDim; dstd++)
-			{
-				// We need to calculate the source pixel to interpolate from - Y-axis
-				const double srcpixd = static_cast<double>(dstd) * scale_factor;
-
-				DoCalc(aWeight[dstd], srcpixd, oldDim);
-			}
-		}
-		else
-		{
-			// Let's take the pixel from the center of the source image.
-			const double srcpixd = static_cast<double>(oldDim - 1) / 2.0;
-
-			DoCalc(aWeight[0], srcpixd, oldDim);
-		}
-	}
-} // anonymous namespace
-
-/*
- *
- * wxIMAGE_QUALITY_NEAREST
-Simplest and fastest algorithm.
-
-wxIMAGE_QUALITY_BILINEAR
-Compromise between wxIMAGE_QUALITY_NEAREST and wxIMAGE_QUALITY_BICUBIC.
-
-wxIMAGE_QUALITY_BICUBIC
-Highest quality but slowest execution time.
-
-wxIMAGE_QUALITY_BOX_AVERAGE
-Use surrounding pixels to calculate an average that will be used for new pixels.
-
-This method is typically used when reducing the size of an image.
-
-wxIMAGE_QUALITY_NORMAL
-Default image resizing algorithm used by wxImage::Scale().
-
-Currently the same as wxIMAGE_QUALITY_NEAREST.
-
-wxIMAGE_QUALITY_HIGH
- * */
-
- // This is the bicubic resampling algorithm
-wxImage CIcone::ResampleBicubic(wxImage* src, int width, int height)
-{
-
-	cv::Mat matrix = CLibPicture::mat_from_wx(*src);
-	cv::resize(matrix, matrix, cv::Size(width, height));
-	return CLibPicture::ConvertRegardsBitmapToWXImage(matrix);
-
-
-}
-
-wxBitmap CIcone::GetCopyIcone()
-{
-    return wxBitmap(localmemBitmap_backup);
-}
 
 void CIcone::RefreshIcone()
 {
 	photoDefault = false;
 	redraw = true;
-	localmemBitmap_backup = wxBitmap(20, 20);
+	//localmemBitmap_backup = wxBitmap(20, 20);
+}
+
+wxBitmap CIcone::GetCopyIcone()
+{
+    return wxBitmap(*localmemBitmap_backup);
 }
 
 void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical,
 	const bool& forceRedraw)
 {
+    wxImage scaleBackup;
+    wxImage photoTemp;
 	wxImage image = wxImage(20,20);
 	if (forceRedraw)
 		redraw = true;
@@ -816,15 +719,16 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 
 
 
-	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() !=
+	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup->GetWidth() || localmemBitmap_backup->GetHeight() !=
 		themeIcone.GetHeight()))
 	{
-		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
+        delete localmemBitmap_backup;
+		localmemBitmap_backup = new wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
 		wxMemoryDC memDC;
 
 		try
 		{
-			memDC.SelectObject(localmemBitmap_backup);
+			memDC.SelectObject(*localmemBitmap_backup);
 
 			wxImage scale;
 
@@ -869,7 +773,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 					if (config->GetThumbnailQuality() == 0)
 						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else if (photoDefault)
-						scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+						scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else
 					{
 						if (photoTemp.IsOk())
@@ -942,7 +846,7 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
 	}
 
 	GetBitmapIcone(returnValue, flipHorizontal, flipVertical, forceRedraw);
-	dc->DrawBitmap(localmemBitmap_backup, x + posLargeur, y + posHauteur);
+	dc->DrawBitmap(*localmemBitmap_backup, x + posLargeur, y + posHauteur);
 	return returnValue;
 }
 

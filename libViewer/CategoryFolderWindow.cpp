@@ -193,13 +193,22 @@ void CCategoryFolderWindow::RefreshCriteriaSearch()
 	init();
 }
 
+void CCategoryFolderWindow::UpdateCriteriaWnd(const bool& need_to_send_message)
+{
+    processIdle = true;
+    updateCriteriaMessage = need_to_send_message;
+    pimpl->update = true;  
+}
+
 void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 {
 	auto filename = static_cast<wxString*>(event.GetClientData());
 	if (filename != nullptr)
 		delete filename;
-
-	UpdateCriteria(false);
+        
+    processIdle = true;
+    updateCriteriaMessage = false;
+    pimpl->update = true;
 }
 
 void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
@@ -225,9 +234,9 @@ void CCategoryFolderWindow::InitSaveParameter()
 
 void CCategoryFolderWindow::init()
 {
-	UpdateCriteria(false);
-	pimpl->update = true;
-	processIdle = true;
+    processIdle = true;
+    updateCriteriaMessage = false;
+    pimpl->update = true;
 
 	pimpl->muVector.lock();
 	//Get List of Photo to process
@@ -252,15 +261,15 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr && treeWindow != nullptr)
 	{
-		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
-		catalogWnd->Init();
-		treeWindow->SetTreeControl(catalogWnd);
-        CCategoryWnd * old = pimpl->catalogWndOld;
-		pimpl->catalogWndOld = catalogWnd;
-		pimpl->update = true;
-        
-        delete old;
-        old = nullptr;
+		CCategoryWnd * catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
+        if(catalogWnd != nullptr)
+        {
+            catalogWnd->Init();
+            treeWindow->SetTreeControl(catalogWnd);
+            delete(pimpl->catalogWndOld);
+            pimpl->catalogWndOld = catalogWnd;
+            pimpl->update = true;        
+        }
 	}
 
 	processIdle = true;
@@ -340,6 +349,11 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		pimpl->muVector.unlock();
 	}
+    else if(pimpl->update)
+    {
+        UpdateCriteria(updateCriteriaMessage);
+        pimpl->update = false;
+    }
 	else if (!pimpl->traitementEnd)
 	{
 		//Nettoyage des criteres non utilises
@@ -492,29 +506,6 @@ void CCategoryFolderWindow::ProcessIdle()
 	if(pimpl->nbGpsFile > 0)
 		processIdle = true;
 
-
-	if (!pimpl->listToErrase.empty())
-	{
-		// printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
-		int i = 0;
-		time_t ending;
-		time(&ending);
-		for (int i = 0; i < pimpl->listToErrase.size(); i++)
-		{
-			CListToClean* element = pimpl->listToErrase[i];
-			int diff = difftime(ending, element->timeToAdd);
-			if (diff > 5)
-			{
-				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
-				delete element->catalogWndOld;
-				element->catalogWndOld = nullptr;
-				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
-				i--;
-			}
-		}
-	}
-
-
 }
 
 
@@ -537,6 +528,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 		evt.SetExtraLong(-1);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 
 	if (endProgram)
 	{
@@ -569,8 +561,9 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 	{
 		//Refresh Criteria 
 		//Mise à jour de l'affichage de l'arborescence
-		UpdateCriteria(true);
-		processIdle = true;
+        processIdle = true;
+        updateCriteriaMessage = true;
+        pimpl->update = true;
 	}
 }
 
@@ -748,7 +741,9 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	{
 		if (findPhotoCriteria->criteriaNew)
 		{
-			UpdateCriteria(true);
+            processIdle = true;
+            updateCriteriaMessage = true;
+            pimpl->update = true;
 		}
 
 		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)

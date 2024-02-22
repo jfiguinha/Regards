@@ -287,6 +287,8 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		old->clear();
 		delete old;
 	}
+    
+    printf("ThumbnailFolder pIconeList : %d \n", pIconeList.size());
 
 	for (CIcone* ico : pIconeList)
 	{
@@ -308,6 +310,9 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		if (!find)
 			pIconeListToClean->push_back(ico);
 	}
+    
+    
+     printf("ThumbnailFolder pIconeListToClean : %d \n", pIconeListToClean->size());
 
 	//------------------------------------
 	for (CIcone* ico : *pIconeListToClean)
@@ -324,6 +329,9 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		if (it != pIconeList.end())
 			pIconeList.erase(it);
 	}
+    
+    printf("ThumbnailFolder pIconeList : %d \n", pIconeList.size());
+
 
 	EraseThumbnailList(oldIconeList);
 	EraseIconeList(pIconeListToClean);
