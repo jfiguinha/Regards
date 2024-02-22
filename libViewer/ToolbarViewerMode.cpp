@@ -66,8 +66,16 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 	switch (windowMode)
 	{
 	case WINDOW_FACE:
-		facemode->SetPush(true);
-		break;
+    	if (faceDetection)
+        {
+            facemode->SetPush(true);
+            break;
+        }
+        else
+        {
+            viewermode->SetPush(true);
+            break;
+        }
 	case WINDOW_VIEWER:
 		viewermode->SetPush(true);
 		break;
