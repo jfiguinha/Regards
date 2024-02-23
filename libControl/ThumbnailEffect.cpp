@@ -592,6 +592,7 @@ void CThumbnailEffect::UpdateScroll()
 			GetHeight();
 	}
 
+	//int nbElement = pIconeList.size();
 	wxWindow* parent = this->GetParent();
 
 	if (parent != nullptr)

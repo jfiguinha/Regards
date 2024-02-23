@@ -296,11 +296,14 @@ void CCategoryFolderWindow::ProcessIdle()
 {
     pimpl->muVector.lock();
 	bool hasSomethingTodo = true;
-	printf("CCategoryFolderWindow::ProcessIdle() \n");
     int nbPhotos = pimpl->m_photosVector.size();
 	pimpl->muVector.unlock();
     
+    time_t ending;
+    time(&ending);
+    printf(" %s CCategoryFolderWindow::ProcessIdle \n", ctime(&ending));
 
+    
 
 	if (nbPhotos > 0 && pimpl->numProcess < pimpl->nbProcesseur)
 	{
@@ -422,52 +425,6 @@ void CCategoryFolderWindow::ProcessIdle()
 	//Thread by Thread
 	//---------------------------------------------------------------------------------------------------------------
 
-	/*
-	int numPhoto = 0;
-	int numFolderId = 0;
-	wxString photoPath = "";
-	CSqlPhotoGPS photoGPS;
-
-	time_t ending;
-	time(&ending);
-
-	int diff = difftime(ending, start);
-
-	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= 3)
-	{
-		int nbGpsFileByMinute = 60;
-		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
-
-		if (pimpl->gpsLocalisationFinish && pimpl->nbGpsFile < nbGpsFileByMinute)
-		{
-			auto findPhotoCriteria = new CFindPhotoCriteria();
-			findPhotoCriteria->urlServer = pimpl->urlServer;
-			findPhotoCriteria->mainWindow = this;
-			findPhotoCriteria->numPhoto = numPhoto;
-			findPhotoCriteria->photoPath = photoPath;
-			findPhotoCriteria->numFolderId = numFolderId;
-			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
-			pimpl->gpsLocalisationFinish = false;
-			pimpl->nbGpsFile++;
-			pimpl->numProcessGps++;
-			processIdle = true;
-			time(&start);
-
-		}
-		
-		//
-	}
-	else if (diff < 3)
-	{
-		processIdle = true;
-	}
-	*/
-
-	time_t ending;
-	time(&ending);
 
 	int diff = difftime(ending, start);
 
@@ -538,19 +495,25 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
     pimpl->muVector.lock();
     int nbPhotos = pimpl->m_photosVector.size();
     pimpl->muVector.unlock();
-    
-    if(updateCriteria)
-    {
-        UpdateCriteria(messageUpdateCriteria);
-        updateCriteria = false;
-    }
-    
+
+    time_t ending;
+    time(&ending);
+    printf(" %s CCategoryFolderWindow::OnIdle \n", ctime(&ending));
+
 	if (needToRefresh)
 	{
 		this->Refresh();
 		needToRefresh = false;
+        return;
 	}
 
+    if(updateCriteria)
+    {
+        UpdateCriteria(messageUpdateCriteria);
+        updateCriteria = false;
+        return;
+    }
+    
 	if (pimpl->startUpdateCriteria&& pimpl->numProcess <= 0 && nbPhotos == 0)
 	{
 		pimpl->startUpdateCriteria = false;

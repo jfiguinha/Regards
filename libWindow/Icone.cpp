@@ -255,12 +255,12 @@ wxImage CIcone::GenerateVideoIcone()
 	if (!videoCadre.IsOk())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
 	}
 	else if (videoCadre.GetWidth() != themeIcone.GetWidth())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
 	}
 	return videoCadre;
 }
@@ -501,7 +501,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 	//Size Thumbnail Max
 	int heightThumbnailMax = (themeIcone.GetHeight() - 40) - (bitmapImageCadreVideo.GetHeight() * 2);
 	if (bitmapScale.GetHeight() > heightThumbnailMax)
-		bitmapImageActif = bitmapScale.ResampleBicubic( bitmapScale.GetWidth(), heightThumbnailMax);
+		bitmapImageActif = ResampleBicubic(&bitmapScale, bitmapScale.GetWidth(), heightThumbnailMax);
 	else
 		bitmapImageActif = bitmapScale;
 
@@ -593,11 +593,10 @@ CIcone::~CIcone(void)
 {
    // if (pThumbnailData != nullptr)
     //    printf("delete CIcone : %s \n", pThumbnailData->GetFilename().ToStdString().c_str());
-
+    
 	if (pThumbnailData != nullptr)
 		delete pThumbnailData;
 	pThumbnailData = nullptr;
-
 }
 
 //----------------------------------------------------------------------------------
@@ -664,6 +663,7 @@ void CIcone::CalculPosition(const wxImage& render)
 	posXThumbnail = localx + left;
 	posYThumbnail = localy + top;
 }
+
 
 wxBitmap CIcone::GetCopyIcone()
 {
@@ -764,7 +764,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 					if (config->GetThumbnailQuality() == 0)
 						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else if (photoDefault)
-						scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+						scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else
 					{
 						if (photoTemp.IsOk())

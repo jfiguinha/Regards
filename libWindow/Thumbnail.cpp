@@ -38,8 +38,9 @@ class CImageLoadingFormat;
 class CListToClean
 {
 public:
-
+	int type = 0;
 	CIconeList* list;
+	std::vector<CIcone*> pIconeListToClean;
 	std::time_t timeToAdd;
 };
 
@@ -778,7 +779,7 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
-    /*
+    
 	if (iconeListLocal->GetNbElement() == 0)
 	{
 		iconeListLocal->EraseThumbnailList();
@@ -794,12 +795,30 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 
 		stopToGetNbElement = false;
 	}
-    */
-    iconeListLocal->EraseThumbnailListWithIcon();
-    delete iconeListLocal;
-    iconeListLocal = nullptr;
+
+
 }
 
+
+
+void CThumbnail::EraseIconeList(std::vector<CIcone*> pIconeListToClean)
+{
+
+	if (pIconeListToClean.size() == 0)
+	{
+		pIconeListToClean.clear();
+	}
+	else
+	{
+		CListToClean* listToAdd = new CListToClean();
+		time(&listToAdd->timeToAdd);
+		listToAdd->type = 1;
+		listToAdd->pIconeListToClean = pIconeListToClean;
+		listToErrase.push_back(listToAdd);
+	}
+
+
+}
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
 {
@@ -920,13 +939,25 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			int diff = difftime(ending, element->timeToAdd);
 			if (diff > 5)
 			{
-                printf("CThumbnail::listToErrase %i \n", i);
-                element->list->EraseThumbnailListWithIcon();
-                delete element->list;
-                element->list = nullptr;
-
+				if (element->type == 0)
+				{
+					printf("CThumbnail::listToErrase %i \n", i);
+					delete element->list;
+					element->list = nullptr;
+				}
+				else if (element->type == 1)
+				{
+					printf("CThumbnail::pIconeListToClean %i \n", i);
+					for (CIcone* ico : element->pIconeListToClean)
+					{
+						delete ico;
+						ico = nullptr;
+					}
+					element->pIconeListToClean.clear();
+				}
 				delete element;
 				element = nullptr;
+				listToErrase[i] = nullptr;
 			}
 			else
 				listToErraseNew.push_back(element);
