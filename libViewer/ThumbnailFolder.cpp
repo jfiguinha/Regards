@@ -19,6 +19,8 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
 
+
+
 CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                    const bool& testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
@@ -219,7 +221,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = iconeList;
 	//---------------------------------
-	//Sauvegarde de l'état
+	//Sauvegarde de l'état
 	//---------------------------------
 	vector<CThumbnailData*> listSelectItem;
 	threadDataProcess = false;
@@ -309,13 +311,13 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	{
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int photoId = thumbnailData->GetNumPhotoId();
+		wxString filename = thumbnailData->GetFilename();
 
 		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == photoId)
+			if (thumbnailData->GetFilename() == filename)
 			{
 				find = true;
 				break;
@@ -333,7 +335,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
 
 			});
 
@@ -405,7 +407,7 @@ void CThumbnailFolder::SetListeFile()
 			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 				{
 					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-					return thumbnailData->GetNumPhotoId() == fileEntry.GetId();
+					return thumbnailData->GetFilename() == fileEntry.GetPath();
 
 				});
 
@@ -431,6 +433,7 @@ void CThumbnailFolder::SetListeFile()
 			{
 				CIcone* icone = (CIcone*)*it;
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+				thumbnailData->SetNumPhotoId(fileEntry.GetId());
 				thumbnailData->SetNumElement(i);
 				icone->SetNumElement(thumbnailData->GetNumElement());
 				icone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
@@ -457,13 +460,13 @@ void CThumbnailFolder::SetListeFile()
 	{
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int photoId = thumbnailData->GetNumPhotoId();
+		wxString filename = thumbnailData->GetFilename();
 
 		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == photoId)
+			if (thumbnailData->GetFilename() == filename)
 			{
 				find = true;
 				break;
@@ -482,7 +485,7 @@ void CThumbnailFolder::SetListeFile()
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
 
 			});
 

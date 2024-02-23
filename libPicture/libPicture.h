@@ -84,13 +84,7 @@ namespace Regards
 
 			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat& img);
 			//static wxImage* ConvertRegardsBitmapToWXImagePt(cv::Mat& img);
-#ifdef LIBBPG
-#if defined(WIN32) && not defined(__MINGW32__)
-#else
-			static void LoadBpgDll();
-			static void UnloadBpgDll();
-#endif
-#endif
+
 			static CImageLoadingFormat* GetCancelPhoto(const wxString& szFileName, const int& widthThumbnail = 0,
 			                                           const int& heightThumbnail = 0);
 			CImageLoadingFormat* LoadPictureToBGRA(const wxString& filename, bool& pictureOK,

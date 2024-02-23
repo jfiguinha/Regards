@@ -84,7 +84,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone * e)
 			{ 
 				CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *) e->GetData();
-				return thumbnailData->GetNumFace() == numFace.numFace;
+				return thumbnailData->GetNumFace() == numFace.numFace && thumbnailData->GetFilename() == numFace.faceFilePath;
 			
 		});
 
@@ -117,6 +117,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		{
 			CIcone* icone = (CIcone *)*it;
 			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)icone->GetData();
+            thumbnailData->SetNumPhotoId(numFace.numPhoto);
 			thumbnailData->SetNumElement(nbElement++);
 			icone->SetNumElement(thumbnailData->GetNumElement());
 
@@ -201,12 +202,13 @@ void CThumbnailFace::init()
 		bool find = false;
 		CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
 		int numFace = thumbnailData->GetNumFace();
+        wxString filename = thumbnailData->GetFilename();
 
 		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
-			if (thumbnailData->GetNumFace() == numFace)
+			if (thumbnailData->GetNumFace() == numFace && thumbnailData->GetFilename() == filename)
 			{
 				find = true;
 				break;
@@ -224,7 +226,7 @@ void CThumbnailFace::init()
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
-				return thumbnailData->GetNumFace() == _clean->GetNumFace();
+				return (thumbnailData->GetNumFace() == _clean->GetNumFace() &&  thumbnailData->GetFilename() == _clean->GetFilename());
 
 			});
 

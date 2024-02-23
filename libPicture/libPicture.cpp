@@ -43,13 +43,6 @@
 #endif
 
 
-#ifdef LIBBPG
-#if defined(WIN32)
-#include <DllBpg.h>
-#else
-#include <dlfcn.h>
-#endif
-#endif
 #include "PictureData.h"
 //#include <SqlPhotos.h>
 
@@ -112,44 +105,6 @@ extern wxImage defaultPicture;
 std::map<wxString, int64_t> CLibPicture::listMovieDuration;
 
 
-#if defined(LIBBPG) && not defined(WIN32)
-
-void * CLibPicture::lib_handle = nullptr;
-
-
-void CLibPicture::LoadBpgDll()
-{
-     printf("LoadBpgDll\n");
-     wxString path = CFileUtility::GetProgramFolderPath();
-
-#ifdef __APPLE__
-    path.Append("/../Frameworks/libRegardsBpg.dylib");
-#else
-    path.Append("/libRegardsBpg.so");
-#endif
-
-    //const char * fichier = CConvertUtility::ConvertToUTF8(path);
-    lib_handle = dlopen(CConvertUtility::ConvertToUTF8(path), RTLD_LOCAL|RTLD_LAZY);
-    if (!lib_handle) {
-        printf("[%s] Unable to load library: %s\n", __FILE__, dlerror());
-        //exit(EXIT_FAILURE);
-    }
-    else
-    {
-        printf("LoadBpgDll enable to load library\n");
-    }
-}
-
-void CLibPicture::UnloadBpgDll()
-{
-    // Close the library.
-    if (dlclose(lib_handle) != 0) {
-        cerr << "[" << __FILE__ << "] main: Unable to close library: "
-        << dlerror() << "\n";
-    }
-}
-
-#endif
 
 static FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 {
@@ -426,20 +381,6 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 			}
 		}
 		break;
-#ifdef LIBBPG
-	case BPG:
-		{
-			CBpgOption bpgOption(nullptr);
-			bpgOption.ShowModal();
-			if (bpgOption.IsOk())
-			{
-				quality = bpgOption.CompressionLevel();
-				option = bpgOption.CompressionOption();
-				returnValue = 1;
-			}
-		}
-		break;
-#endif
 
 	case PDF:
 		{
@@ -879,40 +820,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
-#ifdef LIBBPG
-	case BPG:
-		{
-			//int width = bitmap->GetWidth();
-			//int height = bitmap->GetHeight();
-			int lossless_mode = option;
-			int compress_level = quality;
-
-			CxImage image = bitmap->GetCxImage();
-			//image->SetCodecOption(option, CXIMAGE_FORMAT_PNG);
-
-
-			uint8_t* buffer = nullptr;
-			int32_t sizeLen = 0;
-			image.Encode(buffer, sizeLen, CxImage::GetTypeIdFromName("png"));
-#if defined(WIN32)
-			BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8,
-			                   CConvertUtility::ConvertToUTF8(fileName));
-#else
-			int(*BPG_SavePNGPicture)(uint8_t * , uint64_t , int , int , int , const char * ) = (int(*)(uint8_t * , uint64_t , int , int , int , const char * ))dlsym(lib_handle, "BPG_SavePNGPicture");
-			if (BPG_SavePNGPicture) {
-				printf("[%s] dlsym(lib_handle, \"BPG_SavePNGPicture\"): Successful\n", __FILE__);
-				int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
-			}
-			else {
-				printf("[%s] Unable to get symbol: %s\n",
-					   __FILE__, dlerror());
-				//exit(EXIT_FAILURE);
-			}
-#endif
-			image.FreeMemory(buffer);
-		}
-		break;
-#endif
 
 	case HEIC:
 		{
@@ -2306,67 +2213,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				bitmap->SetPicture(local);
 			}
 			break;
-#ifdef LIBBPG
-		case BPG:
-			{
-				size_t data_size;
-				cv::Mat picture;
-				uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
-				if (_compressedImage != nullptr && data_size > 0)
-				{
-#if defined(WIN32)
 
-					int width = 0, height = 0;
-					//size_t size = 0;
-					uint8_t* data = nullptr;
-					if (BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
-					{
-						picture.create(height, width, CV_8UC4);
-						int returnValue = 0;
-						size_t data_len = width * height * 4;
-						returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, picture.data, data_len, width,
-						                                 height,
-						                                 false);
-					}
-#else
-				int returnValue = 0;
-				int width = 0, height = 0;
-				size_t size = 0;
-
-				void(*BPG_GetDimensions)(uint8_t*, uint64_t, int&, int&) = (void(*)(uint8_t*, uint64_t, int&, int&))dlsym(lib_handle, "BPG_GetDimensions");
-				if (BPG_GetDimensions) {
-					printf("[%s] dlsym(lib_handle, \"BPG_GetDimensions\"): Successful\n", __FILE__);
-					BPG_GetDimensions(_compressedImage, data_size, width, height);
-				}
-				else {
-					printf("[%s] Unable to get symbol: %s\n",
-						__FILE__, dlerror());
-				}
-
-				uint8_t* data = new uint8_t[width * height * 4];
-				size_t data_len = width * height * 4;
-
-				int(*BPG_GetPictureBGRA)(uint8_t*, uint64_t, uint8_t*, uint64_t, int&, int&, bool) = (int(*)(uint8_t*, uint64_t, uint8_t*, uint64_t, int&, int&, bool))dlsym(lib_handle, "BPG_GetPictureBGRA");
-				if (BPG_GetPictureBGRA) {
-					printf("[%s] dlsym(lib_handle, \"BPG_GetPictureBGRA\"): Successful\n", __FILE__);
-					returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height, true);
-				}
-				else {
-					printf("[%s] Unable to get symbol: %s\n",
-						__FILE__, dlerror());
-				}
-
-#endif
-					if (!picture.empty())
-					{
-						bitmap->SetPicture(picture);
-						bitmap->SetFilename(fileName);
-					}
-					delete[] _compressedImage;
-				}
-			}
-			break;
-#endif
 
 #if defined(LIBRAW)
 		case RAWFILE:
@@ -2674,32 +2521,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		width = this->svgWidth;
 		height = this->svgHeight;
 		break;
-#ifdef LIBBPG
-	case BPG:
-		{
-			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			size_t data_size;
-			uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
-			if (_compressedImage != nullptr && data_size > 0)
-			{
-#if defined(WIN32)
-				BPG_GetDimensions(_compressedImage, data_size, width, height);
-#else
-                void(*BPG_GetDimensions)(uint8_t * , uint64_t , int & , int & ) = (void(*)(uint8_t * , uint64_t , int & , int & ))dlsym(lib_handle, "BPG_GetDimensions");
-                if (BPG_GetDimensions) {
-                    printf("[%s] dlsym(lib_handle, \"BPG_GetDimensions\"): Successful\n", __FILE__);
-                    BPG_GetDimensions(_compressedImage, data_size, width, height);
-                }
-                else {
-                    printf("[%s] Unable to get symbol: %s\n",
-                           __FILE__, dlerror());
-                }
-#endif
-				delete[] _compressedImage;
-			}
-		}
-		break;
-#endif
+ 
 	case MPG2:
 	case MPEG:
 	case AVCHD:

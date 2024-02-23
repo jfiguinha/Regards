@@ -119,14 +119,8 @@ int MyApp::Close()
 
 
 #ifdef __WXMSW__
-
-
 	CoUninitialize();
 
-#endif
-
-#if not defined(WIN32) && defined(LIBBPG)
-	CLibPicture::UnloadBpgDll();
 #endif
 
 #ifdef FFMPEG
@@ -290,11 +284,6 @@ bool MyApp::OnInit()
 	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
 	glutInit(&argc, argv);
 #endif
-#endif
-
-#if not defined(WIN32) && defined(LIBBPG)
-    printf("LoadBpgDll\n");
-    CLibPicture::LoadBpgDll();
 #endif
 
 #ifndef NDEBUG
