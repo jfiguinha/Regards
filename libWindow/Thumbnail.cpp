@@ -928,7 +928,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
  
     if (!listToErrase.empty())
 	{
-       
+		std::vector<CListToClean*> listToErraseNew;
 		int i = 0;
 		time_t ending;
 		time(&ending);
@@ -944,25 +944,27 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 					printf("CThumbnail::listToErrase %i \n", i);
 					delete element->list;
 					element->list = nullptr;
-					listToErrase.erase(listToErrase.begin() + i);
-					i--;
 				}
 				else if (element->type == 1)
 				{
-                    printf("CThumbnail::pIconeListToClean %i \n", i);
+					printf("CThumbnail::pIconeListToClean %i \n", i);
 					for (CIcone* ico : element->pIconeListToClean)
 					{
 						delete ico;
 						ico = nullptr;
 					}
 					element->pIconeListToClean.clear();
-					listToErrase.erase(listToErrase.begin() + i);
-					i--;
 				}
-                
+				delete element;
+				element = nullptr;
+				listToErrase[i] = nullptr;
 			}
-            
+			else
+				listToErraseNew.push_back(element);
+
 		}
+		listToErrase = listToErraseNew;
+		
 	}
 }
 
