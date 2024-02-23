@@ -398,7 +398,6 @@
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
-        <Library Value="tbbmalloc_proxy"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -555,9 +554,6 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.4 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.7 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.57 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.11.0/lib/intel64/gcc4.8/libtbb.so.12 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.11.0/lib/intel64/gcc4.8/libtbbmalloc.so.2 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/oneapi-tbb-2021.11.0/lib/intel64/gcc4.8/libtbbmalloc_proxy.so.2 ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
