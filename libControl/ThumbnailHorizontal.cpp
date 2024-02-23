@@ -51,7 +51,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == i;
+				return thumbnailData->GetFilename() == fileEntry;
 
 			});
 
@@ -80,6 +80,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 			CIcone* icone = (CIcone*)*it;
 			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
 			thumbnailData->SetNumElement(i);
+            thumbnailData->SetNumPhotoId(i);
 			icone->SetNumElement(thumbnailData->GetNumElement());
 			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
 			icone->SetWindowPos(x, y);
@@ -102,13 +103,13 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 	{
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		int photoId = thumbnailData->GetNumPhotoId();
+		wxString filename = thumbnailData->GetFilename();
 
 		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetNumPhotoId() == photoId)
+			if (thumbnailData->GetFilename() == filename)
 			{
 				find = true;
 				break;
@@ -127,7 +128,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
 
 			});
 
