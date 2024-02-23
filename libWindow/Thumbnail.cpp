@@ -919,7 +919,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			if (diff > 5)
 			{
                 printf("CThumbnail::listToErrase %i \n", i);
-                element->list->EraseThumbnailListWithIcon();
+                //element->list->EraseThumbnailListWithIcon();
                 delete element->list;
                 element->list = nullptr;
 

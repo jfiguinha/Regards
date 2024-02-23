@@ -200,7 +200,10 @@ void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 	if (filename != nullptr)
 		delete filename;
 
-	UpdateCriteria(false);
+    processIdle = true;
+    updateCriteria = true;
+    messageUpdateCriteria = false;
+
 }
 
 void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
@@ -226,7 +229,9 @@ void CCategoryFolderWindow::InitSaveParameter()
 
 void CCategoryFolderWindow::init()
 {
-	UpdateCriteria(false);
+	//UpdateCriteria(false);
+    updateCriteria = true;
+    messageUpdateCriteria = false;
 	pimpl->update = true;
 	processIdle = true;
 
@@ -294,6 +299,8 @@ void CCategoryFolderWindow::ProcessIdle()
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
     int nbPhotos = pimpl->m_photosVector.size();
 	pimpl->muVector.unlock();
+    
+
 
 	if (nbPhotos > 0 && pimpl->numProcess < pimpl->nbProcesseur)
 	{
@@ -531,6 +538,13 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
     pimpl->muVector.lock();
     int nbPhotos = pimpl->m_photosVector.size();
     pimpl->muVector.unlock();
+    
+    if(updateCriteria)
+    {
+        UpdateCriteria(messageUpdateCriteria);
+        updateCriteria = false;
+    }
+    
 	if (needToRefresh)
 	{
 		this->Refresh();
@@ -552,7 +566,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 			pimpl->refreshTimer->Stop();
 	}
     
-    
+
 
 	StartThread();
 }
@@ -577,7 +591,9 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 	{
 		//Refresh Criteria 
 		//Mise à jour de l'affichage de l'arborescence
-		UpdateCriteria(true);
+		//UpdateCriteria(true);
+        updateCriteria = true;
+        messageUpdateCriteria = true;
 		processIdle = true;
 	}
 }
@@ -756,7 +772,9 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	{
 		if (findPhotoCriteria->criteriaNew)
 		{
-			UpdateCriteria(true);
+			//UpdateCriteria(true);
+            updateCriteria = true;
+            messageUpdateCriteria = true;
 		}
 
 		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)

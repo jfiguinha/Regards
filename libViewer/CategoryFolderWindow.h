@@ -44,6 +44,8 @@ namespace Regards::Viewer
 		int nbGpsFileByMinute = 60;
 		int nbPhotoToProcess = 0;
 		int nbPhotoGpsToProcess = 0;
+        bool updateCriteria = false;
+        bool messageUpdateCriteria = false;
         CCategoryFolderWindowPimpl * pimpl;
     
 	};
