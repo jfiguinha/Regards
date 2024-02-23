@@ -84,7 +84,6 @@ namespace Regards::Window
 		CIcone *  GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
 		void EraseThumbnailList(CIconeList* iconeListLocal);
-		void EraseIconeList(std::vector<CIcone*> pIconeListToClean);
 		int GetNbIconSelected();
 
 		virtual void EraseThumbnail(wxCommandEvent& event);
@@ -261,7 +260,7 @@ namespace Regards::Window
         bool stopToGetNbElement = false;
 		std::mutex muEraseList;
 		std::vector<CListToClean *> listToErrase;
-		std::vector<CIcone *> pIconeList;
+
 		
 	};
 }
