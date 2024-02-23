@@ -52,7 +52,10 @@
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_map.h>
 #include <tbb/parallel_for.h>
-#define USE_TBB_VECTOR
+#ifndef __APPLE__
+#include <tbb/tbbmalloc_proxy.h>
+#endif
+//#define USE_TBB_VECTOR
 #endif
 
 

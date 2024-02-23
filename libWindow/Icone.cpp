@@ -255,12 +255,12 @@ wxImage CIcone::GenerateVideoIcone()
 	if (!videoCadre.IsOk())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
 	}
 	else if (videoCadre.GetWidth() != themeIcone.GetWidth())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+		videoCadre = image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
 	}
 	return videoCadre;
 }
@@ -501,7 +501,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& typ
 	//Size Thumbnail Max
 	int heightThumbnailMax = (themeIcone.GetHeight() - 40) - (bitmapImageCadreVideo.GetHeight() * 2);
 	if (bitmapScale.GetHeight() > heightThumbnailMax)
-		bitmapImageActif = ResampleBicubic(&bitmapScale, bitmapScale.GetWidth(), heightThumbnailMax);
+		bitmapImageActif = bitmapScale.ResampleBicubic(bitmapScale.GetWidth(), heightThumbnailMax);
 	else
 		bitmapImageActif = bitmapScale;
 
@@ -764,7 +764,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 					if (config->GetThumbnailQuality() == 0)
 						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else if (photoDefault)
-						scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+						scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else
 					{
 						if (photoTemp.IsOk())
