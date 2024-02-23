@@ -367,7 +367,6 @@
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Debug/libRegardsBpg.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -449,7 +448,6 @@
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
