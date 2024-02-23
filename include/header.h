@@ -52,7 +52,7 @@
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_map.h>
 #include <tbb/parallel_for.h>
-#define USE_TBB_VECTOR
+//#define USE_TBB_VECTOR
 #endif
 
 
