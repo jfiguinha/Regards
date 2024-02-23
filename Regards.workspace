@@ -12,14 +12,6 @@
   <VirtualDirectory Name="Picture">
     <Project Name="libPicture" Path="libPicture/libPicture.project" Active="No"/>
     <Project Name="libJbig" Path="Otherlib/libJbig/libJbig.project" Active="No"/>
-    <VirtualDirectory Name="libbpg">
-      <Project Name="libavutil" Path="Otherlib/libbpg/libavutil/libavutil.project" Active="No"/>
-      <Project Name="libbpg" Path="Otherlib/libbpg/libbpg/libbpg.project" Active="No"/>
-      <Project Name="libRegardsBpg_unix" Path="Otherlib/libbpg/libRegardsBpg_unix/libRegardsBpg_unix.project" Active="No"/>
-      <Project Name="libRegardsBpg_windows" Path="Otherlib/libbpg/libRegardsBpg_windows/libRegardsBpg_windows.project" Active="No"/>
-      <Project Name="libRegardsBpg_mac" Path="Otherlib/libbpg/libRegardsBpg_mac/libRegardsBpg_mac.project" Active="No"/>
-      <Project Name="libavcodec" Path="Otherlib/libbpg/libavcodec/libavcodec.project" Active="No"/>
-    </VirtualDirectory>
     <VirtualDirectory Name="video">
       <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project" Active="No"/>
     </VirtualDirectory>
