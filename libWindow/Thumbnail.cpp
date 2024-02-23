@@ -778,7 +778,7 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
-    
+    /*
 	if (iconeListLocal->GetNbElement() == 0)
 	{
 		iconeListLocal->EraseThumbnailList();
@@ -794,8 +794,10 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 
 		stopToGetNbElement = false;
 	}
-
-
+    */
+    iconeListLocal->EraseThumbnailListWithIcon();
+    delete iconeListLocal;
+    iconeListLocal = nullptr;
 }
 
 
@@ -919,13 +921,12 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 			if (diff > 5)
 			{
                 printf("CThumbnail::listToErrase %i \n", i);
-                //element->list->EraseThumbnailListWithIcon();
+                element->list->EraseThumbnailListWithIcon();
                 delete element->list;
                 element->list = nullptr;
 
 				delete element;
 				element = nullptr;
-				listToErrase[i] = nullptr;
 			}
 			else
 				listToErraseNew.push_back(element);

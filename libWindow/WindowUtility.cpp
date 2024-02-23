@@ -43,6 +43,7 @@ wxSize CWindowUtility::GetSizeTexte(wxDC* dc, const wxString& libelle, CThemeFon
 		temp_dc.SetFont(_font);
 		size = temp_dc.GetTextExtent(libelle);
 		temp_dc.SetFont(wxNullFont);
+
 	}
 	catch (...)
 	{
