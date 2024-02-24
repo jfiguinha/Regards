@@ -283,11 +283,6 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 
 	av_free(is);
 
-
-	wxCommandEvent evt(FF_QUIT_EVENT);
-	parent->GetEventHandler()->AddPendingEvent(evt);
-
-
 	abortMutex.lock();
 	exit_video = false;
 	abortMutex.unlock();
@@ -2716,6 +2711,8 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 		av_log(NULL, AV_LOG_FATAL, "SDL_CreateThread(): %s\n", SDL_GetError());
 	fail:
 		stream_close(is);
+        wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
+        parent->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 		return NULL;
 	}
 	return is;
