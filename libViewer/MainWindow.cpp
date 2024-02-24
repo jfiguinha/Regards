@@ -147,7 +147,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_ONPICTURECLICK, wxCommandEventHandler(CMainWindow::OnPictureClick));
 	Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
 	Connect(wxEVENT_PICTUREVIDEOCLICK, wxCommandEventHandler(CMainWindow::PictureVideoClick));
-	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
+	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CMainWindow::InitPictures));
 	Connect(wxEVENT_REFRESHPICTURE, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
 	Connect(wxEVENT_MD5CHECKING, wxCommandEventHandler(CMainWindow::Md5Checking));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
@@ -732,7 +732,7 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 	wxWindow* window = FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+		wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
 		evt.SetExtraLong(1);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -976,25 +976,27 @@ void CMainWindow::UpdateFolderStatic()
 			numElementTraitement = 0;
 			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 			init = true;
+            
+            if (faceDetection)
+            {
+                wxWindow* window = this->FindWindowById(LISTFACEID);
+                if (window != nullptr)
+                {
+                    wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+                    window->GetEventHandler()->AddPendingEvent(evt);
+                }
+            }
+
+            if (categoryFolder != nullptr)
+            {
+                wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+                categoryFolder->GetEventHandler()->AddPendingEvent(evt);
+            }
 		}
 
 
 
-		if (faceDetection)
-		{
-			wxWindow* window = this->FindWindowById(LISTFACEID);
-			if (window != nullptr)
-			{
-				wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
-				window->GetEventHandler()->AddPendingEvent(evt);
-			}
-		}
 
-		if (categoryFolder != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
-			categoryFolder->GetEventHandler()->AddPendingEvent(evt);
-		}
 	}
 
 }

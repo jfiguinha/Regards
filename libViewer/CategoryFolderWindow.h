@@ -33,7 +33,7 @@ namespace Regards::Viewer
 		void OnRefreshFolder(wxCommandEvent& event);
 		void OnIdle(wxIdleEvent& evt) override;
 		bool GetProcessEnd() override;
-
+        void UpdateCriteriaList();
 		static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		static void FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		void RefreshThreadFolder(CFolderCatalog* folder);

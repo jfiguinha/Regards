@@ -502,7 +502,7 @@ void CViewerFrame::OnClose(wxCloseEvent& event)
 void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
 {
 	//printf("OnFileSystemModified \n");
-	const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+	const wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
 	mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	eventFileSysTimer->Stop();
 }
@@ -891,7 +891,7 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 			wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 			if (window)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+				wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
 				evt.SetExtraLong(0);
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
@@ -1025,7 +1025,7 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 		CSQLRemoveData::DeleteCatalog(1);
 		if (mainWindow != nullptr)
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
 			mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 

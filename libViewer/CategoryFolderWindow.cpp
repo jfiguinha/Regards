@@ -227,14 +227,8 @@ void CCategoryFolderWindow::InitSaveParameter()
 	}
 }
 
-void CCategoryFolderWindow::init()
+void CCategoryFolderWindow::UpdateCriteriaList()
 {
-	//UpdateCriteria(false);
-    updateCriteria = true;
-    messageUpdateCriteria = false;
-	pimpl->update = true;
-	processIdle = true;
-
 	pimpl->muVector.lock();
 	//Get List of Photo to process
 	CSqlInsertFile sql_insert_file;
@@ -249,6 +243,17 @@ void CCategoryFolderWindow::init()
 	nbPhotoGpsToProcess = 1;
 
 	pimpl->muVector.unlock();
+}
+
+void CCategoryFolderWindow::init()
+{
+	printf("CCategoryFolderWindow::init() \n");
+    updateCriteria = true;
+    messageUpdateCriteria = false;
+	pimpl->update = true;
+	processIdle = true;
+    UpdateCriteriaList();
+
 }
 
 void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
