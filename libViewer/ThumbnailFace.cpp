@@ -134,6 +134,8 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		listSeparator.push_back(infosSeparationBar);
 }
 
+#define USE_TBB_VECTOR
+
 void CThumbnailFace::init()
 {
 	std::vector<CIcone*> pIconeListToClean;

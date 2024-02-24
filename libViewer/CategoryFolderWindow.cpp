@@ -251,6 +251,7 @@ void CCategoryFolderWindow::init()
     updateCriteria = true;
     messageUpdateCriteria = false;
 	pimpl->update = true;
+    
 	processIdle = true;
     UpdateCriteriaList();
 
@@ -306,7 +307,7 @@ void CCategoryFolderWindow::ProcessIdle()
     
     time_t ending;
     time(&ending);
-    printf(" %s CCategoryFolderWindow::ProcessIdle \n", ctime(&ending));
+    printf(" %s CCategoryFolderWindow::ProcessIdle NbPhotos : %d nbGpsFile : %d \n", ctime(&ending), nbPhotos, pimpl->nbGpsFile);
 
     
 
