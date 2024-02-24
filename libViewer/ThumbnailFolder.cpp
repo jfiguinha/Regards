@@ -15,6 +15,7 @@
 #include <ParamInit.h>
 #include "ThumbnailBuffer.h"
 #include <RegardsConfigParam.h>
+#include <tbb/concurrent_queue.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -446,6 +447,7 @@ void CThumbnailFolder::SetListeFile()
 	threadDataProcess = false;
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
+   // auto values = std::vector<int>(size);
     
    
 #define USE_TBB_VECTOR
@@ -501,7 +503,7 @@ void CThumbnailFolder::SetListeFile()
 					return thumbnailData->GetFilename() == fileEntry.GetPath();
 
 				});
-
+                
 			if (it == pIconeList.end())
 			{
                 wxString filename = fileEntry.GetPath();
