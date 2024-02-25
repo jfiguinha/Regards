@@ -331,20 +331,9 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	for (CIcone* ico : pIconeListToClean)
@@ -488,22 +477,9 @@ void CThumbnailFolder::SetListeFile()
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-		CIcone* ico = iconeList->FindElement(filename);
-
-		/*
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-		*/
-		if(ico != nullptr)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	//------------------------------------

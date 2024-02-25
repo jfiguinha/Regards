@@ -45,7 +45,6 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 	int y = 0;
 	thumbnailPos = 0;
 
-
 	for (wxString fileEntry : files)
 	{
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
@@ -104,20 +103,9 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	//------------------------------------

@@ -24,12 +24,19 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
 	threadDataProcess = false;
+	thumbnailPos = 0;
+
 	int i = 0;
 	int x = 0;
 	int y = 0;
-	thumbnailPos = 0;
 
+	int nbElementX = 0;
+	int nbElementY = 0;
 
+	int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+		nbElementByRow++;
+        
 	for (wxString fileEntry : files)
 	{
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
@@ -67,7 +74,6 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 			thumbnailData->SetNumElement(i);
             
 			icone->SetNumElement(thumbnailData->GetNumElement());
-			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
 			icone->SetWindowPos(x, y);
 			iconeListLocal->AddElement(icone);
 
@@ -76,6 +82,15 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		}
 
 		x += themeThumbnail.themeIcone.GetWidth();
+		nbElementX++;
+		if (nbElementX == nbElementByRow)
+		{
+			nbElementX = 0;
+			x = -posLargeur;
+			nbElementY++;
+			y += themeThumbnail.themeIcone.GetHeight();
+		}
+
 		i++;
 	}
 
@@ -89,20 +104,9 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	//------------------------------------
@@ -237,20 +241,9 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	//------------------------------------
@@ -348,32 +341,6 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		}
 
 		i++;
-
-		/*
-		auto thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
-		thumbnailData->SetNumPhotoId(photo.GetId());
-		thumbnailData->SetNumElement(i);
-
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->SetNumElement(i);
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(x, y);
-
-		iconeListLocal->AddElement(pBitmapIcone);
-
-		x += themeThumbnail.themeIcone.GetWidth();
-		nbElementX++;
-		if (nbElementX == nbElementByRow)
-		{
-			nbElementX = 0;
-			x = -posLargeur;
-			nbElementY++;
-			y += themeThumbnail.themeIcone.GetHeight();
-		}
-
-		i++;
-		*/
 	}
 
 	CIconeList* oldIconeList = iconeList;
@@ -386,20 +353,9 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
+		CIcone* icone = iconeList->FindElement(filename);
+		if(icone != nullptr)
+			pIconeListToClean.push_back(icone);
 	}
 
 	//------------------------------------
