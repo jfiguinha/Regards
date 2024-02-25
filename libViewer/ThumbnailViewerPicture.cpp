@@ -40,7 +40,7 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
 
 void CThumbnailViewerPicture::Init(const int& typeAffichage)
 {
-	SetListeFile();
+	ApplyListeFile();
 
 }
 
@@ -59,14 +59,10 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	int size = CThumbnailBuffer::GetVectorSize();
-
-#define USE_TBB_VECTOR
-
-#ifndef USE_TBB_VECTOR
+    tbb::concurrent_vector<int> listItem;
+    
+    #pragma omp parallel for shared(pIconeList, listItem, iconeListLocal)
 	for (auto i = 0; i < size; i++)
-#else
-	tbb::parallel_for(0, size, 1, [=](int i)
-#endif
 	{
 		try
 		{
@@ -89,48 +85,36 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 				icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
 				iconeListLocal->AddElement(icone);
 			}
+            else
+                listItem.push_back(i);
 		}
 		catch (...)
 		{
 
 		}
 	}
-#ifdef USE_TBB_VECTOR
-	);
-#endif
 
-#undef USE_TBB_VECTOR
 
-	for (auto i = 0; i < size; i++)
+	for (int i : listItem)
 	{
 		try
 		{
 			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 
-			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-				{
-					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-					return thumbnailData->GetFilename() == photo.GetPath();
+            wxString filename = photo.GetPath();
+            auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
+            thumbnailData->SetNumPhotoId(photo.GetId());
+            thumbnailData->SetNumElement(i);
 
-				});
+            auto pBitmapIcone = new CIcone();
+            pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+            pBitmapIcone->SetData(thumbnailData);
+            pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+            pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+            pBitmapIcone->SetFilename(filename);
+            iconeListLocal->AddElement(pBitmapIcone);
 
-			if (it == pIconeList.end())
-			{
-				wxString filename = photo.GetPath();
-				auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-				thumbnailData->SetNumPhotoId(photo.GetId());
-				thumbnailData->SetNumElement(i);
-
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-				pBitmapIcone->SetData(thumbnailData);
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-				pBitmapIcone->SetFilename(filename);
-				iconeListLocal->AddElement(pBitmapIcone);
-
-				pIconeList.push_back(pBitmapIcone);
-			}
+            pIconeList.push_back(pBitmapIcone);
 		}
 		catch (...)
 		{
@@ -169,11 +153,6 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
-	/*
-	PhotosVector _pictures;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
-	*/
 	CIconeList* iconeListLocal = PregenerateList();
 
 	iconeList = iconeListLocal;
@@ -186,19 +165,10 @@ void CThumbnailViewerPicture::ApplyListeFile()
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
+        
+        CIcone*  icone = iconeList->FindElement(filename);
 
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
+		if (icone == nullptr)
 			pIconeListToClean.push_back(ico);
 	}
 
@@ -225,144 +195,6 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	//EraseThumbnailList(oldIconeList);
 
 	oldIconeList = nullptr;
-
-	AfterSetList();
-
-	ResizeThumbnail();
-
-	threadDataProcess = true;
-
-	needToRefresh = true;
-}
-
-void CThumbnailViewerPicture::SetListeFile()
-{
-	std::vector<CIcone*> pIconeListToClean;
-	auto iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
-	threadDataProcess = false;
-
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	thumbnailPos = 0;
-	int size = CThumbnailBuffer::GetVectorSize();
-
-#define USE_TBB_VECTOR
-	//std::map<int, CIcone * >
-#ifndef USE_TBB_VECTOR
-	for (auto i = 0; i < size; i++)
-#else
-	tbb::parallel_for(0, size, 1, [=](int i)
-#endif
-	{
-		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetFilename() == photo.GetPath();
-
-			});
-
-		if (it != pIconeList.end())
-		{
-			CIcone* icone = (CIcone*)*it;
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(i);
-			icone->SetNumElement(thumbnailData->GetNumElement());
-			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-			iconeListLocal->AddElement(icone);
-		}
-	}
-#ifdef USE_TBB_VECTOR
-    );
-#endif
-
-#undef USE_TBB_VECTOR
-
-	for (auto i = 0; i < size; i++)
-	{
-		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetFilename() == photo.GetPath();
-
-			});
-
-		if (it == pIconeList.end())
-		{
-			wxString filename = photo.GetPath();
-			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(i);
-
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-			pBitmapIcone->SetFilename(filename);
-			iconeListLocal->AddElement(pBitmapIcone);
-
-			pIconeList.push_back(pBitmapIcone);
-		}
-	}
-
-
-
-	iconeListLocal->SortById();
-
-	oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-
-	nbElementInIconeList = iconeList->GetNbElement();
-    
-    for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
-	}
-
-	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
-	{
-		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetFilename() == _clean->GetFilename();
-
-			});
-
-		if (it != pIconeList.end())
-			pIconeList.erase(it);
-	}
-
-	EraseThumbnailList(oldIconeList);
-	EraseIconeList(pIconeListToClean);
-	//----------------------------------------------------------
-
-	//EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 

@@ -21,6 +21,7 @@ namespace Regards::Viewer
 		CInfosSeparationBarExplorer * AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 
 	protected:
+        void GenerateList(CIconeList* iconeListLocal, int local_nbElement);
 		void InitTypeAffichage(const int& typeAffichage);
 		void OnPictureClick(CThumbnailData* data) override;
 		void ResizeThumbnail() override;
