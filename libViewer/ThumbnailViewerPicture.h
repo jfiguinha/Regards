@@ -22,6 +22,7 @@ namespace Regards::Viewer
 		                        const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailViewerPicture(void) override;
 		void Init(const int& typeAffichage = SHOW_ALL);
+		void SetListeFile();
 		vector<wxString> GetFileList();
 		void ApplyListeFile();
 

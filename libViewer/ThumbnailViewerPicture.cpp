@@ -40,7 +40,7 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
 
 void CThumbnailViewerPicture::Init(const int& typeAffichage)
 {
-	ApplyListeFile();
+	SetListeFile();
 
 }
 
@@ -59,10 +59,8 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	int size = CThumbnailBuffer::GetVectorSize();
-    tbb::concurrent_vector<int> listItem;
-    
-    #pragma omp parallel for shared(pIconeList, listItem, iconeListLocal)
-	for (auto i = 0; i < size; i++)
+
+	tbb::parallel_for(0, size, 1, [=](int i)
 	{
 		try
 		{
@@ -85,36 +83,45 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 				icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
 				iconeListLocal->AddElement(icone);
 			}
-            else
-                listItem.push_back(i);
 		}
 		catch (...)
 		{
 
 		}
 	}
+	);
 
-
-	for (int i : listItem)
+	for (auto i = 0; i < size; i++)
 	{
 		try
 		{
 			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 
-            wxString filename = photo.GetPath();
-            auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-            thumbnailData->SetNumPhotoId(photo.GetId());
-            thumbnailData->SetNumElement(i);
+			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+				{
+					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+					return thumbnailData->GetFilename() == photo.GetPath();
 
-            auto pBitmapIcone = new CIcone();
-            pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-            pBitmapIcone->SetData(thumbnailData);
-            pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-            pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-            pBitmapIcone->SetFilename(filename);
-            iconeListLocal->AddElement(pBitmapIcone);
+				});
 
-            pIconeList.push_back(pBitmapIcone);
+			if (it == pIconeList.end())
+			{
+				CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+				wxString filename = photo.GetPath();
+				auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
+				thumbnailData->SetNumPhotoId(photo.GetId());
+				thumbnailData->SetNumElement(i);
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+				pBitmapIcone->SetFilename(filename);
+				iconeListLocal->AddElement(pBitmapIcone);
+
+				pIconeList.push_back(pBitmapIcone);
+			}
 		}
 		catch (...)
 		{
@@ -123,8 +130,6 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	}
 
 	iconeListLocal->SortByFilename();
-
-#define USE_TBB_VECTOR
 
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < size; i++)
@@ -141,8 +146,6 @@ CIconeList * CThumbnailViewerPicture::PregenerateList()
 	);
 #endif
 
-#undef USE_TBB_VECTOR
-
 	return iconeListLocal;
 }
 
@@ -153,6 +156,11 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
+	/*
+	PhotosVector _pictures;
+	CSqlFindPhotos sqlFindPhotos;
+	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
+	*/
 	CIconeList* iconeListLocal = PregenerateList();
 
 	iconeList = iconeListLocal;
@@ -165,10 +173,19 @@ void CThumbnailViewerPicture::ApplyListeFile()
 		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-        
-        CIcone*  icone = iconeList->FindElement(filename);
 
-		if (icone == nullptr)
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+			if (thumbnailData->GetFilename() == filename)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
 			pIconeListToClean.push_back(ico);
 	}
 
@@ -205,6 +222,134 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	needToRefresh = true;
 }
 
+void CThumbnailViewerPicture::SetListeFile()
+{
+	std::vector<CIcone*> pIconeListToClean;
+	auto iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+	threadDataProcess = false;
+
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	thumbnailPos = 0;
+	int size = CThumbnailBuffer::GetVectorSize();
+
+	tbb::parallel_for(0, size, 1, [=](int i)
+	{
+		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+				return thumbnailData->GetFilename() == photo.GetPath();
+
+			});
+
+		if (it != pIconeList.end())
+		{
+			CIcone* icone = (CIcone*)*it;
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+			thumbnailData->SetNumPhotoId(photo.GetId());
+			thumbnailData->SetNumElement(i);
+			icone->SetNumElement(thumbnailData->GetNumElement());
+			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+			iconeListLocal->AddElement(icone);
+		}
+	}
+    );
+
+
+
+	for (auto i = 0; i < size; i++)
+	{
+		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+				return thumbnailData->GetFilename() == photo.GetPath();
+
+			});
+
+		if (it == pIconeList.end())
+		{
+			wxString filename = photo.GetPath();
+			auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
+			thumbnailData->SetNumPhotoId(photo.GetId());
+			thumbnailData->SetNumElement(i);
+
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			pBitmapIcone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+			pBitmapIcone->SetFilename(filename);
+			iconeListLocal->AddElement(pBitmapIcone);
+
+			pIconeList.push_back(pBitmapIcone);
+		}
+	}
+
+	iconeListLocal->SortById();
+
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+
+	nbElementInIconeList = iconeList->GetNbElement();
+    
+    for (CIcone* ico : pIconeList)
+	{
+		bool find = false;
+		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+		wxString filename = thumbnailData->GetFilename();
+
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+			if (thumbnailData->GetFilename() == filename)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
+
+	//------------------------------------
+	for (CIcone* ico : pIconeListToClean)
+	{
+		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
+
+			});
+
+		if (it != pIconeList.end())
+			pIconeList.erase(it);
+	}
+
+	EraseThumbnailList(oldIconeList);
+	EraseIconeList(pIconeListToClean);
+	//----------------------------------------------------------
+
+	//EraseThumbnailList(oldIconeList);
+
+	AfterSetList();
+
+	ResizeThumbnail();
+
+	threadDataProcess = true;
+
+	needToRefresh = true;
+}
+
 void CThumbnailViewerPicture::ResizeThumbnail()
 {
 	ResizeThumbnailWithoutVScroll();
@@ -217,9 +362,6 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
-    
-#define USE_TBB_VECTOR
-    
 #ifndef USE_TBB_VECTOR
 	for (auto i = 0; i < nbElementInIconeList; i++)
 #else
@@ -237,8 +379,6 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 #ifdef USE_TBB_VECTOR
     );
 #endif
-
-#undef USE_TBB_VECTOR
 
 }
 

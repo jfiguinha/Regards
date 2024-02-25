@@ -191,7 +191,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxString labelThumbnail = CLibResource::LoadStringFromResource(L"labelThumbnail", 1); //L"&Thumbnail";
 	wxString labelHelp = CLibResource::LoadStringFromResource(L"labelHelp", 1); //L"&Help";
 
-	auto menuWindow = new wxMenu;
+	//auto menuWindow = new wxMenu;
 	wxString labelWindowFace = CLibResource::LoadStringFromResource(L"labelWindowFace", 1);
 	wxString labelWindowFaceLink = CLibResource::LoadStringFromResource(L"labelWindowFaceLink", 1);
 	wxString labelWindowFolder = CLibResource::LoadStringFromResource(L"labelWindowFolder", 1);
@@ -209,12 +209,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     auto menuTools = new wxMenu;
 	menuTools->Append(ID_DIAPORAMA, export_diaporama, export_diaporama);
 
-
+    /*
 	menuWindow->Append(ID_WINDOWFACE, labelWindowFaceLink, labelWindowFace);
 	menuWindow->Append(ID_WINDOWFOLDER, labelWindowFolderLink, labelWindowFolder);
 	menuWindow->Append(ID_WINDOWVIEWER, labelWindowViewerLink, labelWindowViewer);
 	menuWindow->Append(ID_WINDOWPICTURE, labelWindowPictureLink, labelWindowPicture);
-
+    */
+    
 	auto menuSizeIcon = new wxMenu;
 	menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
 	menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
@@ -244,7 +245,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuSizeIcon, labelSizeIcon);
     menuBar->Append(menuTools, "Tools");
-	menuBar->Append(menuWindow, labelWindow);
+	//menuBar->Append(menuWindow, labelWindow);
 	menuBar->Append(menuHelp, labelHelp);
 	wxFrameBase::SetMenuBar(menuBar);
 
