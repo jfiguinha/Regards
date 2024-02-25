@@ -146,7 +146,7 @@ namespace Regards::Viewer
 		bool fullscreen;
 		wxGauge* progressBar;
 		wxStatusBar* statusBar;
-		CToolbar* toolbar;
+		//CToolbar* toolbar;
 		CCentralWindow* centralWnd;
 		CToolbarViewerMode * toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;

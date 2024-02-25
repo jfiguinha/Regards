@@ -1769,12 +1769,12 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	{
 		wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
 		previewWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
 
-	if (previewWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_ANIMATIONSTART);
-		previewWindow->GetEventHandler()->AddPendingEvent(evt);
+		wxCommandEvent evt_anim(wxEVENT_ANIMATIONSTART);
+		previewWindow->GetEventHandler()->AddPendingEvent(evt_anim);
+        
+        wxCommandEvent evt_export(wxEVENT_HIDEEXPORTBUTTON);
+		previewWindow->GetEventHandler()->AddPendingEvent(evt_export);
 	}
 	return result;
 }

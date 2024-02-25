@@ -111,9 +111,9 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	if (viewerTheme != nullptr)
 	{
-		CThemeToolbar theme;
-		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbar = new CToolbar(this, wxID_ANY, theme, false);
+		//CThemeToolbar theme;
+		//viewerTheme->GetMainToolbarTheme(&theme);
+		//toolbar = new CToolbar(this, wxID_ANY, theme, false);
 
 		CThemeToolbar theme_infos;
 		viewerTheme->GetInfosToolbarTheme(&theme_infos);
@@ -254,6 +254,7 @@ void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 {
 	cout << "OnVersionUpdate" << endl;
 
+    /*
 	int hasUpdate = event.GetInt();
 	if (hasUpdate)
 	{
@@ -262,7 +263,8 @@ void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 
 		
 	}
-
+    */
+    
 	if (versionUpdate != nullptr)
 	{
 		versionUpdate->join();
@@ -753,7 +755,7 @@ void CMainWindow::OnShowToolbar(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::UpdateScreenRatio()
 {
-	toolbar->UpdateScreenRatio();
+	//toolbar->UpdateScreenRatio();
 	centralWnd->UpdateScreenRatio();
 	this->Resize();
 }
@@ -1377,7 +1379,7 @@ CMainWindow::~CMainWindow()
     delete(progressBar);
 	delete(statusBar);
 	delete(centralWnd);
-	delete(toolbar);
+	//delete(toolbar);
 }
 
 //---------------------------------------------------------------
@@ -1396,16 +1398,15 @@ void CMainWindow::Resize()
 	{
 		const wxSize sizeStatusBar = statusBar->GetSize();
 
-		toolbar->SetSize(0, 0, GetWindowWidth(), toolbar->GetNavigatorHeight());
-		toolbar->Refresh();
+		//toolbar->SetSize(0, 0, GetWindowWidth(), toolbar->GetNavigatorHeight());
+		//toolbar->Refresh();
+		//toolbarViewerMode->SetSize(0, toolbar->GetNavigatorHeight(), GetWindowWidth(), toolbarViewerMode->GetNavigatorHeight());
+		toolbarViewerMode->SetSize(0, 0, GetWindowWidth(), toolbarViewerMode->GetNavigatorHeight());
+        toolbarViewerMode->Refresh();
 
-
-
-		toolbarViewerMode->SetSize(0, toolbar->GetNavigatorHeight(), GetWindowWidth(), toolbarViewerMode->GetNavigatorHeight());
-		toolbarViewerMode->Refresh();
-
-		centralWnd->SetSize(0, toolbar->GetNavigatorHeight() + toolbarViewerMode->GetNavigatorHeight(), GetWindowWidth(), GetWindowHeight() - (toolbarViewerMode->GetNavigatorHeight() + toolbar->GetNavigatorHeight() + sizeStatusBar.y));
-		centralWnd->Refresh();
+		//centralWnd->SetSize(0, toolbar->GetNavigatorHeight() + toolbarViewerMode->GetNavigatorHeight(), GetWindowWidth(), GetWindowHeight() - (toolbarViewerMode->GetNavigatorHeight() + toolbar->GetNavigatorHeight() + sizeStatusBar.y));
+		centralWnd->SetSize(0, toolbarViewerMode->GetNavigatorHeight(), GetWindowWidth(), GetWindowHeight() - (toolbarViewerMode->GetNavigatorHeight() + sizeStatusBar.y));
+        centralWnd->Refresh();
 
 		statusBar->SetSize(0, GetWindowHeight() - sizeStatusBar.y, GetWindowWidth(),sizeStatusBar.y);
 		statusBar->Refresh();
@@ -1673,7 +1674,7 @@ bool CMainWindow::SetFullscreenMode()
 			is_work = true;
 			fullscreen = true;
 			toolbarViewerMode->Show(false);
-			toolbar->Show(false);
+			//toolbar->Show(false);
 			statusBar->Show(false);
 			wxCommandEvent event(wxEVENT_SETSCREEN);
 			wxPostEvent(this, event);
@@ -1692,7 +1693,7 @@ bool CMainWindow::SetScreen()
 		{
 			statusBarViewer->SetScreen();
 			fullscreen = false;
-			toolbar->Show(true);
+			//toolbar->Show(true);
 			toolbarViewerMode->Show(true);
 			statusBar->Show(true);
 			isWork = true;

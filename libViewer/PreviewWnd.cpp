@@ -76,6 +76,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal
 	Connect(wxEVENT_HIDESCREENBUTTON, wxCommandEventHandler(CPreviewWnd::DisableScreenButton));
 	Connect(wxEVENT_SHOWSAVEBUTTON, wxCommandEventHandler(CPreviewWnd::ShowSaveButton));
 	Connect(wxEVENT_HIDESAVEBUTTON, wxCommandEventHandler(CPreviewWnd::HideSaveButton));
+	Connect(wxEVENT_SHOWEXPORTBUTTON, wxCommandEventHandler(CPreviewWnd::ShowExportButton));
+	Connect(wxEVENT_HIDEEXPORTBUTTON, wxCommandEventHandler(CPreviewWnd::HideExportButton));
 	Connect(wxEVENT_HIDETOOLBAR, wxCommandEventHandler(CPreviewWnd::HideToolbar));
 	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
@@ -111,6 +113,18 @@ void CPreviewWnd::ShowSaveButton(wxCommandEvent& event)
 {
 	if (previewToolbar != nullptr)
 		previewToolbar->EnableSaveButton();
+}
+
+void CPreviewWnd::HideExportButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->DisableExportButton();
+}
+
+void CPreviewWnd::ShowExportButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->EnableExportButton();
 }
 
 void CPreviewWnd::ShowScreenButton(wxCommandEvent& event)

@@ -9,6 +9,20 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
+#define IDM_WINDOWSEARCH 152
+#define IDM_THUMBNAILFACE 153
+#define IDM_VIEWERMODE 154
+#define IDM_EXPLORERMODE 155
+#define IDM_SHOWINFOS 156
+#define IDM_QUITTER 157
+#define IDM_PRINT 158
+#define IDM_SCANNER 159
+#define IDM_PICTUREMODE 160
+#define IDM_EDIT 161
+#define IDM_EXPORT 162
+#define IDM_NEWVERSION 163
+#define IDM_EXPORT_DIAPORAMA 164
+
 CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
                                  CToolbarInterface* toolbarInterface, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
@@ -29,8 +43,9 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT", 1);
 	wxString libelleEnd = CLibResource::LoadStringFromResource(L"LBLEND", 1);
 	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE", 1); // "Save";
-
-
+    wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
+    wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
+    
 	fullscreen = new CToolbarButton(themeToolbar.button);
 	fullscreen->SetButtonResourceId(L"IDB_SCREENPNG");
 	fullscreen->SetCommandId(IDM_SETFULLSCREEN);
@@ -42,7 +57,18 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	save->SetCommandId(WM_SAVE);
 	save->SetLibelle(saveLibelle);
 	navElement.push_back(save);
-
+    
+	auto editor = new CToolbarButton(themeToolbar.button);
+	editor->SetButtonResourceId(L"IDB_OPEN");
+	editor->SetLibelle(lblEditor);
+	editor->SetCommandId(IDM_EDIT);
+	navElement.push_back(editor);
+    
+    exportFile= new CToolbarButton(themeToolbar.button);
+	exportFile->SetButtonResourceId("IDB_EXPORT");
+	exportFile->SetCommandId(IDM_EXPORT);
+	exportFile->SetLibelle(export_label);
+	navElement.push_back(exportFile);
 
 	imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_ARROWTRACKLPNG");
@@ -118,6 +144,19 @@ void CPreviewToolbar::EnableScreenButton()
 void CPreviewToolbar::DisableScreenButton()
 {
 	fullscreen->SetVisible(false);
+	needToRefresh = true;
+}
+
+void CPreviewToolbar::EnableExportButton()
+{
+	exportFile->SetVisible(true);
+	needToRefresh = true;
+}
+
+
+void CPreviewToolbar::DisableExportButton()
+{
+	exportFile->SetVisible(false);
 	needToRefresh = true;
 }
 
@@ -353,6 +392,21 @@ void CPreviewToolbar::EventManager(const int& id)
 	case WM_IMAGES_END:
 		LastPicture();
 		break;
+	case IDM_EDIT:
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_EDITFILE);
+			wxQueueEvent(central, event);
+			break;
+		}
+	case IDM_EXPORT:
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto event = new wxCommandEvent(wxEVENT_EXPORTFILE);
+			wxQueueEvent(central, event);
+			break;
+		}
+    
 	default: ;
 	}
 }

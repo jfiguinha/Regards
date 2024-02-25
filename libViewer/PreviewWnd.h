@@ -72,6 +72,9 @@ namespace Regards
 			void HideToolbar(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void StartAnimation(wxCommandEvent& event);
+			void HideExportButton(wxCommandEvent& event);
+			void ShowExportButton(wxCommandEvent& event);
+
 
 			CShowElement* showElement;
 

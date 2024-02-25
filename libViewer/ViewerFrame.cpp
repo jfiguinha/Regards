@@ -200,6 +200,15 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxString labelWindowViewerLink = CLibResource::LoadStringFromResource(L"labelWindowViewerLink", 1);
 	wxString labelWindowPicture = CLibResource::LoadStringFromResource(L"labelWindowPicture", 1);
 	wxString labelWindowPictureLink = CLibResource::LoadStringFromResource(L"labelWindowPictureLink", 1);
+    
+    
+	wxString export_diaporama = CLibResource::LoadStringFromResource(L"LBLEXPORTDIAPORAMA", 1);
+	wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
+    wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
+    
+    auto menuTools = new wxMenu;
+	menuTools->Append(ID_DIAPORAMA, export_diaporama, export_diaporama);
+
 
 	menuWindow->Append(ID_WINDOWFACE, labelWindowFaceLink, labelWindowFace);
 	menuWindow->Append(ID_WINDOWFOLDER, labelWindowFolderLink, labelWindowFolder);
@@ -210,17 +219,20 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
 	menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
 
-	menuFile->Append(ID_EXPORT, "&Export", "Export");
+	//menuFile->Append(ID_EXPORT, "&Export", "Export");
 #ifdef WIN32
 	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
+    menuFile->AppendSeparator();
 #endif
-
-	menuFile->AppendSeparator();
+    //menuTools->Append(wxID_EDIT, lblEditor, lblEditor);
+   
+	
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
 #endif
 	menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
+    menuFile->Append(ID_SCANNER, lblScanner, lblScanner);
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
 	menuFile->AppendSeparator();
@@ -231,6 +243,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	auto menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuSizeIcon, labelSizeIcon);
+    menuBar->Append(menuTools, "Tools");
 	menuBar->Append(menuWindow, labelWindow);
 	menuBar->Append(menuHelp, labelHelp);
 	wxFrameBase::SetMenuBar(menuBar);
@@ -245,7 +258,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #ifdef WIN32
 	Connect(ID_ASSOCIATE, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnAssociate));
 #endif
-	//Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
+	Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
+    Connect(wxID_EDIT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnEdit));
+    Connect(ID_DIAPORAMA, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExportDiaporama));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	mainWindow->Bind(wxEVT_KEY_UP, &CViewerFrame::OnKeyUp, this);
 
@@ -259,6 +274,21 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	loadPictureStartTimer->Start(10, true);
 	
 }
+
+void CViewerFrame::OnExportDiaporama(wxCommandEvent& event)
+{
+    wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+    auto local_event = new wxCommandEvent(wxEVENT_EXPORTDIAPORAMA);
+    wxQueueEvent(central, local_event);  
+}
+
+ void CViewerFrame::OnEdit(wxCommandEvent& event)
+ {
+    
+    wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+    auto local_event = new wxCommandEvent(wxEVENT_EDITFILE);
+    wxQueueEvent(central, local_event);    
+ }
 
 void CViewerFrame::OnWindowFullScreen(wxCommandEvent & event)
 {

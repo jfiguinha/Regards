@@ -27,6 +27,8 @@ namespace Regards
 			void EnableNavigationButton();
 			void EnableSaveButton();
 			void DisableSaveButton();
+			void EnableExportButton();
+			void DisableExportButton();
 			void EnableScreenButton();
 			void DisableScreenButton();
 
@@ -54,7 +56,8 @@ namespace Regards
 			CToolbarButton* imageFirst;
 			CToolbarButton* imagePrec;
 			CToolbarButton* save;
-
+            CToolbarButton* exportFile;
+            CToolbarButton* editFile;
 			bool navigationButtonEnable = true;
 		};
 	}

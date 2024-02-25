@@ -646,6 +646,8 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		{
 			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
 			window->GetEventHandler()->AddPendingEvent(evt);
+            wxCommandEvent evt_Export(wxEVENT_HIDEEXPORTBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt_Export);
 		}
 	}
 	else
@@ -655,6 +657,8 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		{
 			wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
 			window->GetEventHandler()->AddPendingEvent(evt);
+            wxCommandEvent evt_Export(wxEVENT_HIDEEXPORTBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt_Export);
 		}
 	}
 	filename = bitmap->GetFilename();
@@ -1239,6 +1243,13 @@ bool CShowElement::SetVideo(const wxString& filename, const int& rotation, const
 	{
 		value = videoWindow->PlayMovie(filename, true);
 	}
+    
+    wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+    if (window != nullptr)
+    {
+        wxCommandEvent evt(wxEVENT_SHOWEXPORTBUTTON);
+        window->GetEventHandler()->AddPendingEvent(evt);
+    }
 
 	this->Resize();
 	return value;

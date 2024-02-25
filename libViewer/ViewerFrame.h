@@ -36,6 +36,8 @@ namespace Regards::Viewer
 		ID_WINDOWFOLDER = 18,
 		ID_WINDOWVIEWER = 19,
 		ID_WINDOWPICTURE = 20,
+        ID_DIAPORAMA = 21,
+        ID_EDIT = 22,
 		ID_VIDEO = 1018,
 		ID_AUDIO = 1019,
 		ID_SUBTITLE = 1020,
@@ -98,6 +100,8 @@ namespace Regards::Viewer
 		void OnConfiguration(wxCommandEvent& event);
 		void OnEraseDatabase(wxCommandEvent& event);
 		void OnScanner(wxCommandEvent& event);
+        void OnEdit(wxCommandEvent& event);
+        void OnExportDiaporama(wxCommandEvent& event);
 		void OnExit(wxCommandEvent& event);
 		void OnPageSetup(wxCommandEvent& event);
 		void OnFileSystemModified(wxFileSystemWatcherEvent& event);
