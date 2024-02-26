@@ -222,6 +222,7 @@ namespace Regards
 			bool musicPause = false;
 			int64_t musicPosition = 0;
 			wxTimer* diaporamaTimer;
+            int lastWndUse = 0;
 		};
 	}
 }

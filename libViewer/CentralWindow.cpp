@@ -45,6 +45,10 @@ using namespace Regards::FiltreEffet;
 
 #define wxEVENT_ENDLOADPICTURE 1001
 
+#define FACE_LIST 1
+#define PICTURE_LIST 2
+#define PANEL_LIST 3
+
 #include "window_mode_id.h"
 
 extern bool firstElementToShow;
@@ -1381,12 +1385,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	}
 
 	previewWindow->SetNormalMode();
+    /*
 	panelInfosWindow->Show(false);
 	panelInfosClick->Show(false);
 	if (faceDetection)
 		listFace->Show(false);
 	listPicture->Show(false);
-
+    */
 	if (windowInit)
 	{
 		if (!showFolder)
@@ -1414,6 +1419,16 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	{
 	case WINDOW_VIEWER:
 		{
+            if (faceDetection)
+            {
+                if(listFace->IsShown())
+                    listFace->Show(false);
+            }
+            
+           if(listPicture->IsShown())
+                listPicture->Show(false);
+                
+            
 			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1442,11 +1457,20 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				windowManager->HideWindow(Pos::wxTOP);
 			}
 
-
-			panelInfosWindow->Show(true);
-			panelInfosClick->SetWindow(panelInfosWindow);
-			panelInfosClick->Show(true);
-			panelInfosClick->SetTitle("Informations");
+            if(!panelInfosWindow->IsShown())
+                panelInfosWindow->Show(true);
+                
+            if(!panelInfosClick->IsShown())
+            {
+                panelInfosClick->Show(true);
+            }
+                
+            if(lastWndUse != PANEL_LIST)
+            {                   
+                panelInfosClick->SetTitle("Informations");
+                panelInfosClick->SetWindow(panelInfosWindow);
+                lastWndUse = PANEL_LIST;
+            }
 
 			if (windowInit)
 				if (!showInfos)
@@ -1457,6 +1481,12 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 	case WINDOW_FACE:
 		{
+            if(panelInfosWindow->IsShown())
+                panelInfosWindow->Show(false);
+
+            if(listPicture->IsShown())
+                listPicture->Show(false);
+            
 			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1466,7 +1496,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 			if (faceDetection)
 			{
-				panelInfosClick->Show(true);
+	
 				if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 					windowManager->ShowWindow(Pos::wxLEFT);
 				if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
@@ -1476,10 +1506,20 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				if (windowManager->GetWindowIsShow(Pos::wxTOP))
 					windowManager->HideWindow(Pos::wxTOP);
 
-				listFace->Show(true);
-				panelInfosClick->SetWindow(listFace);
-				panelInfosClick->Show(true);
-				panelInfosClick->SetTitle("Face List");
+                if(!listFace->IsShown())
+                    listFace->Show(true);
+                    
+                if(!panelInfosClick->IsShown())
+                {
+                    panelInfosClick->Show(true);
+                }
+                
+                if(lastWndUse != FACE_LIST)
+                {
+                    panelInfosClick->SetWindow(listFace);
+                    panelInfosClick->SetTitle("Face List");
+                    lastWndUse = FACE_LIST;
+                }
 
 				if (windowInit)
 					if (!showInfos)
@@ -1487,8 +1527,18 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			}
 			break;
 		}
+        
 	case WINDOW_EXPLORER:
 		{
+            if(panelInfosWindow->IsShown())
+                panelInfosWindow->Show(false);
+
+            if (faceDetection)
+            {
+                if(listFace->IsShown())
+                    listFace->Show(false);
+            }
+            
 			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1496,7 +1546,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 
-			panelInfosClick->Show(true);
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 				windowManager->ShowWindow(Pos::wxLEFT);
 			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
@@ -1506,10 +1555,20 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			if (windowManager->GetWindowIsShow(Pos::wxTOP))
 				windowManager->HideWindow(Pos::wxTOP);
 
-			listPicture->Show(true);
-			panelInfosClick->SetWindow(listPicture);
-			panelInfosClick->Show(true);
-			panelInfosClick->SetTitle("Picture List");
+            if(!panelInfosClick->IsShown())
+            {
+                panelInfosClick->Show(true);
+                panelInfosClick->SetTitle("Picture List");
+            }
+            
+            if(lastWndUse != PICTURE_LIST)
+            {
+                if(!listPicture->IsShown())
+                    listPicture->Show(true);
+                
+                panelInfosClick->SetWindow(listPicture);
+                lastWndUse = PICTURE_LIST;
+            }
 
 			if (windowInit)
 				if (!showInfos)
@@ -1517,8 +1576,24 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		}
 
 		break;
+        
 	case WINDOW_PICTURE:
 		{
+            if(panelInfosWindow->IsShown())
+                panelInfosWindow->Show(false);
+            
+            if(panelInfosClick->IsShown())
+                panelInfosClick->Show(false);
+                
+            if (faceDetection)
+            {
+                if(listFace->IsShown())
+                    listFace->Show(false);
+            }
+                
+            if(listPicture->IsShown())
+                listPicture->Show(false);
+            
 			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
