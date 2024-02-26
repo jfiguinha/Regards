@@ -76,11 +76,7 @@ void CToolbarTexte::DrawElement(wxDC* dc, const int& x, const int& y, const wxCo
 	if (libelle != L"")
 	{
 		CThemeFont font = themeTexte.font;
-		if (isPushActif)
-			font.SetColorFont(color);
-		else
-			font.SetColorFont(themeTexte.colorBack);
-
+		font.SetColorFont(color);
 		wxSize size = CWindowMain::GetSizeTexte(dc, libelle, font);
 		int xPos = x + (GetWidth() - size.x) / 2;
 		int yPos = y + (GetHeight() - size.y) / 2;
@@ -124,20 +120,17 @@ void CToolbarTexte::CreatePushButton(wxDC* dc, const int& x, const int& y)
 	rcColor.height = GetHeight() - size;
 	CWindowMain::FillRect(dc, rcColor, wxColor(255,255,255));  
 	*/
-	isPushActif = true;
 	DrawShapeElement(dc, rc);
 	DrawElement(dc, x, y, themeTexte.font.GetColorFont());
 }
 
 void CToolbarTexte::CreateInactifButton(wxDC* dc, const int& x, const int& y)
 {
-	isPushActif = false;
 	DrawElement(dc, x, y, wxColor(0, 0, 0));
 }
 
 void CToolbarTexte::CreateActifButton(wxDC* dc, const int& x, const int& y)
 {
-	isPushActif = true;
 	int size = themeTexte.GetRectangleSize() / 2;
 	wxRect rc;
 	rc.x = x + size;

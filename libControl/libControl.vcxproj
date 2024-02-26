@@ -637,6 +637,7 @@
     <ClInclude Include="ThumbnailEffect.h" />
     <ClInclude Include="ThumbnailHorizontal.h" />
     <ClInclude Include="ThumbnailVertical.h" />
+    <ClInclude Include="ThumbnailVerticalListFile.h" />
     <ClInclude Include="ThumbnailVerticalSeparator.h" />
     <ClInclude Include="ThumbnailVideo.h" />
     <ClInclude Include="ThumbnailViewerEffect.h" />
@@ -687,6 +688,7 @@
     <ClCompile Include="ThumbnailEffect.cpp" />
     <ClCompile Include="ThumbnailHorizontal.cpp" />
     <ClCompile Include="ThumbnailVertical.cpp" />
+    <ClCompile Include="ThumbnailVerticalListFile.cpp" />
     <ClCompile Include="ThumbnailVerticalSeparator.cpp" />
     <ClCompile Include="ThumbnailVideo.cpp" />
     <ClCompile Include="ThumbnailViewerEffect.cpp" />

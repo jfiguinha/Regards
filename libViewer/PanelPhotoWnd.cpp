@@ -106,7 +106,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_SETFOLDER, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
 	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
 	Connect(wxEVENT_SELCHANGED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
-	Connect(wxEVENT_UPDATECRITERIA, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
+	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
 	categoryFolderWnd->UpdateCriteria(false);
@@ -221,7 +221,7 @@ void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)
 			wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
 			if (window != nullptr)
 			{
-				const wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+				const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
@@ -231,7 +231,7 @@ void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)
 			wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 			if (window != nullptr)
 			{
-				wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
 				evt.SetExtraLong(3);
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}

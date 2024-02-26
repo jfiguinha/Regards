@@ -878,7 +878,7 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 		auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 		if (mainWindow != nullptr)
 		{
-			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
 			mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}

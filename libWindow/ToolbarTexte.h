@@ -27,7 +27,6 @@ namespace Regards::Window
 		bool drawShape;
 		int width;
 		int height;
-		bool isPushActif = false;
 		wxBitmap buttonLibelle;
 		wxString libelle;
 		CThemeToolbarTexte themeTexte;

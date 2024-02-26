@@ -88,22 +88,6 @@ int CThumbnailVideo::FindNumItem(const int& videoPos)
 			}
 		}
 	}
-    else
-    {
-        int nbItem = iconeList->GetNbElement();
-        CIcone * icone = iconeList->GetElement(nbItem - 1);
-        if(icone != nullptr)
-        {
-            CThumbnailData* data = icone->GetData();
-            if (data != nullptr)
-            {
-                if (data->GetTimePosition() < videoPos)
-                {
-                    numItem = nbItem - 1;
-                }
-            }
-        }  
-    }
 	return numItem;
 }
 

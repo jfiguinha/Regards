@@ -46,7 +46,7 @@ void CFolderProcess::UpdateCriteria(bool criteriaSendMessage)
 	wxWindow* window = mainWindow->FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
 	{
-		wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
 		evt.SetExtraLong((criteriaSendMessage == true) ? 1 : 0);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -65,7 +65,7 @@ void CFolderProcess::RefreshFolder(bool & folderChange, int & nbFile)
 
 
 
-	//Test de la validitÃ© des rÃ©pertoires
+	//Test de la validité des répertoires
 	for (CFolderCatalog folderlocal : folderList)
 	{
 		if (!wxDirExists(folderlocal.GetFolderPath()))
@@ -76,7 +76,7 @@ void CFolderProcess::RefreshFolder(bool & folderChange, int & nbFile)
 		}
 	}
 
-	//Test de la validitÃ© des fichiers
+	//Test de la validité des fichiers
 	PhotosVector photoList;
 	CSqlFindPhotos findphotos;
 	findphotos.GetAllPhotos(&photoList);

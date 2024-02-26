@@ -83,7 +83,7 @@ int CIconeList::GetPhotoId(const int& numElement)
 {
 	CIcone* icone = nullptr;
 	int photoId = -1;
-	if (numElement < pIconeList.size() && pIconeList.size() > 0)
+	if (numElement < pIconeList.size())
 		icone = pIconeList[numElement];
 
 	if (icone != nullptr)
@@ -99,14 +99,8 @@ int CIconeList::GetPhotoId(const int& numElement)
 CIcone* CIconeList::GetElement(const int& numElement)
 {
 	CIcone* icone = nullptr;
-	if (numElement < pIconeList.size() && pIconeList.size() > 0)
+	if (numElement < pIconeList.size())
 		icone = pIconeList[numElement];
-
-	if (icone != nullptr)
-	{
-		if (icone->GetData() == nullptr)
-			return nullptr;
-	}
 
 	return icone;
 }
@@ -120,7 +114,7 @@ wxString CIconeList::GetFilename(const int& numElement)
 {
 	CIcone* icone = nullptr;
 	wxString filename = "";
-	if (numElement < pIconeList.size() && pIconeList.size() > 0)
+	if (numElement < pIconeList.size())
 		icone = pIconeList[numElement];
 
 	if (icone != nullptr)
@@ -141,35 +135,6 @@ CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)
 
 	if (it != pIconeList.end())
 		element = *it;
-
-	if (element != nullptr)
-	{
-		if (element->GetData() == nullptr)
-			return nullptr;
-	}
-
-	return element;
-}
-
-CIcone* CIconeList::FindElement(wxString filename)
-{
-	IconeVector::iterator it;
-	CIcone* element = nullptr;
-    it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-        {
-            CThumbnailData * thumbnailData = (CThumbnailData*)e->GetData();
-            return thumbnailData->GetFilename() == filename;
-
-        });
-
-	if (it != pIconeList.end())
-		element = *it;
-
-	if (element != nullptr)
-	{
-		if (element->GetData() == nullptr)
-			return nullptr;
-	}
 	return element;
 }
 
@@ -177,25 +142,11 @@ CIcone* CIconeList::FindElementPhotoId(const int& photoId)
 {
 	IconeVector::iterator it;
 	CIcone* element = nullptr;
-    it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-        {
-            if(e != nullptr)
-            {
-                CThumbnailData * thumbnailData = (CThumbnailData*)e->GetData();
-                if(thumbnailData != nullptr)
-                    return thumbnailData->GetNumPhotoId() == photoId;
-            }
-            return false;
-        });
+	it = find_if(pIconeList.begin(), pIconeList.end(), CItemPhotoId(photoId));
 
 	if (it != pIconeList.end())
 		element = *it;
 
-	if (element != nullptr)
-	{
-		if (element->GetData() == nullptr)
-			return nullptr;
-	}
 
 	return element;
 }
@@ -210,11 +161,7 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 	if (it != pIconeList.end())
 		element = *it;
 
-	if (element != nullptr)
-	{
-		if (element->GetData() == nullptr)
-			return nullptr;
-	}
+	
 	return element;
 }
 

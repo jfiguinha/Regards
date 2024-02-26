@@ -117,7 +117,7 @@ namespace Regards::Window
 			const int& tailleBitmapHeight);
 		wxImage LoadImageResource(const wxString& resourceName);
 		wxImage GenerateVideoIcone();
-
+		wxImage ResampleBicubic(wxImage* Src, int width, int height);
 		int GetBitmapWidth();
 		int GetBitmapHeight();
 

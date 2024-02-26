@@ -200,10 +200,7 @@ void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 	if (filename != nullptr)
 		delete filename;
 
-    processIdle = true;
-    updateCriteria = true;
-    messageUpdateCriteria = false;
-
+	UpdateCriteria(false);
 }
 
 void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
@@ -227,8 +224,12 @@ void CCategoryFolderWindow::InitSaveParameter()
 	}
 }
 
-void CCategoryFolderWindow::UpdateCriteriaList()
+void CCategoryFolderWindow::init()
 {
+	UpdateCriteria(false);
+	pimpl->update = true;
+	processIdle = true;
+
 	pimpl->muVector.lock();
 	//Get List of Photo to process
 	CSqlInsertFile sql_insert_file;
@@ -243,18 +244,6 @@ void CCategoryFolderWindow::UpdateCriteriaList()
 	nbPhotoGpsToProcess = 1;
 
 	pimpl->muVector.unlock();
-}
-
-void CCategoryFolderWindow::init()
-{
-	printf("CCategoryFolderWindow::init() \n");
-    updateCriteria = true;
-    messageUpdateCriteria = false;
-	pimpl->update = true;
-    
-	processIdle = true;
-    UpdateCriteriaList();
-
 }
 
 void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
@@ -302,14 +291,9 @@ void CCategoryFolderWindow::ProcessIdle()
 {
     pimpl->muVector.lock();
 	bool hasSomethingTodo = true;
+	printf("CCategoryFolderWindow::ProcessIdle() \n");
     int nbPhotos = pimpl->m_photosVector.size();
 	pimpl->muVector.unlock();
-    
-    time_t ending;
-    time(&ending);
-    printf(" %s CCategoryFolderWindow::ProcessIdle NbPhotos : %d nbGpsFile : %d \n", ctime(&ending), nbPhotos, pimpl->nbGpsFile);
-
-    
 
 	if (nbPhotos > 0 && pimpl->numProcess < pimpl->nbProcesseur)
 	{
@@ -431,6 +415,52 @@ void CCategoryFolderWindow::ProcessIdle()
 	//Thread by Thread
 	//---------------------------------------------------------------------------------------------------------------
 
+	/*
+	int numPhoto = 0;
+	int numFolderId = 0;
+	wxString photoPath = "";
+	CSqlPhotoGPS photoGPS;
+
+	time_t ending;
+	time(&ending);
+
+	int diff = difftime(ending, start);
+
+	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= 3)
+	{
+		int nbGpsFileByMinute = 60;
+		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
+		CRegardsConfigParam* param = CParamInit::getInstance();
+		if (param != nullptr)
+			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
+
+		if (pimpl->gpsLocalisationFinish && pimpl->nbGpsFile < nbGpsFileByMinute)
+		{
+			auto findPhotoCriteria = new CFindPhotoCriteria();
+			findPhotoCriteria->urlServer = pimpl->urlServer;
+			findPhotoCriteria->mainWindow = this;
+			findPhotoCriteria->numPhoto = numPhoto;
+			findPhotoCriteria->photoPath = photoPath;
+			findPhotoCriteria->numFolderId = numFolderId;
+			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
+			pimpl->gpsLocalisationFinish = false;
+			pimpl->nbGpsFile++;
+			pimpl->numProcessGps++;
+			processIdle = true;
+			time(&start);
+
+		}
+		
+		//
+	}
+	else if (diff < 3)
+	{
+		processIdle = true;
+	}
+	*/
+
+	time_t ending;
+	time(&ending);
 
 	int diff = difftime(ending, start);
 
@@ -501,25 +531,12 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
     pimpl->muVector.lock();
     int nbPhotos = pimpl->m_photosVector.size();
     pimpl->muVector.unlock();
-
-    time_t ending;
-    time(&ending);
-    printf(" %s CCategoryFolderWindow::OnIdle \n", ctime(&ending));
-
 	if (needToRefresh)
 	{
 		this->Refresh();
 		needToRefresh = false;
-        return;
 	}
 
-    if(updateCriteria)
-    {
-        UpdateCriteria(messageUpdateCriteria);
-        updateCriteria = false;
-        return;
-    }
-    
 	if (pimpl->startUpdateCriteria&& pimpl->numProcess <= 0 && nbPhotos == 0)
 	{
 		pimpl->startUpdateCriteria = false;
@@ -535,7 +552,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 			pimpl->refreshTimer->Stop();
 	}
     
-
+    
 
 	StartThread();
 }
@@ -560,9 +577,7 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 	{
 		//Refresh Criteria 
 		//Mise à jour de l'affichage de l'arborescence
-		//UpdateCriteria(true);
-        updateCriteria = true;
-        messageUpdateCriteria = true;
+		UpdateCriteria(true);
 		processIdle = true;
 	}
 }
@@ -741,9 +756,7 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 	{
 		if (findPhotoCriteria->criteriaNew)
 		{
-			//UpdateCriteria(true);
-            updateCriteria = true;
-            messageUpdateCriteria = true;
+			UpdateCriteria(true);
 		}
 
 		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)
