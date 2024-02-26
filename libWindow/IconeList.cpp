@@ -158,7 +158,16 @@ CIcone* CIconeList::FindElementPhotoId(const int& photoId)
 {
 	IconeVector::iterator it;
 	CIcone* element = nullptr;
-	it = find_if(pIconeList.begin(), pIconeList.end(), CItemPhotoId(photoId));
+    it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+        {
+            if(e != nullptr)
+            {
+                CThumbnailData * thumbnailData = (CThumbnailData*)e->GetData();
+                if(thumbnailData != nullptr)
+                    return thumbnailData->GetNumPhotoId() == photoId;
+            }
+            return false;
+        });
 
 	if (it != pIconeList.end())
 		element = *it;

@@ -1542,7 +1542,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 	oldWindowMode = windowMode;
 
-	windowManager->Resize();
+	//windowManager->Resize();
 }
 
 void CCentralWindow::UpdateScreenRatio()

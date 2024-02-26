@@ -166,8 +166,9 @@ bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone *  icone, CWind
 
 CIcone *  CThumbnail::GetIconeById(const int& idPhoto)
 {
-	pItemCompFonct _pf = &ItemCompFonctPhotoId;
-	return iconeList->FindElement(idPhoto, 0, &_pf, this);
+	//pItemCompFonct _pf = &ItemCompFonctPhotoId;
+	//return iconeList->FindElement(idPhoto, 0, &_pf, this);
+    return iconeList->FindElementPhotoId(idPhoto);
 }
 
 int CThumbnail::GetNumItemById(const int& idPhoto)
@@ -199,9 +200,11 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 	{
 		CIcone *  numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
+        {
 			numSelect->SetSelected(false);
-		RefreshIcone(numSelectPhotoId);
-		refresh = true;
+            RefreshIcone(numSelectPhotoId);
+            refresh = true;
+        }
 	}
 
 
@@ -209,9 +212,11 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 	{
 		CIcone *  numActif = GetIconeById(numActifPhotoId);
 		if (numActif != nullptr)
+        {
 			numActif->SetSelected(false);
-		RefreshIcone(numActifPhotoId);
-		refresh = true;
+            RefreshIcone(numActifPhotoId);
+            refresh = true;
+        }
 	}
 
 	numActifPhotoId = idPhoto;// iconeList->GetPhotoId(numItem);
@@ -245,9 +250,11 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 				{
 					CIcone *  numActif = GetIconeById(numActifPhotoId);
 					if (numActif != nullptr)
+                    {
 						rect = numActif->GetPos();
-				    RefreshIcone(numActifPhotoId);
-					refresh = true;
+                        RefreshIcone(numActifPhotoId);
+                        refresh = true;
+                    }
 				}
 			}
 		}
@@ -259,9 +266,11 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 	{
 		CIcone *  numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
+        {
 			numSelect->SetSelected(true);
-		RefreshIcone(numSelectPhotoId);
-		refresh = true;
+            RefreshIcone(numSelectPhotoId);
+            refresh = true;
+        }
 	}
 
 	numOldItem = numItem;

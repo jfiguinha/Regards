@@ -28,8 +28,8 @@ namespace Regards::Window
 		bool GetSeparationVisibility();
 		void ChangeWindow(CWindowMain* window, Pos position, bool isPanel);
 		void GenerateRenderBitmap();
-		void HideWindow(Pos position, const bool& refresh = true);
-		void ShowWindow(Pos position, const bool& refresh = true);
+		void HideWindow(Pos position, const bool& refresh = false);
+		void ShowWindow(Pos position, const bool& refresh = false);
 		void HidePaneWindow(Pos position, const int& refresh = 1);
 		void ShowPaneWindow(Pos position, const int& refresh = 1);
 		int GetPaneState(Pos position);
