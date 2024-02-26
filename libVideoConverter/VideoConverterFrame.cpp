@@ -185,7 +185,13 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 			" (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		{
+			if (videoInterface != nullptr)
+			{
+				videoInterface->Close();
+			}
 			return; // the user changed idea...
+		}
 		filepath = saveFileDialog.GetPath();
 		int index = saveFileDialog.GetFilterIndex();
 
