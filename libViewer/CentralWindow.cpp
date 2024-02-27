@@ -1282,7 +1282,7 @@ void CCentralWindow::SetListeFile(const wxString& filename, const int& typeAffic
 		listPicture->SetListeFile(typeAffichage);
 
 	if (thumbnailPicture != nullptr)
-		thumbnailPicture->ApplyListeFile();
+		thumbnailPicture->SetListeFile();
 
 	LoadPicture(filename);
 }

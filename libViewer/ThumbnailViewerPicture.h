@@ -24,7 +24,6 @@ namespace Regards::Viewer
 		void Init(const int& typeAffichage = SHOW_ALL);
 		void SetListeFile();
 		vector<wxString> GetFileList();
-		void ApplyListeFile();
 
 		int GetHeight() override
 		{
@@ -36,7 +35,7 @@ namespace Regards::Viewer
 	protected:
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
-		CIconeList* PregenerateList();
+
 	private:
 		void OnPictureClick(CThumbnailData* data) override;
 		CIcone *  FindElement(const int& xPos, const int& yPos) override;

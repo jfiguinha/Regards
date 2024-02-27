@@ -18,7 +18,6 @@ namespace Regards::Viewer
 		
 		void Init(const int& typeAffichage);
 		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
-		CInfosSeparationBarExplorer * AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement);
 
 	protected:
 		void InitTypeAffichage(const int& typeAffichage);
