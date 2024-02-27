@@ -68,12 +68,32 @@ void CThumbnailViewerPicture::SetListeFile()
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
 
-	//std::map<int, CIcone * >
-#ifndef USE_TBB_VECTOR
-	for (auto i = 0; i < size; i++)
-#else
 	tbb::parallel_for(0, size, 1, [=](int i)
-#endif
+	{
+		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+				return thumbnailData->GetFilename() == photo.GetPath();
+
+			});
+
+		if (it != pIconeList.end())
+		{
+			CIcone* icone = (CIcone*)*it;
+			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+			thumbnailData->SetNumPhotoId(photo.GetId());
+			thumbnailData->SetNumElement(i);
+			icone->SetNumElement(thumbnailData->GetNumElement());
+			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
+			iconeListLocal->AddElement(icone);
+		}
+	}
+    );
+
+
+	for (auto i = 0; i < size; i++)
 	{
 		CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 
@@ -101,20 +121,8 @@ void CThumbnailViewerPicture::SetListeFile()
 
 			pIconeList.push_back(pBitmapIcone);
 		}
-		else
-		{
-			CIcone* icone = (CIcone*)*it;
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(i);
-			icone->SetNumElement(thumbnailData->GetNumElement());
-			icone->SetWindowPos(i * themeThumbnail.themeIcone.GetWidth(), 0);
-			iconeListLocal->AddElement(icone);
-		}
 	}
-#ifdef USE_TBB_VECTOR
-    );
-#endif
+
 
 	iconeListLocal->SortById();
 

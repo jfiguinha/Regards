@@ -54,20 +54,23 @@ void CToolbarTexte::DrawShapeElement(wxDC* dc, const wxRect& rc)
 {
 	if (themeTexte.GetRectangleSize() > 0)
 	{
+        /*
+        wxColor color;
+        wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
+        bool isDarkTheme =  systemApp.IsDark();
+        if(isDarkTheme)
+           color = wxColor(255, 255, 255);
+        else
+           color = wxColor(0, 0, 0);
+        */
+        CThemeFont font = themeTexte.font;
+		wxColor color = font.GetColorFont();
 		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
-		penTop.SetColour(themeTexte.colorBack);
+		penTop.SetColour(color);
 		dc->SetPen(penTop);
 		dc->DrawLine(rc.x, rc.height, rc.width, rc.height);
 		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
 		dc->SetPen(wxNullPen);
-
-		/*
-		wxPen penBottom(themeTexte.rectBottom, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
-		dc->SetPen(penBottom);
-		dc->DrawLine(rc.x, rc.y, rc.width, rc.y);
-		dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
-		dc->SetPen(wxNullPen);
-		*/
 	}
 }
 
@@ -90,14 +93,17 @@ void CToolbarTexte::DrawButton(wxDC* dc, const int& x, const int& y)
 	{
 		if (isPush && activePush)
 		{
+            printf("CToolbarTexte::DrawButton CreatePushButton\n");
 			CreatePushButton(dc, x, y);
 		}
 		else if (isActif)
 		{
+            printf("CToolbarTexte::DrawButton CreateActifButton\n");
 			CreateActifButton(dc, x, y);
 		}
 		else
 		{
+            printf("CToolbarTexte::DrawButton CreateInactifButton\n");
 			CreateInactifButton(dc, x, y);
 		}
 	}
@@ -111,22 +117,22 @@ void CToolbarTexte::CreatePushButton(wxDC* dc, const int& x, const int& y)
 	rc.width = x + GetWidth() - size;
 	rc.y = y + size;
 	rc.height = y + GetHeight() - size;
-
-	/*
-	wxRect rcColor;
-	rcColor.x = x + size;
-	rcColor.width = GetWidth() - size;
-	rcColor.y = y + size;
-	rcColor.height = GetHeight() - size;
-	CWindowMain::FillRect(dc, rcColor, wxColor(255,255,255));  
-	*/
 	DrawShapeElement(dc, rc);
 	DrawElement(dc, x, y, themeTexte.font.GetColorFont());
 }
 
 void CToolbarTexte::CreateInactifButton(wxDC* dc, const int& x, const int& y)
 {
-	DrawElement(dc, x, y, wxColor(0, 0, 0));
+    DrawElement(dc, x, y, themeTexte.colorBack);
+
+    /*
+    wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
+    bool isDarkTheme =  systemApp.IsDark();
+    if(isDarkTheme)
+        DrawElement(dc, x, y, wxColor(0, 0, 0));
+    else
+        DrawElement(dc, x, y, wxColor(255, 255, 255));
+    */
 }
 
 void CToolbarTexte::CreateActifButton(wxDC* dc, const int& x, const int& y)

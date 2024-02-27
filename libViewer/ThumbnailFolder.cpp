@@ -322,11 +322,40 @@ void CThumbnailFolder::SetListeFile()
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
 
-#ifndef USE_TBB_VECTOR
-	for (auto i = 0; i < size; i++)
-#else
-	tbb::parallel_for(0, size, 1, [=](int i)    
-#endif    
+
+	tbb::parallel_for(0, size, 1, [=](int i)      
+	{
+		try
+		{
+			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
+
+			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+				{
+					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+					return thumbnailData->GetFilename() == fileEntry.GetPath();
+
+				});
+
+			if (it != pIconeList.end())
+			{
+				CIcone* icone = (CIcone*)*it;
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+				thumbnailData->SetNumPhotoId(fileEntry.GetId());
+				thumbnailData->SetNumElement(i);
+				icone->SetNumElement(thumbnailData->GetNumElement());
+				icone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
+				iconeListLocal->AddElement(icone);
+			}
+		}
+		catch(...)
+		{
+
+		}
+	}
+    );
+
+
+	for (auto i = 0; i < size; i++)   
 	{
 		try
 		{
@@ -357,25 +386,12 @@ void CThumbnailFolder::SetListeFile()
 				iconeListLocal->AddElement(pBitmapIcone);
 				pIconeList.push_back(pBitmapIcone);
 			}
-			else
-			{
-				CIcone* icone = (CIcone*)*it;
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
-				thumbnailData->SetNumPhotoId(fileEntry.GetId());
-				thumbnailData->SetNumElement(i);
-				icone->SetNumElement(thumbnailData->GetNumElement());
-				icone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
-				iconeListLocal->AddElement(icone);
-			}
 		}
 		catch(...)
 		{
 
 		}
 	}
-#ifdef USE_TBB_VECTOR  
-    );
-#endif
 
 	iconeListLocal->SortById();
 

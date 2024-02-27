@@ -53,7 +53,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -283,7 +283,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -378,7 +378,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -498,7 +498,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack>rgb(222, 222, 222)</colorBack>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -588,7 +588,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -774,7 +774,7 @@
 					<tailleX>120</tailleX>
 					<tailleY>30</tailleY>
 					<rectangleSize>0</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -864,7 +864,7 @@
 					<tailleX>120</tailleX>
 					<tailleY>30</tailleY>
 					<rectangleSize>2</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>
@@ -952,7 +952,7 @@
 					<tailleX>100</tailleX>
 					<tailleY>100</tailleY>
 					<rectangleSize>4</rectangleSize>
-					<colorBack/>
+					<colorBack>rgb(0, 0, 0)</colorBack>
 					<actifTop>rgb(48, 48, 48)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>

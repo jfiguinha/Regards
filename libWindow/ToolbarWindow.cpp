@@ -128,6 +128,7 @@ int CToolbarWindow::GetNavigatorWidth()
 
 void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 {
+    printf("CToolbarWindow::OnMouseMove \n");
 	bool needToRedraw = false;
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -166,7 +167,12 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 	}
 
 	if (needToRedraw)
+    {
+        printf("CToolbarWindow::OnMouseMove needToRedraw \n");
 		needToRefresh = true;
+    }
+    
+
 }
 
 
