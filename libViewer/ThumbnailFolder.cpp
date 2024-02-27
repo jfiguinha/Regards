@@ -66,11 +66,37 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	infosSeparationBar->ShowExpandIcon(true);
 	int local_nbElement = iconeListLocal->GetNbElement();
 	int size = _pictures->size();
-#ifndef USE_TBB_VECTOR
-	for (auto i = 0; i < size; i++)
-#else
+    
 	tbb::parallel_for(0, size, 1, [=](int i)
-#endif
+	{
+		try
+		{
+			CPhotos photo = _pictures->at(i);
+
+			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+				{
+					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
+					return thumbnailData->GetNumPhotoId() == photo.GetId();
+
+				});
+
+			if (it != pIconeList.end())
+			{
+				CIcone* icone = (CIcone*)*it;
+				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+				thumbnailData->SetNumElement(local_nbElement + i);
+				icone->SetNumElement(thumbnailData->GetNumElement());
+				iconeListLocal->AddElement(icone);
+			}
+		}
+		catch(...)
+		{
+
+		}
+	}
+    );
+
+	for (auto i = 0; i < size; i++)
 	{
 		try
 		{
@@ -98,23 +124,12 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 				iconeListLocal->AddElement(pBitmapIcone);
 				pIconeList.push_back(pBitmapIcone);
 			}
-			else
-			{
-				CIcone* icone = (CIcone*)*it;
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
-				thumbnailData->SetNumElement(local_nbElement + i);
-				icone->SetNumElement(thumbnailData->GetNumElement());
-				iconeListLocal->AddElement(icone);
-			}
 		}
 		catch(...)
 		{
 
 		}
 	}
-#ifdef USE_TBB_VECTOR  
-    );
-#endif
 
 	iconeListLocal->SortById();
 
