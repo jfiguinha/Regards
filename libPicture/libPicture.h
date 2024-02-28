@@ -76,6 +76,8 @@ namespace Regards
 			static float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& width,
 			                                const int& height);
                                             
+            static cv::Mat ReadPicture(const wxString& fileName);
+                                            
 			static void Initx265Decoder();
 			static void Uninitx265Decoder();
 

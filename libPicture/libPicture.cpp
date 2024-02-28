@@ -2020,7 +2020,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				break;
 			}
 
+#ifndef __APPLE__
         case JPEG:
+#endif
 		case PNM:
 		case WEBP:
 		case BMP:
@@ -2113,7 +2115,10 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				}
 			}
 			break;
-
+            
+#ifdef __APPLE__
+        case JPEG:
+#endif
         case ANI:
         case XPM:
         case ICO:
@@ -2321,6 +2326,17 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	}
 }
 
+
+cv::Mat CLibPicture::ReadPicture(const wxString& fileName)
+{
+ #ifdef __APPLE__
+    wxImage image;
+    image.LoadFile(fileName, wxBITMAP_TYPE_ANY);
+    return mat_from_wx(image);
+#else
+    return cv::imread(CConvertUtility::ConvertToStdString(fileName));
+#endif
+}
 
 void CLibPicture::ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap)
 {

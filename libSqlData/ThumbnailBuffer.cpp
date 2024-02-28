@@ -169,7 +169,8 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
         if (it == listPicture.end())
         {
            // image.LoadFile(filename, wxBITMAP_TYPE_ANY);
-           	image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+           	//image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+            image = CLibPicture::ReadPicture(filename);
             listPicture[filename] = image;
             muListFile.lock();
             listFile.push_back(filename);
@@ -203,7 +204,8 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
     }
     else
     {
-        image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+        //image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+        image = CLibPicture::ReadPicture(filename);
         listPicture[filename] = image;
     }
 	

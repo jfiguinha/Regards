@@ -91,7 +91,8 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 		if (wxFileExists(thumbnail))
 		{
-            videoThumbnail->image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
+            //videoThumbnail->image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
+            videoThumbnail->image = CLibPicture::ReadPicture(thumbnail);
 			//videoThumbnail->image = .LoadFile(thumbnail);
 			if (videoThumbnail->image.empty())
 			{

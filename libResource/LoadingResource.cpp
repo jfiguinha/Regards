@@ -5,13 +5,7 @@
 #include <PictureData.h>
 #include <ConvertUtility.h>
 using namespace Regards::Picture;
-/*
-cv::Mat CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
-{
-	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
-	return cv::imread(CConvertUtility::ConvertToStdString(resourcePath));
-}
-*/
+
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {
     wxImage out;

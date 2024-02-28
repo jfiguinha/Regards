@@ -1558,8 +1558,7 @@ wxBitmap wxFileIconsTable::LoadBitmap(const wxString &icon)
 	if (!bmp.LoadFile(path_icon))
 	{
 		cv::Mat icon = cv::imread(path_icon.ToStdString(), cv::IMREAD_UNCHANGED);
-		wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(icon);
-		bmp = wxBitmap(image);
+		bmp = CLibPicture::ConvertRegardsBitmapToWXImage(icon);
 	}
     
     return bmp;
