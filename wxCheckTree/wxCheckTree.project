@@ -8,12 +8,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="checktree.cpp"/>
     <File Name="directoryctrl.cpp"/>
+    <File Name="checktree.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="checktree.h"/>
     <File Name="directoryctrl.h"/>
+    <File Name="checktree.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
