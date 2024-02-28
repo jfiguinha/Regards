@@ -103,7 +103,7 @@ cv::Mat CThumbnailDataSQL::GetwxImage(bool& isDefault)
         }
     }
 
-	if (numFrame == 0 && nbFrame == 0)
+	if (!isVideo && numFrame == 0 && nbFrame == 0)
 	{
 		CSqlThumbnail sqlThumbnail;
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
@@ -124,12 +124,12 @@ cv::Mat CThumbnailDataSQL::GetwxImage(bool& isDefault)
 			bool grabbed = false;
 			if (mouseOn && isVideo && videoCaptureCV != nullptr)
 			{
-                cvImg = videoCaptureCV->GetVideoFrame(true, true);
-				if (cvImg.empty())
+                frameOut = videoCaptureCV->GetVideoFrame(true, true);
+				if (frameOut.empty())
 				{
 					videoFramePos = 0;
 					videoCaptureCV->SeekToBegin();
-					cvImg = videoCaptureCV->GetVideoFrame(true, true);
+					frameOut = videoCaptureCV->GetVideoFrame(true, true);
 					grabbed = true;
 				}
 				else
@@ -138,13 +138,6 @@ cv::Mat CThumbnailDataSQL::GetwxImage(bool& isDefault)
 					grabbed = true;
 				}
 
-				if (grabbed)
-				{
-					int w = cvImg.cols;
-					int h = cvImg.rows;
-					cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-					frameOut = cvImg;//wxImage(w, h, cvImg.data, true);
-				}
 			}
 
 

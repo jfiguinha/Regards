@@ -75,7 +75,7 @@ namespace Regards
 			static cv::Mat mat_from_wx(const wxImage& wx);
 			static float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& width,
 			                                const int& height);
-
+                                            
 			static void Initx265Decoder();
 			static void Uninitx265Decoder();
 

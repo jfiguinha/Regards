@@ -2020,10 +2020,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				break;
 			}
 
-
-#ifndef __APPLE__
         case JPEG:
-#endif
 		case PNM:
 		case WEBP:
 		case BMP:
@@ -2117,9 +2114,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
-#ifdef __APPLE__
-        case JPEG:
-#endif
         case ANI:
         case XPM:
         case ICO:
@@ -2326,6 +2320,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		bitmap->SetFilename(fileName);
 	}
 }
+
 
 void CLibPicture::ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap)
 {
