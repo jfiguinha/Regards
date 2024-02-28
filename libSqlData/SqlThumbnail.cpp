@@ -105,8 +105,8 @@ cv::Mat CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 	
 	if (wxFileExists(thumbnail))
 	{
-        image = CLibPicture::ReadPicture(thumbnail);
-        //image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
+        //image = CLibPicture::ReadPicture(thumbnail);
+        image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
 	}
 
 	if (image.empty())
