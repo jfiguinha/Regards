@@ -1,148 +1,354 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/dirdlg.h
-// Purpose:     wxDirDialog base class
-// Author:      Robert Roebling
+// Name:        wx/generic/dirctrlg.h
+// Purpose:      wxGenericDirCtrl class
+//              Builds on wxDirCtrl class written by Robert Roebling for the
+//              wxFile application, modified by Harm van der Heijden.
+//              Further modified for Windows.
+// Author:      Robert Roebling, Harm van der Heijden, Julian Smart et al
 // Modified by:
-// Created:
-// Copyright:   (c) Robert Roebling
-// Licence:     wxWindows Licence
+// Created:     21/3/2000
+// Copyright:   (c) Robert Roebling, Harm van der Heijden, Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_DIRDLG_H_BASE_
-#define _WX_DIRDLG_H_BASE_
+#pragma once
 
-#include "wx/defs.h"
+#ifdef wxUSE_DIRDLG
 
-#if wxUSE_DIRDLG
-
+using namespace std;
+//#include "wx/treectrl.h"
+#include "checktree.h"
 #include "wx/dialog.h"
-
-// ----------------------------------------------------------------------------
-// constants
-// ----------------------------------------------------------------------------
-
-extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogNameStr[];
-extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogDefaultFolderStr[];
-extern WXDLLIMPEXP_DATA_CORE(const char) wxDirSelectorPromptStr[];
-
-
-/*
-    The flags below must coexist with the following flags in m_windowStyle
-    #define wxCAPTION               0x20000000
-    #define wxMAXIMIZE              0x00002000
-    #define wxCLOSE_BOX             0x00001000
-    #define wxSYSTEM_MENU           0x00000800
-    wxBORDER_NONE   =               0x00200000
-    #define wxRESIZE_BORDER         0x00000040
-    #define wxDIALOG_NO_PARENT      0x00000020
-*/
-
-#define wxDD_CHANGE_DIR         0x0100
-#define wxDD_DIR_MUST_EXIST     0x0200
-#define wxDD_MULTIPLE           0x0400
-#define wxDD_SHOW_HIDDEN        0x0001
-
-// deprecated, on by default now, use wxDD_DIR_MUST_EXIST to disable it
-#define wxDD_NEW_DIR_BUTTON     0
-
-#define wxDD_DEFAULT_STYLE      (wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
-
-//-------------------------------------------------------------------------
-// wxDirDialogBase
-//-------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxDirDialogBase : public wxDialog
-{
-public:
-    wxDirDialogBase() {}
-    wxDirDialogBase(wxWindow *parent,
-                    const wxString& title = wxASCII_STR(wxDirSelectorPromptStr),
-                    const wxString& defaultPath = wxEmptyString,
-                    long style = wxDD_DEFAULT_STYLE,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& sz = wxDefaultSize,
-                    const wxString& name = wxASCII_STR(wxDirDialogNameStr))
-    {
-        Create(parent, title, defaultPath, style, pos, sz, name);
-    }
-
-    virtual ~wxDirDialogBase() {}
-
-
-    bool Create(wxWindow *parent,
-                const wxString& title = wxASCII_STR(wxDirSelectorPromptStr),
-                const wxString& defaultPath = wxEmptyString,
-                long style = wxDD_DEFAULT_STYLE,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& sz = wxDefaultSize,
-                const wxString& name = wxASCII_STR(wxDirDialogNameStr))
-    {
-        if (!wxDialog::Create(parent, wxID_ANY, title, pos, sz, style, name))
-            return false;
-        m_path = defaultPath;
-        m_message = title;
-        return true;
-    }
-
-    virtual void SetMessage(const wxString& message) { m_message = message; }
-    virtual void SetPath(const wxString& path) { m_path = path; }
-
-    virtual wxString GetMessage() const { return m_message; }
-    virtual wxString GetPath() const
-    {
-        wxCHECK_MSG( !HasFlag(wxDD_MULTIPLE), wxString(),
-                     "When using wxDD_MULTIPLE, must call GetPaths() instead" );
-        return m_path;
-    }
-
-    virtual void GetPaths(wxArrayString& paths) const
-    {
-        paths = m_paths;
-    }
-
-protected:
-    wxString m_message;
-    wxString m_path;
-    wxArrayString m_paths;
-};
-
-
-// Universal and non-port related switches with need for generic implementation
-#if defined(__WXUNIVERSAL__)
-    #include "wx/generic/dirdlgg.h"
-    #define wxDirDialog wxGenericDirDialog
-#elif defined(__WXMSW__) && !wxUSE_OLE
-    #include "wx/generic/dirdlgg.h"
-    #define wxDirDialog wxGenericDirDialog
-#elif defined(__WXMSW__)
-    #include "wx/msw/dirdlg.h"  // Native MSW
-#elif defined(__WXGTK20__)
-    #include "wx/gtk/dirdlg.h"  // Native GTK for gtk2.4
-#elif defined(__WXGTK__)
-    #include "wx/generic/dirdlgg.h"
-    #define wxDirDialog wxGenericDirDialog
-#elif defined(__WXMAC__)
-    #include "wx/osx/dirdlg.h"      // Native Mac
-#elif defined(__WXMOTIF__) || \
-      defined(__WXX11__)
-    #include "wx/generic/dirdlgg.h"     // Other ports use generic implementation
-    #define wxDirDialog wxGenericDirDialog
-#elif defined(__WXQT__)
-    #include "wx/qt/dirdlg.h"
+#include "wx/dirdlg.h"
+#include "wx/choice.h"
+#include "wx/artprov.h"
+// dll export macros
+#ifdef WXMAKINGDLL_DIRECTORYCTRL
+#define WXDLLIMPEXP_DIRECTORYCTRL WXEXPORT
+#elif defined(WXUSING_DIRECTORYCTRL_SOURCE)
+#define WXDLLIMPEXP_CHECKTREE
+#elif defined(WXUSINGDLL)
+#define WXDLLIMPEXP_DIRECTORYCTRL WXIMPORT
+#else // not making nor using DLL
+#define WXDLLIMPEXP_DIRECTORYCTRL
 #endif
 
-// ----------------------------------------------------------------------------
-// common ::wxDirSelector() function
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// classes
+//-----------------------------------------------------------------------------
 
-WXDLLIMPEXP_CORE wxString
-wxDirSelector(const wxString& message = wxASCII_STR(wxDirSelectorPromptStr),
-              const wxString& defaultPath = wxEmptyString,
-              long style = wxDD_DEFAULT_STYLE,
-              const wxPoint& pos = wxDefaultPosition,
-              wxWindow *parent = NULL);
+class WXDLLIMPEXP_DIRECTORYCTRL wxTextCtrl;
+class WXDLLIMPEXP_DIRECTORYCTRL wxHashTable;
+
+//-----------------------------------------------------------------------------
+// Extra styles for  wxGenericDirCtrl
+//-----------------------------------------------------------------------------
+
+enum
+{
+	// Only allow directory viewing/selection, no files
+	wxDIRCTRL_DIR_ONLY = 0x0010,
+	// When setting the default path, select the first file in the directory
+	wxDIRCTRL_SELECT_FIRST = 0x0020,
+	// Show the filter list
+	wxDIRCTRL_SHOW_FILTERS = 0x0040,
+	// Use 3D borders on internal controls
+	wxDIRCTRL_3D_INTERNAL = 0x0080,
+	// Editable labels
+	wxDIRCTRL_EDIT_LABELS = 0x0100,
+	// Allow multiple selection
+	wxDIRCTRL_MULTIPLE = 0x0200,
+
+	wxDIRCTRL_DEFAULT_STYLE = wxDIRCTRL_3D_INTERNAL
+};
+
+//-----------------------------------------------------------------------------
+// wxDirItemData
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirItemData : public wxTreeItemData
+{
+public:
+	wxDirItemData(const wxString& path, const wxString& name, bool isDir);
+
+	~wxDirItemData() override
+	{
+	}
+
+	void SetNewDirName(const wxString& path);
+
+	bool HasSubDirs() const;
+	bool HasFiles(const wxString& spec = wxEmptyString) const;
+
+	wxString m_path, m_name;
+	bool m_isHidden;
+	bool m_isExpanded;
+	bool m_isDir;
+};
+
+//-----------------------------------------------------------------------------
+// wxDirCtrl
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl;
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxGenericDirCtrl : public wxControl
+{
+public:
+	wxGenericDirCtrl();
+
+	wxGenericDirCtrl(wxWindow* parent, wxWindowID id = wxID_ANY,
+	                 const wxString& dir = wxDirDialogDefaultFolderStr,
+	                 const wxPoint& pos = wxDefaultPosition,
+	                 const wxSize& size = wxDefaultSize,
+	                 long style = wxDIRCTRL_DEFAULT_STYLE,
+	                 const wxString& filter = wxEmptyString,
+	                 int defaultFilter = 0,
+	                 const wxString& name = wxTreeCtrlNameStr)
+	{
+		Init();
+		Create(parent, id, dir, pos, size, style, filter, defaultFilter, name);
+	}
+
+	bool Create(wxWindow* parent, wxWindowID id = wxID_ANY,
+	            const wxString& dir = wxDirDialogDefaultFolderStr,
+	            const wxPoint& pos = wxDefaultPosition,
+	            const wxSize& size = wxDefaultSize,
+	            long style = wxDIRCTRL_DEFAULT_STYLE,
+	            const wxString& filter = wxEmptyString,
+	            int defaultFilter = 0,
+	            const wxString& name = wxTreeCtrlNameStr);
+
+	virtual void Init();
+
+	~ wxGenericDirCtrl() override;
+
+	void OnExpandItem(wxTreeEvent& event);
+	void OnCollapseItem(wxTreeEvent& event);
+	void OnBeginEditItem(wxTreeEvent& event);
+	void OnEndEditItem(wxTreeEvent& event);
+	void OnTreeSelChange(wxTreeEvent& event);
+	void OnItemActivated(wxTreeEvent& event);
+	void OnSize(wxSizeEvent& event);
+	void OnMouseEnter(wxMouseEvent& event);
+	void OnEraseBackground(wxEraseEvent& event);
+	// Try to expand as much of the given path as possible.
+	virtual bool ExpandPath(const wxString& path);
+	// collapse the path
+	virtual bool CollapsePath(const wxString& path);
+
+	// Accessors
+
+	virtual wxString GetDefaultPath() const { return m_defaultPath; }
+	virtual void SetDefaultPath(const wxString& path) { m_defaultPath = path; }
+
+	// Get dir or filename
+	virtual wxString GetPath() const;
+	virtual void GetPaths(wxArrayString& paths) const;
+
+	// Get selected filename path only (else empty string).
+	// I.e. don't count a directory as a selection
+	virtual wxString GetFilePath() const;
+	virtual void GetFilePaths(wxArrayString& paths) const;
+	virtual void SetPath(const wxString& path);
+	virtual void AddPath(const wxString& path);
+	virtual void RemovePath(const wxString& path);
+
+	virtual void SelectPath(const wxString& path, bool select = true);
+	virtual void SelectPaths(const wxArrayString& paths);
+
+	virtual void ShowHidden(bool show);
+	virtual bool GetShowHidden() { return m_showHidden; }
+
+	virtual wxString GetFilter() const { return m_filter; }
+	virtual void SetFilter(const wxString& filter);
+
+	virtual int GetFilterIndex() const { return m_currentFilter; }
+	virtual void SetFilterIndex(int n);
+
+	virtual wxTreeItemId GetRootId() { return m_rootId; }
+
+	virtual wxCheckTree* GetTreeCtrl() const { return m_treeCtrl; }
+	virtual wxDirFilterListCtrl* GetFilterListCtrl() const { return m_filterListCtrl; }
+
+	virtual void UnselectAll();
+
+	// Helper
+	virtual void SetupSections();
+
+	// Find the child that matches the first part of 'path'.
+	// E.g. if a child path is "/usr" and 'path' is "/usr/include"
+	// then the child for /usr is returned.
+	// If the path string has been used (we're at the leaf), done is set to true
+	virtual wxTreeItemId FindChild(wxTreeItemId parentId, const wxString& path, bool& done);
+
+	wxString GetPath(wxTreeItemId itemId) const;
+
+	// Resize the components of the control
+	virtual void DoResize();
+
+	// Collapse & expand the tree, thus re-creating it from scratch:
+	virtual void ReCreateTree();
+
+	// Collapse the entire tree
+	virtual void CollapseTree();
+
+	// overridden base class methods
+	void SetFocus() wxOVERRIDE;
+
+protected:
+	virtual void ExpandRoot();
+	virtual void ExpandDir(wxTreeItemId parentId);
+	virtual void CollapseDir(wxTreeItemId parentId);
+	virtual const wxTreeItemId AddSection(const wxString& path, const wxTreeItemId& parent, const wxString& name,
+	                                      int imageId = 0);
+	virtual wxTreeItemId AppendItem(const wxTreeItemId& parent,
+	                                const wxString& text,
+	                                int image = -1, int selectedImage = -1,
+	                                wxTreeItemData* data = nullptr);
+	//void FindChildFiles(wxTreeItemId id, int dirFlags, wxArrayString& filenames);
+	virtual wxCheckTree* CreateTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size,
+	                                    long treeStyle);
+
+	// Extract description and actual filter from overall filter string
+	bool ExtractWildcard(const wxString& filterStr, int n, wxString& filter, wxString& description);
+
+private:
+	void PopulateNode(wxTreeItemId node);
+	wxDirItemData* GetItemData(wxTreeItemId itemId);
+
+	bool m_showHidden;
+	wxTreeItemId m_rootId;
+	wxTreeItemId m_homeId;
+	wxTreeItemId m_DesktopId;
+	wxString m_defaultPath; // Starting path
+	long m_styleEx; // Extended style
+	wxString m_filter; // Wildcards in same format as per wxFileDialog
+	int m_currentFilter; // The current filter index
+	wxString m_currentFilterStr; // Current filter string
+	wxCheckTree* m_treeCtrl;
+	wxDirFilterListCtrl* m_filterListCtrl;
+	vector<wxString> m_selectedPath;
+
+private:
+	wxDECLARE_EVENT_TABLE();
+	wxDECLARE_DYNAMIC_CLASS(wxGenericDirCtrl);
+	wxDECLARE_NO_COPY_CLASS(wxGenericDirCtrl);
+};
+
+wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_DIRECTORYCTRL, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent);
+wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_DIRECTORYCTRL, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeEvent);
+
+#define wx__DECLARE_DIRCTRL_EVT(evt, id, fn) \
+    wx__DECLARE_EVT1(wxEVT_DIRCTRL_ ## evt, id, wxTreeEventHandler(fn))
+
+#define EVT_DIRCTRL_SELECTIONCHANGED(id, fn) wx__DECLARE_DIRCTRL_EVT(SELECTIONCHANGED, id, fn)
+#define EVT_DIRCTRL_FILEACTIVATED(id, fn) wx__DECLARE_DIRCTRL_EVT(FILEACTIVATED, id, fn)
+
+//-----------------------------------------------------------------------------
+// wxDirFilterListCtrl
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl : public wxChoice
+{
+public:
+	wxDirFilterListCtrl() { Init(); }
+
+	wxDirFilterListCtrl(wxGenericDirCtrl* parent, wxWindowID id = wxID_ANY,
+	                    const wxPoint& pos = wxDefaultPosition,
+	                    const wxSize& size = wxDefaultSize,
+	                    long style = 0)
+	{
+		Init();
+		Create(parent, id, pos, size, style);
+	}
+
+	bool Create(wxGenericDirCtrl* parent, wxWindowID id = wxID_ANY,
+	            const wxPoint& pos = wxDefaultPosition,
+	            const wxSize& size = wxDefaultSize,
+	            long style = 0);
+
+	void Init();
+
+	~wxDirFilterListCtrl() override
+	{
+	}
+
+	//// Operations
+	void FillFilterList(const wxString& filter, int defaultFilter);
+
+	//// Events
+	void OnSelFilter(wxCommandEvent& event);
+
+protected:
+	wxGenericDirCtrl* m_dirCtrl;
+
+	wxDECLARE_EVENT_TABLE();
+	wxDECLARE_CLASS(wxDirFilterListCtrl);
+	wxDECLARE_NO_COPY_CLASS(wxDirFilterListCtrl);
+};
+
+#if !defined(__WXMSW__) && !defined(__WXMAC__)
+    #define wxDirCtrl  wxGenericDirCtrl
+#endif
+
+// Symbols for accessing individual controls
+#define wxID_TREECTRL          7000
+#define wxID_FILTERLISTCTRL    7001
 
 #endif // wxUSE_DIRDLG
 
-#endif
-    // _WX_DIRDLG_H_BASE_
+//-------------------------------------------------------------------------
+// wxFileIconsTable - use wxTheFileIconsTable which is created as necessary
+//-------------------------------------------------------------------------
+
+#ifdef wxUSE_DIRDLG
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxImageList;
+
+class WXDLLIMPEXP_DIRECTORYCTRL wxFileIconsTable
+{
+public:
+	wxFileIconsTable();
+	~wxFileIconsTable();
+
+	enum iconId_Type
+	{
+		folder,
+		folder_open,
+		computer,
+		drive,
+		cdrom,
+		floppy,
+		removeable,
+		file,
+		executable
+	};
+
+	int GetIconID(const wxString& extension, const wxString& mime = wxEmptyString);
+	wxImageList* GetSmallImageList();
+
+	const wxSize& GetSize() const { return m_size; }
+	void SetSize(const wxSize& sz) { m_size = sz; }
+
+	bool IsOk() const { return m_smallImageList != nullptr; }
+
+protected:
+	void Create(const wxSize& sz); // create on first use
+
+    wxBitmap GetIcon(const wxArtID& id, const wxSize& sz);
+    wxBitmap LoadBitmap(const wxString &icon);
+    
+	wxImageList* m_smallImageList;
+	wxHashTable* m_HashTable;
+	wxSize m_size;
+};
+
+// The global fileicons table
+extern wxFileIconsTable* wxTheFileIconsTable;
+
+#endif // wxUSE_DIRDLG || wxUSE_FILEDLG || wxUSE_FILECTRL
+
+// old wxEVT_COMMAND_* constants
+#define wxEVT_COMMAND_DIRCTRL_SELECTIONCHANGED wxEVT_DIRCTRL_SELECTIONCHANGED
+#define wxEVT_COMMAND_DIRCTRL_FILEACTIVATED   wxEVT_DIRCTRL_FILEACTIVATED
