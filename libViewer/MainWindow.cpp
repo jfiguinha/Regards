@@ -1266,13 +1266,14 @@ void CMainWindow::LoadPicture(void* param)
 				CImageVideoThumbnail* bitmap = listVideo[i];
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 
-				if (bitmap->image.IsOk())
+				if (!bitmap->image.empty())
 				{
-					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.GetWidth(),
-						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
+					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.size().width,
+						bitmap->image.size().height, i, bitmap->rotation, bitmap->percent,
 						bitmap->timePosition);
 
-					bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+                    cv::imwrite(CConvertUtility::ConvertToStdString(localName), bitmap->image);
+					//bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 				}
 
 
@@ -1284,15 +1285,15 @@ void CMainWindow::LoadPicture(void* param)
 		}
 		else //Not support video
 		{
-			threadLoadingBitmap->bitmapIcone = defaultPicture;
+			threadLoadingBitmap->bitmapIcone = CLibPicture::mat_from_wx(defaultPicture);
 			wxString filename = threadLoadingBitmap->filename;
 
-			wxBitmap bitmap = wxBitmap(defaultPicture);
+			//wxBitmap bitmap = wxBitmap(defaultPicture);
 
 
 			CSqlThumbnailVideo sqlThumbnailVideo;
-			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap.GetWidth(), bitmap.GetHeight(), 0, 0, 0, 0);
-			bitmap.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, defaultPicture.GetWidth(), defaultPicture.GetHeight(), 0, 0, 0, 0);
+			defaultPicture.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
 
 		for (CImageVideoThumbnail* bitmap : listVideo)
@@ -1305,22 +1306,26 @@ void CMainWindow::LoadPicture(void* param)
 		CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
 		if (imageLoad != nullptr)
 		{
-			threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
+			threadLoadingBitmap->bitmapIcone = imageLoad->GetOpenCVPicture();
 			delete imageLoad;
 		}
 	}
 
 
-	if (threadLoadingBitmap->bitmapIcone.IsOk())
+	if (!threadLoadingBitmap->bitmapIcone.empty())
 	{
 		//Enregistrement en base de données
 		CSqlThumbnail sqlThumbnail;
 		wxFileName file(threadLoadingBitmap->filename);
 		wxULongLong sizeFile = file.GetSize();
 		wxString hash = sizeFile.ToString();
-		wxString localName = sqlThumbnail.InsertThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->bitmapIcone.GetWidth(), threadLoadingBitmap->bitmapIcone.GetHeight(), hash);
+		wxString localName = sqlThumbnail.InsertThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->bitmapIcone.size().width, threadLoadingBitmap->bitmapIcone.size().height, hash);
 		if(localName != "")
-			threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+        {
+            //threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
+            cv::imwrite(CConvertUtility::ConvertToStdString(localName), threadLoadingBitmap->bitmapIcone);
+        }
+			
 	}
 
 	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);

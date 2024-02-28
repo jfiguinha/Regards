@@ -33,7 +33,7 @@ public:
 	int photoId;
 	int timePosition;
 	bool isAnimationOrVideo = false;
-	wxImage bitmapIcone;
+	cv::Mat bitmapIcone;
 	thread* _thread;
 	thread* _threadVideo;
 	wxWindow * window;

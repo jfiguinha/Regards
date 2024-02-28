@@ -13,14 +13,18 @@ CSqlFaceThumbnail::~CSqlFaceThumbnail(void)
 {
 }
 
-wxImage CSqlFaceThumbnail::GetwxImage(bool& isDefault)
+cv::Mat CSqlFaceThumbnail::GetwxImage(bool& isDefault)
 {
 
 	CSqlFacePhoto sqlThumbnail;
 	// printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
-	wxImage image= sqlThumbnail.GetFace(numFace, isDefault);
+	cv::Mat image= sqlThumbnail.GetFace(numFace, isDefault);
 	if (isDefault)
 		image = GetDefaultPicture();
+    else
+    {
+        
+    }
 	return image;
 }
 

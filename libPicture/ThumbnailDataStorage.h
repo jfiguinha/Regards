@@ -14,13 +14,13 @@ public:
 	}
 
 	void RemoveBitmap() override;
-	void SetBitmap(wxImage bitmap) override;
-	wxImage GetwxImage(bool& isDefault) override;
+	void SetBitmap(cv::Mat bitmap) override;
+	cv::Mat GetwxImage(bool& isDefault) override;
     bool GetIsDefault();
     void SetIsDefault(const bool &isDefault);
 
 private:
 	bool TestBitmap() override;
-	wxImage localbitmap;
+	cv::Mat localbitmap;
     bool isDefault = true;
 };

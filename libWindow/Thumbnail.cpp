@@ -1609,7 +1609,7 @@ void CThumbnail::UpdateRenderIcone(CThreadLoadingBitmap * threadLoadingBitmap)
 	{
 		if (threadLoadingBitmap != nullptr)
 		{
-			if (threadLoadingBitmap->bitmapIcone.IsOk())
+			if (!threadLoadingBitmap->bitmapIcone.empty())
 			{
 				CThumbnailData* pThumbnailData = nullptr;
 				CIcone *  icone = GetIconeByPath(threadLoadingBitmap->filename);

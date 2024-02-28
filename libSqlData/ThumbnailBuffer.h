@@ -6,8 +6,8 @@ class CThumbnailBuffer
 {
 
 public:
-
-	static wxImage GetPicture(const wxString& filename);
+    static cv::Mat GetPicture(const wxString& filename);
+	//static wxImage GetPicture(const wxString& filename);
 	static void RemovePicture(const wxString& filename);
 	static void InitVectorList(PhotosVector * newVector);
 	static CPhotos GetVectorValue(int i);
@@ -19,7 +19,7 @@ public:
 
 private:
 
-	static std::map<wxString, wxImage> listPicture;
+	static std::map<wxString, cv::Mat> listPicture;
 	static std::vector<wxString> listFile;
 	static std::mutex muPictureBuffer;
 	static std::mutex muListFile;

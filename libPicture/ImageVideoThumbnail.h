@@ -23,7 +23,8 @@ public:
 	{
 	};
 
-	wxImage image;
+	//wxImage image;
+    cv::Mat image;
 	int rotation;
 	uint32_t delay;
 	int percent;

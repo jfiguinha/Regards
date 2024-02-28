@@ -1,5 +1,6 @@
 #pragma once
 #include <LoadingResource.h>
+#include <libPicture.h>
 class CRegardsBitmap;
 
 #define TYPEPHOTO 1
@@ -42,11 +43,11 @@ public:
 	wxString GetFilename();
 	void SetFilename(const wxString& filename);
 
-	virtual void SetBitmap(wxImage bitmap)
+	virtual void SetBitmap(cv::Mat bitmap)
 	{
 	};
 
-	virtual wxImage GetwxImage(bool& isDefault)
+	virtual cv::Mat GetwxImage(bool& isDefault)
 	{
 		isDefault = true;
 		return GetDefaultPicture();
@@ -135,11 +136,11 @@ protected:
 		return false;
 	};
 
-	wxImage GetDefaultPicture()
+	cv::Mat GetDefaultPicture()
 	{
 		if (isVideo || isAnimation)
-			return defaultPictureThumbnailVideo;
-		return defaultPictureThumbnailPicture;
+			return Regards::Picture::CLibPicture::mat_from_wx(defaultPictureThumbnailVideo);
+		return  Regards::Picture::CLibPicture::mat_from_wx(defaultPictureThumbnailPicture);
 	}
 
 	int numCatalog;

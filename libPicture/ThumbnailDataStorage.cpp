@@ -25,15 +25,18 @@ void CThumbnailDataStorage::SetIsDefault(const bool &isDefault)
 
 bool CThumbnailDataStorage::TestBitmap()
 {
-	return localbitmap.IsOk();
+	return !localbitmap.empty();
 }
 
 void CThumbnailDataStorage::RemoveBitmap()
 {
 }
 
-wxImage CThumbnailDataStorage::GetwxImage(bool& isDefault)
+cv::Mat CThumbnailDataStorage::GetwxImage(bool& isDefault)
 {
+    if(isDefault)
+        return GetDefaultPicture();
+    
 	if (TestBitmap())
 	{
 		isDefault = false;
@@ -44,10 +47,11 @@ wxImage CThumbnailDataStorage::GetwxImage(bool& isDefault)
 	return GetDefaultPicture();
 }
 
-void CThumbnailDataStorage::SetBitmap(wxImage bitmap)
+void CThumbnailDataStorage::SetBitmap(cv::Mat bitmap)
 {
-	if (bitmap.IsOk())
+	if (!bitmap.empty())
 	{
 		localbitmap = bitmap;
+        isDefault = false;
 	}
 }

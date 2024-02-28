@@ -197,25 +197,6 @@ bool CLibPicture::TestIsPicture(const wxString& szFileName)
 	return false;
 }
 
-/*
-wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
-{
-	cv::Mat im2;
-	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-
-	//cv::flip(im2, im2, 0);
-
-	long imsize = im2.rows * im2.cols * im2.channels();
-	wxImage* wx = new wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = im2.data;
-	unsigned char* d = wx->GetData();
-	memcpy(d, s, imsize);
-
-	return wx;
-}
-*/
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
 {
 	wxImage wx;
@@ -258,43 +239,6 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
 }
 
 
-/*
-
-wxImage* CLibPicture::ConvertRegardsBitmapToWXImagePt(cv::Mat& img)
-{
-	cv::Mat im2;
-	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-
-	wxBitmap bmp(im2.cols, im2.rows, 24);
-	ConvertMatBitmapTowxBitmap(im2, bmp);
-	wxImage * wx = new wxImage(bmp.ConvertToImage());
-
-
-	return wx;
-}
-
-
-wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
-{
-
-
-
-	cv::Mat im2;
-	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-
-	wxBitmap bmp(im2.cols, im2.rows, 24);
-	ConvertMatBitmapTowxBitmap(im2, bmp);
-	wxImage wx = bmp.ConvertToImage();
-
-
-	return wx;
-}
-
-*/
 
 bool CLibPicture::TestIsPDF(const wxString& szFileName)
 {
@@ -1162,7 +1106,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 
 		cxVideo->rotation = rotation;
 		cxVideo->percent = percent;
-		cxVideo->image = image_resample;
+		cxVideo->image = mat_from_wx(image_resample);
 		cxVideo->filename = szFileName;
 
 		if (isAnimation)
@@ -1207,7 +1151,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& 
 	if (m_ani_images == 0)
 	{
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
-		imageVideoThumbnail->image = defaultPicture;
+		imageVideoThumbnail->image = mat_from_wx(defaultPicture);
 		imageVideoThumbnail->filename = szFileName;
 		imageVideoThumbnail->rotation = 0;
 		imageVideoThumbnail->delay = 4;
@@ -1260,10 +1204,10 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& 
 
 					cv::Mat in = CLibPicture::mat_from_wx(image);
 					cv::resize(in, out, cv::Size(bw, bh), cv::INTER_CUBIC);
-					imageVideoThumbnail->image = CLibPicture::ConvertRegardsBitmapToWXImage(out);
+					imageVideoThumbnail->image = out;
 				}
 				else
-					imageVideoThumbnail->image = image;
+					imageVideoThumbnail->image = mat_from_wx(image);
 
 
 				imageVideoThumbnail->filename = szFileName;
@@ -1468,7 +1412,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 				{
 					auto imageVideoThumbnail = new CImageVideoThumbnail();
 					imageVideoThumbnail->filename = szFileName;
-					imageVideoThumbnail->image = ConvertRegardsBitmapToWXImage(listPicture.at(i));
+					imageVideoThumbnail->image = listPicture.at(i);
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = delay;
 					imageVideoThumbnail->percent = static_cast<int>((static_cast<float>(i) / static_cast<float>(
@@ -1507,7 +1451,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 						CImageLoadingFormat image;
 						image.SetPicture(frame);
 						imageVideoThumbnail->filename = szFileName;
-						imageVideoThumbnail->image = image.GetwxImage();
+						imageVideoThumbnail->image = image.GetOpenCVPicture();
 						imageVideoThumbnail->rotation = 0;
 						imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 						imageVideoThumbnail->percent = (static_cast<float>(i) / static_cast<float>(_cxImage->
@@ -1521,7 +1465,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 					auto imageVideoThumbnail = new CImageVideoThumbnail();
 					CImageLoadingFormat* image = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
 					imageVideoThumbnail->filename = szFileName;
-					imageVideoThumbnail->image = image->GetwxImage();
+					imageVideoThumbnail->image = image->GetOpenCVPicture();
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 					imageVideoThumbnail->percent = (static_cast<float>(0) / static_cast<float>(_cxImage->
@@ -1563,7 +1507,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 			{
 				auto imageVideoThumbnail = new CImageVideoThumbnail();
 				CImageLoadingFormat* imageLoad = LoadThumbnail(szFileName);
-				imageVideoThumbnail->image = imageLoad->GetwxImage();
+				imageVideoThumbnail->image = imageLoad->GetOpenCVPicture();
 				imageVideoThumbnail->filename = szFileName;
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 0;
@@ -1577,8 +1521,11 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 	catch (...)
 	{
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
-		imageVideoThumbnail->image.LoadFile(szFileName);
-		imageVideoThumbnail->image = imageVideoThumbnail->image.ResampleBicubic(widthThumbnail, heightThumbnail);
+        cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(szFileName),
+                                cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
+        cv::resize(matPicture, imageVideoThumbnail->image, cv::Size(widthThumbnail, heightThumbnail), cv::INTER_LINEAR);
+		//imageVideoThumbnail->image.LoadFile(szFileName);
+		//imageVideoThumbnail->image = imageVideoThumbnail->image.ResampleBicubic(widthThumbnail, heightThumbnail);
 		imageVideoThumbnail->filename = szFileName;
 		imageVideoThumbnail->rotation = 0;
 		imageVideoThumbnail->delay = 0;

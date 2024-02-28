@@ -3,12 +3,12 @@
 #include <libPicture.h>
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
+#include <ConvertUtility.h>
 
 
 
 
-
-std::map<wxString, wxImage> CThumbnailBuffer::listPicture;
+std::map<wxString, cv::Mat> CThumbnailBuffer::listPicture;
 std::vector<wxString> CThumbnailBuffer::listFile;
 PhotosVector *  CThumbnailBuffer::newPhotosVectorList;
 std::mutex CThumbnailBuffer::muPictureBuffer;
@@ -20,7 +20,7 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 {
 	muPictureBuffer.lock();
 
-	std::map<wxString, wxImage>::iterator it = listPicture.find(filename);
+	std::map<wxString, cv::Mat>::iterator it = listPicture.find(filename);
 
 	if (it != listPicture.end())
 	{
@@ -147,9 +147,9 @@ void CThumbnailBuffer::InitVectorList(PhotosVector * newVector)
     }
 }
 
-wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
+cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
 {
-	wxImage image;
+	cv::Mat image;
 	float diff_min = 0;
 	wxString keyToDelete = "";
 	int sizeBuffer = 100;
@@ -164,11 +164,12 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
 
         muPictureBuffer.lock();
 
-        std::map<wxString, wxImage>::iterator it = listPicture.find(filename);
+        std::map<wxString, cv::Mat>::iterator it = listPicture.find(filename);
 
         if (it == listPicture.end())
         {
-            image.LoadFile(filename, wxBITMAP_TYPE_ANY);
+           // image.LoadFile(filename, wxBITMAP_TYPE_ANY);
+           	image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
             listPicture[filename] = image;
             muListFile.lock();
             listFile.push_back(filename);
@@ -194,7 +195,7 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
             muListFile.unlock();
 
             muPictureBuffer.lock();
-            std::map<wxString, wxImage>::iterator it = listPicture.find(firstFile);
+            std::map<wxString, cv::Mat>::iterator it = listPicture.find(firstFile);
             listPicture.erase(it);
             muPictureBuffer.unlock();
         }
@@ -202,7 +203,7 @@ wxImage CThumbnailBuffer::GetPicture(const wxString& filename)
     }
     else
     {
-        image.LoadFile(filename, wxBITMAP_TYPE_ANY);
+        image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
         listPicture[filename] = image;
     }
 	

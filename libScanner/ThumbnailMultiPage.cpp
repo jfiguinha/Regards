@@ -155,9 +155,9 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 			thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(size));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-			if (!thumbnail->image.IsOk())
+			if (thumbnail->image.empty())
 			{
-				thumbnail->image = defaultPicture;
+				thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);

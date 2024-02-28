@@ -31,7 +31,7 @@ public:
 	void SetMouseOn();
 	void SetMouseOut();
 
-	wxImage GetwxImage(bool& isDefault) override;
+	cv::Mat GetwxImage(bool& isDefault) override;
 	int GetNbFrame() override;
 
 private:
@@ -39,7 +39,7 @@ private:
 	int nbFrame = 0;
 	cv::Mat cvImg;
 	int time_pos = 0;
-	wxImage frameOut;
+	cv::Mat frameOut;
     bool defaultPicture = true;
 	int oldnumFrame = -1;
 	int oldVideoFrame = 0;

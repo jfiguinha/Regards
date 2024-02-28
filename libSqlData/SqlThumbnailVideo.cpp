@@ -7,6 +7,7 @@
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
 #include <LoadingResource.h>
+#include <ConvertUtility.h>
 #include <FileUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Sqlite;
@@ -90,17 +91,18 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 		if (wxFileExists(thumbnail))
 		{
-			videoThumbnail->image.LoadFile(thumbnail);
-			if (!videoThumbnail->image.IsOk())
+            videoThumbnail->image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
+			//videoThumbnail->image = .LoadFile(thumbnail);
+			if (videoThumbnail->image.empty())
 			{
-				videoThumbnail->image = defaultPictureThumbnailVideo;
+				videoThumbnail->image = CLibPicture::mat_from_wx(defaultPictureThumbnailVideo);
 			}
 			videoThumbnail->filename = thumbnail;
 		}
 	}
 }
 
-wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVideo, bool & isDefault)
+cv::Mat CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVideo, bool & isDefault)
 {
 	wxLogNull logNo;
 	type = 6;
@@ -109,7 +111,7 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
 
 	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
-	wxImage image;
+	cv::Mat image;
 	if (wxFileExists(thumbnail))
 	{
 		image = CThumbnailBuffer::GetPicture(thumbnail);

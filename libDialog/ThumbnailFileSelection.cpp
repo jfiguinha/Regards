@@ -54,9 +54,9 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-		if (!thumbnail->image.IsOk())
+		if (thumbnail->image.empty())
 		{
-			thumbnail->image = defaultPicture;
+			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -164,9 +164,9 @@ void CThumbnailFileSelection::SetListeFile()
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-		if (!thumbnail->image.IsOk())
+		if (thumbnail->image.empty())
 		{
-			thumbnail->image = defaultPicture;
+			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);

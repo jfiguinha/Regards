@@ -286,7 +286,7 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 				{
 				}
 				cxVideo->timePosition = i;
-				cxVideo->image = CLibPicture::ConvertRegardsBitmapToWXImage(image);
+				cxVideo->image = image;//CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)
@@ -320,7 +320,7 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 				{
 				}
 				cxVideo->timePosition = pimpl->m_seekTimeInSecond;
-				cxVideo->image = CLibPicture::ConvertRegardsBitmapToWXImage(image);
+				cxVideo->image = image;//CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)

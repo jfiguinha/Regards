@@ -335,7 +335,7 @@ int CSqlFacePhoto::GetNumFace(const wxString& path, const int& numberface)
 	return numFace;
 }
 
-wxImage CSqlFacePhoto::GetFace(const int& numFace, bool& isDefault)
+cv::Mat CSqlFacePhoto::GetFace(const int& numFace, bool& isDefault)
 {
 	wxLogNull logNo;
 	/*
@@ -345,13 +345,14 @@ wxImage CSqlFacePhoto::GetFace(const int& numFace, bool& isDefault)
 	return bitmap;
 	*/
 	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
-	wxImage image;
+	cv::Mat image;
 	if (wxFileExists(thumbnail))
 	{
-		image = CThumbnailBuffer::GetPicture(thumbnail);
+		//image = cv::Mat();
+        cv::flip(CThumbnailBuffer::GetPicture(thumbnail),image,-1);
 	}
 
-	if (!image.IsOk())
+	if (image.empty())
 	{
 		DeleteNumFace(numFace);
 		isDefault = true;
@@ -359,7 +360,8 @@ wxImage CSqlFacePhoto::GetFace(const int& numFace, bool& isDefault)
 	else
 		isDefault = false;
 
-	return image.Mirror(false);
+   // cv::flip(image,image,-1);
+	return image;//image.Mirror(false);
 }
 
 

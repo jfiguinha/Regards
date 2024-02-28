@@ -196,7 +196,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 		thumbnailData->SetNumPhotoId(IDM_FILTRE_VIDEO);
 
-		thumbnailData->SetBitmap(pBitmap);
+		thumbnailData->SetBitmap(CLibPicture::mat_from_wx(pBitmap));
 
 		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
@@ -245,7 +245,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 					wxImage pBitmap = loadingResource.LoadImageResource("IDB_REDEYE");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					thumbnailData->SetBitmap(pBitmap);
+					thumbnailData->SetBitmap(CLibPicture::mat_from_wx(pBitmap));
 					break;
 				}
 
@@ -255,7 +255,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 					wxImage pResBitmap = loadingResource.LoadImageResource("IDB_CROP");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					thumbnailData->SetBitmap(pResBitmap);
+					thumbnailData->SetBitmap(CLibPicture::mat_from_wx(pResBitmap));
 					break;
 				}
 
@@ -330,7 +330,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
 
-			thumbnailData->SetBitmap(image);
+			thumbnailData->SetBitmap(Regards::Picture::CLibPicture::mat_from_wx(image));
 
 			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
@@ -528,9 +528,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 						&& pThumbnailData != nullptr)
 					{
 						pThumbnailData->SetIsProcess(false);
-						CImageLoadingFormat image;
-						image.SetPicture(threadLoadingBitmap->picture);
-						pThumbnailData->SetBitmap(image.GetwxImage());
+						pThumbnailData->SetBitmap(threadLoadingBitmap->picture);
 						pThumbnailData->SetIsLoading(false);
 						if (!render)
 						{

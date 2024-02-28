@@ -788,10 +788,12 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	wxImage image = wxImage(20,20);
 	if (forceRedraw)
 		redraw = true;
+        
+    cv::Mat mat = pThumbnailData->GetwxImage(photoDefault);
 
 	if (!photoDefault)
 	{
-		image = pThumbnailData->GetwxImage(photoDefault);
+		image = CLibPicture::ConvertRegardsBitmapToWXImage(mat);
 		if (image.IsOk())
 			redraw = true;
 
@@ -799,7 +801,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	}
 	else
 	{
-		image = pThumbnailData->GetwxImage(photoDefault);
+		image = CLibPicture::ConvertRegardsBitmapToWXImage(mat);
 		returnValue = 1;
 	}
 

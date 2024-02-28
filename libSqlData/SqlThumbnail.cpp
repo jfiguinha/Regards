@@ -7,6 +7,7 @@
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
 #include <LoadingResource.h>
+#include <ConvertUtility.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -86,7 +87,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 	return listPhoto;
 }
 
-wxImage CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
+cv::Mat CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 {
     //printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
 	wxLogNull logNo;
@@ -96,18 +97,18 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 
 
-	wxImage image;
-	if (numPhoto == 0)
-		return image;
+	cv::Mat image;
+	//if (numPhoto == 0)
+	//	return image;
 
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	
 	if (wxFileExists(thumbnail))
 	{
-        image.LoadFile(thumbnail, wxBITMAP_TYPE_ANY);
+        image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
 	}
 
-	if (!image.IsOk())
+	if (image.empty())
 		isDefault = true;
 	else
 		isDefault = false;
@@ -128,7 +129,7 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 		if (wxFileExists(thumbnail))
 		{
 			picture = new CImageLoadingFormat();
-			wxImage image = CThumbnailBuffer::GetPicture(thumbnail);
+			cv::Mat image = CThumbnailBuffer::GetPicture(thumbnail);
 			//CLibPicture libPicture;
 			//picture = libPicture.LoadPicture(thumbnail);
 			picture->SetPicture(image);

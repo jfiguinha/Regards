@@ -207,14 +207,14 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 			try
 			{
-				if (thumbnail->image.IsOk())
+				if (!thumbnail->image.empty())
                 {
 					thumbnailData->SetBitmap(thumbnail->image);
                     thumbnailData->SetIsDefault(false);
                 }
                 else
                 {
-                    thumbnailData->SetBitmap(defaultPicture);
+                    thumbnailData->SetIsDefault(true);
                 }
 			}
 			catch (...)
@@ -264,9 +264,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			thumbnailData->SetPercent(percent);
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-			if (!thumbnail->image.IsOk())
+			if (thumbnail->image.empty())
 			{
-				thumbnail->image = defaultPicture;
+				thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);
@@ -351,7 +351,7 @@ void CThumbnailVideo::UpdateVideoThumbnail()
                             sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
                             thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
                             
-                            if (thumbnail->image.IsOk())
+                            if (!thumbnail->image.empty())
                             {
                                 thumbnailData->SetIsDefault(false);
                                 thumbnailData->SetBitmap(thumbnail->image);
@@ -410,7 +410,6 @@ void CThumbnailVideo::EraseThumbnail(long value)
 				if (pThumbnailData != nullptr)
 				{
 					pThumbnailData->InitLoadState();
-                    pThumbnailData->SetBitmap(defaultPicture);
                     pThumbnailData->SetIsDefault(true);
 					wxString filename = pThumbnailData->GetFilename();
 					pThumbnailData->SetIsProcess(false);

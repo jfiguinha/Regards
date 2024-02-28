@@ -84,7 +84,7 @@ bool CThumbnailDataSQL::TestBitmap()
 	return sqlThumbnail.TestThumbnail(filename.Clone(), sizeFile.ToString());
 }
 
-wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
+cv::Mat CThumbnailDataSQL::GetwxImage(bool& isDefault)
 {
 	if (isAnimation && nbFrame == 0)
 	{
@@ -97,7 +97,7 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 
 	if(!defaultPicture)
     {
-        if (isVideo && generateVideoPlayer && !mouseOn && frameOut.IsOk())
+        if (isVideo && generateVideoPlayer && !mouseOn && !frameOut.empty())
         {
             return frameOut;
         }
@@ -115,7 +115,7 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 	{
 		isDefault = false;
 
-		if (isVideo && videoCaptureCV == nullptr && frameOut.IsOk())
+		if (isVideo && videoCaptureCV == nullptr && !frameOut.empty())
 			return frameOut;
 
 
@@ -143,7 +143,7 @@ wxImage CThumbnailDataSQL::GetwxImage(bool& isDefault)
 					int w = cvImg.cols;
 					int h = cvImg.rows;
 					cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-					frameOut = wxImage(w, h, cvImg.data, true);
+					frameOut = cvImg;//wxImage(w, h, cvImg.data, true);
 				}
 			}
 
