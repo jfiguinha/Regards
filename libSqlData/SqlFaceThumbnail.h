@@ -24,7 +24,7 @@ public:
 		return numFace;
 	}
 
-	cv::Mat GetwxImage(bool& isDefault) override;
+	cv::Mat GetImage(bool& isDefault) override;
 
 private:
 	bool TestBitmap() override;

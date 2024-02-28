@@ -84,7 +84,7 @@ bool CThumbnailDataSQL::TestBitmap()
 	return sqlThumbnail.TestThumbnail(filename.Clone(), sizeFile.ToString());
 }
 
-cv::Mat CThumbnailDataSQL::GetwxImage(bool& isDefault)
+cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 {
 	if (isAnimation && nbFrame == 0)
 	{

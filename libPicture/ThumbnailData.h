@@ -47,7 +47,7 @@ public:
 	{
 	};
 
-	virtual cv::Mat GetwxImage(bool& isDefault)
+	virtual cv::Mat GetImage(bool& isDefault)
 	{
 		isDefault = true;
 		return GetDefaultPicture();

@@ -789,7 +789,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	if (forceRedraw)
 		redraw = true;
         
-    cv::Mat mat = pThumbnailData->GetwxImage(photoDefault);
+    cv::Mat mat = pThumbnailData->GetImage(photoDefault);
 
 	if (!photoDefault)
 	{

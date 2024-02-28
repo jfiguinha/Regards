@@ -13,7 +13,7 @@ CSqlFaceThumbnail::~CSqlFaceThumbnail(void)
 {
 }
 
-cv::Mat CSqlFaceThumbnail::GetwxImage(bool& isDefault)
+cv::Mat CSqlFaceThumbnail::GetImage(bool& isDefault)
 {
 
 	CSqlFacePhoto sqlThumbnail;

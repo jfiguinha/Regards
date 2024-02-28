@@ -32,7 +32,7 @@ void CThumbnailDataStorage::RemoveBitmap()
 {
 }
 
-cv::Mat CThumbnailDataStorage::GetwxImage(bool& isDefault)
+cv::Mat CThumbnailDataStorage::GetImage(bool& isDefault)
 {
     if(isDefault)
         return GetDefaultPicture();

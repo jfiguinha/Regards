@@ -31,7 +31,7 @@ public:
 	void SetMouseOn();
 	void SetMouseOut();
 
-	cv::Mat GetwxImage(bool& isDefault) override;
+	cv::Mat GetImage(bool& isDefault) override;
 	int GetNbFrame() override;
 
 private:
