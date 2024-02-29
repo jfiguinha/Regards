@@ -15,9 +15,9 @@ public:
 
 	void RemoveBitmap() override;
 	void SetBitmap(cv::Mat bitmap) override;
-	cv::Mat GetImage(bool& default) override;
+	cv::Mat GetImage(bool& defaultValue) override;
     bool GetIsDefault();
-    void SetIsDefault(const bool & default);
+    void SetIsDefault(const bool & defaultValue);
 
 private:
 	bool TestBitmap() override;
