@@ -122,7 +122,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
 		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, widthInfosWindow, left, libelle, "PanelPhotoSearch",
-		                        true, PHOTOSEEARCHPANEL, true, true);
+		                        true, PHOTOSEEARCHPANEL, false, true);
 	}
 
 
