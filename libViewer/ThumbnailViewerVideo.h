@@ -13,13 +13,9 @@ namespace Regards::Viewer
 
 		wxString GetFilename()
 		{
-			return filename;
+			return videoFilename;
 		}
 
-		void SetFilename(const wxString& filename)
-		{
-			this->filename = filename;
-		}
 
 		int GetHeight() override
 		{
@@ -28,6 +24,6 @@ namespace Regards::Viewer
 
 	private:
 		void OnPictureClick(CThumbnailData* data) override;
-		wxString filename;
+		
 	};
 }

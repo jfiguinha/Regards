@@ -8,7 +8,7 @@ CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, co
                                              const bool& testValidity)
 	: CThumbnailVideo(parent, id, themeThumbnail, testValidity)
 {
-	filename = L"";
+
 	idWindowToRefresh = THUMBNAILVIDEOWINDOW;
 	moveOnPaint = false;
 }

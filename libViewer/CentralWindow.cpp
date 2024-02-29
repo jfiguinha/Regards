@@ -342,22 +342,25 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 		if (listPicture != nullptr)
 		{
 			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
-			ptFolder->UpdateRenderIcone(threadLoadingBitmap);
+			if (ptFolder->IsShown())
+				ptFolder->Refresh();
 		}
 		if (listFace != nullptr)
 		{
-			CThumbnailFace* thumbFace = listFace->GetThumbnailFace();
-			if (thumbFace != nullptr)
-				thumbFace->UpdateRenderIcone(threadLoadingBitmap);
+			CThumbnailFace* ptListFace = listFace->GetThumbnailFace();
+			if (ptListFace->IsShown())
+				ptListFace->Refresh();
 		}
 		if (thumbnailPicture != nullptr)
 		{
-			thumbnailPicture->UpdateRenderIcone(threadLoadingBitmap);
+			if (thumbnailPicture->IsShown())
+				thumbnailPicture->Refresh();
 		}
 		if (thumbnailVideo != nullptr)
 		{
-			thumbnailVideo->UpdateRenderIcone(threadLoadingBitmap);
 			thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
+			if (thumbnailVideo->IsShown())
+				thumbnailVideo->Refresh();
 		}
 	}
 	else
@@ -367,14 +370,9 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 		case THUMBNAILVIDEOWINDOW:
 			if (thumbnailVideo != nullptr)
 			{
-				if (type == 1)
-				{
-					auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
-					wxQueueEvent(thumbnailVideo, event);
-				}
-
-				//if (thumbnailVideo->IsShown())
-				//	thumbnailVideo->Refresh();
+				thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
+				if (thumbnailVideo->IsShown())
+					thumbnailVideo->Refresh();
 			}
 			break;
 
@@ -399,6 +397,15 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 			{
 				if (thumbnailPicture->IsShown())
 					thumbnailPicture->Refresh();
+
+				if (thumbnailVideo->GetFilename() == threadLoadingBitmap->filename)
+				{
+
+					thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
+					if (thumbnailVideo->IsShown())
+						thumbnailVideo->Refresh();
+				}
+
 			}
 			break;
 		}
@@ -1804,12 +1811,8 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	oldFilename = L"";
 	int iFormat = libPicture.TestImageFormat(filename);
 	nbThumbnail = libPicture.GetNbImage(filename);
-	//if (thumbnailVideo->GetFilename() != filename)
-	//{
-		thumbnailVideo->SetFilename(filename);
-		if (nbThumbnail > 0)
-			thumbnailVideo->SetFile(filename, nbThumbnail);
-	//}
+	if (nbThumbnail > 0)
+		thumbnailVideo->SetFile(filename, nbThumbnail);
 
 	if (videoThumbnail.size() > 0)
 	{
