@@ -46,9 +46,6 @@
     <ClCompile Include="ThumbnailVertical.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailVerticalListFile.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailVideo.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
@@ -175,9 +172,6 @@
       <Filter>Thumbnail\header</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVertical.h">
-      <Filter>Thumbnail\header</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailVerticalListFile.h">
       <Filter>Thumbnail\header</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVideo.h">

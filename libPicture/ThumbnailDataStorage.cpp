@@ -18,9 +18,9 @@ bool CThumbnailDataStorage::GetIsDefault()
     return isDefault;
 }
 
-void CThumbnailDataStorage::SetIsDefault(const bool &isDefault)
+void CThumbnailDataStorage::SetIsDefault(const bool & default)
 {
-    this->isDefault = isDefault;
+    this->isDefault = default;
 }
 
 bool CThumbnailDataStorage::TestBitmap()
@@ -32,18 +32,18 @@ void CThumbnailDataStorage::RemoveBitmap()
 {
 }
 
-cv::Mat CThumbnailDataStorage::GetImage(bool& isDefault)
+cv::Mat CThumbnailDataStorage::GetImage(bool& default)
 {
     if(isDefault)
         return GetDefaultPicture();
     
 	if (TestBitmap())
 	{
-		isDefault = false;
+		default = false;
 		return localbitmap;
 	}
 	else
-		isDefault = true;
+		default = true;
 	return GetDefaultPicture();
 }
 
