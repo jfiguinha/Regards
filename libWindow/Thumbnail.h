@@ -143,10 +143,8 @@ namespace Regards::Window
 		void RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur);
 		void OnAnimation(wxTimerEvent& event);
 		void OnRefreshIconeSelect(wxTimerEvent& event);
-		void OnTimerCleanMemory(wxTimerEvent& event);
 		void OnRefreshIconeActif(wxTimerEvent& event);
 		void OnTimerClick(wxTimerEvent& event);
-		void OnTimerRefreshThumbnail(wxTimerEvent& event);
 		void OnTimerMove(wxTimerEvent& event);
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
@@ -205,7 +203,7 @@ namespace Regards::Window
 		vector<int> TabSize;
 		int Max;
 
-		wxTimer* refreshThumbnail;
+
 		wxTimer* refreshMouseMove;
 		wxTimer* refreshActifTimer;
 		wxTimer* refreshSelectTimer;
@@ -262,6 +260,7 @@ namespace Regards::Window
 		std::mutex muEraseList;
 		std::vector<CListToClean *> listToErrase;
 		std::vector<CIcone *> pIconeList;
+		wxWindowID localid;
 		
 	};
 }

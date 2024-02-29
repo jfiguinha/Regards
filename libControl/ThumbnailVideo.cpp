@@ -345,25 +345,22 @@ void CThumbnailVideo::UpdateVideoThumbnail()
 					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData()); 
                     if (thumbnailData != nullptr) 
                     {
-                        if(thumbnailData->GetIsDefault())
-                        {
-                            auto thumbnail = new CImageVideoThumbnail();
-                            sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
-                            thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
+                        auto thumbnail = new CImageVideoThumbnail();
+                        sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
+                        thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
                             
-                            if (!thumbnail->image.empty())
-                            {
-                                thumbnailData->SetIsDefault(false);
-                                thumbnailData->SetBitmap(thumbnail->image);
-                            }
+                        if (!thumbnail->image.empty())
+                        {
+                            thumbnailData->SetIsDefault(false);
+                            thumbnailData->SetBitmap(thumbnail->image);
+                        }
                                 
                             
-                            thumbnailData->SetTimePosition(thumbnail->timePosition);
+                        thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-                            if (thumbnail != nullptr)
-                                delete thumbnail;       
-                        }                     
-                    }
+                        if (thumbnail != nullptr)
+                            delete thumbnail;       
+                    }                     
                 }
 			}
 		}
@@ -435,6 +432,7 @@ void CThumbnailVideo::EraseThumbnail(long value)
 		wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
 		evt.SetClientData(localName);
 		evt.SetInt(1);
+		evt.SetExtraLong(localid);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 

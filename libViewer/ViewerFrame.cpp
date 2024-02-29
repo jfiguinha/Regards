@@ -1059,15 +1059,6 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 			wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
 			mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
-
-#ifndef __NOFACE_DETECTION__
-		auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
-		if (listFace != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-			listFace->GetEventHandler()->AddPendingEvent(evt);
-		}
-#endif
 	}
 }
 

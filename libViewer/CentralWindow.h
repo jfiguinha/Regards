@@ -120,7 +120,7 @@ namespace Regards
 
 			bool GetProcessEnd() override;
 
-			void RefreshThumbnail(int type);
+			//void RefreshThumbnail(int type, int longWindow);
 
 			void StartLoadingPicture();
 			void OnVideoEnd(wxCommandEvent& event);

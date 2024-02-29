@@ -367,6 +367,7 @@ void CThumbnail::ZoomPosition(const int& position)
 CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail, const bool& testValidity)
 	: CWindowMain("CThumbnail", parent, id)
 {
+	localid = id;
 	controlWidth = 0;
 	controlHeight = 0;
 	isMoving = 0;
@@ -415,9 +416,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	timeClick = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerClick), nullptr, this);
 
-	refreshThumbnail = new wxTimer(this, TIMER_REFRESH_THUMBNAIL);
-	Connect(TIMER_REFRESH_THUMBNAIL, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerRefreshThumbnail), nullptr, this);
-
 	refreshActifTimer = new wxTimer(this, TIMER_REFRESH_ACTIF);
 	Connect(TIMER_REFRESH_ACTIF, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIconeActif), nullptr, this);
 
@@ -460,24 +458,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	refreshSelectTimer->Start(timeSelect, TRUE);
 }
 
-
-void CThumbnail::OnTimerRefreshThumbnail(wxTimerEvent & event)
-{
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = this->GetWidth();
-	rc.height = this->GetHeight();
-	this->Refresh();
-
-	wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	if (window != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	
-}
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
 {
@@ -899,11 +879,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	if (needToRefresh)
 	{
-		
-		if(this->IsShown())
-			if(!refreshThumbnail->IsRunning())
-				refreshThumbnail->StartOnce(50);
-
+		this->Refresh();
 		needToRefresh = false;
 	}
 
@@ -1103,6 +1079,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
 							evt.SetClientData(localName);
 							evt.SetInt(0);
+							evt.SetExtraLong(localid);
 							window->GetEventHandler()->AddPendingEvent(evt);
 						}
 						pThumbnailData->SetIsProcess(true);

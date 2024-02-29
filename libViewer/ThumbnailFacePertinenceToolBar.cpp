@@ -117,14 +117,6 @@ void CThumbnailFacePertinenceToolBar::OnChangeValue()
 		viewerParam->SetPertinenceValue(slide->GetPositionValue());
 	}
 
-#ifndef __NOFACE_DETECTION__
-	auto listFace = static_cast<CListFace*>(this->FindWindowById(LISTFACEID));
-	if (listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-#endif
 	wxWindow* mainWindow = this->FindWindowById(LISTFACEID);
 	if (mainWindow != nullptr)
 	{
@@ -135,15 +127,6 @@ void CThumbnailFacePertinenceToolBar::OnChangeValue()
 
 void CThumbnailFacePertinenceToolBar::ZoomPos(const int& position)
 {
-	/*
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if (listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMPOSITION);
-		evt.SetExtraLong(position);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
 	OnChangeValue();
 }
 

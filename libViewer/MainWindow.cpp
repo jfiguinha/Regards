@@ -1154,7 +1154,7 @@ void CMainWindow::ProcessThumbnail()
 		std::map<wxString, bool>::iterator it = listFile.find(path);
 		if (it == listFile.end())
 		{
-			ProcessThumbnail(path, 0);
+			ProcessThumbnail(path, 0, 0);
 			listFile[path] = true;
 		}
 
@@ -1214,9 +1214,10 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
 	int type = event.GetInt();
+	int longWindow = event.GetExtraLong();
 	if (type == 1)
 	{
-		ProcessThumbnail(localName, type);
+		ProcessThumbnail(localName, type, longWindow);
 	}
 	else
 	{
@@ -1227,7 +1228,7 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 			if (itPhoto != photoList.end())
 				photoList.erase(itPhoto);
 
-			ProcessThumbnail(localName, type);
+			ProcessThumbnail(localName, type, longWindow);
 			listFile[localName] = true;
 		}
 	}
@@ -1236,7 +1237,7 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 
 }
 
-void CMainWindow::ProcessThumbnail(wxString filename, int type)
+void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 {
 	if (filename != "")
 	{
@@ -1244,6 +1245,7 @@ void CMainWindow::ProcessThumbnail(wxString filename, int type)
 		auto pLoadBitmap = new CThreadLoadingBitmap();
 		pLoadBitmap->filename = filename;
 		pLoadBitmap->window = this;
+		pLoadBitmap->longWindow = longWindow;
 		pLoadBitmap->type = type;
 		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
 	}

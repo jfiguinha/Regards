@@ -109,6 +109,7 @@ void CToolbarViewerMode::DisableAll()
 	viewermode->SetPush(false);
 	explorermode->SetPush(false);
 	picturemode->SetPush(false);
+	imageNewVersion->SetPush(false);
 }
 
 void CToolbarViewerMode::SetFaceWindowPush()

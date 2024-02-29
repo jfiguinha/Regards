@@ -30,6 +30,7 @@ public:
 	wxString filename;
 	int typeElement;
 	int type;
+	long longWindow;
 	int photoId;
 	int timePosition;
 	bool isAnimationOrVideo = false;

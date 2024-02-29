@@ -256,7 +256,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_STOPDIAPORAMA, wxCommandEventHandler(CCentralWindow::StopDiaporama));
 	Connect(wxEVENT_STARTDIAPORAMA, wxCommandEventHandler(CCentralWindow::StartDiaporama));
 
-	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CCentralWindow::OnRefreshThumbnail));
+
 	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CCentralWindow::UpdateThumbnailIcone));
 
 	Connect(wxEVENT_ICONESIZEREFRESH, wxCommandEventHandler(CCentralWindow::UpdateThumbnailIconeSize));
@@ -275,68 +275,137 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
 }
 
-void CCentralWindow::RefreshThumbnail(int type)
+/*
+void CCentralWindow::RefreshThumbnail(int type, int longWindow)
 {
-	if (listPicture != nullptr)
+	switch (longWindow)
 	{
-		CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
-		if (ptFolder->IsShown())
-			ptFolder->Refresh();
-	}
-	if (listFace != nullptr)
-	{
-		CThumbnailFace * ptListFace = listFace->GetThumbnailFace();
-		if (ptListFace->IsShown())
-			ptListFace->Refresh();
-	}
-	if (thumbnailPicture != nullptr)
-	{
-		if (thumbnailPicture->IsShown())
-			thumbnailPicture->Refresh();
-	}
-	if (thumbnailVideo != nullptr)
-	{
-		if (type == 1)
+	case THUMBNAILVIDEOWINDOW:
+		if (thumbnailVideo != nullptr)
 		{
-			auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
-			wxQueueEvent(thumbnailVideo, event);
-		}
+			if (type == 1)
+			{
+				auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
+				wxQueueEvent(thumbnailVideo, event);
+			}
 
-		if (thumbnailVideo->IsShown())
-			thumbnailVideo->Refresh();
-	}
+			if (thumbnailVideo->IsShown())
+				thumbnailVideo->Refresh();
+		}
+		break;
+
+	case LISTPICTUREID:
+		if (listPicture != nullptr)
+		{
+			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+			if (ptFolder->IsShown())
+				ptFolder->Refresh();
+		}
+		break;
+	case LISTFACEID:
+		if (listFace != nullptr)
+		{
+			CThumbnailFace* ptListFace = listFace->GetThumbnailFace();
+			if (ptListFace->IsShown())
+				ptListFace->Refresh();
+		}
+		break;
+	case THUMBNAILVIEWERPICTURE:
+		if (listPicture != nullptr)
+		{
+			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+			if (ptFolder->IsShown())
+				ptFolder->Refresh();
+		}
+		break;
+	}	
 }
+
 
 void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
 {
-	RefreshThumbnail(event.GetInt());
+	RefreshThumbnail(event.GetInt(), event.GetExtraLong());
 }
+*/
 
 void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
+
 	CThreadLoadingBitmap* threadLoadingBitmap = (CThreadLoadingBitmap*)event.GetClientData();
-	if (listPicture != nullptr)
+	if (threadLoadingBitmap == nullptr)
+		return;
+
+	int type = threadLoadingBitmap->type;
+	long longWindow = threadLoadingBitmap->longWindow;
+	if (longWindow == 0)
 	{
-		CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
-		ptFolder->UpdateRenderIcone(threadLoadingBitmap);
+		if (listPicture != nullptr)
+		{
+			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+			ptFolder->UpdateRenderIcone(threadLoadingBitmap);
+		}
+		if (listFace != nullptr)
+		{
+			CThumbnailFace* thumbFace = listFace->GetThumbnailFace();
+			if (thumbFace != nullptr)
+				thumbFace->UpdateRenderIcone(threadLoadingBitmap);
+		}
+		if (thumbnailPicture != nullptr)
+		{
+			thumbnailPicture->UpdateRenderIcone(threadLoadingBitmap);
+		}
+		if (thumbnailVideo != nullptr)
+		{
+			thumbnailVideo->UpdateRenderIcone(threadLoadingBitmap);
+			thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
+		}
 	}
-	if (listFace != nullptr)
+	else
 	{
-		CThumbnailFace * thumbFace = listFace->GetThumbnailFace();
-		if(thumbFace != nullptr)
-			thumbFace->UpdateRenderIcone(threadLoadingBitmap);
-	}
-	if (thumbnailPicture != nullptr)
-	{
-		thumbnailPicture->UpdateRenderIcone(threadLoadingBitmap);
-	}
-	if (thumbnailVideo != nullptr)
-	{
-		thumbnailVideo->UpdateRenderIcone(threadLoadingBitmap);
-		thumbnailVideo->UpdateVideoThumbnail(threadLoadingBitmap->filename);
+		switch (longWindow)
+		{
+		case THUMBNAILVIDEOWINDOW:
+			if (thumbnailVideo != nullptr)
+			{
+				if (type == 1)
+				{
+					auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
+					wxQueueEvent(thumbnailVideo, event);
+				}
+
+				//if (thumbnailVideo->IsShown())
+				//	thumbnailVideo->Refresh();
+			}
+			break;
+
+		case LISTPICTUREID:
+			if (listPicture != nullptr)
+			{
+				CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
+				if (ptFolder->IsShown())
+					ptFolder->Refresh();
+			}
+			break;
+		case LISTFACEID:
+			if (listFace != nullptr)
+			{
+				CThumbnailFace* ptListFace = listFace->GetThumbnailFace();
+				if (ptListFace->IsShown())
+					ptListFace->Refresh();
+			}
+			break;
+		case THUMBNAILVIEWERPICTURE:
+			if (thumbnailPicture != nullptr)
+			{
+				if (thumbnailPicture->IsShown())
+					thumbnailPicture->Refresh();
+			}
+			break;
+		}
 	}
 
-	RefreshThumbnail(threadLoadingBitmap->type);
+
+	//RefreshThumbnail(threadLoadingBitmap->type, event.GetExtraLong());
 
 	delete threadLoadingBitmap;
 }
