@@ -30,7 +30,8 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 	wxString viewermode_label = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1); //L"Criteria";
 	wxString explorermode_label = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1); //L"Criteria";
 	wxString picturemode_label = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1); //L"Criteria";
-
+    wxString lblNewVersion = CLibResource::LoadStringFromResource(L"LBLUPDATE", 1);
+    
 	int height = this->themeToolbar.GetHeight();
 	int faceDetection = 1;
 
@@ -63,6 +64,12 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 	picturemode->SetLibelle(picturemode_label);
 	navElement.push_back(picturemode);
     
+    imageNewVersion = new CToolbarTexte(themeToolbar.texte);
+	imageNewVersion->SetLibelle(lblNewVersion);
+	imageNewVersion->SetVisible(false);
+	imageNewVersion->SetCommandId(IDM_NEWVERSION);
+	navElement.push_back(imageNewVersion);
+    
     if (!faceDetection && windowMode == WINDOW_FACE)
     {
         windowMode = WINDOW_VIEWER;
@@ -87,6 +94,12 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 
 CToolbarViewerMode::~CToolbarViewerMode()
 {
+}
+
+void CToolbarViewerMode::SetUpdateVisible(const bool& isVisible)
+{
+	imageNewVersion->SetVisible(isVisible);
+	this->Refresh();
 }
 
 void CToolbarViewerMode::DisableAll()

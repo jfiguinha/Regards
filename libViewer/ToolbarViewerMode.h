@@ -17,7 +17,8 @@ namespace Regards::Viewer
 		void SetViewerWindowPush();
 		void SetExplorerWindowPush();
 		void SetPictureWindowPush();
-
+        void SetUpdateVisible(const bool& isVisible);
+        
 	private:
 
 		void EventManager(const int& id) override;
@@ -27,5 +28,6 @@ namespace Regards::Viewer
 		CToolbarTexte* viewermode = nullptr;
 		CToolbarTexte* explorermode = nullptr;
 		CToolbarTexte* picturemode = nullptr;
+        CToolbarTexte* imageNewVersion = nullptr;
 	};
 }

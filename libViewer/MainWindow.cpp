@@ -46,6 +46,8 @@
 #include "md5check.h"
 #include <ImageVideoThumbnail.h>
 #include <ThreadLoadingBitmap.h>
+#include "window_mode_id.h"
+#include <wx/mimetype.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -254,16 +256,16 @@ void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 {
 	cout << "OnVersionUpdate" << endl;
 
-    /*
+
 	int hasUpdate = event.GetInt();
 	if (hasUpdate)
 	{
-		if (toolbar != nullptr)
-			toolbar->SetUpdateVisible(true);
+		if (toolbarViewerMode != nullptr)
+			toolbarViewerMode->SetUpdateVisible(true);
 
 		
 	}
-    */
+
     
 	if (versionUpdate != nullptr)
 	{
@@ -349,6 +351,16 @@ void CMainWindow::ClickShowButton(const int& id, const int& refresh)
 			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 			event.SetInt(4);
 			wxPostEvent(central, event);
+		}
+		break;
+        
+		case IDM_NEWVERSION:
+		{
+			wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
+			wxMimeTypesManager manager;
+			wxFileType* filetype = manager.GetFileTypeFromExtension("html");
+			wxString command = filetype->GetOpenCommand(siteweb);
+			wxExecute(command);
 		}
 		break;
 
