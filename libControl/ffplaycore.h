@@ -75,6 +75,7 @@ public:
 	wxString Getfilename();
 
 private:
+    void ReadQuitEvent(wxCommandEvent& event);
 	void StopEvent(wxCommandEvent& event);
 	void ExitEvent(wxCommandEvent& event);
 	void RefreshEvent(wxCommandEvent& event);
