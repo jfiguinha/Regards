@@ -10,7 +10,6 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	_pimpl = nullptr;
 	Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
 	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
-	Connect(FF_STOP_EVENT, wxCommandEventHandler(CFFmfc::StopEvent));
 	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
 	Connect(FF_PLAY_EVENT, wxCommandEventHandler(CFFmfc::PlayEvent));
@@ -217,12 +216,6 @@ void CFFmfc::ExitEvent(wxCommandEvent& event)
 void CFFmfc::QuitEvent(wxCommandEvent& event)
 {
 	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
-	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-}
-
-void CFFmfc::StopEvent(wxCommandEvent& event)
-{
-	wxCommandEvent evt(wxEVENT_STOPVIDEO);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 

@@ -116,7 +116,6 @@ vector<int> CVideoControlSoft::GetListCommand()
 	list.push_back(wxEVENT_UPDATEPOSMOVIETIME);
 	list.push_back(wxEVENT_SCROLLMOVE);
 	list.push_back(wxEVENT_ENDVIDEOTHREAD);
-	list.push_back(wxEVENT_STOPVIDEO);
 	list.push_back(EVENT_VIDEOSTART);
 	list.push_back(wxEVENT_LEFTPOSITION);
 	list.push_back(wxEVENT_TOPPOSITION);
@@ -166,9 +165,6 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 	case wxEVENT_ENDVIDEOTHREAD:
 		EndVideoThread(event);
 		break;
-	case wxEVENT_STOPVIDEO:
-		StopVideoThread(event);
-		break;
 	case EVENT_VIDEOSTART:
 		VideoStart(event);
 		break;
@@ -205,7 +201,6 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 
 	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
 	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
-	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
 	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
 
@@ -379,7 +374,7 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 	long pos = event.GetExtraLong();
 	if (videoPosition == pos)
 		return;
-	if (stopVideo)
+	if (videoEnd)
 		OnPlay();
 	videoPosition = pos;
 
@@ -833,18 +828,11 @@ CEffectParameter* CVideoControlSoft::GetParameter()
 
 bool CVideoControlSoft::GetProcessEnd()
 {
-	if (!videoEnd)
+	if (!videoEnd && !processVideoEnd)
 	{
-		if (stopVideo && !processVideoEnd)
-		{
-			if (!videoEnd)
-			{
-				ffmfc->Quit();
-				processVideoEnd = true;
-			}
-		}
+		ffmfc->Quit();
+		processVideoEnd = true;
 	}
-
 
 	return videoEnd;
 }
@@ -918,8 +906,6 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 	if (!endProgram)
 	{
 		videoEnd = true;
-		//if (videoRenderStart)
-		//{
 		if (eventPlayer != nullptr)
 		{
 			eventPlayer->OnPositionVideo(0);
@@ -927,64 +913,20 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		}
 		fpsTimer->Stop();
 		videoRenderStart = false;
-		stopVideo = true;
-		//}
+
 	}
 	else
 	{
 		fpsTimer->Stop();
 		videoRenderStart = false;
-		stopVideo = true;
 		videoEnd = true;
 	}
 }
 
-
-void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
-{
-	//OnStop(filename);
-	if (!stopVideo)
-	{
-		//this->OnPause();
-		if (eventPlayer != nullptr)
-		{
-			eventPlayer->OnPositionVideo(0);
-			eventPlayer->OnVideoStop();
-		}
-		fpsTimer->Stop();
-		videoRenderStart = false;
-		stopVideo = true;
-
-
-		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
-		{
-			PlayMovie(filename, true);
-		}
-        
-        if(startVideoAfterProblem)
-        {
-            PlayMovie(filename, true);
-            startVideoAfterProblem = false;
-        }
-	}
-}
-
-
 CVideoControlSoft::~CVideoControlSoft()
 {
-    /*
-	if (_threadVideo != nullptr)
-	{
-		_threadVideo->join();
-		delete _threadVideo;
-	}
-    */
-
 	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
-
-	if (playStopTimer->IsRunning())
-		playStopTimer->Stop();
 
 	if (hq3d != nullptr)
 		delete hq3d;
@@ -1059,57 +1001,59 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 int CVideoControlSoft::Play(const wxString& movie)
 {
-    if (videoEnd || stopVideo)
+    if (videoEnd)
     {
-        //if (thumbnailVideo != nullptr)
-        //    delete thumbnailVideo;
 
-        if (localContext != nullptr)
-            sws_freeContext(localContext);
-        localContext = nullptr;
+        if (movie != filename)
+        {
+            if (localContext != nullptr)
+                sws_freeContext(localContext);
+            localContext = nullptr;
 
-        //thumbnailVideo = new CThumbnailVideo(movie, true);
+            //thumbnailVideo = new CThumbnailVideo(movie, true);
 
-        if (openCVStabilization != nullptr)
-            delete openCVStabilization;
+            if (openCVStabilization != nullptr)
+                delete openCVStabilization;
 
-        openCVStabilization = nullptr;
+            openCVStabilization = nullptr;
 
-        if (playStopTimer->IsRunning())
-            playStopTimer->Stop();
-
-        if (playStartTimer->IsRunning())
-            playStartTimer->Stop();
+            if (playStartTimer->IsRunning())
+                playStartTimer->Stop();
 
 
-		muVideoEffect.lock();
-		videoEffectParameter.ratioSelect = 0;
-		muVideoEffect.unlock();
+            muVideoEffect.lock();
+            videoEffectParameter.ratioSelect = 0;
+            muVideoEffect.unlock();
 
-		AspectRatio aspectRatio = CMediaInfo::GetVideoAspectRatio(movie);
-		if (aspectRatio.den != 0 && aspectRatio.num != 0)
-		{
-			float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
-			printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
-			for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
-			{
-				printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
-				if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
-				{
-					muVideoEffect.lock();
-					videoEffectParameter.ratioSelect = i - 1;
-					muVideoEffect.unlock();
-					break;
-				}
-			}
-		}
+            AspectRatio aspectRatio = CMediaInfo::GetVideoAspectRatio(movie);
+            if (aspectRatio.den != 0 && aspectRatio.num != 0)
+            {
+                float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
+                printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
+                for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
+                {
+                    printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
+                    if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
+                    {
+                        muVideoEffect.lock();
+                        videoEffectParameter.ratioSelect = i - 1;
+                        muVideoEffect.unlock();
+                        break;
+                    }
+                }
+            }  
+            
+            colorRange = CMediaInfo::GetColorRange(movie);
+            colorSpace = CMediaInfo::GetColorSpace(movie);
+            
+            angle = 0;
+            flipV = false;
+            flipH = false;
+        }
+
 
         startVideo = true;
-        stopVideo = false;
         videoStartRender = false;
-        angle = 0;
-        flipV = false;
-        flipH = false;
         videoStart = false;
         newVideo = true;
         initStart = true;
@@ -1117,13 +1061,6 @@ int CVideoControlSoft::Play(const wxString& movie)
         filename = movie;
         standByMovie = "";
         pause = false;
-        firstMovie = true;
-
-        colorRange = CMediaInfo::GetColorRange(movie);
-        colorSpace = CMediaInfo::GetColorSpace(movie);
-
-
-
         firstMovie = false;
         parentRender->Refresh();
     }
@@ -1340,9 +1277,6 @@ void CVideoControlSoft::ErrorDecodingFrame()
         ffmfc->Quit(); 
     }
 
-    //Play(filename);
-    //wxCommandEvent evt(wxEVENT_STOPVIDEO);
-    //parentRender->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -1350,12 +1284,7 @@ void CVideoControlSoft::OnPlay()
 {
 	if (videoStart)
 	{
-		bool _videoEnd = videoEnd;
-		if (!_videoEnd)
-			if (stopVideo)
-				_videoEnd = true;
-
-		if (pause && !_videoEnd)
+		if (pause && !videoEnd)
 		{
 			ffmfc->Pause();
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
@@ -1365,7 +1294,7 @@ void CVideoControlSoft::OnPlay()
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
-		else if (videoEnd || stopVideo)
+		else if (videoEnd)
 		{
 			PlayMovie(filename, true);
 		}
@@ -1393,7 +1322,7 @@ void CVideoControlSoft::QuitMovie()
 		playStartTimer->Stop();
 
 	exit = true;
-	stopVideo = true;
+
 	if (videoStart)
 	{
 		if (!videoEnd)
@@ -1793,7 +1722,7 @@ void CVideoControlSoft::Resize()
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 
-	if (!stopVideo)
+	if (!videoEnd)
 	{
 		updateContext = true;
 

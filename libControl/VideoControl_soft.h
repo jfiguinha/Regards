@@ -176,7 +176,6 @@ protected:
 	void TestMaxY();
 	void RenderFFmpegToTexture(cv::Mat& source);
 
-	void StopVideoThread(wxCommandEvent& event);
 	float CalculRatio(const int& pictureWidth, const int& pictureHeight);
 	void SetSoundVolume(const int& soundVolume);
 	int GetSoundVolume();
@@ -207,7 +206,7 @@ protected:
 	CRegardsConfigParam* config;
 	bool newVideo;
 	bool videoEnd;
-	bool stopVideo;
+
 	bool isDiaporama = false;
 	bool exit;
 	bool quitWindow;
@@ -277,7 +276,6 @@ protected:
 	int oldheightDenoise = 0;
 	bool isInit = false;
 	bool firstMovie = true;
-	wxTimer* playStopTimer;
 	
 	bool needToRefresh = false;
 	std::mutex muRefresh;
