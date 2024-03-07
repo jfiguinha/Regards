@@ -13,6 +13,7 @@ using namespace Regards::Sqlite;
 #include <LoadingResource.h>
 #include <ConvertUtility.h>
 #include <OpenCVVideoPlayer.h>
+#include <VideoPlayer.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
@@ -35,7 +36,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 		{
 			nbFrame = 20;
             this->generateVideoPlayer = true;
-            videoCaptureCV = new COpenCVVideoPlayer(filename);
+            videoCaptureCV = nullptr; 
 		}
 		else
 		{
@@ -53,6 +54,8 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 {
 	if (videoCaptureCV != nullptr)
 		delete videoCaptureCV;
+        
+    printf("CThumbnailDataSQL delete \n");
 }
 
 int CThumbnailDataSQL::GetNbFrame()
@@ -86,9 +89,11 @@ bool CThumbnailDataSQL::TestBitmap()
 
 cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 {
+    CSqlThumbnailVideo sqlThumbnailVideo;
+    CSqlThumbnail sqlThumbnail;
+    
 	if (isAnimation && nbFrame == 0)
 	{
-		CSqlThumbnailVideo sqlThumbnailVideo;
 		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 	}
 
@@ -105,7 +110,7 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 
 	if (!isVideo && numFrame == 0 && nbFrame == 0)
 	{
-		CSqlThumbnail sqlThumbnail;
+		
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename.Clone(), isDefault);
 		if (isDefault)
@@ -114,6 +119,13 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	else if (isVideo && generateVideoPlayer)
 	{
 		isDefault = false;
+        if(videoCaptureCV == nullptr)
+        {
+            if(useOpenCV)
+                videoCaptureCV = new COpenCVVideoPlayer(filename);
+            else
+                videoCaptureCV = new CVideoPlayer(filename);
+        }
 
 		if (isVideo && videoCaptureCV == nullptr && !frameOut.empty())
 			return frameOut;
@@ -143,14 +155,13 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 
 			if (!grabbed)
 			{
-				CSqlThumbnailVideo sqlThumbnailVideo;
+				
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
 			}
 		}
 	}
     else if(isVideo && !generateVideoPlayer)
     {
-        CSqlThumbnailVideo sqlThumbnailVideo;
         frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
         if (isDefault)
         {
@@ -159,7 +170,6 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
     }
 	else if (isAnimation)
 	{
-		CSqlThumbnailVideo sqlThumbnailVideo;
 		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
 		if (isDefault)
 		{

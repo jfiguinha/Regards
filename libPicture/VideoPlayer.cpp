@@ -62,7 +62,6 @@ public:
 	int video_stream, ret;
 
 	AVCodecContext* decoder_ctx = nullptr;
-	//AVCodec* decoder = nullptr;
 	AVPacket* packet = nullptr;
 	SwsContext* localContext = nullptr;
 	AVFormatContext* input_ctx = nullptr;
@@ -120,9 +119,7 @@ public:
 		av_packet_free(&packet);
 		avcodec_free_context(&decoder_ctx);
 		avformat_close_input(&input_ctx);
-		if (localContext != nullptr)
-			sws_freeContext(localContext);
-		localContext = nullptr;
+		sws_freeContext(localContext);
 	}
 
 
@@ -150,8 +147,9 @@ public:
 			ret = avcodec_receive_frame(avctx, frame);
 			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 			{
-				av_frame_free(&frame);
-				return 0;
+                av_frame_unref(frame);
+                av_frame_free(&frame);
+                return 0;
 			}
 			if (ret < 0)
 			{
@@ -163,15 +161,19 @@ public:
 			decode_video = true;
 
 		fail:
+            av_frame_unref(frame);
 			av_frame_free(&frame);
 			if (ret < 0)
 				return ret;
 		}
+        
+        return ret;
 	}
 
 
 	void GetBitmapRGBA(AVFrame* tmp_frame)
 	{
+
 		if (localContext == nullptr)
 		{
 			localContext = sws_alloc_context();
@@ -197,6 +199,7 @@ public:
 
 		sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
 		          &convertedFrameBuffer, &linesize);
+
 	}
 
 	bool isOpened()

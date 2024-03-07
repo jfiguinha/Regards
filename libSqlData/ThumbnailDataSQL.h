@@ -7,7 +7,7 @@ namespace Regards
 {
 	namespace Video
 	{
-		class COpenCVVideoPlayer;
+		class IVideoPlayer;
 	}
 }
 
@@ -46,5 +46,7 @@ private:
 	int videoFramePos = 0;
 	bool mouseOn = false;
     bool generateVideoPlayer = false;
-	Regards::Video::COpenCVVideoPlayer* videoCaptureCV = nullptr;
+    bool useOpenCV = false;
+    Regards::Video::IVideoPlayer * videoCaptureCV = nullptr;
+
 };
