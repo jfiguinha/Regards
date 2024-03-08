@@ -42,10 +42,19 @@ CRegardsConfigParam::CRegardsConfigParam()
 	faceDetection = 0;
 	fastFaceDetection = 1;
 	musicDiaporama = "";
-
+	isThumbnailOpenCV = 1;
 	bufferSize = 100;
 	numSuperResolution = 0;
 	useSuperResolution = 0;
+}
+
+int CRegardsConfigParam::GetThumbnailOpenCV()
+{
+	return isThumbnailOpenCV;
+}
+void CRegardsConfigParam::SetThumbnailOpenCV(const int& isThumbnailOpenCV)
+{
+	this->isThumbnailOpenCV = isThumbnailOpenCV;
 }
 
 int CRegardsConfigParam::GetSkinWindowMode()
@@ -425,6 +434,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("openCLFaceSupport", to_string(openCLFaceSupport)));
 	sectionPosition->append_node(node("useSuperResolution", to_string(useSuperResolution)));
 	sectionPosition->append_node(node("numSuperResolution", to_string(numSuperResolution)));
+	sectionPosition->append_node(node("isThumbnailOpenCV", to_string(isThumbnailOpenCV)));
 }
 
 
@@ -650,6 +660,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		numSuperResolution = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("isThumbnailOpenCV");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		isThumbnailOpenCV = atoi(child_node->value());
 	}
 }
 

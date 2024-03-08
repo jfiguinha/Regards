@@ -29,6 +29,8 @@
 #include <GpsEngine.h>
 #include <wx/filename.h>
 #include <ImageLoadingFormat.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 #include <WindowMain.h>
 #include <config_id.h>
 #include "FolderProcess.h"
@@ -62,7 +64,8 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		checkValidity = config->GetCheckThumbnailValidity();
 		typeAffichage = config->GetTypeAffichage();
 	}
-			
+
+
 
 	if (config != nullptr)
 		config->GetSlideFolderPos(positionTab);

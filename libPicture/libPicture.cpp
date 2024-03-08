@@ -128,6 +128,12 @@ CLibPicture::CLibPicture()
 #ifdef __APPLE__
     readimage = new CReadMacOSImage();
 #endif
+
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		useOpenCVThumb = regardsParam->GetThumbnailOpenCV();
+	}
 }
 
 CLibPicture::~CLibPicture()

@@ -9,6 +9,8 @@ public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam() override;
 
+	int GetThumbnailOpenCV();
+	void SetThumbnailOpenCV(const int& isThumbnailOpenCV);
 
 	int GetBufferSize();
 	void SetBufferSize(const int& value);
@@ -201,4 +203,5 @@ protected:
 
 	wxString musicDiaporama;
 	int bufferSize;
+	int isThumbnailOpenCV = 1;
 };

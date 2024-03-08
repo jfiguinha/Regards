@@ -12,6 +12,8 @@ using namespace Regards::Sqlite;
 #include <opencv2/videoio.hpp>
 #include <LoadingResource.h>
 #include <ConvertUtility.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 #include <OpenCVVideoPlayer.h>
 #include <VideoPlayer.h>
 using namespace Regards::Video;
@@ -46,6 +48,12 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 			CSqlThumbnailVideo sqlThumbnailVideo;
 			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
+	}
+
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		useOpenCV = regardsParam->GetThumbnailOpenCV();
 	}
 
 }
