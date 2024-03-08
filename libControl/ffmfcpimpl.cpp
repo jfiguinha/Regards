@@ -9,7 +9,6 @@
 #include <RGBAQuad.h>
 using namespace std;
 
-
 #ifdef WIN32
 wxString listHardware[] = {"cuda", "qsv", "d3d11va", "dxva2", "opencl"};
 int sizeList = 5;
@@ -163,7 +162,7 @@ void CFFmfcPimpl::packet_queue_flush(PacketQueue* q)
 void CFFmfcPimpl::packet_queue_destroy(PacketQueue* q)
 {
 	packet_queue_flush(q);
-    av_fifo_freep(&q->pkt_list);
+	av_fifo_freep(&q->pkt_list);
 	SDL_DestroyMutex(q->mutex);
 	SDL_DestroyCond(q->cond);
 }
@@ -285,7 +284,7 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 
 	av_free(is);
 
-    printf("stream_close FF_QUIT_EVENT \n");
+
 	wxCommandEvent evt(FF_QUIT_EVENT);
 	parent->GetEventHandler()->AddPendingEvent(evt);
 
@@ -298,27 +297,25 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 //ÍË³ö
 void CFFmfcPimpl::do_exit(VideoState* is)
 {
-    if(exit_remark == 0)
-    {
-        exit_remark = 1;
-        if (is)
-        {
-            stream_close(is);
-        }
+	if (exit_remark == 0)
+	{
+		exit_remark = 1;
+		if (is)
+		{
+			stream_close(is);
+		}
 
-        uninit_opts();
-        //avformat_network_deinit();
-        if (show_status)
-            printf("\n");
-        
-        av_freep(&video_codec_name);
-        av_freep(&audio_codec_name);
-        av_freep(&subtitle_codec_name);
+		uninit_opts();
+		//avformat_network_deinit();
+		if (show_status)
+			printf("\n");
+		av_freep(&video_codec_name);
+		av_freep(&audio_codec_name);
+		av_freep(&subtitle_codec_name);
+		av_log(nullptr, AV_LOG_QUIET, "%s", "");
 
-        av_log(nullptr, AV_LOG_QUIET, "%s", "");      
-        
-        printf("CFFmfcPimpl::do_exit \n");
-    }
+		SDL_CloseAudioDevice(audio_dev);
+	}
 }
 
 /* display the current picture, if any */
@@ -1999,6 +1996,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres)
 			av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
+        
         if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
             if (acceleratorHardware != "" && acceleratorHardware != "none")
@@ -2009,7 +2007,6 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             }
         }
 
-        
 		if (!isSuccess)
 		{
 			isHardwareDecoding = false;
@@ -2654,20 +2651,14 @@ int CFFmfcPimpl::read_thread(void* arg)
 	}
 
 	ret = 0;
-    
-    
 fail:
-
 	if (ic && !is->ic)
 		avformat_close_input(&ic);
 
 	av_packet_free(&pkt);
-	SDL_DestroyMutex(wait_mutex);
-
-    printf("End read_thread FF_READQUIT_EVENT \n");
-	wxCommandEvent evt(FF_READQUIT_EVENT);
+	wxCommandEvent evt(FF_STOP_EVENT);
 	is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
-    
+	SDL_DestroyMutex(wait_mutex);
 	return 0;
 }
 
@@ -2728,17 +2719,11 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	is->read_tid = SDL_CreateThread(read_thread, "read_thread", is);
 	if (!is->read_tid)
 	{
-        
-        printf("CFFmfcPimpl::stream_open \n");
-        
 		av_log(NULL, AV_LOG_FATAL, "SDL_CreateThread(): %s\n", SDL_GetError());
 	fail:
 		stream_close(is);
 		return NULL;
 	}
-    
-    
-    printf("CFFmfcPimpl::stream_open \n");
 	return is;
 }
 

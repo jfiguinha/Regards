@@ -136,12 +136,16 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 			bool grabbed = false;
 			if (mouseOn && isVideo && videoCaptureCV != nullptr)
 			{
-                frameOut = videoCaptureCV->GetVideoFrame(true, true);
+				bool invertRotation = true;
+				if (!useOpenCV)
+					invertRotation = false;
+
+                frameOut = videoCaptureCV->GetVideoFrame(true, invertRotation);
 				if (frameOut.empty())
 				{
 					videoFramePos = 0;
 					videoCaptureCV->SeekToBegin();
-					frameOut = videoCaptureCV->GetVideoFrame(true, true);
+					frameOut = videoCaptureCV->GetVideoFrame(true, invertRotation);
 					grabbed = true;
 				}
 				else

@@ -133,7 +133,6 @@ extern "C" {
 #define FF_EXIT_EVENT FF_QUIT_EVENT + 6
 #define CLOSESTREAM_EVENT FF_QUIT_EVENT + 7
 #define FF_STOP_EVENT FF_QUIT_EVENT + 8
-#define FF_READQUIT_EVENT FF_QUIT_EVENT + 9
 
 //×Ô¶¨ÒåÒ»¸öÊÂ¼þ£¬ÓÃÓÚµ÷Õû²¥·Å½ø¶È
 #define SEEK_BAR_EVENT    (SDL_USEREVENT + 4)

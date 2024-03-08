@@ -46,7 +46,7 @@ private:
 	int videoFramePos = 0;
 	bool mouseOn = false;
     bool generateVideoPlayer = false;
-    bool useOpenCV = true;
+    bool useOpenCV = false;
     Regards::Video::IVideoPlayer * videoCaptureCV = nullptr;
 
 };

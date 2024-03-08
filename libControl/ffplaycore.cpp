@@ -10,7 +10,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	_pimpl = nullptr;
 	Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
 	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
-    Connect(FF_READQUIT_EVENT, wxCommandEventHandler(CFFmfc::ReadQuitEvent));
+	Connect(FF_STOP_EVENT, wxCommandEventHandler(CFFmfc::StopEvent));
 	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
 	Connect(FF_PLAY_EVENT, wxCommandEventHandler(CFFmfc::PlayEvent));
@@ -214,15 +214,15 @@ void CFFmfc::ExitEvent(wxCommandEvent& event)
 	_pimpl->do_exit(cur_stream);
 }
 
-void CFFmfc::ReadQuitEvent(wxCommandEvent& event)
-{
-    printf("CFFmfc::ExitEvent \n");
-	_pimpl->do_exit(cur_stream);
-}
-
 void CFFmfc::QuitEvent(wxCommandEvent& event)
 {
 	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
+	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+}
+
+void CFFmfc::StopEvent(wxCommandEvent& event)
+{
+	wxCommandEvent evt(wxEVENT_STOPVIDEO);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
@@ -278,26 +278,26 @@ void CFFmfc::SetVideoParameter(int angle, int flipV, int flipH)
 //Send Command "Quit"
 bool CFFmfc::Quit()
 {  
-    printf("CFFmfc::Quit \n");
+	printf("CFFmfc::Quit \n");
 	bool isExitNow = false;
-    if(_pimpl->exit_remark == 0)
-    {
-        if (_pimpl->g_is)
-    	{
-    		_pimpl->StopStream();
-    		wxCommandEvent evt(FF_EXIT_EVENT);
-    		evt.SetClientData(cur_stream);
-    		this->GetEventHandler()->AddPendingEvent(evt);       
-    	}
-    	else
-    	{
-    		_pimpl->StopStream();
-    		_pimpl->do_exit(nullptr);
-            isExitNow = true;
-    	}
-    }
-    else
-        return true;
+	if (_pimpl->exit_remark == 0)
+	{
+		if (_pimpl->g_is)
+		{
+			_pimpl->StopStream();
+			wxCommandEvent evt(FF_EXIT_EVENT);
+			evt.SetClientData(cur_stream);
+			this->GetEventHandler()->AddPendingEvent(evt);
+		}
+		else
+		{
+			_pimpl->StopStream();
+			_pimpl->do_exit(nullptr);
+			isExitNow = true;
+		}
+	}
+	else
+		return true;
 	return isExitNow;
 }
 
@@ -472,7 +472,6 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
-   
     printf("CFFmfc::SetFile \n");
     
 	if (_pimpl == nullptr)
