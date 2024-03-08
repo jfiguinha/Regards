@@ -129,11 +129,6 @@ CLibPicture::CLibPicture()
     readimage = new CReadMacOSImage();
 #endif
 
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		useOpenCVThumb = regardsParam->GetThumbnailOpenCV();
-	}
 }
 
 CLibPicture::~CLibPicture()
@@ -1039,7 +1034,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bool isFind = false;
 				int orientation = 0;
 				cv::Mat mat;
-				CVideoThumb* thumbnail = new CVideoThumb(szFileName, useOpenCVThumb);
+				CVideoThumb* thumbnail = new CVideoThumb(szFileName);
 				mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
 				if (mat.empty())
 					mat = CLibPicture::mat_from_wx(defaultPicture);
@@ -1498,7 +1493,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 		case MOV:
 			{
 				bool isFind = false;
-				CVideoThumb* thumbnail = new CVideoThumb(szFileName, useOpenCVThumb);
+				CVideoThumb* thumbnail = new CVideoThumb(szFileName);
 				vector<CImageVideoThumbnail*> listVideo;
 				listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
@@ -2229,7 +2224,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case MOV:
 			{
 				bool isFind = false;
-				CVideoThumb* thumbnail = new CVideoThumb(fileName, useOpenCVThumb);
+				CVideoThumb* thumbnail = new CVideoThumb(fileName);
 				int orientation = 0;
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				cv::Mat mat;

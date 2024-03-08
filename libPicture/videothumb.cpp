@@ -5,6 +5,8 @@
 #include "VideoPlayer.h"
 #include <libPicture.h>
 #include <ConvertUtility.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
@@ -13,13 +15,19 @@ extern wxImage defaultPicture;
 class CVideoThumbPimpl
 {
 public:
-	CVideoThumbPimpl(const wxString& fileName, const bool & useOpenCV)
+	CVideoThumbPimpl(const wxString& fileName)
 	{
-		this->useOpenCV = useOpenCV;
+		this->useOpenCV = false;// useOpenCV;
 		this->filename = fileName;
 		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
-		if(useOpenCV)
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		if (regardsParam != nullptr)
+		{
+			this->useOpenCV = regardsParam->GetThumbnailOpenCV();
+		}
+
+		if(this->useOpenCV)
 			videoThumbnailer = new COpenCVVideoPlayer(filename);
 		else
 			videoThumbnailer = new CVideoPlayer(filename);
@@ -168,11 +176,11 @@ public:
 	bool useOpenCV = false;
 };
 
-CVideoThumb::CVideoThumb(const wxString& fileName, const bool& useOpenCV)
+CVideoThumb::CVideoThumb(const wxString& fileName)
 {
 	
 	this->fileName = fileName;
-	pimpl = new CVideoThumbPimpl(fileName, useOpenCV);
+	pimpl = new CVideoThumbPimpl(fileName);
 }
 
 bool CVideoThumb::isOk()

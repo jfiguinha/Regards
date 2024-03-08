@@ -126,7 +126,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	if (videoOriginal != nullptr)
 		delete videoOriginal;
 
-	videoOriginal = new CVideoThumb(filename, true);
+	videoOriginal = new CVideoThumb(filename);
 	timeTotal = videoOriginal->GetMovieDuration();
 	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
@@ -284,7 +284,7 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CVideoThumb video(fileTemp, true);
+			CVideoThumb video(fileTemp);
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 			if (showPreview->decodeFrame.empty())
 				showPreview->decodeFrame = CLibPicture::mat_from_wx(defaultPicture);
