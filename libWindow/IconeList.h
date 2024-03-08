@@ -21,6 +21,7 @@ namespace Regards::Window
 		void SortById();
 		CIcone* FindElementPhotoId(const int& photoId);
 		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
+		bool FindElement(wxString filename);
 		void SortByFilename();
 	private:
 		IconeVector pIconeList;

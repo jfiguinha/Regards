@@ -141,17 +141,18 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	CIconeList* oldIconeList = iconeList;
 	threadDataProcess = false;
 
-	/*
-	PhotosVector _pictures;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotosByCriteria(&_pictures);
-	*/
-	CIconeList* iconeListLocal = PregenerateList();
-
-	iconeList = iconeListLocal;
-
+	iconeList = PregenerateList();
 
 	nbElementInIconeList = iconeList->GetNbElement();
+
+	for (CIcone* ico : pIconeList)
+	{
+		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
+		wxString filename = thumbnailData->GetFilename();
+		bool find = iconeList->FindElement(filename);
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
 
 	//------------------------------------
 	for (CIcone* ico : pIconeListToClean)
@@ -161,7 +162,7 @@ void CThumbnailViewerPicture::ApplyListeFile()
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetNumPhotoId() == _clean->GetNumPhotoId();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
 
 			});
 
@@ -263,20 +264,9 @@ void CThumbnailViewerPicture::SetListeFile()
     
     for (CIcone* ico : pIconeList)
 	{
-		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
+		bool find = iconeList->FindElement(filename);
 
 		if (!find)
 			pIconeListToClean.push_back(ico);

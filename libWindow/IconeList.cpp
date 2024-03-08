@@ -127,6 +127,23 @@ wxString CIconeList::GetFilename(const int& numElement)
 	return filename;
 }
 
+bool CIconeList::FindElement(wxString filename)
+{
+	IconeVector::iterator it;
+
+	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+		{
+			CThumbnailData * thumbnailData = (CThumbnailData*)e->GetData();
+			return thumbnailData->GetFilename() == filename;
+
+		});
+
+	if (it != pIconeList.end())
+		return true;
+
+	return false;
+}
+
 CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)
 {
 	IconeVector::iterator it;

@@ -101,21 +101,9 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
     
     for (CIcone* ico : pIconeList)
 	{
-		bool find = false;
 		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
 		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-			if (thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
+		bool find = iconeList->FindElement(filename);
 		if (!find)
 			pIconeListToClean.push_back(ico);
 	}
