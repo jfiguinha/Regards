@@ -23,6 +23,7 @@ namespace Regards::Viewer
 		~CThumbnailViewerPicture(void) override;
 		void Init(const int& typeAffichage = SHOW_ALL);
 		void SetListeFile();
+		void ApplyListeFile();
 		vector<wxString> GetFileList();
 
 		int GetHeight() override
@@ -33,6 +34,7 @@ namespace Regards::Viewer
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 
 	protected:
+		CIconeList* PregenerateList();
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
 
