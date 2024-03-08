@@ -116,8 +116,8 @@ namespace Regards::Window
 		float CalculRatio(const int& width, const int& height, const int& tailleBitmapWidth,
 			const int& tailleBitmapHeight);
 		wxImage LoadImageResource(const wxString& resourceName);
-		wxImage GenerateVideoIcone();
-		wxImage ResampleBicubic(wxImage* Src, int width, int height);
+		void GenerateVideoIcone();
+
 		int GetBitmapWidth();
 		int GetBitmapHeight();
 

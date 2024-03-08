@@ -1259,7 +1259,7 @@ void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 
 void CMainWindow::LoadPicture(void* param)
 {
-	//std::thread* t1 = nullptr;
+	CSqlThumbnailVideo sqlThumbnailVideo;
 	CLibPicture libPicture;
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
 	if (threadLoadingBitmap == nullptr)
@@ -1272,9 +1272,6 @@ void CMainWindow::LoadPicture(void* param)
 
 		if (listVideo.size() > 0)
 		{
-			CSqlThumbnailVideo sqlThumbnailVideo;
-
-			//int selectPicture = listVideo.size() / 2;
 			for (int i = 0; i < listVideo.size(); i++)
 			{
 				CImageVideoThumbnail* bitmap = listVideo[i];
@@ -1301,11 +1298,6 @@ void CMainWindow::LoadPicture(void* param)
 		{
 			threadLoadingBitmap->bitmapIcone = CLibPicture::mat_from_wx(defaultPicture);
 			wxString filename = threadLoadingBitmap->filename;
-
-			//wxBitmap bitmap = wxBitmap(defaultPicture);
-
-
-			CSqlThumbnailVideo sqlThumbnailVideo;
 			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, defaultPicture.GetWidth(), defaultPicture.GetHeight(), 0, 0, 0, 0);
 			defaultPicture.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 		}
@@ -1336,7 +1328,6 @@ void CMainWindow::LoadPicture(void* param)
 		wxString localName = sqlThumbnail.InsertThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->bitmapIcone.size().width, threadLoadingBitmap->bitmapIcone.size().height, hash);
 		if(localName != "")
         {
-            //threadLoadingBitmap->bitmapIcone.SaveFile(localName, wxBITMAP_TYPE_JPEG);
             cv::imwrite(CConvertUtility::ConvertToStdString(localName), threadLoadingBitmap->bitmapIcone);
         }
 			

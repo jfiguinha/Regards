@@ -472,6 +472,7 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
+   
     printf("CFFmfc::SetFile \n");
     
 	if (_pimpl == nullptr)

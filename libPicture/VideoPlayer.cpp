@@ -173,7 +173,6 @@ public:
 
 	void GetBitmapRGBA(AVFrame* tmp_frame)
 	{
-
 		if (localContext == nullptr)
 		{
 			localContext = sws_alloc_context();
