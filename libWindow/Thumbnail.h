@@ -77,6 +77,7 @@ namespace Regards::Window
 		
 	protected:
 
+		void GenerateCleanupListFile(std::vector<CIcone*> & pIconeListToClean);
 		//void ProcessIdle() {} override;
 		void PaintNow();
 		void Render(wxDC& dc);

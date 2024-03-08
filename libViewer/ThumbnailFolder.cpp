@@ -237,30 +237,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	nbElementInIconeList = iconeList->GetNbElement();
     
-    for (CIcone* ico : pIconeList)
-	{
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		wxString filename = thumbnailData->GetFilename();
-		bool find = iconeList->FindElement(filename);
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
-	}
-
-	for (CIcone* ico : pIconeListToClean)
-	{
-		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetFilename() == _clean->GetFilename();
-
-			});
-
-		if(it != pIconeList.end())
-			pIconeList.erase(it);
-	}
+	GenerateCleanupListFile(pIconeListToClean);
 
 	EraseThumbnailList(oldIconeList);
 	EraseIconeList(pIconeListToClean);
@@ -384,31 +361,7 @@ void CThumbnailFolder::SetListeFile()
 
 	nbElementInIconeList = iconeList->GetNbElement();
     
-    for (CIcone* ico : pIconeList)
-	{
-		CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)ico->GetData();
-		wxString filename = thumbnailData->GetFilename();
-		bool find = iconeList->FindElement(filename);
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
-	}
-
-	//------------------------------------
-	for (CIcone* ico : pIconeListToClean)
-	{
-		CThumbnailDataSQL* _clean = (CThumbnailDataSQL*)ico->GetData();
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-				return thumbnailData->GetFilename() == _clean->GetFilename();
-
-			});
-
-		if (it != pIconeList.end())
-			pIconeList.erase(it);
-	}
+	GenerateCleanupListFile(pIconeListToClean);
 
 	EraseThumbnailList(oldIconeList);
 	EraseIconeList(pIconeListToClean);

@@ -69,6 +69,34 @@ CIcone *  CThumbnail::FindElement(const int& xPos, const int& yPos)
 }
 
 
+void CThumbnail::GenerateCleanupListFile(std::vector<CIcone*>& pIconeListToClean)
+{
+	for (CIcone* ico : pIconeList)
+	{
+		CThumbnailData* thumbnailData = (CThumbnailData*)ico->GetData();
+		wxString filename = thumbnailData->GetFilename();
+		bool find = iconeList->FindElement(filename);
+		if (!find)
+			pIconeListToClean.push_back(ico);
+	}
+
+	//------------------------------------
+	for (CIcone* ico : pIconeListToClean)
+	{
+		CThumbnailData * _clean = (CThumbnailData*)ico->GetData();
+
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
+				return thumbnailData->GetFilename() == _clean->GetFilename();
+
+			});
+
+		if (it != pIconeList.end())
+			pIconeList.erase(it);
+	}
+}
+
 void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 {
 	wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);

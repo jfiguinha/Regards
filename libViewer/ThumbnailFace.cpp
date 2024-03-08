@@ -120,13 +120,8 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
             thumbnailData->SetNumPhotoId(numFace.numPhoto);
 			thumbnailData->SetNumElement(nbElement++);
 			icone->SetNumElement(thumbnailData->GetNumElement());
-
 			iconeListLocal->AddElement(icone);
 		}
-
-
-		
-
 	}
 
 
@@ -168,11 +163,8 @@ void CThumbnailFace::init()
 
 	int size = iconeListLocal->GetNbElement();
 
-#ifndef USE_TBB_VECTOR
-	for (auto i = 0; i < size; i++)
-#else
+
 	tbb::parallel_for(0, size, 1, [=](int i)
-#endif
 	{
 		int photo = iconeListLocal->GetPhotoId(i);
 		CIcone *  ico = iconeList->FindElementPhotoId(photo);
@@ -187,9 +179,8 @@ void CThumbnailFace::init()
 
 		}
 	}
-#ifdef USE_TBB_VECTOR  
 	);
-#endif
+
 
 
 	oldIconeList = iconeList;
