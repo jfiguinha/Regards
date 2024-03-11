@@ -12,14 +12,11 @@ namespace Regards::Control
 		CThumbnailHorizontal(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
 		                     const bool& testValidity);
 		~CThumbnailHorizontal(void) override;
-		void SetListeFile(const vector<wxString>& files);
 		void InitPosition();
 
 	protected:
 		void RenderIcone(wxDC* deviceContext) override;
 		void UpdateScroll() override;
 		CIcone * FindElement(const int& xPos, const int& yPos) override;
-		//void SetActiveScroll(bool visible);
-		//void UpdateThumbnail();
 	};
 }
