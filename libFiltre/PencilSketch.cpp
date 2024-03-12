@@ -19,7 +19,7 @@ using namespace Regards::Filter;
 
 CPencilSketchFilter::CPencilSketchFilter()
 {
-	libelleEffectSize = "shade_factor";// CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
+	libelleEffectSize = "Effect.shade_factor";// CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
 	libelleEffectsigmaX = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAX", 1); //"Effect.Sigma.X";
 	libelleEffectsigmaP = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP", 1); //"Effect.Sigma.P";
 }

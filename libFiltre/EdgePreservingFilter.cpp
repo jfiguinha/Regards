@@ -20,7 +20,7 @@ using namespace Regards::Filter;
 
 CEdgePreservingFilter::CEdgePreservingFilter()
 {
-	libelleEffectSize = "flags";//CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
+	libelleEffectSize = "Effect.flags";//CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
 	libelleEffectsigmaX = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAX", 1); //"Effect.Sigma.X";
 	libelleEffectsigmaP = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP", 1); //"Effect.Sigma.P";
 }
@@ -58,7 +58,7 @@ void CEdgePreservingFilter::Filter(CEffectParameter* effectParameter, cv::Mat& s
 	this->source = source;
 
 	vector<CMetadata> flags;
-	AddMetadataElement(flags, "RECURS_FILTER ", 1);
+	AddMetadataElement(flags, "RECURS_FILTER", 1);
 	AddMetadataElement(flags, "NORMCONV_FILTER", 2);
 
 	vector<int> elementSigmaS;
