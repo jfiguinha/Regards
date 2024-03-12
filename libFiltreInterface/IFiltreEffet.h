@@ -64,6 +64,11 @@ public:
 	virtual int Erode() = 0;
 	virtual int Median() = 0;
 	virtual int Noise() = 0;
+	virtual int DetailEnhance(const double& sigma_s, const double& sigma_r) = 0;
+	virtual int EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r) = 0;
+	virtual int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor) = 0;
+	virtual int Stylization(const double& sigma_s, const double& sigma_r) = 0;
+
 	virtual int LensDistortionFilter(const int& size) = 0;
 	virtual int Dilate() = 0;
 	virtual int Negatif() = 0;

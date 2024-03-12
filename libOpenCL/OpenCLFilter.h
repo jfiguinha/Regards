@@ -64,6 +64,12 @@ namespace Regards
 			void BrightnessAndContrastAuto(cv::UMat& inputData, float clipHistPercent);
 			void BilateralEffect(cv::UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat& inputData, const float& fSigma);
+
+			void DetailEnhance(cv::UMat& inputData, const double& sigma_s, const double& sigma_r);
+			void EdgePreservingFilter(cv::UMat& inputData, const int& flags, const double& sigma_s, const double& sigma_r);
+			void PencilSketch(cv::UMat& inputData, const double& sigma_s, const double& sigma_r, const double& shade_factor);
+			void Stylization(cv::UMat& inputData, const double& sigma_s, const double& sigma_r);
+
 			void NlMeans(cv::UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
 			             const int& searchWindowSize);
 			static cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,

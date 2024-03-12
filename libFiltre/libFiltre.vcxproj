@@ -577,7 +577,11 @@
     <ClInclude Include="CropFilter.h" />
     <ClInclude Include="DecodeRaw.h" />
     <ClInclude Include="DecodeRawParameter.h" />
+    <ClInclude Include="DetailEnhance.h" />
+    <ClInclude Include="DetailEnhanceParameter.h" />
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="EdgePreservingFilter.h" />
+    <ClInclude Include="EdgePreservingFilterParameter.h" />
     <ClInclude Include="FilterData.h" />
     <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="Filtre.h" />
@@ -609,6 +613,8 @@
     <ClInclude Include="OilPaintingFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
     <ClInclude Include="panorama.h" />
+    <ClInclude Include="PencilSketch.h" />
+    <ClInclude Include="PencilSketchParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
@@ -623,6 +629,8 @@
     <ClInclude Include="SharpenMaskingParameter.h" />
     <ClInclude Include="SolarisationEffectParameter.h" />
     <ClInclude Include="SolarisationFilter.h" />
+    <ClInclude Include="Stylization.h" />
+    <ClInclude Include="StylizationParameter.h" />
     <ClInclude Include="SwirlEffectParameter.h" />
     <ClInclude Include="SwirlFilter.h" />
     <ClInclude Include="VideoFilter.h" />
@@ -656,7 +664,9 @@
     <ClCompile Include="Crop.cpp" />
     <ClCompile Include="CropFilter.cpp" />
     <ClCompile Include="DecodeRaw.cpp" />
+    <ClCompile Include="DetailEnhance.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="EdgePreservingFilter.cpp" />
     <ClCompile Include="FilterData.cpp" />
     <ClCompile Include="FilterWindowParam.cpp" />
     <ClCompile Include="Filtre.cpp" />
@@ -677,6 +687,7 @@
     <ClCompile Include="OilPaintingFilter.cpp" />
     <ClCompile Include="OpenCLEffect.cpp" />
     <ClCompile Include="panorama.cpp" />
+    <ClCompile Include="PencilSketch.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />
@@ -684,6 +695,7 @@
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="SharpenMaskingFilter.cpp" />
     <ClCompile Include="SolarisationFilter.cpp" />
+    <ClCompile Include="Stylization.cpp" />
     <ClCompile Include="SwirlFilter.cpp" />
     <ClCompile Include="VideoFilter.cpp" />
     <ClCompile Include="videostream.cpp" />

@@ -112,6 +112,11 @@ namespace Regards::FiltreEffet
 
 		bool StabilizeVideo(OpenCV::COpenCVStabilization* stabilization) override;
 
+		int DetailEnhance(const double& sigma_s, const double& sigma_r) override;
+		int EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r) override;
+		int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor) override;
+		int Stylization(const double& sigma_s, const double& sigma_r) override;
+
 	protected:
 		COpenCLFilter* openclFilter;
 		wxImage GetwxImage(cv::UMat& input);

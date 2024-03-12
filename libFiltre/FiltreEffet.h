@@ -81,6 +81,13 @@ public:
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	int LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType, const int& iIntensity,
 	              const int& iColor, const int& iColorIntensity);
+
+	//Non-Photorealistic Rendering
+	int DetailEnhance(const double& sigma_s, const double& sigma_r);
+	int EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r);
+	int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor);
+	int Stylization(const double& sigma_s, const double& sigma_r);
+
 	int GetLib();
 	wxImage GetwxImage();
 	cv::Mat GetBitmap(const bool& source);

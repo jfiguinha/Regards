@@ -55,6 +55,27 @@ bool CFiltreEffet::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabili
 	return filtreEffet->StabilizeVideo(stabilization);
 }
 
+int CFiltreEffet::DetailEnhance(const double& sigma_s, const double& sigma_r)
+{
+	return filtreEffet->DetailEnhance(sigma_s, sigma_r / 100.0f);
+}
+
+int CFiltreEffet::EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r)
+{
+	return filtreEffet->EdgePreservingFilter(flags, sigma_s, sigma_r / 100.0f);
+}
+
+int CFiltreEffet::PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor)
+{
+	return filtreEffet->PencilSketch(sigma_s, sigma_r / 100.0f, shade_factor / 100.0f);
+}
+
+int CFiltreEffet::Stylization(const double& sigma_s, const double& sigma_r)
+{
+	return filtreEffet->Stylization(sigma_s, sigma_r /100.0f);
+}
+
+
 int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace)
 {
 	filtreEffet->BokehEffect(radius, boxsize, nbFace, listFace);

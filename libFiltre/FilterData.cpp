@@ -37,7 +37,10 @@
 #include "BokehFilter.h"
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
+#include "DetailEnhance.h"
 #include "LensDistortion.h"
+#include "EdgePreservingFilter.h"
+#include "PencilSketch.h"
 #include <effect_id.h>
 using namespace Regards::Filter;
 
@@ -221,6 +224,24 @@ CFilterWindowParam* CFiltreData::CreateEffectPointer(const int& numFilter)
 			filterEffect = new CBilateralFilter();
 			break;
 		}
+
+	case IDM_FILTRE_PENCILSKETCH:
+	{
+		filterEffect = new CPencilSketchFilter();
+		break;
+	}
+
+	case IDM_FILTRE_EDGEPRESERVING:
+	{
+		filterEffect = new CEdgePreservingFilter();
+		break;
+	}
+
+	case IDM_FILTRE_DETAILENHANCE:
+	{
+		filterEffect = new CDetailEnhance();
+		break;
+	}
 
 	case IDM_FILTRE_NLMEAN:
 		{

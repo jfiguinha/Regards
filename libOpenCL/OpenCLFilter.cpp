@@ -170,6 +170,70 @@ COpenCLFilter::~COpenCLFilter()
 	delete superSampling;
 }
 
+void COpenCLFilter::DetailEnhance(UMat& inputData, const double& sigma_s, const double& sigma_r)
+{
+	try
+	{
+		UMat dest;
+		cv::detailEnhance(inputData, dest, sigma_s, sigma_r);
+		dest.copyTo(inputData);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "BilateralEffect exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::EdgePreservingFilter(UMat& inputData, const int& flags, const double& sigma_s, const double& sigma_r)
+{
+	try
+	{
+		UMat dest;
+		edgePreservingFilter(inputData, dest, flags, sigma_s, sigma_r);
+		dest.copyTo(inputData);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "BilateralEffect exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::PencilSketch(UMat& inputData, const double& sigma_s, const double& sigma_r, const double& shade_factor)
+{
+	try
+	{
+		UMat img1;
+		UMat dest;
+		pencilSketch(inputData, img1, dest, sigma_s, sigma_r, shade_factor);
+		dest.copyTo(inputData);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "BilateralEffect exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::Stylization(UMat& inputData, const double& sigma_s, const double& sigma_r)
+{
+	try
+	{
+		UMat dest;
+		stylization(inputData, dest, sigma_s, sigma_r);
+		dest.copyTo(inputData);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "BilateralEffect exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
 
 void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {

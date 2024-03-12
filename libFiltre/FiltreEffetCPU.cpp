@@ -875,6 +875,7 @@ void CFiltreEffetCPU::RemovePepperNoise(Mat& mask)
 	}
 }
 
+
 int CFiltreEffetCPU::CartoonifyImage(const int& mode)
 {
 	bool sketchMode = false;
@@ -1085,6 +1086,104 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 
 	return 0;
 }
+
+int CFiltreEffetCPU::DetailEnhance(const double& sigma_s, const double& sigma_r)
+{
+	Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;
+
+	try
+	{
+		Mat output;
+		detailEnhance(image, output, sigma_s, sigma_r);
+		output.copyTo(image);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return 0;
+}
+
+int CFiltreEffetCPU::EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r)
+{
+	Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;
+
+	try
+	{
+		Mat output;
+		edgePreservingFilter(image, output, flags, sigma_s, sigma_r);
+		output.copyTo(image);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return 0;
+}
+
+int CFiltreEffetCPU::PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor)
+{
+	Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;
+
+	try
+	{
+		Mat img1;
+		Mat output;
+		pencilSketch(image, img1, output, sigma_s, sigma_r, shade_factor);
+		output.copyTo(image);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return 0;
+}
+
+int CFiltreEffetCPU::Stylization(const double& sigma_s, const double& sigma_r)
+{
+	Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;
+
+	try
+	{
+		Mat output;
+		stylization(image, output, sigma_s, sigma_r);
+		output.copyTo(image);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return 0;
+}
+
 
 int CFiltreEffetCPU::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {

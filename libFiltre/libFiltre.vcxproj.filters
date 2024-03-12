@@ -306,6 +306,30 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="DetailEnhance.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="DetailEnhanceParameter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgePreservingFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgePreservingFilterParameter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="PencilSketch.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="PencilSketchParameter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="Stylization.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="StylizationParameter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -451,6 +475,18 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="DetailEnhance.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgePreservingFilter.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="PencilSketch.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="Stylization.cpp">
+      <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

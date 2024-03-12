@@ -220,6 +220,66 @@ int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const in
 	return 0;
 }
 
+int COpenCLEffect::DetailEnhance(const double& sigma_s, const double& sigma_r)
+{
+	{
+		if (preview && !paramOutput.empty())
+		{
+			openclFilter->DetailEnhance(paramOutput, sigma_s, sigma_r);
+		}
+		else
+		{
+			openclFilter->DetailEnhance(input, sigma_s, sigma_r);
+		}
+	}
+	return 0;
+}
+
+int COpenCLEffect::EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r)
+{
+	{
+		if (preview && !paramOutput.empty())
+		{
+			openclFilter->EdgePreservingFilter(paramOutput, flags, sigma_s, sigma_r);
+		}
+		else
+		{
+			openclFilter->EdgePreservingFilter(input, flags, sigma_s, sigma_r);
+		}
+	}
+	return 0;
+}
+
+int COpenCLEffect::PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor)
+{
+	{
+		if (preview && !paramOutput.empty())
+		{
+			openclFilter->PencilSketch(paramOutput, sigma_s, sigma_r, shade_factor);
+		}
+		else
+		{
+			openclFilter->PencilSketch(input, sigma_s, sigma_r, shade_factor);
+		}
+	}
+	return 0;
+}
+
+int COpenCLEffect::Stylization(const double& sigma_s, const double& sigma_r)
+{
+	{
+		if (preview && !paramOutput.empty())
+		{
+			openclFilter->Stylization(paramOutput, sigma_s, sigma_r);
+		}
+		else
+		{
+			openclFilter->Stylization(input, sigma_s, sigma_r);
+		}
+	}
+	return 0;
+}
+
 int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
 	{
