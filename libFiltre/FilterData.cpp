@@ -41,6 +41,7 @@
 #include "LensDistortion.h"
 #include "EdgePreservingFilter.h"
 #include "PencilSketch.h"
+#include "Stylization.h"
 #include <effect_id.h>
 using namespace Regards::Filter;
 
@@ -224,6 +225,12 @@ CFilterWindowParam* CFiltreData::CreateEffectPointer(const int& numFilter)
 			filterEffect = new CBilateralFilter();
 			break;
 		}
+
+	case IDM_FILTRE_STYLISATION:
+	{
+		filterEffect = new CStylizationEffect();
+		break;
+	}
 
 	case IDM_FILTRE_PENCILSKETCH:
 	{

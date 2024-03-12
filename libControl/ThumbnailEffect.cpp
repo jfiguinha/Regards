@@ -225,6 +225,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			auto thumbnailData = new CThumbnailDataStorage(filename);
 			thumbnailData->SetNumElement(i++);
 			thumbnailData->SetNumPhotoId(numEffect);
+
 			switch (numEffect)
 			{
 			/*
@@ -242,20 +243,20 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			case IDM_REDEYE:
 				{
-					wxImage pBitmap = loadingResource.LoadImageResource("IDB_REDEYE");
+					cv::Mat pBitmap = loadingResource.LoadResourceCV("IDB_REDEYE");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					thumbnailData->SetBitmap(CLibPicture::mat_from_wx(pBitmap));
+					thumbnailData->SetBitmap(pBitmap);
 					break;
 				}
 
 
 			case IDM_CROP:
 				{
-					wxImage pResBitmap = loadingResource.LoadImageResource("IDB_CROP");
+					cv::Mat pBitmap = loadingResource.LoadResourceCV("IDB_CROP");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					thumbnailData->SetBitmap(CLibPicture::mat_from_wx(pResBitmap));
+					thumbnailData->SetBitmap(pBitmap);
 					break;
 				}
 
@@ -324,13 +325,13 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
 			int numElement = iconeListLocal->GetNbElement();
 			auto thumbnailData = new CThumbnailDataStorage(filename);
-			wxImage image = loadingResource.LoadImageResource("IDB_BLACKROOM");
+			cv::Mat image = loadingResource.LoadResourceCV("IDB_BLACKROOM");
 			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
 			blackRoom->AddPhotoToList(numElement);
 
 			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
 
-			thumbnailData->SetBitmap(Regards::Picture::CLibPicture::mat_from_wx(image));
+			thumbnailData->SetBitmap(image);
 
 			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());

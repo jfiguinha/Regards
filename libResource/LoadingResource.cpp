@@ -16,3 +16,14 @@ wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
     }
 	return out;
 }
+
+cv::Mat CLoadingResource::LoadResourceCV(const wxString& resourceName)
+{
+    cv::Mat out;
+    wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
+    if (wxFileExists(resourcePath))
+    {
+        out = cv::imread(resourcePath.ToStdString());
+    }
+    return out;
+}

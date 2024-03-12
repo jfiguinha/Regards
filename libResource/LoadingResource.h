@@ -4,7 +4,7 @@ class CRegardsBitmap;
 class CLoadingResource
 {
 public:
-	//static cv::Mat LoadRegardsBmpResource(const wxString& resourceName);
+	static cv::Mat LoadResourceCV(const wxString& resourceName);
 	static wxImage LoadImageResource(const wxString& resourceName);
 	//static wxImage ConvertTowxImageRGB(cv::Mat & bitmap);
 };
