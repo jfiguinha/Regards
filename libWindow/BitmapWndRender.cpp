@@ -1197,7 +1197,7 @@ void CBitmapWndRender::OnKeyDown(wxKeyEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 {
-	//
+	
 	int move = 0;
 	if (event.GetWheelRotation() > 0)
 		move = 0;
@@ -1206,6 +1206,13 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 
 	if (controlKeyPush)
 		move += 10;
+        
+    if(shrinkImage)
+    {
+        move += 100;
+    }
+    
+    printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
 
 	switch (move)
 	{
@@ -1217,16 +1224,36 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		break;
 	case 10:
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
+			wxCommandEvent evt(wxEVT_BITMAPZOOMIN);
 			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 			this->ZoomOn();
 		}
 		break;
 	case 11:
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
+			wxCommandEvent evt(wxEVT_BITMAPZOOMOUT);
 			parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 			this->ZoomOut();
+		}
+		break;
+	case 100:
+		{
+            wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
+            if(central != nullptr)
+            {
+                wxCommandEvent evt(wxEVENT_PICTURENEXT);
+                parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+            }
+		}
+		break;
+	case 101:
+		{
+            wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
+            if(central != nullptr)
+            {
+                wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
+                parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+            }
 		}
 		break;
 	default: ;

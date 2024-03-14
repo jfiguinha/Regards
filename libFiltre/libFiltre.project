@@ -112,6 +112,22 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="StylizationParameter.h"/>
+      <File Name="Stylization.h"/>
+      <File Name="Stylization.cpp"/>
+      <File Name="PencilSketchParameter.h"/>
+      <File Name="PencilSketch.h"/>
+      <File Name="PencilSketch.cpp"/>
+      <File Name="panorama.h"/>
+      <File Name="panorama.cpp"/>
+      <File Name="FiltreImplementation.h"/>
+      <File Name="EdgePreservingFilterParameter.h"/>
+      <File Name="EdgePreservingFilter.h"/>
+      <File Name="EdgePreservingFilter.cpp"/>
+      <File Name="DetailEnhanceParameter.h"/>
+      <File Name="DetailEnhance.h"/>
+      <File Name="DetailEnhance.cpp"/>
+      <File Name="BokehEffectParameter.h"/>
       <File Name="MosaicFilter.h"/>
       <File Name="MosaicFilter.cpp"/>
       <File Name="LensDistortion.h"/>

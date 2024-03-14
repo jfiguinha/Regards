@@ -20,7 +20,7 @@ using namespace Regards::Filter;
 
 CEdgePreservingFilter::CEdgePreservingFilter()
 {
-	libelleEffectSize = "Effect.flags";//CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1); //"Effect.Size";
+	libelleEffectSize = CLibResource::LoadStringFromResource(L"LBLEFFECTFLAGS", 1); //"Effect.Size";
 	libelleEffectsigmaX = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAX", 1); //"Effect.Sigma.X";
 	libelleEffectsigmaP = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP", 1); //"Effect.Sigma.P";
 }

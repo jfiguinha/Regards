@@ -151,8 +151,8 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowElement::OnIdle));
 	Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowElement::OnViewerDblClick));
-	Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowElement::OnViewerZoomIn));
-	Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowElement::OnViewerZoomOut));
+	Connect(wxEVT_BITMAPZOOMIN, wxCommandEventHandler(CShowElement::OnViewerZoomIn));
+	Connect(wxEVT_BITMAPZOOMOUT, wxCommandEventHandler(CShowElement::OnViewerZoomOut));
 	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CShowElement::OnMoveLeft));
 	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CShowElement::OnMoveRight));
 	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CShowElement::OnMoveTop));
