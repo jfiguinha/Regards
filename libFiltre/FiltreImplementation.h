@@ -230,6 +230,69 @@ namespace Regards::Filter
 		};
 	};
 
+	class CRestoreFilter : public CDefaultFilter
+	{
+	public:
+		int GetNameFilter() override
+		{
+			return IDM_FILTRE_RESTORE;
+		}
+
+		int GetTypeFilter() override
+		{
+			return SPECIAL_EFFECT;
+		};
+
+		wxString GetFilterLabel() override
+		{
+			return CLibResource::LoadStringFromResource("LBLRESTORE", 1);
+		}
+
+		void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			const bool& preview) override
+		{
+			if (filtreEffet != nullptr)
+				filtreEffet->SuperResolutionNCNN();
+		}
+
+		bool IsOpenCLCompatible() override
+		{
+			return false;
+		}
+	};
+
+
+	class CColorisationFilter : public CDefaultFilter
+	{
+	public:
+		int GetNameFilter() override
+		{
+			return IDM_FILTRE_COLORISATION;
+		}
+
+		int GetTypeFilter() override
+		{
+			return SPECIAL_EFFECT;
+		};
+
+		wxString GetFilterLabel() override
+		{
+			return CLibResource::LoadStringFromResource("LBLCOLORISATION", 1);
+		}
+
+		void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			const bool& preview) override
+		{
+			if (filtreEffet != nullptr)
+				filtreEffet->Colorization();
+		}
+
+		bool IsOpenCLCompatible() override
+		{
+			return false;
+		}
+	};
+
 	class CFlipHorizontalFilter : public CDefaultFilter
 	{
 	public:

@@ -308,6 +308,14 @@ CFilterWindowParam* CFiltreData::CreateEffectPointer(const int& numFilter)
 		filterEffect = new CRedEyeFilter();
 		break;
 
+	case IDM_FILTRE_RESTORE:
+		filterEffect = new CRestoreFilter();
+		break;
+
+	case IDM_FILTRE_COLORISATION:
+		filterEffect = new CColorisationFilter();
+		break;
+
 	case IDM_WAVE_EFFECT:
 		filterEffect = new CWaveFilter();
 		break;

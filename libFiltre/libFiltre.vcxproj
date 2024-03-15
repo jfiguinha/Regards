@@ -621,12 +621,14 @@
     <ClInclude Include="PhotoFiltreFilter.h" />
     <ClInclude Include="PosterisationEffectParameter.h" />
     <ClInclude Include="PosterisationFilter.h" />
+    <ClInclude Include="realesrgan.h" />
     <ClInclude Include="RedEyeParameter.h" />
     <ClInclude Include="RgbEffectParameter.h" />
     <ClInclude Include="RotateFreeFilter.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="SharpenMaskingFilter.h" />
     <ClInclude Include="SharpenMaskingParameter.h" />
+    <ClInclude Include="Sig17Slice.h" />
     <ClInclude Include="SolarisationEffectParameter.h" />
     <ClInclude Include="SolarisationFilter.h" />
     <ClInclude Include="Stylization.h" />
@@ -691,6 +693,7 @@
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />
+    <ClCompile Include="realesrgan.cpp" />
     <ClCompile Include="RotateFreeFilter.cpp" />
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="SharpenMaskingFilter.cpp" />

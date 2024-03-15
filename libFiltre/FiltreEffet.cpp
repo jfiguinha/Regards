@@ -45,6 +45,16 @@ int CFiltreEffet::GetWidth()
 	return filtreEffet->GetWidth();
 }
 
+int CFiltreEffet::SuperResolutionNCNN()
+{
+	return filtreEffet->SuperResolutionNCNN();
+}
+
+int CFiltreEffet::Colorization()
+{
+	return filtreEffet->Colorization();
+}
+
 int CFiltreEffet::GetHeight()
 {
 	return filtreEffet->GetHeight();

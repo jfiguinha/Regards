@@ -88,6 +88,10 @@ public:
 	int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor);
 	int Stylization(const double& sigma_s, const double& sigma_r);
 
+	//Image Restoration
+	int SuperResolutionNCNN();
+	int Colorization();
+
 	int GetLib();
 	wxImage GetwxImage();
 	cv::Mat GetBitmap(const bool& source);

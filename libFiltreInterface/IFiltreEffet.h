@@ -102,6 +102,8 @@ public:
 	virtual int GetHeight() = 0;
 	virtual int BrightnessAndContrastAuto(float clipHistPercent) = 0;
 	virtual bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization) = 0;
+	virtual int SuperResolutionNCNN() = 0;
+	virtual int Colorization() = 0;
 
 protected:
 	//CRegardsBitmap * pBitmap;

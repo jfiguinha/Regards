@@ -83,6 +83,9 @@ public:
 	int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor) override;
 	int Stylization(const double& sigma_s, const double& sigma_r) override;
 
+	int SuperResolutionNCNN() override;
+	int Colorization() override;
+
 private:
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);

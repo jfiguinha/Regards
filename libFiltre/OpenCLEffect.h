@@ -106,6 +106,8 @@ namespace Regards::FiltreEffet
 		int HistogramLog(cv::Mat& bitmap) { return -1; }
 		int HistogramNormalize(cv::Mat& bitmap) { return -1; }
 		int HistogramEqualize(cv::Mat& bitmap) { return -1; }
+		int SuperResolutionNCNN() { return -1; }
+		int Colorization() { return -1; }
 
 		int BrightnessAndContrastAuto(float clipHistPercent) override;
 		cv::Mat GetBitmap(const bool& source) override;
