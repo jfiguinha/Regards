@@ -213,3 +213,8 @@
 /packages/Microsoft.Web.WebView2.1.0.1462.37
 /libextern/libavif
 /libDataManipulation/x64/Release
+/Regards/Resources/model/real_esrgan.bin
+/Regards/Resources/model/real_esrgan.param
+/Regards/Resources/model/siggraph17_color_sim.bin
+/Regards/Resources/model/siggraph17_color_sim.param
+/RegardsViewer/package/model.zip

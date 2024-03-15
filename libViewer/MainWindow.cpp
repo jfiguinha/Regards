@@ -190,8 +190,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	                          wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
-	//refreshFolder = true;
-	processIdle = true;
+
 	//updateFolder = true;
 	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
@@ -212,6 +211,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
     sqlPhoto.GetPhotoList(&photoList, 0);
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 	isCheckNewVersion = true;
+	refreshFolder = true;
+	processIdle = true;
 
 }
 
@@ -1083,6 +1084,10 @@ void CMainWindow::ProcessIdle()
 			UpdateFolderStatic();
 			updateCriteria = true;
 			processIdle = true;
+
+			photoList.clear();
+			CSqlPhotosWithoutThumbnail sqlPhoto;
+			sqlPhoto.GetPhotoList(&photoList, 0);
 		}
 		refreshFolder = false;
 		numElementTraitement = 0;
@@ -1122,6 +1127,9 @@ void CMainWindow::ProcessIdle()
 	}
 
 	ProcessThumbnail();
+
+	if (hasDoneOneThings)
+		processIdle = true;
 
 }
 
