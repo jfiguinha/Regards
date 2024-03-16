@@ -1,6 +1,7 @@
 #include "header.h"
 #include "CheckVersion.h"
 #include <ConvertUtility.h>
+#include <wx/zipstrm.h>
 #ifdef USECURL
 #include <curl/curl.h>
 #define SKIP_PEER_VERIFICATION
@@ -10,7 +11,15 @@
 #endif
 
 #include <wx/sstream.h>
+#include <wx/wfstream.h>
 using namespace Regards::Internet;
+
+struct SDataDownload
+{
+	wxProgressDialog* dlg;
+	FILE* pagefile;
+	int updatesize;
+};
 
 CCheckVersion::CCheckVersion(const wxString& server)
 {
@@ -174,3 +183,148 @@ wxString CCheckVersion::GetLastVersion()
 	return xml;
 }
 #endif
+
+
+
+CDownloadFile::CDownloadFile(const wxString& server)
+{
+	serverHttp = server;
+}
+
+
+CDownloadFile::~CDownloadFile()
+{
+}
+
+size_t CDownloadFile::write_data(void* ptr, size_t size, size_t nmemb, void* stream)
+{
+	SDataDownload* data = (SDataDownload*)stream;
+	size_t written = fwrite(ptr, size, nmemb, (FILE*)data->pagefile);
+	data->dlg->Update(data->updatesize++, "In progress");
+	return written;
+}
+
+
+void CDownloadFile::DownloadFile(wxProgressDialog * dlg, const wxString& outputFile)
+{
+	CURL* curl;
+
+	//int error = 0;
+	//bool returnValue = true;
+	//wxString xml = L"";
+	wxString httpAdress = serverHttp;
+	CURLcode res;
+	struct url_data data;
+	SDataDownload dataDownload;
+	CURL* curl_handle;
+	FILE* pagefile;
+
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	/* init the curl session */
+	curl_handle = curl_easy_init();
+
+	curl_easy_setopt(curl, CURLOPT_URL, CConvertUtility::ConvertToUTF8(httpAdress));
+
+	/* Switch on full protocol/debug output while testing */
+	curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1L);
+
+	/* disable progress meter, set to 0L to enable it */
+	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
+
+	/* send all data to this function  */
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+
+
+	/* open the file */
+	pagefile = fopen(outputFile, "wb");
+	if (pagefile) {
+
+		dataDownload.dlg = dlg;
+		dataDownload.pagefile = pagefile;
+		dataDownload.updatesize = 0;
+
+		/* write the page body to this file handle */
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &dataDownload);
+
+		/* get it! */
+		curl_easy_perform(curl_handle);
+
+		/* close the header file */
+		fclose(pagefile);
+	}
+
+	/* cleanup curl stuff */
+	curl_easy_cleanup(curl_handle);
+
+	curl_global_cleanup();
+
+}
+
+bool CDownloadFile::ExtractZipFiles(const wxString& aZipFile, const wxString& aTargetDir, wxWindow * parent)
+{
+
+	bool ret = true;
+
+	//wxFileSystem fs;
+	std::unique_ptr<wxZipEntry> entry(new wxZipEntry());
+
+
+	do {
+
+		wxFileInputStream in(aZipFile);
+
+		if (!in) {
+			wxLogError(_T("Can not open file '") + aZipFile + _T("'."));
+			ret = false;
+			break;
+		}
+		wxZipInputStream zip(in);
+
+		int update = 0;
+		int maxValue = zip.GetTotalEntries();
+		wxProgressDialog dialog("Extracting...", "Please wait...", maxValue, parent, wxPD_APP_MODAL);
+
+
+		while (entry.reset(zip.GetNextEntry()), entry.get() != NULL) {
+			// access meta-data
+			wxString name = entry->GetInternalName();
+			name = aTargetDir + wxFileName::GetPathSeparator() + name;
+
+			// read 'zip' to access the entry's data
+			if (entry->IsDir()) {
+				int perm = entry->GetMode();
+				wxFileName::Mkdir(name, perm, wxPATH_MKDIR_FULL);
+			}
+			else {
+				zip.OpenEntry(*entry.get());
+				if (!zip.CanRead()) {
+					wxLogError(_T("Can not read zip entry '") + entry->GetName() + _T("'."));
+					ret = false;
+					break;
+				}
+
+				if (wxFileExists(name))
+					wxRemoveFile(name);
+
+				wxFileOutputStream file(name);
+
+				if (!file) {
+					wxLogError(_T("Can not create file '") + name + _T("'."));
+					ret = false;
+					break;
+				}
+				zip.Read(file);
+
+				++update;
+				dialog.Update(update);
+
+			}
+
+
+			dialog.Update(maxValue);
+		}
+	} while (false);
+
+	return ret;
+}
