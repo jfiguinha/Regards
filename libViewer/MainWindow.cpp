@@ -48,6 +48,7 @@
 #include <ThreadLoadingBitmap.h>
 #include "window_mode_id.h"
 #include <wx/mimetype.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -84,7 +85,6 @@ CThreadVideoData::~CThreadVideoData()
 {
 }
 
-wxDEFINE_EVENT(wxVERSION_MODELUPDATE_EVENT, wxCommandEvent);
 wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
@@ -106,6 +106,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	start = true;
 	criteriaSendMessage = false;
 	checkVersion = true;
+
 	folderProcess = new CFolderProcess(this);
 
 
@@ -172,7 +173,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
 	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CMainWindow::UpdateThumbnailIcone));
 	Connect(wxVERSION_UPDATE_EVENT, wxCommandEventHandler(CMainWindow::OnVersionUpdate));
-	Connect(wxVERSION_MODELUPDATE_EVENT, wxCommandEventHandler(CMainWindow::OnModelUpdate));
 	Connect(wxEVENT_UPDATEMESSAGE, wxCommandEventHandler(CMainWindow::UpdateMessage));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnRefreshThumbnail));
 	Connect(wxEVENT_ICONETHUMBNAILGENERATION, wxCommandEventHandler(CMainWindow::OnProcessThumbnail));
@@ -212,7 +212,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
     CSqlPhotosWithoutThumbnail sqlPhoto;
     sqlPhoto.GetPhotoList(&photoList, 0);
 	versionUpdate = new std::thread(NewVersionAvailable, this);
-	modelUpdate = new std::thread(NewModelsAvailable, this);
+
 	isCheckNewVersion = true;
 	refreshFolder = true;
 	processIdle = true;
@@ -256,36 +256,6 @@ void CMainWindow::SetViewerMode()
 }
 
 
-void CMainWindow::OnModelUpdate(wxCommandEvent& event)
-{
-	cout << "modelUpdate" << endl;
-	//LBLWEBSITEMODELDOWNLOAD
-
-	int hasUpdate = event.GetInt();
-	if (hasUpdate)
-	{
-		wxProgressDialog dialog("Downloading models ...", "Please wait...", 1000, this, wxPD_APP_MODAL);
-		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
-		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
-
-#ifdef WIN32
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "\\model";
-#else
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "/model";
-#endif
-		CDownloadFile _checkVersion(serverURL);
-		_checkVersion.DownloadFile(&dialog, tempModel);
-		_checkVersion.ExtractZipFiles(tempModel, resourcePath, this);
-	}
-
-
-	if (modelUpdate != nullptr)
-	{
-		modelUpdate->join();
-		delete modelUpdate;
-		modelUpdate = nullptr;
-	}
-}
 
 void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 {
@@ -350,27 +320,6 @@ void CMainWindow::NewVersionAvailable(void* param)
 	wxPostEvent(toolbar, event);
 }
 
-void CMainWindow::NewModelsAvailable(void* param)
-{
-	int hasUpdate = 0;
-	CToolbar* toolbar = (CToolbar*)param;
-	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
-	wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODEL", 1);
-	CCheckVersion _checkVersion(serverURL);
-	wxString serverVersion = _checkVersion.GetLastVersion();
-
-	if (serverVersion != "error" && serverVersion != "")
-	{
-		if (localVersion != serverVersion)
-		{
-			hasUpdate = 1;
-		}
-	}
-
-	wxCommandEvent event(wxVERSION_MODELUPDATE_EVENT);
-	event.SetInt(hasUpdate);
-	wxPostEvent(toolbar, event);
-}
 
 void CMainWindow::ClickShowButton(const int& id, const int& refresh)
 {

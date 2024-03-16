@@ -25,19 +25,4 @@ namespace Regards::Internet
 		//int error;
 		wxString serverHttp;
 	};
-
-	class CDownloadFile
-	{
-	public:
-		CDownloadFile(const wxString& server);
-		~CDownloadFile();
-		void DownloadFile(wxProgressDialog* dlg, const wxString & outputFile);
-		bool ExtractZipFiles(const wxString& aZipFile, const wxString& aTargetDir, wxWindow* parent);
-	private:
-#ifdef USECURL
-		static size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream);
-#endif
-		//int error;
-		wxString serverHttp;
-	};
 }

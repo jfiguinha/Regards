@@ -126,8 +126,6 @@ namespace Regards::Viewer
 
 		void PhotoProcess(CPhotos* photo);
 
-		static void NewModelsAvailable(void* param);
-
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
 		void ProcessThumbnail();
@@ -153,7 +151,7 @@ namespace Regards::Viewer
 		CCentralWindow* centralWnd;
 		CToolbarViewerMode * toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;
-		std::thread* modelUpdate = nullptr;
+
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 

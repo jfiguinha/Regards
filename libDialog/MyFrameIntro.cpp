@@ -2,7 +2,14 @@
 #include "MyFrameIntro.h"
 #include "IntroTheme.h"
 #include "TitleIntro.h"
+#include <LibResource.h>
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
+#include <FileUtility.h>
+#include <wx/progdlg.h>
+#include "DownloadFile.h"
 using namespace Regards::Introduction;
+using namespace Regards::Internet;
 
 #ifndef wxHAS_IMAGES_IN_RESOURCES
 #include "../Resource/sample.xpm"
@@ -56,8 +63,62 @@ void MyFrameIntro::on_size(wxSizeEvent& event)
 	myCentralWindow->SetSize(0, titleIntro->GetHeight(), size.GetWidth(), size.GetHeight() - titleIntro->GetHeight());
 }
 
+
+
+void MyFrameIntro::NewModelsAvailable()
+{
+	bool fileExist = false;
+	cout << "modelUpdate" << endl;
+	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
+	wxString line = "";
+
+#ifdef WIN32
+	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "\\model\\hash.txt";
+#else
+	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "/model/hash.txt";
+#endif
+
+	if (wxFileExists(fileHash))
+	{
+		wxFileInputStream input(fileHash);
+		wxTextInputStream text(input, wxT("\x09"), wxConvUTF8);
+		while (input.IsOk() && !input.Eof())
+		{
+			line = text.ReadLine();
+			break;
+		}
+
+		fileExist = true;
+	}
+
+
+	if (!fileExist || localVersion != line)
+	{
+		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_SMOOTH);
+		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
+		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
+
+#ifdef WIN32
+		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "\\model";
+#else
+		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "/model";
+#endif
+		CDownloadFile _checkVersion(serverURL);
+		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
+		_checkVersion.ExtractZipFiles(tempModel, resourcePath, dialog, this);
+
+		dialog.Close();
+	}
+
+
+}
+
+
 void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 {
+	NewModelsAvailable();
+
+
 	if (mainInterface != nullptr)
 		mainInterface->ShowViewer();
 }
