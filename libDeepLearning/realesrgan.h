@@ -17,7 +17,8 @@ public:
 public:
     int inference(const cv::Mat& in, ncnn::Mat& out, int w, int h);
     int preprocess(const cv::Mat& img, cv::Mat& pad_img, int& img_pad_h, int& img_pad_w);
-    cv::Mat to_ocv(const cv::Mat& source, const ncnn::Mat& result);
+   
+    static cv::Mat to_ocv(const cv::Mat& source, const ncnn::Mat& result);
     // realesrgan parameters
     int scale;
     int tile_size;

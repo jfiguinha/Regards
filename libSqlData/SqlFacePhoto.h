@@ -22,7 +22,7 @@ namespace Regards
 			CSqlFacePhoto();
 			~CSqlFacePhoto() override;
 			int InsertFaceTreatment(const wxString& path);
-			int InsertFace(const wxString& path, const int& numberface, const int& width, const int& height,
+			int InsertFace(const wxString& path, const wxString& gender, const wxString& age, const int& numberface, const int& width, const int& height,
 			               const double& pertinence, const uint8_t* zBlob, const int& nBlob);
 			int GetNumFace(const wxString& path, const int& numberface);
 			int UpdateVideoFace(const int& numFace, const int& videoPosition);

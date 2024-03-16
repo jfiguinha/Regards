@@ -69,7 +69,7 @@ using namespace Regards::Sqlite;
 
 #define SQL_INDEX_PHOTO_EXIF "CREATE UNIQUE INDEX idx_PHOTO_EXIF_FullPath ON PHOTO_EXIF(FullPath)"
 
-#define SQL_CREATE_FACE_PHOTO_TABLE "CREATE TABLE FACEPHOTO (NumFace INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Numberface INT, width INT, height INT, Pertinence REAL)"
+#define SQL_CREATE_FACE_PHOTO_TABLE "CREATE TABLE FACEPHOTO (NumFace INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Numberface INT, width INT, height INT, Pertinence REAL, Gender NVARCHAR(255), Age NVARCHAR(255))"
 #define SQL_DROP_FACE_PHOTO "DROP TABLE FACEPHOTO"
 
 #define SQL_CREATE_FACE_VIDEO_TABLE "CREATE TABLE FACEVIDEO (NumFace INTEGER PRIMARY KEY, videoposition INT)"
@@ -437,6 +437,13 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSWIHOUTTHUMBNAIL);
             hr = ExecuteSQLWithNoResult(SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL);
 		}
+		if (sqlVersion.GetVersion() == "2.70.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.71.0.0");
+			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Gender NVARCHAR(255);");
+			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Age NVARCHAR(255);");
+		}
 	}
 	return hr;
 }
@@ -509,7 +516,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.70.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.71.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;

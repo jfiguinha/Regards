@@ -218,3 +218,10 @@
 /Regards/Resources/model/siggraph17_color_sim.bin
 /Regards/Resources/model/siggraph17_color_sim.param
 /RegardsViewer/package/model.zip
+/Regards/Resources/model/age_deploy.prototxt
+/Regards/Resources/model/age_net.caffemodel
+/Regards/Resources/model/encoder.bin
+/Regards/Resources/model/encoder.param
+/Regards/Resources/model/gender_deploy.prototxt
+/Regards/Resources/model/gender_net.caffemodel
+/Regards/Resources/model/style.bin

@@ -10,6 +10,13 @@ namespace Regards
 {
 	namespace OpenCV
 	{
+		class CSexeAndAge
+		{
+		public:
+			wxString age = "";
+			wxString sexe = "";
+		};
+
 		class CFaceDetector
 		{
 		public:
@@ -22,7 +29,9 @@ namespace Regards
 			std::vector<cv::Rect> GetRectFace(const cv::Mat& picture);
 			int DectectOrientationByFaceDetector(const cv::Mat& pBitmap);
 			int FaceRecognition(const int& numFace);
-
+			CSexeAndAge DetermineSexeAndAge(const cv::Mat& Face);
+			static cv::Mat SuperResolution(const cv::Mat& Face);
+			static cv::Mat Colorisation(const cv::Mat& Face);
 		private:
 			void RemoveRedEye(const cv::Mat& image, const cv::Rect& rSelectionBox, const cv::Rect& radius);
 			void ImageToJpegBuffer(const cv::Mat& image, std::vector<uchar>& buff);

@@ -303,15 +303,15 @@ int CSqlFacePhoto::InsertFaceTreatment(const wxString& path)
 //--------------------------------------------------------
 //Chargement de toutes les données d'un album
 //--------------------------------------------------------
-int CSqlFacePhoto::InsertFace(const wxString& path, const int& numberface, const int& width, const int& height,
+int CSqlFacePhoto::InsertFace(const wxString& path, const wxString& gender, const wxString& age, const int& numberface, const int& width, const int& height,
                               const double& pertinence, const uint8_t* zBlob, const int& nBlob)
 {
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	wxString value = wxString::Format(wxT("%f"), pertinence);
 	ExecuteRequest(
-		"INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence) VALUES('" + fullpath + "'," +
-		to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ")");
+		"INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence, gender, age) VALUES('" + fullpath + "'," +
+		to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ",'" + gender + "','" + age + "')");
 
 	int numFaceId = GetNumFace(path, numberface);
 

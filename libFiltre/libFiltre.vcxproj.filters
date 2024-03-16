@@ -64,9 +64,6 @@
     <Filter Include="header">
       <UniqueIdentifier>{90fb664c-5e73-44b6-a226-8d53135becfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Filter\RealESRNGAN">
-      <UniqueIdentifier>{298728b8-08c0-4bd8-afc0-5daaafc841e4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -333,12 +330,6 @@
     <ClInclude Include="StylizationParameter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
-    <ClInclude Include="realesrgan.h">
-      <Filter>Filter\RealESRNGAN</Filter>
-    </ClInclude>
-    <ClInclude Include="Sig17Slice.h">
-      <Filter>Main</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -496,9 +487,6 @@
     </ClCompile>
     <ClCompile Include="Stylization.cpp">
       <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="realesrgan.cpp">
-      <Filter>Filter\RealESRNGAN</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

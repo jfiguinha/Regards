@@ -11,7 +11,7 @@
 #include "MeanShift.h"
 #include <fstream>
 #include <opencv2/xphoto.hpp>
-#include "realesrgan.h"
+#include <FaceDetector.h>
 #include "VideoStabilization.h"
 #include <opencv2/dnn_superres.hpp>
 #include <FileUtility.h>
@@ -2055,23 +2055,8 @@ int CFiltreEffetCPU::SuperResolutionNCNN()
 	else
 		image = input;
 
-#ifdef WIN32
-	wxString param = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.param";
-	wxString bin = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.bin";
-#else
-	wxString param = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.param";
-	wxString bin = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.bin";
-#endif
-
-	static RealESRGAN real_net;
-	if(!real_net.IsLoaded())
-		real_net.load(param.ToStdString(), bin.ToStdString());
-
-	cv::Mat img_up;
-	real_net.tile_process(image, img_up);
-
-	//cv::resize(img_up, image, image.size());
-
+	cv::Mat img_up = CFaceDetector::SuperResolution(image);
+	
 	if (preview)
 		paramOutput = img_up;
 	else
@@ -2088,23 +2073,10 @@ int CFiltreEffetCPU::Colorization()
 	else
 		image = input;
 
-#ifdef WIN32
-	wxString param = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.param";
-	wxString bin = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.bin";
-#else
-	wxString param = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.param";
-	wxString bin = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.bin";
-#endif
-
-
-	static CColorisationNCNN real_net;
-	if (!real_net.IsLoaded())
-		real_net.load(param.ToStdString(), bin.ToStdString());
-
 	if (preview)
-		paramOutput = real_net.Execute(image);
+		paramOutput = CFaceDetector::Colorisation(image);
 	else
-		input = real_net.Execute(image);
+		input = CFaceDetector::Colorisation(image);
 
 	return 0;
 }

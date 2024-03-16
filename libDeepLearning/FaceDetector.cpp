@@ -12,6 +12,8 @@
 #include <opencv2/tracking/tracking_by_matching.hpp>
 #include <opencv2/objdetect/face.hpp>
 #include <FileUtility.h>
+#include "realesrgan.h"
+#include "gfpgan.h"
 #include <ConvertUtility.h>
 #include <picture_utility.h>
 #define WIDTH_THUMBNAIL 1920
@@ -42,7 +44,11 @@ static CascadeClassifier eye_cascade;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<Facemark> facemark;
 static Ptr<FaceRecognizerSF> faceRecognizer;
-
+static Net ageNet;
+static Net genderNet;
+static RealESRGAN real_net;
+static GFPGAN gfpgan;
+static CColorisationNCNN colorreal_net;
 const Scalar meanVal(104.0, 177.0, 123.0);
 const float confidenceThreshold = 0.59;
 bool CFaceDetector::isload = false;
@@ -63,6 +69,29 @@ CFaceDetector::~CFaceDetector()
 {
 	delete detectFace;
 	delete detectFacePCN;
+}
+
+//------------------------------------------------------------------------------------
+static void to_ocv(const ncnn::Mat& result, cv::Mat& out)
+{
+	cv::Mat cv_result_32F = cv::Mat::zeros(cv::Size(512, 512), CV_32FC3);
+	for (int i = 0; i < result.h; i++)
+	{
+		for (int j = 0; j < result.w; j++)
+		{
+			cv_result_32F.at<cv::Vec3f>(i, j)[2] = (result.channel(0)[i * result.w + j] + 1) / 2;
+			cv_result_32F.at<cv::Vec3f>(i, j)[1] = (result.channel(1)[i * result.w + j] + 1) / 2;
+			cv_result_32F.at<cv::Vec3f>(i, j)[0] = (result.channel(2)[i * result.w + j] + 1) / 2;
+		}
+	}
+
+	cv::Mat cv_result_8U;
+	cv_result_32F.convertTo(cv_result_8U, CV_8UC3, 255.0, 0);
+
+	cv_result_8U.copyTo(out);
+
+	cv::flip(out, out, 1);
+
 }
 
 float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
@@ -147,18 +176,45 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "\\model\\face_recognition_sface_2021dec.onnx";
 		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
+		wxString age_net = CFileUtility::GetResourcesFolderPath() + "\\model\\age_net.caffemodel";
+		wxString age_deploy = CFileUtility::GetResourcesFolderPath() + "\\model\\age_deploy.prototxt";
+		wxString gender_net = CFileUtility::GetResourcesFolderPath() + "\\model\\gender_net.caffemodel";
+		wxString gender_deploy = CFileUtility::GetResourcesFolderPath() + "\\model\\gender_deploy.prototxt";
+		wxString esrgan_param = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.param";
+		wxString esrgan_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.bin";
+		wxString siggraph17_param = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.param";
+		wxString siggraph17_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.bin";
+		wxString gfpgan_param = CFileUtility::GetResourcesFolderPath() + "\\model\\encoder.param";
+		wxString gfpgan_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\encoder.bin";
+		wxString gfpgan_stylebin = CFileUtility::GetResourcesFolderPath() + "\\model\\style.bin";
 #else
 		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "/model/face_recognition_sface_2021dec.onnx";
         wxString fileEye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
+		wxString age_net = CFileUtility::GetResourcesFolderPath() + "/model/age_net.caffemodel";
+		wxString age_deploy = CFileUtility::GetResourcesFolderPath() + "/model/age_deploy.prototxt";
+		wxString gender_net = CFileUtility::GetResourcesFolderPath() + "/model/gender_net.caffemodel";
+		wxString gender_deploy = CFileUtility::GetResourcesFolderPath() + "/model/gender_deploy.prototxt";
+		wxString esrgan_param = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.param";
+		wxString esrgan_bin = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.bin";
+		wxString siggraph17_param = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.param";
+		wxString siggraph17_bin = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.bin";
+		wxString gfpgan_param = CFileUtility::GetResourcesFolderPath() + "/model/encoder.param";
+		wxString gfpgan_bin = CFileUtility::GetResourcesFolderPath() + "/model/encoder.bin";
+		wxString gfpgan_stylebin = CFileUtility::GetResourcesFolderPath() + "/model/style.bin";
 #endif
+
 
 
 		facemark = createFacemarkKazemi();
 		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
-
+		ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
+		genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
 		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
 		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
+		real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+		colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+		gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
 		detectFace.LoadModel(openCLCompatible);
 		detectFacePCN.LoadModel(openCLCompatible);
 		cout << "Loaded model" << endl;
@@ -174,6 +230,8 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 }
 
 
+
+
 Point2f rotatePointUsingTransformationMat(const Point2f& inPoint, const Point2f& center, const double& rotAngle)
 {
 	double angRad = rotAngle * (CV_PI / 180);
@@ -182,6 +240,49 @@ Point2f rotatePointUsingTransformationMat(const Point2f& inPoint, const Point2f&
 	outPoint.x = std::cos(angRad) * inPoint.x - std::sin(angRad) * inPoint.y;
 	outPoint.y = std::sin(angRad) * inPoint.x + std::cos(angRad) * inPoint.y;
 	return outPoint;
+}
+
+cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
+{
+	cv::Mat img_up;
+	real_net.tile_process(Face, img_up);
+	return img_up;
+}
+
+cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
+{
+	return colorreal_net.Execute(Face);
+}
+
+CSexeAndAge CFaceDetector::DetermineSexeAndAge(const cv::Mat& Face)
+{
+	CSexeAndAge sexeAndAge;
+	Scalar MODEL_MEAN_VALUES = Scalar(78.4263377603, 87.7689143744, 114.895847746);
+	vector<string> ageList = { "(0-2)","(4-6)","(8-12)","(15-20)","(25-32)","(38-43)","(48-53)","(60-100)" };
+	vector<string> genderList = { "Male","Female" };
+
+	Mat blob = blobFromImage(Face, 1, Size(227, 227), MODEL_MEAN_VALUES, false);
+
+	genderNet.setInput(blob);
+	vector<float> genderPreds = genderNet.forward();
+	// find max element index (distance function does the argmax() work in C++)
+	int max_index_gender = std::distance(genderPreds.begin(), max_element(genderPreds.begin(), genderPreds.end()));
+	string gender = genderList[max_index_gender];
+
+
+	ageNet.setInput(blob);
+	vector<float> agePreds = ageNet.forward();
+	// finding maximum indicd in the age_preds vector
+	int max_indice_age = std::distance(agePreds.begin(), max_element(agePreds.begin(), agePreds.end()));
+	string age = ageList[max_indice_age];
+
+	cout << "Gender: " << gender << "  Age: " << age << endl;
+
+	sexeAndAge.age = age;
+	sexeAndAge.sexe = gender;
+
+	return sexeAndAge;
+
 }
 
 Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, const Mat& image)
@@ -304,6 +405,7 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 		{
 			if (face.confidence > confidenceThreshold)
 			{
+				CSexeAndAge sexeAndAge;
 				Mat resizedImage;
 				Size size(150, 150);
 
@@ -317,6 +419,7 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 					try
 					{
 						resizedImage = RotateAndExtractFace(face.angle, face.myROI, source);
+						
 					}
 					catch (Exception& e)
 					{
@@ -332,9 +435,18 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 					{
 						Mat localFace;
 						std::vector<uchar> buff;
+						cv::Mat bg_upsample;
+
+						sexeAndAge = DetermineSexeAndAge(resizedImage);
+
+						bg_upsample = CFaceDetector::SuperResolution(resizedImage);
+						ncnn::Mat gfpgan_result;
+						gfpgan.process(bg_upsample, gfpgan_result);
+						to_ocv(gfpgan_result, resizedImage);
+
 						resize(resizedImage, localFace, size);
 						ImageToJpegBuffer(localFace, buff);
-						int numFace = facePhoto.InsertFace(filename, ++i, face.croppedImage.rows,
+						int numFace = facePhoto.InsertFace(filename, sexeAndAge.sexe, sexeAndAge.age, ++i, face.croppedImage.rows,
 						                                   face.croppedImage.cols, face.confidence, buff.data(),
 						                                   buff.size());
 

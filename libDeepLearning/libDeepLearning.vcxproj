@@ -78,6 +78,8 @@
     <ClCompile Include="DetectFacePCN.cpp" />
     <ClCompile Include="DetectRotation.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
+    <ClCompile Include="gfpgan.cpp" />
+    <ClCompile Include="realesrgan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
@@ -87,6 +89,9 @@
     <ClInclude Include="DetectRotation.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FaceRect.h" />
+    <ClInclude Include="gfpgan.h" />
+    <ClInclude Include="realesrgan.h" />
+    <ClInclude Include="Sig17Slice.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

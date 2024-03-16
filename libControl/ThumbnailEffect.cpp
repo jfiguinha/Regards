@@ -374,9 +374,10 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 	processIdle = true;
 
 	UpdateScroll();
-	needToRefresh = true;
-    
+	
     ResizeThumbnail();
+
+	needToRefresh = true;
 }
 
 void CThumbnailEffect::LoadPicture(void* param)
@@ -577,6 +578,8 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 		delete threadLoadingBitmap;
 		threadLoadingBitmap = nullptr;
 	}
+
+	this->Refresh();
 }
 
 void CThumbnailEffect::UpdateScroll()
