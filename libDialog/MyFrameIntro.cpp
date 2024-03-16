@@ -94,7 +94,7 @@ void MyFrameIntro::NewModelsAvailable()
 
 	if (!fileExist || localVersion != line)
 	{
-		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_SMOOTH);
+		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
 		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
 
@@ -105,7 +105,7 @@ void MyFrameIntro::NewModelsAvailable()
 #endif
 		CDownloadFile _checkVersion(serverURL);
 		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
-		_checkVersion.ExtractZipFiles(tempModel, resourcePath, dialog, this);
+		_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, this);
 
 		dialog.Close();
 	}

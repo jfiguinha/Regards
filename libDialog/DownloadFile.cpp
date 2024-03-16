@@ -159,8 +159,9 @@ bool CDownloadFile::ExtractZipFiles(const wxString& aZipFile, const wxString& aT
 		int update = 0;
 		int maxValue = zip.GetTotalEntries();
 
+		dlg->ShowModal();
 		dlg->SetRange(maxValue);
-
+		dlg->Update(0, "File Decompression ...");
 		//wxProgressDialog dialog("Extracting...", "Please wait...", maxValue, parent, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_SMOOTH);
 
 
@@ -195,7 +196,7 @@ bool CDownloadFile::ExtractZipFiles(const wxString& aZipFile, const wxString& aT
 				zip.Read(file);
 
 				++update;
-				dlg->Update(update);
+				dlg->Update(update, "File Decompression ...");
 
 			}
 

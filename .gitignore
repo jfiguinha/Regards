@@ -225,3 +225,5 @@
 /Regards/Resources/model/gender_deploy.prototxt
 /Regards/Resources/model/gender_net.caffemodel
 /Regards/Resources/model/style.bin
+/Regards/Resources/model/model.zip
+/Regards/DirHash.exe
