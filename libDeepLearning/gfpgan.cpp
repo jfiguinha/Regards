@@ -6,8 +6,8 @@
 
 GFPGAN::GFPGAN()
 {
-    net.opt.use_vulkan_compute = false;
-    net.opt.num_threads = 4;
+    net.opt.use_vulkan_compute = true;
+    net.opt.num_threads = std::thread::hardware_concurrency();
 }
 
 GFPGAN::~GFPGAN()

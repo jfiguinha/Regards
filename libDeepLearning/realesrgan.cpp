@@ -5,7 +5,7 @@
 RealESRGAN::RealESRGAN()
 {
     net.opt.use_vulkan_compute = true;
-    net.opt.num_threads = 4;
+    net.opt.num_threads = std::thread::hardware_concurrency();
     scale = 2;
     tile_size = 400;
     tile_pad = 10;
