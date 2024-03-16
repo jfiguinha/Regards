@@ -118,9 +118,19 @@ void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 {
 	NewModelsAvailable();
 
+#ifdef WIN32
+	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "\\model\\hash.txt";
+#else
+	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "/model/hash.txt";
+#endif
 
-	if (mainInterface != nullptr)
-		mainInterface->ShowViewer();
+	if (wxFileExists(fileHash) && mainInterface != nullptr)
+			mainInterface->ShowViewer();
+	else
+	{
+		wxMessageBox(wxT("IA model not found. Program can't be started."), wxT("Error"), wxICON_ERROR);
+		mainInterface->Close();
+	}
 }
 
 MyFrameIntro::~MyFrameIntro()

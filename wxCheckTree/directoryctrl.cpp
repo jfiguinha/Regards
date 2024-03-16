@@ -22,7 +22,7 @@
 #include <wx/dcscreen.h>
 #include <LibResource.h>
 #include <libPicture.h>
-
+#include <wx/dcbuffer.h>
 
 #ifndef WX_PRECOMP
 #include "wx/hash.h"
@@ -386,6 +386,7 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
 
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(wxGenericDirCtrl::OnMouseEnter));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(wxGenericDirCtrl::OnEraseBackground));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(wxGenericDirCtrl::OnPaint));
 
 	// treeStyle |= wxTR_HIDE_ROOT;
 
@@ -463,6 +464,11 @@ void wxGenericDirCtrl::OnEraseBackground(wxEraseEvent& event)
 
 wxGenericDirCtrl::~ wxGenericDirCtrl()
 {
+}
+
+void wxGenericDirCtrl::OnPaint(wxPaintEvent& event)
+{
+	wxBufferedPaintDC dc(this);
 }
 
 void wxGenericDirCtrl::OnMouseEnter(wxMouseEvent& event)

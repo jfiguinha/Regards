@@ -273,6 +273,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
 	Connect(wxEVT_FULLSCREEN,  wxCommandEventHandler(CViewerFrame::OnWindowFullScreen));
 	loadPictureStartTimer->Start(10, true);
+
+
+
 	
 }
 

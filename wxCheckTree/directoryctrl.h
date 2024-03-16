@@ -123,6 +123,7 @@ public:
 
 	~ wxGenericDirCtrl() override;
 
+	void OnPaint(wxPaintEvent& event);
 	void OnExpandItem(wxTreeEvent& event);
 	void OnCollapseItem(wxTreeEvent& event);
 	void OnBeginEditItem(wxTreeEvent& event);
