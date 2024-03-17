@@ -70,6 +70,8 @@ namespace Regards
 			void PencilSketch(cv::UMat& inputData, const double& sigma_s, const double& sigma_r, const double& shade_factor);
 			void Stylization(cv::UMat& inputData, const double& sigma_s, const double& sigma_r);
 
+
+
 			void NlMeans(cv::UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
 			             const int& searchWindowSize);
 			static cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,

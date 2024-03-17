@@ -54,9 +54,10 @@ CVideoFilter::CVideoFilter()
 	libelleStabilizeNbFrame = CLibResource::LoadStringFromResource(L"LBLVideoStabilizeFrame", 1); //LBLEFFECTOPENCL
 	showFPS = CLibResource::LoadStringFromResource(L"LBLshowFPS", 1); //L"Effect.Show FPS";
 	enableFilmgrain = CLibResource::LoadStringFromResource(L"LBLFILMGRAIN", 1);
+	enableColorisation = CLibResource::LoadStringFromResource(L"LBLCOLORISATION", 1);
 	libelleScale = CLibResource::LoadStringFromResource(L"LBLPICTUREFORMAT", 1);
 	libelleZoom = CLibResource::LoadStringFromResource(L"LBLZOOMPICTURE", 1);
-
+	enableRestore = CLibResource::LoadStringFromResource(L"LBLRESTORE", 1);
 
 	libelleTemplateWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingTemplate", 1);
 	libellesearchWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSearchWindowSize", 1);
@@ -133,6 +134,10 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	                              &videoEffectParameter->filmgrainenable, 2, 2);
 	filtreInterface->AddTreeInfos(enableGrayScale, new CTreeElementValueInt(videoEffectParameter->grayEnable),
 	                              &videoEffectParameter->grayEnable, 2, 2);
+	filtreInterface->AddTreeInfos(enableColorisation, new CTreeElementValueInt(videoEffectParameter->filmcolorisation),
+		&videoEffectParameter->filmcolorisation, 2, 2);
+	filtreInterface->AddTreeInfos(enableRestore, new CTreeElementValueInt(videoEffectParameter->filmEnhance),
+		&videoEffectParameter->filmEnhance, 2, 2);
 	filtreInterface->AddTreeInfos(enableVHSEffect, new CTreeElementValueInt(videoEffectParameter->vhsEnable),
 	                              &videoEffectParameter->vhsEnable, 2, 2);
 	filtreInterface->AddTreeInfos(enableBandCEffect, new CTreeElementValueInt(videoEffectParameter->bandcEnable),
@@ -274,9 +279,17 @@ void CVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEle
 	{
 		videoEffectParameter->stabilizeImageBuffere = value;
 	}
+	else if (key == enableRestore)
+	{
+		videoEffectParameter->filmEnhance = value;
+	}
 	else if (key == libelleAutoContrast)
 	{
 		videoEffectParameter->autoConstrast = value;
+	}
+	else if (key == enableColorisation)
+	{
+		videoEffectParameter->filmcolorisation = value;
 	}
 	else if (key == libelleStabilize)
 	{

@@ -59,6 +59,8 @@ namespace Regards::Filter
 		wxString enableOpenCL;
 		wxString threshold;
 		wxString enableFilmgrain;
+		wxString enableColorisation;
+		wxString enableRestore;
 		wxString libelleScale;
 		wxString libelleZoom;
 		wxString libelleAutoContrast;

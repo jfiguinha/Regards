@@ -8,17 +8,8 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#include <OpenGL/OpenGL.h>
-#elif defined(__WXGTK__)
-#include <GL/glx.h>
-#include <CL/cl_gl.h>
-#else
-#include <CL/cl_gl.h>
-#endif
-//#include <RegardsConfigParam.h>
-//#include <ParamInit.h>
+
+#include <FaceDetector.h>
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
@@ -186,6 +177,23 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 	{
 		openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
 		frameStabilized = true;
+	}
+
+	if (videoEffectParameter->filmEnhance || videoEffectParameter->filmcolorisation)
+	{
+		cv::Mat img_up;
+		cv::Mat image;
+		paramSrc.copyTo(image);
+		if (videoEffectParameter->filmEnhance)
+		{
+			image = CFaceDetector::SuperResolution(image);
+		}
+		if (videoEffectParameter->filmcolorisation)
+		{
+			image = CFaceDetector::Colorisation(image);
+		}
+
+		image.copyTo(paramSrc);
 	}
 }
 

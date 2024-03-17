@@ -2005,7 +2005,7 @@ void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
             filterInterpolation = regardsParam->GetInterpolationType();
 
 
-        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
             effectEnable)
         {
             if (openCVStabilization == nullptr)

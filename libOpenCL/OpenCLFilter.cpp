@@ -327,6 +327,8 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 }
 
 
+
+
 void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPercent)
 {
 	

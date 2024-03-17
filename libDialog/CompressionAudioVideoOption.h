@@ -94,6 +94,8 @@ public:
 	wxCheckBox* cknoise;
 	wxCheckBox* ckenablefilter;
 
+	wxCheckBox* ckenableColorisation;
+	wxCheckBox* ckenableRestore;
 
 	wxRadioBox* rbAudioDirectCopy;
 	wxRadioBox* rbVideoDirectCopy;
