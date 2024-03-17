@@ -94,6 +94,7 @@ void MyFrameIntro::NewModelsAvailable()
 
 	if (!fileExist || localVersion != line)
 	{
+		/*
 		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
 		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
@@ -108,6 +109,22 @@ void MyFrameIntro::NewModelsAvailable()
 		_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, this);
 
 		dialog.Close();
+		*/
+		wxString pathProgram = "";
+#ifdef __APPLE__
+		//ExportVideo(this->centralWnd->GetFilename());
+		pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p DownloadModels";
+		cout << "Path Program" << pathProgram << endl;
+#else
+#ifdef __WXMSW__
+		pathProgram = "RegardsDownloader.exe";
+#else
+		pathProgram = "./RegardsViewer -p DownloadModels";
+		cout << "Path Program" << pathProgram << endl;
+#endif
+
+#endif
+		wxExecute(pathProgram, wxEXEC_SYNC);
 	}
 
 

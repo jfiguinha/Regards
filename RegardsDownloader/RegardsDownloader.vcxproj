@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{910b2ff9-0eb8-4d0e-9ebb-1bd60c885ba1}</ProjectGuid>
+    <RootNamespace>RegardsDownloader</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\IMath;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <LibraryPath>$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\heif-master\build\lib\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>GenericCodeGen.lib;glslang.lib;glslang-default-resource-limits.lib;MachineIndependent.lib;ncnn.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;ncnn.lib;jpeg.lib;heif.lib;lz4.lib;Shcore.lib;sqlite3.lib;Ws2_32.lib;Userenv.lib;de265.lib;exiv2.lib;poppler.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;raw_r.lib;avif.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;libexif.lib;libxml2.lib;leptonica-1.83.1.lib;tesseract53.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1.lib;Imath-3_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="..\Regards\eLut.h" />
+    <ClInclude Include="..\Regards\openexr_3\half.h" />
+    <ClInclude Include="..\Regards\SqlInit.h" />
+    <ClInclude Include="..\Regards\toFloat.h" />
+    <ClInclude Include="RegardsDownloader.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\header.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Regards\openexr_3\half.cpp" />
+    <ClCompile Include="RegardsDownloader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RegardsDownloader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="RegardsDownloader.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CxImage\cximage.vcxproj">
+      <Project>{c739151f-5384-41df-a1a6-f089e2c1ad56}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libControl\libControl.vcxproj">
+      <Project>{d1ad7321-2aa9-4feb-938e-578f51ff3f4f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libDataManipulation\libDataManipulation.vcxproj">
+      <Project>{cdc6f53b-9216-4e01-bb55-4c374a466c10}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libDeepLearning\libDeepLearning.vcxproj">
+      <Project>{578851e0-ad56-4df1-b03f-1b9a0e386fad}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libDialog\libDialog.vcxproj">
+      <Project>{517373bb-6bb1-42a8-bcd1-6108cd51a73f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libEmail\libEmail.vcxproj">
+      <Project>{b9f8de9e-8e05-4455-955d-dc31f55d87bd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libFiltre\libFiltre.vcxproj">
+      <Project>{67274429-0b74-48ab-9b74-0d3e15c825be}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libGeolocalisation\libGeolocalisation.vcxproj">
+      <Project>{5e545b46-4112-4c16-b716-9a8cad576b7e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libOpenCL\libOpenCL.vcxproj">
+      <Project>{ff974e33-5149-453a-95ae-0d584fe6b913}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libOpenGL\libOpenGL.vcxproj">
+      <Project>{8ee4035e-fb02-4c5e-8dad-2838b9204c11}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libParameter\libParameter.vcxproj">
+      <Project>{2d05120b-c22e-4df1-9a29-850f5af20eb2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libPicture\libPicture.vcxproj">
+      <Project>{ab7507f9-2d5b-4627-bec3-209ae7a3d0cb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libResource\libResource.vcxproj">
+      <Project>{ae3f398c-b13b-4c98-99e6-6ec349823995}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libScanner\libScanner.vcxproj">
+      <Project>{b9fab389-b14f-493d-89a4-bac998a11299}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libSqlData\libSqlData.vcxproj">
+      <Project>{0cea9fae-6276-4cee-a7d6-c80605f0384a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libSqlEngine\libSqlEngine.vcxproj">
+      <Project>{dbdf9029-404c-4c2a-b226-485e21d3e785}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libTheme\libTheme.vcxproj">
+      <Project>{9b54079f-2ae2-477a-b157-6db796be4aff}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libUtility\libUtility.vcxproj">
+      <Project>{a576274a-8b70-4aee-afca-a14d3083c49f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libVideoConverter\libVideoConverter.vcxproj">
+      <Project>{41687fa3-7971-461f-9579-b30bba6d77a7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libViewer\libViewer.vcxproj">
+      <Project>{caa0ba1b-f0ec-48ea-9158-dad73cdb55a4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libWindow\libWindow.vcxproj">
+      <Project>{f25c7926-abe0-4a0b-a1de-3d7452a6ac73}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libffmpeg\libffmpeg.vcxproj">
+      <Project>{ce591fa1-6863-4410-a259-2567261afa51}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libJbig\jbig.vcxproj">
+      <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\wxIA\wxIA.vcxproj">
+      <Project>{d83ea5f5-d8b4-4632-aa26-dfb31490af96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\wxPDFDoc\wxPDFDoc.vcxproj">
+      <Project>{3d1770b4-abf8-49b1-a17a-4e31d18906f2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\wxCheckTree\wxCheckTree.vcxproj">
+      <Project>{475d02bb-fbd5-4094-8cd8-d33d9804cd24}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -24,13 +24,15 @@
 #include <picture_utility.h>
 #include <ImageVideoThumbnail.h>
 #include <OpenCLContext.h>
+#include <wx/progdlg.h>
+#include <DownloadFile.h>
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 5;
 cv::ocl::OpenCLExecutionContext clExecCtx;
 
-
+using namespace Regards::Internet;
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
@@ -374,6 +376,30 @@ bool MyApp::OnInit()
 		framePDF->Centre(wxBOTH);
 		framePDF->Show(true);
 		framePDF->OnOpen();	
+	}
+	else if (appName == "DownloadModels")
+	{
+		
+		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
+		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
+
+#ifdef WIN32
+		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "\\model";
+#else
+		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "/model";
+#endif
+		CDownloadFile _checkVersion(serverURL);
+		{
+			wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, nullptr, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
+			_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
+			dialog.Close();
+		}
+		
+		{
+			wxProgressDialog dialog("Extracting models ...", "Please wait...", 100, nullptr, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
+			_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, nullptr);
+			dialog.Close();
+		}
 	}
 	else
 	{
