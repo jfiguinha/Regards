@@ -427,9 +427,11 @@ void CFFmfc::SetTimePosition(int64_t time)
 	auto pos = new int64_t();
 	*pos = time;
 	_pimpl->time_position = time;
+
 	wxCommandEvent evt(SET_POSITION);
 	evt.SetClientData(pos);
 	this->GetEventHandler()->AddPendingEvent(evt);
+
 }
 
 void CFFmfc::VolumeDown()

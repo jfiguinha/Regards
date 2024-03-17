@@ -1061,71 +1061,71 @@ int CVideoControlSoft::Play(const wxString& movie)
 {
     if (videoEnd || stopVideo)
 	{
+		if (movie != filename)
+		{
+			if (localContext != nullptr)
+				sws_freeContext(localContext);
+			localContext = nullptr;
 
-			if (movie != filename)
+			//thumbnailVideo = new CThumbnailVideo(movie, true);
+
+			if (openCVStabilization != nullptr)
+				delete openCVStabilization;
+
+			openCVStabilization = nullptr;
+
+			if (playStartTimer->IsRunning())
+				playStartTimer->Stop();
+
+
+			muVideoEffect.lock();
+			videoEffectParameter.ratioSelect = 0;
+			muVideoEffect.unlock();
+
+			AspectRatio aspectRatio = CMediaInfo::GetVideoAspectRatio(movie);
+			if (aspectRatio.den != 0 && aspectRatio.num != 0)
 			{
-				if (localContext != nullptr)
-					sws_freeContext(localContext);
-				localContext = nullptr;
-
-				//thumbnailVideo = new CThumbnailVideo(movie, true);
-
-				if (openCVStabilization != nullptr)
-					delete openCVStabilization;
-
-				openCVStabilization = nullptr;
-
-				if (playStartTimer->IsRunning())
-					playStartTimer->Stop();
-
-
-				muVideoEffect.lock();
-				videoEffectParameter.ratioSelect = 0;
-				muVideoEffect.unlock();
-
-				AspectRatio aspectRatio = CMediaInfo::GetVideoAspectRatio(movie);
-				if (aspectRatio.den != 0 && aspectRatio.num != 0)
+				float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
+				printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
+				for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
 				{
-					float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
-					printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
-					for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
+					printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
+					if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
 					{
-						printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
-						if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
-						{
-							muVideoEffect.lock();
-							videoEffectParameter.ratioSelect = i - 1;
-							muVideoEffect.unlock();
-							break;
-						}
+						muVideoEffect.lock();
+						videoEffectParameter.ratioSelect = i - 1;
+						muVideoEffect.unlock();
+						break;
 					}
 				}
-
-				colorRange = CMediaInfo::GetColorRange(movie);
-				colorSpace = CMediaInfo::GetColorSpace(movie);
-
-				angle = 0;
-				flipV = false;
-				flipH = false;
 			}
 
+			colorRange = CMediaInfo::GetColorRange(movie);
+			colorSpace = CMediaInfo::GetColorSpace(movie);
 
-			startVideo = true;
-			videoStartRender = false;
-			videoStart = false;
-			newVideo = true;
-			initStart = true;
-			videoRenderStart = false;
-			filename = movie;
-			standByMovie = "";
-			pause = false;
-			firstMovie = false;
-			parentRender->Refresh();
+			angle = 0;
+			flipV = false;
+			flipH = false;
 		}
-		else if (movie != filename)
-		{
-			OnStop(movie);
-		}
+
+
+		startVideo = true;
+		videoStartRender = false;
+		videoStart = false;
+		newVideo = true;
+		initStart = true;
+		videoRenderStart = false;
+		filename = movie;
+		standByMovie = "";
+		pause = false;
+		firstMovie = false;
+		stopVideo = false;
+		parentRender->Refresh();
+	}
+	else if (movie != filename)
+	{
+		OnStop(movie);
+	}
 	return 0;
 }
 
