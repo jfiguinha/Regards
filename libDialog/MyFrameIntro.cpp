@@ -94,7 +94,28 @@ void MyFrameIntro::NewModelsAvailable()
 
 	if (!fileExist || localVersion != line)
 	{
-		/*
+
+#ifdef WIN32
+
+		wxString path = CFileUtility::GetProgramFolderPath() + "\\RegardsDownloader.exe";
+		SHELLEXECUTEINFO ShExecInfo = { 0 };
+		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+		ShExecInfo.hwnd = NULL;
+		ShExecInfo.lpVerb = NULL;
+		ShExecInfo.lpFile = path;
+		ShExecInfo.lpParameters = L"";
+		ShExecInfo.lpDirectory = NULL;
+		ShExecInfo.nShow = SW_SHOWNORMAL;
+		ShExecInfo.hInstApp = NULL;
+		ShellExecuteEx(&ShExecInfo);
+		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+		CloseHandle(ShExecInfo.hProcess);
+
+		
+	//	ShellExecute(this->GetHWND(), L"runas", path, nullptr, nullptr, SW_SHOWNORMAL);
+#else
+
 		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
 		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
@@ -109,7 +130,10 @@ void MyFrameIntro::NewModelsAvailable()
 		_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, this);
 
 		dialog.Close();
-		*/
+#endif
+
+		/*
+
 		wxString pathProgram = "";
 #ifdef __APPLE__
 		//ExportVideo(this->centralWnd->GetFilename());
@@ -125,6 +149,7 @@ void MyFrameIntro::NewModelsAvailable()
 
 #endif
 		wxExecute(pathProgram, wxEXEC_SYNC);
+		*/
 	}
 
 
