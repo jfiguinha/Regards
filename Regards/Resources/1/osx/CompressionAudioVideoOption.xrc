@@ -279,12 +279,20 @@
 							<label>Gray Filter</label>
 						</object>
 						<object class="wxCheckBox" name="ID_CKSEPIAFILTER">
-							<pos>200,60</pos>
+							<pos>140,60</pos>
 							<label>Sepia Filter</label>
 						</object>
 						<object class="wxCheckBox" name="ID_CKNOISEFILTER">
-							<pos>200,80</pos>
+							<pos>140,80</pos>
 							<label>Noise Filter</label>
+						</object>
+						<object class="wxCheckBox" name="ID_CKCOLORISATIONFILTER">
+							<pos>250,60</pos>
+							<label>Colorization Filter</label>
+						</object>
+						<object class="wxCheckBox" name="ID_CKRESTOREFILTER">
+							<pos>250,80</pos>
+							<label>Restore Filter</label>
 						</object>
 						<object class="wxCheckBox" name="ID_CKDCOLORBOOSTFILTER">
 							<pos>15,80</pos>
