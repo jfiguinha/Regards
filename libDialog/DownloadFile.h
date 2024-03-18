@@ -9,7 +9,7 @@ namespace Regards::Internet
 		CDownloadFile(const wxString& server);
 		~CDownloadFile();
 		void DownloadFile(wxProgressDialog* dlg, const wxString & outputFile, const wxString& crtFile);
-		bool ExtractZipFiles(const wxString& aZipFile, const wxString& aTargetDir, wxProgressDialog* dlg, wxWindow* parent);
+		bool ExtractZipFiles(const wxString& aZipFile, const wxString& aTargetDir, wxWindow* parent);
 	private:
 #ifdef USECURL
 		static size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream);

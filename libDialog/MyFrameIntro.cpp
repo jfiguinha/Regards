@@ -72,11 +72,14 @@ void MyFrameIntro::NewModelsAvailable()
 	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
 	wxString line = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
+    wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
+    
 #ifdef WIN32
-	wxString fileHash = documentPath + "\\model\\hash.txt";
+    wxString resourcePath = documentPath + "\\model";
+    wxString fileHash = resourcePath + "\\hash.txt";
 #else
-	wxString fileHash = documentPath + "/model/hash.txt";
+	wxString resourcePath = documentPath + "/model";
+    wxString fileHash = resourcePath + "/hash.txt";
 #endif
 
 	if (wxFileExists(fileHash))
@@ -91,7 +94,6 @@ void MyFrameIntro::NewModelsAvailable()
 
 		fileExist = true;
 	}
-
 
 	if (!fileExist || localVersion != line)
 	{
@@ -115,23 +117,25 @@ void MyFrameIntro::NewModelsAvailable()
 		*/
 
 		
-		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_SMOOTH);
+		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE  | 
+                         wxPD_CAN_ABORT |
+                         wxPD_ELAPSED_TIME |
+                         wxPD_ESTIMATED_TIME |
+                         wxPD_REMAINING_TIME | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
-		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
-
-#ifdef WIN32
-		wxString resourcePath = documentPath + "\\model";
-#else
-		wxString resourcePath = documentPath + "/model";
-#endif
+		
 		CDownloadFile _checkVersion(serverURL);
 		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
-		_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, this);
-
 		dialog.Close();
-
-
 	}
+    
+    
+    if (wxFileExists(tempModel))
+    {
+		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
+		CDownloadFile _checkVersion(serverURL);
+		_checkVersion.ExtractZipFiles(tempModel, resourcePath, this);
+    }
 
 
 }
