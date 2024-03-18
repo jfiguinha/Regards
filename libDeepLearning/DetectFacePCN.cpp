@@ -170,7 +170,9 @@ int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 
 void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
 {
-	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
+	wxString config = documentPath + "\\model\\deploy.prototxt";
 
 	try
 	{
@@ -178,17 +180,17 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
 			clExecCtx.bind();
 
 #ifdef WIN32
-		wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";
-		wxString pcn1_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-1.prototxt";
-		wxString pcn2_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-2.prototxt";
-		wxString pcn3_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-3.prototxt";
+		wxString detection_model_path = documentPath + "\\model\\PCN.caffemodel";
+		wxString pcn1_proto = documentPath + "\\model\\PCN-1.prototxt";
+		wxString pcn2_proto = documentPath + "\\model\\PCN-2.prototxt";
+		wxString pcn3_proto = documentPath + "\\model\\PCN-3.prototxt";
 #else
-        wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "/model/PCN.caffemodel";
-        wxString pcn1_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-1.prototxt";
-        wxString pcn2_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-2.prototxt";
-        wxString pcn3_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-3.prototxt";
-
+        wxString detection_model_path = documentPath + "/model/PCN.caffemodel";
+        wxString pcn1_proto = documentPath + "/model/PCN-1.prototxt";
+        wxString pcn2_proto = documentPath + "/model/PCN-2.prototxt";
+        wxString pcn3_proto = documentPath + "/model/PCN-3.prototxt";
 #endif
+
 		net_1 = readNet(CConvertUtility::ConvertToStdString(pcn1_proto),
 		                CConvertUtility::ConvertToStdString(detection_model_path));
 		net_2 = readNet(CConvertUtility::ConvertToStdString(pcn2_proto),

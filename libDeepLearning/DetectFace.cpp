@@ -194,6 +194,8 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 
 void CDetectFace::LoadModel(const bool& openCLCompatible)
 {
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
 #ifdef __APPLE__
 #else
 
@@ -201,8 +203,8 @@ void CDetectFace::LoadModel(const bool& openCLCompatible)
 	{
 #ifndef __WXGTK__
 
-		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() +
+		wxString tensorflowConfigFile = documentPath + "\\model\\opencv_face_detector.pbtxt";
+		wxString tensorflowWeightFile = documentPath +
 			"\\model\\opencv_face_detector_uint8.pb";
 
 		/*
@@ -225,8 +227,8 @@ void CDetectFace::LoadModel(const bool& openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_CPU);
 #else
 
-		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
-		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
+		wxString tensorflowConfigFile = documentPath + "/model/opencv_face_detector.pbtxt";
+		wxString tensorflowWeightFile = documentPath + "/model/opencv_face_detector_uint8.pb";
 
 		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);

@@ -114,11 +114,13 @@ Rect CFiltreEffetCPUImpl::CalculRect(int widthIn, int heightIn, int widthOut, in
 
 string CFiltreEffetCPUImpl::GenerateModelPath(string modelName, int scale)
 {
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
 	wxString path = "";
 #ifdef WIN32
-	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
+	path = documentPath + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
 #else
-	path = CFileUtility::GetResourcesFolderPath() + "/model/"  + modelName + "_x" + to_string(scale) + ".pb";
+	path = documentPath + "/model/"  + modelName + "_x" + to_string(scale) + ".pb";
 #endif
 	return CConvertUtility::ConvertToStdString(path);
 }

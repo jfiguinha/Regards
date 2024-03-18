@@ -382,30 +382,6 @@ bool MyApp::OnInit()
 		framePDF->Show(true);
 		framePDF->OnOpen();	
 	}
-	else if (appName == "DownloadModels")
-	{
-		
-		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
-		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
-
-#ifdef WIN32
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "\\model";
-#else
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "/model";
-#endif
-		CDownloadFile _checkVersion(serverURL);
-		{
-			wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, nullptr, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
-			_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
-			dialog.Close();
-		}
-		
-		{
-			wxProgressDialog dialog("Extracting models ...", "Please wait...", 100, nullptr, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
-			_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, nullptr);
-			dialog.Close();
-		}
-	}
 	else
 	{
 		frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);

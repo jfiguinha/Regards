@@ -141,10 +141,12 @@ void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 {
 	NewModelsAvailable();
 
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
 #ifdef WIN32
-	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "\\model\\hash.txt";
+	wxString fileHash = documentPath + "\\model\\hash.txt";
 #else
-	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "/model/hash.txt";
+	wxString fileHash = documentPath + "/model/hash.txt";
 #endif
 
 	if (wxFileExists(fileHash) && mainInterface != nullptr)
