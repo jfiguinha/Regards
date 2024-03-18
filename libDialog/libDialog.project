@@ -43,6 +43,8 @@
     <File Name="CompressionAudioVideoOption.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Intro">
+    <File Name="DownloadFile.h"/>
+    <File Name="DownloadFile.cpp"/>
     <File Name="TitleIntro.h"/>
     <File Name="MyFrameIntro.h"/>
     <File Name="MyCentralWindowIntro.h"/>

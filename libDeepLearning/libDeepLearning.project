@@ -17,11 +17,17 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="realesrgan.cpp"/>
+    <File Name="gfpgan.cpp"/>
     <File Name="FaceDetector.cpp"/>
     <File Name="DetectRotation.cpp"/>
     <File Name="DeepLearning.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="Sig17Slice.h"/>
+    <File Name="realesrgan.h"/>
+    <File Name="gfpgan.h"/>
+    <File Name="FaceRect.h"/>
     <File Name="FaceDetector.h"/>
     <File Name="DetectRotation.h"/>
     <File Name="DeepLearning.h"/>

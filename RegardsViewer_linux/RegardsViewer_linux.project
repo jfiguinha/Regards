@@ -304,6 +304,7 @@
         <Library Value="IlmThread-3_1"/>
         <Library Value="Imath-3_1"/>
         <Library Value="archive"/>
+        <Library Value="ncnn"/>
         <Library Value="protobuf-lite"/>
         <Library Value="protobuf"/>
         <Library Value="x265"/>
@@ -394,6 +395,7 @@
         <Library Value="lz4"/>
         <Library Value="zstd"/>
         <Library Value="gomp"/>
+        <Library Value="omp"/>
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
