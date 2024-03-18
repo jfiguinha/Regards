@@ -29,6 +29,7 @@ cd vcpkg
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
 ./vcpkg install aom
+./vcpkg install ncnn
 cd ..
 
 #Compile heif-master
