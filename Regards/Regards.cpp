@@ -260,7 +260,12 @@ bool MyApp::OnInit()
 	{
 		printf("Unable to make folder Face");
 		exit(0);
-	}	
+	}
+	if (!LocaleMakeDir("model"))
+	{
+		printf("Unable to make folder Face");
+		exit(0);
+	}
     
     if(!wxFileExists(regardsdocumentdb_path))
         wxCopyFile(regardsdb_path, regardsdocumentdb_path);

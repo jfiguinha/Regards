@@ -170,38 +170,38 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 	{
 		CDetectFacePCN detectFacePCN;
 		CDetectFace detectFace;
-
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
-		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
-		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "\\model\\face_recognition_sface_2021dec.onnx";
-		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
-		wxString age_net = CFileUtility::GetResourcesFolderPath() + "\\model\\age_net.caffemodel";
-		wxString age_deploy = CFileUtility::GetResourcesFolderPath() + "\\model\\age_deploy.prototxt";
-		wxString gender_net = CFileUtility::GetResourcesFolderPath() + "\\model\\gender_net.caffemodel";
-		wxString gender_deploy = CFileUtility::GetResourcesFolderPath() + "\\model\\gender_deploy.prototxt";
-		wxString esrgan_param = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.param";
-		wxString esrgan_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\real_esrgan.bin";
-		wxString siggraph17_param = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.param";
-		wxString siggraph17_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\siggraph17_color_sim.bin";
-		wxString gfpgan_param = CFileUtility::GetResourcesFolderPath() + "\\model\\encoder.param";
-		wxString gfpgan_bin = CFileUtility::GetResourcesFolderPath() + "\\model\\encoder.bin";
-		wxString gfpgan_stylebin = CFileUtility::GetResourcesFolderPath() + "\\model\\style.bin";
+		wxString face_landmark = documentPath + "\\model\\face_landmark_model.dat";
+		wxString fr_modelPath = documentPath + "\\model\\face_recognition_sface_2021dec.onnx";
+		wxString fileEye = documentPath + "\\model\\haarcascade_eye.xml";
+		wxString age_net = documentPath + "\\model\\age_net.caffemodel";
+		wxString age_deploy = documentPath + "\\model\\age_deploy.prototxt";
+		wxString gender_net = documentPath + "\\model\\gender_net.caffemodel";
+		wxString gender_deploy = documentPath + "\\model\\gender_deploy.prototxt";
+		wxString esrgan_param = documentPath + "\\model\\real_esrgan.param";
+		wxString esrgan_bin = documentPath + "\\model\\real_esrgan.bin";
+		wxString siggraph17_param = documentPath + "\\model\\siggraph17_color_sim.param";
+		wxString siggraph17_bin = documentPath + "\\model\\siggraph17_color_sim.bin";
+		wxString gfpgan_param = documentPath + "\\model\\encoder.param";
+		wxString gfpgan_bin = documentPath + "\\model\\encoder.bin";
+		wxString gfpgan_stylebin = documentPath + "\\model\\style.bin";
 #else
-		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
-		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "/model/face_recognition_sface_2021dec.onnx";
-        wxString fileEye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
-		wxString age_net = CFileUtility::GetResourcesFolderPath() + "/model/age_net.caffemodel";
-		wxString age_deploy = CFileUtility::GetResourcesFolderPath() + "/model/age_deploy.prototxt";
-		wxString gender_net = CFileUtility::GetResourcesFolderPath() + "/model/gender_net.caffemodel";
-		wxString gender_deploy = CFileUtility::GetResourcesFolderPath() + "/model/gender_deploy.prototxt";
-		wxString esrgan_param = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.param";
-		wxString esrgan_bin = CFileUtility::GetResourcesFolderPath() + "/model/real_esrgan.bin";
-		wxString siggraph17_param = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.param";
-		wxString siggraph17_bin = CFileUtility::GetResourcesFolderPath() + "/model/siggraph17_color_sim.bin";
-		wxString gfpgan_param = CFileUtility::GetResourcesFolderPath() + "/model/encoder.param";
-		wxString gfpgan_bin = CFileUtility::GetResourcesFolderPath() + "/model/encoder.bin";
-		wxString gfpgan_stylebin = CFileUtility::GetResourcesFolderPath() + "/model/style.bin";
+		wxString face_landmark = documentPath + "/model/face_landmark_model.dat";
+		wxString fr_modelPath = documentPath + "/model/face_recognition_sface_2021dec.onnx";
+        wxString fileEye = documentPath + "/model/haarcascade_eye.xml";
+		wxString age_net = documentPath + "/model/age_net.caffemodel";
+		wxString age_deploy = documentPath + "/model/age_deploy.prototxt";
+		wxString gender_net = documentPath + "/model/gender_net.caffemodel";
+		wxString gender_deploy = documentPath + "/model/gender_deploy.prototxt";
+		wxString esrgan_param = documentPath + "/model/real_esrgan.param";
+		wxString esrgan_bin = documentPath + "/model/real_esrgan.bin";
+		wxString siggraph17_param = documentPath + "/model/siggraph17_color_sim.param";
+		wxString siggraph17_bin = documentPath + "/model/siggraph17_color_sim.bin";
+		wxString gfpgan_param = documentPath + "/model/encoder.param";
+		wxString gfpgan_bin = documentPath + "/model/encoder.bin";
+		wxString gfpgan_stylebin = documentPath + "/model/style.bin";
 #endif
 
 

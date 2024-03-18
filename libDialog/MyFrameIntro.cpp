@@ -95,8 +95,8 @@ void MyFrameIntro::NewModelsAvailable()
 	if (!fileExist || localVersion != line)
 	{
 
-#ifdef WIN32
-
+		/*
+		
 		wxString path = CFileUtility::GetProgramFolderPath() + "\\RegardsDownloader.exe";
 		SHELLEXECUTEINFO ShExecInfo = { 0 };
 		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -111,45 +111,25 @@ void MyFrameIntro::NewModelsAvailable()
 		ShellExecuteEx(&ShExecInfo);
 		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 		CloseHandle(ShExecInfo.hProcess);
+		*/
 
-		
-	//	ShellExecute(this->GetHWND(), L"runas", path, nullptr, nullptr, SW_SHOWNORMAL);
-#else
-
-		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | !wxPD_CAN_ABORT | wxPD_SMOOTH);
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
+		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
 		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
 
 #ifdef WIN32
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "\\model";
+		wxString resourcePath = documentPath + "\\model";
 #else
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath() + "/model";
+		wxString resourcePath = documentPath + "/model";
 #endif
 		CDownloadFile _checkVersion(serverURL);
 		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
 		_checkVersion.ExtractZipFiles(tempModel, resourcePath, &dialog, this);
 
 		dialog.Close();
-#endif
 
-		/*
 
-		wxString pathProgram = "";
-#ifdef __APPLE__
-		//ExportVideo(this->centralWnd->GetFilename());
-		pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer -p DownloadModels";
-		cout << "Path Program" << pathProgram << endl;
-#else
-#ifdef __WXMSW__
-		pathProgram = "RegardsDownloader.exe";
-#else
-		pathProgram = "./RegardsViewer -p DownloadModels";
-		cout << "Path Program" << pathProgram << endl;
-#endif
-
-#endif
-		wxExecute(pathProgram, wxEXEC_SYNC);
-		*/
 	}
 
 
