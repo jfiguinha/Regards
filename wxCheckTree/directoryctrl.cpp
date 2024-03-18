@@ -351,11 +351,12 @@ void wxGenericDirCtrl::ExpandRoot()
 	 * */
 }
 
+#ifndef __APPLE__
 wxClassInfo* wxGenericDirCtrl::GetClassInfo() const
 {
 	return &wxObject::ms_classInfo;
 }
-
+#endif
 
 bool wxGenericDirCtrl::Create(wxWindow* parent,
                               wxWindowID treeid,
@@ -1326,8 +1327,8 @@ wxTreeItemId wxGenericDirCtrl::AppendItem(const wxTreeItemId& parent,
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-#ifdef WIN32
-//wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
+#ifdef __APPLE__
+wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
 #endif
 
 #ifndef __WXGTK__

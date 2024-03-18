@@ -43,6 +43,7 @@ cd vcpkg
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
+./vcpkg install wxwidgets[webview]
 cd ..
 
 #Compile heif-master

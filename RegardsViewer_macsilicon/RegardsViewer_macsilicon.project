@@ -276,6 +276,7 @@
         <Library Value="dav1d"/>
         <Library Value="wx_osx_cocoau_webview-3.2"/>
         <Library Value="archive"/>
+        <Library Value="ncnn"/>
         <Library Value="protobuf"/>
         <Library Value="xml2"/>
         <Library Value="jxl"/>

@@ -13,7 +13,7 @@ brew install -v autoconf
 brew install -v automake
 brew install -v libtool
 brew install -v qpdf
-brew install -v wxwidgets
+brew install -v ncnn
 
 
 #Install External Library
