@@ -71,11 +71,12 @@ void MyFrameIntro::NewModelsAvailable()
 	cout << "modelUpdate" << endl;
 	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
 	wxString line = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
-	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "\\model\\hash.txt";
+	wxString fileHash = documentPath + "\\model\\hash.txt";
 #else
-	wxString fileHash = CFileUtility::GetResourcesFolderPath() + "/model/hash.txt";
+	wxString fileHash = documentPath + "/model/hash.txt";
 #endif
 
 	if (wxFileExists(fileHash))
@@ -113,7 +114,7 @@ void MyFrameIntro::NewModelsAvailable()
 		CloseHandle(ShExecInfo.hProcess);
 		*/
 
-		wxString documentPath = CFileUtility::GetDocumentFolderPath();
+		
 		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_SMOOTH);
 		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
 		wxString tempModel = CFileUtility::GetTempFile("model.zip", true);

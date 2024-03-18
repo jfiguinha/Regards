@@ -49,6 +49,11 @@ static Net genderNet;
 static RealESRGAN real_net;
 static GFPGAN gfpgan;
 static CColorisationNCNN colorreal_net;
+
+static bool isRealESRGAN_load = false;
+static bool isGFPGAN_load = false;
+static bool isColorisation_load = false;
+
 const Scalar meanVal(104.0, 177.0, 123.0);
 const float confidenceThreshold = 0.59;
 bool CFaceDetector::isload = false;
@@ -69,6 +74,74 @@ CFaceDetector::~CFaceDetector()
 {
 	delete detectFace;
 	delete detectFacePCN;
+}
+
+static void LoadRealESRGAN()
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString esrgan_param = documentPath + "\\model\\real_esrgan.param";
+	wxString esrgan_bin = documentPath + "\\model\\real_esrgan.bin";
+#else
+	wxString esrgan_param = documentPath + "/model/real_esrgan.param";
+	wxString esrgan_bin = documentPath + "/model/real_esrgan.bin";
+#endif
+
+	if(!isRealESRGAN_load)
+		real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+	isRealESRGAN_load = true;
+}
+
+static void LoadGFPGAN()
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString age_net = documentPath + "\\model\\age_net.caffemodel";
+	wxString age_deploy = documentPath + "\\model\\age_deploy.prototxt";
+	wxString gender_net = documentPath + "\\model\\gender_net.caffemodel";
+	wxString gender_deploy = documentPath + "\\model\\gender_deploy.prototxt";
+	wxString gfpgan_param = documentPath + "\\model\\encoder.param";
+	wxString gfpgan_bin = documentPath + "\\model\\encoder.bin";
+	wxString gfpgan_stylebin = documentPath + "\\model\\style.bin";
+#else
+	wxString age_net = documentPath + "/model/age_net.caffemodel";
+	wxString age_deploy = documentPath + "/model/age_deploy.prototxt";
+	wxString gender_net = documentPath + "/model/gender_net.caffemodel";
+	wxString gender_deploy = documentPath + "/model/gender_deploy.prototxt";
+	wxString gfpgan_param = documentPath + "/model/encoder.param";
+	wxString gfpgan_bin = documentPath + "/model/encoder.bin";
+	wxString gfpgan_stylebin = documentPath + "/model/style.bin";
+#endif
+
+	if (!isGFPGAN_load)
+	{
+		gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
+		ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
+		genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
+	}
+	isGFPGAN_load = true;
+}
+
+
+static void LoadColorisation()
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString siggraph17_param = documentPath + "\\model\\siggraph17_color_sim.param";
+	wxString siggraph17_bin = documentPath + "\\model\\siggraph17_color_sim.bin";
+#else
+	wxString siggraph17_param = documentPath + "/model/siggraph17_color_sim.param";
+	wxString siggraph17_bin = documentPath + "/model/siggraph17_color_sim.bin";
+#endif
+
+	if (!isColorisation_load)
+	{
+		colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+	}
+	isColorisation_load = true;
 }
 
 //------------------------------------------------------------------------------------
@@ -119,6 +192,8 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 
 	return new_ratio;
 }
+
+
 
 int CFaceDetector::DectectOrientationByFaceDetector(const Mat& pBitmap)
 {
@@ -208,13 +283,13 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 
 		facemark = createFacemarkKazemi();
 		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
-		ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
-		genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
+		//ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
+		//genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
 		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
 		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
-		real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
-		colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
-		gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
+		//real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+		//colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+		//gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
 		detectFace.LoadModel(openCLCompatible);
 		detectFacePCN.LoadModel(openCLCompatible);
 		cout << "Loaded model" << endl;
@@ -244,6 +319,7 @@ Point2f rotatePointUsingTransformationMat(const Point2f& inPoint, const Point2f&
 
 cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 {
+	LoadRealESRGAN();
 	cv::Mat img_up;
 	real_net.tile_process(Face, img_up);
 	return img_up;
@@ -251,6 +327,7 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 
 cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
 {
+	LoadColorisation();
 	return colorreal_net.Execute(Face);
 }
 
@@ -380,6 +457,9 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 
 	if (isLoading)
 	{
+
+		LoadGFPGAN();
+
 		CSqlFacePhoto facePhoto;
 		Mat dest, source;
 		std::vector<CFace> listOfFace;
