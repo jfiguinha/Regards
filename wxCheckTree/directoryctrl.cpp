@@ -368,7 +368,7 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
                               int defaultFilter,
                               const wxString& name)
 {
-	if (!wxControl::Create(parent, treeid, pos, size, style, wxDefaultValidator, name))
+	if (!wxControl::Create(parent, treeid, pos, size, style | wxCLIP_CHILDREN | wxNO_FULL_REPAINT_ON_RESIZE, wxDefaultValidator, name))
 		return false;
 
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
@@ -387,7 +387,6 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
 
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(wxGenericDirCtrl::OnMouseEnter));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(wxGenericDirCtrl::OnEraseBackground));
-	Connect(wxEVT_PAINT, wxPaintEventHandler(wxGenericDirCtrl::OnPaint));
 
 	// treeStyle |= wxTR_HIDE_ROOT;
 
@@ -465,11 +464,6 @@ void wxGenericDirCtrl::OnEraseBackground(wxEraseEvent& event)
 
 wxGenericDirCtrl::~ wxGenericDirCtrl()
 {
-}
-
-void wxGenericDirCtrl::OnPaint(wxPaintEvent& event)
-{
-	wxBufferedPaintDC dc(this);
 }
 
 void wxGenericDirCtrl::OnMouseEnter(wxMouseEvent& event)
