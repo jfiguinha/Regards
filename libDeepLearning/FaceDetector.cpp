@@ -322,6 +322,7 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 	LoadRealESRGAN();
 	cv::Mat img_up;
 	real_net.tile_process(Face, img_up);
+	cv::resize(img_up, img_up, Face.size());
 	return img_up;
 }
 
