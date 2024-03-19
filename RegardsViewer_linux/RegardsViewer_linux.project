@@ -305,6 +305,13 @@
         <Library Value="Imath-3_1"/>
         <Library Value="archive"/>
         <Library Value="ncnn"/>
+        <Library Value="MachineIndependent"/>
+        <Library Value="glslang"/>
+        <Library Value="glslang-default-resource-limits"/>
+        <Library Value="GenericCodeGen"/>
+        <Library Value="OGLCompiler"/>
+        <Library Value="OSDependent"/>
+        <Library Value="SPIRV"/>
         <Library Value="protobuf-lite"/>
         <Library Value="protobuf"/>
         <Library Value="x265"/>

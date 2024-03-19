@@ -2022,6 +2022,97 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 
         case JPEG:
+            {
+                if (isThumbnail)
+                {
+                    cv::Mat picture;
+                    tjscalingfactor *scalingfactors = nullptr, sf = {1, 1};
+                    int nsf = 0;
+                    size_t _jpegSize;
+                    uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
+
+                    //unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
+                    //Getting the size
+                    if (_compressedImage != nullptr && _jpegSize > 0)
+                    {
+                        int jpegSubsamp, width = 0, height = 0;
+
+
+                        tjhandle _jpegDecompressor = tjInitDecompress();
+
+
+                        tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
+                                            &jpegSubsamp);
+
+
+                        if ((scalingfactors = tjGetScalingFactors(&nsf)) == nullptr || nsf == 0)
+                            throw("executing tjGetScalingFactors()");
+
+                        //int num = 1;
+                        //int denom = 4;
+                        //int defaultscaling = 0;
+                        int match = 0;
+
+#ifdef WIN32
+
+                        HDC screen = GetDC(nullptr);
+                        RECT rcClip;
+                        GetClipBox(screen, &rcClip);
+                        ReleaseDC(nullptr, screen);
+
+                        int widthThumbnail = max(static_cast<int32_t>(rcClip.right / 4), 200);
+                        int heightThumbnail = max(static_cast<int32_t>(rcClip.bottom / 4), 200);
+
+    #else
+                        int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
+                        int heightThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 4, 200);
+    #endif
+
+                        float ratio = CalculPictureRatio(width, height, widthThumbnail, heightThumbnail);
+
+                        for (int j = 0; j < nsf; j++)
+                        {
+                            sf = scalingfactors[j];
+                            float localRatio = static_cast<float>(sf.num) / static_cast<float>(sf.denom);
+                            if (localRatio < ratio)
+                            {
+                                if (j > 0)
+                                    sf = scalingfactors[j - 1];
+
+                                match = 1;
+                                break;
+                            }
+                        }
+
+                        if (match == 0)
+                        {
+                            sf = scalingfactors[nsf - 1];
+                            match = 1;
+                        }
+
+                        if (match == 1)
+                        {
+                            width = TJSCALED(width, sf);
+                            height = TJSCALED(height, sf);
+                        }
+
+                        picture = cv::Mat(height, width, CV_8UC4);
+
+                        tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
+                                      picture.size().width, 0, picture.size().height, TJPF_BGRX,
+                                      TJFLAG_FASTDCT);
+
+                        tjDestroy(_jpegDecompressor);
+
+                        bitmap->SetPicture(picture);
+                        bitmap->SetFilename(fileName);
+
+                        delete[] _compressedImage;
+                    }
+                    break;
+                }
+                
+            }
 		case PNM:
 		case WEBP:
 		case BMP:
@@ -2029,13 +2120,22 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				try
 				{
-					cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(fileName),
+
+  
+                    {
+                        cv::Mat matPicture;
+                        
+                        matPicture = cv::imread(CConvertUtility::ConvertToStdString(fileName),
 					                                cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
-					if (!matPicture.empty())
-					{
-						bitmap->SetFilename(fileName);
-						bitmap->SetPicture(matPicture);
-					}
+                                                    
+                        if (!matPicture.empty())
+                        {
+                            bitmap->SetFilename(fileName);
+                            bitmap->SetPicture(matPicture);
+                        }
+                    }
+                    
+
 				}
 				catch (cv::Exception& e)
 				{
