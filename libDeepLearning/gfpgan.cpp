@@ -6,7 +6,11 @@
 
 GFPGAN::GFPGAN()
 {
+#ifdef __WXGTK__
+    net.opt.use_vulkan_compute = false;
+#else
     net.opt.use_vulkan_compute = true;
+#endif
     net.opt.num_threads = std::thread::hardware_concurrency();
 }
 
