@@ -93,17 +93,17 @@ void CToolbarTexte::DrawButton(wxDC* dc, const int& x, const int& y)
 	{
 		if (isPush && activePush)
 		{
-            printf("CToolbarTexte::DrawButton CreatePushButton\n");
+            //printf("CToolbarTexte::DrawButton CreatePushButton\n");
 			CreatePushButton(dc, x, y);
 		}
 		else if (isActif)
 		{
-            printf("CToolbarTexte::DrawButton CreateActifButton\n");
+            //printf("CToolbarTexte::DrawButton CreateActifButton\n");
 			CreateActifButton(dc, x, y);
 		}
 		else
 		{
-            printf("CToolbarTexte::DrawButton CreateInactifButton\n");
+            //printf("CToolbarTexte::DrawButton CreateInactifButton\n");
 			CreateInactifButton(dc, x, y);
 		}
 	}

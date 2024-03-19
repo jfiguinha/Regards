@@ -26,6 +26,7 @@
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
 #include <aspectratio.h>
+#include <FaceDetector.h>
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
@@ -2060,6 +2061,17 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 		frameStabilized = true;
 		CFiltreEffetCPU::BrightnessAndContrastAuto(image, 1.0);
 	}
+    if (videoEffectParameter.filmcolorisation)
+    {
+        frameStabilized = true;
+        image = CFaceDetector::Colorisation(image);
+    }
+    if (videoEffectParameter.filmEnhance)
+    {
+        frameStabilized = true;
+		image = CFaceDetector::SuperResolution(image);
+    }
+    
 	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
 }
@@ -2098,7 +2110,7 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
         cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
                                                            flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
-        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast  || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance) && videoEffectParameter.
             effectEnable)
         {
             ApplyOpenCVEffect(bitmapOut);

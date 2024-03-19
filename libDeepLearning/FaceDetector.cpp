@@ -127,6 +127,8 @@ static void LoadGFPGAN()
 
 static void LoadColorisation()
 {
+    printf("LoadColorisation() \n");
+    
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
@@ -327,6 +329,7 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 
 cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
 {
+    printf("CFaceDetector::Colorisation \n");
 	LoadColorisation();
 	return colorreal_net.Execute(Face);
 }
