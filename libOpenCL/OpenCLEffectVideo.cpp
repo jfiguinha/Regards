@@ -211,6 +211,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 		}
 		if (videoEffectParameter->filmcolorisation)
 		{
+
 			image = CFaceDetector::Colorisation(image);
 		}
 
