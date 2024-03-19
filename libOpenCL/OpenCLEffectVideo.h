@@ -79,8 +79,8 @@ namespace Regards
 			void FlipVertical();
 			void ConvertToBgr();
 			bool StabilizeVideo(COpenCVStabilization* stabilization);
-			void ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter,
-			                       COpenCVStabilization* openCVStabilization);
+			void ApplyStabilization(CVideoEffectParameter* videoEffectParameter, COpenCVStabilization* openCVStabilization);
+			void ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter);
 			int GetDataSizeWidth(const bool& src);
 
 		protected:

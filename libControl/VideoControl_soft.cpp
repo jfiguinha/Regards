@@ -2005,16 +2005,21 @@ void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
             filterInterpolation = regardsParam->GetInterpolationType();
 
 
-        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
-            effectEnable)
+        if (videoEffectParameter.stabilizeVideo)
         {
             if (openCVStabilization == nullptr)
                 openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
-            openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
+            openclEffect->ApplyStabilization(&videoEffectParameter, openCVStabilization);
         }
 
         openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
                                                (int)GetZoomRatio() * 100);
+
+		if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
+			effectEnable)
+		{
+			openclEffect->ApplyOpenCVEffect(&videoEffectParameter);
+		}
                                             
         cv::UMat data = openclEffect->GetUMat(false);
         if (!renderOpenGL->SetData(data))

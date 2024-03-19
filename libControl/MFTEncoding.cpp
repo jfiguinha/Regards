@@ -341,10 +341,14 @@ HRESULT CMFTEncodingPimp::WriteFrame(
 	if (stabilizeFrame && openCVStabilization == nullptr)
 		openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-
-	if (stabilizeFrame || correctedContrast)
+	if (stabilizeFrame)
 	{
-		openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+		openclEffectVideo.ApplyStabilization(&videoCompressOption->videoEffectParameter, openCVStabilization);
+	}
+
+	if (correctedContrast || videoCompressOption->videoEffectParameter.filmcolorisation || videoCompressOption->videoEffectParameter.filmEnhance)
+	{
+		openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter);
 	}
 
 	openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);

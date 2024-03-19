@@ -1983,9 +1983,14 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				openCVStabilization = new Regards::OpenCV::COpenCVStabilization(
 					videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-			if (stabilizeFrame || correctedContrast || videoCompressOption->videoEffectParameter.filmcolorisation || videoCompressOption->videoEffectParameter.filmEnhance)
+			if (stabilizeFrame)
 			{
-				openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+				openclEffectVideo.ApplyStabilization(&videoCompressOption->videoEffectParameter, openCVStabilization);
+			}
+
+			if (correctedContrast || videoCompressOption->videoEffectParameter.filmcolorisation || videoCompressOption->videoEffectParameter.filmEnhance)
+			{
+				openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter);
 			}
 
 			openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
@@ -2082,9 +2087,14 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 		COpenCLEffectVideo openclEffectVideo;
 		openclEffectVideo.SetMatrix(mat);
 
-		if (stabilizeFrame || correctedContrast || videoCompressOption->videoEffectParameter.filmcolorisation || videoCompressOption->videoEffectParameter.filmEnhance)
+		if (stabilizeFrame)
 		{
-			openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+			openclEffectVideo.ApplyStabilization(&videoCompressOption->videoEffectParameter, openCVStabilization);
+		}
+
+		if (correctedContrast || videoCompressOption->videoEffectParameter.filmcolorisation || videoCompressOption->videoEffectParameter.filmEnhance)
+		{
+			openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter);
 		}
 
 		openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);

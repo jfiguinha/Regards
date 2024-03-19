@@ -142,7 +142,7 @@ void COpenCLEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
 }
 
 
-void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter,
+void COpenCLEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectParameter,
                                            COpenCVStabilization* openCVStabilization)
 {
 	
@@ -172,18 +172,39 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			image_local.release();
 		}
 	}
+}
+
+
+void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter)
+{
 
 	if (videoEffectParameter->autoConstrast)
 	{
-		openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
-		frameStabilized = true;
+		if (interpolatePicture)
+		{
+			openclFilter->BrightnessAndContrastAuto(paramOutput, 1.0);
+		}
+		else
+		{
+			openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
+		}
 	}
 
 	if (videoEffectParameter->filmEnhance || videoEffectParameter->filmcolorisation)
 	{
 		cv::Mat img_up;
 		cv::Mat image;
-		paramSrc.copyTo(image);
+
+		if (interpolatePicture)
+		{
+			paramOutput.copyTo(image);
+		}
+		else
+		{
+			paramSrc.copyTo(image);
+		}
+
+		
 		if (videoEffectParameter->filmEnhance)
 		{
 			image = CFaceDetector::SuperResolution(image);
@@ -193,9 +214,17 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			image = CFaceDetector::Colorisation(image);
 		}
 
-		image.copyTo(paramSrc);
+		if (interpolatePicture)
+		{
+			image.copyTo(paramOutput);
+		}
+		else
+		{
+			image.copyTo(paramSrc);
+		}
 	}
 }
+
 
 
 void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect& rc,
