@@ -121,7 +121,7 @@ public:
 
 	virtual void Init();
 
-	~ wxGenericDirCtrl() override;
+	~wxGenericDirCtrl() override;
 
 
 	void OnExpandItem(wxTreeEvent& event);
@@ -195,7 +195,7 @@ public:
 	virtual void CollapseTree();
 
 	// overridden base class methods
-	void SetFocus() wxOVERRIDE;
+	//void SetFocus() wxOVERRIDE;
 
 protected:
 	virtual void ExpandRoot();

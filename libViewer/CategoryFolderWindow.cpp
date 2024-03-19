@@ -154,6 +154,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CCategoryFolderWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
 	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CCategoryFolderWindow::OnRefreshFolder));
+
 	pimpl->update = true;
 	pimpl->noCategoryMessage = false;
 	pimpl->categoryMessage = false;
@@ -746,6 +747,7 @@ wxString CCategoryFolderWindow::GetSqlRequest()
 		return pimpl->catalogWndOld->GetSqlRequest();
 	return sqlRequest;
 }
+
 
 void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 {

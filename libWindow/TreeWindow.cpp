@@ -535,8 +535,7 @@ void CTreeWindow::GenerateScreenBuffer()
 
 void CTreeWindow::on_paint(wxPaintEvent& event)
 {
-	//printf("CTreeWindow::OnPaint \n");
-	wxPaintDC dc(this);
+	wxBufferedPaintDC dc(this);
 	if (backgroundBuffer.IsOk())
 	{
 		//printf("CTreeWindow::OnPaint not bufferUpdate \n");
