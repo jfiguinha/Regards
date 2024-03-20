@@ -26,6 +26,7 @@
 #include <OpenCLContext.h>
 #include <wx/progdlg.h>
 #include <DownloadFile.h>
+#include <ncnn/gpu.h>
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -324,6 +325,24 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		else
 			regardsParam->SetIsOpenCLSupport(true);
+	}
+
+	if (ocl::haveOpenCL())
+	{
+		int select = 0;
+		cl_uint numPlatforms = ncnn::get_gpu_count();
+		for (int i = 0; i < numPlatforms; i++)
+		{
+			const ncnn::GpuInfo & pguInfo = ncnn::get_gpu_info(i);
+			string deviceName = pguInfo.device_name();
+			if (deviceName == "nvidia" || deviceName == "amd")
+				select = i;
+
+		}
+
+
+		vkdev = ncnn::get_gpu_device(select);
+		
 	}
 
     

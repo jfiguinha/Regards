@@ -2,14 +2,20 @@
 #include "realesrgan.h"
 #include "Sig17Slice.h"
 
+extern ncnn::VulkanDevice* vkdev;
+
 RealESRGAN::RealESRGAN()
 {
-#ifdef __WXGTK__
-    net.opt.use_vulkan_compute = false;
-#else
     net.opt.use_vulkan_compute = true;
-#endif
     net.opt.num_threads = std::thread::hardware_concurrency();
+  
+       
+    if (vkdev == nullptr)
+    {
+        net.opt.use_vulkan_compute = false;
+    }
+    else
+        net.set_vulkan_device(vkdev);
     scale = 2;
     tile_size = 400;
     tile_pad = 10;
@@ -148,11 +154,13 @@ int RealESRGAN::tile_process(const cv::Mat& inimage, cv::Mat& outimage)
 
 CColorisationNCNN::CColorisationNCNN()
 {
-#ifdef __WXGTK__
     net.opt.use_vulkan_compute = true;
-#else
-    net.opt.use_vulkan_compute = true;
-#endif
+
+    if (vkdev == nullptr)
+        net.opt.use_vulkan_compute = false;
+    else
+        net.set_vulkan_device(vkdev);
+
     net.register_custom_layer("Sig17Slice", Sig17Slice_layer_creator);
     net.opt.num_threads = std::thread::hardware_concurrency();
 }

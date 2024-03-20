@@ -46,9 +46,9 @@ static Ptr<Facemark> facemark;
 static Ptr<FaceRecognizerSF> faceRecognizer;
 static Net ageNet;
 static Net genderNet;
-static RealESRGAN real_net;
-static GFPGAN gfpgan;
-static CColorisationNCNN colorreal_net;
+static RealESRGAN * real_net = nullptr;
+static GFPGAN* gfpgan = nullptr;
+static CColorisationNCNN* colorreal_net = nullptr;
 
 static bool isRealESRGAN_load = false;
 static bool isGFPGAN_load = false;
@@ -88,8 +88,11 @@ static void LoadRealESRGAN()
 	wxString esrgan_bin = documentPath + "/model/real_esrgan.bin";
 #endif
 
-	if(!isRealESRGAN_load)
-		real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+	if (!isRealESRGAN_load)
+	{
+		real_net = new RealESRGAN();
+		real_net->load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+	}
 	isRealESRGAN_load = true;
 }
 
@@ -117,7 +120,8 @@ static void LoadGFPGAN()
 
 	if (!isGFPGAN_load)
 	{
-		gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
+		gfpgan = new GFPGAN();
+		gfpgan->load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
 		ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
 		genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
 	}
@@ -141,7 +145,8 @@ static void LoadColorisation()
 
 	if (!isColorisation_load)
 	{
-		colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+		colorreal_net = new CColorisationNCNN();
+		colorreal_net->load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
 	}
 	isColorisation_load = true;
 }
@@ -323,7 +328,7 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 {
 	LoadRealESRGAN();
 	cv::Mat img_up;
-	real_net.tile_process(Face, img_up);
+	real_net->tile_process(Face, img_up);
 	cv::resize(img_up, img_up, Face.size());
 	return img_up;
 }
@@ -332,7 +337,7 @@ cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
 {
     printf("CFaceDetector::Colorisation \n");
 	LoadColorisation();
-	return colorreal_net.Execute(Face);
+	return colorreal_net->Execute(Face);
 }
 
 CSexeAndAge CFaceDetector::DetermineSexeAndAge(const cv::Mat& Face)
@@ -525,7 +530,7 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 
 						bg_upsample = CFaceDetector::SuperResolution(resizedImage);
 						ncnn::Mat gfpgan_result;
-						gfpgan.process(bg_upsample, gfpgan_result);
+						gfpgan->process(bg_upsample, gfpgan_result);
 						to_ocv(gfpgan_result, resizedImage);
 
 						resize(resizedImage, localFace, size);

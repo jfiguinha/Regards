@@ -26,6 +26,7 @@
 #include <VideoConverterFrame.h>
 #include <ScannerFrame.h>
 #include "TestFrame.h"
+#include <ncnn/gpu.h>
 //#define TEST_WINDOWMANAGER
 #ifdef __WXGTK__
  #include <X11/Xlib.h>   
@@ -155,7 +156,7 @@ const char* pick_option(int* c, char** v, const char* o, const char* d)
 wxImage defaultPicture;
 wxImage defaultPictureThumbnailPicture;
 wxImage defaultPictureThumbnailVideo;
-
+ncnn::VulkanDevice * vkdev = nullptr;
 float value[256];
 
 float clamp(float val, float minval, float maxval)
