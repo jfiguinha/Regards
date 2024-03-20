@@ -27,6 +27,7 @@
 #include <wx/progdlg.h>
 #include <DownloadFile.h>
 #include <ncnn/gpu.h>
+#include <locale>
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -335,7 +336,11 @@ bool MyApp::OnInit()
 		{
 			const ncnn::GpuInfo & pguInfo = ncnn::get_gpu_info(i);
 			string deviceName = pguInfo.device_name();
-			if (deviceName == "nvidia" || deviceName == "amd")
+            for(auto& c : deviceName)
+            {
+               c = tolower(c);
+            }
+			if (deviceName.find("nvidia") != std::string::npos)
 				select = i;
 
 		}
