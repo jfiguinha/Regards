@@ -16,6 +16,7 @@
 #include "gfpgan.h"
 #include <ConvertUtility.h>
 #include <picture_utility.h>
+#include "colornet.h"
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -49,6 +50,7 @@ static Net genderNet;
 static RealESRGAN * real_net = nullptr;
 static GFPGAN* gfpgan = nullptr;
 static CColorisationNCNN* colorreal_net = nullptr;
+static CColorization * color_net = nullptr;
 
 static bool isRealESRGAN_load = false;
 static bool isGFPGAN_load = false;
@@ -128,8 +130,7 @@ static void LoadGFPGAN()
 	isGFPGAN_load = true;
 }
 
-
-static void LoadColorisation()
+static void LoadColorisationNCNN()
 {
     printf("LoadColorisation() \n");
     
@@ -147,6 +148,28 @@ static void LoadColorisation()
 	{
 		colorreal_net = new CColorisationNCNN();
 		colorreal_net->load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+	}
+	isColorisation_load = true;
+}
+
+static void LoadColorisation()
+{
+    printf("LoadColorisation() \n");
+    
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString ncnn_param = documentPath + "\\model\\ncnn_v1.param";
+	wxString ncnn_bin = documentPath + "\\model\\ncnn_v1.bin";
+#else
+	wxString ncnn_param = documentPath + "/model/ncnn_v1.param";
+	wxString ncnn_bin = documentPath + "/model/ncnn_v1.bin";
+#endif
+
+	if (!isColorisation_load)
+	{
+		color_net = new CColorization();
+		color_net->load(ncnn_param.ToStdString(), ncnn_bin.ToStdString());
 	}
 	isColorisation_load = true;
 }
@@ -336,8 +359,9 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
 {
     printf("CFaceDetector::Colorisation \n");
-	LoadColorisation();
-	return colorreal_net->Execute(Face);
+	LoadColorisationNCNN();
+	//return colorreal_net->colorization(Face);
+    return colorreal_net->Execute(Face);
 }
 
 CSexeAndAge CFaceDetector::DetermineSexeAndAge(const cv::Mat& Face)

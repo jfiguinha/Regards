@@ -41,6 +41,7 @@
 #include "LensDistortion.h"
 #include "EdgePreservingFilter.h"
 #include "PencilSketch.h"
+#include "InpaintFilter.h"
 #include "Stylization.h"
 #include <effect_id.h>
 using namespace Regards::Filter;
@@ -339,6 +340,10 @@ CFilterWindowParam* CFiltreData::CreateEffectPointer(const int& numFilter)
 
 	case IDM_CROP:
 		filterEffect = new CCropFilter();
+		break;
+        
+	case IDM_INPAINT:
+		filterEffect = new CInpaintFilter();
 		break;
 	default: ;
 	}

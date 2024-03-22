@@ -240,6 +240,14 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 				break;
 			}
 			*/
+            case IDM_INPAINT:
+            {
+                cv::Mat pBitmap = loadingResource.LoadResourceCV("IDB_INPAINT");
+                thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
+                infosSeparationSpecialEffect->AddPhotoToList(numElement);
+                thumbnailData->SetBitmap(pBitmap);
+                break;
+            }
 
 			case IDM_REDEYE:
 				{

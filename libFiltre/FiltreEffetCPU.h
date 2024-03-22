@@ -85,7 +85,7 @@ public:
 
 	int SuperResolutionNCNN() override;
 	int Colorization() override;
-
+    int Inpaint(const cv::Mat &mask) override;
 private:
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);

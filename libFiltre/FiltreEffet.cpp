@@ -50,6 +50,11 @@ int CFiltreEffet::SuperResolutionNCNN()
 	return filtreEffet->SuperResolutionNCNN();
 }
 
+int CFiltreEffet::Inpaint(const cv::Mat &mask)
+{
+    return filtreEffet->Inpaint(mask);
+}
+
 int CFiltreEffet::Colorization()
 {
 	return filtreEffet->Colorization();

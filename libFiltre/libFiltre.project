@@ -59,6 +59,8 @@
   </VirtualDirectory>
   <VirtualDirectory Name="window">
     <VirtualDirectory Name="drawing">
+      <File Name="InpaintFilter.h"/>
+      <File Name="InpaintFIlter.cpp"/>
       <File Name="CropFilter.h"/>
       <File Name="CropFilter.cpp"/>
     </VirtualDirectory>

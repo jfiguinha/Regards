@@ -108,7 +108,7 @@ namespace Regards::FiltreEffet
 		int HistogramEqualize(cv::Mat& bitmap) { return -1; }
 		int SuperResolutionNCNN() { return -1; }
 		int Colorization() { return -1; }
-
+        int Inpaint(const cv::Mat &mask) { return -1; }
 		int BrightnessAndContrastAuto(float clipHistPercent) override;
 		cv::Mat GetBitmap(const bool& source) override;
 
@@ -118,7 +118,7 @@ namespace Regards::FiltreEffet
 		int EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r) override;
 		int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor) override;
 		int Stylization(const double& sigma_s, const double& sigma_r) override;
-
+        
 	protected:
 		COpenCLFilter* openclFilter;
 		wxImage GetwxImage(cv::UMat& input);
