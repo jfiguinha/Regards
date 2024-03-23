@@ -173,6 +173,8 @@ void CBitmapWndRender::OnCommand(wxCommandEvent& event)
 		OnScrollMove(event);
 		break;
 	}
+
+	
 }
 
 
@@ -1587,7 +1589,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	{
 		if (widthOutput < 0 || heightOutput < 0)
 			return;
-
+		/*
 		if (updateFilter)
 		{
 			if (!bitmapIsLoad)
@@ -1597,6 +1599,15 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			updateFilter = true;
 			
 		}
+		*/
+		if (updateFilter || mouseUpdate != nullptr)
+		{
+			if (!bitmapIsLoad)
+				filtreEffet->SetBitmap(source);
+			BeforeInterpolationBitmap();
+			updateFilter = true;
+		}
+
 
 		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
@@ -1652,7 +1663,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			return;
 
 
-		if (updateFilter)
+		if (updateFilter || mouseUpdate != nullptr)
 		{
 			BeforeInterpolationBitmap();
 			updateFilter = true;

@@ -22,6 +22,7 @@
 #include "PicturePanel.h"
 #include <effect_id.h>
 #include <wx/filename.h>
+#include <wx/busyinfo.h>
 #include "ParamInit.h"
 using namespace Regards::Picture;
 using namespace Regards::Internet;
@@ -390,6 +391,7 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 
 void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 {
+	wxBusyInfo wait("Please wait, working...");
 	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ClickShowButton(WM_EFFECT);
 }

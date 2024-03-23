@@ -269,7 +269,7 @@ int CFiltreEffetCPU::Inpaint(const cv::Mat &mask, int algorithm)
 		// reconstruct the distorted image
 		// choose quality profile fast (xphoto::INPAINT_FSR_FAST) or best (xphoto::INPAINT_FSR_BEST)
 		
-		xphoto::inpaint(im_distorted, mask, reconstructed, xphoto::INPAINT_SHIFTMAP);
+		xphoto::inpaint(im_distorted, mask, reconstructed, algorithm);
 	}
 
 	/*
