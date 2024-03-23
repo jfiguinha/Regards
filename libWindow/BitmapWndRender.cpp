@@ -1347,7 +1347,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 
 	default:
 		{
-			wxSetCursor(*wxSTANDARD_CURSOR);
+			MouseMove(xPos * scale_factor, yPos * scale_factor); 
 			break;
 		}
 	}

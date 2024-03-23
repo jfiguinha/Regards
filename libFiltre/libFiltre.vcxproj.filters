@@ -330,6 +330,12 @@
     <ClInclude Include="StylizationParameter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
+    <ClInclude Include="InpaintFilter.h">
+      <Filter>window\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="InpaintFilterParam.h">
+      <Filter>window\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -487,6 +493,9 @@
     </ClCompile>
     <ClCompile Include="Stylization.cpp">
       <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="InpaintFIlter.cpp">
+      <Filter>window\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

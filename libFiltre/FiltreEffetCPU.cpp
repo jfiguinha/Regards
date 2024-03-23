@@ -18,7 +18,8 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ConvertUtility.h>
-
+#include <opencv2/xphoto/inpainting.hpp>
+#include "opencv2/fuzzy.hpp"
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 using namespace Regards::DeepLearning;
@@ -249,7 +250,7 @@ static const float a(0.073235f);
 static const float b(0.176765f);
 static const cv::Mat K = (cv::Mat_<float>(3, 3) << a, b, a, b, 0.0f, b, a, b, a);
 
-int CFiltreEffetCPU::Inpaint(const cv::Mat &mask)
+int CFiltreEffetCPU::Inpaint(const cv::Mat &mask, int algorithm)
 {
     cv::Mat kernel = K;
     int maxNumOfIter = 100;
@@ -258,60 +259,32 @@ int CFiltreEffetCPU::Inpaint(const cv::Mat &mask)
 		src = paramOutput;
 	else
 		src = input;
-        
-	assert(src.type() == mask.type() && mask.type() == CV_8UC3);
-	assert(src.size() == mask.size());
-	assert(kernel.type() == CV_32F);
+      
+	Mat reconstructed;
 
-	// fill in the missing region with the input's average color
-	auto avgColor = cv::sum(src) / (src.cols * src.rows);
-	cv::Mat avgColorMat(1, 1, CV_8UC3);
-	avgColorMat.at<cv::Vec3b>(0, 0) = cv::Vec3b(avgColor[0], avgColor[1], avgColor[2]);
-	cv::resize(avgColorMat, avgColorMat, src.size(), 0.0, 0.0, cv::INTER_NEAREST);
-	cv::Mat result = (mask / 255).mul(src) + (1 - mask / 255).mul(avgColorMat);
-
-	// convolution
-	int bSize = K.cols / 2;
-	cv::Mat kernel3ch, inWithBorder;
-	result.convertTo(result, CV_32FC3);
-	cv::cvtColor(kernel, kernel3ch, cv::COLOR_GRAY2BGR);
-
-	cv::copyMakeBorder(result, inWithBorder, bSize, bSize, bSize, bSize, cv::BORDER_REPLICATE);
-	cv::Mat resInWithBorder = cv::Mat(inWithBorder, cv::Rect(bSize, bSize, result.cols, result.rows));
-
-	const int ch = result.channels();
-	for (int itr = 0; itr < maxNumOfIter; ++itr)
 	{
-		cv::copyMakeBorder(result, inWithBorder, bSize, bSize, bSize, bSize, cv::BORDER_REPLICATE);
-
-		for (int r = 0; r < result.rows; ++r)
-		{
-			const uchar *pMask = mask.ptr(r);
-			float *pRes = result.ptr<float>(r);
-			for (int c = 0; c < result.cols; ++c)
-			{
-				if (pMask[ch * c] == 0)
-				{
-					cv::Rect rectRoi(c, r, K.cols, K.rows);
-					cv::Mat roi(inWithBorder, rectRoi);
-
-					auto sum = cv::sum(kernel3ch.mul(roi));
-					pRes[ch * c + 0] = sum[0];
-					pRes[ch * c + 1] = sum[1];
-					pRes[ch * c + 2] = sum[2];
-				}
-			}
-		}
-
-		// for debugging
-		//cv::imshow("Inpainting...", result / 255.0f);
-		//cv::waitKey(1);
+		// distort image
+		Mat im_distorted(src.size(), src.type(), Scalar::all(0));
+		src.copyTo(im_distorted, mask); // copy valid pixels only (i.e. non-zero pixels in mask)
+		// reconstruct the distorted image
+		// choose quality profile fast (xphoto::INPAINT_FSR_FAST) or best (xphoto::INPAINT_FSR_BEST)
+		
+		xphoto::inpaint(im_distorted, mask, reconstructed, xphoto::INPAINT_SHIFTMAP);
 	}
 
+	/*
+	{
+		// reconstruct the distorted image
+		// choose quality profile fast (xphoto::INPAINT_FSR_FAST) or best (xphoto::INPAINT_FSR_BEST)
+		int radius = 2;
+		ft::inpaint(src, mask, reconstructed, radius, ft::LINEAR, ft::MULTI_STEP);
+	}
+	*/
+
 	if (preview)
-        result.convertTo(paramOutput, CV_8UC3);
+		reconstructed.convertTo(paramOutput, CV_8UC3);
 	else
-        result.convertTo(input, CV_8UC3);
+		reconstructed.convertTo(input, CV_8UC3);
         
     return 0;
 }

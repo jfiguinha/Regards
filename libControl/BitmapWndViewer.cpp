@@ -815,7 +815,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 		else if (CFiltreData::SupportMouseSelection(toolOption))
 		{
 			m_cDessin->Selection(x, y, hpos, vpos, GetRatio());
-			//updateFilter = true;
+			updateFilter = true;
 			needToRefresh = true;
 		}
 	}
@@ -840,5 +840,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 				wxSetCursor(*wxSTANDARD_CURSOR);
 			}
 		}
+		else
+			wxSetCursor(*wxSTANDARD_CURSOR);
 	}
 }

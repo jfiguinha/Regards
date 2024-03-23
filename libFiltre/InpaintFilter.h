@@ -9,6 +9,7 @@
 //
 
 #include "FilterWindowParam.h"
+class CMetadata;
 
 namespace Regards::Filter
 {
@@ -22,7 +23,14 @@ namespace Regards::Filter
         int GetNameFilter() override;
         wxString GetFilterLabel() override;
         CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer) override;
+		void Filter(CEffectParameter* effectParameter, cv::Mat& source, const wxString& filename,
+			IFiltreEffectInterface* filtreInterface)  override;
+		void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+			const wxString& key);
+		CEffectParameter* GetEffectPointer() override;
 	private:
+		void AddMetadataElement(vector<CMetadata>& element, wxString value, int key);
         cv::Mat GenerateMaskFromZone(const cv::Rect & zone, const cv::Mat & src);
+		wxString libelleAlgorithm;
 	};
 }

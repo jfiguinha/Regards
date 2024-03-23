@@ -209,6 +209,7 @@ namespace Regards::Window
 
 		virtual void MouseMove(const int& xPos, const int& yPos)
 		{
+			wxSetCursor(*wxSTANDARD_CURSOR);
 		};
 
 		virtual void AfterSetBitmap()

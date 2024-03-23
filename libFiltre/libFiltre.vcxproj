@@ -594,6 +594,8 @@
     <ClInclude Include="GaussianBlurFilter.h" />
     <ClInclude Include="hqdn3dEffectParameter.h" />
     <ClInclude Include="hqdn3dFilter.h" />
+    <ClInclude Include="InpaintFilter.h" />
+    <ClInclude Include="InpaintFilterParam.h" />
     <ClInclude Include="LensDistortion.h" />
     <ClInclude Include="LensDistortionEffectParameter.h" />
     <ClInclude Include="LensFlare.h" />
@@ -674,6 +676,7 @@
     <ClCompile Include="FiltreEffetCPU.cpp" />
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="hqdn3dFilter.cpp" />
+    <ClCompile Include="InpaintFIlter.cpp" />
     <ClCompile Include="LensDistortion.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />
