@@ -81,7 +81,7 @@ namespace Regards::Control
 		void AfterRender() override;
 
 
-		void SetDessinRatio();
+		void SetDessinRatio() override;
 		void DeterminePos(wxRect& rc, const int& nTailleAffichageWidth, const int& nTailleAffichageHeight,
 		                  int& left, int& top);
 

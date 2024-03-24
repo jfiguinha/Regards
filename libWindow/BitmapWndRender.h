@@ -177,6 +177,8 @@ namespace Regards::Window
 		{
 		};
 
+		virtual void SetDessinRatio() {};
+
 
 		int IsSupportOpenCL();
 		virtual bool NeedAfterRenderBitmap() { return false; };

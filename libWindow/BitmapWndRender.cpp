@@ -1287,6 +1287,7 @@ int CBitmapWndRender::UpdateResized()
 
 	//Toolbar posRatio
 	sliderInterface->SetTrackBarPosition(posRatio);
+	SetDessinRatio();
 	return 0;
 }
 

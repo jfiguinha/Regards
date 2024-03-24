@@ -419,12 +419,31 @@ void CBitmapWndViewer::SetDessinRatio()
 
 	DeterminePos(rc2, iTailleWidth, iTailleHeight, iLeft, iTop);
 
+	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 	//rc.x = iLeft;
-	rc.x = 0;
-	rc.width = iTailleWidth;
-	//rc.y = iTop;
-	rc.y = 0;
-	rc.height = iTailleHeight;
+
+	if (widthOutput < GetWidth())
+	{
+		rc.x = ((GetWidth() * scale_factor) - widthOutput) / 2;
+		rc.width = widthOutput;
+	}
+	else
+	{
+		rc.x = 0;
+		rc.width = GetWidth();
+	}
+
+	if (heightOutput < GetHeight())
+	{
+		rc.y = ((GetHeight() * scale_factor) - heightOutput) / 2;
+		rc.height = widthOutput;
+	}
+	else
+	{
+		rc.y = 0;
+		rc.height = GetHeight();
+	}
 
 	if (m_cDessin != nullptr)
 		m_cDessin->SetMaxPosition(rc);
@@ -639,8 +658,10 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 		int hpos = GetHPos();
 		int vpos = GetVPos();
 
-		int x = (xPos - xPosImage);
-		int y = (yPos - yPosImage);
+		//int x = (xPos - xPosImage);
+		//int y = (yPos - yPosImage);
+		int x = xPos ;
+		int y = yPos;
 		m_cDessin->SetScaleFactor(scale_factor);
 
 		invertColor = true;
@@ -799,8 +820,8 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 		int hpos = GetHPos();
 		int vpos = GetVPos();
 
-		int x = (xPos - xPosImage);
-		int y = (yPos - yPosImage);
+		int x = (xPos);
+		int y = (yPos);
 
 		m_cDessin->SetScaleFactor(scale_factor);
 

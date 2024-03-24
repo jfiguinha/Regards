@@ -21,16 +21,7 @@ CDraw::~CDraw()
 
 bool CDraw::VerifierValiditerPoint(const wxPoint& pt)
 {
-	if (pt.x < m_rcAffichage.x)
-		return false;
-
-	if (pt.x > (m_rcAffichage.x + m_rcAffichage.width))
-		return false;
-
-	if (pt.y > (m_rcAffichage.y + m_rcAffichage.height))
-		return false;
-
-	if (pt.y < m_rcAffichage.y)
+	if (pt.x < m_rcAffichage.x || (pt.x > (m_rcAffichage.x + m_rcAffichage.width)) || (pt.y > (m_rcAffichage.y + m_rcAffichage.height)) || (pt.y < m_rcAffichage.y))
 		return false;
 
 	return true;
@@ -51,13 +42,13 @@ float CDraw::YDrawingPosition(const float& m_ly, const long& m_lVScroll, const f
 
 float CDraw::XRealPosition(const float& m_lx, const long& m_lHScroll, const float& ratio)
 {
-	int x = (m_lx + m_lHScroll) / ratio;
+	int x = (m_lx - m_rcAffichage.x + m_lHScroll) / ratio;
 	return x;
 }
 
 float CDraw::YRealPosition(const float& m_ly, const long& m_lVScroll, const float& ratio)
 {
-	int y = (m_ly + m_lVScroll) / ratio;
+	int y = (m_ly - m_rcAffichage.y + m_lVScroll) / ratio;
 	return y;
 }
 

@@ -44,10 +44,10 @@ void CCrop::Dessiner(wxDC* deviceContext, const long& m_lHScroll, const long& m_
 
 
 	wxRect rcTemp;
-	rcTemp.x = XDrawingPosition(ptSelection[0].x, m_lHScroll, ratio) + m_rcAffichage.x;
-	rcTemp.width = (XDrawingPosition(ptSelection[1].x, m_lHScroll, ratio) + m_rcAffichage.x) - rcTemp.x;
-	rcTemp.y = YDrawingPosition(ptSelection[0].y, m_lVScroll, ratio) + m_rcAffichage.y;
-	rcTemp.height = (YDrawingPosition(ptSelection[3].y, m_lVScroll, ratio) + m_rcAffichage.y) - rcTemp.y;
+	rcTemp.x = XDrawingPosition(ptSelection[0].x, m_lHScroll, ratio);
+	rcTemp.width = (XDrawingPosition(ptSelection[1].x, m_lHScroll, ratio)) - rcTemp.x;
+	rcTemp.y = YDrawingPosition(ptSelection[0].y, m_lVScroll, ratio);
+	rcTemp.height = (YDrawingPosition(ptSelection[3].y, m_lVScroll, ratio)) - rcTemp.y;
 
 	switch (style)
 	{
@@ -160,11 +160,11 @@ void CCrop::Selection(const int32_t& xNewSize, const int32_t& yNewSize, const lo
 
 	if (VerifierValiditerPoint(pt))
 	{
-		const int x = XRealPosition(xNewSize - m_rcAffichage.x, m_lVScroll, ratio);
-		const int y = YRealPosition(yNewSize - m_rcAffichage.y, m_lHScroll, ratio);
+		const int x = XRealPosition(xNewSize, m_lHScroll, ratio);
+		const int y = YRealPosition(yNewSize, m_lVScroll, ratio);
 
 
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(WIN32)
 		wchar_t message[255];
 		wsprintf(message, L"Pos : x : %d et y : %d \n", x, y);
 		OutputDebugString(message);
@@ -247,8 +247,8 @@ void CCrop::MouseMove(const long& xNewSize, const long& yNewSize, const long& m_
 
 	if (VerifierValiditerPoint(pt))
 	{
-		const float x = XRealPosition(xNewSize - m_rcAffichage.x, m_lHScroll, ratio);
-		const float y = YRealPosition(yNewSize - m_rcAffichage.y, m_lVScroll, ratio);
+		const float x = XRealPosition(xNewSize, m_lHScroll, ratio);
+		const float y = YRealPosition(yNewSize, m_lVScroll, ratio);
 
 		switch (iSelect)
 		{
@@ -375,8 +375,8 @@ void CCrop::InitPoint(const long& m_lx, const long& m_ly, const long& m_lHScroll
 		pt.y = static_cast<int>(m_ly);
 		if (VerifierValiditerPoint(pt))
 		{
-			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll, ratio);
-			y = YRealPosition(m_ly - m_rcAffichage.y, m_lVScroll, ratio);
+			x = XRealPosition(m_lx , m_lHScroll, ratio);
+			y = YRealPosition(m_ly, m_lVScroll, ratio);
 
 			for (auto i = 0; i < 4; i++)
 			{
