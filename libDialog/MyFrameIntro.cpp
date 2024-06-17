@@ -53,7 +53,7 @@ MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, cons
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(MyFrameIntro::OnTimeShowViewer), nullptr, this);
 	//CreateStatusBar();
 
-	diaporamaTimer->Start(200, wxTIMER_ONE_SHOT);
+	//diaporamaTimer->Start(200, wxTIMER_ONE_SHOT);
 }
 
 void MyFrameIntro::on_size(wxSizeEvent& event)

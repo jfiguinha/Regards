@@ -3,6 +3,7 @@
 #include <window_id.h>
 #include <fstream>
 #include <ConvertUtility.h>
+#include <x265.h>
 
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
@@ -278,6 +279,9 @@ void CFFmfc::SetVideoParameter(int angle, int flipV, int flipH)
 //Send Command "Quit"
 bool CFFmfc::Quit()
 {  
+    
+    
+    x265_cleanup();
 	printf("CFFmfc::Quit \n");
 	bool isExitNow = false;
 	if (_pimpl->exit_remark == 0)

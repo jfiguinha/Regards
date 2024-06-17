@@ -408,9 +408,12 @@ bool MyApp::OnInit()
 	}
 	else
 	{
+        /*
 		frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 		frameStart->Centre(wxBOTH);
 		frameStart->Show(true);
+        */
+        ShowViewer();
 
 		CViewerFrame::SetViewerMode(true);
 	}

@@ -473,6 +473,7 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.4 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.7 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.57 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/libvulkan.so.1.3.204 ./Debug/libvulkan.so</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
@@ -563,6 +564,7 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.4 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.7 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.57 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/libvulkan.so.1.3.204 ./Release/libvulkan.so</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
