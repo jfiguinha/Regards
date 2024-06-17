@@ -192,6 +192,15 @@ public:
 		for (auto i = 0; i < 256; i++)
 			value[i] = static_cast<float>(i);
 
+		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
+		//------SDL------------------------
+		//³õÊ¼»¯
+		if (SDL_Init(flags))
+		{
+			std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
+			wxMessageBox(_T("Could not initialize SDL Audio"));
+			//exit(1);
+		}
 	}
 
 
