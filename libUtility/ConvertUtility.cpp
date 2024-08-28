@@ -1,5 +1,6 @@
 #include "header.h"
 #include "ConvertUtility.h"
+#include "base64.h"
 using namespace std;
 
 CConvertUtility::CConvertUtility(void)
@@ -9,6 +10,16 @@ CConvertUtility::CConvertUtility(void)
 
 CConvertUtility::~CConvertUtility(void)
 {
+}
+
+wxString CConvertUtility::ConvertToBase64(const wxString& s)
+{
+    return base64_encode(s);
+}
+
+wxString CConvertUtility::ConvertFromBase64(const wxString& s)
+{
+    return base64_decode(s);
 }
 
 wxString CConvertUtility::GeneratePath(const wxString& firstPart, const wxString& secondPart)

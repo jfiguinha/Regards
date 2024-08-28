@@ -402,11 +402,11 @@
         <Library Value="lz4"/>
         <Library Value="zstd"/>
         <Library Value="gomp"/>
-        <Library Value="omp"/>
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
+        <Library Value="omp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

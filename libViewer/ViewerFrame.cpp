@@ -272,7 +272,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
 	Connect(wxEVT_FULLSCREEN,  wxCommandEventHandler(CViewerFrame::OnWindowFullScreen));
-	loadPictureStartTimer->Start(10, true);
+	
+    if(openFirstFile)
+        OpenPictureFile();
+    else
+        loadPictureStartTimer->Start(10, true);
 
 
 
@@ -303,7 +307,12 @@ void CViewerFrame::OnWindowFullScreen(wxCommandEvent & event)
 
 void CViewerFrame::OnOpenFile(wxTimerEvent& event)
 {
-	CLibPicture libPicture;
+    OpenPictureFile();
+}
+
+void CViewerFrame::OpenPictureFile()
+{
+ 	CLibPicture libPicture;
 	wxString dirpath = "";
 	if (fileToOpen == "")
 	{
@@ -338,9 +347,7 @@ void CViewerFrame::OnOpenFile(wxTimerEvent& event)
 			mainWindow->SetPictureMode();
 		else
 			mainWindow->SetViewerMode();
-	}
-
-	
+	}   
 }
 
 
@@ -588,7 +595,7 @@ void CViewerFrame::Exit()
 		mainWindowWaiting->SetSize(0, 0, mainWindow->GetWindowWidth(), mainWindow->GetWindowHeight());
 		mainWindowWaiting->Refresh();
 
-		exitTimer->Start(1000, wxTIMER_ONE_SHOT);
+		exitTimer->Start(10, wxTIMER_ONE_SHOT);
 	}
 	else
 	{
@@ -657,7 +664,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTURENEXT;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(50, true);
+					loadPictureTimer->Start(0, true);
 				pictureEndLoading = false;
 				/*
 				printf("Image Suivante \n");
@@ -676,7 +683,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTUREPREVIOUS;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(50, true);
+					loadPictureTimer->Start(0, true);
 				pictureEndLoading = false;
 			}
 			break;

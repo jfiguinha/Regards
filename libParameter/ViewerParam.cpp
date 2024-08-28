@@ -341,7 +341,7 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("FacePertinence", to_string(pertinence)));
 	sectionWindow->append_node(node("windowMode", to_string(windowMode)));
 	sectionWindow->append_node(node("windowVisible", to_string(windowVisible)));
-	sectionWindow->append_node(node("LastFilepath", CConvertUtility::ConvertToUTF8(filepath)));
+	sectionWindow->append_node(node("LastFilepath", CConvertUtility::ConvertToBase64(filepath)));
 	sectionWindow->append_node(node("VideoEditorPath", pathProgramVideo));
 	sectionWindow->append_node(node("ImageEditorPath", pathProgramPicture));
 	sectionWindow->append_node(node("SlideFacePos", to_string(posFace)));
@@ -561,7 +561,9 @@ void CMainParam::GetWindowParameter(xml_node<>* window_node)
 	child_node = window_node->first_node("LastFilepath");
 	if (child_node != nullptr)
 	{
-		filepath = child_node->value();
+		filepath = CConvertUtility::ConvertFromBase64(child_node->value());
+        if(!wxFileExists(filepath))
+            filepath = child_node->value();
 	}
 
 	child_node = window_node->first_node("VideoEditorPath");

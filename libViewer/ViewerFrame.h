@@ -119,7 +119,7 @@ namespace Regards::Viewer
 		void OnWindowViewer(wxCommandEvent& event);
 		void OnWindowPicture(wxCommandEvent& event);
         void OnWindowFullScreen(wxCommandEvent & event);
-
+        void OpenPictureFile();
 		wxDECLARE_EVENT_TABLE();
 
 

@@ -1365,6 +1365,8 @@ void CCentralWindow::SetListeFile(const wxString& filename, const int& typeAffic
 
 CCentralWindow::~CCentralWindow()
 {
+    cout << "End Program : " << filename << endl;
+    
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		config->SetLastShowPicture(filename);

@@ -29,12 +29,14 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="base64.cpp"/>
     <File Name="DateValidation.cpp"/>
     <File Name="utility.cpp"/>
     <File Name="picture_utility.cpp"/>
     <File Name="wxmd5.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="base64.h"/>
     <File Name="ConvertUtility.cpp"/>
     <File Name="FileUtility.cpp"/>
     <File Name="DateValidation.hpp"/>
