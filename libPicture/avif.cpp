@@ -10,6 +10,9 @@ using namespace HEIF;
 #include "imageinfo.hpp"
 using namespace Regards::Picture;
 
+std::mutex CAvif::mudecoder;
+avifDecoder* CAvif::decoder;
+
 CAvif::CAvif()
 {
 }
@@ -199,7 +202,9 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 
 			if (reader->getItemDataWithDecoderParameters(thumbId.get(), itemData, itemSize) == ErrorCode::OK)
 			{
-				avifDecoder* decoder = avifDecoderCreate();
+				mudecoder.lock();
+				if(decoder == nullptr)
+					decoder = avifDecoderCreate();
 				avifRWData raw = AVIF_DATA_EMPTY;
 				avifRWDataRealloc(&raw, itemSize);
 				memcpy(&raw, itemData, itemSize);
@@ -227,8 +232,9 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 						}
 						avifRGBImageFreePixels(&dstRGB);
 					}
-					avifDecoderDestroy(decoder);
+					//avifDecoderDestroy(decoder);
 				}
+				mudecoder.unlock();
 				avifImageDestroy(decoded);
 				avifRWDataFree(&raw);
 			}
@@ -250,7 +256,9 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 cv::Mat CAvif::GetPicture(const char * filename, int& delay, const int& numPicture)
 {
 	cv::Mat out;
-	avifDecoder* decoder = avifDecoderCreate();
+	mudecoder.lock();
+	if (decoder == nullptr)
+		decoder = avifDecoderCreate();
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
@@ -304,7 +312,7 @@ cv::Mat CAvif::GetPicture(const char * filename, int& delay, const int& numPictu
 	}
 cleanup:
 
-	avifDecoderDestroy(decoder);
+	mudecoder.unlock();
 	return out;
 }
 
@@ -384,7 +392,9 @@ void CAvif::SavePicture(const char * filename, cv::Mat& source, uint8_t* data, c
 vector<cv::Mat> CAvif::GetAllPicture(const char * filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
-	avifDecoder* decoder = avifDecoderCreate();
+	mudecoder.lock();
+	if (decoder == nullptr)
+		decoder = avifDecoderCreate();
 
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
@@ -440,8 +450,7 @@ vector<cv::Mat> CAvif::GetAllPicture(const char * filename, int& delay)
 
 	}
 cleanup:
-
-	avifDecoderDestroy(decoder);
+	mudecoder.unlock();
 	return listPicture;
 }
 
@@ -449,7 +458,9 @@ cv::Mat CAvif::GetPicture(const char * filename)
 {
 	cv::Mat out;
 	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
+	mudecoder.lock();
+	if (decoder == nullptr)
+		decoder = avifDecoderCreate();
 
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
@@ -492,7 +503,7 @@ cv::Mat CAvif::GetPicture(const char * filename)
 	
 cleanup:
 	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
+	mudecoder.unlock();
 	return out;
 }
 

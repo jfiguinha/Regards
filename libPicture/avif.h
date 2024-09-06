@@ -1,5 +1,6 @@
 #pragma once
 class CRegardsBitmap;
+struct avifDecoder;
 
 namespace Regards
 {
@@ -22,6 +23,10 @@ namespace Regards
 			static void SavePicture(const char * filename, cv::Mat& source, uint8_t* data, const long& size,
 			                        const int& compression = 0, const bool& hasExif = false);
 			static void SetMetadata(const char * filename, uint8_t*& data, long& size);
+
+		private:
+			static std::mutex mudecoder;
+			static avifDecoder* decoder;
 		};
 	}
 }
