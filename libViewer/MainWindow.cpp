@@ -230,7 +230,9 @@ void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 
 void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
-    //printf("CMainWindow::UpdateThumbnailIcone \n");
+    printf("CMainWindow::UpdateThumbnailIcone \n");
+    
+    
 	nbProcess--;
 	auto localevent = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	localevent->SetClientData(event.GetClientData());
@@ -1170,6 +1172,7 @@ void CMainWindow::ProcessThumbnail()
 		{
 			ProcessThumbnail(path, 0, 0);
 			listFile[path] = true;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		}
 
 		photoList.erase(photoList.begin() + i);
@@ -1235,9 +1238,15 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	}
 	else
 	{
+        if(type == 30)
+            printf("CMainWindow::OnProcessThumbnail longWindow : %d\n", longWindow);
+        
 		std::map<wxString, bool>::iterator it = listFile.find(localName);
 		if (it == listFile.end())
 		{
+            if(type == 30)
+                printf("CMainWindow::OnProcessThumbnail find longWindow : %d\n", longWindow);
+                
 			std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(),  localName);
 			if (itPhoto != photoList.end())
 				photoList.erase(itPhoto);
@@ -1245,6 +1254,17 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 			ProcessThumbnail(localName, type, longWindow);
 			listFile[localName] = true;
 		}
+
+
+        if(type == 30)
+        {
+            printf("CMainWindow::OnProcessThumbnail longWindow wxEVENT_THUMBNAILREFRESH \n");
+            
+            wxWindow* window = this->FindWindowById(longWindow);
+            auto localevent = new wxCommandEvent(wxEVENT_THUMBNAILREFRESH);
+            wxQueueEvent(window, localevent);
+        }
+
 	}
 	delete filename;
 	processIdle = true;
@@ -1273,11 +1293,13 @@ void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 
 void CMainWindow::LoadPicture(void* param)
 {
+
 	//std::thread* t1 = nullptr;
 	CLibPicture libPicture;
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
 	if (threadLoadingBitmap == nullptr)
 		return;
+        
 
 	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename) || libPicture.TestIsVideo(threadLoadingBitmap->filename))
 	{
@@ -1355,7 +1377,18 @@ void CMainWindow::LoadPicture(void* param)
         }
 			
 	}
-
+    
+    if(threadLoadingBitmap->type == 30)
+    {
+        printf("CMainWindow::LoadPicture Type %d window Id : %d \n", threadLoadingBitmap->type, threadLoadingBitmap->longWindow);
+        
+        wxWindow* window = threadLoadingBitmap->window->FindWindowById(threadLoadingBitmap->longWindow);
+        if(window == nullptr)
+            printf("CMainWindow::LoadPicture window error \n");
+        auto localevent = new wxCommandEvent(wxEVENT_THUMBNAILREFRESH);
+        wxQueueEvent(window, localevent);
+    }
+    
 	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);
 	wxQueueEvent(threadLoadingBitmap->window, event);

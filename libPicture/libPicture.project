@@ -133,6 +133,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="imageinfo.hpp"/>
     <File Name="jxl.h"/>
     <File Name="ImageVideoThumbnail.h"/>
     <File Name="ascii.h"/>

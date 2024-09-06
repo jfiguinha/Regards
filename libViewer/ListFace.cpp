@@ -479,6 +479,8 @@ void CListFace::FacialRecognitionReload()
 			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 			this->GetEventHandler()->AddPendingEvent(evt);
 		}
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 }
 
@@ -673,6 +675,8 @@ void CListFace::ProcessIdle()
 		processPhoto = true;
 
 		listPhoto.erase(listPhoto.begin());
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 
 	muListPhoto.unlock();

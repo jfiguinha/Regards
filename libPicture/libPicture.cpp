@@ -84,6 +84,7 @@ using namespace Regards::exiv2;
 #include <PDFOption.h>
 #include <SqlPhotos.h>
 #include <CompressionOption.h>
+#include "imageinfo.hpp"
 #include <opencv2/core/core.hpp>
 #include "RegardsPDF.h"
 #define TYPE_IMAGE_CXIMAGE 0
@@ -177,11 +178,13 @@ int CLibPicture::TestExtension(const wxString& ext)
 void CLibPicture::Initx265Decoder()
 {
 	CHeic::Initx265Decoder();
+    //CAvif::CreateDecoder();
 }
 
 void CLibPicture::Uninitx265Decoder()
 {
 	CHeic::Uninitx265Decoder();
+    //CAvif::DestroyDecoder();
 }
 
 bool CLibPicture::TestIsPicture(const wxString& szFileName)
@@ -2460,7 +2463,14 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	CxImage* image = nullptr;
 	wxImage imageWx;
 	int typeImage = TYPE_IMAGE_CXIMAGE;
-	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
+
+    auto info = imageinfo::parse<imageinfo::FilePathReader>(CConvertUtility::ConvertToStdString(fileName));
+    if (info) {
+        width = info.size().width;
+        height = info.size().height;
+        return 0;
+    }
+
 	switch (iFormat)
 	{
 	case JXL:

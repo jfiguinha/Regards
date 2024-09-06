@@ -664,7 +664,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTURENEXT;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(0, true);
+					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
 				/*
 				printf("Image Suivante \n");
@@ -683,7 +683,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				repeatEvent = true;
 				eventToLoop = wxEVENT_PICTUREPREVIOUS;
 				if (pictureEndLoading)
-					loadPictureTimer->Start(0, true);
+					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
 			}
 			break;
@@ -693,7 +693,9 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 			{
 				repeatEvent = false;
 				eventToLoop = wxEVENT_PICTURELAST;
-				loadPictureTimer->Start(0, true);
+				if (pictureEndLoading)
+					loadPictureTimer->Start(50, true);
+				pictureEndLoading = false;
 			}
 			break;
 
@@ -701,7 +703,9 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 			{
 				repeatEvent = false;
 				eventToLoop = wxEVENT_PICTUREFIRST;
-				loadPictureTimer->Start(0, true);
+				if (pictureEndLoading)
+					loadPictureTimer->Start(50, true);
+				pictureEndLoading = false;
 			}
 			break;
 

@@ -7,6 +7,7 @@ using namespace HEIF;
 #include <avif/avif.h>
 #include <iostream>
 #include <fstream>
+#include "imageinfo.hpp"
 using namespace Regards::Picture;
 
 CAvif::CAvif()
@@ -33,101 +34,128 @@ void LoadDataFromFile(const char * filename, avifRWData& raw)
 
 int CAvif::GetDelay(const char * filename)
 {
-	int delay = 0;
-	// Decode it
-	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
+	uint32_t delay = 0;
+	auto* reader = Reader::Create();
+	Array<uint32_t> itemIds;
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-		goto cleanup;
-	}
-
-	result = avifDecoderParse(decoder);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
-		goto cleanup;
-	}
-
-	if (decoder != nullptr)
+	// Input file available from https://github.com/nokiatech/heif_conformance
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
-		delay = decoder->duration / decoder->imageCount;
+		FileInformation info;
+		if (reader->getFileInformation(info) == ErrorCode::OK)
+		{
+			if (info.trackInformation.size > 0)
+			{
+				// Print information for every track read
+				for (const auto& trackProperties : info.trackInformation)
+				{
+					const auto sequenceId = trackProperties.trackId;
+					Array<TimestampIDPair> timestamps;
+					reader->getItemTimestamps(sequenceId, timestamps);
+					//cout << "Sample timestamps:" << endl;
+					for (const auto& timestamp : timestamps)
+					{
+						delay = timestamp.timeStamp;
+						break;
+						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
 	}
 
-cleanup:
+	Reader::Destroy(reader);
 
-	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
+
 	return delay;
 }
 
 int CAvif::GetNbFrame(const char * filename)
 {
-	int nbFrame = 0;
-	// Decode it
-	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
+	int nbId = 0;
+	auto* reader = Reader::Create();
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-		goto cleanup;
-	}
-
-	result = avifDecoderParse(decoder);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
-		goto cleanup;
-	}
-
-	if (decoder != nullptr)
+	if (reader->initialize(filename) == ErrorCode::OK)
 	{
-		nbFrame = decoder->imageCount;
+		FileInformation info;
+		reader->getFileInformation(info);
+
+		// Print information for every track read
+		for (const auto& trackProperties : info.trackInformation)
+		{
+			const auto sequenceId = trackProperties.trackId;
+			//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
+
+			if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
+			{
+				//cout << "This is a master image sequence." << endl;
+			}
+
+			if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
+			{
+				// Assume there is only one type track reference, so check reference type and master track ID(s) from
+				// the first one.
+				const auto tref = trackProperties.referenceTrackIds[0];
+				//cout << "Track reference type is '" << tref.type.value << "'" << endl;
+				//cout << "This is a thumbnail track for track ID ";
+				/*
+				for (const auto masterTrackId : tref.trackIds)
+				{
+					//cout << masterTrackId << endl;
+				}
+				*/
+			}
+
+			Array<TimestampIDPair> timestamps;
+			reader->getItemTimestamps(sequenceId, timestamps);
+			//cout << "Sample timestamps:" << endl;
+			/*
+			for (const auto& timestamp : timestamps)
+			{
+				//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+			}
+			*/
+			nbId = timestamps.size;
+		}
+
+		if (nbId == 0)
+		{
+			nbId = 1;
+		}
 	}
-cleanup:
 
-
-	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
-	return nbFrame;
+	Reader::Destroy(reader);
+	return nbId;
 }
 
 
 void CAvif::GetPictureDimension(const char * filename, int& width, int& height)
 {
-	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
+    auto info = imageinfo::parse<imageinfo::FilePathReader>(filename);
+    printf("File: %s\n", filename);
+    if (!info) {
+        printf("  - Error    : %s\n", info.error_msg());
+        width = 0;
+        height = 0;
+    } 
+    else 
+    {
+        printf("  - Format   : %d\n", info.format());
+        printf("  - Ext      : %s\n", info.ext());
+        printf("  - Full Ext : %s\n", info.full_ext());
+        printf("  - Size     : {width: %d, height: %d}\n", info.size().width, info.size().height);
+        printf("  - Mimetype : %s\n", info.mimetype());
+        width = info.size().width;
+        height = info.size().height;
 
+    }
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-		goto cleanup;
-	}
-
-	result = avifDecoderParse(decoder);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
-		goto cleanup;
-	}
-	if (decoder != nullptr)
-	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded);
-
-		if (decodeResult == AVIF_RESULT_OK)
-		{
-			width = decoded->width;
-			height = decoded->height;
-		}
-
-	}
-
-cleanup:
-
-	
-	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
 }
 
 
@@ -148,6 +176,12 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 		// Find the item ID
 		ImageId itemId;
 		reader->getPrimaryItem(itemId);
+	FileInformation fileInfo{};
+	reader->getFileInformation(fileInfo);
+
+	// Find the primary item ID.
+	ImageId primaryItemId;
+	reader->getPrimaryItem(primaryItemId);
 
 		// Thumbnail references ('thmb') are from the thumbnail image to the master image
 		Array<ImageId> thumbIds;
@@ -216,9 +250,7 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 cv::Mat CAvif::GetPicture(const char * filename, int& delay, const int& numPicture)
 {
 	cv::Mat out;
-	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
-
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
@@ -352,8 +384,6 @@ void CAvif::SavePicture(const char * filename, cv::Mat& source, uint8_t* data, c
 vector<cv::Mat> CAvif::GetAllPicture(const char * filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
-	int returnCode = 1;
-	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
 
@@ -418,8 +448,6 @@ cleanup:
 cv::Mat CAvif::GetPicture(const char * filename)
 {
 	cv::Mat out;
-
-	int returnCode = 1;
 	avifImage* decoded = avifImageCreateEmpty();
 	avifDecoder* decoder = avifDecoderCreate();
 
@@ -473,36 +501,59 @@ bool CAvif::HasExifMetaData(const char * filename)
 {
 	bool exifData = false;
 
-	int returnCode = 1;
+	auto* reader = Reader::Create();
 
-	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
-
-
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-		goto cleanup;
-	}
-
-	result = avifDecoderParse(decoder);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
-		goto cleanup;
-	}
-
-	if (decoder != nullptr)
+	if (reader->initialize(filename) != ErrorCode::OK)
 	{
-		avifDecoderRead(decoder, decoded);
-		if (decoded->exif.size > 0)
-			exifData = true;
-
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
+		return false;
 	}
-	
-cleanup:
-	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
-	return exifData;
+
+	FileInformation fileInfo{};
+	reader->getFileInformation(fileInfo);
+
+	// Find the primary item ID.
+	ImageId primaryItemId;
+	reader->getPrimaryItem(primaryItemId);
+
+	// Find item(s) referencing to the primary item with "cdsc" (content describes) item reference.
+	Array<ImageId> metadataIds;
+	reader->getReferencedToItemListByType(primaryItemId, "cdsc", metadataIds);
+	if (metadataIds.size > 0)
+	{
+		ImageId exifItemId = metadataIds[0];
+
+		// Optional: verify the item ID we got is really of "Exif" type.
+		FourCC itemType;
+		reader->getItemType(exifItemId, itemType);
+		if (itemType != "Exif")
+		{
+			return false;
+		}
+
+		// Get item size from parsed information. For simplicity, assume it is the first and only non-image item in the
+		// file.
+		uint64_t itemSize = 1024 * 1024;
+		for (ItemInformation itemInfo : fileInfo.rootMetaBoxInformation.itemInformations)
+		{
+			if (itemInfo.itemId != exifItemId)
+			{
+				continue;
+			}
+			itemSize = itemInfo.size;
+		}
+		// Request item data.
+		if (itemSize > 0)
+		{
+            exifData = true;
+		}
+	}
+
+	Reader::Destroy(reader);
+    
+    return exifData;
 }
 
 
@@ -553,63 +604,80 @@ static const unsigned int image_data_offset = 20;
 // static
 void CAvif::GetMetadata(const char * filename, uint8_t*& data, unsigned int& size)
 {
-	int returnCode = 1;
+	auto* reader = Reader::Create();
 
-	avifImage* decoded = avifImageCreateEmpty();
-	avifDecoder* decoder = avifDecoderCreate();
-
-
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-		goto cleanup;
-	}
-
-	result = avifDecoderParse(decoder);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
-		goto cleanup;
-	}
-
-
-	if (decoder != nullptr)
+	if (reader->initialize(filename) != ErrorCode::OK)
 	{
-		avifDecoderRead(decoder, decoded);
-		if (decoded->exif.size > 0)
-		{
-			if (size > 0)
-			{
-				//memcpy(data, decoded->exif.data, size);
-				/* raw EXIF header data */
-				static const unsigned char exif_header[] = {
-					0xff, 0xd8, 0xff, 0xe1
-				};
-				/* length of data in exif_header */
-				static const unsigned int exif_header_len = sizeof(exif_header);
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
+		return;
+	}
 
-				char value = 0;
-				int pos = 0;
-				memcpy(data, exif_header, exif_header_len);
-				pos += exif_header_len;
-				value = ((decoded->exif.size + 2) >> 8);
-				memcpy(data + pos, &value, 1);
-				pos++;
-				value = (decoded->exif.size + 2) & 0xff;
-				memcpy(data + pos, &value, 1);
-				pos++;
-				memcpy(data + pos, decoded->exif.data, decoded->exif.size);
-				pos += decoded->exif.size;
-				memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
-			}
-			else
-				size = decoded->exif.size + 512;
+	FileInformation fileInfo{};
+	reader->getFileInformation(fileInfo);
+
+	// Find the primary item ID.
+	ImageId primaryItemId;
+	reader->getPrimaryItem(primaryItemId);
+
+	// Find item(s) referencing to the primary item with "cdsc" (content describes) item reference.
+	Array<ImageId> metadataIds;
+	reader->getReferencedToItemListByType(primaryItemId, "cdsc", metadataIds);
+	if (metadataIds.size > 0)
+	{
+		ImageId exifItemId = metadataIds[0];
+
+		// Optional: verify the item ID we got is really of "Exif" type.
+		FourCC itemType;
+		reader->getItemType(exifItemId, itemType);
+		if (itemType != "Exif")
+		{
+			return;
 		}
 
-	}
-	
+		// Get item size from parsed information. For simplicity, assume it is the first and only non-image item in the
+		// file.
+		uint64_t itemSize = 1024 * 1024;
+		for (ItemInformation itemInfo : fileInfo.rootMetaBoxInformation.itemInformations)
+		{
+			if (itemInfo.itemId != exifItemId)
+			{
+				continue;
+			}
+			itemSize = itemInfo.size;
+		}
+		// Request item data.
+		if (size > 0)
+		{
+			/* raw EXIF header data */
+			static const unsigned char exif_header[] = {
+				0xff, 0xd8, 0xff, 0xe1
+			};
+			/* length of data in exif_header */
+			static const unsigned int exif_header_len = sizeof(exif_header);
 
-cleanup:
-	avifImageDestroy(decoded);
-	avifDecoderDestroy(decoder);
-	return;
+			auto memoryBuffer = new uint8_t[itemSize];
+			reader->getItemData(metadataIds[0], memoryBuffer, itemSize);
+
+			char value = 0;
+			int pos = 0;
+			memcpy(data, exif_header, exif_header_len);
+			pos += exif_header_len;
+			value = ((itemSize + 2) >> 8);
+			memcpy(data + pos, &value, 1);
+			pos++;
+			value = (itemSize + 2) & 0xff;
+			memcpy(data + pos, &value, 1);
+			pos++;
+			memcpy(data + pos, memoryBuffer + 4, itemSize - 4);
+			pos += itemSize - 4;
+			memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
+			delete[] memoryBuffer;
+		}
+		else
+			size = itemSize + 512;
+	}
+
+	Reader::Destroy(reader);
 }

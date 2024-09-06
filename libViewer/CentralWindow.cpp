@@ -281,7 +281,7 @@ void CCentralWindow::RefreshThumbnail(int type, int longWindow)
 	switch (longWindow)
 	{
 	case THUMBNAILVIDEOWINDOW:
-		if (thumbnailVideo != nullptr)
+		if (thumbnailVideo != nullptr)wxEVENT_ENDLOADPICTURE
 		{
 			if (type == 1)
 			{
@@ -405,14 +405,10 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 					if (thumbnailVideo->IsShown())
 						thumbnailVideo->Refresh();
 				}
-
 			}
 			break;
 		}
 	}
-
-
-	//RefreshThumbnail(threadLoadingBitmap->type, event.GetExtraLong());
 
 	delete threadLoadingBitmap;
 }

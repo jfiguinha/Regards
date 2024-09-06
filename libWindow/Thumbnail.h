@@ -146,6 +146,7 @@ namespace Regards::Window
 		void OnRefreshIconeSelect(wxTimerEvent& event);
 		void OnRefreshIconeActif(wxTimerEvent& event);
 		void OnTimerClick(wxTimerEvent& event);
+        void OnRefreshThumbnail(wxTimerEvent& event);
 		void OnTimerMove(wxTimerEvent& event);
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
@@ -155,6 +156,7 @@ namespace Regards::Window
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
 		void update_render_icone(wxCommandEvent& event);
+        void OnEndPreprocessThumbnail(wxCommandEvent& event);
 
 
 		CIcone *  GetIconeByPath(const wxString& filepath);
@@ -204,7 +206,7 @@ namespace Regards::Window
 		vector<int> TabSize;
 		int Max;
 
-
+        wxTimer* refreshItemTimer;
 		wxTimer* refreshMouseMove;
 		wxTimer* refreshActifTimer;
 		wxTimer* refreshSelectTimer;
@@ -228,6 +230,7 @@ namespace Regards::Window
 		bool threadDataProcess;
 		bool allThreadEnd;
 		bool showLoadingBitmap;
+        bool preprocessisAvailable = true;
 		int stepLoading;
 
 		wxAnimation* m_animation;

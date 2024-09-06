@@ -292,7 +292,7 @@ void CCategoryFolderWindow::ProcessIdle()
 {
     pimpl->muVector.lock();
 	bool hasSomethingTodo = true;
-	printf("CCategoryFolderWindow::ProcessIdle() \n");
+	//printf("CCategoryFolderWindow::ProcessIdle() \n");
     int nbPhotos = pimpl->m_photosVector.size();
 	pimpl->muVector.unlock();
 
@@ -347,7 +347,10 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		}
 
+        
 		pimpl->muVector.unlock();
+        
+        
 	}
 	else if (!pimpl->traitementEnd)
 	{

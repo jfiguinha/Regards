@@ -440,7 +440,9 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CThumbnail::OnLeaveWindow));
 
-
+    refreshItemTimer = new wxTimer(this, TIMER_REFRESH_THUMBNAIL); 
+    Connect(TIMER_REFRESH_THUMBNAIL, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshThumbnail), nullptr, this);
+    
 	timeClick = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerClick), nullptr, this);
 
@@ -461,6 +463,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
+    Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CThumbnail::OnEndPreprocessThumbnail));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CThumbnail::EraseThumbnail));
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CThumbnail::OnScrollMove));
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
@@ -706,6 +709,8 @@ CThumbnail::~CThumbnail()
 	threadDataProcess = false;
 
 	refreshMouseMove->Stop();
+    
+    refreshItemTimer->Stop();
 
 	timeClick->Stop();
 
@@ -1077,8 +1082,24 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 }
 
+ void CThumbnail::OnRefreshThumbnail(wxTimerEvent& event)
+ {
+    printf("CThumbnail::OnRefreshThumbnail \n");
+    preprocessisAvailable = true;
+    needToRefresh = true;   
+ }
+
+void CThumbnail::OnEndPreprocessThumbnail(wxCommandEvent& event)
+{
+    printf("CThumbnail::OnEndPreprocessThumbnail \n");
+    preprocessisAvailable = true;
+    needToRefresh = true;
+}
+
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
+   // printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
+    
 	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
 
@@ -1088,7 +1109,9 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
 	
-	if (preprocess_thumbnail)
+   // printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
+    
+	if (preprocess_thumbnail && preprocessisAvailable)
 	{
 		if (value == 1)
 		{
@@ -1103,15 +1126,20 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
 						if (window != nullptr)
 						{
+                            
+                            printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
 							wxString* localName = new wxString(pThumbnailData->GetFilename());
 							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
 							evt.SetClientData(localName);
-							evt.SetInt(0);
+							evt.SetInt(30);
 							evt.SetExtraLong(localid);
 							window->GetEventHandler()->AddPendingEvent(evt);
 						}
 						pThumbnailData->SetIsProcess(true);
 					}
+                    
+                    preprocessisAvailable = false;
+                    refreshItemTimer->Start(100, true);
 				}
 			}
 		}

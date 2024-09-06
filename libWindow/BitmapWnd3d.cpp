@@ -199,9 +199,11 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
    of seconds used by the CPU, you will need to divide by
    CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical
    32 bit system.  */
+   
+   /*
 	clock_t start, end;
 
-	/* Recording the starting clock tick.*/
+	// Recording the starting clock tick.
 	start = clock();
 
 	if (!clExecCtx.empty())
@@ -216,7 +218,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	cout << "Time taken by program is : " << fixed
 		<< time_taken << setprecision(5);
 	cout << " sec " << endl;
-
+    */
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
 }
 
