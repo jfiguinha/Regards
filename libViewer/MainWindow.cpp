@@ -56,8 +56,8 @@ using namespace std;
 using namespace Regards::Sqlite;
 
 bool firstTime = true;
-
-
+extern bool preprocessisAvailable;
+extern std::mutex muProcessAvailable;
 class CFolderFiles
 {
 public:
@@ -1254,15 +1254,13 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 			ProcessThumbnail(localName, type, longWindow);
 			listFile[localName] = true;
 		}
-
-
-        if(type == 30)
+		else if(type == 30)
         {
             printf("CMainWindow::OnProcessThumbnail longWindow wxEVENT_THUMBNAILREFRESH \n");
-            
-            wxWindow* window = this->FindWindowById(longWindow);
-            auto localevent = new wxCommandEvent(wxEVENT_THUMBNAILREFRESH);
-            wxQueueEvent(window, localevent);
+
+			muProcessAvailable.lock();
+			preprocessisAvailable = true;
+			muProcessAvailable.unlock();
         }
 
 	}
@@ -1378,16 +1376,17 @@ void CMainWindow::LoadPicture(void* param)
 			
 	}
     
+	/*
     if(threadLoadingBitmap->type == 30)
     {
         printf("CMainWindow::LoadPicture Type %d window Id : %d \n", threadLoadingBitmap->type, threadLoadingBitmap->longWindow);
         
         wxWindow* window = threadLoadingBitmap->window->FindWindowById(threadLoadingBitmap->longWindow);
-        if(window == nullptr)
-            printf("CMainWindow::LoadPicture window error \n");
-        auto localevent = new wxCommandEvent(wxEVENT_THUMBNAILREFRESH);
-        wxQueueEvent(window, localevent);
+		wxCommandEvent event(wxEVENT_THUMBNAILREFRESH);
+		event.SetInt(0);
+        wxPostEvent(window, event);
     }
+	*/
     
 	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);

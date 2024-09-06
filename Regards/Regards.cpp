@@ -176,7 +176,6 @@ bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
 
-
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())
@@ -328,6 +327,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
+	/*
 	if (ocl::haveOpenCL())
 	{
 		int select = 0;
@@ -349,6 +349,7 @@ bool MyApp::OnInit()
 		vkdev = ncnn::get_gpu_device(select);
 		
 	}
+	*/
 
     
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
