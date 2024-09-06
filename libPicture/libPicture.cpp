@@ -1936,7 +1936,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 				if (numPicture == 0)
 				{
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName));
+					picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isThumbnail);
 				}
 				else
 				{

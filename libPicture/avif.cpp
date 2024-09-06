@@ -13,6 +13,9 @@ using namespace Regards::Picture;
 std::mutex CAvif::mudecoder;
 avifDecoder* CAvif::decoder;
 
+std::mutex CAvif::mudecoder_thumb;
+avifDecoder* CAvif::decoder_thumb;
+
 CAvif::CAvif()
 {
 }
@@ -25,6 +28,9 @@ void CAvif::CreateDecoder()
 {
 	decoder = avifDecoderCreate();   
     decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
+    
+	decoder_thumb = avifDecoderCreate();   
+    decoder_thumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
 }
 
 void LoadDataFromFile(const char * filename, avifRWData& raw)
@@ -208,7 +214,7 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 
 			if (reader->getItemDataWithDecoderParameters(thumbId.get(), itemData, itemSize) == ErrorCode::OK)
 			{
-				mudecoder.lock();
+				mudecoder_thumb.lock();
 
 				avifRWData raw = AVIF_DATA_EMPTY;
 				avifRWDataRealloc(&raw, itemSize);
@@ -217,7 +223,7 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 				avifImage* decoded = avifImageCreateEmpty();
 				if (decoder != nullptr)
 				{
-					avifResult decodeResult = avifDecoderRead(decoder, decoded);
+					avifResult decodeResult = avifDecoderRead(decoder_thumb, decoded);
 
 					if (decodeResult == AVIF_RESULT_OK)
 					{
@@ -239,7 +245,7 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 					}
 					//avifDecoderDestroy(decoder);
 				}
-				mudecoder.unlock();
+				mudecoder_thumb.unlock();
 				avifImageDestroy(decoded);
 				avifRWDataFree(&raw);
 			}
@@ -454,19 +460,32 @@ cleanup:
 	return listPicture;
 }
 
-cv::Mat CAvif::GetPicture(const char * filename)
+cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
 {
 	cv::Mat out;
 	avifImage* decoded = avifImageCreateEmpty();
-	mudecoder.lock();
+    
+    if(isThumb)
+        mudecoder_thumb.lock();
+    else
+        mudecoder.lock();
 
-	avifResult result = avifDecoderSetIOFile(decoder, filename);
+    avifResult result;
+    if(isThumb)
+        result = avifDecoderSetIOFile(decoder_thumb, filename);
+    else
+        result = avifDecoderSetIOFile(decoder, filename);
+        
 	if (result != AVIF_RESULT_OK) {
 		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
-	result = avifDecoderParse(decoder);
+    if(isThumb)
+        result = avifDecoderParse(decoder_thumb);
+    else
+        result = avifDecoderParse(decoder);
+
 	if (result != AVIF_RESULT_OK) {
 		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
 		goto cleanup;
@@ -474,7 +493,11 @@ cv::Mat CAvif::GetPicture(const char * filename)
 
 	if (decoder != nullptr)
 	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded);
+        avifResult decodeResult;
+        if(isThumb)
+            decodeResult = avifDecoderRead(decoder_thumb, decoded);
+        else
+            decodeResult = avifDecoderRead(decoder, decoded);
 
 		if (decodeResult == AVIF_RESULT_OK)
 		{
@@ -500,7 +523,10 @@ cv::Mat CAvif::GetPicture(const char * filename)
 	
 cleanup:
 	avifImageDestroy(decoded);
-	mudecoder.unlock();
+    if(isThumb)
+        mudecoder_thumb.unlock();
+    else
+        mudecoder.unlock();
 	return out;
 }
 

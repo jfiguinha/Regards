@@ -12,7 +12,7 @@ namespace Regards
 			CAvif();
 			~CAvif();
             static void CreateDecoder();
-			static cv::Mat GetPicture(const char * filename);
+			static cv::Mat GetPicture(const char * filename, bool isThumb = false);
 			static cv::Mat GetPicture(const char * filename, int& delay, const int& numPicture);
 			static vector<cv::Mat> GetAllPicture(const char * filename, int& delay);
 			static void GetPictureDimension(const char * filename, int& width, int& height);
@@ -28,6 +28,8 @@ namespace Regards
 		private:
 			static std::mutex mudecoder;
 			static avifDecoder* decoder;
+            static std::mutex mudecoder_thumb;
+			static avifDecoder* decoder_thumb;
 		};
 	}
 }
