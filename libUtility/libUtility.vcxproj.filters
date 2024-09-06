@@ -51,6 +51,9 @@
     <ClInclude Include="DateValidation.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
@@ -75,6 +78,9 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="DateValidation.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

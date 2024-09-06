@@ -30,7 +30,7 @@
    René Nyffenegger rene.nyffenegger@adp-gmbh.ch
 
 */
-
+#include "header.h"
 #include "base64.h"
 
 #include <algorithm>

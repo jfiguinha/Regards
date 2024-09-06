@@ -597,6 +597,7 @@
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="hqdn3d.h" />
+    <ClInclude Include="imageinfo.hpp" />
     <ClInclude Include="ImageLoadingFormat.h" />
     <ClInclude Include="ImageVideoThumbnail.h" />
     <ClInclude Include="J2kOption.h" />

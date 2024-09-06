@@ -300,6 +300,9 @@
     <ClInclude Include="PictureMetadataExiv.h">
       <Filter>libexif</Filter>
     </ClInclude>
+    <ClInclude Include="imageinfo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
