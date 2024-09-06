@@ -21,6 +21,12 @@ CAvif::~CAvif()
 {
 }
 
+void CAvif::CreateDecoder()
+{
+	decoder = avifDecoderCreate();   
+    decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
+}
+
 void LoadDataFromFile(const char * filename, avifRWData& raw)
 {
 	FILE* f = fopen(filename, "rb");
@@ -203,8 +209,7 @@ cv::Mat CAvif::GetThumbnailPicture(const char * filename)
 			if (reader->getItemDataWithDecoderParameters(thumbId.get(), itemData, itemSize) == ErrorCode::OK)
 			{
 				mudecoder.lock();
-				if(decoder == nullptr)
-					decoder = avifDecoderCreate();
+
 				avifRWData raw = AVIF_DATA_EMPTY;
 				avifRWDataRealloc(&raw, itemSize);
 				memcpy(&raw, itemData, itemSize);
@@ -257,8 +262,6 @@ cv::Mat CAvif::GetPicture(const char * filename, int& delay, const int& numPictu
 {
 	cv::Mat out;
 	mudecoder.lock();
-	if (decoder == nullptr)
-		decoder = avifDecoderCreate();
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
@@ -393,9 +396,6 @@ vector<cv::Mat> CAvif::GetAllPicture(const char * filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
 	mudecoder.lock();
-	if (decoder == nullptr)
-		decoder = avifDecoderCreate();
-
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {
@@ -459,9 +459,6 @@ cv::Mat CAvif::GetPicture(const char * filename)
 	cv::Mat out;
 	avifImage* decoded = avifImageCreateEmpty();
 	mudecoder.lock();
-	if (decoder == nullptr)
-		decoder = avifDecoderCreate();
-
 
 	avifResult result = avifDecoderSetIOFile(decoder, filename);
 	if (result != AVIF_RESULT_OK) {

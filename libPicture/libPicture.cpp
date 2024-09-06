@@ -178,7 +178,7 @@ int CLibPicture::TestExtension(const wxString& ext)
 void CLibPicture::Initx265Decoder()
 {
 	CHeic::Initx265Decoder();
-    //CAvif::CreateDecoder();
+    CAvif::CreateDecoder();
 }
 
 void CLibPicture::Uninitx265Decoder()

@@ -11,6 +11,7 @@ namespace Regards
 		public:
 			CAvif();
 			~CAvif();
+            static void CreateDecoder();
 			static cv::Mat GetPicture(const char * filename);
 			static cv::Mat GetPicture(const char * filename, int& delay, const int& numPicture);
 			static vector<cv::Mat> GetAllPicture(const char * filename, int& delay);
