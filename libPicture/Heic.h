@@ -27,7 +27,7 @@ namespace Regards
 			                        const int& compression = 50, const bool& hasExif = false);
 
 		private:
-			static void DecodePictureMultiThread(void* parameter);
+            static cv::Mat DecodeFrame_heif(uint8_t * sampleData, const uint64_t & size);
 		};
 	}
 }

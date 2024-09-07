@@ -156,7 +156,7 @@ namespace Regards::Window
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 		
 		void update_render_icone(wxCommandEvent& event);
-
+        void RefreshThumbnail(wxCommandEvent& event);
 
 
 		CIcone *  GetIconeByPath(const wxString& filepath);
@@ -170,6 +170,7 @@ namespace Regards::Window
 		void MoveBottom();
 		void MoveRight();
 
+        bool preprocessisAvailable = true;
 		bool isMouseOnWindow = false;
 		bool enableTimer = true;
 		int nbElement = 0;

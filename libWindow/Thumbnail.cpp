@@ -467,6 +467,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::OnRefreshThumbnail));
+    Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CThumbnail::RefreshThumbnail));
 	processIdle = false;
 
 	listProcessWindow.push_back(this);
@@ -784,6 +785,8 @@ void CThumbnail::AfterSetList()
 				break;
 		}
 	}
+    
+    preprocessisAvailable = true;
 }
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
@@ -835,38 +838,7 @@ void CThumbnail::SetIconeSize(const int& width, const int& height)
 	themeThumbnail.themeIcone.SetHeight(height);
 
 	ResizeThumbnail();
-
-	/*
-	wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	if (window != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_ICONESIZEREFRESH);
-		evt.SetInt(height);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
 }
-
-#ifdef TBB
-struct mytask {
-	mytask(CThreadLoadingBitmap * pLoadBitmap)
-	{
-		this->pLoadBitmap = pLoadBitmap;
-	}
-
-	void operator()()
-	{
-		CThumbnail::LoadPicture(pLoadBitmap);
-	}
-
-
-	CThreadLoadingBitmap * pLoadBitmap;
-};
-#endif
-
-
-
-
 
 void CThumbnail::ExecuteTimer(const int& numId, wxTimer* refresh)
 {
@@ -910,6 +882,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 	{
 		this->Refresh();
 		needToRefresh = false;
+        preprocessisAvailable = true;
 	}
 
 	if (processIdle)
@@ -937,7 +910,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		int i = 0;
 		time_t ending;
 		time(&ending);
-        printf("%s CThumbnail::listToErrase Nb Element : %i  \n", ctime(&ending), listToErrase.size());
+        //printf("%s CThumbnail::listToErrase Nb Element : %i  \n", ctime(&ending), listToErrase.size());
 		for (int i = 0; i < listToErrase.size(); i++)
 		{
 			CListToClean* element = listToErrase[i];
@@ -1078,7 +1051,12 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 }
 
-
+void CThumbnail::RefreshThumbnail(wxCommandEvent& event)
+{
+    preprocessisAvailable = true;
+    needToRefresh = true;
+    printf("CThumbnail::RefreshThumbnail \n");
+}
 
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
@@ -1092,14 +1070,8 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 		nbProcesseur = config->GetThumbnailProcess();
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
-	
-	bool localpreprocessisAvailable;
-
-	muProcessAvailable.lock();
-	localpreprocessisAvailable = preprocessisAvailable;
-	muProcessAvailable.unlock();
-    
-	if (preprocess_thumbnail && localpreprocessisAvailable)
+	   
+	if (preprocess_thumbnail && preprocessisAvailable)
 	{
 		if (value == 1)
 		{
@@ -1126,10 +1098,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 						pThumbnailData->SetIsProcess(true);
 					}
                     
-					muProcessAvailable.lock();
 					preprocessisAvailable = false;
-					muProcessAvailable.unlock();
-
 				}
 			}
 		}

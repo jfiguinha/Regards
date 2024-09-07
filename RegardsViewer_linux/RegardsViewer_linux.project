@@ -405,7 +405,6 @@
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
-        <Library Value="dav1d"/>
         <Library Value="tinyxml2"/>
         <Library Value="omp"/>
       </Linker>

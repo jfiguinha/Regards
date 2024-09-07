@@ -50,8 +50,6 @@ using namespace Regards::FiltreEffet;
 extern bool firstElementToShow;
 extern int numElementToLoad;
 extern wxImage defaultPicture;
-extern bool preprocessisAvailable;
-extern std::mutex muProcessAvailable;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
                                const CThemeSplitter& theme, const bool& horizontal)
@@ -342,10 +340,6 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 	int type = threadLoadingBitmap->type;
 	long longWindow = threadLoadingBitmap->longWindow;
 
-	muProcessAvailable.lock();
-	preprocessisAvailable = true;
-	muProcessAvailable.unlock();
-
 	if (longWindow == 0)
 	{
 		if (listPicture != nullptr)
@@ -418,6 +412,13 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 			break;
 		}
 	}
+    
+    if(threadLoadingBitmap->type == 30)
+    {
+       	wxWindow* mainWindow = this->FindWindowById(threadLoadingBitmap->longWindow);
+        wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+        mainWindow->GetEventHandler()->AddPendingEvent(evt); 
+    }
 
 
 	delete threadLoadingBitmap;

@@ -56,8 +56,7 @@ using namespace std;
 using namespace Regards::Sqlite;
 
 bool firstTime = true;
-extern bool preprocessisAvailable;
-extern std::mutex muProcessAvailable;
+
 class CFolderFiles
 {
 public:
@@ -1257,10 +1256,9 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 		else if(type == 30)
         {
             printf("CMainWindow::OnProcessThumbnail longWindow wxEVENT_THUMBNAILREFRESH \n");
-
-			muProcessAvailable.lock();
-			preprocessisAvailable = true;
-			muProcessAvailable.unlock();
+            wxWindow* mainWindow = this->FindWindowById(longWindow);
+            wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+            mainWindow->GetEventHandler()->AddPendingEvent(evt); 
         }
 
 	}

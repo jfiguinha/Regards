@@ -7,19 +7,25 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
+unzip vcpkg-2022.08.15.zip
+cd vcpkg-2022.08.15
+./bootstrap-vcpkg.sh
+./vcpkg install wxwidgets
+cd ..
+
+
 unzip vcpkg-2024.01.12.zip
 mv vcpkg-2024.01.12 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install libavif[aom,core]
 ./vcpkg install x265
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
 ./vcpkg install tbb
 ./vcpkg install opencl
 ./vcpkg install exiv2[video,xmp]
+./vcpkg install libavif[aom,core]
 ./vcpkg install libmediainfo
-./vcpkg install libde265
 ./vcpkg install libexif
 ./vcpkg install jasper
 ./vcpkg install libraw
@@ -28,8 +34,8 @@ cd vcpkg
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
-./vcpkg install aom
 ./vcpkg install ncnn
+./vcpkg install vulkan
 cd ..
 
 #Compile heif-master

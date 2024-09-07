@@ -27,10 +27,10 @@ CAvif::~CAvif()
 void CAvif::CreateDecoder()
 {
 	decoder = avifDecoderCreate();   
-    decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
+    decoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
     
 	decoder_thumb = avifDecoderCreate();   
-    decoder_thumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
+    decoder_thumb->codecChoice = AVIF_CODEC_CHOICE_AUTO;
 }
 
 void LoadDataFromFile(const char * filename, avifRWData& raw)

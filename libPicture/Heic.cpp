@@ -13,15 +13,6 @@
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
-static cv::Mat DecodeFrame(void* data, int length, void* externDecoder = nullptr);
-
-typedef struct x265Frame
-{
-	uint64_t memoryBufferSize;
-	uint8_t* _memoryBuffer;
-	cv::Mat picture;
-	wxString filename;
-};
 
 CHeic::CHeic()
 {
@@ -34,468 +25,108 @@ CHeic::~CHeic()
 
 void CHeic::Initx265Decoder()
 {
-	de265_init();
+	//de265_init();
 }
 
 void CHeic::Uninitx265Decoder()
 {
-	de265_free();
+	//de265_free();
 }
 
-static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
-                                int pixelsPerLine, int bit_depth)
-{
-	auto data16 = reinterpret_cast<const uint16_t*>(data);
-	auto out = new uint8_t[pixelsPerLine * height];
-
-	for (auto y = 0; y < height; y++)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			out[y * pixelsPerLine + x] = *(data16 + y * pixelsPerLine + x) >> (bit_depth - 8);
-		}
-	}
-
-	return out;
-}
-
-
-cv::Mat GetRGBPicture(const de265_image* img)
-{
-	int width = de265_get_image_width(img, 0);
-	int height = de265_get_image_height(img, 0);
-
-	int chroma_width = de265_get_image_width(img, 1);
-	int chroma_height = de265_get_image_height(img, 1);
-
-	de265_chroma chroma = de265_get_chroma_format(img);
-
-	int frame_width = width;
-	int frame_height = height;
-
-	//frame_width &= ~7;
-	//frame_height &= ~7;
-
-	cv::Mat picture;
-	int stride, chroma_stride;
-	const uint8_t* yOrigin = de265_get_image_plane(img, 0, &stride);
-	const uint8_t* cbOrigin = de265_get_image_plane(img, 1, &chroma_stride);
-	const uint8_t* crOrigin = de265_get_image_plane(img, 2, nullptr);
-
-	int bpp_y = (de265_get_bits_per_pixel(img, 0) + 7) / 8;
-	int bpp_c = (de265_get_bits_per_pixel(img, 1) + 7) / 8;
-	int ppl_y = stride / bpp_y;
-	int ppl_c = chroma_stride / bpp_c;
-
-	uint8_t* y16 = nullptr;
-	uint8_t* cb16 = nullptr;
-	uint8_t* cr16 = nullptr;
-	int bd;
-
-	if ((bd = de265_get_bits_per_pixel(img, 0)) > 8)
-	{
-		y16 = convert_to_8bit(yOrigin, width, height, ppl_y, bd);
-		yOrigin = y16;
-	}
-
-	if (chroma != de265_chroma_mono)
-	{
-		if ((bd = de265_get_bits_per_pixel(img, 1)) > 8)
-		{
-			cb16 = convert_to_8bit(cbOrigin, chroma_width, chroma_height, ppl_c, bd);
-			cbOrigin = cb16;
-		}
-		if ((bd = de265_get_bits_per_pixel(img, 2)) > 8)
-		{
-			cr16 = convert_to_8bit(crOrigin, chroma_width, chroma_height, ppl_c, bd);
-			crOrigin = cr16;
-		}
-	}
-
-
-	switch (chroma)
-	{
-	case de265_chroma_420:
-		{
-			if (stride == frame_width && chroma_stride == frame_width / 2)
-			{
-				// fast copy
-				/*
-				memcpy(_y, yOrigin, frame_width * frame_height);
-				memcpy(_cb, cbOrigin, frame_width * frame_height / 4);
-				memcpy(_cr, crOrigin, frame_width * frame_height / 4);
-				*/
-
-				cv::Mat mSrc_YUV420(cv::Size(frame_width, frame_height + frame_height / 2), CV_8UC1);
-				memcpy(mSrc_YUV420.data, yOrigin, frame_width * frame_height);
-				memcpy(mSrc_YUV420.data + (frame_width * frame_height), cbOrigin, frame_width * frame_height / 4);
-				memcpy(mSrc_YUV420.data + (frame_width * frame_height + frame_width * frame_height / 4), crOrigin,
-				       frame_width * frame_height / 4);
-				cv::cvtColor(mSrc_YUV420, picture, cv::COLOR_YUV2RGB_I420);
-				//cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
-			}
-			else
-			{
-				// copy line by line, because sizes are different
-				auto _y = new uint8_t[frame_width * frame_height];
-				auto _cb = new uint8_t[frame_width * frame_height / 4];
-				auto _cr = new uint8_t[frame_width * frame_height / 4];
-				picture.create(frame_height, frame_width, CV_8UC4);
-
-				for (auto y = 0; y < frame_height; y++)
-				{
-					memcpy(_y + y * frame_width, yOrigin + stride * y, frame_width);
-				}
-
-				for (auto y = 0; y < frame_height / 2; y++)
-				{
-					memcpy(_cb + y * frame_width / 2, cbOrigin + chroma_stride * y, frame_width / 2);
-					memcpy(_cr + y * frame_width / 2, crOrigin + chroma_stride * y, frame_width / 2);
-				}
-
-				yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
-				delete[] _y;
-				delete[] _cb;
-				delete[] _cr;
-			}
-		}
-		break;
-	case de265_chroma_422:
-		{
-			auto dataYUV = new uint8_t[frame_width * 2 * frame_height];
-			picture.create(frame_height, frame_width, CV_8UC4);
-
-			for (auto y = 0; y < frame_height; y++)
-			{
-				unsigned char* p = dataYUV + y * frame_width * 2;
-
-				const unsigned char* Yp = yOrigin + y * stride;
-				const unsigned char* Up = cbOrigin + y * chroma_stride;
-				const unsigned char* Vp = crOrigin + y * chroma_stride;
-
-				for (auto x = 0; x < frame_width; x += 2)
-				{
-					*p++ = Yp[x];
-					*p++ = Up[x / 2];
-					*p++ = Yp[x + 1];
-					*p++ = Vp[x / 2];
-				}
-			}
-
-			yuv422p_to_rgb32(dataYUV, picture.data, frame_width, frame_height);
-			delete[] dataYUV;
-		}
-		break;
-	case de265_chroma_444:
-		{
-			picture.create(frame_height, frame_width, CV_8UC4);
-			auto _y = new uint8_t[frame_width * frame_height];
-			auto _cb = new uint8_t[frame_width * frame_height / 4];
-			auto _cr = new uint8_t[frame_width * frame_height / 4];
-
-			for (auto y = 0; y < frame_height; y++)
-			{
-				unsigned char* p = _y + y * frame_width;
-				memcpy(p, yOrigin + y * stride, frame_width);
-			}
-
-			for (auto y = 0; y < frame_height; y += 2)
-			{
-				unsigned char* u = _cb + y / 2 * frame_width / 2;
-				unsigned char* v = _cr + y / 2 * frame_width / 2;
-
-				for (auto x = 0; x < frame_width; x += 2)
-				{
-					u[x / 2] = (U[y * chroma_stride + x] + U[y * chroma_stride + x + 1] +
-						U[(y + 1) * chroma_stride + x] + U[(y + 1) * chroma_stride + x + 1]) / 4;
-					v[x / 2] = (V[y * chroma_stride + x] + V[y * chroma_stride + x + 1] +
-						V[(y + 1) * chroma_stride + x] + V[(y + 1) * chroma_stride + x + 1]) / 4;
-
-					//u[x/2] = U[y*chroma_stride + x];
-					//v[x/2] = V[y*chroma_stride + x];
-				}
-			}
-			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
-			delete[] _y;
-			delete[] _cb;
-			delete[] _cr;
-		}
-		break;
-	case de265_chroma_mono:
-		{
-			picture.create(frame_height, frame_width, CV_8UC4);
-			auto _y = new uint8_t[frame_width * frame_height];
-			auto _cb = new uint8_t[frame_width * frame_height / 4];
-			auto _cr = new uint8_t[frame_width * frame_height / 4];
-			if (stride == frame_width)
-			{
-				// fast copy
-
-				memcpy(_y, yOrigin, frame_width * frame_height);
-			}
-			else
-			{
-				// copy line by line, because sizes are different
-
-				for (auto y = 0; y < frame_height; y++)
-				{
-					memcpy(_y + y * frame_width, yOrigin + stride * y, frame_width);
-				}
-			}
-
-			// clear chroma planes
-
-			memset(_cb, 0x80, frame_width * frame_height / 4);
-			memset(_cr, 0x80, frame_width * frame_height / 4);
-
-			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
-			delete[] _y;
-			delete[] _cb;
-			delete[] _cr;
-		}
-		break;
-	}
-
-
-	delete[] y16;
-	delete[] cb16;
-	delete[] cr16;
-
-	return picture;
-}
-
-
-cv::Mat DecodeFrame(void* data, int length, void* externDecoder)
+cv::Mat CHeic::DecodeFrame_heif(uint8_t * sampleData, const uint64_t & size)
 {
 	cv::Mat picture;
-	de265_decoder_context* decoderContext = nullptr;
-	if (decoderContext == nullptr)
-		decoderContext = de265_new_decoder();
-	else
-		decoderContext = externDecoder;
-
-	de265_error err = de265_push_data(decoderContext, data, length, 0, nullptr);
-	if (err == DE265_OK)
+	try
 	{
-		int check_hash = 1;
-		int quiet = 0;
-		err = de265_flush_data(decoderContext);
-		if (err == DE265_OK)
-		{
-			int more = 1;
-			while (more)
-			{
-				more = 0;
+		heif_context* ctx = heif_context_alloc();
+		heif_context_read_from_memory_without_copy(ctx, sampleData, size, nullptr);
 
-				// decode some more
-				try
-				{
-					err = de265_decode(decoderContext, &more);
-				}
-				catch (...)
-				{
-					break;
-				}
-				if (err != DE265_OK)
-				{
-					if (quiet <= 1)
-						fprintf(stderr, "ERROR: %s\n", de265_get_error_text(err));
+		// get a handle to the primary image
+		heif_image_handle* handle;
+		heif_context_get_primary_image_handle(ctx, &handle);
 
-					if (check_hash && err == DE265_ERROR_CHECKSUM_MISMATCH)
-						break;
-					more = 0;
-					break;
-				}
+		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+		heif_image* img;
+		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
 
-				// show available images
+		int width = heif_image_handle_get_width(handle);
+		int height = heif_image_handle_get_height(handle);
 
-				const de265_image* img = de265_get_next_picture(decoderContext);
-				if (img)
-				{
-					picture = GetRGBPicture(img);
-					//cv::flip(picture, picture, 0);
-					cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
-					more = 0;
-				}
+		picture = cv::Mat(height, width, CV_8UC3);
 
-				// show warnings
+		int stride = 0;
+		const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+		memcpy(picture.data, data, stride * height);
 
-				for (;;)
-				{
-					de265_error warning = de265_get_warning(decoderContext);
-					if (warning == DE265_OK)
-					{
-						break;
-					}
+		heif_image_release(img);
+		heif_image_handle_release(handle);
+		heif_context_free(ctx);
 
-					if (quiet <= 1)
-						fprintf(stderr, "WARNING: %s\n", de265_get_error_text(warning));
-				}
-			}
-		}
+
+		cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+
 	}
-	de265_free_decoder(decoderContext);
+	catch (...) {
+		//std::cerr << err.get_message() << "\n";
+	}
 
 	return picture;
-}
-
-vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const char * filename)
-{
-	vector<cv::Mat> listPicture;
-
-	int check_hash = 1;
-	int quiet = 0;
-	de265_error err = de265_flush_data(decoderContext);
-	if (err == DE265_OK)
-	{
-		int more = 1;
-		while (more)
-		{
-			more = 0;
-
-			// decode some more
-			try
-			{
-				err = de265_decode(decoderContext, &more);
-			}
-			catch (...)
-			{
-				break;
-			}
-			if (err != DE265_OK)
-			{
-				if (quiet <= 1)
-					fprintf(stderr, "ERROR: %s\n", de265_get_error_text(err));
-
-				if (check_hash && err == DE265_ERROR_CHECKSUM_MISMATCH)
-					break;
-				more = 0;
-				break;
-			}
-
-			// show available images
-
-			const de265_image* img = de265_get_next_picture(decoderContext);
-			if (img)
-			{
-				cv::Mat picture = GetRGBPicture(img);
-				//cv::flip(picture, picture, 0);
-				cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
-				listPicture.push_back(picture);
-			}
-
-			// show warnings
-
-			for (;;)
-			{
-				de265_error warning = de265_get_warning(decoderContext);
-				if (warning == DE265_OK)
-				{
-					break;
-				}
-
-				if (quiet <= 1)
-					fprintf(stderr, "WARNING: %s\n", de265_get_error_text(warning));
-			}
-		}
-	}
-	return listPicture;
 }
 
 vector<cv::Mat> CHeic::GetAllPicture(const char * filename, bool& isMasterSequence, int& delay)
 {
-	vector<cv::Mat> listPicture;
-	auto* reader = Reader::Create();
-	Array<uint32_t> item_ids;
+    vector<cv::Mat> listPicture;
+    
+    heif_context* ctx = heif_context_alloc();
+    heif_context_read_from_file(ctx, filename, nullptr);
+   
+    int numImages = heif_context_get_number_of_top_level_images(ctx);
+    std::vector<heif_item_id> IDs(numImages);
+    heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
 
-	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		FileInformation info;
-		if (reader->getFileInformation(info) == ErrorCode::OK)
-		{
-			if (info.trackInformation.size > 0)
-			{
-				// Print information for every track read
-				for (const auto& trackProperties : info.trackInformation)
-				{
-					const auto sequenceId = trackProperties.trackId;
-					//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
+    for (int i = 0; i < numImages; i++) {
+        struct heif_image_handle* handle;
+        struct heif_error err = heif_context_get_image_handle(ctx, IDs[i], &handle);
+        if (err.code) {
+          std::cerr << err.message << "\n";
+          break;
+        }
+        int width = heif_image_handle_get_width(handle);
+        int height = heif_image_handle_get_height(handle);
 
-					if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
-					{
-						isMasterSequence = true;
-						//cout << "This is a master image sequence." << endl;
-					}
+        cv::Mat picture = cv::Mat(height, width, CV_8UC3);
+        
+		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+		heif_image* img;
+		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
 
-					if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
-					{
-						// Assume there is only one type track reference, so check reference type and master track ID(s) from
-						// the first one.
-						isMasterSequence = false;
-						const auto tref = trackProperties.referenceTrackIds[0];
-						//cout << "Track reference type is '" << tref.type.value << "'" << endl;
-						//cout << "This is a thumbnail track for track ID ";
-						/*
-						for (const auto masterTrackId : tref.trackIds)
-						{
-							//cout << masterTrackId << endl;
-						}*/
-					}
+        int stride = 0;
+        const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+        memcpy(picture.data, data, stride * height);
 
-					Array<TimestampIDPair> timestamps;
-					reader->getItemTimestamps(sequenceId, timestamps);
-					//cout << "Sample timestamps:" << endl;
-					for (const auto& timestamp : timestamps)
-					{
-						delay = timestamp.timeStamp;
-						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-					}
+        heif_image_release(img);
+        
 
-					for (const auto& sampleProperties : trackProperties.sampleProperties)
-					{
-						// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
-						// decode all dependencies.
-						Array<SequenceImageId> items_to_decode;
-						reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, items_to_decode);
-						for (auto dependencyId : items_to_decode)
-						{
-							uint64_t size = 1024 * 1024;
-							auto sampleData = new uint8_t[size];
-							reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
-
-							//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
-							cv::Mat bitmapSrc = DecodeFrame(sampleData, size);
-							if (!bitmapSrc.empty())
-							{
-								listPicture.push_back(bitmapSrc);
-							}
-
-							delete[] sampleData;
-						}
-						// Store or show the image...
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		cout << "Can't find input file: " << filename << ". "
-			<< "Please download it from https://github.com/nokiatech/heif_conformance "
-			<< "and place it in same directory with the executable." << endl;
-	}
-
-	Reader::Destroy(reader);
+        cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+        
+        
+        listPicture.push_back(picture);
 
 
-	return listPicture;
+        heif_image_handle_release(handle);
+ 
+    }
+    
+    heif_context_free(ctx);
+    
+    return listPicture;
+    
 }
 
 void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
                         const int& compression, const bool& hasExif)
 {
-#ifdef HAS_X265
+
 	struct heif_error err{};
 	if (!source.empty())
 	{
@@ -554,7 +185,7 @@ void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& dat
 			heif_context_free(ctx);
 		}
 	}
-#endif
+
 }
 
 
@@ -604,229 +235,80 @@ uint32_t CHeic::GetDelay(const char * filename)
 
 cv::Mat CHeic::GetPicture(const char * filename, bool& isMasterSequence, int& delay, const int& numPicture)
 {
-	cv::Mat bitmapSrc;
-	auto* reader = Reader::Create();
-	Array<uint32_t> itemIds;
+    cv::Mat picture;
+    
+    heif_context* ctx = heif_context_alloc();
+    heif_context_read_from_file(ctx, filename, nullptr);
+   
+    int numImages = heif_context_get_number_of_top_level_images(ctx);
+    std::vector<heif_item_id> IDs(numImages);
+    heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
 
-	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		//de265_error err = de265_error::DE265_OK;
-		FileInformation info;
-		if (reader->getFileInformation(info) == ErrorCode::OK)
-		{
-			if (info.trackInformation.size > 0)
-			{
-				// Print information for every track read
-				for (const auto& trackProperties : info.trackInformation)
-				{
-					const auto sequenceId = trackProperties.trackId;
-					//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
+    if(numPicture < numImages){
+        struct heif_image_handle* handle;
+        struct heif_error err = heif_context_get_image_handle(ctx, IDs[numPicture], &handle);
+        if (err.code) {
+          std::cerr << err.message << "\n";
+        }
+        else
+        {
+            int width = heif_image_handle_get_width(handle);
+            int height = heif_image_handle_get_height(handle);
 
-					if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
-					{
-						isMasterSequence = true;
-						//cout << "This is a master image sequence." << endl;
-					}
+            cv::Mat picture = cv::Mat(height, width, CV_8UC3);
+            
+            // decode the image and convert colorspace to RGB, saved as 24bit interleaved
+            heif_image* img;
+            heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
 
-					if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
-					{
-						// Assume there is only one type track reference, so check reference type and master track ID(s) from
-						// the first one.
-						isMasterSequence = false;
-						const auto tref = trackProperties.referenceTrackIds[0];
-						//cout << "Track reference type is '" << tref.type.value << "'" << endl;
-						//cout << "This is a thumbnail track for track ID ";
-						/*
-						for (const auto masterTrackId : tref.trackIds)
-						{
-							//cout << masterTrackId << endl;
-						}
-						*/
-					}
+            int stride = 0;
+            const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+            memcpy(picture.data, data, stride * height);
 
-					Array<TimestampIDPair> timestamps;
-					reader->getItemTimestamps(sequenceId, timestamps);
-					//cout << "Sample timestamps:" << endl;
-					for (const auto& timestamp : timestamps)
-					{
-						delay = timestamp.timeStamp;
-						break;
-						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-					}
+            heif_image_release(img);
+            
 
-					int i = 0;
-					for (const auto& sampleProperties : trackProperties.sampleProperties)
-					{
-						// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
-						// decode all dependencies.
-						Array<SequenceImageId> itemsToDecode;
-						reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, itemsToDecode);
-						for (auto dependencyId : itemsToDecode)
-						{
-							if (i == numPicture)
-							{
-								uint64_t size = 1024 * 1024;
-								auto sampleData = new uint8_t[size];
-								reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
+            cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
 
-								//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
-								bitmapSrc = DecodeFrame(sampleData, size);
+            heif_image_handle_release(handle);
+        }
+ 
+    }
+    
+    heif_context_free(ctx);
 
-								delete[] sampleData;
-								break;
-							}
-							i++;
-						}
-						// Store or show the image...
-						if (i == numPicture)
-							break;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		cout << "Can't find input file: " << filename << ". "
-			<< "Please download it from https://github.com/nokiatech/heif_conformance "
-			<< "and place it in same directory with the executable." << endl;
-	}
-
-	Reader::Destroy(reader);
-
-
-	return bitmapSrc;
+	return picture;
 }
 
 int CHeic::GetNbFrame(const char * filename)
 {
-	int nbId = 0;
-	auto* reader = Reader::Create();
-
-	if (reader->initialize(filename) == ErrorCode::OK)
+    int nbId = 0;
+	try
 	{
-		FileInformation info;
-		reader->getFileInformation(info);
-
-		// Print information for every track read
-		for (const auto& trackProperties : info.trackInformation)
-		{
-			const auto sequenceId = trackProperties.trackId;
-			//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
-
-			if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
-			{
-				//cout << "This is a master image sequence." << endl;
-			}
-
-			if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
-			{
-				// Assume there is only one type track reference, so check reference type and master track ID(s) from
-				// the first one.
-				const auto tref = trackProperties.referenceTrackIds[0];
-				//cout << "Track reference type is '" << tref.type.value << "'" << endl;
-				//cout << "This is a thumbnail track for track ID ";
-				/*
-				for (const auto masterTrackId : tref.trackIds)
-				{
-					//cout << masterTrackId << endl;
-				}
-				*/
-			}
-
-			Array<TimestampIDPair> timestamps;
-			reader->getItemTimestamps(sequenceId, timestamps);
-			//cout << "Sample timestamps:" << endl;
-			/*
-			for (const auto& timestamp : timestamps)
-			{
-				//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-			}
-			*/
-			nbId = timestamps.size;
-		}
-
-		if (nbId == 0)
-		{
-			nbId = 1;
-		}
-	}
-
-	Reader::Destroy(reader);
-	return nbId;
+        heif_context* ctx = heif_context_alloc();
+        heif_context_read_from_file(ctx, filename, nullptr);
+        nbId = heif_context_get_number_of_top_level_images(ctx);
+        heif_context_free(ctx);
+    }
+    catch(...)
+    {
+        
+    }
+    return nbId;
 }
-
-void CHeic::DecodePictureMultiThread(void* parameter)
-{
-	auto decoding = static_cast<x265Frame*>(parameter);
-
-	decoding->picture = DecodeFrame(decoding->_memoryBuffer, decoding->memoryBufferSize);
-
-
-	delete[] decoding->_memoryBuffer;
-}
-
-struct mytask
-{
-	mytask(x265Frame* frame)
-	{
-		this->frame = frame;
-	}
-
-
-	void ApplyFilter()
-	{
-		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
-
-		delete[] frame->_memoryBuffer;
-		frame->_memoryBuffer = nullptr;
-	}
-
-	void operator()()
-	{
-		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
-
-		delete[] frame->_memoryBuffer;
-		frame->_memoryBuffer = nullptr;
-	}
-
-	cv::Mat GetFrame()
-	{
-		return frame->picture;
-	}
-
-	void Free()
-	{
-		if (frame->_memoryBuffer != nullptr)
-			delete[] frame->_memoryBuffer;
-		frame->_memoryBuffer = nullptr;
-
-		if (frame != nullptr)
-			delete frame;
-
-		frame = nullptr;
-	}
-
-	x265Frame* frame;
-};
 
 cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 {
-	struct PictureEncoder
-	{
-		x265Frame* frame = nullptr;
-	};
-	cv::Mat picture;
+    
 	auto* reader = Reader::Create();
-
+    int rotation = 0;
 	// Input file available from https://github.com/nokiatech/heif_conformance
 	if (reader->initialize(filename) == ErrorCode::OK)
 	{
 		FileInformation info;
 		if (reader->getFileInformation(info) != ErrorCode::OK)
 		{
-			goto END;
+			goto DECODE;
 		}
 
 		// Find the item ID
@@ -836,7 +318,7 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 		Array<ItemPropertyInfo> propertyInfos;
 		reader->getItemProperties(itemId, propertyInfos);
 
-		unsigned int rotation = 0;
+
 		for (const auto& property : propertyInfos)
 		{
 			// For example, handle 'irot' transformational property is anti-clockwise rotation
@@ -849,176 +331,12 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 				break; // Assume only one property
 			}
 		}
-
-		uint32_t _width, _heigth;
-		reader->getWidth(itemId, _width);
-		reader->getHeight(itemId, _heigth);
-		uint64_t memoryBufferSize = 4096 * 4096;
-		auto memoryBuffer = new uint8_t[memoryBufferSize];
-		ErrorCode err = reader->getItemDataWithDecoderParameters(itemId, memoryBuffer, memoryBufferSize);
-		if (err == ErrorCode::OK)
-		{
-			picture = DecodeFrame(memoryBuffer, memoryBufferSize);
-			orientation = rotation;
-		}
-		else
-		{
-			unsigned int rotation = 0;
-			vector<PictureEncoder> listPicture;
-			// Input file available from https://github.com/nokiatech/heif_conformance
-			Array<ImageId> itemIds;
-			// Find item IDs of master images
-			reader->getMasterImages(itemIds);
-			//bool firstTime = true;
-			// Find thumbnails for each master. There can be several thumbnails for one master image, get narrowest ones here.
-
-			for (const auto masterId : itemIds)
-			{
-				Array<ItemPropertyInfo> propertyInfos;
-				reader->getItemProperties(masterId, propertyInfos);
-
-				for (const auto& property : propertyInfos)
-				{
-					// For example, handle 'irot' transformational property is anti-clockwise rotation
-					if (property.type == ItemPropertyType::IROT)
-					{
-						// Get property struct by index to access rotation angle
-						Rotate irot;
-						reader->getProperty(property.index, irot);
-						rotation = irot.angle;
-						break; // Assume only one property
-					}
-				}
-				break;
-			}
-
-			std::vector<mytask> tasks;
-
-			for (const auto masterId : itemIds)
-			{
-				auto frame = new x265Frame;
-				frame->memoryBufferSize = 1024 * 1024;
-				frame->_memoryBuffer = new uint8_t[memoryBufferSize];
-				frame->filename = filename;
-				reader->getItemDataWithDecoderParameters(masterId, frame->_memoryBuffer, frame->memoryBufferSize);
-				tasks.push_back(mytask(frame));
-			}
-
-
-			tbb::parallel_for(0, (int)tasks.size(), 1, [=](int k)
-			{
-				mytask task = tasks[k];
-				task.ApplyFilter();
-			});
-
-
-			if (tasks.size() > 0)
-			{
-				ImageId itemId;
-				reader->getPrimaryItem(itemId);
-
-				Array<ItemPropertyInfo> propertyInfos;
-				reader->getItemProperties(itemId, propertyInfos);
-
-				uint32_t _width, _heigth;
-				reader->getWidth(itemId, _width);
-				reader->getHeight(itemId, _heigth);
-
-
-				if (tasks.size() == 1)
-				{
-					picture = tasks[0].GetFrame();
-					listPicture.clear();
-				}
-				else
-				{
-					cv::Mat bitmapSrc = tasks[0].GetFrame();
-					if (!bitmapSrc.empty())
-					{
-						try
-						{
-							int boxWidth = bitmapSrc.size().width;
-							int boxHeight = bitmapSrc.size().height;
-
-							int nbItemWidth = _width / boxWidth;
-							if (nbItemWidth * boxWidth < _width)
-								nbItemWidth++;
-
-							int nbItemHeight = _heigth / boxHeight;
-							if (nbItemHeight * boxHeight < _heigth)
-								nbItemHeight++;
-
-							cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
-							int x = 0;
-							int y = 0;
-							int i = 0;
-							for (mytask task : tasks)
-							{
-								cv::Mat src = task.GetFrame();
-
-								try
-								{
-									src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
-								}
-								catch (cv::Exception& e)
-								{
-									const char* err_msg = e.what();
-									std::cout << "exception caught: " << err_msg << std::endl;
-									std::cout << "wrong file format, please input the name of an IMAGE file" <<
-										std::endl;
-								}
-								//out->InsertBitmap(task.GetFrame(), x, y, false);
-								x += boxWidth;
-
-								if (x >= _width)
-								{
-									x = 0;
-									y += boxHeight;
-								}
-								i++;
-							}
-
-
-							picture = out(cv::Rect(0, 0, _width, _heigth));
-
-							listPicture.clear();
-						}
-						catch (...)
-						{
-						}
-					}
-				}
-			}
-
-
-			for (mytask task : tasks)
-			{
-				task.Free();
-			}
-
-			tasks.clear();
-		}
-
-		if (memoryBuffer != nullptr)
-			delete[] memoryBuffer;
-		memoryBuffer = nullptr;
-	}
-	else
-	{
-		cout << "Can't find input file: " << filename << ". "
-			<< "Please download it from https://github.com/nokiatech/heif_conformance "
-			<< "and place it in same directory with the executable." << endl;
-	}
-
-
-END:
-
-
-	Reader::Destroy(reader);
-
-
-	/*
-
+    }
+    
+    Reader::Destroy(reader);
+    
+DECODE:
+    
 	cv::Mat picture;
 	try
 	{
@@ -1048,13 +366,27 @@ END:
 
 
 		cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+        
+        switch(rotation)
+        {
+            case 90:
+                orientation = 6;
+                break;
+            case 270:
+                orientation = 8;
+                break;
+            case 180:
+                orientation = 3;
+                break;
+        }
 
 	}
-	catch (const heif::Error& err) {
-		std::cerr << err.get_message() << "\n";
+	catch (...) {
+		//std::cerr << err.get_message() << "\n";
 	}
 
-	*/
+    printf("Rotation HEIF : %d \n", orientation );
+	
 	return picture;
 }
 
@@ -1096,69 +428,59 @@ void CHeic::GetPictureDimension(const char * filename, int& width, int& height)
 
 cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 {
-	cv::Mat picture;
-	auto* reader = Reader::Create();
-	uint64_t itemSize = 1024 * 1024;
-	auto itemData = new uint8_t[itemSize];
-	Array<ImageId> itemIds;
+    struct heif_error err;
+    cv::Mat picture;
+    
+    heif_context* ctx = heif_context_alloc();
+    heif_context_read_from_file(ctx, filename, nullptr);
 
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		FileInformation info;
-		reader->getFileInformation(info);
+    // get a handle to the primary image
+    heif_image_handle* handle;
+    heif_context_get_primary_image_handle(ctx, &handle);
+        
+    int nThumbnails = heif_image_handle_get_number_of_thumbnails(handle);
+    std::vector<heif_item_id> thumbnailIDs(nThumbnails);
 
-		// Find the item ID
-		ImageId itemId;
-		reader->getPrimaryItem(itemId);
+    nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, thumbnailIDs.data(), nThumbnails);
 
-		Array<ItemPropertyInfo> propertyInfos;
-		reader->getItemProperties(itemId, propertyInfos);
+    for (int thumbnailIdx = 0; thumbnailIdx < nThumbnails; thumbnailIdx++) {
+        heif_image_handle* thumbnail_handle;
+        err = heif_image_handle_get_thumbnail(handle, thumbnailIDs[thumbnailIdx], &thumbnail_handle);
+        if (err.code) {
+            std::cerr << err.message << "\n";
+            break;
+        }
 
-		unsigned int rotation = 0;
-		for (const auto& property : propertyInfos)
-		{
-			// For example, handle 'irot' transformational property is anti-clockwise rotation
-			if (property.type == ItemPropertyType::IROT)
-			{
-				// Get property struct by index to access rotation angle
-				Rotate irot;
-				reader->getProperty(property.index, irot);
-				rotation = irot.angle;
-				break; // Assume only one property
-			}
-		}
+        int th_width = heif_image_handle_get_width(thumbnail_handle);
+        int th_height = heif_image_handle_get_height(thumbnail_handle);
 
-		// Thumbnail references ('thmb') are from the thumbnail image to the master image
-		Array<ImageId> thumbIds;
-		reader->getReferencedToItemListByType(itemId, "thmb", thumbIds);
-		if (thumbIds.size > 0)
-		{
-			const ImageId thumbId = *std::min_element(thumbIds.begin(), thumbIds.end(), [&](ImageId a, ImageId b)
-			{
-				uint32_t widthA, widthB;
-				reader->getWidth(a, widthA);
-				reader->getWidth(b, widthB);
-				return (widthA < widthB);
-			});
-			//imageMap[masterId] = thumbId;
+        printf("  thumbnail: %dx%d\n", th_width, th_height);
 
-			if (reader->getItemDataWithDecoderParameters(thumbId.get(), itemData, itemSize) == ErrorCode::OK)
-			{
-				picture = DecodeFrame(itemData, itemSize);
-				orientation = rotation;
-			}
-		}
-	}
-	else
-	{
-		cout << "Can't find input file: " << filename << ". "
-			<< "Please download it from https://github.com/nokiatech/heif_conformance "
-			<< "and place it in same directory with the executable." << endl;
-	}
 
-	delete[] itemData;
-	Reader::Destroy(reader);
-	return picture;
+        picture = cv::Mat(th_height, th_width, CV_8UC3);
+        
+		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+		heif_image* img;
+		heif_decode_image(thumbnail_handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+
+        int stride = 0;
+        const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+        memcpy(picture.data, data, stride * th_height);
+
+        heif_image_release(img);
+        
+
+        cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+
+
+        heif_image_handle_release(thumbnail_handle);
+        
+        break;
+    }
+    
+    heif_context_free(ctx);
+    
+    return picture;
 }
 
 
