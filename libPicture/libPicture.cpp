@@ -36,7 +36,6 @@
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
-#include <avif.h>
 #endif
 #if defined(WIN32)
 #include "wic.h"
@@ -173,18 +172,6 @@ CImageLoadingFormat* CLibPicture::LoadPictureToBGRA(const wxString& filename, bo
 int CLibPicture::TestExtension(const wxString& ext)
 {
 	return CLibResource::GetExtensionId(ext);
-}
-
-void CLibPicture::Initx265Decoder()
-{
-	CHeic::Initx265Decoder();
-    CAvif::CreateDecoder();
-}
-
-void CLibPicture::Uninitx265Decoder()
-{
-	CHeic::Uninitx265Decoder();
-    //CAvif::DestroyDecoder();
 }
 
 bool CLibPicture::TestIsPicture(const wxString& szFileName)
@@ -768,7 +755,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
-
+    case AVIF:
 	case HEIC:
 		{
 			wxLogNull logNo;
@@ -791,6 +778,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 
 				pictureMetadata.CopyMetadata(fileTemp);
+                
 
 				CMetadataExiv2 metadata(fileTemp);
 				metadata.GetMetadataBuffer(data, size);
@@ -808,37 +796,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			if (data != nullptr)
 				delete[] data;
 
-			break;
-		}
-	case AVIF:
-		{
-			wxLogNull logNo;
-			uint8_t* data = nullptr;
-			unsigned int size = 0;
-			bool hasExif = false;
-			cv::Mat image = bitmap->GetOpenCVPicture();
-			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
-			if (pictureMetadata.HasExif())
-			{
-				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
-				cv::imwrite(CConvertUtility::ConvertToStdString(fileTemp), image);
-
-				pictureMetadata.CopyMetadata(fileTemp);
-
-				CMetadataExiv2 metadata(fileTemp);
-				metadata.GetMetadataBuffer(data, size);
-				if (size > 0)
-				{
-					data = new uint8_t[size + 1];
-					metadata.GetMetadataBuffer(data, size);
-					hasExif = true;
-				}
-			}
-
-
-			CAvif::SavePicture(CConvertUtility::ConvertToUTF8(fileName), image, data, size, quality, hasExif);
-			if (data != nullptr)
-				delete[] data;
 			break;
 		}
 
@@ -1246,10 +1203,6 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	{
 #ifdef LIBHEIC
 	case AVIF:
-		{
-			return CAvif::GetNbFrame(CConvertUtility::ConvertToUTF8(szFileName));
-		}
-		break;
 	case HEIC:
 		{
 			return CHeic::GetNbFrame(CConvertUtility::ConvertToUTF8(szFileName));
@@ -1322,8 +1275,6 @@ uint32_t CLibPicture::GetFrameDelay(const wxString& szFileName)
 	{
 #ifdef LIBHEIC
 	case AVIF:
-		return CAvif::GetDelay(CConvertUtility::ConvertToUTF8(szFileName));
-
 	case HEIC:
 		return CHeic::GetDelay(CConvertUtility::ConvertToUTF8(szFileName));
 
@@ -1405,11 +1356,8 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 				int delay = 4;
 				bool isMaster;
 				vector<cv::Mat> listPicture;
-				if (iFormat == HEIC)
-					listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToUTF8(szFileName), isMaster,
-					                                   delay);
-				else if (iFormat == AVIF)
-					listPicture = CAvif::GetAllPicture(CConvertUtility::ConvertToUTF8(szFileName), delay);
+				if (iFormat == HEIC || iFormat == AVIF)
+					listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToUTF8(szFileName), delay);
 				else if (iFormat == WEBP)
 					listPicture = CRegardsWebp::GetAllPicture(szFileName, delay);
 				for (auto i = 0; i < listPicture.size(); i++)
@@ -1900,11 +1848,12 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 #ifdef LIBHEIC
 
+        case AVIF:
 		case HEIC:
 			{
 				cv::Mat picture;
 				int orientation = 0;
-				
+				applyExif = false;
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
@@ -1917,8 +1866,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				else
 				{
 					int delay = 4;
-					bool isMaster;
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isMaster, delay,
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay,
 					                            numPicture);
 				}
 				
@@ -1926,10 +1874,11 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				{
 					bitmap->SetPicture(picture);
 					bitmap->SetFilename(fileName);
-					bitmap->RotateExif(orientation);
+					//bitmap->RotateExif(orientation);
 				}
 				break;
 			}
+            /*
 		case AVIF:
 			{
 				cv::Mat picture;
@@ -1950,7 +1899,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					bitmap->SetFilename(fileName);
 				}
 			}
-			break;
+			break;*/
 #endif
 
 		case JXL:
@@ -2427,12 +2376,15 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 void CLibPicture::ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap)
 {
+    printf("CLibPicture::ApplyOrientation \n");
 	int orientation = -1;
 	if (TestIsExifCompatible(fileName) && applyExif)
 	{
 		CMetadataExiv2 metadata(fileName);
 		orientation = metadata.GetOrientation();
 		bitmap->SetOrientation(orientation);
+        
+        printf("CLibPicture::ApplyOrientation orientation : %d \n", orientation);
 	}
 }
 
@@ -2614,17 +2566,11 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		}
 		break;
 #ifdef LIBHEIC
+	case AVIF:
 	case HEIC:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			CHeic::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
-			//video.GetVideoDimensions(fileName, width, height, rotation);
-		}
-		break;
-	case AVIF:
-		{
-			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CAvif::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;

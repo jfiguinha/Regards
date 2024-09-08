@@ -62,6 +62,8 @@
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
+    <File Name="avifexif.h"/>
+    <File Name="avifexif.cpp"/>
     <File Name="PictureMetadataExiv_new.h"/>
     <File Name="PictureMetadataExiv_new.cpp"/>
     <File Name="ThumbnailData.h"/>
@@ -125,7 +127,6 @@
     <File Name="jxl.cpp"/>
     <File Name="ascii.cpp"/>
     <File Name="regards_webp.cpp"/>
-    <File Name="avif.cpp"/>
     <File Name="PictureData.cpp"/>
     <File Name="pfm.cpp"/>
     <File Name="libPicture.cpp"/>
@@ -138,7 +139,6 @@
     <File Name="ImageVideoThumbnail.h"/>
     <File Name="ascii.h"/>
     <File Name="regards_webp.h"/>
-    <File Name="avif.h"/>
     <File Name="PictureData.h"/>
     <File Name="pfm.h"/>
     <File Name="libPicture.h"/>

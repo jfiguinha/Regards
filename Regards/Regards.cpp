@@ -117,8 +117,6 @@ int MyApp::Close()
 
 	CWindowMain::listMainWindow.clear();
 
-	CLibPicture::Uninitx265Decoder();
-
 	CLibPicture::UninitFreeImage();
 
 
@@ -280,10 +278,6 @@ bool MyApp::OnInit()
 	wxSocketBase::Initialize();
 
 	CPrintEngine::Initialize();
-
-	CLibPicture::Initx265Decoder();
-	
-
 
 
 #ifdef GLUT

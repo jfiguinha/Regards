@@ -8,6 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="exif.cc"/>
     <File Name="nclx.cc"/>
     <File Name="heif_plugin_registry.cc"/>
     <File Name="heif_plugin.cc"/>
@@ -32,6 +33,7 @@
     <File Name="bitstream.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="exif.h"/>
     <File Name="nclx.h"/>
     <File Name="logging.h"/>
     <File Name="heif_version.h"/>
@@ -75,6 +77,8 @@
         <Preprocessor Value="HAVE_X265"/>
         <Preprocessor Value="HAVE_LIBDE265"/>
         <Preprocessor Value="HAVE_UNISTD_H"/>
+        <Preprocessor Value="HAVE_AOM_DECODER"/>
+        <Preprocessor Value="HAVE_AOM_ENCODER"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

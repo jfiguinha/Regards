@@ -3,15 +3,12 @@
 #include "Heic.h"
 #ifdef LIBHEIC
 #include <cstdint>
-#include <heifreader.h>
-#include <libde265/de265.h>
-#include "yuv420.h"
-#include "yuv422.h"
 #include <libheif/heif.h>
+#include <libheif/exif.h>
 #include <FileUtility.h>
+#include "imageinfo.hpp"
 #include <map>
 using namespace std;
-using namespace HEIF;
 using namespace Regards::Picture;
 
 CHeic::CHeic()
@@ -23,57 +20,38 @@ CHeic::~CHeic()
 {
 }
 
-void CHeic::Initx265Decoder()
+static const char kMetadataTypeExif[] = "Exif";
+
+void GetHandleMetadata(heif_image_handle * handle, uint8_t * & buffer, unsigned int& size)
 {
-	//de265_init();
+    
+    heif_item_id metadata_id;
+    int count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
+                                                               &metadata_id, 1);
+
+    for (int i = 0; i < count; i++) 
+    {
+        size_t datasize = heif_image_handle_get_metadata_size(handle, metadata_id);
+
+        if(size > 0)
+        {
+            heif_error error = heif_image_handle_get_metadata(handle, metadata_id, buffer);
+            if (error.code != heif_error_Ok) {
+              continue;
+            }
+        }
+        
+        
+        size = datasize;
+        if(size > 0)
+            break;
+    }
+    
+    printf("size : %d local_data : %u \n",size, buffer);
+
 }
 
-void CHeic::Uninitx265Decoder()
-{
-	//de265_free();
-}
-
-cv::Mat CHeic::DecodeFrame_heif(uint8_t * sampleData, const uint64_t & size)
-{
-	cv::Mat picture;
-	try
-	{
-		heif_context* ctx = heif_context_alloc();
-		heif_context_read_from_memory_without_copy(ctx, sampleData, size, nullptr);
-
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-
-		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
-		heif_image* img;
-		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
-
-		int width = heif_image_handle_get_width(handle);
-		int height = heif_image_handle_get_height(handle);
-
-		picture = cv::Mat(height, width, CV_8UC3);
-
-		int stride = 0;
-		const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-		memcpy(picture.data, data, stride * height);
-
-		heif_image_release(img);
-		heif_image_handle_release(handle);
-		heif_context_free(ctx);
-
-
-		cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
-
-	}
-	catch (...) {
-		//std::cerr << err.get_message() << "\n";
-	}
-
-	return picture;
-}
-
-vector<cv::Mat> CHeic::GetAllPicture(const char * filename, bool& isMasterSequence, int& delay)
+vector<cv::Mat> CHeic::GetAllPicture(const char * filename, int& delay)
 {
     vector<cv::Mat> listPicture;
     
@@ -189,51 +167,8 @@ void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& dat
 }
 
 
-uint32_t CHeic::GetDelay(const char * filename)
-{
-	uint32_t delay = 0;
-	auto* reader = Reader::Create();
-	Array<uint32_t> itemIds;
 
-	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		FileInformation info;
-		if (reader->getFileInformation(info) == ErrorCode::OK)
-		{
-			if (info.trackInformation.size > 0)
-			{
-				// Print information for every track read
-				for (const auto& trackProperties : info.trackInformation)
-				{
-					const auto sequenceId = trackProperties.trackId;
-					Array<TimestampIDPair> timestamps;
-					reader->getItemTimestamps(sequenceId, timestamps);
-					//cout << "Sample timestamps:" << endl;
-					for (const auto& timestamp : timestamps)
-					{
-						delay = timestamp.timeStamp;
-						break;
-						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		cout << "Can't find input file: " << filename << ". "
-			<< "Please download it from https://github.com/nokiatech/heif_conformance "
-			<< "and place it in same directory with the executable." << endl;
-	}
-
-	Reader::Destroy(reader);
-
-
-	return delay;
-}
-
-cv::Mat CHeic::GetPicture(const char * filename, bool& isMasterSequence, int& delay, const int& numPicture)
+cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPicture)
 {
     cv::Mat picture;
     
@@ -300,43 +235,7 @@ int CHeic::GetNbFrame(const char * filename)
 cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 {
     
-	auto* reader = Reader::Create();
     int rotation = 0;
-	// Input file available from https://github.com/nokiatech/heif_conformance
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		FileInformation info;
-		if (reader->getFileInformation(info) != ErrorCode::OK)
-		{
-			goto DECODE;
-		}
-
-		// Find the item ID
-		ImageId itemId;
-		reader->getPrimaryItem(itemId);
-
-		Array<ItemPropertyInfo> propertyInfos;
-		reader->getItemProperties(itemId, propertyInfos);
-
-
-		for (const auto& property : propertyInfos)
-		{
-			// For example, handle 'irot' transformational property is anti-clockwise rotation
-			if (property.type == ItemPropertyType::IROT)
-			{
-				// Get property struct by index to access rotation angle
-				Rotate irot;
-				reader->getProperty(property.index, irot);
-				rotation = irot.angle;
-				break; // Assume only one property
-			}
-		}
-    }
-    
-    Reader::Destroy(reader);
-    
-DECODE:
-    
 	cv::Mat picture;
 	try
 	{
@@ -353,7 +252,7 @@ DECODE:
 
 		int width = heif_image_handle_get_width(handle);
 		int height = heif_image_handle_get_height(handle);
-
+        
 		picture = cv::Mat(height, width, CV_8UC3);
 
 		int stride = 0;
@@ -367,18 +266,6 @@ DECODE:
 
 		cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
         
-        switch(rotation)
-        {
-            case 90:
-                orientation = 6;
-                break;
-            case 270:
-                orientation = 8;
-                break;
-            case 180:
-                orientation = 3;
-                break;
-        }
 
 	}
 	catch (...) {
@@ -392,33 +279,11 @@ DECODE:
 
 void CHeic::GetPictureDimension(const char * filename, int& width, int& height)
 {
-	Array<ImageId> itemIds;
-	auto* reader = Reader::Create();
-	if (reader->initialize(filename) == ErrorCode::OK)
-	{
-		FileInformation info;
-		if (reader->getFileInformation(info) != ErrorCode::OK)
-		{
-			return;
-		}
-
-		// Verify that the file has one or several images in the MetaBox
-		if (!(info.features & FileFeatureEnum::HasSingleImage || info.features & FileFeatureEnum::HasImageCollection))
-		{
-			return;
-		}
-
-		// Find the item ID
-		// Find the item ID of the first master image
-		ImageId itemId;
-		reader->getPrimaryItem(itemId);
-
-		uint32_t _width, _heigth;
-		reader->getWidth(itemId, _width);
-		reader->getHeight(itemId, _heigth);
-		width = _width;
-		height = _heigth;
-	}
+    auto info = imageinfo::parse<imageinfo::FilePathReader>(filename);
+    if (info) {
+        width = info.size().width;
+        height = info.size().height;
+    }
 	else
 	{
 		width = 0;
@@ -484,6 +349,8 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 }
 
 
+#include <heifreader.h>
+using namespace HEIF;
 /* raw JPEG image data */
 static const unsigned char image_jpg[] = {
 	0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01,
@@ -529,7 +396,7 @@ static const unsigned int image_jpg_len = sizeof(image_jpg);
 static const unsigned int image_data_offset = 20;
 #define image_data_len (image_jpg_len - image_data_offset)
 
-void CHeic::GetMetadata(const char * filename, uint8_t*& data, unsigned int& size)
+void CHeicExif::GetMetadataHeic(const char * filename, uint8_t*& data, unsigned int& size)
 {
 	auto* reader = Reader::Create();
 
@@ -609,5 +476,50 @@ void CHeic::GetMetadata(const char * filename, uint8_t*& data, unsigned int& siz
 	Reader::Destroy(reader);
 }
 
+
+
+uint32_t CHeic::GetDelay(const char * filename)
+{
+    int delay = 0;
+	auto* reader = Reader::Create();
+	Array<uint32_t> itemIds;
+
+	// Input file available from https://github.com/nokiatech/heif_conformance
+	if (reader->initialize(filename) == ErrorCode::OK)
+	{
+		FileInformation info;
+		if (reader->getFileInformation(info) == ErrorCode::OK)
+		{
+			if (info.trackInformation.size > 0)
+			{
+				// Print information for every track read
+				for (const auto& trackProperties : info.trackInformation)
+				{
+					const auto sequenceId = trackProperties.trackId;
+					Array<TimestampIDPair> timestamps;
+					reader->getItemTimestamps(sequenceId, timestamps);
+					//cout << "Sample timestamps:" << endl;
+					for (const auto& timestamp : timestamps)
+					{
+						delay = timestamp.timeStamp;
+						break;
+						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
+	}
+
+	Reader::Destroy(reader);
+
+
+	return delay;
+}
 
 #endif

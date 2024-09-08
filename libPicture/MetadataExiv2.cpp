@@ -10,8 +10,7 @@
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>
-//#include <libexif/exif-data.h>
-#include "avif.h"
+#include "avifexif.h"
 #include "Heic.h"
 #include "ConvertUtility.h"
 
@@ -27,36 +26,41 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	CLibPicture libPicture;
 	this->filename = filename;
 	int type = libPicture.TestImageFormat(filename);
-
+    
 	if (type == HEIC || type == AVIF)
 	{
 		buffer = nullptr;
-		unsigned int size = 0;
+		
 		if (type == HEIC)
 		{
-			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
-			if (size > 0)
+			CHeicExif::GetMetadataHeic(CConvertUtility::ConvertToUTF8(filename), buffer, bufferexifsize);
+			if (bufferexifsize > 0)
 			{
-				buffer = new uint8_t[size + 1];
-				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+				buffer = new uint8_t[bufferexifsize + 1];
+				CHeicExif::GetMetadataHeic(CConvertUtility::ConvertToUTF8(filename), buffer, bufferexifsize);
 			}
 		}
 		else if (type == AVIF)
 		{
-			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
-			if (size > 0)
-			{
-				buffer = new uint8_t[size + 1];
-				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
-			}
+            CAvifExif avifExif;
+            bool isOk = avifExif.InitAvif(CConvertUtility::ConvertToUTF8(filename));
+            if(isOk)
+            {
+                avifExif.GetMetadataAvif(buffer, bufferexifsize);
+                if (bufferexifsize > 0)
+                {
+                    buffer = new uint8_t[bufferexifsize + 1];
+                    avifExif.GetMetadataAvif(buffer, bufferexifsize);
+                }
+            }
 		}
-
-		if (size > 0)
+        
+        if (bufferexifsize > 0)
 		{
-			metaExiv = new CPictureMetadataExiv(buffer, size);
+			metaExiv = new CPictureMetadataExiv(buffer, bufferexifsize);
 		}
 	}
-	/*
+    /*
 	else if (type == PNG)
 	{
 		unsigned char* buf;
@@ -117,28 +121,14 @@ void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 	int type = libPicture.TestImageFormat(filename);
 	if (type == HEIC || type == AVIF)
 	{
-		if (type == AVIF)
-		{
-			if (size > 0)
-			{
-				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-			}
-			else if (size == 0)
-			{
-				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-			}
-		}
-		else if (type == HEIC)
-		{
-			if (size > 0)
-			{
-				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-			}
-			else if (size == 0)
-			{
-				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-			}
-		}
+        if(size == 0)
+        {
+            size = bufferexifsize;
+        }
+        else if(size > 0)
+        {
+            memcpy(data, buffer, bufferexifsize);
+        }
 	}
 	else if (metaExiv != nullptr)
 		metaExiv->GetMetadataBuffer(data, size);

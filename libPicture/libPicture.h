@@ -77,9 +77,6 @@ namespace Regards
 			                                const int& height);
                                             
                                             
-			static void Initx265Decoder();
-			static void Uninitx265Decoder();
-
 			static void InitFreeImage();
 			static void UninitFreeImage();
 

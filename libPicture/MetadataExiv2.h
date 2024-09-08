@@ -33,6 +33,7 @@ namespace Regards
 			CPictureMetadataExiv* metaExiv;
 			wxString filename;
 			uint8_t* buffer = nullptr;
+            unsigned int bufferexifsize = 0;
 		};
 	}
 }
