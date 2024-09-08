@@ -189,6 +189,8 @@ cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPictu
             int width = heif_image_handle_get_width(handle);
             int height = heif_image_handle_get_height(handle);
 
+
+
             cv::Mat picture = cv::Mat(height, width, CV_8UC3);
             
             // decode the image and convert colorspace to RGB, saved as 24bit interleaved
@@ -248,6 +250,20 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
 		heif_image* img;
 		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+
+		/*
+		unsigned int size = 0;
+		uint8_t* memoryBuffer = nullptr;
+		GetHandleMetadata(handle, memoryBuffer, size);
+		memoryBuffer = new uint8_t[size];
+		GetHandleMetadata(handle, memoryBuffer, size);
+
+
+		std::ofstream ofs("d:\\test_heic_new.bin");
+		ofs.write((char*)&memoryBuffer, sizeof(size));
+
+		delete[] memoryBuffer;
+		*/
 
 		int width = heif_image_handle_get_width(handle);
 		int height = heif_image_handle_get_height(handle);
@@ -466,6 +482,11 @@ void CHeicExif::GetMetadataHeic(const char * filename, uint8_t*& data, unsigned 
 			memcpy(data + pos, memoryBuffer + 4, itemSize - 4);
 			pos += itemSize - 4;
 			memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
+
+
+
+
+
 			delete[] memoryBuffer;
 		}
 		else
@@ -473,6 +494,8 @@ void CHeicExif::GetMetadataHeic(const char * filename, uint8_t*& data, unsigned 
 	}
 
 	Reader::Destroy(reader);
+
+
 }
 
 

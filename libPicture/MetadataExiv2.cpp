@@ -33,12 +33,9 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 		
 		if (type == HEIC)
 		{
+			bufferexifsize = 128 * 1024;
+			buffer = new uint8_t[bufferexifsize + 1];
 			CHeicExif::GetMetadataHeic(CConvertUtility::ConvertToUTF8(filename), buffer, bufferexifsize);
-			if (bufferexifsize > 0)
-			{
-				buffer = new uint8_t[bufferexifsize + 1];
-				CHeicExif::GetMetadataHeic(CConvertUtility::ConvertToUTF8(filename), buffer, bufferexifsize);
-			}
 		}
 		else if (type == AVIF)
 		{
@@ -46,12 +43,9 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
             bool isOk = avifExif.InitAvif(CConvertUtility::ConvertToUTF8(filename));
             if(isOk)
             {
+				bufferexifsize = 128*1024;
+				buffer = new uint8_t[bufferexifsize + 1];
                 avifExif.GetMetadataAvif(buffer, bufferexifsize);
-                if (bufferexifsize > 0)
-                {
-                    buffer = new uint8_t[bufferexifsize + 1];
-                    avifExif.GetMetadataAvif(buffer, bufferexifsize);
-                }
             }
 		}
         

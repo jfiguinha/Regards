@@ -34,6 +34,8 @@ bool CAvifExif::InitAvif(const char * filename)
         
 }
 
+#include <fstream> 
+
 void CAvifExif::GetMetadataAvif( uint8_t*& data, unsigned int& size)
 {
      
