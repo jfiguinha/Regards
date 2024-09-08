@@ -23,7 +23,7 @@ namespace Regards
 			static cv::Mat GetThumbnailPicture(const char * filename, int& orientation);
 			static void GetPictureDimension(const char * filename, int& width, int& height);
 
-			static void SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
+			static void SavePicture(const char * filenameOut, const int& format, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
 			                        const int& compression = 50, const bool& hasExif = false);
 
 

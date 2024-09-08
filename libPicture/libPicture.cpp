@@ -791,7 +791,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 			//CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
-			CHeic::SavePicture(CConvertUtility::ConvertToUTF8(fileName), image, data, size, quality, hasExif);
+			CHeic::SavePicture(CConvertUtility::ConvertToUTF8(fileName), iFormat, image, data, size, quality, hasExif);
 
 			if (data != nullptr)
 				delete[] data;

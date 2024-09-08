@@ -100,7 +100,12 @@ vector<cv::Mat> CHeic::GetAllPicture(const char * filename, int& delay)
     
 }
 
-void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
+/*
+#define HEIC 26
+#define AVIF 35
+*/
+
+void CHeic::SavePicture(const char * filenameOut, const int& format, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
                         const int& compression, const bool& hasExif)
 {
 
@@ -112,7 +117,12 @@ void CHeic::SavePicture(const char * filenameOut, cv::Mat& source, uint8_t*& dat
 		{
 			// get the default encoder
 			heif_encoder* encoder;
-			heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
+			if(format == 26)
+				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
+			else if(format == 35)
+				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
+			else
+				heif_context_get_encoder_for_format(ctx, heif_compression_undefined, &encoder);
 
 
 			// set the encoder parameters
