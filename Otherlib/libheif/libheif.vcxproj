@@ -346,7 +346,7 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\;$(SolutionDir)libextern\aom;$(SolutionDir)libextern\libde265-master\build;$(SolutionDir)libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;LIBHEIF_STATIC_BUILD;_WINDOWS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;HAVE_X265=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;LIBHEIF_STATIC_BUILD;_WINDOWS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM_ENCODER=1;HAVE_AOM_DECODER=1;HAVE_X265=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
