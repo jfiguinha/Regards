@@ -561,9 +561,12 @@ void CMainParam::GetWindowParameter(xml_node<>* window_node)
 	child_node = window_node->first_node("LastFilepath");
 	if (child_node != nullptr)
 	{
-		filepath = CConvertUtility::ConvertFromBase64(child_node->value());
-        if(!wxFileExists(filepath))
-            filepath = child_node->value();
+		filepath = child_node->value();
+		if (!wxFileExists(filepath))
+			filepath = CConvertUtility::ConvertFromBase64(child_node->value());
+			
+		if (!wxFileExists(filepath))
+			filepath = "";
 	}
 
 	child_node = window_node->first_node("VideoEditorPath");
