@@ -4,10 +4,9 @@
 #ifdef LIBHEIC
 #include <cstdint>
 #include <libheif/heif.h>
-#include <libheif/exif.h>
-#include <FileUtility.h>
+
 #include "imageinfo.hpp"
-#include <map>
+
 using namespace std;
 using namespace Regards::Picture;
 

@@ -4,9 +4,6 @@
     <ClCompile Include="raw.cpp">
       <Filter>libraw</Filter>
     </ClCompile>
-    <ClCompile Include="avif.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Heic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,13 +133,13 @@
     <ClCompile Include="PictureMetadataExiv.cpp">
       <Filter>libexif</Filter>
     </ClCompile>
+    <ClCompile Include="avifexif.cpp">
+      <Filter>libexif</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
       <Filter>libraw</Filter>
-    </ClInclude>
-    <ClInclude Include="avif.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>Header Files</Filter>
@@ -302,6 +299,9 @@
     </ClInclude>
     <ClInclude Include="imageinfo.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avifexif.h">
+      <Filter>libexif</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

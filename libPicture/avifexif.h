@@ -1,5 +1,5 @@
 struct avifDecoder;
-struct avifImage;
+
 
 class CAvifExif
 {
@@ -10,6 +10,6 @@ public:
     void GetMetadataAvif( uint8_t * & buffer, unsigned int& size);
 private:
     avifDecoder* decoder;   
-    avifImage* decoded;
+
     
 };

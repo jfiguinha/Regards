@@ -78,6 +78,12 @@
     <ClInclude Include="nclx.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="heif_decoder_aom.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="heif_encoder_aom.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nclx.cc">
@@ -135,6 +141,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="bitstream.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="heif_decoder_aom.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="heif_encoder_aom.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

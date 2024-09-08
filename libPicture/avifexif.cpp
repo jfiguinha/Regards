@@ -5,12 +5,10 @@
 CAvifExif::CAvifExif()
 {
     decoder = avifDecoderCreate();   
-	decoded = avifImageCreateEmpty();  
 
 }
 CAvifExif::~CAvifExif()
 {
-    avifImageDestroy(decoded);
     avifDecoderDestroy(decoder); 
 }
 
@@ -31,12 +29,6 @@ bool CAvifExif::InitAvif(const char * filename)
 		fprintf(stderr, "Cannot open file for read: %s\n", filename);
         return false;
 	}
-        
-    result = avifDecoderRead(decoder, decoded);
-	if (result != AVIF_RESULT_OK) {
-		fprintf(stderr, "Cannot open file for read: %s\n", filename);
-        return false;
-	}
     
     return true;
         
@@ -44,12 +36,12 @@ bool CAvifExif::InitAvif(const char * filename)
 
 void CAvifExif::GetMetadataAvif( uint8_t*& data, unsigned int& size)
 {
-      
-    int itemSize = decoded->exif.size;
+     
+    int itemSize = decoder->image->exif.size;
     // Request item data.
     if (size > 0)
     {
-        memcpy(data, decoded->exif.data, itemSize);
+        memcpy(data, decoder->image->exif.data, itemSize);
     }
     else
         size = itemSize;
