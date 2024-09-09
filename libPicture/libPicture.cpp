@@ -16,6 +16,7 @@
 #include "MetadataExiv2.h"
 #include "regards_webp.h"
 #include "picture_utility.h"
+#include "avif.h"
 #include <ximage.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
@@ -1574,7 +1575,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		if (imageLoading != nullptr && imageLoading->IsOk())
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
 	}
-	else if (iFormat == HEIC)
+	else if (iFormat == HEIC || iFormat == AVIF)
 	{
 
 		int angle = 0;
@@ -1861,7 +1862,13 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 						                                     orientation);
 
 					if (picture.empty())
-						picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation);
+                    {
+                        if(iFormat == HEIC)
+                            picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation, isThumbnail);
+                        else
+                            picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isThumbnail);
+                    
+                    }
 				}
 				else
 				{
@@ -2613,6 +2620,7 @@ void CLibPicture::InitFreeImage()
 {
 	FreeImage_Initialise(true);
 	FreeImage_SetOutputMessage(&FreeImageErrorHandler);
+    CAvif::CreateDecoder();
 }
 
 void CLibPicture::UninitFreeImage()

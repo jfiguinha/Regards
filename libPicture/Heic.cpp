@@ -7,8 +7,11 @@
 
 #include "imageinfo.hpp"
 
+
 using namespace std;
 using namespace Regards::Picture;
+
+
 
 CHeic::CHeic()
 {
@@ -243,9 +246,9 @@ int CHeic::GetNbFrame(const char * filename)
     return nbId;
 }
 
-cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
+cv::Mat CHeic::GetPicture(const char * filename, int& orientation, const bool & isThumbnail)
 {
-    
+       
     int rotation = 0;
 	cv::Mat picture;
 	try
@@ -260,20 +263,6 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
 		heif_image* img;
 		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
-
-		/*
-		unsigned int size = 0;
-		uint8_t* memoryBuffer = nullptr;
-		GetHandleMetadata(handle, memoryBuffer, size);
-		memoryBuffer = new uint8_t[size];
-		GetHandleMetadata(handle, memoryBuffer, size);
-
-
-		std::ofstream ofs("d:\\test_heic_new.bin");
-		ofs.write((char*)&memoryBuffer, sizeof(size));
-
-		delete[] memoryBuffer;
-		*/
 
 		int width = heif_image_handle_get_width(handle);
 		int height = heif_image_handle_get_height(handle);
@@ -298,7 +287,7 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation)
 	}
 
     printf("Rotation HEIF : %d \n", orientation );
-	
+
 	return picture;
 }
 

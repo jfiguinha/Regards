@@ -19,13 +19,12 @@ namespace Regards
 			static cv::Mat GetPicture(const char * filename, int& delay,
 			                          const int& numPicture);
 			static vector<cv::Mat> GetAllPicture(const char * filename, int& delay);
-			static cv::Mat GetPicture(const char * filename, int& orientation);
+			static cv::Mat GetPicture(const char * filename, int& orientation, const bool & isThumbnail);
 			static cv::Mat GetThumbnailPicture(const char * filename, int& orientation);
 			static void GetPictureDimension(const char * filename, int& width, int& height);
 
 			static void SavePicture(const char * filenameOut, const int& format, cv::Mat& source, uint8_t*& data_exif, unsigned int& size,
 			                        const int& compression = 50, const bool& hasExif = false);
-
 
             
 		};

@@ -124,6 +124,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="avif.cpp"/>
     <File Name="jxl.cpp"/>
     <File Name="ascii.cpp"/>
     <File Name="regards_webp.cpp"/>
@@ -134,6 +135,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="avif.h"/>
     <File Name="imageinfo.hpp"/>
     <File Name="jxl.h"/>
     <File Name="ImageVideoThumbnail.h"/>
