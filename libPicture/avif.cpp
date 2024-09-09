@@ -19,7 +19,7 @@ cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
 	avifImage* decoded = avifImageCreateEmpty();
     avifDecoder* decoder = avifDecoderCreate();   
     
-    decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
+    decoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
 
     avifResult result;
     result = avifDecoderSetIOFile(decoder, filename);
