@@ -3,11 +3,6 @@
 #include <avif/avif.h>
 using namespace Regards::Picture;
 
-std::mutex CAvif::mudecoder;
-avifDecoder* CAvif::decoder;
-
-std::mutex CAvif::mudecoder_thumb;
-avifDecoder* CAvif::decoder_thumb;
 
 CAvif::CAvif()
 {
@@ -17,40 +12,24 @@ CAvif::~CAvif()
 {
 }
 
-void CAvif::CreateDecoder()
-{
-	decoder = avifDecoderCreate();   
-    decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
-    
-	decoder_thumb = avifDecoderCreate();   
-    decoder_thumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
-}
 
 cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
 {
 	cv::Mat out;
 	avifImage* decoded = avifImageCreateEmpty();
+    avifDecoder* decoder = avifDecoderCreate();   
     
-    if(isThumb)
-        mudecoder_thumb.lock();
-    else
-        mudecoder.lock();
+    decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
 
     avifResult result;
-    if(isThumb)
-        result = avifDecoderSetIOFile(decoder_thumb, filename);
-    else
-        result = avifDecoderSetIOFile(decoder, filename);
+    result = avifDecoderSetIOFile(decoder, filename);
         
 	if (result != AVIF_RESULT_OK) {
 		fprintf(stderr, "Cannot open file for read: %s\n", filename);
 		goto cleanup;
 	}
 
-    if(isThumb)
-        result = avifDecoderParse(decoder_thumb);
-    else
-        result = avifDecoderParse(decoder);
+    result = avifDecoderParse(decoder);
 
 	if (result != AVIF_RESULT_OK) {
 		fprintf(stderr, "Failed to decode image: %s\n", avifResultToString(result));
@@ -60,10 +39,7 @@ cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
 	if (decoder != nullptr)
 	{
         avifResult decodeResult;
-        if(isThumb)
-            decodeResult = avifDecoderRead(decoder_thumb, decoded);
-        else
-            decodeResult = avifDecoderRead(decoder, decoded);
+        decodeResult = avifDecoderRead(decoder, decoded);
 
 		if (decodeResult == AVIF_RESULT_OK)
 		{
@@ -89,9 +65,6 @@ cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
 	
 cleanup:
 	avifImageDestroy(decoded);
-    if(isThumb)
-        mudecoder_thumb.unlock();
-    else
-        mudecoder.unlock();
+    avifDecoderDestroy(decoder);
 	return out;
 }

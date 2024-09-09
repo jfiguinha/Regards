@@ -2620,7 +2620,7 @@ void CLibPicture::InitFreeImage()
 {
 	FreeImage_Initialise(true);
 	FreeImage_SetOutputMessage(&FreeImageErrorHandler);
-    CAvif::CreateDecoder();
+    //CAvif::CreateDecoder();
 }
 
 void CLibPicture::UninitFreeImage()
