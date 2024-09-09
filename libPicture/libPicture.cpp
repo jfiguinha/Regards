@@ -1858,15 +1858,21 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
+                    {
 						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToUTF8(fileName),
 						                                     orientation);
+                        applyExif = true;
+                    }
 
 					if (picture.empty())
                     {
                         if(iFormat == HEIC)
                             picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation, isThumbnail);
                         else
+                        {
                             picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isThumbnail);
+                            applyExif = true;
+                        }
                     
                     }
 				}
