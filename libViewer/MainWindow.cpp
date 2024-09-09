@@ -1251,11 +1251,7 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
         } 
         
     }
-    else
-    {
-        CSqlPhotosWithoutThumbnail sqlPhoto;
-        sqlPhoto.GetPhotoList(&photoList, 0);
-    }
+
 
     delete filename;
     
