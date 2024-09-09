@@ -1071,7 +1071,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
 	   
-	if (preprocess_thumbnail && preprocessisAvailable)
+	if (preprocess_thumbnail)
 	{
 		if (value == 1)
 		{
@@ -1097,8 +1097,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 						}
 						pThumbnailData->SetIsProcess(true);
 					}
-                    
-					preprocessisAvailable = false;
+
 				}
 			}
 		}

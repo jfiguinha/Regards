@@ -138,7 +138,7 @@ namespace Regards::Viewer
 		int nbProcess = 0;
 		bool stopToGetNbElement = false;
 		int thumbnailPos = 0;
-		std::map<wxString, bool> listFile;
+		//std::map<wxString, bool> listFile;
 
 
 		bool isCheckNewVersion = false;

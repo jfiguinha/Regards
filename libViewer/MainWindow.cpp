@@ -221,7 +221,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	nbProcess = 0;
-	listFile.clear();
+
 	processIdle = true;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GetPhotoList(&photoList, 0);
@@ -992,7 +992,7 @@ void CMainWindow::UpdateFolderStatic()
 
 
 			centralWnd->SetListeFile(localFilename, typeAffichage);
-			listFile.clear();
+
 			thumbnailPos = 0;
 			firstFileToShow = "";
 			numElementTraitement = 0;
@@ -1142,13 +1142,14 @@ void CMainWindow::ProcessIdle()
 
 void CMainWindow::ProcessThumbnail()
 {
-    //printf("CMainWindow::ProcessThumbnail() : nbElementInIconeList %d \n", nbElementInIconeList);
-    //printf("CMainWindow::ProcessThumbnail() : nbProcess %d \n", nbProcess);
+
     
 	if (nbElementInIconeList == 0)
 	{
 		return;
 	}
+    
+
 
 	int nbProcesseur = 1;
 	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
@@ -1156,6 +1157,7 @@ void CMainWindow::ProcessThumbnail()
 
 	if (nbProcess >= nbProcesseur)
 		return;
+        
 
 	for (int i = 0; i < photoList.size(); i++)
 	{
@@ -1165,24 +1167,25 @@ void CMainWindow::ProcessThumbnail()
 		event->SetExtraLong(photoList.size());
 		wxQueueEvent(this, event);
 
+        ProcessThumbnail(path, 0, 0);
 
-		std::map<wxString, bool>::iterator it = listFile.find(path);
-		if (it == listFile.end())
-		{
-			ProcessThumbnail(path, 0, 0);
-			listFile[path] = true;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-		}
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        
+        photoList.erase(photoList.begin() + i);
 
-		photoList.erase(photoList.begin() + i);
-
-		i--;
+        i--;
 
 		if (nbProcess == nbProcesseur)
 			break;
 	}
 
 
+
+	if (photoList.empty())
+	{
+        CSqlPhotosWithoutThumbnail sqlPhoto;
+        sqlPhoto.GetPhotoList(&photoList, 0);
+    }
 	if (photoList.empty())
 	{
 		nbElement = 0;
@@ -1226,43 +1229,36 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
-
-	wxString* filename = (wxString*)event.GetClientData();
-	wxString localName = wxString(*filename);
-	int type = event.GetInt();
-	int longWindow = event.GetExtraLong();
-	if (type == 1)
-	{
-		ProcessThumbnail(localName, type, longWindow);
-	}
-	else
-	{
-        if(type == 30)
-            printf("CMainWindow::OnProcessThumbnail longWindow : %d\n", longWindow);
-        
-		std::map<wxString, bool>::iterator it = listFile.find(localName);
-		if (it == listFile.end())
-		{
-            if(type == 30)
-                printf("CMainWindow::OnProcessThumbnail find longWindow : %d\n", longWindow);
-                
-			std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(),  localName);
-			if (itPhoto != photoList.end())
-				photoList.erase(itPhoto);
-
-			ProcessThumbnail(localName, type, longWindow);
-			listFile[localName] = true;
-		}
-		else if(type == 30)
+    wxString firstFile = "";
+    wxString* filename = (wxString*)event.GetClientData();
+    if(photoList.size() > 0)
+    {
+        firstFile = *filename;
+   
+        for (int i = 0; i < photoList.size(); i++)
         {
-            printf("CMainWindow::OnProcessThumbnail longWindow wxEVENT_THUMBNAILREFRESH \n");
-            wxWindow* mainWindow = this->FindWindowById(longWindow);
-            wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-            mainWindow->GetEventHandler()->AddPendingEvent(evt); 
-        }
+            wxString oldFile = photoList[i];
+            if(*filename == oldFile)
+            {
+                photoList[i] = firstFile;
+                break;
+            }
+            else
+            {
+                photoList[i] = firstFile;
+                firstFile = oldFile;
+            }
+        } 
+        
+    }
+    else
+    {
+        CSqlPhotosWithoutThumbnail sqlPhoto;
+        sqlPhoto.GetPhotoList(&photoList, 0);
+    }
 
-	}
-	delete filename;
+    delete filename;
+    
 	processIdle = true;
 
 }
