@@ -180,5 +180,6 @@ namespace Regards::Viewer
 		bool init = true;
 		vector<wxString> photoList;
 		CFolderProcess* folderProcess = nullptr;
+		std::map<wxString, bool> listFile;
 	};
 }

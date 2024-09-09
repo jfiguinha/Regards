@@ -136,6 +136,9 @@
     <ClCompile Include="avifexif.cpp">
       <Filter>libexif</Filter>
     </ClCompile>
+    <ClCompile Include="avif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -302,6 +305,9 @@
     </ClInclude>
     <ClInclude Include="avifexif.h">
       <Filter>libexif</Filter>
+    </ClInclude>
+    <ClInclude Include="avif.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

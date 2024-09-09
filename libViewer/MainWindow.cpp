@@ -27,6 +27,8 @@
 #include "StatusText.h"
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
+#define LIBHEIC
+#include <picture_id.h>
 #include "FaceInfosUpdate.h"
 #include <ShowElement.h>
 #include <wx/filedlg.h>
@@ -221,7 +223,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	nbProcess = 0;
-
+	listFile.clear();
 	processIdle = true;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GetPhotoList(&photoList, 0);
@@ -992,7 +994,7 @@ void CMainWindow::UpdateFolderStatic()
 
 
 			centralWnd->SetListeFile(localFilename, typeAffichage);
-
+			listFile.clear();
 			thumbnailPos = 0;
 			firstFileToShow = "";
 			numElementTraitement = 0;
@@ -1170,8 +1172,17 @@ void CMainWindow::ProcessThumbnail()
         ProcessThumbnail(path, 0, 0);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        
-        photoList.erase(photoList.begin() + i);
+
+
+		std::map<wxString, bool>::iterator it = listFile.find(path);
+		if (it == listFile.end())
+		{
+			ProcessThumbnail(path, 0, 0);
+			listFile[path] = true;
+		}
+
+		photoList.erase(photoList.begin() + i);
+
 
         i--;
 
@@ -1230,8 +1241,36 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
     wxString firstFile = "";
-    wxString* filename = (wxString*)event.GetClientData();
-    if(photoList.size() > 0)
+	wxString* filename = (wxString*)event.GetClientData();
+	wxString localName = wxString(*filename);
+
+	CLibPicture libPicture;
+	int iFormat = libPicture.TestImageFormat(localName);
+
+	if (iFormat != AVIF)
+	{
+
+		int type = event.GetInt();
+		int longWindow = event.GetExtraLong();
+		if (type == 1)
+		{
+			ProcessThumbnail(localName, type, longWindow);
+		}
+		else
+		{
+			std::map<wxString, bool>::iterator it = listFile.find(localName);
+			if (it == listFile.end())
+			{
+				std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
+				if (itPhoto != photoList.end())
+					photoList.erase(itPhoto);
+
+				ProcessThumbnail(localName, type, longWindow);
+				listFile[localName] = true;
+			}
+		}
+	}
+	else if(photoList.size() > 0)
     {
         firstFile = *filename;
    
