@@ -316,46 +316,57 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
     // get a handle to the primary image
     heif_image_handle* handle;
     heif_context_get_primary_image_handle(ctx, &handle);
-        
-    int nThumbnails = heif_image_handle_get_number_of_thumbnails(handle);
-    std::vector<heif_item_id> thumbnailIDs(nThumbnails);
 
-    nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, thumbnailIDs.data(), nThumbnails);
+	try
+	{
 
-    for (int thumbnailIdx = 0; thumbnailIdx < nThumbnails; thumbnailIdx++) {
-        heif_image_handle* thumbnail_handle;
-        err = heif_image_handle_get_thumbnail(handle, thumbnailIDs[thumbnailIdx], &thumbnail_handle);
-        if (err.code) {
-            std::cerr << err.message << "\n";
-            break;
-        }
+		int nThumbnails = heif_image_handle_get_number_of_thumbnails(handle);
+		std::vector<heif_item_id> thumbnailIDs(nThumbnails);
 
-        int th_width = heif_image_handle_get_width(thumbnail_handle);
-        int th_height = heif_image_handle_get_height(thumbnail_handle);
+		nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, thumbnailIDs.data(), nThumbnails);
 
-        printf("  thumbnail: %dx%d\n", th_width, th_height);
+		for (int thumbnailIdx = 0; thumbnailIdx < nThumbnails; thumbnailIdx++) {
+			heif_image_handle* thumbnail_handle;
+			err = heif_image_handle_get_thumbnail(handle, thumbnailIDs[thumbnailIdx], &thumbnail_handle);
+			if (err.code) {
+				std::cerr << err.message << "\n";
+				break;
+			}
 
+			int th_width = heif_image_handle_get_width(thumbnail_handle);
+			int th_height = heif_image_handle_get_height(thumbnail_handle);
 
-        picture = cv::Mat(th_height, th_width, CV_8UC3);
-        
-		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
-		heif_image* img;
-		heif_decode_image(thumbnail_handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
-
-        int stride = 0;
-        const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-        memcpy(picture.data, data, stride * th_height);
-
-        heif_image_release(img);
-        
-
-        cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+			printf("  thumbnail: %dx%d\n", th_width, th_height);
 
 
-        heif_image_handle_release(thumbnail_handle);
-        
-        break;
-    }
+			picture = cv::Mat(th_height, th_width, CV_8UC3);
+
+			// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+			heif_image* img;
+			heif_decode_image(thumbnail_handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+
+			int stride = 0;
+			const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+			memcpy(picture.data, data, stride * th_height);
+
+			heif_image_release(img);
+
+
+			cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+
+			heif_image_handle_release(thumbnail_handle);
+
+
+			break;
+		}
+	}
+	catch (...)
+	{
+
+	}
+
+
+	heif_image_handle_release(handle);
     
     heif_context_free(ctx);
     

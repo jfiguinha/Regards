@@ -1102,22 +1102,27 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 	{
 		if (value == 1)
 		{
-            bool isProcess = false;
-            CIcone *  numSelect = GetIconeById(numSelectPhotoId);
-            if(numSelect != nullptr)
-            {
-                isProcess = UpdateThumbnail(numSelect);
-            }
-            
-            CIcone *  numActif = GetIconeById(numActifPhotoId);
-            if(numActif != nullptr && isProcess)
-            {
-                isProcess = UpdateThumbnail(numActif);
-            }
-            
-            if (pBitmapIcone != nullptr && isProcess)
+			if (pBitmapIcone != nullptr)
 			{
-                isProcess = UpdateThumbnail(pBitmapIcone);
+				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
+				{
+					const bool isProcess = pThumbnailData->IsProcess();
+					//const bool isLoad = pThumbnailData->IsLoad();
+					if (!isProcess) // && !isLoad)
+					{
+						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+						if (window != nullptr)
+						{
+							wxString* localName = new wxString(pThumbnailData->GetFilename());
+							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+							evt.SetClientData(localName);
+							evt.SetInt(0);
+							evt.SetExtraLong(localid);
+							window->GetEventHandler()->AddPendingEvent(evt);
+						}
+						pThumbnailData->SetIsProcess(true);
+					}
+				}
 			}
 		}
 	}

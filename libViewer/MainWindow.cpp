@@ -1288,13 +1288,13 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
                 firstFile = oldFile;
             }
         } 
-        
+		processIdle = true;
     }
 
 
     delete filename;
     
-	processIdle = true;
+	
 
 }
 
