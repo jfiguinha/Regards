@@ -321,7 +321,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
-	/*
+
 	if (ocl::haveOpenCL())
 	{
 		int select = 0;
@@ -336,14 +336,14 @@ bool MyApp::OnInit()
             }
 			if (deviceName.find("nvidia") != std::string::npos)
 				select = i;
-
+			if (deviceName.find("amd") != std::string::npos)
+				select = i;
 		}
 
 
 		vkdev = ncnn::get_gpu_device(select);
 		
 	}
-	*/
 
     
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
