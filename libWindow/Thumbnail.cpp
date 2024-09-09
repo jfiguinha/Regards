@@ -1058,6 +1058,33 @@ void CThumbnail::RefreshThumbnail(wxCommandEvent& event)
     printf("CThumbnail::RefreshThumbnail \n");
 }
 
+bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
+{
+    bool isProcess = false;
+    if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
+    {
+        isProcess = pThumbnailData->IsProcess();
+        //const bool isLoad = pThumbnailData->IsLoad();
+        //const bool isLoad = pThumbnailData->IsLoad();
+        if (!isProcess) // && !isLoad)
+        {
+            wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+            if (window != nullptr)
+            {
+                
+                printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
+                wxString* localName = new wxString(pThumbnailData->GetFilename());
+                wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+                evt.SetClientData(localName);
+                evt.SetInt(30);
+                evt.SetExtraLong(localid);
+                window->GetEventHandler()->AddPendingEvent(evt);
+            }
+            pThumbnailData->SetIsProcess(true);
+        }
+    }  
+    return isProcess;  
+}
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
    // printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
@@ -1075,30 +1102,22 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 	{
 		if (value == 1)
 		{
-			if (pBitmapIcone != nullptr)
+            bool isProcess = false;
+            CIcone *  numSelect = GetIconeById(numSelectPhotoId);
+            if(numSelect != nullptr)
+            {
+                isProcess = UpdateThumbnail(numSelect);
+            }
+            
+            CIcone *  numActif = GetIconeById(numActifPhotoId);
+            if(numActif != nullptr && isProcess)
+            {
+                isProcess = UpdateThumbnail(numActif);
+            }
+            
+            if (pBitmapIcone != nullptr && isProcess)
 			{
-				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
-				{
-					const bool isProcess = pThumbnailData->IsProcess();
-					//const bool isLoad = pThumbnailData->IsLoad();
-					if (!isProcess) // && !isLoad)
-					{
-						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
-						if (window != nullptr)
-						{
-                            
-                            printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
-							wxString* localName = new wxString(pThumbnailData->GetFilename());
-							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
-							evt.SetClientData(localName);
-							evt.SetInt(30);
-							evt.SetExtraLong(localid);
-							window->GetEventHandler()->AddPendingEvent(evt);
-						}
-						pThumbnailData->SetIsProcess(true);
-					}
-
-				}
+                isProcess = UpdateThumbnail(pBitmapIcone);
 			}
 		}
 	}

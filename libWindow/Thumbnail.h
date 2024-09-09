@@ -161,7 +161,7 @@ namespace Regards::Window
 
 		CIcone *  GetIconeByPath(const wxString& filepath);
 		static bool ItemCompFonctPath(wxString filepath, CIcone *  icone);
-
+        bool UpdateThumbnail(CIcone *  pBitmapIcone);
 		//------------------------------------------------------------
 		//Variable
 		//------------------------------------------------------------
