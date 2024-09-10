@@ -15,6 +15,7 @@
 #include <BitmapWndViewer.h>
 #include "Toolbar.h"
 #include "ToolbarViewerMode.h"
+#include <avif.h>
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
 #include "FileUtility.h"
@@ -1164,6 +1165,15 @@ void CMainWindow::ProcessThumbnail()
 	for (int i = 0; i < photoList.size(); i++)
 	{
 		wxString path = photoList[i];
+            
+        CLibPicture libPicture;
+        int iFormat = libPicture.TestImageFormat(path);
+
+        if (iFormat == AVIF)
+        {
+            if(Regards::Picture::CAvif::IsOccupied())
+                continue;
+        }
 
 		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
 		event->SetExtraLong(photoList.size());
