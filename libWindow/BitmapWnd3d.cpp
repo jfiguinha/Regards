@@ -200,16 +200,17 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
    CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical
    32 bit system.  */
    
-   /*
-	clock_t start, end;
+
+	//clock_t start, end;
 
 	// Recording the starting clock tick.
-	start = clock();
+	//start = clock();
 
 	if (!clExecCtx.empty())
 		clExecCtx.bind();
 	renderOpenGL->SetCurrent(*this);
 
+    /*
 	// Recording the end clock tick.
 	end = clock();
 
@@ -219,6 +220,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 		<< time_taken << setprecision(5);
 	cout << " sec " << endl;
     */
+
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
 }
 
