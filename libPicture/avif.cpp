@@ -86,7 +86,7 @@ cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
     if(!isThumb)
     {
         avifDecoder* decoder = avifDecoderCreate(); 
-    #ifdef __APPLE__
+    #if defined(__APPLE_) || defined(__ARM64__) 
         decoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
     #else
         decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
@@ -101,7 +101,7 @@ cv::Mat CAvif::GetPicture(const char * filename, bool isThumb)
         if(decoderThumb == nullptr)
         {
             decoderThumb = avifDecoderCreate();
-        #ifdef __APPLE__
+        #if defined(__APPLE_) || defined(__ARM64__) 
             decoderThumb->codecChoice = AVIF_CODEC_CHOICE_AUTO;
         #else
             decoderThumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
