@@ -2,14 +2,9 @@
 #include "MyFrameIntro.h"
 #include "IntroTheme.h"
 #include "TitleIntro.h"
-#include <LibResource.h>
-#include <wx/wfstream.h>
-#include <wx/txtstrm.h>
-#include <FileUtility.h>
-#include <wx/progdlg.h>
-#include "DownloadFile.h"
+
 using namespace Regards::Introduction;
-using namespace Regards::Internet;
+
 
 #ifndef wxHAS_IMAGES_IN_RESOURCES
 #include "../Resource/sample.xpm"
@@ -65,101 +60,11 @@ void MyFrameIntro::on_size(wxSizeEvent& event)
 
 
 
-void MyFrameIntro::NewModelsAvailable()
-{
-	bool fileExist = false;
-	cout << "modelUpdate" << endl;
-	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
-	wxString line = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
-    
-#ifdef WIN32
-    wxString resourcePath = documentPath + "\\model";
-    wxString fileHash = resourcePath + "\\hash.txt";
-#else
-	wxString resourcePath = documentPath + "/model";
-    wxString fileHash = resourcePath + "/hash.txt";
-#endif
-
-	if (wxFileExists(fileHash))
-	{
-		wxFileInputStream input(fileHash);
-		wxTextInputStream text(input, wxT("\x09"), wxConvUTF8);
-		while (input.IsOk() && !input.Eof())
-		{
-			line = text.ReadLine();
-			break;
-		}
-
-		fileExist = true;
-	}
-
-	if (!fileExist || localVersion != line)
-	{
-
-		/*
-		
-		wxString path = CFileUtility::GetProgramFolderPath() + "\\RegardsDownloader.exe";
-		SHELLEXECUTEINFO ShExecInfo = { 0 };
-		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-		ShExecInfo.hwnd = NULL;
-		ShExecInfo.lpVerb = NULL;
-		ShExecInfo.lpFile = path;
-		ShExecInfo.lpParameters = L"";
-		ShExecInfo.lpDirectory = NULL;
-		ShExecInfo.nShow = SW_SHOWNORMAL;
-		ShExecInfo.hInstApp = NULL;
-		ShellExecuteEx(&ShExecInfo);
-		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
-		CloseHandle(ShExecInfo.hProcess);
-		*/
-
-		
-		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE  | 
-                         wxPD_CAN_ABORT |
-                         wxPD_ELAPSED_TIME |
-                         wxPD_ESTIMATED_TIME |
-                         wxPD_REMAINING_TIME | wxPD_SMOOTH);
-		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
-		
-		CDownloadFile _checkVersion(serverURL);
-		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
-		dialog.Close();
-	}
-    
-    
-    if (wxFileExists(tempModel))
-    {
-		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
-		CDownloadFile _checkVersion(serverURL);
-		_checkVersion.ExtractZipFiles(tempModel, resourcePath, this);
-    }
-
-
-}
 
 
 void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 {
-	NewModelsAvailable();
-
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    
-#ifdef WIN32
-	wxString fileHash = documentPath + "\\model\\hash.txt";
-#else
-	wxString fileHash = documentPath + "/model/hash.txt";
-#endif
-
-	if (wxFileExists(fileHash) && mainInterface != nullptr)
-			mainInterface->ShowViewer();
-	else
-	{
-		wxMessageBox(wxT("IA model not found. Program can't be started."), wxT("Error"), wxICON_ERROR);
-		mainInterface->Close();
-	}
+	mainInterface->ShowViewer();
 }
 
 MyFrameIntro::~MyFrameIntro()

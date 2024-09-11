@@ -17,7 +17,6 @@ namespace Regards::Introduction
 		void OnClose(wxCloseEvent& event);
 		void on_size(wxSizeEvent& event);
 		void OnTimeShowViewer(wxTimerEvent& event);
-		void NewModelsAvailable();
 
 		CTitleIntro* titleIntro;
 		CMyCentralWindowIntro* myCentralWindow;

@@ -120,6 +120,8 @@ namespace Regards::Viewer
 		void OnWindowPicture(wxCommandEvent& event);
         void OnWindowFullScreen(wxCommandEvent & event);
         void OpenPictureFile();
+		void NewModelsAvailable();
+
 		wxDECLARE_EVENT_TABLE();
 
 

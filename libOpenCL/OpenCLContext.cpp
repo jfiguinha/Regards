@@ -1,4 +1,4 @@
-#include "header.h"
+﻿#include "header.h"
 #include "OpenCLContext.h"
 
 #ifdef __APPLE__

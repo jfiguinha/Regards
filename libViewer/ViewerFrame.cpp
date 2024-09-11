@@ -30,6 +30,12 @@
 #include <SqlFacePhoto.h>
 #include "window_mode_id.h"
 #include <wx/busyinfo.h>
+#include <LibResource.h>
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
+#include <FileUtility.h>
+#include <wx/progdlg.h>
+#include "DownloadFile.h"
 #ifdef __APPLE__
 #include <ToggleFullscreen.h>
 #endif
@@ -39,6 +45,7 @@ using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
+using namespace Regards::Internet;
 
 constexpr auto TIMER_LOADPICTURE = 2;
 constexpr auto TIMER_EVENTFILEFS = 3;
@@ -115,6 +122,23 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	this->mainInterface = mainInterface;
 	this->mainInterface->parent = this;
+
+	NewModelsAvailable();
+
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString fileHash = documentPath + "\\model\\hash.txt";
+#else
+	wxString fileHash = documentPath + "/model/hash.txt";
+#endif
+
+	if (!wxFileExists(fileHash))
+	{
+		wxMessageBox(wxT("IA model not found. Program can't be started."), wxT("Error"), wxICON_ERROR);
+		mainInterface->Close();
+		return;
+	}
 
 	
 	CSqlFindFolderCatalog folderCatalog;
@@ -281,6 +305,83 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 
 	
+}
+
+
+
+void CViewerFrame::NewModelsAvailable()
+{
+	bool fileExist = false;
+	cout << "modelUpdate" << endl;
+	wxString localVersion = CLibResource::LoadStringFromResource("LBLMODELHASH", 1);
+	wxString line = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+	wxString tempModel = CFileUtility::GetTempFile("model.zip", true);
+
+#ifdef WIN32
+	wxString resourcePath = documentPath + "\\model";
+	wxString fileHash = resourcePath + "\\hash.txt";
+#else
+	wxString resourcePath = documentPath + "/model";
+	wxString fileHash = resourcePath + "/hash.txt";
+#endif
+
+	if (wxFileExists(fileHash))
+	{
+		wxFileInputStream input(fileHash);
+		wxTextInputStream text(input, wxT("\x09"), wxConvUTF8);
+		while (input.IsOk() && !input.Eof())
+		{
+			line = text.ReadLine();
+			break;
+		}
+
+		fileExist = true;
+	}
+
+	if (!fileExist || localVersion != line)
+	{
+
+		/*
+
+		wxString path = CFileUtility::GetProgramFolderPath() + "\\RegardsDownloader.exe";
+		SHELLEXECUTEINFO ShExecInfo = { 0 };
+		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+		ShExecInfo.hwnd = NULL;
+		ShExecInfo.lpVerb = NULL;
+		ShExecInfo.lpFile = path;
+		ShExecInfo.lpParameters = L"";
+		ShExecInfo.lpDirectory = NULL;
+		ShExecInfo.nShow = SW_SHOWNORMAL;
+		ShExecInfo.hInstApp = NULL;
+		ShellExecuteEx(&ShExecInfo);
+		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+		CloseHandle(ShExecInfo.hProcess);
+		*/
+
+
+		wxProgressDialog dialog("Downloading models ...", "Please wait...", 100, this, wxPD_APP_MODAL | wxPD_AUTO_HIDE |
+			wxPD_CAN_ABORT |
+			wxPD_ELAPSED_TIME |
+			wxPD_ESTIMATED_TIME |
+			wxPD_REMAINING_TIME | wxPD_SMOOTH);
+		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
+
+		CDownloadFile _checkVersion(serverURL);
+		_checkVersion.DownloadFile(&dialog, tempModel, CFileUtility::GetResourcesFolderPathWithExt("ca-bundle.crt"));
+		dialog.Close();
+	}
+
+
+	if (wxFileExists(tempModel))
+	{
+		wxString serverURL = CLibResource::LoadStringFromResource("LBLWEBSITEMODELDOWNLOAD", 1);
+		CDownloadFile _checkVersion(serverURL);
+		_checkVersion.ExtractZipFiles(tempModel, resourcePath, this);
+	}
+
+
 }
 
 void CViewerFrame::OnExportDiaporama(wxCommandEvent& event)
