@@ -12,8 +12,8 @@ namespace Regards
 			CAvif();
 			~CAvif();
             static bool IsOccupied();
-            static void CreateDecoder();
-			static cv::Mat GetPicture(const char * filename, bool isThumb = false);
+			static cv::Mat GetPicture(const char * filename);
+			static cv::Mat GetPictureThumb(const char* filename, const int& width, const int& heigth);
         private:
             static std::mutex muPicture;
             static bool isOccupied;

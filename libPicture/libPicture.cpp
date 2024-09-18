@@ -105,7 +105,62 @@ extern float clamp(float val, float minval, float maxval);
 extern wxImage defaultPicture;
 std::map<wxString, int64_t> CLibPicture::listMovieDuration;
 
+void CLibPicture::CalculThumbSizeFromScreenDef(int &width, int &height)
+{
+	cv::Mat picture;
+	tjscalingfactor* scalingfactors = nullptr, sf = { 1, 1 };
+	int nsf = 0;
 
+	if ((scalingfactors = tjGetScalingFactors(&nsf)) == nullptr || nsf == 0)
+		throw("executing tjGetScalingFactors()");
+
+	int match = 0;
+
+#ifdef WIN32
+
+	HDC screen = GetDC(nullptr);
+	RECT rcClip;
+	GetClipBox(screen, &rcClip);
+	ReleaseDC(nullptr, screen);
+
+	int widthThumbnail = max(static_cast<int32_t>(rcClip.right / 4), 200);
+	int heightThumbnail = max(static_cast<int32_t>(rcClip.bottom / 4), 200);
+
+#else
+	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
+	int heightThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 4, 200);
+#endif
+
+	float ratio = CalculPictureRatio(width, height, widthThumbnail, heightThumbnail);
+
+	for (int j = 0; j < nsf; j++)
+	{
+		sf = scalingfactors[j];
+		float localRatio = static_cast<float>(sf.num) / static_cast<float>(sf.denom);
+		if (localRatio < ratio)
+		{
+			if (j > 0)
+				sf = scalingfactors[j - 1];
+
+			match = 1;
+			break;
+		}
+	}
+
+	if (match == 0)
+	{
+		sf = scalingfactors[nsf - 1];
+		match = 1;
+	}
+
+	if (match == 1)
+	{
+		width = TJSCALED(width, sf);
+		height = TJSCALED(height, sf);
+	}
+
+
+}
 
 static FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 {
@@ -1870,7 +1925,19 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
                             picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation, isThumbnail);
                         else
                         {
-                            picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), isThumbnail);
+							if (isThumbnail)
+							{
+
+								int width = 0;
+								int height = 0;
+								CHeic::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
+
+								CalculThumbSizeFromScreenDef(width, height);
+
+								picture = CAvif::GetPictureThumb(CConvertUtility::ConvertToUTF8(fileName), width, height);
+							}
+							else
+								picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName));
                             applyExif = true;
                         }
                     
@@ -2009,57 +2076,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
                         tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
                                             &jpegSubsamp);
 
-
-                        if ((scalingfactors = tjGetScalingFactors(&nsf)) == nullptr || nsf == 0)
-                            throw("executing tjGetScalingFactors()");
-
-                        //int num = 1;
-                        //int denom = 4;
-                        //int defaultscaling = 0;
-                        int match = 0;
-
-#ifdef WIN32
-
-                        HDC screen = GetDC(nullptr);
-                        RECT rcClip;
-                        GetClipBox(screen, &rcClip);
-                        ReleaseDC(nullptr, screen);
-
-                        int widthThumbnail = max(static_cast<int32_t>(rcClip.right / 4), 200);
-                        int heightThumbnail = max(static_cast<int32_t>(rcClip.bottom / 4), 200);
-
-    #else
-                        int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
-                        int heightThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 4, 200);
-    #endif
-
-                        float ratio = CalculPictureRatio(width, height, widthThumbnail, heightThumbnail);
-
-                        for (int j = 0; j < nsf; j++)
-                        {
-                            sf = scalingfactors[j];
-                            float localRatio = static_cast<float>(sf.num) / static_cast<float>(sf.denom);
-                            if (localRatio < ratio)
-                            {
-                                if (j > 0)
-                                    sf = scalingfactors[j - 1];
-
-                                match = 1;
-                                break;
-                            }
-                        }
-
-                        if (match == 0)
-                        {
-                            sf = scalingfactors[nsf - 1];
-                            match = 1;
-                        }
-
-                        if (match == 1)
-                        {
-                            width = TJSCALED(width, sf);
-                            height = TJSCALED(height, sf);
-                        }
+						CalculThumbSizeFromScreenDef(width, height);
 
                         picture = cv::Mat(height, width, CV_8UC4);
 

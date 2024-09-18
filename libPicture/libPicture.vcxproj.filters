@@ -139,6 +139,12 @@
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scale.c">
+      <Filter>avif</Filter>
+    </ClCompile>
+    <ClCompile Include="diag.c">
+      <Filter>avif</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -349,6 +355,9 @@
     </Filter>
     <Filter Include="ThumbnailVideoGenerator\PostEffect">
       <UniqueIdentifier>{0de571a8-a667-4b06-aca9-424fb418f961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avif">
+      <UniqueIdentifier>{c1d69a5c-7064-4351-8906-7564d3a42ba7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

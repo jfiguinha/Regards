@@ -101,7 +101,7 @@ namespace Regards
 			//-----------------------------------------------------------------------------
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
-
+			void CalculThumbSizeFromScreenDef(int& width, int& height);
 			void ApplyOrientation(const wxString& fileName, const bool& applyExif, CImageLoadingFormat* bitmap);
 			int svgWidth;
 			int svgHeight;
