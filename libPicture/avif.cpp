@@ -3,9 +3,7 @@
 #include <avif/avif.h>
 using namespace Regards::Picture;
 
-std::mutex CAvif::muPicture;
-bool CAvif::isOccupied = false;
-avifDecoder* CAvif::decoderThumb = nullptr;
+
 
 CAvif::CAvif()
 {
@@ -143,7 +141,7 @@ cleanup:
 
 bool CAvif::IsOccupied()
 {
-    return isOccupied;
+    return false;
 }
 
 cv::Mat CAvif::GetPicture(const char * filename)
@@ -197,7 +195,7 @@ cv::Mat CAvif::GetPictureThumb(const char* filename, const int &width, const int
 #else
     decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
 #endif  
-    out = GetPictureThumbnail(filename, width, heigth, decoderThumb);
+    out = GetPictureThumbnail(filename, width, heigth, decoder);
     avifDecoderDestroy(decoder);
 
 
