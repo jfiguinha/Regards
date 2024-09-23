@@ -1,13 +1,13 @@
 #pragma once
-#pragma once
 #include "WindowOpenGLMain.h"
 #include <RegardsConfigParam.h>
 #include <theme.h>
+#include <chrono>
 #include "IBitmapRenderInterface.h"
 #include "SliderInterface.h"
 #include <BitmapDisplay.h>
 using namespace std;
-
+using namespace std::chrono;
 class CRegardsBitmap;
 class CFiltreEffet;
 class CImageLoadingFormat;
@@ -335,7 +335,7 @@ namespace Regards::Window
 
 		double scale_factor = 1.0f;
 
-
+        std::chrono::system_clock::time_point start;
 		int widthOutputOld = 0;
 		int heightOutputOld = 0;
 	};

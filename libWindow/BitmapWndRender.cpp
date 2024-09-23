@@ -8,7 +8,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <wx/dcbuffer.h>
-
+#include <chrono>
 #include <MetadataExiv2.h>
 #include <window_id.h>
 #include <config_id.h>
@@ -27,7 +27,7 @@ using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace Regards::exiv2;
 using namespace Regards::OpenCL;
-
+using namespace std::chrono;
 extern bool processrecognitionison;
 
 
@@ -58,7 +58,7 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	flipVertical = 0;
 	flipHorizontal = 0;
 	angle = 0;
-
+    start = high_resolution_clock::now();
 	config = CParamInit::getInstance();
 	sliderInterface = slider;
 	zoom = false;
@@ -1214,8 +1214,11 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
         move += 100;
     }
     
+    auto stop = std::chrono::high_resolution_clock::now();
+    
     printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
-
+    std::chrono::duration<float> t_diff = stop - start;
+    std::chrono::seconds t_diff_ms = std::chrono::duration_cast<std::chrono::seconds>(t_diff);
 	switch (move)
 	{
 	case 0:
@@ -1240,6 +1243,10 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		break;
 	case 100:
 		{
+            if(t_diff_ms.count() < 1)
+                break;
+            
+            printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTURENEXT \n");
             wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
             if(central != nullptr)
             {
@@ -1250,6 +1257,10 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		break;
 	case 101:
 		{
+            if(t_diff_ms.count() < 1)
+                break;
+                
+            printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTUREPREVIOUS \n");
             wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
             if(central != nullptr)
             {
@@ -1260,6 +1271,8 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		break;
 	default: ;
 	}
+    
+    start = std::chrono::high_resolution_clock::now();
 }
 
 void CBitmapWndRender::Resize()

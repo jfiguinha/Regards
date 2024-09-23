@@ -30,6 +30,10 @@
     <File Name="RegardsPDF.h"/>
     <File Name="RegardsPDF.cpp"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="avif">
+    <File Name="scale.c"/>
+    <File Name="diag.c"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
     <File Name="aspectratio.h"/>
     <File Name="OpenCVVideoPlayer.h"/>
@@ -149,6 +153,8 @@
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
@@ -173,6 +179,7 @@
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libDeepLearning"/>
+        <Preprocessor Value="AVIF_LIBYUV_ENABLED"/>
         <Preprocessor Value="__NEW_EXIV2__"/>
         <Preprocessor Value="__FREEIMAGE__"/>
         <Preprocessor Value="LIBRAW"/>
@@ -266,6 +273,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

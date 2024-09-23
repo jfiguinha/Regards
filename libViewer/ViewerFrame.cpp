@@ -123,22 +123,14 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	this->mainInterface = mainInterface;
 	this->mainInterface->parent = this;
 
-	NewModelsAvailable();
+	bool isAvailable = VerifyIAModel();
 
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString fileHash = documentPath + "\\model\\hash.txt";
-#else
-	wxString fileHash = documentPath + "/model/hash.txt";
-#endif
-
-	if (!wxFileExists(fileHash))
-	{
-		wxMessageBox(wxT("IA model not found. Program can't be started."), wxT("Error"), wxICON_ERROR);
-		mainInterface->Close();
-		return;
-	}
+    if (!isAvailable)
+    {
+        wxMessageBox(wxT("IA model not found. Program can't be started."), wxT("Error"), wxICON_ERROR);
+        mainInterface->Close();
+        return;
+    }
 
 	
 	CSqlFindFolderCatalog folderCatalog;
@@ -307,7 +299,47 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	
 }
 
+bool CViewerFrame::VerifyIAModel()
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
+#ifdef WIN32
+	wxString fileHash = documentPath + "\\model\\hash.txt";
+#else
+	wxString fileHash = documentPath + "/model/hash.txt";
+#endif
+
+    bool fileExist = false;
+    //Vérification de la version du hash
+    if (wxFileExists(fileHash))
+	{
+        wxString md5 = "";
+		wxFileInputStream input(fileHash);
+		wxTextInputStream text(input, wxT("\x09"), wxConvUTF8);
+		while (input.IsOk() && !input.Eof())
+		{
+			md5 = text.ReadLine();
+			break;
+		}
+
+		fileExist = true;
+        wxString model_hash = CLibResource::LoadStringFromResource("REGARDSMODELHASH", 1);
+        if(model_hash != md5)
+        {
+            fileExist = false;
+        }
+	}
+
+	if (!fileExist)
+	{
+        NewModelsAvailable();
+        if (!wxFileExists(fileHash))
+        {
+            return false;
+        }
+	}
+    return true;
+}
 
 void CViewerFrame::NewModelsAvailable()
 {
@@ -709,6 +741,7 @@ void CViewerFrame::Exit()
 
 void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
+    printf("void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event) \n");
 	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{

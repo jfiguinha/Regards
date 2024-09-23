@@ -312,6 +312,15 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->InitAllHandlers();
 
 	CFiltreData::CreateFilterList();
+    
+    if (!ocl::haveOpenCL())
+    {
+        cout << "OpenCL is not avaiable..." << endl;
+    }
+    else
+    {
+        cout << "OpenCL is not avaiable..." << endl;
+    }
 
 	if (!configFileExist)
 	{
@@ -360,6 +369,7 @@ bool MyApp::OnInit()
 		if (!isOpenCLInitialized)
 		{
 			regardsParam->SetIsOpenCLSupport(false);
+            cout << "OpenCL is not Initialized..." << endl;
 		}
 	}
     

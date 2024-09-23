@@ -121,6 +121,7 @@ namespace Regards::Viewer
         void OnWindowFullScreen(wxCommandEvent & event);
         void OpenPictureFile();
 		void NewModelsAvailable();
+        bool VerifyIAModel();
 
 		wxDECLARE_EVENT_TABLE();
 
