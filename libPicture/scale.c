@@ -42,6 +42,7 @@ avifBool avifImageScale(avifImage * image,
 // This should be configurable and/or smarter. kFilterBox has the highest quality but is the slowest.
 #define AVIF_LIBYUV_FILTER_MODE kFilterBox
 
+#ifndef __APPLE__
 avifBool avifDimensionsTooLarge(uint32_t width, uint32_t height, uint32_t imageSizeLimit, uint32_t imageDimensionLimit)
 {
     if (width > (imageSizeLimit / height)) {
@@ -52,6 +53,7 @@ avifBool avifDimensionsTooLarge(uint32_t width, uint32_t height, uint32_t imageS
     }
     return AVIF_FALSE;
 }
+#endif
 
 avifBool avifImageScale(avifImage * image,
                         uint32_t dstWidth,
