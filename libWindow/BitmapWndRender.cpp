@@ -1218,7 +1218,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 
     printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
     std::chrono::duration<float> t_diff = stop - start;
-    std::chrono::seconds t_diff_ms = std::chrono::duration_cast<std::chrono::seconds>(t_diff);
+    std::chrono::milliseconds t_diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t_diff);
 	switch (move)
 	{
 	case 0:
@@ -1243,7 +1243,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 		break;
 	case 100:
 		{
-            if(t_diff_ms.count() < 1)
+            if(t_diff_ms.count() < 100)
                 break;
             
             printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTURENEXT \n");
@@ -1253,11 +1253,13 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
                 wxCommandEvent evt(wxEVENT_PICTURENEXT);
                 parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
             }
+            
+            start = std::chrono::system_clock::now();
 		}
 		break;
 	case 101:
 		{
-            if(t_diff_ms.count() < 1)
+            if(t_diff_ms.count() < 100)
                 break;
                 
             printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTUREPREVIOUS \n");
@@ -1267,12 +1269,14 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
                 wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
                 parentRender->GetParent()->GetEventHandler()->AddPendingEvent(evt);
             }
+            
+            start = std::chrono::system_clock::now();
 		}
 		break;
 	default: ;
 	}
+
     
-    start = std::chrono::system_clock::now();
 }
 
 void CBitmapWndRender::Resize()
