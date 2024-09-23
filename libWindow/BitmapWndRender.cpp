@@ -58,7 +58,7 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	flipVertical = 0;
 	flipHorizontal = 0;
 	angle = 0;
-    start = high_resolution_clock::now();
+    start = std::chrono::system_clock::now();
 	config = CParamInit::getInstance();
 	sliderInterface = slider;
 	zoom = false;
@@ -1214,8 +1214,8 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
         move += 100;
     }
     
-    auto stop = std::chrono::high_resolution_clock::now();
-    
+    auto stop = std::chrono::system_clock::now(); 
+
     printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
     std::chrono::duration<float> t_diff = stop - start;
     std::chrono::seconds t_diff_ms = std::chrono::duration_cast<std::chrono::seconds>(t_diff);
@@ -1272,7 +1272,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 	default: ;
 	}
     
-    start = std::chrono::high_resolution_clock::now();
+    start = std::chrono::system_clock::now();
 }
 
 void CBitmapWndRender::Resize()
