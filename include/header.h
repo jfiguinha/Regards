@@ -2,6 +2,7 @@
 #ifndef _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR
 #define _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR
 #endif
+
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP

@@ -1248,9 +1248,12 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	CLibPicture libPicture;
 	int iFormat = libPicture.TestImageFormat(localName);
 
-	if (iFormat != AVIF)
-	{
+	int nbProcesseur = 1;
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
+		nbProcesseur = config->GetThumbnailProcess() + 1;
 
+	if (nbProcess < nbProcesseur)
+	{
 		int type = event.GetInt();
 		int longWindow = event.GetExtraLong();
 		if (type == 1)
@@ -1271,32 +1274,29 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 			}
 		}
 	}
-	else if(photoList.size() > 0)
-    {
-        firstFile = *filename;
-   
-        for (int i = 0; i < photoList.size(); i++)
-        {
-            wxString oldFile = photoList[i];
-            if(*filename == oldFile)
-            {
-                photoList[i] = firstFile;
-                break;
-            }
-            else
-            {
-                photoList[i] = firstFile;
-                firstFile = oldFile;
-            }
-        } 
+	else if (photoList.size() > 0)
+	{
+		firstFile = *filename;
+
+		for (int i = 0; i < photoList.size(); i++)
+		{
+			wxString oldFile = photoList[i];
+			if (*filename == oldFile)
+			{
+				photoList[i] = firstFile;
+				break;
+			}
+			else
+			{
+				photoList[i] = firstFile;
+				firstFile = oldFile;
+			}
+		}
 		processIdle = true;
-    }
+	}
 
 
-    delete filename;
-    
-	
-
+	delete filename;
 }
 
 void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
