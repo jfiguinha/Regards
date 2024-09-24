@@ -160,6 +160,8 @@ void wxCheckTree::Init()
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(wxCheckTree::On_Mouse_Wheel), nullptr, this);
 	Connect(wxEVT_SET_FOCUS, wxFocusEventHandler(wxCheckTree::On_Tree_Focus_Set), nullptr, this);
 	Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(wxCheckTree::On_Tree_Focus_Lost), nullptr, this);
+
+	SetDoubleBuffered(true);
 }
 
 void wxCheckTree::SetItemTextColour(const wxTreeItemId& item, const wxColour& col)
