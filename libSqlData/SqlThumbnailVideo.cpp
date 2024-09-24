@@ -139,7 +139,13 @@ bool CSqlThumbnailVideo::DeleteThumbnail(const wxString& path)
 		if (wxFileExists(thumbnail))
 		{
 			CThumbnailBuffer::RemovePicture(thumbnail);
-			wxRemoveFile(thumbnail);
+			{
+#ifdef WIN32
+				std::remove(thumbnail);
+#else
+				wxRemoveFile(thumbnail);
+#endif
+			}
 		}
 	}
 
@@ -156,7 +162,13 @@ bool CSqlThumbnailVideo::DeleteThumbnail(const int& numPhoto)
 		if (wxFileExists(thumbnail))
 		{
 			CThumbnailBuffer::RemovePicture(thumbnail);
-			wxRemoveFile(thumbnail);
+			{
+#ifdef WIN32
+				std::remove(thumbnail);
+#else
+				wxRemoveFile(thumbnail);
+#endif
+			}
 		}
 	}
 
@@ -181,7 +193,13 @@ bool CSqlThumbnailVideo::EraseThumbnail()
 	for (wxString filename : files)
 	{
 		CThumbnailBuffer::RemovePicture(filename);
-		wxRemoveFile(filename);
+		{
+#ifdef WIN32
+			std::remove(filename);
+#else
+			wxRemoveFile(filename);
+#endif
+		}
 	}
 	//wxRmdir(documentPath);
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL") != -1) ? true : false;
@@ -199,7 +217,13 @@ bool CSqlThumbnailVideo::EraseFolderThumbnail(const int& numFolder)
 			wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(idPhoto), i);
 			if (wxFileExists(thumbnail))
 			{
-				wxRemoveFile(thumbnail);
+				{
+#ifdef WIN32
+					std::remove(thumbnail);
+#else
+					wxRemoveFile(thumbnail);
+#endif
+				}
 			}
 		}
 	}

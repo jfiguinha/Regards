@@ -181,7 +181,13 @@ bool CDownloadFile::ExtractZipFiles(const wxString& aZipFile, const wxString& aT
 				}
 
 				if (wxFileExists(name))
-					wxRemoveFile(name);
+				{
+#ifdef WIN32
+					std::remove(name);
+#else
+					wxRemoveFile(filename);
+#endif
+				}
 
 				wxFileOutputStream file(name);
 

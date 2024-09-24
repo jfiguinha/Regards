@@ -434,7 +434,13 @@ wxString CScannerFrame::ScanPage()
 	{
 		pdfFile = CFileUtility::GetTempFile("scanner.pdf");
 		if (wxFileExists(pdfFile))
+		{
+#ifdef WIN32
+			std::remove(pdfFile);
+#else
 			wxRemoveFile(pdfFile);
+#endif
+		}
 		CRegardsPDF::SaveToPDF(&image, pdfFile);
 	}
 #endif

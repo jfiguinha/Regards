@@ -1165,15 +1165,6 @@ void CMainWindow::ProcessThumbnail()
 	for (int i = 0; i < photoList.size(); i++)
 	{
 		wxString path = photoList[i];
-            
-        CLibPicture libPicture;
-        int iFormat = libPicture.TestImageFormat(path);
-
-        if (iFormat == AVIF)
-        {
-            if(Regards::Picture::CAvif::IsOccupied())
-                continue;
-        }
 
 		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
 		event->SetExtraLong(photoList.size());
@@ -1181,9 +1172,7 @@ void CMainWindow::ProcessThumbnail()
 
         ProcessThumbnail(path, 0, 0);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-
+       
 		std::map<wxString, bool>::iterator it = listFile.find(path);
 		if (it == listFile.end())
 		{
@@ -1198,6 +1187,8 @@ void CMainWindow::ProcessThumbnail()
 
 		if (nbProcess == nbProcesseur)
 			break;
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 
 
@@ -1319,6 +1310,7 @@ void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 		pLoadBitmap->longWindow = longWindow;
 		pLoadBitmap->type = type;
 		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+
 	}
 	else
 	{
@@ -1616,7 +1608,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0)
+	if (nbProcessMD5 > 0 || nbProcess > 0)
 		return false;
 
 	return true;

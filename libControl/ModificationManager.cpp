@@ -56,9 +56,9 @@ void CModificationManager::EraseData()
 	while (cont)
 	{
 #ifdef WIN32
-		wxRemoveFile(folder + "\\" + filename);
+		std::remove(folder + "\\" + filename);
 #else
-        ::wxRemoveFile(folder + "//" + filename);
+        wxRemoveFile(folder + "//" + filename);
 #endif
 
 		cont = dir.GetNext(&filename);
@@ -144,7 +144,14 @@ void CModificationManager::AddModification(CImageLoadingFormat* bitmap, const wx
 	wxString filename = GetFilenameWithModification(numModification);
 
 	if (wxFileName::FileExists(filename))
+	{
+#ifdef WIN32
+		std::remove(filename);
+#else
 		wxRemoveFile(filename);
+#endif
+	}
+		
 
 	bitmap->WriteFile(filename);
 }

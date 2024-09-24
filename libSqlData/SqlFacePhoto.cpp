@@ -53,13 +53,21 @@ bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
 			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(faceId);
 			if (wxFileExists(thumbnail))
 			{
+#ifdef WIN32
+				std::remove(thumbnail);
+#else
 				wxRemoveFile(thumbnail);
+#endif
 			}
 
 			thumbnail = CFileUtility::GetFaceZScorePath(faceId);
 			if (wxFileExists(thumbnail))
 			{
+#ifdef WIN32
+				std::remove(thumbnail);
+#else
 				wxRemoveFile(thumbnail);
+#endif
 			}
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(faceId));
 			ExecuteRequestWithNoResult("DELETE FROM FACEVIDEO WHERE NumFace = " + to_string(faceId));
@@ -90,7 +98,11 @@ void CSqlFacePhoto::DeleteNumFace(const int& numFace)
 	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
 	if (wxFileExists(thumbnail))
 	{
+#ifdef WIN32
+		std::remove(thumbnail);
+#else
 		wxRemoveFile(thumbnail);
+#endif
 	}
 
 	ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
@@ -400,7 +412,11 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 		wxString filename = files[i];
 		if (wxFileExists(filename))
 		{
+#ifdef WIN32
+			std::remove(filename);
+#else
 			wxRemoveFile(filename);
+#endif
 		}
 	});
 	/*

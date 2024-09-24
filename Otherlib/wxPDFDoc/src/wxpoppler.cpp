@@ -296,7 +296,13 @@ bool wxPDFHandler::SaveFile(wxImage* poImage, wxOutputStream& oOStream, bool bVe
 			oPdfDocument.Image(strTempFileName, 0, 0, 0, 0, wxT("image/jpeg"));
 
 			// Remove temporary file.
-			wxRemoveFile(strTempFileName);
+			{
+#ifdef WIN32
+				std::remove(strTempFileName);
+#else
+				wxRemoveFile(strTempFileName);
+#endif
+			}
 
 			// Send the PDF to the output stream.
 			wxMemoryInputStream oMemoryInputStream(oPdfDocument.CloseAndGetBuffer());

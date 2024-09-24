@@ -65,7 +65,13 @@ wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, 
 	{
 		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 		if (wxFileExists(thumbnail))
+		{
+#ifdef WIN32
+			std::remove(thumbnail);
+#else
 			wxRemoveFile(thumbnail);
+#endif
+		}
 
 		if (!wxFileExists(thumbnail))
 		{
@@ -158,7 +164,13 @@ bool CSqlThumbnail::DeleteThumbnail(const wxString& path)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
-		wxRemoveFile(thumbnail);
+		{
+#ifdef WIN32
+			std::remove(thumbnail);
+#else
+			wxRemoveFile(thumbnail);
+#endif
+		}
 		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1)
@@ -171,7 +183,13 @@ bool CSqlThumbnail::DeleteThumbnail(const int& numPhoto)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
-		wxRemoveFile(thumbnail);
+		{
+#ifdef WIN32
+			std::remove(thumbnail);
+#else
+			wxRemoveFile(thumbnail);
+#endif
+		}
 		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
 
@@ -211,7 +229,13 @@ bool CSqlThumbnail::EraseThumbnail()
 		wxString filename = files[i];
 		if (wxFileExists(filename))
 		{
-			wxRemoveFile(filename);
+			{
+#ifdef WIN32
+				std::remove(filename);
+#else
+				wxRemoveFile(filename);
+#endif
+			}
 			CThumbnailBuffer::RemovePicture(filename);
 		}
 	}
@@ -234,7 +258,13 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int& numFolder)
 		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
 		if (wxFileExists(thumbnail))
 		{
-			wxRemoveFile(thumbnail);
+			{
+#ifdef WIN32
+				std::remove(thumbnail);
+#else
+				wxRemoveFile(thumbnail);
+#endif
+			}
 			CThumbnailBuffer::RemovePicture(thumbnail);
 		}
 	}

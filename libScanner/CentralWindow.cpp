@@ -146,7 +146,13 @@ int CCentralWindow::OnOpen(const int& type)
 #endif
 
 		if (wxFileExists(filename))
+		{
+#ifdef WIN32
+			std::remove(filename);
+#else
 			wxRemoveFile(filename);
+#endif
+		}
 	}
 
 	wxString file = "";
@@ -346,7 +352,13 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString& listFile)
 #endif
 
 	if (wxFileExists(temporyFile))
+	{
+#ifdef WIN32
+		std::remove(temporyFile);
+#else
 		wxRemoveFile(temporyFile);
+#endif
+	}
 
 
 	CLibPicture libPicture;

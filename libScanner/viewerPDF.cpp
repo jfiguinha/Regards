@@ -306,7 +306,13 @@ wxString CViewerPDF::SetImage(wxImage imageFile)
 #endif
 
 	if (wxFileExists(file))
+	{
+#ifdef WIN32
+		std::remove(file);
+#else
 		wxRemoveFile(file);
+#endif
+	}
 
 	//wxImage * imageTemp = new wxImage(imageFile);
 	imageFile.SaveFile(file);

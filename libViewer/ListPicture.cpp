@@ -871,7 +871,13 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 			CThumbnailData* data = listItem.at(i);
 			wxString filename = data->GetFilename();
 			wxString message = text + to_string(j) + "/" + to_string(listItem.size());
-			wxRemoveFile(filename);
+			{
+#ifdef WIN32
+				std::remove(filename);
+#else
+				wxRemoveFile(filename);
+#endif
+			}
 			if (false == dialog.Update(i, message))
 				break;
 		}

@@ -40,7 +40,13 @@ wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const boo
 		if (removeFile)
 		{
 			if (wxFileExists(file))
+			{
+#ifdef WIN32
+				std::remove(file);
+#else
 				wxRemoveFile(file);
+#endif
+			}
 		}
 	}
 	catch (...)
@@ -75,7 +81,13 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 		if (removeFile)
 		{
 			if (wxFileExists(file))
+			{
+#ifdef WIN32
+				std::remove(file);
+#else
 				wxRemoveFile(file);
+#endif
+			}
 		}
 	}
 	catch (...)

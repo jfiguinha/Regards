@@ -87,7 +87,13 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 
 
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		wxImage image = bitmap->GetwxImage();
 		image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
@@ -102,7 +108,13 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 #endif
 
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		wxImage image = bitmap->GetwxImage();
 		image.SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
@@ -121,7 +133,11 @@ void CRegardsPDF::SavePictureToPdf(const wxString& fileName, CImageLoadingFormat
 	//image.SetOption(wxIMAGE_OPTION_RESOLUTION, 200);//bitmap->GetResolution());
 
 	SaveToPDF(&image, fileName, file, option, quality);
+#ifdef WIN32
+	std::remove(file);
+#else
 	wxRemoveFile(file);
+#endif
 }
 
 
@@ -135,7 +151,13 @@ void CRegardsPDF::SavePicture(const wxString& file, CImageLoadingFormat* bitmap,
 		wxLogNull logNo;
 
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		wxImage image = bitmap->GetwxImage();
 		image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
@@ -144,7 +166,13 @@ void CRegardsPDF::SavePicture(const wxString& file, CImageLoadingFormat* bitmap,
 	else
 	{
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		wxImage image = bitmap->GetwxImage();
 		image.SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
@@ -201,7 +229,13 @@ bool CRegardsPDF::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int optio
 		fileToSave = CFileUtility::GetTempFile("scanner.tif");
 
 	if (wxFileExists(fileToSave))
+	{
+#ifdef WIN32
+		std::remove(fileToSave);
+#else
 		wxRemoveFile(fileToSave);
+#endif
+	}
 
 	if (option == 0)
 		poImage->SaveFile(fileToSave, wxBITMAP_TYPE_JPEG);
@@ -325,7 +359,13 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* i
 #endif
 
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		 SavePicture(file, imageFormat, option, quality);
 		//SavePicture(file, imageFormat);
@@ -339,7 +379,13 @@ void CRegardsPDF::AddPdfPage(wxPdfDocument* oPdfDocument, CImageLoadingFormat* i
 #endif
 
 		if (wxFileExists(file))
+		{
+#ifdef WIN32
+			std::remove(file);
+#else
 			wxRemoveFile(file);
+#endif
+		}
 
 		SavePicture(file, imageFormat, option, quality);
 		//SavePicture(file, imageFormat);
@@ -408,7 +454,13 @@ wxString CRegardsPDF::ExtractPage(const wxString& filename, const vector<int>& l
 #endif
 
 	if (wxFileExists(file))
+	{
+#ifdef WIN32
+		std::remove(file);
+#else
 		wxRemoveFile(file);
+#endif
+	}
 
 
 	QPDF inpdf;
@@ -470,7 +522,13 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 #endif
 
 	if (wxFileExists(file))
+	{
+#ifdef WIN32
+		std::remove(file);
+#else
 		wxRemoveFile(file);
+#endif
+	}
 
 	if (file != "")
 	{
@@ -554,6 +612,8 @@ void CRegardsPDF::AddPage(const wxString& fileToAdd, const wxString& filename, c
 #ifndef DEMO
 	if (wxFileExists(filename))
 	{
+
+
 		bool isRemove = wxRemoveFile(filename);
 		if (!isRemove)
 		{
@@ -583,7 +643,13 @@ void CRegardsPDF::RemovePage(const wxString& filename, const vector<int>& listPa
 #endif
 
 	if (wxFileExists(file))
+	{
+#ifdef WIN32
+		std::remove(file);
+#else
 		wxRemoveFile(file);
+#endif
+	}
 
 
 	{
@@ -628,7 +694,13 @@ void CRegardsPDF::RemovePage(const wxString& filename, const vector<int>& listPa
 
 #ifndef DEMO
 	if (wxFileExists(filename))
+	{
+#ifdef WIN32
+		std::remove(filename);
+#else
 		wxRemoveFile(filename);
+#endif
+	}
 
 	wxCopyFile(file, filename);
 #endif
