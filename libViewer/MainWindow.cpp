@@ -1329,7 +1329,7 @@ void CMainWindow::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
         
-
+#ifdef OLD
 	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename) || libPicture.TestIsVideo(threadLoadingBitmap->filename))
 	{
 
@@ -1389,6 +1389,14 @@ void CMainWindow::LoadPicture(void* param)
 			delete imageLoad;
 		}
 	}
+#else
+	CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+	if (imageLoad != nullptr)
+	{
+		threadLoadingBitmap->bitmapIcone = imageLoad->GetOpenCVPicture();
+		delete imageLoad;
+	}
+#endif
 
 
 	if (!threadLoadingBitmap->bitmapIcone.empty())

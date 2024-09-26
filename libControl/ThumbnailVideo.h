@@ -26,6 +26,8 @@ namespace Regards::Control
 		void InitWithDefaultPicture(const wxString& szFileName, const int& size);
 		int numItemSelected;
 		bool process_end;
+		void UpdateThumbnailIcone(wxCommandEvent& event);
+		static void LoadVideoThumbnail(void* param);
 
 		int64_t oldvideoPos = 0;
 		int iFormat = 0;

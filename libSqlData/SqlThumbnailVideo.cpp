@@ -120,7 +120,14 @@ cv::Mat CSqlThumbnailVideo::GetThumbnail(const wxString& path, const int& numVid
 	}
 	else
 	{
-		isDefault = true;
+		thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		if (wxFileExists(thumbnail))
+		{
+			image = CThumbnailBuffer::GetPicture(thumbnail);
+			isDefault = false;
+		}
+		else
+			isDefault = true;
 	}
 	return image;
 }
