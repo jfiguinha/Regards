@@ -38,9 +38,10 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 {
 	numItemSelected = -1;
 	process_end = true;
+	nbProcess = 0;
 	enableTimer = false;
 	Connect(wxEVENT_REFRESHVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::UpdateVideoThumbnail));
-	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnailVideo::UpdateVideoThumbnail));
+	Connect(wxEVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnailVideo::UpdateThumbnailIcone));
 	
 }
 
@@ -52,8 +53,14 @@ void CThumbnailVideo::UpdateThumbnailIcone(wxCommandEvent& event)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
+	nbProcess--;
+
 	if (threadLoadingBitmap->filename == videoFilename)
 		UpdateVideoThumbnail();
+	else
+	{
+		GenerateThumbnail(videoFilename);
+	}
 
 	delete threadLoadingBitmap;
 
@@ -186,6 +193,21 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	//this->Refresh();
 }
 
+void CThumbnailVideo::GenerateThumbnail(const wxString& szFileName)
+{
+	if (nbProcess == 0)
+	{
+		auto pLoadBitmap = new CThreadLoadingBitmap();
+		pLoadBitmap->filename = szFileName;
+		pLoadBitmap->window = this;
+		pLoadBitmap->_thread = new thread(LoadVideoThumbnail, pLoadBitmap);
+
+		process_end = false;
+
+		nbProcess++;
+	}
+}
+
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
 {
 	int x = 0;
@@ -265,10 +287,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	else
 	{
 		//Start loading thumbnail
-		auto pLoadBitmap = new CThreadLoadingBitmap();
-		pLoadBitmap->filename = szFileName;
-		pLoadBitmap->window = this;
-		pLoadBitmap->_thread = new thread(LoadVideoThumbnail, pLoadBitmap);
+		GenerateThumbnail(szFileName);
 
 		CLibPicture libPicture;
 		vector<CImageVideoThumbnail*> listThumbnail = libPicture.LoadDefaultVideoThumbnail(szFileName, size);
@@ -352,6 +371,10 @@ void CThumbnailVideo::UpdateVideoThumbnail(const wxString& videoFile)
 {
 	if (videoFilename == videoFile)
 		UpdateVideoThumbnail();
+	else
+		process_end = true;
+
+
 }
 
 void CThumbnailVideo::LoadVideoThumbnail(void * param)

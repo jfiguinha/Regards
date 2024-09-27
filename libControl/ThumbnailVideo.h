@@ -28,8 +28,9 @@ namespace Regards::Control
 		bool process_end;
 		void UpdateThumbnailIcone(wxCommandEvent& event);
 		static void LoadVideoThumbnail(void* param);
-
+		void GenerateThumbnail(const wxString& szFileName);
 		int64_t oldvideoPos = 0;
 		int iFormat = 0;
+		int nbProcess = 0;
 	};
 }
