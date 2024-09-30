@@ -85,9 +85,11 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, cons
 		if (GetNumPhoto(filename) == 0)
 		{
 			bool isValid = true;
+            int multifile = 0;
 			int extensionId = libPicture.TestImageFormat(filename);
 			filename.Replace("'", "''");
-			int multifile = 0;
+
+            /*
 			if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
 				TestIsAnimation(filename))
 			{
@@ -98,8 +100,8 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, cons
 			{
 				isValid = libPicture.TestIsVideoValid(filename);
 			}
-
-			if (isValid)
+            */
+			if (extensionId > 0)
 			{
 				ExecuteRequestWithNoResult(
 					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId, Multifiles) VALUES ("
@@ -182,24 +184,12 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog
 		{
 			wxString file = files[i];
 			CLibPicture libPicture;
-			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+            int extensionId = libPicture.TestImageFormat(file);
+			if (extensionId != 0 && GetNumPhoto(file) == 0)
 			{
-				const int extensionId = libPicture.TestImageFormat(file);
-				file.Replace("'", "''");
-				bool isValid = true;
-
-				if (libPicture.TestIsVideo(file))
-				{
-					isValid = libPicture.TestIsVideoValid(file);
-				}
-
-				if (isValid)
-				{
-					ExecuteRequestWithNoResult(
-						"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" +
+				ExecuteRequestWithNoResult(
+					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" +
 						to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
-				}
-
 			}
 
 			if (dialog != nullptr)
@@ -257,13 +247,13 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString& folder, const int& idFo
 			if (i == 0)
 				firstFile = file;
 			file.Replace("'", "''");
-
+            /*
 			if (libPicture.TestIsVideo(file))
 			{
 				isValid = libPicture.TestIsVideoValid(file);
 			}
-
-			if (isValid)
+            */
+			if (extensionId > 0)
 			{
 				ExecuteRequestWithNoResult(
 					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" +

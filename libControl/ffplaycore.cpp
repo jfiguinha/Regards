@@ -229,17 +229,20 @@ void CFFmfc::StopEvent(wxCommandEvent& event)
 
 void CFFmfc::StepEvent(wxCommandEvent& event)
 {
-	_pimpl->step_to_next_frame(cur_stream);
+    if(cur_stream != nullptr)
+        _pimpl->step_to_next_frame(cur_stream);
 }
 
 void CFFmfc::PauseEvent(wxCommandEvent& event)
 {
-	_pimpl->toggle_pause(cur_stream);
+    if(cur_stream != nullptr)
+        _pimpl->toggle_pause(cur_stream);
 }
 
 void CFFmfc::PlayEvent(wxCommandEvent& event)
 {
-	_pimpl->toggle_play(cur_stream);
+    if(cur_stream != nullptr)
+        _pimpl->toggle_play(cur_stream);
 }
 
 void CFFmfc::SetOutputMode(int outputMode)
@@ -479,7 +482,7 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
                     const bool& isOpenGLDecoding, const int& volume)
 {
     printf("CFFmfc::SetFile \n");
-    
+
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
 
@@ -504,10 +507,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 
 	_pimpl->autoexit = 1;
     
-    
-     
-
-	//av_init_packet(&_pimpl->flush_pkt);
 	//_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(CConvertUtility::ConvertToUTF8(filename), _pimpl->file_iformat);
 	if (!_pimpl->g_is)
@@ -520,7 +519,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, c
 		_pimpl->g_is->width = _pimpl->dlg->getWidth();
 		_pimpl->g_is->height = _pimpl->dlg->getHeight();
 	}
-
 
 	wxCommandEvent event(EVENT_VIDEOSTART);
 	//event.SetId(EVENT_VIDEOSTART);
