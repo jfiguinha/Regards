@@ -199,15 +199,13 @@ public:
 		AVSubtitle sub;
 	};
 
-	using AudioParams = struct AudioParams
-	{
-		int freq;
-		int channels;
-		int64_t channel_layout;
-		enum AVSampleFormat fmt;
-		int frame_size;
-		int bytes_per_sec;
-	};
+    typedef struct AudioParams {
+        int freq;
+        AVChannelLayout ch_layout;
+        enum AVSampleFormat fmt;
+        int frame_size;
+        int bytes_per_sec;
+    } AudioParams;
 
 	enum
 	{
@@ -587,8 +585,7 @@ public:
 	/* decode one audio frame and returns its uncompressed size */
 	int audio_decode_frame(VideoState* is);
 
-	int audio_open(void* opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate,
-	               AudioParams* audio_hw_params);
+	int audio_open(void *opaque, AVChannelLayout *wanted_channel_layout, int wanted_sample_rate, AudioParams *audio_hw_params);
 
 #ifndef CMDUTILS
 

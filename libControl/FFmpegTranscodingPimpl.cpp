@@ -1505,8 +1505,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 				streamAudio = out_stream;
 				//enc_ctx->bit_rate = dst_abit_rate;
 				enc_ctx->sample_rate = dec_ctx->sample_rate;
-				enc_ctx->channel_layout = dec_ctx->channel_layout;
-				enc_ctx->channels = av_get_channel_layout_nb_channels(enc_ctx->channel_layout);
+				enc_ctx->ch_layout = dec_ctx->ch_layout;
+				//enc_ctx->channels = av_get_channel_layout_nb_channels(enc_ctx->ch_layout);
 				/* take first format from list of supported formats */
 				enc_ctx->sample_fmt = encoder->sample_fmts[0];
 				enc_ctx->time_base = {1, enc_ctx->sample_rate};
