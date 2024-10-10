@@ -20,22 +20,21 @@ mv vcpkg-2024.01.12 vcpkg
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install x265
-./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp]
-./vcpkg install tbb
+./vcpkg install libde265
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr]
 ./vcpkg install opencl
-./vcpkg install exiv2[video,xmp]
-./vcpkg install libavif[aom,core]
+./vcpkg install dav1d
+./vcpkg install exiv2[video,xmp,bmff]
+./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
 ./vcpkg install jasper
-./vcpkg install libraw
+./vcpkg install libraw[dng-lossy,openmp]
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
-./vcpkg install ncnn
-./vcpkg install vulkan
 cd ..
 
 #Compile heif-master

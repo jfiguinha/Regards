@@ -171,17 +171,16 @@ public:
 		AVBufferRef* device_ref;
 	};
 
-	using PacketQueue = struct PacketQueue
-	{
-		AVFifoBuffer* pkt_list;
-		int nb_packets;
-		int size;
-		int64_t duration;
-		int abort_request;
-		int serial;
-		SDL_mutex* mutex;
-		SDL_cond* cond;
-	};
+    typedef struct PacketQueue {
+        AVFifo *pkt_list;
+        int nb_packets;
+        int size;
+        int64_t duration;
+        int abort_request;
+        int serial;
+        SDL_mutex *mutex;
+        SDL_cond *cond;
+    } PacketQueue;
 
 	using VideoPicture = struct VideoPicture
 	{
