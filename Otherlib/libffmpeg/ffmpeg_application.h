@@ -42,6 +42,6 @@ private:
 	bool showProgressWindow = true;
 	int ret = 0;
 	//int i = 0;
-	char** arrayOfCstrings;
-	std::vector<std::string> arrayOfStrings;
+	//char** arrayOfCstrings;
+	std::vector<wxString> arrayOfStrings;
 };

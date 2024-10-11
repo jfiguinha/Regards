@@ -27,18 +27,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cmdutils.c" />
-    <ClCompile Include="ffmpeg.c" />
     <ClCompile Include="ffmpeg_application.cpp" />
-    <ClCompile Include="ffmpeg_filter.c" />
-    <ClCompile Include="ffmpeg_hw.c" />
-    <ClCompile Include="ffmpeg_opt.c" />
     <ClCompile Include="win32\stdatomic.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cmdutils.h" />
-    <ClInclude Include="cmd_struct.h" />
-    <ClInclude Include="ffmpeg.h" />
     <ClInclude Include="ffmpeg_application.h" />
     <ClInclude Include="win32\stdalign.h" />
     <ClInclude Include="win32\stdatomic.h" />

@@ -13,15 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ffmpeg">
-      <UniqueIdentifier>{ca9d9152-99ef-4e64-9648-2f186e63d8c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ffmpeg\src">
-      <UniqueIdentifier>{df191b9e-2e62-4a87-aafe-b55776ec0cdf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ffmpeg\inc">
-      <UniqueIdentifier>{11549653-526c-4385-8a3a-be20aac28a29}</UniqueIdentifier>
-    </Filter>
     <Filter Include="iso_c">
       <UniqueIdentifier>{6de7b9d6-bfe0-4577-ad96-0daeb9f1c350}</UniqueIdentifier>
     </Filter>
@@ -30,21 +21,6 @@
     <ClCompile Include="ffmpeg_application.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg_opt.c">
-      <Filter>ffmpeg\src</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg_hw.c">
-      <Filter>ffmpeg\src</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg_filter.c">
-      <Filter>ffmpeg\src</Filter>
-    </ClCompile>
-    <ClCompile Include="cmdutils.c">
-      <Filter>ffmpeg\src</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg.c">
-      <Filter>ffmpeg\src</Filter>
-    </ClCompile>
     <ClCompile Include="win32\stdatomic.c">
       <Filter>iso_c</Filter>
     </ClCompile>
@@ -52,15 +28,6 @@
   <ItemGroup>
     <ClInclude Include="ffmpeg_application.h">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="cmdutils.h">
-      <Filter>ffmpeg\inc</Filter>
-    </ClInclude>
-    <ClInclude Include="ffmpeg.h">
-      <Filter>ffmpeg\inc</Filter>
-    </ClInclude>
-    <ClInclude Include="cmd_struct.h">
-      <Filter>ffmpeg\inc</Filter>
     </ClInclude>
     <ClInclude Include="win32\stdalign.h">
       <Filter>iso_c</Filter>
