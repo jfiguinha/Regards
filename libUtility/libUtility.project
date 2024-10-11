@@ -29,6 +29,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="FileUtility.cpp"/>
+    <File Name="ConvertUtility.cpp"/>
     <File Name="base64.cpp"/>
     <File Name="DateValidation.cpp"/>
     <File Name="utility.cpp"/>
@@ -37,8 +39,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="base64.h"/>
-    <File Name="ConvertUtility.cpp"/>
-    <File Name="FileUtility.cpp"/>
     <File Name="DateValidation.hpp"/>
     <File Name="utility.h"/>
     <File Name="picture_utility.h"/>

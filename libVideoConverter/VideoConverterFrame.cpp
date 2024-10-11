@@ -105,7 +105,7 @@ void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+					////fmpegApp.Cleanup(e);
 				}
 			}
 		}
@@ -120,7 +120,7 @@ void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+					//fmpegApp.Cleanup(e);
 				}
 			}
 		}
@@ -308,7 +308,7 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+							//fmpegApp.Cleanup(e);
 							filename_in = fileOut;
 							ret = -1;
 						}
@@ -381,7 +381,7 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+							//fmpegApp.Cleanup(e);
 						}
 					}
 
@@ -396,7 +396,7 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+							//fmpegApp.Cleanup(e);
 						}
 					}
 				}

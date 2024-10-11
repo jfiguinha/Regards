@@ -112,7 +112,7 @@ void CExportDiaporama::OnExportDiaporama()
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+
 				}
 			}
 			{
@@ -123,7 +123,7 @@ void CExportDiaporama::OnExportDiaporama()
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+
 				}
 			}
 
@@ -251,7 +251,7 @@ void CExportDiaporama::ExportVideo(const wxString& filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+
 							filename_in = fileOut;
 							ret = -1;
 						}
@@ -324,7 +324,7 @@ void CExportDiaporama::ExportVideo(const wxString& filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+
 						}
 					}
 
@@ -339,7 +339,7 @@ void CExportDiaporama::ExportVideo(const wxString& filename)
 						}
 						catch (int e)
 						{
-							fmpegApp.Cleanup(e);
+
 						}
 					}
 				}
@@ -449,7 +449,7 @@ void CExportDiaporama::OnEndDecompressFile(int ret)
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+
 				}
 			}
 		}
@@ -464,7 +464,7 @@ void CExportDiaporama::OnEndDecompressFile(int ret)
 				}
 				catch (int e)
 				{
-					fmpegApp.Cleanup(e);
+
 				}
 			}
 		}

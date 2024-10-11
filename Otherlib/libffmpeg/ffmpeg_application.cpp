@@ -9,7 +9,7 @@
 #include "ffmpeg_application.h"
 #include <ConvertUtility.h>
 #include <wx/process.h>
-
+#include <FileUtility.h> 
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/avassert.h>
@@ -17,23 +17,6 @@ extern "C" {
 }
 
 
-
-void CFFmpegApp::ExitFunction(int x)
-{
-	throw x;
-}
-
-int CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
-{
-	if (progressWnd != nullptr)
-	{
-		auto dialog = static_cast<wxProgressDialog*>(progressWnd);
-		if (false == dialog->Update(x, "Video Progress ..."))
-			return 1;
-	}
-
-	return 0;
-}
 
 void CFFmpegApp::ExecuteFFmpeg()
 {
@@ -47,34 +30,15 @@ void CFFmpegApp::ExecuteFFmpeg()
         commande.append(" ");
     }
     
-    showProgressWindow = false;
-
-
-	wxProgressDialog* dialog = nullptr;
-
-	if (showProgressWindow)
-	{
-		dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 100, nullptr,
-			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-	}
 
 	try
 	{
         int x = 0;
-
         
         cout << "Commande : " << commande << endl;
      
-        int pid = wxExecute(commande,  wxEXEC_ASYNC);
-        cout << " process pid " << pid << endl;
+        int pid = wxExecute(commande,  wxEXEC_SHOW_CONSOLE | wxEXEC_SYNC);
 
-		while (wxProcess::Exists(pid)) {
-			//cout << " le process existe toujours " << endl;
-			if(dialog != nullptr)
-				dialog->Update(x++, "Video Progress ...");
-			if (x > 100)
-				x = 0;
-		}
 
 	}
 	catch (int e)
@@ -85,45 +49,28 @@ void CFFmpegApp::ExecuteFFmpeg()
 	{
 	}
 
-	if (dialog != nullptr)
-	{
-		dialog->Close();
-		delete dialog;
-	}
-		
 
-	Cleanup(ret);
 }
 
-int CFFmpegApp::TestFFmpeg(const wxString& commandline)
+
+CFFmpegApp::CFFmpegApp(const bool showProgressWindow)
 {
-	//ffmpeg -hwaccel_output_format cuda -i F:\music_video\test.mp4 -frames:v 1 -q:v 2 test.png
-	/*
-	arrayOfStrings.push_back("ffmpeg");
-	arrayOfStrings.push_back("-hwaccel_output_format");
-	arrayOfStrings.push_back("cuda");
-	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back("F:\\music_video\\test.mp4");
-	arrayOfStrings.push_back("-frames:v");
-	arrayOfStrings.push_back("1");
-	arrayOfStrings.push_back("-q:v");
-	arrayOfStrings.push_back("2");
-	arrayOfStrings.push_back("d:\\test.png");
-	*/
-	arrayOfStrings.push_back("ffmpeg");
-	arrayOfStrings.push_back("cuda");
-	arrayOfStrings.push_back("d:\\video\\20200509_132206.mp4");
-	arrayOfStrings.push_back("F:\\music_video\\20200509_132206.yuv");
-	//TestHWDecode(arrayOfStrings);
+    this->showProgressWindow = showProgressWindow;
+    
+    wxString workingFolder = CFileUtility::GetProgramFolderPath();
 
-	return 0;
-}
+#ifdef WIN32
+    arrayOfStrings.push_back(workingFolder + "\\ffmpeg.exe");
+#else
+    arrayOfStrings.push_back(workingFolder + "/ffmpeg");
+#endif
+};
 
 int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const wxString& outputFile,
                                            const int& rotate)
 {
 	//ffmpeg -i 20200509_132328.mp4 -map_metadata 0 -metadata:s:v rotate=-90 -codec copy output.mp4
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-i");
 	arrayOfStrings.push_back(inputVideoFile);
 	arrayOfStrings.push_back("-map_metadata");
@@ -137,17 +84,10 @@ int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const
 	return 0;
 }
 
-void CFFmpegApp::Cleanup(int ret)
-{
-	//ffmpeg_cleanup(ret);
-	//delete[] arrayOfCstrings;
-}
-
-
 int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVideo, const wxString& extension,
                           const wxString& outputFile)
 {
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-stream_loop");
 	arrayOfStrings.push_back("-1");
 	arrayOfStrings.push_back("-i");
@@ -167,7 +107,7 @@ int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVi
 int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString& inputAudioFile,
                                  const wxString& timeVideo, const wxString& outputFile)
 {
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-ss");
 	arrayOfStrings.push_back("00:00:00");
 	arrayOfStrings.push_back("-t");
@@ -200,7 +140,7 @@ int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxSt
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
-	arrayOfStrings.push_back("ffmpeg");
+
 	arrayOfStrings.push_back("-i");
 	arrayOfStrings.push_back(inputVideoFile);
 	arrayOfStrings.push_back("-ss");
@@ -223,7 +163,7 @@ int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const 
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-i");
 	arrayOfStrings.push_back(inputVideoFile);
 	if (timeVideoIn != "00:00:00" || timeVideoOut != "00:00:00")
@@ -248,7 +188,7 @@ int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const 
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-i");
     cout << "Input Video File : " << inputVideoFile << endl;
 	arrayOfStrings.push_back(inputVideoFile);
@@ -274,7 +214,7 @@ int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const
 {
 	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
 
-	arrayOfStrings.push_back("ffmpeg");
+	
 	arrayOfStrings.push_back("-i");
 	arrayOfStrings.push_back(inputVideoFile);
 	arrayOfStrings.push_back("-i");

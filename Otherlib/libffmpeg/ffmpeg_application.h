@@ -1,25 +1,19 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <wx/filefn.h>
 using namespace std;
 
 class CFFmpegApp
 {
 public:
-	CFFmpegApp(const bool showProgressWindow = true)
-	{
-		this->showProgressWindow = showProgressWindow;
-	};
+	CFFmpegApp(const bool showProgressWindow = true);
 
 	~CFFmpegApp()
 	{
 	};
 
-	static int ProgressBarFunction(int x, void* progressWnd);
-	static void ExitFunction(int x);
 
-	void Cleanup(int x);
-	int TestFFmpeg(const wxString& commandline);
 	int CropAudio(const wxString& inputAudioFile, const wxString& timeVideo, const wxString& extension,
 	              const wxString& outputFile);
 	int ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString& inputAudioFile, const wxString& timeVideo,
@@ -41,7 +35,5 @@ private:
 	void ExecuteFFmpeg();
 	bool showProgressWindow = true;
 	int ret = 0;
-	//int i = 0;
-	//char** arrayOfCstrings;
 	std::vector<wxString> arrayOfStrings;
 };

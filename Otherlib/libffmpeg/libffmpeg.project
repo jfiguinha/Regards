@@ -11,19 +11,6 @@
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src">
-    <File Name="ffmpeg_videotoolbox.c"/>
-    <File Name="ffmpeg_opt.c"/>
-    <File Name="ffmpeg_hw.c"/>
-    <File Name="ffmpeg_filter.c"/>
-    <File Name="ffmpeg.c"/>
-    <File Name="cmdutils.c"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="include">
-    <File Name="cmd_struct.h"/>
-    <File Name="ffmpeg.h"/>
-    <File Name="cmdutils.h"/>
-  </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">

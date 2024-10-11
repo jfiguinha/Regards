@@ -207,7 +207,7 @@ void GLTexture::DeleteInteropTexture()
 bool GLTexture::SetData(cv::UMat& bitmap)
 {   
     
-    printf("GLTexture::SetData isOpenCLOpenGLInterop \n");
+   // printf("GLTexture::SetData isOpenCLOpenGLInterop \n");
     
 	bool isOk = false;
 
