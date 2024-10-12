@@ -32,6 +32,7 @@ public:
 	static std::vector<wxString> GetHardwareList();
 
 private:
+    static int StartApp(void * arg);
 	void ExecuteFFmpeg();
 	bool showProgressWindow = true;
 	int ret = 0;

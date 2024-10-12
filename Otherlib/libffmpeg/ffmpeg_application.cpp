@@ -6,6 +6,7 @@
 
 #include <wx/progdlg.h>
 #include <stdexcept>
+#include <thread>
 #include "ffmpeg_application.h"
 #include <ConvertUtility.h>
 #include <wx/process.h>
@@ -16,12 +17,26 @@ extern "C" {
 
 }
 
+#include <atomic>
 
+std::atomic<bool> finished;
+
+int CFFmpegApp::StartApp(void * arg)
+{
+    cout << "StartApp : " << " in " << endl;
+    wxString * commande = (wxString *)arg;
+    cout << "Commande : " << *commande << endl;
+    int pid = wxExecute(*commande,  wxEXEC_SYNC);
+    cout << "StartApp : " << " out " << endl;
+    finished  = true;
+    return pid;
+}
+ 
 
 void CFFmpegApp::ExecuteFFmpeg()
 {
 	//arrayOfCstrings = new char*[arrayOfStrings.size()];
-
+    finished = false;
     wxString commande = "";
 	for (int i = 0; i < arrayOfStrings.size(); i++)
     {
@@ -30,26 +45,66 @@ void CFFmpegApp::ExecuteFFmpeg()
         commande.append(" ");
     }
     
-
+    wxProgressDialog* dialog = nullptr;
+    showProgressWindow = true;
+    
 	try
 	{
         int x = 0;
         
         cout << "Commande : " << commande << endl;
+        
+        if (showProgressWindow)
+        {
+            dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 100, NULL,
+                                          wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+        }
+        
+        std::thread first(StartApp, &commande); 
+        
+        while(first.joinable())
+        {
+            cout << " le process existe toujours " << endl;
+            dialog->Update(x++, "Video Progress ...");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if(finished)
+                break;
+        }
+        
+        first.join();
      
-        int pid = wxExecute(commande,  wxEXEC_SHOW_CONSOLE | wxEXEC_SYNC);
+       // int pid = wxExecute(commande,  wxEXEC_SHOW_CONSOLE | wxEXEC_SYNC);
+       
+        /*
+        if (showProgressWindow)
+        {
+            dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 1000, NULL,
+                                          wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+        }
 
+        MyProcess * process = new MyProcess(commande);
+     
+        int pid = wxExecute(commande, wxEXEC_MAKE_GROUP_LEADER | wxEXEC_ASYNC, process);
+        cout << " process pid " << pid << endl;
+     
+     
+        while(wxProcess::Exists(pid))
+        {
+            cout << " le process existe toujours " << endl;
+            dialog->Update(x++, "Video Progress ...");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+ 
+        cout << " le process est  mort " << endl;
+        */
 
-	}
-	catch (int e)
-	{
-		ret = e;
 	}
 	catch (...)
 	{
 	}
 
-
+	if (dialog != nullptr)
+		delete dialog;
 }
 
 
