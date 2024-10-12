@@ -23,11 +23,11 @@ std::atomic<bool> finished;
 
 int CFFmpegApp::StartApp(void * arg)
 {
-    cout << "StartApp : " << " in " << endl;
+    //cout << "StartApp : " << " in " << endl;
     wxString * commande = (wxString *)arg;
-    cout << "Commande : " << *commande << endl;
+    //cout << "Commande : " << *commande << endl;
     int pid = wxExecute(*commande,  wxEXEC_SYNC);
-    cout << "StartApp : " << " out " << endl;
+   // cout << "StartApp : " << " out " << endl;
     finished  = true;
     return pid;
 }
@@ -40,7 +40,7 @@ void CFFmpegApp::ExecuteFFmpeg()
     wxString commande = "";
 	for (int i = 0; i < arrayOfStrings.size(); i++)
     {
-        cout << "ExecuteFFmpeg " << to_string(i) << " " << arrayOfStrings[i] <<endl;
+        //cout << "ExecuteFFmpeg " << to_string(i) << " " << arrayOfStrings[i] <<endl;
 		commande.append(arrayOfStrings[i]);
         commande.append(" ");
     }
@@ -52,7 +52,7 @@ void CFFmpegApp::ExecuteFFmpeg()
 	{
         int x = 0;
         
-        cout << "Commande : " << commande << endl;
+        //cout << "Commande : " << commande << endl;
         
         if (showProgressWindow)
         {
@@ -64,7 +64,6 @@ void CFFmpegApp::ExecuteFFmpeg()
         
         while(first.joinable())
         {
-            cout << " le process existe toujours " << endl;
             dialog->Update(x++, "Video Progress ...");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if(finished)
@@ -72,32 +71,6 @@ void CFFmpegApp::ExecuteFFmpeg()
         }
         
         first.join();
-     
-       // int pid = wxExecute(commande,  wxEXEC_SHOW_CONSOLE | wxEXEC_SYNC);
-       
-        /*
-        if (showProgressWindow)
-        {
-            dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 1000, NULL,
-                                          wxPD_APP_MODAL | wxPD_AUTO_HIDE);
-        }
-
-        MyProcess * process = new MyProcess(commande);
-     
-        int pid = wxExecute(commande, wxEXEC_MAKE_GROUP_LEADER | wxEXEC_ASYNC, process);
-        cout << " process pid " << pid << endl;
-     
-     
-        while(wxProcess::Exists(pid))
-        {
-            cout << " le process existe toujours " << endl;
-            dialog->Update(x++, "Video Progress ...");
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
- 
-        cout << " le process est  mort " << endl;
-        */
-
 	}
 	catch (...)
 	{
