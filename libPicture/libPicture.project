@@ -179,6 +179,7 @@
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libDeepLearning"/>
+        <Preprocessor Value="__NEW_JXL__"/>
         <Preprocessor Value="AVIF_LIBYUV_ENABLED"/>
         <Preprocessor Value="__NEW_EXIV2__"/>
         <Preprocessor Value="__FREEIMAGE__"/>
