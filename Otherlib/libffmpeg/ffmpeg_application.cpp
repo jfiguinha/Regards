@@ -67,7 +67,7 @@ void CFFmpegApp::ExecuteFFmpeg()
         if (showProgressWindow)
         {
             dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 100, NULL,
-                                          wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+                                          wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxEXEC_HIDE_CONSOLE);
         }
         
 #ifdef __APPLE__
