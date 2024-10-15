@@ -14,16 +14,16 @@ cd vcpkg-2022.08.15
 cd ..
 
 
-unzip vcpkg-2024.01.12.zip
-mv vcpkg-2024.01.12 vcpkg
+unzip vcpkg-vcpkg-2024.08.23.zip
+mv vcpkg-vcpkg-2024.08.23 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install x265
 ./vcpkg install libde265
-./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr]
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr]
 ./vcpkg install opencl
-./vcpkg install dav1d
+./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp,bmff]
 ./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
@@ -35,6 +35,7 @@ cd vcpkg
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
+./vcpkg install ncnn[vulkan]
 cd ..
 
 #Compile heif-master
