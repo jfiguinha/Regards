@@ -307,7 +307,6 @@
         <Library Value="glslang"/>
         <Library Value="glslang-default-resource-limits"/>
         <Library Value="GenericCodeGen"/>
-        <Library Value="OGLCompiler"/>
         <Library Value="OSDependent"/>
         <Library Value="SPIRV"/>
         <Library Value="protobuf-lite"/>
@@ -676,6 +675,7 @@
         <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux-dynamic/lib/libjxl_cms.so.0.10	./Release</Command>
         <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux-dynamic/lib/libssl.so.3	./Release</Command>
         <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux-dynamic/lib/libszip.so.2.1 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux-dynamic/lib/libncnn.so.1 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux-dynamic/lib/manual-link/libraw.so.23 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.61 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.61 ./Release</Command>

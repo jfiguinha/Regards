@@ -35,6 +35,7 @@ cd vcpkg
 ./vcpkg install freeimage:x64-linux-dynamic
 ./vcpkg install libjxl:x64-linux-dynamic
 ./vcpkg install libepoxy:x64-linux-dynamic
+./vcpkg install ncnn[vulkan]:x64-linux-dynamic
 cd ..
 
 #Compile heif-master
