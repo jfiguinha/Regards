@@ -23,15 +23,25 @@ std::atomic<bool> finished;
 
 int CFFmpegApp::StartApp(void * arg)
 {
-    //cout << "StartApp : " << " in " << endl;
+    cout << "StartApp : " << " in " << endl;
     wxString * commande = (wxString *)arg;
-    //cout << "Commande : " << *commande << endl;
+    cout << "Commande : " << *commande << endl;
     int pid = wxExecute(*commande,  wxEXEC_SYNC);
-   // cout << "StartApp : " << " out " << endl;
+    cout << "StartApp : " << " out " << endl;
     finished  = true;
     return pid;
 }
  
+ 
+class MyProcess : public wxProcess
+{
+public:
+	virtual void OnTerminate(int,int);
+};
+ 
+void MyProcess::OnTerminate(int pid, int status)
+{
+}
 
 void CFFmpegApp::ExecuteFFmpeg()
 {
@@ -40,7 +50,7 @@ void CFFmpegApp::ExecuteFFmpeg()
     wxString commande = "";
 	for (int i = 0; i < arrayOfStrings.size(); i++)
     {
-        //cout << "ExecuteFFmpeg " << to_string(i) << " " << arrayOfStrings[i] <<endl;
+        cout << "ExecuteFFmpeg " << to_string(i) << " " << arrayOfStrings[i] <<endl;
 		commande.append(arrayOfStrings[i]);
         commande.append(" ");
     }
@@ -52,7 +62,7 @@ void CFFmpegApp::ExecuteFFmpeg()
 	{
         int x = 0;
         
-        //cout << "Commande : " << commande << endl;
+        cout << "Commande : " << commande << endl;
         
         if (showProgressWindow)
         {
@@ -60,17 +70,39 @@ void CFFmpegApp::ExecuteFFmpeg()
                                           wxPD_APP_MODAL | wxPD_AUTO_HIDE);
         }
         
+#ifdef __APPLE__
+        
+        //int pid = wxExecute(commande,  wxEXEC_SYNC);
+
+        MyProcess* process = new MyProcess();
+        int pid = wxExecute(commande, wxEXEC_MAKE_GROUP_LEADER | wxEXEC_ASYNC, process);
+        
+        while(wxProcess::Exists(pid))
+        {
+            cout << "process en cours " << endl;
+            if(dialog != nullptr)
+                dialog->Update(x++, "Video Progress ...");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        
+#else
+        
         std::thread first(StartApp, &commande); 
         
         while(first.joinable())
         {
-            dialog->Update(x++, "Video Progress ...");
+            if(dialog != nullptr)
+                dialog->Update(x++, "Video Progress ...");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if(finished)
                 break;
         }
         
         first.join();
+
+#endif
+
 	}
 	catch (...)
 	{

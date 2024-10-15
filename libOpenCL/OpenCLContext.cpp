@@ -6,6 +6,9 @@
 #include <OpenCL/cl.h>
 #include <OpenCL/cl_gl.h>
 #include <OpenCL/cl_gl_ext.h>
+
+#include <OpenCL/opencl.h>
+#include <OpenGL/OpenGL.h>
 #else
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
