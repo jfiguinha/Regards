@@ -46,7 +46,7 @@ CVideoConverterFrame::CVideoConverterFrame(const wxString& title, const wxPoint&
 	SetIcon(wxICON(sample));
 	this->videoInterface = videoInterface;
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CVideoConverterFrame::OnEndDecompressFile));
-	
+
 
 }
 
@@ -170,6 +170,7 @@ void CVideoConverterFrame::OnEndDecompressFile(wxCommandEvent& event)
 	{
 		videoInterface->Close();
 	}
+
 }
 
 

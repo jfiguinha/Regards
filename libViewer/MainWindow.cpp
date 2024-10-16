@@ -519,6 +519,10 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		
 #endif
         wxExecute(pathProgram);
+
+		this->SetFocus();  // focus on my window
+		this->Raise();  // bring window to front
+		this->Show(true); // show the window
 		
 	}
 	else

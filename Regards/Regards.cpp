@@ -400,6 +400,8 @@ bool MyApp::OnInit()
 		wxRect screen = display.GetClientArea();
 		frameVideoConverter = new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(50,50), this);
 		frameVideoConverter->Centre(wxBOTH);
+		frameVideoConverter->SetFocus();  // focus on my window
+		frameVideoConverter->Raise();  // bring window to front
 		frameVideoConverter->Show(true);
 		frameVideoConverter->ExportVideo(fileToOpen);
 	}
@@ -410,6 +412,8 @@ bool MyApp::OnInit()
 		//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
 		framePDF = new CScannerFrame("RegardsPDF", this,  wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()));
 		framePDF->Centre(wxBOTH);
+		framePDF->SetFocus();  // focus on my window
+		framePDF->Raise();  // bring window to front
 		framePDF->Show(true);
 		framePDF->OnOpen();	
 	}

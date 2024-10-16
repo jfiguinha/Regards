@@ -140,6 +140,8 @@ int CFFmpegTranscoding::EncodeFile(wxWindow* mainWindow, const wxString& input, 
 	this->videoCompressOption = videoCompressOption;
 
 	m_dlgProgress = new CompressVideo(nullptr, rotation);
+	m_dlgProgress->SetFocus();  // focus on my window
+	m_dlgProgress->Raise();  // bring window to front
 	m_dlgProgress->Show();
 	encode_thread = new std::thread(EncodeFileThread, this);
 	return 0;

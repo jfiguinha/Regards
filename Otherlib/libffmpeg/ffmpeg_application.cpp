@@ -26,7 +26,7 @@ int CFFmpegApp::StartApp(void * arg)
     cout << "StartApp : " << " in " << endl;
     wxString * commande = (wxString *)arg;
     cout << "Commande : " << *commande << endl;
-    int pid = wxExecute(*commande,  wxEXEC_SYNC);
+    int pid = wxExecute(*commande,  wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE);
     cout << "StartApp : " << " out " << endl;
     finished  = true;
     return pid;
