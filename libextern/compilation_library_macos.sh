@@ -8,12 +8,13 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2024.08.23.zip
+unzip vcpkg-2024.08.23_mac.zip
 mv vcpkg-2024.08.23 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxwidgets[webview]
+./vcpkg install sdl2
 
 cd ..
 unzip SVT-AV1-v2.2.1.zip
@@ -31,7 +32,6 @@ cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,openjpeg,opus,fdk-aac,ffmpeg] --allow-unsupported
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr]
 ./vcpkg install libde265
-./vcpkg install dav1d
 ./vcpkg install exiv2[video,xmp,bmff]
 ./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
@@ -55,6 +55,7 @@ cd ..
 cd ..
 
 rm $LOCALPATH/vcpkg/installed/arm64-osx/lib/libpng.a
+rm -r $LOCALPATH/vcpkg/installed/arm64-osx/include/OpenCL
 
 
 
