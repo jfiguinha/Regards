@@ -655,6 +655,7 @@
     <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="diag.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DiaporamaFusion.cpp" />
     <ClCompile Include="DiaporamaMove.cpp" />
@@ -685,6 +686,7 @@
     <ClCompile Include="RGBAQuad.cpp" />
     <ClCompile Include="scale.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ScaleThumbnail.cpp" />
     <ClCompile Include="ThumbnailData.cpp" />
