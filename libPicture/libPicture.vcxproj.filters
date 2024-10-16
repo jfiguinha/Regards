@@ -139,10 +139,10 @@
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scale.c">
+    <ClCompile Include="diag.c">
       <Filter>avif</Filter>
     </ClCompile>
-    <ClCompile Include="diag.c">
+    <ClCompile Include="scale.c">
       <Filter>avif</Filter>
     </ClCompile>
   </ItemGroup>

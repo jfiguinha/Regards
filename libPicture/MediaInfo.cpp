@@ -20,7 +20,7 @@
 
 #if defined(__WXGTK__) || defined(__ARM64__) || defined(__APPLE__)
 
-#if defined(__ARM64__) && defined(_DEBUG)
+#if defined(__ARM64__)
 
 #include "MediaInfoDLL/MediaInfoDLL.h" //Dynamicly-loaded library (.dll or .so)
 #define MediaInfoNameSpace MediaInfoDLL;
