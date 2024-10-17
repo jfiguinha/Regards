@@ -236,6 +236,10 @@ bool MyApp::OnInit()
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 #endif
 
+    wxString programPath = CFileUtility::GetProgramFolderPath();
+    
+    cout << "Program Path : " << programPath << endl;
+
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
     
@@ -321,7 +325,7 @@ bool MyApp::OnInit()
     }
     else
     {
-        cout << "OpenCL is not avaiable..." << endl;
+        cout << "OpenCL is avaiable..." << endl;
     }
 
 	if (!configFileExist)

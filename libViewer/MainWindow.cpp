@@ -513,7 +513,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 #ifdef __WXMSW__
         pathProgram = "RegardsViewer.exe \"" + this->centralWnd->GetFilename() + "\"  -p RegardsConverter";
 #else
-        pathProgram = "./RegardsViewer \"" + this->centralWnd->GetFilename() + "\" -p RegardsConverter";
+        pathProgram = CFileUtility::GetProgramFolderPath() + "/RegardsViewer \"" + this->centralWnd->GetFilename() + "\" -p RegardsConverter";
 		cout << "Path Program" << pathProgram << endl;
 #endif
 		
