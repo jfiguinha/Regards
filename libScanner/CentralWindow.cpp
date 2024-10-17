@@ -83,6 +83,10 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 
 			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
 			                            "PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                                        
+            wxString documentPath = CFileUtility::GetDocumentFolderPath();
+            saveFileDialog.SetDirectory(documentPath);
+                                        
 			if (saveFileDialog.ShowModal() == wxID_CANCEL)
 				return; // the user changed idea...
 
@@ -254,6 +258,10 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 
 		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
 		                            "PDF Files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                                    
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        saveFileDialog.SetDirectory(documentPath);
+                                    
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...
 

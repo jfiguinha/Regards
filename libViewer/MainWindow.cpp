@@ -563,9 +563,12 @@ void CMainWindow::OnEditFile(wxCommandEvent& event)
 
 	if (pathProgram.empty())
 	{
+
 		const wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 		wxFileDialog openFileDialog(nullptr, title, "", "",
 		                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        openFileDialog.SetDirectory(documentPath);
 		if (openFileDialog.ShowModal() == wxID_OK)
 			pathProgram = openFileDialog.GetPath();
 	}

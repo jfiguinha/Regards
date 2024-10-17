@@ -65,6 +65,10 @@ void CExportDiaporama::OnExportDiaporama()
 
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
 			"mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        saveFileDialog.SetDirectory(documentPath);
+            
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...
 
@@ -176,6 +180,9 @@ void CExportDiaporama::ExportVideo(const wxString& filename)
 			"mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label +
 			" (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label +
 			" (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        saveFileDialog.SetDirectory(documentPath);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...

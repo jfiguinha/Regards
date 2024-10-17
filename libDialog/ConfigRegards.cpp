@@ -2,6 +2,7 @@
 #include "ConfigRegards.h"
 #include <RegardsConfigParam.h>
 #include <LibResource.h>
+#include <FileUtility.h>
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
@@ -134,6 +135,10 @@ void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
 
 	wxFileDialog openFileDialog(nullptr, label, "", "",
 	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                                
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    openFileDialog.SetDirectory(documentPath);
+                                
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtVideoPath->SetValue(openFileDialog.GetPath());
 }
@@ -145,6 +150,11 @@ void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
 
 	wxFileDialog openFileDialog(nullptr, label, "", "",
 	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                                
+                                
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    openFileDialog.SetDirectory(documentPath);
+                                
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtPicturePath->SetValue(openFileDialog.GetPath());
 }
@@ -158,6 +168,9 @@ void ConfigRegards::OnBtnMusicDiaporamaClick(wxCommandEvent& event)
 	wxFileDialog openFileDialog(nullptr, label, "", filename,
 	                            "mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename
 	                            + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    openFileDialog.SetDirectory(documentPath);
 
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtMusicDiaporamaPath->SetValue(openFileDialog.GetPath());

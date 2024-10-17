@@ -8,10 +8,13 @@
 //#include <Picture_id.h>
 //#include <ConvertUtility.h>
 #endif
+#include <FileUtility.h>
 #include <wx/filename.h>
+#include <FileUtility.h>
 #include "SelectPage.h"
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
+#include <FileUtility.h>
 #include <wx/busyinfo.h>
 using namespace Regards::Picture;
 
@@ -70,6 +73,10 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 		wxFileDialog saveFileDialog(nullptr, bmpFilename.GetName(), "", bmpFilename.GetName(),
 		                            GetPictureFilter(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
+
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        saveFileDialog.SetDirectory(documentPath);
+
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return "";
 
@@ -107,6 +114,11 @@ wxString CSavePicture::LoadPicture()
 
 	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
 	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                                
+
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    openFileDialog.SetDirectory(documentPath);
+                                
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return ""; // the user changed idea..
 
@@ -124,6 +136,11 @@ wxArrayString CSavePicture::LoadMultiplePicture()
 
 	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
 	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+                                
+
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    openFileDialog.SetDirectory(documentPath);
+                                
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return listFile; // the user changed idea..
 

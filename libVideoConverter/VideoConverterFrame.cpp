@@ -182,6 +182,10 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 	{
 		wxFileDialog openFileDialog(this, _("Open video file"), "", "",
 				"mp4 files (*.mp4)|*.mp4", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        openFileDialog.SetDirectory(documentPath);
+        
 		if (openFileDialog.ShowModal() == wxID_CANCEL)
 		{
 			if (videoInterface != nullptr)
@@ -227,6 +231,9 @@ void CVideoConverterFrame::ExportVideo(wxString filename)
 			"mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label +
 			" (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label +
 			" (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+            
+        wxString documentPath = CFileUtility::GetDocumentFolderPath();
+        saveFileDialog.SetDirectory(documentPath);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		{

@@ -291,6 +291,11 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	                            "PDF " + filename + " (*.pdf)|*.pdf | TXT " + filename + " (*.txt)|*.txt |boxfile " +
 	                            filename + " (*.boxfile) | *.boxfile | hOcr " + filename + " (*.hocr) | *.hocr",
 	                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                                
+
+    wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    saveFileDialog.SetDirectory(documentPath);
+                                
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return; // the user changed idea...
 
