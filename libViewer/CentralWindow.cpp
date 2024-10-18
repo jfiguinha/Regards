@@ -1527,25 +1527,17 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				windowManager->HideWindow(Pos::wxTOP);
 			}
             
+            windowManager->ShowPaneWindow(Pos::wxRIGHT);
+            panelInfosWindow->Show(true);
+            panelInfosClick->SetWindow(panelInfosWindow);
+            panelInfosClick->Show(true);
+            panelInfosClick->SetTitle("Informations");
             printf("CCentralWindow::SetMode Show Infos : %d \n", showInfos);
 
 			if (windowInit)
 				if (!showInfos)
                 {
-					 windowManager->ShowPaneWindow(Pos::wxRIGHT);
-                    panelInfosWindow->Show(true);
-                    panelInfosClick->SetWindow(panelInfosWindow);
-                    panelInfosClick->Show(true);
-                    panelInfosClick->SetTitle("Informations");
                     windowManager->HidePaneWindow(Pos::wxRIGHT);
-                }
-                else
-                {
-                    windowManager->ShowPaneWindow(Pos::wxRIGHT);
-                    panelInfosWindow->Show(true);
-                    panelInfosClick->SetWindow(panelInfosWindow);
-                    panelInfosClick->Show(true);
-                    panelInfosClick->SetTitle("Informations");
                 }
                    
 		}   
