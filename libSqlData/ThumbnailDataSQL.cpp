@@ -34,7 +34,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 
 	if(isVideo)
 	{
-		if (libPicture.TestIsVideo(filename))
+		if (libPicture.TestIsVideoValid(filename))
 		{
 			nbFrame = 20;
             this->generateVideoPlayer = true;

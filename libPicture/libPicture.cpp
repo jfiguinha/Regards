@@ -1574,7 +1574,13 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 		listMovieDuration[szFileName] = duration;
 	}
 	if (duration > 0)
-		return true;
+    {
+        	COpenCVVideoPlayer player(szFileName);
+            bool isOpen = player.isOpened();
+            return isOpen;
+    }
+        
+        
 	return false;
 
 }
