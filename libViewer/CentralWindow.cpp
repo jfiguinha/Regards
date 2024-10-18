@@ -1565,6 +1565,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				if (windowManager->GetWindowIsShow(Pos::wxTOP))
 					windowManager->HideWindow(Pos::wxTOP);
 
+                windowManager->ShowPaneWindow(Pos::wxRIGHT);
 				listFace->Show(true);
 				panelInfosClick->SetWindow(listFace);
 				panelInfosClick->Show(true);
@@ -1595,6 +1596,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			if (windowManager->GetWindowIsShow(Pos::wxTOP))
 				windowManager->HideWindow(Pos::wxTOP);
 
+            windowManager->ShowPaneWindow(Pos::wxRIGHT);
 			listPicture->Show(true);
 			panelInfosClick->SetWindow(listPicture);
 			panelInfosClick->Show(true);
