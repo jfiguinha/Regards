@@ -36,6 +36,9 @@
     <ClInclude Include="SqlLibResource.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="sqlite3recover.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlEngine.cpp">
@@ -52,6 +55,12 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="dbdata.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlite3recover.c">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

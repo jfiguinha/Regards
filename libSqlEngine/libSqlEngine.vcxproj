@@ -580,6 +580,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="SqlEngine.h" />
+    <ClInclude Include="sqlite3recover.h" />
     <ClInclude Include="SqlLib.h" />
     <ClInclude Include="SqlLibResource.h" />
     <ClInclude Include="SqlResult.h" />
@@ -591,7 +592,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="dbdata.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SqlEngine.cpp" />
+    <ClCompile Include="sqlite3recover.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SqlLib.cpp" />
     <ClCompile Include="SqlLibResource.cpp" />
     <ClCompile Include="SqlResult.cpp" />
