@@ -17,6 +17,7 @@ CSqlEngine::~CSqlEngine()
 {
 }
 
+
 CSqlLib* CSqlEngine::getInstance(const wxString& baseName)
 {
 	auto i = std::find_if(_listOfBase.begin(),

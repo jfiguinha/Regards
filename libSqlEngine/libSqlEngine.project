@@ -29,12 +29,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="dbdata.c"/>
+    <File Name="sqlite3recover.c"/>
     <File Name="SqlLibResource.cpp"/>
     <File Name="SqlEngine.cpp"/>
     <File Name="SqlLib.cpp"/>
     <File Name="SqlResult.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="sqlite3recover.h"/>
     <File Name="SqlLibResource.h"/>
     <File Name="header.h"/>
     <File Name="SqlEngine.h"/>

@@ -2,6 +2,7 @@
 #include "SqlLib.h"
 #include "SqlResult.h"
 #include <ConvertUtility.h>
+#include "sqlite3recover.h"
 using namespace std;
 using namespace Regards::Sqlite;
 
@@ -20,6 +21,49 @@ CSqlLib::~CSqlLib()
 {
 	if (pCon)
 		CloseConnection();
+}
+
+/* Verbosity level for the dbsqlfuzz test runner */
+static int eVerbosity = 0;
+
+/*
+** This function is used as a callback by the recover extension. Simply
+** print the supplied SQL statement to stdout.
+*/
+static int recoverSqlCb(void *pCtx, const char *zSql){
+  if( eVerbosity>=2 ){
+    printf("%s\n", zSql);
+  }
+  return SQLITE_OK;
+}
+
+/*
+** This function is called to recover data from the database.
+*/
+int CSqlLib::recoverDatabase(sqlite3 *db){
+  int rc;                                 /* Return code from this routine */
+  const char *zLAF = "lost_and_found";    /* Name of "lost_and_found" table */
+  int bFreelist = 1;                      /* True to scan the freelist */
+  int bRowids = 1;                        /* True to restore ROWID values */
+  sqlite3_recover *p;                     /* The recovery object */
+
+  p = sqlite3_recover_init_sql(db, "main", recoverSqlCb, 0);
+  sqlite3_recover_config(p, SQLITE_RECOVER_LOST_AND_FOUND, (void*)zLAF);
+  sqlite3_recover_config(p, SQLITE_RECOVER_ROWIDS, (void*)&bRowids);
+  sqlite3_recover_config(p, SQLITE_RECOVER_FREELIST_CORRUPT,(void*)&bFreelist);
+  sqlite3_recover_run(p);
+  if( sqlite3_recover_errcode(p)!=SQLITE_OK ){
+    const char *zErr = sqlite3_recover_errmsg(p);
+    int errCode = sqlite3_recover_errcode(p);
+    if( eVerbosity>0 ){
+      printf("recovery error: %s (%d)\n", zErr, errCode);
+    }
+  }
+  rc = sqlite3_recover_finish(p);
+  if( eVerbosity>0 && rc ){
+     printf("recovery returns error code %d\n", rc);
+  }
+  return rc;
 }
 
 
@@ -70,6 +114,18 @@ int CSqlLib::LoadOrSaveDb(sqlite3* pInMemory, const char* zFilename, int isSave)
 		}
 		rc = sqlite3_errcode(pTo);
 	}
+    else
+    {
+        recoverDatabase(pFile);
+        /* Open the database file identified by zFilename. Exit early if this fails
+        ** for any reason. */
+        rc = sqlite3_open(zFilename, &pFile);
+        if (rc != SQLITE_OK)
+        {
+            wxMessageBox("Database Error","Information", wxICON_ERROR);
+            exit(0);
+        }
+    }
 
 	/* Close the database connection opened on database file zFilename
 	** and return the result of this function. */
@@ -110,7 +166,7 @@ bool CSqlLib::OpenConnection(const wxString& databasePath, const bool& readonly,
 
 	if (load_inmemory)
 	{
-		sqlite3_open(":memory:", &(pCon));
+		rc = sqlite3_open(":memory:", &(pCon));
 		if (wxFileExists(sqLiteDBPath))
 		{
 			rc = LoadOrSaveDb(pCon, sqLiteDBPath, 0);
@@ -129,20 +185,26 @@ bool CSqlLib::OpenConnection(const wxString& databasePath, const bool& readonly,
 			                     SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nullptr);
 		m_strLastError = sqlite3_errmsg(pCon);
 	}
+    
+    if (rc != SQLITE_OK)
+    {
+        recoverDatabase(pCon);
+        m_bConnected = OpenConnection(databasePath, readonly, load_inmemory);
+        if (!m_bConnected)
+        {
+            wxMessageBox("Database Error - Unable to loaded Regards.db data information","Information", wxICON_ERROR);
+            exit(0);
+        }        
+    }
+    else
+    {
+        if (!rc)
+        {
+            if (m_strLastError.find("not an error") == string::npos)
+                m_bConnected = false;
+        }
 
-
-	// if(readonly)
-	//	rc = sqlite3_open_v2(":memory:", &(pCon), SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
-	// else
-
-
-	if (!rc)
-	{
-		if (m_strLastError.find("not an error") == string::npos)
-			m_bConnected = false;
-	}
-
-
+    }
 	return m_bConnected;
 }
 

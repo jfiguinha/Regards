@@ -45,7 +45,7 @@ namespace Regards
 		protected:
 			int LoadOrSaveDb(sqlite3* pInMemory, const char* zFilename, int isSave);
 			bool isConnected();
-
+            int recoverDatabase(sqlite3 *db);
 			mutex sync;
 			wxString sqLiteDBPath; //Databse File Dir
 			sqlite3* pCon; //SQLite Connection Object
