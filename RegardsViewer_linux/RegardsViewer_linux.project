@@ -456,7 +456,6 @@
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
-        <Library Value="omp"/>
         <Library Value="utf8_range"/>
         <Library Value="utf8_validity"/>
       </Linker>
