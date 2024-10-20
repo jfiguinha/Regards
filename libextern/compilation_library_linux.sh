@@ -7,14 +7,7 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2022.08.15.zip
-cd vcpkg-2022.08.15
-./bootstrap-vcpkg.sh
-./vcpkg install wxwidgets
-cd ..
-
-
-unzip vcpkg-vcpkg-2024.08.23.zip
+unzip vcpkg-vcpkg-2024.08.23_linux.zip
 mv vcpkg-vcpkg-2024.08.23 vcpkg
 
 cd vcpkg
