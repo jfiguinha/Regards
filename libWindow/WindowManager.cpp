@@ -664,6 +664,10 @@ void CWindowManager::Init_left()
 
 void CWindowManager::SetWindowLeftSize(CWindowToAdd* left, int width, int y, int left_height)
 {
+    if(width <= 0 || left_height <= 0)
+        return;
+    
+    
 	if (!left->fixe)
 	{
 		wxRect rect = left->rect;
@@ -701,6 +705,9 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd* left, int width, int y, int
 
 void CWindowManager::SetWindowRightSize(CWindowToAdd* right, int width, int y, int right_height)
 {
+    if(width <= 0 || right_height <= 0)
+        return;
+        
 	printf("SetWindowRightSize width : %d y : %d right_height : %d  \n", width, y, right_height);
 
 	if (!right->fixe)
