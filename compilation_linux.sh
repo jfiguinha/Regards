@@ -12,7 +12,7 @@ sudo apt install meson
 sudo apt install autoconf
 sudo apt install libtool
 sudo apt install patchelf
-sudo apt install opencl-headers
+#sudo apt install opencl-headers
 sudo apt install libwebkit2gtk-4.0-dev
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
@@ -31,7 +31,8 @@ sudo apt install libsystemd-dev
 sudo apt install curl zip unzip tar
 sudo apt install bison
 sudo apt install gperf
-sudo apt install nvidia-cuda-toolkit
+sudo apt install dos2unix
+#sudo apt install nvidia-cuda-toolkit
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
@@ -48,10 +49,11 @@ sudo apt install nvidia-cuda-toolkit
 #sudo bash AMD-APP-SDK-v3.0.130.136-GA-linux64.sh
 
 #install clinfo
-sudo apt install clinfo
+#sudo apt install clinfo
 
 #Install External Library
 cd libextern
+dos2unix compilation_library_linux.sh
 chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
