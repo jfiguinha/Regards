@@ -18,6 +18,10 @@
 
 #ifdef __WXGTK__
 #include <epoxy/glx.h>
+#if wxUSE_GLCANVAS_EGL == 1
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#endif
 #endif
 
 

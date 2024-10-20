@@ -5,5 +5,6 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 else
 #	${HOME}/ffmpeg_build/bin/wx-config --libs
 #    ${HOME}/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/tools/wxwidgets/wx-config --libs
-    ${HOME}/developpement/git/Regards/libextern/wxWidgets-3.2.3/build_new/wx-config --libs
+#    ${HOME}/developpement/git/Regards/libextern/wxWidgets-3.2.3/build_new/wx-config --libs
+    ${HOME}/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/tools/wxwidgets/wx-config --libs
 fi

@@ -19,6 +19,7 @@ mv vcpkg-vcpkg-2024.08.23 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
+./vcpkg install wxwidgets
 ./vcpkg install x265
 ./vcpkg install libde265
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr]
