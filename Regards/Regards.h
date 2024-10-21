@@ -20,14 +20,13 @@
 #include <ViewerFrame.h>
 #include "wx/sysopt.h"
 #include <wx/cmdline.h>
-#include <libPicture.h>
-#include <wx/textfile.h>
 #include <wx/display.h>
 #include <VideoConverterFrame.h>
 #include <ScannerFrame.h>
 #include "TestFrame.h"
 #include <ncnn/gpu.h>
 #include <signal.h>
+#include <wxffmpegFrame.h>
 //#define TEST_WINDOWMANAGER
 #ifdef __WXGTK__
  #include <X11/Xlib.h>   
@@ -278,6 +277,7 @@ private:
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
 	
+	wxFfmpegFrame* frameFFmpeg = nullptr;
 	CScannerFrame * framePDF = nullptr;
 	CVideoConverterFrame* frameVideoConverter = nullptr;
 	CTestFrame* testFrame = nullptr;

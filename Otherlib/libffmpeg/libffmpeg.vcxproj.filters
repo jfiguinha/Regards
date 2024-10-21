@@ -16,6 +16,18 @@
     <Filter Include="iso_c">
       <UniqueIdentifier>{6de7b9d6-bfe0-4577-ad96-0daeb9f1c350}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wxfflmpeg">
+      <UniqueIdentifier>{5ffdcbf6-160a-4fb0-9bbd-35e86e3e5de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxfflmpeg\include">
+      <UniqueIdentifier>{e1fcf0f5-5387-4809-9343-7a2416587c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxfflmpeg\src">
+      <UniqueIdentifier>{cd5a4862-5d91-4978-89c6-2d687b2c278b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxfflmpeg\Frame">
+      <UniqueIdentifier>{1c1db31e-083c-4295-8ade-a6c34cf0d084}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ffmpeg_application.cpp">
@@ -23,6 +35,27 @@
     </ClCompile>
     <ClCompile Include="win32\stdatomic.c">
       <Filter>iso_c</Filter>
+    </ClCompile>
+    <ClCompile Include="wxFFmpegView.cc">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="video.cc">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cc">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="movie.cc">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="glmanager.cc">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="wxffmpegFrame.cpp">
+      <Filter>wxfflmpeg\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="audio.cc">
+      <Filter>wxfflmpeg\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +70,36 @@
     </ClInclude>
     <ClInclude Include="win32\threads.h">
       <Filter>iso_c</Filter>
+    </ClInclude>
+    <ClInclude Include="wxFFmpegView.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="video.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="packet_queue.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="movie.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="glmanager.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="chronons.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="audio.h">
+      <Filter>wxfflmpeg\include</Filter>
+    </ClInclude>
+    <ClInclude Include="wxffmpegFrame.h">
+      <Filter>wxfflmpeg\Frame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

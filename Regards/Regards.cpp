@@ -20,21 +20,18 @@
 #include <ParamInit.h>
 #include <FilterWindowParam.h>
 #include <FilterData.h>
-#include <ffplaycore.h>
-#include <picture_utility.h>
-#include <ImageVideoThumbnail.h>
 #include <OpenCLContext.h>
-#include <wx/progdlg.h>
-#include <DownloadFile.h>
 #include <ncnn/gpu.h>
-#include <locale>
+
+
+
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 5;
 cv::ocl::OpenCLExecutionContext clExecCtx;
 
-using namespace Regards::Internet;
+
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
@@ -420,6 +417,17 @@ bool MyApp::OnInit()
 		framePDF->Raise();  // bring window to front
 		framePDF->Show(true);
 		framePDF->OnOpen();	
+	}
+	else if (appName == "RegardswxFFmpeg")
+	{
+		wxDisplay display;
+		wxRect screen = display.GetClientArea();
+		//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
+		frameFFmpeg = new wxFfmpegFrame();
+		frameFFmpeg->Centre(wxBOTH);
+		frameFFmpeg->SetFocus();  // focus on my window
+		frameFFmpeg->Raise();  // bring window to front
+		frameFFmpeg->Show(true);
 	}
 	else
 	{

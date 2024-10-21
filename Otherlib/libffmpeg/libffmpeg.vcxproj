@@ -27,14 +27,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="audio.cc" />
     <ClCompile Include="ffmpeg_application.cpp" />
+    <ClCompile Include="glmanager.cc" />
+    <ClCompile Include="movie.cc" />
+    <ClCompile Include="shader.cc" />
+    <ClCompile Include="video.cc" />
     <ClCompile Include="win32\stdatomic.c" />
+    <ClCompile Include="wxffmpegFrame.cpp" />
+    <ClCompile Include="wxFFmpegView.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio.h" />
+    <ClInclude Include="chronons.h" />
+    <ClInclude Include="ffmpeg.h" />
     <ClInclude Include="ffmpeg_application.h" />
+    <ClInclude Include="glmanager.h" />
+    <ClInclude Include="movie.h" />
+    <ClInclude Include="packet_queue.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="video.h" />
     <ClInclude Include="win32\stdalign.h" />
     <ClInclude Include="win32\stdatomic.h" />
     <ClInclude Include="win32\threads.h" />
+    <ClInclude Include="wxffmpegFrame.h" />
+    <ClInclude Include="wxFFmpegView.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -164,6 +181,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;.\win32;$(SolutionDir)libUtility;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
