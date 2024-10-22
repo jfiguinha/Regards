@@ -119,7 +119,7 @@ wxFFmpegInnerView::~wxFFmpegInnerView() {
 }
 
 void wxFFmpegInnerView::open(std::string filename) {
-    movie_->open(std::move(filename));
+    movie_->open(filename);
     pts_ = std::numeric_limits<int64_t>::min();
     renderTimer_.Start(10);
 }
@@ -227,7 +227,7 @@ wxFFmpegView::~wxFFmpegView() {
 }
 
 void wxFFmpegView::open(std::string filename) {
-    innerView_->open(std::move(filename));
+    innerView_->open(filename);
 }
 
 void wxFFmpegView::close() {

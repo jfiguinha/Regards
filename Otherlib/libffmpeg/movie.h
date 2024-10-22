@@ -14,7 +14,7 @@ public:
     ~Movie();
 
     int open(std::string filename);
-    int start();
+    void start();
     void play();
     void pause();
     void stop();
@@ -27,7 +27,7 @@ public:
 private:
 
     int streamComponentOpen(unsigned int stream_index);
-
+    int startMovie();
     friend class Audio;
     friend class Video;
 

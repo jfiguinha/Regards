@@ -17,11 +17,17 @@ Movie::~Movie() {
 }
 
 int Movie::open(std::string filename) {
+
+    quit_ = true;
+
     if (parseThread_.joinable()) {
-        return -1;
-    }
-    filename_ = std::move(filename);
-    parseThread_ = std::thread(&Movie::start, this);
+            parseThread_.join();
+        }
+
+
+    filename_ = filename;
+    quit_ = false;
+    parseThread_ = std::thread(&Movie::startMovie, this);
 
     return 0;
 }
@@ -35,13 +41,27 @@ void Movie::play()
             parseThread_.join();
         }
         quit_ = false;
-        start();
+        parseThread_ = std::thread(&Movie::startMovie, this);
     }
+
 }
 
 void Movie::pause()
 {
     pause_ = true;
+}
+
+void  Movie::start()
+{
+    if (quit_)
+    {
+        if (parseThread_.joinable()) {
+            parseThread_.join();
+        }
+        quit_ = false;
+        parseThread_ = std::thread(&Movie::startMovie, this);
+    }
+
 }
 
 void Movie::stop()
@@ -101,7 +121,7 @@ int Movie::streamComponentOpen(unsigned int stream_index) {
     return static_cast<int>(stream_index);
 }
 
-int Movie::start() {
+int Movie::startMovie() {
     AVFormatContext *fmtctx = avformat_alloc_context();
     AVIOInterruptCB intrcb{nullptr, this};
     fmtctx->interrupt_callback = intrcb;
