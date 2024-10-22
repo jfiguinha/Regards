@@ -18,12 +18,7 @@ Movie::~Movie() {
 
 int Movie::open(std::string filename) {
 
-    quit_ = true;
-
-    if (parseThread_.joinable()) {
-            parseThread_.join();
-        }
-
+    close();
 
     filename_ = filename;
     quit_ = false;

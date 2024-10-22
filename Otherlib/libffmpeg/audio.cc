@@ -46,6 +46,9 @@ int Audio::start() {
     std::unique_lock<std::mutex> srclck(srcMutex_, std::defer_lock);
     milliseconds sleep_time{AudioBufferTime / 3};
 
+    currentPts_ = nanoseconds::min();
+    deviceStartTime_ = nanoseconds::min();
+
     ALenum FormatStereo8{AL_FORMAT_STEREO8};
     ALenum FormatStereo16{AL_FORMAT_STEREO16};
 
@@ -216,7 +219,7 @@ int Audio::start() {
 
 finish:
     av_freep(&samples);
-
+    packets_.Erase();
     return 0;
 }
 

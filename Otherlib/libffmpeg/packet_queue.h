@@ -10,7 +10,12 @@ template <size_t SizeLimit> class PacketQueue {
 public:
     PacketQueue() = default;
     ~PacketQueue() {
-        for (AVPacket &pkt : packets_) {
+        Erase();
+    }
+
+    void Erase()
+    {
+        for (AVPacket& pkt : packets_) {
             av_packet_unref(&pkt);
         }
         packets_.clear();

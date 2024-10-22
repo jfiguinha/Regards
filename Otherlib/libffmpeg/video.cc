@@ -7,15 +7,20 @@
 using std::chrono::duration_cast;
 
 Video::Video(Movie &movie) : movie_(movie) {
+    std::for_each(pictQ_.begin(), pictQ_.end(), [](Picture& pic) {
+        pic.frame = AVFramePtr{ av_frame_alloc() };
+        pic.pts = nanoseconds::min();
+        });
 }
 
 int Video::start() {
 
+    displayPts_ = nanoseconds::min();
+    displayPtsTime_ = microseconds::min();
 
-    std::for_each(pictQ_.begin(), pictQ_.end(), [](Picture &pic) {
-        pic.frame = AVFramePtr{av_frame_alloc()};
+    std::for_each(pictQ_.begin(), pictQ_.end(), [](Picture& pic) {
         pic.pts = nanoseconds::min();
-    });
+        });
 
     // Prefill the codec buffer.
     do {
@@ -92,6 +97,8 @@ int Video::start() {
 
     }
 
+
+    packets_.Erase();
     return 0;
 }
 
