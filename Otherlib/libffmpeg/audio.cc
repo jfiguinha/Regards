@@ -220,6 +220,16 @@ int Audio::start() {
 finish:
     av_freep(&samples);
     packets_.Erase();
+    if (source_) {
+        alDeleteSources(1, &source_);
+    }
+    if (buffers_[0]) {
+        alDeleteBuffers(buffers_.size(), buffers_.data());
+    }
+    if (samples_) {
+        av_freep(&samples_);
+    }
+    source_ = 0;
     return 0;
 }
 
