@@ -21,7 +21,9 @@ public:
     ~Audio();
 
     static int initAL();
-
+    void mute();
+    void plus();
+    void minus();
     int start();
     int decodeFrame();
     int readAudio(uint8_t *samples, unsigned int length);
@@ -32,6 +34,9 @@ public:
 private:
     friend class Movie;
     Movie &movie_;
+
+    void setVolume(float v);
+    float getVolume();
 
     AVStream *stream_{nullptr};
     AVCodecContextPtr codecctx_;
@@ -51,6 +56,10 @@ private:
     int samplesLen_{0};
     int samplesPos_{0};
     int samplesMax_{0};
+
+    float volume_;
+    int volumePercent_;
+    bool mute_ = false;
 
     ALenum format_{AL_NONE};
     ALuint frameSize_{0};

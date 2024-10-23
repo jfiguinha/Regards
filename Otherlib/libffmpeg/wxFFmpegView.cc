@@ -35,6 +35,9 @@ public:
     void pause();
     void stop();
     void close();
+    void mute();
+    void plus();
+    void minus();
 
 private:
     void OnPaint(wxPaintEvent &event);
@@ -116,6 +119,21 @@ wxFFmpegInnerView::~wxFFmpegInnerView() {
     if (glContext_) {
         delete glContext_;
     }
+}
+
+void wxFFmpegInnerView::mute()
+{
+    movie_->mute();
+}
+
+void wxFFmpegInnerView::plus()
+{
+    movie_->plus();
+}
+
+void wxFFmpegInnerView::minus()
+{
+    movie_->minus();
 }
 
 void wxFFmpegInnerView::open(std::string filename) {
@@ -224,6 +242,21 @@ wxFFmpegView::wxFFmpegView(wxWindow *parent,
 }
 
 wxFFmpegView::~wxFFmpegView() {
+}
+
+void wxFFmpegView::mute()
+{
+    innerView_->mute();
+}
+
+void wxFFmpegView::plus()
+{
+    innerView_->plus();
+}
+
+void wxFFmpegView::minus()
+{
+    innerView_->minus();
 }
 
 void wxFFmpegView::open(std::string filename) {

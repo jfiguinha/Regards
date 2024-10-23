@@ -15,7 +15,13 @@ private:
     void OnStart(wxCommandEvent& event);
     void OnStop(wxCommandEvent& event);
 
+    void OnMute(wxCommandEvent& event);
+    void OnPlus(wxCommandEvent& event);
+    void OnMinus(wxCommandEvent& event);
+
+
+
     wxFFmpegView* ffmpegView;
 };
 
-enum { ID_SelectFile = 1, ID_Play = 2, ID_Stop = 3, ID_Pause = 4, ID_Start = 5 };
+enum { ID_SelectFile = 1, ID_Play = 2, ID_Stop = 3, ID_Pause = 4, ID_Start = 5, ID_Mute = 6, ID_Plus = 7, ID_Minus = 8};

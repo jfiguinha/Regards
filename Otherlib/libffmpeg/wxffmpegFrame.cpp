@@ -19,6 +19,7 @@ wxFfmpegFrame::wxFfmpegFrame()
     menuHelp->Append(wxID_ABOUT);
     wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* menuCommand = new wxMenu;
+    wxMenu* menuSound = new wxMenu;
 
     menuCommand->Append(ID_Play,
         "Play",
@@ -36,8 +37,21 @@ wxFfmpegFrame::wxFfmpegFrame()
         "Stop",
         "Stop movie");
 
+    menuSound->Append(ID_Mute,
+        "Mute",
+        "Mute Sound");
+
+    menuSound->Append(ID_Plus,
+        "Plus",
+        "Plus Sound");
+
+    menuSound->Append(ID_Minus,
+        "Minus",
+        "Minus Sound");
+
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuCommand, "&Command");
+    menuBar->Append(menuSound, "&Sound");
     menuBar->Append(menuHelp, "&Help");
     SetMenuBar(menuBar);
     CreateStatusBar();
@@ -52,11 +66,31 @@ wxFfmpegFrame::wxFfmpegFrame()
     Bind(wxEVT_MENU, &wxFfmpegFrame::OnStart, this, ID_Start);
     Bind(wxEVT_MENU, &wxFfmpegFrame::OnStop, this, ID_Stop);
 
+    Bind(wxEVT_MENU, &wxFfmpegFrame::OnMute, this, ID_Mute);
+    Bind(wxEVT_MENU, &wxFfmpegFrame::OnPlus, this, ID_Plus);
+    Bind(wxEVT_MENU, &wxFfmpegFrame::OnMinus, this, ID_Minus);
+
     ffmpegView = new wxFFmpegView(this);
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     mainSizer->Add(ffmpegView, 1, wxEXPAND);
     SetSizer(mainSizer);
 
+}
+
+
+void wxFfmpegFrame::OnMute(wxCommandEvent& event)
+{
+    ffmpegView->mute();
+}
+
+void wxFfmpegFrame::OnPlus(wxCommandEvent& event)
+{
+    ffmpegView->plus();
+}
+
+void wxFfmpegFrame::OnMinus(wxCommandEvent& event)
+{
+    ffmpegView->minus();
 }
 
 void wxFfmpegFrame::OnPlay(wxCommandEvent& event)

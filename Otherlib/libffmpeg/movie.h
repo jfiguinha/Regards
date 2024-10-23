@@ -19,6 +19,9 @@ public:
     void pause();
     void stop();
     void close();
+    void mute();
+    void plus();
+    void minus();
     std::pair<AVFrame *, int64_t> currentFrame();
 
     nanoseconds getMasterClock();

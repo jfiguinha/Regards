@@ -11,6 +11,7 @@ Audio::Audio(Movie &movie) : movie_(movie) {
 }
 
 Audio::~Audio() {
+    /*
     if (source_) {
         alDeleteSources(1, &source_);
     }
@@ -20,6 +21,7 @@ Audio::~Audio() {
     if (samples_) {
         av_freep(&samples_);
     }
+    */
 }
 
 int Audio::initAL() {
@@ -42,12 +44,59 @@ int Audio::initAL() {
     return 0;
 }
 
+void Audio::mute()
+{
+    mute_ = !mute_;
+    if (mute_)
+    {
+        setVolume(0.0);
+    }
+    else
+    {
+        setVolume(volume_);
+    }
+}
+
+void Audio::plus()
+{
+    //Max 1.0
+    volumePercent_+=10;
+    volume_ = (float)volumePercent_ / 100.0f;
+    setVolume(volume_);
+
+}
+
+void Audio::minus()
+{
+    //Min 0.0
+    volumePercent_ -= 10;
+    volume_ = (float)volumePercent_ / 100.0f;
+    setVolume(volume_);
+}
+
+void Audio::setVolume(float v)
+{
+    alListenerf(AL_GAIN, v);
+}
+
+float Audio::getVolume()
+{
+    ALfloat v;
+    alGetListenerf(AL_GAIN, &v);
+    return v;
+}
+
+
 int Audio::start() {
     std::unique_lock<std::mutex> srclck(srcMutex_, std::defer_lock);
     milliseconds sleep_time{AudioBufferTime / 3};
 
     currentPts_ = nanoseconds::min();
     deviceStartTime_ = nanoseconds::min();
+
+    volume_ = getVolume();
+    mute_ = false;
+    volumePercent_ = volume_ * 100;
 
     ALenum FormatStereo8{AL_FORMAT_STEREO8};
     ALenum FormatStereo16{AL_FORMAT_STEREO16};
@@ -156,6 +205,9 @@ int Audio::start() {
     } while (1);
 
     srclck.lock();
+
+    play();
+    //std::this_thread::sleep_for(milliseconds(100));
 
     while (!movie_.quit_.load(std::memory_order_relaxed)) {
 
@@ -330,6 +382,8 @@ bool Audio::play() {
     }
 
     alSourcePlay(source_);
+
+    std::this_thread::sleep_for(milliseconds(100));
     return true;
 }
 

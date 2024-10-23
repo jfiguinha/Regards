@@ -116,6 +116,21 @@ int Movie::streamComponentOpen(unsigned int stream_index) {
     return static_cast<int>(stream_index);
 }
 
+void Movie::mute()
+{
+    audio_.mute();
+}
+
+void Movie::plus()
+{
+    audio_.plus();
+}
+
+void Movie::minus()
+{
+    audio_.minus();
+}
+
 int Movie::startMovie() {
     AVFormatContext *fmtctx = avformat_alloc_context();
     AVIOInterruptCB intrcb{nullptr, this};
@@ -172,13 +187,13 @@ int Movie::startMovie() {
             }
 
             if (packet.stream_index == video_index) {
-                while (!quit_.load(std::memory_order_acquire)
+                while ((!quit_.load(std::memory_order_acquire) || !pause_.load(std::memory_order_acquire))
                     && !video_queue.put(&packet)) {
                     std::this_thread::sleep_for(milliseconds(100));
                 }
             }
             else if (packet.stream_index == audio_index) {
-                while (!quit_.load(std::memory_order_acquire)
+                while ((!quit_.load(std::memory_order_acquire) || !pause_.load(std::memory_order_acquire))
                     && !audio_queue.put(&packet)) {
                     std::this_thread::sleep_for(milliseconds(100));
                 }

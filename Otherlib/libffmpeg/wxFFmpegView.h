@@ -19,7 +19,9 @@ public:
     void play();
     void stop();
     void close();
-
+    void mute();
+    void plus();
+    void minus();
 private:
     wxFFmpegInnerView *innerView_;
 };
