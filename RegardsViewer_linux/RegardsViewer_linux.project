@@ -167,6 +167,7 @@
         <IncludePath Value="../libScanner"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
         <IncludePath Value="../Otherlib/wxIA/WIA"/>
+        <IncludePath Value="../Otherlib/libffmpeg"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -459,6 +460,7 @@
         <Library Value="omp"/>
         <Library Value="utf8_range"/>
         <Library Value="utf8_validity"/>
+        <Library Value="openal"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libffmpeg" Version="11000" InternalType="Library">
+  <VirtualDirectory Name="wxffmpeg">
+    <VirtualDirectory Name="source">
+      <File Name="wxFFmpegView.cc"/>
+      <File Name="wxffmpegFrame.cpp"/>
+      <File Name="video.cc"/>
+      <File Name="shader.cc"/>
+      <File Name="movie.cc"/>
+      <File Name="glmanager.cc"/>
+      <File Name="audio.cc"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="include">
+      <File Name="wxFFmpegView.h"/>
+      <File Name="wxffmpegFrame.h"/>
+      <File Name="video.h"/>
+      <File Name="shader.h"/>
+      <File Name="packet_queue.h"/>
+      <File Name="movie.h"/>
+      <File Name="glmanager.h"/>
+      <File Name="ffmpeg.h"/>
+      <File Name="chronons.h"/>
+      <File Name="audio.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>

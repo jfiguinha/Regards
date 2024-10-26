@@ -1,5 +1,9 @@
 #include <header.h>
 #include "shader.h"
+#ifdef __WXGTK__
+#include <epoxy/gl.h>
+#include <epoxy/glx.h>
+#endif
 #include <cassert>
 #include <iostream>
 

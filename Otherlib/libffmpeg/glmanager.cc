@@ -1,6 +1,8 @@
 #include <header.h>
 #include "glmanager.h"
 #include <vector>
+#include <epoxy/gl.h>
+#include <GL/glext.h>
 
 const char *vertexSource = R"(
 #version 330 core

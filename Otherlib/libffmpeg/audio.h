@@ -49,8 +49,8 @@ private:
     AVFramePtr decodedFrame_;
     SwrContextPtr swrctx_;
 
-    AVChannelLayout dstChanLayout_{0};
-    AVSampleFormat dstSampleFmt_{AV_SAMPLE_FMT_NONE};
+    AVChannelLayout dstChanLayout_;
+    AVSampleFormat dstSampleFmt_{(AVSampleFormat)AV_SAMPLE_FMT_NONE};
 
     uint8_t *samples_{nullptr};
     int samplesLen_{0};

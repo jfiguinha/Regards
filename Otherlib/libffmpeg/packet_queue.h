@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ffmpeg.h"
-
+#include <condition_variable>
 #include <deque>
 #include <thread>
 #include <cassert>

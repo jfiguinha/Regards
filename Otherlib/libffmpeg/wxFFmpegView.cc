@@ -1,5 +1,9 @@
 #include <header.h>
 #include "wxFFmpegView.h"
+#ifdef __WXGTK__
+#include <epoxy/gl.h>
+#include <epoxy/glx.h>
+#endif
 #include <wx/glcanvas.h>
 
 #include "glmanager.h"
