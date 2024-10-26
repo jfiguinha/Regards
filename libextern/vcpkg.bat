@@ -17,3 +17,4 @@ vcpkg install sqlite3
 vcpkg install freeimage
 vcpkg install libjxl
 vcpkg install libepoxy
+vcpkg install openal-soft

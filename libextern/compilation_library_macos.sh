@@ -42,6 +42,7 @@ cd vcpkg
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install libjxl
+./vcpkg install openal-soft
 ./vcpkg install libepoxy
 cd ..
 
