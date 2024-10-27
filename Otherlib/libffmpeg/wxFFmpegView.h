@@ -22,6 +22,7 @@ public:
     void mute();
     void plus();
     void minus();
+    void setTimePosition(int64_t time);
 private:
     wxFFmpegInnerView *innerView_;
 };

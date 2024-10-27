@@ -13,6 +13,11 @@ Video::Video(Movie &movie) : movie_(movie) {
         });
 }
 
+void Video::setTimePosition(int64_t time)
+{
+
+}
+
 int Video::start() {
 
     displayPts_ = nanoseconds::min();

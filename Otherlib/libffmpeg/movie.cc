@@ -16,6 +16,18 @@ Movie::~Movie() {
     }
 }
 
+void Movie::setTimePosition(int64_t time)
+{
+    //currentPts_ = nanoseconds{ seconds{time} };
+    //seek_ = true;
+    switch (sync_)
+    {
+        case SyncMaster::Audio:
+            audio_.setTimePosition(time);
+            break;
+    }
+}
+
 int Movie::open(std::string filename) {
 
     close();
@@ -181,6 +193,23 @@ int Movie::startMovie() {
 
         if (!pause_.load(std::memory_order_relaxed))
         {
+            if (seek_.load(std::memory_order_relaxed))
+            {
+               
+                int64_t seek_target = currentPts_.count();
+               // int64_t seek_min = is->seek_rel > 0 ? seek_target - is->seek_rel + 2 : INT64_MIN;
+                //int64_t seek_max = is->seek_rel < 0 ? seek_target - is->seek_rel - 2 : INT64_MAX;
+                // FIXME the +-2 is due to rounding being not done in the correct direction in generation
+                //      of the seek_pos/seek_rel variables
+
+              //  int ret = avformat_seek_file(fmtctx_.get(), seek_min, seek_target, seek_max, is->seek_flags);
+
+
+                int ret = avformat_seek_file(fmtctx_.get(), -1, INT64_MIN, seek_target, INT64_MAX, 0);
+
+                seek_ = false;
+            }
+
             AVPacket packet;
             if (av_read_frame(fmtctx_.get(), &packet) < 0) {
                 break;

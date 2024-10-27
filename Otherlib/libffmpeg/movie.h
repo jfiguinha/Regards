@@ -22,6 +22,8 @@ public:
     void mute();
     void plus();
     void minus();
+    void setTimePosition(int64_t time);
+
     std::pair<AVFrame *, int64_t> currentFrame();
 
     nanoseconds getMasterClock();
@@ -38,10 +40,11 @@ private:
     Video video_;
     std::string filename_;
     AVFormatContextPtr fmtctx_;
-
+    nanoseconds currentPts_{ 0 };
     microseconds clockbase_{microseconds::min()};
     SyncMaster sync_{SyncMaster::Default};
 
+    std::atomic<bool> seek_{ false };
     std::atomic<bool> quit_{false};
     std::atomic<bool> pause_{ false };
 

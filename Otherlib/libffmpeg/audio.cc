@@ -24,6 +24,11 @@ Audio::~Audio() {
     */
 }
 
+void Audio::setTimePosition(int64_t time)
+{
+    currentPts_ = nanoseconds{ seconds{time} };
+}
+
 int Audio::initAL() {
     ALCdevice *device = alcOpenDevice(nullptr);
     if (!device) {
@@ -287,6 +292,7 @@ finish:
 
 int Audio::decodeFrame() {
     while (!movie_.quit_.load(std::memory_order_relaxed)) {
+
         int ret, pret;
         while ((ret = avcodec_receive_frame(codecctx_.get(),
                                             decodedFrame_.get()))
@@ -303,6 +309,7 @@ int Audio::decodeFrame() {
         if (decodedFrame_->nb_samples <= 0) {
             continue;
         }
+
         if (decodedFrame_->best_effort_timestamp != AVNoPtsValue) {
             currentPts_ = duration_cast<nanoseconds>(
                     seconds_d64{av_q2d(stream_->time_base)

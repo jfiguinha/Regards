@@ -13,7 +13,7 @@ class Video {
 public:
     Video(Movie &movie);
     std::pair<AVFrame *, int64_t> currentFrame();
-
+    void setTimePosition(int64_t time);
 private:
     int start();
     nanoseconds getClock();
