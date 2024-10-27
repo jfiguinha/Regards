@@ -191,7 +191,7 @@ void wxFfmpegFrame::OnSelectFile(wxCommandEvent& event) {
 #else
     showElement->ShowToolbar();
     int rotation = 0;
-    showElement->SetVideo(videoFile, rotation, true);
+    showElement->SetVideo(videoFile, rotation, false);
 #endif
 
 }
