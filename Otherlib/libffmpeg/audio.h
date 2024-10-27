@@ -28,6 +28,7 @@ public:
     int decodeFrame();
     int readAudio(uint8_t *samples, unsigned int length);
     bool play();
+    void setTimePosition(int64_t time);
     nanoseconds getClock();
     nanoseconds getClockNoLock();
 

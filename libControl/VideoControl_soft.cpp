@@ -1055,6 +1055,11 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
     {
         isHardwareDecoder = true;
     }
+	if (standByMovie != "")
+	{
+		return Play(standByMovie);
+	}
+
     return Play(movie);
 }
 
@@ -1126,6 +1131,7 @@ int CVideoControlSoft::Play(const wxString& movie)
 	else if (movie != filename)
 	{
 		OnStop(movie);
+		//filename = movie;
 	}
 	return 0;
 }
