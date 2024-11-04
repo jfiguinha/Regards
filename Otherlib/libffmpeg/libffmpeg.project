@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libffmpeg" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="wxffmpeg">
     <VirtualDirectory Name="source">
       <File Name="wxFFmpegView.cc"/>
@@ -23,11 +28,6 @@
       <File Name="audio.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="interface">
     <File Name="ffmpeg_application.h"/>
     <File Name="ffmpeg_application.cpp"/>
@@ -43,6 +43,12 @@
         <IncludePath Value="../../libextern/ffmpeg-master/"/>
         <IncludePath Value="../../include"/>
         <IncludePath Value="../../libUtility"/>
+        <IncludePath Value="../../libPicture"/>
+        <IncludePath Value="../../libControl"/>
+        <IncludePath Value="../../libFiltre"/>
+        <IncludePath Value="../../libTheme"/>
+        <IncludePath Value="../../libParameter"/>
+        <IncludePath Value="../../libWindow"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
