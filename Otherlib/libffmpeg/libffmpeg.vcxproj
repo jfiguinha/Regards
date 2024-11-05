@@ -32,6 +32,7 @@
     <ClCompile Include="glmanager.cc" />
     <ClCompile Include="movie.cc" />
     <ClCompile Include="shader.cc" />
+    <ClCompile Include="ThumbnailViewerVideo.cpp" />
     <ClCompile Include="video.cc" />
     <ClCompile Include="win32\stdatomic.c" />
     <ClCompile Include="wxffmpegFrame.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="movie.h" />
     <ClInclude Include="packet_queue.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="ThumbnailViewerVideo.h" />
     <ClInclude Include="video.h" />
     <ClInclude Include="win32\stdalign.h" />
     <ClInclude Include="win32\stdatomic.h" />
@@ -199,7 +201,7 @@
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)libFiltre;$(SolutionDir)libPicture;$(SolutionDir)libTheme;$(SolutionDir)libParameter;$(SolutionDir)libWindow;$(SolutionDir)libControl;$(SolutionDir)libUtility;.;.\win32;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libSqlData;$(SolutionDir)libResource;$(SolutionDir)libFiltre;$(SolutionDir)libPicture;$(SolutionDir)libTheme;$(SolutionDir)libParameter;$(SolutionDir)libWindow;$(SolutionDir)libControl;$(SolutionDir)libUtility;.;.\win32;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>

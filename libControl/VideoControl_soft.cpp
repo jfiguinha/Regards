@@ -2026,10 +2026,20 @@ void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		{
 			openclEffect->ApplyOpenCVEffect(&videoEffectParameter);
 		}
+
+		if (openclOpenGLInterop)
+		{
+			cv::UMat data = openclEffect->GetUMat(false);
+			if (!renderOpenGL->SetData(data))
+				openclOpenGLInterop = false;
+		}
+		else
+		{
+			cv::Mat data = openclEffect->GetMatrix(false);
+			renderOpenGL->SetData(data);
+		}
                                             
-        cv::UMat data = openclEffect->GetUMat(false);
-        if (!renderOpenGL->SetData(data))
-            openclOpenGLInterop = false;
+
 
         int nError = glGetError();
 
@@ -2396,11 +2406,11 @@ void CVideoControlSoft::RenderToGLTexture()
 	else
 	{
         //printf("RenderToGLTexture RenderFFmpegToTexture  \n"); 
-		cv::Mat bitmap;
+		//cv::Mat bitmap;
 		//muBitmap.lock();
-		pictureFrame.copyTo(bitmap);
+		//pictureFrame.copyTo(bitmap);
 		//muBitmap.unlock();
-		RenderFFmpegToTexture(bitmap);
+		RenderFFmpegToTexture(pictureFrame);
 	}
 
 	duration = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);

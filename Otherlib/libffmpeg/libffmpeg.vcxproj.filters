@@ -57,6 +57,9 @@
     <ClCompile Include="audio.cc">
       <Filter>wxfflmpeg\src</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailViewerVideo.cpp">
+      <Filter>wxfflmpeg\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ffmpeg_application.h">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="wxffmpegFrame.h">
       <Filter>wxfflmpeg\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerVideo.h">
+      <Filter>wxfflmpeg\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

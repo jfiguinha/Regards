@@ -89,7 +89,7 @@ cv::Mat COpenCLEffectVideo::GetMatrix(const bool& src)
 		paramSrc.copyTo(output);
 	}
 
-	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	//cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
 }
