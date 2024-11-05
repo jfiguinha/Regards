@@ -84,6 +84,11 @@ namespace Regards
 
 			void ReallocMat(cv::UMat& inputData);
 			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
+
+
+			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, const int& method, int width, int height, int flipH, int flipV, int angle);
+			cv::UMat Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int width, int height, int flipH, int flipV, int angle);
+			
 			CSuperSampling* superSampling;
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle,
 			                    float ratioX, float ratioY, int x, int y, float left, float top);

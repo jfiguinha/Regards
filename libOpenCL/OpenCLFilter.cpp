@@ -26,6 +26,8 @@ std::mutex muDnnSuperResImpl;
 int numTexture = -1;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
+#define OPENCV_METHOD
+
 class CSuperSampling
 {
 public:
@@ -1115,7 +1117,7 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputDa
 	UMat dest;
 	UMat cvDest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -1158,7 +1160,172 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputDa
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+}
+
+
+cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, const int& method, int width, int height, int flipH, int flipV, int angle)
+{
+	UMat dest;
+	UMat cvDest;
+	UMat cvDestBgra;
+	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+
+	vector<COpenCLParameter*> vecParam;
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+
+	auto input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
+
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(width);
+	paramWidth->SetLibelle("width");
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(height);
+	paramHeight->SetLibelle("height");
+	vecParam.push_back(paramHeight);
+
+	COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
+	paramWidthOut->SetLibelle("widthOut");
+	paramWidthOut->SetValue(widthOut);
+	vecParam.push_back(paramWidthOut);
+
+	COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
+	paramHeightOut->SetLibelle("heightOut");
+	paramHeightOut->SetValue(heightOut);
+	vecParam.push_back(paramHeightOut);
+
+	COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+	paramflipH->SetLibelle("flipH");
+	paramflipH->SetValue(flipH);
+	vecParam.push_back(paramflipH);
+
+	COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+	paramflipV->SetLibelle("flipV");
+	paramflipV->SetValue(flipV);
+	vecParam.push_back(paramflipV);
+
+	COpenCLParameterInt* paramangle = new COpenCLParameterInt();
+	paramangle->SetLibelle("angle");
+	paramangle->SetValue(angle);
+	vecParam.push_back(paramangle);
+
+	COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+	paramtype->SetLibelle("type");
+	paramtype->SetValue(method);
+	vecParam.push_back(paramtype);
+
+	dest = ExecuteOpenCLCode("IDR_OPENCL_INTERPOLATION", "Interpolation", vecParam, widthOut, heightOut);
+		
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(dest, cvDest, COLOR_BGRA2BGR);
+
+	return cvDest;
+}
+
+cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int width, int height, int flipH, int flipV, int angle)
+{
+	UMat dest;
+	UMat cvDest;
+	UMat cvDestBgra;
+	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+
+	vector<COpenCLParameter*> vecParam;
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+
+	auto input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
+
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(width);
+	paramWidth->SetLibelle("width");
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(height);
+	paramHeight->SetLibelle("height");
+	vecParam.push_back(paramHeight);
+
+	COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
+	paramWidthOut->SetLibelle("widthOut");
+	paramWidthOut->SetValue(widthOut);
+	vecParam.push_back(paramWidthOut);
+
+	COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
+	paramHeightOut->SetLibelle("heightOut");
+	paramHeightOut->SetValue(heightOut);
+	vecParam.push_back(paramHeightOut);
+
+	COpenCLParameterFloat* left = new COpenCLParameterFloat();
+	left->SetLibelle("left");
+	left->SetValue(rc.x);
+	vecParam.push_back(left);
+
+	COpenCLParameterFloat* top = new COpenCLParameterFloat();
+	top->SetLibelle("top");
+	top->SetValue(rc.y);
+	vecParam.push_back(top);
+
+	COpenCLParameterFloat* bitmapWidth = new COpenCLParameterFloat();
+	bitmapWidth->SetLibelle("bitmapWidth");
+	bitmapWidth->SetValue(rc.width);
+	vecParam.push_back(bitmapWidth);
+
+	COpenCLParameterFloat* bitmapHeight = new COpenCLParameterFloat();
+	bitmapHeight->SetLibelle("bitmapHeight");
+	bitmapHeight->SetValue(rc.height);
+	vecParam.push_back(bitmapHeight);
+
+	COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+	paramflipH->SetLibelle("flipH");
+	paramflipH->SetValue(flipH);
+	vecParam.push_back(paramflipH);
+
+	COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+	paramflipV->SetLibelle("flipV");
+	paramflipV->SetValue(flipV);
+	vecParam.push_back(paramflipV);
+
+	COpenCLParameterInt* paramangle = new COpenCLParameterInt();
+	paramangle->SetLibelle("angle");
+	paramangle->SetValue(angle);
+	vecParam.push_back(paramangle);
+
+	COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+	paramtype->SetLibelle("type");
+	paramtype->SetValue(method);
+	vecParam.push_back(paramtype);
+
+	dest = ExecuteOpenCLCode("IDR_OPENCL_INTERPOLATION", "InterpolationZone", vecParam, widthOut, heightOut);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(dest, cvDest, COLOR_BGRA2BGR);
+
+	return cvDest;
 }
 
 void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, UMat& inputData)
@@ -1450,8 +1617,16 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
                                   UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
 	
+	
+
+
+#ifndef OPENCV_METHOD
+
+	return Interpolation(widthOut, heightOut, rc, method, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
+
+#else
+
 	UMat cvImage;
-	//inputData.copyTo(cvImage);
 
 	try
 	{
@@ -1566,12 +1741,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		{
 			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 		}
-		/*
-		else
-		{
-			cv::resize(cvImage, cvImage, cv::Size(widthOut+2, heightOut+2), method);
-		}
-		*/
+
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
@@ -1604,6 +1774,8 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
         image.copyTo(cvImage);
 	}
 
-
 	return cvImage;
+#endif
+
+	
 }
