@@ -1722,6 +1722,8 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 {
 
+
+	/*
 	CDataAVFrame* avFrameData = (CDataAVFrame *)event.GetClientData();
 	if (avFrameData != nullptr)
 	{
@@ -1740,8 +1742,10 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		delete avFrameData;
 		parentRender->Refresh();
 	}
+	*/
 
-
+	needToRefresh = false;
+	parentRender->Refresh();
 }
 
 
@@ -1756,11 +1760,14 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
     ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
     video_aspect_ratio = sample_aspect_ratio;
    
+	wxCommandEvent event(wxEVENT_UPDATEFRAME);
+	wxPostEvent(parentRender, event);
+
 #ifdef WIN32
-	parentRender->Refresh();
+	//parentRender->Refresh();
 #else
     //muRefresh.lock();
-    needToRefresh = true;
+    //needToRefresh = true;
     //muRefresh.unlock();
 #endif
     
