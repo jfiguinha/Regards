@@ -35,17 +35,6 @@ void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
 	isOk = true;
 }
 
-void COpenCLEffectVideo::TransfertData()
-{
-	/*
-	if (convertSrc.channels() == 4)
-		cv::cvtColor(convertSrc, paramSrc, cv::COLOR_BGRA2BGR);
-	else
-		convertSrc.copyTo(paramSrc);
-		*/
-	
-}
-
 cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 {
 	
@@ -540,7 +529,6 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
                                     const int& colorSpace)
 {
 	cv::UMat out;
-	
 
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();

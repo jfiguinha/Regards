@@ -7,6 +7,7 @@
   </Plugins>
   <VirtualDirectory Name="wxffmpeg">
     <VirtualDirectory Name="source">
+      <File Name="ThumbnailViewerVideo.cpp"/>
       <File Name="wxFFmpegView.cc"/>
       <File Name="wxffmpegFrame.cpp"/>
       <File Name="video.cc"/>
@@ -16,6 +17,7 @@
       <File Name="audio.cc"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="ThumbnailViewerVideo.h"/>
       <File Name="wxFFmpegView.h"/>
       <File Name="wxffmpegFrame.h"/>
       <File Name="video.h"/>
@@ -38,7 +40,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options=";$(shell ../../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
+      <Compiler Options=";$(shell ../../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../../libextern/ffmpeg-master/"/>
         <IncludePath Value="../../include"/>
@@ -49,6 +51,8 @@
         <IncludePath Value="../../libTheme"/>
         <IncludePath Value="../../libParameter"/>
         <IncludePath Value="../../libWindow"/>
+        <IncludePath Value="../../libResource"/>
+        <IncludePath Value="../../libSqlData"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -95,7 +99,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="Intel" DebuggerType="" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-std=c++14" C_Options="-ansi;-std=c99" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-O2;-std=c++17" C_Options="-ansi;-std=c99" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="" Required="yes"/>

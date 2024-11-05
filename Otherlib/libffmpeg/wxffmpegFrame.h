@@ -7,6 +7,11 @@
 using namespace Regards::Control;
 using namespace Regards::Window;
 
+namespace Regards::VideoFFmpeg
+{
+    class CThumbnailViewerVideo;
+}
+
 class wxFfmpegFrame : public wxFrame, public Regards::Window::CBitmapInterface {
 public:
     wxFfmpegFrame();
@@ -35,6 +40,8 @@ private:
     wxFFmpegView* ffmpegView;
 #else
     CShowElement* showElement;
+    Regards::VideoFFmpeg::CThumbnailViewerVideo * thumbnailVideo;
+    CScrollbarWnd* scrollVideoWindow;
 #endif
     
    

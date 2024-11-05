@@ -165,7 +165,7 @@ protected:
 	void ZoomOut();
 	void CalculCenterPicture();
 	bool IsCPUContext();
-	void SetFrameData(AVFrame* src_frame);
+	void SetFrameData(AVFrame *dst);
 
 	int GetBitmapWidth();
 	int GetBitmapHeight();
@@ -191,6 +191,7 @@ protected:
 	Chqdn3d* hq3d = nullptr;
 	cv::Mat GetBitmapRGBA(AVFrame* tmp_frame);
     int Play(const wxString& movie);
+    void CopyFrame(AVFrame* src);
 
 	bool openclOpenGLInterop = false;
 	int mouseScrollX = 0;
@@ -221,9 +222,9 @@ protected:
 	wxString standByMovie;
 	CFFmfc* ffmfc;
 	wxCursor hCursorHand;
-	mutex muBitmap;
+	//mutex muBitmap;
 	mutex muVideoEffect;
-	mutex muVideoRender;
+	//mutex muVideoRender;
 	mutex muSubtitle;
     
     bool isHardwareDecoder = true;
@@ -239,10 +240,16 @@ protected:
 	CRenderOpenGL* renderOpenGL = nullptr;
 	wxWindow * window;
 	CVideoEffectParameter videoEffectParameter;
-	float video_aspect_ratio;
-	int widthVideo;
-	int heightVideo;
+    
+    
+    
+	std::atomic<float> video_aspect_ratio;
+	std::atomic<int> widthVideo;
+	std::atomic<int> heightVideo;
+    std::atomic<float> ratioVideo{1.0f};
+    
 	int angle;
+    
 	bool flipV;
 	bool flipH;
 	bool oldBicubic = false;
@@ -259,7 +266,7 @@ protected:
 	int64_t oldvideoPosition = 0;
 	bool updateContext = true;
 	bool controlKeyPush = false;
-	float ratioVideo = 1.0f;
+	
 	int posLargeur = 0;
 	int posHauteur = 0;
 	bool shrinkVideo = false;
@@ -279,8 +286,7 @@ protected:
 	bool firstMovie = true;
 	wxTimer* playStopTimer;
 	
-	bool needToRefresh = false;
-	std::mutex muRefresh;
+    std::atomic<bool> needToRefresh{ false };
 
 	bool inverted = true;
 	cv::Mat previousFrame;
@@ -294,4 +300,8 @@ protected:
 	int sizesrc = 0;
     
     bool startVideoAfterProblem = false;
+    
+    //Frame Copy
+    AVFrame *dst = nullptr;
+    std::mutex muframe; 
 };

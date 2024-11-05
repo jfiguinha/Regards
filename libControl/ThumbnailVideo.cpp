@@ -63,6 +63,8 @@ void CThumbnailVideo::UpdateThumbnailIcone(wxCommandEvent& event)
 	}
 
 	delete threadLoadingBitmap;
+    
+    
 
 		
 }

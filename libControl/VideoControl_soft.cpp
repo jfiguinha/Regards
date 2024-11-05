@@ -100,6 +100,8 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
     
+    dst = av_frame_alloc();
+    
 }
 
 vector<int> CVideoControlSoft::GetListTimer()
@@ -248,18 +250,18 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 	cv::Mat bitmap;
 	if (!isffmpegDecode)
 	{
-		muBitmap.lock();
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			bitmap = openclEffectYUV->GetMatrix(true);
 		}
-		muBitmap.unlock();
+		//////////////////////////////muBitmap.unlock();
 	}
 	else
 	{
-		muBitmap.lock();
+		////////muBitmap.lock();
 		pictureFrame.copyTo(bitmap);
-		muBitmap.unlock();
+		//muBitmap.unlock();
 	}
 
 
@@ -397,18 +399,18 @@ void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	muRefresh.lock();
+	//muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
+	//muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	muRefresh.lock();
+	//muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
+	//muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
@@ -494,9 +496,9 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 	muVideoEffect.unlock();
 
-	muRefresh.lock();
+	//muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
+	//muRefresh.unlock();
 }
 
 
@@ -601,9 +603,9 @@ void CVideoControlSoft::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-	muRefresh.lock();
+	//muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
+	//muRefresh.unlock();
 }
 
 void CVideoControlSoft::MoveRight()
@@ -793,9 +795,9 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 	{
 		if (pause)
 		{
-			muRefresh.lock();
+			//muRefresh.lock();
 			needToRefresh = true;
-			muRefresh.unlock();
+			//muRefresh.unlock();
 		}
 	}
 	//Refresh();
@@ -809,9 +811,9 @@ bool CVideoControlSoft::GetPausedValue()
 
 void CVideoControlSoft::RedrawFrame()
 {
-	muRefresh.lock();
+	//muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
+	//muRefresh.unlock();
 }
 
 void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -870,11 +872,11 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	}
 
 	bool localRefresh = false;
-	muRefresh.lock();
+	//muRefresh.lock();
 	localRefresh = needToRefresh;
 	needToRefresh = false;
 
-	muRefresh.unlock();
+	//muRefresh.unlock();
 	if (localRefresh)
 	{
 		parentRender->Refresh();
@@ -1172,16 +1174,12 @@ int CVideoControlSoft::getHeight()
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
-	muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
 }
 
 void CVideoControlSoft::ReloadResource()
 {
-	muRefresh.lock();
 	needToRefresh = true;
-	muRefresh.unlock();
 }
 
 void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
@@ -1248,11 +1246,15 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	{
         
         
+        muframe.lock();
+        SetFrameData(dst);
+        muframe.unlock();
+        
 		if (!pictureFrame.empty() && !IsSupportOpenCL())
 		{
-			muBitmap.lock();
+			//muBitmap.lock();
 			RenderFFmpegToTexture(pictureFrame);
-			muBitmap.unlock();
+			//muBitmap.unlock();
 		}
 		else
 			RenderToGLTexture();
@@ -1731,29 +1733,9 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		heightVideo = avFrameData->height;
 		ratioVideo = static_cast<float>(avFrameData->width) / static_cast<float>(avFrameData->height);
 
-		muRefresh.lock();
+		//muRefresh.lock();
 		needToRefresh = false;
-		muRefresh.unlock();
-        
-        /*
-        printf("video_aspect_ratio %f \n",video_aspect_ratio);
-        for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
-        {
-             printf("video_aspect_ratio %f \n",videoEffectParameter.tabZoom[i]);
-            if(video_aspect_ratio == videoEffectParameter.tabZoom[i])
-            {
-                videoEffectParameter.zoomSelect = i;
-                break;
-            }
-        }
-        */
-
-		if (!isffmpegDecode)
-		{
-			//muBitmap.lock();
-			openclEffectYUV->TransfertData();
-			//muBitmap.unlock();
-		}
+		//muRefresh.unlock();
 
 		delete avFrameData;
 		parentRender->Refresh();
@@ -1765,6 +1747,22 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
+    printf("CVideoControlSoft::SetData \n");
+    auto src_frame = static_cast<AVFrame*>(data);
+    CopyFrame(src_frame);
+    videoRenderStart = true;
+    widthVideo = src_frame->width;
+    heightVideo = src_frame->height;
+    ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
+    video_aspect_ratio = sample_aspect_ratio;
+    
+    //muRefresh.lock();
+    needToRefresh = true;
+    //muRefresh.unlock();
+    
+    //parentRender->Refresh();
+    /*
+    
 	bool sendMessage = false;
 	bool isCPU = true;
 	if (IsSupportOpenCL())
@@ -1783,11 +1781,12 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	avFrameData->width = src_frame->width;
 	avFrameData->height = src_frame->height;
 	//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-
+    
 
 	wxCommandEvent event(wxEVENT_UPDATEFRAME);
 	event.SetClientData(avFrameData);
 	wxPostEvent(parentRender, event);
+    */
 }
 
 void CVideoControlSoft::Resize()
@@ -1834,9 +1833,9 @@ void CVideoControlSoft::Resize()
 			UpdateScrollBar();
 		}
 
-		muRefresh.lock();
+		//muRefresh.lock();
 		needToRefresh = true;
-		muRefresh.unlock();
+		//muRefresh.unlock();
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
@@ -2156,9 +2155,9 @@ void CVideoControlSoft::FlipVertical()
 	flipV = !flipV;
 	if (pause)
 	{
-		muRefresh.lock();
+		//muRefresh.lock();
 		needToRefresh = true;
-		muRefresh.unlock();
+		//muRefresh.unlock();
 	}
 
 	CSqlPhotos sqlPhotos;
@@ -2171,9 +2170,9 @@ void CVideoControlSoft::FlipHorizontal()
 	flipH = !flipH;
 	if (pause)
 	{
-		muRefresh.lock();
+		//muRefresh.lock();
 		needToRefresh = true;
-		muRefresh.unlock();
+		//muRefresh.unlock();
 	}
 
 	CSqlPhotos sqlPhotos;
@@ -2224,9 +2223,36 @@ int CVideoControlSoft::IsSupportOpenCL()
 }
 
 
-void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
+void CVideoControlSoft::CopyFrame(AVFrame* src)
 {
+    muframe.lock();
+    
+    int ret = 0;
+    
+    if(dst == nullptr)
+        dst = av_frame_alloc();
 
+    memcpy(dst,src,sizeof(AVFrame));
+
+    dst->format         = src->format;
+    dst->width          = src->width;
+    dst->height         = src->height;
+
+    memcpy(dst->data, src->data, sizeof(src->data));
+
+    if (ret < 0) 
+    { 
+        av_frame_unref(dst);
+        dst = nullptr;
+    }
+    
+    muframe.unlock();
+}
+
+void CVideoControlSoft::SetFrameData(AVFrame *dst)
+{
+   printf("CVideoControlSoft::SetFrameData \n");
+    
 	if (!clExecCtx.empty())
 		clExecCtx.bind();
 
@@ -2243,24 +2269,24 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		enableopenCL = 0;
 	}
 
-	if (!enableopenCL || (src_frame->format != AV_PIX_FMT_YUV420P && src_frame->format != AV_PIX_FMT_NV12))
+	if (!enableopenCL || (dst->format != AV_PIX_FMT_YUV420P && dst->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
-		int nWidth = src_frame->width;
-		int nHeight = src_frame->height;
+		int nWidth = dst->width;
+		int nHeight = dst->height;
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 		{
 			if (hq3d == nullptr)
 				hq3d = new Chqdn3d(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 			else
 				hq3d->UpdateParameter(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-			uint8_t* outData = hq3d->ApplyDenoise3D(src_frame->data[0], src_frame->linesize[0], nHeight);
-			memcpy(src_frame->data[0], outData, src_frame->linesize[0] * nHeight);
+			uint8_t* outData = hq3d->ApplyDenoise3D(dst->data[0], dst->linesize[0], nHeight);
+			memcpy(dst->data[0], outData, dst->linesize[0] * nHeight);
 		}
-		cv::Mat bitmapData = GetBitmapRGBA(src_frame);
-		muBitmap.lock();
+		cv::Mat bitmapData = GetBitmapRGBA(dst);
+		//muBitmap.lock();
 		bitmapData.copyTo(pictureFrame);
-		muBitmap.unlock();
+		//muBitmap.unlock();
 	}
 	else
 	{
@@ -2286,12 +2312,12 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			}
 
 			//cv::ocl::OpenCLExecutionContext::getCurrent().bind();
-			int nWidth = src_frame->width;
-			int nHeight = src_frame->height;
-			AVFrame* tmp_frame = src_frame;
+			int nWidth = dst->width;
+			int nHeight = dst->height;
+			AVFrame* tmp_frame = dst;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
-				muBitmap.lock();
+				//muBitmap.lock();
 				//Test if denoising Effect
 				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 				{
@@ -2316,11 +2342,11 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 											 tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 											 tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
-				muBitmap.unlock();
+				//muBitmap.unlock();
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
-				muBitmap.lock();
+				//muBitmap.lock();
 				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 				{
 					uint8_t* outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
@@ -2331,15 +2357,16 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				}
 				else
 				{
-					openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+                    openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
 						tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				}
 
-				muBitmap.unlock();
+				//muBitmap.unlock();
 			}
 		}
+
 	}
 }
 
@@ -2357,12 +2384,12 @@ void CVideoControlSoft::RenderToGLTexture()
 	if (!isffmpegDecode)
 	{
        //  printf("RenderToGLTexture RenderToTexture  \n"); 
-		muBitmap.lock();
+		//muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			RenderToTexture(openclEffectYUV);
 		}
-		muBitmap.unlock();
+		//muBitmap.unlock();
 
 		deleteTexture = false;
 	}
@@ -2370,9 +2397,9 @@ void CVideoControlSoft::RenderToGLTexture()
 	{
         //printf("RenderToGLTexture RenderFFmpegToTexture  \n"); 
 		cv::Mat bitmap;
-		muBitmap.lock();
+		//muBitmap.lock();
 		pictureFrame.copyTo(bitmap);
-		muBitmap.unlock();
+		//muBitmap.unlock();
 		RenderFFmpegToTexture(bitmap);
 	}
 

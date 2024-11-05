@@ -19,10 +19,6 @@ class CReadMacOSImage;
 
 namespace Regards
 {
-	namespace Video
-	{
-		class CThumbnailVideo;
-	}
 	namespace Picture
 	{
 #ifdef WIN32

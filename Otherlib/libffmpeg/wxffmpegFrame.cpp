@@ -6,8 +6,9 @@
 #include <wx/timectrl.h>
 #include <MainTheme.h>
 #include <MainThemeInit.h>
-
+#include "ThumbnailViewerVideo.h"
 using namespace Regards::Control;
+using namespace Regards::Window;
 
 wxFfmpegFrame::wxFfmpegFrame()
     : wxFrame(NULL,
@@ -94,9 +95,21 @@ wxFfmpegFrame::wxFfmpegFrame()
    // Connect(wxEVT_SIZE, wxSizeEventHandler(wxFfmpegFrame::OnSize));
 
     CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+    
+    CThemeThumbnail themeVideo;
+    viewerTheme->GetThumbnailTheme(&themeVideo);
+    bool checkValidity = true;
     showElement = new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme, true);
+    thumbnailVideo = new Regards::VideoFFmpeg::CThumbnailViewerVideo(this, THUMBNAILVIDEOWINDOW, themeVideo, checkValidity);
+    scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
+    scrollVideoWindow->HideVerticalScroll();
+    scrollVideoWindow->SetPageSize(200);
+    scrollVideoWindow->SetLineSize(200);
+    thumbnailVideo->Show(true);
+    scrollVideoWindow->Show(true);
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     mainSizer->Add(showElement, 1, wxEXPAND);
+    mainSizer->Add(scrollVideoWindow, 1, wxEXPAND);
     SetSizer(mainSizer);
     showElement->Show(true);
 #endif
@@ -192,6 +205,7 @@ void wxFfmpegFrame::OnSelectFile(wxCommandEvent& event) {
     showElement->ShowToolbar();
     int rotation = 0;
     showElement->SetVideo(videoFile, rotation, false);
+    thumbnailVideo->SetFile(videoFile, 20);
 #endif
 
 }
