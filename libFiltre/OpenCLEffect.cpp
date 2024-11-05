@@ -9,6 +9,7 @@ using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
+extern string platformName;
 #define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
@@ -27,6 +28,7 @@ bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilizationt)
 
 cv::Mat COpenCLEffect::GetMat()
 {
+	/*
 	cv::Mat output;
 
 	if (preview && !paramOutput.empty())
@@ -41,10 +43,73 @@ cv::Mat COpenCLEffect::GetMat()
 	cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
+	*/
+	cv::UMat convert;
+	cv::Mat output;
+
+	if (preview && !paramOutput.empty())
+	{
+		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		//paramSrc.copyTo(output);
+	}
+	else
+	{
+		cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
+
+	}
+
+	convert.copyTo(output);
+
+	return output;
 }
 
 cv::UMat COpenCLEffect::GetUMat()
 {
+	cv::UMat output;
+
+#ifdef WIN32
+	if (platformName == "Intel(R) OpenCL HD Graphics")
+	{
+		if (preview && !paramOutput.empty())
+		{
+			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2BGRA);
+		}
+		else
+		{
+			cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
+		}
+	}
+	else
+	{
+		if (preview && !paramOutput.empty())
+		{
+			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
+		}
+		else
+		{
+			cv::cvtColor(input, output, cv::COLOR_BGR2RGBA);
+		}
+	}
+
+#else
+
+	if (preview && !paramOutput.empty())
+	{
+		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
+	}
+	else
+	{
+		cv::cvtColor(input, output, cv::COLOR_BGR2RGBA);
+	}
+
+#endif
+
+
+
+
+	return output;
+
+	/*
 	cv::UMat output;
 
 	if (preview && !paramOutput.empty())
@@ -59,6 +124,7 @@ cv::UMat COpenCLEffect::GetUMat()
 	cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
+	*/
 }
 
 int COpenCLEffect::GetSizeData() const

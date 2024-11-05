@@ -129,7 +129,6 @@ GLTexture::GLTexture(void)
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;
-	formatTexture = GL_BGR;
 	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 	openclOpenGLInterop = false;
 }
@@ -147,17 +146,16 @@ GLTexture::~GLTexture(void)
 		delete pimpl_;
 }
 
-GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format, GLenum formatTexture)
+GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
 {
-	auto glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format, formatTexture);
+	auto glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format);
 	return glTextureDest;
 }
 
-GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOpenGLInterop, GLenum format, GLenum formatTexture)
+GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOpenGLInterop, GLenum format)
 {
 	m_nTextureID = -1;
 	width = nWidth;
-	this->formatTexture = GL_BGR;
 	height = nHeight;
 	this->format = format;
 	this->openclOpenGLInterop = openclOpenGLInterop;
@@ -237,7 +235,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
@@ -254,6 +252,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 		}
 		else
 		{
+			/*
 #ifdef WIN32
 			if(platformName != "Intel(R) OpenCL HD Graphics")
 				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
@@ -261,8 +260,9 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 #else
 			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 #endif
+			*/
 			
-			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
+			isOk = pimpl_->convertToGLTexture2D(bitmap, this);
 		}
 
 
@@ -330,14 +330,14 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 			SetDataToPBO(bitmapMatrix);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 		}
 		else
 		{
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 			
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -362,7 +362,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 			SetDataToPBO(bitmapMatrix);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
@@ -373,7 +373,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -462,7 +462,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	if (0 != m_nTextureID)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
@@ -475,7 +475,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

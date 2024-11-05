@@ -1635,9 +1635,19 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			ApplyPreviewEffect(widthOutput, heightOutput);
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
-			cv::UMat data = filtreEffet->GetUMat();
-			if (!glTexture->SetData(data))
-				isOpenCLOpenGLInterop = false;
+
+			if (isOpenCLOpenGLInterop)
+			{
+				cv::UMat data = filtreEffet->GetUMat();
+				if (!glTexture->SetData(data))
+					isOpenCLOpenGLInterop = false;
+			}
+			else
+			{
+				cv::Mat data = filtreEffet->GetMat();
+				glTexture->SetData(data);
+			}
+
 		}
 
 
