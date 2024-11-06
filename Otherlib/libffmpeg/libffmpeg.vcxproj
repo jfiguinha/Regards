@@ -181,7 +181,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;.\win32;$(SolutionDir)libUtility;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libSqlData;$(SolutionDir)libResource;$(SolutionDir)libFiltre;$(SolutionDir)libPicture;$(SolutionDir)libTheme;$(SolutionDir)libParameter;$(SolutionDir)libWindow;$(SolutionDir)libControl;$(SolutionDir)libUtility;.;.\win32;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

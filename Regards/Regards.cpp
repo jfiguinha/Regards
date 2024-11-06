@@ -333,9 +333,15 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
-
+	/*
 	if (ocl::haveOpenCL())
 	{
+		bool findNvidia = false;
+		bool findIntel = false;
+		bool findAmd = false;
+		int numNvidia = 0;
+		int numAmd = 0;
+		int numIntel = 0;
 		int select = 0;
 		cl_uint numPlatforms = ncnn::get_gpu_count();
 		for (int i = 0; i < numPlatforms; i++)
@@ -347,16 +353,29 @@ bool MyApp::OnInit()
                c = tolower(c);
             }
 			if (deviceName.find("nvidia") != std::string::npos)
-				select = i;
+			{
+				findNvidia = true;
+				numNvidia = i;
+			}
+				
 			if (deviceName.find("amd") != std::string::npos)
-				select = i;
+			{
+				findAmd = true;
+				numAmd = i;
+			}
+
+			if (deviceName.find("intel") != std::string::npos)
+			{
+				findAmd = true;
+				numIntel = i;
+			}
 		}
 
 
 		vkdev = ncnn::get_gpu_device(select);
 		
 	}
-
+	*/
     
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
 	{

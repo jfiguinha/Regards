@@ -89,6 +89,7 @@ namespace Regards
 			cv::Mat convertSrc;
 			cv::UMat paramSrc;
 			cv::UMat paramOutput;
+
 			cl_mem_flags flag;
 			Chqdn3d* hq3d = nullptr;
 			bool interpolatePicture = false;

@@ -40,7 +40,7 @@ cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 	cv::UMat output;
 
 #ifdef WIN32
-	if (platformName == "Intel(R) OpenCL HD Graphics")
+	if (platformName.find("Intel(R) OpenCL") == 0)
 	{
 		if (src)
 		{
