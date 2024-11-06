@@ -385,7 +385,7 @@ void COpenCLContext::initializeContextFromGL()
 
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
-
+	
 	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
@@ -407,7 +407,7 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 
 	if (isOpenCLInitialized)
 	{
-		cv::ocl::Device(context.device(0));
+		//cv::ocl::Device(context.device(0));
 		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
 		platformName = clExecCtx.getDevice().vendorName();
 		AssociateToVulkan();
