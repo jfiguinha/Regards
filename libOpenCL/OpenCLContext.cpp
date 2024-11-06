@@ -238,6 +238,11 @@ void COpenCLContext::initializeContextFromGL()
 	std::string platformName = cv::ocl::PlatformInfo(&platform).name();
 
 	cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
+
+	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
+
+	AssociateToVulkan();
+
 	clReleaseDevice(device);
 	clReleaseContext(context);
 	clExecCtx.bind();
@@ -380,6 +385,8 @@ void COpenCLContext::initializeContextFromGL()
 
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
+
+	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
 

@@ -84,7 +84,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 						COpenCLContext::initializeContextFromGL();
 						isOpenCLInitialized = true;
 						openclOpenGLInterop = true;
-						cv::ocl::Device(clExecCtx.getContext().device(0));
+						//cv::ocl::Device(clExecCtx.getContext().device(0));
 					}
 					catch (cv::Exception& e)
 					{
