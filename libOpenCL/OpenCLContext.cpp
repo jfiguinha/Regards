@@ -381,6 +381,8 @@ void COpenCLContext::initializeContextFromGL()
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
 
+	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
+
 	AssociateToVulkan();
 
 #endif
