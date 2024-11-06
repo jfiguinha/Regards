@@ -81,7 +81,7 @@ void COpenCLContext::AssociateToVulkan()
 		}
 	}
 
-	if (platformName.find("Intel(R) OpenCL") == 0 && findIntel)
+	if (platformName.find("Intel") == 0 && findIntel)
 		vkdev = ncnn::get_gpu_device(numIntel);
 	else if(platformName.find("NVIDIA") == 0 && findNvidia)
 		vkdev = ncnn::get_gpu_device(numNvidia);
