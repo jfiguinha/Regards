@@ -5,10 +5,20 @@ echo $NBPROC
 LOCALPATH=$(pwd)
 echo $LOCALPATH
 
+x11=$(XDG_SESSION_TYPE)
+echo $x11
+
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
 unzip vcpkg-2024.08.23_linux.zip
 mv vcpkg-2024.08.23 vcpkg
+
+unzip ports_vcpkg.zip
+
+if [ "$x11" = "x11" ]
+then
+    cp ports_vcpkg/x11/wxwidgets/portfile.cmake vcpkg/ports/wxwidgets/portfile.cmake 
+fi
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
