@@ -15,14 +15,15 @@ using namespace Regards::OpenGL;
 
 using namespace cv::ocl;
 extern string platformName;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 class CTextureGLPriv
 {
 public:
 	CTextureGLPriv()
 	{
-		context = static_cast<cl_context>(Context::getDefault().ptr());
-		q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
+		//context = static_cast<cl_context>(Context::getDefault().ptr());
+		//q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
 	}
 
 	bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
@@ -31,20 +32,27 @@ public:
 
 	cl_mem clImage = nullptr;
 	bool isOpenCLCompatible = true;
-	cl_context context;
-	cl_command_queue q;
+	//cl_context context;
+	//cl_command_queue q;
 };
 
 
 cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
+    printf("CreateTextureInterop 1 \n");
 	cl_int status = 0;
 	if (clImage == nullptr)
 	{
+        printf("CreateTextureInterop 2 : GLTexture ID : %i \n", glTexture->GetTextureID());
+    
+        cl_context context = (cl_context)clExecCtx.getContext().ptr();
+        cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
+        
 		clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(),
 		                                &status);
 		if (status == CL_SUCCESS)
 		{
+            printf("CreateTextureInterop CL_SUCCESS \n");
 			status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
 		}
 
@@ -52,6 +60,7 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 			isOpenCLCompatible = true;
 		else
 		{
+            printf("CreateTextureInterop CL_ERROR : %i \n", status);
 			DeleteTextureInterop();
 			isOpenCLCompatible = false;
 		}
@@ -71,6 +80,9 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 	{
 		try
 		{
+            cl_context context = (cl_context)clExecCtx.getContext().ptr();
+            cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
+            
 			cv::Size srcSize = u.size();
 			status = CreateTextureInterop(glTexture);
 
@@ -111,6 +123,9 @@ void CTextureGLPriv::DeleteTextureInterop()
 {
 	if (clImage != nullptr)
 	{
+        cl_context context = (cl_context)clExecCtx.getContext().ptr();
+        cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
+        
 		cl_int status = 0;
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
 		if (status != CL_SUCCESS)
@@ -129,6 +144,7 @@ GLTexture::GLTexture(void)
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;
+    dataformat = GL_RGBA8;
 	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 	openclOpenGLInterop = false;
 }
@@ -157,6 +173,7 @@ GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOp
 	m_nTextureID = -1;
 	width = nWidth;
 	height = nHeight;
+    dataformat = GL_RGBA8;
 	this->format = format;
 	this->openclOpenGLInterop = openclOpenGLInterop;
 	pboSupported = false;// epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
@@ -235,7 +252,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
@@ -330,14 +347,14 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 			SetDataToPBO(bitmapMatrix);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 		}
 		else
 		{
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 			
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -362,7 +379,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 			SetDataToPBO(bitmapMatrix);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
@@ -373,7 +390,7 @@ void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -462,7 +479,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	if (0 != m_nTextureID)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
+		glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
@@ -475,7 +492,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
+		glTexImage2D(GL_TEXTURE_2D, 0, dataformat, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

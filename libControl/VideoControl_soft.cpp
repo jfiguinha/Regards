@@ -1751,7 +1751,7 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-    printf("CVideoControlSoft::SetData \n");
+    //printf("CVideoControlSoft::SetData \n");
     auto src_frame = static_cast<AVFrame*>(data);
     CopyFrame(src_frame);
     videoRenderStart = true;
@@ -2272,7 +2272,7 @@ void CVideoControlSoft::CopyFrame(AVFrame* src)
 
 void CVideoControlSoft::SetFrameData(AVFrame *dst)
 {
-   printf("CVideoControlSoft::SetFrameData \n");
+   //printf("CVideoControlSoft::SetFrameData \n");
     
 	if (!clExecCtx.empty())
 		clExecCtx.bind();

@@ -189,7 +189,7 @@ void COpenCLContext::initializeContextFromGL()
 {
 #if defined(__APPLE__) || defined(__MACOSX)
 
-    printf("initializeContextFromGL 1\n");
+    //printf("initializeContextFromGL 1\n");
 	cl_uint numPlatforms;
 	cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
 	if (status != CL_SUCCESS)
@@ -203,7 +203,7 @@ void COpenCLContext::initializeContextFromGL()
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
 
 	// TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
-     printf("initializeContextFromGL 2\n");
+   //  printf("initializeContextFromGL 2\n");
 	int found = -1;
 	cl_device_id device = NULL;
 	device = GetListOfDevice(platforms[0], CL_DEVICE_TYPE_GPU, found);
@@ -217,7 +217,7 @@ void COpenCLContext::initializeContextFromGL()
 	CGLContextObj cgl_current_context = CGLGetCurrentContext();
 	CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_context);
     
-     printf("initializeContextFromGL 3\n");
+   //  printf("initializeContextFromGL 3\n");
 
 	cl_context_properties properties[] = {
 		CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
@@ -232,7 +232,7 @@ void COpenCLContext::initializeContextFromGL()
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
 	}
 
-     printf("initializeContextFromGL 4\n");
+    // printf("initializeContextFromGL 4\n");
 
 	cl_platform_id platform = platforms[0];
 	std::string platformName = cv::ocl::PlatformInfo(&platform).name();
@@ -247,9 +247,11 @@ void COpenCLContext::initializeContextFromGL()
 	clReleaseContext(context);
 	clExecCtx.bind();
 
-     printf("initializeContextFromGL 5\n");
+    // printf("initializeContextFromGL 5\n");
 #else
 
+     printf("initializeContextFromGL 1\n");
+    
 	cl_uint numPlatforms;
 	cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
 	if (status != CL_SUCCESS)
@@ -298,11 +300,15 @@ void COpenCLContext::initializeContextFromGL()
 
 		platformCompatible.push_back(i);
 	}
+    
+    printf("initializeContextFromGL 2\n");
 
 	for (int j = 0; j < platformCompatible.size(); j++)
 	{
 		int i = platformCompatible[j];
 		std::string platformName = cv::ocl::PlatformInfo(&platforms[i]).name();
+        
+        printf("platformName : %i - %s \n", i, platformName.c_str());
 
 		clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
 			clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
@@ -334,6 +340,9 @@ void COpenCLContext::initializeContextFromGL()
 #elif defined(__WXGTK__)
 
 #if wxUSE_GLCANVAS_EGL == 1
+
+printf("initializeContextFromGL wayland\n");
+
 		EGLContext eglContext = eglGetCurrentContext();
 		EGLDisplay eglDisplay = eglGetCurrentDisplay();
 
@@ -342,6 +351,9 @@ void COpenCLContext::initializeContextFromGL()
 		CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0 };
 
 #else
+        
+    printf("initializeContextFromGL x11\n");
+    
 		// Create CL context properties, add GLX context & handle to DC
 		GLXContext glxcontext = glXGetCurrentContext();
 		Display* display = glXGetCurrentDisplay();
@@ -355,6 +367,8 @@ void COpenCLContext::initializeContextFromGL()
 
 #endif
 #endif
+
+        printf("initializeContextFromGL 4\n");
 
 		// query device
 		device = NULL;
@@ -379,18 +393,26 @@ void COpenCLContext::initializeContextFromGL()
 
 	if (found < 0)
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
+        
+     printf("initializeContextFromGL 6\n");
 
 	cl_platform_id platform = platforms[found];
 	platformName = cv::ocl::PlatformInfo(&platform).name();
 
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
+        
+    printf("platformName : %i - %s \n", found, platformName.c_str());
+        
+    printf("initializeContextFromGL 7\n");
 	
 	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
 
 	AssociateToVulkan();
+    
+    printf("initializeContextFromGL 8\n");
 
 #endif
 }

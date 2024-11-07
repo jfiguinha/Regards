@@ -61,6 +61,7 @@ namespace Regards
 			int height;
 			GLenum format;
 			bool pboSupported = false;
+            GLenum dataformat;
 			GLuint pboIds[1];
 		};
 	}
