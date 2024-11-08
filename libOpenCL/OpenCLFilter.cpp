@@ -21,32 +21,37 @@ using namespace dnn_superres;
 #define FSRCNN 2
 #define LapSRN 3
 
-bool isUsed = false;
-std::mutex muDnnSuperResImpl;
-int numTexture = -1;
+bool COpenCLFilter::isUsed = false;
+int COpenCLFilter::numTexture = -1;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 #define OPENCV_METHOD
 
-class CSuperSampling
+namespace Regards
 {
-public:
-	CSuperSampling()
+	namespace OpenCL
 	{
-	};
+		class CSuperSampling
+		{
+		public:
+			CSuperSampling()
+			{
+			};
 
-	~CSuperSampling()
-	{
-	};
-	string GenerateModelPath(string modelName, int scale);
-	bool TestIfMethodIsValid(int method, int scale);
-	UMat upscaleImage(UMat img, int method, int scale);
+			~CSuperSampling()
+			{
+			};
+			string GenerateModelPath(string modelName, int scale);
+			bool TestIfMethodIsValid(int method, int scale);
+			UMat upscaleImage(UMat img, int method, int scale);
 
-private:
-	DnnSuperResImpl sr;
-	int oldscale = -1;
-	int oldmethod = -1;
-};
+		private:
+			DnnSuperResImpl sr;
+			int oldscale = -1;
+			int oldmethod = -1;
+		};
+	}
+}
 
 string CSuperSampling::GenerateModelPath(string modelName, int scale)
 {
@@ -84,7 +89,7 @@ bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 {
 	
-	isUsed = true;
+	COpenCLFilter::isUsed = true;
 	UMat outputImage;
 
 	if (oldscale != scale || oldmethod != method)
@@ -152,7 +157,7 @@ UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 
 	oldscale = scale;
 	oldmethod = method;
-	isUsed = false;
+	COpenCLFilter::isUsed = false;
 	return outputImage;
 }
 

@@ -2,6 +2,7 @@
 #define LIBOPENGL 2
 #define LIBGDI	  3
 #define LIBCPU	4
+#define LIBCUDA 5
 
 
 #define SHOW_ALL 0

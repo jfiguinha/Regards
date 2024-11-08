@@ -389,7 +389,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;LIBRAW_NODLL;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../libPicture;../include;../cximage;../libParameter;../libUtility;../libDeeplearning;../libPicture;../libFiltreInterface;../libResource;../libOpenCL;../libOpenGL;.;../libOpenCLEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libVideoEffect;../libCudaEffect;../libPicture;../include;../cximage;../libParameter;../libUtility;../libDeeplearning;../libFiltreInterface;../libResource;../libOpenCL;../libOpenGL;.;../libOpenCLEngine</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -575,6 +575,7 @@
     <ClInclude Include="ColorBalanceFilter.h" />
     <ClInclude Include="Crop.h" />
     <ClInclude Include="CropFilter.h" />
+    <ClInclude Include="CudaEffect.h" />
     <ClInclude Include="DecodeRaw.h" />
     <ClInclude Include="DecodeRawParameter.h" />
     <ClInclude Include="DetailEnhance.h" />
@@ -665,6 +666,7 @@
     <ClCompile Include="ColorBalanceFilter.cpp" />
     <ClCompile Include="Crop.cpp" />
     <ClCompile Include="CropFilter.cpp" />
+    <ClCompile Include="CudaEffect.cpp" />
     <ClCompile Include="DecodeRaw.cpp" />
     <ClCompile Include="DetailEnhance.cpp" />
     <ClCompile Include="Draw.cpp" />

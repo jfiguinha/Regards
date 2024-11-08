@@ -1876,6 +1876,9 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 		return ret;
 
 
+	colorRange = CMediaInfo::GetColorRange(output);
+	colorSpace = CMediaInfo::GetColorSpace(output);
+
 	return ret;
 }
 
@@ -1924,8 +1927,28 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		cv::UMat bgr;
 		int nWidth = tmp_frame->width;
 		int nHeight = tmp_frame->height;
-		COpenCLEffectVideo openclEffectVideo;
 
+		int _colorSpace = 0;
+		int isLimited = 0;
+		if (colorRange == "Limited")
+			isLimited = 1;
+
+		if (colorSpace == "BT.601")
+		{
+			_colorSpace = 1;
+		}
+		else if (colorSpace == "BT.709")
+		{
+			_colorSpace = 2;
+		}
+		else if (colorSpace == "BT.2020")
+		{
+			_colorSpace = 3;
+		}
+
+		COpenCLEffectVideo openclEffectVideo;
+		openclEffectVideo.SetAVFrame(nullptr, tmp_frame, _colorSpace, isLimited);
+		/*
 		if (tmp_frame->format == AV_PIX_FMT_NV12)
 		{
 			try
@@ -1972,7 +1995,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 			}
 		}
-
+		*/
 
 		if (videoCompressOption->videoEffectParameter.effectEnable)
 		{

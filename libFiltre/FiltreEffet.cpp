@@ -3,10 +3,19 @@
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include <OpenCLParameter.h>
+#include <RegardsConfigParam.h>
 #include <FilterData.h>
 #include "WaveFilter.h"
+#include "ViewerParamInit.h"
+#include "ViewerParam.h"
 #include <ImageLoadingFormat.h>
 #include <config_id.h>
+#include <ParamInit.h>
+
+#ifndef __APPLE__
+#include "CudaEffect.h"
+#endif
+
 extern float value[256];
 
 using namespace Regards::FiltreEffet;
@@ -102,6 +111,11 @@ cv::UMat CFiltreEffet::GetUMat()
 	return filtreEffet->GetUMat();
 }
 
+cv::cuda::GpuMat CFiltreEffet::GetGpuMat()
+{
+	return filtreEffet->GetGpuMat();
+}
+
 int CFiltreEffet::LensDistortionFilter(const int& size)
 {
 	filtreEffet->LensDistortionFilter(size);
@@ -161,12 +175,38 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CI
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
-	//filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 
-	if (useOpenCL && cv::ocl::haveOpenCL())
+
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+	bool local_useOpenCL = false;
+
+#ifndef __APPLE__
+
+	bool useCuda = regardsParam->GetIsCudaSupport();
+	if (useCuda)
 	{
-		filtreEffet = new COpenCLEffect(backColor, bitmap);
-		this->numLib = LIBOPENCL;
+		filtreEffet = new CCudaEffect(backColor, bitmap);
+		this->numLib = LIBCUDA;
+	}
+	else
+		local_useOpenCL = regardsParam->GetIsOpenCLSupport();
+#else
+
+	local_useOpenCL = regardsParam->GetIsOpenCLSupport();
+
+#endif
+
+	
+	
+
+	if (local_useOpenCL && useOpenCL)
+	{
+		if (cv::ocl::haveOpenCL())
+		{
+			filtreEffet = new COpenCLEffect(backColor, bitmap);
+			this->numLib = LIBOPENCL;
+		}
 	}
 
 	if (this->numLib == LIBCPU)

@@ -26,6 +26,9 @@ namespace Regards
 			void BufferFrame(const cv::UMat& pBitmap);
 			cv::UMat CorrectFrame(cv::UMat& pictureData);
 
+			void AddFrame(const cv::cuda::GpuMat& pictureData);
+			void BufferFrame(const cv::cuda::GpuMat& pBitmap);
+			cv::cuda::GpuMat CorrectFrame(cv::cuda::GpuMat& pictureData);
 
 			void Init();
 			int GetNbFrame();

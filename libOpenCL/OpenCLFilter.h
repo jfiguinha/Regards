@@ -11,13 +11,14 @@
 #include <GLTexture.h>
 using namespace Regards::OpenGL;
 class CRegardsBitmap;
-class CSuperSampling;
+
 
 namespace Regards
 {
 	namespace OpenCL
 	{
 		class COpenCLProgram;
+		class CSuperSampling;
 
 		class COpenCLFilter
 		{
@@ -77,6 +78,10 @@ namespace Regards
 			static cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 			                                  vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 
+
+			static bool isUsed;
+			static int numTexture;
+
 		protected:
 			static void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 			                              vector<COpenCLParameter*>& vecParam, const int& width, const int& height,
@@ -98,6 +103,7 @@ namespace Regards
 			double oldLevelDenoise = 0;
 			int oldwidthDenoise = 0;
 			int oldheightDenoise = 0;
+
 		};
 	}
 }

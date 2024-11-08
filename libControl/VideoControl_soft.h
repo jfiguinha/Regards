@@ -1,23 +1,21 @@
 #pragma once
 #include "VideoControlInterface.h"
-#include <OpenCLEffectVideo.h>
-#include <VideoStabilization.h>
+#include <IEffectVideo.h>
+
 
 extern "C" {
 #include <libswscale/swscale.h>
 }
-
+#include <ParamInit.h>
 #include "WindowMain.h"
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
-#include <ParamInit.h>
 #include "RenderVideoOpenGL.h"
 #include <wx/glcanvas.h>
 #include <IBitmapRenderInterface.h>
 
 using namespace Regards::Window;
 using namespace Regards::Video;
-using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
@@ -140,7 +138,7 @@ protected:
 	void CalculPositionPicture(const float& x, const float& y);
 	//static void GenerateThumbnailVideo(void* data);
 	int IsSupportOpenCL();
-
+	int IsSupportCuda();
 	bool ApplyOpenCVEffect(cv::Mat& image);
 	bool IsHardwareCompatible();
 	float GetHauteurMax();
@@ -158,7 +156,7 @@ protected:
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	void RenderToGLTexture();
-	void RenderToTexture(COpenCLEffectVideo* openclEffect);
+	void RenderToTexture(IEffectVideo * openclEffect);
 	//GLTexture* RenderFFmpegToTexture();
 
 	void ZoomOn();
@@ -235,7 +233,7 @@ protected:
 	//bool threadVideoEnd = true;
 	//GLTexture* glTextureSrc = nullptr;
 	//cv::Mat bitmap;
-	COpenCLEffectVideo* openclEffectYUV = nullptr;
+	IEffectVideo * openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
 	wxWindow * window;

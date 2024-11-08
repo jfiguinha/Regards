@@ -27,7 +27,14 @@
 #include <FiltreEffetCPU.h>
 #include <aspectratio.h>
 #include <FaceDetector.h>
+
+#include <OpenCLEffectVideo.h>
+#include <CudaEffectVideo.h>
+#include <VideoStabilization.h>
+
 using namespace Regards::OpenCV;
+using namespace Regards::Cuda;
+using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 //#include "LoadingResource.h"
 
@@ -1195,8 +1202,20 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
 
+#ifndef __APPLE__
 
-	if (IsSupportOpenCL())
+	if (IsSupportCuda())
+	{
+		if (openclEffectYUV == nullptr)
+		{
+			openclEffectYUV = new CCudaEffectVideo();
+		}
+	}
+
+#endif
+
+
+	if (IsSupportOpenCL() && openclEffectYUV == nullptr)
 	{
 		if (openclEffectYUV == nullptr)
 		{
@@ -1998,7 +2017,7 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 
 }
 
-void CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
+void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 {
     
 	if (openclEffect == nullptr)
@@ -2237,10 +2256,23 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	if (cv::ocl::Context::getDefault(false).empty())
-		return 0;
+	//if (cv::ocl::Context::getDefault(false).empty())
+	//	return 0;
 
 	return supportOpenCL;
+}
+
+int CVideoControlSoft::IsSupportCuda()
+{
+	int supportCuda = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportCuda = config->GetIsCudaSupport();
+
+	//if (cv::ocl::Context::getDefault(false).empty())
+	//	return 0;
+
+	return supportCuda;
 }
 
 
@@ -2333,26 +2365,19 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 			}
 
 			//cv::ocl::OpenCLExecutionContext::getCurrent().bind();
-			int nWidth = dst->width;
-			int nHeight = dst->height;
-			AVFrame* tmp_frame = dst;
+			//int nWidth = dst->width;
+			//int nHeight = dst->height;
+
+
+			//AVFrame* tmp_frame = dst;
+			openclEffectYUV->SetAVFrame(&videoEffectParameter, dst, _colorSpace, isLimited);
+			/*
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
 				//muBitmap.lock();
 				//Test if denoising Effect
 				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 				{
-					/*
-					cv::Mat yChannel(nHeight, tmp_frame->linesize[0], CV_8UC1, tmp_frame->data[0]);
-					cv::UMat yChannelOut;
-					yChannel.copyTo(yChannelOut);
-					fastNlMeansDenoising(out, out, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-
-					openclEffectYUV->SetNV12(yChannelOut, tmp_frame->data[1],
-						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
-					*/
-
 					uint8_t * outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 					openclEffectYUV->SetNV12(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
@@ -2386,6 +2411,7 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 
 				//muBitmap.unlock();
 			}
+			*/
 		}
 
 	}

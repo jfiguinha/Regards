@@ -1,42 +1,30 @@
 #pragma once
 #include "IFiltreEffet.h"
-#ifdef __APPLE__
-#include <OpenCL/cl.h>
-#else
-#include <CL/cl.h>
-#endif
+
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 
-namespace Regards::OpenCL
+namespace Regards
 {
-	class COpenCLProgram;
-	class COpenCLParameter;
-	class COpenCLParameterInt;
-	class COpenCLParameterByteArray;
-	class COpenCLParameterClMem;
-	class COpenCLFilter;
+	namespace Cuda
+	{
+		class CCudaFilter;
+	}
 }
-
-using namespace Regards::OpenCL;
-using namespace Regards::OpenGL;
 
 namespace Regards::FiltreEffet
 {
-	class COpenCLEffect : public IFiltreEffet
+	class CCudaEffect : public IFiltreEffet
 	{
 	public:
-		COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap);
+		CCudaEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap);
 
-		void SetFlag(const bool& useMemory)
-		{
-			flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-		};
-
-		cv::UMat GetUMat() override;
 		cv::Mat GetMat() override;
+		cv::UMat GetUMat() override;
 		cv::cuda::GpuMat GetGpuMat() override;
-		~COpenCLEffect() override;
+
+		~CCudaEffect() override;
+
 		int LensDistortionFilter(const int& size) override;
 
 		int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace) override
@@ -47,10 +35,10 @@ namespace Regards::FiltreEffet
 		int MeanShift(const float& fSpatialRadius, const float& fColorRadius) override { return -1; };
 		int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP) override;
 		int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize,
-		                  const int& searchWindowSize) override;
+			const int& searchWindowSize) override;
 		int OilPaintingEffect(const int& size, const int& dynRatio) override { return -1; };
 		void Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-		                   int flipH, int flipV, int angle, int ratio) override;
+			int flipH, int flipV, int angle, int ratio) override;
 		int CartoonifyImage(const int& mode) override { return -1; };
 		int NiveauDeGris() override;
 		int RedEye() override { return -1; };
@@ -97,19 +85,23 @@ namespace Regards::FiltreEffet
 		int MotionBlur(const double& radius, const double& sigma, const double& angle) override;
 
 		int CloudsFilter(const CRgbaquad& color1, const CRgbaquad& color2, const float& amplitude,
-		                 const float& frequence, const int& octave, const int& intensity) override { return -1; };
+			const float& frequence, const int& octave, const int& intensity) override {
+			return -1;
+		};
 		int Contrast(const double& contrast, const uint8_t& offset) { return -1; };
 		int Lightness(const double& factor) { return -1; };
 
 		int LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType,
-		              const int& iIntensity, const int& iColor, const int& iColorIntensity) override { return -1; };
+			const int& iIntensity, const int& iColor, const int& iColorIntensity) override {
+			return -1;
+		};
 
 		int HistogramLog(cv::Mat& bitmap) { return -1; }
 		int HistogramNormalize(cv::Mat& bitmap) { return -1; }
 		int HistogramEqualize(cv::Mat& bitmap) { return -1; }
 		int SuperResolutionNCNN() { return -1; }
 		int Colorization() { return -1; }
-        int Inpaint(const cv::Mat &mask, int algorithm) { return -1; }
+		int Inpaint(const cv::Mat& mask, int algorithm) { return -1; }
 		int BrightnessAndContrastAuto(float clipHistPercent) override;
 		cv::Mat GetBitmap(const bool& source) override;
 
@@ -119,15 +111,13 @@ namespace Regards::FiltreEffet
 		int EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r) override;
 		int PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor) override;
 		int Stylization(const double& sigma_s, const double& sigma_r) override;
-        
+
 	protected:
-		COpenCLFilter* openclFilter;
-		wxImage GetwxImage(cv::UMat& input);
-		int GetSizeData() const;
-		cl_mem_flags flag;
+
+		Regards::Cuda::CCudaFilter* cudaFilter;
+		wxImage GetwxImage(cv::cuda::GpuMat& input);
 		wxString filename;
-		cv::Mat alphaChannel;
-		cv::UMat input;
-		cv::UMat paramOutput;
+		cv::cuda::GpuMat input;
+		cv::cuda::GpuMat paramOutput;
 	};
 }

@@ -1,23 +1,5 @@
 #pragma once
-#ifdef __APPLE__
-#include <OpenCL/cl.h>
-#else
-#include <CL/cl.h>
-#endif
-#include <GLTexture.h>
-
-namespace cv
-{
-	class UMat;
-}
-
-namespace Regards
-{
-	namespace OpenCV
-	{
-		class COpenCVStabilization;
-	}
-}
+#include <IEffectVideo.h>
 
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
@@ -38,7 +20,7 @@ namespace Regards
 		class COpenCLParameterClMem;
 		class COpenCLFilter;
 
-		class COpenCLEffectVideo
+		class COpenCLEffectVideo : public Regards::OpenCV::IEffectVideo
 		{
 		public:
 			COpenCLEffectVideo();
@@ -47,8 +29,10 @@ namespace Regards
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
 			void SetMatrix(cv::UMat& frame);
+			void SetMatrix(cv::cuda::GpuMat& frame);
 			cv::UMat GetUMat(const bool& src = true);
 			cv::Mat GetMatrix(const bool& src = true);
+			cv::cuda::GpuMat GetGpuMat(const bool& src = true);
 
 			void AutoContrast();
 			virtual void GetYUV420P(uint8_t* & y, uint8_t* & u, uint8_t* & v, const int& widthOut,
@@ -59,31 +43,38 @@ namespace Regards
 			                                      const int& flipH, const int& flipV, const int& angle,
 			                                      const int& bicubic, int ratio);
 
+
+			void SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited);
+
+
+			
+			void HQDn3D(const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
+			void NLMeansDenoise(const double& coeff, const double& templateWindowSize, const double& searchWindowSize);
+			void FlipVertical();
+			void ConvertToBgr();
+
+			void ApplyStabilization(CVideoEffectParameter* videoEffectParameter, Regards::OpenCV::COpenCVStabilization* openCVStabilization);
+			void ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter);
+
+
+		protected:
+
+			uint8_t* HQDn3D(uint8_t* y, int width, int height, const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
 			void SetNV12(const cv::Mat& yuv);
 			void SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, const int& width,
 				const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
 				const int& colorRange, const int& colorSpace);
 			void SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width,
-			             const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
-			             const int& colorRange, const int& colorSpace);
+				const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
+				const int& colorRange, const int& colorSpace);
 			void SetNV12(const cv::Mat& yuv, const int& linesize, const int& nWidth, const int& nHeight);
 			void SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV,
-			                const int& width, const int& height, const int& lineSize, const int& widthOut,
-			                const int& heightOut, const int& colorRange, const int& colorSpace);
+				const int& width, const int& height, const int& lineSize, const int& widthOut,
+				const int& heightOut, const int& colorRange, const int& colorSpace);
 			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,
-			                const int& nWidth, const int& nHeight);
-			uint8_t* HQDn3D(uint8_t* y, int width, int height, const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
-			void HQDn3D(const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
-			void NLMeansDenoise(const double& coeff, const double& templateWindowSize, const double& searchWindowSize);
-			void FlipVertical();
-			void ConvertToBgr();
-			bool StabilizeVideo(COpenCVStabilization* stabilization);
-			void ApplyStabilization(CVideoEffectParameter* videoEffectParameter, COpenCVStabilization* openCVStabilization);
-			void ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParameter);
-			int GetDataSizeWidth(const bool& src);
+				const int& nWidth, const int& nHeight);
 
-		protected:
-			void GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, GLTexture* texture, int rgba);
+
 			COpenCLFilter* openclFilter = nullptr;
 			wxString filename;
 			cv::Mat convertSrc;

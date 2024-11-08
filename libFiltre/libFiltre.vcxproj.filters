@@ -336,6 +336,9 @@
     <ClInclude Include="InpaintFilterParam.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="CudaEffect.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -496,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="InpaintFIlter.cpp">
       <Filter>window\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaEffect.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

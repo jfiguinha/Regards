@@ -95,6 +95,18 @@ cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 	return output;
 }
 
+void COpenCLEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
+{
+
+	if (frame.channels() == 4)
+		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+	else
+		frame.copyTo(paramSrc);
+
+	needToTranscode = false;
+	isOk = true;
+}
+
 
 void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 {
@@ -106,6 +118,32 @@ void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 
 	needToTranscode = false;
 	isOk = true;
+}
+
+cv::cuda::GpuMat COpenCLEffectVideo::GetGpuMat(const bool& src)
+{
+	cv::cuda::GpuMat convert;
+	cv::cuda::GpuMat output;
+
+	if (src)
+	{
+		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		//paramSrc.copyTo(output);
+	}
+	else if (interpolatePicture)
+	{
+		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		//paramOutput.copyTo(output);
+	}
+	else
+	{
+		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+
+	}
+
+	convert.copyTo(output);
+
+	return output;
 }
 
 cv::Mat COpenCLEffectVideo::GetMatrix(const bool& src)
@@ -648,6 +686,54 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
+
+void COpenCLEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited)
+{
+	int nWidth = tmp_frame->width;
+	int nHeight = tmp_frame->height;
+
+	if (tmp_frame->format == AV_PIX_FMT_NV12)
+	{
+		//muBitmap.lock();
+		//Test if denoising Effect
+		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
+		{
+			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+			SetNV12(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+
+		}
+		else
+			SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+		//muBitmap.unlock();
+	}
+	else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
+	{
+		//muBitmap.lock();
+		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
+		{
+			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+			SetYUV420P(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+		}
+		else
+		{
+			SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+		}
+
+		//muBitmap.unlock();
+	}
+}
+
+
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,
 	const int& nWidth, const int& nHeight)

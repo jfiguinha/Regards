@@ -46,6 +46,7 @@ public:
 	int Sharpen();
 	int Erode();
 	cv::UMat GetUMat();
+	cv::cuda::GpuMat GetGpuMat();
 	cv::Mat GetMat();
 	int LensDistortionFilter(const int& size);
 	int OilPaintingEffect(const int& size = 10, const int& dynRatio = 1);

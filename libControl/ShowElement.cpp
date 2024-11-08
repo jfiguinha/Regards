@@ -29,7 +29,7 @@
 #include <ImageLoadingFormat.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
-using namespace Regards::OpenCL;
+
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;

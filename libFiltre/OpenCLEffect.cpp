@@ -21,9 +21,30 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bi
 	openclFilter = new COpenCLFilter();
 }
 
-bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilizationt)
+bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 {
 	return true;
+}
+
+cv::cuda::GpuMat COpenCLEffect::GetGpuMat()
+{
+	cv::UMat convert;
+	cv::cuda::GpuMat output;
+
+	if (preview && !paramOutput.empty())
+	{
+		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		//paramSrc.copyTo(output);
+	}
+	else
+	{
+		cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
+
+	}
+
+	convert.copyTo(output);
+
+	return output;
 }
 
 cv::Mat COpenCLEffect::GetMat()

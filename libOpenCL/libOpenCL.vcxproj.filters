@@ -16,9 +16,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="VideoStabilization">
-      <UniqueIdentifier>{0e7d98c2-4e2a-43e8-89fc-986b837140c6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,9 +33,6 @@
     <ClInclude Include="OpenCLParameter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="VideoStabilization.h">
-      <Filter>VideoStabilization</Filter>
-    </ClInclude>
     <ClInclude Include="OpenCLContext.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -55,9 +49,6 @@
     </ClCompile>
     <ClCompile Include="OpenCLParameter.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoStabilization.cpp">
-      <Filter>VideoStabilization</Filter>
     </ClCompile>
     <ClCompile Include="OpenCLContext.cpp">
       <Filter>Fichiers sources</Filter>

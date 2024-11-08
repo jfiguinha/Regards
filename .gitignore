@@ -232,3 +232,6 @@
 /libextern/vcpkg.old
 /libextern/bak
 /libextern/SVT-AV1-v2.2.1
+/libCudaEffect/x64/Release
+/libVideoEffect/x64/Release
+/Otherlib/libffmpeg/bak

@@ -159,7 +159,8 @@ private:
 	uint8_t* frame_buffer_nv12 = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;
 	int nbFrame = 0;
-
+	wxString colorRange = "";
+	wxString colorSpace = "";
 	int framerate = 30;
 	uint8_t* src = nullptr;
 	int sizesrc = 0;

@@ -23,7 +23,10 @@
 #include <OpenCLContext.h>
 #include <ncnn/gpu.h>
 
-
+#ifndef __APPLE__
+#include <opencv2/cudaarithm.hpp>
+using namespace cv::cuda;
+#endif
 
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -35,7 +38,7 @@ cv::ocl::OpenCLExecutionContext clExecCtx;
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
-
+using namespace Regards::OpenCL;
 extern int Start(int argc, char **argv);
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -171,7 +174,9 @@ bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
     
-
+	//putenv("OPENCV_OPENCL_DEVICE=:GPU:0");
+	//OPENCV_OPENCL_DEVICE=:GPU:1
+	// 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())
@@ -314,71 +319,33 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->InitAllHandlers();
 
 	CFiltreData::CreateFilterList();
-    
-    if (!ocl::haveOpenCL())
-    {
-        cout << "OpenCL is not avaiable..." << endl;
-    }
-    else
-    {
-        cout << "OpenCL is avaiable..." << endl;
-    }
 
-	if (!configFileExist)
+	bool testOpenCL = true;
+
+#ifndef __APPLE__
+
+	int cuda_devices_number = getCudaEnabledDeviceCount();
+
+	if (cuda_devices_number > 0)
 	{
-		if (!ocl::haveOpenCL())
-			regardsParam->SetIsOpenCLSupport(false);
-		else
-			regardsParam->SetIsOpenCLSupport(true);
+		cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
+		DeviceInfo _deviceInfo;
+		bool _isd_evice_compatible = _deviceInfo.isCompatible();
+		cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
+
+		regardsParam->SetIsCudaSupport(1);
+		testOpenCL = false;
 	}
+	else
+		regardsParam->SetIsCudaSupport(0);
 
-	/*
-	if (ocl::haveOpenCL())
-	{
-		bool findNvidia = false;
-		bool findIntel = false;
-		bool findAmd = false;
-		int numNvidia = 0;
-		int numAmd = 0;
-		int numIntel = 0;
-		int select = 0;
-		cl_uint numPlatforms = ncnn::get_gpu_count();
-		for (int i = 0; i < numPlatforms; i++)
-		{
-			const ncnn::GpuInfo & pguInfo = ncnn::get_gpu_info(i);
-			string deviceName = pguInfo.device_name();
-            for(auto& c : deviceName)
-            {
-               c = tolower(c);
-            }
-			if (deviceName.find("nvidia") != std::string::npos)
-			{
-				findNvidia = true;
-				numNvidia = i;
-			}
-				
-			if (deviceName.find("amd") != std::string::npos)
-			{
-				findAmd = true;
-				numAmd = i;
-			}
+#else
 
-			if (deviceName.find("intel") != std::string::npos)
-			{
-				findAmd = true;
-				numIntel = i;
-			}
-		}
-
-
-		vkdev = ncnn::get_gpu_device(select);
-		
-	}
-	*/
-
-
+	regardsParam->SetIsCudaSupport(0);
     
-	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
+#endif
+
+	if (testOpenCL)
 	{
 		if (!ocl::haveOpenCL())
 		{
@@ -386,15 +353,38 @@ bool MyApp::OnInit()
 		}
 		else
 		{
-            COpenCLContext::CreateDefaultOpenCLContext();
+			cout << "OpenCL is avaiable..." << endl;
 		}
 
-		if (!isOpenCLInitialized)
+		if (!configFileExist)
 		{
-			regardsParam->SetIsOpenCLSupport(false);
-            cout << "OpenCL is not Initialized..." << endl;
+			if (!ocl::haveOpenCL())
+				regardsParam->SetIsOpenCLSupport(false);
+			else
+				regardsParam->SetIsOpenCLSupport(true);
+		}
+
+
+		if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
+		{
+			if (!ocl::haveOpenCL())
+			{
+				cout << "OpenCL is not avaiable..." << endl;
+			}
+			else
+			{
+				COpenCLContext::CreateDefaultOpenCLContext();
+			}
+
+			if (!isOpenCLInitialized)
+			{
+				regardsParam->SetIsOpenCLSupport(false);
+				cout << "OpenCL is not Initialized..." << endl;
+			}
 		}
 	}
+
+
     
 
 #ifdef WIN32

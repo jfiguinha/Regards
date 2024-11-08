@@ -235,6 +235,18 @@ Mat CFiltreEffetCPU::GetMat()
 	return image;
 }
 
+cv::cuda::GpuMat CFiltreEffetCPU::GetGpuMat()
+{
+	cv::cuda::GpuMat image;
+	if (preview)
+		paramOutput.copyTo(image);
+	else
+		input.copyTo(image);
+
+	return image;
+}
+
+
 UMat CFiltreEffetCPU::GetUMat()
 {
 	UMat image;
