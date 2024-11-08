@@ -10,7 +10,7 @@
 #else
 #include <GL/glut.h>
 #endif
-
+#include <opencv2/core/opengl.hpp>
 using namespace Regards::OpenGL;
 
 using namespace cv::ocl;
@@ -29,6 +29,7 @@ public:
 	bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
 	cl_int CreateTextureInterop(GLTexture* glTexture);
 	void DeleteTextureInterop();
+
 
 	cl_mem clImage = nullptr;
 	bool isOpenCLCompatible = true;
@@ -118,6 +119,9 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 
 	return isOk;
 }
+
+
+
 
 void CTextureGLPriv::DeleteTextureInterop()
 {
@@ -307,6 +311,22 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 	}
 
 	return isOk;
+}
+
+
+
+bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
+{
+	if (tex == nullptr)
+		tex = new cv::ogl::Texture2D();
+
+	tex->copyFrom(bitmap, true);
+	tex->bind();
+	//tex->setAutoRelease(false);
+	m_nTextureID = tex->texId();
+	width = tex->size().width;
+	height = tex->size().height;
+	return true;
 }
 
 void GLTexture::InitPbo(const cv::Mat& bitmapMatrix)

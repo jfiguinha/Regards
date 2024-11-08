@@ -29,6 +29,7 @@ namespace Regards
 			void Enable();
 			void SetData(cv::Mat& bitmap);
 			bool SetData(cv::UMat& bitmap);
+			bool SetData(cv::cuda::GpuMat& bitmap);
 
 			void Disable()
 			{
@@ -55,6 +56,10 @@ namespace Regards
 			void SetDataToPBO(const cv::Mat& bitmapMatrix);
 			void InitPbo(const cv::Mat& bitmapMatrix);
 			CTextureGLPriv* pimpl_ = nullptr;
+			
+			
+			cv::ogl::Texture2D * tex = nullptr;
+
 
 			bool openclOpenGLInterop = false;
 			int width;

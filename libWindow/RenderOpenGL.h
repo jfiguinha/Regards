@@ -40,6 +40,7 @@ namespace Regards::OpenGL
 		wxGLContext* GetGLContext();
 		bool GetOpenGLInterop();
 		void SetData(cv::Mat& bitmap);
+		bool SetData(cv::cuda::GpuMat& bitmap);
 		bool SetData(cv::UMat& bitmap);
 		void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
 		GLTexture* GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop);

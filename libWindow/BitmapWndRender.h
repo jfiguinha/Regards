@@ -170,6 +170,7 @@ namespace Regards::Window
 		virtual void OnMoveBottom(wxCommandEvent& event);
 		virtual void OnScrollMove(wxCommandEvent& event);
 
+		int IsSupportCuda();
 		int GetExifOrientation(const int& angle);
 		virtual bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) { return false; };
 
@@ -201,6 +202,7 @@ namespace Regards::Window
 #endif
 		void RenderToScreenWithOpenCLSupport();
 		void RenderToScreenWithoutOpenCLSupport();
+		void RenderToScreenWithCudaSupport();
 		void RefreshWindow();
 		//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
 		virtual void KeyPress(const int& key)

@@ -24,7 +24,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
-
+extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 extern bool isOpenCLInitialized;
 using namespace Regards::OpenGL;
@@ -74,7 +74,18 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		{
              printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
             
-			if (regardsParam->GetIsOpenCLSupport())
+#ifndef __APPLE__
+
+			if (regardsParam->GetIsCudaSupport())
+			{
+				openclOpenGLInterop = false;
+				platformName = "NVIDIA";
+				COpenCLContext::AssociateToVulkan();
+			}
+			else if (regardsParam->GetIsOpenCLSupport())
+#else
+			 if (regardsParam->GetIsOpenCLSupport())
+#endif
 			{
 				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 				{
@@ -199,6 +210,11 @@ void CRenderOpenGL::SetData(cv::Mat& bitmap)
 }
 
 bool CRenderOpenGL::SetData(cv::UMat& bitmap)
+{
+	return textureDisplay->SetData(bitmap);
+}
+
+bool CRenderOpenGL::SetData(cv::cuda::GpuMat& bitmap)
 {
 	return textureDisplay->SetData(bitmap);
 }

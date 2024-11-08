@@ -1268,8 +1268,8 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         muframe.lock();
         SetFrameData(dst);
         muframe.unlock();
-        
-		if (!pictureFrame.empty() && !IsSupportOpenCL())
+ 
+		if (!pictureFrame.empty() && !IsSupportOpenCL() && !IsSupportCuda())
 		{
 			//muBitmap.lock();
 			RenderFFmpegToTexture(pictureFrame);
@@ -2057,6 +2057,16 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 			openclEffect->ApplyOpenCVEffect(&videoEffectParameter);
 		}
 
+#ifndef __APPLE__
+
+		if (IsSupportCuda())
+		{
+			cv::cuda::GpuMat data = openclEffect->GetGpuMat(false);
+			renderOpenGL->SetData(data);
+			return;
+		}
+
+#endif
 		if (openclOpenGLInterop)
 		{
 			cv::UMat data = openclEffect->GetUMat(false);

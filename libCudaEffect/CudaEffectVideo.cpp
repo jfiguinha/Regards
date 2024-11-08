@@ -7,6 +7,11 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
+#ifndef __APPLE__
+#include "opencv2/cudaimgproc.hpp"
+#include <opencv2/cudaarithm.hpp>
+#include "opencv2/cudawarping.hpp"
+#endif
 using namespace Regards::Cuda;
 using namespace Regards::OpenCV;
 extern string platformName;
@@ -22,7 +27,7 @@ void CCudaEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
 {
 
 	if (frame.channels() == 4)
-		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 	else
 		paramSrc = frame;
 
@@ -33,7 +38,7 @@ void CCudaEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
 void CCudaEffectVideo::SetMatrix(cv::UMat& frame)
 {
 	if (frame.channels() == 4)
-		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 	else
 		frame.copyTo(paramSrc);
 
@@ -47,15 +52,15 @@ cv::cuda::GpuMat CCudaEffectVideo::GetGpuMat(const bool& src)
 
 	if (src)
 	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 	else if (interpolatePicture)
 	{
-		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
 	}
 	else
 	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 
 
@@ -68,15 +73,15 @@ cv::UMat CCudaEffectVideo::GetUMat(const bool& src)
 
 	if (src)
 	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 	else if (interpolatePicture)
 	{
-		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
 	}
 	else
 	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 
 
@@ -86,10 +91,15 @@ cv::UMat CCudaEffectVideo::GetUMat(const bool& src)
 void CCudaEffectVideo::SetMatrix(cv::Mat& frame)
 {
 
+
 	if (frame.channels() == 4)
-		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+	{
+		cv::cuda::GpuMat mat;
+		mat.upload(frame);
+		cv::cuda::cvtColor(mat, paramSrc, cv::COLOR_BGRA2BGR);
+	}
 	else
-		frame.copyTo(paramSrc);
+		paramSrc.upload(frame);
 
 	needToTranscode = false;
 	isOk = true;
@@ -102,21 +112,23 @@ cv::Mat CCudaEffectVideo::GetMatrix(const bool& src)
 
 	if (src)
 	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
 		//paramSrc.copyTo(output);
 	}
 	else if (interpolatePicture)
 	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		cv::cuda::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
 		//paramOutput.copyTo(output);
 	}
 	else
 	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
 
 	}
 
-	convert.copyTo(output);
+	convert.download(output);
+
+	//convert.copyTo(output);
 
 	return output;
 }
@@ -134,7 +146,8 @@ void CCudaEffectVideo::ConvertToBgr()
 {
 
 	if (!paramSrc.empty())
-		cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
+		cv::cuda::cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
+
 }
 
 void CCudaEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
@@ -389,7 +402,7 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 			memcpy(src + size, tmp_frame->data[1], (tmp_frame->linesize[0] * (nHeight / 2)));
 			cv::cuda::GpuMat yuv = cv::cuda::GpuMat(nHeight + nHeight / 2, tmp_frame->linesize[0], CV_8UC1, src);
 
-			cv::cvtColor(yuv, paramSrc, cv::COLOR_RGBA2BGR);
+			cv::cuda::cvtColor(yuv, paramSrc, cv::COLOR_RGBA2BGR);
 			//openclEffectVideo.SetNV12(yuv, tmp_frame->linesize[0], nWidth, nHeight);
 		}
 		catch (cv::Exception& e)
@@ -403,34 +416,41 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 	{
 		try
 		{
-			cv::cuda::GpuMat y = cv::cuda::GpuMat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
-			cv::cuda::GpuMat u = cv::cuda::GpuMat(cv::Size(tmp_frame->linesize[1], nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-			cv::cuda::GpuMat v = cv::cuda::GpuMat(cv::Size(tmp_frame->linesize[2], nHeight / 2), CV_8UC1, tmp_frame->data[2]);
+			//cv::cuda::GpuMat _y;
+			cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
+			cv::Mat u = cv::Mat(cv::Size(tmp_frame->linesize[1], nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+			cv::Mat v = cv::Mat(cv::Size(tmp_frame->linesize[2], nHeight / 2), CV_8UC1, tmp_frame->data[2]);
 			//openclEffectVideo.SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
 
 			int linesize = tmp_frame->linesize[0];
+			cv::cuda::GpuMat u_resized, v_resized, _y;
 
-			cv::cuda::GpuMat u_resized, v_resized;
-			cv::resize(u, u_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
-			cv::resize(v, v_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
-			cv::cuda::GpuMat _y;
+			_y.upload(y);
+			u_resized.upload(u);
+			v_resized.upload(v);
+
+
+			cv::cuda::resize(u_resized, u_resized, cv::Size(linesize, nHeight)); //repeat u values 4 times
+			cv::cuda::resize(v_resized, v_resized, cv::Size(linesize, nHeight)); //repeat v values 4 times
+			
 			cv::cuda::GpuMat yuv;
-			cv::cuda::GpuMat out;
+			//cv::cuda::GpuMat out;
 
-			y.copyTo(_y);
+			//y.copyTo(_y);
 
 			std::vector<cv::cuda::GpuMat> yuv_channels = { _y, u_resized, v_resized };
-			cv::merge(yuv_channels, yuv);
+			cv::cuda::merge(yuv_channels, yuv);
 
 			if (nWidth != linesize)
 			{
-				cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR);
+				cv::cuda::GpuMat out;
+				cv::cuda::cvtColor(yuv, out, cv::COLOR_YUV2RGB);
 				out(cv::Rect(0, 0, nWidth, nHeight)).copyTo(paramSrc);
 			}
 			else
 			{
-				cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR);
-				out.copyTo(paramSrc);
+				cv::cuda::cvtColor(yuv, paramSrc, cv::COLOR_YUV2RGB);
+				//out.copyTo(paramSrc);
 			}
 		}
 		catch (cv::Exception& e)
@@ -463,7 +483,7 @@ void CCudaEffectVideo::GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const i
 	cv::cuda::GpuMat ycbcr;
 
 
-	cvtColor(src, ycbcr, cv::COLOR_BGR2YUV);
+	cv::cuda::cvtColor(src, ycbcr, cv::COLOR_BGR2YUV);
 	vector<cv::cuda::GpuMat> yuv;
 	cv::split(ycbcr, yuv);
 	yuv[0].copyTo(_y);
@@ -541,13 +561,13 @@ void CCudaEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaD
 		{
 			width = paramOutput.cols;
 			height = paramOutput.rows;
-			cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
+			cv::cuda::cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
 		}
 		else
 		{
 			width = paramSrc.cols;
 			height = paramSrc.rows;
-			cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
+			cv::cuda::cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
 		}
 
 		if (hq3d == nullptr)
@@ -575,11 +595,11 @@ void CCudaEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaD
 
 		if (interpolatePicture)
 		{
-			cv::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
+			cv::cuda::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
 		}
 		else
 		{
-			cv::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
+			cv::cuda::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
 		}
 
 		ycbcr.release();

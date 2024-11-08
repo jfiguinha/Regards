@@ -198,6 +198,16 @@ void CBitmapWndRender::OnScrollMove(wxCommandEvent& event)
 	isMoving = event.GetInt();
 }
 
+int CBitmapWndRender::IsSupportCuda()
+{
+	int supportCuda = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportCuda = config->GetIsCudaSupport();
+
+	return supportCuda;
+}
+
 int CBitmapWndRender::IsSupportOpenCL()
 {
 	int supportOpenCL = 0;
@@ -1570,7 +1580,74 @@ void CBitmapWndRender::SetPreview(const int& value)
 	preview = value;
 }
 
+void CBitmapWndRender::RenderToScreenWithCudaSupport()
+{
+	CRgbaquad color;
 
+	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
+
+
+	bool invert = true;
+	muBitmap.lock();
+	bool bitmapIsLoad = false;
+
+	if (loadBitmap)
+	{
+		if (filtreEffet == nullptr)
+			filtreEffet = new CFiltreEffet(color, true, source);
+		else
+		{
+			filtreEffet->SetBitmap(source);
+		}
+
+		loadBitmap = false;
+		bitmapIsLoad = true;
+	}
+	muBitmap.unlock();
+
+
+	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
+	{
+		if (widthOutput < 0 || heightOutput < 0)
+			return;
+
+		if (updateFilter || mouseUpdate != nullptr)
+		{
+			if (!bitmapIsLoad)
+				filtreEffet->SetBitmap(source);
+			BeforeInterpolationBitmap();
+			updateFilter = true;
+		}
+
+
+		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
+		{
+			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+			ApplyPreviewEffect(widthOutput, heightOutput);
+
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+
+			cv::cuda::GpuMat data = filtreEffet->GetGpuMat();
+			glTexture->SetData(data);
+
+		}
+
+		updateFilter = false;
+
+		widthOutputOld = widthOutput;
+		heightOutputOld = heightOutput;
+
+		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+				themeBitmap.colorBack.Blue()));
+
+		RenderTexture(invert);
+	}
+
+}
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
 	//printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
@@ -1666,6 +1743,8 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 
 }
+
+
 
 void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 {
@@ -1840,9 +1919,12 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 	}
 
 
+
 	if (renderBitmapOpenGL != nullptr)
 	{
-		if (!IsSupportOpenCL())
+
+
+		if (!IsSupportOpenCL() && !IsSupportCuda())
 		{
 			//printf("CBitmapWndRender OnPaint RenderToScreenWithoutOpenCLSupport\n");
 			RenderToScreenWithoutOpenCLSupport();
@@ -1850,7 +1932,20 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 		else
 		{
 			//printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
-			RenderToScreenWithOpenCLSupport();
+#ifndef __APPLE__
+
+			if (IsSupportCuda())
+			{
+				RenderToScreenWithCudaSupport();
+			}
+			else
+			{
+#endif
+				RenderToScreenWithOpenCLSupport();
+
+#ifndef __APPLE__
+			}
+#endif
 		}
 
 

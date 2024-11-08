@@ -10,6 +10,12 @@
 #include <opencv2/core/ocl.hpp>
 #include <LibResource.h>
 
+#ifndef __APPLE__
+#include "opencv2/cudaimgproc.hpp"
+#include <opencv2/cudaarithm.hpp>
+#include "opencv2/cudawarping.hpp"
+#endif
+
 using namespace Regards::Cuda;
 using namespace cv;
 using namespace dnn;
@@ -245,7 +251,7 @@ void CCudaFilter::BilateralEffect(cv::cuda::GpuMat& inputData, const int& fSize,
 	try
 	{
 		cv::cuda::GpuMat dest;
-		bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
+		cv::cuda::bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
 		dest.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -267,7 +273,7 @@ void CCudaFilter::NlMeans(cv::cuda::GpuMat& inputData, const int& h, const int& 
 		cv::cuda::GpuMat yChannel;
 		cv::cuda::GpuMat yChannelOut;
 
-		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
 		extractChannel(ycbcr, yChannel, 0);
@@ -279,7 +285,7 @@ void CCudaFilter::NlMeans(cv::cuda::GpuMat& inputData, const int& h, const int& 
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
@@ -304,7 +310,7 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		cv::cuda::GpuMat yChannel;
 		cv::cuda::GpuMat yChannelOut;
 
-		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
 		extractChannel(ycbcr, yChannel, 0);
@@ -315,7 +321,7 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
@@ -343,12 +349,12 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		double minGray = 0, maxGray = 0;
 
 		cv::cuda::GpuMat gray;
-		cvtColor(inputData, gray, COLOR_BGR2GRAY);
+		cv::cuda::cvtColor(inputData, gray, COLOR_BGR2GRAY);
 
 		if (clipHistPercent == 0)
 		{
 			// keep full available range
-			minMaxLoc(gray, &minGray, &maxGray);
+			cv::minMaxLoc(gray, &minGray, &maxGray);
 		}
 		else
 		{
@@ -419,7 +425,7 @@ void CCudaFilter::Fusion(cv::cuda::GpuMat& inputData, const cv::cuda::GpuMat& se
 	{
 		cv::cuda::GpuMat dst;
 		float beta = (1.0 - pourcentage);
-		addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
+		cv::cuda::addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
 		dst.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -463,7 +469,7 @@ void CCudaFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, cv
 		auto color = Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
 		Scalar out_two = color * coeff;
 
-		add(out_one, out_two, out);
+		cv::cuda::add(out_one, out_two, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -481,7 +487,7 @@ void CCudaFilter::RGBFilter(const int& red, const int& green, const int& blue, c
 	{
 		cv::cuda::GpuMat out;
 		auto color = Scalar(blue, green, red);
-		add(inputData, color, out);
+		cv::cuda::add(inputData, color, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -499,10 +505,10 @@ void CCudaFilter::FiltreMosaic(cv::cuda::GpuMat& inputData, const int& size)
 	{
 		cv::cuda::GpuMat dest;
 		cv::cuda::GpuMat cvDestBgra;
-		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+		cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
-		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -549,10 +555,10 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
@@ -642,14 +648,14 @@ void CCudaFilter::Edge(cv::cuda::GpuMat& inputData)
 	try
 	{
 		cv::cuda::GpuMat dest;
-		cvtColor(inputData, dest, COLOR_BGR2GRAY);
+		cv::cuda::cvtColor(inputData, dest, COLOR_BGR2GRAY);
 
 		Mat img_blur;
 		cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
 		cv::cuda::GpuMat edges;
 		Canny(img_blur, edges, 100, 200, 3, false);
 
-		cvtColor(edges, inputData, COLOR_GRAY2BGR);
+		cv::cuda::cvtColor(edges, inputData, COLOR_GRAY2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -664,11 +670,11 @@ void CCudaFilter::FiltreConvolution(const wxString& programName, const wxString&
 
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 void CCudaFilter::ErodeDilate(const wxString& functionName, cv::cuda::GpuMat& inputData)
@@ -694,10 +700,10 @@ void CCudaFilter::Posterize(const float& level, const float& gamma, cv::cuda::Gp
 
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
@@ -706,13 +712,13 @@ void CCudaFilter::LensDistortion(const float& strength, cv::cuda::GpuMat& inputD
 
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	double _strength = static_cast<double>(strength) / 100;
 	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
@@ -722,11 +728,11 @@ void CCudaFilter::Solarize(const long& threshold, cv::cuda::GpuMat& inputData)
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
@@ -749,10 +755,10 @@ void CCudaFilter::Noise(cv::cuda::GpuMat& inputData)
 
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
@@ -761,11 +767,11 @@ void CCudaFilter::Flip(const wxString& functionName, cv::cuda::GpuMat& inputData
 
 	if (functionName == "FlipVertical")
 	{
-		flip(inputData, inputData, 0);
+		cv::cuda::flip(inputData, inputData, 0);
 	}
 	else
 	{
-		flip(inputData, inputData, 1);
+		cv::cuda::flip(inputData, inputData, 1);
 	}
 }
 
@@ -775,11 +781,11 @@ void CCudaFilter::Swirl(const float& radius, const float& angle, cv::cuda::GpuMa
 	cv::cuda::GpuMat dest;
 	cv::cuda::GpuMat cvDest;
 	cv::cuda::GpuMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 
 
-	cv::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
@@ -820,18 +826,18 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 		}
 		else if (functionName == "Negatif")
 		{
-			bitwise_not(inputData, inputData);
+			cv::cuda::bitwise_not(inputData, inputData);
 		}
 		else if (functionName == "NoirEtBlanc")
 		{
-			cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
-			threshold(cvDest, cvDest, 127, 255, THRESH_BINARY);
-			cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+			cv::cuda::threshold(cvDest, cvDest, 127, 255, THRESH_BINARY);
+			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
 		}
 		else if (functionName == "GrayLevel")
 		{
-			cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
-			cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
 		}
 		cvDest.release();
 	}
@@ -885,7 +891,7 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		Mat yChannel;
 		Mat yChannelOut;
 
-		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
 		std::vector<Mat> planes(3);
 		split(ycbcr, planes);
@@ -901,7 +907,7 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 
 		ycbcr.release();
 		yChannel.release();
@@ -929,7 +935,7 @@ void CCudaFilter::Rotate(const wxString& functionName, const int& widthOut, cons
 	rot.at<double>(0, 2) += bbox.width / 2.0 - inputData.cols / 2.0;
 	rot.at<double>(1, 2) += bbox.height / 2.0 - inputData.rows / 2.0;
 
-	warpAffine(inputData, cvDest, rot, bbox.size());
+	cv::cuda::warpAffine(inputData, cvDest, rot, bbox.size());
 
 	rot.release();
 	inputData.release();
@@ -1019,6 +1025,9 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 
 	try
 	{
+		int width = inputData.cols;
+		int height = inputData.rows;
+
 		float ratioX = static_cast<float>(inputData.cols) / rc.width;
 		float ratioY = static_cast<float>(inputData.rows) / rc.height;
 		if (angle == 90 || angle == 270)
@@ -1079,24 +1088,24 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		if (angle == 270)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_CLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_COUNTERCLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_CLOCKWISE);
 		}
 		else if (angle == 90)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_COUNTERCLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_CLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::cuda::rotate(cvImage, cvImage, cv::Size(height, width), ROTATE_90_COUNTERCLOCKWISE);
 		}
 		else if (angle == 180)
 		{
-			cv::rotate(cvImage, cvImage, ROTATE_180);
+			cv::cuda::rotate(cvImage, cvImage, cv::Size(width,height), ROTATE_180);
 		}
 
 
@@ -1128,28 +1137,28 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		}
 		else if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 		{
-			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+			cv::cuda::resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 		}
 
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+			cv::cuda::resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 
 		//Apply Transformation
 
 		if (flipH)
 		{
 			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 0);
+				cv::cuda::flip(cvImage, cvImage, 0);
 			else
-				flip(cvImage, cvImage, 1);
+				cv::cuda::flip(cvImage, cvImage, 1);
 		}
 		if (flipV)
 		{
 			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 1);
+				cv::cuda::flip(cvImage, cvImage, 1);
 			else
-				flip(cvImage, cvImage, 0);
+				cv::cuda::flip(cvImage, cvImage, 0);
 		}
 		//
 	}
