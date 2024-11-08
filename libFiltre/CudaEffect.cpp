@@ -6,14 +6,22 @@
 #define minmax
 #include <DeepLearning.h>
 using namespace Regards::FiltreEffet;
+using namespace Regards::Cuda;
 using namespace Regards::DeepLearning;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 extern string platformName;
 #define NONE_FILTER 12
+
+#ifndef __APPLE__
+#include "opencv2/cudaimgproc.hpp"
+#include <opencv2/cudaarithm.hpp>
+#include "opencv2/cudawarping.hpp"
+#endif
 
 CCudaEffect::CCudaEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(backColor)
 {
+	cudaFilter = new CCudaFilter();
 	this->backColor = backColor;
 	SetBitmap(bitmap);
 }
@@ -50,7 +58,7 @@ cv::Mat CCudaEffect::GetMat()
 
 	}
 
-	convert.copyTo(output);
+	convert.download(output);
 
 	return output;
 }
@@ -68,7 +76,7 @@ cv::cuda::GpuMat CCudaEffect::GetGpuMat()
 		input.copyTo(output);
 	}
 
-	cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	cv::cuda::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
 
@@ -118,16 +126,19 @@ int CCudaEffect::WaveFilter(int x, int y, short height, int scale, int radius)
 void CCudaEffect::SetBitmap(CImageLoadingFormat* bitmap)
 {
 
+	cv::cuda::GpuMat source;
+
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		cv::Mat local = bitmap->GetOpenCVPicture();
+		source = bitmap->GetCudaPicture();
+		//input.upload(local);
 
-		if (local.channels() == 4)
-			cvtColor(local, input, cv::COLOR_BGRA2BGR);
-		else if (local.channels() == 1)
-			cvtColor(local, input, cv::COLOR_GRAY2BGR);
+		if (source.channels() == 4)
+			cv::cuda::cvtColor(source, input, cv::COLOR_BGRA2BGR);
+		else if (source.channels() == 1)
+			cv::cuda::cvtColor(source, input, cv::COLOR_GRAY2BGR);
 		else
-			local.copyTo(input);
+			source.copyTo(input);
 
 		filename = bitmap->GetFilename();
 		//vector<cv::Mat> channels;
@@ -152,15 +163,15 @@ cv::Mat CCudaEffect::GetBitmap(const bool& source)
 	cv::Mat bitmapOut;
 	if (source)
 	{
-		input.copyTo(bitmapOut);
+		input.download(bitmapOut);
 	}
 	else if (preview && !paramOutput.empty())
 	{
-		paramOutput.copyTo(bitmapOut);
+		paramOutput.download(bitmapOut);
 	}
 	else
 	{
-		input.copyTo(bitmapOut);
+		input.download(bitmapOut);
 	}
 
 	return bitmapOut;
@@ -173,7 +184,11 @@ cv::Mat CCudaEffect::GetBitmap(const bool& source)
 wxImage CCudaEffect::GetwxImage(cv::cuda::GpuMat& input)
 {
 	cv::Mat cvDest;
-	cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
+	cv::Mat source;
+
+	input.download(source);
+
+	cv::cvtColor(source, cvDest, cv::COLOR_BGR2RGB);
 
 	long imsize = cvDest.rows * cvDest.cols * cvDest.channels();
 	wxImage wx(cvDest.cols, cvDest.rows, static_cast<unsigned char*>(malloc(imsize)), false);

@@ -219,7 +219,19 @@ cv::Mat CImageLoadingFormat::GetOpenCVPicture()
 	return _image;
 }
 
+cv::UMat CImageLoadingFormat::GetOpenCLPicture()
+{
+	cv::UMat picture_export;
+	_image.copyTo(picture_export);
+	return picture_export;
 
+}
+cv::cuda::GpuMat CImageLoadingFormat::GetCudaPicture()
+{
+	cv::cuda::GpuMat picture_export;
+	picture_export.upload(_image);
+	return picture_export;
+}
 /*
 From exiftool documentation
 
