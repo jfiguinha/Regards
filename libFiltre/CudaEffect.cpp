@@ -1,5 +1,8 @@
 #include <header.h>
 #include "CudaEffect.h"
+
+#ifndef __APPLE__
+
 #include <CudaFilter.h>
 #include <MotionBlur.h>
 #include <ImageLoadingFormat.h>
@@ -831,3 +834,6 @@ void CCudaEffect::Interpolation(const int& widthOut, const int& heightOut, const
 		preview = true;
 	}
 }
+
+
+#endif

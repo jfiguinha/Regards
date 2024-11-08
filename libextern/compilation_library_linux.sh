@@ -19,13 +19,13 @@ if [ "$x11" = "x11" ]
 then
     cp ports_vcpkg/x11/wxwidgets/portfile.cmake vcpkg/ports/wxwidgets/portfile.cmake 
 fi
-
+,open
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxwidgets
 ./vcpkg install x265
 ./vcpkg install libde265
-./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr]
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl,cuda]
 ./vcpkg install opencl
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp,bmff]

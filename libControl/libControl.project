@@ -158,10 +158,14 @@
     <File Name="InfosSeparationBarEffect.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libVideoEffect"/>
+        <IncludePath Value="../libCudaEffect"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libTheme"/>
@@ -282,6 +286,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

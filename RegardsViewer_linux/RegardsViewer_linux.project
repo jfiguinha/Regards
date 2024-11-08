@@ -37,47 +37,6 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-    <Project Name="libResource"/>
-    <Project Name="libffmpeg"/>
-    <Project Name="libVideoConverter"/>
-  </Dependencies>
   <Dependencies Name="Debug">
     <Project Name="include"/>
     <Project Name="libWindow"/>
@@ -120,10 +79,54 @@
     <Project Name="libVideoConverter"/>
     <Project Name="ffplay"/>
   </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libVideoConverter"/>
+    <Project Name="libCudaEffect"/>
+    <Project Name="libVideoEffect"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions;" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
@@ -187,6 +190,8 @@
         <Library Value="Filtre"/>
         <Library Value="RegardsCL"/>
         <Library Value="RegardsGL"/>
+        <Library Value="CudaEffect"/>
+        <Library Value="VideoEffect"/>
         <Library Value="DeepLearning"/>
         <Library Value="wxIA"/>
         <Library Value="Dialog"/>
@@ -296,6 +301,20 @@
         <Library Value="opencv_imgproc4"/>
         <Library Value="opencv_ximgproc4"/>
         <Library Value="opencv_core4"/>
+        <Library Value="opencv_cudawarping4"/>
+        <Library Value="opencv_cudaobjdetect4"/>
+        <Library Value="opencv_cudaimgproc4"/>
+        <Library Value="opencv_cudaarithm4"/>
+        <Library Value="cudart_static"/>
+        <Library Value="nppc_static"/>
+        <Library Value="nppial_static"/>
+        <Library Value="nppig_static"/>
+        <Library Value="nppidei_static"/>
+        <Library Value="nppicc_static"/>
+        <Library Value="nppitc_static"/>
+        <Library Value="nppist_static"/>
+        <Library Value="nppc_static"/>
+        <Library Value="culibos"/>
         <Library Value="ippiw"/>
         <Library Value="ippicv"/>
         <Library Value="OpenEXR-3_2"/>
@@ -468,6 +487,8 @@
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
+        <LibraryPath Value="../libVideoEffect/Debug"/>
+        <LibraryPath Value="../libCudaEffect/Debug"/>
         <LibraryPath Value="../libOpenGL/Debug"/>
         <LibraryPath Value="../libVideoThumbnail/Debug"/>
         <LibraryPath Value="../wxCheckTree/Debug"/>
@@ -562,6 +583,8 @@
       </Compiler>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Release"/>
+        <LibraryPath Value="../libVideoEffect/Release"/>
+        <LibraryPath Value="../libCudaEffect/Release"/>
         <LibraryPath Value="../libOpenGL/Release"/>
         <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../libMediaInfo/Release"/>

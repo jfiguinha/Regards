@@ -324,20 +324,25 @@ bool MyApp::OnInit()
 
 #ifndef __APPLE__
 
-	int cuda_devices_number = getCudaEnabledDeviceCount();
+    if(regardsParam->GetIsUseCuda())
+    {
+        int cuda_devices_number = getCudaEnabledDeviceCount();
 
-	if (cuda_devices_number > 0)
-	{
-		cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
-		DeviceInfo _deviceInfo;
-		bool _isd_evice_compatible = _deviceInfo.isCompatible();
-		cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
+        if (cuda_devices_number > 0)
+        {
+            cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
+            DeviceInfo _deviceInfo;
+            bool _isd_evice_compatible = _deviceInfo.isCompatible();
+            cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
 
-		regardsParam->SetIsCudaSupport(1);
-		testOpenCL = false;
-	}
-	else
-		regardsParam->SetIsCudaSupport(0);
+            regardsParam->SetIsCudaSupport(1);
+            testOpenCL = false;
+        }
+        else
+            regardsParam->SetIsCudaSupport(0);      
+    }
+    else
+        regardsParam->SetIsCudaSupport(0);   
 
 #else
 

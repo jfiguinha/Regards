@@ -1,6 +1,6 @@
 #pragma once
 #include <IEffectVideo.h>
-
+#ifndef __APPLE__
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CVideoEffectParameter;
@@ -76,3 +76,4 @@ namespace Regards
 		};
 	}
 }
+#endif

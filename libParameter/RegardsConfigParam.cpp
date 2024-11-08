@@ -47,6 +47,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numSuperResolution = 0;
 	useSuperResolution = 0;
 	cudaSupport = 0;
+    useCuda = 0;
 }
 
 int CRegardsConfigParam::GetThumbnailOpenCV()
@@ -163,6 +164,16 @@ void CRegardsConfigParam::SetIsOpenCLSupport(const int& openCLSupport)
 int CRegardsConfigParam::GetIsCudaSupport()
 {
 	return cudaSupport;
+}
+
+void CRegardsConfigParam::SetIsUseCuda(const int& useCuda)
+{
+	this->useCuda = cudaSupport;
+}
+
+int CRegardsConfigParam::GetIsUseCuda()
+{
+	return useCuda;
 }
 
 void CRegardsConfigParam::SetIsCudaSupport(const int& cudaSupport)
@@ -447,6 +458,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("numSuperResolution", to_string(numSuperResolution)));
 	sectionPosition->append_node(node("isThumbnailOpenCV", to_string(isThumbnailOpenCV)));
 	sectionPosition->append_node(node("cudaSupport", to_string(cudaSupport)));
+    sectionPosition->append_node(node("useCuda", to_string(cudaSupport)));
 }
 
 
@@ -632,6 +644,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		cudaSupport = atoi(child_node->value());
+	}
+    
+	child_node = position_node->first_node("useCuda");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		useCuda = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("openCLOpenGLInteropSupport");

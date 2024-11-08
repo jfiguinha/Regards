@@ -1,4 +1,7 @@
 #pragma once
+
+#ifndef __APPLE__
+
 #include <RGBAQuad.h>
 #include <vector>
 #include <hqdn3d.h>
@@ -85,3 +88,5 @@ namespace Regards
 		};
 	}
 }
+
+#endif

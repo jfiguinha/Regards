@@ -1,5 +1,6 @@
 #include <header.h>
 #include "CudaFilter.h"
+#ifndef __APPLE__
 #include "utility.h"
 #include <opencv2/xphoto.hpp>
 #include <opencv2/dnn_superres.hpp>
@@ -1177,3 +1178,6 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 
 
 }
+
+
+#endif

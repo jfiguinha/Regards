@@ -1,6 +1,8 @@
 #pragma once
 #include "IFiltreEffet.h"
 
+#ifndef __APPLE__
+
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 
@@ -121,3 +123,5 @@ namespace Regards::FiltreEffet
 		cv::cuda::GpuMat paramOutput;
 	};
 }
+
+#endif

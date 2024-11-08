@@ -111,6 +111,9 @@ public:
 
 	int GetIsCudaSupport();
 	void SetIsCudaSupport(const int& openCLSupport);
+    
+	int GetIsUseCuda();
+	void SetIsUseCuda(const int& useCuda);
 
 	void SetHardwareDecoder(const wxString& hardwareDecoder);
 	wxString GetHardwareDecoder();
@@ -193,6 +196,7 @@ protected:
 	int openCLFaceSupport = 0;
 
 	int cudaSupport = 0;
+    int useCuda = 0;
 
 	int autoContrast = 0;
 	int soundVolume = 100;

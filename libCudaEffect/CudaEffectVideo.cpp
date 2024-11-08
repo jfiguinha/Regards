@@ -1,17 +1,18 @@
 // ReSharper disable All
 #include <header.h>
 #include "CudaEffectVideo.h"
+#ifndef __APPLE__
 #include "utility.h"
 #include "EffectVideoParameter.h"
 #include "CudaFilter.h"
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
-#ifndef __APPLE__
+
 #include "opencv2/cudaimgproc.hpp"
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
-#endif
+
 using namespace Regards::Cuda;
 using namespace Regards::OpenCV;
 extern string platformName;
@@ -619,3 +620,5 @@ bool CCudaEffectVideo::IsOk()
 		return !paramOutput.empty();
 	return !paramSrc.empty();
 }
+
+#endif
