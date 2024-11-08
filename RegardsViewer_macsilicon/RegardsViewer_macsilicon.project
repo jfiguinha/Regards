@@ -123,12 +123,14 @@
     <Project Name="libffmpeg"/>
     <Project Name="libVideoConverter"/>
     <Project Name="libheif"/>
+    <Project Name="libVideoEffect"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options=";-std=gnu++17;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-z muldefs;" C_Options=";-Wall;" Assembler="">
+      <Compiler Options=";-std=gnu++17;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
+        <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
@@ -136,6 +138,7 @@
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libVideoConverter"/>
         <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../OtherLib/libffmpeg"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
@@ -188,6 +191,7 @@
         <Library Value="Filtre"/>
         <Library Value="VideoConverter"/>
         <Library Value="RegardsCL"/>
+        <Library Value="VideoEffect"/>
         <Library Value="SqlData"/>
         <Library Value="SqlEngine"/>
         <Library Value="sqlite3"/>
@@ -411,6 +415,7 @@
         <LibraryPath Value="../libOpenGL/Debug"/>
         <LibraryPath Value="../wxCheckTree/Debug"/>
         <LibraryPath Value="../libViewer/Debug"/>
+        <LibraryPath Value="../libVideoEffect/Debug"/>
         <LibraryPath Value="../libSqlEngine/Debug"/>
         <LibraryPath Value="../libResource/Debug"/>
         <LibraryPath Value="../libDialog/Debug"/>
@@ -492,6 +497,7 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Release"/>
         <LibraryPath Value="../libOpenGL/Release"/>
+        <LibraryPath Value="../libVideoEffect/Release"/>
         <LibraryPath Value="../wxCheckTree/Release"/>
         <LibraryPath Value="../libViewer/Release"/>
         <LibraryPath Value="../libSqlEngine/Release"/>

@@ -33,7 +33,9 @@
 #include <VideoStabilization.h>
 
 using namespace Regards::OpenCV;
+#ifndef __APPLE__
 using namespace Regards::Cuda;
+#endif
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 //#include "LoadingResource.h"

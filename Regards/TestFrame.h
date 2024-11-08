@@ -6,7 +6,7 @@
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Video;
-using namespace Regards::Viewer;
+//using namespace Regards::Viewer;
 class CVideoControlSoft;
 
 #define SHOW_VIDEO
