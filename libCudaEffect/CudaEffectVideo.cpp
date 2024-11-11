@@ -8,11 +8,10 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
-
 #include "opencv2/cudaimgproc.hpp"
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
-
+#include "videoFilter.h"
 using namespace Regards::Cuda;
 using namespace Regards::OpenCV;
 extern string platformName;

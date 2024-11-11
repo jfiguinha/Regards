@@ -11,11 +11,13 @@
 #include <opencv2/core/ocl.hpp>
 #include <LibResource.h>
 
-#ifndef __APPLE__
 #include "opencv2/cudaimgproc.hpp"
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
-#endif
+#include <opencv2/cudafilters.hpp>
+
+
+#include "pictureFilter.h"
 
 using namespace Regards::Cuda;
 using namespace cv;
@@ -29,6 +31,7 @@ using namespace dnn_superres;
 
 bool CCudaFilter::isUsed = false;
 int CCudaFilter::numTexture = -1;
+
 
 
 #define OPENCV_METHOD
@@ -445,7 +448,12 @@ void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& input
 	{
 		cv::cuda::GpuMat cvDestBgra;
 		double sigma = 1;
-		cv::GaussianBlur(inputData, cvDestBgra, Size(), sigma, sigma);
+        cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createGaussianFilter(CV_8UC1,CV_8UC1, Size(), sigma, sigma);
+        filter3x3->apply(inputData, cvDestBgra);
+        cvDestBgra.copyTo(inputData);
+        
+
 
 	}
 	catch (Exception& e)

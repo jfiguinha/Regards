@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libCudaEffect" Version="11000" InternalType="Library">
+  <VirtualDirectory Name="cuda">
+    <File Name="pictureFilter.cu"/>
+    <File Name="pictureFilter.h"/>
+    <File Name="helper_math.h"/>
+    <File Name="videoFilter.h"/>
+    <File Name="videoFilter.cu"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -76,7 +83,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
       </Compiler>
