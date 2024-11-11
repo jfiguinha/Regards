@@ -302,6 +302,7 @@
         <Library Value="opencv_ximgproc4"/>
         <Library Value="opencv_core4"/>
         <Library Value="opencv_cudawarping4"/>
+        <Library Value="opencv_cudafilters4"/>
         <Library Value="opencv_cudaobjdetect4"/>
         <Library Value="opencv_cudaimgproc4"/>
         <Library Value="opencv_cudaarithm4"/>
@@ -313,6 +314,8 @@
         <Library Value="nppicc_static"/>
         <Library Value="nppitc_static"/>
         <Library Value="nppist_static"/>
+        <Library Value="nppif_static"/>
+        <Library Value="nppim_static"/>
         <Library Value="nppc_static"/>
         <Library Value="culibos"/>
         <Library Value="ippiw"/>
