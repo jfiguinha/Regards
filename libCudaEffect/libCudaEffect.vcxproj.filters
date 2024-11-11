@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{088f992a-07eb-4b50-885a-720d954d7aee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cuda">
+      <UniqueIdentifier>{8e336115-3b07-49da-819f-6cf3eeab346c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CudaFilter.cpp">
@@ -38,5 +41,19 @@
     <ClInclude Include="CudaEffectVideo.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="pictureFilter.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="videoFilter.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="pictureFilter.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
+    <CudaCompile Include="videoFilter.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
