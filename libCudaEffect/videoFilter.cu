@@ -24,7 +24,91 @@ inline  __host__ __device__ uint rgbaFloat4ToUint(float4 rgba, float fScale)
     return uiPackedPix;
 }
 
+inline  __host__ __device__ float4 yuvToRgb32(float yComp, float uComp, float vComp, int colorRange, int colorSpace)
+{
+    float4 color = make_float4(0.0);
+    float3 matrix[3];
+    if(colorSpace == 0)
+    {
+        //default
+        matrix[0].x = 1.164;
+        matrix[0].y = 0;
+        matrix[0].z = 1.596;
+        
+        matrix[1].x = 1.164;
+        matrix[1].y = -0.391;
+        matrix[1].z = -0.813;
 
+        matrix[2].x = 1.164;
+        matrix[2].y = 2.018;
+        matrix[2].z = 0;			
+    }
+    else if(colorSpace == 1)
+    {
+        //bt601
+        matrix[0].x = 1;
+        matrix[0].y = 0;
+        matrix[0].z = 1;
+        
+        matrix[1].x = 1;
+        matrix[1].y = -0.344;
+        matrix[1].z = -0.714;
+
+        matrix[2].x = 1;
+        matrix[2].y = 1.772;
+        matrix[2].z = 0;
+    }
+    else if(colorSpace == 2)
+    {
+        //BT.709
+        matrix[0].x = 1;
+        matrix[0].y = 0;
+        matrix[0].z = 1.5748;
+        
+        matrix[1].x = 1;
+        matrix[1].y = -0.187324;
+        matrix[1].z = -0.468124;
+
+        matrix[2].x = 1;
+        matrix[2].y = 1.8556;
+        matrix[2].z = 0;
+    }		
+    else if(colorSpace == 3)
+    {
+        //BT.2020
+        matrix[0].x = 1;
+        matrix[0].y = 0;
+        matrix[0].z = 1.402;
+        
+        matrix[1].x = 1;
+        matrix[1].y = -0.344136286;
+        matrix[1].z = -0.7141362862;
+
+        matrix[2].x = 1;
+        matrix[2].y = 1.772;
+        matrix[2].z = 0;
+    }	
+    
+    color.z = (matrix[0].x * (yComp - 16) + matrix[0].y * (uComp-128) + matrix[0].z * (vComp-128));
+    color.y = (matrix[1].x * (yComp - 16) + matrix[1].y * (uComp-128) + matrix[1].z * (vComp-128));
+    color.x = (matrix[2].x * (yComp - 16) + matrix[2].y * (uComp-128) + matrix[2].z * (vComp-128));
+    color.w = 255.0f;
+
+    float4 minimal = make_float4(0.0);
+    float4 maximal = make_float4(255.0);
+    
+    if(colorRange == 1)
+    {
+        minimal = make_float4(16.0);
+        maximal = make_float4(235.0);
+    }
+    
+    
+
+    color = clamp(color,minimal,maximal);
+
+    return color;
+}
 
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
@@ -57,86 +141,8 @@ __global__ void convertYUVtoRGB32(uint *output, const uchar *inputY, const uchar
 		float vComp = inputV[positionUV];
 		float yComp = inputY[positionSrc];
 		    // RGB conversion
-		
-		float3 matrix[3];
-		if(colorSpace == 0)
-		{
-			//default
-			matrix[0].x = 1.164;
-			matrix[0].y = 0;
-			matrix[0].z = 1.596;
-			
-			matrix[1].x = 1.164;
-			matrix[1].y = -0.391;
-			matrix[1].z = -0.813;
+		color = yuvToRgb32(yComp, uComp, vComp, colorRange, colorSpace);
 
-			matrix[2].x = 1.164;
-			matrix[2].y = 2.018;
-			matrix[2].z = 0;			
-		}
-		else if(colorSpace == 1)
-		{
-			//bt601
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1;
-			
-			matrix[1].x = 1;
-			matrix[1].y = -0.344;
-			matrix[1].z = -0.714;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.772;
-			matrix[2].z = 0;
-		}
-		else if(colorSpace == 2)
-		{
-			//BT.709
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1.5748;
-			
-			matrix[1].x = 1;
-			matrix[1].y = -0.187324;
-			matrix[1].z = -0.468124;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.8556;
-			matrix[2].z = 0;
-		}		
-		else if(colorSpace == 3)
-		{
-			//BT.2020
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1.402;
-			
-			matrix[1].x = 1;
-			matrix[1].y = -0.344136286;
-			matrix[1].z = -0.7141362862;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.772;
-			matrix[2].z = 0;
-		}	
-		
-		color.z = (matrix[0].x * (yComp - 16) + matrix[0].y * (uComp-128) + matrix[0].z * (vComp-128));
-		color.y = (matrix[1].x * (yComp - 16) + matrix[1].y * (uComp-128) + matrix[1].z * (vComp-128));
-		color.x = (matrix[2].x * (yComp - 16) + matrix[2].y * (uComp-128) + matrix[2].z * (vComp-128));
-		color.w = 255.0f;
-
-		float4 minimal = make_float4(0.0);
-		float4 maximal = make_float4(255.0);
-		
-		if(colorRange == 1)
-		{
-			minimal = make_float4(16.0);
-			maximal = make_float4(235.0);
-		}
-        
-		
-
-		color = clamp(color,minimal,maximal);
 		output[position] = rgbaFloat4ToUint(color,1.0f);
 	}
 } 
@@ -178,84 +184,8 @@ __global__ void convertNV12toRGB32(uint * output,  unsigned char * inputY, unsig
 		uchar vComp = inputUV[positionUV];
 		uchar uComp = inputUV[positionUV + 1];
 		uchar yComp = inputY[positionSrc];
-		
-		float3 matrix[3];
-		if(colorSpace == 0)
-		{
-			//default
-			matrix[0].x = 1.164;
-			matrix[0].y = 0;
-			matrix[0].z = 1.596;
-			
-			matrix[1].x = 1.164;
-			matrix[1].y = -0.391;
-			matrix[1].z = -0.813;
-
-			matrix[2].x = 1.164;
-			matrix[2].y = 2.018;
-			matrix[2].z = 0;			
-		}
-		else if(colorSpace == 1)
-		{
-			//bt601
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1;
-			
-			matrix[1].x = 1;
-			matrix[1].y = -0.344;
-			matrix[1].z = -0.714;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.772;
-			matrix[2].z = 0;
-		}
-		else if(colorSpace == 2)
-		{
-			//BT.709
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1.5748;
-			
-			matrix[1].x = 1;
-			matrix[1].y = -0.187324;
-			matrix[1].z = -0.468124;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.8556;
-			matrix[2].z = 0;
-		}		
-		else if(colorSpace == 3)
-		{
-			//BT.2020
-			matrix[0].x = 1;
-			matrix[0].y = 0;
-			matrix[0].z = 1.402;
-
-			matrix[1].x = 1;
-			matrix[1].y = -0.344136286;
-			matrix[1].z = -0.7141362862;
-
-			matrix[2].x = 1;
-			matrix[2].y = 1.772;
-			matrix[2].z = 0;
-		}	
-		
-		color.x = (matrix[0].x * (yComp - 16) + matrix[0].y * (uComp-128) + matrix[0].z * (vComp-128));
-		color.y = (matrix[1].x * (yComp - 16) + matrix[1].y * (uComp-128) + matrix[1].z * (vComp-128));
-		color.z = (matrix[2].x * (yComp - 16) + matrix[2].y * (uComp-128) + matrix[2].z * (vComp-128));
-		color.w = 255.0f;
-
-		float4 minimal = make_float4(0.0);
-		float4 maximal = make_float4(255.0);
-		
-		if(colorRange == 1)
-		{
-			minimal = make_float4(16.0);
-			maximal = make_float4(235.0);
-		}
         
-        color = clamp(color,minimal,maximal);
+		color = yuvToRgb32(yComp, uComp, vComp, colorRange, colorSpace);
         
 		output[position] = rgbaFloat4ToUint(color,1.0f);
 	}
