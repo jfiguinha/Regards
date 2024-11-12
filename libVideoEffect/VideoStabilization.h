@@ -1,6 +1,9 @@
 #pragma once
 
-class COpenCVStabilizationPimpl_;
+
+#define TYPE_CPU 1
+#define TYPE_OPENCL 2
+#define TYPE_CUDA 3
 
 namespace cv
 {
@@ -12,10 +15,15 @@ namespace Regards
 {
 	namespace OpenCV
 	{
+
+		class COpenCVStabilizationCpu;
+		class COpenCVStabilizationOpenCL;
+		class COpenCVStabilizationCuda;
+
 		class COpenCVStabilization
 		{
 		public:
-			COpenCVStabilization(const int& nbFrame);
+			COpenCVStabilization(const int& nbFrame, const int &type);
 			~COpenCVStabilization();
 
 			void AddFrame(const cv::Mat& pictureData);
@@ -24,11 +32,11 @@ namespace Regards
 
 			void AddFrame(const cv::UMat& pictureData);
 			void BufferFrame(const cv::UMat& pBitmap);
-			cv::UMat CorrectFrame(cv::UMat& pictureData);
+			cv::UMat CorrectFrame(cv::UMat& image);
 
 			void AddFrame(const cv::cuda::GpuMat& pictureData);
 			void BufferFrame(const cv::cuda::GpuMat& pBitmap);
-			cv::cuda::GpuMat CorrectFrame(cv::cuda::GpuMat& pictureData);
+			cv::cuda::GpuMat CorrectFrame(cv::cuda::GpuMat& image);
 
 			void Init();
 			int GetNbFrame();
@@ -36,9 +44,11 @@ namespace Regards
 			void SetNbFrameBuffer(const int& nbFrame);
 
 		private:
-			COpenCVStabilizationPimpl_* pimpl;
-			int nbFrame = 0;
-			int nbFrameBuffer = 0;
+			
+			COpenCVStabilizationCpu* openCVCpu = nullptr;
+			COpenCVStabilizationOpenCL* openCVopenCL = nullptr;
+			COpenCVStabilizationCuda* openCVCuda = nullptr;
+			int type = 0;
 		};
 	}
 }

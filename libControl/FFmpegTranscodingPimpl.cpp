@@ -2004,7 +2004,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 
 			if (stabilizeFrame && openCVStabilization == nullptr)
 				openCVStabilization = new Regards::OpenCV::COpenCVStabilization(
-					videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+					videoCompressOption->videoEffectParameter.stabilizeImageBuffere, TYPE_OPENCL);
 
 			if (stabilizeFrame)
 			{
@@ -2102,8 +2102,16 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 	cv::Mat mat = src.clone();
 
 	if (stabilizeFrame && openCVStabilization == nullptr)
-		openCVStabilization = new Regards::OpenCV::COpenCVStabilization(
-			videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+	{
+		if (IsSupportOpenCL())
+		{
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere, TYPE_OPENCL);
+		}
+		else
+		{
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere, TYPE_CPU);
+		}
+	}
 
 	if (IsSupportOpenCL())
 	{

@@ -33,6 +33,11 @@ namespace Regards::FiltreEffet
 			flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 		};
 
+		int GetType()
+		{
+			return TYPE_OPENCL;
+		}
+
 		cv::UMat GetUMat() override;
 		cv::Mat GetMat() override;
 		cv::cuda::GpuMat GetGpuMat() override;

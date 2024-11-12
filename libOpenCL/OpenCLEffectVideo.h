@@ -26,6 +26,12 @@ namespace Regards
 			COpenCLEffectVideo();
 
 			virtual ~COpenCLEffectVideo();
+
+			int GetType()
+			{
+				return TYPE_OPENCL;
+			}
+
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
 			void SetMatrix(cv::UMat& frame);

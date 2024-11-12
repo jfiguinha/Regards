@@ -6,6 +6,11 @@ class CImageLoadingFormat;
 class Chqdn3d;
 class COpenCVStabilization;
 
+
+#define TYPE_CPU 1
+#define TYPE_OPENCL 2
+#define TYPE_CUDA 3
+
 namespace Regards::OpenCV
 {
 	class COpenCVStabilization;

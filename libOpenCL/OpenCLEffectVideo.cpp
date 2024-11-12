@@ -218,7 +218,7 @@ void COpenCLEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPa
 	if (videoEffectParameter->stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere);
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere, TYPE_OPENCL);
 
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter->stabilizeImageBuffere);
 

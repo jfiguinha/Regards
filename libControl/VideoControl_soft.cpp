@@ -2046,7 +2046,7 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
         if (videoEffectParameter.stabilizeVideo)
         {
             if (openCVStabilization == nullptr)
-                openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+                openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, openclEffect->GetType());
             openclEffect->ApplyStabilization(&videoEffectParameter, openCVStabilization);
         }
 
@@ -2095,7 +2095,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, TYPE_CPU);
 
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
 

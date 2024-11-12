@@ -11,6 +11,11 @@ public:
 	CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitmap);
 	~CFiltreEffetCPU() override;
 
+	int GetType() 
+	{
+		return TYPE_CPU;
+	}
+
 	int HistogramNormalize() override;
 	int HistogramEqualize() override;
 	cv::UMat GetUMat() override;

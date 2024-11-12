@@ -25,6 +25,11 @@ namespace Regards::FiltreEffet
 		cv::UMat GetUMat() override;
 		cv::cuda::GpuMat GetGpuMat() override;
 
+		int GetType()
+		{
+			return TYPE_CUDA;
+		}
+
 		~CCudaEffect() override;
 
 		int LensDistortionFilter(const int& size) override;

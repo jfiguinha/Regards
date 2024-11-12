@@ -27,6 +27,12 @@ namespace Regards
 			CCudaEffectVideo();
 
 			virtual ~CCudaEffectVideo();
+
+			int GetType()
+			{
+				return TYPE_CUDA;
+			}
+
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
 			void SetMatrix(cv::cuda::GpuMat& frame);

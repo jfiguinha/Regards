@@ -180,7 +180,7 @@ void CCudaEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPara
 	if (videoEffectParameter->stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere);
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere, TYPE_CUDA);
 
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter->stabilizeImageBuffere);
 
@@ -226,11 +226,11 @@ void CCudaEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParam
 
 		if (interpolatePicture)
 		{
-			paramOutput.copyTo(image);
+			paramOutput.download(image);
 		}
 		else
 		{
-			paramSrc.copyTo(image);
+			paramSrc.download(image);
 		}
 
 
@@ -246,11 +246,11 @@ void CCudaEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectParam
 
 		if (interpolatePicture)
 		{
-			image.copyTo(paramOutput);
+			paramOutput.upload(image);
 		}
 		else
 		{
-			image.copyTo(paramSrc);
+			paramSrc.upload(image);
 		}
 	}
 }

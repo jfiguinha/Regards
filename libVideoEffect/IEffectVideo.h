@@ -29,6 +29,8 @@ namespace Regards
 		{
 		public:
 
+			virtual int GetType() = 0;
+
 			virtual bool IsOk() = 0;
 			virtual void SetMatrix(cv::Mat& frame) = 0;
 			virtual void SetMatrix(cv::cuda::GpuMat& frame) = 0;

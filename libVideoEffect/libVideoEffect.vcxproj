@@ -24,11 +24,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp" />
+    <ClCompile Include="VideoStabilizationCpu.cpp" />
+    <ClCompile Include="VideoStabilizationCuda.cpp" />
+    <ClCompile Include="VideoStabilizationOpenCL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="IEffectVideo.h" />
     <ClInclude Include="VideoStabilization.h" />
+    <ClInclude Include="VideoStabilizationCpu.h" />
+    <ClInclude Include="VideoStabilizationCuda.h" />
+    <ClInclude Include="VideoStabilizationOpenCL.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -130,6 +136,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -148,6 +155,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libFiltre;..\libParameter;..\libPicture;..\libOpenGL;..\libUtility;..\libResource;..\libDataStructure;..\libFiltreInterface;..\include;..\libDeepLearning;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>

@@ -339,7 +339,7 @@ HRESULT CMFTEncodingPimp::WriteFrame(
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 
 	if (stabilizeFrame && openCVStabilization == nullptr)
-		openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+		openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere, TYPE_CPU);
 
 	if (stabilizeFrame)
 	{
