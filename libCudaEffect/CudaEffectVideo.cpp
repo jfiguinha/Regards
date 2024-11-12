@@ -146,7 +146,7 @@ void CCudaEffectVideo::ConvertToBgr()
 {
 
 	if (!paramSrc.empty())
-		cv::cuda::cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
+		cv::cuda::cvtColor(paramSrc, paramSrc, cv::COLOR_RGB2BGR);
 
 }
 
@@ -622,23 +622,29 @@ void CCudaEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaD
 
 	try
 	{
-		cv::cuda::GpuMat ycbcr;
+		cv::Mat gpuPicture;
+		cv::Mat ycbcr;
 		cv::Mat yChannel;
 		int width = 0;
 		int height = 0;
+
+		
 
 		if (interpolatePicture)
 		{
 			width = paramOutput.cols;
 			height = paramOutput.rows;
-			cv::cuda::cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
+			paramOutput.download(gpuPicture);
 		}
 		else
 		{
 			width = paramSrc.cols;
 			height = paramSrc.rows;
-			cv::cuda::cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
+			paramSrc.download(gpuPicture);
+			
 		}
+
+		cv::cvtColor(gpuPicture, ycbcr, cv::COLOR_BGR2YCrCb);
 
 		if (hq3d == nullptr)
 			hq3d = new Chqdn3d(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
@@ -661,19 +667,20 @@ void CCudaEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLumaD
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-
+		cv::cvtColor(ycbcr, gpuPicture, cv::COLOR_YCrCb2BGR);
 
 		if (interpolatePicture)
 		{
-			cv::cuda::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
+			paramOutput.upload(gpuPicture);
 		}
 		else
 		{
-			cv::cuda::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
+			paramSrc.upload(gpuPicture);
 		}
 
 		ycbcr.release();
 		yChannel.release();
+		gpuPicture.release();
 	}
 	catch (cv::Exception& e)
 	{

@@ -408,7 +408,7 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
-		convertScaleAbs(inputData, inputData, alpha, beta);
+		cv::cuda::convertScaleAbs(inputData, inputData, alpha, beta);
 	}
 	catch (Exception& e)
 	{
