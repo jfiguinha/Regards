@@ -35,6 +35,7 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="CudaEffectVideo.h" />
     <ClInclude Include="CudaFilter.h" />
+    <ClInclude Include="helper_math.h" />
     <ClInclude Include="pictureFilter.h" />
     <ClInclude Include="videoFilter.h" />
   </ItemGroup>

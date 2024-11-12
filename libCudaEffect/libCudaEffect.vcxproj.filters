@@ -47,6 +47,9 @@
     <ClInclude Include="videoFilter.h">
       <Filter>cuda</Filter>
     </ClInclude>
+    <ClInclude Include="helper_math.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="pictureFilter.cu">

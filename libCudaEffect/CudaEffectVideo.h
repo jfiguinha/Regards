@@ -64,6 +64,7 @@ namespace Regards
 			wxString filename;
 			cv::Mat convertSrc;
 			cv::cuda::GpuMat paramSrc;
+			cv::cuda::GpuMat out;
 			cv::cuda::GpuMat paramOutput;
 
 			uint8_t* src = nullptr;

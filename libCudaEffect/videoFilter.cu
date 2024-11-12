@@ -14,14 +14,13 @@ using namespace std;
 //----------------------------------------------------
 // Conversion du NV12 vers du 32 bits
 //----------------------------------------------------
-inline  __host__ __device__ uint rgbaFloat4ToUint(float4 rgba, float fScale)
+inline  __host__ __device__ void rgbaFloat4ToUchar4(unsigned char* & output, int position, float4 rgba, float fScale)
 {
-    unsigned int uiPackedPix = 0U;
-    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
-    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
-    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
-    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
-    return uiPackedPix;
+    output[position] = (uchar)(rgba.x * fScale);
+    output[position+1] = (uchar)(rgba.y * fScale);
+    output[position+2] = (uchar)(rgba.z * fScale);
+    output[position+3] = (uchar)(rgba.w * fScale);
+
 }
 
 inline  __host__ __device__ float4 yuvToRgb32(float yComp, float uComp, float vComp, int colorRange, int colorSpace)
@@ -113,14 +112,15 @@ inline  __host__ __device__ float4 yuvToRgb32(float yComp, float uComp, float vC
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__global__ void convertYUVtoRGB32(uint *output, const uchar *inputY, const uchar *inputU, const uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace) 
+__global__ void convertYUVtoRGB32(unsigned char * output, const uchar *inputY, const uchar *inputU, const uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
 { 
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = x + y * widthOut;
+   int position = (x + y * widthOut) * 4;
 	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
 	{
 		float4 color;
+        
 		int positionSrc = x + y * pitch;
 		int positionUV = 0;
 		if (x & 1)
@@ -143,7 +143,7 @@ __global__ void convertYUVtoRGB32(uint *output, const uchar *inputY, const uchar
 		    // RGB conversion
 		color = yuvToRgb32(yComp, uComp, vComp, colorRange, colorSpace);
 
-		output[position] = rgbaFloat4ToUint(color,1.0f);
+        rgbaFloat4ToUchar4(output, position, color, 1.0f);
 	}
 } 
 
@@ -151,11 +151,11 @@ __global__ void convertYUVtoRGB32(uint *output, const uchar *inputY, const uchar
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__global__ void convertNV12toRGB32(uint * output,  unsigned char * inputY, unsigned char * inputUV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace) 
+__global__ void convertNV12toRGB32(unsigned char * output,  unsigned char * inputY, unsigned char * inputUV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
 { 
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = x + y * widthOut;
+   int position = (x + y * widthOut) * 4;
 	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
 	{
 		//float4 color = getColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch, colorRange, colorSpace); 
@@ -187,36 +187,27 @@ __global__ void convertNV12toRGB32(uint * output,  unsigned char * inputY, unsig
         
 		color = yuvToRgb32(yComp, uComp, vComp, colorRange, colorSpace);
         
-		output[position] = rgbaFloat4ToUint(color,1.0f);
+        rgbaFloat4ToUchar4(output, position, color, 1.0f);
+
 	}
 } 
 
 // The wrapper is used to call sharpening filter 
-void convertNV12toRGB32(cv::cuda::GpuMat& output, const cv::Mat& inputY, const cv::Mat& inputUV, int pitch, int colorRange, int colorSpace)
+void convertNV12toRGB32(cv::cuda::GpuMat& output, uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width,
+    const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
+    const int& colorRange, const int& colorSpace)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
-
-        // Calculate number of image channels
-        int channel = 4;//inputY.step/inputY.cols; 
-
-        // Calculate number of input & output bytes in each block
-        const int inputYSize = inputY.cols * inputY.rows;
-        const int inputUVSize = inputUV.cols * inputUV.rows;
-        const int outputSize = output.cols * output.rows * channel;
         unsigned char *d_inputY, * d_inputUV;
-        uint * d_output;
+        unsigned char * d_output = output.ptr();
         
         // Allocate device memory
-        cudaMalloc<unsigned char>(&d_inputY,inputYSize);
-        cudaMalloc<unsigned char>(&d_inputUV,inputUVSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+        cudaMalloc<unsigned char>(&d_inputY, sizeY);
+        cudaMalloc<unsigned char>(&d_inputUV, sizeUV);
+        //cudaMalloc<unsigned char>(&d_output,outputSize);
 
         // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_inputY,inputY.ptr(),inputYSize,cudaMemcpyHostToDevice);
-        cudaMemcpy(d_inputUV,inputUV.ptr(),inputUVSize,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inputY, bufferY, sizeY,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inputUV, bufferUV, sizeUV,cudaMemcpyHostToDevice);
 
         // Specify block size
         const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
@@ -224,89 +215,44 @@ void convertNV12toRGB32(cv::cuda::GpuMat& output, const cv::Mat& inputY, const c
         // Calculate grid size to cover the whole image
         const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
 
-        // Start time
-        cudaEventRecord(start);
-
         // Run BoxFilter kernel on CUDA 
-        convertNV12toRGB32<<<grid,block>>>(d_output,d_inputY,d_inputUV, inputY.cols, inputY.rows, output.cols, output.rows, pitch, colorRange, colorSpace);
-
-        // Stop time
-        cudaEventRecord(stop);
-
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
+        convertNV12toRGB32<<<grid,block>>>(d_output,d_inputY,d_inputUV, width, height, widthOut, heightOut, lineSize, colorRange, colorSpace);
 
         //Free the device memory
         cudaFree(d_inputY);
         cudaFree(d_inputUV);
-        cudaFree(d_output);
-
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
 }
 
 
 // The wrapper is used to call sharpening filter 
-void convertYUVtoRGB32(cv::cuda::GpuMat& output, const cv::Mat& inputY, const cv::Mat& inputU, const cv::Mat& inputV, int pitch, int colorRange, int colorSpace)
+void convertYUVtoRGB32(cv::cuda::GpuMat& output, uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV,
+    const int& width, const int& height, const int& lineSize, const int& widthOut,
+    const int& heightOut, const int& colorRange, const int& colorSpace)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
-
-        // Calculate number of image channels
-        int channel = 4;//inputY.step/inputY.cols; 
-
-        // Calculate number of input & output bytes in each block
-        const int inputYSize = inputY.cols * inputY.rows;
-        const int inputUSize = inputU.cols * inputU.rows;
-        const int inputVSize = inputV.cols * inputV.rows;
-        const int outputSize = output.cols * output.rows * channel;
         unsigned char *d_inputY, * d_inputU, * d_inputV;
-        uint * d_output;
+        unsigned char* d_output = output.ptr();
         
         // Allocate device memory
-        cudaMalloc<unsigned char>(&d_inputY,inputYSize);
-        cudaMalloc<unsigned char>(&d_inputU,inputUSize);
-        cudaMalloc<unsigned char>(&d_inputV,inputVSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+        cudaMalloc<unsigned char>(&d_inputY, sizeY);
+        cudaMalloc<unsigned char>(&d_inputU, sizeU);
+        cudaMalloc<unsigned char>(&d_inputV, sizeV);
+       // cudaMalloc<unsigned char>(&d_output,outputSize);
 
         // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_inputY,inputY.ptr(),inputYSize,cudaMemcpyHostToDevice);
-        cudaMemcpy(d_inputU,inputU.ptr(),inputUSize,cudaMemcpyHostToDevice);
-        cudaMemcpy(d_inputV,inputV.ptr(),inputVSize,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inputY, bufferY, sizeY,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inputU, bufferU, sizeU,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inputV, bufferV, sizeV,cudaMemcpyHostToDevice);
         // Specify block size
         const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
 
         // Calculate grid size to cover the whole image
         const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
 
-        // Start time
-        cudaEventRecord(start);
-
         // Run BoxFilter kernel on CUDA 
-        convertYUVtoRGB32<<<grid,block>>>(d_output,d_inputY,d_inputU,d_inputV, inputY.cols, inputY.rows, output.cols, output.rows, pitch, colorRange, colorSpace);
-
-        // Stop time
-        cudaEventRecord(stop);
-
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
+        convertYUVtoRGB32<<<grid,block>>>(d_output,d_inputY,d_inputU,d_inputV, width, height, widthOut, heightOut, lineSize, colorRange, colorSpace);
 
         //Free the device memory
         cudaFree(d_inputY);
         cudaFree(d_inputU);
         cudaFree(d_inputV);
-        cudaFree(d_output);
-
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
 }
