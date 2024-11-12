@@ -4,58 +4,49 @@
 #include "pictureFilter.h"
 #include <cuda.h>
 #include "cuda_runtime.h"
-
+#include "helper_math.h"
 #define BLOCK_SIZE      16
 #define FILTER_WIDTH    3       
 #define FILTER_HEIGHT   3       
 
 using namespace std;
 
-// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
-//*****************************************************************
-inline  __host__ __device__ float4 rgbaUintToFloat4(uint c)
+inline  __host__ __device__  uchar4 GetColorSrc(unsigned char* input, int position)
 {
-    float4 rgba;
-    rgba.x = c & 0xff;
-    rgba.y = (c >> 8) & 0xff;
-    rgba.z = (c >> 16) & 0xff;
-    rgba.w = (c >> 24) & 0xff;
-    return rgba;
+    uchar4 value;
+    value.x = input[position];
+    value.y = input[position + 1];
+    value.z = input[position + 2];
+    value.w = input[position + 3];
+    return value;
 }
 
-inline  __host__ __device__ uchar4 rgbaUintToUChar4(uint c)
+//----------------------------------------------------
+// Conversion du NV12 vers du 32 bits
+//----------------------------------------------------
+inline  __host__ __device__ void rgbaFloat4ToUchar4(unsigned char*& output, int position, float4 rgba, float fScale)
 {
-    uchar4 rgba;
-    rgba.x = c & 0xff;
-    rgba.y = (c >> 8) & 0xff;
-    rgba.z = (c >> 16) & 0xff;
-    rgba.w = (c >> 24) & 0xff;
-    return rgba;
-}
+    output[position] = (uchar)(rgba.x * fScale);
+    output[position + 1] = (uchar)(rgba.y * fScale);
+    output[position + 2] = (uchar)(rgba.z * fScale);
+    output[position + 3] = (uchar)(rgba.w * fScale);
 
-// Inline device function to convert floating point rgba color to 32-bit unsigned integer
-//*****************************************************************
-inline  __host__ __device__ uint rgbaFloat4ToUint(float4 rgba, float fScale)
-{
-    unsigned int uiPackedPix = 0U;
-    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
-    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
-    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
-    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
-    return uiPackedPix;
 }
 
 
-// Inline device function to convert floating point rgba color to 32-bit unsigned integer
-//*****************************************************************
-inline  __host__ __device__  uint rgbaUChar4ToUint(uchar4 rgba)
+inline  __host__ __device__  float4 GetColorSrc(int x, int y, unsigned char* input, int width, int height)
 {
-    unsigned int uiPackedPix = 0U;
-    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x);
-    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y)) << 8);
-    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z)) << 16);
-    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w)) << 24);
-    return uiPackedPix;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        int position = (x + y * width) * 4;
+        float4 value;
+        value.x = (float)input[position];
+        value.y = (float)input[position + 1];
+        value.z = (float)input[position + 2];
+        value.w = (float)input[position + 3];
+        return value;
+    }
+    return make_float4(0.0f, 0.0f, 0.0f,0.0f);
 }
 
 
@@ -63,22 +54,9 @@ inline  __host__ __device__  uint rgbaUChar4ToUint(uchar4 rgba)
 //Filtre Niveau de gris
 //----------------------------------------------------
 
-//---------------------------------------------------------------------
-//Limite les valeurs entre 0 et 1.0f
-//---------------------------------------------------------------------
-inline  __host__ __device__ float4 NormalizeValue(float4 sum)
-{
-	float4 value;
-	value.x = max(min(sum.x, 255.0f), 0.0f);
-	value.y = max(min(sum.y, 255.0f), 0.0f);
-	value.z = max(min(sum.z, 255.0f), 0.0f);  
-	value.w = max(min(sum.w, 255.0f), 0.0f); 
-	return value;
-}
-
 
 // Run Sharpening Filter on GPU
-__global__ void mosaicFilter(uint *srcImage, uint *dstImage, unsigned int width, unsigned int height, int fTileSize)
+__global__ void mosaicFilter(uchar*srcImage, uchar*dstImage, unsigned int width, unsigned int height, int fTileSize)
 {
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -94,25 +72,27 @@ __global__ void mosaicFilter(uint *srcImage, uint *dstImage, unsigned int width,
 	    int sourcex = __float2int_rd(s * w);
 	    int sourcey = __float2int_rd(t * h);
 	    
-	    int positionSrc = sourcex + sourcey * width;
-	    int positionDest = x + y * width;
+	    int positionSrc = (sourcex + sourcey * width) * 4;
+	    int positionDest = (x + y * width) * 4;
 
-	    dstImage[positionDest] = srcImage[positionSrc];
+        dstImage[positionDest] = srcImage[positionSrc];
+        dstImage[positionDest + 1] = srcImage[positionSrc + 1];
+        dstImage[positionDest + 2] = srcImage[positionSrc + 2];
+        dstImage[positionDest + 3] = srcImage[positionSrc + 3];
     }
 }
 
 
 // Run Sharpening Filter on GPU
-__global__ void solarizationFilter(uint *srcImage, uint *dstImage, unsigned int width, unsigned int height, int threshold)
+__global__ void solarizationFilter(uchar*srcImage, uchar*dstImage, unsigned int width, unsigned int height, int threshold)
 {
-   int x = blockIdx.x*blockDim.x + threadIdx.x;
-   int y = blockIdx.y*blockDim.y + threadIdx.y;
-   
-   int position = x + y * width;
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
 
 	if(x < width && y < height && y >= 0 && x >= 0)	
     {
-	    float4 colorInput = rgbaUintToFloat4(srcImage[position]);
+	    float4 colorInput = GetColorSrc(x,y,srcImage,width,height);
 	    float4 colorOutput = colorInput;
 	    
 	    float red = colorInput.x;
@@ -135,21 +115,24 @@ __global__ void solarizationFilter(uint *srcImage, uint *dstImage, unsigned int 
 	    else
 		    colorOutput.z = blue;
 
-	    dstImage[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
+        dstImage[position] = colorOutput.x;
+        dstImage[position + 1] = colorOutput.y;
+        dstImage[position + 2] = colorOutput.z;
+        dstImage[position + 3] = colorOutput.w;
     }
 }
 
 
 // Run Sharpening Filter on GPU
-__global__ void posterisationFilter(uint * srcImage, uint * dstImage, unsigned int width, unsigned int height, int level)
+__global__ void posterisationFilter(uchar* srcImage, uchar* dstImage, unsigned int width, unsigned int height, int level)
 {
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = x + y * width;
+   int position = (x + y * width) * 4;
 
 	if(x < width && y < height && y >= 0 && x >= 0)	
     {
-	    uchar4 colorInput = rgbaUintToUChar4(srcImage[position]);
+	    uchar4 colorInput = GetColorSrc(srcImage,position);
 	    uchar4 colorOutput = colorInput;
 	    int _levels = max(2, min(16, level));
 	    float _offset = (float)256 / (float)_levels;
@@ -162,18 +145,23 @@ __global__ void posterisationFilter(uint * srcImage, uint * dstImage, unsigned i
 	    colorOutput.y = (green * _offset);
 	    colorOutput.z = (blue * _offset);
 
-        dstImage[position] = rgbaUChar4ToUint(colorOutput);
+        dstImage[position] = colorOutput.x;
+        dstImage[position+1] = colorOutput.y;
+        dstImage[position+2] = colorOutput.z;
+        dstImage[position+3] = colorOutput.w;
     }
 }
+
+
 
 //----------------------------------------------------
 //Filtre Posterization
 //----------------------------------------------------
-__global__ void distorsionFilter(uint *output, uint * input, int width, int height, float correctionRadius)
+__global__ void distorsionFilter(uchar* output, uchar* input, int width, int height, float correctionRadius)
 {
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = x + y * width;
+   int position = (x + y * width) * 4;
 
     if(x < width && y < height && y >= 0 && x >= 0)	
     {
@@ -192,10 +180,34 @@ __global__ void distorsionFilter(uint *output, uint * input, int width, int heig
 	    int sourceX = round(halfWidth + theta*newX);
 	    int sourceY = round(halfHeight + theta * newY);
 	    
-	    int positionSrc = sourceX + sourceY * width;
-	    int position = x + y * width;
+	    int positionSrc = (sourceX + sourceY * width) * 4;
 
 	    output[position] = input[positionSrc];
+        output[position+1] = input[positionSrc + 1];
+        output[position + 2] = input[positionSrc + 2];
+        output[position + 3] = input[positionSrc + 3];
+    }
+}
+
+__global__ void sharpenMasking(uchar* output, uchar * input, uchar * gaussian, int width, int height, float sharpness)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+
+        float4 origin = GetColorSrc(x, y, input, width, height);
+        float4 color = GetColorSrc(x, y, gaussian, width, height);
+
+        color = origin - color;
+
+        float4 value = origin + color * sharpness;
+
+
+        value = clamp(value, 255.0f, 0.0f);
+
+        rgbaFloat4ToUchar4(output, position, value, 1.0f);
     }
 }
 
@@ -203,54 +215,20 @@ __global__ void distorsionFilter(uint *output, uint * input, int width, int heig
 // The wrapper is used to call sharpening filter 
 void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float correctionRadius)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+    uchar * d_input;
+    uchar * d_output;
 
-        // Calculate number of image channels
-        int channel = 4;//input.step/input.cols; 
+    d_input = (uchar * )input.ptr();
+    d_output = (uchar*)output.ptr();
 
-        // Calculate number of input & output bytes in each block
-        const int inputSize = input.cols * input.rows * channel;
-        const int outputSize = output.cols * output.rows * channel;
-        uint *d_input, *d_output;
-        
-        // Allocate device memory
-        cudaMalloc<uint>(&d_input,inputSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+    // Specify block size
+    const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
 
-        // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_input,input.ptr(),inputSize,cudaMemcpyDeviceToDevice);
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
 
-        // Specify block size
-        const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
-
-        // Calculate grid size to cover the whole image
-        const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
-
-        // Start time
-        cudaEventRecord(start);
-
-        // Run BoxFilter kernel on CUDA 
-        distorsionFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, correctionRadius);
-
-        // Stop time
-        cudaEventRecord(stop);
-
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
-
-        //Free the device memory
-        cudaFree(d_input);
-        cudaFree(d_output);
-
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
+    // Run BoxFilter kernel on CUDA 
+    distorsionFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, correctionRadius);
 }
 
 
@@ -258,54 +236,20 @@ void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, f
 // The wrapper is used to call sharpening filter 
 void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int threshold)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+    uchar* d_input;
+    uchar* d_output;
 
-        // Calculate number of image channels
-        int channel = 4;//input.step/input.cols; 
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
 
-        // Calculate number of input & output bytes in each block
-        const int inputSize = input.cols * input.rows * channel;
-        const int outputSize = output.cols * output.rows * channel;
-        uint *d_input, *d_output;
-        
-        // Allocate device memory
-        cudaMalloc<uint>(&d_input,inputSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
-        // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_input,input.ptr(),inputSize,cudaMemcpyDeviceToDevice);
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
 
-        // Specify block size
-        const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
-
-        // Calculate grid size to cover the whole image
-        const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
-
-        // Start time
-        cudaEventRecord(start);
-
-        // Run BoxFilter kernel on CUDA 
-        posterisationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, threshold);
-
-        // Stop time
-        cudaEventRecord(stop);
-
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
-
-        //Free the device memory
-        cudaFree(d_input);
-        cudaFree(d_output);
-
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
+    // Run BoxFilter kernel on CUDA 
+    posterisationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, threshold);
 }
 
 
@@ -313,108 +257,63 @@ void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output
 // The wrapper is used to call sharpening filter 
 void solarizationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int level)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+    uchar* d_input;
+    uchar* d_output;
 
-        // Calculate number of image channels
-        int channel = 4;//input.step/input.cols; 
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
 
-        // Calculate number of input & output bytes in each block
-        const int inputSize = input.cols * input.rows * channel;
-        const int outputSize = output.cols * output.rows * channel;
-        uint *d_input, *d_output;
-        
-        // Allocate device memory
-        cudaMalloc<uint>(&d_input,inputSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
-        // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_input,input.ptr(),inputSize,cudaMemcpyDeviceToDevice);
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
 
-        // Specify block size
-        const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
-
-        // Calculate grid size to cover the whole image
-        const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
-
-        // Start time
-        cudaEventRecord(start);
-
-        // Run BoxFilter kernel on CUDA 
-        solarizationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, level);
-
-        // Stop time
-        cudaEventRecord(stop);
-
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
-
-        //Free the device memory
-        cudaFree(d_input);
-        cudaFree(d_output);
-
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
+    // Run BoxFilter kernel on CUDA 
+    solarizationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, level);
 }
 
 
 // The wrapper is used to call sharpening filter 
 void mosaicFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int fTileSize)
 {
-        // Use cuda event to catch time
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+    uchar* d_input;
+    uchar* d_output;
 
-        // Calculate number of image channels
-        int channel = 4;//input.step/input.cols; 
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
 
-        // Calculate number of input & output bytes in each block
-        const int inputSize = input.cols * input.rows * channel;
-        const int outputSize = output.cols * output.rows * channel;
-        uint *d_input, *d_output;
-        
-        // Allocate device memory
-        cudaMalloc<uint>(&d_input,inputSize);
-        cudaMalloc<uint>(&d_output,outputSize);
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
-        // Copy data from OpenCV input image to device memory
-        cudaMemcpy(d_input,input.ptr(),inputSize,cudaMemcpyDeviceToDevice);
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
 
-        // Specify block size
-        const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
+    // Run BoxFilter kernel on CUDA 
+    mosaicFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, fTileSize);
 
-        // Calculate grid size to cover the whole image
-        const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
+}
 
-        // Start time
-        cudaEventRecord(start);
+// The wrapper is used to call sharpening filter 
+void sharpenMasking(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const cv::cuda::GpuMat& gaussian, float sharpness)
+{
+    uchar* d_input;
+    uchar* d_output;
+    uchar* gaussian_input;
 
-        // Run BoxFilter kernel on CUDA 
-        mosaicFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, fTileSize);
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+    gaussian_input = (uchar*)gaussian.ptr();
 
-        // Stop time
-        cudaEventRecord(stop);
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
 
-        //Copy data from device memory to output image
-        cudaMemcpy(output.ptr(),d_output,outputSize,cudaMemcpyDeviceToDevice);
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
 
-        //Free the device memory
-        cudaFree(d_input);
-        cudaFree(d_output);
+    // Run BoxFilter kernel on CUDA 
+    sharpenMasking << <grid, block >> > (d_input, d_output, gaussian_input, output.cols, output.rows, sharpness);
 
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        
-        // Calculate elapsed time in milisecond  
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cout<< "\nProcessing time on GPU (ms): " << milliseconds << "\n";
 }
 
 

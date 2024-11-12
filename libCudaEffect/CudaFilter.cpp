@@ -15,7 +15,7 @@
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
 #include <opencv2/cudafilters.hpp>
-
+#include <opencv2/photo/cuda.hpp>
 
 #include "pictureFilter.h"
 
@@ -204,9 +204,11 @@ void CCudaFilter::EdgePreservingFilter(cv::cuda::GpuMat& inputData, const int& f
 {
 	try
 	{
-		cv::cuda::GpuMat dest;
-		edgePreservingFilter(inputData, dest, flags, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+		cv::Mat dest;
+		cv::Mat input;
+		inputData.download(input);
+		edgePreservingFilter(input, dest, flags, sigma_s, sigma_r);
+		inputData.upload(dest);
 	}
 	catch (Exception& e)
 	{
@@ -220,10 +222,13 @@ void CCudaFilter::PencilSketch(cv::cuda::GpuMat& inputData, const double& sigma_
 {
 	try
 	{
-		cv::cuda::GpuMat img1;
-		cv::cuda::GpuMat dest;
-		pencilSketch(inputData, img1, dest, sigma_s, sigma_r, shade_factor);
-		dest.copyTo(inputData);
+
+		cv::Mat img1;
+		cv::Mat dest;
+		cv::Mat input;
+		inputData.download(input);
+		pencilSketch(input, img1, dest, sigma_s, sigma_r, shade_factor);
+		inputData.upload(dest);
 	}
 	catch (Exception& e)
 	{
@@ -237,9 +242,11 @@ void CCudaFilter::Stylization(cv::cuda::GpuMat& inputData, const double& sigma_s
 {
 	try
 	{
-		cv::cuda::GpuMat dest;
-		stylization(inputData, dest, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+		cv::Mat dest;
+		cv::Mat input;
+		inputData.download(input);
+		stylization(input, dest, sigma_s, sigma_r);
+		inputData.upload(dest);
 	}
 	catch (Exception& e)
 	{
@@ -273,28 +280,9 @@ void CCudaFilter::NlMeans(cv::cuda::GpuMat& inputData, const int& h, const int& 
 
 	try
 	{
-		cv::cuda::GpuMat ycbcr;
-		cv::cuda::GpuMat yChannel;
-		cv::cuda::GpuMat yChannelOut;
-
-		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
-
-		// Extract the Y channel
-		extractChannel(ycbcr, yChannel, 0);
-		extractChannel(ycbcr, yChannel, 0);
-
-		fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
-
-		// Merge the the color planes back into an Lab image
-		insertChannel(yChannelOut, ycbcr, 0);
-
-		// convert back to RGB
-		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
-
-		// Temporary Mat not reused, so release from memory.
-		yChannel.release();
-		ycbcr.release();
-		yChannelOut.release();
+		cv::cuda::GpuMat dest;
+		cv::cuda::fastNlMeansDenoisingColored(inputData, dest, h, h, templateWindowSize, searchWindowSize);
+		dest.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -310,11 +298,15 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 
 	try
 	{
-		cv::cuda::GpuMat ycbcr;
-		cv::cuda::GpuMat yChannel;
-		cv::cuda::GpuMat yChannelOut;
+		cv::Mat dest;
+		cv::Mat input;
+		inputData.download(input);
 
-		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cv::Mat ycbcr;
+		cv::Mat yChannel;
+		cv::Mat yChannelOut;
+
+		cv::cvtColor(input, ycbcr, COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
 		extractChannel(ycbcr, yChannel, 0);
@@ -325,12 +317,16 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR);
+
+		inputData.upload(dest);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
 		ycbcr.release();
 		yChannelOut.release();
+		dest.release();
+		
 	}
 	catch (Exception& e)
 	{
@@ -443,18 +439,24 @@ void CCudaFilter::Fusion(cv::cuda::GpuMat& inputData, const cv::cuda::GpuMat& se
 
 void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
 	try
 	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		cv::cuda::GpuMat cvDestBgra;
 		double sigma = 1;
         cv::Ptr<cv::cuda::Filter> filter3x3;
 		filter3x3 = cv::cuda::createGaussianFilter(CV_8UC1,CV_8UC1, Size(), sigma, sigma);
         filter3x3->apply(inputData, cvDestBgra);
-        cvDestBgra.copyTo(inputData);
+
+		sharpenMasking(inputData, out, cvDestBgra, sharpness);
         
-
-
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -509,20 +511,24 @@ void CCudaFilter::RGBFilter(const int& red, const int& green, const int& blue, c
 
 void CCudaFilter::FiltreMosaic(cv::cuda::GpuMat& inputData, const int& size)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
 	try
 	{
-		cv::cuda::GpuMat dest;
-		cv::cuda::GpuMat cvDestBgra;
-		cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		mosaicFilter(inputData, out, size);
 
-		cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "FiltreMosaic exception caught: " << err_msg << std::endl;
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -532,7 +538,7 @@ void CCudaFilter::Blur(const int& radius, cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		blur(inputData, inputData, Size(radius, radius));
+		cv::blur(inputData, inputData, Size(radius, radius));
 	}
 	catch (Exception& e)
 	{

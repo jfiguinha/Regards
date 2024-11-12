@@ -7,3 +7,4 @@ void mosaicFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int f
 void solarizationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int threshold);
 void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int level);
 void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float correctionRadius);
+void sharpenMasking(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const cv::cuda::GpuMat& gaussian, float sharpness);

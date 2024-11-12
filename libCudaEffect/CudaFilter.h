@@ -80,6 +80,7 @@ namespace Regards
 				float ratioX, float ratioY, int x, int y, float left, float top);
 
 			Chqdn3d* hq3d = nullptr;
+			cv::cuda::GpuMat out;
 			double oldLevelDenoise = 0;
 			int oldwidthDenoise = 0;
 			int oldheightDenoise = 0;
