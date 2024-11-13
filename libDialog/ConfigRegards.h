@@ -52,7 +52,7 @@ public:
 
 	wxComboBox* rbTransitionDiaporamaEffect;
 	wxComboBox* rbInterpolation;
-
+	wxComboBox* cbHardwareAccelerator;
 
 	wxRadioBox* rbOpenCLOpenGLInterop;
 	wxComboBox* rbVideoEncoderHard;
@@ -87,6 +87,7 @@ private:
 	void OnBtnCancelClick(wxCommandEvent& event);
 	//*)
 	bool isOk;
+	wxString oldAccelerator;
 	DECLARE_EVENT_TABLE()
 };
 

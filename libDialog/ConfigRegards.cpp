@@ -7,6 +7,11 @@
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 #include <ffmpeg_application.h>
+#include <opencv2/core/ocl.hpp>
+#ifndef __APPLE__
+#include <opencv2/cudaarithm.hpp>
+using namespace cv::cuda;
+#endif
 using namespace Regards::Viewer;
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
@@ -52,7 +57,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbDatabaseInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATAINMEMORY")));
 	rbAutoRotate = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBROTATEAUTO")));
 	rbInterpolation = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBINTERPOLATIONFILTER")));
-
+	cbHardwareAccelerator = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBHARDWAREACCELERATE")));
 	rbOpenCLOpenGLInterop = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBOPENGLOPENCLINTEROP")));
 
 	rbContrastCorrection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUTOCONTRAST")));
@@ -83,7 +88,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	        (wxObjectEventFunction)&ConfigRegards::OnBtnMusicDiaporamaClick);
 
 
-	init();
+	
 
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -117,6 +122,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 		}
 		else
 			rbVideoEncoderHard->SetStringSelection("none");
+
 	}
 #else
 
@@ -124,6 +130,19 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbVideoEncoderHard->SetStringSelection("videotoolbox");
 
 #endif
+
+	
+	cbHardwareAccelerator->AppendString("CPU");
+	if (cv::ocl::haveOpenCL())
+		cbHardwareAccelerator->AppendString("OpenCL");
+
+#ifndef __APPLE__
+	int cuda_devices_number = getCudaEnabledDeviceCount();
+	if(cuda_devices_number > 0)
+		cbHardwareAccelerator->AppendString("Cuda");
+#endif
+
+	init();
 
 	SetAutoLayout(TRUE);
 }
@@ -282,6 +301,23 @@ void ConfigRegards::init()
 	else
 		rbVideoDecoderHard->SetSelection(0);
 
+
+	if (regardsParam->GetIsUseCuda())
+	{
+		cbHardwareAccelerator->SetStringSelection("Cuda");
+		oldAccelerator = "Cuda";
+	}
+	else if (regardsParam->GetIsOpenCLSupport())
+	{
+		cbHardwareAccelerator->SetStringSelection("OpenCL");
+		oldAccelerator = "OpenCL";
+	}
+	else
+	{
+		cbHardwareAccelerator->SetStringSelection("CPU");
+		oldAccelerator = "CPU";
+	}
+
 	int skinMode = regardsParam->GetSkinWindowMode();
 	rbSkin->SetSelection(skinMode);
 }
@@ -382,6 +418,24 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetHardwareDecoder("");
 	else
 		regardsParam->SetHardwareDecoder(decoder);
+
+	wxString hardwareAccelerator = cbHardwareAccelerator->GetStringSelection();
+	if (hardwareAccelerator == "Cuda")
+	{
+		regardsParam->SetIsUseCuda(1);
+	}
+	else if (hardwareAccelerator == "OpenCL")
+	{
+		regardsParam->SetIsOpenCLSupport(1);
+	}
+	else
+	{
+		regardsParam->SetIsUseCuda(0);
+		regardsParam->SetIsOpenCLSupport(0);
+	}
+
+	if(oldAccelerator != hardwareAccelerator)
+		showInfosRestart = true;
 
 	if (oldencoder != encoder)
 		showInfosRestart = true;

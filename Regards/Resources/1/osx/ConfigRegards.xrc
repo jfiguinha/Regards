@@ -188,6 +188,18 @@
 										<pos>0,130</pos>
 										<size>360,70</size>
 								</object>
+								<object class="wxStaticBox" name="sbHardwareAccelerate">
+									<label>Hardware Accelerator</label>
+									<pos>0,210</pos>
+									<size>380,70</size>
+								</object>
+								<object class="wxComboBox" name="ID_CBHARDWAREACCELERATE">
+									<pos>10,240</pos>
+									<size>170,20</size>
+									<value>CPU</value>
+									<content>
+									</content>
+								</object>	
 							</object>
 						</object>
 						<object class="notebookpage">
