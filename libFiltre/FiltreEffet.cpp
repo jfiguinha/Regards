@@ -166,7 +166,7 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CImageLoadingFormat* bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, const bool& useCuda, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
@@ -184,9 +184,9 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CI
 #ifndef __APPLE__
 
 	//(regardsParam->GetIsUseCuda()
-	bool useCuda = regardsParam->GetIsUseCuda();
+	//bool useCuda = regardsParam->GetIsUseCuda();
 	bool supportCuda = regardsParam->GetIsCudaSupport();
-	if (useCuda && supportCuda && useOpenCL)
+	if (useCuda && supportCuda)
 	{
 		filtreEffet = new CCudaEffect(backColor, bitmap);
 		this->numLib = LIBCUDA;

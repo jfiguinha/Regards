@@ -190,7 +190,7 @@ void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, 
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 		auto cloudsParameter = static_cast<CCloudsEffectParameter*>(effectParameter);
 		filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude,
 		                     cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
@@ -222,7 +222,7 @@ CImageLoadingFormat* CCloudsFilter::ApplyEffect(CEffectParameter* effectParamete
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 		filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude,
 		                     cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
 		imageLoad = new CImageLoadingFormat();

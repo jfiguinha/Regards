@@ -36,11 +36,23 @@ bool CCudaEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 
 cv::UMat CCudaEffect::GetUMat()
 {
+	cv::cuda::GpuMat convert;
+	cv::Mat output;
 	cv::UMat image;
-	if (preview)
-		paramOutput.copyTo(image);
+
+	if (preview && !paramOutput.empty())
+	{
+		//cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		paramOutput.download(output);
+	}
 	else
-		input.copyTo(image);
+	{
+		//cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
+		input.download(output);
+
+	}
+
+	output.copyTo(image);
 
 	return image;
 }
@@ -52,16 +64,17 @@ cv::Mat CCudaEffect::GetMat()
 
 	if (preview && !paramOutput.empty())
 	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
+		//cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		paramOutput.download(output);
 	}
 	else
 	{
-		cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
+		//cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
+		input.download(output);
 
 	}
 
-	convert.download(output);
+	//convert.download(output);
 
 	return output;
 }
@@ -79,7 +92,7 @@ cv::cuda::GpuMat CCudaEffect::GetGpuMat()
 		input.copyTo(output);
 	}
 
-	cv::cuda::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	//cv::cuda::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
 
@@ -136,8 +149,8 @@ void CCudaEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		source = bitmap->GetCudaPicture();
 		//input.upload(local);
 
-		if (source.channels() == 4)
-			cv::cuda::cvtColor(source, input, cv::COLOR_BGRA2BGR);
+		if (source.channels() == 3)
+			cv::cuda::cvtColor(source, input, cv::COLOR_BGR2BGRA);
 		else if (source.channels() == 1)
 			cv::cuda::cvtColor(source, input, cv::COLOR_GRAY2BGR);
 		else

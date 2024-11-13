@@ -1595,7 +1595,7 @@ void CBitmapWndRender::RenderToScreenWithCudaSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, true, source);
+			filtreEffet = new CFiltreEffet(color, false, true, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
@@ -1662,10 +1662,14 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	muBitmap.lock();
 	bool bitmapIsLoad = false;
 
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	bool useCuda = regardsParam->GetIsUseCuda();
+	bool useOpenCL = regardsParam->GetIsOpenCLSupport();
+
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, true, source);
+			filtreEffet = new CFiltreEffet(color, useOpenCL, useCuda, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
@@ -1758,7 +1762,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, false, source);
+			filtreEffet = new CFiltreEffet(color, false, false, source);
 		else
 			filtreEffet->SetBitmap(source);
 	}
@@ -1849,15 +1853,18 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 
 	if (source != nullptr)
 	{
-		//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
-
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		bool useCuda = regardsParam->GetIsUseCuda();
+		bool useOpenCL = regardsParam->GetIsOpenCLSupport();
 		CRgbaquad color;
 
 		int widthOutput = static_cast<int>(GetBitmapWidthWithRatio());
 		int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, true, source);
+		{
+			filtreEffet = new CFiltreEffet(color, useOpenCL, useCuda, source);
+		}
 		else
 			filtreEffet->SetBitmap(source);
 

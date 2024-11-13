@@ -174,7 +174,7 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 		auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();
@@ -196,7 +196,7 @@ CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 		auto BokehEffectParameter = static_cast<CBokehEffectParameter*>(effectParameter);
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();

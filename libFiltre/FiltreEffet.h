@@ -20,7 +20,7 @@ namespace Regards::OpenCV
 class CFiltreEffet
 {
 public:
-	CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CImageLoadingFormat* bitmap);
+	CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, const bool& useCuda, CImageLoadingFormat* bitmap);
 	virtual ~CFiltreEffet();
 
 	void SetPreviewMode(const bool& value);

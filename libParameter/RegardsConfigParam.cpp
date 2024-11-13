@@ -168,7 +168,7 @@ int CRegardsConfigParam::GetIsCudaSupport()
 
 void CRegardsConfigParam::SetIsUseCuda(const int& useCuda)
 {
-	this->useCuda = cudaSupport;
+	this->useCuda = useCuda;
 }
 
 int CRegardsConfigParam::GetIsUseCuda()
@@ -458,7 +458,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("numSuperResolution", to_string(numSuperResolution)));
 	sectionPosition->append_node(node("isThumbnailOpenCV", to_string(isThumbnailOpenCV)));
 	sectionPosition->append_node(node("cudaSupport", to_string(cudaSupport)));
-    sectionPosition->append_node(node("useCuda", to_string(cudaSupport)));
+    sectionPosition->append_node(node("useCuda", to_string(useCuda)));
 }
 
 

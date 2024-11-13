@@ -127,7 +127,7 @@ CImageLoadingFormat* CWaveFilter::ApplyEffect(CEffectParameter* effectParameter,
 
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
@@ -188,7 +188,7 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 	{
 		CImageLoadingFormat image;
 		image.SetPicture(source);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
