@@ -269,7 +269,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const Mat& pBitmap)
 	return selectAngle;
 }
 
-void CFaceDetector::LoadModel(const bool& openCLCompatible)
+void CFaceDetector::LoadModel(const bool& openCLCompatible, const bool& cudaCompatible)
 {
 	try
 	{
@@ -320,8 +320,12 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible)
 		//real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
 		//colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
 		//gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
-		detectFace.LoadModel(openCLCompatible);
-		detectFacePCN.LoadModel(openCLCompatible);
+
+
+		detectFace.LoadModel(openCLCompatible, cudaCompatible);
+		detectFacePCN.LoadModel(openCLCompatible, cudaCompatible);
+
+
 		cout << "Loaded model" << endl;
 	}
 	catch (Exception& e)

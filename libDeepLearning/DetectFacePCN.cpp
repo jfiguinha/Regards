@@ -168,7 +168,7 @@ int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 }
 
 
-void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
+void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCompatible)
 {
     wxString documentPath = CFileUtility::GetDocumentFolderPath();
     
@@ -200,19 +200,25 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
 
 
 		net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		if (openCLCompatible)
+		if(cudaCompatible)
+			net_1.setPreferableTarget(DNN_TARGET_CUDA_FP16);
+		else if (openCLCompatible)
 			net_1.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
 		else
 			net_1.setPreferableTarget(DNN_TARGET_CPU);
 
 		net_2.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		if (openCLCompatible)
+		if (cudaCompatible)
+			net_2.setPreferableTarget(DNN_TARGET_CUDA_FP16);
+		else if (openCLCompatible)
 			net_2.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
 		else
 			net_2.setPreferableTarget(DNN_TARGET_CPU);
 
 		net_3.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		if (openCLCompatible)
+		if (cudaCompatible)
+			net_3.setPreferableTarget(DNN_TARGET_CUDA_FP16);
+		else if (openCLCompatible)
 			net_3.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
 		else
 			net_3.setPreferableTarget(DNN_TARGET_CPU);

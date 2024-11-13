@@ -35,10 +35,10 @@ vector<int> CDeepLearning::FindFace(const cv::Mat& pictureData, const wxString& 
 }
 
 
-void CDeepLearning::LoadRessource(const bool& openCLCompatible)
+void CDeepLearning::LoadRessource(const bool& openCLCompatible, const bool& cudaCompatible)
 {
 	//CDetectRotation::LoadModel(rotation_json);
-	CFaceDetector::LoadModel(openCLCompatible);
+	CFaceDetector::LoadModel(openCLCompatible, cudaCompatible);
 	muLoading.lock();
 	isload = true;
 	muLoading.unlock();

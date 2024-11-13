@@ -369,15 +369,18 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 void CListFace::LoadResource(void* param)
 {
 	bool openCLCompatible = false;
+	bool cudaCompatible = false;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
 		if (config->GetIsOpenCLSupport())
 			openCLCompatible = true;
+		if (config->GetIsCudaSupport())
+			cudaCompatible = true;
 	}
 
 	auto path = static_cast<CThreadFace*>(param);
-	CDeepLearning::LoadRessource(openCLCompatible);
+	CDeepLearning::LoadRessource(openCLCompatible, cudaCompatible);
 
 	if (path->mainWindow != nullptr)
 	{

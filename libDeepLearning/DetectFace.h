@@ -19,7 +19,7 @@ public:
 	CDetectFace(void);
 	~CDetectFace(void);
 
-	void LoadModel(const bool& openCLCompatible);
+	void LoadModel(const bool& openCLCompatible, const bool& cudaCompatible = false);
 	void DetectFace(const Mat& bitmap, const float& confidenceThreshold, std::vector<CFace>& listOfFace,
 	                std::vector<cv::Rect>& pointOfFace);
 	int FindNbFace(const Mat& bitmap, const float& confidenceThreshold, float& bestConfidence);

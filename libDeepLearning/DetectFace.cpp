@@ -192,7 +192,7 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 #endif
 }
 
-void CDetectFace::LoadModel(const bool& openCLCompatible)
+void CDetectFace::LoadModel(const bool& openCLCompatible, const bool& cudaCompatible)
 {
     wxString documentPath = CFileUtility::GetDocumentFolderPath();
     
@@ -221,7 +221,9 @@ void CDetectFace::LoadModel(const bool& openCLCompatible)
 		                            CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
-		if (openCLCompatible)
+		if(cudaCompatible)
+			net.setPreferableTarget(DNN_TARGET_CUDA);
+		else if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			net.setPreferableTarget(DNN_TARGET_CPU);

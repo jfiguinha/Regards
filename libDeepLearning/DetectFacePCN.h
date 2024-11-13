@@ -12,7 +12,7 @@ public:
 	CDetectFacePCN(void);
 	~CDetectFacePCN(void);
 
-	void LoadModel(const bool& openCLCompatible);
+	void LoadModel(const bool& openCLCompatible, const bool& cudaCompatible);
 	void DetectFace(const cv::Mat& source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
 	int DetectFaceAngle(const cv::Mat& frameOpenCVDNN);
 

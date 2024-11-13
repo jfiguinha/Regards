@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			static void CleanRecognition();
-			static void LoadRessource(const bool& openCLCompatible);
+			static void LoadRessource(const bool& openCLCompatible, const bool& cudaCompatible);
 			static vector<int> FindFace(const cv::Mat& pictureData, const wxString& filename,
 			                            const bool& fastDetection);
 			static void DetectEyes(const cv::Mat& pBitmap, const bool& fastDetection);
