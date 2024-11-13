@@ -1,6 +1,7 @@
 //
 // CUDA implementation of Image Sharpening Filter
 //
+
 #include "pictureFilter.h"
 #include <cuda.h>
 #include "cuda_runtime.h"
@@ -34,7 +35,7 @@ inline  __host__ __device__ void rgbaFloat4ToUchar4(unsigned char*& output, int 
 }
 
 
-inline  __host__ __device__  float4 GetColorSrc(int x, int y, unsigned char* input, int width, int height)
+inline  __host__ __device__  float4 GetColorSrc(int x, int y, const unsigned char* input, int width, int height)
 {
     if (x < width && y < height && y >= 0 && x >= 0)
     {
@@ -157,7 +158,7 @@ __global__ void posterisationFilter(uchar* srcImage, uchar* dstImage, unsigned i
 //----------------------------------------------------
 //Filtre Posterization
 //----------------------------------------------------
-__global__ void distorsionFilter(uchar* output, uchar* input, int width, int height, float correctionRadius)
+__global__ void distorsionFilter(uchar* input, uchar* output,  int width, int height, float correctionRadius)
 {
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -189,7 +190,108 @@ __global__ void distorsionFilter(uchar* output, uchar* input, int width, int hei
     }
 }
 
-__global__ void sharpenMasking(uchar* output, uchar * input, uchar * gaussian, int width, int height, float sharpness)
+//---------------------------------------------------------------------
+//Limite les valeurs entre 0 et 1.0f
+//---------------------------------------------------------------------
+inline  __host__ __device__ float4 NormalizeValue(float4 sum)
+{
+    float4 value;
+    value.x = max(min(sum.x, 255.0f), 0.0f);
+    value.y = max(min(sum.y, 255.0f), 0.0f);
+    value.z = max(min(sum.z, 255.0f), 0.0f);
+    value.w = max(min(sum.w, 255.0f), 0.0f);
+    return value;
+}
+
+//---------------------------------------------------------------------
+//Application du filtre Motion Blur
+//---------------------------------------------------------------------
+__global__ void motionBlur(uchar* input, uchar * output,  int width, int height, const float* kernelMotion, const int2 * offsets, int kernelSize)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 sum = make_float4(0);
+        for (int i = 0; i < kernelSize; i++)
+        {
+            int u = x + offsets[i].x;
+            int v = y + offsets[i].y;
+            if ((u < 0) || (u >= width) || (v < 0) || (v >= height))
+                continue;
+
+            float4 color = kernelMotion[i] * GetColorSrc(u, v, input, width, height);
+            sum = sum + color;
+        }
+
+        rgbaFloat4ToUchar4(output, position, NormalizeValue(sum), 1.0f);
+
+    }
+}
+
+//---------------------------------------------------------------------
+//Application du filtre Soften
+//	kernel = {  1, 1, 1, 1, 8, 1, 1, 1, 1 };
+//	factor = 16;
+//---------------------------------------------------------------------
+__global__ void softenFilter(uchar* input, uchar * output,  int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 sum = GetColorSrc(x - 1, y - 1, input, width, height);
+        sum += GetColorSrc(x, y - 1, input, width, height);
+        sum += GetColorSrc(x + 1, y - 1, input, width, height);
+        sum += GetColorSrc(x - 1, y, input, width, height);
+        sum += GetColorSrc(x, y, input, width, height) * make_float4(8.0f);
+        sum += GetColorSrc(x + 1, y, input, width, height);
+        sum += GetColorSrc(x - 1, y + 1, input, width, height);
+        sum += GetColorSrc(x, y + 1, input, width, height);
+        sum += GetColorSrc(x + 1, y + 1, input, width, height);
+        sum = sum / make_float4(16.0f);
+        rgbaFloat4ToUchar4(output, position, sum, 1.0f);
+    }
+}
+
+__global__ void sepiaFilter(uchar* input, uchar* output,  int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 color = GetColorSrc(x, y, input, width, height);
+        float4 color_out = make_float4(0.0f);
+        color_out.x = 0.272 * color.x +0.534 * color.y + 0.131 * color.z;
+        color_out.y = 0.349 * color.x + 0.686 * color.y + 0.168 * color.z; //0.349, 0.686, 0.168 
+        color_out.z = 0.393 * color.x + 0.769 * color.y + 0.189 * color.z; //0.393, 0.769, 0.189
+        color_out.w = color.w;
+        rgbaFloat4ToUchar4(output, position, color_out, 1.0f);
+    }
+}
+
+__global__ void cuda_filter2d(uchar* input, uchar* output, float* kernelMotion, int width, int height, int kernelSize)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 data = GetColorSrc(x, y, input, width, height);
+        float4 sum = make_float4(0);
+        for (int i = 0; i < kernelSize; i++)
+        {
+            float4 color = kernelMotion[i] * data;
+            sum = sum + color;
+        }
+        rgbaFloat4ToUchar4(output, position, NormalizeValue(sum), 1.0f);
+    }
+}
+
+__global__ void sharpenMasking(uchar* input, uchar* output, uchar * gaussian, int width, int height, float sharpness)
 {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -211,6 +313,234 @@ __global__ void sharpenMasking(uchar* output, uchar * input, uchar * gaussian, i
     }
 }
 
+inline  __host__ __device__ float Noise2d(int x, int y)
+{
+    int n = ((x + (y << 6)) << 13) ^ (x + (y << 6));
+    return 0.2f * (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+inline  __host__ __device__ float CalculPosValue(int Xint, int Yint)
+{
+    int m = Xint + ((Yint) << 6);
+    int n = (m << 13) ^ (m);
+    return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+inline  __host__ __device__ float GetValue(float x, float y)
+{
+    int Xint = (int)x;
+    int Yint = (int)y;
+
+    float Xfrac = x - (float)Xint;
+    float Yfrac = y - (float)Yint;
+
+    float x0y0, x1y0, x0y1, x1y1;
+
+    if (Xint != 0 || Yint != 0)
+    {
+        x0y0 = CalculPosValue(Xint, Yint);
+        x1y0 = CalculPosValue(Xint + 1, Yint);
+        x0y1 = CalculPosValue(Xint, Yint + 1);
+        x1y1 = CalculPosValue(Xint + 1, Yint + 1);
+    }
+    else
+    {
+        x0y0 = Noise2d(0, 0);
+        x1y0 = Noise2d(1, 0);
+        x0y1 = Noise2d(0, 1);
+        x1y1 = Noise2d(1, 1);
+    }
+
+    //interpolate between those values according to the x and y fractions
+    float v1 = (x0y0 + (Xfrac * (x1y0 - x0y0)));
+    float v2 = (x0y1 + (Xfrac * (x1y1 - x0y1)));
+    float fin = (v1 + (Yfrac * (v2 - v1)));
+
+    return fin;
+}
+
+__global__ void noiseFilter(uchar* input, uchar * output, int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 n = make_float4(Noise2d(x, y));
+        float4 src_color = GetColorSrc(x, y, input, width, height) + n * 255.0f;
+        float4 minimal = make_float4(0.0f);
+        float4 maximal = make_float4(255.0f);
+        src_color = clamp(src_color, minimal, maximal);
+        rgbaFloat4ToUchar4(output, position, src_color, 1.0f);
+    }
+}
+
+
+inline  __host__ __device__ float EuclideanDist(float tcX, float tcY, float centerX, float centerY)
+{
+    float diffX = tcX - centerX;
+    float diffY = tcY - centerY;
+    return sqrt(diffX * diffX + diffY * diffY);
+}
+
+inline  __host__ __device__ float DotProduct(float tcX, float tcY, float qX, float qY)
+{
+    return tcX * qX + tcY * qY;
+}
+
+inline  __host__ __device__ float4 PostFX(uchar * input, int x, int y, float radius, float angleDegree, int widthIn, int heightIn)
+{
+    float xOut = x;
+    float yOut = y;
+
+    //Calcul du centre
+    float centerX = (float)widthIn / 2.0f;
+    float centerY = (float)heightIn / 2.0f;
+
+    float tcX = (float)x - centerX;
+    float tcY = (float)y - centerY;
+
+    float angle = angleDegree * 0.0174532925;
+
+    float dist = EuclideanDist(x, y, centerX, centerY);
+
+    if (dist < radius)
+    {
+        float percent = (radius - dist) / radius;
+        float theta = percent * percent * angle * 8.0;
+        float s = sin(theta);
+        float c = cos(theta);
+        xOut = DotProduct(tcX, tcY, c, -s);
+        yOut = DotProduct(tcX, tcY, s, c);
+
+        tcX = xOut;
+        tcY = yOut;
+    }
+
+    tcX += centerX;
+    tcY += centerY;
+
+    return GetColorSrc((int)tcX, (int)tcY, input, widthIn, heightIn);
+}
+
+__global__ void swirlFilter(uchar* input, uchar * output,  int width, int height, float radius, float angleDegree)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 color = PostFX(input, x, y, radius, angleDegree, width, height);
+        rgbaFloat4ToUchar4(output, position, color, 1.0f);
+    }
+}
+
+
+void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<float>& kernelMotion, int kernelSize)
+{
+    uchar* d_input;
+    uchar* d_output;
+    float* f_kernel;
+
+    float* kernel = new float[kernelMotion.size()];
+    for (auto i = 0; i < kernelMotion.size(); i++)
+        kernel[i] = kernelMotion[i];
+
+    cudaMalloc<float>(&f_kernel, kernelMotion.size());
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    cuda_filter2d << <grid, block >> > (d_input, d_output, f_kernel, output.cols, output.rows, kernelSize);
+
+    cudaFree(f_kernel);
+    delete[] kernel;
+}
+
+// The wrapper is used to call sharpening filter 
+void noiseFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
+}
+
+
+// The wrapper is used to call sharpening filter 
+void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float radius, float angleDegree)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    swirlFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, radius, angleDegree);
+}
+
+
+// The wrapper is used to call sharpening filter 
+void sepiaFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    sepiaFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
+}
+
+// The wrapper is used to call sharpening filter 
+void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    softenFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
+}
 
 // The wrapper is used to call sharpening filter 
 void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float correctionRadius)
@@ -252,6 +582,50 @@ void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output
     posterisationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, threshold);
 }
 
+
+void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize)
+{
+    uchar* d_input;
+    uchar* d_output;
+    float* f_kernel;
+    int2 * i_offsetsMotion;
+
+    float * kernel = new float[kernelMotion.size()];
+    for (auto i = 0; i < kernelMotion.size(); i++)
+        kernel[i] = kernelMotion[i];
+
+    int2* offsetsMotion = new int2[offsets.size()];
+    for (auto i = 0; i < offsets.size(); i++)
+    {
+        offsetsMotion[i].x = offsets[i].x;
+        offsetsMotion[i].y = offsets[i].y;
+    }
+
+    // Allocate device memory
+    cudaMalloc<float>(&f_kernel, kernelMotion.size());
+    cudaMalloc<int2>(&i_offsetsMotion, offsets.size());
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    cudaMemcpy(f_kernel, kernel, kernelMotion.size() * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(i_offsetsMotion, offsetsMotion, offsets.size() * sizeof(int2), cudaMemcpyHostToDevice);
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    motionBlur << <grid, block >> > (d_input, d_output, output.cols, output.rows, f_kernel, i_offsetsMotion, kernelSize);
+
+    cudaFree(f_kernel);
+    cudaFree(offsetsMotion);
+
+    delete[] i_offsetsMotion;
+    delete[] f_kernel;
+}
 
 
 // The wrapper is used to call sharpening filter 

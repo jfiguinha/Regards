@@ -538,7 +538,11 @@ void CCudaFilter::Blur(const int& radius, cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::blur(inputData, inputData, Size(radius, radius));
+		cv::cuda::GpuMat cvDestBgra;
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createBoxFilter(inputData.type(), inputData.type(), Size(radius, radius));
+		filter3x3->apply(inputData, cvDestBgra);
+		cvDestBgra.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -553,7 +557,11 @@ void CCudaFilter::GaussianBlur(const int& radius, const int& boxSize, cv::cuda::
 
 	try
 	{
-		cv::GaussianBlur(inputData, inputData, Size(boxSize, boxSize), radius);
+		cv::cuda::GpuMat cvDestBgra;
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createGaussianFilter(inputData.type(), inputData.type(), Size(boxSize, boxSize), radius, radius);
+		filter3x3->apply(inputData, cvDestBgra);
+		cvDestBgra.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -564,16 +572,29 @@ void CCudaFilter::GaussianBlur(const int& radius, const int& boxSize, cv::cuda::
 }
 
 void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets,
-	const int& size,
+	const int& kernelSize,
 	cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
@@ -601,7 +622,7 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 {
-
+	/*
 	try
 	{
 		// Construct kernel (all entries initialized to 0)
@@ -615,7 +636,7 @@ void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 		kernel.at<float>(1, 2) = -1.0;
 
 		cv::cuda::GpuMat dest;
-		filter2D(inputData, dest, inputData.depth(), kernel);
+		cv::cuda::filter2D(inputData, dest, inputData.depth(), kernel);
 		dest.copyTo(inputData);
 		dest.release();
 		kernel.release();
@@ -626,33 +647,67 @@ void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 		std::cout << "Sharpen exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-}
-
-void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
-{
+	*/
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
 	try
 	{
-		Mat kernel(3, 3, CV_32F, Scalar(0));
-		kernel.at<float>(0, 0) = -1.0;
-		kernel.at<float>(0, 1) = -1.0;
-		kernel.at<float>(0, 2) = -1.0;
-		kernel.at<float>(1, 0) = -1.0;
-		kernel.at<float>(1, 1) = 9.0;
-		kernel.at<float>(1, 2) = -1.0;
-		kernel.at<float>(2, 0) = -1.0;
-		kernel.at<float>(2, 1) = -1.0;
-		kernel.at<float>(2, 2) = -1.0;
-		cv::cuda::GpuMat dest;
-		filter2D(inputData, dest, inputData.depth(), kernel);
-		dest.copyTo(inputData);
-		dest.release();
-		kernel.release();
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		vector<float> data;
+		data.push_back(0.0f);
+		data.push_back(-1.0f);
+		data.push_back(0.0f);
+		data.push_back(-1.0f);
+		data.push_back(5.0f);
+		data.push_back(-1.0f);
+		data.push_back(0.0f);
+		data.push_back(-1.0f);
+		data.push_back(0.0f);
+		cuda_filter2d(inputData, out, data, 9);
+
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
 		const char* err_msg = e.what();
-		std::cout << "SharpenStrong exception caught: " << err_msg << std::endl;
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
+{
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
+
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		vector<float> data;
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		data.push_back(9.0f);
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		data.push_back(-1.0f);
+		cuda_filter2d(inputData, out, data, 9);
+
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -682,14 +737,28 @@ void CCudaFilter::Edge(cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::FiltreConvolution(const wxString& programName, const wxString& functionName, cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		if (functionName == "Soften")
+			softenFilter(inputData, out);
 
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 void CCudaFilter::ErodeDilate(const wxString& functionName, cv::cuda::GpuMat& inputData)
@@ -713,41 +782,81 @@ void CCudaFilter::ErodeDilate(const wxString& functionName, cv::cuda::GpuMat& in
 void CCudaFilter::Posterize(const float& level, const float& gamma, cv::cuda::GpuMat& inputData)
 {
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		posterisationFilter(inputData, out, level);
+
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 
 void CCudaFilter::LensDistortion(const float& strength, cv::cuda::GpuMat& inputData)
 {
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
-	double _strength = static_cast<double>(strength) / 100;
-	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		double _strength = static_cast<double>(strength) / 100;
+		double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		distorsionFilter(inputData, out, correctionRadius);
+			
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 
 void CCudaFilter::Solarize(const long& threshold, cv::cuda::GpuMat& inputData)
 {
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		solarizationFilter(inputData, out, threshold);
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
@@ -767,13 +876,26 @@ void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::Noise(cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		noiseFilter(inputData, out);
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 
@@ -792,15 +914,27 @@ void CCudaFilter::Flip(const wxString& functionName, cv::cuda::GpuMat& inputData
 
 void CCudaFilter::Swirl(const float& radius, const float& angle, cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
-	cv::cuda::GpuMat dest;
-	cv::cuda::GpuMat cvDest;
-	cv::cuda::GpuMat cvDestBgra;
-	cv::cuda::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
+		swirlFilter(inputData, out, radius, angle);
 
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 
-	cv::cuda::cvtColor(dest, inputData, COLOR_BGRA2BGR);
 }
 
 
@@ -830,14 +964,26 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 	{
 		if (functionName == "Sepia")
 		{
-			Mat kernel =
-				(cv::Mat_<float>(3, 3)
-					<<
-					0.272, 0.534, 0.131,
-					0.349, 0.686, 0.168,
-					0.393, 0.769, 0.189);
+			if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+			{
+				out.release();
+				out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+			}
 
-			cv::transform(inputData, inputData, kernel);
+			try
+			{
+				cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+
+				sepiaFilter(inputData, out);
+
+				cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+			}
+			catch (Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
 		}
 		else if (functionName == "Negatif")
 		{
@@ -902,11 +1048,14 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 	}
 	try
 	{
-		cv::cuda::GpuMat ycbcr;
+		cv::Mat input;
+		inputData.download(input);
+
+		Mat ycbcr;
 		Mat yChannel;
 		Mat yChannelOut;
 
-		cv::cuda::cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cv::cvtColor(input, ycbcr, COLOR_BGR2YCrCb);
 
 		std::vector<Mat> planes(3);
 		split(ycbcr, planes);
@@ -922,7 +1071,9 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cv::cuda::cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR);
+
+		inputData.upload(input);
 
 		ycbcr.release();
 		yChannel.release();
@@ -1026,15 +1177,6 @@ Rect CCudaFilter::CalculRect(int widthIn, int heightIn, int widthOut, int height
 cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	cv::cuda::GpuMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
-
-
-
-
-#ifndef OPENCV_METHOD
-
-	return Interpolation(widthOut, heightOut, rc, method, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
-
-#else
 
 	cv::cuda::GpuMat cvImage;
 
@@ -1188,9 +1330,6 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 	}
 
 	return cvImage;
-#endif
-
-
 }
 
 

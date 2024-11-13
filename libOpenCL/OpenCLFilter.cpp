@@ -664,7 +664,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	paramkernelMotion->SetValue(static_cast<cl_context>(ocl::Context::getDefault(false).ptr()), kernel, size, flag);
 	vecParam.push_back(paramkernelMotion);
 
-	auto offsetsMotion = new int[kernelMotion.size() * 2];
+	auto offsetsMotion = new int[offsets.size() * 2];
 	for (auto i = 0, j = 0; i < offsets.size(); i++, j += 2)
 	{
 		offsetsMotion[j] = offsets[i].x;
