@@ -52,15 +52,18 @@ cv::cuda::GpuMat CCudaEffectVideo::GetGpuMat(const bool& src)
 
 	if (src)
 	{
-		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		paramSrc.copyTo(output);
+		//cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 	else if (interpolatePicture)
 	{
-		cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
+		paramOutput.copyTo(output);
+		//cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
 	}
 	else
 	{
-		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
+		paramSrc.copyTo(output);
+		//cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
 	}
 
 
@@ -92,11 +95,11 @@ void CCudaEffectVideo::SetMatrix(cv::Mat& frame)
 {
 
 
-	if (frame.channels() == 4)
+	if (frame.channels() == 3)
 	{
 		cv::cuda::GpuMat mat;
 		mat.upload(frame);
-		cv::cuda::cvtColor(mat, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::cuda::cvtColor(mat, paramSrc, cv::COLOR_BGR2BGRA);
 	}
 	else
 		paramSrc.upload(frame);
@@ -112,17 +115,18 @@ cv::Mat CCudaEffectVideo::GetMatrix(const bool& src)
 
 	if (src)
 	{
-		cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
+		//cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		paramSrc.copyTo(convert);
 	}
 	else if (interpolatePicture)
 	{
-		cv::cuda::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramOutput.copyTo(output);
+		//cv::cuda::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
+		paramOutput.copyTo(convert);
 	}
 	else
 	{
-		cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		//cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
+		paramSrc.copyTo(convert);
 
 	}
 
@@ -146,7 +150,7 @@ void CCudaEffectVideo::ConvertToBgr()
 {
 
 	if (!paramSrc.empty())
-		cv::cuda::cvtColor(paramSrc, paramSrc, cv::COLOR_RGB2BGR);
+		cv::cuda::cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
 
 }
 
@@ -380,10 +384,10 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 	int nWidth = tmp_frame->width;
 	int nHeight = tmp_frame->height;
 
-	if (out.size().height != nHeight || out.size().width != nWidth)
+	if (paramSrc.size().height != nHeight || paramSrc.size().width != nWidth)
 	{
-		out.release();
-		out = cv::cuda::GpuMat(nHeight, nWidth, CV_8UC4);
+		paramSrc.release();
+		paramSrc = cv::cuda::GpuMat(nHeight, nWidth, CV_8UC4);
 	}
 
 	if (tmp_frame->format == AV_PIX_FMT_NV12)
@@ -393,13 +397,13 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
 		{
 			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-			convertNV12toRGB32(out, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+			convertNV12toRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
 
 		}
 		else
-			convertNV12toRGB32(out, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+			convertNV12toRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
 		//muBitmap.unlock();
@@ -410,14 +414,14 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
 		{
 			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-			convertYUVtoRGB32(out, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+			convertYUVtoRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
 				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
 		}
 		else
 		{
-			convertYUVtoRGB32(out, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+			convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
 				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
@@ -428,6 +432,9 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 		//muBitmap.unlock();
 	}
 
+
+	
+	/*
 	try
 	{
 		cv::cuda::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);

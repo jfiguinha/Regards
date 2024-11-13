@@ -183,8 +183,10 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CI
 
 #ifndef __APPLE__
 
-	bool useCuda = regardsParam->GetIsCudaSupport();
-	if (useCuda)
+	//(regardsParam->GetIsUseCuda()
+	bool useCuda = regardsParam->GetIsUseCuda();
+	bool supportCuda = regardsParam->GetIsCudaSupport();
+	if (useCuda && supportCuda && useOpenCL)
 	{
 		filtreEffet = new CCudaEffect(backColor, bitmap);
 		this->numLib = LIBCUDA;
