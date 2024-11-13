@@ -348,9 +348,12 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
 
-		cv::cuda::GpuMat gray;
-		cv::cuda::cvtColor(inputData, gray, COLOR_BGR2GRAY);
-
+		cv::cuda::GpuMat gpuGray;
+		cv::Mat gray;
+		cv::Mat color;
+		cv::cuda::cvtColor(inputData, gpuGray, COLOR_BGRA2GRAY);
+		gpuGray.download(gray);
+		inputData.download(color);
 		if (clipHistPercent == 0)
 		{
 			// keep full available range
@@ -358,14 +361,14 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		}
 		else
 		{
-			cv::cuda::GpuMat h;
+			cv::Mat h;
 
 			std::vector<int> channels = { 0 }; // Analyze only the channel 0.
 			std::vector<int> hsize = { 256 };
 			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
 			std::vector<float> hranges = { 0, 256 }; // The range is between 0 - 255 (so less than 256).
 
-			calcHist(std::vector<cv::cuda::GpuMat>(1, gray), channels, noArray(), h, hsize, hranges);
+			cv::calcHist(std::vector<cv::Mat>(1, gray), channels, noArray(), h, hsize, hranges);
 
 			Mat hist;
 
@@ -404,7 +407,9 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
-		cv::convertScaleAbs(inputData, inputData, alpha, beta);
+		cv::convertScaleAbs(color, color, alpha, beta);
+
+		inputData.upload(color);
 	}
 	catch (Exception& e)
 	{
@@ -599,7 +604,7 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 
 void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 {
-
+	/*
 	try
 	{
 		// Construct kernel (all entries initialized to 0)
@@ -616,6 +621,37 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 	{
 		const char* err_msg = e.what();
 		std::cout << "Emboss exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+	*/
+
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
+
+	try
+	{
+		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		vector<float> data;
+		data.push_back(-1.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(1.0f);
+		cuda_filter2d(inputData, out, data, 9);
+
+		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "SharpenMasking exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
@@ -745,12 +781,12 @@ void CCudaFilter::FiltreConvolution(const wxString& programName, const wxString&
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		if (functionName == "Soften")
+		{
 			softenFilter(inputData, out);
+			out.copyTo(inputData);
+		}
 
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -763,13 +799,20 @@ void CCudaFilter::FiltreConvolution(const wxString& programName, const wxString&
 
 void CCudaFilter::ErodeDilate(const wxString& functionName, cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
 	try
 	{
 		if (functionName == "Erode")
-			erode(inputData, inputData, Mat());
+			 erodeFilter(inputData, out);
 		else if (functionName == "Dilate")
-			dilate(inputData, inputData, Mat());
+			dilateFilter(inputData, out);
+
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -790,11 +833,8 @@ void CCudaFilter::Posterize(const float& level, const float& gamma, cv::cuda::Gp
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		posterisationFilter(inputData, out, level);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -816,14 +856,12 @@ void CCudaFilter::LensDistortion(const float& strength, cv::cuda::GpuMat& inputD
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		double _strength = static_cast<double>(strength) / 100;
 		double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
 
 		distorsionFilter(inputData, out, correctionRadius);
 			
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -845,11 +883,8 @@ void CCudaFilter::Solarize(const long& threshold, cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		solarizationFilter(inputData, out, threshold);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -861,10 +896,16 @@ void CCudaFilter::Solarize(const long& threshold, cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
 {
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 
 	try
 	{
-		medianBlur(inputData, inputData, 3);
+		medianFilter(inputData, inputData);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -884,11 +925,8 @@ void CCudaFilter::Noise(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		noiseFilter(inputData, out);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -922,11 +960,8 @@ void CCudaFilter::Swirl(const float& radius, const float& angle, cv::cuda::GpuMa
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		swirlFilter(inputData, out, radius, angle);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -972,11 +1007,8 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 
 			try
 			{
-				cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 				sepiaFilter(inputData, out);
-
-				cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+				out.copyTo(inputData);
 			}
 			catch (Exception& e)
 			{
@@ -991,14 +1023,14 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 		}
 		else if (functionName == "NoirEtBlanc")
 		{
-			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGRA2GRAY);
 			cv::cuda::threshold(cvDest, cvDest, 127, 255, THRESH_BINARY);
-			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGRA);
 		}
 		else if (functionName == "GrayLevel")
 		{
-			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
-			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+			cv::cuda::cvtColor(inputData, cvDest, COLOR_BGRA2GRAY);
+			cv::cuda::cvtColor(cvDest, inputData, COLOR_GRAY2BGRA);
 		}
 		cvDest.release();
 	}
@@ -1055,7 +1087,7 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		Mat yChannel;
 		Mat yChannelOut;
 
-		cv::cvtColor(input, ycbcr, COLOR_BGR2YCrCb);
+		cv::cvtColor(input, ycbcr, COLOR_BGRA2YUV_I420);
 
 		std::vector<Mat> planes(3);
 		split(ycbcr, planes);
@@ -1071,7 +1103,7 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR);
+		cv::cvtColor(ycbcr, input, COLOR_YUV2BGRA_I420);
 
 		inputData.upload(input);
 

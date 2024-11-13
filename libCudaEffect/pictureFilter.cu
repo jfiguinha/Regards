@@ -435,6 +435,119 @@ __global__ void swirlFilter(uchar* input, uchar * output,  int width, int height
     }
 }
 
+__global__ void erodeFilter(uchar* input, uchar* output, int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 maxValue = make_float4(0.0f);
+
+        for (int n = -1; n < 2; n++)
+        {
+            int posY = y + n;
+            for (int m = -1; m < 2; m++)
+            {
+                int posX = x + m;
+                maxValue = fmaxf(GetColorSrc(posX, posY, input, width, height), maxValue);
+            }
+        }
+
+        rgbaFloat4ToUchar4(output, position, maxValue, 1.0f);
+    }
+}
+
+__global__ void dilateFilter(uchar* input, uchar* output, int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 minValue = make_float4(1.0f);
+
+        for (int n = -1; n < 2; n++)
+        {
+            int posY = y + n;
+            for (int m = -1; m < 2; m++)
+            {
+                int posX = x + m;
+                minValue = fminf(GetColorSrc(posX, posY, input, width, height), minValue);
+            }
+        }
+
+        rgbaFloat4ToUchar4(output, position, minValue, 1.0f);
+    }
+}
+
+
+inline  __host__ __device__ void s2(float4* a, float4* b)
+{
+    float4 temp = *a;
+    *a = fminf(*a, *b);
+    *b = fmaxf(temp, *b);
+}
+
+inline  __host__ __device__ void mn3(float4* a, float4* b, float4* c)
+{
+    s2(a, b);
+    s2(a, c);
+}
+
+inline  __host__ __device__ void mx3(float4* a, float4* b, float4* c)
+{
+    s2(b, c);
+    s2(a, c);
+}
+
+inline  __host__ __device__ void mnmx3(float4* a, float4* b, float4* c)
+{
+    mx3(a, b, c);
+    s2(a, b);
+}
+
+inline  __host__ __device__ void mnmx4(float4* a, float4* b, float4* c, float4* d)
+{
+    s2(a, b); s2(c, d); s2(a, c); s2(b, d);
+}
+
+inline  __host__ __device__ void mnmx5(float4* a, float4* b, float4* c, float4* d, float4* e)
+{
+    s2(a, b); s2(c, d); mn3(a, c, e); mx3(b, d, e);
+}
+
+inline  __host__ __device__ void mnmx6(float4* a, float4* b, float4* c, float4* d, float4* e, float4* f)
+{
+    s2(a, d); s2(b, e); s2(c, f); mn3(a, b, c); mx3(d, e, f);
+}
+
+__global__ void medianFilter(uchar* input, uchar* output, int width, int height)
+{
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int position = (x + y * width) * 4;
+    if (x < width && y < height && y >= 0 && x >= 0)
+    {
+        float4 k0 = GetColorSrc(x - 1, y - 1, input, width, height);
+        float4 k1 = GetColorSrc(x, y - 1, input, width, height);
+        float4 k2 = GetColorSrc(x + 1, y - 1, input, width, height);
+        float4 k3 = GetColorSrc(x - 1, y, input, width, height);
+        float4 k4 = GetColorSrc(x, y, input, width, height);
+        float4 k5 = GetColorSrc(x + 1, y, input, width, height);
+        float4 k6 = GetColorSrc(x - 1, y + 1, input, width, height);
+        float4 k7 = GetColorSrc(x, y + 1, input, width, height);
+        float4 k8 = GetColorSrc(x + 1, y + 1, input, width, height);
+
+        mnmx6(&k0, &k1, &k2, &k3, &k4, &k5);
+        mnmx5(&k1, &k2, &k3, &k4, &k6);
+        mnmx4(&k2, &k3, &k4, &k7);
+        mnmx3(&k3, &k4, &k8);
+
+        rgbaFloat4ToUchar4(output, position, k4, 1.0f);
+    }
+
+}
 
 void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<float>& kernelMotion, int kernelSize)
 {
@@ -462,6 +575,64 @@ void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, cons
 
     cudaFree(f_kernel);
     delete[] kernel;
+}
+
+// The wrapper is used to call sharpening filter 
+void medianFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    medianFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
+}
+
+
+// The wrapper is used to call sharpening filter 
+void dilateFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    dilateFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
+}
+
+// The wrapper is used to call sharpening filter 
+void erodeFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    uchar* d_input;
+    uchar* d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify block size
+    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    erodeFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
 }
 
 // The wrapper is used to call sharpening filter 
