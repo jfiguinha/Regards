@@ -188,9 +188,11 @@ void CCudaFilter::DetailEnhance(cv::cuda::GpuMat& inputData, const double& sigma
 {
 	try
 	{
-		cv::cuda::GpuMat dest;
-		cv::detailEnhance(inputData, dest, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+		cv::Mat dest;
+		cv::Mat input;
+		inputData.download(input);
+		cv::detailEnhance(input, dest, sigma_s, sigma_r);
+		inputData.upload(dest);
 	}
 	catch (Exception& e)
 	{
@@ -452,7 +454,6 @@ void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& input
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		cv::cuda::GpuMat cvDestBgra;
 		double sigma = 1;
         cv::Ptr<cv::cuda::Filter> filter3x3;
@@ -460,8 +461,8 @@ void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& input
         filter3x3->apply(inputData, cvDestBgra);
 
 		sharpenMasking(inputData, out, cvDestBgra, sharpness);
-        
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -524,11 +525,8 @@ void CCudaFilter::FiltreMosaic(cv::cuda::GpuMat& inputData, const int& size)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-
 		mosaicFilter(inputData, out, size);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -750,18 +748,25 @@ void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::Edge(cv::cuda::GpuMat& inputData)
 {
-
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 	try
 	{
-		cv::cuda::GpuMat dest;
-		cv::cuda::cvtColor(inputData, dest, COLOR_BGR2GRAY);
+		cv::cuda::GpuMat gray;
+		cv::cuda::GpuMat blur;
+		cv::cuda::cvtColor(inputData, gray, COLOR_BGRA2GRAY);
 
-		Mat img_blur;
-		cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
-		cv::cuda::GpuMat edges;
-		Canny(img_blur, edges, 100, 200, 3, false);
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createGaussianFilter(inputData.type(), inputData.type(), Size(3, 3), 0, 0);
+		filter3x3->apply(gray, blur);
+		cv::Ptr<cv::cuda::CannyEdgeDetector> edgeDetector;
+		edgeDetector = cv::cuda::createCannyEdgeDetector(100, 200, 3, false);
+		edgeDetector->detect(blur, gray);
 
-		cv::cuda::cvtColor(edges, inputData, COLOR_GRAY2BGR);
+		cv::cuda::cvtColor(gray, inputData, COLOR_GRAY2BGRA);
 	}
 	catch (Exception& e)
 	{
@@ -975,12 +980,18 @@ void CCudaFilter::Swirl(const float& radius, const float& angle, cv::cuda::GpuMa
 
 void CCudaFilter::BrightnessAndContrast(const double& brightness, const double& contrast, cv::cuda::GpuMat& inputData)
 {
-
-	cv::cuda::GpuMat cvDest;
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 	try
 	{
-		convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
-		cvDest.copyTo(inputData);
+		//convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
+		//cvDest.copyTo(inputData);
+		//inputData.convertTo(cv.CV_8U, alpha, beta)
+		inputData.convertTo(out, inputData.type(), contrast / 100.0f, brightness);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
