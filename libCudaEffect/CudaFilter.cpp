@@ -138,7 +138,7 @@ cv::cuda::GpuMat Regards::Cuda::CSuperSampling::upscaleImage(cv::cuda::GpuMat im
 			break;
 			}
 
-			sr.setPreferableTarget(DNN_TARGET_OPENCL);
+			sr.setPreferableTarget(DNN_TARGET_CUDA);
 			sr.upsample(img, outputImage);
 
 			//muDnnSuperResImpl.unlock();
@@ -474,19 +474,14 @@ void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& input
 
 void CCudaFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, cv::cuda::GpuMat& inputData)
 {
-
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 	try
 	{
-		float coeff = static_cast<float>(intensity) / 100.0f;
-		float diff = 1.0f - coeff;
-		cv::cuda::GpuMat out;
-		cv::cuda::GpuMat out_one;
-		//out_one = inputData.mul(diff);
-
-		auto color = Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
-		Scalar out_two = color * coeff;
-
-		cv::cuda::add(out_one, out_two, out);
+		PhotoFilter(inputData, out, intensity, clValue);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -586,11 +581,11 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 
 		motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		out.copyTo(inputData);
+		//cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -1015,9 +1010,9 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 				out.release();
 				out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
 			}
-
 			try
 			{
+				//convert_to_gray(inputData, out);
 				sepiaFilter(inputData, out);
 				out.copyTo(inputData);
 			}

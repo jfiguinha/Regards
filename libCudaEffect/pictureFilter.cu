@@ -6,6 +6,8 @@
 #include <cuda.h>
 #include "cuda_runtime.h"
 #include "helper_math.h"
+#include <opencv2/core/utility.hpp>
+#include <opencv2/core/cuda/common.hpp>
 #define BLOCK_SIZE      16
 #define FILTER_WIDTH    3       
 #define FILTER_HEIGHT   3       
@@ -22,20 +24,33 @@ inline  __host__ __device__  uchar4 GetColorSrc(unsigned char* input, int positi
     return value;
 }
 
+inline  __host__ __device__  float4 GetfColorSrc(unsigned char* input, int position)
+{
+    float4 value;
+    value.x = input[position];
+    value.y = input[position + 1];
+    value.z = input[position + 2];
+    value.w = input[position + 3];
+    return value;
+}
+
 //----------------------------------------------------
 // Conversion du NV12 vers du 32 bits
 //----------------------------------------------------
-inline  __host__ __device__ void rgbaFloat4ToUchar4(unsigned char*& output, int position, float4 rgba, float fScale)
+inline  __host__ __device__ void rgbaFloat4ToUchar4(uchar * output, int position, float4 rgba, float fScale)
 {
     output[position] = (uchar)(rgba.x * fScale);
     output[position + 1] = (uchar)(rgba.y * fScale);
     output[position + 2] = (uchar)(rgba.z * fScale);
     output[position + 3] = (uchar)(rgba.w * fScale);
-
+    output[position] = clamp(output[position], 0, 255);
+    output[position + 1] = clamp(output[position + 1], 0, 255);
+    output[position + 2] = clamp(output[position + 2], 0, 255);
+    output[position + 3] = clamp(output[position + 3], 0, 255);
 }
 
 
-inline  __host__ __device__  float4 GetColorSrc(int x, int y, const unsigned char* input, int width, int height)
+inline  __host__ __device__  float4 GetColorSrc(int x, int y, uchar * input, int width, int height)
 {
     if (x < width && y < height && y >= 0 && x >= 0)
     {
@@ -256,21 +271,27 @@ __global__ void softenFilter(uchar* input, uchar * output,  int width, int heigh
     }
 }
 
-__global__ void sepiaFilter(uchar* input, uchar* output,  int width, int height)
+
+
+
+inline __host__ __device__ float4 make_float4(uchar4 value)
 {
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int position = (x + y * width) * 4;
-    if (x < width && y < height && y >= 0 && x >= 0)
-    {
-        float4 color = GetColorSrc(x, y, input, width, height);
-        float4 color_out = make_float4(0.0f);
-        color_out.x = 0.272 * color.x +0.534 * color.y + 0.131 * color.z;
-        color_out.y = 0.349 * color.x + 0.686 * color.y + 0.168 * color.z; //0.349, 0.686, 0.168 
-        color_out.z = 0.393 * color.x + 0.769 * color.y + 0.189 * color.z; //0.393, 0.769, 0.189
-        color_out.w = color.w;
-        rgbaFloat4ToUchar4(output, position, color_out, 1.0f);
-    }
+    float4 color = make_float4(0.0);
+    color.x = value.x;
+    color.y = value.y;
+    color.z = value.z;
+    color.w = value.w;
+    return color;
+}
+
+inline __host__ __device__ uchar4 make_uchar4(float4 value)
+{
+    uchar4 color;;
+    color.x = clamp((uchar)value.x,0,255);
+    color.y = clamp((uchar)value.y, 0, 255);
+    color.z = clamp((uchar)value.z, 0, 255);
+    color.w = clamp((uchar)value.w, 0, 255);
+    return color;
 }
 
 __global__ void cuda_filter2d(uchar* input, uchar* output, float* kernelMotion, int width, int height, int kernelSize)
@@ -549,6 +570,200 @@ __global__ void medianFilter(uchar* input, uchar* output, int width, int height)
 
 }
 
+//----------------------------------------------------
+//Filtre Photo Filtre
+//----------------------------------------------------
+__global__  void PhotoFilter(uchar* input, uchar* output, int width, int height, float intensity, uint4 color, int colorWidthStep, int grayWidthStep)
+{
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        //Location of colored pixel in input
+        const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
+
+        //Location of gray pixel in output
+        const int gray_tid = yIndex * grayWidthStep + (4 * xIndex);
+
+        const unsigned char blue = input[color_tid];
+        const unsigned char green = input[color_tid + 1];
+        const unsigned char red = input[color_tid + 2];
+        const unsigned char alpha = input[color_tid + 3];
+
+        float coeff = intensity / 100.0f;
+        float diff = 1.0f - coeff;
+
+        float fred = (float)(color.x) * coeff + red * diff;
+        float fgreen = (float)(color.y) * coeff + green * diff;
+        float fblue = (float)(color.z) * coeff + blue * diff;
+
+        fred = clamp(fred, 0.0, 255.0);
+        fgreen = clamp(fgreen, 0.0, 255.0);
+        fblue = clamp(fblue, 0.0, 255.0);
+
+        output[gray_tid] = static_cast<unsigned char>(fblue);
+        output[gray_tid + 1] = static_cast<unsigned char>(fgreen);
+        output[gray_tid + 2] = static_cast<unsigned char>(fred);
+        output[gray_tid + 3] = static_cast<unsigned char>(alpha);
+    }
+
+}
+
+/**
+ * @brief      BGR to Gray Kernel
+ *
+ *             This is a simple image processing kernel that converts color
+ *             images to black and white by iterating over the individual
+ *             pixels.
+ *
+ * @param      input           The input
+ * @param      output          The output
+ * @param[in]  width           The width
+ * @param[in]  height          The height
+ * @param[in]  colorWidthStep  The color width step
+ * @param[in]  grayWidthStep   The gray width step
+ */
+__global__ void bgr_to_gray_kernel(unsigned char* input, unsigned char* output, int width, int height, int colorWidthStep, int grayWidthStep) {
+    //2D Index of current thread
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        //Location of colored pixel in input
+        const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
+
+        //Location of gray pixel in output
+        const int gray_tid = yIndex * grayWidthStep + (4 * xIndex);
+
+        const unsigned char blue = input[color_tid];
+        const unsigned char green = input[color_tid + 1];
+        const unsigned char red = input[color_tid + 2];
+
+        const float gray = red * 0.3f + green * 0.59f + blue * 0.11f;
+
+        output[gray_tid] = static_cast<unsigned char>(gray);
+        output[gray_tid + 1] = static_cast<unsigned char>(gray);
+        output[gray_tid + 2] = static_cast<unsigned char>(gray);
+        output[gray_tid + 3] = static_cast<unsigned char>(gray);
+    }
+}
+
+
+__global__ void sepiaFilter(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep)
+{
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        //Location of colored pixel in input
+        const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
+
+        //Location of gray pixel in output
+        const int gray_tid = yIndex * grayWidthStep + (4 * xIndex);
+
+        const unsigned char blue = input[color_tid];
+        const unsigned char green = input[color_tid + 1];
+        const unsigned char red = input[color_tid + 2];
+        const unsigned char alpha = input[color_tid + 3];
+
+        const float gray = red * 0.3f + green * 0.59f + blue * 0.11f;
+       
+        float fred = (0.393f * blue) + (0.769f * green) + (0.189f * red);
+        float fgreen = (0.349f * blue) + (0.686f * green) + (0.168f * red);
+        float fblue = (0.272f * blue) + (0.534f * green) + (0.131f * red);
+
+        fred = clamp(fred, 0.0, 255.0);
+        fgreen = clamp(fgreen, 0.0, 255.0);
+        fblue = clamp(fblue, 0.0, 255.0);
+
+        output[gray_tid] = static_cast<unsigned char>(fblue);
+        output[gray_tid + 1] = static_cast<unsigned char>(fgreen);
+        output[gray_tid + 2] = static_cast<unsigned char>(fred);
+        output[gray_tid + 3] = static_cast<unsigned char>(alpha);
+
+    }
+}
+
+void convert_to_gray(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) {
+    // Calculate total number of bytes of input and output image
+    const int colorBytes = input.step * input.rows;
+    const int grayBytes = output.step * output.rows;
+
+    unsigned char* d_input, * d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Launch the color conversion kernel
+    bgr_to_gray_kernel << <grid, block >> > (d_input, d_output, input.cols, input.rows, input.step, output.step);
+
+    // Synchronize to check for any kernel launch errors
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+}
+
+
+// The wrapper is used to call sharpening filter 
+void sepiaFilter(cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    const int colorBytes = input.step * input.rows;
+    const int grayBytes = output.step * output.rows;
+
+    unsigned char* d_input, * d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Launch the color conversion kernel
+    sepiaFilter << <grid, block >> > (d_input, d_output, input.cols, input.rows, input.step, output.step);
+
+    // Synchronize to check for any kernel launch errors
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+}
+
+
+// The wrapper is used to call sharpening filter 
+void PhotoFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float intensity, const CRgbaquad& clValue)
+{
+    uchar* d_input;
+    uchar* d_output;
+    uint4 color;
+    color.x = clValue.GetRed();
+    color.y = clValue.GetGreen();
+    color.z = clValue.GetBlue();
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    PhotoFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, intensity, color, input.step, output.step);
+
+    // Synchronize to check for any kernel launch errors
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+}
+
 void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<float>& kernelMotion, int kernelSize)
 {
     uchar* d_input;
@@ -674,25 +889,6 @@ void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float 
     swirlFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, radius, angleDegree);
 }
 
-
-// The wrapper is used to call sharpening filter 
-void sepiaFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
-{
-    uchar* d_input;
-    uchar* d_output;
-
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    sepiaFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
-}
 
 // The wrapper is used to call sharpening filter 
 void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)

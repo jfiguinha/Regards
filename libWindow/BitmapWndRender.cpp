@@ -201,11 +201,14 @@ void CBitmapWndRender::OnScrollMove(wxCommandEvent& event)
 int CBitmapWndRender::IsSupportCuda()
 {
 	int supportCuda = 0;
+	int useCuda = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
+	{
 		supportCuda = config->GetIsCudaSupport();
-
-	return supportCuda;
+		useCuda = config->GetIsUseCuda();
+	}
+	return (supportCuda && useCuda) ? 1 : 0;
 }
 
 int CBitmapWndRender::IsSupportOpenCL()
@@ -1663,13 +1666,13 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	bool bitmapIsLoad = false;
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	bool useCuda = regardsParam->GetIsUseCuda();
+	//bool useCuda = regardsParam->GetIsUseCuda();
 	bool useOpenCL = regardsParam->GetIsOpenCLSupport();
 
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, useOpenCL, useCuda, source);
+			filtreEffet = new CFiltreEffet(color, useOpenCL, false, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
