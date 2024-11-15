@@ -83,6 +83,34 @@ __global__ void noiseFilter(uchar* input, uchar* output, int width, int height, 
     }
 }
 
+//---------------------------------------------------------------------
+//Application du filtre Motion Blur
+//---------------------------------------------------------------------
+__global__ void motionBlur(uchar* input, uchar* output, int width, int height, const float* kernelMotion, const int2* offsets, int kernelSize, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int position = y * colorWidthStep + (4 * x);
+        float4 sum = make_float4(0);
+        for (int i = 0; i < kernelSize; i++)
+        {
+            int u = x + offsets[i].x;
+            int v = y + offsets[i].y;
+            if ((u < 0) || (u >= width) || (v < 0) || (v >= height))
+                continue;
+
+            float4 color = kernelMotion[i] * GetColorSrc(u, v, input, colorWidthStep, width, height);
+            sum = sum + color;
+        }
+
+        rgbaFloat4ToUchar4(output, position, sum, 1.0f);
+
+    }
+}
 
 //---------------------------------------------------------------------
 //Swirl Filter
@@ -731,4 +759,48 @@ void CNoiseFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat
 
     // Run BoxFilter kernel on CUDA 
     noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
+}
+
+void CMotionBlur::SetParameter(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize)
+{
+    offsetSize = offsets.size();
+    kSize = kernelMotion.size();
+    kernel = new float[kernelMotion.size()];
+    for (auto i = 0; i < kernelMotion.size(); i++)
+        kernel[i] = kernelMotion[i];
+
+    offsetsMotion = new int2[offsets.size()];
+    for (auto i = 0; i < offsets.size(); i++)
+    {
+        offsetsMotion[i].x = offsets[i].x;
+        offsetsMotion[i].y = offsets[i].y;
+    }
+    this->kernelSize = kernelSize;
+}
+
+void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    float* f_kernel;
+    int2* i_offsetsMotion;
+    // Allocate device memory
+    cudaMalloc<float>(&f_kernel, kSize);
+    cudaMalloc<int2>(&i_offsetsMotion, offsetSize);
+
+    cudaMemcpy(f_kernel, kernel, kSize * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(i_offsetsMotion, offsetsMotion, offsetSize * sizeof(int2), cudaMemcpyHostToDevice);
+
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    motionBlur << <grid, block >> > (d_input, d_output, output.cols, output.rows, f_kernel, i_offsetsMotion, kernelSize, input.step, output.step);
+
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+
+    cudaFree(f_kernel);
+    cudaFree(offsetsMotion);
+
 }

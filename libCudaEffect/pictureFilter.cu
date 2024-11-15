@@ -162,68 +162,6 @@ __global__ void cuda_filter2d(uchar* input, uchar* output, float* kernelMotion, 
     }
 }
 
-inline  __host__ __device__ float Noise2d(int x, int y)
-{
-    int n = ((x + (y << 6)) << 13) ^ (x + (y << 6));
-    return 0.2f * (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
-}
-
-inline  __host__ __device__ float CalculPosValue(int Xint, int Yint)
-{
-    int m = Xint + ((Yint) << 6);
-    int n = (m << 13) ^ (m);
-    return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
-}
-
-inline  __host__ __device__ float GetValue(float x, float y)
-{
-    int Xint = (int)x;
-    int Yint = (int)y;
-
-    float Xfrac = x - (float)Xint;
-    float Yfrac = y - (float)Yint;
-
-    float x0y0, x1y0, x0y1, x1y1;
-
-    if (Xint != 0 || Yint != 0)
-    {
-        x0y0 = CalculPosValue(Xint, Yint);
-        x1y0 = CalculPosValue(Xint + 1, Yint);
-        x0y1 = CalculPosValue(Xint, Yint + 1);
-        x1y1 = CalculPosValue(Xint + 1, Yint + 1);
-    }
-    else
-    {
-        x0y0 = Noise2d(0, 0);
-        x1y0 = Noise2d(1, 0);
-        x0y1 = Noise2d(0, 1);
-        x1y1 = Noise2d(1, 1);
-    }
-
-    //interpolate between those values according to the x and y fractions
-    float v1 = (x0y0 + (Xfrac * (x1y0 - x0y0)));
-    float v2 = (x0y1 + (Xfrac * (x1y1 - x0y1)));
-    float fin = (v1 + (Yfrac * (v2 - v1)));
-
-    return fin;
-}
-
-__global__ void noiseFilter(uchar* input, uchar * output, int width, int height)
-{
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int position = (x + y * width) * 4;
-    if (x < width && y < height && y >= 0 && x >= 0)
-    {
-        float4 n = make_float4(Noise2d(x, y));
-        float4 src_color = GetColorSrc(x, y, input, width, height) + n * 255.0f;
-        float4 minimal = make_float4(0.0f);
-        float4 maximal = make_float4(255.0f);
-        src_color = clamp(src_color, minimal, maximal);
-        rgbaFloat4ToUchar4(output, position, src_color, 1.0f);
-    }
-}
-
 
 
 inline  __host__ __device__ ColorRef GetColor(uchar* input, const int color_tid)
@@ -330,26 +268,6 @@ void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, cons
     delete[] kernel;
 }
 
-
-
-// The wrapper is used to call sharpening filter 
-void noiseFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
-{
-    uchar* d_input;
-    uchar* d_output;
-
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
-}
 
 
 

@@ -9,6 +9,7 @@
 #include <RGBAQuad.h>
 using namespace std;
 
+struct int2;
 
 class CCudaComputeFilter
 {
@@ -239,7 +240,30 @@ protected:
 
 };
 
+class CMotionBlur : public CCudaComputeFilter
+{
+public:
+	CMotionBlur()
+	{
+	};
 
+	~CMotionBlur() {
+	
+		delete[] kernel;
+		delete[] offsetsMotion;
+	};
+
+	void SetParameter(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize);
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+
+	float* kernel;
+	int kSize;
+	int2 * offsetsMotion;
+	int offsetSize;
+	int kernelSize;
+};
 
 
 

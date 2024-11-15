@@ -590,8 +590,12 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 	try
 	{
 		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		CMotionBlur motionBlur;
+		motionBlur.SetParameter(kernelMotion, offsets, kernelSize);
+		motionBlur.ApplyEffect(inputData, out);
 
-		motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
+
+		//motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
 		out.copyTo(inputData);
 		//cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}

@@ -34,7 +34,7 @@ namespace Regards
 				cv::Mat& inputData);
 			//cv::cuda::GpuMat Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cv::cuda::GpuMat & inputData);
 			void FiltreConvolution(const wxString& programName, const wxString& functionName, cv::cuda::GpuMat& inputData);
-			void MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, const int& size,
+			void MotionBlurCompute(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, const int& kernelSize,
 				cv::cuda::GpuMat& inputData);
 			void SharpenMasking(const float& sharpness, cv::cuda::GpuMat& inputData);
 			void PhotoFiltre(const CRgbaquad& clValue, const int& intensity, cv::cuda::GpuMat& inputData);
