@@ -850,7 +850,12 @@ void CCudaFilter::Posterize(const float& level, const float& gamma, cv::cuda::Gp
 
 	try
 	{
-		posterisationFilter(inputData, out, level);
+		//dilateFilter(inputData, out);
+		CPosterizationFilter posterizationFilter;
+		posterizationFilter.SetParameter(level);
+		posterizationFilter.ApplyEffect(inputData, out);
+
+		//posterisationFilter(inputData, out, level);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -876,7 +881,10 @@ void CCudaFilter::LensDistortion(const float& strength, cv::cuda::GpuMat& inputD
 		double _strength = static_cast<double>(strength) / 100;
 		double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
 
-		distorsionFilter(inputData, out, correctionRadius);
+		//distorsionFilter(inputData, out, correctionRadius);
+		CDistorsionFilter distorsionFilter;
+		distorsionFilter.SetParameter(correctionRadius);
+		distorsionFilter.ApplyEffect(inputData, out);
 			
 		out.copyTo(inputData);
 	}
@@ -900,7 +908,9 @@ void CCudaFilter::Solarize(const long& threshold, cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		solarizationFilter(inputData, out, threshold);
+		CSolarizationFilter solarizationFilter;
+		solarizationFilter.SetParameter(threshold);
+		solarizationFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)

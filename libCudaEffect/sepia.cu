@@ -17,6 +17,119 @@ using namespace std;
 
 
 //----------------------------------------------------
+//Filtre Posterization
+//----------------------------------------------------
+__global__ void distorsionFilter(uchar* input, uchar* output, int width, int height, float correctionRadius, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int color_tid = y * colorWidthStep + (4 * x);
+
+        float theta = 1;
+        int halfWidth = (width / 2);
+        int halfHeight = (height / 2);
+
+        float newX = x - halfWidth;
+        float newY = y - halfHeight;
+        float value = pow((float)newX, (float)2.0) + pow((float)newY, (float)2.0);
+        float distance = sqrt(value);
+        float r = distance / correctionRadius;
+        if (r != 0.0)
+            theta = atan(r) / r;
+
+        int sourceX = round(halfWidth + theta * newX);
+        int sourceY = round(halfHeight + theta * newY);
+
+        int positionSrc = sourceY * colorWidthStep + (4 * sourceX);
+
+        ColorRef colorIn = GetfColor(input, positionSrc);
+
+        SetColor(output, color_tid, colorIn);
+
+    }
+}
+//----------------------------------------------------
+//solarization Filter
+//----------------------------------------------------
+// Run Sharpening Filter on GPU
+__global__ void posterisationFilter(uchar* input, uchar* output, unsigned int width, unsigned int height, int level, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int color_tid = y * colorWidthStep + (4 * x);
+
+        //Location of gray pixel in output
+        const int gray_tid = y * grayWidthStep + (4 * x);
+
+        ColorRef colorIn = GetfColor(input, color_tid);
+        ColorRef colorOut;
+
+        int _levels = max(2, min(16, level));
+        float _offset = (float)256 / (float)_levels;
+
+        int red = colorIn.red / _offset;
+        int green = colorIn.green / _offset;
+        int blue = colorIn.blue / _offset;
+
+        colorOut.red = (red * _offset);
+        colorOut.green = (green * _offset);
+        colorOut.blue = (blue * _offset);
+        colorOut.alpha = colorIn.alpha;
+
+        SetColor(output, gray_tid, colorOut);
+
+    }
+}
+
+
+//----------------------------------------------------
+//solarization Filter
+//----------------------------------------------------
+__global__ void solarizationFilter(uchar* input, uchar* output, unsigned int width, unsigned int height, float threshold, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int color_tid = y * colorWidthStep + (4 * x);
+        float4 colorInput = GetColorSrc(x, y, input, colorWidthStep, width, height);
+        float4 colorOutput = colorInput;
+
+        float red = colorInput.x;
+        float green = colorInput.y;
+        float blue = colorInput.z;
+        float fthreshold = threshold;
+
+        if (red > fthreshold)
+            colorOutput.x = 255.0f - red;
+        else
+            colorOutput.x = red;
+
+        if (green > fthreshold)
+            colorOutput.y = 255.0f - green;
+        else
+            colorOutput.y = green;
+
+        if (blue > fthreshold)
+            colorOutput.z = 255.0f - blue;
+        else
+            colorOutput.z = blue;
+
+        rgbaFloat4ToUchar4(output, color_tid, colorOutput, 1.0f);
+    }
+}
+
+//----------------------------------------------------
 //dilate Filter
 //----------------------------------------------------
 
@@ -334,11 +447,11 @@ void CMosaicFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMa
 // The wrapper is used to call sharpening filter 
 void CCudaSharpenMaskingFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
 
     // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
 
     // Run BoxFilter kernel on CUDA 
     sharpenMasking << <grid, block >> > (d_input, d_output, gaussian_input, output.cols, output.rows, sharpness, input.step, output.step);
@@ -347,11 +460,11 @@ void CCudaSharpenMaskingFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv:
 
 void CCudaMedianFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
 
     // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
 
     // Run BoxFilter kernel on CUDA 
     medianFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
@@ -359,11 +472,11 @@ void CCudaMedianFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::G
 
 void CDilateFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
 
     // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
 
     // Run BoxFilter kernel on CUDA 
     dilateFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
@@ -371,12 +484,52 @@ void CDilateFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMa
 
 void CErodeFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
 
     // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
 
     // Run BoxFilter kernel on CUDA 
     erodeFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
+}
+
+
+// The wrapper is used to call sharpening filter 
+void CSolarizationFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    solarizationFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, level, input.step, output.step);
+}
+
+// The wrapper is used to call sharpening filter 
+void CPosterizationFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    posterisationFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, level, input.step, output.step);
+}
+
+// The wrapper is used to call sharpening filter 
+void CDistorsionFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    distorsionFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, correctionRadius, input.step, output.step);
 }

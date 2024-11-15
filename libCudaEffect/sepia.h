@@ -130,4 +130,64 @@ protected:
 };
 
 
+class CSolarizationFilter : public CCudaComputeFilter
+{
+public:
+	CSolarizationFilter()
+	{
+	};
+
+	~CSolarizationFilter() {};
+
+	void SetParameter(const float& level)
+	{
+		this->level = level;
+	}
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+	float level;
+};
+
+class CPosterizationFilter : public CCudaComputeFilter
+{
+public:
+	CPosterizationFilter()
+	{
+	};
+
+	~CPosterizationFilter() {};
+
+	void SetParameter(const int& level)
+	{
+		this->level = level;
+	}
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+	int level;
+};
+
+class CDistorsionFilter : public CCudaComputeFilter
+{
+public:
+	CDistorsionFilter()
+	{
+	};
+
+	~CDistorsionFilter() {};
+
+	void SetParameter(const float& correctionRadius)
+	{
+		this->correctionRadius = correctionRadius;
+	}
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+	float correctionRadius;
+};
+
+
+
+
 

@@ -14,9 +14,6 @@
 #include <vector>
 using namespace std;
 
-void solarizationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int threshold);
-void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int level);
-void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float correctionRadius);
 
 void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize);
 void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output);

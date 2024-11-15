@@ -79,111 +79,6 @@ inline  __host__ __device__  float4 GetColorSrc(int x, int y, uchar * input, int
 //----------------------------------------------------
 
 
-// Run Sharpening Filter on GPU
-__global__ void solarizationFilter(uchar*srcImage, uchar*dstImage, unsigned int width, unsigned int height, int threshold)
-{
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int position = (x + y * width) * 4;
-
-	if(x < width && y < height && y >= 0 && x >= 0)	
-    {
-	    float4 colorInput = GetColorSrc(x,y,srcImage,width,height);
-	    float4 colorOutput = colorInput;
-	    
-	    float red = colorInput.x;
-	    float green = colorInput.y;
-	    float blue = colorInput.z;
-	    float fthreshold = (float)threshold;
-	    
-	    if (red > fthreshold)
-		    colorOutput.x = 255.0f - red;
-	    else
-		    colorOutput.x = red;
-		    
-	    if (green > fthreshold)
-		    colorOutput.y = 255.0f - green;
-	    else
-		    colorOutput.y = green;
-
-	    if (blue > fthreshold)
-		    colorOutput.z = 255.0f - blue;
-	    else
-		    colorOutput.z = blue;
-
-        dstImage[position] = colorOutput.x;
-        dstImage[position + 1] = colorOutput.y;
-        dstImage[position + 2] = colorOutput.z;
-        dstImage[position + 3] = colorOutput.w;
-    }
-}
-
-
-// Run Sharpening Filter on GPU
-__global__ void posterisationFilter(uchar* srcImage, uchar* dstImage, unsigned int width, unsigned int height, int level)
-{
-   int x = blockIdx.x*blockDim.x + threadIdx.x;
-   int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = (x + y * width) * 4;
-
-	if(x < width && y < height && y >= 0 && x >= 0)	
-    {
-	    uchar4 colorInput = GetColorSrc(srcImage,position);
-	    uchar4 colorOutput = colorInput;
-	    int _levels = max(2, min(16, level));
-	    float _offset = (float)256 / (float)_levels;
-	    
-	    int red = colorInput.x / _offset;
-	    int green = colorInput.y / _offset;
-	    int blue = colorInput.z / _offset;
-	    
-	    colorOutput.x = (red * _offset);
-	    colorOutput.y = (green * _offset);
-	    colorOutput.z = (blue * _offset);
-
-        dstImage[position] = colorOutput.x;
-        dstImage[position+1] = colorOutput.y;
-        dstImage[position+2] = colorOutput.z;
-        dstImage[position+3] = colorOutput.w;
-    }
-}
-
-
-
-//----------------------------------------------------
-//Filtre Posterization
-//----------------------------------------------------
-__global__ void distorsionFilter(uchar* input, uchar* output,  int width, int height, float correctionRadius)
-{
-   int x = blockIdx.x*blockDim.x + threadIdx.x;
-   int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = (x + y * width) * 4;
-
-    if(x < width && y < height && y >= 0 && x >= 0)	
-    {
-	    float theta = 1;
-	    int halfWidth = (width / 2); 
-	    int halfHeight = (height / 2);
-	    
-	    float newX = x - halfWidth; 
-	    float newY = y - halfHeight;
-	    float value = pow((float)newX,(float)2.0) + pow((float)newY, (float)2.0);
-	    float distance = sqrt(value);
-	    float r = distance / correctionRadius;
-	    if (r != 0.0)
-		    theta = atan(r) / r;
-		    
-	    int sourceX = round(halfWidth + theta*newX);
-	    int sourceY = round(halfHeight + theta * newY);
-	    
-	    int positionSrc = (sourceX + sourceY * width) * 4;
-
-	    output[position] = input[positionSrc];
-        output[position+1] = input[positionSrc + 1];
-        output[position + 2] = input[positionSrc + 2];
-        output[position + 3] = input[positionSrc + 3];
-    }
-}
 
 //---------------------------------------------------------------------
 //Limite les valeurs entre 0 et 1.0f
@@ -402,7 +297,7 @@ inline  __host__ __device__ float4 PostFX(uchar * input, int x, int y, float rad
     return GetColorSrc((int)tcX, (int)tcY, input, widthIn, heightIn);
 }
 
-__global__ void swirlFilter(uchar* input, uchar * output,  int width, int height, float radius, float angleDegree)
+__global__ void swirlFilter(uchar* input, uchar* output, int width, int height, float radius, float angleDegree)
 {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -412,8 +307,7 @@ __global__ void swirlFilter(uchar* input, uchar * output,  int width, int height
         float4 color = PostFX(input, x, y, radius, angleDegree, width, height);
         rgbaFloat4ToUchar4(output, position, color, 1.0f);
     }
-
-
+}
 
 inline  __host__ __device__ ColorRef GetColor(uchar* input, const int color_tid)
 {
@@ -580,47 +474,6 @@ void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
     softenFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
 }
 
-// The wrapper is used to call sharpening filter 
-void distorsionFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float correctionRadius)
-{
-    uchar * d_input;
-    uchar * d_output;
-
-    d_input = (uchar * )input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE,BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    distorsionFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, correctionRadius);
-}
-
-
-
-// The wrapper is used to call sharpening filter 
-void posterisationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int threshold)
-{
-    uchar* d_input;
-    uchar* d_output;
-
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    posterisationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, threshold);
-}
-
-
 void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize)
 {
     uchar* d_input;
@@ -664,28 +517,6 @@ void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const v
     delete[] i_offsetsMotion;
     delete[] f_kernel;
 }
-
-
-// The wrapper is used to call sharpening filter 
-void solarizationFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, int level)
-{
-    uchar* d_input;
-    uchar* d_output;
-
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    solarizationFilter<<<grid,block>>>(d_input, d_output, output.cols, output.rows, level);
-}
-
-
 
 
 
