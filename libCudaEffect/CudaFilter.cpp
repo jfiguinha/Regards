@@ -16,7 +16,7 @@
 #include "opencv2/cudawarping.hpp"
 #include <opencv2/cudafilters.hpp>
 #include <opencv2/photo/cuda.hpp>
-
+#include "sepia.h"
 #include "pictureFilter.h"
 
 using namespace Regards::Cuda;
@@ -457,10 +457,12 @@ void CCudaFilter::SharpenMasking(const float& sharpness, cv::cuda::GpuMat& input
 		cv::cuda::GpuMat cvDestBgra;
 		double sigma = 1;
         cv::Ptr<cv::cuda::Filter> filter3x3;
-		filter3x3 = cv::cuda::createGaussianFilter(CV_8UC1,CV_8UC1, Size(), sigma, sigma);
+		filter3x3 = cv::cuda::createGaussianFilter(CV_8UC4,CV_8UC4, Size(3,3), sigma, sigma);
         filter3x3->apply(inputData, cvDestBgra);
 
-		sharpenMasking(inputData, out, cvDestBgra, sharpness);
+		CCudaSharpenMaskingFilter sharpenMaskingFilter;
+		sharpenMaskingFilter.SetParameter(cvDestBgra, sharpness);
+		sharpenMaskingFilter.ApplyEffect(inputData, out);
 
 		out.copyTo(inputData);
 	}
@@ -481,8 +483,12 @@ void CCudaFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, cv
 	}
 	try
 	{
-		PhotoFilter(inputData, out, intensity, clValue);
+		CPhotoFilter photoFilter;
+		photoFilter.SetParameter(intensity, clValue);
+		photoFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
+		//PhotoFilter(inputData, out, intensity, clValue);
+		//out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -520,7 +526,9 @@ void CCudaFilter::FiltreMosaic(cv::cuda::GpuMat& inputData, const int& size)
 
 	try
 	{
-		mosaicFilter(inputData, out, size);
+		CMosaicFilter mosaicFilter;
+		mosaicFilter.SetParameter(size);
+		mosaicFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -808,9 +816,18 @@ void CCudaFilter::ErodeDilate(const wxString& functionName, cv::cuda::GpuMat& in
 	try
 	{
 		if (functionName == "Erode")
-			 erodeFilter(inputData, out);
+		{
+			//erodeFilter(inputData, out);
+			CErodeFilter erodeFilter;
+			erodeFilter.ApplyEffect(inputData, out);
+		}
 		else if (functionName == "Dilate")
-			dilateFilter(inputData, out);
+		{
+			//dilateFilter(inputData, out);
+			CDilateFilter dilateFilter;
+			dilateFilter.ApplyEffect(inputData, out);
+		}
+			
 
 		out.copyTo(inputData);
 	}
@@ -904,7 +921,8 @@ void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		medianFilter(inputData, inputData);
+		CCudaMedianFilter medianFilter;
+		medianFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -1012,8 +1030,8 @@ void CCudaFilter::ColorEffect(const wxString& functionName, cv::cuda::GpuMat& in
 			}
 			try
 			{
-				//convert_to_gray(inputData, out);
-				sepiaFilter(inputData, out);
+				CSepiaFilter sepia;
+				sepia.ApplyEffect(inputData, out);
 				out.copyTo(inputData);
 			}
 			catch (Exception& e)

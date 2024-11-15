@@ -30,13 +30,18 @@
     <ClCompile Include="CudaFilter.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
     </ClCompile>
+    <CudaCompile Include="sepia.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="CudaEffectVideo.h" />
     <ClInclude Include="CudaFilter.h" />
+    <ClInclude Include="helper_filter.h" />
     <ClInclude Include="helper_math.h" />
     <ClInclude Include="pictureFilter.h" />
+    <ClInclude Include="sepia.h" />
     <ClInclude Include="videoFilter.h" />
   </ItemGroup>
   <ItemGroup>

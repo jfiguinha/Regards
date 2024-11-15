@@ -50,12 +50,21 @@
     <ClInclude Include="helper_math.h">
       <Filter>cuda</Filter>
     </ClInclude>
+    <ClInclude Include="sepia.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="helper_filter.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="pictureFilter.cu">
       <Filter>cuda</Filter>
     </CudaCompile>
     <CudaCompile Include="videoFilter.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
+    <CudaCompile Include="sepia.cu">
       <Filter>cuda</Filter>
     </CudaCompile>
   </ItemGroup>
