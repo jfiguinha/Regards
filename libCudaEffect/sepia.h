@@ -267,3 +267,24 @@ protected:
 
 
 
+
+class C2DFilter : public CCudaComputeFilter
+{
+public:
+	C2DFilter()
+	{
+	};
+
+	~C2DFilter() {
+
+		delete[] kernel;
+	};
+
+	void SetParameter(const vector<float>& kernelMotion, int kernelSize);
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+
+	float* kernel;
+	int kernelSize;
+};

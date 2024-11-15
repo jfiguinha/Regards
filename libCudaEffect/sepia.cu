@@ -14,6 +14,29 @@
 #define FILTER_HEIGHT   3       
 
 using namespace std;
+//---------------------------------------------------------------------
+//2D Filter
+//---------------------------------------------------------------------
+__global__ void cuda_filter2d(uchar* input, uchar* output, int width, int height, float* kernelMotion, int kernelSize, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int position = y * colorWidthStep + (4 * x);
+        float4 data = GetColorSrc(x, y, input, colorWidthStep, width, height);
+        float4 sum = make_float4(0);
+        for (int i = 0; i < kernelSize; i++)
+        {
+            float4 color = kernelMotion[i] * data;
+            sum = sum + color;
+        }
+        rgbaFloat4ToUchar4(output, position, sum, 1.0f);
+    }
+}
+
 
 //---------------------------------------------------------------------
 //Noise Filter
@@ -802,5 +825,39 @@ void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat&
 
     cudaFree(f_kernel);
     cudaFree(offsetsMotion);
+
+}
+
+
+
+void C2DFilter::SetParameter(const vector<float>& kernelMotion, int kernelSize)
+{
+    kernel = new float[kernelMotion.size()];
+    for (auto i = 0; i < kernelMotion.size(); i++)
+        kernel[i] = kernelMotion[i];
+
+    this->kernelSize = kernelSize;
+}
+
+void C2DFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    float* f_kernel;
+
+    cudaMalloc<float>(&f_kernel, kernelSize);
+    cudaMemcpy(f_kernel, kernel, kernelSize * sizeof(float), cudaMemcpyHostToDevice);
+
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    cuda_filter2d << <grid, block >> > (d_input, d_output, output.cols, output.rows, f_kernel, kernelSize, input.step, output.step);
+
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+
+    cudaFree(f_kernel);
+
 
 }

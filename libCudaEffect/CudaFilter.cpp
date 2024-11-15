@@ -638,7 +638,7 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		vector<float> data;
 		data.push_back(-1.0f);
 		data.push_back(0.0f);
@@ -649,9 +649,13 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 		data.push_back(0.0f);
 		data.push_back(0.0f);
 		data.push_back(1.0f);
-		cuda_filter2d(inputData, out, data, 9);
+		//cuda_filter2d(inputData, out, data, 9);
 
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		C2DFilter filtre2d;
+		filtre2d.SetParameter(data, data.size());
+		filtre2d.ApplyEffect(inputData, out);
+		out.copyTo(inputData);
+		//cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -697,7 +701,7 @@ void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+
 		vector<float> data;
 		data.push_back(0.0f);
 		data.push_back(-1.0f);
@@ -708,9 +712,10 @@ void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 		data.push_back(0.0f);
 		data.push_back(-1.0f);
 		data.push_back(0.0f);
-		cuda_filter2d(inputData, out, data, 9);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		C2DFilter filtre2d;
+		filtre2d.SetParameter(data, data.size());
+		filtre2d.ApplyEffect(inputData, out);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -730,7 +735,7 @@ void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
+
 		vector<float> data;
 		data.push_back(-1.0f);
 		data.push_back(-1.0f);
@@ -741,9 +746,10 @@ void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
 		data.push_back(-1.0f);
 		data.push_back(-1.0f);
 		data.push_back(-1.0f);
-		cuda_filter2d(inputData, out, data, 9);
-
-		cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+		C2DFilter filtre2d;
+		filtre2d.SetParameter(data, data.size());
+		filtre2d.ApplyEffect(inputData, out);
+		out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
