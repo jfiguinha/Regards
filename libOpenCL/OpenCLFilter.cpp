@@ -759,6 +759,7 @@ void COpenCLFilter::SharpenStrong(UMat& inputData)
 	
 	try
 	{
+
 		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(0, 0) = -1.0;
 		kernel.at<float>(0, 1) = -1.0;

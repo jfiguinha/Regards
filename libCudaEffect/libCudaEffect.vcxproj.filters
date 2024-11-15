@@ -41,16 +41,13 @@
     <ClInclude Include="CudaEffectVideo.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="pictureFilter.h">
-      <Filter>cuda</Filter>
-    </ClInclude>
     <ClInclude Include="videoFilter.h">
       <Filter>cuda</Filter>
     </ClInclude>
     <ClInclude Include="helper_math.h">
       <Filter>cuda</Filter>
     </ClInclude>
-    <ClInclude Include="sepia.h">
+    <ClInclude Include="pictureFilter.h">
       <Filter>cuda</Filter>
     </ClInclude>
     <ClInclude Include="helper_filter.h">
@@ -58,13 +55,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="pictureFilter.cu">
-      <Filter>cuda</Filter>
-    </CudaCompile>
     <CudaCompile Include="videoFilter.cu">
       <Filter>cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="sepia.cu">
+    <CudaCompile Include="pictureFilter.cu">
       <Filter>cuda</Filter>
     </CudaCompile>
   </ItemGroup>

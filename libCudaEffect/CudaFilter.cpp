@@ -10,13 +10,11 @@
 #include <RegardsConfigParam.h>
 #include <opencv2/core/ocl.hpp>
 #include <LibResource.h>
-
+#include <opencv2/photo/cuda.hpp>
 #include "opencv2/cudaimgproc.hpp"
 #include <opencv2/cudaarithm.hpp>
 #include "opencv2/cudawarping.hpp"
 #include <opencv2/cudafilters.hpp>
-#include <opencv2/photo/cuda.hpp>
-#include "sepia.h"
 #include "pictureFilter.h"
 
 using namespace Regards::Cuda;
@@ -609,26 +607,6 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 
 void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 {
-	/*
-	try
-	{
-		// Construct kernel (all entries initialized to 0)
-		Mat kernel(3, 3, CV_32F, Scalar(0));
-		kernel.at<float>(0, 0) = -1.0;
-		kernel.at<float>(2, 2) = 1.0;
-		cv::cuda::GpuMat dest;
-		filter2D(inputData, dest, inputData.depth(), kernel);
-		dest.copyTo(inputData);
-		dest.release();
-		kernel.release();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "Emboss exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	*/
 
 	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
 	{
@@ -638,24 +616,15 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
-		vector<float> data;
-		data.push_back(-1.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(0.0f);
-		data.push_back(1.0f);
-		//cuda_filter2d(inputData, out, data, 9);
+		Mat kernel(3, 3, CV_32F, Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(2, 2) = 1.0;
 
-		C2DFilter filtre2d;
-		filtre2d.SetParameter(data, data.size());
-		filtre2d.ApplyEffect(inputData, out);
+
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createLinearFilter(inputData.type(), out.type(), kernel);
+		filter3x3->apply(inputData, out);
 		out.copyTo(inputData);
-		//cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
 	}
 	catch (Exception& e)
 	{
@@ -702,19 +671,20 @@ void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 	try
 	{
 
-		vector<float> data;
-		data.push_back(0.0f);
-		data.push_back(-1.0f);
-		data.push_back(0.0f);
-		data.push_back(-1.0f);
-		data.push_back(5.0f);
-		data.push_back(-1.0f);
-		data.push_back(0.0f);
-		data.push_back(-1.0f);
-		data.push_back(0.0f);
-		C2DFilter filtre2d;
-		filtre2d.SetParameter(data, data.size());
-		filtre2d.ApplyEffect(inputData, out);
+		// Construct kernel (all entries initialized to 0)
+		// Construct kernel (all entries initialized to 0)
+		Mat kernel(3, 3, CV_32F, Scalar(0));
+		// assigns kernel values
+		kernel.at<float>(1, 1) = 5.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 2) = -1.0;
+
+
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createLinearFilter(inputData.type(), out.type(), kernel);
+		filter3x3->apply(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -735,21 +705,23 @@ void CCudaFilter::SharpenStrong(cv::cuda::GpuMat& inputData)
 
 	try
 	{
+		Mat kernel(3, 3, CV_32F, Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(0, 2) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 1) = 9.0;
+		kernel.at<float>(1, 2) = -1.0;
+		kernel.at<float>(2, 0) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(2, 2) = -1.0;
 
-		vector<float> data;
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		data.push_back(9.0f);
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		data.push_back(-1.0f);
-		C2DFilter filtre2d;
-		filtre2d.SetParameter(data, data.size());
-		filtre2d.ApplyEffect(inputData, out);
+
+		cv::Ptr<cv::cuda::Filter> filter3x3;
+		filter3x3 = cv::cuda::createLinearFilter(inputData.type(), out.type(), kernel);
+		filter3x3->apply(inputData, out);
 		out.copyTo(inputData);
+
 	}
 	catch (Exception& e)
 	{
