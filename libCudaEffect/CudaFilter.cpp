@@ -636,32 +636,7 @@ void CCudaFilter::Emboss(cv::cuda::GpuMat& inputData)
 
 void CCudaFilter::Sharpen(cv::cuda::GpuMat& inputData)
 {
-	/*
-	try
-	{
-		// Construct kernel (all entries initialized to 0)
-		// Construct kernel (all entries initialized to 0)
-		Mat kernel(3, 3, CV_32F, Scalar(0));
-		// assigns kernel values
-		kernel.at<float>(1, 1) = 5.0;
-		kernel.at<float>(0, 1) = -1.0;
-		kernel.at<float>(2, 1) = -1.0;
-		kernel.at<float>(1, 0) = -1.0;
-		kernel.at<float>(1, 2) = -1.0;
 
-		cv::cuda::GpuMat dest;
-		cv::cuda::filter2D(inputData, dest, inputData.depth(), kernel);
-		dest.copyTo(inputData);
-		dest.release();
-		kernel.release();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "Sharpen exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	*/
 	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
 	{
 		out.release();
@@ -1383,8 +1358,8 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		std::cout << "CCudaFilter::Interpolation exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		std::cout << "width : " << widthOut << "height : " << heightOut << std::endl;
-		cv::Mat image(widthOut, heightOut, CV_8UC3, cv::Scalar(0, 0, 0));
-		image.copyTo(cvImage);
+		cv::Mat image(widthOut, heightOut, CV_8UC4, cv::Scalar(0, 0, 0));
+		cvImage.upload(image);
 	}
 
 	return cvImage;
