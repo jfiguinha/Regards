@@ -225,64 +225,6 @@ __global__ void noiseFilter(uchar* input, uchar * output, int width, int height)
 }
 
 
-inline  __host__ __device__ float EuclideanDist(float tcX, float tcY, float centerX, float centerY)
-{
-    float diffX = tcX - centerX;
-    float diffY = tcY - centerY;
-    return sqrt(diffX * diffX + diffY * diffY);
-}
-
-inline  __host__ __device__ float DotProduct(float tcX, float tcY, float qX, float qY)
-{
-    return tcX * qX + tcY * qY;
-}
-
-inline  __host__ __device__ float4 PostFX(uchar * input, int x, int y, float radius, float angleDegree, int widthIn, int heightIn)
-{
-    float xOut = x;
-    float yOut = y;
-
-    //Calcul du centre
-    float centerX = (float)widthIn / 2.0f;
-    float centerY = (float)heightIn / 2.0f;
-
-    float tcX = (float)x - centerX;
-    float tcY = (float)y - centerY;
-
-    float angle = angleDegree * 0.0174532925;
-
-    float dist = EuclideanDist(x, y, centerX, centerY);
-
-    if (dist < radius)
-    {
-        float percent = (radius - dist) / radius;
-        float theta = percent * percent * angle * 8.0;
-        float s = sin(theta);
-        float c = cos(theta);
-        xOut = DotProduct(tcX, tcY, c, -s);
-        yOut = DotProduct(tcX, tcY, s, c);
-
-        tcX = xOut;
-        tcY = yOut;
-    }
-
-    tcX += centerX;
-    tcY += centerY;
-
-    return GetColorSrc((int)tcX, (int)tcY, input, widthIn, heightIn);
-}
-
-__global__ void swirlFilter(uchar* input, uchar* output, int width, int height, float radius, float angleDegree)
-{
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int position = (x + y * width) * 4;
-    if (x < width && y < height && y >= 0 && x >= 0)
-    {
-        float4 color = PostFX(input, x, y, radius, angleDegree, width, height);
-        rgbaFloat4ToUchar4(output, position, color, 1.0f);
-    }
-}
 
 inline  __host__ __device__ ColorRef GetColor(uchar* input, const int color_tid)
 {
@@ -408,27 +350,6 @@ void noiseFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
     // Run BoxFilter kernel on CUDA 
     noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
 }
-
-
-// The wrapper is used to call sharpening filter 
-void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float radius, float angleDegree)
-{
-    uchar* d_input;
-    uchar* d_output;
-
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    swirlFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, radius, angleDegree);
-}
-
 
 
 

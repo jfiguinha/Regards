@@ -19,7 +19,7 @@ void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const v
 
 void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<float>& kernelMotion, int kernelSize);
 void noiseFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output);
-void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float radius, float angleDegree);
+
 
 
 void convert_to_gray(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output);

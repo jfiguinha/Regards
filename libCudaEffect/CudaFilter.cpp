@@ -955,7 +955,10 @@ void CCudaFilter::Noise(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		noiseFilter(inputData, out);
+		CNoiseFilter noiseFilter;
+		noiseFilter.ApplyEffect(inputData, out);
+
+		//noiseFilter(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -990,8 +993,13 @@ void CCudaFilter::Swirl(const float& radius, const float& angle, cv::cuda::GpuMa
 
 	try
 	{
-		swirlFilter(inputData, out, radius, angle);
+		CSwirlFilter swirlFilter;
+		swirlFilter.SetParameter(radius, angle);
+		swirlFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
+
+		//swirlFilter(inputData, out, radius, angle);
+		//out.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{

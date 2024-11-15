@@ -201,6 +201,45 @@ protected:
 
 };
 
+class CSwirlFilter : public CCudaComputeFilter
+{
+public:
+	CSwirlFilter()
+	{
+	};
+
+	~CSwirlFilter() {};
+
+	void SetParameter(const float& radius, const float& angleDegree)
+	{
+		this->radius = radius;
+		this->angleDegree = angleDegree;
+	}
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+	float radius;
+	float angleDegree;
+
+};
+
+class CNoiseFilter : public CCudaComputeFilter
+{
+public:
+	CNoiseFilter()
+	{
+	};
+
+	~CNoiseFilter() {};
+
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+
+
+};
+
+
 
 
 

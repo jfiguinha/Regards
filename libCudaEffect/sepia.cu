@@ -15,6 +15,139 @@
 
 using namespace std;
 
+//---------------------------------------------------------------------
+//Noise Filter
+//---------------------------------------------------------------------
+
+inline  __host__ __device__ float Noise2d(int x, int y)
+{
+    int n = ((x + (y << 6)) << 13) ^ (x + (y << 6));
+    return 0.2f * (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+inline  __host__ __device__ float CalculPosValue(int Xint, int Yint)
+{
+    int m = Xint + ((Yint) << 6);
+    int n = (m << 13) ^ (m);
+    return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+inline  __host__ __device__ float GetValue(float x, float y)
+{
+    int Xint = (int)x;
+    int Yint = (int)y;
+
+    float Xfrac = x - (float)Xint;
+    float Yfrac = y - (float)Yint;
+
+    float x0y0, x1y0, x0y1, x1y1;
+
+    if (Xint != 0 || Yint != 0)
+    {
+        x0y0 = CalculPosValue(Xint, Yint);
+        x1y0 = CalculPosValue(Xint + 1, Yint);
+        x0y1 = CalculPosValue(Xint, Yint + 1);
+        x1y1 = CalculPosValue(Xint + 1, Yint + 1);
+    }
+    else
+    {
+        x0y0 = Noise2d(0, 0);
+        x1y0 = Noise2d(1, 0);
+        x0y1 = Noise2d(0, 1);
+        x1y1 = Noise2d(1, 1);
+    }
+
+    //interpolate between those values according to the x and y fractions
+    float v1 = (x0y0 + (Xfrac * (x1y0 - x0y0)));
+    float v2 = (x0y1 + (Xfrac * (x1y1 - x0y1)));
+    float fin = (v1 + (Yfrac * (v2 - v1)));
+
+    return fin;
+}
+
+__global__ void noiseFilter(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int position = y * colorWidthStep + (4 * x);
+        float4 n = make_float4(Noise2d(x, y));
+        float4 src_color = GetColorSrc(x, y, input, colorWidthStep, width, height) + n * 255.0f;
+        float4 minimal = make_float4(0.0f);
+        float4 maximal = make_float4(255.0f);
+        src_color = clamp(src_color, minimal, maximal);
+        rgbaFloat4ToUchar4(output, position, src_color, 1.0f);
+    }
+}
+
+
+//---------------------------------------------------------------------
+//Swirl Filter
+//---------------------------------------------------------------------
+
+inline  __host__ __device__ float EuclideanDist(float tcX, float tcY, float centerX, float centerY)
+{
+    float diffX = tcX - centerX;
+    float diffY = tcY - centerY;
+    return sqrt(diffX * diffX + diffY * diffY);
+}
+
+inline  __host__ __device__ float DotProduct(float tcX, float tcY, float qX, float qY)
+{
+    return tcX * qX + tcY * qY;
+}
+
+inline  __host__ __device__ float4 PostFX(uchar* input, int x, int y, float radius, float angleDegree, int colorWidthStep, int widthIn, int heightIn)
+{
+    float xOut = x;
+    float yOut = y;
+
+    //Calcul du centre
+    float centerX = (float)widthIn / 2.0f;
+    float centerY = (float)heightIn / 2.0f;
+
+    float tcX = (float)x - centerX;
+    float tcY = (float)y - centerY;
+
+    float angle = angleDegree * 0.0174532925;
+
+    float dist = EuclideanDist(x, y, centerX, centerY);
+
+    if (dist < radius)
+    {
+        float percent = (radius - dist) / radius;
+        float theta = percent * percent * angle * 8.0;
+        float s = sin(theta);
+        float c = cos(theta);
+        xOut = DotProduct(tcX, tcY, c, -s);
+        yOut = DotProduct(tcX, tcY, s, c);
+
+        tcX = xOut;
+        tcY = yOut;
+    }
+
+    tcX += centerX;
+    tcY += centerY;
+
+    return GetColorSrc((int)tcX, (int)tcY, input, colorWidthStep, widthIn, heightIn);
+}
+
+__global__ void swirlFilter(uchar* input, uchar* output, int width, int height, float radius, float angleDegree, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int position = y * colorWidthStep + (4 * x);
+        float4 color = PostFX(input, x, y, radius, angleDegree, colorWidthStep, width, height);
+        rgbaFloat4ToUchar4(output, position, color, 1.0f);
+    }
+}
 
 //---------------------------------------------------------------------
 //Application du filtre Soften
@@ -573,4 +706,29 @@ void CSoftenFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMa
 
     // Run BoxFilter kernel on CUDA 
     softenFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
+}
+
+
+void CSwirlFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    swirlFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, radius, angleDegree, input.step, output.step);
+}
+
+void CNoiseFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
 }
