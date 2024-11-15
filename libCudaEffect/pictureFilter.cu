@@ -97,16 +97,18 @@ __global__ void motionBlur(uchar* input, uchar* output, int width, int height, c
     {
         const int position = y * colorWidthStep + (4 * x);
         float4 sum = make_float4(0);
+
+
         for (int i = 0; i < kernelSize; i++)
         {
             int u = x + offsets[i].x;
             int v = y + offsets[i].y;
             if ((u < 0) || (u >= width) || (v < 0) || (v >= height))
                 continue;
-
-            float4 color = kernelMotion[i] * GetColorSrc(u, v, input, colorWidthStep, width, height);
-            sum = sum + color;
+            sum += make_float4(kernelMotion[i])*  GetColorSrc(u, v, input, colorWidthStep, width, height);
         }
+
+        //sum = sum / make_float4(kernelSize);
 
         rgbaFloat4ToUchar4(output, position, sum, 1.0f);
 
@@ -784,8 +786,8 @@ void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat&
     float* f_kernel;
     int2* i_offsetsMotion;
     // Allocate device memory
-    cudaMalloc<float>(&f_kernel, kSize);
-    cudaMalloc<int2>(&i_offsetsMotion, offsetSize);
+    cudaMalloc<float>(&f_kernel, kSize * sizeof(float));
+    cudaMalloc<int2>(&i_offsetsMotion, offsetSize * sizeof(int2));
 
     cudaMemcpy(f_kernel, kernel, kSize * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(i_offsetsMotion, offsetsMotion, offsetSize * sizeof(int2), cudaMemcpyHostToDevice);
@@ -797,7 +799,7 @@ void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat&
     const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
 
     // Run BoxFilter kernel on CUDA 
-    motionBlur << <grid, block >> > (d_input, d_output, output.cols, output.rows, f_kernel, i_offsetsMotion, kernelSize, input.step, output.step);
+    motionBlur << <grid, block >> > (d_input, d_output, input.cols, input.rows, f_kernel, i_offsetsMotion, kernelSize, input.step, output.step);
 
     cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
 
