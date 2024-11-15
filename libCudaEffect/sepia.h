@@ -187,6 +187,19 @@ protected:
 	float correctionRadius;
 };
 
+class CSoftenFilter : public CCudaComputeFilter
+{
+public:
+	CSoftenFilter()
+	{
+	};
+
+	~CSoftenFilter() {};
+
+protected:
+	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;
+
+};
 
 
 

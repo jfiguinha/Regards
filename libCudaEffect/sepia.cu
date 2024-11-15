@@ -16,6 +16,35 @@
 using namespace std;
 
 
+//---------------------------------------------------------------------
+//Application du filtre Soften
+//	kernel = {  1, 1, 1, 1, 8, 1, 1, 1, 1 };
+//	factor = 16;
+//---------------------------------------------------------------------
+__global__ void softenFilter(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep)
+{
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((x < width) && (y < height))
+    {
+        const int position = y * colorWidthStep + (4 * x);
+        float4 sum = GetColorSrc(x - 1, y - 1, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x, y - 1, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x + 1, y - 1, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x - 1, y, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x, y, input, colorWidthStep, width, height) * make_float4(8.0f);
+        sum += GetColorSrc(x + 1, y, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x - 1, y + 1, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x, y + 1, input, colorWidthStep, width, height);
+        sum += GetColorSrc(x + 1, y + 1, input, colorWidthStep, width, height);
+        sum = sum / make_float4(16.0f);
+        rgbaFloat4ToUchar4(output, position, sum, 1.0f);
+    }
+}
+
+
 //----------------------------------------------------
 //Filtre Posterization
 //----------------------------------------------------
@@ -532,4 +561,16 @@ void CDistorsionFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::G
 
     // Run BoxFilter kernel on CUDA 
     distorsionFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, correctionRadius, input.step, output.step);
+}
+
+void CSoftenFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
+{
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Run BoxFilter kernel on CUDA 
+    softenFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
 }

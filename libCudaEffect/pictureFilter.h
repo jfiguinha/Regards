@@ -16,7 +16,7 @@ using namespace std;
 
 
 void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize);
-void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output);
+
 void cuda_filter2d(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<float>& kernelMotion, int kernelSize);
 void noiseFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output);
 void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float radius, float angleDegree);

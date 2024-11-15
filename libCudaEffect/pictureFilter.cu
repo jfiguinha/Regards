@@ -120,31 +120,6 @@ __global__ void motionBlur(uchar* input, uchar * output,  int width, int height,
     }
 }
 
-//---------------------------------------------------------------------
-//Application du filtre Soften
-//	kernel = {  1, 1, 1, 1, 8, 1, 1, 1, 1 };
-//	factor = 16;
-//---------------------------------------------------------------------
-__global__ void softenFilter(uchar* input, uchar * output,  int width, int height)
-{
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int position = (x + y * width) * 4;
-    if (x < width && y < height && y >= 0 && x >= 0)
-    {
-        float4 sum = GetColorSrc(x - 1, y - 1, input, width, height);
-        sum += GetColorSrc(x, y - 1, input, width, height);
-        sum += GetColorSrc(x + 1, y - 1, input, width, height);
-        sum += GetColorSrc(x - 1, y, input, width, height);
-        sum += GetColorSrc(x, y, input, width, height) * make_float4(8.0f);
-        sum += GetColorSrc(x + 1, y, input, width, height);
-        sum += GetColorSrc(x - 1, y + 1, input, width, height);
-        sum += GetColorSrc(x, y + 1, input, width, height);
-        sum += GetColorSrc(x + 1, y + 1, input, width, height);
-        sum = sum / make_float4(16.0f);
-        rgbaFloat4ToUchar4(output, position, sum, 1.0f);
-    }
-}
 
 
 
@@ -455,24 +430,7 @@ void swirlFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, float 
 }
 
 
-// The wrapper is used to call sharpening filter 
-void softenFilter(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
-{
-    uchar* d_input;
-    uchar* d_output;
 
-    d_input = (uchar*)input.ptr();
-    d_output = (uchar*)output.ptr();
-
-    // Specify block size
-    const dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-
-    // Calculate grid size to cover the whole image
-    const dim3 grid((output.cols + block.x - 1) / block.x, (output.rows + block.y - 1) / block.y);
-
-    // Run BoxFilter kernel on CUDA 
-    softenFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows);
-}
 
 void motionBlur(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize)
 {

@@ -791,7 +791,9 @@ void CCudaFilter::FiltreConvolution(const wxString& programName, const wxString&
 	{
 		if (functionName == "Soften")
 		{
-			softenFilter(inputData, out);
+			CSoftenFilter softenFilter;
+			softenFilter.ApplyEffect(inputData, out);
+			//softenFilter(inputData, out);
 			out.copyTo(inputData);
 		}
 
