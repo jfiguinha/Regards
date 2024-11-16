@@ -238,3 +238,4 @@
 /libCudaEffect/x64/Debug
 /libVideoEffect/x64/Debug
 /libCuda
+/libextern/cudnn
