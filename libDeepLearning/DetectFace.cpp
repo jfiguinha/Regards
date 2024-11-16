@@ -221,8 +221,11 @@ void CDetectFace::LoadModel(const bool& openCLCompatible, const bool& cudaCompat
 		                            CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
-		if(cudaCompatible)
+		if (cudaCompatible)
+		{
+			net.setPreferableBackend(DNN_BACKEND_CUDA);
 			net.setPreferableTarget(DNN_TARGET_CUDA);
+		}
 		else if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
 		else

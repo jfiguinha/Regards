@@ -136,6 +136,7 @@ cv::cuda::GpuMat Regards::Cuda::CSuperSampling::upscaleImage(cv::cuda::GpuMat im
 			break;
 			}
 
+			sr.setPreferableTarget(DNN_BACKEND_CUDA);
 			sr.setPreferableTarget(DNN_TARGET_CUDA);
 			sr.upsample(img, outputImage);
 
@@ -890,8 +891,11 @@ void CCudaFilter::Median(cv::cuda::GpuMat& inputData)
 
 	try
 	{
-		CCudaMedianFilter medianFilter;
-		medianFilter.ApplyEffect(inputData, out);
+		cv::Ptr<cv::cuda::Filter> medianFilter;
+		medianFilter = cv::cuda::createMedianFilter(inputData.type(), 3);
+		medianFilter->apply(inputData, out);
+		//CCudaMedianFilter medianFilter;
+		//medianFilter.ApplyEffect(inputData, out);
 		out.copyTo(inputData);
 	}
 	catch (Exception& e)

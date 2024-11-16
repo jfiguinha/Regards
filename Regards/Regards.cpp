@@ -22,7 +22,7 @@
 #include <FilterData.h>
 #include <OpenCLContext.h>
 #include <ncnn/gpu.h>
-
+#include <cudnn.h>
 #ifndef __APPLE__
 #include <opencv2/cudaarithm.hpp>
 using namespace cv::cuda;
@@ -339,7 +339,21 @@ bool MyApp::OnInit()
             testOpenCL = false;
         }
         else
-            regardsParam->SetIsCudaSupport(0);      
+            regardsParam->SetIsCudaSupport(0);  
+
+
+		auto cudnn_bversion = cudnnGetVersion();
+		auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
+		if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
+		{
+			std::ostringstream oss;
+			oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
+			//CV_LOG_WARNING(NULL, oss.str().c_str());
+		}
+		else
+		{
+			cout << "CuDNN is OK" << endl;
+		}
     }
     else
         regardsParam->SetIsCudaSupport(0);   

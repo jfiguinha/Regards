@@ -616,7 +616,8 @@ void CListFace::ProcessIdle()
 	int faceDetection = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
-	if (!isOpenCLInitialized && regardsParam->GetIsOpenCLSupport())
+
+	if (!isOpenCLInitialized && (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsUseCuda()))
 	{
 		processIdle = true;
 		return;
