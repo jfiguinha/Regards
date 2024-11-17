@@ -307,7 +307,7 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 		UMat yChannel;
 		UMat yChannelOut;
 
-		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+		cvtColor(inputData, ycbcr, COLOR_BGR2YUV);
 
 		// Extract the Y channel
 		extractChannel(ycbcr, yChannel, 0);
@@ -318,7 +318,7 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+		cvtColor(ycbcr, inputData, COLOR_YUV2BGR);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
@@ -341,6 +341,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 	
 	try
 	{
+		/*
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
@@ -402,6 +403,15 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
 		convertScaleAbs(inputData, inputData, alpha, beta);
+		*/
+		cv::UMat gpuframe_3channel(inputData.size(), CV_8UC3);
+		std::vector<cv::UMat> yuv_planes(3);
+
+		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::split(gpuframe_3channel, yuv_planes);
+		equalizeHist(yuv_planes[0], yuv_planes[0]);
+		cv::merge(yuv_planes, gpuframe_3channel);
+		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
 	}
 	catch (Exception& e)
 	{

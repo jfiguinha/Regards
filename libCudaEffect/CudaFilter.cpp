@@ -189,9 +189,11 @@ void CCudaFilter::DetailEnhance(cv::cuda::GpuMat& inputData, const double& sigma
 	{
 		cv::Mat dest;
 		cv::Mat input;
-		inputData.download(input);
+		inputData.download(dest);
+		cv::cvtColor(dest, input, COLOR_BGRA2BGR);
 		cv::detailEnhance(input, dest, sigma_s, sigma_r);
-		inputData.upload(dest);
+		cv::cvtColor(dest, input, COLOR_BGR2BGRA);
+		inputData.upload(input);
 	}
 	catch (Exception& e)
 	{
@@ -207,9 +209,11 @@ void CCudaFilter::EdgePreservingFilter(cv::cuda::GpuMat& inputData, const int& f
 	{
 		cv::Mat dest;
 		cv::Mat input;
-		inputData.download(input);
+		inputData.download(dest);
+		cv::cvtColor(dest, input, COLOR_BGRA2BGR);
 		edgePreservingFilter(input, dest, flags, sigma_s, sigma_r);
-		inputData.upload(dest);
+		cv::cvtColor(dest, input, COLOR_BGR2BGRA);
+		inputData.upload(input);
 	}
 	catch (Exception& e)
 	{
@@ -227,9 +231,11 @@ void CCudaFilter::PencilSketch(cv::cuda::GpuMat& inputData, const double& sigma_
 		cv::Mat img1;
 		cv::Mat dest;
 		cv::Mat input;
-		inputData.download(input);
+		inputData.download(dest);
+		cv::cvtColor(dest, input, COLOR_BGRA2BGR);
 		pencilSketch(input, img1, dest, sigma_s, sigma_r, shade_factor);
-		inputData.upload(dest);
+		cv::cvtColor(dest, input, COLOR_BGR2BGRA);
+		inputData.upload(input);
 	}
 	catch (Exception& e)
 	{
@@ -246,8 +252,10 @@ void CCudaFilter::Stylization(cv::cuda::GpuMat& inputData, const double& sigma_s
 		cv::Mat dest;
 		cv::Mat input;
 		inputData.download(input);
+		cv::cvtColor(input, dest, COLOR_BGRA2BGR);
 		stylization(input, dest, sigma_s, sigma_r);
-		inputData.upload(dest);
+		cv::cvtColor(dest, input, COLOR_BGR2BGRA);
+		inputData.upload(input);
 	}
 	catch (Exception& e)
 	{
@@ -282,8 +290,10 @@ void CCudaFilter::NlMeans(cv::cuda::GpuMat& inputData, const int& h, const int& 
 	try
 	{
 		cv::cuda::GpuMat dest;
+		cv::cvtColor(inputData, dest, COLOR_BGRA2BGR);
 		cv::cuda::fastNlMeansDenoisingColored(inputData, dest, h, h, templateWindowSize, searchWindowSize);
-		dest.copyTo(inputData);
+		cv::cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		//dest.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -299,7 +309,6 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 
 	try
 	{
-		cv::Mat dest;
 		cv::Mat input;
 		inputData.download(input);
 
@@ -307,7 +316,7 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		cv::Mat yChannel;
 		cv::Mat yChannelOut;
 
-		cv::cvtColor(input, ycbcr, COLOR_BGR2YCrCb);
+		cv::cvtColor(input, ycbcr, COLOR_BGR2YUV, 3);
 
 		// Extract the Y channel
 		extractChannel(ycbcr, yChannel, 0);
@@ -318,15 +327,15 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR);
+		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR, 4);
 
-		inputData.upload(dest);
+		inputData.upload(input);
 
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
 		ycbcr.release();
+		input.release();
 		yChannelOut.release();
-		dest.release();
 		
 	}
 	catch (Exception& e)
@@ -345,6 +354,22 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 
 	try
 	{
+		static Ptr<cv::cuda::CLAHE> clahe;
+		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
+
+		if (!clahe) {
+			clahe = cv::cuda::createCLAHE(2.5, Size(6, 6));
+		}
+
+		std::vector<cv::cuda::GpuMat> yuv_planes(3);
+
+		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::split(gpuframe_3channel, yuv_planes);
+		clahe->apply(yuv_planes[0], yuv_planes[0]);
+		cv::merge(yuv_planes, gpuframe_3channel);
+		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+
+		/*
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
@@ -411,6 +436,7 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		cv::convertScaleAbs(color, color, alpha, beta);
 
 		inputData.upload(color);
+		*/
 	}
 	catch (Exception& e)
 	{
