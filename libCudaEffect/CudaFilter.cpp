@@ -588,9 +588,17 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
 
 	try
 	{
+        vector<Points> _offsets;
+        for(int i = 0;i < offsets.size();i++)
+        {
+            Points _local;
+            _local.x = offsets[i].x;
+            _local.y = offsets[i].y;
+            _offsets.push_back(_local);
+        }
 		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		CMotionBlur motionBlur;
-		motionBlur.SetParameter(kernelMotion, offsets, kernelSize);
+		motionBlur.SetParameter(kernelMotion, _offsets, kernelSize);
 		motionBlur.ApplyEffect(inputData, out);
 
 

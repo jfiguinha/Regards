@@ -68,7 +68,7 @@ CRgbaquad::CRgbaquad()
 	}
 }
 
-CRgbaquad::CRgbaquad(const wxString& hexacolor)
+CRgbaquad::CRgbaquad(const std::string& hexacolor)
 {
 	SetHexaColor(hexacolor);
 }
@@ -86,15 +86,15 @@ void CRgbaquad::SetColor(const uint8_t& color)
 	this->alpha = 0;
 }
 
-std::vector<wxString> CRgbaquad::Split(const wxString& s, char seperator)
+std::vector<std::string> CRgbaquad::Split(const std::string & s, char seperator)
 {
-	std::vector<wxString> output;
+	std::vector<std::string> output;
 
 	std::string::size_type prev_pos = 0, pos = 0;
 
 	while ((pos = s.find(seperator, pos)) != std::string::npos)
 	{
-		wxString substring(s.substr(prev_pos, pos - prev_pos));
+		std::string substring(s.substr(prev_pos, pos - prev_pos));
 
 		output.push_back(substring);
 
@@ -107,22 +107,22 @@ std::vector<wxString> CRgbaquad::Split(const wxString& s, char seperator)
 }
 
 
-void CRgbaquad::SetHexaColor(const wxString& hexacolor)
+void CRgbaquad::SetHexaColor(const std::string& hexacolor)
 {
-	vector<wxString> listcolor = Split(hexacolor, ';');
+	vector<std::string> listcolor = Split(hexacolor, ';');
 	if (listcolor.size() == 3)
 	{
-		red = atoi(listcolor[0]);
-		green = atoi(listcolor[1]);
-		blue = atoi(listcolor[2]);
+		red = atoi(listcolor[0].c_str());
+		green = atoi(listcolor[1].c_str());
+		blue = atoi(listcolor[2].c_str());
 	}
 }
 
-wxString CRgbaquad::GetHexacolor()
+std::string CRgbaquad::GetHexacolor()
 {
 	char chex[255];
 	sprintf(chex, "%d;%d;%d", red, green, blue);
-	return chex;
+	return std::string(chex);
 }
 
 void CRgbaquad::Add(const float& value)

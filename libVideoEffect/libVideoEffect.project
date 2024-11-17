@@ -3,9 +3,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="VideoStabilizationCpu.cpp"/>
+    <File Name="VideoStabilizationCuda.cpp"/>
+    <File Name="VideoStabilizationOpenCL.cpp"/>
     <File Name="VideoStabilization.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="VideoStabilizationCpu.h"/>
+    <File Name="VideoStabilizationCuda.h"/>
+    <File Name="VideoStabilizationOpenCL.h"/>
     <File Name="IEffectVideo.h"/>
     <File Name="VideoStabilization.h"/>
   </VirtualDirectory>
@@ -75,7 +81,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="2">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="" Required="yes"/>

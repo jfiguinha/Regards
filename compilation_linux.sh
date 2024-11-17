@@ -33,6 +33,10 @@ sudo apt install bison
 sudo apt install gperf
 sudo apt install dos2unix
 sudo apt install nvidia-cuda-toolkit
+sudo apt update
+sudo apt install libcudnn8
+sudo apt install libcudnn8-dev
+sudo apt install libcudnn8-samples
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev

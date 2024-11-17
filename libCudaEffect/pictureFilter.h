@@ -1,9 +1,4 @@
 #pragma once
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 #include <opencv2/opencv.hpp>
 #include <RGBAQuad.h>
@@ -253,7 +248,7 @@ public:
 		delete[] offsetsMotion;
 	};
 
-	void SetParameter(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize);
+	void SetParameter(const vector<double>& kernelMotion, const vector<Points>& offsets, int kernelSize);
 
 protected:
 	void ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output) override;

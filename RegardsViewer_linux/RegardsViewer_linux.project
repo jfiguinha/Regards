@@ -301,11 +301,14 @@
         <Library Value="opencv_imgproc4"/>
         <Library Value="opencv_ximgproc4"/>
         <Library Value="opencv_core4"/>
+        <Library Value="opencv_cudaoptflow4"/>
         <Library Value="opencv_cudawarping4"/>
         <Library Value="opencv_cudafilters4"/>
         <Library Value="opencv_cudaobjdetect4"/>
         <Library Value="opencv_cudaimgproc4"/>
         <Library Value="opencv_cudaarithm4"/>
+        <Library Value="cudnn"/>
+        <Library Value="cublas"/>
         <Library Value="cudart_static"/>
         <Library Value="nppc_static"/>
         <Library Value="nppial_static"/>
@@ -581,7 +584,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="2">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">

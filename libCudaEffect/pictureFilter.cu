@@ -592,7 +592,11 @@ void CCudaComputeFilter::ApplyEffect(const cv::cuda::GpuMat& input, cv::cuda::Gp
     ExecuteEffect(input, output);
 
     // Synchronize to check for any kernel launch errors
+#ifdef WIN32
     cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+#else
+    cudaSafeCall(cudaDeviceSynchronize());
+#endif 
 }
 
 void CSepiaFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
@@ -764,7 +768,7 @@ void CNoiseFilter::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat
     noiseFilter << <grid, block >> > (d_input, d_output, output.cols, output.rows, input.step, output.step);
 }
 
-void CMotionBlur::SetParameter(const vector<double>& kernelMotion, const vector<wxPoint>& offsets, int kernelSize)
+void CMotionBlur::SetParameter(const vector<double>& kernelMotion, const vector<Points>& offsets, int kernelSize)
 {
     offsetSize = offsets.size();
     kSize = kernelMotion.size();
@@ -801,8 +805,12 @@ void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat&
     // Run BoxFilter kernel on CUDA 
     motionBlur << <grid, block >> > (d_input, d_output, input.cols, input.rows, f_kernel, i_offsetsMotion, kernelSize, input.step, output.step);
 
+    // Synchronize to check for any kernel launch errors
+#ifdef WIN32
     cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
-
+#else
+    cudaSafeCall(cudaDeviceSynchronize());
+#endif 
     cudaFree(f_kernel);
     cudaFree(offsetsMotion);
 

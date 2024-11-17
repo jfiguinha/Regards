@@ -1,11 +1,16 @@
 #pragma once
 
+struct Points
+{
+    int x, y;
+};
+
 class CRgbaquad
 {
 public:
 	CRgbaquad(const uint8_t& red, const uint8_t& green, const uint8_t& blue, const uint8_t& alpha = 0);
 
-	CRgbaquad(const wxString& hexacolor);
+	CRgbaquad(const std::string& hexacolor);
 
 	/****Définition du constructeur de copie***/
 	CRgbaquad(const CRgbaquad& source) //lobjet source est protégé par const   
@@ -28,13 +33,13 @@ public:
 
 	static CRgbaquad GetColorValue(cv::Mat* bitmapMatrix, const int& x, const int& y);
 
-	void SetHexaColor(const wxString& hexacolor);
+	void SetHexaColor(const std::string & hexacolor);
 
 	void SetColor(const uint8_t& color);
 
 	float GetGreyValue() const;
 
-	wxString GetHexacolor();
+	std::string GetHexacolor();
 
 	bool operator==(const CRgbaquad& other);
 
@@ -100,7 +105,7 @@ public:
 	int GetIntensity() const;
 
 private:
-	std::vector<wxString> Split(const wxString& s, char seperator);
+	std::vector<std::string> Split(const std::string& s, char seperator);
 	int clamp(const int& val, const int& minval, const int& maxval);
 
 #if _MSC_VER >= 1800
