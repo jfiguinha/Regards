@@ -37,6 +37,10 @@ void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
 
 cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 {
+	
+
+#ifdef OLD
+
 	cv::UMat output;
 
 #ifdef WIN32
@@ -89,10 +93,24 @@ cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
 
 #endif
 
+	return output;
+
+#else
+
+	if (src)
+	{
+		return paramSrc;
+	}
+	else if (interpolatePicture)
+	{
+		return paramOutput;
+	}
+	return paramSrc;
+
+
+#endif
 
 	
-
-	return output;
 }
 
 void COpenCLEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)

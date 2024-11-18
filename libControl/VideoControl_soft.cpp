@@ -2069,6 +2069,8 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 		}
 
 #endif
+
+		/*
 		if (openclOpenGLInterop)
 		{
 			cv::UMat data = openclEffect->GetUMat(false);
@@ -2080,8 +2082,11 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 			cv::Mat data = openclEffect->GetMatrix(false);
 			renderOpenGL->SetData(data);
 		}
+		*/
                                             
-
+		cv::UMat data = openclEffect->GetUMat(false);
+		if (!renderOpenGL->SetData(data))
+			openclOpenGLInterop = false;
 
         int nError = glGetError();
 

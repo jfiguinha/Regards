@@ -86,7 +86,16 @@ cv::Mat COpenCLEffect::GetMat()
 
 cv::UMat COpenCLEffect::GetUMat()
 {
-	cv::UMat output;
+	if (preview && !paramOutput.empty())
+	{
+		return paramOutput;
+	}
+	else
+	{
+		return input;
+	}
+
+#ifdef __OLD__
 
 #ifdef WIN32
 	if (platformName.find("Intel") == 0)
@@ -129,6 +138,8 @@ cv::UMat COpenCLEffect::GetUMat()
 
 
 	return output;
+
+#endif
 
 	/*
 	cv::UMat output;

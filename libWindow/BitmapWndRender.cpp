@@ -1720,6 +1720,11 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 
+			cv::UMat data = filtreEffet->GetUMat();
+			if (!glTexture->SetData(data))
+				isOpenCLOpenGLInterop = false;
+
+			/*
 			if (isOpenCLOpenGLInterop)
 			{
 				cv::UMat data = filtreEffet->GetUMat();
@@ -1731,6 +1736,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 				cv::Mat data = filtreEffet->GetMat();
 				glTexture->SetData(data);
 			}
+			*/
 
 		}
 

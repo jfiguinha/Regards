@@ -232,87 +232,114 @@ bool GLTexture::SetData(cv::UMat& bitmap)
     
 	bool isOk = false;
 
-	if (pimpl_ == nullptr && openclOpenGLInterop)
-		pimpl_ = new CTextureGLPriv();
-
-	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
+	if (!openclOpenGLInterop)
 	{
-		if (bitmap.size().width != width || height != bitmap.size().height)
-		{
-			Delete();
-			m_nTextureID = -1;
+		if (tex == nullptr)
+			tex = new cv::ogl::Texture2D();
 
-		}
+		tex->copyFrom(bitmap, true);
+		tex->bind();
+		//tex->setAutoRelease(false);
+		m_nTextureID = tex->texId();
+		width = tex->size().width;
+		height = tex->size().height;
+	}
+	else
+	{
+		if (pimpl_ == nullptr && openclOpenGLInterop)
+			pimpl_ = new CTextureGLPriv();
 
-		if (m_nTextureID == -1)
+		if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 		{
-			width = bitmap.size().width;
-			height = bitmap.size().height;
-			glGenTextures(1, &m_nTextureID);
-			//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-			glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+			if (bitmap.size().width != width || height != bitmap.size().height)
+			{
+				Delete();
+				m_nTextureID = -1;
 
-		cv::UMat bitmapMatrix;
-		if (bitmap.channels() == 3)
-		{
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
-			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
-		}
-		else if (bitmap.channels() == 1)
-		{
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
-			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
-		}
-		else
-		{
-			/*
-#ifdef WIN32
-			if(platformName != "Intel(R) OpenCL HD Graphics")
+			}
+
+			if (m_nTextureID == -1)
+			{
+				width = bitmap.size().width;
+				height = bitmap.size().height;
+				glGenTextures(1, &m_nTextureID);
+				//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+				glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+				glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+
+			cv::UMat bitmapMatrix;
+			if (bitmap.channels() == 3)
+			{
+				if (platformName.find("Intel") == 0)
+				{
+					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+				}
+				else
+				{
+					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
+				}
+				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
+			}
+			else if (bitmap.channels() == 1)
+			{
+				cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
+				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
+			}
+			else
+			{
+				if (platformName.find("Intel") == 0)
+				{
+					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+				}
+				/*
+	#ifdef WIN32
+				if(platformName != "Intel(R) OpenCL HD Graphics")
+					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+
+	#else
 				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+	#endif
+				*/
 
-#else
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
-#endif
-			*/
-			
-			isOk = pimpl_->convertToGLTexture2D(bitmap, this);
+				isOk = pimpl_->convertToGLTexture2D(bitmap, this);
+			}
+
+
+			if (!isOk)
+			{
+				openclOpenGLInterop = false;
+				pimpl_->DeleteTextureInterop();
+			}
 		}
 
 
 		if (!isOk)
 		{
-			openclOpenGLInterop = false;
-			pimpl_->DeleteTextureInterop();
+			cv::Mat bitmapMatrix;
+			if (bitmap.channels() == 3)
+			{
+				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+			}
+			else if (bitmap.channels() == 1)
+				cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+			else
+				bitmap.copyTo(bitmapMatrix);
+
+			SetTextureData(bitmapMatrix);
 		}
+
 	}
 
-
-	if (!isOk)
-	{
-		cv::Mat bitmapMatrix;
-		if (bitmap.channels() == 3)
-		{
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
-		}
-		else if (bitmap.channels() == 1)
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
-		else
-			bitmap.copyTo(bitmapMatrix);
-
-		SetTextureData(bitmapMatrix);
-	}
 
 	return isOk;
 }
-
 
 
 bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
@@ -328,6 +355,8 @@ bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
 	height = tex->size().height;
 	return true;
 }
+
+
 
 void GLTexture::InitPbo(const cv::Mat& bitmapMatrix)
 {
