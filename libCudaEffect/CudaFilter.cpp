@@ -327,7 +327,7 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 		insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cv::cvtColor(ycbcr, input, COLOR_YCrCb2BGR, 4);
+		cv::cvtColor(ycbcr, input, COLOR_YUV2BGR, 4);
 
 		inputData.upload(input);
 
