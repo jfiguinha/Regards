@@ -363,11 +363,11 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 
 		std::vector<cv::cuda::GpuMat> yuv_planes(3);
 
-		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
-		cv::split(gpuframe_3channel, yuv_planes);
+		cv::cuda::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::cuda::split(gpuframe_3channel, yuv_planes);
 		clahe->apply(yuv_planes[0], yuv_planes[0]);
-		cv::merge(yuv_planes, gpuframe_3channel);
-		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+		cv::cuda::merge(yuv_planes, gpuframe_3channel);
+		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
 
 		/*
 		int histSize = 256;

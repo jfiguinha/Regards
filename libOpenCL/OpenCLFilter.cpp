@@ -403,15 +403,24 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
 		convertScaleAbs(inputData, inputData, alpha, beta);
+
+
 		*/
 		cv::UMat gpuframe_3channel(inputData.size(), CV_8UC3);
 		std::vector<cv::UMat> yuv_planes(3);
 
-		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV);
 		cv::split(gpuframe_3channel, yuv_planes);
-		equalizeHist(yuv_planes[0], yuv_planes[0]);
+		//equalizeHist(yuv_planes[0], yuv_planes[0]);
+			// apply the CLAHE algorithm to the L channel
+		cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
+		clahe->setClipLimit(4);
+
+		clahe->apply(yuv_planes[0], gpuframe_3channel);
+
 		cv::merge(yuv_planes, gpuframe_3channel);
-		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR);
+		
 	}
 	catch (Exception& e)
 	{
