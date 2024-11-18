@@ -20,7 +20,7 @@ extern string platformName;
 CCudaEffectVideo::CCudaEffectVideo()
 {
 	cudaFilter = new CCudaFilter();
-
+    //paramSrc = cv::cuda::GpuMat(32, 32, CV_8UC4);
 }
 
 void CCudaEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
@@ -366,7 +366,7 @@ void CCudaEffectVideo::ApplyVideoEffect(CVideoEffectParameter* videoEffectParame
 
 void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited)
 {
-
+    printf("CCudaEffectVideo::SetAVFrame \n");
 	int nWidth = tmp_frame->width;
 	int nHeight = tmp_frame->height;
 
@@ -407,10 +407,13 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
 		}
 		else
 		{
+             printf("CCudaEffectVideo::convertYUVtoRGB32 begin \n");
 			convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
 				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
 				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
 				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+                
+            printf("CCudaEffectVideo::convertYUVtoRGB32 end \n");
 		}
 
 

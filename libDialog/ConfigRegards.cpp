@@ -423,15 +423,19 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	if (hardwareAccelerator == "Cuda")
 	{
 		regardsParam->SetIsUseCuda(1);
+        regardsParam->SetIsCudaSupport(1);
 	}
 	else if (hardwareAccelerator == "OpenCL")
 	{
 		regardsParam->SetIsOpenCLSupport(1);
+        regardsParam->SetIsUseCuda(0);
+        regardsParam->SetIsCudaSupport(0);
 	}
 	else
 	{
 		regardsParam->SetIsUseCuda(0);
 		regardsParam->SetIsOpenCLSupport(0);
+        regardsParam->SetIsCudaSupport(0);
 	}
 
 	if(oldAccelerator != hardwareAccelerator)
