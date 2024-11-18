@@ -1615,7 +1615,7 @@ void CBitmapWndRender::RenderToScreenWithCudaSupport()
 		if (widthOutput < 0 || heightOutput < 0)
 			return;
 
-		if (updateFilter || mouseUpdate != nullptr)
+		if (updateFilter)// || mouseUpdate != nullptr)
 		{
 			if (!bitmapIsLoad)
 				filtreEffet->SetBitmap(source);
@@ -1702,7 +1702,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			
 		}
 		*/
-		if (updateFilter || mouseUpdate != nullptr)
+		if (updateFilter)// || mouseUpdate != nullptr)
 		{
 			if (!bitmapIsLoad)
 				filtreEffet->SetBitmap(source);
@@ -1783,7 +1783,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			return;
 
 
-		if (updateFilter || mouseUpdate != nullptr)
+		if (updateFilter)// || mouseUpdate != nullptr)
 		{
 			BeforeInterpolationBitmap();
 			updateFilter = true;

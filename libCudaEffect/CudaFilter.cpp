@@ -253,9 +253,9 @@ void CCudaFilter::Stylization(cv::cuda::GpuMat& inputData, const double& sigma_s
 		cv::Mat input;
 		inputData.download(input);
 		cv::cvtColor(input, dest, COLOR_BGRA2BGR);
-		stylization(input, dest, sigma_s, sigma_r);
-		cv::cvtColor(dest, input, COLOR_BGR2BGRA);
-		inputData.upload(input);
+		stylization(dest, input, sigma_s, sigma_r);
+		cv::cvtColor(input, dest, COLOR_BGR2BGRA);
+		inputData.upload(dest);
 	}
 	catch (Exception& e)
 	{
@@ -290,9 +290,10 @@ void CCudaFilter::NlMeans(cv::cuda::GpuMat& inputData, const int& h, const int& 
 	try
 	{
 		cv::cuda::GpuMat dest;
-		cv::cvtColor(inputData, dest, COLOR_BGRA2BGR);
-		cv::cuda::fastNlMeansDenoisingColored(inputData, dest, h, h, templateWindowSize, searchWindowSize);
-		cv::cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		cv::cuda::GpuMat out;
+		cv::cuda::cvtColor(inputData, dest, COLOR_BGRA2BGR);
+		cv::cuda::fastNlMeansDenoisingColored(dest, out, h, hColor, templateWindowSize, searchWindowSize);
+		cv::cuda::cvtColor(out, inputData, COLOR_BGR2BGRA);
 		//dest.copyTo(inputData);
 	}
 	catch (Exception& e)
@@ -1145,7 +1146,7 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		Mat yChannel;
 		Mat yChannelOut;
 
-		cv::cvtColor(input, ycbcr, COLOR_BGRA2YUV_I420);
+		cv::cvtColor(input, ycbcr, COLOR_BGR2YUV, 3);
 
 		std::vector<Mat> planes(3);
 		split(ycbcr, planes);
@@ -1154,14 +1155,14 @@ void CCudaFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefaul
 		//cv::extractChannel(ycbcr, yChannel, 0);
 
 		uint8_t* dataOut = hq3d->ApplyDenoise3D(planes[0].data, inputData.cols, inputData.rows);
-
+		
 		memcpy(planes[0].data, dataOut, inputData.cols * inputData.rows);
 
 		// Merge the the color planes back into an Lab image
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cv::cvtColor(ycbcr, input, COLOR_YUV2BGRA_I420);
+		cv::cvtColor(ycbcr, input, COLOR_YUV2BGR, 4);
 
 		inputData.upload(input);
 
