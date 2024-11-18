@@ -67,20 +67,11 @@ cv::Mat CCudaEffect::GetMat()
 
 cv::cuda::GpuMat CCudaEffect::GetGpuMat()
 {
-	cv::cuda::GpuMat output;
-
 	if (preview && !paramOutput.empty())
 	{
-		paramOutput.copyTo(output);
+		return paramOutput;
 	}
-	else
-	{
-		input.copyTo(output);
-	}
-
-	//cv::cuda::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-
-	return output;
+	return input;
 
 }
 
