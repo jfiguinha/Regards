@@ -354,11 +354,13 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 
 	try
 	{
+		/*
 		static Ptr<cv::cuda::CLAHE> clahe;
 		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
 
 		if (!clahe) {
 			clahe = cv::cuda::createCLAHE(2.5, Size(6, 6));
+			clahe->setClipLimit(4);
 		}
 
 		std::vector<cv::cuda::GpuMat> yuv_planes(3);
@@ -368,16 +370,29 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		clahe->apply(yuv_planes[0], yuv_planes[0]);
 		cv::cuda::merge(yuv_planes, gpuframe_3channel);
 		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+		*/
 
-		/*
+		
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
 
 		cv::cuda::GpuMat gpuGray;
-		cv::Mat gray;
-		cv::Mat color;
+
+		cv::Point minLoc;
+		cv::Point maxLoc;
 		cv::cuda::cvtColor(inputData, gpuGray, COLOR_BGRA2GRAY);
+		cv::cuda::minMaxLoc(gpuGray, &minGray, &maxGray, &minLoc, &maxLoc);
+		float inputRange = maxGray - minGray;
+
+		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+		//cv::convertScaleAbs(color, color, alpha, beta);
+
+
+		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.type());
+		/*
 		gpuGray.download(gray);
 		inputData.download(color);
 		if (clipHistPercent == 0)
@@ -433,10 +448,14 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
-		cv::convertScaleAbs(color, color, alpha, beta);
+		//cv::convertScaleAbs(color, color, alpha, beta);
 
-		inputData.upload(color);
+
+		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.type());
+
+		//inputData.upload(color);
 		*/
+		
 	}
 	catch (Exception& e)
 	{

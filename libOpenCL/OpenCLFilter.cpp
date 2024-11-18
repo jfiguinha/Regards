@@ -341,13 +341,24 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 	
 	try
 	{
-		/*
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
 
 		UMat gray;
 		cvtColor(inputData, gray, COLOR_BGR2GRAY);
+
+		cv::Point minLoc;
+		cv::Point maxLoc;
+		minMaxLoc(gray, &minGray, &maxGray, &minLoc, &maxLoc);
+		float inputRange = maxGray - minGray;
+
+		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+		convertScaleAbs(inputData, inputData, alpha, beta);
+
+		/*
 
 		if (clipHistPercent == 0)
 		{
@@ -405,7 +416,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		convertScaleAbs(inputData, inputData, alpha, beta);
 
 
-		*/
+		/*
 		cv::UMat gpuframe_3channel(inputData.size(), CV_8UC3);
 		std::vector<cv::UMat> yuv_planes(3);
 
@@ -420,7 +431,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 
 		cv::merge(yuv_planes, gpuframe_3channel);
 		cv::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR);
-		
+		*/
 	}
 	catch (Exception& e)
 	{
