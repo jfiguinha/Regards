@@ -73,27 +73,13 @@ cv::cuda::GpuMat CCudaEffectVideo::GetGpuMat(const bool& src)
 cv::UMat CCudaEffectVideo::GetUMat(const bool& src)
 {
 	cv::UMat output;
-
-	if (src)
-	{
-		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-	}
-	else if (interpolatePicture)
-	{
-		cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
-	}
-	else
-	{
-		cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-	}
-
-
+	cv::Mat mat = GetMatrix(src);
+	mat.copyTo(output);
 	return output;
 }
 
 void CCudaEffectVideo::SetMatrix(cv::Mat& frame)
 {
-
 
 	if (frame.channels() == 3)
 	{

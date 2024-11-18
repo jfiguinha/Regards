@@ -28,7 +28,7 @@ bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 
 cv::cuda::GpuMat COpenCLEffect::GetGpuMat()
 {
-	cv::UMat convert;
+	cv::Mat convert;
 	cv::cuda::GpuMat output;
 
 	if (preview && !paramOutput.empty())
@@ -42,7 +42,7 @@ cv::cuda::GpuMat COpenCLEffect::GetGpuMat()
 
 	}
 
-	convert.copyTo(output);
+	output.upload(convert);
 
 	return output;
 }
