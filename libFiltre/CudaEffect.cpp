@@ -36,21 +36,8 @@ bool CCudaEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 
 cv::UMat CCudaEffect::GetUMat()
 {
-	cv::cuda::GpuMat convert;
-	cv::Mat output;
+	cv::Mat output = GetMat();
 	cv::UMat image;
-
-	if (preview && !paramOutput.empty())
-	{
-		//cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		paramOutput.download(output);
-	}
-	else
-	{
-		//cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
-		input.download(output);
-
-	}
 
 	output.copyTo(image);
 
@@ -59,7 +46,6 @@ cv::UMat CCudaEffect::GetUMat()
 
 cv::Mat CCudaEffect::GetMat()
 {
-	cv::cuda::GpuMat convert;
 	cv::Mat output;
 
 	if (preview && !paramOutput.empty())
@@ -152,7 +138,7 @@ void CCudaEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		if (source.channels() == 3)
 			cv::cuda::cvtColor(source, input, cv::COLOR_BGR2BGRA);
 		else if (source.channels() == 1)
-			cv::cuda::cvtColor(source, input, cv::COLOR_GRAY2BGR);
+			cv::cuda::cvtColor(source, input, cv::COLOR_GRAY2BGRA);
 		else
 			source.copyTo(input);
 
@@ -204,7 +190,7 @@ wxImage CCudaEffect::GetwxImage(cv::cuda::GpuMat& input)
 
 	input.download(source);
 
-	cv::cvtColor(source, cvDest, cv::COLOR_BGR2RGB);
+	cv::cvtColor(source, cvDest, cv::COLOR_BGRA2RGB);
 
 	long imsize = cvDest.rows * cvDest.cols * cvDest.channels();
 	wxImage wx(cvDest.cols, cvDest.rows, static_cast<unsigned char*>(malloc(imsize)), false);
