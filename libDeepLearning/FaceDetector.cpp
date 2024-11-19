@@ -321,7 +321,7 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible, const bool& cudaComp
 		//colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
 		//gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
 
-
+        printf("CFaceDetector::LoadModel \n");
 		detectFace.LoadModel(openCLCompatible, cudaCompatible);
 		detectFacePCN.LoadModel(openCLCompatible, cudaCompatible);
 

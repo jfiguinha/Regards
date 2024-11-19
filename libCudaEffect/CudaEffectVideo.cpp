@@ -20,7 +20,7 @@ extern string platformName;
 CCudaEffectVideo::CCudaEffectVideo()
 {
 	cudaFilter = new CCudaFilter();
-    //paramSrc = cv::cuda::GpuMat(32, 32, CV_8UC4);
+    paramSrc = cv::cuda::GpuMat(32, 32, CV_8UC4);
 }
 
 void CCudaEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
@@ -369,58 +369,64 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
     printf("CCudaEffectVideo::SetAVFrame \n");
 	int nWidth = tmp_frame->width;
 	int nHeight = tmp_frame->height;
-
-	if (paramSrc.size().height != nHeight || paramSrc.size().width != nWidth)
+	try
 	{
-		paramSrc.release();
-		paramSrc = cv::cuda::GpuMat(nHeight, nWidth, CV_8UC4);
-	}
+        if (paramSrc.size().height != nHeight || paramSrc.size().width != nWidth)
+        {
+            paramSrc.release();
+            paramSrc = cv::cuda::GpuMat(nHeight, nWidth, CV_8UC4);
+        }
 
-	if (tmp_frame->format == AV_PIX_FMT_NV12)
+        if (tmp_frame->format == AV_PIX_FMT_NV12)
+        {
+            //muBitmap.lock();
+            //Test if denoising Effect
+            if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
+            {
+                uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+                convertNV12toRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+
+            }
+            else
+                convertNV12toRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+            //muBitmap.unlock();
+        }
+        else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
+        {
+            //muBitmap.lock();
+            if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
+            {
+                uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+                convertYUVtoRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+                    tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+            }
+            else
+            {
+                 printf("CCudaEffectVideo::convertYUVtoRGB32 begin \n");
+                convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
+                    tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+                    
+                printf("CCudaEffectVideo::convertYUVtoRGB32 end \n");
+            }
+        }
+	}
+	catch (cv::Exception& e)
 	{
-		//muBitmap.lock();
-		//Test if denoising Effect
-		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
-		{
-			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-			convertNV12toRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
+		//cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
+		//cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 
-		}
-		else
-			convertNV12toRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
-		//muBitmap.unlock();
+		const char* err_msg = e.what();
+		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-	else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
-	{
-		//muBitmap.lock();
-		if (videoEffectParameter != nullptr && (videoEffectParameter->denoiseEnable && videoEffectParameter->effectEnable))
-		{
-			uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-			convertYUVtoRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
-		}
-		else
-		{
-             printf("CCudaEffectVideo::convertYUVtoRGB32 begin \n");
-			convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-				tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-				tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-				tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
-                
-            printf("CCudaEffectVideo::convertYUVtoRGB32 end \n");
-		}
-
-
-		
-		//muBitmap.unlock();
-	}
-
 
 	
 	/*

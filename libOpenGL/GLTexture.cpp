@@ -1,5 +1,9 @@
 ﻿#include <header.h>
 #include "GLTexture.h"
+#include <cuda.h>
+#include "cuda_runtime.h"
+#include <cuda_gl_interop.h>
+#include <opencv2/core.hpp>
 #include <epoxy/gl.h>
 #ifdef __APPLE__
 #include <OpenCL/cl_gl.h>
@@ -10,12 +14,30 @@
 #else
 #include <GL/glut.h>
 #endif
+
+
 #include <opencv2/core/opengl.hpp>
 using namespace Regards::OpenGL;
 
 using namespace cv::ocl;
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
+
+void CHECK_CUDA(cudaError_t err) {
+    if(err != cudaSuccess) {
+        std::cerr << "Error: " << cudaGetErrorString(err) << std::endl;
+        exit(-1);
+    }
+}  
+
+void CHECK_ERROR_GL() {
+    GLenum err = glGetError();
+    if(err != GL_NO_ERROR) {
+        std::cerr << "GL Error: " << gluErrorString(err) << std::endl;
+        exit(-1);
+    }
+}
 
 class CTextureGLPriv
 {
@@ -37,6 +59,68 @@ public:
 	//cl_command_queue q;
 };
 
+
+class CTextureCudaPriv
+{
+public:
+	CTextureCudaPriv()
+	{
+		//context = static_cast<cl_context>(Context::getDefault().ptr());
+		//q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
+	}
+
+	int CopyToTexture(cv::cuda::GpuMat & inputData);
+	int CreateTextureInterop(GLuint m_nTextureID);
+	int DeleteTextureInterop();
+
+
+    cudaGraphicsResource *cudaTexPtr;
+    cudaArray *texture_ptr;
+	bool isCudaCompatible = true;
+	//cl_context context;
+	//cl_command_queue q;
+};
+
+int CTextureCudaPriv::CopyToTexture(cv::cuda::GpuMat & inputData)
+{
+    cudaError_t err;
+    err = cudaMemcpyToArray( texture_ptr, 0, 0, inputData.data, inputData.elemSize(), cudaMemcpyDeviceToDevice);
+    if(err != cudaSuccess)
+        return -1;
+    return 1;
+}
+
+int CTextureCudaPriv::CreateTextureInterop(GLuint m_nTextureID)
+{
+    cudaError_t err;
+    //cudaGraphicsGLRegisterImage(&resource, m_iTexture, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsNone);
+    err = cudaGraphicsGLRegisterImage(&cudaTexPtr, m_nTextureID, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsNone);
+    if(err != cudaSuccess)
+        return -1;
+        
+    err = cudaGraphicsMapResources(1, &cudaTexPtr);
+    if(err != cudaSuccess)
+        return -1;
+        
+    err = cudaGraphicsSubResourceGetMappedArray(&texture_ptr, cudaTexPtr, 0, 0);
+    if(err != cudaSuccess)
+        return -1;
+        
+    return 1;
+}
+
+int CTextureCudaPriv::DeleteTextureInterop()
+{
+    cudaError_t err;
+    err = cudaGraphicsUnmapResources(1, &cudaTexPtr);
+    if(err != cudaSuccess)
+        return -1;
+    err = cudaGraphicsUnregisterResource(cudaTexPtr);
+    if(err != cudaSuccess)
+        return -1;
+        
+    return 1;
+}
 
 cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
@@ -164,6 +248,9 @@ GLTexture::~GLTexture(void)
 
 	if (pimpl_ != nullptr)
 		delete pimpl_;
+        
+    if(cudaInterop != nullptr)
+        delete cudaInterop;
 }
 
 GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
@@ -232,19 +319,34 @@ bool GLTexture::SetData(cv::UMat& bitmap)
     
 	bool isOk = false;
 
+/*
 	if (!openclOpenGLInterop)
 	{
-		if (tex == nullptr)
-			tex = new cv::ogl::Texture2D();
+        try
+        {
+            if (tex == nullptr)
+                tex = new cv::ogl::Texture2D();
 
-		tex->copyFrom(bitmap, true);
-		tex->bind();
-		//tex->setAutoRelease(false);
-		m_nTextureID = tex->texId();
-		width = tex->size().width;
-		height = tex->size().height;
+            tex->copyFrom(bitmap, true);
+            tex->bind();
+            //tex->setAutoRelease(false);
+            m_nTextureID = tex->texId();
+            width = tex->size().width;
+            height = tex->size().height;
+            isOk = true;
+        }
+        catch (cv::Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            isOk = false;
+        }
+
 	}
-	else
+*/
+
+	if(!isOk)
 	{
 		if (pimpl_ == nullptr && openclOpenGLInterop)
 			pimpl_ = new CTextureGLPriv();
@@ -298,16 +400,6 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 				{
 					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 				}
-				/*
-	#ifdef WIN32
-				if(platformName != "Intel(R) OpenCL HD Graphics")
-					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
-
-	#else
-				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
-	#endif
-				*/
-
 				isOk = pimpl_->convertToGLTexture2D(bitmap, this);
 			}
 
@@ -344,15 +436,81 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
 {
-	if (tex == nullptr)
-		tex = new cv::ogl::Texture2D();
+    bool isOk = false;
+    try
+    {
+        if (tex == nullptr)
+            tex = new cv::ogl::Texture2D();
 
-	tex->copyFrom(bitmap, true);
-	tex->bind();
-	//tex->setAutoRelease(false);
-	m_nTextureID = tex->texId();
-	width = tex->size().width;
-	height = tex->size().height;
+        tex->copyFrom(bitmap, true);
+        tex->bind();
+        //tex->setAutoRelease(false);
+        m_nTextureID = tex->texId();
+        width = tex->size().width;
+        height = tex->size().height;
+        isOk = true;
+    }
+    catch (cv::Exception& e)
+    {
+        const char* err_msg = e.what();
+        std::cout << "exception caught: " << err_msg << std::endl;
+        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        isOk = false;
+    }
+    
+    if(!isOk)
+    {
+        int status = 0;
+		if (cudaInterop == nullptr)
+			cudaInterop = new CTextureCudaPriv();
+            
+        if (bitmap.size().width != width || height != bitmap.size().height)
+        {
+            
+            cudaInterop->DeleteTextureInterop();
+            Delete();
+            m_nTextureID = -1;
+
+        }
+            
+        if (m_nTextureID == -1)
+        {
+            width = bitmap.size().width;
+            height = bitmap.size().height;
+            glGenTextures(1, &m_nTextureID);
+            //glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+            glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            status = cudaInterop->CreateTextureInterop(m_nTextureID);
+        }
+        
+        if(status)
+        {
+            cudaInterop->CopyToTexture(bitmap);
+        }
+
+        /*
+        cudaGraphicsGLRegisterImage(&CudaRes, m_nTextureID, GL_TEXTURE_2D, cudaGraphicsMapFlagsNone);
+        cudaArray *texture_ptr;
+        cudaGraphicsMapResources(1, &CudaRes);
+        cudaGraphicsSubResourceGetMappedArray(&texture_ptr, CudaRes, 0, 0);
+        cudaMemcpyToArray( texture_ptr, 0, 0, bitmap.data(), bitmap.bytes(), cudaMemcpyDeviceToDevice);
+        cudaGraphicsUnmapResources(1, &CudaRes); 
+        */
+        
+        if (!isOk)
+        {
+            cudaOpenGLInterop = false;
+            pimpl_->DeleteTextureInterop();
+        }
+    }
+
 	return true;
 }
 

@@ -6,6 +6,7 @@
 #endif
 
 class CTextureGLPriv;
+class CTextureCudaPriv;
 
 namespace Regards
 {
@@ -56,11 +57,11 @@ namespace Regards
 			void SetDataToPBO(const cv::Mat& bitmapMatrix);
 			void InitPbo(const cv::Mat& bitmapMatrix);
 			CTextureGLPriv* pimpl_ = nullptr;
-			
+			CTextureCudaPriv * cudaInterop = nullptr;
 			
 			cv::ogl::Texture2D * tex = nullptr;
 
-
+            bool cudaOpenGLInterop = false;
 			bool openclOpenGLInterop = false;
 			int width;
 			int height;

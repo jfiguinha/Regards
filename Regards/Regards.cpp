@@ -330,6 +330,17 @@ bool MyApp::OnInit()
 
         if (cuda_devices_number > 0)
         {
+            try
+            {
+                cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
+            }
+            catch (Exception& e)
+            {
+                const char* err_msg = e.what();
+                std::cout << "exception caught: " << err_msg << std::endl;
+                std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+                exit(0);
+            }
             cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
             DeviceInfo _deviceInfo;
             bool _isd_evice_compatible = _deviceInfo.isCompatible();
