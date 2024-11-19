@@ -210,7 +210,7 @@ void CRenderVideoOpenGL::ShowSubtitle()
 GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop)
 {
 	if (textureVideo == nullptr)
-		textureVideo = new GLTexture(width, height, isOpenCLOpenGLInterop);
+		textureVideo = new GLTexture();
 
 	return textureVideo;
 }

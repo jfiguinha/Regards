@@ -121,6 +121,7 @@
     <Project Name="libVideoConverter"/>
     <Project Name="libCudaEffect"/>
     <Project Name="libVideoEffect"/>
+    <Project Name="libOpenCVMissingGTK"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -295,6 +296,7 @@
         <Library Value="opencv_xfeatures2d4"/>
         <Library Value="opencv_xobjdetect4"/>
         <Library Value="opencv_xphoto4"/>
+        <Library Value="OpenCVMissingGTK"/>
         <Library Value="opencv_dnn_objdetect4"/>
         <Library Value="opencv_dnn_superres4"/>
         <Library Value="opencv_dnn4"/>
@@ -618,6 +620,7 @@
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
+        <LibraryPath Value="../libOpenCVMissingGTK/Release"/>
         <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>

@@ -32,6 +32,7 @@ sudo apt install curl zip unzip tar
 sudo apt install bison
 sudo apt install gperf
 sudo apt install dos2unix
+sudo apt install libgtkglext1-dev
 sudo apt install nvidia-cuda-toolkit
 sudo apt install libcudnn8
 sudo apt install libcudnn8-dev

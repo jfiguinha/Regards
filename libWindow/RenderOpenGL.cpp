@@ -124,7 +124,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		isInit = true;
 
 
-		textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
+		textureDisplay = new GLTexture();
 	}
 }
 

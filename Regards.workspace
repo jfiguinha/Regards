@@ -58,6 +58,7 @@
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
     <Project Name="libCudaEffect" Path="libCudaEffect/libCudaEffect.project" Active="No"/>
     <Project Name="libVideoEffect" Path="libVideoEffect/libVideoEffect.project" Active="No"/>
+    <Project Name="libOpenCVMissingGTK" Path="libOpenCVMissingGTK/libOpenCVMissingGTK.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsVideoConverter">
     <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project" Active="No"/>
@@ -135,6 +136,7 @@
       <Project Name="ffplay" ConfigName="Debug"/>
       <Project Name="libCudaEffect" ConfigName="Debug"/>
       <Project Name="libVideoEffect" ConfigName="Debug"/>
+      <Project Name="libOpenCVMissingGTK" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -207,6 +209,7 @@
       <Project Name="ffplay" ConfigName="Release"/>
       <Project Name="libCudaEffect" ConfigName="Release"/>
       <Project Name="libVideoEffect" ConfigName="Release"/>
+      <Project Name="libOpenCVMissingGTK" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

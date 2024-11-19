@@ -60,68 +60,6 @@ public:
 };
 
 
-class CTextureCudaPriv
-{
-public:
-	CTextureCudaPriv()
-	{
-		//context = static_cast<cl_context>(Context::getDefault().ptr());
-		//q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
-	}
-
-	int CopyToTexture(cv::cuda::GpuMat & inputData);
-	int CreateTextureInterop(GLuint m_nTextureID);
-	int DeleteTextureInterop();
-
-
-    cudaGraphicsResource *cudaTexPtr;
-    cudaArray *texture_ptr;
-	bool isCudaCompatible = true;
-	//cl_context context;
-	//cl_command_queue q;
-};
-
-int CTextureCudaPriv::CopyToTexture(cv::cuda::GpuMat & inputData)
-{
-    cudaError_t err;
-    err = cudaMemcpyToArray( texture_ptr, 0, 0, inputData.data, inputData.elemSize(), cudaMemcpyDeviceToDevice);
-    if(err != cudaSuccess)
-        return -1;
-    return 1;
-}
-
-int CTextureCudaPriv::CreateTextureInterop(GLuint m_nTextureID)
-{
-    cudaError_t err;
-    //cudaGraphicsGLRegisterImage(&resource, m_iTexture, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsNone);
-    err = cudaGraphicsGLRegisterImage(&cudaTexPtr, m_nTextureID, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsNone);
-    if(err != cudaSuccess)
-        return -1;
-        
-    err = cudaGraphicsMapResources(1, &cudaTexPtr);
-    if(err != cudaSuccess)
-        return -1;
-        
-    err = cudaGraphicsSubResourceGetMappedArray(&texture_ptr, cudaTexPtr, 0, 0);
-    if(err != cudaSuccess)
-        return -1;
-        
-    return 1;
-}
-
-int CTextureCudaPriv::DeleteTextureInterop()
-{
-    cudaError_t err;
-    err = cudaGraphicsUnmapResources(1, &cudaTexPtr);
-    if(err != cudaSuccess)
-        return -1;
-    err = cudaGraphicsUnregisterResource(cudaTexPtr);
-    if(err != cudaSuccess)
-        return -1;
-        
-    return 1;
-}
-
 cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
     printf("CreateTextureInterop 1 \n");
@@ -205,8 +143,6 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 }
 
 
-
-
 void CTextureGLPriv::DeleteTextureInterop()
 {
 	if (clImage != nullptr)
@@ -249,27 +185,8 @@ GLTexture::~GLTexture(void)
 	if (pimpl_ != nullptr)
 		delete pimpl_;
         
-    if(cudaInterop != nullptr)
-        delete cudaInterop;
 }
 
-GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
-{
-	auto glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format);
-	return glTextureDest;
-}
-
-GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOpenGLInterop, GLenum format)
-{
-	m_nTextureID = -1;
-	width = nWidth;
-	height = nHeight;
-    dataformat = GL_RGBA8;
-	this->format = format;
-	this->openclOpenGLInterop = openclOpenGLInterop;
-	pboSupported = false;// epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
-//	Create(nWidth, nHeight, nullptr);
-}
 
 int GLTexture::GetWidth()
 {
@@ -279,29 +196,6 @@ int GLTexture::GetWidth()
 int GLTexture::GetHeight()
 {
 	return height;
-}
-
-uint8_t* GLTexture::GetData()
-{
-	GLuint m_nTextureSize = width * height << 2;
-	uint8_t* m_bData = nullptr;
-	if (m_nTextureID)
-	{
-		m_bData = new uint8_t[m_nTextureSize];
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, m_bData);
-	}
-
-	return m_bData;
-}
-
-void GLTexture::GetData(uint8_t* data)
-{
-	if (m_nTextureID && data != nullptr)
-	{
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, data);
-	}
 }
 
 void GLTexture::DeleteInteropTexture()
@@ -319,32 +213,10 @@ bool GLTexture::SetData(cv::UMat& bitmap)
     
 	bool isOk = false;
 
-/*
 	if (!openclOpenGLInterop)
 	{
-        try
-        {
-            if (tex == nullptr)
-                tex = new cv::ogl::Texture2D();
-
-            tex->copyFrom(bitmap, true);
-            tex->bind();
-            //tex->setAutoRelease(false);
-            m_nTextureID = tex->texId();
-            width = tex->size().width;
-            height = tex->size().height;
-            isOk = true;
-        }
-        catch (cv::Exception& e)
-        {
-            const char* err_msg = e.what();
-            std::cout << "exception caught: " << err_msg << std::endl;
-            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-            isOk = false;
-        }
-
+        isOk = SetTextureData(bitmap);
 	}
-*/
 
 	if(!isOk)
 	{
@@ -414,17 +286,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 		if (!isOk)
 		{
-			cv::Mat bitmapMatrix;
-			if (bitmap.channels() == 3)
-			{
-				cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
-			}
-			else if (bitmap.channels() == 1)
-				cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
-			else
-				bitmap.copyTo(bitmapMatrix);
-
-			SetTextureData(bitmapMatrix);
+            isOk = SetTextureData(bitmap);
 		}
 
 	}
@@ -436,7 +298,13 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
 {
-    bool isOk = false;
+ 	return SetTextureData(bitmap);
+}
+
+
+bool GLTexture::SetTextureData(cv::InputArray& bitmap)
+{
+     bool isOk = false;
     try
     {
         if (tex == nullptr)
@@ -457,258 +325,15 @@ bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
         std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
         isOk = false;
     }
-    
-    if(!isOk)
-    {
-        int status = 0;
-		if (cudaInterop == nullptr)
-			cudaInterop = new CTextureCudaPriv();
-            
-        if (bitmap.size().width != width || height != bitmap.size().height)
-        {
-            
-            cudaInterop->DeleteTextureInterop();
-            Delete();
-            m_nTextureID = -1;
-
-        }
-            
-        if (m_nTextureID == -1)
-        {
-            width = bitmap.size().width;
-            height = bitmap.size().height;
-            glGenTextures(1, &m_nTextureID);
-            //glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-            glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            status = cudaInterop->CreateTextureInterop(m_nTextureID);
-        }
-        
-        if(status)
-        {
-            cudaInterop->CopyToTexture(bitmap);
-        }
-
-        /*
-        cudaGraphicsGLRegisterImage(&CudaRes, m_nTextureID, GL_TEXTURE_2D, cudaGraphicsMapFlagsNone);
-        cudaArray *texture_ptr;
-        cudaGraphicsMapResources(1, &CudaRes);
-        cudaGraphicsSubResourceGetMappedArray(&texture_ptr, CudaRes, 0, 0);
-        cudaMemcpyToArray( texture_ptr, 0, 0, bitmap.data(), bitmap.bytes(), cudaMemcpyDeviceToDevice);
-        cudaGraphicsUnmapResources(1, &CudaRes); 
-        */
-        
-        if (!isOk)
-        {
-            cudaOpenGLInterop = false;
-            pimpl_->DeleteTextureInterop();
-        }
-    }
-
-	return true;
-}
-
-
-
-void GLTexture::InitPbo(const cv::Mat& bitmapMatrix)
-{
-	int rows = bitmapMatrix.rows;
-	int cols = bitmapMatrix.cols;
-	int num_el = rows * cols;
-	int len = num_el * bitmapMatrix.elemSize1();
-
-	glGenBuffers(1, pboIds);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, len, 0, GL_STREAM_DRAW);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-}
-
-void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
-{  
-	//glEnable(GL_TEXTURE_2D);
-
-	if (m_nTextureID == -1)
-	{
-		glGenTextures(1, &m_nTextureID);
-		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-		width = bitmapMatrix.size().width;
-		height = bitmapMatrix.size().height;
-
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		if (pboSupported)
-		{
-			InitPbo(bitmapMatrix);
-			SetDataToPBO(bitmapMatrix);
-
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-		}
-		else
-		{
-			
-			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-			
-		}
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else if(width != bitmapMatrix.size().width || height != bitmapMatrix.size().height)
-	{
-		if (pboSupported)
-		{
-			glDeleteBuffers(1, pboIds);
-
-			InitPbo(bitmapMatrix);
-		}
-
-		width = bitmapMatrix.size().width;
-		height = bitmapMatrix.size().height;
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-
-
-		if (pboSupported)
-		{
-
-			SetDataToPBO(bitmapMatrix);
-
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-			// copy pixels from PBO to texture object
-			// Use offset instead of ponter.
-			
-			
-		}
-		else
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-		}
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else
-	{
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		if (pboSupported)
-		{
-			SetDataToPBO(bitmapMatrix);
-			// copy pixels from PBO to texture object
-			// Use offset instead of ponter.
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, 0);
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-		}
-		else
-		{
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-
-		}
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-
-    
-    int nError = glGetError();
-   // printf(" GLTexture::SetTextureData : %d \n", nError);
-}
-
-void GLTexture::SetDataToPBO(const cv::Mat& bitmapMatrix)
-{
-	int rows = bitmapMatrix.rows;
-	int cols = bitmapMatrix.cols;
-	int num_el = rows * cols;
-	int len = num_el * bitmapMatrix.elemSize1();
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pboIds[0]);
-	// map the buffer object into client's memory
-	// Note that glMapBuffer() causes sync issue.
-	// If GPU is working with this buffer, glMapBuffer() will wait(stall)
-	// for GPU to finish its job. To avoid waiting (stall), you can call
-	// first glBufferData() with NULL pointer before glMapBuffer().
-	// If you do that, the previous data in PBO will be discarded and
-	// glMapBuffer() returns a new allocated pointer immediately
-	// even if GPU is still working with the previous data.
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, len, 0, GL_STREAM_DRAW);
-	GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
-	if (ptr)
-	{
-		// update data directly on the mapped buffer
-		//memcpy(ptr, bitmapMatrix.data, len);
-		for (int i = 0; i < len; i++)
-		{
-			*ptr = bitmapMatrix.data[i];
-			++ptr;
-		}
-		glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);  // release pointer to mapping buffer
-	}
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+ 	return true;   
 }
 
 void GLTexture::SetData(cv::Mat& bitmap)
 {
-	cv::Mat bitmapMatrix;
-	if (bitmap.channels() == 3)
-	{
-		cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
-	}
-	else if (bitmap.channels() == 1)
-		cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
-	else
-		bitmapMatrix = bitmap;
-
-	SetTextureData(bitmapMatrix);
+    SetTextureData(bitmap);
 }
 
 
-//bool GLTexture::Create(const int &nWidth, const int &nHeight, void *pbyData, const int & nFormat_i, const int & nInternalFormat_i)
-bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
-{
-	width = nWidth;
-	height = nHeight;
-
-	//int nError = glGetError();
-	if (0 != m_nTextureID)
-	{
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, pbyData);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else
-	{
-		glGenTextures(1, &m_nTextureID);
-		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glTexImage2D(GL_TEXTURE_2D, 0, dataformat, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-    
-    int nError = glGetError();
-   // printf(" GLTexture::Create : %d \n", nError);
-
-	return (GL_NO_ERROR == glGetError());
-}
 
 void GLTexture::SetFilterType(const GLint FilterType_i, const GLint FilterValue_i)
 {
