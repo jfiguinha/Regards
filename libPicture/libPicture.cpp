@@ -708,7 +708,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case WEBP:
 		{
-			cv::Mat mat = bitmap->GetOpenCVPicture();
+			cv::Mat mat = bitmap->GetMatrix().getMat();
 
 			int _option = quality;
 			switch (option)
@@ -818,7 +818,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			uint8_t* data = nullptr;
 			unsigned int size = 0;
 			bool hasExif = false;
-			cv::Mat image = bitmap->GetOpenCVPicture();
+			cv::Mat image = bitmap->GetMatrix().getMat();
 			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
 			if (pictureMetadata.HasExif())
 			{
@@ -874,7 +874,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case PPM:
 		{
-			cv::Mat dest = bitmap->GetOpenCVPicture();
+			cv::Mat dest = bitmap->GetMatrix().getMat();
 			cv::cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
 			cv::imwrite(CConvertUtility::ConvertToStdString(fileName), dest);
 		}
@@ -1459,7 +1459,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 						CImageLoadingFormat image;
 						image.SetPicture(frame);
 						imageVideoThumbnail->filename = szFileName;
-						imageVideoThumbnail->image = image.GetOpenCVPicture();
+						imageVideoThumbnail->image = image.GetMatrix().getMat();
 						imageVideoThumbnail->rotation = 0;
 						imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 						imageVideoThumbnail->percent = (static_cast<float>(i) / static_cast<float>(_cxImage->
@@ -1473,7 +1473,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 					auto imageVideoThumbnail = new CImageVideoThumbnail();
 					CImageLoadingFormat* image = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
 					imageVideoThumbnail->filename = szFileName;
-					imageVideoThumbnail->image = image->GetOpenCVPicture();
+					imageVideoThumbnail->image = image->GetMatrix().getMat();
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 					imageVideoThumbnail->percent = (static_cast<float>(0) / static_cast<float>(_cxImage->
@@ -1515,7 +1515,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 			{
 				auto imageVideoThumbnail = new CImageVideoThumbnail();
 				CImageLoadingFormat* imageLoad = LoadThumbnail(szFileName);
-				imageVideoThumbnail->image = imageLoad->GetOpenCVPicture();
+				imageVideoThumbnail->image = imageLoad->GetMatrix().getMat();
 				imageVideoThumbnail->filename = szFileName;
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 0;

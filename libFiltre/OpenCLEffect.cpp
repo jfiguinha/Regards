@@ -93,7 +93,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		cv::UMat local = bitmap->GetOpenCLPicture();
+		cv::UMat local = bitmap->GetMatrix().getUMat();
 
 		if (local.channels() == 4)
 			cvtColor(local, input, cv::COLOR_BGRA2BGR);

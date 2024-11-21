@@ -43,7 +43,7 @@ void CBitmapToAscii::SaveToAscii(CImageLoadingFormat* source, const string& file
 	}
 
 	cv::Mat out;
-	resize(source->GetOpenCVPicture(), out, cv::Size(source->GetWidth() * new_ratio, source->GetHeight() * new_ratio),
+	resize(source->GetMatrix().getMat(), out, cv::Size(source->GetWidth() * new_ratio, source->GetHeight() * new_ratio),
 	       cv::INTER_CUBIC);
 	std::ofstream outfile(filenameOut);
 	if (outfile.fail())

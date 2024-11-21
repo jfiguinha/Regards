@@ -92,7 +92,7 @@ void CCudaEffect::SetBitmap(CImageLoadingFormat* bitmap)
 
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		source = bitmap->GetCudaPicture();
+		source = bitmap->GetMatrix().getGpuMat();
 		//input.upload(local);
 
 		if (source.channels() == 3)

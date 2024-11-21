@@ -58,7 +58,7 @@ void CPictureData::SetData(const int& width, const int& height, uint8_t* & extda
 void CPictureData::CopyData(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr)
-		bitmapMatrix = bitmap->GetOpenCVPicture();
+		bitmapMatrix = bitmap->GetMatrix().getMat();
 }
 
 

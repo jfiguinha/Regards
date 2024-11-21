@@ -214,24 +214,11 @@ int CImageLoadingFormat::GetResolution()
 	return resolution;
 }
 
-cv::Mat CImageLoadingFormat::GetOpenCVPicture()
+Regards::Picture::CPictureArray CImageLoadingFormat::GetMatrix()
 {
-	return _image;
+	return Regards::Picture::CPictureArray(_image);
 }
 
-cv::UMat CImageLoadingFormat::GetOpenCLPicture()
-{
-	cv::UMat picture_export;
-	_image.copyTo(picture_export);
-	return picture_export;
-
-}
-cv::cuda::GpuMat CImageLoadingFormat::GetCudaPicture()
-{
-	cv::cuda::GpuMat picture_export;
-	picture_export.upload(_image);
-	return picture_export;
-}
 /*
 From exiftool documentation
 

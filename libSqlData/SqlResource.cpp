@@ -34,7 +34,7 @@ void CSqlResource::InsertBitmap(const wstring& idName, const wstring& mimeType, 
 	CImageLoadingFormat* loadPicture = libPicture.LoadPicture(filename);
 	if (loadPicture != nullptr && loadPicture->IsOk())
 	{
-		cv::Mat bitmap = loadPicture->GetOpenCVPicture();
+		cv::Mat bitmap = loadPicture->GetMatrix().getMat();
 		wchar_t _pwszRequeteSQL[512];
 		swprintf(_pwszRequeteSQL, 512,
 		         L"INSERT INTO BitmapResource (idName, mimeType, width, height, depth, data) VALUES('%s', '%s', %d, %d, %d, ?)",

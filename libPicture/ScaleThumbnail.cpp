@@ -93,7 +93,7 @@ void CScaleThumbnail::CreateScaleBitmap(CImageLoadingFormat* pBitmap, const int&
 		*/
 
 		cv::Mat resized_down;
-		resize(pBitmap->GetOpenCVPicture(), resized_down, cv::Size(nTailleAffichageWidth, nTailleAffichageHeight),
+		resize(pBitmap->GetMatrix().getMat(), resized_down, cv::Size(nTailleAffichageWidth, nTailleAffichageHeight),
 		       cv::INTER_CUBIC);
 
 		//delete scaleBitmap;

@@ -14,7 +14,7 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 {
 	int pos;
 
-	cv::Mat bitmapTemp = nextPicture->GetOpenCVPicture();
+	cv::Mat bitmapTemp = nextPicture->GetMatrix().getMat();
 	int orientation = nextPicture->GetOrientation();
 	CPictureUtility::RotateExif(bitmapTemp, orientation);
 

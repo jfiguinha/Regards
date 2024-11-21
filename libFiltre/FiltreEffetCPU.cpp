@@ -215,7 +215,7 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		Mat local = bitmap->GetOpenCVPicture();
+		Mat local = bitmap->GetMatrix().getMat();
 		filename = bitmap->GetFilename();
 		vector<Mat> channels;
 		extractChannel(local, alphaChannel, 3);
@@ -812,7 +812,7 @@ void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr)
 	{
-		Mat local = bitmap->GetOpenCVPicture();
+		Mat local = bitmap->GetMatrix().getMat();
 		filename = bitmap->GetFilename();
 		vector<Mat> channels;
 		extractChannel(local, alphaChannel, 3);

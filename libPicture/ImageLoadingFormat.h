@@ -1,4 +1,5 @@
 #pragma once
+#include <PictureArray.h>
 class CxImage;
 class FIBITMAP;
 class CRgbaquad;
@@ -8,10 +9,8 @@ class CImageLoadingFormat
 public:
 	CImageLoadingFormat();
 	~CImageLoadingFormat();
-	//void SaveToJpeg(const wxString& filename);
-	cv::Mat GetOpenCVPicture();
-	cv::UMat GetOpenCLPicture();
-	cv::cuda::GpuMat GetCudaPicture();
+
+	Regards::Picture::CPictureArray GetMatrix();
 	void RotateExif_withoutflip(const int& orientation);
 	CImageLoadingFormat* GetPage(const int& numPage);
 	int GetNbPage();

@@ -95,7 +95,7 @@ CImageLoadingFormat* CBitmapWndRender::GetBitmap(const bool& source)
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
 		CImageLoadingFormat* bitmap = new CImageLoadingFormat();
-		cv::Mat mat = this->source->GetOpenCVPicture();
+		cv::Mat mat = this->source->GetMatrix().getMat();
 		bitmap->SetPicture(mat);
 		bitmap->SetOrientation(orientation);
 		bitmap->SetFilename(this->filename);

@@ -1173,7 +1173,7 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData print_dialog_data(*g_printData);
-	cv::Mat bitmap_preview = imageToPrint->GetOpenCVPicture();
+	cv::Mat bitmap_preview = imageToPrint->GetMatrix().getMat();
 
 
 	const auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmap_preview),

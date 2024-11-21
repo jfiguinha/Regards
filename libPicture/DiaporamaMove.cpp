@@ -37,7 +37,7 @@ int CDiaporamaMove::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, cons
 			imageLoad.InsertBitmap(&img1, x2, 0, false);
 			imageLoad.InsertBitmap(&img2, x, 0, false);
 
-			cvtColor(imageLoad.GetOpenCVPicture(), dest, COLOR_BGRA2BGR);
+			cvtColor(imageLoad.GetMatrix().getMat(), dest, COLOR_BGRA2BGR);
 
 			WritePicture(dest);
 			SendMessageProgress();

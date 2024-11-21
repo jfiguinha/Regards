@@ -167,7 +167,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 						bitmap = bitmapViewer->GetBitmap(true);
 
-						filtreEffect->Init(effectParameter, bitmap->GetOpenCVPicture(), filename, numItem);
+						filtreEffect->Init(effectParameter, bitmap->GetMatrix().getMat(), filename, numItem);
 
 						if (previewWindow != nullptr)
 						{

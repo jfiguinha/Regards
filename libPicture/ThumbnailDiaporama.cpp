@@ -127,7 +127,7 @@ Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int wi
 	CImageLoadingFormat* bitmap = libPicture.LoadPictureToBGRA(filename, pictureOK, width, height);
 	if (bitmap != nullptr)
 	{
-		Mat pBitmap = bitmap->GetOpenCVPicture();
+		Mat pBitmap = bitmap->GetMatrix().getMat();
 		src_bitmap = Mat::zeros(Size(width, height), CV_8UC4);
 		int x = (width - bitmap->GetWidth()) / 2;
 		int y = (height - bitmap->GetHeight()) / 2;

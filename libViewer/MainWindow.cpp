@@ -1392,7 +1392,7 @@ void CMainWindow::LoadPicture(void* param)
 		CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
 		if (imageLoad != nullptr)
 		{
-			threadLoadingBitmap->bitmapIcone = imageLoad->GetOpenCVPicture();
+			threadLoadingBitmap->bitmapIcone = imageLoad->GetMatrix().getMat();
 			delete imageLoad;
 		}
 	}
@@ -1400,7 +1400,7 @@ void CMainWindow::LoadPicture(void* param)
 	CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
 	if (imageLoad != nullptr)
 	{
-		threadLoadingBitmap->bitmapIcone = imageLoad->GetOpenCVPicture();
+		threadLoadingBitmap->bitmapIcone = imageLoad->GetMatrix().getMat();
 		delete imageLoad;
 	}
 #endif

@@ -10,7 +10,7 @@ CPictureArray::CPictureArray(const cv::_InputArray::KindFlag& type)
 
 CPictureArray::CPictureArray(cv::Mat& m)
 {
-	m = mat;
+	mat = m;
 	kind = cv::_InputArray::KindFlag::MAT;
 }
 
@@ -79,15 +79,13 @@ cv::UMat& CPictureArray::getUMat()
 	{
 		cv::Mat local;
 		gpuMat.download(local);
-		cv::UMat u;
-		local.copyTo(u);
-		return u;
+		local.copyTo(umat);
+		return umat;
 	}
 	else if(kind == cv::_InputArray::KindFlag::MAT)
 	{
-		cv::UMat u;
-		mat.copyTo(u);
-		return u;
+		mat.copyTo(umat);
+		return umat;
 	}
 	return umat;
 }
@@ -96,15 +94,13 @@ cv::Mat& CPictureArray::getMat()
 {
 	if (kind == cv::_InputArray::KindFlag::CUDA_GPU_MAT)
 	{
-		cv::Mat local;
-		gpuMat.download(local);
-		return local;
+		gpuMat.download(mat);
+		return mat;
 	}
 	else if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
-		cv::Mat local;
-		umat.copyTo(local);
-		return local;
+		umat.copyTo(mat);
+		return mat;
 	}
 	return mat;
 }
@@ -113,17 +109,15 @@ cv::cuda::GpuMat& CPictureArray::getGpuMat()
 {
 	if (kind == cv::_InputArray::KindFlag::MAT)
 	{
-		cv::cuda::GpuMat cudaMat;
-		cudaMat.upload(mat);
-		return cudaMat;
+		gpuMat.upload(mat);
+		return gpuMat;
 	}
 	else if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
 		cv::Mat local;
 		umat.copyTo(local);
-		cv::cuda::GpuMat cudaMat;
-		cudaMat.upload(local);
-		return cudaMat;
+		gpuMat.upload(local);
+		return gpuMat;
 	}
 	return gpuMat;
 }

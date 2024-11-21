@@ -551,7 +551,7 @@ void CPanelInfosWnd::HistogramUpdate()
 {
 	CLibPicture picture;
 	CImageLoadingFormat* pictureLoad = picture.LoadPicture(filename);
-	cv::Mat mat = pictureLoad->GetOpenCVPicture();
+	cv::Mat mat = pictureLoad->GetMatrix().getMat();
 	picturePanel->SetPictureToDisplay(mat);
 	delete pictureLoad;
 
