@@ -304,23 +304,20 @@ int COpenCVStabilizationOpenCL::GetNbFrameBuffer()
 
 void COpenCVStabilizationOpenCL::AddFrame(Regards::Picture::CPictureArray& image)
 {
-	cv::UMat bitmap = image.getUMat();
-	pimpl->AnalyseFrame(bitmap);
+	pimpl->AnalyseFrame(image.getUMat());
 }
 
 void COpenCVStabilizationOpenCL::BufferFrame(Regards::Picture::CPictureArray& image)
 {
-	cv::UMat bitmap = image.getUMat();
-	pimpl->AnalyseFrame(bitmap);
+	pimpl->AnalyseFrame(image.getUMat());
 	nbFrameBuffer++;
 }
 
 
 Regards::Picture::CPictureArray COpenCVStabilizationOpenCL::CorrectFrame(Regards::Picture::CPictureArray& image)
 {
-	cv::UMat bitmap = image.getUMat();
 	pimpl->CalculTransformation();
-	cv::UMat mat = pimpl->CorrectedFrame(bitmap);
+	cv::UMat mat = pimpl->CorrectedFrame(image.getUMat());
 	return Regards::Picture::CPictureArray(mat);
 	//frame.copyTo(frame);
 }

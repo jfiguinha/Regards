@@ -321,14 +321,12 @@ int COpenCVStabilizationCuda::GetNbFrameBuffer()
 
 void COpenCVStabilizationCuda::AddFrame(Regards::Picture::CPictureArray& image)
 {
-	cv::cuda::GpuMat bitmap = image.getGpuMat();
-	pimpl->AnalyseFrame(bitmap);
+	pimpl->AnalyseFrame(image.getGpuMat());
 }
 
 void COpenCVStabilizationCuda::BufferFrame(Regards::Picture::CPictureArray& image)
 {
-	cv::cuda::GpuMat bitmap = image.getGpuMat();
-	pimpl->AnalyseFrame(bitmap);
+	pimpl->AnalyseFrame(image.getGpuMat());
 	nbFrameBuffer++;
 }
 
