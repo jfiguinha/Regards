@@ -23,8 +23,9 @@ COpenCLEffectVideo::COpenCLEffectVideo()
 
 }
 
-void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
+void COpenCLEffectVideo::SetMatrix(Regards::Picture::CPictureArray& bitmap)
 {
+	cv::UMat frame = bitmap.getUMat();
 
 	if (frame.channels() == 4)
 		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
@@ -35,159 +36,17 @@ void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
 	isOk = true;
 }
 
-cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
+Regards::Picture::CPictureArray COpenCLEffectVideo::GetMatrix(const bool& src)
 {
-	
 
-#ifdef OLD
-
-	cv::UMat output;
-
-#ifdef WIN32
-	if (platformName.find("Intel") == 0)
-	{
-		if (src)
-		{
-			cv::cvtColor(paramSrc, output, cv::COLOR_BGR2BGRA);
-		}
-		else if (interpolatePicture)
-		{
-			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2BGRA);
-		}
-		else
-		{
-			cv::cvtColor(paramSrc, output, cv::COLOR_BGR2BGRA);
-		}
-	}
-	else
-	{
-		if (src)
-		{
-			cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-		}
-		else if (interpolatePicture)
-		{
-			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
-		}
-		else
-		{
-			cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-		}
-	}
-
-#else
-	
-
-	if (src)
-	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-	}
-	else if (interpolatePicture)
-	{
-		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
-	}
-	else
-	{
-		cv::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-	}
-
-#endif
-
-	return output;
-
-#else
-
-	if (src)
-	{
-		return paramSrc;
-	}
-	else if (interpolatePicture)
+	if (interpolatePicture)
 	{
 		return paramOutput;
 	}
 	return paramSrc;
 
 
-#endif
-
 	
-}
-
-void COpenCLEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
-{
-
-	if (frame.channels() == 4)
-		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
-	else
-		frame.copyTo(paramSrc);
-
-	needToTranscode = false;
-	isOk = true;
-}
-
-
-void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
-{
-
-	if (frame.channels() == 4)
-		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
-	else
-		frame.copyTo(paramSrc);
-
-	needToTranscode = false;
-	isOk = true;
-}
-
-cv::cuda::GpuMat COpenCLEffectVideo::GetGpuMat(const bool& src)
-{
-	cv::cuda::GpuMat convert;
-	cv::cuda::GpuMat output;
-
-	if (src)
-	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
-	}
-	else if (interpolatePicture)
-	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramOutput.copyTo(output);
-	}
-	else
-	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-
-	}
-
-	convert.copyTo(output);
-
-	return output;
-}
-
-cv::Mat COpenCLEffectVideo::GetMatrix(const bool& src)
-{
-	cv::UMat convert;
-	cv::Mat output;
-
-	if (src)
-	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
-	}
-	else if (interpolatePicture)
-	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramOutput.copyTo(output);
-	}
-	else
-	{
-		cv::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		
-	}
-
-	convert.copyTo(output);
-
-	return output;
 }
 
 COpenCLEffectVideo::~COpenCLEffectVideo()
@@ -232,6 +91,7 @@ void COpenCLEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPa
 {
 
 	bool frameStabilized = false;
+	Regards::Picture::CPictureArray pictureArray(paramSrc);
 
 	if (videoEffectParameter->stabilizeVideo)
 	{
@@ -242,19 +102,20 @@ void COpenCLEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPa
 
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
-			openCVStabilization->BufferFrame(paramSrc);
+
+			openCVStabilization->BufferFrame(pictureArray);
 		}
 		else
 		{
 			frameStabilized = true;
-			openCVStabilization->AddFrame(paramSrc);
+			openCVStabilization->AddFrame(pictureArray);
 		}
 
 		if (frameStabilized)
 		{
-			cv::UMat image_local = openCVStabilization->CorrectFrame(paramSrc);
+			Regards::Picture::CPictureArray image_local = openCVStabilization->CorrectFrame(pictureArray);
 			image_local.copyTo(paramSrc);
-			image_local.release();
+			//image_local.release();
 		}
 	}
 }

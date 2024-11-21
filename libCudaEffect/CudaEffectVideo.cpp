@@ -23,39 +23,18 @@ CCudaEffectVideo::CCudaEffectVideo()
     paramSrc = cv::cuda::GpuMat(32, 32, CV_8UC4);
 }
 
-void CCudaEffectVideo::SetMatrix(cv::cuda::GpuMat& frame)
+void CCudaEffectVideo::SetMatrix(Regards::Picture::CPictureArray& frame)
 {
-
-	if (frame.channels() == 4)
-		cv::cuda::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
-	else
-		paramSrc = frame;
-
+	paramSrc = frame.getGpuMat();
 	needToTranscode = false;
 	isOk = true;
 }
 
-void CCudaEffectVideo::SetMatrix(cv::UMat& frame)
-{
-	if (frame.channels() == 4)
-		cv::cuda::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
-	else
-		frame.copyTo(paramSrc);
-
-	needToTranscode = false;
-	isOk = true;
-}
-
-cv::cuda::GpuMat CCudaEffectVideo::GetGpuMat(const bool& src)
+Regards::Picture::CPictureArray CCudaEffectVideo::GetMatrix(const bool& src)
 {
 	cv::cuda::GpuMat output;
 
-	if (src)
-	{
-		paramSrc.copyTo(output);
-		//cv::cuda::cvtColor(paramSrc, output, cv::COLOR_BGR2RGBA);
-	}
-	else if (interpolatePicture)
+	if (interpolatePicture)
 	{
 		paramOutput.copyTo(output);
 		//cv::cuda::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
@@ -70,58 +49,6 @@ cv::cuda::GpuMat CCudaEffectVideo::GetGpuMat(const bool& src)
 	return output;
 }
 
-cv::UMat CCudaEffectVideo::GetUMat(const bool& src)
-{
-	cv::UMat output;
-	cv::Mat mat = GetMatrix(src);
-	mat.copyTo(output);
-	return output;
-}
-
-void CCudaEffectVideo::SetMatrix(cv::Mat& frame)
-{
-
-	if (frame.channels() == 3)
-	{
-		cv::cuda::GpuMat mat;
-		mat.upload(frame);
-		cv::cuda::cvtColor(mat, paramSrc, cv::COLOR_BGR2BGRA);
-	}
-	else
-		paramSrc.upload(frame);
-
-	needToTranscode = false;
-	isOk = true;
-}
-
-cv::Mat CCudaEffectVideo::GetMatrix(const bool& src)
-{
-	cv::cuda::GpuMat convert;
-	cv::Mat output;
-
-	if (src)
-	{
-		//cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		paramSrc.copyTo(convert);
-	}
-	else if (interpolatePicture)
-	{
-		//cv::cuda::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		paramOutput.copyTo(convert);
-	}
-	else
-	{
-		//cv::cuda::cvtColor(paramSrc, convert, cv::COLOR_BGR2BGRA);
-		paramSrc.copyTo(convert);
-
-	}
-
-	convert.download(output);
-
-	//convert.copyTo(output);
-
-	return output;
-}
 
 CCudaEffectVideo::~CCudaEffectVideo()
 {
@@ -164,7 +91,7 @@ void CCudaEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
 void CCudaEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectParameter,
 	Regards::OpenCV::COpenCVStabilization * openCVStabilization)
 {
-
+	Regards::Picture::CPictureArray pictureArray(paramSrc);
 	bool frameStabilized = false;
 
 	if (videoEffectParameter->stabilizeVideo)
@@ -176,19 +103,19 @@ void CCudaEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPara
 
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
-			openCVStabilization->BufferFrame(paramSrc);
+			openCVStabilization->BufferFrame(pictureArray);
 		}
 		else
 		{
 			frameStabilized = true;
-			openCVStabilization->AddFrame(paramSrc);
+			openCVStabilization->AddFrame(pictureArray);
 		}
 
 		if (frameStabilized)
 		{
-			cv::cuda::GpuMat image_local = openCVStabilization->CorrectFrame(paramSrc);
+			Regards::Picture::CPictureArray image_local = openCVStabilization->CorrectFrame(pictureArray);
 			image_local.copyTo(paramSrc);
-			image_local.release();
+			///image_local.release();
 		}
 	}
 }

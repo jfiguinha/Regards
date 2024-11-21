@@ -25,7 +25,7 @@ namespace Regards::OpenGL
 	public:
 		CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL);
 		~CRenderVideoOpenGL();
-		GLTexture* GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop);
+		GLTexture* GetVideoTexture(const int& width, const int& height);
 
 		GLTexture* GetVideoTexturePt();
 		void SetSubtitle(cv::Mat& subtitle);

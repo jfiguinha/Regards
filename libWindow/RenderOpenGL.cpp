@@ -30,14 +30,13 @@ extern bool isOpenCLInitialized;
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 
-CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas, const bool& testOpenCLOpenGLInterop)
+CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
 	width = 0;
 	height = 0;
 	this->openclOpenGLInterop = false;
 	textureDisplay = nullptr;
-	this->testOpenCLOpenGLInterop = testOpenCLOpenGLInterop;
 }
 
 
@@ -204,23 +203,13 @@ GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And
 }
 
 
-void CRenderOpenGL::SetData(cv::Mat& bitmap)
-{
-	textureDisplay->SetData(bitmap);
-}
-
-bool CRenderOpenGL::SetData(cv::UMat& bitmap)
-{
-	return textureDisplay->SetData(bitmap);
-}
-
-bool CRenderOpenGL::SetData(cv::cuda::GpuMat& bitmap)
+bool CRenderOpenGL::SetData(Regards::Picture::CPictureArray& bitmap)
 {
 	return textureDisplay->SetData(bitmap);
 }
 
 
-GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop)
+GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
 {
 	return textureDisplay;
 }

@@ -21,9 +21,7 @@ namespace Regards::FiltreEffet
 	public:
 		CCudaEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap);
 
-		cv::Mat GetMat() override;
-		cv::UMat GetUMat() override;
-		cv::cuda::GpuMat GetGpuMat() override;
+		Regards::Picture::CPictureArray GetMatrix() override;
 
 		int GetType()
 		{

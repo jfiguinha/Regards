@@ -40,7 +40,7 @@ class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInt
 public:
 	CVideoControlSoft(CWindowMain* windowMain, wxWindow * window, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
-	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) override;
+
 	void SetParent(wxWindow* parent) override;
 	void ReloadResource();
 	bool IsPause();
@@ -191,7 +191,7 @@ protected:
     int Play(const wxString& movie);
     void CopyFrame(AVFrame* src);
 
-	bool openclOpenGLInterop = false;
+
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;

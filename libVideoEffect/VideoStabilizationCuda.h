@@ -1,35 +1,31 @@
 #pragma once
+#include "VideoStabilizationInterface.h"
 
 class COpenCVStabilizationCudaPimpl_;
 
-namespace cv::cuda
-{
-	class GpuMat;
-}
 
 namespace Regards
 {
 	namespace OpenCV
 	{
-		class COpenCVStabilizationCuda
+		class COpenCVStabilizationCuda : public COpenCVStabilizationInterface
 		{
 		public:
 			COpenCVStabilizationCuda(const int& nbFrame);
 			~COpenCVStabilizationCuda();
 
-			void AddFrame(const cv::cuda::GpuMat& pictureData);
-			void BufferFrame(const cv::cuda::GpuMat& pBitmap);
-			cv::cuda::GpuMat CorrectFrame(cv::cuda::GpuMat& pictureData);
+			void AddFrame(Regards::Picture::CPictureArray& pictureData) override;
+			void BufferFrame(Regards::Picture::CPictureArray& pBitmap) override;
+			Regards::Picture::CPictureArray CorrectFrame(Regards::Picture::CPictureArray& image) override;
 
-			void Init();
-			int GetNbFrame();
-			int GetNbFrameBuffer();
-			void SetNbFrameBuffer(const int& nbFrame);
+			void Init() override;
+			int GetNbFrame() override;
+			int GetNbFrameBuffer() override;
+			void SetNbFrameBuffer(const int& nbFrame) override;
 
 		private:
 			COpenCVStabilizationCudaPimpl_* pimpl;
-			int nbFrame = 0;
-			int nbFrameBuffer = 0;
+
 		};
 	}
 }

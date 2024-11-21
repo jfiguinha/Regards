@@ -35,7 +35,7 @@ namespace Regards::Window
 	public:
 		CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 		~CBitmapWndRender(void) override;
-		void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) override;
+
 		void SetParent(wxWindow* parent) override;
 		int GetWidth() override;
 		int GetHeight() override;
@@ -266,7 +266,7 @@ namespace Regards::Window
 		bool isThumbnail;
 		bool isInUse;
 		int toolOption;
-		bool isOpenCLOpenGLInterop = false;
+
 
 		wxCursor hCursorHand;
 		wxCursor hCursorZoomIn;

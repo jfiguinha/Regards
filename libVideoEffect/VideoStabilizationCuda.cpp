@@ -319,19 +319,22 @@ int COpenCVStabilizationCuda::GetNbFrameBuffer()
 	return nbFrameBuffer;
 }
 
-void COpenCVStabilizationCuda::AddFrame(const cv::cuda::GpuMat& image)
+void COpenCVStabilizationCuda::AddFrame(Regards::Picture::CPictureArray& image)
 {
-	pimpl->AnalyseFrame(image);
+	cv::cuda::GpuMat bitmap = image.getGpuMat();
+	pimpl->AnalyseFrame(bitmap);
 }
 
-void COpenCVStabilizationCuda::BufferFrame(const cv::cuda::GpuMat& image)
+void COpenCVStabilizationCuda::BufferFrame(Regards::Picture::CPictureArray& image)
 {
-	pimpl->AnalyseFrame(image);
+	cv::cuda::GpuMat bitmap = image.getGpuMat();
+	pimpl->AnalyseFrame(bitmap);
 	nbFrameBuffer++;
 }
 
-cv::cuda::GpuMat COpenCVStabilizationCuda::CorrectFrame(cv::cuda::GpuMat& image)
+Regards::Picture::CPictureArray COpenCVStabilizationCuda::CorrectFrame(Regards::Picture::CPictureArray& image)
 {
 	pimpl->CalculTransformation();
-	return pimpl->CorrectedFrame(image);
+	cv::cuda::GpuMat mat = pimpl->CorrectedFrame(image.getGpuMat());
+	return Regards::Picture::CPictureArray(mat);
 }

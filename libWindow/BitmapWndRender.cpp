@@ -104,11 +104,6 @@ CImageLoadingFormat* CBitmapWndRender::GetBitmap(const bool& source)
 	return nullptr;
 }
 
-void CBitmapWndRender::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
-{
-	isOpenCLOpenGLInterop = openclOpenGLInterop;
-}
-
 void CBitmapWndRender::SetTabValue(const std::vector<int>& value)
 {
 	this->value = value;
@@ -1631,10 +1626,9 @@ void CBitmapWndRender::RenderToScreenWithCudaSupport()
 
 			ApplyPreviewEffect(widthOutput, heightOutput);
 
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
-			cv::cuda::GpuMat data = filtreEffet->GetGpuMat();
-			glTexture->SetData(data);
+			glTexture->SetData(filtreEffet->GetMatrix());
 
 		}
 
@@ -1683,25 +1677,12 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	}
 	muBitmap.unlock();
 
-	//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-
-	//UpdateScrollBar();
 
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		if (widthOutput < 0 || heightOutput < 0)
 			return;
-		/*
-		if (updateFilter)
-		{
-			if (!bitmapIsLoad)
-				filtreEffet->SetBitmap(source);
-			BeforeInterpolationBitmap();
 
-			updateFilter = true;
-			
-		}
-		*/
 		if (updateFilter)// || mouseUpdate != nullptr)
 		{
 			if (!bitmapIsLoad)
@@ -1718,29 +1699,10 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 			ApplyPreviewEffect(widthOutput, heightOutput);
 
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
-			cv::UMat data = filtreEffet->GetUMat();
-			if (!glTexture->SetData(data))
-				isOpenCLOpenGLInterop = false;
-
-			/*
-			if (isOpenCLOpenGLInterop)
-			{
-				cv::UMat data = filtreEffet->GetUMat();
-				if (!glTexture->SetData(data))
-					isOpenCLOpenGLInterop = false;
-			}
-			else
-			{
-				cv::Mat data = filtreEffet->GetMat();
-				glTexture->SetData(data);
-			}
-			*/
-
+			glTexture->SetData(filtreEffet->GetMatrix());
 		}
-
-
 
 		updateFilter = false;
 
@@ -1797,7 +1759,8 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 			//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-			cv::Mat bitmap = filtreEffet->GetMat();
+
+			cv::Mat bitmap = filtreEffet->GetMatrix().getMat();
 
 			if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
 			{
@@ -1807,9 +1770,13 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			}
 
 
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 			if (glTexture != nullptr)
-				glTexture->SetData(bitmap);
+			{
+				Regards::Picture::CPictureArray inArray(bitmap);
+				glTexture->SetData(inArray);
+			}
+				
 		}
 
 

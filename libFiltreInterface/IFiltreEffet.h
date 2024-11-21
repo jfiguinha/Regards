@@ -1,5 +1,6 @@
 #pragma once
 #include <RGBAQuad.h>
+#include <PictureArray.h>
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
@@ -42,9 +43,7 @@ public:
 		this->preview = preview;
 	}
 
-	virtual cv::Mat GetMat() = 0;
-	virtual cv::UMat GetUMat() = 0;
-	virtual cv::cuda::GpuMat GetGpuMat() = 0;
+	virtual Regards::Picture::CPictureArray GetMatrix() = 0;
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace) = 0;
 	virtual int OilPaintingEffect(const int& size, const int& dynRatio) = 0;
 	virtual void Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,

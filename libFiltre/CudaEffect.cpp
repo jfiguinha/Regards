@@ -34,38 +34,7 @@ bool CCudaEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 	return true;
 }
 
-cv::UMat CCudaEffect::GetUMat()
-{
-	cv::Mat output = GetMat();
-	cv::UMat image;
-
-	output.copyTo(image);
-
-	return image;
-}
-
-cv::Mat CCudaEffect::GetMat()
-{
-	cv::Mat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		//cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		paramOutput.download(output);
-	}
-	else
-	{
-		//cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
-		input.download(output);
-
-	}
-
-	//convert.download(output);
-
-	return output;
-}
-
-cv::cuda::GpuMat CCudaEffect::GetGpuMat()
+Regards::Picture::CPictureArray CCudaEffect::GetMatrix()
 {
 	if (preview && !paramOutput.empty())
 	{

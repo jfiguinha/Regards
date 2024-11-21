@@ -26,137 +26,21 @@ bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 	return true;
 }
 
-cv::cuda::GpuMat COpenCLEffect::GetGpuMat()
+
+Regards::Picture::CPictureArray COpenCLEffect::GetMatrix()
 {
-	cv::Mat convert;
-	cv::cuda::GpuMat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
-	}
-	else
-	{
-		cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
-
-	}
-
-	output.upload(convert);
-
-	return output;
-}
-
-cv::Mat COpenCLEffect::GetMat()
-{
-	/*
-	cv::Mat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		paramOutput.copyTo(output);
-	}
-	else
-	{
-		input.copyTo(output);
-	}
-
-	cvtColor(output, output, cv::COLOR_BGR2BGRA);
-
-	return output;
-	*/
 	cv::UMat convert;
-	cv::Mat output;
 
 	if (preview && !paramOutput.empty())
 	{
-		cv::cvtColor(paramOutput, convert, cv::COLOR_BGR2BGRA);
-		//paramSrc.copyTo(output);
+		convert = paramOutput;
 	}
 	else
 	{
-		cv::cvtColor(input, convert, cv::COLOR_BGR2BGRA);
-
+		convert = input;
 	}
 
-	convert.copyTo(output);
-
-	return output;
-}
-
-cv::UMat COpenCLEffect::GetUMat()
-{
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput;
-	}
-	else
-	{
-		return input;
-	}
-
-#ifdef __OLD__
-
-#ifdef WIN32
-	if (platformName.find("Intel") == 0)
-	{
-		if (preview && !paramOutput.empty())
-		{
-			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2BGRA);
-		}
-		else
-		{
-			cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
-		}
-	}
-	else
-	{
-		if (preview && !paramOutput.empty())
-		{
-			cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
-		}
-		else
-		{
-			cv::cvtColor(input, output, cv::COLOR_BGR2RGBA);
-		}
-	}
-
-#else
-
-	if (preview && !paramOutput.empty())
-	{
-		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2RGBA);
-	}
-	else
-	{
-		cv::cvtColor(input, output, cv::COLOR_BGR2RGBA);
-	}
-
-#endif
-
-
-
-
-	return output;
-
-#endif
-
-	/*
-	cv::UMat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		paramOutput.copyTo(output);
-	}
-	else
-	{
-		input.copyTo(output);
-	}
-
-	cvtColor(output, output, cv::COLOR_BGR2BGRA);
-
-	return output;
-	*/
+	return Regards::Picture::CPictureArray(convert);
 }
 
 int COpenCLEffect::GetSizeData() const

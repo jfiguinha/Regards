@@ -145,6 +145,9 @@
     <ClCompile Include="scale.c">
       <Filter>avif</Filter>
     </ClCompile>
+    <ClCompile Include="PictureArray.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -314,6 +317,9 @@
     </ClInclude>
     <ClInclude Include="avif.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureArray.h">
+      <Filter>datastructure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

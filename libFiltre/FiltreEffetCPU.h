@@ -18,9 +18,7 @@ public:
 
 	int HistogramNormalize() override;
 	int HistogramEqualize() override;
-	cv::UMat GetUMat() override;
-	cv::Mat GetMat() override;
-	cv::cuda::GpuMat GetGpuMat() override;
+	Regards::Picture::CPictureArray GetMatrix() override;
 	int RedEye() override;
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect& listFace) override;
 	int HQDn3D(const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0) override;

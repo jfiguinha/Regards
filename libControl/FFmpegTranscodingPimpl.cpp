@@ -2115,8 +2115,9 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 
 	if (IsSupportOpenCL())
 	{
+		Regards::Picture::CPictureArray inArray(mat);
 		COpenCLEffectVideo openclEffectVideo;
-		openclEffectVideo.SetMatrix(mat);
+		openclEffectVideo.SetMatrix(inArray);
 
 		if (stabilizeFrame)
 		{
@@ -2130,11 +2131,13 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 
 		openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
-		mat = openclEffectVideo.GetMatrix();
+		mat = openclEffectVideo.GetMatrix().getMat();
 	}
 	else
 	{
 		bool frameStabilized = false;
+
+		Regards::Picture::CPictureArray pictureArray(mat);
 
 		if (videoCompressOption->videoEffectParameter.stabilizeVideo)
 		{
@@ -2142,17 +2145,18 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat& src)
 
 			if (openCVStabilization->GetNbFrameBuffer() == 0)
 			{
-				openCVStabilization->BufferFrame(mat);
+				openCVStabilization->BufferFrame(pictureArray);
 			}
 			else
 			{
 				frameStabilized = true;
-				openCVStabilization->AddFrame(mat);
+				openCVStabilization->AddFrame(pictureArray);
 			}
 
 			if (frameStabilized)
 			{
-				openCVStabilization->CorrectFrame(mat);
+				Regards::Picture::CPictureArray output = openCVStabilization->CorrectFrame(pictureArray);
+				output.copyTo(mat);
 			}
 		}
 

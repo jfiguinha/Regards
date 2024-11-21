@@ -19,7 +19,7 @@ namespace Regards::Window
 	class CBitmapWnd3D : public CWindowOpenGLMain, public IBitmapWnd
 	{
 	public:
-		CBitmapWnd3D(wxWindow* parent, wxWindowID id, const bool & testOpenCLOpenGLInterop = true);
+		CBitmapWnd3D(wxWindow* parent, wxWindowID id);
 		~CBitmapWnd3D(void) override;
 
 		void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
@@ -62,6 +62,6 @@ namespace Regards::Window
 		IBitmapRenderInterface* bitmapWndRender = nullptr;
 		//cv::ocl::Context& initializeContextFromGL();
 		bool openclOpenGLInterop = false;
-		bool testOpenCLOpenGLInterop = true;
+
 	};
 }

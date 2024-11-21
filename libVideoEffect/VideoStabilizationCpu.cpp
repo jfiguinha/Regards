@@ -298,20 +298,23 @@ int COpenCVStabilizationCpu::GetNbFrameBuffer()
 	return nbFrameBuffer;
 }
 
-void COpenCVStabilizationCpu::AddFrame(const Mat& image)
+void COpenCVStabilizationCpu::AddFrame(Regards::Picture::CPictureArray& image)
 {
-	pimpl->AnalyseFrame(image);
+	cv::Mat mat = image.getMat();
+	pimpl->AnalyseFrame(mat);
 }
 
-void COpenCVStabilizationCpu::BufferFrame(const Mat& image)
+void COpenCVStabilizationCpu::BufferFrame(Regards::Picture::CPictureArray& image)
 {
-	pimpl->AnalyseFrame(image);
+	pimpl->AnalyseFrame(image.getMat());
 	nbFrameBuffer++;
 }
 
-void COpenCVStabilizationCpu::CorrectFrame(Mat& image)
+Regards::Picture::CPictureArray COpenCVStabilizationCpu::CorrectFrame(Regards::Picture::CPictureArray& image)
 {
+	cv::Mat mat = image.getMat();
 	pimpl->CalculTransformation();
-	pimpl->CorrectedFrame(image);
+	pimpl->CorrectedFrame(mat);
+	return image;
 }
 

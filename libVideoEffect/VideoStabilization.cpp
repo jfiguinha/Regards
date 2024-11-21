@@ -8,6 +8,9 @@ using namespace cv;
 
 const int SMOOTHING_RADIUS = 50; // In frames. The larger the more stable the video, but less reactive to sudden panning
 
+
+
+
 COpenCVStabilization::COpenCVStabilization(const int& nbFrame, const int& type)
 {
 	this->type = type;
@@ -112,47 +115,17 @@ int COpenCVStabilization::GetNbFrameBuffer()
 	}
 }
 
-void COpenCVStabilization::AddFrame(const Mat& image)
+void COpenCVStabilization::AddFrame(Regards::Picture::CPictureArray& image)
 {
 	openCVCpu->AddFrame(image);
 }
 
-void COpenCVStabilization::BufferFrame(const Mat& image)
+void COpenCVStabilization::BufferFrame(Regards::Picture::CPictureArray& image)
 {
 	openCVCpu->BufferFrame(image);
 }
 
-void COpenCVStabilization::CorrectFrame(Mat& image)
+Regards::Picture::CPictureArray COpenCVStabilization::CorrectFrame(Regards::Picture::CPictureArray& image)
 {
-	openCVCpu->CorrectFrame(image);
-}
-
-void COpenCVStabilization::AddFrame(const UMat& image)
-{
-	openCVopenCL->AddFrame(image);
-}
-
-void COpenCVStabilization::BufferFrame(const UMat& image)
-{
-	openCVopenCL->BufferFrame(image);
-}
-
-cv::UMat COpenCVStabilization::CorrectFrame(UMat& image)
-{
-	return openCVopenCL->CorrectFrame(image);
-}
-
-void COpenCVStabilization::AddFrame(const cv::cuda::GpuMat& image)
-{
-	openCVCuda->AddFrame(image);
-}
-
-void COpenCVStabilization::BufferFrame(const cv::cuda::GpuMat& image)
-{
-	openCVCuda->BufferFrame(image);
-}
-
-cv::cuda::GpuMat COpenCVStabilization::CorrectFrame(cv::cuda::GpuMat& image)
-{
-	return openCVCuda->CorrectFrame(image);
+	return openCVCpu->CorrectFrame(image);
 }

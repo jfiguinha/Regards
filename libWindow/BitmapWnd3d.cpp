@@ -25,7 +25,7 @@ extern cv::ocl::OpenCLExecutionContext clExecCtx;
 //
 //-----------------------------------------------------------------------------
 
-CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id, const bool& testOpenCLOpenGLInterop)
+CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	: CWindowOpenGLMain("CBitmapWnd3D", parent, id)
 {
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd3D::OnPaint));
@@ -40,7 +40,6 @@ CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id, const bool& testOpen
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd3D::OnMouseCaptureLost));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWnd3D::OnIdle));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CBitmapWnd3D::OnMouseLeave));
-	this->testOpenCLOpenGLInterop = testOpenCLOpenGLInterop;
 }
 
 void CBitmapWnd3D::OnMouseLeave(wxMouseEvent& event)
@@ -53,7 +52,7 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 {
 	this->bitmapWndRender = bitmapWndRender;
 	this->bitmapWndRender->SetParent(this);
-	bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+
 	vector<int> listTimer = bitmapWndRender->GetListTimer();
 	for (int id : listTimer)
 	{
@@ -70,7 +69,6 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 void CBitmapWnd3D::UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender)
 {
 	this->bitmapWndRender = bitmapWndRender;
-	bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 }
 
 bool CBitmapWnd3D::GetProcessEnd()
@@ -187,10 +185,9 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	if (renderOpenGL == nullptr)
 	{
 
-		renderOpenGL = new CRenderOpenGL(this, testOpenCLOpenGLInterop);
+		renderOpenGL = new CRenderOpenGL(this);
 		renderOpenGL->Init(this);
-		openclOpenGLInterop = renderOpenGL->GetOpenGLInterop();
-		bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+
 	}
 
 

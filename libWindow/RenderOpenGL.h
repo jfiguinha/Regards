@@ -34,16 +34,14 @@ namespace Regards::OpenGL
 	class CRenderOpenGL : public wxGLContext
 	{
 	public:
-		CRenderOpenGL(wxGLCanvas* canvas, const bool & testOpenCLOpenGLInterop = true);
+		CRenderOpenGL(wxGLCanvas* canvas);
 		~CRenderOpenGL() override;
 		GLTexture* GetGLTexture();
 		wxGLContext* GetGLContext();
 		bool GetOpenGLInterop();
-		void SetData(cv::Mat& bitmap);
-		bool SetData(cv::cuda::GpuMat& bitmap);
-		bool SetData(cv::UMat& bitmap);
+		bool SetData(Regards::Picture::CPictureArray& bitmap);
 		void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
-		GLTexture* GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop);
+		GLTexture* GetDisplayTexture(const int& width, const int& height);
 		void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
 		                    const int& top, const bool& inverted = false);
 
@@ -81,6 +79,5 @@ namespace Regards::OpenGL
 		bool isInit = false;
 		IMouseUpdate* mouseUpdate;
 		bool openclOpenGLInterop = false;
-		bool testOpenCLOpenGLInterop = true;
 	};
 }

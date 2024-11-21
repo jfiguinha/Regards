@@ -5,6 +5,8 @@
 #include <CL/cl_gl.h>
 #endif
 
+#include <PictureArray.h>
+
 class CTextureGLPriv;
 class CTextureCudaPriv;
 
@@ -24,9 +26,7 @@ namespace Regards
 			void Delete();
 			void DeleteInteropTexture();
 			void Enable();
-			void SetData(cv::Mat& bitmap);
-			bool SetData(cv::UMat& bitmap);
-			bool SetData(cv::cuda::GpuMat& bitmap);
+			bool SetData(Regards::Picture::CPictureArray& bitmap);
 
 			void Disable()
 			{
@@ -50,13 +50,12 @@ namespace Regards
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
             
-            bool SetTextureData(cv::InputArray& bitmap);
+            bool SetTextureData(Regards::Picture::CPictureArray& bitmap);
 
 			CTextureGLPriv* pimpl_ = nullptr;
 			
 			cv::ogl::Texture2D * tex = nullptr;
 
-			bool openclOpenGLInterop = false;
 			int width;
 			int height;
 			GLenum format;

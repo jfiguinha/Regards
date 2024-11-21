@@ -1,8 +1,5 @@
 ﻿#include <header.h>
 #include "GLTexture.h"
-#include <cuda.h>
-#include "cuda_runtime.h"
-#include <cuda_gl_interop.h>
 #include <opencv2/core.hpp>
 #include <epoxy/gl.h>
 #ifdef __APPLE__
@@ -14,7 +11,8 @@
 #else
 #include <GL/glut.h>
 #endif
-
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 
 #include <opencv2/core/opengl.hpp>
 using namespace Regards::OpenGL;
@@ -23,13 +21,6 @@ using namespace cv::ocl;
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
-
-void CHECK_CUDA(cudaError_t err) {
-    if(err != cudaSuccess) {
-        std::cerr << "Error: " << cudaGetErrorString(err) << std::endl;
-        exit(-1);
-    }
-}  
 
 void CHECK_ERROR_GL() {
     GLenum err = glGetError();
@@ -48,7 +39,7 @@ public:
 		//q = static_cast<cl_command_queue>(Queue::getDefault().ptr());
 	}
 
-	bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
+	bool convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture);
 	cl_int CreateTextureInterop(GLTexture* glTexture);
 	void DeleteTextureInterop();
 
@@ -93,6 +84,7 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
+
 	printf("convertToGLTexture2D \n");
 	bool isOk = true;
 
@@ -170,7 +162,7 @@ GLTexture::GLTexture(void)
 	format = GL_BGRA_EXT;
     dataformat = GL_RGBA8;
 	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
-	openclOpenGLInterop = false;
+
 }
 
 GLTexture::~GLTexture(void)
@@ -200,32 +192,34 @@ int GLTexture::GetHeight()
 
 void GLTexture::DeleteInteropTexture()
 {
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
 		pimpl_->DeleteTextureInterop();
 	}
 }
 
-bool GLTexture::SetData(cv::UMat& bitmap)
+bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 {   
-    
-   // printf("GLTexture::SetData isOpenCLOpenGLInterop \n");
-    
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
+	int kind = bitmap.Kind();
+
 	bool isOk = false;
 
-	if (!openclOpenGLInterop)
+	if(kind == cv::_InputArray::KindFlag::UMAT && openclOpenGLInterop)
 	{
-        isOk = SetTextureData(bitmap);
-	}
+		cv::UMat umatBitmap = bitmap.getUMat();
 
-	if(!isOk)
-	{
 		if (pimpl_ == nullptr && openclOpenGLInterop)
 			pimpl_ = new CTextureGLPriv();
 
 		if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 		{
-			if (bitmap.size().width != width || height != bitmap.size().height)
+			if (bitmap.getWidth() != width || height != bitmap.getHeight())
 			{
 				Delete();
 				m_nTextureID = -1;
@@ -234,8 +228,8 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 
 			if (m_nTextureID == -1)
 			{
-				width = bitmap.size().width;
-				height = bitmap.size().height;
+				width = bitmap.getWidth();
+				height = bitmap.getHeight();
 				glGenTextures(1, &m_nTextureID);
 				//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
 				glBindTexture(GL_TEXTURE_2D, m_nTextureID);
@@ -249,30 +243,30 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			}
 
 			cv::UMat bitmapMatrix;
-			if (bitmap.channels() == 3)
+			if (umatBitmap.channels() == 3)
 			{
 				if (platformName.find("Intel") == 0)
 				{
-					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
 				}
 				else
 				{
-					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
+					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
 				}
 				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 			}
-			else if (bitmap.channels() == 1)
+			else if (umatBitmap.channels() == 1)
 			{
-				cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
+				cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
 				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 			}
 			else
 			{
 				if (platformName.find("Intel") == 0)
 				{
-					cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 				}
-				isOk = pimpl_->convertToGLTexture2D(bitmap, this);
+				isOk = pimpl_->convertToGLTexture2D(umatBitmap, this);
 			}
 
 
@@ -280,29 +274,20 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			{
 				openclOpenGLInterop = false;
 				pimpl_->DeleteTextureInterop();
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
 			}
 		}
-
-
-		if (!isOk)
-		{
-            isOk = SetTextureData(bitmap);
-		}
-
 	}
-
+	if (!isOk)
+	{
+		isOk = SetTextureData(bitmap);
+	}
 
 	return isOk;
 }
 
 
-bool GLTexture::SetData(cv::cuda::GpuMat& bitmap)
-{
- 	return SetTextureData(bitmap);
-}
-
-
-bool GLTexture::SetTextureData(cv::InputArray& bitmap)
+bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap)
 {
      bool isOk = false;
     try
@@ -310,7 +295,8 @@ bool GLTexture::SetTextureData(cv::InputArray& bitmap)
         if (tex == nullptr)
             tex = new cv::ogl::Texture2D();
 
-        tex->copyFrom(bitmap, true);
+		bitmap.CopyFrom(tex);
+        //tex->copyFrom(bitmap, true);
         tex->bind();
         //tex->setAutoRelease(false);
         m_nTextureID = tex->texId();
@@ -327,12 +313,6 @@ bool GLTexture::SetTextureData(cv::InputArray& bitmap)
     }
  	return true;   
 }
-
-void GLTexture::SetData(cv::Mat& bitmap)
-{
-    SetTextureData(bitmap);
-}
-
 
 
 void GLTexture::SetFilterType(const GLint FilterType_i, const GLint FilterValue_i)
@@ -354,6 +334,9 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
 	checkErrors("GLTexture::Delete()");
 
 	if (m_nTextureID != -1)

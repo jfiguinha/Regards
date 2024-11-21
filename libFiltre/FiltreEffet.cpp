@@ -1,5 +1,6 @@
 #include <header.h>
 #include "FiltreEffet.h"
+#include "PictureArray.h"
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include <OpenCLParameter.h>
@@ -106,14 +107,9 @@ int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& 
 	return 0;
 }
 
-cv::UMat CFiltreEffet::GetUMat()
+Regards::Picture::CPictureArray CFiltreEffet::GetMatrix()
 {
-	return filtreEffet->GetUMat();
-}
-
-cv::cuda::GpuMat CFiltreEffet::GetGpuMat()
-{
-	return filtreEffet->GetGpuMat();
+	return filtreEffet->GetMatrix();
 }
 
 int CFiltreEffet::LensDistortionFilter(const int& size)
@@ -243,11 +239,6 @@ wxImage CFiltreEffet::GetwxImage()
 cv::Mat CFiltreEffet::GetBitmap(const bool& source)
 {
 	return filtreEffet->GetBitmap(source);
-}
-
-cv::Mat CFiltreEffet::GetMat()
-{
-	return filtreEffet->GetMat();
 }
 
 int CFiltreEffet::HistogramNormalize()

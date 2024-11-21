@@ -108,9 +108,10 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 
 void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat* bitmap)
 {
+	Regards::Picture::CPictureArray picture(cv::_InputArray::KindFlag::MAT);
 	cv::Mat mat = bitmap->GetOpenCVPicture();
-	cv::flip(mat, mat, 0);
-	pictureNext->SetData(mat);
+	cv::flip(mat, picture.getMat(), 0);	
+	pictureNext->SetData(picture);
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }
 

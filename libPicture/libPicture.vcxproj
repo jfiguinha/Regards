@@ -612,6 +612,7 @@
     <ClInclude Include="OpenCVVideoPlayer.h" />
     <ClInclude Include="PDFOption.h" />
     <ClInclude Include="pfm.h" />
+    <ClInclude Include="PictureArray.h" />
     <ClInclude Include="PictureData.h" />
     <ClInclude Include="PictureMetadataExiv.h" />
     <ClInclude Include="PictureMetadataExiv_new.h" />
@@ -677,6 +678,7 @@
     <ClCompile Include="OpenCVVideoPlayer.cpp" />
     <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="pfm.cpp" />
+    <ClCompile Include="PictureArray.cpp" />
     <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="PictureMetadataExiv.cpp" />
     <ClCompile Include="PictureMetadataExiv_new.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <PictureArray.h>
 
 #define TYPE_CPU 1
 #define TYPE_OPENCL 2
@@ -26,17 +26,9 @@ namespace Regards
 			COpenCVStabilization(const int& nbFrame, const int &type);
 			~COpenCVStabilization();
 
-			void AddFrame(const cv::Mat& pictureData);
-			void BufferFrame(const cv::Mat& pBitmap);
-			void CorrectFrame(cv::Mat& image);
-
-			void AddFrame(const cv::UMat& pictureData);
-			void BufferFrame(const cv::UMat& pBitmap);
-			cv::UMat CorrectFrame(cv::UMat& image);
-
-			void AddFrame(const cv::cuda::GpuMat& pictureData);
-			void BufferFrame(const cv::cuda::GpuMat& pBitmap);
-			cv::cuda::GpuMat CorrectFrame(cv::cuda::GpuMat& image);
+			void AddFrame(Regards::Picture::CPictureArray& pictureData);
+			void BufferFrame(Regards::Picture::CPictureArray& pBitmap);
+			Regards::Picture::CPictureArray CorrectFrame(Regards::Picture::CPictureArray& image);
 
 			void Init();
 			int GetNbFrame();

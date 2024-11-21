@@ -186,7 +186,7 @@ void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 
 	if(textureSubtitle == nullptr)
 		textureSubtitle = new GLTexture();
-	textureSubtitle->SetData(subtitle);
+	textureSubtitle->SetData(Regards::Picture::CPictureArray(subtitle));
 }
 
 void CRenderVideoOpenGL::ShowSubtitle()
@@ -207,7 +207,7 @@ void CRenderVideoOpenGL::ShowSubtitle()
 	}
 }
 
-GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop)
+GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height)
 {
 	if (textureVideo == nullptr)
 		textureVideo = new GLTexture();

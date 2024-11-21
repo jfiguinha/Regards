@@ -224,7 +224,7 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 	}
 }
 
-Mat CFiltreEffetCPU::GetMat()
+Regards::Picture::CPictureArray CFiltreEffetCPU::GetMatrix()
 {
 	Mat image;
 	if (preview)
@@ -235,28 +235,6 @@ Mat CFiltreEffetCPU::GetMat()
 	return image;
 }
 
-cv::cuda::GpuMat CFiltreEffetCPU::GetGpuMat()
-{
-	cv::cuda::GpuMat image;
-	if (preview)
-		paramOutput.copyTo(image);
-	else
-		input.copyTo(image);
-
-	return image;
-}
-
-
-UMat CFiltreEffetCPU::GetUMat()
-{
-	UMat image;
-	if (preview)
-		paramOutput.copyTo(image);
-	else
-		input.copyTo(image);
-
-	return image;
-}
 
 static const float a(0.073235f);
 static const float b(0.176765f);
@@ -309,22 +287,27 @@ bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* open
 	else
 		image = input;
 
+	Regards::Picture::CPictureArray dest = Regards::Picture::CPictureArray(image);
+
 	bool frameStabilized = false;
 
 	if (openCVStabilization != nullptr)
 	{
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
-			openCVStabilization->BufferFrame(image);
+			openCVStabilization->BufferFrame(dest);
 		}
 		else
 		{
 			frameStabilized = true;
-			openCVStabilization->AddFrame(image);
+			openCVStabilization->AddFrame(dest);
 		}
 
 		if (frameStabilized)
-			openCVStabilization->CorrectFrame(image);
+		{
+			Regards::Picture::CPictureArray output = openCVStabilization->CorrectFrame(dest);
+			output.copyTo(image);
+		}
 	}
 
 	return frameStabilized;

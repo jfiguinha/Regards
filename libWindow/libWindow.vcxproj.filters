@@ -19,9 +19,6 @@
     <Filter Include="Render">
       <UniqueIdentifier>{d79d6a29-b792-48b2-b0bc-2f0c8aacab14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Datastructure">
-      <UniqueIdentifier>{b4a78db2-1d2f-4333-9726-03360137dcea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{11d65e60-7b9f-4ef2-965a-d0ebb95c4be0}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="OpenGL\Render">
       <UniqueIdentifier>{905f5478-8b9b-4395-8647-236faeb83707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Datastructure">
+      <UniqueIdentifier>{b4a78db2-1d2f-4333-9726-03360137dcea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -214,31 +214,31 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Tree.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeData.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeDataCategory.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeDataEffect.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeDataKeyWord.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeDataLink.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="TreeDataStars.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="SliderInterface.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailMessage.h">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="BitmapWndRender.h">
       <Filter>Render</Filter>
@@ -429,22 +429,22 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="TreeData.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataCategory.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataEffect.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataKeyWord.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataLink.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataStars.cpp">
-      <Filter>Datastructure</Filter>
+      <Filter>Fichiers de ressources\Datastructure</Filter>
     </ClCompile>
     <ClCompile Include="BitmapWndRender.cpp">
       <Filter>Render</Filter>

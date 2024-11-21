@@ -38,9 +38,7 @@ namespace Regards::FiltreEffet
 			return TYPE_OPENCL;
 		}
 
-		cv::UMat GetUMat() override;
-		cv::Mat GetMat() override;
-		cv::cuda::GpuMat GetGpuMat() override;
+		Regards::Picture::CPictureArray GetMatrix() override;
 		~COpenCLEffect() override;
 		int LensDistortionFilter(const int& size) override;
 
