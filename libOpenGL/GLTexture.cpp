@@ -98,6 +98,9 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &format);
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
 
+			printf("GL_TEXTURE_IMAGE_FORMAT %#08x\n", format);
+			printf("GL_TEXTURE_IMAGE_TYPE %#08x\n", type);
+
 			if (type == 35863)
 				color = "BGRA";
 			else
