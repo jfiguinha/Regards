@@ -16,7 +16,7 @@ CPictureArray::CPictureArray(cv::Mat& m)
 
 CPictureArray::CPictureArray(cv::cuda::GpuMat& d_mat)
 {
-	d_mat = gpuMat;
+	gpuMat = d_mat;
 	kind = cv::_InputArray::KindFlag::CUDA_GPU_MAT;
 }
 

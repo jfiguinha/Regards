@@ -373,7 +373,32 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
 		*/
 
-		
+		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
+		std::vector<cv::cuda::GpuMat> yuv_planes(3);
+
+		cv::cuda::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::cuda::split(gpuframe_3channel, yuv_planes);
+
+		int histSize = 256;
+		float alpha, beta;
+		double minGray = 0, maxGray = 0;
+
+		cv::cuda::GpuMat gpuGray;
+
+		cv::Point minLoc;
+		cv::Point maxLoc;
+		cv::cuda::minMaxLoc(yuv_planes[0], &minGray, &maxGray, &minLoc, &maxLoc);
+		float inputRange = maxGray - minGray;
+
+		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+		cv::cuda::normalize(yuv_planes[0], yuv_planes[0], alpha, beta, NORM_MINMAX, 1);
+
+		cv::cuda::merge(yuv_planes, gpuframe_3channel);
+		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+
+		/*
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
@@ -390,9 +415,9 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
 		//cv::convertScaleAbs(color, color, alpha, beta);
+		int nbChannels = inputData.channels();
 
-
-		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.type());
+		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.channels());
 		/*
 		gpuGray.download(gray);
 		inputData.download(color);

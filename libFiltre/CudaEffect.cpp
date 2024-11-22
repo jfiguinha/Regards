@@ -38,9 +38,9 @@ Regards::Picture::CPictureArray CCudaEffect::GetMatrix()
 {
 	if (preview && !paramOutput.empty())
 	{
-		return paramOutput;
+		return Regards::Picture::CPictureArray(paramOutput);
 	}
-	return input;
+	return  Regards::Picture::CPictureArray(input);
 
 }
 
