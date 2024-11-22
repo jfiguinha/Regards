@@ -5,8 +5,7 @@ echo $NBPROC
 LOCALPATH=$(pwd)
 echo $LOCALPATH
 
-x11=$XDG_SESSION_TYPE
-echo $x11
+
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
@@ -29,6 +28,9 @@ mv vcpkg-2024.08.23 vcpkg
 
 unzip ports_vcpkg.zip
 
+x11=$XDG_SESSION_TYPE
+echo $x11
+
 if [ "$x11" = "x11" ]
 then
     cp ports_vcpkg/x11/wxwidgets/portfile.cmake vcpkg/ports/wxwidgets/portfile.cmake 
@@ -42,9 +44,9 @@ cd vcpkg
 ./vcpkg install x265
 ./vcpkg install libde265
 if [ -f "$FILE" ]; then
-    ./vcpkg install opencv4[contrib,core,dnn,dnn-cuda,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl,cuda]
+    ./vcpkg install opencv4[contrib,core,dnn,dnn-cuda,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl,cuda,gtk]
 else
-    ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl]
+    ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl,gtk]
 fi
 ./vcpkg install opencl
 ./vcpkg install tbb
