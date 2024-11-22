@@ -84,17 +84,43 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
-
-	printf("convertToGLTexture2D \n");
 	bool isOk = true;
-
-	printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
 	cl_int status = 0;
 
 	if (isOpenCLCompatible)
 	{
 		try
 		{
+            CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+            wxString color = regardsParam->GetOpenGLOutputColor();
+    
+			cv::UMat bitmapMatrix;
+			if (u.channels() == 3)
+			{
+				if (color == "BGRA")
+				{
+					cvtColor(u, bitmapMatrix, cv::COLOR_BGR2BGRA);
+				}
+				else
+				{
+					cvtColor(u, bitmapMatrix, cv::COLOR_BGR2RGBA);
+				}
+			}
+			else if (u.channels() == 1)
+			{
+				cvtColor(u, bitmapMatrix, cv::COLOR_GRAY2RGBA);
+			}
+			else
+			{
+				if (color == "BGRA")
+				{
+					cvtColor(u, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+				}
+                else
+                    bitmapMatrix = u;
+			}
+            
+            
             cl_context context = (cl_context)clExecCtx.getContext().ptr();
             cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
             
@@ -104,10 +130,10 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			if (status != CL_SUCCESS)
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-			auto clBuffer = static_cast<cl_mem>(u.handle(cv::ACCESS_READ));
+			auto clBuffer = static_cast<cl_mem>(bitmapMatrix.handle(cv::ACCESS_READ));
 			size_t offset = 0; // TODO
 			size_t dst_origin[3] = {0, 0, 0};
-			size_t region[3] = {static_cast<size_t>(u.cols), static_cast<size_t>(u.rows), 1};
+			size_t region[3] = {static_cast<size_t>(bitmapMatrix.cols), static_cast<size_t>(bitmapMatrix.rows), 1};
 			status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, nullptr, nullptr);
 
 			if (status == CL_SUCCESS)
@@ -241,33 +267,8 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 				glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
-
-			cv::UMat bitmapMatrix;
-			if (umatBitmap.channels() == 3)
-			{
-				if (platformName.find("Intel") == 0)
-				{
-					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
-				}
-				else
-				{
-					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
-				}
-				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
-			}
-			else if (umatBitmap.channels() == 1)
-			{
-				cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
-				isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
-			}
-			else
-			{
-				if (platformName.find("Intel") == 0)
-				{
-					cvtColor(umatBitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
-				}
-				isOk = pimpl_->convertToGLTexture2D(umatBitmap, this);
-			}
+            
+            isOk = pimpl_->convertToGLTexture2D(umatBitmap, this);
 
 
 			if (!isOk)

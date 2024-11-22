@@ -48,6 +48,17 @@ CRegardsConfigParam::CRegardsConfigParam()
 	useSuperResolution = 0;
 	cudaSupport = 0;
     useCuda = 0;
+    openGLOutputColor = "RGBA";
+}
+
+wxString CRegardsConfigParam::GetOpenGLOutputColor()
+{
+    return openGLOutputColor;
+}
+
+void CRegardsConfigParam::SetOpenGLOutputColor(const wxString& openGLOutputColor)
+{
+    this->openGLOutputColor = openGLOutputColor;
 }
 
 int CRegardsConfigParam::GetThumbnailOpenCV()
@@ -451,6 +462,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
 	sectionPosition->append_node(node("openCLOpenGLInteropSupport", to_string(openCLOpenGLInteropSupport)));
+    sectionPosition->append_node(node("openGLOutputColor", openGLOutputColor));
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
 	sectionPosition->append_node(node("autoContrast", to_string(autoContrast)));
 	sectionPosition->append_node(node("openCLFaceSupport", to_string(openCLFaceSupport)));
@@ -662,6 +674,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		openCLOpenGLInteropSupport = atoi(child_node->value());
 	}
 
+	child_node = position_node->first_node("openGLOutputColor");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		openGLOutputColor = child_node->value();
+	}
+    
 	child_node = position_node->first_node("detectOrientation");
 	if (child_node != nullptr)
 	{

@@ -126,6 +126,9 @@ public:
 
 	bool GetIsOpenCLOpenGLInteropSupport();
 	void SetIsOpenCLOpenGLInteropSupport(const int& openCLOpenGLInteropSupport);
+    
+	wxString GetOpenGLOutputColor();
+	void SetOpenGLOutputColor(const wxString& openGLOutputColor);
 
 	int GetSkinWindowMode();
 	void SetSkinWindowMode(const int& skinWindowMode);
@@ -214,4 +217,5 @@ protected:
 	wxString musicDiaporama;
 	int bufferSize;
 	int isThumbnailOpenCV = 1;
+    wxString openGLOutputColor = "RGBA";
 };

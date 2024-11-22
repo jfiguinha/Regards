@@ -18,9 +18,7 @@ namespace Regards
 	namespace OpenCV
 	{
 
-		class COpenCVStabilizationCpu;
-		class COpenCVStabilizationOpenCL;
-		class COpenCVStabilizationCuda;
+		class COpenCVStabilizationInterface;
 
 		class COpenCVStabilization
 		{
@@ -39,11 +37,7 @@ namespace Regards
 
 		private:
 			
-			COpenCVStabilizationCpu* openCVCpu = nullptr;
-			COpenCVStabilizationOpenCL* openCVopenCL = nullptr;
-#ifdef USE_CUDA
-			COpenCVStabilizationCuda* openCVCuda = nullptr;
-#endif
+			COpenCVStabilizationInterface * opencvStabilization = nullptr;
 			int type = 0;
 		};
 	}
