@@ -19,8 +19,10 @@ if [ -f "$FILE" ]; then
     sudo rm $CUDA_ROOT/bin/g++
     sudo ln -s /usr/bin/gcc-10 $CUDA_ROOT/bin/gcc
     sudo ln -s /usr/bin/g++-10 $CUDA_ROOT/bin/g++
+    cp header_cuda.h ../include/header.h
 else
     echo "Cuda not found in system"
+    cp header.h ../include/header.h
 fi
 
 unzip vcpkg-2024.08.23_linux.zip

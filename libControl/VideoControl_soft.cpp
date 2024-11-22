@@ -33,7 +33,7 @@
 #include <VideoStabilization.h>
 
 using namespace Regards::OpenCV;
-#ifndef __APPLE__
+#ifdef USE_CUDA
 using namespace Regards::Cuda;
 #endif
 using namespace Regards::OpenCL;
@@ -1201,7 +1201,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
 	if (IsSupportCuda())
 	{

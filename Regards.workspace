@@ -39,10 +39,12 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
+    <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -136,6 +138,8 @@
       <Project Name="libCudaEffect" ConfigName="Debug"/>
       <Project Name="libVideoEffect" ConfigName="Debug"/>
       <Project Name="libOpenCVMissingGTK" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_linux_cuda" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -209,6 +213,8 @@
       <Project Name="libCudaEffect" ConfigName="Release"/>
       <Project Name="libVideoEffect" ConfigName="Release"/>
       <Project Name="libOpenCVMissingGTK" ConfigName="Release"/>
+      <Project Name="RegardsViewer_linux" ConfigName="Release"/>
+      <Project Name="RegardsViewer_linux_cuda" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

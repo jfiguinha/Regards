@@ -8,7 +8,7 @@
 #include "ViewerParam.h"
 #include <ffmpeg_application.h>
 #include <opencv2/core/ocl.hpp>
-#ifndef __APPLE__
+#ifdef USE_CUDA
 #include <opencv2/cudaarithm.hpp>
 using namespace cv::cuda;
 #endif
@@ -136,7 +136,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	if (cv::ocl::haveOpenCL())
 		cbHardwareAccelerator->AppendString("OpenCL");
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 	int cuda_devices_number = getCudaEnabledDeviceCount();
 	if(cuda_devices_number > 0)
 		cbHardwareAccelerator->AppendString("Cuda");
