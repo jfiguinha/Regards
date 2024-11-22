@@ -30,6 +30,7 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libParameter"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -123,7 +123,8 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 
 			mat = bitmapNext.GetMatrix().getMat();
 			cv::flip(mat, mat, 0);
-			pictureNext->SetData(Regards::Picture::CPictureArray(mat));
+            Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(mat); 
+			pictureNext->SetData(pictureArray);
 		}
 	}
 	{
@@ -143,9 +144,9 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 			}
 			delete bitmapOut;
 
-			mat = bitmapFirst.GetMatrix().getMat();
-			
-			pictureFirst->SetData(Regards::Picture::CPictureArray(mat));
+			//mat = bitmapFirst.GetMatrix().getMat();
+			Regards::Picture::CPictureArray pictureArray = bitmapFirst.GetMatrix(); 
+			pictureFirst->SetData(pictureArray);
 		}
 	}
 

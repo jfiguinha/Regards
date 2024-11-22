@@ -22,9 +22,10 @@
 #include <FilterData.h>
 #include <OpenCLContext.h>
 #include <ncnn/gpu.h>
-#include <cudnn.h>
-#ifndef __APPLE__
+
+#ifdef USE_CUDA
 #include <opencv2/cudaarithm.hpp>
+#include <cudnn.h>
 using namespace cv::cuda;
 #endif
 
@@ -322,7 +323,7 @@ bool MyApp::OnInit()
 
 	bool testOpenCL = true;
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
     if(regardsParam->GetIsUseCuda())
     {

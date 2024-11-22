@@ -13,7 +13,7 @@
 #include <config_id.h>
 #include <ParamInit.h>
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 #include "CudaEffect.h"
 #endif
 
@@ -177,7 +177,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, co
 
 	bool local_useOpenCL = false;
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
 	//(regardsParam->GetIsUseCuda()
 	//bool useCuda = regardsParam->GetIsUseCuda();

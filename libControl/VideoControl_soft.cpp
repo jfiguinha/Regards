@@ -2067,8 +2067,8 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 			openclEffect->ApplyOpenCVEffect(&videoEffectParameter);
 		}
 
-
-		renderOpenGL->SetData(openclEffect->GetMatrix(false));
+        Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(openclEffect->GetMatrix(false)); 
+		renderOpenGL->SetData(pictureArray);
 
         int nError = glGetError();
 
@@ -2163,7 +2163,8 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
             ApplyOpenCVEffect(bitmapOut);
         }
 
-        renderOpenGL->SetData(Regards::Picture::CPictureArray(bitmapOut));
+        Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(bitmapOut);
+        renderOpenGL->SetData(pictureArray);
     }
 
 }

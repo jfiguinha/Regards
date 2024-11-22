@@ -73,7 +73,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		{
              printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
             
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
 			if (regardsParam->GetIsCudaSupport())
 			{

@@ -107,6 +107,8 @@
     <File Name="webpOption.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="datastructure">
+    <File Name="PictureArray.h"/>
+    <File Name="PictureArray.cpp"/>
     <File Name="StreamInfo.h"/>
     <File Name="BitmapYUV.h"/>
     <File Name="RGBAQuad.h"/>

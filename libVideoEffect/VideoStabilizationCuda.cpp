@@ -1,5 +1,6 @@
 #include "header.h"
 #include "VideoStabilizationCuda.h"
+#ifdef USE_CUDA
 #include <opencv2/cudawarping.hpp>
 #include "opencv2/cudaimgproc.hpp"
 #include <opencv2/cudaoptflow.hpp>
@@ -336,3 +337,5 @@ Regards::Picture::CPictureArray COpenCVStabilizationCuda::CorrectFrame(Regards::
 	cv::cuda::GpuMat mat = pimpl->CorrectedFrame(image.getGpuMat());
 	return Regards::Picture::CPictureArray(mat);
 }
+
+#endif

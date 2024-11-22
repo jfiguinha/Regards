@@ -1,7 +1,7 @@
 #include <header.h>
 #include "CudaEffect.h"
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
 #include <CudaFilter.h>
 #include <MotionBlur.h>

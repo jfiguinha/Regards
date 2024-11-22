@@ -1,6 +1,5 @@
 #include "header.h"
 #include "VideoStabilizationOpenCL.h"
-#include <opencv2/cudawarping.hpp>
 
 using namespace Regards::OpenCV;
 using namespace cv;

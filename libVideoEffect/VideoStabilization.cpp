@@ -22,9 +22,11 @@ COpenCVStabilization::COpenCVStabilization(const int& nbFrame, const int& type)
 	case TYPE_OPENCL:
 		openCVopenCL = new COpenCVStabilizationOpenCL(nbFrame);
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		openCVCuda = new COpenCVStabilizationCuda(nbFrame);
 		break;
+#endif
 
 	}
 }
@@ -39,9 +41,11 @@ COpenCVStabilization::~COpenCVStabilization()
 	case TYPE_OPENCL:
 		delete openCVopenCL;
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		delete openCVCuda;
 		break;
+#endif
 	}
 }
 
@@ -55,10 +59,11 @@ void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
 	case TYPE_OPENCL:
 		openCVopenCL->SetNbFrameBuffer(nbFrame);
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		openCVCuda->SetNbFrameBuffer(nbFrame);
 		break;
-
+#endif
 	}
 }
 
@@ -72,10 +77,11 @@ int COpenCVStabilization::GetNbFrame()
 	case TYPE_OPENCL:
 		return openCVopenCL->GetNbFrame();
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		return openCVCuda->GetNbFrame();
 		break;
-
+#endif
 	}
 }
 
@@ -89,10 +95,11 @@ void COpenCVStabilization::Init()
 	case TYPE_OPENCL:
 		openCVopenCL->Init();
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		openCVCuda->Init();
 		break;
-
+#endif
 	}
 }
 
@@ -104,10 +111,11 @@ int COpenCVStabilization::GetNbFrameBuffer()
 	case TYPE_OPENCL:
 		return openCVopenCL->GetNbFrameBuffer();
 		break;
+#ifdef USE_CUDA
 	case TYPE_CUDA:
 		return openCVCuda->GetNbFrameBuffer();
 		break;
-
+#endif
 	default:
 		return openCVCpu->GetNbFrameBuffer();
 		break;
@@ -117,15 +125,57 @@ int COpenCVStabilization::GetNbFrameBuffer()
 
 void COpenCVStabilization::AddFrame(Regards::Picture::CPictureArray& image)
 {
-	openCVCpu->AddFrame(image);
+	switch (type)
+	{
+
+	case TYPE_OPENCL:
+		return openCVopenCL->AddFrame(image);
+		break;
+#ifdef USE_CUDA
+	case TYPE_CUDA:
+		return openCVCuda->AddFrame(image);
+		break;
+#endif
+	default:
+		return openCVCpu->AddFrame(image);
+		break;
+
+	}
+
 }
 
 void COpenCVStabilization::BufferFrame(Regards::Picture::CPictureArray& image)
 {
-	openCVCpu->BufferFrame(image);
+	switch (type)
+	{
+
+	case TYPE_OPENCL:
+		return openCVopenCL->BufferFrame(image);
+		break;
+#ifdef USE_CUDA
+	case TYPE_CUDA:
+		return openCVCuda->BufferFrame(image);
+		break;
+#endif
+	default:
+		return openCVCpu->BufferFrame(image);
+		break;
+
+	}
 }
 
 Regards::Picture::CPictureArray COpenCVStabilization::CorrectFrame(Regards::Picture::CPictureArray& image)
 {
-	return openCVCpu->CorrectFrame(image);
+	switch (type)
+	{
+	case TYPE_OPENCL:
+		return openCVopenCL->CorrectFrame(image);
+		break;
+#ifdef USE_CUDA
+	case TYPE_CUDA:
+		return openCVCuda->CorrectFrame(image);
+		break;
+#endif
+	}
+    return openCVCpu->CorrectFrame(image);
 }

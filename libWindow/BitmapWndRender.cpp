@@ -1627,8 +1627,10 @@ void CBitmapWndRender::RenderToScreenWithCudaSupport()
 			ApplyPreviewEffect(widthOutput, heightOutput);
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-
-			glTexture->SetData(filtreEffet->GetMatrix());
+            
+            
+             Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
+			glTexture->SetData(mat);
 
 		}
 
@@ -1701,7 +1703,8 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
-			glTexture->SetData(filtreEffet->GetMatrix());
+             Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
+			glTexture->SetData(mat);
 		}
 
 		updateFilter = false;

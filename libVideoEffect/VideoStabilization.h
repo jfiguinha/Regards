@@ -3,7 +3,9 @@
 
 #define TYPE_CPU 1
 #define TYPE_OPENCL 2
+#ifdef USE_CUDA
 #define TYPE_CUDA 3
+#endif
 
 namespace cv
 {
@@ -39,7 +41,9 @@ namespace Regards
 			
 			COpenCVStabilizationCpu* openCVCpu = nullptr;
 			COpenCVStabilizationOpenCL* openCVopenCL = nullptr;
+#ifdef USE_CUDA
 			COpenCVStabilizationCuda* openCVCuda = nullptr;
+#endif
 			int type = 0;
 		};
 	}

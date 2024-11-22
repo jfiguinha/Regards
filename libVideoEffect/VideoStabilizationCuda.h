@@ -1,6 +1,6 @@
 #pragma once
 #include "VideoStabilizationInterface.h"
-
+#ifdef USE_CUDA
 class COpenCVStabilizationCudaPimpl_;
 
 
@@ -29,3 +29,4 @@ namespace Regards
 		};
 	}
 }
+#endif

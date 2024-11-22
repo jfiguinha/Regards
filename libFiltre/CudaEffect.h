@@ -1,7 +1,7 @@
 #pragma once
 #include "IFiltreEffet.h"
 
-#ifndef __APPLE__
+#ifdef USE_CUDA
 
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
