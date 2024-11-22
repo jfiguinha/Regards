@@ -358,6 +358,9 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 
 		convertScaleAbs(inputData, inputData, alpha, beta);
 
+
+
+
 		/*
 
 		if (clipHistPercent == 0)
