@@ -19,6 +19,24 @@ CPictureArray::CPictureArray(cv::cuda::GpuMat& d_mat)
 	gpuMat = d_mat;
 	kind = cv::_InputArray::KindFlag::CUDA_GPU_MAT;
 }
+void CPictureArray::SetArray(cv::Mat& m)
+{
+  	mat = m;
+	kind = cv::_InputArray::KindFlag::MAT;  
+}
+
+void CPictureArray::SetArray(cv::cuda::GpuMat& d_mat)
+{
+ 	d_mat = gpuMat;
+	kind = cv::_InputArray::KindFlag::CUDA_GPU_MAT;   
+}
+
+void CPictureArray::SetArray(cv::UMat& m)
+{
+  	umat = m;
+	kind = cv::_InputArray::KindFlag::UMAT;  
+}
+
 
 CPictureArray::CPictureArray(cv::UMat& m)
 {

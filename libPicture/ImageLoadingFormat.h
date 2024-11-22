@@ -10,7 +10,7 @@ public:
 	CImageLoadingFormat();
 	~CImageLoadingFormat();
 
-	Regards::Picture::CPictureArray GetMatrix();
+    Regards::Picture::CPictureArray& GetMatrix();
 	void RotateExif_withoutflip(const int& orientation);
 	CImageLoadingFormat* GetPage(const int& numPage);
 	int GetNbPage();
@@ -57,4 +57,5 @@ protected:
 	wxString filename;
 	int orientation;
 	int resolution = 300;
+    Regards::Picture::CPictureArray pictureArray;
 };

@@ -214,9 +214,10 @@ int CImageLoadingFormat::GetResolution()
 	return resolution;
 }
 
-Regards::Picture::CPictureArray CImageLoadingFormat::GetMatrix()
+Regards::Picture::CPictureArray& CImageLoadingFormat::GetMatrix()
 {
-	return Regards::Picture::CPictureArray(_image);
+    pictureArray.SetArray(_image);
+	return pictureArray;
 }
 
 /*

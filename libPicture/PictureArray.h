@@ -8,11 +8,15 @@ namespace Regards
 		class CPictureArray
 		{
 		public:
+            CPictureArray() {};
 			CPictureArray(const cv::_InputArray::KindFlag &type);
 			virtual ~CPictureArray() {};
 			CPictureArray(cv::Mat& m);
 			CPictureArray(cv::cuda::GpuMat& d_mat);
 			CPictureArray(cv::UMat& m);
+            void SetArray(cv::Mat& m);
+             void SetArray(cv::cuda::GpuMat& d_mat);
+              void SetArray(cv::UMat& m);
 			cv::_InputArray::KindFlag Kind();
 			cv::UMat& getUMat();
 			cv::Mat& getMat();
