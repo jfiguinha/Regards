@@ -58,8 +58,6 @@
     <File Name="include/wx/wxscan.h"/>
     <File Name="include/wx/wxsanedlg.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;-std=gnu++14;$(shell ../../libextern/wxconfig_cpp.sh);-pthread;-Wno-narrowing;-fpermissive" C_Options=";-Wall;" Assembler="">
@@ -153,4 +151,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

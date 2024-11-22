@@ -15,8 +15,6 @@
     <File Name="directoryctrl.h"/>
     <File Name="checktree.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -107,4 +105,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
