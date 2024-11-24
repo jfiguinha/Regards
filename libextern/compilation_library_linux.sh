@@ -10,7 +10,8 @@ echo $LOCALPATH
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
 FILE=/usr/local/cuda/version.json
-if [ -f "$FILE" ]; then
+if [ -f "$FILE" ]; 
+then
     echo "Cuda found in this system"
     export CC=/usr/bin/gcc-10
     export CXX=/usr/bin/g++-10

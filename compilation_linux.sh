@@ -33,10 +33,17 @@ sudo apt install bison
 sudo apt install gperf
 sudo apt install dos2unix
 sudo apt install libgtkglext1-dev
-sudo apt install nvidia-cuda-toolkit
-sudo apt install libcudnn8
-sudo apt install libcudnn8-dev
-sudo apt install libcudnn8-samples
+
+#test if cuda is available on system
+FILE=/usr/local/cuda/version.json
+if [ -f "$FILE" ]; 
+then
+    sudo apt install nvidia-cuda-toolkit
+    sudo apt install libcudnn8
+    sudo apt install libcudnn8-dev
+    sudo apt install libcudnn8-samples
+fi
+
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
