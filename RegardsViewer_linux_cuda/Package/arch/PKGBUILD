@@ -1,0 +1,29 @@
+# Maintainer: Jacques Figuinha <appt.jf@outlook.fr>
+pkgname=regardsviewer-bin
+pkgver=2.74.2
+pkgrel=1
+pkgdesc="Regards is a modern photo viewer. (official precompiled binary)"
+arch=('x86_64')
+url="https://github.com/jfiguinha/Regards"
+license=('GPL')
+provides=()
+options=()
+depends=('gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'sdl2' 'sane' 'sndio')
+optdepends=()
+conflicts=('RegardsViewer')
+source=("RegardsViewer.zip")
+sha256sums=('2c7c3af953f6df55418628f9960939a82ce3e98d275d2711097c864db37ee1b0')
+
+package() {
+  # Recursively remove group's write permission before moving to package directory
+  mkdir ${pkgdir}/usr
+  mkdir ${pkgdir}/usr/bin
+  mkdir ${pkgdir}/usr/share
+  mkdir ${pkgdir}/usr/share/applications
+  mkdir ${pkgdir}/opt
+  mkdir ${pkgdir}/opt/RegardsViewer2
+   cp ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
+   cp ${srcdir}/RegardsViewer.desktop ${pkgdir}/usr/share/applications
+   mv ${srcdir}/RegardsViewer2 ${pkgdir}/opt
+   chmod +x ${pkgdir}/usr/bin/RegardsViewer
+}

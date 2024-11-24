@@ -1,0 +1,19 @@
+Package: RegardsViewer
+Version: 2.75.5
+Installed-Size: 756736
+Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
+Section: graphics
+Source: https://github.com/jfiguinha/Regards.git
+Homepage: https://jfiguinha.pagesperso-orange.fr/
+Architecture: amd64
+Priority: standard
+Depends: libwebkit2gtk-4.0-dev, freeglut3-dev, mesa-common-dev, libsdl2-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev,  libsane-dev, libgnutls28-dev, libunistring-dev, libturbojpeg-dev, libva-dev, libvdpau-dev
+Description: RegardsViewer is a picture viewer and video player
+ Regards is a modern photo viewer.
+ Support highDPI definition screen.
+ Support Exif and xmp file information.
+ Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
+ Support GPS informations from Photo and Apple Iphone Video.
+ Hi Quality display interpolation.
+ OpenGL Picture display and OpenCL post Effect.
+
