@@ -399,15 +399,14 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
             
             //gray.download(y);
 
-			std::vector<int> channels = {0}; // Analyze only the channel 0.
-			std::vector<int> hsize = {256};
+			//std::vector<int> channels = {0}; // Analyze only the channel 0.
+			//std::vector<int> hsize = {256};
 			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
-			std::vector<float> hranges = {0, 256}; // The range is between 0 - 255 (so less than 256).
+			//std::vector<float> hranges = {0, 256}; // The range is between 0 - 255 (so less than 256).
 
 			//calcHist(std::vector<cv::Mat>(1, y), channels, noArray(), h, hsize, hranges);
             
-            vector<unsigned int> hist = cuda_histogram(gray);
-
+			unsigned int* hist = cuda_histogram(gray);
 
 			//Mat hist;
 
@@ -415,10 +414,10 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 
 			// calculate cumulative distribution from the histogram
 			std::vector<float> accumulator(histSize);
-			accumulator[0] = (float)hist.at(0);//hist.at<float>(0);
+			accumulator[0] = (float)hist[0];//hist.at<float>(0);
 			for (int i = 1; i < histSize; i++)
 			{
-				accumulator[i] = accumulator[i - 1] + (float)hist.at(i);//hist.at<float>(i);
+				accumulator[i] = accumulator[i - 1] + (float)hist[i];//hist.at<float>(i);
 			}
 
 			// locate points that cuts at required value
@@ -438,6 +437,8 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 				if (maxGray == 0)
 					break;
 			}
+
+			delete[] hist;
 		}
 
 		// current range

@@ -642,13 +642,12 @@ __global__ void convertScaleAbs(uchar* input, uchar* output, int width, int heig
 }
 
 
-std::vector<unsigned int> cuda_histogram(const cv::cuda::GpuMat& input)
+unsigned int * cuda_histogram(const cv::cuda::GpuMat& input)
 {
     unsigned char* d_input;
     unsigned int * d_output;
-    const int colorBytes = input.step * input.rows;
-    std::vector<unsigned int> tab; 
-    tab.reserve(NUM_BINS);
+
+    unsigned int* tab = new unsigned int[NUM_BINS];
 
     d_input = (uchar*)input.ptr();
     
@@ -670,7 +669,7 @@ std::vector<unsigned int> cuda_histogram(const cv::cuda::GpuMat& input)
     cudaSafeCall(cudaDeviceSynchronize());
 #endif 
 
-    cudaMemcpy(&tab[0], d_output, NUM_BINS * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+    cudaMemcpy(tab, d_output, NUM_BINS * sizeof(unsigned int), cudaMemcpyDeviceToHost);
 
     cudaFree(d_output);
     
@@ -681,8 +680,6 @@ std::vector<unsigned int> cuda_histogram(const cv::cuda::GpuMat& input)
 void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float & alpha, const float &  beta)
 {
     unsigned char* d_input, * d_output;
-    const int colorBytes = input.step * input.rows;
-    const int grayBytes = output.step * output.rows;
 
     d_input = (uchar*)input.ptr();
     d_output = (uchar*)output.ptr();
@@ -706,9 +703,6 @@ void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& outpu
 
 void CCudaComputeFilter::ApplyEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
-    const int colorBytes = input.step * input.rows;
-    const int grayBytes = output.step * output.rows;
-
     d_input = (uchar*)input.ptr();
     d_output = (uchar*)output.ptr();
 
