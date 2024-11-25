@@ -13,5 +13,6 @@ public:
 	static bool IsConfigFileExist();
 
 private:
+    static wxString ConfigPath();
 	static CRegardsConfigParam* _singleton;
 };

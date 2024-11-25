@@ -115,3 +115,23 @@ inline __host__ __device__ ColorRef operator*(ColorRef a, float b)
     color.alpha = a.alpha * b;
     return color;
 }
+
+inline __host__ __device__ ColorRef operator+(ColorRef a, float b)
+{
+    ColorRef color;
+    color.blue = a.blue + b;
+    color.green = a.green + b;
+    color.red = a.red + b;
+    color.alpha = a.alpha + b;
+    return color;
+}
+
+inline __host__ __device__ ColorRef abs(ColorRef a)
+{
+    ColorRef color;
+    color.blue = abs(a.blue);
+    color.green = abs(a.green);
+    color.red = abs(a.red);
+    color.alpha = abs(a.alpha);
+    return color;
+}

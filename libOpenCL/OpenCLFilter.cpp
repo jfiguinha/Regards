@@ -341,6 +341,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 	
 	try
 	{
+        /*
 		int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
@@ -357,11 +358,16 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
 		convertScaleAbs(inputData, inputData, alpha, beta);
+        */
+        
+        printf("Use OpenCL Auto Contrast \n");
+        
+        int histSize = 256;
+		float alpha, beta;
+		double minGray = 0, maxGray = 0;
 
-
-
-
-		/*
+		UMat gray;
+		cvtColor(inputData, gray, COLOR_BGR2GRAY);
 
 		if (clipHistPercent == 0)
 		{

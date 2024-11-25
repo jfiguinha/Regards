@@ -6,6 +6,9 @@ using namespace std;
 
 struct int2;
 
+void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float & alpha, const float &  beta);
+std::vector<unsigned int> cuda_histogram(const cv::cuda::GpuMat& input);
+
 class CCudaComputeFilter
 {
 public:

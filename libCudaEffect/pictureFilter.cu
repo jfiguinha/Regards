@@ -11,7 +11,8 @@
 #include <opencv2/core/cuda/common.hpp>
 #define BLOCK_SIZE      16
 #define FILTER_WIDTH    3       
-#define FILTER_HEIGHT   3       
+#define FILTER_HEIGHT   3      
+#define NUM_BINS 256 
 
 using namespace std;
 
@@ -581,6 +582,128 @@ __global__  void photoFilter(uchar* input, uchar* output, int width, int height,
 
 }
 
+
+__global__ void histogram(const uchar *in, int width, int height, int colorWidthStep, unsigned int *out)
+{
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    // initialize temporary accumulation array in shared memory
+   // __shared__ unsigned int smem[NUM_BINS];
+   // for (int i = 0; i < NUM_BINS; i++) 
+    //    smem[i] = 0;
+    __syncthreads();
+    
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        const int gray_tid = yIndex * colorWidthStep + (xIndex);
+        unsigned int r = (unsigned int)(in[gray_tid]);
+        atomicAdd(&out[r], 1);
+    }
+    __syncthreads();
+
+    //for (int i = 0; i < NUM_BINS; i++) {
+    //    out[i] = smem[i];
+    //}
+}
+
+//----------------------------------------------------
+//Filtre Sepia
+//----------------------------------------------------
+__global__ void convertScaleAbs(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep, float alpha, float  beta)
+{
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        //Location of colored pixel in input
+        const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
+
+        //Location of gray pixel in output
+        const int gray_tid = yIndex * grayWidthStep + (4 * xIndex);
+
+        ColorRef colorIn = GetfColor(input, color_tid);
+        colorIn = abs(colorIn * alpha + beta);
+        colorIn = clamp(colorIn, 0.0, 255.0);
+        SetColor(output, gray_tid, colorIn);
+        /*
+        float4 color = GetfloatColor(input, color_tid);
+        color.x = fabs(color.x * alpha + beta);
+        color.y = fabs(color.y * alpha + beta);
+        color.w = fabs(color.w * alpha + beta);
+        color.z = fabs(color.z * alpha + beta);
+        
+        rgbaFloat4ToUchar4(output, gray_tid, color, 1.0f);
+        */
+    }
+}
+
+
+std::vector<unsigned int> cuda_histogram(const cv::cuda::GpuMat& input)
+{
+    unsigned char* d_input;
+    unsigned int * d_output;
+    const int colorBytes = input.step * input.rows;
+    std::vector<unsigned int> tab; 
+    tab.reserve(NUM_BINS);
+
+    d_input = (uchar*)input.ptr();
+    
+    cudaMalloc<unsigned int>(&d_output, NUM_BINS * sizeof(unsigned int));
+    
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Launch the color conversion kernel
+    histogram << <grid, block >> > (d_input, input.cols, input.rows, input.step, d_output);
+
+    // Synchronize to check for any kernel launch errors
+#ifdef WIN32
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+#else
+    cudaSafeCall(cudaDeviceSynchronize());
+#endif 
+
+    cudaMemcpy(&tab[0], d_output, NUM_BINS * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+
+    cudaFree(d_output);
+    
+    return tab;
+}
+
+
+void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float & alpha, const float &  beta)
+{
+    unsigned char* d_input, * d_output;
+    const int colorBytes = input.step * input.rows;
+    const int grayBytes = output.step * output.rows;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+    
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Launch the color conversion kernel
+    convertScaleAbs << <grid, block >> > (d_input, d_output, input.cols, input.rows, input.step, output.step, alpha, beta);
+
+    // Synchronize to check for any kernel launch errors
+#ifdef WIN32
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+#else
+    cudaSafeCall(cudaDeviceSynchronize());
+#endif 
+}
+
 void CCudaComputeFilter::ApplyEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output)
 {
     const int colorBytes = input.step * input.rows;
@@ -815,3 +938,5 @@ void CMotionBlur::ExecuteEffect(const cv::cuda::GpuMat& input, cv::cuda::GpuMat&
     cudaFree(offsetsMotion);
 
 }
+
+

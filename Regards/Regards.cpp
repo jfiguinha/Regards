@@ -173,8 +173,7 @@ void SaveIcon(const wxArtID& id, wxString filename)
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
-	std::set_terminate(onTerminate);
-    
+
 	//putenv("OPENCV_OPENCL_DEVICE=:GPU:0");
 	//OPENCV_OPENCL_DEVICE=:GPU:1
 	// 
@@ -320,10 +319,26 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->InitAllHandlers();
 
 	CFiltreData::CreateFilterList();
+    
+    bool firstInitialisation = true;
+	std::set_terminate(onTerminate);
+    
 
 	bool testOpenCL = true;
 
 #ifdef USE_CUDA
+
+    printf("Test if Is Use Cuda \n");
+    
+    if(!configFileExist)
+    {
+        int cuda_devices_number = getCudaEnabledDeviceCount();
+        if (cuda_devices_number > 0)
+        {
+            regardsParam->SetIsUseCuda(1);
+            regardsParam->SetIsCudaSupport(1);
+        }
+    }
 
     if(regardsParam->GetIsUseCuda())
     {
@@ -331,6 +346,8 @@ bool MyApp::OnInit()
 
         if (cuda_devices_number > 0)
         {
+            printf("cuda_devices_number : %d \n", cuda_devices_number);
+             
             try
             {
                 cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
@@ -349,29 +366,35 @@ bool MyApp::OnInit()
 
             regardsParam->SetIsCudaSupport(1);
             testOpenCL = false;
+            
+            auto cudnn_bversion = cudnnGetVersion();
+            auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
+            if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
+            {
+                std::ostringstream oss;
+                oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
+                //CV_LOG_WARNING(NULL, oss.str().c_str());
+            }
+            else
+            {
+                cout << "CuDNN is OK" << endl;
+            }
         }
         else
+        {
             regardsParam->SetIsCudaSupport(0);  
+            printf("cuda platform not found \n");
+        }
 
 
-		auto cudnn_bversion = cudnnGetVersion();
-		auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
-		if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
-		{
-			std::ostringstream oss;
-			oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
-			//CV_LOG_WARNING(NULL, oss.str().c_str());
-		}
-		else
-		{
-			cout << "CuDNN is OK" << endl;
-		}
+
     }
     else
         regardsParam->SetIsCudaSupport(0);   
 
 #else
 
+    printf("Not Test if Is Use Cuda \n");
 	regardsParam->SetIsCudaSupport(0);
     
 #endif
@@ -390,9 +413,15 @@ bool MyApp::OnInit()
 		if (!configFileExist)
 		{
 			if (!ocl::haveOpenCL())
+            {
 				regardsParam->SetIsOpenCLSupport(false);
+                regardsParam->SetIsOpenCLOpenGLInteropSupport(false);
+            }
 			else
+            {
 				regardsParam->SetIsOpenCLSupport(true);
+                regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
+            }
 		}
 
 

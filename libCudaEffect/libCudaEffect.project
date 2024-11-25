@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libCudaEffect" Version="11000" InternalType="Library">
   <VirtualDirectory Name="cuda">
+    <File Name="helper_filter.h"/>
     <File Name="pictureFilter.cu"/>
     <File Name="pictureFilter.h"/>
     <File Name="helper_math.h"/>

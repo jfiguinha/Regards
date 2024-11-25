@@ -379,6 +379,8 @@ int CFiltreEffetCPU::GetHeight()
 */
 void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercent)
 {
+    printf("Use Auto Contrast \n");
+    
 	int histSize = 256;
 	float alpha, beta;
 	double minGray = 0, maxGray = 0;

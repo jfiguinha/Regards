@@ -352,7 +352,11 @@ void CCudaFilter::Bm3d(cv::cuda::GpuMat& inputData, const float& fSigma)
 
 void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float clipHistPercent)
 {
-
+	if (out.size().height != inputData.rows || out.size().width != inputData.cols)
+	{
+		out.release();
+		out = cv::cuda::GpuMat(inputData.rows, inputData.cols, CV_8UC4);
+	}
 	try
 	{
 		/*
@@ -372,81 +376,49 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		cv::cuda::merge(yuv_planes, gpuframe_3channel);
 		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
 		*/
-
-		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
-		std::vector<cv::cuda::GpuMat> yuv_planes(3);
-
-		cv::cuda::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
-		cv::cuda::split(gpuframe_3channel, yuv_planes);
-
-		int histSize = 256;
+        
+        printf("Use Cuda Auto Contrast \n");
+        
+        cv::cuda::GpuMat gray;
+        int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
-
-		cv::cuda::GpuMat gpuGray;
-
-		cv::Point minLoc;
-		cv::Point maxLoc;
-		cv::cuda::minMaxLoc(yuv_planes[0], &minGray, &maxGray, &minLoc, &maxLoc);
-		float inputRange = maxGray - minGray;
-
-		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
-		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
-
-		cv::cuda::normalize(yuv_planes[0], yuv_planes[0], alpha, beta, NORM_MINMAX, 1);
-
-		cv::cuda::merge(yuv_planes, gpuframe_3channel);
-		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
-
-		/*
-		int histSize = 256;
-		float alpha, beta;
-		double minGray = 0, maxGray = 0;
-
-		cv::cuda::GpuMat gpuGray;
-
-		cv::Point minLoc;
-		cv::Point maxLoc;
-		cv::cuda::cvtColor(inputData, gpuGray, COLOR_BGRA2GRAY);
-		cv::cuda::minMaxLoc(gpuGray, &minGray, &maxGray, &minLoc, &maxLoc);
-		float inputRange = maxGray - minGray;
-
-		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
-		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
-
-		//cv::convertScaleAbs(color, color, alpha, beta);
-		int nbChannels = inputData.channels();
-
-		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.channels());
-		/*
-		gpuGray.download(gray);
-		inputData.download(color);
+		cv::cuda::cvtColor(inputData, gray, COLOR_BGRA2GRAY);
+        
 		if (clipHistPercent == 0)
 		{
-			// keep full available range
-			cv::minMaxLoc(gray, &minGray, &maxGray);
+            
+            cv::Point minLoc;
+            cv::Point maxLoc;
+            cv::cuda::minMaxLoc(gray, &minGray, &maxGray, &minLoc, &maxLoc);
 		}
 		else
 		{
-			cv::Mat h;
+			//cv::Mat h;
+            //cv::Mat y;
+            
+            //gray.download(y);
 
-			std::vector<int> channels = { 0 }; // Analyze only the channel 0.
-			std::vector<int> hsize = { 256 };
+			std::vector<int> channels = {0}; // Analyze only the channel 0.
+			std::vector<int> hsize = {256};
 			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
-			std::vector<float> hranges = { 0, 256 }; // The range is between 0 - 255 (so less than 256).
+			std::vector<float> hranges = {0, 256}; // The range is between 0 - 255 (so less than 256).
 
-			cv::calcHist(std::vector<cv::Mat>(1, gray), channels, noArray(), h, hsize, hranges);
+			//calcHist(std::vector<cv::Mat>(1, y), channels, noArray(), h, hsize, hranges);
+            
+            vector<unsigned int> hist = cuda_histogram(gray);
 
-			Mat hist;
 
-			h.copyTo(hist);
+			//Mat hist;
+
+			//h.copyTo(hist);
 
 			// calculate cumulative distribution from the histogram
 			std::vector<float> accumulator(histSize);
-			accumulator[0] = hist.at<float>(0);
+			accumulator[0] = (float)hist.at(0);//hist.at<float>(0);
 			for (int i = 1; i < histSize; i++)
 			{
-				accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+				accumulator[i] = accumulator[i - 1] + (float)hist.at(i);//hist.at<float>(i);
 			}
 
 			// locate points that cuts at required value
@@ -474,13 +446,40 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
-		//cv::convertScaleAbs(color, color, alpha, beta);
+        cuda_convertScaleAbs(inputData, out, alpha, beta);
+        out.copyTo(inputData);
+        /*
+        cv::Mat local;
+        inputData.download(local);
+		convertScaleAbs(local, local, alpha, beta);
+        inputData.upload(local);
+        /*
+		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
+		std::vector<cv::cuda::GpuMat> yuv_planes(3);
 
+		cv::cuda::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::cuda::split(gpuframe_3channel, yuv_planes);
 
-		cv::cuda::normalize(inputData, inputData, alpha, beta, NORM_MINMAX, inputData.type());
+		int histSize = 256;
+		float alpha, beta;
+		double minGray = 0, maxGray = 0;
 
-		//inputData.upload(color);
-		*/
+		cv::cuda::GpuMat gpuGray;
+
+		cv::Point minLoc;
+		cv::Point maxLoc;
+		cv::cuda::minMaxLoc(yuv_planes[0], &minGray, &maxGray, &minLoc, &maxLoc);
+		float inputRange = maxGray - minGray;
+
+		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+		cv::cuda::normalize(yuv_planes[0], yuv_planes[0], alpha, beta, NORM_MINMAX, 1);
+
+		cv::cuda::merge(yuv_planes, gpuframe_3channel);
+		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
+        */
+
 		
 	}
 	catch (Exception& e)
