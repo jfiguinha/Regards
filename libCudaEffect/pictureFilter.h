@@ -6,6 +6,7 @@ using namespace std;
 
 struct int2;
 
+void cuda_autoContrast(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float& min, const float& max);
 void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float & alpha, const float &  beta);
 unsigned int* cuda_histogram(const cv::cuda::GpuMat& input);
 

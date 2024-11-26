@@ -385,18 +385,16 @@ void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercen
 	float alpha, beta;
 	double minGray = 0, maxGray = 0;
 
-	CV_Assert(clipHistPercent >= 0);
-	CV_Assert((image.type() == CV_8UC1) || (image.type() == CV_8UC3) || (image.type() == CV_8UC4));
+	std::vector<cv::Mat> yuv_planes(3);
+	cv::Mat gpuframe_3channel(image.size(), CV_8UC3);
+	cv::cvtColor(image, gpuframe_3channel, COLOR_BGR2YUV, 3);
+	cv::split(gpuframe_3channel, yuv_planes);
 
-	//to calculate grayscale histogram
-	Mat gray;
-	if (image.type() == CV_8UC1) gray = image;
-	else if (image.type() == CV_8UC3) cvtColor(image, gray, COLOR_BGR2GRAY);
-	else if (image.type() == CV_8UC4) cvtColor(image, gray, COLOR_BGRA2GRAY);
+
 	if (clipHistPercent == 0)
 	{
 		// keep full available range
-		minMaxLoc(gray, &minGray, &maxGray);
+		minMaxLoc(yuv_planes[0], &minGray, &maxGray);
 	}
 	else
 	{
@@ -406,7 +404,7 @@ void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercen
 		const float* histRange = {range};
 		bool uniform = true;
 		bool accumulate = false;
-		calcHist(&gray, 1, nullptr, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		calcHist(&yuv_planes[0], 1, nullptr, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
 
 		// calculate cumulative distribution from the histogram
 		std::vector<float> accumulator(histSize);

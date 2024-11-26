@@ -609,8 +609,31 @@ __global__ void histogram(const uchar *in, int width, int height, int colorWidth
 }
 
 //----------------------------------------------------
-//Filtre Sepia
+//Filtre Auto Contrast
 //----------------------------------------------------
+
+
+
+__global__ void autoConstrast(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep, float min, float  max)
+{
+    const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    const int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    //Only valid threads perform memory I/O
+    if ((xIndex < width) && (yIndex < height))
+    {
+        //Location of colored pixel in input
+        const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
+
+        float constant = 255.0f / (max - min);
+        ColorRef colorIn = GetfColor(input, color_tid);
+        colorIn = (colorIn - (min)) * (constant);
+        colorIn = clamp(colorIn, 0.0, 255.0);
+        SetColor(output, color_tid, colorIn);
+
+    }
+}
+
 __global__ void convertScaleAbs(uchar* input, uchar* output, int width, int height, int colorWidthStep, int grayWidthStep, float alpha, float  beta)
 {
     const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
@@ -619,6 +642,7 @@ __global__ void convertScaleAbs(uchar* input, uchar* output, int width, int heig
     //Only valid threads perform memory I/O
     if ((xIndex < width) && (yIndex < height))
     {
+
         //Location of colored pixel in input
         const int color_tid = yIndex * colorWidthStep + (4 * xIndex);
 
@@ -676,6 +700,29 @@ unsigned int * cuda_histogram(const cv::cuda::GpuMat& input)
     return tab;
 }
 
+void cuda_autoContrast(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float& min, const float& max)
+{
+    unsigned char* d_input, * d_output;
+
+    d_input = (uchar*)input.ptr();
+    d_output = (uchar*)output.ptr();
+
+    // Specify a reasonable block size
+    const dim3 block(16, 16);
+
+    // Calculate grid size to cover the whole image
+    const dim3 grid((input.cols + block.x - 1) / block.x, (input.rows + block.y - 1) / block.y);
+
+    // Launch the color conversion kernel
+    autoConstrast << <grid, block >> > (d_input, d_output, input.cols, input.rows, input.step, output.step, min, max);
+
+    // Synchronize to check for any kernel launch errors
+#ifdef WIN32
+    cudaSafeCall(cudaDeviceSynchronize(), "Kernel Launch Failed");
+#else
+    cudaSafeCall(cudaDeviceSynchronize());
+#endif 
+}
 
 void cuda_convertScaleAbs(const cv::cuda::GpuMat& input, cv::cuda::GpuMat& output, const float & alpha, const float &  beta)
 {

@@ -365,14 +365,16 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
         int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
-
-		UMat gray;
-		cvtColor(inputData, gray, COLOR_BGR2GRAY);
+		
+		std::vector<cv::UMat> yuv_planes(3);
+		cv::UMat gpuframe_3channel(inputData.size(), CV_8UC3);
+		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::split(gpuframe_3channel, yuv_planes);
 
 		if (clipHistPercent == 0)
 		{
 			// keep full available range
-			minMaxLoc(gray, &minGray, &maxGray);
+			minMaxLoc(yuv_planes[0], &minGray, &maxGray);
 		}
 		else
 		{
@@ -383,7 +385,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
 			std::vector<float> hranges = {0, 256}; // The range is between 0 - 255 (so less than 256).
 
-			calcHist(std::vector<UMat>(1, gray), channels, noArray(), h, hsize, hranges);
+			calcHist(std::vector<UMat>(1, yuv_planes[0]), channels, noArray(), h, hsize, hranges);
 
 			Mat hist;
 

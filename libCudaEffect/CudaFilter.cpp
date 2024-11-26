@@ -383,14 +383,18 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
         int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
-		cv::cuda::cvtColor(inputData, gray, COLOR_BGRA2GRAY);
+		std::vector<cv::cuda::GpuMat> yuv_planes(3);
+		cv::cuda::GpuMat gpuframe_3channel(inputData.size(), CV_8UC3);
+		cv::cuda::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::cuda::split(gpuframe_3channel, yuv_planes);
+
         
 		if (clipHistPercent == 0)
 		{
             
             cv::Point minLoc;
             cv::Point maxLoc;
-            cv::cuda::minMaxLoc(gray, &minGray, &maxGray, &minLoc, &maxLoc);
+            cv::cuda::minMaxLoc(yuv_planes[0], &minGray, &maxGray, &minLoc, &maxLoc);
 		}
 		else
 		{
@@ -406,7 +410,7 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 
 			//calcHist(std::vector<cv::Mat>(1, y), channels, noArray(), h, hsize, hranges);
             
-			unsigned int* hist = cuda_histogram(gray);
+			unsigned int* hist = cuda_histogram(yuv_planes[0]);
 
 			//Mat hist;
 
@@ -448,6 +452,7 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
         cuda_convertScaleAbs(inputData, out, alpha, beta);
+
         out.copyTo(inputData);
         /*
         cv::Mat local;
