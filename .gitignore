@@ -239,3 +239,6 @@
 /libVideoEffect/x64/Debug
 /libCuda
 /libextern/cudnn
+/libextern/vcpkg_cuda
+/RegardsViewer_cuda/x64
+/RegardsViewer_cuda.old
