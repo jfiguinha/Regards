@@ -201,44 +201,27 @@ void CDetectFace::LoadModel(const bool& openCLCompatible, const bool& cudaCompat
 
 	try
 	{
-#ifndef __WXGTK__
-
+#ifdef WIN32
 		wxString tensorflowConfigFile = documentPath + "\\model\\opencv_face_detector.pbtxt";
 		wxString tensorflowWeightFile = documentPath +
 			"\\model\\opencv_face_detector_uint8.pb";
-
-		/*
-		bool openCLCompatible = false;
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-		{
-			if (config->GetIsOpenCLSupport())
-				openCLCompatible = true;
-		}
-		*/
-
-		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile),
+#else
+		wxString tensorflowConfigFile = documentPath + "/model/opencv_face_detector.pbtxt";
+		wxString tensorflowWeightFile = documentPath + "/model/opencv_face_detector_uint8.pb";
+#endif
+        net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile),
 		                            CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
 		if (cudaCompatible)
 		{
 			net.setPreferableBackend(DNN_BACKEND_CUDA);
-			net.setPreferableTarget(DNN_TARGET_CUDA);
+			net.setPreferableTarget(DNN_TARGET_CUDA_FP16);
 		}
 		else if (openCLCompatible)
-			net.setPreferableTarget(DNN_TARGET_OPENCL);
+			net.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
 		else
 			net.setPreferableTarget(DNN_TARGET_CPU);
-#else
-
-		wxString tensorflowConfigFile = documentPath + "/model/opencv_face_detector.pbtxt";
-		wxString tensorflowWeightFile = documentPath + "/model/opencv_face_detector_uint8.pb";
-
-		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
-		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		net.setPreferableTarget(DNN_TARGET_CPU);
-#endif
 	}
 	catch (Exception& e)
 	{

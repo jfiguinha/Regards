@@ -474,6 +474,7 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.58 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.5 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.8 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/cuda_dll/*.so.* ./Debug</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
@@ -568,6 +569,7 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.58 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.5 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.8 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/cuda_dll/*.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/ffmpeg ./Release</Command>
         <Command Enabled="yes">sh patch_release.sh</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>

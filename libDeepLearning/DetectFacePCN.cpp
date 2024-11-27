@@ -203,7 +203,7 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCom
 		if (cudaCompatible)
 		{
 			net_1.setPreferableBackend(DNN_BACKEND_CUDA);
-			net_1.setPreferableTarget(DNN_TARGET_CUDA);
+			net_1.setPreferableTarget(DNN_TARGET_CUDA_FP16);
 		}	
 		else if (openCLCompatible)
 		{
@@ -216,7 +216,7 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCom
 		if (cudaCompatible)
 		{
 			net_2.setPreferableBackend(DNN_BACKEND_CUDA);
-			net_2.setPreferableTarget(DNN_TARGET_CUDA);
+			net_2.setPreferableTarget(DNN_TARGET_CUDA_FP16);
 		}
 		else if (openCLCompatible)
 			net_2.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
@@ -227,7 +227,7 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCom
 		if (cudaCompatible)
 		{
 			net_3.setPreferableBackend(DNN_BACKEND_CUDA);
-			net_3.setPreferableTarget(DNN_TARGET_CUDA);
+			net_3.setPreferableTarget(DNN_TARGET_CUDA_FP16);
 		}
 		else if (openCLCompatible)
 			net_3.setPreferableTarget(DNN_TARGET_OPENCL_FP16);

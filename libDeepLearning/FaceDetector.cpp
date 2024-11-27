@@ -313,13 +313,8 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible, const bool& cudaComp
 
 		facemark = createFacemarkKazemi();
 		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
-		//ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
-		//genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
 		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
 		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
-		//real_net.load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
-		//colorreal_net.load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
-		//gfpgan.load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
 
         printf("CFaceDetector::LoadModel \n");
 		detectFace.LoadModel(openCLCompatible, cudaCompatible);
