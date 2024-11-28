@@ -379,6 +379,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freetype.dll" 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\ncnn.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\lz4d.dll"  $(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\
