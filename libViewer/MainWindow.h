@@ -126,6 +126,8 @@ namespace Regards::Viewer
 
 
 		void PhotoProcess(CPhotos* photo);
+		static void UpdateFolderInThread(void* param);
+		void ExecuteFolderStatic();
 
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
