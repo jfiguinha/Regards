@@ -126,8 +126,6 @@ namespace Regards::Viewer
 
 
 		void PhotoProcess(CPhotos* photo);
-		static void UpdateFolderInThread(void* param);
-		void ExecuteFolderStatic();
 
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
@@ -152,9 +150,9 @@ namespace Regards::Viewer
 		wxStatusBar* statusBar;
 		//CToolbar* toolbar;
 		CCentralWindow* centralWnd;
-		CToolbarViewerMode * toolbarViewerMode;
+		CToolbarViewerMode* toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;
-		
+
 		bool isCheckingFile = false;
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
