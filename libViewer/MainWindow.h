@@ -69,6 +69,7 @@ namespace Regards::Viewer
 		void UpdateFolderStatic();
 
 		static void NewVersionAvailable(void* param);
+		static void CheckFile(void* param);
 
 		void ClickShowButton(const int& id, const int& refresh);
 
@@ -83,7 +84,7 @@ namespace Regards::Viewer
 		void OnUpdateInfos(wxCommandEvent& event);
 		void OnShowToolbar(wxCommandEvent& event);
 		void OnStatusSetText(wxCommandEvent& event);
-
+		void OnEndCheckFile(wxCommandEvent& event);
 		void OnSetRangeProgressBar(wxCommandEvent& event);
 		void OnSetValueProgressBar(wxCommandEvent& event);
 		void OnCriteriaUpdate(wxCommandEvent& event);
@@ -151,22 +152,23 @@ namespace Regards::Viewer
 		CCentralWindow* centralWnd;
 		CToolbarViewerMode * toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;
-
+		
+		bool isCheckingFile = false;
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;
 
 		wxString localFilename;
-		int nbProcessMD5;
+		std::atomic<int> nbProcessMD5;
 
 		bool showToolbar;
 		CMainParam* viewerParam;
 		bool multithread;
 		bool needToReload;
 		int typeAffichage;
-		bool updateCriteria;
+		std::atomic<bool> updateCriteria;
 		bool updateFolder = false;
 		bool refreshFolder;
-		int numElementTraitement;
+		std::atomic<int> numElementTraitement;
 		bool start;
 		bool criteriaSendMessage;
 		bool checkVersion;

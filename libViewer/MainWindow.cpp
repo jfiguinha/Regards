@@ -81,7 +81,61 @@ public:
 	wxString video;
 };
 
+class CThreadCheckFile
+{
+public:
+	CThreadCheckFile()
+	{
+		mainWindow = nullptr;
+	}
 
+	~CThreadCheckFile()
+	{
+	};
+
+
+	std::thread* checkFile = nullptr;
+	CMainWindow* mainWindow;
+	int pictureSize;
+	int numFile;
+};
+
+void CMainWindow::CheckFile(void* param)
+{
+	CThreadCheckFile* checkFile = (CThreadCheckFile*)param;
+	if (checkFile != nullptr)
+	{
+		for (int i = checkFile->numFile; i < checkFile->pictureSize; i++)
+		{
+			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+			checkFile->mainWindow->PhotoProcess(&photo);
+			std::this_thread::sleep_for(50ms);
+		}
+	}
+
+
+	wxCommandEvent evt(wxEVENT_ENDCHECKFILE);
+	evt.SetClientData(checkFile);
+	checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+}
+
+void CMainWindow::OnEndCheckFile(wxCommandEvent& event)
+{
+	CThreadCheckFile* checkFile = (CThreadCheckFile *)event.GetClientData();
+	if (checkFile != nullptr)
+	{
+		if (checkFile->checkFile != nullptr)
+		{
+			checkFile->checkFile->join();
+			delete checkFile->checkFile;
+		}
+
+		isCheckingFile = false;
+		delete checkFile;
+	}
+
+	processIdle = true;
+}
 
 CThreadVideoData::~CThreadVideoData()
 {
@@ -149,6 +203,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(TOOLBAR_UPDATE_ID, wxCommandEventHandler(CMainWindow::OnShowToolbar));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
 
+	Connect(wxEVENT_ENDCHECKFILE, wxCommandEventHandler(CMainWindow::OnEndCheckFile));
 	Connect(wxEVENT_UPDATEFOLDER, wxCommandEventHandler(CMainWindow::OnUpdateFolder));
 	Connect(wxEVENT_ONPICTURECLICK, wxCommandEventHandler(CMainWindow::OnPictureClick));
 	Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
@@ -1113,9 +1168,18 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (numElementTraitement < pictureSize)
 	{
-		CPhotos photo = CThumbnailBuffer::GetVectorValue(numElementTraitement);
-		PhotoProcess(&photo);
-		hasDoneOneThings = true;
+		if (!isCheckingFile)
+		{
+			CThreadCheckFile* checkFile = new CThreadCheckFile();
+			checkFile->mainWindow = this;
+			checkFile->pictureSize = pictureSize;
+			checkFile->numFile = numElementTraitement;
+			checkFile->checkFile = new std::thread(CheckFile, checkFile);
+			isCheckingFile = true;
+			std::this_thread::sleep_for(100ms);
+		}
+
+		//hasDoneOneThings = true;
 	}
 
 	if (setPictureMode)
@@ -1623,7 +1687,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	if (nbProcessMD5 > 0 || nbProcess > 0)
+	if (nbProcessMD5 > 0 || nbProcess > 0 || isCheckingFile)
 		return false;
 
 	return true;

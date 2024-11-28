@@ -242,3 +242,7 @@
 /libextern/vcpkg_cuda
 /RegardsViewer_cuda/x64
 /RegardsViewer_cuda.old
+/libextern/vcpkg_opencl
+/libextern/cudnn-windows-x86_64-8.9.7.29_cuda12-archive (1).zip
+/RegardsViewer_cuda/x64)/RegardsViewer_cuda/Release
+/x64)/RegardsViewer_cuda/Debug

@@ -1744,29 +1744,6 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 {
-
-
-	/*
-	CDataAVFrame* avFrameData = (CDataAVFrame *)event.GetClientData();
-	if (avFrameData != nullptr)
-	{
-		//isffmpegDecode = true;
-		//enableopenCL = 0;
-
-		video_aspect_ratio = avFrameData->sample_aspect_ratio;
-		widthVideo = avFrameData->width;
-		heightVideo = avFrameData->height;
-		ratioVideo = static_cast<float>(avFrameData->width) / static_cast<float>(avFrameData->height);
-
-		//muRefresh.lock();
-		needToRefresh = false;
-		//muRefresh.unlock();
-
-		delete avFrameData;
-		parentRender->Refresh();
-	}
-	*/
-
 	needToRefresh = false;
 	parentRender->Refresh();
 }
@@ -1783,44 +1760,13 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
     ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
     video_aspect_ratio = sample_aspect_ratio;
    
-	wxCommandEvent event(wxEVENT_UPDATEFRAME);
-	wxPostEvent(parentRender, event);
-
 #ifdef WIN32
-	//parentRender->Refresh();
+	needToRefresh = false;
+	parentRender->Refresh();
 #else
-    //muRefresh.lock();
-    //needToRefresh = true;
-    //muRefresh.unlock();
-#endif
-    
-    //parentRender->Refresh();
-    /*
-    
-	bool sendMessage = false;
-	bool isCPU = true;
-	if (IsSupportOpenCL())
-		isCPU = IsCPUContext();
-
-	CDataAVFrame* avFrameData = new CDataAVFrame();
-
-	//printf("Set Data Begin \n");
-
-	videoRenderStart = true;
-	auto src_frame = static_cast<AVFrame*>(data);
-	avFrameData->sample_aspect_ratio = sample_aspect_ratio;
-
-	SetFrameData(src_frame);
-	//avFrameData->matFrame = GetBitmapRGBA(src_frame);
-	avFrameData->width = src_frame->width;
-	avFrameData->height = src_frame->height;
-	//ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-    
-
 	wxCommandEvent event(wxEVENT_UPDATEFRAME);
-	event.SetClientData(avFrameData);
 	wxPostEvent(parentRender, event);
-    */
+#endif
 }
 
 void CVideoControlSoft::Resize()
