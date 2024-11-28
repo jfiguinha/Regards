@@ -531,11 +531,29 @@ void wxGenericDirCtrl::SetupSections()
 	size_t n, count = wxGetAvailableDrives(paths, names, icons);
 
 	//#ifdef __WXGTK20__
+#ifndef __WXGTK__
 	wxString home = wxGetHomeDir();
+    printf("Home Folder : %s \n", (const char*)home.mb_str());
+    
 	m_homeId = AddSection(home, m_rootId, _("Home directory"), 1);
+    
+#endif
 	// ExpandDir(m_homeId);
 #ifdef __WXGTK__
+
+	wxString home = "/home/";
+    home += wxGetUserId();
+    printf("Home Folder : %s \n", (const char*)home.mb_str());
+    
+	m_homeId = AddSection(home, m_rootId, _("Home directory"), 1);
+
     home = "/media/";
+    if (!wxDirExists(home))
+    {
+        home = "/mnt/";
+    }
+    
+    
     home += wxGetUserId();
     m_homeId = AddSection( home, m_rootId, _("Media"), 1);
     
