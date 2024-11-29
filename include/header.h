@@ -61,9 +61,10 @@
 
 #define USE_CUDA
 
-#ifdef __APPLE__
+#if defined(__APPLE_) || defined(_M_ARM64) 
 #undef USE_CUDA
 #endif
+
 
 #ifndef __WXGTK__
 #include <epoxy/gl.h>

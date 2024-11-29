@@ -29,7 +29,9 @@
 #include <FaceDetector.h>
 
 #include <OpenCLEffectVideo.h>
+#ifdef USE_CUDA
 #include <CudaEffectVideo.h>
+#endif
 #include <VideoStabilization.h>
 
 using namespace Regards::OpenCV;
