@@ -821,7 +821,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../include;../libVideoConverter;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libScanner;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libOpenGL;../libOpenCL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -929,7 +929,7 @@ XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Plat
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libVideoConverter;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libScanner;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libOpenGL;../libOpenCL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

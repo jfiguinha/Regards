@@ -230,13 +230,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;.\win32;$(SolutionDir)libUtility;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libSqlData;$(SolutionDir)libResource;$(SolutionDir)libFiltre;$(SolutionDir)libPicture;$(SolutionDir)libTheme;$(SolutionDir)libParameter;$(SolutionDir)libWindow;$(SolutionDir)libControl;$(SolutionDir)libUtility;.;.\win32;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;.\win32;$(SolutionDir)libUtility;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libSqlData;$(SolutionDir)libResource;$(SolutionDir)libFiltre;$(SolutionDir)libPicture;$(SolutionDir)libTheme;$(SolutionDir)libParameter;$(SolutionDir)libWindow;$(SolutionDir)libControl;$(SolutionDir)libUtility;.;.\win32;$(SolutionDir)include;$(SolutionDir)libextern\ffmpeg-master\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -253,6 +254,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
