@@ -3,7 +3,7 @@ vcpkg install wxWidgets[webview]
 vcpkg install sdl2
 vcpkg install x265
 vcpkg install libde265
-vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr]
+vcpkg install opencv4[contrib,core,dnn-cuda,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr,cuda,opengl] --recurse
 vcpkg install opencl
 vcpkg install dav1d
 vcpkg install exiv2[video,xmp,bmff]
