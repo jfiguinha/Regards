@@ -1357,7 +1357,12 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		}
 
 		//cv::cv::cuda::GpuMat crop;
-		inputData(rectGlobal).copyTo(cvImage);
+		if (rectGlobal.x == 0 && rectGlobal.y == 0 && rectGlobal.width == inputData.size().width && rectGlobal.height == inputData.size().height)
+		{
+			inputData.copyTo(cvImage);
+		}
+		else
+			inputData(rectGlobal).copyTo(cvImage);
 		//Mat global;
 		//cvImage.copyTo(global);
 		//crop.copyTo(cvImage);

@@ -312,13 +312,13 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
             {
                 uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
                 convertNV12toRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->width, tmp_frame->height,
                     tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
 
             }
             else
                 convertNV12toRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->width, tmp_frame->height,
                     tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
             //muBitmap.unlock();
         }
@@ -330,17 +330,23 @@ void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, A
                 uint8_t* outData = HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter->denoisingLevel, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
                 convertYUVtoRGB32(paramSrc, outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
                     tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-                    tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                    tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->width, tmp_frame->height,
                     tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
             }
             else
             {
                  printf("CCudaEffectVideo::convertYUVtoRGB32 begin \n");
-                convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-                    tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-                    tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
+                convertYUVtoRGB32(paramSrc, tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, 
+					tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), 
+					tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), 
+					tmp_frame->width, tmp_frame->height,
                     tmp_frame->linesize[0], nWidth, nHeight, isLimited, colorSpace);
-                    
+                /*
+				
+void convertYUVtoRGB32(cv::cuda::GpuMat& output, uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV,
+	const int& width, const int& height, const int& lineSize, const int& widthOut,
+	const int& heightOut, const int& colorRange, const int& colorSpace)
+				*/
                 printf("CCudaEffectVideo::convertYUVtoRGB32 end \n");
             }
         }

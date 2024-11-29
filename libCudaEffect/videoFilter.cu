@@ -112,30 +112,30 @@ inline  __host__ __device__ float4 yuvToRgb32(float yComp, float uComp, float vC
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__global__ void convertYUVtoRGB32(unsigned char * output, const uchar *inputY, const uchar *inputU, const uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
+__global__ void convertYUVtoRGB32(unsigned char * output, const uchar *inputY, const uchar *inputU, const uchar *inputV, int widthIn, int heightIn, int lineIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
 { 
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = (x + y * widthOut) * 4;
+
 	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
 	{
 		float4 color;
-        
-		int positionSrc = x + y * pitch;
+        const int position = y * pitch + (4 * x);
+		int positionSrc = x + y * lineIn;
 		int positionUV = 0;
 		if (x & 1)
 		{		
 			if (y & 1)
-				positionUV = ((x - 1) / 2) + ((y - 1) / 2) * (pitch / 2);
+				positionUV = ((x - 1) / 2) + ((y - 1) / 2) * (lineIn / 2);
 			else
-				positionUV = ((x - 1) / 2) + (y / 2) * (pitch / 2);
+				positionUV = ((x - 1) / 2) + (y / 2) * (lineIn / 2);
 		}
 		else
 		{
 			if (y & 1)
-				positionUV = (x / 2) + ((y - 1) / 2) * (pitch / 2);
+				positionUV = (x / 2) + ((y - 1) / 2) * (lineIn / 2);
 			else
-				positionUV = (x / 2) + (y / 2) * (pitch / 2);
+				positionUV = (x / 2) + (y / 2) * (lineIn / 2);
 		}
 		float uComp = inputU[positionUV];
 		float vComp = inputV[positionUV];
@@ -151,17 +151,17 @@ __global__ void convertYUVtoRGB32(unsigned char * output, const uchar *inputY, c
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__global__ void convertNV12toRGB32(unsigned char * output,  unsigned char * inputY, unsigned char * inputUV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
+__global__ void convertNV12toRGB32(unsigned char * output,  unsigned char * inputY, unsigned char * inputUV, int widthIn, int heightIn, int lineIn, int widthOut, int heightOut, int pitch, int colorRange, int colorSpace)
 { 
    int x = blockIdx.x*blockDim.x + threadIdx.x;
    int y = blockIdx.y*blockDim.y + threadIdx.y;
-   int position = (x + y * widthOut) * 4;
+   
 	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
 	{
 		//float4 color = getColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch, colorRange, colorSpace); 
-        
+        const int position = y * pitch + (4 * x);
 		float4 color;
-		int positionSrc = x + y * pitch;
+		int positionSrc = x + y * lineIn;
 		int positionUV = 0;
 
 		int yModulo = y % 2;
@@ -169,16 +169,16 @@ __global__ void convertNV12toRGB32(unsigned char * output,  unsigned char * inpu
 		if (xModulo == 1)
 		{		
 			if (yModulo == 1)
-				positionUV = (x - 1) + ((y - 1) / 2) * pitch;
+				positionUV = (x - 1) + ((y - 1) / 2) * lineIn;
 			else
-				positionUV = (x - 1) + (y / 2) * pitch;
+				positionUV = (x - 1) + (y / 2) * lineIn;
 		}
 		else
 		{
 			if (yModulo == 1)
-				positionUV = x + ((y - 1) / 2) * pitch;
+				positionUV = x + ((y - 1) / 2) * lineIn;
 			else
-				positionUV = x + (y / 2) * pitch;
+				positionUV = x + (y / 2) * lineIn;
 		}
 		
 		uchar vComp = inputUV[positionUV];
@@ -216,7 +216,7 @@ void convertNV12toRGB32(cv::cuda::GpuMat& output, uint8_t* bufferY, int sizeY, u
         const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
 
         // Run BoxFilter kernel on CUDA 
-        convertNV12toRGB32<<<grid,block>>>(d_output,d_inputY,d_inputUV, width, height, widthOut, heightOut, lineSize, colorRange, colorSpace);
+        convertNV12toRGB32<<<grid,block>>>(d_output,d_inputY,d_inputUV, width, height, lineSize, widthOut, heightOut, output.step, colorRange, colorSpace);
 
         //Free the device memory
         cudaFree(d_inputY);
@@ -249,7 +249,7 @@ void convertYUVtoRGB32(cv::cuda::GpuMat& output, uint8_t* bufferY, int sizeY, ui
         const dim3 grid((output.cols + block.x - 1)/block.x, (output.rows + block.y - 1)/block.y);
 
         // Run BoxFilter kernel on CUDA 
-        convertYUVtoRGB32<<<grid,block>>>(d_output,d_inputY,d_inputU,d_inputV, width, height, widthOut, heightOut, lineSize, colorRange, colorSpace);
+        convertYUVtoRGB32<<<grid,block>>>(d_output,d_inputY,d_inputU,d_inputV, width, height, lineSize, widthOut, heightOut, output.step, colorRange, colorSpace);
 
         //Free the device memory
         cudaFree(d_inputY);

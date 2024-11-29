@@ -298,6 +298,20 @@ public:
                     aspectRatio.num = std::stoi(list[0].ToStdString());
                     aspectRatio.den = std::stoi(list[1].ToStdString());
                 }
+                else
+                {
+                    std::vector<wxString> list = CConvertUtility::split(To_Display, '.');
+                    if (list.size() == 2)
+                    {
+                        aspectRatio.num = std::stoi(list[0].ToStdString());
+                        aspectRatio.den = std::stoi(list[1].ToStdString());
+                    }
+                    else
+                    {
+                        aspectRatio.num = 1;
+                        aspectRatio.den = 0;
+                    }
+                }
                 return aspectRatio;
             }
             catch (...)
