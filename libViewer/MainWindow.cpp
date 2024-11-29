@@ -109,6 +109,8 @@ void CMainWindow::CheckFile(void* param)
 		{
 			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 			checkFile->mainWindow->PhotoProcess(&photo);
+			if (checkFile->mainWindow->endApplication)
+				break;
 			std::this_thread::sleep_for(50ms);
 		}
 	}
@@ -1685,6 +1687,8 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
+	endApplication = true;
+
 	if (nbProcessMD5 > 0 || nbProcess > 0 || isCheckingFile)
 		return false;
 

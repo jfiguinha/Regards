@@ -159,7 +159,7 @@ namespace Regards::Viewer
 
 		wxString localFilename;
 		std::atomic<int> nbProcessMD5;
-
+		std::atomic<int> endApplication = false;
 		bool showToolbar;
 		CMainParam* viewerParam;
 		bool multithread;
