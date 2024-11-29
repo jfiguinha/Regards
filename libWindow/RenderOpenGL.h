@@ -45,7 +45,7 @@ namespace Regards::OpenGL
 		void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
 		                    const int& top, const bool& inverted = false);
 
-		void Print(int x, int y, const char* string);
+		void Print(int x, int y, double scaleFactor, const char* string);
 
 		void Init(wxGLCanvas* canvas);
 		bool IsInit();

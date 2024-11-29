@@ -320,9 +320,9 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 	//wxBusyInfo wait(libelle, windowMain);
 	if (!folder.IsEmpty())
 	{
-		//wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
-		//wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
-		//StopAllProcess(title, message, this);
+		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+		StopAllProcess(title, message, this);
 
 		//Indication d'imporation des critères 
 		CSqlFolderCatalog sqlFolderCatalog;

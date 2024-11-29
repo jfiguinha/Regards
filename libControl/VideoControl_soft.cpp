@@ -1213,7 +1213,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 #endif
 
-    printf("CVideoControlSoft::OnPaint3D 1 \n");
+   // printf("CVideoControlSoft::OnPaint3D 1 \n");
 
 	if (IsSupportOpenCL() && openclEffectYUV == nullptr)
 	{
@@ -1257,8 +1257,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		if (!fpsTimer->IsRunning())
 			fpsTimer->Start(1000);
 	}
-     printf("CVideoControlSoft::OnPaint3D 2 \n");
-    
     renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 
 	if (videoRenderStart)
@@ -1268,8 +1266,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         muframe.lock();
         SetFrameData(dst);
         muframe.unlock();
-        
-         printf("CVideoControlSoft::OnPaint3D 3 \n");
  
 		if (!pictureFrame.empty() && !IsSupportOpenCL() && !IsSupportCuda())
 		{
@@ -1279,10 +1275,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		}
 		else
 			RenderToGLTexture();
-            
-         printf("CVideoControlSoft::OnPaint3D 4 \n");
 
-		//printf("DisplayTexture not openGLDecoding \n");
 		muVideoEffect.lock();
 		wxFloatRect floatRect;
 		floatRect.left = 0;
@@ -1295,7 +1288,12 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		muVideoEffect.lock();
 		if (videoEffectParameter.showFPS)
 		{
-			renderOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
+        #ifndef WIN32
+            double scale_factor = parentRender->GetContentScaleFactor();
+        #else
+            double scale_factor = 1.0f;
+        #endif
+			renderOpenGL->Print(0, 1, scale_factor, CConvertUtility::ConvertToUTF8(msgFrame));
 		}
 		muVideoEffect.unlock();
 
@@ -1973,8 +1971,6 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
 	if (openclEffect == nullptr)
 		return;
 
-    printf("CVideoControlSoft::RenderToTexture 1 \n");
-
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
@@ -1991,22 +1987,15 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
         if (regardsParam != nullptr)
             filterInterpolation = regardsParam->GetInterpolationType();
 
-        printf("CVideoControlSoft::RenderToTexture 2 \n");
-
         if (videoEffectParameter.stabilizeVideo)
         {
             if (openCVStabilization == nullptr)
                 openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, openclEffect->GetType());
             openclEffect->ApplyStabilization(&videoEffectParameter, openCVStabilization);
         }
-        
-         printf("CVideoControlSoft::RenderToTexture 3 \n");
-
         openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
                                                (int)GetZoomRatio() * 100);
 
-         printf("CVideoControlSoft::RenderToTexture 4 \n");
-         
 		if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
 			effectEnable)
 		{
@@ -2372,30 +2361,21 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 
 void CVideoControlSoft::RenderToGLTexture()
 {
-    printf("RenderToGLTexture  \n"); 
+
 	std::clock_t start;
 	start = std::clock();
 	double duration;
 
 	if (!isffmpegDecode)
 	{
-        printf("RenderToGLTexture RenderToTexture  \n"); 
-		//muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			RenderToTexture(openclEffectYUV);
 		}
-		//muBitmap.unlock();
-
 		deleteTexture = false;
 	}
 	else
 	{
-        //printf("RenderToGLTexture RenderFFmpegToTexture  \n"); 
-		//cv::Mat bitmap;
-		//muBitmap.lock();
-		//pictureFrame.copyTo(bitmap);
-		//muBitmap.unlock();
 		RenderFFmpegToTexture(pictureFrame);
 	}
 

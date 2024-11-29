@@ -275,7 +275,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	isCheckNewVersion = true;
 	refreshFolder = true;
 	processIdle = true;
-
+    endApplication = false;
 }
 
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)

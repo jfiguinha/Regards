@@ -167,19 +167,48 @@ wxGLContext* CRenderOpenGL::GetGLContext()
 	return this;
 }
 
-void CRenderOpenGL::Print(int x, int y, const char* text)
+void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
 {
+    float font_height = 15;
+    
+    if(scale_factor > 1.0f)
+        font_height = font_height * 2;
+
+
+	glRasterPos2f(x, height - font_height);
+	//get the length of the string to display
+	int len = static_cast<int>(strlen(text));
+    
+    //glScalef(scale_factor,scale_factor,scale_factor); 
+
+	//loop to display character by character
+	for (auto i = 0; i < len; i++)
+	{
+        if(scale_factor > 1.0f)
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
+        else
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+	}
+    
+    /*
+
+    glPushMatrix(); 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//set the position of the text in the window using the x and y coordinates
 	glRasterPos2f(x, height - 10);
 	//get the length of the string to display
 	int len = static_cast<int>(strlen(text));
 
+    glScalef(scale_factor,scale_factor,scale_factor); 
+
 	//loop to display character by character
 	for (auto i = 0; i < len; i++)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+		glutStrokeCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
 	}
+    
+    glPopMatrix(); 
+     * */
 };
 
 

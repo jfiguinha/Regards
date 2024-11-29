@@ -9,13 +9,13 @@ RealESRGAN::RealESRGAN()
     net.opt.use_vulkan_compute = true;
     net.opt.num_threads = std::thread::hardware_concurrency();
   
-       
+  
     if (vkdev == nullptr)
-    {
         net.opt.use_vulkan_compute = false;
-    }
     else
         net.set_vulkan_device(vkdev);
+
+
     scale = 2;
     tile_size = 400;
     tile_pad = 10;
@@ -93,6 +93,8 @@ int RealESRGAN::inference(const cv::Mat& in, ncnn::Mat& out,int w, int h)
 }
 int RealESRGAN::tile_process(const cv::Mat& inimage, cv::Mat& outimage)
 {
+    printf("RealESRGAN::tile_process \n"); 
+        
     cv::Mat pad_inimage;
     int img_pad_w = 0, img_pad_h = 0;
     preprocess(inimage, pad_inimage, img_pad_w, img_pad_h);
@@ -156,10 +158,14 @@ CColorisationNCNN::CColorisationNCNN()
 {
     net.opt.use_vulkan_compute = true;
 
+#ifdef __WXGTK__
+    net.opt.use_vulkan_compute = false;
+#else
     if (vkdev == nullptr)
         net.opt.use_vulkan_compute = false;
     else
         net.set_vulkan_device(vkdev);
+#endif
 
     net.register_custom_layer("Sig17Slice", Sig17Slice_layer_creator);
     net.opt.num_threads = std::thread::hardware_concurrency();

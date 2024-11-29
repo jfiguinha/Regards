@@ -14,6 +14,7 @@ GFPGAN::GFPGAN()
         net.opt.use_vulkan_compute = false;
     else
         net.set_vulkan_device(vkdev);
+
 }
 
 GFPGAN::~GFPGAN()
@@ -25,6 +26,8 @@ GFPGAN::~GFPGAN()
 
 static ncnn::Mat generate_noise(const int& c, const int& h, const int& w, const float* weight)
 {
+    printf("ncnn::Mat generate_noise \n");
+       
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine gen(seed);
     std::normal_distribution<double> dis(0, 1);
@@ -555,6 +558,8 @@ int GFPGAN::load(const std::string& param_path, const std::string& model_path, c
 }
 int GFPGAN::process(const cv::Mat& img, ncnn::Mat& outimage)
 {
+    printf("ncnn:: GFPGAN::process \n");    
+
     ncnn::Mat ncnn_in = ncnn::Mat::from_pixels_resize(img.data, ncnn::Mat::PIXEL_BGR2RGB, img.cols, img.rows, 512, 512);
     ncnn_in.substract_mean_normalize(mean_vals, norm_vals);
 

@@ -82,11 +82,22 @@ void COpenCLContext::AssociateToVulkan()
 	}
 
 	if (platformName.find("Intel") == 0 && findIntel)
-		vkdev = ncnn::get_gpu_device(numIntel);
+    {
+        vkdev = ncnn::get_gpu_device(numIntel);
+        printf("Vulkan Intel \n");
+    }
 	else if(platformName.find("NVIDIA") == 0 && findNvidia)
+    {
 		vkdev = ncnn::get_gpu_device(numNvidia);
+        printf("Vulkan NVIDIA \n");
+    }
 	else if (findAmd)
+    {
 		vkdev = ncnn::get_gpu_device(numAmd);
+        printf("Vulkan AMD \n");
+    }
+    else
+        vkdev = nullptr;
 
 }
 

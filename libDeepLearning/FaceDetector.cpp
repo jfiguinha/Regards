@@ -550,14 +550,22 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 						cv::Mat bg_upsample;
 
 						sexeAndAge = DetermineSexeAndAge(resizedImage);
+                        
+                        if(resizedImage.size().width < 200 && resizedImage.size().height < 200)
+                        {
+                            bg_upsample = CFaceDetector::SuperResolution(resizedImage);
 
-						bg_upsample = CFaceDetector::SuperResolution(resizedImage);
-						ncnn::Mat gfpgan_result;
-						gfpgan->process(bg_upsample, gfpgan_result);
-						to_ocv(gfpgan_result, resizedImage);
+                            ncnn::Mat gfpgan_result;
+                            gfpgan->process(bg_upsample, gfpgan_result);
+                            to_ocv(gfpgan_result, resizedImage);
 
-						resize(resizedImage, localFace, size);
-						ImageToJpegBuffer(localFace, buff);
+                            resize(resizedImage, localFace, size);
+                        
+                            ImageToJpegBuffer(localFace, buff);
+                        }
+                        else
+                            ImageToJpegBuffer(resizedImage, buff);
+						
 						int numFace = facePhoto.InsertFace(filename, sexeAndAge.sexe, sexeAndAge.age, ++i, face.croppedImage.rows,
 						                                   face.croppedImage.cols, face.confidence, buff.data(),
 						                                   buff.size());

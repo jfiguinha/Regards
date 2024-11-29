@@ -45,15 +45,13 @@ int CColorization::load(const std::string& param_path, const std::string& model_
 
 cv::Mat CColorization::colorization(const cv::Mat& bgr)
 {
-    printf("toto 1 \n");
+    printf("CColorization::colorization \n");
     cv::Mat out_image;
 	try
 	{
       //fixed input size for the pretrained network
       const int W_in = 224;
       const int H_in = 224;
-      
-       printf("toto 2 \n");
       
       cv::Mat Base_img, lab, L, input_img;
       Base_img = bgr.clone();
@@ -69,12 +67,7 @@ cv::Mat CColorization::colorization(const cv::Mat& bgr)
       
       //Resize to input shape 224x224
       resize(L, input_img, cv::Size(W_in, H_in));
-      
-      //We subtract 50 from the L channel (for mean centering)
-      //input_img -= 50;
-      
-       printf("toto 3 \n");
-      
+           
       //convert to NCNN::MAT
       ncnn::Mat in_LAB_L(input_img.cols, input_img.rows, 1, (void*)input_img.data);
       in_LAB_L = in_LAB_L.clone();
@@ -89,11 +82,8 @@ cv::Mat CColorization::colorization(const cv::Mat& bgr)
       ex.input("data_l", in_LAB_L);
       ex.input("Trecip", in_Trecip);
       
-       printf("toto 4 \n");
-      
       //inference network 
       ncnn::Mat out;
-      ex.extract("class8_ab", out);
       
       //create LAB material
       cv::Mat colored_LAB(out.h, out.w, CV_32FC2);
@@ -103,28 +93,21 @@ cv::Mat CColorization::colorization(const cv::Mat& bgr)
       //get separsted LAB channels a&b
       cv::Mat a(out.h, out.w, CV_32F, (float*)out.data);
       cv::Mat b(out.h, out.w, CV_32F, (float*)out.data + out.w * out.h);
-      
-       printf("toto 5 \n");
-      
+
       //Resize a, b channels to origina image size
       cv::resize(a, a, Base_img.size());
       cv::resize(b, b, Base_img.size());
-      
-      printf("toto 6 \n");
-      
+        
       //merge channels, and convert back to BGR
       cv::Mat color, chn[] = {L, a, b};
       cv::merge(chn, 3, lab);
       
-      printf("toto 7 \n");
       
       cvtColor(lab, color, cv::COLOR_Lab2BGR);
       //normalize values to 0->255
       color.convertTo(color, CV_8UC3, 255);
       
       color.copyTo(out_image);
-      
-      printf("toto 8 \n");
       
 	}
 	catch (cv::Exception& e)
@@ -139,26 +122,3 @@ cv::Mat CColorization::colorization(const cv::Mat& bgr)
   return out_image;
 }
 
-/*
-int main_colorization(int argc, char** argv)
-{
-    if (argc != 2)
-    {
-        fprintf(stderr, "Usage: %s [imagepath]\n", argv[0]);
-        return -1;
-    }
-
-    const char* imagepath = argv[1];
-
-    cv::Mat m = cv::imread(imagepath, 1);
-    if (m.empty())
-    {
-        fprintf(stderr, "cv::imread %s failed\n", imagepath);
-        return -1;
-    }
-    cv::Mat out_image;
-    colorization(m, out_image);
-
-    return 0;
-}
-*/
