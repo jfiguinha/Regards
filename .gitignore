@@ -246,3 +246,19 @@
 /libextern/cudnn-windows-x86_64-8.9.7.29_cuda12-archive (1).zip
 /RegardsViewer_cuda/x64)/RegardsViewer_cuda/Release
 /x64)/RegardsViewer_cuda/Debug
+/libVideoEffect/ARM64
+/libextern/__MACOSX
+/ - Copie.gitignore
+/.DS_Store
+/._.DS_Store
+/Appending
+/checkout.sh
+/Disabled
+/Disabling
+/Generating
+/Importing
+/Locally
+/Updating
+/RegardsViewer/.DS_Store
+/RegardsViewer/._.DS_Store
+/RegardsViewer/package/RegardsViewer2_arm64_win.exe
