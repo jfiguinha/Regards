@@ -56,6 +56,7 @@
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_map.h>
 #include <tbb/parallel_for.h>
+#include <tbb/tbbmalloc_proxy.h>
 //#define USE_TBB_VECTOR
 #endif
 

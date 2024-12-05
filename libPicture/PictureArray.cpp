@@ -74,7 +74,23 @@ void CPictureArray::CopyFrom(cv::ogl::Texture2D* tex)
 {
 	if (kind == cv::_InputArray::KindFlag::CUDA_GPU_MAT)
 	{
-		tex->copyFrom(gpuMat, true);
+        bool isOk = true;
+        try
+        {
+            tex->copyFrom(gpuMat, true);
+        }
+        catch (cv::Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            isOk = false;
+        }
+        
+        if(!isOk)
+        {
+            tex->copyFrom(getMat(), true);
+        }
 	}
 	else if (kind == cv::_InputArray::KindFlag::MAT)
 	{

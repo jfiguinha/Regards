@@ -672,15 +672,19 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
             _local.y = offsets[i].y;
             _offsets.push_back(_local);
         }
+        
+        printf("CCudaFilter::MotionBlurCompute Begin \n");
 		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		CMotionBlur motionBlur;
 		motionBlur.SetParameter(kernelMotion, _offsets, kernelSize);
 		motionBlur.ApplyEffect(inputData, out);
 
-
+        printf("CCudaFilter::MotionBlurCompute End width : %d height : %d \n", out.size().width, 
+            out.size().height);
 		//motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
 		out.copyTo(inputData);
-		//cv::cuda::cvtColor(out, inputData, cv::COLOR_BGRA2BGR);
+        
+
 	}
 	catch (Exception& e)
 	{
@@ -1355,6 +1359,10 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		{
 			rectGlobal.width = inputData.cols - rectGlobal.x;
 		}
+        
+        
+        printf("Rect : x : %d y : %d width : %d height : %d \n", rectGlobal.x, rectGlobal.y,
+            rectGlobal.width, rectGlobal.height);
 
 		//cv::cv::cuda::GpuMat crop;
 		if (rectGlobal.x == 0 && rectGlobal.y == 0 && rectGlobal.width == inputData.size().width && rectGlobal.height == inputData.size().height)
@@ -1411,6 +1419,10 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		the nearest neighbor method in PIL, scikit-image or Matlab.
 		INTER_NEAREST_EXACT = 6,
 		*/
+        
+        printf("Resize : width : %d height : %d \n",cvImage.size().width, cvImage.size().height);
+        printf("Resize : width : %d height : %d \n",widthOut, heightOut);
+        
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		int superDnn = regardsParam->GetSuperResolutionType();
 		int useSuperResolution = regardsParam->GetUseSuperResolution();
@@ -1449,10 +1461,30 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 	{
 		const char* err_msg = e.what();
 		std::cout << "CCudaFilter::Interpolation exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		std::cout << "width : " << widthOut << "height : " << heightOut << std::endl;
-		cv::Mat image(widthOut, heightOut, CV_8UC4, cv::Scalar(0, 0, 0));
-		cvImage.upload(image);
+        
+        cv::Mat test;
+        cvImage.download(test);
+
+        cv::resize(test, test, Size(widthOut, heightOut), method);
+        
+		//cv::Mat image(widthOut, heightOut, CV_8UC4, cv::Scalar(0, 0, 0));
+		cvImage.upload(test);
+        
+		if (flipH)
+		{
+			if (angle == 90 || angle == 270)
+				cv::cuda::flip(cvImage, cvImage, 0);
+			else
+				cv::cuda::flip(cvImage, cvImage, 1);
+		}
+		if (flipV)
+		{
+			if (angle == 90 || angle == 270)
+				cv::cuda::flip(cvImage, cvImage, 1);
+			else
+				cv::cuda::flip(cvImage, cvImage, 0);
+		}
 	}
 
 	return cvImage;
