@@ -1693,7 +1693,10 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 	if (renderBitmapOpenGL != nullptr)
 	{
         CRgbaquad color;
-
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		bool useCuda = regardsParam->GetIsUseCuda();
+		bool useOpenCL = regardsParam->GetIsOpenCLSupport();
+        
         int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
         int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
@@ -1705,7 +1708,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
         if (loadBitmap)
         {
             if (filtreEffet == nullptr)
-                filtreEffet = new CFiltreEffet(color, useOpenCL, false, source);
+                filtreEffet = new CFiltreEffet(color, useOpenCL, useCuda, source);
             else
             {
                 filtreEffet->SetBitmap(source);

@@ -179,22 +179,11 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 		{
 			wxBeginBusyCursor();
 
-			if (IsSupportOpenCL())
-			{
-				filtreEffet->SetPreviewMode(false);
-				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
-				updateFilter = false;
-				bitmapwidth = filtreEffet->GetWidth();
-				bitmapheight = filtreEffet->GetHeight();
-			}
-			else
-			{
-				filtreEffet->SetPreviewMode(false);
-				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
-				updateFilter = false;
-				bitmapwidth = filtreEffet->GetWidth();
-				bitmapheight = filtreEffet->GetHeight();
-			}
+            filtreEffet->SetPreviewMode(false);
+            mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+            updateFilter = false;
+            bitmapwidth = filtreEffet->GetWidth();
+            bitmapheight = filtreEffet->GetHeight();
 
 			if (mouseUpdate->NeedToShrink())
 				ShrinkImage();
