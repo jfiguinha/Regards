@@ -412,26 +412,26 @@ void CBitmapWndViewer::SetDessinRatio()
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 	//rc.x = iLeft;
 
-	if (widthOutput < GetWidth())
+	if (widthOutput < rc2.width)
 	{
-		rc.x = ((GetWidth() * scale_factor) - widthOutput) / 2;
+		rc.x = (rc2.width - widthOutput) / 2;
 		rc.width = widthOutput;
 	}
 	else
 	{
 		rc.x = 0;
-		rc.width = GetWidth();
+		rc.width = rc2.width;
 	}
 
-	if (heightOutput < GetHeight())
+	if (heightOutput < rc2.height)
 	{
-		rc.y = ((GetHeight() * scale_factor) - heightOutput) / 2;
+		rc.y = (rc2.height - heightOutput) / 2;
 		rc.height = widthOutput;
 	}
 	else
 	{
 		rc.y = 0;
-		rc.height = GetHeight();
+		rc.height = rc2.height;
 	}
 
 	if (m_cDessin != nullptr)

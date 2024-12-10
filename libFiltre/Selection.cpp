@@ -81,8 +81,8 @@ void CSelection::MouseMove(const long& xNewSize, const long& yNewSize, const lon
 	{
 		ptScreen = pt;
 		//float x = 0, y = 0;
-		ptSelection[0].x = XRealPosition(xNewSize - m_rcAffichage.x, m_lHScroll, ratio);
-		ptSelection[0].y = YRealPosition(yNewSize - m_rcAffichage.y, m_lVScroll, ratio);
+		ptSelection[0].x = XRealPosition(xNewSize, m_lHScroll, ratio);
+		ptSelection[0].y = YRealPosition(yNewSize, m_lVScroll, ratio);
 		wxSetCursor(wxCursor(wxCURSOR_CROSS));
 	}
 }
@@ -97,8 +97,8 @@ void CSelection::InitPoint(const long& m_lx, const long& m_ly, const long& m_lHS
 		//pt.y = m_ly;
 		if (VerifierValiditerPoint(pt))
 		{
-			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll, ratio);
-			y = YRealPosition(m_ly - m_rcAffichage.y, m_lVScroll, ratio);
+			x = XRealPosition(m_lx, m_lHScroll, ratio);
+			y = YRealPosition(m_ly, m_lVScroll, ratio);
 			ptSelection[0].x = x;
 			ptSelection[0].y = y;
 			ptScreen = pt;

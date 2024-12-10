@@ -21,6 +21,10 @@ CDraw::~CDraw()
 
 bool CDraw::VerifierValiditerPoint(const wxPoint& pt)
 {
+    printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", pt.x, pt.y);
+    printf("CDraw::VerifierValiditerPoint m_rcAffichage \n");
+    printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", m_rcAffichage.x, m_rcAffichage.y);
+    printf("CDraw::VerifierValiditerPoint width : %d - height : %d \n", m_rcAffichage.width, m_rcAffichage.height);
 	if (pt.x < m_rcAffichage.x || (pt.x > (m_rcAffichage.x + m_rcAffichage.width)) || (pt.y > (m_rcAffichage.y + m_rcAffichage.height)) || (pt.y < m_rcAffichage.y))
 		return false;
 
@@ -42,7 +46,7 @@ float CDraw::YDrawingPosition(const float& m_ly, const long& m_lVScroll, const f
 
 float CDraw::XRealPosition(const float& m_lx, const long& m_lHScroll, const float& ratio)
 {
-	int x = (m_lx + m_lHScroll) / ratio;
+	int x = (m_lx - m_rcAffichage.x + m_lHScroll) / ratio;
 	if (x < 0)
 	{
 		printf("Error");
@@ -52,7 +56,7 @@ float CDraw::XRealPosition(const float& m_lx, const long& m_lHScroll, const floa
 
 float CDraw::YRealPosition(const float& m_ly, const long& m_lVScroll, const float& ratio)
 {
-	int y = (m_ly + m_lVScroll) / ratio;
+	int y = (m_ly - m_rcAffichage.y + m_lVScroll) / ratio;
 	return y;
 }
 
@@ -135,6 +139,11 @@ void CDraw::DessinerCarre(wxDC* deviceContext, const int32_t& iLargeur, const in
 
 void CDraw::SetMaxPosition(const wxRect& m_rcPicture)
 {
+    printf("CDraw::SetMaxPosition m_rcPicture \n");
+    printf("CDraw::SetMaxPosition x : %d - y : %d \n", m_rcPicture.x, m_rcPicture.y);
+    printf("CDraw::SetMaxPosition width : %d - height : %d \n", m_rcPicture.width, m_rcPicture.height);
+    
+
 	m_rcAffichage = m_rcPicture;
 }
 
