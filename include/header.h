@@ -56,13 +56,15 @@
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_map.h>
 #include <tbb/parallel_for.h>
+#ifndef __APPLE__
 #include <tbb/tbbmalloc_proxy.h>
+#endif
 //#define USE_TBB_VECTOR
 #endif
 
 #define USE_CUDA
 
-#if defined(__APPLE_) || defined(_M_ARM64) 
+#if defined(__APPLE__) || defined(_M_ARM64) 
 #undef USE_CUDA
 #endif
 
