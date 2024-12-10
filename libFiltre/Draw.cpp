@@ -42,13 +42,17 @@ float CDraw::YDrawingPosition(const float& m_ly, const long& m_lVScroll, const f
 
 float CDraw::XRealPosition(const float& m_lx, const long& m_lHScroll, const float& ratio)
 {
-	int x = (m_lx - m_rcAffichage.x + m_lHScroll) / ratio;
+	int x = (m_lx + m_lHScroll) / ratio;
+	if (x < 0)
+	{
+		printf("Error");
+	}
 	return x;
 }
 
 float CDraw::YRealPosition(const float& m_ly, const long& m_lVScroll, const float& ratio)
 {
-	int y = (m_ly - m_rcAffichage.y + m_lVScroll) / ratio;
+	int y = (m_ly + m_lVScroll) / ratio;
 	return y;
 }
 
