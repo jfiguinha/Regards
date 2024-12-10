@@ -200,9 +200,7 @@ namespace Regards::Window
 #ifdef KeyPress
 #undef KeyPress
 #endif
-		void RenderToScreenWithOpenCLSupport();
-		void RenderToScreenWithoutOpenCLSupport();
-		void RenderToScreenWithCudaSupport();
+
 		void RefreshWindow();
 		//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
 		virtual void KeyPress(const int& key)

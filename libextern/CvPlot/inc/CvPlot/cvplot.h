@@ -5,7 +5,9 @@
 
 #include <CvPlot/libdef.h>
 #include <CvPlot/core.h>
+#ifdef CVPLOT_USEGUI__
 #include <CvPlot/gui.h>
+#endif
 
 #ifdef CVPLOT_HEADER_ONLY
 #include <CvPlot/imp/cvplot.ipp>

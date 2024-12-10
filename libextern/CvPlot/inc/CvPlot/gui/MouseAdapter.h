@@ -9,7 +9,7 @@
 #include <CvPlot/Internal/no_warning.h>
 #include <CvPlot/core/Axes.h>
 #include <CvPlot/gui/MouseEvent.h>
-#include <opencv2/highgui.hpp>
+//#include <opencv2/highgui.hpp>
 #include <functional>
 
 namespace CvPlot {

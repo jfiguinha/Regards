@@ -14,7 +14,9 @@
 #include <CvPlot/imp/Image.ipp>
 #include <CvPlot/imp/LineBase.ipp>
 #include <CvPlot/imp/makeAxes.ipp>
+#ifdef CVPLOT_USEGUI__
 #include <CvPlot/imp/MouseAdapter.ipp>
+#endif
 #include <CvPlot/imp/Series.ipp>
 #include <CvPlot/imp/Title.ipp>
 #include <CvPlot/imp/util.ipp>

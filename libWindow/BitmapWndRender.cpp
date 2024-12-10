@@ -1578,222 +1578,6 @@ void CBitmapWndRender::SetPreview(const int& value)
 	preview = value;
 }
 
-void CBitmapWndRender::RenderToScreenWithCudaSupport()
-{
-	CRgbaquad color;
-
-	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
-
-
-	bool invert = true;
-	muBitmap.lock();
-	bool bitmapIsLoad = false;
-
-	if (loadBitmap)
-	{
-		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, false, true, source);
-		else
-		{
-			filtreEffet->SetBitmap(source);
-		}
-
-		loadBitmap = false;
-		bitmapIsLoad = true;
-	}
-	muBitmap.unlock();
-
-
-	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
-	{
-		if (widthOutput < 0 || heightOutput < 0)
-			return;
-
-		if (updateFilter)// || mouseUpdate != nullptr)
-		{
-			if (!bitmapIsLoad)
-				filtreEffet->SetBitmap(source);
-			BeforeInterpolationBitmap();
-			updateFilter = true;
-		}
-
-
-		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
-		{
-			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-			ApplyPreviewEffect(widthOutput, heightOutput);
-
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-            
-            
-             Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
-			glTexture->SetData(mat);
-
-		}
-
-		updateFilter = false;
-
-		widthOutputOld = widthOutput;
-		heightOutputOld = heightOutput;
-
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-				themeBitmap.colorBack.Blue()));
-
-		RenderTexture(invert);
-	}
-
-}
-void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
-{
-	//printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
-
-	CRgbaquad color;
-
-	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
-
-
-	bool invert = true;
-	muBitmap.lock();
-	bool bitmapIsLoad = false;
-
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	//bool useCuda = regardsParam->GetIsUseCuda();
-	bool useOpenCL = regardsParam->GetIsOpenCLSupport();
-
-	if (loadBitmap)
-	{
-		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, useOpenCL, false, source);
-		else
-		{
-			filtreEffet->SetBitmap(source);
-		}
-
-		loadBitmap = false;
-		bitmapIsLoad = true;
-	}
-	muBitmap.unlock();
-
-
-	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
-	{
-		if (widthOutput < 0 || heightOutput < 0)
-			return;
-
-		if (updateFilter)// || mouseUpdate != nullptr)
-		{
-			if (!bitmapIsLoad)
-				filtreEffet->SetBitmap(source);
-			BeforeInterpolationBitmap();
-			updateFilter = true;
-		}
-
-
-		//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
-		{
-			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-			ApplyPreviewEffect(widthOutput, heightOutput);
-
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-
-             Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
-			glTexture->SetData(mat);
-		}
-
-		updateFilter = false;
-
-		widthOutputOld = widthOutput;
-		heightOutputOld = heightOutput;
-
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-				themeBitmap.colorBack.Blue()));
-
-		RenderTexture(invert);
-	}
-
-
-}
-
-
-
-void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
-{
-	//printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
-
-	CRgbaquad color;
-
-	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
-
-	if (loadBitmap)
-	{
-		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, false, false, source);
-		else
-			filtreEffet->SetBitmap(source);
-	}
-
-
-	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
-	{
-		if (widthOutput < 0 || heightOutput < 0)
-			return;
-
-
-		if (updateFilter)// || mouseUpdate != nullptr)
-		{
-			BeforeInterpolationBitmap();
-			updateFilter = true;
-		}
-
-		if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
-		{
-			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-			ApplyPreviewEffect(widthOutput, heightOutput);
-
-			//printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-
-
-			cv::Mat bitmap = filtreEffet->GetMatrix().getMat();
-
-			if (bitmap.size().width != widthOutput || bitmap.size().height != heightOutput)
-			{
-				float percent = CPictureUtility::CalculPictureRatio(bitmap.size().width, bitmap.size().height, widthOutput,
-					heightOutput);
-				cv::resize(bitmap, bitmap, cv::Size(bitmap.size().width * percent, bitmap.size().height * percent));
-			}
-
-
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-			if (glTexture != nullptr)
-			{
-				Regards::Picture::CPictureArray inArray(bitmap);
-				glTexture->SetData(inArray);
-			}
-				
-		}
-
-
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-				themeBitmap.colorBack.Blue()));
-
-		RenderTexture(true);
-	}
-
-	updateFilter = false;
-
-}
-
 void CBitmapWndRender::OnIdle(wxIdleEvent& evt)
 {
 	if (needToRefresh)
@@ -1908,32 +1692,69 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 
 	if (renderBitmapOpenGL != nullptr)
 	{
+        CRgbaquad color;
+
+        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
 
-		if (!IsSupportOpenCL() && !IsSupportCuda())
-		{
-			//printf("CBitmapWndRender OnPaint RenderToScreenWithoutOpenCLSupport\n");
-			RenderToScreenWithoutOpenCLSupport();
-		}
-		else
-		{
-			//printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
-#ifndef __APPLE__
+        bool invert = true;
+        muBitmap.lock();
+        bool bitmapIsLoad = false;
 
-			if (IsSupportCuda())
-			{
-				RenderToScreenWithCudaSupport();
-			}
-			else
-			{
-#endif
-				RenderToScreenWithOpenCLSupport();
+        if (loadBitmap)
+        {
+            if (filtreEffet == nullptr)
+                filtreEffet = new CFiltreEffet(color, useOpenCL, false, source);
+            else
+            {
+                filtreEffet->SetBitmap(source);
+            }
 
-#ifndef __APPLE__
-			}
-#endif
-		}
+            loadBitmap = false;
+            bitmapIsLoad = true;
+        }
+        muBitmap.unlock();
 
+
+        if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
+        {
+            if (widthOutput < 0 || heightOutput < 0)
+                return;
+
+            if (updateFilter)// || mouseUpdate != nullptr)
+            {
+                if (!bitmapIsLoad)
+                    filtreEffet->SetBitmap(source);
+                BeforeInterpolationBitmap();
+                updateFilter = true;
+            }
+
+
+            //printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+            if (updateFilter || widthOutputOld != widthOutput || heightOutputOld != heightOutput)
+            {
+                GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+                ApplyPreviewEffect(widthOutput, heightOutput);
+
+                glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+
+                 Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
+                glTexture->SetData(mat);
+            }
+
+            updateFilter = false;
+
+            widthOutputOld = widthOutput;
+            heightOutputOld = heightOutput;
+
+            renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+                CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+                    themeBitmap.colorBack.Blue()));
+
+            RenderTexture(invert);
+        }
 
 		AfterRender();
 	}

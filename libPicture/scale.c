@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include <avif/internal.h>
 
-
+#ifndef __NEW_AVIF__
 #if !defined(AVIF_LIBYUV_ENABLED)
 
 avifBool avifImageScale(avifImage * image,
@@ -20,6 +20,8 @@ avifBool avifImageScale(avifImage * image,
     avifDiagnosticsPrintf(diag, "avifImageScale() called, but is unimplemented without libyuv!");
     return AVIF_FALSE;
 }
+
+
 
 #else
 
@@ -187,4 +189,5 @@ avifBool avifImageScale(avifImage * image,
     return AVIF_TRUE;
 }
 
+#endif
 #endif
