@@ -112,6 +112,7 @@ Regards::Picture::CPictureArray CFiltreEffet::GetMatrix()
 	return filtreEffet->GetMatrix();
 }
 
+
 int CFiltreEffet::LensDistortionFilter(const int& size)
 {
 	filtreEffet->LensDistortionFilter(size);

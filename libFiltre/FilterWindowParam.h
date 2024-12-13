@@ -88,6 +88,33 @@ public:
 	{
 	};
 
+	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
+	{
+		//
+		if (pictureWidth == 0 && pictureHeight == 0)
+			return 1.0f;
+
+		float new_ratio = 1;
+
+		//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
+
+		if (pictureWidth > pictureHeight)
+			new_ratio = static_cast<float>(source.size().width) / static_cast<float>(pictureWidth);
+		else
+			new_ratio = static_cast<float>(source.size().height) / static_cast<float>(pictureHeight);
+
+		if ((pictureHeight * new_ratio) > source.size().height)
+		{
+			new_ratio = static_cast<float>(source.size().height) / static_cast<float>(pictureHeight);
+		}
+		if ((pictureWidth * new_ratio) > source.size().width)
+		{
+			new_ratio = static_cast<float>(source.size().width) / static_cast<float>(pictureWidth);
+		}
+
+		return new_ratio;
+	}
+
 protected:
 	void ApplyExifToPoint(wxPoint& pt, int numExif, const int& width, const int& height);
 	static void RotateExif(const int& orientation, CFiltreEffet* filtre);

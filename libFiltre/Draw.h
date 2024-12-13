@@ -71,6 +71,7 @@ namespace Regards::FiltreEffet
 
 		virtual void GetPos(wxRect& rc)
 		{
+			rc = m_rcAffichage;
 		};
 
 		virtual void GetPoint(wxPoint& pt)
