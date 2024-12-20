@@ -428,8 +428,84 @@ printf("initializeContextFromGL wayland\n");
 #endif
 }
 
+void ShowInfos()
+{
+	cl_int errNum;
+	cl_uint numPlatforms;
+	cl_platform_id firstPlatformId;
+	cl_context context = NULL;
+	cl_device_id device;
+	//get Platform and choose first one
+	errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
+	if (errNum != CL_SUCCESS || numPlatforms <= 0) {
+		cerr << "No OpenCL platforum found!" << endl;
+		return;
+	}
+
+	char buffer[10240];
+	printf("=====  Platform 0 =====\n");
+	clGetPlatformInfo(firstPlatformId, CL_PLATFORM_PROFILE, 10240, buffer, NULL);
+	printf("  PROFILE = %s\n", buffer);
+	clGetPlatformInfo(firstPlatformId, CL_PLATFORM_VERSION, 10240, buffer, NULL);
+	printf("  VERSION = %s\n", buffer);
+	clGetPlatformInfo(firstPlatformId, CL_PLATFORM_NAME, 10240, buffer, NULL);
+	printf("  NAME = %s\n", buffer);
+	clGetPlatformInfo(firstPlatformId, CL_PLATFORM_VENDOR, 10240, buffer, NULL);
+	printf("  VENDOR = %s\n", buffer);
+	clGetPlatformInfo(firstPlatformId, CL_PLATFORM_EXTENSIONS, 10240, buffer, NULL);
+	printf("  VENDOR = %s\n", buffer);
+	//  clGetPlatformInfo(platforms[i],CL_PLATFORM_EXTENSIONS,10240,buffer,NULL);
+	//  printf("  EXTENSIONS = %s\n", buffer);
+
+	cl_uint devices_n;
+
+	// get the GPU-devices of platform i, print details of the device
+	errNum = clGetDeviceIDs(firstPlatformId, CL_DEVICE_TYPE_CPU, 1, &device,
+		&devices_n);
+	if (errNum != CL_SUCCESS)
+		printf("error getting device IDS\n");
+	printf("  === %d OpenCL device(s) found on platform: 0\n\n", devices_n);
+	for (unsigned int d = 0; d < devices_n; d++)
+	{
+		char buffer[10240];
+		cl_uint buf_uint;
+		cl_ulong buf_ulong;
+		cl_bool buf_bool;
+		printf("  === --- Device -- %d \n", d);
+		(clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(buffer),
+			buffer, NULL));
+		printf("    DEVICE_NAME = %s\n", buffer);
+		(clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(buffer),
+			buffer, NULL));
+		printf("    DEVICE_VENDOR = %s\n", buffer);
+		(clGetDeviceInfo(device, CL_DEVICE_VERSION, sizeof(buffer),
+			buffer, NULL));
+		printf("    DEVICE_VERSION = %s\n", buffer);
+		(clGetDeviceInfo(device, CL_DRIVER_VERSION, sizeof(buffer),
+			buffer, NULL));
+		printf("    DRIVER_VERSION = %s\n", buffer);
+		(clGetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS,
+			sizeof(buf_uint), &buf_uint, NULL));
+		printf("    DEVICE_MAX_COMPUTE_UNITS = %u\n", (unsigned int)buf_uint);
+		(clGetDeviceInfo(device, CL_DEVICE_MAX_CLOCK_FREQUENCY,
+			sizeof(buf_uint), &buf_uint, NULL));
+		printf("    DEVICE_MAX_CLOCK_FREQUENCY = %u\n", (unsigned int)buf_uint);
+		(clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_SIZE,
+			sizeof(buf_ulong), &buf_ulong, NULL));
+		printf("    DEVICE_GLOBAL_MEM_SIZE = %u\n\n", (unsigned int)buf_ulong);
+		(clGetDeviceInfo(device, CL_DEVICE_AVAILABLE,
+			sizeof(buf_bool), &buf_bool, NULL));
+		printf("    DEVICE_AVAILABLE = %s\n\n", buf_bool ? "Yes" : "No");
+	}
+	if (devices_n == 0)
+	{
+		printf("error, on platform 0, there is no GPU device\n");
+	}
+}
+
 void COpenCLContext::CreateDefaultOpenCLContext()
 {
+	ShowInfos();
 	
 	cv::ocl::Context context;
 	if (!context.create(cv::ocl::Device::TYPE_GPU))
@@ -437,6 +513,39 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	else
 		isOpenCLInitialized = true;
 
+	if (!isOpenCLInitialized) {
+		cl_int errNum;
+		cl_uint numPlatforms;
+		cl_platform_id firstPlatformId;
+		cl_context _context = NULL;
+		cl_device_id device;
+		//get Platform and choose first one
+		errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
+		if (errNum != CL_SUCCESS || numPlatforms <= 0) {
+			cerr << "No OpenCL platforum found!" << endl;
+			return;
+		}
+
+		cl_context_properties contextProperties[3] = {
+			  CL_CONTEXT_PLATFORM,
+			  (cl_context_properties)firstPlatformId,
+			  0
+		};
+		_context = clCreateContextFromType(contextProperties, CL_DEVICE_TYPE_ALL, NULL, NULL, &errNum);
+		if (errNum != CL_SUCCESS) {
+			cerr << "Unable to create GPU or CPU context" << endl;
+			//check_error(errNum);
+			return;
+		}
+		else
+		{
+			context.fromHandle(_context);
+			isOpenCLInitialized = true;
+		}
+			
+
+		cout << "Created CPU context" << endl;
+	}
 
 	if (isOpenCLInitialized)
 	{
