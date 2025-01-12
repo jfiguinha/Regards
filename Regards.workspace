@@ -42,9 +42,9 @@
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
-    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="Yes"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
-    <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
+    <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
