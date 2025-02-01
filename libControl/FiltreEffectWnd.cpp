@@ -114,8 +114,17 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	filtreEffectOld = nullptr;
 
 	wxString filterName = CFiltreData::GetFilterLabel(numItem);
-	if (titleBar != nullptr)
-		titleBar->SetTitle(filterName);
+	if (filterName != "")
+	{
+		if (titleBar != nullptr)
+			titleBar->SetTitle(filterName);
+
+		showTitle = true;
+	}
+	else
+	{
+		showTitle = false;
+	}
 
 	numFiltre = numItem;
 	if (!isVideo)
