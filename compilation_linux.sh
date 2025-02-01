@@ -4,6 +4,7 @@ echo $NBPROC
 
 #Install Depedency
 sudo apt install g++
+sudo apt install git
 sudo apt install build-essential
 sudo apt install cmake
 sudo apt install yasm
@@ -38,6 +39,7 @@ sudo apt install libgtkglext1-dev
 FILE=/usr/local/cuda/version.json
 if [ -f "$FILE" ]; 
 then
+    sudo apt install gcc-10
     sudo apt install nvidia-cuda-toolkit
     sudo apt install libcudnn8
     sudo apt install libcudnn8-dev

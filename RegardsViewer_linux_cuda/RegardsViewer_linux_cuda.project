@@ -214,7 +214,6 @@
         <Library Value="opencv_xfeatures2d4"/>
         <Library Value="opencv_xobjdetect4"/>
         <Library Value="opencv_xphoto4"/>
-        <Library Value="OpenCVMissingGTK"/>
         <Library Value="opencv_dnn_objdetect4"/>
         <Library Value="opencv_dnn_superres4"/>
         <Library Value="opencv_dnn4"/>
