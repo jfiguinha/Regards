@@ -189,6 +189,9 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 		}
 	}
 
+	if (frameOut.empty())
+		isDefault = true;
+
     defaultPicture = isDefault;
     if(isDefault)
     {
