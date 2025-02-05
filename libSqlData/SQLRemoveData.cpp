@@ -59,6 +59,10 @@ bool CSQLRemoveData::DeleteCatalog(const int& numCatalog)
 	CSqlFaceRecognition sqlFaceRecognition;
 	sqlFaceRecognition.DeleteFaceRecognitionDatabase();
 
+
+	CSqlThumbnailVideo sqlThumbnailVideo;
+	sqlThumbnailVideo.EraseThumbnail();
+
 	CSqlFaceLabel sqlFaceLabel;
 	sqlFaceLabel.DeleteFaceLabelDatabase();
 
