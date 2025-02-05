@@ -175,7 +175,10 @@ void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
         font_height = font_height * 2;
 
 
-	glRasterPos2f(x, height - font_height);
+	//glRasterPos2f(x, height - font_height);
+
+	glWindowPos2i(x, height - font_height);
+
 	//get the length of the string to display
 	int len = static_cast<int>(strlen(text));
     
@@ -190,25 +193,81 @@ void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
 	}
     
-    /*
+};
 
-    glPushMatrix(); 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//set the position of the text in the window using the x and y coordinates
-	glRasterPos2f(x, height - 10);
-	//get the length of the string to display
-	int len = static_cast<int>(strlen(text));
+void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
+{
+	float font_height = 15;
+    void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
+	float font_width = glutBitmapWidth(font_choose, 'x');;
+    int xPos = 0;
 
-    glScalef(scale_factor,scale_factor,scale_factor); 
-
-	//loop to display character by character
-	for (auto i = 0; i < len; i++)
+	std::vector<wxString> list = CConvertUtility::split(text, '\\');
+	if (list.size() > 0)
 	{
-		glutStrokeCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+		wxString line = list[0];
+        xPos = x - ((font_width * line.size()) / 2);
+		glWindowPos2i(xPos, y);
+		//get the length of the string to display
+		int len = static_cast<int>(line.Length());
+
+		//glScalef(scale_factor,scale_factor,scale_factor); 
+        int xPosition = 0;
+		//loop to display character by character
+		for (auto i = 0; i < len; i++)
+		{
+			wxUniChar c = line[i];
+			char letter;
+			c.GetAsChar(&letter);
+			glutBitmapCharacter(font_choose, c);
+            xPosition += font_width;
+		}
+
+		for (int i = 1;i < list.size();i++)
+		{
+			wxUniChar c = list[i][0];
+			if (c == 'N')
+			{
+				//New Line
+				wxString line = list[i];
+				glWindowPos2i(x - ((font_width * line.size()) / 2), y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+			}
+            else
+            {
+				wxString line = list[i];
+				glWindowPos2i(xPos + xPosition + font_width, y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+            }
+		}
 	}
-    
-    glPopMatrix(); 
-     * */
+
+
+
 };
 
 

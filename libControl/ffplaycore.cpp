@@ -147,7 +147,7 @@ void CFFmfc::PositionEvent(wxCommandEvent& event)
 			if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
 				*ts += _pimpl->g_is->ic->start_time;
 			_pimpl->stream_seek(cur_stream, *ts, 0, 0);
-			_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
+			//_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
 		}
 		//}
 		delete ts;

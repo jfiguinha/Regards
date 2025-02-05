@@ -200,7 +200,9 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 		{
 			evt.SetInt(1);
 			folderWnd->RemovePath(getSelectPath);
+			auto newPath = new wxString(getSelectPath);
 			RemoveFolder(getSelectPath);
+			evt.SetClientData(newPath);
 		}
 
 		if (file != nullptr)

@@ -35,9 +35,11 @@ namespace Regards::OpenGL
 		                      const bool& inverted);
 
 	private:
+
 		GLTexture* textureVideo = nullptr;
 		GLTexture* textureSubtitle = nullptr;
 		CRenderOpenGL* renderOpenGL = nullptr;
 		GLuint fboId;
+
 	};
 }

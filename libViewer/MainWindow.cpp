@@ -1613,22 +1613,28 @@ void CMainWindow::OnPictureClick(wxCommandEvent& event)
 void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 {
 	int typeId = event.GetInt();
+	const auto newPath = static_cast<wxString*>(event.GetClientData());
 
-	if (typeId == 0)
+	if (newPath != nullptr)
 	{
-		const auto newPath = static_cast<wxString*>(event.GetClientData());
-		if (newPath != nullptr)
+		if (typeId == 0)
 		{
+			//Folder 
+			wxFileName filename(firstFileToShow);
+			wxString folder = filename.GetPath();
+			statusBarViewer->RemoveFSEntry(folder);
 			firstFileToShow = *newPath;
-			delete newPath;
+		}
+		else if (typeId == 1)
+		{
+			wxString folder = *newPath;
+			statusBarViewer->AddFSEntry(folder);
 		}
 	}
-
 
 	updateCriteria = true;
 
 
-	//wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	wxBusyCursor busy;
 	{
 		photoList.clear();
@@ -1636,7 +1642,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		sqlPhoto.GetPhotoList(&photoList, 0);
 	}
 
-
+	delete newPath;
 	UpdateFolderStatic();
 	processIdle = true;
 	//this->Show(true);

@@ -26,7 +26,6 @@
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
 #include <aspectratio.h>
-#include <FaceDetector.h>
 
 #include <OpenCLEffectVideo.h>
 #ifdef USE_CUDA
@@ -45,6 +44,7 @@ using namespace Regards::Sqlite;
 #define TIMER_FPS 0x10001
 #define TIMER_PLAYSTART 0x10002
 #define TIMER_PLAYSTOP 0x10003
+#define TIMER_SUBTITLE 0x10004
 
 extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
@@ -121,6 +121,7 @@ vector<int> CVideoControlSoft::GetListTimer()
 	list.push_back(TIMER_PLAYSTOP);
 	list.push_back(TIMER_FPS);
 	list.push_back(TIMER_PLAYSTART);
+	list.push_back(TIMER_SUBTITLE);
 	return list;
 }
 
@@ -161,6 +162,11 @@ void CVideoControlSoft::OnTimer(wxTimerEvent& event)
 	case TIMER_PLAYSTART:
 		OnPlayStart(event);
 		break;
+	case TIMER_SUBTITLE:
+	{
+		subtilteUpdate = false;
+		break;
+	}
 	}
 }
 
@@ -220,6 +226,7 @@ void CVideoControlSoft::SetParent(wxWindow* parent)
 	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
 	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
 	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
+	assSubtitleTimer = new wxTimer(parentRender, TIMER_SUBTITLE);
 	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
 
@@ -778,7 +785,7 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 	}
 	else if (videoParameter->streamSubtitleUpdate)
 	{
-		//ChangeAudioStream(videoParameter->streamAudioIndex);
+		ChangeSubtitleStream(videoParameter->streamSubtitleIndex);
 		videoParameter->streamSubtitleUpdate = 0;
 	}
 
@@ -994,6 +1001,9 @@ CVideoControlSoft::~CVideoControlSoft()
 	}
     */
 
+	if (assSubtitleTimer->IsRunning())
+		assSubtitleTimer->Stop();
+
 	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
@@ -1007,6 +1017,7 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete openCVStabilization;
 
 	delete playStartTimer;
+	delete assSubtitleTimer;
 	delete fpsTimer;
 
 	if (renderBitmapOpenGL != nullptr)
@@ -1028,12 +1039,40 @@ CVideoControlSoft::~CVideoControlSoft()
 	localContext = nullptr;
 }
 
+void CVideoControlSoft::SetSubtituleText(const char* textSub, int timing)
+{
+	muSubtitle.lock();
+	subtitleText = textSub;
+	std::vector<wxString> listString = CConvertUtility::split(subtitleText, ',');
+	int timeShow = atoi(listString.at(0));
+	if (listString.size() > 9)
+	{
+		subtitleText = "";
+		for (int i = 8; i < listString.size(); i++)
+		{
+			subtitleText.append(listString.at(i) + ",");
+		}
+		subtitleText = subtitleText.SubString(0,subtitleText.size() - 1);
+	}
+	else
+		subtitleText = listString.at(listString.size() - 1);
+	
+	
+	subtilteUpdate = true;
+	typeSubtitle = 1;
+	if (assSubtitleTimer->IsRunning())
+		assSubtitleTimer->Stop();
+	assSubtitleTimer->StartOnce(10);
+	muSubtitle.unlock();
+}
+
+
 void CVideoControlSoft::SetSubtitulePicture(cv::Mat& picture)
 {
 	muSubtitle.lock();
 	picture.copyTo(pictureSubtitle);
 	subtilteUpdate = true;
-
+	typeSubtitle = 0;
 	muSubtitle.unlock();
 }
 
@@ -1261,6 +1300,12 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	}
     renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 
+
+	int widthOutput = 0;
+	int heightOutput = 0;
+	wxRect rc(0, 0, 0, 0);
+	CalculPositionVideo(widthOutput, heightOutput, rc);
+
 	if (videoRenderStart)
 	{
         
@@ -1297,28 +1342,42 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         #endif
 			renderOpenGL->Print(0, 1, scale_factor, CConvertUtility::ConvertToUTF8(msgFrame));
 		}
-		muVideoEffect.unlock();
-
-		muSubtitle.lock();
-
-		if (subtilteUpdate && !pictureSubtitle.empty())
-		{
-			renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
-			subtilteUpdate = false;
-		}
-		else if (subtilteUpdate)
-		{
-			//renderBitmapOpenGL->DeleteSubtitle();
-			subtilteUpdate = false;
-		}
-
-		muSubtitle.unlock();
 
 		if (videoEffectParameter.enableSubtitle)
 		{
+			muSubtitle.lock();
+
+			if (subtilteUpdate)
+			{
+				if (typeSubtitle == 0 && !pictureSubtitle.empty())
+				{
+					renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
+					subtilteUpdate = false;
+				}
+				else if(typeSubtitle == 1)
+				{
+
+	#ifndef WIN32
+					double scale_factor = parentRender->GetContentScaleFactor();
+	#else
+					double scale_factor = 1.0f;
+	#endif
+
+					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, subtitleText);
+
+				}
+			
+			}
+			else if (subtilteUpdate)
+			{
+				subtilteUpdate = false;
+			}
+
+			muSubtitle.unlock();
+
 			renderBitmapOpenGL->ShowSubtitle();
 		}
-
+		muVideoEffect.unlock();
 	}
 
 
@@ -1726,7 +1785,8 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 		if (sws_init_context(localContext, nullptr, nullptr) < 0)
 		{
 			sws_freeContext(localContext);
-			throw std::logic_error("Failed to initialise scale context");
+			localContext = nullptr;
+			return bitmapData;
 		}
 	}
 
@@ -2045,16 +2105,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 		frameStabilized = true;
 		CFiltreEffetCPU::BrightnessAndContrastAuto(image, 1.0);
 	}
-    if (videoEffectParameter.filmcolorisation)
-    {
-        frameStabilized = true;
-        image = CFaceDetector::Colorisation(image);
-    }
-    if (videoEffectParameter.filmEnhance)
-    {
-        frameStabilized = true;
-		image = CFaceDetector::SuperResolution(image);
-    }
+
     
 	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
@@ -2262,7 +2313,7 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 		enableopenCL = 0;
 	}
 
-	if (!enableopenCL || (dst->format != AV_PIX_FMT_YUV420P && dst->format != AV_PIX_FMT_NV12))
+	if (!enableopenCL)
 	{
 		isffmpegDecode = true;
 		int nWidth = dst->width;
@@ -2280,6 +2331,28 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 		//muBitmap.lock();
 		bitmapData.copyTo(pictureFrame);
 		//muBitmap.unlock();
+	}
+	else if (enableopenCL && (dst->format != AV_PIX_FMT_YUV420P && dst->format != AV_PIX_FMT_NV12))
+	{
+		isffmpegDecode = false;
+		int nWidth = dst->width;
+		int nHeight = dst->height;
+		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
+		{
+			if (hq3d == nullptr)
+				hq3d = new Chqdn3d(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+			else
+				hq3d->UpdateParameter(nWidth, nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+			uint8_t* outData = hq3d->ApplyDenoise3D(dst->data[0], dst->linesize[0], nHeight);
+			memcpy(dst->data[0], outData, dst->linesize[0] * nHeight);
+		}
+		cv::Mat bitmapData = GetBitmapRGBA(dst);
+		if (openclEffectYUV != nullptr)
+		{
+
+			Regards::Picture::CPictureArray pictureArray(bitmapData);
+			openclEffectYUV->SetMatrix(pictureArray);
+		}
 	}
 	else
 	{
@@ -2311,47 +2384,7 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 
 			//AVFrame* tmp_frame = dst;
 			openclEffectYUV->SetAVFrame(&videoEffectParameter, dst, _colorSpace, isLimited);
-			/*
-			if (tmp_frame->format == AV_PIX_FMT_NV12)
-			{
-				//muBitmap.lock();
-				//Test if denoising Effect
-				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
-				{
-					uint8_t * outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-					openclEffectYUV->SetNV12(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 
-				}
-				else
-					openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-											 tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-											 tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
-				//muBitmap.unlock();
-			}
-			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
-			{
-				//muBitmap.lock();
-				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
-				{
-					uint8_t* outData = openclEffectYUV->HQDn3D(tmp_frame->data[0], tmp_frame->linesize[0], nHeight, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
-					openclEffectYUV->SetYUV420P(outData, tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-						tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
-				}
-				else
-				{
-                    openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1],
-						tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2],
-						tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight,
-						tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
-				}
-
-				//muBitmap.unlock();
-			}
-			*/
 		}
 
 	}

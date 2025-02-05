@@ -342,30 +342,56 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			{
 				sp = frame_queue_peek(&is->subpq);
 
-				if (vp->pts >= sp->pts + (static_cast<float>(sp->sub.start_display_time) / 1000))
+				if (TRUE)
 				{
-					for (int i = 0; i < sp->sub.num_rects; i++)
+					if (sp->sub.format == 0 && (vp->pts >= sp->pts + (static_cast<float>(sp->sub.start_display_time) / 1000)))
 					{
-						AVSubtitleRect* rect = sp->sub.rects[i];
-						//AVPicture picture = rect->pict;
-						cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
-						uint8_t* data = rect->data[0];
-
-						for (int y = 0; y < rect->h; y++)
+						for (int i = 0; i < sp->sub.num_rects; i++)
 						{
-							for (int x = 0; x < rect->w; x++)
+							AVSubtitleRect* rect = sp->sub.rects[i];
+							//AVPicture picture = rect->pict;
+							cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
+							uint8_t* data = rect->data[0];
+
+							for (int y = 0; y < rect->h; y++)
 							{
-								int r, g, b, a;
-								int j = *data++;
-								RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
-								CRgbaquad color(r, g, b, a);
-								int i = (x << 2) + (y * (bitmap.cols << 2));
-								memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
+								for (int x = 0; x < rect->w; x++)
+								{
+									int r, g, b, a;
+									int j = *data++;
+									RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
+									CRgbaquad color(r, g, b, a);
+									int i = (x << 2) + (y * (bitmap.cols << 2));
+									memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
+								}
 							}
+							if (dlg != nullptr)
+								dlg->SetSubtitulePicture(bitmap);
+						}
+					}
+					else if (sp->sub.format == 1 && (vp->pts >= sp->pts - (static_cast<float>(sp->sub.end_display_time))))
+					{
+						wxString text = "";
+						for (int i = 0; i < sp->sub.num_rects; i++)
+						{
+
+							AVSubtitleRect* rect = sp->sub.rects[i];
+							if (rect->ass != nullptr)
+							{
+								wxString mystring = wxString::FromUTF8(rect->ass, strlen(rect->ass));
+								text += mystring;
+							}
+							else if (rect->text != nullptr)
+							{
+								wxString mystring = wxString::FromUTF8(rect->text, strlen(rect->text));
+								text += mystring;
+							}
+
 						}
 						if (dlg != nullptr)
-							dlg->SetSubtitulePicture(bitmap);
+							dlg->SetSubtituleText(text, sp->sub.end_display_time);
 					}
+
 				}
 			}
 		}
@@ -646,9 +672,9 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 					else
 						sp2 = NULL;
 
-					if (sp->serial != is->subtitleq.serial
+					if (sp->sub.format == 0 && (sp->serial != is->subtitleq.serial
 						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time / 1000)))
-						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time / 1000))))
+						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time / 1000)))))
 					{
 						if (sp->uploaded)
 						{
@@ -678,6 +704,25 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 								if (dlg != nullptr)
 									dlg->SetSubtitulePicture(bitmap);
 							}
+
+						}
+						frame_queue_next(&is->subpq);
+					}
+					else if (sp->sub.format == 1 && (sp->serial != is->subtitleq.serial
+						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time)))
+						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time)))))
+					{
+						if (sp->uploaded)
+						{
+							wxString text = "";
+							for (int i = 0; i < sp->sub.num_rects; i++)
+							{
+								AVSubtitleRect* rect = sp->sub.rects[i];
+								text += rect->ass;
+							}
+							if (dlg != nullptr)
+								dlg->SetSubtituleText(text, sp->sub.end_display_time);
+
 						}
 						frame_queue_next(&is->subpq);
 					}
@@ -1065,6 +1110,33 @@ int CFFmfcPimpl::subtitle_thread(void* arg)
 
 			/* now we can update the picture count */
 			is->_pimpl->frame_queue_push(&is->subpq);
+		}
+		else if (got_subtitle && sp->sub.format == 1)
+		{
+			if (sp->sub.pts != AV_NOPTS_VALUE)
+				pts = sp->sub.pts / (double)AV_TIME_BASE;
+			sp->pts = pts;
+			sp->serial = is->subdec.pkt_serial;
+			sp->width = is->subdec.avctx->width;
+			sp->height = is->subdec.avctx->height;
+			sp->uploaded = 0;
+
+			/* now we can update the picture count */
+			is->_pimpl->frame_queue_push(&is->subpq);
+
+			/*
+			wxString text = "";
+			for (int i = 0; i < sp->sub.num_rects; i++)
+			{
+				AVSubtitleRect* rect = sp->sub.rects[i];
+				text += rect->ass;
+			}
+			if (dlg != nullptr)
+				dlg->SetSubtituleText(text, sp->sub.end_display_time);
+
+
+			avsubtitle_free(&sp->sub);
+			*/
 		}
 		else if (got_subtitle)
 		{

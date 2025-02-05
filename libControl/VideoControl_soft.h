@@ -76,6 +76,7 @@ public:
 	int getWidth() override;
 	int getHeight() override;
 
+	void SetSubtituleText(const char * textSub, int timing) override;
 	void SetSubtitulePicture(cv::Mat& picture) override;
 	void DeleteSubtitulePicture() override;
 
@@ -215,6 +216,7 @@ protected:
 	CWindowMain* windowMain;
 	wxTimer* fpsTimer;
 	wxTimer* playStartTimer;
+	wxTimer* assSubtitleTimer;
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;
@@ -302,4 +304,10 @@ protected:
     //Frame Copy
     AVFrame *dst = nullptr;
     std::mutex muframe; 
+
+	wxString subtitleText = "";
+	int typeSubtitle = 0;
+
+	int widthContext = 0;
+	int heightContext = 0;
 };

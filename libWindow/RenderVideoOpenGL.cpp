@@ -178,6 +178,7 @@ void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter
 	glTexture->Disable();
 }
 
+
 void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 {
 	//if (textureSubtitle != nullptr)

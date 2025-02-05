@@ -25,6 +25,7 @@ public:
     virtual void ErrorDecodingFrame() = 0;
     virtual wxString GetAcceleratorHardware() = 0;
 	virtual void SetSubtitulePicture(cv::Mat& picture) = 0;
+	virtual void SetSubtituleText(const char* textSub, int timing) = 0;
 	virtual void DeleteSubtitulePicture() = 0;
 
 	virtual int ChangeAudioStream(int newStreamAudio) = 0;
