@@ -65,6 +65,8 @@
 #undef USE_CUDA
 #endif
 
+#undef USE_CUDA
+
 
 #ifndef __WXGTK__
 #include <epoxy/gl.h>
