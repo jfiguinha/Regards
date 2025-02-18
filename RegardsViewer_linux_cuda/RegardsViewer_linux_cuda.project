@@ -40,6 +40,36 @@
     <Project Name="wxIA"/>
     <Project Name="wxPDFDoc"/>
   </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libCudaEffect"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libDialog"/>
+    <Project Name="libEmail"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libheif"/>
+    <Project Name="libJbig"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libPicture"/>
+    <Project Name="libResource"/>
+    <Project Name="libScanner"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libTheme"/>
+    <Project Name="libUtility"/>
+    <Project Name="libVideoConverter"/>
+    <Project Name="libVideoEffect"/>
+    <Project Name="libViewer"/>
+    <Project Name="libWindow"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions;" C_Options=";-Wall" Assembler="">
@@ -409,7 +439,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="2"/>
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="2"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
         <LibraryPath Value="../libVideoEffect/Debug"/>
