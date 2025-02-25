@@ -1,4 +1,5 @@
 #pragma once
+#include "vec3.h"
 #include "GLSLParameter.h"
 
 namespace Regards
@@ -25,6 +26,7 @@ namespace Regards
 			bool SetFloatVectorParam(const char* pParamName_i, int size, float* tabVecs);
 			bool SetIntVectorParam(const char* pParamName_i, int size, int* tabVecs);
 			bool SetIntegerParam(const char* pParamName_i, int iValue_i);
+            bool SetVec3Param(const char* pParamName_i, vec3f iValue_i);
 			bool SetMatrixParam(const char* pParamName_i, float* tabVecs);
 
 			GLuint GetProgramId()

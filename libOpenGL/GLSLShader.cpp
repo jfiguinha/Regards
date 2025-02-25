@@ -308,6 +308,18 @@ bool GLSLShader::SetIntVectorParam(const char* pParamName_i, const int size, int
 	return (GL_NO_ERROR == glGetError());
 }
 
+bool GLSLShader::SetVec3Param(const char* pParamName_i, vec3f iValue_i)
+{
+	GLint nParamObj = glGetUniformLocation(m_hProgramObject, pParamName_i);
+	if (-1 == nParamObj)
+	{
+		return false;
+	}
+
+    glUniform3f(nParamObj, iValue_i.x, iValue_i.y, iValue_i.z);
+
+	return (GL_NO_ERROR == glGetError());
+}
 
 bool GLSLShader::SetMatrixParam(const char* pParamName_i, float* tabVecs)
 {

@@ -66,6 +66,8 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & 
 	textureArrowLeft->SetData(mat);
 }
 
+
+
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left,
                                                  const int& top, const bool& flipH, const bool& flipV,
                                                  const bool& inverted)

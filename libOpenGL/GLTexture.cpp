@@ -203,6 +203,17 @@ GLTexture::GLTexture(void)
 
 }
 
+
+GLTexture::GLTexture(const int& textureId, const int& width, const int& height)
+{
+	m_nTextureID = textureId;
+	this->width = width;
+	this->height = height;
+	format = GL_BGRA_EXT;
+	dataformat = GL_RGBA8;
+	pboSupported = false;//epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
+}
+
 GLTexture::~GLTexture(void)
 {
 	Delete();
@@ -226,7 +237,9 @@ int GLTexture::GetWidth()
 int GLTexture::GetHeight()
 {
 	return height;
+
 }
+
 
 void GLTexture::DeleteInteropTexture()
 {
@@ -243,6 +256,8 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 {   
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+    
+    //openclOpenGLInterop = 0;
 
 	int kind = bitmap.Kind();
 

@@ -10,8 +10,8 @@
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
-#endif`
-
+#endif
+#include <FileUtility.h>
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #elif defined(__WXGTK__)
@@ -23,6 +23,19 @@
 #include <utility.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <GLCharacter.h>
+
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+
+class CFreeTypeFace
+{
+public:
+	CFreeTypeFace() {};
+	FT_Face face;
+};
 
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
@@ -124,6 +137,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 
 		textureDisplay = new GLTexture();
+        LoadFont("Antonio-Bold.ttf");
 	}
 }
 
@@ -169,6 +183,10 @@ wxGLContext* CRenderOpenGL::GetGLContext()
 
 void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
 {
+
+	
+
+	/*
     float font_height = 15;
     
     if(scale_factor > 1.0f)
@@ -192,11 +210,52 @@ void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
         else
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
 	}
-    
+    */
+
+
+	RenderText(text, x, height - (heightFont * 0.3), 0.3f, vec3f(0.5, 0.8f, 0.2f));
 };
 
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
 {
+    //RenderText(text, x, y, 1.0f, vec3f(0.5, 0.8f, 0.2f));
+    
+	int xPos = 0;
+
+	std::vector<wxString> list = CConvertUtility::split(text, '\\');
+	if (list.size() > 0)
+	{
+		wxString line = list[0];
+		xPos = x - ((widthFont * line.size()) / 2);
+		//glWindowPos2i(xPos, y);
+		//get the length of the string to display
+		int len = static_cast<int>(line.Length());
+
+		//glScalef(scale_factor,scale_factor,scale_factor); 
+		int xPosition = 0;
+		RenderText(line, xPos, y, 1.0f, vec3f(0.5, 0.8f, 0.2f));
+		xPosition += widthFont * len;
+
+
+		for (int i = 1; i < list.size(); i++)
+		{
+			wxUniChar c = list[i][0];
+			if (c == 'N')
+			{
+				//New Line
+				wxString line = list[i];
+				RenderText(line, x - ((widthFont * line.size()) / 2), y - heightFont * 2, 1.0f, vec3f(0.5, 0.8f, 0.2f));
+
+			}
+			else
+			{
+				wxString line = list[i];
+				RenderText(line, xPos + xPosition + widthFont, y - heightFont * 2, 1.0f, vec3f(0.5, 0.8f, 0.2f));
+			}
+		}
+	}
+
+    /*
 	float font_height = 15;
     void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
 	float font_width = glutBitmapWidth(font_choose, 'x');;
@@ -265,7 +324,7 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString te
             }
 		}
 	}
-
+    */
 
 
 };
@@ -557,19 +616,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 	glFlush();
 }
 
-/*
-void CRenderOpenGL::RenderToTexture()
-{
-	GLTexture* displayTexture = GetGLTexture();
-	textureDisplay->Enable();
-	//textureSource->Enable();
-	glBindTexture(GL_TEXTURE_2D, displayTexture->GetTextureID()); // Bind To The Blur Texture
-	//glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
-	//textureSource->Disable();
-	textureDisplay->Disable();
-}
-*/
 void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
                                    const int& top, const bool& inverted)
 {
@@ -587,4 +633,237 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* e
 GLTexture* CRenderOpenGL::GetGLTexture()
 {
 	return textureDisplay;
+}
+
+void CRenderOpenGL::LoadCharacter(unsigned char c, CFreeTypeFace& face)
+{
+	// Load character glyph 
+	if (FT_Load_Char(face.face, c, FT_LOAD_RENDER))
+	{
+		std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+		return;
+	}
+	// generate texture
+
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RED,
+		face.face->glyph->bitmap.width,
+		face.face->glyph->bitmap.rows,
+		0,
+		GL_RED,
+		GL_UNSIGNED_BYTE,
+		face.face->glyph->bitmap.buffer
+	);
+	// set texture options
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	GLTexture* glTexture = new GLTexture(texture, face.face->glyph->bitmap.width, face.face->glyph->bitmap.rows);
+
+	// now store character for later use
+	Character character = {
+		glTexture,
+		vec2d(face.face->glyph->bitmap.width, face.face->glyph->bitmap.rows),
+		vec2d(face.face->glyph->bitmap_left, face.face->glyph->bitmap_top),
+		static_cast<unsigned int>(face.face->glyph->advance.x)
+	};
+	Characters.insert(std::pair<char, Character>(c, character));
+
+	widthFont = face.face->glyph->bitmap.width;
+	heightFont = face.face->glyph->bitmap.rows;
+}
+
+int CRenderOpenGL::LoadFont(const wxString & fontName)
+{
+    // FreeType
+    // --------
+    FT_Library ft;
+    // All functions return a value different than 0 whenever an error occurred
+    if (FT_Init_FreeType(&ft))
+    {
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        return -1;
+    }
+
+	// find path to font
+    wxString font_name = CFileUtility::GetResourcesFolderFontPathWithExt(fontName);
+    //std::string font_name = FileSystem::getPath("resources/fonts/Antonio-Bold.ttf");
+    if (font_name.empty())
+    {
+        std::cout << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
+        return -1;
+    }
+	
+	// load font as face
+    FT_Face face;
+    if (FT_New_Face(ft, font_name.c_str(), 0, &face)) {
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return -1;
+    }
+    else {
+        // set size to load glyphs as
+        FT_Set_Pixel_Sizes(face, 0, 48);
+
+        // disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        // load first 128 characters of ASCII set
+        for (unsigned char c = 32; c < 127; c++)
+        {
+			CFreeTypeFace freetypeFace;
+			freetypeFace.face = face;
+			LoadCharacter(c, freetypeFace);
+        }
+
+		// load first 128 characters of ASCII set
+		for (unsigned char c = 192; c < 255; c++)
+		{
+			CFreeTypeFace freetypeFace;
+			freetypeFace.face = face;
+			LoadCharacter(c, freetypeFace);
+		}
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    // destroy FreeType once we're finished
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+    
+	return 0;
+}
+
+void CRenderOpenGL::RenderQuad(GLTexture* texture, float left, float top, float scale, bool inverted)
+{
+ 	glPushMatrix();
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	GLfloat vertices[] = {
+		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(texture->GetWidth() * scale) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(texture->GetWidth() * scale) + static_cast<GLfloat>(left),
+		static_cast<GLfloat>(texture->GetHeight() * scale) + static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left), static_cast<GLfloat>(texture->GetHeight() * scale) + static_cast<GLfloat>(top)
+	};
+
+	GLfloat texVertices[8];
+
+	if (inverted)
+	{
+		GLfloat vertices[] = {
+			0, 1,
+			1, 1,
+			1, 0,
+			0, 0
+		};
+
+		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
+	}
+	else
+	{
+		GLfloat vertices[] = {
+			0, 0,
+			1, 0,
+			1, 1,
+			0, 1
+		};
+
+		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
+	}
+
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+	glDrawArrays(GL_QUADS, 0, 4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glPopMatrix();
+
+	glFlush();   
+}
+
+void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color)
+{
+
+	printf("GLSLShader IDR_GLSL_COLOR \n ");
+	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("text", glTexture->GetTextureID()))
+		{
+			printf("SetTexture textureScreen failed \n ");
+		}
+		if (!m_pShader->SetVec3Param("textColor", color))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+	RenderQuad(glTexture, left, top, scale, true);
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+
+	
+	//glTexture->Disable();
+}
+
+// render line of text
+// -------------------
+void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec3f color)
+{
+	//glTexture->Enable();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBindTexture(GL_TEXTURE_2D, 1);
+    // iterate through all characters
+    wxString::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++) 
+    {
+        Character ch = Characters[*c];
+
+        float xpos = x + ch.Bearing.x * scale;
+        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+    
+        /*
+        float w = ch.Size.x * scale;
+        float h = ch.Size.y * scale;
+        // update VBO for each character
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },            
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }           
+        };
+        */
+        if(ch.glTexture != nullptr)
+			RenderCharacter(ch.glTexture, xpos, ypos, scale, color);
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+    }
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_BLEND);
+}
+
+// render line of text
+// -------------------
+void CRenderOpenGL::RenderChar(char c, float x, float y, float scale, vec3f color)
+{
+    Character ch = Characters[c];
+
+    float xpos = x + ch.Bearing.x * scale;
+    float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+    
+    RenderCharacter(ch.glTexture, xpos, ypos, scale, color);
+
 }

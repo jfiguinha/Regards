@@ -13,6 +13,18 @@ CFileUtility::~CFileUtility(void)
 {
 }
 
+wxString CFileUtility::GetResourcesFolderFontPathWithExt(const wxString& szFile)
+{
+    wxString path = GetResourcesFolderPath();
+#ifdef WIN32
+	path.append("\\font\\");
+#else
+    path.append("/font/");
+#endif
+    path.append(szFile);
+    return path;
+}
+
 wxString CFileUtility::GetResourcesFolderPathWithExt(const wxString & folder)
 {
     wxString path = GetResourcesFolderPath();
@@ -255,9 +267,9 @@ wxString CFileUtility::GetDocumentFolderPath()
 #ifdef WIN32
     //documentPath = "d:\\Regards";
 
-    documentPath.append("\\Regards");
+    documentPath.append("\\RegardsLite");
 #else
-    documentPath.append("/Regards");
+    documentPath.append("/RegardsLite");
 #endif
 
     if (!wxDir::Exists(documentPath))

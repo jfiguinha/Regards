@@ -958,6 +958,13 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 		videoEnd = true;
 	}
+
+
+	if (startVideoAfterProblem)
+	{
+		PlayMovie(filename, true);
+		startVideoAfterProblem = false;
+	}
 }
 
 
@@ -1099,6 +1106,7 @@ void CVideoControlSoft::PlayFirstMovie(const bool& firstMovie)
 
 int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
+	errorDecoding = false;
     
     if(movie != filename)
     {
@@ -1393,6 +1401,12 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		
 	videoStartRender = true;
 
+
+	if (errorDecoding)
+	{
+		ErrorDecodingFrame();
+	}
+
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1419,12 +1433,11 @@ int CVideoControlSoft::ChangeAudioStream(int newStreamAudio)
 
 void CVideoControlSoft::ErrorDecodingFrame()
 {
-    if(!startVideoAfterProblem)
-    {
-        isHardwareDecoder = false;
-        startVideoAfterProblem = true;
-        ffmfc->Quit(); 
-    }
+    isHardwareDecoder = false;
+    startVideoAfterProblem = true;
+	QuitMovie();
+	//ffmfc->Quit();
+	//PlayMovie(filename, true);
 
     //Play(filename);
     //wxCommandEvent evt(wxEVENT_STOPVIDEO);
@@ -1784,6 +1797,7 @@ cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 		if (sws_init_context(localContext, nullptr, nullptr) < 0)
 		{
+			errorDecoding = true;
 			sws_freeContext(localContext);
 			localContext = nullptr;
 			return bitmapData;
@@ -2349,6 +2363,12 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 		cv::Mat bitmapData = GetBitmapRGBA(dst);
 		if (openclEffectYUV != nullptr)
 		{
+			if (bitmapData.empty())
+			{
+				errorDecoding = true;
+				bitmapData = cv::Mat(nHeight, nWidth, CV_8UC4);
+			}
+				
 
 			Regards::Picture::CPictureArray pictureArray(bitmapData);
 			openclEffectYUV->SetMatrix(pictureArray);
