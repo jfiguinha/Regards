@@ -28,7 +28,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
+#define USE_GLUT
 
 class CFreeTypeFace
 {
@@ -137,7 +137,10 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 
 		textureDisplay = new GLTexture();
+        
+#ifndef USE_GLUT
         LoadFont("Antonio-Bold.ttf");
+#endif
 	}
 }
 
@@ -184,22 +187,23 @@ wxGLContext* CRenderOpenGL::GetGLContext()
 void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
 {
 
-	
+#ifdef USE_GLUT	
 
-	/*
     float font_height = 15;
     
     if(scale_factor > 1.0f)
         font_height = font_height * 2;
 
-
+    //glPushMatrix();
 	//glRasterPos2f(x, height - font_height);
-
+    //glLoadIdentity();
 	glWindowPos2i(x, height - font_height);
-
+    
+    
+    //glColor4f(0.5, 0.8f, 0.2f, 1.0f);   
 	//get the length of the string to display
 	int len = static_cast<int>(strlen(text));
-    
+        
     //glScalef(scale_factor,scale_factor,scale_factor); 
 
 	//loop to display character by character
@@ -210,16 +214,90 @@ void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
         else
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
 	}
-    */
+    
+    //glPopMatrix();
+    //glColor4f(1,1,1,1);
 
+#else
 
 	RenderText(text, x, height - (heightFont * 0.3 * scale_factor), 0.3f * scale_factor, vec3f(0.5, 0.8f, 0.2f));
+
+#endif
 };
 
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, float green, float blue, wxString text)
 {
     //RenderText(text, x, y, 1.0f, vec3f(0.5, 0.8f, 0.2f));
-    
+#ifdef USE_GLUT	
+	float font_height = 15;
+    void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
+	float font_width = glutBitmapWidth(font_choose, 'x');;
+    int xPos = 0;
+    glColor3f(red, green, blue); 
+	std::vector<wxString> list = CConvertUtility::split(text, '\\');
+	if (list.size() > 0)
+	{
+		wxString line = list[0];
+        xPos = x - ((font_width * line.size()) / 2);
+		glWindowPos2i(xPos, y);
+		//get the length of the string to display
+		int len = static_cast<int>(line.Length());
+
+		//glScalef(scale_factor,scale_factor,scale_factor); 
+        int xPosition = 0;
+		//loop to display character by character
+		for (auto i = 0; i < len; i++)
+		{
+			wxUniChar c = line[i];
+			char letter;
+			c.GetAsChar(&letter);
+			glutBitmapCharacter(font_choose, c);
+            xPosition += font_width;
+		}
+
+		for (int i = 1;i < list.size();i++)
+		{
+			wxUniChar c = list[i][0];
+			if (c == 'N' || c == 'n')
+			{
+				//New Line
+				wxString line = list[i];
+				glWindowPos2i(x - ((font_width * line.size()) / 2), y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+			}
+            else
+            {
+				wxString line = list[i];
+				glWindowPos2i(xPos + xPosition + font_width, y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+            }
+		}
+	}
+#else   
 	int xPos = 0;
     
     cout << "Scale Factor : " << to_string(scale_factor) << endl;
@@ -263,76 +341,9 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, 
 			}
 		}
 	}
-
+#endif
     /*
-	float font_height = 15;
-    void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
-	float font_width = glutBitmapWidth(font_choose, 'x');;
-    int xPos = 0;
 
-	std::vector<wxString> list = CConvertUtility::split(text, '\\');
-	if (list.size() > 0)
-	{
-		wxString line = list[0];
-        xPos = x - ((font_width * line.size()) / 2);
-		glWindowPos2i(xPos, y);
-		//get the length of the string to display
-		int len = static_cast<int>(line.Length());
-
-		//glScalef(scale_factor,scale_factor,scale_factor); 
-        int xPosition = 0;
-		//loop to display character by character
-		for (auto i = 0; i < len; i++)
-		{
-			wxUniChar c = line[i];
-			char letter;
-			c.GetAsChar(&letter);
-			glutBitmapCharacter(font_choose, c);
-            xPosition += font_width;
-		}
-
-		for (int i = 1;i < list.size();i++)
-		{
-			wxUniChar c = list[i][0];
-			if (c == 'N')
-			{
-				//New Line
-				wxString line = list[i];
-				glWindowPos2i(x - ((font_width * line.size()) / 2), y - font_height * 2);
-				//get the length of the string to display
-				int len = static_cast<int>(line.Length());
-
-				//glScalef(scale_factor,scale_factor,scale_factor); 
-
-				//loop to display character by character
-				for (auto i = 1; i < len; i++)
-				{
-					wxUniChar c = line[i];
-					char letter;
-					c.GetAsChar(&letter);
-					glutBitmapCharacter(font_choose, c);
-				}
-			}
-            else
-            {
-				wxString line = list[i];
-				glWindowPos2i(xPos + xPosition + font_width, y - font_height * 2);
-				//get the length of the string to display
-				int len = static_cast<int>(line.Length());
-
-				//glScalef(scale_factor,scale_factor,scale_factor); 
-
-				//loop to display character by character
-				for (auto i = 1; i < len; i++)
-				{
-					wxUniChar c = line[i];
-					char letter;
-					c.GetAsChar(&letter);
-					glutBitmapCharacter(font_choose, c);
-				}
-            }
-		}
-	}
     */
 
 
@@ -829,8 +840,8 @@ void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, co
 void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec3f color)
 {
 	//glTexture->Enable();
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBindTexture(GL_TEXTURE_2D, 1);
     // iterate through all characters
     wxString::const_iterator c;
@@ -861,7 +872,7 @@ void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec
         x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 }
 
 // render line of text

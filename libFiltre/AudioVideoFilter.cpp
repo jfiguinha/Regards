@@ -98,6 +98,7 @@ void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString
 
 	filtreInterface->AddTreeInfos(libelleAudio, new CTreeElementValueInt(indexAudio), &elementAudio, 3, 3);
 	filtreInterface->AddTreeInfos(libelleVideo, new CTreeElementValueInt(indexVideo), &elementVideo, 3, 3);
+    
 	if (elementSubtitle.size() > 0)
 	{
         vector<float> vect{
@@ -109,7 +110,7 @@ void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString
 		                              &videoEffectParameter->enableSubtitle, 2, 2);
 		filtreInterface->AddTreeInfos(libelleSubtitle, new CTreeElementValueInt(indexSubtitle), &elementSubtitle, 3, 3);
 	
-   
+        /*
     	filtreInterface->AddTreeInfos(libelleEffectSize, new CTreeElementValueFloat(videoEffectParameter->subtitleSize, 2),
 	                              &vect, 4);
                                   
@@ -123,7 +124,9 @@ void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString
                                       &elementColor);
         filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(videoEffectParameter->subtitleBlueColor),
                                       &elementColor);
+             * */
     }
+
 }
 
 void CAudioVideoFilter::AddMetadataElement(vector<CMetadata>& element, wxString value, int key)
