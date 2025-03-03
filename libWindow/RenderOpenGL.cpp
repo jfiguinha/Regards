@@ -28,7 +28,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#define USE_GLUT
+//#define USE_GLUT
 
 class CFreeTypeFace
 {
@@ -839,6 +839,9 @@ void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, co
 // -------------------
 void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec3f color)
 {
+	if (text.size() <= 0)
+		return;
+
 	//glTexture->Enable();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

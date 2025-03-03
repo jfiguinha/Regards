@@ -110,7 +110,7 @@ void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString
 		                              &videoEffectParameter->enableSubtitle, 2, 2);
 		filtreInterface->AddTreeInfos(libelleSubtitle, new CTreeElementValueInt(indexSubtitle), &elementSubtitle, 3, 3);
 	
-        /*
+
     	filtreInterface->AddTreeInfos(libelleEffectSize, new CTreeElementValueFloat(videoEffectParameter->subtitleSize, 2),
 	                              &vect, 4);
                                   
@@ -124,7 +124,7 @@ void CAudioVideoFilter::Filter(CEffectParameter* effectParameter, const wxString
                                       &elementColor);
         filtreInterface->AddTreeInfos(libelleEffectColorBlue, new CTreeElementValueInt(videoEffectParameter->subtitleBlueColor),
                                       &elementColor);
-             * */
+
     }
 
 }
