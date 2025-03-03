@@ -829,8 +829,8 @@ void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, co
 void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec3f color)
 {
 	//glTexture->Enable();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBindTexture(GL_TEXTURE_2D, 1);
     // iterate through all characters
     wxString::const_iterator c;
@@ -861,7 +861,7 @@ void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec
         x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 }
 
 // render line of text
