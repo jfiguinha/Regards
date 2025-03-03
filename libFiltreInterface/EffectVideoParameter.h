@@ -23,16 +23,24 @@
 
 */
 
+
+    
+
 class CVideoEffectParameter : public CEffectParameter
 {
 public:
+    
+    vector<float> zoom{1.0f, 1.33f, 1.66f, 1.77f, 1.85f, 2.35f};
+    vector<float> vect{
+    0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f,
+    1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f
+    };
+
 	CVideoEffectParameter(): streamAudioIndex(0), streamVideoIndex(0), streamSubtitleIndex(0)
 	{
-		vector<float> zoom{1.0f, 1.33f, 1.66f, 1.77f, 1.85f, 2.35f};
-		vector<float> vect{
-			0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f,
-			1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f
-		};
+
+        
+        
 		effectEnable = 0;
 		//Video Parameter
 		sharpness = 1.5f;
@@ -88,8 +96,62 @@ public:
 			if (tabZoom[i] == 1.0f)
 				zoomSelect = i;
 		}
-	}
-	;
+	};
+    
+	/*
+    CVideoEffectParameter& operator=(const CVideoEffectParameter& x)
+    {
+		CVideoEffectParameter effect;
+
+		effect.effectEnable = x.effectEnable;
+		//Video Parameter
+		effect.sharpness = x.sharpness;
+		//Sky Light
+		//Tone mapping
+		effect.contrast = x.contrast;
+		effect.brightness = x.brightness;
+		//exponent = 1.0f;
+
+		//Color Boost
+		effect.color_boost[0] = x.color_boost[0];
+		effect.color_boost[1] = x.color_boost[1];
+		effect.color_boost[2] = x.color_boost[2];
+		effect.color_boost[3] = x.color_boost[3];
+
+		effect.SharpenEnable = x.SharpenEnable;
+		effect.MedianEnable = x.MedianEnable;
+		effect.ColorBoostEnable = x.ColorBoostEnable;
+		effect.BicubicEnable = x.BicubicEnable;;
+		effect.rotation = x.rotation;
+		effect.showFPS = x.showFPS;
+		effect.grayEnable = x.grayEnable;
+		effect.vhsEnable = x.vhsEnable;
+		effect.sepiaEnable = x.sepiaEnable;
+		effect.enableSubtitle =x.enableSubtitle;
+		effect.streamAudioUpdate = x.streamAudioUpdate;
+		effect.streamVideoUpdate = x.streamVideoUpdate;
+		effect.streamSubtitleUpdate = x.streamSubtitleUpdate;
+		//enableOpenCL = 0;
+		effect.denoiseEnable = x.denoiseEnable;
+		effect.bandcEnable =x.bandcEnable;
+
+		effect.uSigma = x.uSigma;
+		effect.uThreshold =x.uThreshold;
+		effect.uKSigma = x.uKSigma;
+		effect.openglDenoise = x.openglDenoise;
+
+		effect.denoisingLevel = x.denoisingLevel;
+		effect.templateWindowSize = x.templateWindowSize;
+		effect.searchWindowSize = x.searchWindowSize;
+
+		effect.filmgrainenable = x.filmgrainenable;
+		effect.filmcolorisation = x.filmcolorisation;
+		effect.filmEnhance = x.filmEnhance;
+		effect.ratioSelect = x.ratioSelect;
+
+		return effect;
+    }
+	*/
 
 	~CVideoEffectParameter() override
 	{
@@ -152,4 +214,11 @@ public:
 	int searchWindowSize = 21;
 	int h = 3;
 	int hColor = 3;
+ 
+    float subtitleSize = 1.0f;
+    
+    //0.5, 0.8f, 0.2f
+    int subtitleRedColor = 128;
+    int subtitleGreenColor = 204;
+    int subtitleBlueColor = 51;
 };

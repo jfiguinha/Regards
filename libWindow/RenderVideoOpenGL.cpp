@@ -104,6 +104,10 @@ void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter
 			{
 				printf("SetParam grayscale failed \n ");
 			}
+			if (!m_pShader->SetIntegerParam("sepia", effectParameter->sepiaEnable))
+			{
+				printf("SetParam sepia failed \n ");
+			}
 			if (!m_pShader->SetIntegerParam("sharpenMasking", effectParameter->SharpenEnable))
 			{
 				printf("SetParam sharpenMasking failed \n ");

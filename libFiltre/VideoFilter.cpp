@@ -58,7 +58,7 @@ CVideoFilter::CVideoFilter()
 	libelleScale = CLibResource::LoadStringFromResource(L"LBLPICTUREFORMAT", 1);
 	libelleZoom = CLibResource::LoadStringFromResource(L"LBLZOOMPICTURE", 1);
 	enableRestore = CLibResource::LoadStringFromResource(L"LBLRESTORE", 1);
-
+	enableSepia = CLibResource::LoadStringFromResource(L"LBLenableSepia", 1); //L"Effect.Sepia";
 	libelleTemplateWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingTemplate", 1);
 	libellesearchWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSearchWindowSize", 1);
 }
@@ -134,6 +134,9 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	                              &videoEffectParameter->filmgrainenable, 2, 2);
 	filtreInterface->AddTreeInfos(enableGrayScale, new CTreeElementValueInt(videoEffectParameter->grayEnable),
 	                              &videoEffectParameter->grayEnable, 2, 2);
+	filtreInterface->AddTreeInfos(enableSepia, new CTreeElementValueInt(videoEffectParameter->sepiaEnable),
+		&videoEffectParameter->sepiaEnable, 2, 2);
+
 	filtreInterface->AddTreeInfos(enableColorisation, new CTreeElementValueInt(videoEffectParameter->filmcolorisation),
 		&videoEffectParameter->filmcolorisation, 2, 2);
 	filtreInterface->AddTreeInfos(enableRestore, new CTreeElementValueInt(videoEffectParameter->filmEnhance),
@@ -313,11 +316,10 @@ void CVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEle
 	{
 		videoEffectParameter->BicubicEnable = value;
 	}
-	/*
-	else if (key == effectDenoisingSigmaK)
+	else if (key == enableSepia)
 	{
-		videoEffectParameter->uKSigma = value;
-	}*/
+		videoEffectParameter->sepiaEnable = value;
+	}
 	else if (key == effectSharpenLevel)
 	{
 		videoEffectParameter->sharpness = value / 10.0f;

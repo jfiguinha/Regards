@@ -3,6 +3,8 @@
 using namespace rapidxml;
 
 
+class CVideoEffectParameter;
+
 class CRegardsConfigParam : public CConfigParam
 {
 public:
@@ -132,6 +134,9 @@ public:
 
 	int GetSkinWindowMode();
 	void SetSkinWindowMode(const int& skinWindowMode);
+    
+    CVideoEffectParameter * GetVideoEffectParameter();
+	void SetVideoEffectParameter(const CVideoEffectParameter * videoEffect);
 
 protected:
 	void LoadParameter() override;
@@ -163,6 +168,9 @@ protected:
 
 	void SetWindowParameter(xml_node<>* sectionPosition);
 	void GetWindowParameter(xml_node<>* position_node);
+    
+    void SetVideoEffectParameter(xml_node<>* sectionPosition);
+	void GetVideoEffectParameter(xml_node<>* position_node);
 
 	int pictureSize;
 	int numLibPreview;
@@ -218,4 +226,5 @@ protected:
 	int bufferSize;
 	int isThumbnailOpenCV = 1;
     wxString openGLOutputColor = "RGBA";
+    CVideoEffectParameter * videoEffectParameter = nullptr;
 };

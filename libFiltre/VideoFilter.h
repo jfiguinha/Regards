@@ -61,6 +61,7 @@ namespace Regards::Filter
 		wxString enableFilmgrain;
 		wxString enableColorisation;
 		wxString enableRestore;
+		wxString enableSepia;
 		wxString libelleScale;
 		wxString libelleZoom;
 		wxString libelleAutoContrast;

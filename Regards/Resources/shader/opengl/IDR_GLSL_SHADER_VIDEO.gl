@@ -13,6 +13,7 @@ uniform int effectenable;
 uniform int vhsEffect;
 uniform float iTime;
 uniform int grayscale;
+uniform int sepia;
 uniform int sharpenMasking;
 uniform int tone;
 uniform int colorboost;
@@ -302,6 +303,15 @@ vec4 ApplyFilter(vec4 src_color)
 	{
 		float sum = src_color.r * 0.299 + src_color.b * 0.114 + src_color.g * 0.587;
 		src_color = vec4(sum, sum, sum, src_color.a);
+	}
+	if(sepia == 1)
+	{
+		float sum = src_color.r * 0.299 + src_color.b * 0.114 + src_color.g * 0.587;
+		src_color = vec4(sum, sum, sum, src_color.a);
+
+		src_color.r = dot(src_color, vec3(.393, .769, .189));
+		src_color.g = dot(src_color, vec3(.349, .686, .168));
+		src_color.b = dot(src_color, vec3(.272, .534, .131));
 	}
 	
 	return src_color;

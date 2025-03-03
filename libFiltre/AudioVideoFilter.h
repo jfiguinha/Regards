@@ -27,5 +27,9 @@ namespace Regards::Filter
 		wxString libelleVideo;
 		wxString libelleSubtitle;
 		wxString enableSubtitle;
+        wxString libelleEffectColorRed;
+		wxString libelleEffectColorGreen;
+		wxString libelleEffectColorBlue;
+        wxString libelleEffectSize;
 	};
 }

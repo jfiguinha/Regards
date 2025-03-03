@@ -2,7 +2,7 @@
 #include "header.h"
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
-
+#include <ViewerParamInit.h>
 #include "ffplaycore.h"
 #include "ffmpegToBitmap.h"
 #ifdef __APPLE__
@@ -26,19 +26,20 @@
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
 #include <aspectratio.h>
-
+#include <ParamInit.h>
 #include <OpenCLEffectVideo.h>
 #ifdef USE_CUDA
 #include <CudaEffectVideo.h>
 #endif
 #include <VideoStabilization.h>
-
+#include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 #ifdef USE_CUDA
 using namespace Regards::Cuda;
 #endif
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
+using namespace Regards::Viewer;
 //#include "LoadingResource.h"
 
 #define TIMER_FPS 0x10001
@@ -110,6 +111,14 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
+    
+    CRegardsConfigParam* config = CParamInit::getInstance();
+    if (config != nullptr)
+	{
+		CVideoEffectParameter * parameter = config->GetVideoEffectParameter();
+		videoEffectParameter = *parameter;
+    }
+
     
     dst = av_frame_alloc();
     
@@ -818,7 +827,13 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 			//muRefresh.unlock();
 		}
 	}
-	//Refresh();
+
+
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+	{
+		config->SetVideoEffectParameter(videoParameter);
+	}
 }
 
 
@@ -840,6 +855,8 @@ void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
 	muVideoEffect.lock();
 	videoEffectParameter = *videoParameter;
 	muVideoEffect.unlock();
+
+
 }
 
 CEffectParameter* CVideoControlSoft::GetParameter()
@@ -1016,6 +1033,8 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if (playStopTimer->IsRunning())
 		playStopTimer->Stop();
+
+
 
 	if (hq3d != nullptr)
 		delete hq3d;
@@ -1366,12 +1385,13 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 				{
 
 	#ifndef WIN32
-					double scale_factor = parentRender->GetContentScaleFactor();
+					double scale_factor = parentRender->GetContentScaleFactor() * ((float)videoEffectParameter.subtitleSize);
 	#else
-					double scale_factor = 1.0f;
+					double scale_factor = 1.0f* ((float)videoEffectParameter.subtitleSize);
 	#endif
 
-					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, subtitleText);
+					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, videoEffectParameter.subtitleRedColor
+                        , videoEffectParameter.subtitleGreenColor, videoEffectParameter.subtitleBlueColor, subtitleText);
 
 				}
 			
@@ -2120,7 +2140,13 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 		CFiltreEffetCPU::BrightnessAndContrastAuto(image, 1.0);
 	}
 
-    
+	/*
+	if (videoEffectParameter.sepiaEnable)
+	{
+		frameStabilized = true;
+		CFiltreEffetCPU::Sepia(image);
+	}
+    */
 	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
 }
@@ -2159,7 +2185,7 @@ void CVideoControlSoft::RenderFFmpegToTexture(cv::Mat& pictureFrame)
         cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
                                                            flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
-        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast  || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance) && videoEffectParameter.
+        if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance) && videoEffectParameter.
             effectEnable)
         {
             ApplyOpenCVEffect(bitmapOut);
