@@ -9,10 +9,12 @@
 #include <SqlPhotos.h>
 #include <FileGeolocation.h>
 #include <GpsEngine.h>
-
+#include <wx/filename.h>
+#include <MetadataExiv2.h>
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
+using namespace Regards::exiv2;
 using namespace std;
 
 
@@ -78,10 +80,27 @@ void CBitmapInfos::SetFilename(const wxString& libelle)
 }
 
 
+wxString CBitmapInfos::GenerateDefaultTimeStamp()
+{
+	wxFileName file = wxFileName(filename);
+	wxDateTime dt = file.GetModificationTime();
+
+	wxDateTime now = wxDateTime::Now();
+	wxString str = now.Format(wxT("%Y-%m-%d"), wxDateTime::CET);
+
+	return str;
+}
+
 void CBitmapInfos::UpdateData()
 {
 	//printf("UpdateData \n");
 	gpsInfos = "";
+
+	CMetadataExiv2 metadata(filename);
+	if(metadata.HasExif())
+		dateInfos = metadata.GetCreationDate();
+
+
 
 	//Recherche dans la base de données des critères sur le fichier
 	CSqlPhotos sqlPhotos;
@@ -102,12 +121,28 @@ void CBitmapInfos::UpdateData()
 				dateInfos = criteria.GetLibelle();
 			}
 		}
-		SetDateInfos(dateInfos, '.');
+
+		if (dateInfos == "")
+		{
+			wxString str = GenerateDefaultTimeStamp();
+			SetDateInfos(str, '-');
+		}
+		else
+			SetDateInfos(dateInfos, '.');
 	}
 	else
 	{
-		dateInfos = L"";
+		if (dateInfos == "")
+		{
+			wxString str = GenerateDefaultTimeStamp();
+			SetDateInfos(str, '-');
+		}
+		else
+			SetDateInfos(dateInfos, '.');
+
 		gpsInfos = "";
+
+		
 	}
 	needToRefresh = true;
 }

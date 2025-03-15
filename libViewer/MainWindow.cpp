@@ -1209,22 +1209,6 @@ void CMainWindow::ProcessIdle()
 
 		hasDoneOneThings = true;
 	}
-	/*
-	else if (numElementTraitement < pictureSize)
-	{
-		if (!isCheckingFile)
-		{
-			CThreadCheckFile* checkFile = new CThreadCheckFile();
-			checkFile->mainWindow = this;
-			checkFile->pictureSize = pictureSize;
-			checkFile->numFile = numElementTraitement;
-			checkFile->checkFile = new std::thread(CheckFile, checkFile);
-			isCheckingFile = true;
-			std::this_thread::sleep_for(100ms);
-		}
-
-		//hasDoneOneThings = true;
-	}*/
 
 	if (setPictureMode)
 	{
