@@ -6,6 +6,7 @@
 #include <InfosSeparationBar.h>
 using namespace Regards::Window;
 
+
 class CRegardsBitmap;
 class CImageLoadingFormat;
 class CPictureCategorieLoadData;
@@ -102,9 +103,11 @@ namespace Regards::Viewer
 
 		void OnPrint(wxCommandEvent& event);
 		void OnPictureClick(wxCommandEvent& event);
-		void Md5Checking(wxCommandEvent& event);
+
 		void PrintPreview(wxCommandEvent& event);
 
+		void OnRemoveFileFromCheckIn(wxCommandEvent& event);
+		void OnCheckInUpdateStatus(wxCommandEvent& event);
 
 		void OnFaceInfosUpdate(wxCommandEvent& event);
 		void OnExportFile(wxCommandEvent& event);
@@ -124,8 +127,6 @@ namespace Regards::Viewer
 		void ProcessIdle() override;
 		void OnIdle(wxIdleEvent& evt) override;
 
-
-		void PhotoProcess(CPhotos* photo);
 
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
@@ -168,7 +169,7 @@ namespace Regards::Viewer
 		std::atomic<bool> updateCriteria;
 		bool updateFolder = false;
 		bool refreshFolder;
-		std::atomic<int> numElementTraitement;
+
 		bool start;
 		bool criteriaSendMessage;
 		bool checkVersion;

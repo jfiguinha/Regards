@@ -46,7 +46,6 @@
 #include <ParamInit.h>
 #include "FolderProcess.h"
 #include <wx/busyinfo.h>
-#include "md5check.h"
 #include <ImageVideoThumbnail.h>
 #include <ThreadLoadingBitmap.h>
 #include "window_mode_id.h"
@@ -57,6 +56,11 @@ using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace std;
 using namespace Regards::Sqlite;
+
+wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
+wxDEFINE_EVENT(wxEVENT_UPDATECHECKINSTATUS, wxCommandEvent);
+wxDEFINE_EVENT(wxEVENT_UPDATECHECKINFOLDER, wxCommandEvent);
 
 bool firstTime = true;
 
@@ -96,8 +100,7 @@ public:
 
 	std::thread* checkFile = nullptr;
 	CMainWindow* mainWindow;
-	int pictureSize;
-	int numFile;
+
 };
 
 void CMainWindow::CheckFile(void* param)
@@ -105,14 +108,67 @@ void CMainWindow::CheckFile(void* param)
 	CThreadCheckFile* checkFile = (CThreadCheckFile*)param;
 	if (checkFile != nullptr)
 	{
-		for (int i = checkFile->numFile; i < checkFile->pictureSize; i++)
+		int numElementTraitement = 0;
+		
+		PhotosVector* _pictures = new PhotosVector();
+		CSqlFindPhotos sqlFindPhotos;
+		sqlFindPhotos.SearchPhotosByCriteriaFolder(_pictures);
+
+		wxString nbElement = to_string(_pictures->size());
+		for (int i = 0; i < _pictures->size(); i++)
 		{
-			CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-			checkFile->mainWindow->PhotoProcess(&photo);
+			CPhotos photo = _pictures->at(i);
+
+			int nbProcesseur = 1;
+
+			if (wxFileName::FileExists(photo.GetPath()))
+			{
+				//Test si thumbnail valide
+				CMainParam* config = CMainParamInit::getInstance();
+				if (config != nullptr)
+				{
+					if (config->GetCheckThumbnailValidity() && checkFile->mainWindow->nbProcessMD5 < nbProcesseur)
+					{
+						CSqlThumbnail sqlThumbnail;
+						CSqlThumbnailVideo sqlThumbnailVideo;
+						wxFileName file(photo.GetPath());
+						wxULongLong sizeFile = file.GetSize();
+						wxString md5file = sizeFile.ToString();
+
+						bool result = sqlThumbnail.TestThumbnail(photo.GetPath(), md5file);
+						if (!result)
+						{
+							//Remove thumbnail
+							sqlThumbnail.DeleteThumbnail(photo.GetPath());
+							sqlThumbnailVideo.DeleteThumbnail(photo.GetPath());
+						}
+
+						wxCommandEvent evt(wxEVENT_UPDATECHECKINFOLDER);
+						checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+					}
+				}
+			}
+			else
+			{
+				//Remove file
+				CSQLRemoveData::DeletePhoto(photo.GetId());
+				wxCommandEvent evt(wxEVENT_UPDATECHECKINFOLDER);
+				checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+			}
+
+			numElementTraitement++;
+
+			wxCommandEvent evt(wxEVENT_UPDATECHECKINSTATUS);
+			evt.SetInt(numElementTraitement);
+			evt.SetString(nbElement);
+			checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+
 			if (checkFile->mainWindow->endApplication)
 				break;
 			std::this_thread::sleep_for(50ms);
 		}
+
+		delete _pictures;
 	}
 
 
@@ -120,6 +176,26 @@ void CMainWindow::CheckFile(void* param)
 	evt.SetClientData(checkFile);
 	checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 }
+
+void CMainWindow::OnRemoveFileFromCheckIn(wxCommandEvent& event)
+{
+	updateCriteria = true;
+	UpdateFolderStatic();
+	processIdle = true;
+}
+
+void CMainWindow::OnCheckInUpdateStatus(wxCommandEvent& event)
+{
+	int numElementTraitement = event.GetInt();
+	wxString nbElement = event.GetString();
+	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
+	wxString message = label + to_string(numElementTraitement) + L"/" + nbElement;
+	if (statusBarViewer != nullptr)
+	{
+		statusBarViewer->SetText(3, message);
+	}
+}
+
 
 void CMainWindow::OnEndCheckFile(wxCommandEvent& event)
 {
@@ -143,8 +219,7 @@ CThreadVideoData::~CThreadVideoData()
 {
 }
 
-wxDEFINE_EVENT(wxVERSION_UPDATE_EVENT, wxCommandEvent);
-wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
+
 
 extern wxImage defaultPicture;
 
@@ -160,7 +235,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	updateCriteria = true;
 
 	refreshFolder = false;
-	numElementTraitement = 0;
+
 	start = true;
 	criteriaSendMessage = false;
 	checkVersion = true;
@@ -212,7 +287,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_PICTUREVIDEOCLICK, wxCommandEventHandler(CMainWindow::PictureVideoClick));
 	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CMainWindow::InitPictures));
 	Connect(wxEVENT_REFRESHPICTURE, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
-	Connect(wxEVENT_MD5CHECKING, wxCommandEventHandler(CMainWindow::Md5Checking));
+
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
@@ -235,6 +310,9 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATEMESSAGE, wxCommandEventHandler(CMainWindow::UpdateMessage));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnRefreshThumbnail));
 	Connect(wxEVENT_ICONETHUMBNAILGENERATION, wxCommandEventHandler(CMainWindow::OnProcessThumbnail));
+
+	Connect(wxEVENT_UPDATECHECKINSTATUS, wxCommandEventHandler(CMainWindow::OnCheckInUpdateStatus));
+	Connect(wxEVENT_UPDATECHECKINFOLDER, wxCommandEventHandler(CMainWindow::OnRemoveFileFromCheckIn));
 	/*----------------------------------------------------------------------
 	 *
 	 * Manage Event
@@ -268,6 +346,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	}
 
 	UpdateFolderStatic();
+	int pictureSize = CThumbnailBuffer::GetVectorSize();
+	CThreadCheckFile* checkFile = new CThreadCheckFile();
+	checkFile->mainWindow = this;
+	checkFile->checkFile = new std::thread(CheckFile, checkFile);
+	isCheckingFile = true;
+	std::this_thread::sleep_for(100ms);
+
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GetPhotoList(&photoList, 0);
 	versionUpdate = new std::thread(NewVersionAvailable, this);
@@ -1060,7 +1145,7 @@ void CMainWindow::UpdateFolderStatic()
 			listFile.clear();
 			thumbnailPos = 0;
 			firstFileToShow = "";
-			numElementTraitement = 0;
+
 			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 			init = true;
 
@@ -1088,48 +1173,6 @@ void CMainWindow::UpdateFolderStatic()
 
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::PhotoProcess(CPhotos* photo)
-{
-	int nbProcesseur = 1;
-
-	if (wxFileName::FileExists(photo->GetPath()))
-	{
-		//Test si thumbnail valide
-		CMainParam* config = CMainParamInit::getInstance();
-		if (config != nullptr)
-		{
-			if (config->GetCheckThumbnailValidity() && nbProcessMD5 < nbProcesseur)
-			{
-				auto path = new CThreadMD5();
-				path->filename = photo->GetPath();
-				path->mainWindow = this;
-				path->thread = new thread(CMd5Check::CheckMD5, path);
-				nbProcessMD5++;
-			}
-			else
-				numElementTraitement++;
-		}
-	}
-	else
-	{
-		//Remove file
-		CSQLRemoveData::DeletePhoto(photo->GetId());
-		updateCriteria = true;
-		UpdateFolderStatic();
-		numElementTraitement++;
-		processIdle = true;
-	}
-
-	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(CThumbnailBuffer::GetVectorSize());
-	if (statusBarViewer != nullptr)
-	{
-		statusBarViewer->SetText(3, message);
-	}
-}
 
 //---------------------------------------------------------------
 //
@@ -1162,10 +1205,11 @@ void CMainWindow::ProcessIdle()
 			sqlPhoto.GetPhotoList(&photoList, 0);
 		}
 		refreshFolder = false;
-		numElementTraitement = 0;
+
 
 		hasDoneOneThings = true;
 	}
+	/*
 	else if (numElementTraitement < pictureSize)
 	{
 		if (!isCheckingFile)
@@ -1180,7 +1224,7 @@ void CMainWindow::ProcessIdle()
 		}
 
 		//hasDoneOneThings = true;
-	}
+	}*/
 
 	if (setPictureMode)
 	{
@@ -1518,31 +1562,7 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 	StartThread();
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-void CMainWindow::Md5Checking(wxCommandEvent& event)
-{
-	auto path = static_cast<CThreadMD5*>(event.GetClientData());
-	if (path != nullptr)
-	{
-		if (path->thread != nullptr)
-		{
-			path->thread->join();
-			delete(path->thread);
-			path->thread = nullptr;
-		}
-		delete path;
-	}
-	nbProcessMD5--;
-	numElementTraitement++;
-	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(CThumbnailBuffer::GetVectorSize());
-	if (statusBarViewer != nullptr)
-	{
-		statusBarViewer->SetText(3, message);
-	}
-}
+
 
 
 //---------------------------------------------------------------
