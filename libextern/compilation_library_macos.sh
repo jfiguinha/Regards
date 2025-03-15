@@ -21,8 +21,8 @@ unzip ports_vcpkg_mac.zip
 
 cp -r ports_vcpkg/opencv4 vcpkg/ports
 
-unzip SVT-AV1-v2.2.1.zip
-cd SVT-AV1-v2.2.1/Build
+unzip SVT-AV1-v2.3.0.zip
+cd SVT-AV1-v2.3.0/Build
 PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
 PATH="$HOME/bin:$PATH" make -j
 make install
