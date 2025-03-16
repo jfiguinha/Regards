@@ -163,7 +163,7 @@ void CMainWindow::CheckFile(void* param)
 			evt.SetString(nbElement);
 			checkFile->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 
-			if (checkFile->mainWindow->endApplication)
+			if (checkFile->mainWindow->processEnd)
 				break;
 			std::this_thread::sleep_for(50ms);
 		}
@@ -360,7 +360,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	isCheckNewVersion = true;
 	refreshFolder = true;
 	processIdle = true;
-    endApplication = false;
+	processEnd = false;
 }
 
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
@@ -1182,6 +1182,9 @@ void CMainWindow::ProcessIdle()
 	bool hasDoneOneThings = false;
 	int pictureSize = CThumbnailBuffer::GetVectorSize();
 
+	if (processEnd)
+		return;
+
 	if (updateCriteria)
 	{
 		folderProcess->UpdateCriteria(criteriaSendMessage);
@@ -1244,7 +1247,8 @@ void CMainWindow::ProcessIdle()
 
 void CMainWindow::ProcessThumbnail()
 {
-
+	if (processEnd)
+		return;
 
 	if (nbElementInIconeList == 0)
 	{
@@ -1263,6 +1267,12 @@ void CMainWindow::ProcessThumbnail()
 
 	for (int i = 0; i < photoList.size(); i++)
 	{
+		if (processEnd)
+			return;
+
+		if (nbProcess >= nbProcesseur)
+			return;
+
 		wxString path = photoList[i];
 
 		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
@@ -1340,6 +1350,9 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
+	if (processEnd)
+		return;
+
 	wxString firstFile = "";
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
@@ -1400,6 +1413,9 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 
 void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 {
+	if (processEnd)
+		return;
+
 	if (filename != "")
 	{
 		nbProcess++;
@@ -1428,75 +1444,12 @@ void CMainWindow::LoadPicture(void* param)
 	if (threadLoadingBitmap == nullptr)
 		return;
 
-#ifdef OLD
-	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename) || libPicture.TestIsVideo(threadLoadingBitmap->filename))
-	{
-
-		vector<CImageVideoThumbnail*> listVideo = libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, true, true);
-
-		if (listVideo.size() > 0)
-		{
-			CSqlThumbnailVideo sqlThumbnailVideo;
-
-			//int selectPicture = listVideo.size() / 2;
-			for (int i = 0; i < listVideo.size(); i++)
-			{
-				CImageVideoThumbnail* bitmap = listVideo[i];
-				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
-
-				if (!bitmap->image.empty())
-				{
-					wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, bitmap->image.size().width,
-						bitmap->image.size().height, i, bitmap->rotation, bitmap->percent,
-						bitmap->timePosition);
-
-					cv::imwrite(CConvertUtility::ConvertToStdString(localName), bitmap->image);
-					//bitmap->image.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-				}
-
-
-				if (i == 0)
-					threadLoadingBitmap->bitmapIcone = bitmap->image;
-
-			}
-			threadLoadingBitmap->isAnimationOrVideo = true;
-		}
-		else //Not support video
-		{
-			threadLoadingBitmap->bitmapIcone = CLibPicture::mat_from_wx(defaultPicture);
-			wxString filename = threadLoadingBitmap->filename;
-
-			//wxBitmap bitmap = wxBitmap(defaultPicture);
-
-
-			CSqlThumbnailVideo sqlThumbnailVideo;
-			wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, defaultPicture.GetWidth(), defaultPicture.GetHeight(), 0, 0, 0, 0);
-			defaultPicture.SaveFile(localName, wxBITMAP_TYPE_JPEG);
-		}
-
-		for (CImageVideoThumbnail* bitmap : listVideo)
-			delete bitmap;
-
-		listVideo.clear();
-	}
-	else
-	{
-		CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-		if (imageLoad != nullptr)
-		{
-			threadLoadingBitmap->bitmapIcone = imageLoad->GetMatrix().getMat();
-			delete imageLoad;
-		}
-	}
-#else
 	CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
 	if (imageLoad != nullptr)
 	{
 		threadLoadingBitmap->bitmapIcone = imageLoad->GetMatrix().getMat();
 		delete imageLoad;
 	}
-#endif
-
 
 	if (!threadLoadingBitmap->bitmapIcone.empty())
 	{
@@ -1513,18 +1466,6 @@ void CMainWindow::LoadPicture(void* param)
 		}
 
 	}
-
-	/*
-	if(threadLoadingBitmap->type == 30)
-	{
-		printf("CMainWindow::LoadPicture Type %d window Id : %d \n", threadLoadingBitmap->type, threadLoadingBitmap->longWindow);
-
-		wxWindow* window = threadLoadingBitmap->window->FindWindowById(threadLoadingBitmap->longWindow);
-		wxCommandEvent event(wxEVENT_THUMBNAILREFRESH);
-		event.SetInt(0);
-		wxPostEvent(window, event);
-	}
-	*/
 
 	auto event = new wxCommandEvent(wxEVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);
@@ -1697,8 +1638,6 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	endApplication = true;
-
 	if (nbProcessMD5 > 0 || nbProcess > 0 || isCheckingFile)
 		return false;
 
