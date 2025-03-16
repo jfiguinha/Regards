@@ -267,9 +267,9 @@ wxString CFileUtility::GetDocumentFolderPath()
 #ifdef WIN32
     //documentPath = "d:\\Regards";
 
-    documentPath.append("\\RegardsLite");
+    documentPath.append("\\Regards");
 #else
-    documentPath.append("/RegardsLite");
+    documentPath.append("/Regards");
 #endif
 
     if (!wxDir::Exists(documentPath))
