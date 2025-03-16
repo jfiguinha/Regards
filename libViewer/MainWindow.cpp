@@ -1261,9 +1261,6 @@ void CMainWindow::ProcessThumbnail()
 	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 
-	if (nbProcess >= nbProcesseur)
-		return;
-
 
 	for (int i = 0; i < photoList.size(); i++)
 	{
@@ -1281,7 +1278,6 @@ void CMainWindow::ProcessThumbnail()
 
 		ProcessThumbnail(path, 0, 0);
 
-
 		std::map<wxString, bool>::iterator it = listFile.find(path);
 		if (it == listFile.end())
 		{
@@ -1293,9 +1289,6 @@ void CMainWindow::ProcessThumbnail()
 
 
 		i--;
-
-		if (nbProcess == nbProcesseur)
-			break;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
@@ -1413,7 +1406,14 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 
 void CMainWindow::ProcessThumbnail(wxString filename, int type, long longWindow)
 {
+	int nbProcesseur = 1;
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
+		nbProcesseur = config->GetThumbnailProcess() + 1;
+
 	if (processEnd)
+		return;
+
+	if (nbProcess >= nbProcesseur)
 		return;
 
 	if (filename != "")
