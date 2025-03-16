@@ -65,7 +65,7 @@
 #undef USE_CUDA
 #endif
 
-//#undef USE_CUDA
+#undef USE_CUDA
 
 
 #ifndef __WXGTK__

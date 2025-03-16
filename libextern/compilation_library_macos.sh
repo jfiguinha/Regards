@@ -48,6 +48,7 @@ cd vcpkg
 ./vcpkg install libjxl
 ./vcpkg install openal-soft
 ./vcpkg install libepoxy
+./vcpkg install boost-lexical-cast
 cd ..
 
 #Compile heif-master

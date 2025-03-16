@@ -24,6 +24,10 @@ namespace Regards
 
 		private:
 
+            void OnStartGps(wxTimerEvent& event);
+			void UpdateGpsInfosLocal(wxCommandEvent& event);
+			static void GetGpsInfos(void * data);
+            
 			wxString GenerateDefaultTimeStamp();
 			void OnUpdateGpsInfos(wxCommandEvent& event);
 			void SetDateInfos(const wxString& dataInfos, char seperator);
@@ -34,7 +38,10 @@ namespace Regards
 			wxString gpsInfos;
 			wxString dateInfos;
 			bool gpsInfosUpdate;
+            
+            std::thread* threadGps = nullptr;
 			CThemeBitmapInfos bitmapInfosTheme;
+            wxTimer * gpsTimer;
 		};
 	}
 }

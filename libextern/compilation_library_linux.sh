@@ -66,6 +66,7 @@ fi
 ./vcpkg install libepoxy
 ./vcpkg install openal-soft
 ./vcpkg install ncnn[vulkan]
+./vcpkg install boost-lexical-cast
 cd ..
 
 #Compile heif-master

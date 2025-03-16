@@ -37,7 +37,7 @@ namespace Regards
 			wxString GetGpsInformation();
 			wxString GetDateTimeInfos();
 			wxString GetFilename();
-			void Geolocalize();
+			wxString Geolocalize();
 			bool Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto);
 			// void RefreshData();
 			wxString GenerateGeolocalisationString(const wxString& countryCode, const wxString& region,

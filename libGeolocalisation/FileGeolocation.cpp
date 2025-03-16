@@ -105,8 +105,9 @@ wxString CFileGeolocation::GetGpsInformation()
 	return infoGpsLocalisation;
 }
 
-void CFileGeolocation::Geolocalize()
+wxString CFileGeolocation::Geolocalize()
 {
+    wxString geolocalisationString = "";
 	if (hasGps)
 	{
 		auto gps = new CGps(urlServer);
@@ -123,12 +124,14 @@ void CFileGeolocation::Geolocalize()
 				infoGpsLocalisation.append(geoValue.GetRegion());
 				infoGpsLocalisation.append(L".");
 				infoGpsLocalisation.append(geoValue.GetPlace());
+                geolocalisationString = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetPlace());
 				break;
 			}
 		}
 
 		delete gps;
 	}
+    return geolocalisationString;
 }
 
 
