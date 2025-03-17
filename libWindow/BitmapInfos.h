@@ -21,6 +21,7 @@ namespace Regards
 			int GetHeight() override;
 			void Redraw();
 			void UpdateScreenRatio() override;
+			bool GetProcessEnd() override;
 
 		private:
 

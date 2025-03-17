@@ -35,12 +35,25 @@ CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapIn
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;
+	threadGps = nullptr;
 	fileGeolocalisation->AddWindow(this);
-	
+	listProcessWindow.push_back(this);
     gpsTimer = new wxTimer(this, wxTIMER_EXIT);
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfos::on_paint));
+	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CBitmapInfos::OnStartGps), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CBitmapInfos::OnUpdateGpsInfos));
     Connect(wxEVENT_GPSINFOSLOCAL, wxCommandEventHandler(CBitmapInfos::UpdateGpsInfosLocal));
+}
+
+bool CBitmapInfos::GetProcessEnd()
+{
+	if (gpsTimer->IsRunning())
+		gpsTimer->Stop();
+
+	if (threadGps != nullptr)
+		return false;
+
+	return true;
 }
 
 void CBitmapInfos::OnStartGps(wxTimerEvent& event)
@@ -149,6 +162,9 @@ void CBitmapInfos::SetFilename(const wxString& libelle)
 	//printf("SetFilename \n");
 	if (filename != libelle)
 	{
+		if (gpsTimer->IsRunning())
+			gpsTimer->Stop();
+
 		gpsInfos = "";
 		filename = libelle;
 		gpsInfosUpdate = false;
