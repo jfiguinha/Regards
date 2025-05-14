@@ -193,6 +193,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="avir.h" />
+    <ClInclude Include="avir_dil.h" />
+    <ClInclude Include="avir_float4_sse.h" />
+    <ClInclude Include="avir_float8_avx.h" />
+    <ClInclude Include="avir_opencl.h" />
+    <ClInclude Include="avir_step.h" />
     <ClInclude Include="config_id.h" />
     <ClInclude Include="effect_id.h" />
     <ClInclude Include="font_quality.h" />

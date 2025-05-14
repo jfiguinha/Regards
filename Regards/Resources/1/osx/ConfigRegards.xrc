@@ -63,6 +63,16 @@
 											<item>LANCZOS4</item>
 											<item>LINEAR_EXACT</item>
 											<item>NEAREST_EXACT</item>
+											<item>AVIR</item>
+											<item>BboxFilter</item>
+											<item>HermiteFilter</item>
+											<item>HanningFilter</item>
+											<item>CatromFilter</item>
+											<item>MitchellFilter</item>
+											<item>TriangleFilter</item>
+											<item>QuadraticFilter</item>
+											<item>BlackmanFilter</item>
+											<item>HammingFilter</item>
 											<item>None</item>
 										</content>
 									</object>

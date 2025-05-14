@@ -409,21 +409,24 @@ __kernel void Interpolation(__global uint *output, const __global uint *input, i
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
-	if (angle == 90)
-	{
-		ratioX = (float)widthIn / (float)height;
-		ratioY = (float)heightIn / (float)width;
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+		float ratioX = (float)widthIn / (float)width;
+		float ratioY = (float)heightIn / (float)height;
+		if (angle == 90)
+		{
+			ratioX = (float)widthIn / (float)height;
+			ratioY = (float)heightIn / (float)width;
+		}
+		else if(angle == 270)
+		{
+			ratioX = (float)widthIn / (float)height;
+			ratioY = (float)heightIn / (float)width;	
+		}
+		
+		int position = x + y * widthOut;
+		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, 0, 0);
 	}
-	else if(angle == 270)
-	{
-		ratioX = (float)widthIn / (float)height;
-		ratioY = (float)heightIn / (float)width;	
-	}
-	
-	int position = x + y * widthOut;
-	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, 0, 0);
 }
 
 __kernel void InterpolationZone(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
@@ -431,19 +434,22 @@ __kernel void InterpolationZone(__global uint *output, const __global uint *inpu
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float ratioX = (float)widthIn / bitmapWidth;
-	float ratioY = (float)heightIn / bitmapHeight;
-	if (angle == 90)
-	{
-		ratioX = (float)widthIn / (float)bitmapHeight;
-		ratioY = (float)heightIn / (float)bitmapWidth;
-	}
-	else if(angle == 270)
-	{
-		ratioX = (float)widthIn / (float)bitmapHeight;
-		ratioY = (float)heightIn / (float)bitmapWidth;	
-	}
+    if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
+    {
+		float ratioX = (float)widthIn / bitmapWidth;
+		float ratioY = (float)heightIn / bitmapHeight;
+		if (angle == 90)
+		{
+			ratioX = (float)widthIn / (float)bitmapHeight;
+			ratioY = (float)heightIn / (float)bitmapWidth;
+		}
+		else if(angle == 270)
+		{
+			ratioX = (float)widthIn / (float)bitmapHeight;
+			ratioY = (float)heightIn / (float)bitmapWidth;	
+		}
 
-	int position = x + y * widthOut;
-	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
+		int position = x + y * widthOut;
+		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
+	}
 }

@@ -20,6 +20,8 @@
 #include <ConvertUtility.h>
 #include <opencv2/xphoto/inpainting.hpp>
 #include "opencv2/fuzzy.hpp"
+#include <avir.h>
+#include "InterpolationFilters.h"
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 using namespace Regards::DeepLearning;
@@ -1343,153 +1345,106 @@ wxImage CFiltreEffetCPU::GetwxImage()
 	return wx;
 }
 
+
 Mat CFiltreEffetCPU::Interpolation(const Mat& inputData, const int& widthOut, const int& heightOut, const wxRect& rc,
-                                   const int& method, int flipH, int flipV, int angle, int ratio)
+	const int& method, int flipH, int flipV, int angle, int ratio)
 {
 	Mat cvImage;
-	//cv::Mat cvImage;
-	//inputData.copyTo(cvImage);
 	try
 	{
+		// Calcul des ratios
 		float ratioX = static_cast<float>(inputData.cols) / rc.width;
 		float ratioY = static_cast<float>(inputData.rows) / rc.height;
 		if (angle == 90 || angle == 270)
 		{
-			ratioX = static_cast<float>(inputData.cols) / static_cast<float>(rc.height);
-			ratioY = static_cast<float>(inputData.rows) / static_cast<float>(rc.width);
+			std::swap(ratioX, ratioY);
 		}
 
-		Rect rectGlobal;
-		Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH,
-		                                                  flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
-		Rect rect_end = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH,
-		                                                flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
-		rectGlobal.x = rect_begin.x;
-		rectGlobal.y = rect_begin.y;
-		rectGlobal.width = rect_end.x;
-		rectGlobal.height = rect_end.y;
-		if (rectGlobal.x > rectGlobal.width)
-		{
-			int x_end = rectGlobal.x;
-			int x = rectGlobal.width;
-			rectGlobal.x = x;
-			rectGlobal.width = x_end - x;
-		}
-		else
-		{
-			rectGlobal.width -= rectGlobal.x;
-		}
+		// Calcul des rectangles
+		Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
+		Rect rect_end = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
 
-		if (rectGlobal.y > rectGlobal.height)
-		{
-			int y_end = rectGlobal.y;
-			int y = rectGlobal.height;
-			rectGlobal.y = y;
-			rectGlobal.height = y_end - y;
-		}
-		else
-		{
-			rectGlobal.height -= rectGlobal.y;
-		}
+		Rect rectGlobal(
+			std::min(rect_begin.x, rect_end.x),
+			std::min(rect_begin.y, rect_end.y),
+			std::abs(rect_end.x - rect_begin.x),
+			std::abs(rect_end.y - rect_begin.y)
+		);
 
-		if ((rectGlobal.height + rectGlobal.y) > inputData.rows)
-		{
-			rectGlobal.height = inputData.rows - rectGlobal.y;
-		}
-		if ((rectGlobal.width + rectGlobal.x) > inputData.cols)
-		{
-			rectGlobal.width = inputData.cols - rectGlobal.x;
-		}
+		// Ajustement des dimensions pour éviter les débordements
+		rectGlobal.width = std::min(rectGlobal.width, inputData.cols - rectGlobal.x);
+		rectGlobal.height = std::min(rectGlobal.height, inputData.rows - rectGlobal.y);
 
-		//cv::Mat crop;
+		// Extraction de la région d'intérêt
 		inputData(rectGlobal).copyTo(cvImage);
-		//crop.copyTo(cvImage);
 
-		if (angle == 270)
+		// Rotation selon l'angle
+		if (angle == 90 || angle == 270 || angle == 180)
 		{
-			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
-			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
-			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
-		}
-		else if (angle == 90)
-		{
-			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
-			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
-			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
-		}
-		else if (angle == 180)
-		{
-			cv::rotate(cvImage, cvImage, ROTATE_180);
+			int rotationFlag = (angle == 90) ? ROTATE_90_COUNTERCLOCKWISE :
+				(angle == 270) ? ROTATE_90_CLOCKWISE : ROTATE_180;
+			cv::rotate(cvImage, cvImage, rotationFlag);
 		}
 
-
-		/*
-		nearest neighbor interpolation
-		INTER_NEAREST = 0,
-		bilinear interpolation
-		INTER_LINEAR = 1,
-		bicubic interpolation
-		INTER_CUBIC = 2,
-		resampling using pixel area relation. It may be a preferred method for image decimation, as
-		it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
-		method.
-		INTER_AREA = 3,
-		Lanczos interpolation over 8x8 neighborhood
-		INTER_LANCZOS4 = 4,
-		Bit exact bilinear interpolation
-		INTER_LINEAR_EXACT = 5,
-		Bit exact nearest neighbor interpolation. This will produce same results as
-		the nearest neighbor method in PIL, scikit-image or Matlab.
-		INTER_NEAREST_EXACT = 6,
-		*/
-		if (ratio != 100)
+		// Application des méthodes d'interpolation
+		if (method == 7)
 		{
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-			int superDnn = regardsParam->GetSuperResolutionType();
-			int useSuperResolution = regardsParam->GetUseSuperResolution();
-			if (useSuperResolution && CFiltreEffetCPUImpl::TestIfMethodIsValid(superDnn, (ratio / 100)))
+			cv::Mat inBuf, outBuf(Size(widthOut, heightOut), CV_8UC4, Scalar(0, 0, 0));
+			cvtColor(cvImage, inBuf, cv::COLOR_BGR2BGRA);
+
+			avir::CImageResizer ImageResizer(8);
+			avir::CImageResizerVars Vars;
+			Vars.UseSRGBGamma = true;
+			ImageResizer.resizeImage(
+				reinterpret_cast<uint8_t*>(inBuf.data), inBuf.cols, inBuf.rows, inBuf.step,
+				reinterpret_cast<uint8_t*>(outBuf.data), widthOut, heightOut, 4, 0, &Vars
+			);
+
+			cvtColor(outBuf, cvImage, cv::COLOR_BGRA2BGR);
+		}
+		else if (method > 7)
+		{
+			int local_method = method - 7 + 1000;
+			std::unique_ptr<CInterpolationBicubic> m_LocalFilter;
+
+			switch (local_method)
 			{
-				cvImage = CFiltreEffetCPUImpl::upscaleImage(cvImage, superDnn, (ratio / 100));
+			case BOXFILTER: m_LocalFilter = std::make_unique<CBoxFilter>(); break;
+			case BILINEARFILTER: m_LocalFilter = std::make_unique<CBilinearFilter>(); break;
+			case GAUSSIANFILTER: m_LocalFilter = std::make_unique<CGaussianFilter>(); break;
+			case HAMMINGFILTER: m_LocalFilter = std::make_unique<CHammingFilter>(); break;
+			case BLACKMANFILTER: m_LocalFilter = std::make_unique<CBlackmanFilter>(); break;
+			case QUADRATICFILTER: m_LocalFilter = std::make_unique<CQuadraticFilter>(); break;
+			case MITCHELLFILTER: m_LocalFilter = std::make_unique<CMitchellFilter>(); break;
+			case TRIANGLEFILTER: m_LocalFilter = std::make_unique<CTriangleFilter>(); break;
+			case HERMITEFILTER: m_LocalFilter = std::make_unique<CHermiteFilter>(); break;
+			case HANNINGFILTER: m_LocalFilter = std::make_unique<CHanningFilter>(); break;
+			case CATROMFILTER: m_LocalFilter = std::make_unique<CCatromFilter>(); break;
 			}
-			else
+
+			if (m_LocalFilter)
+			{
+				cv::Mat outBuf(Size(widthOut, heightOut), CV_8UC3, Scalar(0, 0, 0));
+				m_LocalFilter->Execute(cvImage, outBuf);
+				cvImage = outBuf;
+			}
+		}
+		else
+		{
+			if (ratio != 100 || cvImage.cols != widthOut || cvImage.rows != heightOut)
 			{
 				resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 			}
 		}
 
-		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-			resize(cvImage, cvImage, Size(widthOut, heightOut), INTER_NEAREST_EXACT);
-
-		//Apply Transformation
-
-		if (flipH)
-		{
-			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 0);
-			else
-				flip(cvImage, cvImage, 1);
-		}
-		if (flipV)
-		{
-			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 1);
-			else
-				flip(cvImage, cvImage, 0);
-		}
-
-		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+		// Application des transformations de flip
+		if (flipH) flip(cvImage, cvImage, (angle == 90 || angle == 270) ? 0 : 1);
+		if (flipV) flip(cvImage, cvImage, (angle == 90 || angle == 270) ? 1 : 0);
 	}
 	catch (Exception& e)
 	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		std::cerr << "Exception caught: " << e.what() << std::endl;
+		std::cerr << "Invalid file format. Please input the name of an IMAGE file." << std::endl;
 	}
 	return cvImage;
 }

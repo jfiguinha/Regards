@@ -8,8 +8,6 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 
-
-#include <FaceDetector.h>
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 extern string platformName;
@@ -18,6 +16,7 @@ extern cv::ocl::OpenCLExecutionContext clExecCtx;
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
 	openclFilter = new COpenCLFilter();
+	openclFilter->SetIsVideo(true);
 	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
@@ -135,7 +134,19 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
 		}
 	}
-
+	/*
+	if (videoEffectParameter->sepiaEnable)
+	{
+		if (interpolatePicture)
+		{
+			openclFilter->ColorEffect("Sepia", paramOutput);
+		}
+		else
+		{
+			openclFilter->ColorEffect("Sepia", paramSrc);
+		}
+	}
+	*/
 	if (videoEffectParameter->filmEnhance || videoEffectParameter->filmcolorisation)
 	{
 		cv::Mat img_up;
@@ -150,16 +161,6 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			paramSrc.copyTo(image);
 		}
 
-
-		if (videoEffectParameter->filmEnhance)
-		{
-			image = CFaceDetector::SuperResolution(image);
-		}
-		if (videoEffectParameter->filmcolorisation)
-		{
-
-			image = CFaceDetector::Colorisation(image);
-		}
 
 		if (interpolatePicture)
 		{
@@ -181,7 +182,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 	if (!clExecCtx.empty() && !paramSrc.empty())
 	{
 
-
+		
 		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, bicubic, paramSrc, flipH, flipV, angle,
 			ratio);
 		interpolatePicture = true;
@@ -566,6 +567,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 	}
 }
 
+
 void COpenCLEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited)
 {
 	int nWidth = tmp_frame->width;
@@ -609,6 +611,10 @@ void COpenCLEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter,
 		}
 
 		//muBitmap.unlock();
+	}
+	else
+	{
+
 	}
 }
 

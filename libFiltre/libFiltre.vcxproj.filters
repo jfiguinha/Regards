@@ -64,6 +64,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{90fb664c-5e73-44b6-a226-8d53135becfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Filter\Interpolation">
+      <UniqueIdentifier>{398416f1-c42d-490d-bf14-e6ec32d22ba9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -339,6 +342,15 @@
     <ClInclude Include="CudaEffect.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="Pass2Scale.h">
+      <Filter>Filter\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="InterpolationBicubic.h">
+      <Filter>Filter\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="InterpolationFilters.h">
+      <Filter>Filter\Interpolation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -502,6 +514,15 @@
     </ClCompile>
     <ClCompile Include="CudaEffect.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Pass2Scale.cpp">
+      <Filter>Filter\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="avir_opencl.cpp">
+      <Filter>Filter\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="InterpolationBicubic.cpp">
+      <Filter>Filter\Interpolation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

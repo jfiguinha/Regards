@@ -598,9 +598,11 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="OpenCLContext.h" />
+    <ClInclude Include="OpenCLConvertFormat.h" />
     <ClInclude Include="OpenCLEffectVideo.h" />
     <ClInclude Include="OpenCLFilter.h" />
     <ClInclude Include="OpenCLParameter.h" />
+    <ClInclude Include="utility_opencl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -610,9 +612,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="OpenCLContext.cpp" />
+    <ClCompile Include="OpenCLConvertFormat.cpp" />
     <ClCompile Include="OpenCLEffectVideo.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />
+    <ClCompile Include="utility_opencl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

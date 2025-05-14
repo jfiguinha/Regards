@@ -30,7 +30,8 @@
 #include <ncnn/gpu.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-
+#include "utility_opencl.h"
+#include <LibResource.h>
 #if defined (__APPLE__) || defined(MACOSX)
 static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 #else
@@ -42,6 +43,44 @@ extern cv::ocl::OpenCLExecutionContext clExecCtx;
 extern bool isOpenCLInitialized;
 extern ncnn::VulkanDevice* vkdev;
 using namespace Regards::OpenCL;
+extern std::map<wxString, vector<char>> openclBinaryMapping;
+extern string buildOption;
+
+wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
+{
+	try
+	{
+		// Get the length for the i-th device name
+		size_t device_name_length = 0;
+		cl_int err = clGetDeviceInfo(
+			device,
+			param_name,
+			0,
+			nullptr,
+			&device_name_length
+		);
+		Error::CheckError(err);
+
+		// Get the name itself for the i-th device
+		// use vector for automatic memory management
+		vector<char> device_name(device_name_length);
+		err = clGetDeviceInfo(
+			device,
+			param_name,
+			device_name_length,
+			&device_name[0],
+			nullptr
+		);
+		Error::CheckError(err);
+
+		return wxString(&device_name[0]);
+	}
+	catch (...)
+	{
+	}
+
+	return "";
+}
 
 void COpenCLContext::AssociateToVulkan()
 {
@@ -82,60 +121,75 @@ void COpenCLContext::AssociateToVulkan()
 	}
 
 	if (platformName.find("Intel") == 0 && findIntel)
-    {
-        vkdev = ncnn::get_gpu_device(numIntel);
-        printf("Vulkan Intel \n");
-    }
-	else if(platformName.find("NVIDIA") == 0 && findNvidia)
-    {
+	{
+		vkdev = ncnn::get_gpu_device(numIntel);
+		printf("Vulkan Intel \n");
+	}
+	else if (platformName.find("NVIDIA") == 0 && findNvidia)
+	{
 		vkdev = ncnn::get_gpu_device(numNvidia);
-        printf("Vulkan NVIDIA \n");
-    }
+		printf("Vulkan NVIDIA \n");
+	}
 	else if (findAmd)
-    {
+	{
 		vkdev = ncnn::get_gpu_device(numAmd);
-        printf("Vulkan AMD \n");
-    }
-    else
-        vkdev = nullptr;
+		printf("Vulkan AMD \n");
+	}
+	else
+		vkdev = nullptr;
 
 }
 
-wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
+cv::ocl::Program COpenCLContext::GetProgram(const wxString & programName)
 {
+	cv::ocl::Program program;
+	cv::String module_name = "REGARDS";
+	cv::ocl::Context context = clExecCtx.getContext();
+	std::map<wxString, vector<char>>::iterator it;
+	it = openclBinaryMapping.find(programName);
+	if (it == openclBinaryMapping.end())
+	{
+		// Récupération du code source du kernel
+		wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
+		//cv::ocl::ProgramSource programSource(module_name, programName, kernelSource, "");
+		// Compilation du kernel
+		string errmsg;
+
+		cv::ocl::ProgramSource src(module_name, programName.ToStdString(), kernelSource.ToStdString(), "");
+		cv::ocl::Program program(src, buildOption, errmsg);
+		if (program.ptr() == NULL)
+		{
+			std::cout << "Error: " << errmsg << std::endl;
+			return program;
+		}
+
+		program.getBinary(openclBinaryMapping[programName]);
+		std::cout << "Program binary size: " << openclBinaryMapping[programName].size() << " bytes" << std::endl;
+
+	}
+	cv::ocl::ProgramSource programSource;
 	try
 	{
-		// Get the length for the i-th device name
-		size_t device_name_length = 0;
-		cl_int err = clGetDeviceInfo(
-			device,
-			param_name,
-			0,
-			nullptr,
-			&device_name_length
-		);
-		Error::CheckError(err);
-
-		// Get the name itself for the i-th device
-		// use vector for automatic memory management
-		vector<char> device_name(device_name_length);
-		err = clGetDeviceInfo(
-			device,
-			param_name,
-			device_name_length,
-			&device_name[0],
-			nullptr
-		);
-		Error::CheckError(err);
-
-		return wxString(&device_name[0]);
+		
+		string errmsg;
+		programSource = cv::ocl::ProgramSource::fromBinary(module_name, programName.ToStdString(), (uchar*)&openclBinaryMapping[programName][0], openclBinaryMapping[programName].size());
+		if (programSource.empty())
+		{
+			std::cout << "Error: " << std::endl;
+			return program;
+		}
+		program.create(programSource, buildOption, errmsg);
 	}
-	catch (...)
+	catch (cv::Exception& e)
 	{
+		std::cerr << "COpenCLFilter::Interpolation exception caught: " << e.what() << std::endl;
+		std::cerr << "Invalid file format. Please input the name of an IMAGE file." << std::endl;
+
 	}
 
-	return "";
+	return program;
 }
+
 
 cl_device_id COpenCLContext::GetListOfDevice(cl_platform_id platform, cl_device_type device_type, int& found)
 {
@@ -251,8 +305,6 @@ void COpenCLContext::initializeContextFromGL()
 	cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
-
-	AssociateToVulkan();
 
 	clReleaseDevice(device);
 	clReleaseContext(context);
@@ -420,8 +472,6 @@ printf("initializeContextFromGL wayland\n");
 	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
-
-	AssociateToVulkan();
     
     printf("initializeContextFromGL 8\n");
 
@@ -505,7 +555,7 @@ void ShowInfos()
 
 void COpenCLContext::CreateDefaultOpenCLContext()
 {
-	ShowInfos();
+	//ShowInfos();
 	
 	cv::ocl::Context context;
 	if (!context.create(cv::ocl::Device::TYPE_GPU))
@@ -552,9 +602,52 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 		//cv::ocl::Device(context.device(0));
 		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
 		platformName = clExecCtx.getDevice().vendorName();
-		AssociateToVulkan();
+	}
+}
+
+cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties queue_properties)
+{
+	cl_int err = 0;
+	cl_command_queue queue = clCreateCommandQueue((cl_context)clExecCtx.getContext().ptr(), (cl_device_id)clExecCtx.getDevice().ptr(), queue_properties, &err);
+	Error::CheckError(err);
+	return queue;
+}
+
+
+void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void* dataOut, const int& sizeOutput, const int& flag)
+{
+	cl_int err = 0;
+	cl_command_queue queue = CreateCommandQueue();
+
+	if (flag == CL_MEM_USE_HOST_PTR)
+	{
+		
+
+		void* tmp_ptr = clEnqueueMapBuffer(queue, cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
+		ErrorOpenCL::CheckError(err);
+		if (tmp_ptr != dataOut)
+		{// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
+			throw ErrorOpenCL("clEnqueueMapBuffer failed to return original pointer");
+		}
+
+		err = clFinish(queue);
+		ErrorOpenCL::CheckError(err);
+
+		err = clEnqueueUnmapMemObject(queue, cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+		ErrorOpenCL::CheckError(err);
+	}
+	else
+	{
+		err = clEnqueueReadBuffer(queue, cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
+		ErrorOpenCL::CheckError(err);
+		err = clFinish(queue);
+		ErrorOpenCL::CheckError(err);
 	}
 
 
-
+	if (queue)
+	{
+		cl_int err = clReleaseCommandQueue(queue);
+		ErrorOpenCL::CheckError(err);
+	}
 }

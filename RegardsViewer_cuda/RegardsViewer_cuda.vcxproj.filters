@@ -98,7 +98,6 @@
     <None Include="wx\msw\cross.cur">
       <Filter>Fichiers de ressources</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\resource\explorer.ico">

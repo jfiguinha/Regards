@@ -48,6 +48,24 @@
     <ClInclude Include="window_id.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="avir.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_dil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_float4_sse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_float8_avx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_opencl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_step.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header.cpp">

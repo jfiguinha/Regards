@@ -597,6 +597,8 @@
     <ClInclude Include="hqdn3dFilter.h" />
     <ClInclude Include="InpaintFilter.h" />
     <ClInclude Include="InpaintFilterParam.h" />
+    <ClInclude Include="InterpolationBicubic.h" />
+    <ClInclude Include="InterpolationFilters.h" />
     <ClInclude Include="LensDistortion.h" />
     <ClInclude Include="LensDistortionEffectParameter.h" />
     <ClInclude Include="LensFlare.h" />
@@ -616,6 +618,7 @@
     <ClInclude Include="OilPaintingFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
     <ClInclude Include="panorama.h" />
+    <ClInclude Include="Pass2Scale.h" />
     <ClInclude Include="PencilSketch.h" />
     <ClInclude Include="PencilSketchParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
@@ -655,6 +658,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AudioVideoFilter.cpp" />
+    <ClCompile Include="avir_opencl.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="BokehFilter.cpp" />
@@ -679,6 +683,7 @@
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="hqdn3dFilter.cpp" />
     <ClCompile Include="InpaintFIlter.cpp" />
+    <ClCompile Include="InterpolationBicubic.cpp" />
     <ClCompile Include="LensDistortion.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />
@@ -692,6 +697,7 @@
     <ClCompile Include="OilPaintingFilter.cpp" />
     <ClCompile Include="OpenCLEffect.cpp" />
     <ClCompile Include="panorama.cpp" />
+    <ClCompile Include="Pass2Scale.cpp" />
     <ClCompile Include="PencilSketch.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
