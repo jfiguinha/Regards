@@ -62,7 +62,7 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & 
 	if (textureArrowLeft == nullptr)
 		textureArrowLeft = new GLTexture();
 	
-    mat = arrowRight.GetMatrix();
+    mat = arrowLeft.GetMatrix();
 	textureArrowLeft->SetData(mat);
 }
 

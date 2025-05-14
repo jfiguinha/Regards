@@ -1617,17 +1617,12 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 
 				cv::UMat out;
 				
-				if (TRUE)
-				{
-					if(useParam)
-						out = ImageResizer.resizeImageOpenCLWithStep(src, param);
-					else
-						out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
-				}	
+
+				if(useParam)
+					out = ImageResizer.resizeImageOpenCLWithStep(src, param);
 				else
-				{
 					out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
-				}
+
 
 					
 				cvtColor(out, cvImage, cv::COLOR_BGRA2BGR);

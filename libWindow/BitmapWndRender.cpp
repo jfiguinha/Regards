@@ -459,7 +459,7 @@ void CBitmapWndRender::CalculPositionPicture(const float& x, const float& y)
 	}
 	else
 	{
-		posLargeur = clamp(0, static_cast<int>(screenXPos - middleScreenWidth), posLargeurMax);
+		posLargeur = clamp( static_cast<int>(screenXPos - middleScreenWidth), 0, posLargeurMax);
 	}
 
 	if (screenHeight > bitmapRatioHeight)
@@ -468,7 +468,7 @@ void CBitmapWndRender::CalculPositionPicture(const float& x, const float& y)
 	}
 	else
 	{
-		posHauteur = clamp(0, static_cast<int>(screenYPos - middleScreenHeight), posHauteurMax);
+		posHauteur = clamp( static_cast<int>(screenYPos - middleScreenHeight), 0, posHauteurMax);
 	}
 }
 
