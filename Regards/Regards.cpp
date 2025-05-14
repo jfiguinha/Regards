@@ -490,17 +490,6 @@ bool MyApp::OnInit()
 		framePDF->Show(true);
 		framePDF->OnOpen();	
 	}
-	else if (appName == "RegardswxFFmpeg")
-	{
-		wxDisplay display;
-		wxRect screen = display.GetClientArea();
-		//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
-		frameFFmpeg = new wxFfmpegFrame();
-		frameFFmpeg->Centre(wxBOTH);
-		frameFFmpeg->SetFocus();  // focus on my window
-		frameFFmpeg->Raise();  // bring window to front
-		frameFFmpeg->Show(true);
-	}
 	else
 	{
         /*

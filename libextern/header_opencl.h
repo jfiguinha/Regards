@@ -59,11 +59,9 @@
 //#define USE_TBB_VECTOR
 #endif
 
-
 #ifdef __APPLE__
 #undef USE_CUDA
 #endif
-
 
 #ifndef __WXGTK__
 #include <epoxy/gl.h>
