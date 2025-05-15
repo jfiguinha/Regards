@@ -73,7 +73,6 @@
 											<item>QuadraticFilter</item>
 											<item>BlackmanFilter</item>
 											<item>HammingFilter</item>
-											<item>None</item>
 										</content>
 									</object>
 									<object class="wxRadioBox" name="ID_RBAUTOCONTRAST">
