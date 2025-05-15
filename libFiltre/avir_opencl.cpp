@@ -1,7 +1,6 @@
 #pragma once
 #include <header.h>
 #include <avir_opencl.h>
-#include <libResource.h>
 #include "OpenCLParameter.h"
 #include "OpenCLContext.h"
 
@@ -17,7 +16,7 @@ UMat CAvirFilterOpenCL::ConvertToFloat(cv::UMat& src, const int& width, const in
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		//cv::Mat  paramDest(height, width, CV_32FC4, dest);
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 		UMat paramSrc(height, width, CV_32FC4);
 		auto clBuffer = static_cast<cl_mem>(paramSrc.handle(ACCESS_WRITE));
 
@@ -41,19 +40,19 @@ UMat CAvirFilterOpenCL::ConvertToFloat(cv::UMat& src, const int& width, const in
 		paramHeight->SetLibelle("height");
 		vecParam.push_back(paramHeight);
 
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 
 		ocl::Kernel kernel("ConvertToFloat", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -67,7 +66,7 @@ UMat CAvirFilterOpenCL::ConvertToFloat(cv::UMat& src, const int& width, const in
 			parameter->Add(static_cast<cl_kernel>(kernel.ptr()), numArg++);
 		}
 
-		// Configuration et exécution du kernel
+		// Configuration et exÃ©cution du kernel
 		size_t global_work_size[2] = { static_cast<size_t>(width), static_cast<size_t>(height) };
 		bool success = kernel.run(2, global_work_size, nullptr, true);
 		if (!success)
@@ -102,7 +101,7 @@ cv::UMat CAvirFilterOpenCL::GetDataOpenCLHtoV2D(cv::UMat& src)
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -125,20 +124,20 @@ cv::UMat CAvirFilterOpenCL::GetDataOpenCLHtoV2D(cv::UMat& src)
 		vecParam.push_back(paramHeight);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
 		ocl::Kernel kernel("GetDataHtoV2D", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -180,7 +179,7 @@ UMat CAvirFilterOpenCL::UpSample2D(cv::UMat& src, const int& width, const int& h
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramSrc.handle(ACCESS_WRITE));
 
@@ -224,14 +223,14 @@ UMat CAvirFilterOpenCL::UpSample2D(cv::UMat& src, const int& width, const int& h
 		vecParam.push_back(paramsrcResampleFactor);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 
@@ -241,7 +240,7 @@ UMat CAvirFilterOpenCL::UpSample2D(cv::UMat& src, const int& width, const int& h
 			kernel.create("UpSample2DUchar", program);
 		else
 			kernel.create("UpSample2D", program);
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -285,7 +284,7 @@ UMat CAvirFilterOpenCL::doResize2OpenCL2D(cv::UMat& src, const int& width, const
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -329,7 +328,7 @@ UMat CAvirFilterOpenCL::doResize2OpenCL2D(cv::UMat& src, const int& width, const
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
 		ocl::Kernel kernel("doResize22D", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -371,7 +370,7 @@ UMat CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& src, const int& width, const 
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -417,7 +416,7 @@ UMat CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& src, const int& width, const 
 		paramWidthInput->SetValue(src.size().width);
 		paramWidthInput->SetLibelle("inputWidth");
 		vecParam.push_back(paramWidthInput);
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		/*
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
@@ -425,7 +424,7 @@ UMat CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& src, const int& width, const 
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
@@ -435,7 +434,7 @@ UMat CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& src, const int& width, const 
 		else
 			kernel.create("doResize2D", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -479,7 +478,7 @@ UMat CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -517,21 +516,21 @@ UMat CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float
 		vecParam.push_back(paramTrMul0);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
 		ocl::Kernel kernel("GetDataHtoVDither2D", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -575,7 +574,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2D(cv::UMat& src, const int& width, const 
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -622,7 +621,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2D(cv::UMat& src, const int& width, const 
 		vecParam.push_back(paramIntStep);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		//wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 
 		cv::ocl::ProgramSource programSource(kernelSource);
@@ -630,7 +629,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2D(cv::UMat& src, const int& width, const 
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 
@@ -642,7 +641,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2D(cv::UMat& src, const int& width, const 
 		else
 			kernel.create("doFilter2D", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -686,7 +685,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DV(cv::UMat& src, const float* f, int fle
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -733,14 +732,14 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DV(cv::UMat& src, const float* f, int fle
 		vecParam.push_back(paramIntStep);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 
@@ -748,7 +747,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DV(cv::UMat& src, const float* f, int fle
 		ocl::Kernel kernel;
 		kernel.create("doFilter2DV", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -791,7 +790,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DLastStep(cv::UMat& src, const float* f, 
 		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 		vector<COpenCLParameter*> vecParam;
-		// Crée un UMat avec le type CV_8UC4
+		// CrÃ©e un UMat avec le type CV_8UC4
 
 		auto clBuffer = static_cast<cl_mem>(paramOutput.handle(ACCESS_WRITE));
 
@@ -853,14 +852,14 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DLastStep(cv::UMat& src, const float* f, 
 		vecParam.push_back(paramTrMul0);
 
 		/*
-		// Récupération du code source du kernel
+		// RÃ©cupÃ©ration du code source du kernel
 		wxString kernelSource = CLibResource::GetOpenCLUcharProgram("IDR_OPENCL_AVIR");
 		cv::ocl::ProgramSource programSource(kernelSource);
 		ocl::Context context = clExecCtx.getContext();
 
 		// Compilation du kernel
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		ocl::Program program = context.getProg(programSource, buildopt, errmsg);
 		*/
 
@@ -868,7 +867,7 @@ UMat CAvirFilterOpenCL::doFilterOpenCL2DLastStep(cv::UMat& src, const float* f, 
 		ocl::Kernel kernel;
 		kernel.create("doFilter2DLastStep", program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
 		if (err != CL_SUCCESS)
 		{

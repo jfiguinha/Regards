@@ -1,5 +1,5 @@
 #pragma once
-#include <libResource.h>
+#include <LibResource.h>
 #include "OpenCLParameter.h"
 #include "OpenCLContext.h"
 
