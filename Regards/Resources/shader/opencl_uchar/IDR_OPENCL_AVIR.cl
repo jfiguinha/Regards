@@ -228,10 +228,10 @@ __kernel void doFilter2DUchar(__global float4 * output, const __global uchar4 *i
 
 inline float pow24i_sRGB(float x0)
 {
-	const double x = (double)x0;
-	const double sx = sqrt(x);
-	const double ssx = sqrt(sx);
-	const double sssx = sqrt(ssx);
+	const float x = (float)x0;
+	const float sx = sqrt(x);
+	const float ssx = sqrt(sx);
+	const float sssx = sqrt(ssx);
 
 	return((float)(0.000213364515060263 + 0.0149409239419218 * x +
 		0.433973412731747 * sx + ssx * (0.659628181609715 * sssx -
