@@ -618,7 +618,6 @@
     <ClInclude Include="OilPaintingFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
     <ClInclude Include="panorama.h" />
-    <ClInclude Include="Pass2Scale.h" />
     <ClInclude Include="PencilSketch.h" />
     <ClInclude Include="PencilSketchParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
@@ -697,7 +696,6 @@
     <ClCompile Include="OilPaintingFilter.cpp" />
     <ClCompile Include="OpenCLEffect.cpp" />
     <ClCompile Include="panorama.cpp" />
-    <ClCompile Include="Pass2Scale.cpp" />
     <ClCompile Include="PencilSketch.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
