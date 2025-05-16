@@ -28,6 +28,7 @@ protected:
 			
 	virtual inline void Bicubic(const cv::Mat& in, uchar*& data, const int& x, const int& y, float* tabF1, float* tabF);
 
+    inline int clamp(const int& val, const int& minval, const int& maxval);
 	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
 
 	weightX * wX;

@@ -2,6 +2,12 @@
 #include "InterpolationBicubic.h"
 
 
+int CInterpolationBicubic::clamp(const int& val, const int& minval, const int& maxval)
+{
+	//std::clamp(val, minval, maxval);
+	return min(max(val, minval), maxval);
+}
+
 CInterpolationBicubic::CInterpolationBicubic(const double& dWidth)
 	: wX(nullptr), wY(nullptr), m_dWidth(dWidth)
 {

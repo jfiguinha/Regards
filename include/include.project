@@ -23,6 +23,12 @@
     <File Name="header.cpp" ExcludeProjConfig=""/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="avir_step.h"/>
+    <File Name="avir_opencl.h"/>
+    <File Name="avir_float8_avx.h"/>
+    <File Name="avir_float4_sse.h"/>
+    <File Name="avir_dil.h"/>
+    <File Name="avir.h"/>
     <File Name="lang_id.h"/>
     <File Name="picture_id.h"/>
     <File Name="header.h"/>

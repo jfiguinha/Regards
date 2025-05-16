@@ -190,6 +190,7 @@
         <Library Value="Geolocalisation"/>
         <Library Value="Filtre"/>
         <Library Value="RegardsCL"/>
+        <Library Value="Filtre"/>
         <Library Value="RegardsGL"/>
         <Library Value="VideoEffect"/>
         <Library Value="DeepLearning"/>
