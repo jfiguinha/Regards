@@ -17,6 +17,9 @@ cd vcpkg
 ./vcpkg install sdl2
 cd ..
 
+unzip ports_vcpkg_macos.zip
+cp -r ports_vcpkg/opencv4 vcpkg/ports
+
 unzip SVT-AV1-v2.3.0.zip
 cd SVT-AV1-v2.3.0/Build
 PATH="$HOME/bin:$PATH" cmake -DCMAKE_INSTALL_PREFIX="$LOCALPATH/vcpkg/installed/arm64-osx" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF ..
@@ -57,7 +60,7 @@ cd ..
 cd ..
 
 rm $LOCALPATH/vcpkg/installed/arm64-osx/lib/libpng.a
-rm -r $LOCALPATH/vcpkg/installed/arm64-osx/include/OpenCL
+cp $LOCALPATH/ports_vcpkg/include/poppler-global.h $LOCALPATH/vcpkg/installed/arm64-osx/include/poppler
 
 
 
