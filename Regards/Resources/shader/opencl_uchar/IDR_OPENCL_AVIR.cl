@@ -1,6 +1,3 @@
-//----------------------------------------------------
-//Conversion d'un bitmap en wxImage
-//----------------------------------------------------
 __constant float tbl[256] = {
 		0.0f, 0.000303527f, 0.000607054f, 0.000910581f, 0.001214108f,
 		0.001517635f, 0.001821162f, 0.002124689f, 0.002428216f, 0.002731743f,
@@ -173,23 +170,20 @@ __kernel void doFilter2D(__global float4 * output, const __global float4 *input,
 		float4 sum = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 		int position = min(k * step + j * widthSrc, heightSrc * widthSrc - 1);
 
-		// Pré-calculer la première valeur pour éviter de la répéter dans la boucle
 		float4 inputVal = input[position];
 		sum = f[0] * inputVal;
 
 		for (int i = 1; i < flen; i++) 
 		{
 			int pos1 = position + i;
-			int pos2 = max(position - i, 0); // Utilisation de max() pour éviter les indices négatifs
+			int pos2 = max(position - i, 0);
 
 			float4 ip1 = input[pos1];
 			float4 ip2 = input[pos2];
 
-			// Accumuler les contributions des deux positions
 			sum += f[i] * (ip1 + ip2);
 		}
 
-		// Écriture dans la mémoire globale
 		output[k + j * width] = sum;
 	}
 }
@@ -204,23 +198,20 @@ __kernel void doFilter2DUchar(__global float4 * output, const __global uchar4 *i
 		float4 sum = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 		int position = min(k * step + j * widthSrc, heightSrc * widthSrc - 1);
 
-		// Pré-calculer la première valeur pour éviter de la répéter dans la boucle
 		float4 inputVal = ucharTofloat(input[position]);
 		sum = f[0] * inputVal;
 
 		for (int i = 1; i < flen; i++) 
 		{
 			int pos1 = position + i;
-			int pos2 = max(position - i, 0); // Utilisation de max() pour éviter les indices négatifs
+			int pos2 = max(position - i, 0); 
 
 			float4 ip1 = ucharTofloat(input[pos1]);
 			float4 ip2 = ucharTofloat(input[pos2]);
 
-			// Accumuler les contributions des deux positions
 			sum += f[i] * (ip1 + ip2);
 		}
 
-		// Écriture dans la mémoire globale
 		output[k + j * width] = sum;
 	}
 }
@@ -335,7 +326,7 @@ __kernel void GetDataHtoV2D(__global float4 * output, const __global float4 *inp
 
 __kernel void GetDataHtoVDither2D(__global uchar4 * output, const __global float4 *input, int width, int height, float gm, float PkOut, float TrMul0)
 {
-	int k = get_global_id(0); // Index global
+	int k = get_global_id(0); 
 	int xPos = get_global_id(1);
 
 	if (k >= height) 
@@ -383,24 +374,20 @@ __kernel void doFilter2DLastStep(__global uchar4 * output, const __global float4
 		float4 sum = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 		int position = min(k * step + j * widthSrc, heightSrc * widthSrc - 1);
 
-		// Pré-calculer la première valeur pour éviter de la répéter dans la boucle
 		float4 inputVal = input[position];
 		sum = f[0] * inputVal;
 
 		for (int i = 1; i < flen; i++) 
 		{
 			int pos1 = position + i;
-			int pos2 = max(position - i, 0); // Utilisation de max() pour éviter les indices négatifs
+			int pos2 = max(position - i, 0); 
 
 			float4 ip1 = input[pos1];
 			float4 ip2 = input[pos2];
 
-			// Accumuler les contributions des deux positions
 			sum += f[i] * (ip1 + ip2);
 		}
 
-		// Écriture dans la mémoire globale
-		//output[k + j * width] = sum;
 		float4 inValue = sum;
 		float4 outValue = {
 			convertLin2SRGB(inValue.x) * gm,
@@ -442,23 +429,20 @@ __kernel void doFilter2DV(__global float4 * output, const __global float4 *input
 		float4 sum = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 		int position = min(k * step + j * widthSrc, heightSrc * widthSrc - 1);
 
-		// Pré-calculer la première valeur pour éviter de la répéter dans la boucle
 		float4 inputVal = input[position];
 		sum = f[0] * inputVal;
 
 		for (int i = 1; i < flen; i++) 
 		{
 			int pos1 = position + i;
-			int pos2 = max(position - i, 0); // Utilisation de max() pour éviter les indices négatifs
+			int pos2 = max(position - i, 0); 
 
 			float4 ip1 = input[pos1];
 			float4 ip2 = input[pos2];
 
-			// Accumuler les contributions des deux positions
 			sum += f[i] * (ip1 + ip2);
 		}
 
-		// Écriture dans la mémoire globale
 		output[j + k * width] = sum;
 	}
 }

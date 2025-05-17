@@ -47,11 +47,7 @@ void CAvirFilterOpenCL::GetDataOpenCLHtoV2D(cv::UMat& dest, cv::UMat& src)
 		paramHeight->SetLibelle("height");
 		vecParam.push_back(paramHeight);
 
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_HTOV");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel("GetDataHtoV2D", program);
 
 		// Définition du premier argument (outBuffer)
@@ -138,11 +134,7 @@ void CAvirFilterOpenCL::UpSample2D(cv::UMat& dest, cv::UMat& src, const int& wid
 		paramsrcResampleFactor->SetLibelle("ResampleFactor");
 		vecParam.push_back(paramsrcResampleFactor);
 
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_UPSAMPLE");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel;
 		if(src.type() == CV_8UC4)
 			kernel.create("UpSample2DUchar", program);
@@ -231,11 +223,7 @@ void CAvirFilterOpenCL::doResize2OpenCL2D(cv::UMat& dest, cv::UMat& src, const i
 		paramWidthInput->SetLibelle("inputWidth");
 		vecParam.push_back(paramWidthInput);
 
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_RESIZE");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel("doResize22D", program);
 
 		// Définition du premier argument (outBuffer)
@@ -325,11 +313,7 @@ void CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& dest, cv::UMat& src, const in
 		paramWidthInput->SetLibelle("inputWidth");
 		vecParam.push_back(paramWidthInput);
 		// Récupération du code source du kernel
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_RESIZE");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel;
 		if (src.type() == CV_8UC4)
 			kernel.create("doResize2DUchar", program);
@@ -422,11 +406,9 @@ void CAvirFilterOpenCL::doFilterOpenCL2D(cv::UMat& dest, cv::UMat& src, const in
 		paramIntStep->SetValue(step);
 		paramIntStep->SetLibelle("step");
 		vecParam.push_back(paramIntStep);
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_FILTER");
-#else
+
+
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 
 		ocl::Kernel kernel;
 		if (src.type() == CV_8UC4)
@@ -520,11 +502,7 @@ void CAvirFilterOpenCL::doFilterOpenCL2DV(cv::UMat& dest, cv::UMat& src, const f
 		paramIntStep->SetLibelle("step");
 		vecParam.push_back(paramIntStep);
 
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_FILTER");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel;
 		kernel.create("doFilter2DV", program);
 
@@ -629,11 +607,7 @@ void CAvirFilterOpenCL::doFilterOpenCL2DLastStep(cv::UMat& dest, cv::UMat& src, 
 		paramTrMul0->SetLibelle("TrMul0");
 		vecParam.push_back(paramTrMul0);
 
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_FILTER");
-#else
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel;
 		kernel.create("doFilter2DLastStep", program);
 
@@ -746,11 +720,8 @@ void CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& dest, cv::UMat& src,
 		paramTrMul0->SetValue(TrMul0);
 		paramTrMul0->SetLibelle("TrMul0");
 		vecParam.push_back(paramTrMul0);
-#ifdef __APPLE__
-		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR_HTOV");
-#else
+
 		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
-#endif
 		ocl::Kernel kernel("GetDataHtoVDither2D", program);
 
 		// Définition du premier argument (outBuffer)
