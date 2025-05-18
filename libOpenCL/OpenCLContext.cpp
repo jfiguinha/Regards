@@ -27,7 +27,6 @@
 
 
 #include <utility.h>
-#include <ncnn/gpu.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include "utility_opencl.h"
@@ -41,9 +40,8 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 extern bool isOpenCLInitialized;
-extern ncnn::VulkanDevice* vkdev;
 using namespace Regards::OpenCL;
-extern std::map<wxString, vector<char>> openclBinaryMapping;
+extern std::map<wxString, cv::ocl::Program> openclBinaryMapping;
 extern string buildOption;
 
 wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
@@ -82,112 +80,20 @@ wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param
 	return "";
 }
 
-void COpenCLContext::AssociateToVulkan()
-{
-
-	bool findNvidia = false;
-	bool findIntel = false;
-	bool findAmd = false;
-	int numNvidia = 0;
-	int numAmd = 0;
-	int numIntel = 0;
-	int select = 0;
-	cl_uint numPlatforms = ncnn::get_gpu_count();
-	for (int i = 0; i < numPlatforms; i++)
-	{
-		const ncnn::GpuInfo& pguInfo = ncnn::get_gpu_info(i);
-		string deviceName = pguInfo.device_name();
-		for (auto& c : deviceName)
-		{
-			c = tolower(c);
-		}
-		if (deviceName.find("nvidia") != std::string::npos)
-		{
-			findNvidia = true;
-			numNvidia = i;
-		}
-
-		if (deviceName.find("amd") != std::string::npos)
-		{
-			findAmd = true;
-			numAmd = i;
-		}
-
-		if (deviceName.find("intel") != std::string::npos)
-		{
-			findIntel = true;
-			numIntel = i;
-		}
-	}
-
-	if (platformName.find("Intel") == 0 && findIntel)
-	{
-		vkdev = ncnn::get_gpu_device(numIntel);
-		printf("Vulkan Intel \n");
-	}
-	else if (platformName.find("NVIDIA") == 0 && findNvidia)
-	{
-		vkdev = ncnn::get_gpu_device(numNvidia);
-		printf("Vulkan NVIDIA \n");
-	}
-	else if (findAmd)
-	{
-		vkdev = ncnn::get_gpu_device(numAmd);
-		printf("Vulkan AMD \n");
-	}
-	else
-		vkdev = nullptr;
-
-}
-
 cv::ocl::Program COpenCLContext::GetProgram(const wxString & programName)
 {
-	cv::ocl::Program program;
 	cv::String module_name = "REGARDS";
-	cv::ocl::Context context = clExecCtx.getContext();
-	std::map<wxString, vector<char>>::iterator it;
-	it = openclBinaryMapping.find(programName);
-	if (it == openclBinaryMapping.end())
-	{
-		// Récupération du code source du kernel
-		wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
-		//cv::ocl::ProgramSource programSource(module_name, programName, kernelSource, "");
-		// Compilation du kernel
-		string errmsg;
 
-		cv::ocl::ProgramSource src(module_name, programName.ToStdString(), kernelSource.ToStdString(), "");
-		cv::ocl::Program program(src, buildOption, errmsg);
-		if (program.ptr() == NULL)
-		{
-			std::cout << "Error: " << errmsg << std::endl;
-			return program;
-		}
+	std::map<wxString, cv::ocl::Program>::iterator it;
 
-		program.getBinary(openclBinaryMapping[programName]);
-		std::cout << "Program binary size: " << openclBinaryMapping[programName].size() << " bytes" << std::endl;
+    wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
+    cv::ocl::ProgramSource programSource(kernelSource);
+    cv::ocl::Context context = clExecCtx.getContext();//ocl::Context::getDefault(false);
 
-	}
-	cv::ocl::ProgramSource programSource;
-	try
-	{
-		
-		string errmsg;
-		programSource = cv::ocl::ProgramSource::fromBinary(module_name, programName.ToStdString(), (uchar*)&openclBinaryMapping[programName][0], openclBinaryMapping[programName].size());
-		if (programSource.empty())
-		{
-			std::cout << "Error: " << std::endl;
-			return program;
-		}
-		program.create(programSource, buildOption, errmsg);
-	}
-	catch (cv::Exception& e)
-	{
-		std::cerr << "COpenCLFilter::Interpolation exception caught: " << e.what() << std::endl;
-		std::cerr << "Invalid file format. Please input the name of an IMAGE file." << std::endl;
-
-	}
-
-	return program;
+    // Compile the kernel code
+    cv::String errmsg;
+    //openclBinaryMapping[programName] = context.getProg(programSource, buildOption, errmsg);
+    return context.getProg(programSource, buildOption, errmsg);
 }
 
 

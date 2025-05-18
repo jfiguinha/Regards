@@ -666,9 +666,102 @@ UMat CAvirFilterOpenCL::doResizeOpenCL2D(cv::UMat& src, const int& width, const 
 	return paramOutput;
 }
 
-UMat CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float PkOut, float TrMul0)
+UMat CAvirFilterOpenCL::GetDataOpenCLHtoVDither2DV(cv::UMat& src, float gm, float PkOut, float TrMul0)
 {
 	UMat paramOutput(src.size().width, src.size().height, CV_8UC4);
+	GetDataOpenCLHtoVDither2D(paramOutput, src, gm, PkOut, TrMul0);
+	return paramOutput;
+}
+
+void CAvirFilterOpenCL::GetDataOpenCLHtoVDither2DV(cv::UMat& dest, cv::UMat& src, float gm, float PkOut, float TrMul0)
+{
+	
+	cl_mem_flags flag;
+	{
+
+
+		bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
+		flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
+
+		vector<COpenCLParameter*> vecParam;
+		// Crée un UMat avec le type CV_8UC4
+
+		auto clBuffer = static_cast<cl_mem>(dest.handle(ACCESS_WRITE));
+
+		auto clInputBuffer = static_cast<cl_mem>(src.handle(ACCESS_READ));
+		auto input = new COpenCLParameterClMem(true);
+		input->SetValue(clInputBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+
+		auto paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(src.size().width);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		auto paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(src.size().height);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		auto paramGM = new COpenCLParameterFloat();
+		paramGM->SetValue(gm);
+		paramGM->SetLibelle("gm");
+		vecParam.push_back(paramGM);
+
+		auto paramPkOut = new COpenCLParameterFloat();
+		paramPkOut->SetValue(PkOut);
+		paramPkOut->SetLibelle("PkOut");
+		vecParam.push_back(paramPkOut);
+
+		auto paramTrMul0 = new COpenCLParameterFloat();
+		paramTrMul0->SetValue(TrMul0);
+		paramTrMul0->SetLibelle("TrMul0");
+		vecParam.push_back(paramTrMul0);
+
+		ocl::Program program = COpenCLContext::GetProgram("IDR_OPENCL_AVIR");
+		ocl::Kernel kernel("GetDataHtoVDither2DV", program);
+
+		// Définition du premier argument (outBuffer)
+		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &clBuffer);
+		if (err != CL_SUCCESS)
+		{
+			throw std::runtime_error("Failed to set kernel argument for outBuffer.");
+		}
+
+		// Ajout des autres arguments
+		int numArg = 1;
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			parameter->Add(static_cast<cl_kernel>(kernel.ptr()), numArg++);
+		}
+
+		size_t global_work_size[2] = { static_cast<size_t>(src.size().height), static_cast<size_t>(src.size().width) };
+		bool success = kernel.run(2, global_work_size, nullptr, true);
+		if (!success)
+		{
+			throw std::runtime_error("Failed to execute OpenCL kernel.");
+		}
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+
+	}
+
+}
+
+
+UMat CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float PkOut, float TrMul0)
+{
+	UMat paramOutput(src.size().height, src.size().width, CV_8UC4);
 	GetDataOpenCLHtoVDither2D(paramOutput, src, gm, PkOut, TrMul0);
 	return paramOutput;
 }
@@ -738,7 +831,7 @@ void CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(cv::UMat& dest, cv::UMat& src,
 			parameter->Add(static_cast<cl_kernel>(kernel.ptr()), numArg++);
 		}
 
-		size_t global_work_size[2] = { static_cast<size_t>(src.size().height), static_cast<size_t>(src.size().width) };
+		size_t global_work_size[2] = { static_cast<size_t>(src.size().width), static_cast<size_t>(src.size().height) };
 		bool success = kernel.run(2, global_work_size, nullptr, true);
 		if (!success)
 		{

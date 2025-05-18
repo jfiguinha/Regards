@@ -13,8 +13,12 @@ public:
 	static cv::UMat GetDataOpenCLHtoV2D(cv::UMat& src);
 	static void GetDataOpenCLHtoV2D(cv::UMat& dest, cv::UMat& src);
 	
-	static UMat GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float PkOut, float TrMul0);
+    static UMat GetDataOpenCLHtoVDither2D(cv::UMat& src, float gm, float PkOut, float TrMul0);
 	static void GetDataOpenCLHtoVDither2D(cv::UMat& dest, cv::UMat& src, float gm, float PkOut, float TrMul0);
+
+    
+	static UMat GetDataOpenCLHtoVDither2DV(cv::UMat& src, float gm, float PkOut, float TrMul0);
+	static void GetDataOpenCLHtoVDither2DV(cv::UMat& dest, cv::UMat& src, float gm, float PkOut, float TrMul0);
 
 	static UMat UpSample2D(cv::UMat& src, const int& width, const int& height, int widthSrc, int start, int outLen, int ResampleFactor);
 	static UMat doFilterOpenCL2D(cv::UMat& src, const int& width, const int& height, const float* f, int flen, int step);

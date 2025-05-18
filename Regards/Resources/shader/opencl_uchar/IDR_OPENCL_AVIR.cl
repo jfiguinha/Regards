@@ -326,39 +326,81 @@ __kernel void GetDataHtoV2D(__global float4 * output, const __global float4 *inp
 
 __kernel void GetDataHtoVDither2D(__global uchar4 * output, const __global float4 *input, int width, int height, float gm, float PkOut, float TrMul0)
 {
-	int k = get_global_id(0); 
+	int k = get_global_id(0); // Index global
 	int xPos = get_global_id(1);
 
-	if (k >= height) 
-		return;
+	if (k < width && xPos < height) 
+    {
 
-	int position = xPos + k * width;
-	int outpos = k + xPos * height;
+	    int position = k + xPos * width;
+        int outpos = position;
 
-	float4 inValue = input[position];
-	float4 outValue = {
-		convertLin2SRGB(inValue.x) * gm,
-		convertLin2SRGB(inValue.y) * gm,
-		convertLin2SRGB(inValue.z) * gm,
-		convertLin2SRGB(inValue.w) * gm
-	};
+	    float4 inValue = input[position];
+	    float4 outValue = {
+		    convertLin2SRGB(inValue.x) * gm,
+		    convertLin2SRGB(inValue.y) * gm,
+		    convertLin2SRGB(inValue.z) * gm,
+		    convertLin2SRGB(inValue.w) * gm
+	    };
 
-	const float c0 = 0;
+	    const float c0 = 0;
 
-	if (TrMul0 == 1.0f) {
-		output[outpos].x = (uchar)(clamp(round(outValue.x), c0, PkOut));
-		output[outpos].y = (uchar)(clamp(round(outValue.y), c0, PkOut));
-		output[outpos].z = (uchar)(clamp(round(outValue.z), c0, PkOut));
-		output[outpos].w = (uchar)(clamp(round(outValue.w), c0, PkOut));
-	} else {
-		const float TrMul = (float)TrMul0;
-		const float TrMulI = 1.0f / TrMul;
+	    if (TrMul0 == 1.0f) {
+		    output[outpos].x = (uchar)(clamp(round(outValue.x), c0, PkOut));
+		    output[outpos].y = (uchar)(clamp(round(outValue.y), c0, PkOut));
+		    output[outpos].z = (uchar)(clamp(round(outValue.z), c0, PkOut));
+		    output[outpos].w = (uchar)(clamp(round(outValue.w), c0, PkOut));
+	    } else {
+		    const float TrMul = (float)TrMul0;
+		    const float TrMulI = 1.0f / TrMul;
 
-		output[outpos].x = (uchar)(clamp(round(outValue.x * TrMulI) * TrMul, c0, PkOut));
-		output[outpos].y = (uchar)(clamp(round(outValue.y * TrMulI) * TrMul, c0, PkOut));
-		output[outpos].z = (uchar)(clamp(round(outValue.z * TrMulI) * TrMul, c0, PkOut));
-		output[outpos].w = (uchar)(clamp(round(outValue.w * TrMulI) * TrMul, c0, PkOut));
-	}
+		    output[outpos].x = (uchar)(clamp(round(outValue.x * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].y = (uchar)(clamp(round(outValue.y * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].z = (uchar)(clamp(round(outValue.z * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].w = (uchar)(clamp(round(outValue.w * TrMulI) * TrMul, c0, PkOut));
+	    }
+    }
+
+}
+
+
+__kernel void GetDataHtoVDither2DV(__global uchar4 * output, const __global float4 *input, int width, int height, float gm, float PkOut, float TrMul0)
+{
+	int k = get_global_id(0); // Index global
+	int xPos = get_global_id(1);
+
+	if (k < height && xPos < width) 
+	{
+	    int position = xPos + k * width;
+	    int outpos = k + xPos * height;
+
+	    float4 inValue = input[position];
+	    float4 outValue = {
+		    convertLin2SRGB(inValue.x) * gm,
+		    convertLin2SRGB(inValue.y) * gm,
+		    convertLin2SRGB(inValue.z) * gm,
+		    convertLin2SRGB(inValue.w) * gm
+	    };
+
+	    const float c0 = 0;
+
+	    if (TrMul0 == 1.0f) {
+		    output[outpos].x = (uchar)(clamp(round(outValue.x), c0, PkOut));
+		    output[outpos].y = (uchar)(clamp(round(outValue.y), c0, PkOut));
+		    output[outpos].z = (uchar)(clamp(round(outValue.z), c0, PkOut));
+		    output[outpos].w = (uchar)(clamp(round(outValue.w), c0, PkOut));
+	    } else {
+		    const float TrMul = (float)TrMul0;
+		    const float TrMulI = 1.0f / TrMul;
+
+		    output[outpos].x = (uchar)(clamp(round(outValue.x * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].y = (uchar)(clamp(round(outValue.y * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].z = (uchar)(clamp(round(outValue.z * TrMulI) * TrMul, c0, PkOut));
+		    output[outpos].w = (uchar)(clamp(round(outValue.w * TrMulI) * TrMul, c0, PkOut));
+	    }
+    }
+
+
 
 }
 
@@ -388,6 +430,7 @@ __kernel void doFilter2DLastStep(__global uchar4 * output, const __global float4
 			sum += f[i] * (ip1 + ip2);
 		}
 
+		//output[k + j * width] = sum;
 		float4 inValue = sum;
 		float4 outValue = {
 			convertLin2SRGB(inValue.x) * gm,

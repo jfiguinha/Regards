@@ -1429,7 +1429,7 @@ Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int heig
 		posY = heightIn - posY - 1;
 	}
 
-	// Création du rectangle avec des coordonnées absolues
+	// CrÃ©ation du rectangle avec des coordonnÃ©es absolues
 	return Rect(abs(posX), abs(posY), 0, 0);
 }
 
@@ -1452,29 +1452,29 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 			ocl::ProgramSource programSource;
 			// Compilation du kernel
 			String errmsg;
-			String buildopt = ""; // Options de compilation (vide par défaut)
+			String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 			programSource.fromBinary("COpenCLFilter", programName.ToStdString(), reinterpret_cast<uchar*>(openclBinaryMapping[programName].data()), openclBinaryMapping[programName].size());
 			program = context.getProg(programSource, buildopt, errmsg);
 		}
 		else
 		{
-			// Récupération du code source du kernel
+			// RÃ©cupÃ©ration du code source du kernel
 			wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
 			ocl::ProgramSource programSource(kernelSource);
 			// Compilation du kernel
 			String errmsg;
-			String buildopt = ""; // Options de compilation (vide par défaut)
+			String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 			
 			program = context.getProg(programSource, buildopt, errmsg);
 			program.getBinary(openclBinaryMapping[programName]);
 		}
 		
 		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
+		String buildopt = ""; // Options de compilation (vide par dÃ©faut)
 		*/
 		ocl::Kernel kernel(functionName, program);
 
-		// Définition du premier argument (outBuffer)
+		// DÃ©finition du premier argument (outBuffer)
 		cl_int err = clSetKernelArg(static_cast<cl_kernel>(kernel.ptr()), 0, sizeof(cl_mem), &outBuffer);
 		if (err != CL_SUCCESS)
 		{
@@ -1488,7 +1488,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 			parameter->Add(static_cast<cl_kernel>(kernel.ptr()), numArg++);
 		}
 
-		// Configuration et exécution du kernel
+		// Configuration et exÃ©cution du kernel
 		size_t global_work_size[2] = { static_cast<size_t>(width), static_cast<size_t>(height) };
 		bool success = kernel.run(2, global_work_size, nullptr, true);
 		if (!success)
@@ -1502,7 +1502,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 		return;
 	}
 
-	// Libération des ressources des paramètres
+	// LibÃ©ration des ressources des paramÃ¨tres
 	for (COpenCLParameter* parameter : vecParam)
 	{
 		if (!parameter->GetNoDelete())
@@ -1515,13 +1515,13 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 	vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
-	// Crée un UMat avec le type CV_8UC4
+	// CrÃ©e un UMat avec le type CV_8UC4
 	UMat paramSrc(height, width, CV_8UC4);
 
-	// Récupère le buffer OpenCL associé
+	// RÃ©cupÃ¨re le buffer OpenCL associÃ©
 	auto clBuffer = static_cast<cl_mem>(paramSrc.handle(ACCESS_WRITE));
 
-	// Exécute le code OpenCL
+	// ExÃ©cute le code OpenCL
 	ExecuteOpenCLCode(programName, functionName, vecParam, width, height, clBuffer);
 
 	return paramSrc;
@@ -1530,9 +1530,11 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
+    cout << "COpenCLFilter::Interpolation : " << method << endl;
+    
 	if (method > 7)
 	{
-		// Appelle une autre version d'Interpolation pour les méthodes avancées
+		// Appelle une autre version d'Interpolation pour les mÃ©thodes avancÃ©es
 		int localMethod = method - 7;
 		return Interpolation(widthOut, heightOut, rc, localMethod, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
 	}
@@ -1560,11 +1562,11 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			std::abs(rect_end.y - rect_begin.y)
 		);
 
-		// Ajustement des dimensions pour éviter les débordements
+		// Ajustement des dimensions pour Ã©viter les dÃ©bordements
 		rectGlobal.width = std::min(rectGlobal.width, inputData.cols - rectGlobal.x);
 		rectGlobal.height = std::min(rectGlobal.height, inputData.rows - rectGlobal.y);
 
-		// Extraction de la région d'intérêt
+		// Extraction de la rÃ©gion d'intÃ©rÃªt
 		inputData(rectGlobal).copyTo(cvImage);
 
 		// Rotation selon l'angle
@@ -1575,7 +1577,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			cv::rotate(cvImage, cvImage, rotationFlag);
 		}
 
-		// Application des méthodes d'interpolation
+		// Application des mÃ©thodes d'interpolation
 		if (method == 7)
 		{
 			
@@ -1617,15 +1619,23 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 
 				cv::UMat out;
 				
+                cout << "COpenCLFilter::Interpolation : Start "<< endl;
 
 				if(useParam)
+                {
+                    cout << "COpenCLFilter::Interpolation resizeImageOpenCLWithStep "<< endl;
 					out = ImageResizer.resizeImageOpenCLWithStep(src, param);
+                }
 				else
+                {
+                    cout << "COpenCLFilter::Interpolation resizeImageOpenCL "<< endl;
 					out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
-
-
+                }
+                cout << "COpenCLFilter::Interpolation : end "<< endl;
 					
-				cvtColor(out, cvImage, cv::COLOR_BGRA2BGR);
+                cvtColor(out, cvImage, cv::COLOR_BGR2BGRA);
+                
+                cout << "COpenCLFilter::Interpolation Conversion "<< endl;
 
 				end = clock();
 
