@@ -1619,23 +1619,16 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 
 				cv::UMat out;
 				
-                cout << "COpenCLFilter::Interpolation : Start "<< endl;
-
 				if(useParam)
                 {
-                    cout << "COpenCLFilter::Interpolation resizeImageOpenCLWithStep "<< endl;
 					out = ImageResizer.resizeImageOpenCLWithStep(src, param);
                 }
 				else
                 {
-                    cout << "COpenCLFilter::Interpolation resizeImageOpenCL "<< endl;
 					out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
                 }
-                cout << "COpenCLFilter::Interpolation : end "<< endl;
 					
-                cvtColor(out, cvImage, cv::COLOR_BGR2BGRA);
-                
-                cout << "COpenCLFilter::Interpolation Conversion "<< endl;
+                cvtColor(out, cvImage, cv::COLOR_BGRA2BGR);
 
 				end = clock();
 
