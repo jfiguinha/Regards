@@ -61,6 +61,7 @@ using namespace cv;
 #define BITDECALAGE_RESIZE 0
 #define BITDECALAGE_RESIZE2 0
 
+
 //#define BITDECALAGE_RESIZE2 128
 #if __cplusplus >= 201103L
 
@@ -4050,8 +4051,9 @@ namespace avir {
 						}
 					}
 
-					CAvirFilterOpenCL::GetDataOpenCLHtoVDither2DV(param->dest, output, param->gm, param->PkOut, param->TrMul);
-					return param->dest;
+					//CAvirFilterOpenCL::GetDataOpenCLHtoVDither2DV(param->dest, output, param->gm, param->PkOut, param->TrMul);
+					param->dest = CAvirFilterOpenCL::GetDataOpenCLHtoV2D(output);
+					return CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(param->dest, param->gm, param->PkOut, param->TrMul);
 				}
 
 
@@ -4354,15 +4356,12 @@ namespace avir {
 
 					td.processScanlineQueueOpenCL(param);
                     
+
 					if (td.output.type() != CV_8UC4)
 					{
-						cout << "resizeImageOpenCL td.output begin type : " << td.output.type() << td.output.size().width << " " << td.output.size().height << endl;
-                        //td.output = CAvirFilterOpenCL::GetDataOpenCLHtoV2D(td.output);
-
-                        param->dest = CAvirFilterOpenCL::GetDataOpenCLHtoVDither2DV(td.output, gm, PkOut, TrMul);
-                        cout << "resizeImageOpenCL param->dest type : " << param->dest.type() << param->dest.size().width << " " << param->dest.size().height << endl;
-                        cout << "resizeImageOpenCL td.output begin type : " << td.output.type() << td.output.size().width << " " << td.output.size().height << endl;
-						return param->dest;//.copyTo(td.output);
+						td.output = CAvirFilterOpenCL::GetDataOpenCLHtoV2D(td.output);
+                        param->dest = CAvirFilterOpenCL::GetDataOpenCLHtoVDither2D(td.output, gm, PkOut, TrMul);
+						return param->dest;
 					}
         
 					end = clock();
@@ -6262,6 +6261,13 @@ public:
 						paramUpSample->picture = CAvirFilterOpenCL::UpSample2D(src_cvt, widthOut, QueueLen, SrcLen, fs.OutPrefix, fs.OutLen, fs.ResampleFactor);
 						end = clock();
                         
+#ifdef TEST
+                        cout << "doUpsampleOpenCL begin" << endl;
+                        cv::Mat test;
+                        paramUpSample->picture.copyTo(test);
+                        cout << "doUpsampleOpenCL end" << endl;
+#endif
+
 						// Calculating total time taken by the program.
 						double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
 #ifdef WIN32
@@ -6299,6 +6305,12 @@ public:
 							paramDoFilter->picture = CAvirFilterOpenCL::doFilterOpenCL2DV(src, f, flen, fs.ResampleFactor);
 						end = clock();
 
+#ifdef TEST
+                        cout << "doFilterOpenCL begin" << endl;
+                        cv::Mat test;
+                        paramDoFilter->picture.copyTo(test);
+                        cout << "doFilterOpenCL end" << endl;
+#endif
 						// Calculating total time taken by the program.
 						double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
 #ifdef WIN32
@@ -6333,6 +6345,13 @@ public:
 						paramDoFilter->picture = CAvirFilterOpenCL::doFilterOpenCL2DLastStep(output, paramDoFilter->f, paramDoFilter->flen, paramDoFilter->step, param->gm, param->PkOut, param->TrMul);
 						end = clock();
                         
+#ifdef TEST
+                        cout << "doFilterOpenCL2DLastStep begin" << endl;
+                        cv::Mat test;
+                        paramDoFilter->picture.copyTo(test);
+                        cout << "doFilterOpenCL2DLastStep end" << endl;
+#endif
+
 						// Calculating total time taken by the program.
 						double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
 #ifdef WIN32
@@ -6399,6 +6418,13 @@ public:
 
 						paramResize->picture = CAvirFilterOpenCL::doResizeOpenCL2D(src, paramResize->width, paramResize->height, paramResize->PositionTab, paramResize->posTabSize, paramResize->ftp, paramResize->ftpTabSize, paramResize->IntFltLen);
 
+#ifdef TEST
+                        cout << "doResizeOpenCL begin" << endl;
+                        cv::Mat test;
+                        paramUpSample->picture.copyTo(test);
+                        cout << "doResizeOpenCL end" << endl;
+#endif
+
 						end = clock();
 
 						// Calculating total time taken by the program.
@@ -6448,6 +6474,7 @@ public:
 							int i = 0;
 							const float* const ftp = rpos->ftp;
 							paramResize->PositionTab[j] = rpos->SrcOffs;
+
 							if (startPos > 24)
 							{
 								if (paramUpSample != nullptr)
@@ -6455,9 +6482,9 @@ public:
 							}
 							else
 							{
-								//paramResize->PositionTab[j] += diff;
+								paramResize->PositionTab[j] += 19;
 							}
-
+							
 							for (int k = 0; k < IntFltLen0; k += 2)
 							{
 								const float xx = ftp[k];
@@ -6467,6 +6494,13 @@ public:
 						}
 
 						paramResize->picture = CAvirFilterOpenCL::doResize2OpenCL2D(src, paramResize->width, paramResize->height, paramResize->PositionTab, paramResize->posTabSize, paramResize->ftp, paramResize->ftpTabSize, paramResize->IntFltLen);
+
+#ifdef TEST
+                        cout << "doResize2OpenCL begin" << endl;
+                        cv::Mat test;
+                        paramUpSample->picture.copyTo(test);
+                        cout << "doResize2OpenCL end" << endl;
+#endif
 
 						end = clock();
 

@@ -1153,7 +1153,8 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 {
 	UMat dest;
 	UMat cvDest;
-	UMat cvDestBgra;
+	//UMat cvDestBgra;
+
 	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 
 	vector<COpenCLParameter*> vecParam;
@@ -1444,34 +1445,6 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 		ocl::Context context = clExecCtx.getContext();
 		ocl::Program program = COpenCLContext::GetProgram(programName);
 
-		/*
-		std::map<wxString, vector<char>>::iterator it;
-		it = openclBinaryMapping.find(programName);
-		if (it != openclBinaryMapping.end())
-		{
-			ocl::ProgramSource programSource;
-			// Compilation du kernel
-			String errmsg;
-			String buildopt = ""; // Options de compilation (vide par défaut)
-			programSource.fromBinary("COpenCLFilter", programName.ToStdString(), reinterpret_cast<uchar*>(openclBinaryMapping[programName].data()), openclBinaryMapping[programName].size());
-			program = context.getProg(programSource, buildopt, errmsg);
-		}
-		else
-		{
-			// Récupération du code source du kernel
-			wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
-			ocl::ProgramSource programSource(kernelSource);
-			// Compilation du kernel
-			String errmsg;
-			String buildopt = ""; // Options de compilation (vide par défaut)
-			
-			program = context.getProg(programSource, buildopt, errmsg);
-			program.getBinary(openclBinaryMapping[programName]);
-		}
-		
-		String errmsg;
-		String buildopt = ""; // Options de compilation (vide par défaut)
-		*/
 		ocl::Kernel kernel(functionName, program);
 
 		// Définition du premier argument (outBuffer)
@@ -1516,15 +1489,23 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
 	// Crée un UMat avec le type CV_8UC4
-	UMat paramSrc(height, width, CV_8UC4);
+	if(cvDestBgra.empty())
+	{
+		cvDestBgra.create(height, width, CV_8UC4);
+	}
+	else if (cvDestBgra.size().width != width || cvDestBgra.size().height != height)
+	{
+		cvDestBgra.create(height, width, CV_8UC4);
+	}
+	//UMat paramSrc(height, width, CV_8UC4);
 
 	// Récupère le buffer OpenCL associé
-	auto clBuffer = static_cast<cl_mem>(paramSrc.handle(ACCESS_WRITE));
+	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_WRITE));
 
 	// Exécute le code OpenCL
 	ExecuteOpenCLCode(programName, functionName, vecParam, width, height, clBuffer);
 
-	return paramSrc;
+	return cvDestBgra;
 }
 
 UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
@@ -1539,7 +1520,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		return Interpolation(widthOut, heightOut, rc, localMethod, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
 	}
 
-	UMat cvImage;
+	//UMat cvDestBgra;
 
 	try
 	{
@@ -1567,14 +1548,14 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		rectGlobal.height = std::min(rectGlobal.height, inputData.rows - rectGlobal.y);
 
 		// Extraction de la région d'intérêt
-		inputData(rectGlobal).copyTo(cvImage);
+		inputData(rectGlobal).copyTo(cvDestBgra);
 
 		// Rotation selon l'angle
 		if (angle == 90 || angle == 270 || angle == 180)
 		{
 			int rotationFlag = (angle == 90) ? ROTATE_90_COUNTERCLOCKWISE :
 				(angle == 270) ? ROTATE_90_CLOCKWISE : ROTATE_180;
-			cv::rotate(cvImage, cvImage, rotationFlag);
+			cv::rotate(cvDestBgra, cvDestBgra, rotationFlag);
 		}
 
 		// Application des méthodes d'interpolation
@@ -1587,7 +1568,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 				clock_t start, end;
 				start = clock();
 				cv::UMat src;
-				cvtColor(cvImage, src, cv::COLOR_BGR2BGRA);
+				cvtColor(cvDestBgra, src, cv::COLOR_BGR2BGRA);
 				avir::CImageResizer ImageResizer(8);
 				avir::CImageResizerVars Vars;
 				Vars.UseSRGBGamma = true;
@@ -1618,6 +1599,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 				}
 
 				cv::UMat out;
+
 				
 				if(useParam)
                 {
@@ -1627,8 +1609,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
                 {
 					out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
                 }
+				
+				//out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
 					
-                cvtColor(out, cvImage, cv::COLOR_BGRA2BGR);
+                cvtColor(out, cvDestBgra, cv::COLOR_BGRA2BGR);
 
 				end = clock();
 
@@ -1648,24 +1632,24 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			}
 			catch (...)
 			{
-				if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+				if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
 				{
-					resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+					resize(cvDestBgra, cvDestBgra, Size(widthOut, heightOut), method);
 				}
 			}
 			
 		}
 		else
 		{
-			if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+			if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
 			{
-				resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+				resize(cvDestBgra, cvDestBgra, Size(widthOut, heightOut), method);
 			}
 		}
 
 		// Application des transformations de flip
-		if (flipH) flip(cvImage, cvImage, (angle == 90 || angle == 270) ? 0 : 1);
-		if (flipV) flip(cvImage, cvImage, (angle == 90 || angle == 270) ? 1 : 0);
+		if (flipH) flip(cvDestBgra, cvDestBgra, (angle == 90 || angle == 270) ? 0 : 1);
+		if (flipV) flip(cvDestBgra, cvDestBgra, (angle == 90 || angle == 270) ? 1 : 0);
 	}
 	catch (Exception& e)
 	{
@@ -1673,8 +1657,8 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		std::cerr << "Invalid file format. Please input the name of an IMAGE file." << std::endl;
 
 		// Retourne une image vide en cas d'erreur
-		cvImage = UMat(heightOut, widthOut, CV_8UC3, Scalar(0, 0, 0));
+		cvDestBgra.create(heightOut, widthOut, CV_8UC3);
 	}
 
-	return cvImage;
+	return cvDestBgra;
 }

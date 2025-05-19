@@ -345,7 +345,7 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 	vecParam.push_back(paramColorSpace);
 
 
-	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
+	out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -432,7 +432,7 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 	vecParam.push_back(paramColorSpace);
 
 
-	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
+	out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -541,7 +541,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 	vecParam.push_back(paramColorSpace);
 
 
-	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
+	out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{

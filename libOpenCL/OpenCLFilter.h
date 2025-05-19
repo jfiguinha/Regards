@@ -80,7 +80,7 @@ namespace Regards
 
 			void NlMeans(cv::UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
 			             const int& searchWindowSize);
-			static cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
+			cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 			                                  vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 
 
@@ -88,7 +88,7 @@ namespace Regards
 			static int numTexture;
 
 		protected:
-			static void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
+			void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 			                              vector<COpenCLParameter*>& vecParam, const int& width, const int& height,
 			                              cl_mem& outBuffer);
 
@@ -110,6 +110,7 @@ namespace Regards
 			int oldheightDenoise = 0;
 			CAvirFilterParam* param = nullptr;
 			bool isVideo = false;
+			cv::UMat cvDestBgra;
 
 		};
 	}
