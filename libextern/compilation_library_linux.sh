@@ -110,4 +110,5 @@ sudo make install
 cd ..
 
 rm $LOCALPATH/vcpkg/installed/x64-linux/lib/libpng.a
+unzip opencl_dll.zip
 

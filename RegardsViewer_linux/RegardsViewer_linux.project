@@ -177,7 +177,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.1;-ljavascriptcoregtk-4.1;-pthread">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <Library Value="Viewer"/>
         <Library Value="ffmpeg"/>
@@ -235,7 +235,7 @@
         <Library Value="SM"/>
         <Library Value="curl"/>
         <Library Value="dl"/>
-        <Library Value="webkit2gtk-4.0"/>
+        <Library Value="webkit2gtk-4.1"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler-cpp"/>
         <Library Value="poppler"/>
