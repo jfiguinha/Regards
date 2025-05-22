@@ -33,8 +33,8 @@ plugs:
 layout:
     /usr/bin/gnome-control-center:
         symlink: $SNAP/usr/bin/gnome-control-center
-    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.0:
-        bind: $SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.0
+    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1:
+        bind: $SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1
     /usr/share/xml/iso-codes:
         bind: $SNAP/gnome-platform/usr/share/xml/iso-codes
     /usr/share/libdrm:
@@ -80,7 +80,7 @@ parts:
       - libxdmcp6
       - libxext6
       - libxml2
-      - libwebkit2gtk-4.0-dev
+      - libwebkit2gtk-4.1-dev
       - libxv1
       - libzmq5
       - mesa-vdpau-drivers

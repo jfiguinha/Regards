@@ -132,6 +132,7 @@
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/opencl_dll"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libVideoConverter"/>
@@ -463,10 +464,10 @@
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
-        <Library Value="omp"/>
         <Library Value="utf8_range"/>
         <Library Value="utf8_validity"/>
         <Library Value="openal"/>
+        <Library Value="omp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
