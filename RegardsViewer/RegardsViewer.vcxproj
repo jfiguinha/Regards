@@ -1,6 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_cuda|ARM64">
+      <Configuration>Debug_cuda</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_cuda|Win32">
+      <Configuration>Debug_cuda</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_cuda|x64">
+      <Configuration>Debug_cuda</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug_windows10|ARM64">
       <Configuration>Debug_windows10</Configuration>
       <Platform>ARM64</Platform>
@@ -35,6 +47,18 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release_avx|x64">
       <Configuration>Release_avx</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_cuda|ARM64">
+      <Configuration>Release_cuda</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_cuda|Win32">
+      <Configuration>Release_cuda</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_cuda|x64">
+      <Configuration>Release_cuda</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release_windows10|ARM64">
@@ -79,6 +103,16 @@
     <UseIntelTBB>false</UseIntelTBB>
     <UseIntelMKL>No</UseIntelMKL>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WindowsAppContainer>false</WindowsAppContainer>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+    <UseIntelTBB>false</UseIntelTBB>
+    <UseIntelMKL>No</UseIntelMKL>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -90,6 +124,16 @@
     <UseIntelMKL>No</UseIntelMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WindowsAppContainer>false</WindowsAppContainer>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <UseInteloneTBB>true</UseInteloneTBB>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -115,6 +159,14 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -132,6 +184,17 @@
     <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+    <UseInteloneTBB>true</UseInteloneTBB>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <InterproceduralOptimization>true</InterproceduralOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -172,7 +235,13 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|ARM64'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'" Label="Configuration">
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -181,16 +250,25 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'" Label="PropertySheets">
@@ -202,6 +280,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -210,6 +291,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)\libextern\SDL2-2.0.4\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\Intel64;$(ICInstallDir)compiler\lib\Intel64;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\libExtern\wxsvg-1.5.4\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include\</IncludePath>
+    <LibraryPath>C:\Program Files\AMD APP SDK\3.0\lib\x86;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x86;$(SolutionDir)\libextern\SDL2-2.0.4\lib\x86;$(SolutionDir)\libExtern\ffmpeg\lib\win32;$(SolutionDir)\libExtern\libxml2\lib\win32;C:\Program Files (x86)\Intel\Composer XE 2011 SP1\ipp\lib\ia32;C:\developpement\boost\1.52\intel\lib\ia32\debug;$(ICInstallDir)compiler\lib\ia32;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(SolutionDir)\libExtern\cairo-1.10.2\lib\win32;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -234,6 +322,17 @@
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(CUDA_PATH)\include;$(SolutionDir)libextern\cudnn\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\IMath;$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\cudnn\lib\x64;$(SolutionDir)x64\Debug;$(SolutionDir)libextern\rav1e\lib;$(oneMKLLibDir);$(oneTBBLibDir)\vc_mt;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Debug;$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Debug;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Debug;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\x265_2.5\build\vc15-x86_64\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib;$(CUDA_PATH)\lib\x64</LibraryPath>
+    <EmbedManifest>false</EmbedManifest>
+    <TargetName>RegardsViewer</TargetName>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -246,6 +345,13 @@
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir)\libextern\SDL2-2.0.4\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\libExtern\wxsvg-1.5.4\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include\</IncludePath>
+    <LibraryPath>C:\Program Files\AMD APP SDK\3.0\lib\x86;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x86;$(SolutionDir)\libextern\SDL2-2.0.4\lib\x86;$(SolutionDir)\libExtern\ffmpeg\lib\win32;$(SolutionDir)\libExtern\libxml2\lib\win32;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(SolutionDir)\libExtern\cairo-1.4.10\lib\win32;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -277,6 +383,17 @@
     <OutDir>$(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(SolutionDir)libextern\cudnn\lib\x64;$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\heif-master\build\lib\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(CUDA_PATH)\lib\x64</LibraryPath>
+    <IncludePath>$(CUDA_PATH)\include;$(SolutionDir)libextern\cudnn\include;$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\IMath;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <TargetName>RegardsViewer</TargetName>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <EmbedManifest>true</EmbedManifest>
+    <OutDir>$(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Release;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Release;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Release;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
@@ -297,13 +414,39 @@
     <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\heif-master\lib\arm64\Debug;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Debug;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|ARM64'">
+    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\heif-master\lib\arm64\Debug;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Debug;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\LLVM\lib;$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
+    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\LLVM\lib;$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+    <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>GLEW_STATIC;OPENGL;WX_PRECOMP;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\otherlib\libGlew;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glut32.lib;D3d9.lib;opengl32.lib;sdl2.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;libxml2.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;cairo.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexud.lib;wxexpat.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|Win32'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -393,6 +536,41 @@ XCOPY /Y "$(SolutionDir)libextern\mediainfo\*.dll" $(SolutionDir)$(Platform)\Reg
       </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>wxUSE_WEBVIEW_EDGE_STATIC ;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>cudnn.lib;opencv_cudaoptflow4d.lib;cudart.lib;cuda.lib;opencv_cudafilters4d.lib;opencv_cudawarping4d.lib;opencv_cudaimgproc4d.lib;opencv_cudaarithm4d.lib;opencv_cudafeatures2d4d.lib;OpenAL32.lib;GenericCodeGen.lib;glslang.lib;glslang-default-resource-limits.lib;MachineIndependent.lib;ncnn.lib;OSDependent.lib;SPIRV.lib;raw_r.lib;libheif.lib;avif.lib;jpeg.lib;sqlite3.lib;lz4d.lib;Shcore.lib;Ws2_32.lib;Userenv.lib;de265.lib;exiv2.lib;poppler.lib;mediainfod.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;aom.lib;opencv_calib3d4d.lib;opencv_objdetect4d.lib;opencv_core4d.lib;opencv_video4d.lib;opencv_dnn4d.lib;opencv_xfeatures2d4d.lib;opencv_features2d4d.lib;opencv_imgproc4d.lib;opencv_dnn_superres4d.lib;opencv_imgcodecs4d.lib;opencv_highgui4d.lib;opencv_flann4d.lib;opencv_face4d.lib;opencv_xphoto4d.lib;opencv_photo4d.lib;opencv_videoio4d.lib;opencv_tracking4d.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;exif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.84.1d.lib;tesseract54d.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32ud.lib;wxbase32ud_net.lib;wxbase32ud_xml.lib;turbojpeg.lib;wxmsw32ud_core.lib;wxmsw32ud_adv.lib;wxmsw32ud_html.lib;wxmsw32ud_gl.lib;wxmsw32ud_xrc.lib;wxmsw32ud_qa.lib;wxmsw32ud_aui.lib;wxmsw32ud_ribbon.lib;wxmsw32ud_stc.lib;wxmsw32ud_propgrid.lib;wxmsw32ud_richtext.lib;wxmsw32ud_webview.lib;SDL2d.lib;epoxy.lib;libcurl-d.lib;iconv.lib;openjp2.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpatd.lib;FreeImaged.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_2_d.lib;Imath-3_1.lib;yuv.lib;libx265.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\Resources</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -443,6 +621,40 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>GLEW_STATIC;OPENGL;WX_PRECOMP;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\otherlib\libglew;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glut32.lib;D3d9.lib;opengl32.lib;sdl2.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;libxml2.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;libcairo.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
@@ -603,6 +815,72 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\*.dll" $(Solut
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\ffmpeg.exe" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\mediainfo\*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</Command>
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <AdditionalManifestFiles>%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
+    </ManifestResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions> _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MinimalRebuild>false</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OpenMPSupport>true</OpenMPSupport>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <GenerateAlternateCodePaths>AVX</GenerateAlternateCodePaths>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
+      <DisableFunctionSplitting>false</DisableFunctionSplitting>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <ConformanceMode>false</ConformanceMode>
+      <Optimization>Full</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <AdditionalDependencies>cudnn.lib;opencv_cudaoptflow4.lib;cudart.lib;cuda.lib;opencv_cudafilters4.lib;opencv_cudawarping4.lib;opencv_cudaimgproc4.lib;opencv_cudaarithm4.lib;opencv_cudafeatures2d4.lib;OpenAL32.lib;opencv_fuzzy4.lib;GenericCodeGen.lib;glslang.lib;glslang-default-resource-limits.lib;MachineIndependent.lib;ncnn.lib;OSDependent.lib;SPIRV.lib;jpeg.lib;lz4.lib;Shcore.lib;sqlite3.lib;Ws2_32.lib;Userenv.lib;de265.lib;exiv2.lib;poppler.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;raw_r.lib;avif.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;exif.lib;libxml2.lib;leptonica-1.84.1.lib;tesseract54.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_2.lib;Imath-3_1.lib;yuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
+      <EnableUAC>false</EnableUAC>
+      <Profile>true</Profile>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(SolutionDir)$(Platform)\RegardsViewer_cuda\$(Configuration)\Resources</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -863,7 +1141,56 @@ XCOPY /Y "$(SolutionDir)libextern\qpdf-master\build\libqpdf\Debug\*.dll"  $(Solu
 XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|ARM64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ncnn.lib;yuv.lib;Shcore.lib;dav1d.lib;sqlite3.lib;libx265.lib;Ws2_32.lib;lz4d.lib;Userenv.lib;de265.lib;heif.lib;avif.lib;exiv2.lib;poppler.lib;mediainfod.lib;zend.lib;zlibd.lib;poppler-cpp.lib;qpdf.lib;raw_rd.lib;psapi.lib;aom.lib;opencv_calib3d4d.lib;opencv_objdetect4d.lib;opencv_core4d.lib;opencv_video4d.lib;opencv_dnn4d.lib;opencv_xfeatures2d4d.lib;opencv_features2d4d.lib;opencv_imgproc4d.lib;opencv_dnn_superres4d.lib;opencv_imgcodecs4d.lib;opencv_highgui4d.lib;opencv_flann4d.lib;opencv_face4d.lib;opencv_xphoto4d.lib;opencv_photo4d.lib;opencv_videoio4d.lib;opencv_tracking4d.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;exif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.84.1d.lib;tesseract54d.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32ud.lib;wxbase32ud_net.lib;wxbase32ud_xml.lib;turbojpeg.lib;wxmsw32ud_core.lib;wxmsw32ud_adv.lib;wxmsw32ud_html.lib;wxmsw32ud_gl.lib;wxmsw32ud_xrc.lib;wxmsw32ud_qa.lib;wxmsw32ud_aui.lib;wxmsw32ud_ribbon.lib;wxmsw32ud_stc.lib;wxmsw32ud_propgrid.lib;wxmsw32ud_richtext.lib;wxmsw32ud_webview.lib;SDL2d.lib;epoxy.lib;libcurl-d.lib;iconv.lib;openjp2.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpatd.lib;FreeImaged.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_2_d.lib;Imath-3_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
+XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\debug\qpdf*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\rav1e\bin\rav1e.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\avif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\opus.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\hwy.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libsharpyuv.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\aom.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\heif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\poppler*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\lcms2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\dav1d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\freetype.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\de265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\build\libqpdf\Debug\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
@@ -902,12 +1229,45 @@ XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
+    <ClCompile>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MinimalRebuild>false</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <OpenMPSupport>true</OpenMPSupport>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>yuv.lib;ncnn.lib;Shcore.lib;dav1d.lib;sqlite3.lib;lz4.lib;Ws2_32.lib;Userenv.lib;de265.lib;heif.lib;avif.lib;exiv2.lib;poppler.lib;raw_r.lib;mediainfo.lib;zlib.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;libwebpdemux.lib;libwebpdecoder.lib;libwebp.lib;exif.lib;libxml2.lib;leptonica-1.84.1.lib;tesseract54.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_2.lib;Imath-3_1.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\Release\qpdf29.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\tools\ffmpeg.exe"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="..\Regards\openexr_3\half.h" />
     <ClInclude Include="..\Regards\Regards.h" />
     <ClInclude Include="..\Regards\SqlInit.h" />
-    <ClInclude Include="..\Regards\TestFrame.h" />
     <ClInclude Include="..\Regards\toFloat.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -1035,16 +1395,20 @@ XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">header.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">header.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Regards\openexr_3\half.cpp" />
     <ClCompile Include="..\Regards\Regards.cpp">
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
     </ClCompile>
-    <ClCompile Include="..\Regards\TestFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc" />
