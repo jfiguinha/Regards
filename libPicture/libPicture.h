@@ -93,7 +93,7 @@ namespace Regards
 			vector<CImageVideoThumbnail*> LoadwxImageThumbnail(const wxString& szFileName,
 			                          const int& bitmapType, const int& width, const int& height,
 			                          const bool& compressJpeg, const bool& isThumbnail);
-
+			float CalculRatio(const int& width, const int& height);
 			//-----------------------------------------------------------------------------
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------

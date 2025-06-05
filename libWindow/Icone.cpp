@@ -720,12 +720,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 			int tailleAffichageBitmapWidth = 0;
 			int tailleAffichageBitmapHeight = 0;
 			float ratio = 0.0;
-			if (scaleBackup.IsOk())
-			{
-				bool isOk = scaleBackup.IsOk();
-				int scaleWidth = scaleBackup.GetWidth();
-				int scaleHeight = scaleBackup.GetHeight();
-			}
+
 
 
 			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
@@ -748,10 +743,6 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 				}
 				if (image.IsOk())
 				{
-					GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth,
-						tailleAffichageBitmapHeight,
-						ratio);
-
 					if (config->GetThumbnailQuality() == 0)
 						scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 					else if (photoDefault)
@@ -901,13 +892,12 @@ float CIcone::CalculRatio(const int& width, const int& height, const int& taille
 	{
 		newRatio = static_cast<float>(tailleBitmapHeight) / static_cast<float>(height);
 	}
-	else
+
+	if ((width * newRatio) > tailleBitmapWidth)
 	{
-		if ((width * newRatio) > tailleBitmapWidth)
-		{
-			newRatio = static_cast<float>(tailleBitmapHeight) / static_cast<float>(width);
-		}
+		newRatio = static_cast<float>(tailleBitmapWidth) / static_cast<float>(width);
 	}
+
 
 	return newRatio;
 }

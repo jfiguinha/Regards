@@ -41,7 +41,7 @@ namespace Regards
 				return m_nTextureID;
 			}
 
-			cl_mem GetOpenCLTexture();
+			//cl_mem GetOpenCLTexture();
 
 			int GetWidth();
 			int GetHeight();
@@ -49,7 +49,7 @@ namespace Regards
 
 		protected:
 
-			void checkErrors(std::string desc);
+			void checkErrors(const std::string & desc);
 			GLuint m_nTextureID;
             
             bool SetTextureData(Regards::Picture::CPictureArray& bitmap);

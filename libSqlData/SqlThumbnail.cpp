@@ -224,7 +224,7 @@ bool CSqlThumbnail::EraseThumbnail()
 
 	//tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
 	//	{
-	for (int i = 0; i < listPhoto.size(); i++)
+	for (int i = 0; i < files.size(); i++)
 	{
 		wxString filename = files[i];
 		if (wxFileExists(filename))
