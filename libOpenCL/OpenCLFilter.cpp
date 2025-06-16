@@ -9,11 +9,14 @@
 #include <RegardsConfigParam.h>
 #include <opencv2/core/ocl.hpp>
 #include <LibResource.h>
-
+#include <opencv2/dnn_superres.hpp>
 #include <avir.h>
 
 using namespace Regards::OpenCL;
 using namespace cv;
+
+using namespace dnn;
+using namespace dnn_superres;
 
 bool COpenCLFilter::isUsed = false;
 int COpenCLFilter::numTexture = -1;
@@ -22,11 +25,151 @@ extern std::map<wxString, vector<char>> openclBinaryMapping;
 #define OPENCV_METHOD
 
 
+#define EDSR 0
+#define ESPCN 1
+#define FSRCNN 2
+#define LapSRN 3
+
+bool isUsed = false;
+std::mutex muDnnSuperResImpl;
+int numTexture = -1;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
+class CSuperSampling
+{
+public:
+	CSuperSampling()
+	{
+	};
+
+	~CSuperSampling()
+	{
+	};
+	string GenerateModelPath(string modelName, int scale);
+	bool TestIfMethodIsValid(int method, int scale);
+	UMat upscaleImage(UMat img, int method, int scale);
+
+private:
+	DnnSuperResImpl sr;
+	int oldscale = -1;
+	int oldmethod = -1;
+};
+
+string CSuperSampling::GenerateModelPath(string modelName, int scale)
+{
+	wxString path = "";
+#ifdef WIN32
+	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
+#else
+	path = CFileUtility::GetResourcesFolderPath() + "/model/" + modelName + "_x" + to_string(scale) + ".pb";
+#endif
+
+	return CConvertUtility::ConvertToStdString(path);
+}
+
+bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
+{
+	if (method == EDSR && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	if (method == ESPCN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	if (method == FSRCNN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	if (method == LapSRN && (scale == 2 || scale == 4 || scale == 8))
+	{
+		return true;
+	}
+	return false;
+}
+
+UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
+{
+	
+	isUsed = true;
+	UMat outputImage;
+
+	if (oldscale != scale || oldmethod != method)
+	{
+		try
+		{
+			switch (method)
+			{
+			case EDSR:
+				{
+					string algorithm = "edsr";
+					sr.readModel(GenerateModelPath("EDSR", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
+
+			case ESPCN:
+				{
+					string algorithm = "espcn";
+					sr.readModel(GenerateModelPath("ESPCN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
+			case FSRCNN:
+				{
+					string algorithm = "fsrcnn";
+					sr.readModel(GenerateModelPath("FSRCNN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
+			case LapSRN:
+				{
+					string algorithm = "lapsrn";
+					sr.readModel(GenerateModelPath("LapSRN", scale));
+					sr.setModel(algorithm, scale);
+				}
+				break;
+			}
+
+			sr.setPreferableTarget(DNN_TARGET_OPENCL);
+			sr.upsample(img, outputImage);
+
+			//muDnnSuperResImpl.unlock();
+		}
+		catch (Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
+	}
+	else
+	{
+		try
+		{
+			sr.upsample(img, outputImage);
+		}
+		catch (Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
+	}
+
+	oldscale = scale;
+	oldmethod = method;
+	isUsed = false;
+	return outputImage;
+}
+
+
 COpenCLFilter::COpenCLFilter()
 {
 	bool useMemory = (ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	hq3d = nullptr;
+    superSampling = new CSuperSampling();
 
 }
 
@@ -40,6 +183,8 @@ COpenCLFilter::~COpenCLFilter()
 		delete param;
 		param = nullptr;
 	}
+    
+    delete superSampling;
 
 }
 
@@ -1511,55 +1656,131 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {
+    bool _useSuperResolution = false;
     cout << "COpenCLFilter::Interpolation : " << method << endl;
-    
-	if (method > 7)
+    CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+    int superDnn = regardsParam->GetSuperResolutionType();
+    int useSuperResolution = regardsParam->GetUseSuperResolution();
+    if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
+        _useSuperResolution = true;
+
+    if (method > 7 && !_useSuperResolution)
 	{
 		// Appelle une autre version d'Interpolation pour les méthodes avancées
 		int localMethod = method - 7;
 		return Interpolation(widthOut, heightOut, rc, localMethod, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
 	}
-
-	//UMat cvDestBgra;
+	
+	UMat cvImage;
+	//inputData.copyTo(cvImage);
 
 	try
 	{
-		// Calcul des ratios
 		float ratioX = static_cast<float>(inputData.cols) / rc.width;
 		float ratioY = static_cast<float>(inputData.rows) / rc.height;
 		if (angle == 90 || angle == 270)
 		{
-			std::swap(ratioX, ratioY);
+			ratioX = static_cast<float>(inputData.cols) / static_cast<float>(rc.height);
+			ratioY = static_cast<float>(inputData.rows) / static_cast<float>(rc.width);
 		}
 
-		// Calcul des rectangles
-		Rect rect_begin = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
-		Rect rect_end = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
-
-		Rect rectGlobal(
-			std::min(rect_begin.x, rect_end.x),
-			std::min(rect_begin.y, rect_end.y),
-			std::abs(rect_end.x - rect_begin.x),
-			std::abs(rect_end.y - rect_begin.y)
-		);
-
-		// Ajustement des dimensions pour éviter les débordements
-		rectGlobal.width = std::min(rectGlobal.width, inputData.cols - rectGlobal.x);
-		rectGlobal.height = std::min(rectGlobal.height, inputData.rows - rectGlobal.y);
-
-		// Extraction de la région d'intérêt
-		inputData(rectGlobal).copyTo(cvDestBgra);
-
-		// Rotation selon l'angle
-		if (angle == 90 || angle == 270 || angle == 180)
+		Rect rectGlobal;
+		Rect rect_begin = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX,
+		                             ratioY, 0, 0, rc.x, rc.y);
+		Rect rect_end = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX,
+		                           ratioY, widthOut, heightOut, rc.x, rc.y);
+		rectGlobal.x = rect_begin.x;
+		rectGlobal.y = rect_begin.y;
+		rectGlobal.width = rect_end.x;
+		rectGlobal.height = rect_end.y;
+		if (rectGlobal.x > rectGlobal.width)
 		{
-			int rotationFlag = (angle == 90) ? ROTATE_90_COUNTERCLOCKWISE :
-				(angle == 270) ? ROTATE_90_CLOCKWISE : ROTATE_180;
-			cv::rotate(cvDestBgra, cvDestBgra, rotationFlag);
+			int x_end = rectGlobal.x;
+			int x = rectGlobal.width;
+			rectGlobal.x = x;
+			rectGlobal.width = x_end - x;
+		}
+		else
+		{
+			rectGlobal.width -= rectGlobal.x;
 		}
 
-		// Application des méthodes d'interpolation
-		if (method == 7)
+		if (rectGlobal.y > rectGlobal.height)
+		{
+			int y_end = rectGlobal.y;
+			int y = rectGlobal.height;
+			rectGlobal.y = y;
+			rectGlobal.height = y_end - y;
+		}
+		else
+		{
+			rectGlobal.height -= rectGlobal.y;
+		}
+
+		if ((rectGlobal.height + rectGlobal.y) > inputData.rows)
+		{
+			rectGlobal.height = inputData.rows - rectGlobal.y;
+		}
+		if ((rectGlobal.width + rectGlobal.x) > inputData.cols)
+		{
+			rectGlobal.width = inputData.cols - rectGlobal.x;
+		}
+
+		//cv::UMat crop;
+		inputData(rectGlobal).copyTo(cvImage);
+		//Mat global;
+		//cvImage.copyTo(global);
+		//crop.copyTo(cvImage);
+		//cvImage = cvImage(rectGlobal);
+
+		if (angle == 270)
+		{
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+			else if (flipV || flipH)
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+		}
+		else if (angle == 90)
+		{
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+			else if (flipV || flipH)
+				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+		}
+		else if (angle == 180)
+		{
+			cv::rotate(cvImage, cvImage, ROTATE_180);
+		}
+
+
+		/*
+		nearest neighbor interpolation
+		INTER_NEAREST = 0,
+		bilinear interpolation
+		INTER_LINEAR = 1,
+		bicubic interpolation
+		INTER_CUBIC = 2,
+		resampling using pixel area relation. It may be a preferred method for image decimation, as
+		it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
+		method.
+		INTER_AREA = 3,
+		Lanczos interpolation over 8x8 neighborhood
+		INTER_LANCZOS4 = 4,
+		Bit exact bilinear interpolation
+		INTER_LINEAR_EXACT = 5,
+		Bit exact nearest neighbor interpolation. This will produce same results as
+		the nearest neighbor method in PIL, scikit-image or Matlab.
+		INTER_NEAREST_EXACT = 6,
+		*/
+		if (_useSuperResolution)
+		{
+			cvImage = superSampling->upscaleImage(cvImage, superDnn, (ratio / 100));
+		}
+		else if (method == 7)
 		{
 			
 			try
@@ -1639,26 +1860,43 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			}
 			
 		}
-		else
+		else if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 		{
-			if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
-			{
-				resize(cvDestBgra, cvDestBgra, Size(widthOut, heightOut), method);
-			}
+			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
 		}
 
-		// Application des transformations de flip
-		if (flipH) flip(cvDestBgra, cvDestBgra, (angle == 90 || angle == 270) ? 0 : 1);
-		if (flipV) flip(cvDestBgra, cvDestBgra, (angle == 90 || angle == 270) ? 1 : 0);
+		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+
+		//Apply Transformation
+
+		if (flipH)
+		{
+			if (angle == 90 || angle == 270)
+				flip(cvImage, cvImage, 0);
+			else
+				flip(cvImage, cvImage, 1);
+		}
+		if (flipV)
+		{
+			if (angle == 90 || angle == 270)
+				flip(cvImage, cvImage, 1);
+			else
+				flip(cvImage, cvImage, 0);
+		}
+		//
 	}
 	catch (Exception& e)
 	{
-		std::cerr << "COpenCLFilter::Interpolation exception caught: " << e.what() << std::endl;
-		std::cerr << "Invalid file format. Please input the name of an IMAGE file." << std::endl;
-
-		// Retourne une image vide en cas d'erreur
-		cvDestBgra.create(heightOut, widthOut, CV_8UC3);
+		const char* err_msg = e.what();
+		std::cout << "COpenCLFilter::Interpolation exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        std::cout << "width : " << widthOut << "height : " <<  heightOut << std::endl;
+        cv::Mat image(widthOut, heightOut, CV_8UC3, cv::Scalar(0, 0, 0));
+        image.copyTo(cvImage);
 	}
 
-	return cvDestBgra;
+
+	return cvImage;
+    
 }

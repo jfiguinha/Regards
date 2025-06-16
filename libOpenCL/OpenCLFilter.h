@@ -12,6 +12,7 @@
 using namespace Regards::OpenGL;
 
 class CAvirFilterParam;
+class CSuperSampling;
 
 namespace Regards
 {
@@ -111,6 +112,7 @@ namespace Regards
 			CAvirFilterParam* param = nullptr;
 			bool isVideo = false;
 			cv::UMat cvDestBgra;
+            CSuperSampling * superSampling;
 
 		};
 	}
