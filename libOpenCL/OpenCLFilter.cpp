@@ -1671,7 +1671,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		return Interpolation(widthOut, heightOut, rc, localMethod, inputData, inputData.cols, inputData.rows, flipH, flipV, angle);
 	}
 	
-	UMat cvImage;
+	//UMat cvImage;
 	//inputData.copyTo(cvImage);
 
 	try
@@ -1727,7 +1727,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		}
 
 		//cv::UMat crop;
-		inputData(rectGlobal).copyTo(cvImage);
+		inputData(rectGlobal).copyTo(cvDestBgra);
 		//Mat global;
 		//cvImage.copyTo(global);
 		//crop.copyTo(cvImage);
@@ -1736,24 +1736,24 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		if (angle == 270)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_CLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_COUNTERCLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_CLOCKWISE);
 		}
 		else if (angle == 90)
 		{
 			if (flipV && flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_COUNTERCLOCKWISE);
 			else if (flipV || flipH)
-				cv::rotate(cvImage, cvImage, ROTATE_90_CLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_CLOCKWISE);
 			else
-				cv::rotate(cvImage, cvImage, ROTATE_90_COUNTERCLOCKWISE);
+				cv::rotate(cvDestBgra, cvDestBgra, ROTATE_90_COUNTERCLOCKWISE);
 		}
 		else if (angle == 180)
 		{
-			cv::rotate(cvImage, cvImage, ROTATE_180);
+			cv::rotate(cvDestBgra, cvDestBgra, ROTATE_180);
 		}
 
 
@@ -1778,7 +1778,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		*/
 		if (_useSuperResolution)
 		{
-			cvImage = superSampling->upscaleImage(cvImage, superDnn, (ratio / 100));
+			cvDestBgra = superSampling->upscaleImage(cvDestBgra, superDnn, (ratio / 100));
 		}
 		else if (method == 7)
 		{
@@ -1860,29 +1860,29 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			}
 			
 		}
-		else if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+		else if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
 		{
-			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+			resize(cvDestBgra, cvDestBgra, Size(widthOut, heightOut), method);
 		}
 
-		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-			resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+		if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
+			resize(cvDestBgra, cvDestBgra, Size(widthOut, heightOut), method);
 
 		//Apply Transformation
 
 		if (flipH)
 		{
 			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 0);
+				flip(cvDestBgra, cvDestBgra, 0);
 			else
-				flip(cvImage, cvImage, 1);
+				flip(cvDestBgra, cvDestBgra, 1);
 		}
 		if (flipV)
 		{
 			if (angle == 90 || angle == 270)
-				flip(cvImage, cvImage, 1);
+				flip(cvDestBgra, cvDestBgra, 1);
 			else
-				flip(cvImage, cvImage, 0);
+				flip(cvDestBgra, cvDestBgra, 0);
 		}
 		//
 	}
@@ -1893,10 +1893,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
         std::cout << "width : " << widthOut << "height : " <<  heightOut << std::endl;
         cv::Mat image(widthOut, heightOut, CV_8UC3, cv::Scalar(0, 0, 0));
-        image.copyTo(cvImage);
+        image.copyTo(cvDestBgra);
 	}
 
 
-	return cvImage;
+	return cvDestBgra;
     
 }

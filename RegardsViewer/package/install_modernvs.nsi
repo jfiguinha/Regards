@@ -16,9 +16,10 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
 ;--------------------------------
 ;General
-!define MUI_PRODUCT "Regards Viewer 2.82.7"
+!define MUI_PRODUCT "RegardsViewer 2.0"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
+!define MUI_VERSION "2.87.7"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
@@ -134,7 +135,7 @@ Call openLinkNewWindow
 
 ;--------------------------------
 ;Installer Sections
-Section "Regards Viewer 2.82.7" SecRegardsViewer
+Section "RegardsViewer" SecRegardsViewer
 
   SetOutPath "$INSTDIR"
 
@@ -160,10 +161,16 @@ Section "Regards Viewer 2.82.7" SecRegardsViewer
   CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
   CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\${MUI_FILE}.exe" 0
 
+  ; Obtain the size of the files, in kilobytes, in section SEC_01
+  SectionGetSize "${SecRegardsViewer}" $0
+
   ;write uninstall information to the registry
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\Uninstall.exe"
-
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayVersion" "${MUI_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "Publisher" "FIGUINHA"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayIcon" "$INSTDIR\Resources\viewer.ico"
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "EstimatedSize" 0x000668A0
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
 
@@ -205,8 +212,8 @@ Section "Uninstall"
 
   RMDIR /r "$INSTDIR"
 
-  DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
-
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
+ 
 SectionEnd
 
 
