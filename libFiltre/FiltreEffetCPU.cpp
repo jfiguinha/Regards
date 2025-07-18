@@ -1431,59 +1431,57 @@ Mat CFiltreEffetCPU::Interpolation(const Mat& inputData, const int& widthOut, co
 			cv::rotate(cvImage, cvImage, ROTATE_180);
 		}
 
-		if (ratio != 100)
+		// Application des méthodes d'interpolation
+		if (method == 7)
 		{
-			// Application des méthodes d'interpolation
-			if (method == 7)
+			cv::Mat inBuf, outBuf(Size(widthOut, heightOut), CV_8UC4, Scalar(0, 0, 0));
+			cvtColor(cvImage, inBuf, cv::COLOR_BGR2BGRA);
+
+			avir::CImageResizer ImageResizer(8);
+			avir::CImageResizerVars Vars;
+			Vars.UseSRGBGamma = true;
+			ImageResizer.resizeImage(
+				reinterpret_cast<uint8_t*>(inBuf.data), inBuf.cols, inBuf.rows, inBuf.step,
+				reinterpret_cast<uint8_t*>(outBuf.data), widthOut, heightOut, 4, 0, &Vars
+			);
+
+			cvtColor(outBuf, cvImage, cv::COLOR_BGRA2BGR);
+		}
+		else if (method > 7)
+		{
+			int local_method = method - 7 + 1000;
+			std::unique_ptr<CInterpolationBicubic> m_LocalFilter;
+
+			switch (local_method)
 			{
-				cv::Mat inBuf, outBuf(Size(widthOut, heightOut), CV_8UC4, Scalar(0, 0, 0));
-				cvtColor(cvImage, inBuf, cv::COLOR_BGR2BGRA);
-
-				avir::CImageResizer ImageResizer(8);
-				avir::CImageResizerVars Vars;
-				Vars.UseSRGBGamma = true;
-				ImageResizer.resizeImage(
-					reinterpret_cast<uint8_t*>(inBuf.data), inBuf.cols, inBuf.rows, inBuf.step,
-					reinterpret_cast<uint8_t*>(outBuf.data), widthOut, heightOut, 4, 0, &Vars
-				);
-
-				cvtColor(outBuf, cvImage, cv::COLOR_BGRA2BGR);
+			case BOXFILTER: m_LocalFilter = std::make_unique<CBoxFilter>(); break;
+			case BILINEARFILTER: m_LocalFilter = std::make_unique<CBilinearFilter>(); break;
+			case GAUSSIANFILTER: m_LocalFilter = std::make_unique<CGaussianFilter>(); break;
+			case HAMMINGFILTER: m_LocalFilter = std::make_unique<CHammingFilter>(); break;
+			case BLACKMANFILTER: m_LocalFilter = std::make_unique<CBlackmanFilter>(); break;
+			case QUADRATICFILTER: m_LocalFilter = std::make_unique<CQuadraticFilter>(); break;
+			case MITCHELLFILTER: m_LocalFilter = std::make_unique<CMitchellFilter>(); break;
+			case TRIANGLEFILTER: m_LocalFilter = std::make_unique<CTriangleFilter>(); break;
+			case HERMITEFILTER: m_LocalFilter = std::make_unique<CHermiteFilter>(); break;
+			case HANNINGFILTER: m_LocalFilter = std::make_unique<CHanningFilter>(); break;
+			case CATROMFILTER: m_LocalFilter = std::make_unique<CCatromFilter>(); break;
 			}
-			else if (method > 7)
-			{
-				int local_method = method - 7 + 1000;
-				std::unique_ptr<CInterpolationBicubic> m_LocalFilter;
 
-				switch (local_method)
-				{
-				case BOXFILTER: m_LocalFilter = std::make_unique<CBoxFilter>(); break;
-				case BILINEARFILTER: m_LocalFilter = std::make_unique<CBilinearFilter>(); break;
-				case GAUSSIANFILTER: m_LocalFilter = std::make_unique<CGaussianFilter>(); break;
-				case HAMMINGFILTER: m_LocalFilter = std::make_unique<CHammingFilter>(); break;
-				case BLACKMANFILTER: m_LocalFilter = std::make_unique<CBlackmanFilter>(); break;
-				case QUADRATICFILTER: m_LocalFilter = std::make_unique<CQuadraticFilter>(); break;
-				case MITCHELLFILTER: m_LocalFilter = std::make_unique<CMitchellFilter>(); break;
-				case TRIANGLEFILTER: m_LocalFilter = std::make_unique<CTriangleFilter>(); break;
-				case HERMITEFILTER: m_LocalFilter = std::make_unique<CHermiteFilter>(); break;
-				case HANNINGFILTER: m_LocalFilter = std::make_unique<CHanningFilter>(); break;
-				case CATROMFILTER: m_LocalFilter = std::make_unique<CCatromFilter>(); break;
-				}
-
-				if (m_LocalFilter)
-				{
-					cv::Mat outBuf(Size(widthOut, heightOut), CV_8UC3, Scalar(0, 0, 0));
-					m_LocalFilter->Execute(cvImage, outBuf);
-					cvImage = outBuf;
-				}
-			}
-			else
+			if (m_LocalFilter)
 			{
-				if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-				{
-					resize(cvImage, cvImage, Size(widthOut, heightOut), method);
-				}
+				cv::Mat outBuf(Size(widthOut, heightOut), CV_8UC3, Scalar(0, 0, 0));
+				m_LocalFilter->Execute(cvImage, outBuf);
+				cvImage = outBuf;
 			}
 		}
+		else
+		{
+			if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+			{
+				resize(cvImage, cvImage, Size(widthOut, heightOut), method);
+			}
+		}
+
 
 
 
