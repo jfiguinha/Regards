@@ -178,9 +178,7 @@ wxString CBitmapInfos::GenerateDefaultTimeStamp()
 {
 	wxFileName file = wxFileName(filename);
 	wxDateTime dt = file.GetModificationTime();
-
-	wxDateTime now = wxDateTime::Now();
-	wxString str = now.Format(wxT("%Y-%m-%d"), wxDateTime::CET);
+	wxString str = dt.Format(wxT("%Y-%m-%d"), wxDateTime::CET);
 
 	return str;
 }
