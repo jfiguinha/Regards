@@ -62,7 +62,12 @@ vector<cv::Mat> CHeic::GetAllPicture(const char * filename, int& delay)
    
     int numImages = heif_context_get_number_of_top_level_images(ctx);
     std::vector<heif_item_id> IDs(numImages);
-    heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
+    int nbReturnImage = heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
+	if (nbReturnImage == 0)
+	{
+		heif_context_free(ctx);
+		return listPicture;
+	}
 
     for (int i = 0; i < numImages; i++) {
 		struct heif_image_handle* handle;
@@ -153,11 +158,17 @@ void CHeic::SavePicture(const char * filenameOut, const int& format, cv::Mat& so
 			                        heif_colorspace_RGB,
 			                        heif_chroma_interleaved_RGBA,
 			                        &image);
+			if (err.code != heif_error_Ok) {
+				heif_context_free(ctx);
+				return;
+			}
 
-
-			heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height,
+			err = heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height,
 			                     32);
-
+			if (err.code != heif_error_Ok) {
+				heif_context_free(ctx);
+				return;
+			}
 			cvtColor(source, source, cv::COLOR_BGRA2RGBA);
 			int stride;
 			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
@@ -188,8 +199,9 @@ void CHeic::SavePicture(const char * filenameOut, const int& format, cv::Mat& so
 
 			heif_context_free(ctx);
 		}
-	}
 
+	}
+	
 }
 
 
@@ -199,6 +211,9 @@ cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPictu
     cv::Mat picture;
     
     heif_context* ctx = heif_context_alloc();
+	if (ctx == nullptr)
+		return picture;
+
     heif_context_read_from_file(ctx, filename, nullptr);
    
     int numImages = heif_context_get_number_of_top_level_images(ctx);
@@ -249,7 +264,14 @@ int CHeic::GetNbFrame(const char * filename)
 	try
 	{
         heif_context* ctx = heif_context_alloc();
-        heif_context_read_from_file(ctx, filename, nullptr);
+		if(ctx == nullptr)
+			return 0;
+
+		struct heif_error err = heif_context_read_from_file(ctx, filename, nullptr);
+		if (err.code != heif_error_Ok) {
+			heif_context_free(ctx);
+			return 0;
+		}
         nbId = heif_context_get_number_of_top_level_images(ctx);
         heif_context_free(ctx);
     }
@@ -268,15 +290,29 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation, const bool & 
 	try
 	{
 		heif_context* ctx = heif_context_alloc();
-		heif_context_read_from_file(ctx, filename, nullptr);
+		if (ctx == nullptr)
+			return picture;
 
+		struct heif_error err = heif_context_read_from_file(ctx, filename, nullptr);
+		if (err.code != heif_error_Ok) {
+			heif_context_free(ctx);
+			return picture;
+		}
 		// get a handle to the primary image
 		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-
+		err = heif_context_get_primary_image_handle(ctx, &handle);
+		if (err.code != heif_error_Ok) {
+			heif_context_free(ctx);
+			return picture;
+		}
 		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
 		heif_image* img;
-		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+		err = heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+		if (err.code != heif_error_Ok) {
+			heif_image_handle_release(handle);
+			heif_context_free(ctx);
+			return picture;
+		}
 
 		int width = heif_image_handle_get_width(handle);
 		int height = heif_image_handle_get_height(handle);
@@ -325,19 +361,23 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
     cv::Mat picture;
     
     heif_context* ctx = heif_context_alloc();
-    heif_context_read_from_file(ctx, filename, nullptr);
+	if (ctx == nullptr)
+		return picture;
 
+	 err = heif_context_read_from_file(ctx, filename, nullptr);
+	if (err.code != heif_error_Ok) {
+		heif_context_free(ctx);
+		return picture;
+	}
     // get a handle to the primary image
     heif_image_handle* handle;
    
 
-	heif_error _error = heif_context_get_primary_image_handle(ctx, &handle);
-	if (_error.code != heif_error_Ok) {
+	err = heif_context_get_primary_image_handle(ctx, &handle);
+	if (err.code != heif_error_Ok) {
+		heif_context_free(ctx);
 		return picture;
 	}
-
-	if (handle == nullptr)
-		return picture;
 
 	bool error = false;
 
