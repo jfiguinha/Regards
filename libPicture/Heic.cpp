@@ -233,7 +233,7 @@ cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPictu
 
 
 
-            cv::Mat picture = cv::Mat(height, width, CV_8UC3);
+            picture = cv::Mat(height, width, CV_8UC3);
             
             // decode the image and convert colorspace to RGB, saved as 24bit interleaved
             heif_image* img;
@@ -268,10 +268,12 @@ int CHeic::GetNbFrame(const char * filename)
 			return 0;
 
 		struct heif_error err = heif_context_read_from_file(ctx, filename, nullptr);
+
 		if (err.code != heif_error_Ok) {
 			heif_context_free(ctx);
 			return 0;
 		}
+		
         nbId = heif_context_get_number_of_top_level_images(ctx);
         heif_context_free(ctx);
     }

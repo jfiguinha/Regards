@@ -1945,6 +1945,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				cv::Mat picture;
 				int orientation = 0;
 				applyExif = false;
+				bool resize = false;
+				int thumbWidth = 0;
+				int thumbHeight = 0;
 				if (numPicture == 0)
 				{
 					if (isThumbnail)
@@ -1964,8 +1967,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 							{
 								CMetadataExiv2 metadata(fileName);
 								orientation = metadata.GetOrientation();
-								int thumbWidth = 0;
-								int thumbHeight = 0;
+
 								int width = 0;
 								int height = 0;
 								CHeic::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
@@ -1985,10 +1987,23 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 									thumbHeight = static_cast<int>(height * ratio);
 								}
 
-									picture = CAvif::GetPictureThumb(CConvertUtility::ConvertToUTF8(fileName), thumbWidth, thumbHeight);
+								picture = CAvif::GetPictureThumb(CConvertUtility::ConvertToUTF8(fileName), thumbWidth, thumbHeight);
+								if (picture.empty())
+								{
+									int delay = 4;
+									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
+									resize = true;
+								}
 							}	
 							else
+							{
 								picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName));
+								if(picture.empty())
+								{
+									int delay = 4;
+									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
+								}
+							}
                             applyExif = true;
                         }
                     
@@ -2005,6 +2020,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				{
 					bitmap->SetPicture(picture);
 					bitmap->SetFilename(fileName);
+					if(resize)
+						bitmap->Resize(thumbWidth, thumbHeight, 0);
 					//bitmap->RotateExif(orientation);
 				}
 				break;
