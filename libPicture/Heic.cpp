@@ -65,36 +65,50 @@ vector<cv::Mat> CHeic::GetAllPicture(const char * filename, int& delay)
     heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
 
     for (int i = 0; i < numImages; i++) {
-        struct heif_image_handle* handle;
-        struct heif_error err = heif_context_get_image_handle(ctx, IDs[i], &handle);
-        if (err.code) {
-          std::cerr << err.message << "\n";
-          break;
-        }
-        int width = heif_image_handle_get_width(handle);
-        int height = heif_image_handle_get_height(handle);
+		struct heif_image_handle* handle;
+		struct heif_error err = heif_context_get_image_handle(ctx, IDs[i], &handle);
+		if (err.code) {
+			std::cerr << err.message << "\n";
+			break;
+		}
+		try
+		{
 
-        cv::Mat picture = cv::Mat(height, width, CV_8UC3);
-        
-		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
-		heif_image* img;
-		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+			int width = heif_image_handle_get_width(handle);
+			int height = heif_image_handle_get_height(handle);
 
-        int stride = 0;
-        const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-        memcpy(picture.data, data, stride * height);
+			if(width <= 0 || height <= 0)
+			{
+				heif_image_handle_release(handle);
+				break;
+			}
 
-        heif_image_release(img);
-        
+			cv::Mat picture = cv::Mat(height, width, CV_8UC3);
 
-        cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
-        
-        
-        listPicture.push_back(picture);
+			// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+			heif_image* img;
+			heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+
+			int stride = 0;
+			const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+			memcpy(picture.data, data, stride * height);
+
+			heif_image_release(img);
 
 
-        heif_image_handle_release(handle);
- 
+			cv::cvtColor(picture, picture, cv::COLOR_RGB2BGRA);
+
+
+			listPicture.push_back(picture);
+
+
+		}
+		catch(...)
+		{
+
+		}
+
+		heif_image_handle_release(handle);
     }
     
     heif_context_free(ctx);
@@ -315,7 +329,17 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 
     // get a handle to the primary image
     heif_image_handle* handle;
-    heif_context_get_primary_image_handle(ctx, &handle);
+   
+
+	heif_error _error = heif_context_get_primary_image_handle(ctx, &handle);
+	if (_error.code != heif_error_Ok) {
+		return picture;
+	}
+
+	if (handle == nullptr)
+		return picture;
+
+	bool error = false;
 
 	try
 	{
@@ -362,13 +386,28 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 	}
 	catch (...)
 	{
+		error = true;
+	}
+
+	try
+	{
+		if(!error)
+			heif_image_handle_release(handle);
+	}
+	catch (...)
+	{
 
 	}
 
+	try
+	{
+		heif_context_free(ctx);
+	}
+	catch (...)
+	{
 
-	heif_image_handle_release(handle);
+	}
     
-    heif_context_free(ctx);
     
     return picture;
 }

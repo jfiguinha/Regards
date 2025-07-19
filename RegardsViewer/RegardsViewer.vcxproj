@@ -512,6 +512,7 @@ XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_shared.dll" $
 XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf29.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\ncnn.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\poppler*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lcms2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
@@ -523,12 +524,10 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\openjp2.dll"  
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\lz4d.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\mediainfo\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</Command>
     </PostBuildEvent>
     <PreBuildEvent>

@@ -1172,7 +1172,7 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 	animationPosition++;
 	if (animationPosition < nbThumbnail)
 	{
-		uint32_t delay;
+		uint32_t delay = 20;
 		CLibPicture libPicture;
 		const int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
