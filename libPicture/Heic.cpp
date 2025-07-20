@@ -209,20 +209,20 @@ void CHeic::SavePicture(const char * filenameOut, const int& format, cv::Mat& so
 cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPicture)
 {
     cv::Mat picture;
-    
+	struct heif_error err;
     heif_context* ctx = heif_context_alloc();
 	if (ctx == nullptr)
 		return picture;
 
-    heif_context_read_from_file(ctx, filename, nullptr);
-   
+	err = heif_context_read_from_file(ctx, filename, nullptr);
+
     int numImages = heif_context_get_number_of_top_level_images(ctx);
     std::vector<heif_item_id> IDs(numImages);
     heif_context_get_list_of_top_level_image_IDs(ctx, IDs.data(), numImages);
 
     if(numPicture < numImages){
         struct heif_image_handle* handle;
-        struct heif_error err = heif_context_get_image_handle(ctx, IDs[numPicture], &handle);
+        err = heif_context_get_image_handle(ctx, IDs[numPicture], &handle);
         if (err.code) {
           std::cerr << err.message << "\n";
         }
