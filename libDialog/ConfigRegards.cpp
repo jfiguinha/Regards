@@ -284,7 +284,7 @@ void ConfigRegards::init()
 
 	int numItem = 0;
 	wxString encoder = regardsParam->GetHardwareEncoder();
-	if (encoder != "")
+	if (encoder != "" && encoder != "none")
 	{
 		numItem = rbVideoEncoderHard->FindString(encoder);
 		rbVideoEncoderHard->SetSelection(numItem);
@@ -293,7 +293,7 @@ void ConfigRegards::init()
 		rbVideoEncoderHard->SetSelection(0);
 
 	wxString decoder = regardsParam->GetHardwareDecoder();
-	if (decoder != "")
+	if (decoder != "" && decoder != "none")
 	{
 		numItem = rbVideoDecoderHard->FindString(decoder);
 		rbVideoDecoderHard->SetSelection(numItem);
