@@ -224,7 +224,7 @@ public:
     {
         int64 duration = -1000;
         std:wstring To_Display = MI.Get(Stream_General, 0, __T("Duration"), Info_Text, Info_Name).c_str();
-        if (To_Display != "")
+        if (To_Display != L"")
         {
             try
             {
@@ -246,7 +246,7 @@ public:
         to_width = MI.Get(Stream_Video, 0, __T("Width"), Info_Text, Info_Name).c_str();
         to_height = MI.Get(Stream_Video, 0, __T("Height"), Info_Text, Info_Name).c_str();
       //  MI.Close();
-        if (to_width != "")
+        if (to_width != L"")
         {
             try
             {
@@ -257,7 +257,7 @@ public:
             }
         }
 
-        if (to_height != "")
+        if (to_height != L"")
         {
             try
             {
@@ -274,7 +274,7 @@ public:
         AspectRatio aspectRatio;
         wstring To_Display;
         To_Display = MI.Get(Stream_Video, 0, __T("Display_aspect_ratio"), Info_Text, Info_Name).c_str();
-        if (To_Display == "")
+        if (To_Display == L"")
         {          
             tbb::concurrent_vector<CMetadata> vectorMeta = GetMetadata();
             tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "Video.Display aspect ratio"; });
@@ -294,7 +294,7 @@ public:
         }
        
 
-        if (To_Display != "")
+        if (To_Display != L"")
         {
             try
             {
@@ -333,7 +333,7 @@ public:
         wstring To_Display;
         To_Display = MI.Get(Stream_Video, 0, __T("Rotation"), Info_Text, Info_Name).c_str();
 
-        if (To_Display != "")
+        if (To_Display != L"")
         {
             try
             {
