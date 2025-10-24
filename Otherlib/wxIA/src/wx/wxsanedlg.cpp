@@ -364,22 +364,22 @@ wxString wxScanSaneAcquireDialog::GetUnitString(SANE_Unit unit)
             return wxEmptyString;
 
         case SANE_UNIT_PIXEL :
-            return wxString(_("pixels"));
+            return wxString(("pixels"));
 
         case SANE_UNIT_BIT :
-            return wxString(_("bits"));
+            return wxString(("bits"));
 
         case SANE_UNIT_MM :
-            return wxString(_("mm"));
+            return wxString(("mm"));
 
         case SANE_UNIT_DPI :
-            return wxString(_("dpi"));
+            return wxString(("dpi"));
 
         case SANE_UNIT_PERCENT :
-            return wxString(_('%'));
+            return wxString(('%'));
 
         case SANE_UNIT_MICROSECOND :
-            return wxString(_("microseconds"));
+            return wxString(("microseconds"));
     }
 }
 

@@ -105,9 +105,11 @@ cv::Mat GetPictureThumbnail(const char* filename, const int &width, const int &h
             avifDiagnostics diag;
 
 
-            avifBool result = avifImageScale(decoded, width, height, decoder->imageSizeLimit,
-                decoder->imageDimensionLimit,
+            decodeResult = avifImageScale(decoded, width, height,
                 &decoder->diag);
+                
+            if (decodeResult != AVIF_RESULT_OK)
+                 goto cleanup;
 
             avifRGBImage dstRGB;
             avifRGBImageSetDefaults(&dstRGB, decoded);

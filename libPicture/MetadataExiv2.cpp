@@ -10,8 +10,6 @@
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>
-#include "avifexif.h"
-#include "Heic.h"
 #include "ConvertUtility.h"
 
 #include <libexif/exif-data.h>
@@ -26,56 +24,7 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	CLibPicture libPicture;
 	this->filename = filename;
 	int type = libPicture.TestImageFormat(filename);
-    
-	if (type == HEIC || type == AVIF)
-	{
-		buffer = nullptr;
-		
-		if (type == HEIC)
-		{
-			bufferexifsize = 128 * 1024;
-			buffer = new uint8_t[bufferexifsize + 1];
-			CHeicExif::GetMetadataHeic(CConvertUtility::ConvertToUTF8(filename), buffer, bufferexifsize);
-		}
-		else if (type == AVIF)
-		{
-            CAvifExif avifExif;
-            bool isOk = avifExif.InitAvif(CConvertUtility::ConvertToUTF8(filename));
-            if(isOk)
-            {
-				bufferexifsize = 128*1024;
-				buffer = new uint8_t[bufferexifsize + 1];
-                avifExif.GetMetadataAvif(buffer, bufferexifsize);
-            }
-		}
-        
-        if (bufferexifsize > 0)
-		{
-			metaExiv = new CPictureMetadataExiv(buffer, bufferexifsize);
-		}
-	}
-    /*
-	else if (type == PNG)
-	{
-		unsigned char* buf;
-		unsigned int len;
-		ExifData* d;
-		d = exif_data_new_from_file(CConvertUtility::ConvertToUTF8(filename));
-		if (!d) {
-			fprintf(stderr, "Could not load data from '%s'!\n", CConvertUtility::ConvertToUTF8(filename));
-			return;
-		}
-		exif_data_save_data(d, &buf, &len);
-		exif_data_unref(d);
-
-		metaExiv = new CPictureMetadataExiv(buf, len);
-
-
-		free(buf);
-
-	}*/
-	else
-		metaExiv = new CPictureMetadataExiv(filename);
+	metaExiv = new CPictureMetadataExiv(filename);
 }
 
 

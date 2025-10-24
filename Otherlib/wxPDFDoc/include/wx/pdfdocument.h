@@ -17,6 +17,8 @@
 #include <wx/hashmap.h>
 #include <wx/mstream.h>
 #include <wx/string.h>
+
+#undef _WINDOWS_
 #include <wx/xml/xml.h>
 
 // wxPdfDocument headers
@@ -1806,7 +1808,7 @@ public:
 	/**
 	* Append a cubic Bezier curve to the current path. The curve extends
 	* from the current point to the point (x3, y3), using (x1, y1) and (x2, y2)
-	* as the Bézier control points. The new current point is (x3, y3).
+	* as the BÃ©zier control points. The new current point is (x3, y3).
 	* \param x1: Abscissa of control point 1
 	* \param y1: Ordinate of control point 1
 	* \param x2: Abscissa of control point 2
@@ -2754,7 +2756,7 @@ protected:
 	/// Draws a line relative from last draw point
 	void OutLineRelative(double dx, double dy);
 
-	/// Draws a Bézier curve from last draw point
+	/// Draws a BÃ©zier curve from last draw point
 	void OutCurve(double x1, double y1, double x2, double y2, double x3, double y3);
 
 	/// Perform transformation

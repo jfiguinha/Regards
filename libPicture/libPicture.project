@@ -30,10 +30,6 @@
     <File Name="RegardsPDF.h"/>
     <File Name="RegardsPDF.cpp"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="avif">
-    <File Name="scale.c"/>
-    <File Name="diag.c"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
     <File Name="aspectratio.h"/>
     <File Name="OpenCVVideoPlayer.h"/>
@@ -66,8 +62,6 @@
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
-    <File Name="avifexif.h"/>
-    <File Name="avifexif.cpp"/>
     <File Name="PictureMetadataExiv_new.h"/>
     <File Name="PictureMetadataExiv_new.cpp"/>
     <File Name="ThumbnailData.h"/>

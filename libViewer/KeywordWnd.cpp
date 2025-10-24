@@ -81,7 +81,7 @@ void CKeywordWnd::Init(const wxString& filename)
 
 	for (CCriteria criteria : criteriaVector)
 	{
-		wxString localkey = to_string(criteria.GetId()) + L":" + criteria.GetLibelle() + L":1:";
+		wxString localkey = to_string(criteria.GetId()) + ":" + criteria.GetLibelle() + ":1:";
 		stateValue += localkey;
 	}
 
@@ -258,7 +258,7 @@ void CKeywordWnd::UpdateScreenRatio()
 //------------------------------------------------------------------------------
 bool CKeywordWnd::GetTriangleState(const wxString& exifKey, const wxString& key)
 {
-	wxString localkey = exifKey + L":" + key + L":";
+	wxString localkey = exifKey + ":" + key + ":";
 	size_t pos = stateTriangleValue.find(localkey);
 	if (pos < stateTriangleValue.size())
 	{
@@ -276,7 +276,7 @@ bool CKeywordWnd::GetTriangleState(const wxString& exifKey, const wxString& key)
 //------------------------------------------------------------------------------
 bool CKeywordWnd::GetCheckState(const wxString& exifKey, const wxString& key)
 {
-	wxString localkey = exifKey + L":" + key + L":";
+	wxString localkey = exifKey + ":" + key + ":";
 	size_t pos = stateValue.find(localkey);
 	if (pos < stateValue.size())
 	{
