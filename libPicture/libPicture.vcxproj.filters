@@ -133,17 +133,8 @@
     <ClCompile Include="PictureMetadataExiv.cpp">
       <Filter>libexif</Filter>
     </ClCompile>
-    <ClCompile Include="avifexif.cpp">
-      <Filter>libexif</Filter>
-    </ClCompile>
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="diag.c">
-      <Filter>avif</Filter>
-    </ClCompile>
-    <ClCompile Include="scale.c">
-      <Filter>avif</Filter>
     </ClCompile>
     <ClCompile Include="PictureArray.cpp">
       <Filter>datastructure</Filter>
@@ -311,9 +302,6 @@
     </ClInclude>
     <ClInclude Include="imageinfo.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="avifexif.h">
-      <Filter>libexif</Filter>
     </ClInclude>
     <ClInclude Include="avif.h">
       <Filter>Header Files</Filter>
