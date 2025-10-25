@@ -69,6 +69,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture) {
         auto* regardsParam = CParamInit::getInstance();
         wxString color = regardsParam->GetOpenGLOutputColor();
 
+#ifndef __APPLE__
         GLint format = 0, type = 0;
         glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &format);
         glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
@@ -77,7 +78,9 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture) {
             color = "BGRA";
         else
             color = "RGBA";
-
+#else
+        color = "BGRA";
+#endif
         cv::UMat bitmapMatrix;
         if (u.channels() == 3) {
             cvtColor(u, bitmapMatrix, color == "BGRA" ? cv::COLOR_BGR2BGRA : cv::COLOR_BGR2RGBA);

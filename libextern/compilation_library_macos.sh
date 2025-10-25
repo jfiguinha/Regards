@@ -8,8 +8,11 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-#unzip vcpkg-2024.08.23_mac.zip
-#mv vcpkg-2024.08.23 vcpkg
+unzip vcpkg-2025.09.17_mac.zip
+mv vcpkg-2025.09.17 vcpkg
+
+#unzip ports_vcpkg_macos.zip
+#cp -r ports_vcpkg/opencv4 vcpkg/ports
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
@@ -30,9 +33,9 @@ cd ..
 
 cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,openjpeg,opus,fdk-aac,ffmpeg] --allow-unsupported --x-abi-tools-use-exact-versions
-./vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,ipp,tbb,png,tiff,webp,openexr,opengl,opencl] --x-abi-tools-use-exact-versions --allow-unsupported
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,tbb,png,tiff,webp,openexr,opengl] --allow-unsupported --x-abi-tools-use-exact-versions
 ./vcpkg install libde265
-./vcpkg install exiv2[video,xmp,bmff]
+./vcpkg install exiv2[xmp,bmff]
 ./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
