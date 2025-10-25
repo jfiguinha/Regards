@@ -8,17 +8,14 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2024.08.23_mac.zip
-mv vcpkg-2024.08.23 vcpkg
+#unzip vcpkg-2024.08.23_mac.zip
+#mv vcpkg-2024.08.23 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxwidgets[webview] --allow-unsupported --x-abi-tools-use-exact-versions
 ./vcpkg install sdl2
 cd ..
-
-unzip ports_vcpkg_macos.zip
-cp -r ports_vcpkg/opencv4 vcpkg/ports
 
 unzip SVT-AV1-v2.3.0.zip
 cd SVT-AV1-v2.3.0/Build
@@ -33,7 +30,7 @@ cd ..
 
 cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,openjpeg,opus,fdk-aac,ffmpeg] --allow-unsupported --x-abi-tools-use-exact-versions
-./vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,ipp,tbb,png,tiff,webp,openexr,opengl] --x-abi-tools-use-exact-versions
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,ipp,tbb,png,tiff,webp,openexr,opengl,opencl] --x-abi-tools-use-exact-versions --allow-unsupported
 ./vcpkg install libde265
 ./vcpkg install exiv2[video,xmp,bmff]
 ./vcpkg install libavif[aom,dav1d]

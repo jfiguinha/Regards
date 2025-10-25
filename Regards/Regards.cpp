@@ -33,7 +33,7 @@ string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
 int numElementToLoad = 5;
-string buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
+string buildOption = "";//"-cl-mad-enable -cl-unsafe-math-optimizations";
 cv::ocl::OpenCLExecutionContext clExecCtx;
 std::map<wxString, vector<char>> openclBinaryMapping;
 
