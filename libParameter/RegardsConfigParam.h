@@ -10,6 +10,9 @@ class CRegardsConfigParam : public CConfigParam
 public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam() override;
+    
+	int GetInverseVideoRotation();
+	void SetInverseVideoRotation(const int& inverseRot);
 
 	int GetThumbnailOpenCV();
 	void SetThumbnailOpenCV(const int& isThumbnailOpenCV);
@@ -171,6 +174,8 @@ protected:
     
     void SetVideoEffectParameter(xml_node<>* sectionPosition);
 	void GetVideoEffectParameter(xml_node<>* position_node);
+    
+    int inverseRotation = 0;
 
 	int pictureSize;
 	int numLibPreview;

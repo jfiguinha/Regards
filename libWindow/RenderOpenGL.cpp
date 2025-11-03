@@ -138,9 +138,84 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 		textureDisplay = new GLTexture();
         
+#ifndef __APPLE__
 #ifndef USE_GLUT
         LoadFont("Antonio-Bold.ttf");
 #endif
+#endif
+	}
+}
+
+
+void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
+{
+	float font_height = 15;
+    void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
+	float font_width = glutBitmapWidth(font_choose, 'x');;
+    int xPos = 0;
+
+	std::vector<wxString> list = CConvertUtility::split(text, '\\');
+	if (list.size() > 0)
+	{
+		wxString line = list[0];
+        xPos = x - ((font_width * line.size()) / 2);
+		glWindowPos2i(xPos, y);
+		//get the length of the string to display
+		int len = static_cast<int>(line.Length());
+
+		//glScalef(scale_factor,scale_factor,scale_factor); 
+        int xPosition = 0;
+		//loop to display character by character
+		for (auto i = 0; i < len; i++)
+		{
+			wxUniChar c = line[i];
+			char letter;
+			c.GetAsChar(&letter);
+			glutBitmapCharacter(font_choose, c);
+            xPosition += font_width;
+		}
+
+		for (int i = 1;i < list.size();i++)
+		{
+			wxUniChar c = list[i][0];
+			if (c == 'N')
+			{
+				//New Line
+				wxString line = list[i];
+				glWindowPos2i(x - ((font_width * line.size()) / 2), y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+			}
+            else
+            {
+				wxString line = list[i];
+				glWindowPos2i(xPos + xPosition + font_width, y - font_height * 2);
+				//get the length of the string to display
+				int len = static_cast<int>(line.Length());
+
+				//glScalef(scale_factor,scale_factor,scale_factor); 
+
+				//loop to display character by character
+				for (auto i = 1; i < len; i++)
+				{
+					wxUniChar c = line[i];
+					char letter;
+					c.GetAsChar(&letter);
+					glutBitmapCharacter(font_choose, c);
+				}
+            }
+		}
 	}
 }
 

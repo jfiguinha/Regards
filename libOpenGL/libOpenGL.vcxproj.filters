@@ -16,9 +16,6 @@
     <Filter Include="header">
       <UniqueIdentifier>{79eab594-02fc-4e08-bcfe-ac414a06e272}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{de635d77-5ee6-4242-ac4e-8c48cae4fa13}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

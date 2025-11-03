@@ -20,7 +20,7 @@ namespace Regards
 		public:
 
 			GLTexture(void);
-			GLTexture(const int& textureId, const int &width, const int &height);
+            GLTexture(const int& textureId, const int &width, const int &height);
 			~GLTexture(void);
 
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
@@ -35,13 +35,12 @@ namespace Regards
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 
-
 			int GetTextureID()
 			{
 				return m_nTextureID;
 			}
 
-			//cl_mem GetOpenCLTexture();
+			cl_mem GetOpenCLTexture();
 
 			int GetWidth();
 			int GetHeight();
@@ -49,7 +48,7 @@ namespace Regards
 
 		protected:
 
-			void checkErrors(const std::string & desc);
+			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
             
             bool SetTextureData(Regards::Picture::CPictureArray& bitmap);

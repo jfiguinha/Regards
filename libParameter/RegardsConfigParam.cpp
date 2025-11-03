@@ -53,6 +53,15 @@ CRegardsConfigParam::CRegardsConfigParam()
     videoEffectParameter = new CVideoEffectParameter();
 }
 
+void CRegardsConfigParam::SetInverseVideoRotation(const int& inverseRot)
+{
+	inverseRotation = inverseRot;
+}
+int CRegardsConfigParam::GetInverseVideoRotation()
+{
+	return inverseRotation;
+}
+
 CVideoEffectParameter * CRegardsConfigParam::GetVideoEffectParameter()
 {
     return videoEffectParameter;
@@ -483,6 +492,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("isThumbnailOpenCV", to_string(isThumbnailOpenCV)));
 	sectionPosition->append_node(node("cudaSupport", to_string(cudaSupport)));
     sectionPosition->append_node(node("useCuda", to_string(useCuda)));
+    sectionPosition->append_node(node("inverseRotation", to_string(inverseRotation)));
 }
 
 void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)

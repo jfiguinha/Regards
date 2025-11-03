@@ -126,30 +126,18 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 
 vector<int> CVideoControlSoft::GetListTimer()
 {
-	vector<int> list;
-	list.push_back(TIMER_PLAYSTOP);
-	list.push_back(TIMER_FPS);
-	list.push_back(TIMER_PLAYSTART);
-	list.push_back(TIMER_SUBTITLE);
-	return list;
+	return { TIMER_PLAYSTOP, TIMER_FPS, TIMER_PLAYSTART, TIMER_SUBTITLE };
 }
+
 
 vector<int> CVideoControlSoft::GetListCommand()
 {
-	vector<int> list;
-	list.push_back(wxEVENT_UPDATEPOSMOVIETIME);
-	list.push_back(wxEVENT_SCROLLMOVE);
-	list.push_back(wxEVENT_ENDVIDEOTHREAD);
-	list.push_back(wxEVENT_STOPVIDEO);
-	list.push_back(EVENT_VIDEOSTART);
-	list.push_back(wxEVENT_LEFTPOSITION);
-	list.push_back(wxEVENT_TOPPOSITION);
-	list.push_back(wxEVENT_SETPOSITION);
-	list.push_back(EVENT_VIDEOROTATION);
-	list.push_back(wxEVENT_UPDATEMOVIETIME);
-	list.push_back(wxEVENT_UPDATEFRAME);
-	list.push_back(wxEVENT_PAUSEMOVIE);
-	return list;
+	return {
+		wxEVENT_UPDATEPOSMOVIETIME, wxEVENT_SCROLLMOVE, wxEVENT_ENDVIDEOTHREAD,
+		wxEVENT_STOPVIDEO, EVENT_VIDEOSTART, wxEVENT_LEFTPOSITION,
+		wxEVENT_TOPPOSITION, wxEVENT_SETPOSITION, EVENT_VIDEOROTATION,
+		wxEVENT_UPDATEMOVIETIME, wxEVENT_UPDATEFRAME, wxEVENT_PAUSEMOVIE
+	};
 }
 
 int CVideoControlSoft::UpdateResized()
@@ -266,10 +254,8 @@ bool CVideoControlSoft::IsPause()
 
 float CVideoControlSoft::GetMovieRatio()
 {
-	muVideoEffect.lock();
-	const float ratioSelect = videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
-	muVideoEffect.unlock();
-	return ratioSelect;
+	std::lock_guard<std::mutex> lock(muVideoEffect);
+	return videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
 }
 
 cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
@@ -748,19 +734,30 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
+	int inverseRotation = 0;
 	long rotation = event.GetExtraLong();
-	if (rotation == 90)
-		angle = 270;
-	else if (rotation == -90)
-		angle = 270;
-	else if (rotation == -180)
-		angle = 180;
-	else if (rotation == 180)
-		angle = 180;
-	else if (rotation == -270)
-		angle = 90;
-	else if (rotation == 270)
-		angle = 90;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		inverseRotation = config->GetInverseVideoRotation();
+	if (inverseRotation == 0)
+	{
+		if (rotation == 90)
+			angle = 270;
+		else if (rotation == -90)
+			angle = 270;
+		else if (rotation == -180)
+			angle = 180;
+		else if (rotation == 180)
+			angle = 180;
+		else if (rotation == -270)
+			angle = 90;
+		else if (rotation == 270)
+			angle = 90;
+	}
+	else
+	{
+		angle = rotation;
+	}
 
 	CSqlPhotos sqlPhotos;
 	int exif = sqlPhotos.GetPhotoExif(filename);
@@ -1379,8 +1376,8 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 				if (typeSubtitle == 0 && !pictureSubtitle.empty())
 				{
 					renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
-					renderBitmapOpenGL->ShowSubtitle();
 					subtilteUpdate = false;
+					renderBitmapOpenGL->ShowSubtitle();
 				}
 				else if(typeSubtitle == 1)
 				{
@@ -1391,9 +1388,12 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 					double scale_factor = 1.0f* ((float)videoEffectParameter.subtitleSize);
 	#endif
 
+#ifdef __APPLE__
+                     renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, subtitleText);
+#else
 					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, videoEffectParameter.subtitleRedColor
                         , videoEffectParameter.subtitleGreenColor, videoEffectParameter.subtitleBlueColor, subtitleText);
-
+#endif
 				}
 			
 			}
