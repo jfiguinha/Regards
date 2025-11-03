@@ -99,6 +99,19 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 			 if (regardsParam->GetIsOpenCLSupport())
 #endif
 			{
+                
+#ifdef __APPLE__
+                
+                isOpenCLInitialized = true;
+                openclOpenGLInterop = false;
+                COpenCLContext::CreateDefaultOpenCLContext();
+
+				if (!isOpenCLInitialized)
+				{
+					regardsParam->SetIsOpenCLSupport(false);
+				}
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+#else
 				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 				{
                      printf("CRenderOpenGL::Init 2 \n");
@@ -120,13 +133,12 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 				}
 
-
-
 				if (!isOpenCLInitialized)
 				{
 					regardsParam->SetIsOpenCLSupport(false);
 				}
 				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+#endif
 			}
 		}
 		
