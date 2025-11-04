@@ -151,15 +151,25 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bo
 	{
 		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
-		if (!invertRotation)
+		if (applyOrientation)
 		{
+
 			int orientation = GetOrientation();
 
-			if (orientation != 0 && orientation != 180)
+			switch (orientation)
 			{
-				cv::flip(frame, frame, -1);
+			case 90:
+				cv::rotate(frame, frame, cv::ROTATE_90_CLOCKWISE);
+				break;
+			case 180:
+				cv::rotate(frame, frame, cv::ROTATE_180);
+				break;
+			case 270:
+				cv::rotate(frame, frame, cv::ROTATE_90_COUNTERCLOCKWISE);
+				break;
 			}
 		}
+
 	}
 	else
 	{

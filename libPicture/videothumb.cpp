@@ -134,10 +134,11 @@ public:
 		{
 			videowidth = image.size().width;
 			videoheight = image.size().height;
+			//int rotation = videoThumbnailer->GetOrientation();
 
 			if (thumbnailWidth > 0 && thumbnailHeight > 0)
 			{
-				int rotation = videoThumbnailer->GetOrientation();
+				
 
 				int scaledSize = 0;
 				bool maintainAspectRatio = true;
@@ -147,14 +148,30 @@ public:
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
 				resize(image, image, cv::Size(scaledWidth, scaledHeight));
-				if (!useOpenCV)
-				{
-					if (rotation == 90 || rotation == 270)
-					{
-						cv::flip(image, image, -1);
-					}
-				}
+
 			}
+
+			/*
+			switch (rotation)
+			{
+				case 90:
+					cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
+					break;
+				case 180:
+					cv::rotate(image, image, cv::ROTATE_180);
+					break;
+				case 270:
+					cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
+					break;
+			}
+			*/
+
+			/*
+			if (rotation == 90 || rotation == 270)
+			{
+				cv::flip(image, image, -1);
+			}
+			*/
 		}
 
 
