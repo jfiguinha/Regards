@@ -100,7 +100,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 #endif
 			{
                 
-#ifdef __APPLE__
+#ifdef TOTO
                 
                 isOpenCLInitialized = true;
                 openclOpenGLInterop = false;
