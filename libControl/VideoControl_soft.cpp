@@ -1388,12 +1388,9 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 					double scale_factor = 1.0f* ((float)videoEffectParameter.subtitleSize);
 	#endif
 
-#ifdef __APPLE__
-                     renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, subtitleText);
-#else
 					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, videoEffectParameter.subtitleRedColor
                         , videoEffectParameter.subtitleGreenColor, videoEffectParameter.subtitleBlueColor, subtitleText);
-#endif
+
 				}
 			
 			}

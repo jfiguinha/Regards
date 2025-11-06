@@ -25,10 +25,12 @@
 #include <RegardsConfigParam.h>
 #include <GLCharacter.h>
 
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
-//#define USE_GLUT
+
+#ifdef __APPLE__
+#define USE_GLUT
+#endif
 
 class CFreeTypeFace
 {
@@ -150,11 +152,11 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 		textureDisplay = new GLTexture();
         
-#ifndef __APPLE__
+
 #ifndef USE_GLUT
         LoadFont("Antonio-Bold.ttf");
 #endif
-#endif
+
 	}
 }
 
