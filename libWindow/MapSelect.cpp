@@ -91,7 +91,7 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 
 				for (CGeoPluginValue geoValue : *geoPluginVector)
 				{
-					infoGpsLocalisation = geoValue.GetAddress(); //fileGeo.GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetPlace());
+					infoGpsLocalisation = fileGeo.GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetCity());
 
 					break;
 				}

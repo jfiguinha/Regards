@@ -11,7 +11,7 @@
 #include <SqlGps.h>
 #include <window_id.h>
 #include <SqlPhotoCriteria.h>
-//#include <LibResource.h>
+#include <LibResource.h>
 #include <MediaInfo.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
@@ -120,7 +120,7 @@ wxString CFileGeolocation::Geolocalize()
 
 			for (CGeoPluginValue geoValue : *geoPluginVector)
 			{
-				geolocalisationString = geoValue.GetAddress();// GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetPlace());
+				geolocalisationString = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetCity());
 				break;
 			}
 		}
@@ -162,12 +162,19 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 				{
 					CGeoPluginValue geoValue = *it;
 					wxString value = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),
-					                                               geoValue.GetPlace());
-					if (value != "")
+					                                               geoValue.GetCity());
+					if (value != "" && value != "not found")
 					{
 						auto insertCriteria = new CInsertCriteria();
 						insertCriteria->type = CATEGORIE_GEO;
 						insertCriteria->value = value;
+						listCriteriaPhoto->listCriteria.push_back(insertCriteria);
+					}
+					else
+					{
+						auto insertCriteria = new CInsertCriteria();
+						insertCriteria->type = CATEGORIE_GEO;
+						insertCriteria->value = CLibResource::LoadStringFromResource(L"LBLNOTGEO", 1);
 						listCriteriaPhoto->listCriteria.push_back(insertCriteria);
 					}
 				}
@@ -195,7 +202,9 @@ wxString CFileGeolocation::GenerateGeolocalisationString(const wxString& country
 	wxString value;
 	CCountry local;
 	CountryVector::iterator itCountry;
-	local.SetCode(countryCode);
+	wxString str = countryCode;
+	std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+	local.SetCode(str);
 
 	//Recherche du nom du pays
 	itCountry = std::find(countryVector.begin(), countryVector.end(), local);
@@ -213,6 +222,12 @@ wxString CFileGeolocation::GenerateGeolocalisationString(const wxString& country
 
 		return value;
 	}
+	else if (place == "not found")
+	{
+		value.append(place);
+		return value;
+	}
+
 
 	return "";
 }
