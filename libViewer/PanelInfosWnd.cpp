@@ -45,7 +45,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	historyEffectWnd = nullptr;
 	thumbnailEffectWnd = nullptr;
 	filtreEffectWnd = nullptr;
-	criteriaTreeWnd = nullptr;
 
 	webBrowser = nullptr;
 	infosToolbar = nullptr;
@@ -169,6 +168,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	if (webBrowser == nullptr)
 	{
+#ifdef WIN32
 #if wxUSE_WEBVIEW_EDGE
 		// Check if a fixed version of edge is present in
 		// $executable_path/edge_fixed and use it
@@ -181,7 +181,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 			wxLogMessage("Using fixed edge version");
 		}
 #endif
-
+#endif
 		webBrowser = wxWebView::New(this, wxID_ANY);
 		webBrowser->Show(false);
 
@@ -213,20 +213,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this, false);
 	}
 
-	if (viewerTheme != nullptr)
-	{
-		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollTheme(&themeScroll);
-
-		CThemeSplitter themeSplitter;
-		viewerTheme->GetSplitterTheme(&themeSplitter);
-		criteriaTreeWnd = new CCriteriaWindow(this, wxID_ANY, themeSplitter);
-
-		auto tabInfosFile = new CTabWindowData();
-		tabInfosFile->SetWindow(criteriaTreeWnd);
-		tabInfosFile->SetId(WM_CRITERIA);
-		listWindow.push_back(tabInfosFile);
-	}
 
 	toolbarWindow = infosToolbar;
 
@@ -254,7 +240,6 @@ CPanelInfosWnd::~CPanelInfosWnd()
 	delete(infosFileWnd);
 	delete(historyEffectWnd);
 	delete(filtreEffectWnd);
-	delete(criteriaTreeWnd);
 	delete(thumbnailEffectWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
@@ -284,14 +269,16 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		this->filename = filename;
 
 		wxString urlServer;
+		wxString apiKey = "";
 		CRegardsConfigParam* param = CParamInit::getInstance();
 		if (param != nullptr)
 		{
-			urlServer = param->GetUrlServer();
+			urlServer = param->GetGeoLocUrlServer();
+			apiKey = param->GetApiKey();
 		}
 
 		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-		auto fileGeolocalisation = new CFileGeolocation(urlServer);
+		auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
 		fileGeolocalisation->SetFile(filename, notGeo);
 
 		if (!this->isVideo)
@@ -336,13 +323,15 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 	if (this->filename != filename)
 	{
 		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-		wxString urlServer;
+		wxString urlServer = "";
+		wxString apiKey = "";
 		CRegardsConfigParam* param = CParamInit::getInstance();
 		if (param != nullptr)
 		{
-			urlServer = param->GetUrlServer();
+			urlServer = param->GetGeoLocUrlServer();
+			apiKey = param->GetApiKey();
 		}
-		auto fileGeolocalisation = new CFileGeolocation(urlServer);
+		auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
 
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
@@ -482,11 +471,7 @@ void CPanelInfosWnd::LoadInfo()
 		infosToolbar->SetInfosPush();
 		windowVisible = WM_INFOS;
 		break;
-	case WM_CRITERIA:
-		criteriaTreeWnd->SetFile(filename);
-		infosToolbar->SetCriteriaPush();
-		windowVisible = WM_CRITERIA;
-		break;
+
 	case WM_HISTORY:
 		HistoryUpdate();
 		infosToolbar->SetHistoryPush();
@@ -562,14 +547,16 @@ void CPanelInfosWnd::HistogramUpdate()
 wxString CPanelInfosWnd::MapsUpdate()
 {
 	wxString urlServer;
+	wxString apiKey = "";
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
-		urlServer = param->GetUrlServer();
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
 	}
 
 	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-	auto fileGeolocalisation = new CFileGeolocation(urlServer);
+	auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
 	fileGeolocalisation->SetFile(filename, notGeo);
 	wxString url = L"http://www.openstreetmap.org/?mlat="; // NOLINT(clang-diagnostic-shadow)
 	url.append(fileGeolocalisation->GetLatitude());

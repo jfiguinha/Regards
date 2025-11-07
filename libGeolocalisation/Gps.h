@@ -16,7 +16,7 @@ namespace Regards
 		class CGps
 		{
 		public:
-			CGps(const wxString& server);
+			CGps(const wxString& server, const wxString& apiKey);
 			~CGps();
 			bool GeolocalisationGPS(const wxString& latitude, const wxString& longitude);
 			GeoPluginVector* GetGpsList();
@@ -26,12 +26,15 @@ namespace Regards
 			float GetFLongitude();
 
 		private:
-			bool ImportationGeoPlugin(const wxString& xml);
+			//bool ImportationGeoPlugin(const wxString& xml);
+			bool ImportationGeocodePlugin(const wxString& xml);
 			wxString FindElement(const wxString& xml, const wxString& baliseBegin, const wxString& baliseEnd);
 			GeoPluginVector geoPluginVector;
 			//int error;
+			bool isLocalisationAvailable = false;
 			wxString serverHttp;
 			wxString latitude;
+			wxString apiKey;
 			wxString longitude;
 			CGpscurl* gpsUrl;
 		};

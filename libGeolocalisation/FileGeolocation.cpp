@@ -19,9 +19,10 @@ using namespace Regards::Picture;
 using namespace Regards::exiv2;
 CountryVector CFileGeolocation::countryVector;
 
-CFileGeolocation::CFileGeolocation(const wxString& urlServer)
+CFileGeolocation::CFileGeolocation(const wxString& urlServer, const wxString& apiKey)
 {
 	this->urlServer = urlServer;
+	this->apiKey = apiKey;
 	dateTimeInfos = "";
 	hasGps = false;
 	hasDataTime = false;
@@ -107,10 +108,10 @@ wxString CFileGeolocation::GetGpsInformation()
 
 wxString CFileGeolocation::Geolocalize()
 {
-    wxString geolocalisationString = "";
+	wxString geolocalisationString = "";
 	if (hasGps)
 	{
-		auto gps = new CGps(urlServer);
+		auto gps = new CGps(urlServer, apiKey);
 		infoGpsLocalisation = L"";
 		//Execution de la requÍte de gÈolocalisation
 		if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
@@ -119,19 +120,14 @@ wxString CFileGeolocation::Geolocalize()
 
 			for (CGeoPluginValue geoValue : *geoPluginVector)
 			{
-				infoGpsLocalisation.append(geoValue.GetCountryCode());
-				infoGpsLocalisation.append(L".");
-				infoGpsLocalisation.append(geoValue.GetRegion());
-				infoGpsLocalisation.append(L".");
-				infoGpsLocalisation.append(geoValue.GetPlace());
-                geolocalisationString = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetPlace());
+				geolocalisationString = geoValue.GetAddress();// GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetPlace());
 				break;
 			}
 		}
 
 		delete gps;
 	}
-    return geolocalisationString;
+	return geolocalisationString;
 }
 
 
@@ -154,7 +150,7 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 	//Execution de la requête de géolocalisation
 	if (hasGps)
 	{
-		auto gps = new CGps(urlServer);
+		auto gps = new CGps(urlServer, apiKey);
 		try
 		{
 			if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))

@@ -73,14 +73,16 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 			longitude = gpsInfos.at(2);
 
 			wxString urlServer = "";
+			wxString apiKey = "";
 			//Géolocalisation
 			CRegardsConfigParam* param = CParamInit::getInstance();
 			if (param != nullptr)
 			{
-				urlServer = param->GetUrlServer();
+				urlServer = param->GetGeoLocUrlServer();
+				apiKey = param->GetApiKey();
 			}
-			CFileGeolocation fileGeo(urlServer);
-			auto gps = new CGps(urlServer);
+			CFileGeolocation fileGeo(urlServer, apiKey);
+			auto gps = new CGps(urlServer, apiKey);
 
 			//Execution de la requÍte de gÈolocalisation
 			if (gps->GeolocalisationGPS(latitude, longitude))
@@ -89,8 +91,8 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 
 				for (CGeoPluginValue geoValue : *geoPluginVector)
 				{
-					infoGpsLocalisation = fileGeo.GenerateGeolocalisationString(
-						geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetPlace());
+					infoGpsLocalisation = geoValue.GetAddress(); //fileGeo.GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetPlace());
+
 					break;
 				}
 			}

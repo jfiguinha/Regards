@@ -83,15 +83,17 @@ public:
 	int numProcessGps;
     int nbProcesseur;
     bool refreshFolder;
-
+	bool geolocalizeIsAvailable = false;
     bool needToSendMessage;
     bool noCategoryMessage;
     bool categoryMessage;
     bool startUpdateCriteria = false;
     int nbPhotos = 0;
 
+	
     PhotosVector m_photosVector;
     wxString urlServer;
+	wxString apiKey = "";
     bool gpsLocalisationFinish;
     int nbGpsFile;
     wxTimer* refreshTimer;
@@ -107,6 +109,7 @@ public:
 	CFindPhotoCriteria();
 
 	wxString urlServer;
+	wxString apiKey;
 	CCategoryFolderWindow* mainWindow;
 	bool criteriaNew;
 	int numPhoto{};
@@ -146,7 +149,12 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
-		pimpl->urlServer = param->GetUrlServer();
+		pimpl->urlServer = param->GetGeoLocUrlServer();
+		pimpl->apiKey = param->GetApiKey();
+		if(pimpl->apiKey == "")
+			pimpl->geolocalizeIsAvailable = false;
+		else
+			pimpl->geolocalizeIsAvailable = true;
 	}
 	pimpl->refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	Connect(EVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CCategoryFolderWindow::CriteriaPhotoUpdate));
@@ -317,6 +325,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			findPhotoCriteria->photoPath = photo.GetPath();
 			findPhotoCriteria->numFolderId = photo.GetFolderId();
 			findPhotoCriteria->urlServer = pimpl->urlServer;
+			findPhotoCriteria->apiKey = pimpl->apiKey;
 			findPhotoCriteria->mainWindow = this;
 			//findPhotoCriteria->numFolder = photo.GetFolderId();
 
@@ -468,7 +477,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	int diff = difftime(ending, start);
 
-	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
+	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET && pimpl->geolocalizeIsAvailable)
 	{
 		auto findPhotoCriteria = new CFindPhotoCriteria();
 		findPhotoCriteria->urlServer = pimpl->urlServer;
@@ -593,16 +602,18 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 	CSqlPhotoCriteria photoCriteria;
 
 	wxString urlServer = "";
+	wxString apiKey = "";
 	//Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
-		urlServer = param->GetUrlServer();
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
 	}
 
 	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	CListCriteriaPhoto listCriteriaPhoto;
-	CFileGeolocation fileGeolocalisation(urlServer);
+	CFileGeolocation fileGeolocalisation(urlServer, apiKey);
 	listCriteriaPhoto.numCatalog = NUMCATALOGID;
 	listCriteriaPhoto.numPhotoId = findPhotoCriteria->numPhoto;
 	listCriteriaPhoto.photoPath = findPhotoCriteria->photoPath;
@@ -648,7 +659,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
 	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-	CFileGeolocation geoloc(findPhotoCriteria->urlServer);
+	CFileGeolocation geoloc(findPhotoCriteria->urlServer, findPhotoCriteria->apiKey);
 	CSqlPhotoCriteria photoCriteria;
 
 	CListCriteriaPhoto listCriteriaPhoto;

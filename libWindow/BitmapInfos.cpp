@@ -73,11 +73,13 @@ void CBitmapInfos::OnStartGps(wxTimerEvent& event)
 void CBitmapInfos::GetGpsInfos(void* data)
 {
 	wxString urlServer = "";
+	wxString apiKey = "";
 	//Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
-		urlServer = param->GetUrlServer();
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
 	}
 
 	InfosGps * infosGps = static_cast<InfosGps*>(data);
@@ -87,7 +89,7 @@ void CBitmapInfos::GetGpsInfos(void* data)
 		if (wxFileName::FileExists(infosGps->filename))
 		{
 			wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-			CFileGeolocation fileGeolocalisation(urlServer);
+			CFileGeolocation fileGeolocalisation(urlServer, apiKey);
 			fileGeolocalisation.SetFile(infosGps->filename, notGeo);
 			infosGps->gpsInfos = fileGeolocalisation.Geolocalize();
 			//infosGps->gpsInfos = fileGeolocalisation.GetGpsInformation();
@@ -124,11 +126,13 @@ void CBitmapInfos::UpdateGpsInfosLocal(wxCommandEvent& event)
 void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 {
 	wxString urlServer = "";
+	wxString apiKey = "";
 	//Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
-		urlServer = param->GetUrlServer();
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
 	}
 
 	auto filename = static_cast<wxString*>(event.GetClientData());
@@ -138,7 +142,7 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 		if (*filename == this->filename)
 		{
 			wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-			CFileGeolocation fileGeolocalisation(urlServer);
+			CFileGeolocation fileGeolocalisation(urlServer, apiKey);
 			fileGeolocalisation.SetFile(*filename, notGeo);
 			if (typeData == 1)
 			{

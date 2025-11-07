@@ -11,6 +11,24 @@ CGeoPluginValue::~CGeoPluginValue()
 {
 }
 
+void CGeoPluginValue::SetCity(const wxString& city)
+{
+	this->city = city;
+}
+wxString CGeoPluginValue::GetCity()
+{
+	return city;
+}
+
+void CGeoPluginValue::SetAddress(const wxString& address)
+{
+	this->address = address;
+}
+wxString CGeoPluginValue::GetAddress()
+{
+	return address;
+}
+
 void CGeoPluginValue::SetPlace(const wxString& place)
 {
 	this->place = place;

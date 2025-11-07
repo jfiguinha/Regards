@@ -10,9 +10,6 @@ class CRegardsConfigParam : public CConfigParam
 public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam() override;
-    
-	int GetInverseVideoRotation();
-	void SetInverseVideoRotation(const int& inverseRot);
 
 	int GetThumbnailOpenCV();
 	void SetThumbnailOpenCV(const int& isThumbnailOpenCV);
@@ -40,6 +37,9 @@ public:
 
 	int GetVideoLibrary();
 	void SetVideoLibrary(const int& numLib);
+
+	int GetInverseVideoRotation();
+	void SetInverseVideoRotation(const int& inverseRot);
 
 	int GetSuperResolutionType();
 	void SetSuperResolutionType(const int& value);
@@ -78,6 +78,8 @@ public:
 	void SetEffect(const int& numEffect);
 
 	wxString GetUrlServer();
+	wxString GetApiKey();
+	wxString GetGeoLocUrlServer();
 	int GetNbGpsIterationByMinute();
 
 	int GetDiaporamaTime();
@@ -174,8 +176,6 @@ protected:
     
     void SetVideoEffectParameter(xml_node<>* sectionPosition);
 	void GetVideoEffectParameter(xml_node<>* position_node);
-    
-    int inverseRotation = 0;
 
 	int pictureSize;
 	int numLibPreview;
@@ -197,9 +197,12 @@ protected:
 
 	float iconSizeRatio;
 	wxString openCLPlatformName;
+	wxString geolocInverseURL;
 	wxString geolocUrl;
+	wxString apiKey;
 
 	int dataInMemory;
+	int inverseRotation = 0;
 
 	int nbProcessThumbnail;
 	int nbProcessExif;

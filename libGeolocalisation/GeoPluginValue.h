@@ -9,6 +9,12 @@ public:
 	void SetPlace(const wxString& place);
 	wxString GetPlace();
 
+	void SetCity(const wxString& city);
+	wxString GetCity();
+
+	void SetAddress(const wxString& address);
+	wxString GetAddress();
+
 	void SetCountryCode(const wxString& countryCode);
 	wxString GetCountryCode();
 
@@ -35,6 +41,7 @@ public:
 
 private:
 	wxString place;
+	wxString city;
 	wxString countryCode;
 	wxString region;
 	wxString latitude;
@@ -43,6 +50,7 @@ private:
 	wxString distanceKm;
 	wxString directionAngle;
 	wxString directionHeadling;
+	wxString address;
 };
 
 using GeoPluginVector = std::vector<CGeoPluginValue>;
