@@ -90,6 +90,8 @@
     <File Name="PertinenceValue.h"/>
     <File Name="IndexGenerator.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14" C_Options=";-Wall;" Assembler="">
@@ -116,6 +118,7 @@
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../libGeolocalisation"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="">
@@ -200,6 +203,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
