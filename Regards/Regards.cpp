@@ -188,6 +188,11 @@ void MyApp::CheckGeolocalisationServiceAvailability()
 		ShowInfosGeolocUnavailable = param->ShowInfosGeolocUnavailable();
 	}
 	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
+	if (!result)
+		isGPsAvailable = false;
+	else
+		isGPsAvailable = true;
+
 	if (!result && ShowInfosGeolocUnavailable)
 	{
 		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key locate in the configuration window."));
