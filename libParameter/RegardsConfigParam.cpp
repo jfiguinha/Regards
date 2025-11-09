@@ -46,6 +46,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	fastFaceDetection = 1;
 	musicDiaporama = "";
 	isThumbnailOpenCV = 1;
+	showInfosGeolocUnavailable = 1;
 	bufferSize = 100;
 	numSuperResolution = 0;
 	useSuperResolution = 0;
@@ -356,6 +357,15 @@ int CRegardsConfigParam::GetThumbnailIconeCache()
 void CRegardsConfigParam::SetThumbnailIconeCache(const int& iconeCache)
 {
 	thumbnailIconeCache = iconeCache;
+}
+
+int CRegardsConfigParam::ShowInfosGeolocUnavailable()
+{
+	return showInfosGeolocUnavailable;
+}
+void CRegardsConfigParam::SetShowInfosGeolocUnavailable(const int& showInfo)
+{
+	this->showInfosGeolocUnavailable = showInfo;
 }
 
 wxString CRegardsConfigParam::GetApiKey()
@@ -1138,6 +1148,7 @@ void CRegardsConfigParam::SetGeolocalisationServer(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("Url", geolocUrl));
 	sectionPosition->append_node(node("GeoLoc", geolocInverseURL));
 	sectionPosition->append_node(node("ApiKey", apiKey));
+	sectionPosition->append_node(node("showInfosGeolocUnavailable", to_string(showInfosGeolocUnavailable)));
 }
 
 void CRegardsConfigParam::GetGeolocalisationServer(xml_node<>* position_node)
@@ -1158,6 +1169,11 @@ void CRegardsConfigParam::GetGeolocalisationServer(xml_node<>* position_node)
 	if (child_node != nullptr)
 	{
 		apiKey = child_node->value();
+	}
+	child_node = position_node->first_node("showInfosGeolocUnavailable");
+	if (child_node != nullptr)
+	{
+		showInfosGeolocUnavailable = atoi(child_node->value());
 	}
 }
 

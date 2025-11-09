@@ -82,6 +82,8 @@ public:
 	void SetApiKey(const wxString & apiKey);
 	wxString GetGeoLocUrlServer();
 	int GetNbGpsIterationByMinute();
+	int ShowInfosGeolocUnavailable();
+	void SetShowInfosGeolocUnavailable(const int& showInfo);
 
 	int GetDiaporamaTime();
 	void SetDiaporamaTime(const int& diaporamaTime);
@@ -201,6 +203,7 @@ protected:
 	wxString geolocInverseURL;
 	wxString geolocUrl;
 	wxString apiKey;
+	int showInfosGeolocUnavailable;
 
 	int dataInMemory;
 	int inverseRotation = 0;

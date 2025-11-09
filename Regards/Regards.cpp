@@ -178,17 +178,20 @@ void MyApp::CheckGeolocalisationServiceAvailability()
 {
 	wxString urlServer = "";
 	wxString apiKey = "";
+	int ShowInfosGeolocUnavailable = 1;
 	//Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
 		urlServer = param->GetGeoLocUrlServer();
 		apiKey = param->GetApiKey();
+		ShowInfosGeolocUnavailable = param->ShowInfosGeolocUnavailable();
 	}
 	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
-	if (!result)
+	if (!result && ShowInfosGeolocUnavailable)
 	{
-		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key."));
+		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key locate in the configuration window."));
+		param->SetShowInfosGeolocUnavailable(0);
 	}
 }
 
