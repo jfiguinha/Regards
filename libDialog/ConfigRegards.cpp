@@ -8,6 +8,7 @@
 #include "ViewerParam.h"
 #include <ffmpeg_application.h>
 #include <opencv2/core/ocl.hpp>
+#include <Gps.h>
 #ifdef USE_CUDA
 #include <opencv2/cudaarithm.hpp>
 using namespace cv::cuda;
@@ -75,6 +76,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 
 	rbSkin = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBSKINCOLOR")));
 
+	txtAPIKey = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTAPIKEY")));
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
@@ -318,6 +320,8 @@ void ConfigRegards::init()
 		oldAccelerator = "CPU";
 	}
 
+	txtAPIKey->SetValue(regardsParam->GetApiKey());
+
 	int skinMode = regardsParam->GetSkinWindowMode();
 	rbSkin->SetSelection(skinMode);
 }
@@ -445,6 +449,27 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		showInfosRestart = true;
 	if (olddecoder != decoder)
 		showInfosRestart = true;
+
+	
+
+	wxString urlServer = "";
+	wxString apiKey = txtAPIKey->GetValue();
+	//Géolocalisation
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetGeoLocUrlServer();
+	}
+	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
+	if (!result)
+	{
+		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key."));
+	}
+	else
+	{
+		showInfosRestart = true;
+		regardsParam->SetApiKey(apiKey);
+	}
 
 	if (thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
 	{

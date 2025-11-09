@@ -5,6 +5,8 @@
 #include <wx/sstream.h>
 using namespace Regards::Internet;
 
+extern bool isGPsAvailable;
+
 class CGpscurl
 {
 public:
@@ -86,11 +88,60 @@ CGps::CGps(const wxString& server, const wxString& apiKey)
 	serverHttp = server;
 	gpsUrl = new CGpscurl();
 	this->apiKey = apiKey;
-	if(apiKey != L"")
-		isLocalisationAvailable = true;
-	else
-		isLocalisationAvailable = false;
-	//OpenHttpRequest(server, error);
+
+}
+
+bool CGps::IsLocalisationAvailable(const wxString& server, const wxString& apiKey)
+{
+	//wxString result = GeolocalisationGPS("48.839996", "2.379706");
+	CGpscurl* gpsUrl = new CGpscurl();
+	wxString latitude = "48.839996";
+	wxString longitude = "2.379706";
+
+	wxString httpAdress = server;
+	httpAdress.append(L"/v1/geocode/reverse?lat=");
+	httpAdress.append(latitude);
+	httpAdress.append(L"&lon=");
+	httpAdress.append(longitude);
+	httpAdress.append("&format=xml");
+	httpAdress.append(L"&type=postcode");
+	httpAdress.append(L"&apiKey=");
+	httpAdress.append(apiKey);
+	struct url_data data;
+	data.size = 0;
+	data.data = static_cast<char*>(malloc(4096)); /* reasonable size initial buffer */
+	if (nullptr == data.data)
+	{
+		printf("CGps GeolocalisationGPS Failed to allocate memory \n");
+		fprintf(stderr, "Failed to allocate memory.\n");
+		return false;
+	}
+
+	data.data[0] = '\0';
+	gpsUrl->PerformHttpGet(&data, CConvertUtility::ConvertToUTF8(httpAdress));
+
+	//wxString mystring2(chars, wxConvUTF8);
+	wxString xml(data.data, wxConvUTF8);
+
+	size_t pos_error = xml.find("error");
+	size_t pos_Unauthorized = xml.find("Unauthorized");
+
+	if(pos_error != -1 || pos_Unauthorized != -1)
+	{
+		free(data.data);
+		delete gpsUrl;
+		return false;
+	}
+
+
+	printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
+	printf("Data : %s \n", data.data);
+
+	free(data.data);
+
+	delete gpsUrl;
+
+	return true;
 }
 
 
@@ -155,11 +206,13 @@ float CGps::GetFLongitude()
 	return val;
 }
 
+
+
 bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitude)
 {
 	bool returnValue = true;
 
-	if (!isLocalisationAvailable)
+	if (!isGPsAvailable)
 	{
 		return false;
 	}

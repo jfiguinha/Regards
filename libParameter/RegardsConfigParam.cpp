@@ -364,6 +364,11 @@ wxString CRegardsConfigParam::GetApiKey()
 	return value;
 }
 
+void CRegardsConfigParam::SetApiKey(const wxString& apiKey)
+{
+	this->apiKey = apiKey;
+}
+
 wxString CRegardsConfigParam::GetUrlServer()
 {
 	wxString value = geolocUrl;

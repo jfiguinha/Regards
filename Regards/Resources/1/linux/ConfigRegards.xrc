@@ -244,6 +244,21 @@
 								</object>
 						</object>
 					</object>
+					<object class="notebookpage">
+					<label>Geolocalise</label>
+						<object class="wxPanel" name="page_5">
+							<object class="wxStaticBox" name="sbPictureExternalProgram">
+								<label>ApiKey from geoplugin.net</label>
+								<pos>0,10</pos>
+								<size>360,70</size>
+							</object>
+							<object class="wxTextCtrl" name="ID_TXTAPIKEY">
+								<default>0</default>
+								<pos>5,35</pos>
+								<size>255,20</size>
+							</object>
+						</object>
+					</object>
 						<object class="notebookpage">
 						<label>Other Parameter</label>
 						<object class="wxPanel" name="page_4">

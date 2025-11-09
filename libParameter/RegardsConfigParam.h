@@ -79,6 +79,7 @@ public:
 
 	wxString GetUrlServer();
 	wxString GetApiKey();
+	void SetApiKey(const wxString & apiKey);
 	wxString GetGeoLocUrlServer();
 	int GetNbGpsIterationByMinute();
 

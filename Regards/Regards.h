@@ -268,6 +268,10 @@ public:
 	wxString GetImageFilter() override;
 
 private:
+
+	void CheckGeolocalisationServiceAvailability();
+	void CheckOpenCLAvailability(bool configFileExist);
+
 	CRegardsConfigParam* regardsParam= nullptr;
 	MyFrameIntro* frameStart= nullptr;
 	CViewerFrame* frameViewer= nullptr;

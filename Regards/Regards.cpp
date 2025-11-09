@@ -22,6 +22,7 @@
 #include <FilterData.h>
 #include <OpenCLContext.h>
 #include <ncnn/gpu.h>
+#include <Gps.h>
 
 #ifdef USE_CUDA
 #include <opencv2/cudaarithm.hpp>
@@ -36,7 +37,7 @@ int numElementToLoad = 5;
 string buildOption = "";//"-cl-mad-enable -cl-unsafe-math-optimizations";
 cv::ocl::OpenCLExecutionContext clExecCtx;
 std::map<wxString, vector<char>> openclBinaryMapping;
-
+bool isGPsAvailable = false;
 
 using namespace cv;
 using namespace Regards::Picture;
@@ -170,6 +171,150 @@ void SaveIcon(const wxArtID& id, wxString filename)
     wxBitmap bmp = GetIcon(id, m_size);
     wxImage image = bmp.ConvertToImage();
     image.SaveFile(filename, wxBITMAP_TYPE_PNG);
+}
+
+void MyApp::CheckGeolocalisationServiceAvailability()
+//Verify if Geolocalisation is available
+{
+	wxString urlServer = "";
+	wxString apiKey = "";
+	//Géolocalisation
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
+	}
+	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
+	if (!result)
+	{
+		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key."));
+	}
+}
+
+void MyApp::CheckOpenCLAvailability(bool configFileExist)
+{
+
+	bool testOpenCL = true;
+
+#ifdef USE_CUDA
+
+	printf("Test if Is Use Cuda \n");
+
+	if (!configFileExist)
+	{
+		int cuda_devices_number = getCudaEnabledDeviceCount();
+		if (cuda_devices_number > 0)
+		{
+			regardsParam->SetIsUseCuda(1);
+			regardsParam->SetIsCudaSupport(1);
+		}
+	}
+
+	if (regardsParam->GetIsUseCuda())
+	{
+		int cuda_devices_number = getCudaEnabledDeviceCount();
+
+		if (cuda_devices_number > 0)
+		{
+			printf("cuda_devices_number : %d \n", cuda_devices_number);
+
+			try
+			{
+				cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
+			}
+			catch (Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				exit(0);
+			}
+			cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
+			DeviceInfo _deviceInfo;
+			bool _isd_evice_compatible = _deviceInfo.isCompatible();
+			cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
+
+			regardsParam->SetIsCudaSupport(1);
+			testOpenCL = false;
+
+			auto cudnn_bversion = cudnnGetVersion();
+			auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
+			if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
+			{
+				std::ostringstream oss;
+				oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
+				//CV_LOG_WARNING(NULL, oss.str().c_str());
+			}
+			else
+			{
+				cout << "CuDNN is OK" << endl;
+			}
+		}
+		else
+		{
+			regardsParam->SetIsCudaSupport(0);
+			printf("cuda platform not found \n");
+		}
+
+
+
+	}
+	else
+		regardsParam->SetIsCudaSupport(0);
+
+#else
+
+	printf("Not Test if Is Use Cuda \n");
+	regardsParam->SetIsCudaSupport(0);
+
+#endif
+
+
+	if (testOpenCL)
+	{
+		if (!ocl::haveOpenCL())
+		{
+			cout << "OpenCL is not avaiable..." << endl;
+		}
+		else
+		{
+			cout << "OpenCL is avaiable..." << endl;
+		}
+
+		if (!configFileExist)
+		{
+			if (!ocl::haveOpenCL())
+			{
+				regardsParam->SetIsOpenCLSupport(false);
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(false);
+			}
+			else
+			{
+				regardsParam->SetIsOpenCLSupport(true);
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
+			}
+		}
+
+
+		if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
+		{
+			if (!ocl::haveOpenCL())
+			{
+				cout << "OpenCL is not avaiable..." << endl;
+			}
+			else
+			{
+				COpenCLContext::CreateDefaultOpenCLContext();
+			}
+
+			if (!isOpenCLInitialized)
+			{
+				regardsParam->SetIsOpenCLSupport(false);
+				cout << "OpenCL is not Initialized..." << endl;
+			}
+		}
+	}
 }
 
 // 'Main program' equivalent: the program execution "starts" here
@@ -325,129 +470,9 @@ bool MyApp::OnInit()
     bool firstInitialisation = true;
 	std::set_terminate(onTerminate);
     
+	CheckOpenCLAvailability(configFileExist);
 
-	bool testOpenCL = true;
-
-#ifdef USE_CUDA
-
-    printf("Test if Is Use Cuda \n");
-    
-    if(!configFileExist)
-    {
-        int cuda_devices_number = getCudaEnabledDeviceCount();
-        if (cuda_devices_number > 0)
-        {
-            regardsParam->SetIsUseCuda(1);
-            regardsParam->SetIsCudaSupport(1);
-        }
-    }
-
-    if(regardsParam->GetIsUseCuda())
-    {
-        int cuda_devices_number = getCudaEnabledDeviceCount();
-
-        if (cuda_devices_number > 0)
-        {
-            printf("cuda_devices_number : %d \n", cuda_devices_number);
-             
-            try
-            {
-                cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
-            }
-            catch (Exception& e)
-            {
-                const char* err_msg = e.what();
-                std::cout << "exception caught: " << err_msg << std::endl;
-                std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-                exit(0);
-            }
-            cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
-            DeviceInfo _deviceInfo;
-            bool _isd_evice_compatible = _deviceInfo.isCompatible();
-            cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
-
-            regardsParam->SetIsCudaSupport(1);
-            testOpenCL = false;
-            
-            auto cudnn_bversion = cudnnGetVersion();
-            auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
-            if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
-            {
-                std::ostringstream oss;
-                oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
-                //CV_LOG_WARNING(NULL, oss.str().c_str());
-            }
-            else
-            {
-                cout << "CuDNN is OK" << endl;
-            }
-        }
-        else
-        {
-            regardsParam->SetIsCudaSupport(0);  
-            printf("cuda platform not found \n");
-        }
-
-
-
-    }
-    else
-        regardsParam->SetIsCudaSupport(0);   
-
-#else
-
-    printf("Not Test if Is Use Cuda \n");
-	regardsParam->SetIsCudaSupport(0);
-    
-#endif
-
-	if (testOpenCL)
-	{
-		if (!ocl::haveOpenCL())
-		{
-			cout << "OpenCL is not avaiable..." << endl;
-		}
-		else
-		{
-			cout << "OpenCL is avaiable..." << endl;
-		}
-
-		if (!configFileExist)
-		{
-			if (!ocl::haveOpenCL())
-            {
-				regardsParam->SetIsOpenCLSupport(false);
-                regardsParam->SetIsOpenCLOpenGLInteropSupport(false);
-            }
-			else
-            {
-				regardsParam->SetIsOpenCLSupport(true);
-                regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
-            }
-		}
-
-
-		if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
-		{
-			if (!ocl::haveOpenCL())
-			{
-				cout << "OpenCL is not avaiable..." << endl;
-			}
-			else
-			{
-				COpenCLContext::CreateDefaultOpenCLContext();
-			}
-
-			if (!isOpenCLInitialized)
-			{
-				regardsParam->SetIsOpenCLSupport(false);
-				cout << "OpenCL is not Initialized..." << endl;
-			}
-		}
-	}
-
-
-    
+	CheckGeolocalisationServiceAvailability();
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

@@ -24,14 +24,13 @@ namespace Regards
 			float GetGpsfValue(const wxString& gpsValue);
 			float GetFLatitude();
 			float GetFLongitude();
-
+			static bool IsLocalisationAvailable(const wxString& server, const wxString& apiKey);
 		private:
 			//bool ImportationGeoPlugin(const wxString& xml);
 			bool ImportationGeocodePlugin(const wxString& xml);
 			wxString FindElement(const wxString& xml, const wxString& baliseBegin, const wxString& baliseEnd);
 			GeoPluginVector geoPluginVector;
-			//int error;
-			bool isLocalisationAvailable = false;
+
 			wxString serverHttp;
 			wxString latitude;
 			wxString apiKey;

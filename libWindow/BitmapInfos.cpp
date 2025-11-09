@@ -18,7 +18,7 @@ using namespace Regards::exiv2;
 using namespace std;
 
 #define GPS_TIME 1000
-
+extern bool isGPsAvailable;
 
 struct InfosGps
 {
@@ -58,15 +58,18 @@ bool CBitmapInfos::GetProcessEnd()
 
 void CBitmapInfos::OnStartGps(wxTimerEvent& event)
 {
-	if (threadGps == nullptr)
+	if (isGPsAvailable)
 	{
-		InfosGps* infos = new InfosGps();
-		infos->window = this;
-		infos->filename = filename;
-		threadGps = new thread(GetGpsInfos, infos);
+		if (threadGps == nullptr)
+		{
+			InfosGps* infos = new InfosGps();
+			infos->window = this;
+			infos->filename = filename;
+			threadGps = new thread(GetGpsInfos, infos);
+		}
+		else
+			gpsTimer->StartOnce(GPS_TIME);
 	}
-	else
-		gpsTimer->StartOnce(GPS_TIME);
 }
 
 
@@ -248,7 +251,7 @@ void CBitmapInfos::UpdateData()
 		
 	}
     
-    if(hasGps && gpsInfos == "")
+    if(hasGps && gpsInfos == "" && isGPsAvailable)
     {
         gpsTimer->StartOnce(100);
     }
