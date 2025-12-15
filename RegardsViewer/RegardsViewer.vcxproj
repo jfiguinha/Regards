@@ -485,7 +485,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>wxUSE_WEBVIEW_EDGE_STATIC ;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libVideoEffect;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre;../libVideoConverter;../libScanner;../libOpenGL;../libOpenCL;../OtherLib/libffmpeg;../libGeolocalisation</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
