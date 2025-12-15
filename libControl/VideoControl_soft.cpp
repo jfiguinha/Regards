@@ -1172,7 +1172,7 @@ int CVideoControlSoft::Play(const wxString& movie)
 					if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
 					{
 						muVideoEffect.lock();
-						videoEffectParameter.ratioSelect = i - 1;
+						videoEffectParameter.ratioSelect = i;
 						muVideoEffect.unlock();
 						break;
 					}

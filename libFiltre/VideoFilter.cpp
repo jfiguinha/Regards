@@ -112,11 +112,8 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	*/
 	vector<CMetadata> formatPicture;
 	AddMetadataElement(formatPicture, "auto", 0);
-	AddMetadataElement(formatPicture, "1.33", 1);
-	AddMetadataElement(formatPicture, "1.66", 2);
-	AddMetadataElement(formatPicture, "1.77", 3);
-	AddMetadataElement(formatPicture, "1.85", 4);
-	AddMetadataElement(formatPicture, "2.35", 5);
+	for (int i = 0; i < videoEffectParameter->tabRatio.size(); i++)
+		AddMetadataElement(formatPicture, to_string(videoEffectParameter->tabRatio[i]), i + 1);
 
 	vector<CMetadata> zoomPicture;
 	for (int i = 0; i < videoEffectParameter->tabZoom.size(); i++)

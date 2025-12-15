@@ -29,8 +29,10 @@
 class CVideoEffectParameter : public CEffectParameter
 {
 public:
-    
-    vector<float> zoom{1.0f, 1.33f, 1.66f, 1.77f, 1.85f, 2.35f};
+
+	//vector<float> zoom{ 1.0f, 1.2f, 1.25f, 1.33f, 1.66f, 1.77f, 1.85f, 2.35f, 2.40f, };
+	vector<float> zoom{ 1.0f, 1.19f, 1.25f, 1.3f, 1.33f, 1.37f, 1.375f, 1.43f, 1.5f, 1.6f, 1.66f, 1.7f, 1.75f, 1.77f, 1.85f, 1.875f, 1.9f, 2.0f, 2.165f, 2.208f, 2.35f, 2.370f, 2.39f, 2.4f, 2.55f, 2.592f, 2.6f, 2.66f, 2.76f, 3.5f, 3.6f, 4.0f, 12.0f };
+
     vector<float> vect{
     0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f,
     1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f

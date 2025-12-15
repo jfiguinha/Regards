@@ -2,6 +2,6 @@
 
 struct AspectRatio
 {
-    int num;
+    float num;
     int den;
 };

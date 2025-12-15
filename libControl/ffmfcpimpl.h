@@ -23,7 +23,7 @@
 #include "VideoControlInterface.h"
 #include <thread>
 using namespace std;
-
+//#define CONFIG_AVFILTER 1
 
 extern "C" {
 #include "libavutil/avstring.h"
@@ -31,6 +31,7 @@ extern "C" {
 #include "libavutil/pixdesc.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/dict.h"
+#include "libavutil/bprint.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/samplefmt.h"
 #include "libavutil/avassert.h"
@@ -40,6 +41,7 @@ extern "C" {
 #include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
 #include "libavutil/opt.h"
+#include "libavfilter/buffersrc.h"
 #include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
 #include "libavutil/display.h"
@@ -54,6 +56,8 @@ extern "C" {
 #include "libavutil/imgutils.h"
 #endif
 }
+
+
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25
@@ -286,6 +290,10 @@ public:
 		PacketQueue* pktq;
 	};
 
+	typedef struct FrameData {
+		int64_t pkt_pos;
+	} FrameData;
+
 	using VideoState = struct VideoState
 	{
 		int refresh = 0;
@@ -339,9 +347,7 @@ public:
 		int audio_volume;
 		int muted;
 		AudioParams audio_src;
-#if CONFIG_AVFILTER
         AudioParams audio_filter_src;
-#endif
 		AudioParams audio_tgt;
 		SwrContext* swr_ctx;
 		int frame_drops_early;
@@ -396,7 +402,7 @@ public:
 		AVHWDeviceType hwaccel_device_type;
 		char* hwaccel_device;
 		AVPixelFormat hwaccel_output_format;
-
+		int wanted_nb_channels = 2;
 		/* hwaccel context */
 		void* hwaccel_ctx;
 		void (*hwaccel_uninit)(AVCodecContext* s);
@@ -407,6 +413,9 @@ public:
 		AVBufferRef* hw_frames_ctx;
 		AVCodecContext* avctx;
 		AVCodec* codec;
+		AVFilterContext* in_audio_filter;   // the first filter in the audio chain
+		AVFilterContext* out_audio_filter;  // the last filter in the audio chain
+		AVFilterGraph* agraph;              // audio filter graph
 	};
 
 
@@ -586,7 +595,8 @@ public:
 	int audio_decode_frame(VideoState* is);
 
 	int audio_open(void *opaque, AVChannelLayout *wanted_channel_layout, int wanted_sample_rate, AudioParams *audio_hw_params);
-
+	int configure_audio_filters(VideoState* is, const char* afilters, int force_output_format);
+	int configure_filtergraph(AVFilterGraph* graph, const char* filtergraph, AVFilterContext* source_ctx, AVFilterContext* sink_ctx);
 #ifndef CMDUTILS
 
 	int check_stream_specifier(AVFormatContext* s, AVStream* st, const char* spec);

@@ -301,7 +301,7 @@ public:
                 std::vector<wxString> list = CConvertUtility::split(To_Display, ':');
                 if (list.size() == 2)
                 {
-                    aspectRatio.num = std::stoi(list[0].ToStdString());
+                    aspectRatio.num = std::stof(list[0].ToStdString());
                     aspectRatio.den = std::stoi(list[1].ToStdString());
                 }
                 else
@@ -309,7 +309,7 @@ public:
                     std::vector<wxString> list = CConvertUtility::split(To_Display, '.');
                     if (list.size() == 2)
                     {
-                        aspectRatio.num = std::stoi(list[0].ToStdString());
+                        aspectRatio.num = std::stof(list[0].ToStdString());
                         aspectRatio.den = std::stoi(list[1].ToStdString());
                     }
                     else
