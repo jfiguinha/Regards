@@ -19,7 +19,7 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 !define MUI_PRODUCT "RegardsViewer 2.0"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
-!define MUI_VERSION "2.87.7"
+!define MUI_VERSION "2.83.2"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file

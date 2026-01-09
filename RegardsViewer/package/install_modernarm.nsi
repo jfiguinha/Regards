@@ -143,7 +143,7 @@ Section "RegardsViewer" SecRegardsViewer
 
 
   ;ADD YOUR OWN FILES HERE...
-  DetailPrint "*** Installing Regards Viewer 2.82.7..."
+  DetailPrint "*** Installing Regards Viewer 2.83.2..."
   File "Prerequisites\RegardsViewer2.zip"
   ZipDLL::extractall "$INSTDIR\RegardsViewer2.zip" $INSTDIR
   ;Store installation folder
@@ -193,7 +193,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.82.7"
+  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.83.2"
   LangString DESC_SecVisualStudio ${LANG_ENGLISH} "Visual Studio 2017 Redistribuable arm64"
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
