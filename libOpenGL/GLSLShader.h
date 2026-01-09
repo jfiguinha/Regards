@@ -47,6 +47,8 @@ namespace Regards
 			GLuint m_hShaderHandle;
 			GLuint m_hVertexHandle;
 			GLuint m_hComputeHandle;
+
+			bool isLink = false;
 		};
 	}
 }

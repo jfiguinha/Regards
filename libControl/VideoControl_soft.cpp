@@ -2351,7 +2351,7 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 		enableopenCL = 0;
 	}
 
-	if (!enableopenCL)
+	if (!enableopenCL || (dst->format != AV_PIX_FMT_YUV420P && dst->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
 		int nWidth = dst->width;
@@ -2366,9 +2366,26 @@ void CVideoControlSoft::SetFrameData(AVFrame *dst)
 			memcpy(dst->data[0], outData, dst->linesize[0] * nHeight);
 		}
 		cv::Mat bitmapData = GetBitmapRGBA(dst);
-		//muBitmap.lock();
-		bitmapData.copyTo(pictureFrame);
-		//muBitmap.unlock();
+		if (bitmapData.empty())
+		{
+			errorDecoding = true;
+			bitmapData = cv::Mat(nHeight, nWidth, CV_8UC4);
+		}
+		if (openclEffectYUV != nullptr && enableopenCL)
+		{
+			if (bitmapData.empty())
+			{
+				errorDecoding = true;
+				bitmapData = cv::Mat(nHeight, nWidth, CV_8UC4);
+			}
+
+
+			Regards::Picture::CPictureArray pictureArray(bitmapData);
+			openclEffectYUV->SetMatrix(pictureArray);
+		}
+		else
+			bitmapData.copyTo(pictureFrame);
+
 	}
 	else if (enableopenCL && (dst->format != AV_PIX_FMT_YUV420P && dst->format != AV_PIX_FMT_NV12))
 	{

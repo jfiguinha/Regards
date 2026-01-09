@@ -219,10 +219,15 @@ bool GLSLShader::DeleteShader()
 
 bool GLSLShader::EnableShader()
 {
-	glLinkProgram(m_hProgramObject);
+	if (!isLink)
+	{
+		glLinkProgram(m_hProgramObject);
 
-	if (!check_program_link_status(m_hProgramObject))
-		return false;
+		if (!check_program_link_status(m_hProgramObject))
+			return false;
+	}
+
+	isLink = true;
 
 	glUseProgram(m_hProgramObject);
 	return true;
