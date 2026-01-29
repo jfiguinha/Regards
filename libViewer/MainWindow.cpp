@@ -1134,26 +1134,26 @@ void CMainWindow::ProcessIdle()
 			listFile[path] = true;
 
 		photoList.erase(photoList.begin() + 0);
-
-		if (photoList.empty())
-		{
-			CSqlPhotosWithoutThumbnail sqlPhoto;
-			sqlPhoto.GetPhotoList(&photoList, 0);
-		}
-
-		//No more photo to process
-		if (photoList.empty())
-		{
-			nbElement = 0;
-			hasDoneOneThings = false;
-			needToRefresh = true;
-			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-			event->SetExtraLong(nbElement);
-			wxQueueEvent(this, event);
-		}
-		else
-			hasDoneOneThings = true;
 	}
+
+	if (photoList.empty())
+	{
+		CSqlPhotosWithoutThumbnail sqlPhoto;
+		sqlPhoto.GetPhotoList(&photoList, 0);
+	}
+
+	//No more photo to process
+	if (photoList.empty())
+	{
+		nbElement = 0;
+		hasDoneOneThings = false;
+		needToRefresh = true;
+		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+		event->SetExtraLong(nbElement);
+		wxQueueEvent(this, event);
+	}
+	else
+		hasDoneOneThings = true;
 
 	if (hasDoneOneThings)
 		processIdle = true;
