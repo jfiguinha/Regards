@@ -124,7 +124,6 @@ namespace Regards::Viewer
 		void OnUpdateFolder(wxCommandEvent& event);
 		void OnRefreshThumbnail(wxCommandEvent& event);
 		void OnProcessThumbnail(wxCommandEvent& event);
-		void OnModelUpdate(wxCommandEvent& event);
 
 		void Resize() override;
 		void ExportVideo(const wxString& filename);
@@ -134,7 +133,6 @@ namespace Regards::Viewer
 
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
-		void ProcessThumbnail();
 
 		void UpdateThumbnailIcone(wxCommandEvent& event);
 		int nbElementInIconeList = 0;

@@ -1057,6 +1057,9 @@ void CMainWindow::ProcessIdle()
 {
 	bool hasDoneOneThings = false;
 	int pictureSize = CThumbnailBuffer::GetVectorSize();
+	int nbProcesseur = 1;
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
+		nbProcesseur = config->GetThumbnailProcess();
 
 	if (processEnd)
 		return;
@@ -1114,39 +1117,10 @@ void CMainWindow::ProcessIdle()
 		}
 	}
 
-	ProcessThumbnail();
 
-	if (hasDoneOneThings)
-		processIdle = true;
-
-}
-
-void CMainWindow::ProcessThumbnail()
-{
-	if (processEnd)
-		return;
-
-	if (nbElementInIconeList == 0)
+	if (nbElementInIconeList > 0 && photoList.size() > 0 && nbProcess < nbProcesseur)
 	{
-		return;
-	}
-
-
-
-	int nbProcesseur = 1;
-	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
-		nbProcesseur = config->GetThumbnailProcess();
-
-
-	for (int i = 0; i < photoList.size(); i++)
-	{
-		if (processEnd)
-			return;
-
-		if (nbProcess >= nbProcesseur)
-			return;
-
-		wxString path = photoList[i];
+		wxString path = *photoList.begin();
 
 		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
 		event->SetExtraLong(photoList.size());
@@ -1154,50 +1128,43 @@ void CMainWindow::ProcessThumbnail()
 
 		thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
 
+		
 		std::map<wxString, bool>::iterator it = listFile.find(path);
 		if (it == listFile.end())
-		{
-			thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
 			listFile[path] = true;
+
+		photoList.erase(photoList.begin() + 0);
+
+		if (photoList.empty())
+		{
+			CSqlPhotosWithoutThumbnail sqlPhoto;
+			sqlPhoto.GetPhotoList(&photoList, 0);
 		}
 
-		photoList.erase(photoList.begin() + i);
-
-
-		i--;
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		//No more photo to process
+		if (photoList.empty())
+		{
+			nbElement = 0;
+			hasDoneOneThings = false;
+			needToRefresh = true;
+			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+			event->SetExtraLong(nbElement);
+			wxQueueEvent(this, event);
+		}
+		else
+			hasDoneOneThings = true;
 	}
 
-
-
-	if (photoList.empty())
-	{
-		CSqlPhotosWithoutThumbnail sqlPhoto;
-		sqlPhoto.GetPhotoList(&photoList, 0);
-	}
-	if (photoList.empty())
-	{
-		nbElement = 0;
-		processIdle = false;
-		needToRefresh = true;
-
-
-		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-		event->SetExtraLong(nbElement);
-		wxQueueEvent(this, event);
-
-
-	}
-	else
+	if (hasDoneOneThings)
 		processIdle = true;
+
 }
 
 void CMainWindow::UpdateMessage(wxCommandEvent& event)
 {
 	const int nbPhoto = event.GetExtraLong();
 	const auto thumbnailMessage = new CThumbnailMessage();
-	if (nbPhoto > 0)
+	//if (nbPhoto > 0)
 	{
 		thumbnailMessage->nbPhoto = nbPhoto;
 		thumbnailMessage->thumbnailPos = thumbnailPos;
