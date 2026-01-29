@@ -75,6 +75,8 @@ namespace Regards::Window
 
 		virtual bool GetProcessStop();
 
+		bool processEnd;
+
 	protected:
 		static void ThreadIdle(void* data);
 		virtual void ProcessOnIdleEndEvent(wxCommandEvent& event);
@@ -91,7 +93,7 @@ namespace Regards::Window
 
 		CWindowMainPimpl* windowMainPimpl;
 		wxString name;
-		bool processEnd;
+		
 		bool processStop;
 		bool processIdle;
 		int id;
