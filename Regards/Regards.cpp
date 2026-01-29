@@ -56,6 +56,14 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
         return;
 }
 
+void MyApp::OnEventLoopEnter(wxEventLoopBase* WXUNUSED(loop))
+{
+	if (frameViewer != nullptr)
+	{
+		frameViewer->CreateWatcherIfNecessary();
+	}
+}
+
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
 	// to get at your unnamed parameters use

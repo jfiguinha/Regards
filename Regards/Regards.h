@@ -266,6 +266,7 @@ public:
 
 	virtual void AddImageHandler(wxImageHandler* poHandler);
 	wxString GetImageFilter() override;
+	virtual void OnEventLoopEnter(wxEventLoopBase* WXUNUSED(loop)) override;
 
 private:
 

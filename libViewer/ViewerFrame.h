@@ -69,7 +69,7 @@ namespace Regards::Viewer
 		void PrintPreview(CImageLoadingFormat* imageToPrint) override;
 		void PrintImagePreview(CImageLoadingFormat* imageToPrint) override;
 		void Exit() override;
-
+		void CreateWatcherIfNecessary();
 		void ShowViewer() override
 		{
 		};

@@ -60,47 +60,9 @@ using namespace Regards::Sqlite;
 
 bool firstTime = true;
 
-void CMainWindow::OnRemoveFileFromCheckIn(wxCommandEvent& event)
-{
-	updateCriteria = true;
-	UpdateFolderStatic();
-	processIdle = true;
-}
-
-void CMainWindow::OnCheckInUpdateStatus(wxCommandEvent& event)
-{
-	int numElementTraitement = event.GetInt();
-	wxString nbElement = event.GetString();
-	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + nbElement;
-	if (statusBarViewer != nullptr)
-	{
-		statusBarViewer->SetText(3, message);
-	}
-}
 
 
-void CMainWindow::OnEndCheckFile(wxCommandEvent& event)
-{
-	CThreadCheckFile* checkFile = (CThreadCheckFile*)event.GetClientData();
-	if (checkFile != nullptr)
-	{
-		if (checkFile->checkFile != nullptr)
-		{
-			checkFile->checkFile->join();
-			delete checkFile->checkFile;
-		}
 
-		isCheckingFile = false;
-		delete checkFile;
-	}
-
-	processIdle = true;
-}
-
-CThreadVideoData::~CThreadVideoData()
-{
-}
 
 
 
@@ -184,7 +146,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
-	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
@@ -246,6 +207,44 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	processEnd = false;
 }
 
+void CMainWindow::OnRemoveFileFromCheckIn(wxCommandEvent& event)
+{
+	updateCriteria = true;
+	UpdateFolderStatic();
+	processIdle = true;
+}
+
+void CMainWindow::OnCheckInUpdateStatus(wxCommandEvent& event)
+{
+	int numElementTraitement = event.GetInt();
+	wxString nbElement = event.GetString();
+	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
+	wxString message = label + to_string(numElementTraitement) + L"/" + nbElement;
+	if (statusBarViewer != nullptr)
+	{
+		statusBarViewer->SetText(3, message);
+	}
+}
+
+
+void CMainWindow::OnEndCheckFile(wxCommandEvent& event)
+{
+	CThreadCheckFile* checkFile = (CThreadCheckFile*)event.GetClientData();
+	if (checkFile != nullptr)
+	{
+		if (checkFile->checkFile != nullptr)
+		{
+			checkFile->checkFile->join();
+			delete checkFile->checkFile;
+		}
+
+		isCheckingFile = false;
+		delete checkFile;
+	}
+
+	processIdle = true;
+}
+
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	nbProcess = 0;
@@ -283,8 +282,6 @@ void CMainWindow::SetViewerMode()
 	if (toolbarViewerMode != nullptr)
 		toolbarViewerMode->SetViewerWindowPush();
 }
-
-
 
 void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 {
@@ -480,10 +477,14 @@ void CMainWindow::OnDeleteFace(wxCommandEvent& event)
 
 void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 {
+	CExportDiaporama * exportDiaporama = new CExportDiaporama(this);
+
 	if (exportDiaporama != nullptr)
 	{
 		exportDiaporama->OnExportDiaporama();
 	}
+
+	delete exportDiaporama;
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
@@ -500,29 +501,6 @@ void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
 		evt.SetInt(numPhoto);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
-}
-
-void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
-{
-	if (exportDiaporama != nullptr)
-	{
-		int ret = event.GetInt();
-		exportDiaporama->OnEndDecompressFile(ret);
-		delete exportDiaporama;
-		exportDiaporama = nullptr;
-	}
-}
-
-void CMainWindow::ExportVideo(const wxString& filename)
-{
-	if (!wxFileExists(filename))
-		return;
-
-	if (exportDiaporama != nullptr)
-		delete exportDiaporama;
-
-	exportDiaporama = new CExportDiaporama(this);
-	exportDiaporama->ExportVideo(filename);
 }
 
 void CMainWindow::OnExportFile(wxCommandEvent& event)
@@ -1339,9 +1317,12 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		if (typeId == 0)
 		{
 			//Folder 
-			wxFileName filename(firstFileToShow);
-			wxString folder = filename.GetPath();
-			statusBarViewer->RemoveFSEntry(folder);
+			if (firstFileToShow != "")
+			{
+				wxFileName filename(firstFileToShow);
+				wxString folder = filename.GetPath();
+				statusBarViewer->RemoveFSEntry(folder);
+			}
 			firstFileToShow = *newPath;
 		}
 		else if (typeId == 1)

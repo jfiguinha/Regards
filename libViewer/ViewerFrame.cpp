@@ -133,15 +133,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     }
 
 	
-	CSqlFindFolderCatalog folderCatalog;
-	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+
 	
 
-	m_watcher = new wxFileSystemWatcher();
-	m_watcher->SetOwner(this);
+
 	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
 
-	CheckDatabase(folderList);
+
 
 	exitTimer = new wxTimer(this, wxTIMER_EXIT);
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
@@ -298,6 +296,20 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	
 }
+
+void CViewerFrame::CreateWatcherIfNecessary()
+{
+	if(m_watcher != nullptr)
+	{
+		m_watcher = new wxFileSystemWatcher();
+		m_watcher->SetOwner(this);
+		CSqlFindFolderCatalog folderCatalog;
+		folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+		CheckDatabase(folderList);
+	}
+
+}
+
 
 bool CViewerFrame::VerifyIAModel()
 {

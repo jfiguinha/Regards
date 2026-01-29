@@ -45,7 +45,9 @@ namespace Regards::Viewer
 			mainWindow = nullptr;
 		}
 
-		~CThreadVideoData();
+		CThreadVideoData::~CThreadVideoData()
+		{
+		};
 
 		CMainWindow* mainWindow;
 		wxString video;
