@@ -190,13 +190,13 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 		{
 			folderWnd->AddPath(getSelectPath);
 			const wxString firstFile = AddFolder(getSelectPath, file, !isShowDialog);
-			evt.SetInt(0);
+			evt.SetInt(wxEVENT_ADDFOLDER);
 			auto newPath = new wxString(firstFile);
 			evt.SetClientData(newPath);
 		}
 		else
 		{
-			evt.SetInt(1);
+			evt.SetInt(wxEVENT_REMOVEFOLDER);
 			folderWnd->RemovePath(getSelectPath);
 			auto newPath = new wxString(getSelectPath);
 			RemoveFolder(getSelectPath);

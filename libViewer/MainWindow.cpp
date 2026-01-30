@@ -1300,21 +1300,22 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 	if (newPath != nullptr)
 	{
-		if (typeId == 0)
+		if (typeId == wxEVENT_ADDFOLDER)
 		{
 			//Folder 
+			firstFileToShow = *newPath;
 			if (firstFileToShow != "")
 			{
 				wxFileName filename(firstFileToShow);
 				wxString folder = filename.GetPath();
-				statusBarViewer->RemoveFSEntry(folder);
+				statusBarViewer->AddFSEntry(folder);
 			}
-			firstFileToShow = *newPath;
+			
 		}
-		else if (typeId == 1)
+		else if (typeId == wxEVENT_REMOVEFOLDER)
 		{
 			wxString folder = *newPath;
-			statusBarViewer->AddFSEntry(folder);
+			statusBarViewer->RemoveFSEntry(folder);
 		}
 	}
 
