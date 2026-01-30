@@ -96,7 +96,19 @@ vector<cv::Mat> CHeic::GetAllPicture(const char * filename, int& delay)
 
 			int stride = 0;
 			const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			memcpy(picture.data, data, stride * height);
+			int len = picture.total() * picture.elemSize();
+			if (len == stride * height)
+			{
+				memcpy(picture.data, data, stride * height);
+			}
+			else
+			{
+			#pragma omp	parallel for
+				for (int y = 0; y < height; y++)
+				{
+					memcpy(picture.data + y * width * 3, data + y * stride, width * 3);
+				}
+			}
 
 			heif_image_release(img);
 
@@ -241,7 +253,20 @@ cv::Mat CHeic::GetPicture(const char * filename, int& delay, const int& numPictu
 
             int stride = 0;
             const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-            memcpy(picture.data, data, stride * height);
+            
+			int len = picture.total() * picture.elemSize();
+			if (len == stride * height)
+			{
+				memcpy(picture.data, data, stride * height);
+			}
+			else
+			{
+			#pragma omp	parallel for
+				for (int y = 0; y < height; y++)
+				{
+					memcpy(picture.data + y * width * 3, data + y * stride, width * 3);
+				}
+			}
 
             heif_image_release(img);
             
@@ -323,7 +348,19 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation, const bool & 
 
 		int stride = 0;
 		const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-		memcpy(picture.data, data, stride * height);
+		int len = picture.total() * picture.elemSize();
+		if (len == stride * height)
+		{
+			memcpy(picture.data, data, stride * height);
+		}
+		else
+		{
+#pragma omp	parallel for
+			for (int y = 0; y < height; y++)
+			{
+				memcpy(picture.data + y * width * 3, data + y * stride, width * 3);
+			}
+		}
 
 		heif_image_release(img);
 		heif_image_handle_release(handle);
@@ -413,7 +450,19 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 
 			int stride = 0;
 			const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			memcpy(picture.data, data, stride * th_height);
+			int len = picture.total() * picture.elemSize();
+			if (len == stride * th_height)
+			{
+				memcpy(picture.data, data, stride * th_height);
+			}
+			else
+			{
+#pragma omp	parallel for
+				for (int y = 0; y < th_height; y++)
+				{
+					memcpy(picture.data + y * th_width * 3, data + y * stride, th_width * 3);
+				}
+			}
 
 			heif_image_release(img);
 
