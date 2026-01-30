@@ -9,9 +9,7 @@
 
 #include "EdgePreservingFilter.h"
 #include "EdgePreservingFilterParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <Metadata.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>

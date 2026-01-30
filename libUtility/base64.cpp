@@ -33,7 +33,6 @@
 #include "header.h"
 #include "base64.h"
 
-#include <algorithm>
 #include <stdexcept>
 
  //

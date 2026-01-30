@@ -1,9 +1,7 @@
 #include <header.h>
 #include "CartoonFilter.h"
 #include "CartoonEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>

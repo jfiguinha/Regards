@@ -2,7 +2,6 @@
 #include "Gps.h"
 #include <curl/curl.h>
 #include <ConvertUtility.h>
-#include <wx/sstream.h>
 using namespace Regards::Internet;
 
 extern bool isGPsAvailable;

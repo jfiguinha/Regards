@@ -19,12 +19,10 @@
 #endif
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
-#include <Gps.h>
 #include <theme.h>
 #include <TreeElementControlInterface.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
-using namespace Regards::Internet;
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
 #define TAILLEMAX 4096

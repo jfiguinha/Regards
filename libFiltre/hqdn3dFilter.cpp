@@ -9,9 +9,7 @@
 
 #include "hqdn3dFilter.h"
 #include "hqdn3dEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <Draw.h>

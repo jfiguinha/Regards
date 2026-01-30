@@ -4,9 +4,7 @@
 #include <LibResource.h>
 #include <ThumbnailDataStorage.h>
 #include <libPicture.h>
-#include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
-#include <picture_utility.h>
 #include <ImageVideoThumbnail.h>
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;

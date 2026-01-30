@@ -1,6 +1,5 @@
 #include <header.h>
 #include "SelectPage.h"
-#include "ScannerParam.h"
 
 CSelectFileDlg::CSelectFileDlg(wxWindow* parent, const wxWindowID id,
                                const wxString& filename,

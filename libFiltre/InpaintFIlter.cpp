@@ -2,12 +2,10 @@
 #include "InpaintFilter.h"
 #include "EffectParameter.h"
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
-#include <Crop.h>
 #include "FiltreEffetCPU.h"
 #include <effect_id.h>
 #include "InpaintFilterParam.h"

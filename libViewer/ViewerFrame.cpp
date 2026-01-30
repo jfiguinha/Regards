@@ -7,7 +7,6 @@
 #include "SQLRemoveData.h"
 #include <PrintEngine.h>
 #include <LibResource.h>
-//#include <OpenCLDialog.h>
 #include <wx/filename.h>
 #include <ConfigRegards.h>
 #include "MainThemeInit.h"
@@ -23,17 +22,14 @@
 #include <SavePicture.h>
 #include <ScannerFrame.h>
 #include <ImageLoadingFormat.h>
-#include "ListFace.h"
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
 #include "window_mode_id.h"
 #include <wx/busyinfo.h>
-#include <LibResource.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-#include <FileUtility.h>
 #include <wx/progdlg.h>
 #include "DownloadFile.h"
 #ifdef __APPLE__

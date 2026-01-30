@@ -10,11 +10,9 @@
 #endif
 #include <FileUtility.h>
 #include <wx/filename.h>
-#include <FileUtility.h>
 #include "SelectPage.h"
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
-#include <FileUtility.h>
 #include <wx/busyinfo.h>
 using namespace Regards::Picture;
 

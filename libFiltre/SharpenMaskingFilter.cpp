@@ -1,8 +1,6 @@
 #include <header.h>
 #include "SharpenMaskingFilter.h"
 #include "SharpenMaskingParameter.h"
-#include <FilterData.h>
-
 #include <LibResource.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>

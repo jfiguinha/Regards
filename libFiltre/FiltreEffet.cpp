@@ -3,12 +3,8 @@
 #include "PictureArray.h"
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
-#include <OpenCLParameter.h>
 #include <RegardsConfigParam.h>
 #include <FilterData.h>
-#include "WaveFilter.h"
-#include "ViewerParamInit.h"
-#include "ViewerParam.h"
 #include <ImageLoadingFormat.h>
 #include <config_id.h>
 #include <ParamInit.h>

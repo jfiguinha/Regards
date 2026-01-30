@@ -1,10 +1,6 @@
 #include "header.h"
 #include "LoadingResource.h"
-#include <libPicture.h>
 #include <LibResource.h>
-#include <PictureData.h>
-#include <ConvertUtility.h>
-using namespace Regards::Picture;
 
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {

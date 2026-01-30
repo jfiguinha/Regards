@@ -8,7 +8,6 @@
 //
 
 #include "PageCurlFilter.h"
-#include <FilterData.h>
 #include <RGBAQuad.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>

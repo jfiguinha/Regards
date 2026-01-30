@@ -2,11 +2,8 @@
 #include "ThumbnailMultiPage.h"
 #include <Thumbnail.h>
 #include <ThumbnailDataStorage.h>
-#include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
-#include <picture_utility.h>
-#include <LibResource.h>
 using namespace Regards::Control;
 using namespace Regards::Scanner;
 using namespace Regards::Window;

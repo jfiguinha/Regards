@@ -1,6 +1,5 @@
 #include <header.h>
 #include "ThumbnailDataStorage.h"
-#include "ImageLoadingFormat.h"
 
 
 CThumbnailDataStorage::CThumbnailDataStorage(const wxString& filename)

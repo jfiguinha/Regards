@@ -9,11 +9,8 @@
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
 #endif
 #include <EffectVideoParameter.h>
-#include <utility.h>
 
 using namespace Regards::OpenGL;
 //#define RENDER_TO_TEXTURE

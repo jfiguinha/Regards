@@ -9,9 +9,7 @@
 
 #include "LensFlareFilter.h"
 #include "LensFlareEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <Draw.h>

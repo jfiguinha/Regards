@@ -1,7 +1,5 @@
 #include "header.h"
 #ifdef __NEW_EXIV2__
-#include <FreeImage.h>
-#include <ximage.h>
 #include <ConvertUtility.h>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>

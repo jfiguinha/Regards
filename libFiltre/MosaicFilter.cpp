@@ -1,8 +1,6 @@
 #include <header.h>
 #include "MosaicFilter.h"
 #include "MosaicFilterParameter.h"
-#include <FilterData.h>
-
 #include <LibResource.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>

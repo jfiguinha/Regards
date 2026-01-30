@@ -1,6 +1,5 @@
 #include "header.h"
 #include "ThumbnailBuffer.h"
-#include <libPicture.h>
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
 #include <ConvertUtility.h>

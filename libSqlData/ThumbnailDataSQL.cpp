@@ -2,16 +2,9 @@
 #include "ThumbnailDataSQL.h"
 #include "SqlThumbnail.h"
 #include "SqlThumbnailVideo.h"
-#include <wxmd5.h>
 #include <libPicture.h>
 using namespace Regards::Sqlite;
-#include <ImageLoadingFormat.h>
-#include <wx/dir.h>
 #include <wx/filename.h>
-#include <FileUtility.h>
-#include <opencv2/videoio.hpp>
-#include <LoadingResource.h>
-#include <ConvertUtility.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <OpenCVVideoPlayer.h>

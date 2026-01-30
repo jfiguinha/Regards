@@ -3,17 +3,13 @@
 #include "ThumbnailVideo.h"
 #include <Thumbnail.h>
 #include <ThumbnailDataStorage.h>
-#include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
 #include <SqlThumbnailVideo.h>
-#include <picture_id.h>
 #include <SqlThumbnail.h>
-#include <SqlPhotosWithoutThumbnail.h>
-#include <LibResource.h>
 #include <ImageVideoThumbnail.h>
 #include <ConvertUtility.h>
-#include <picture_utility.h>
+
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;

@@ -10,7 +10,6 @@
 #include "BlurFilter.h"
 #include "BlurEffectParameter.h"
 #include <LibResource.h>
-#include <FilterData.h>
 #include <effect_id.h>
 #include <ImageLoadingFormat.h>
 #include "TreeElementValue.h"

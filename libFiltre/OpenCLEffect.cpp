@@ -4,10 +4,10 @@
 #include <MotionBlur.h>
 #include <ImageLoadingFormat.h>
 #define minmax
-#include <DeepLearning.h>
+
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
-using namespace Regards::DeepLearning;
+
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
 extern string platformName;
 #define NONE_FILTER 12

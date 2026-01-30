@@ -4,9 +4,6 @@
 #include <LibResource.h>
 #include <wx/dcbuffer.h>
 #include <ClosedHandCursor.h>
-#include <wx/sstream.h>
-
-#include "ScrollbarHorizontalWnd.h"
 #include "SliderInterface.h"
 using namespace Regards::Window;
 

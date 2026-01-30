@@ -8,14 +8,11 @@
 #include "window_mode_id.h"
 #include <ImageLoadingFormat.h>
 #include <SqlFaceRecognition.h>
-#include "ThumbnailViewerPicture.h"
 #include "ThumbnailBuffer.h"
 #include "SqlFindPhotos.h"
-#include <SqlThumbnail.h>
 #include <BitmapWndViewer.h>
 #include "Toolbar.h"
 #include "ToolbarViewerMode.h"
-#include <avif.h>
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
 #include "FileUtility.h"
@@ -23,14 +20,9 @@
 #include <wx/filename.h>
 #include <window_id.h>
 #include <SqlFindFolderCatalog.h>
-#include <SQLRemoveData.h>
-#include <SqlInsertFile.h>
 #include "StatusText.h"
 #include <ThumbnailMessage.h>
-#include <SqlThumbnailVideo.h>
 #define LIBHEIC
-#include <picture_id.h>
-#include "FaceInfosUpdate.h"
 #include <ShowElement.h>
 #include <wx/filedlg.h>
 #include <SqlFaceLabel.h>
@@ -38,17 +30,11 @@
 #include <FiltreEffetCPU.h>
 #include "CheckVersion.h"
 #include <IBitmapWnd.h>
-#include <ListPicture.h>
-#include <ThumbnailFolder.h>
 #include <MainTheme.h>
 #include <MainThemeInit.h>
 #include <SqlPhotosWithoutThumbnail.h>
 #include <ParamInit.h>
 #include "FolderProcess.h"
-#include <wx/busyinfo.h>
-#include <ImageVideoThumbnail.h>
-#include <ThreadLoadingBitmap.h>
-#include "window_mode_id.h"
 #include <wx/mimetype.h>
 
 using namespace Regards::Picture;

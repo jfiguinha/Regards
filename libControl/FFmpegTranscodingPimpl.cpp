@@ -29,8 +29,6 @@ extern "C" {
 }
 
 
-#include <opencv2/core/core.hpp>
-#include <ffmpeg_application.h>
 using namespace cv;
 using namespace Regards::OpenCL;
 using namespace Regards::Video;

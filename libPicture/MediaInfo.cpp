@@ -1,7 +1,5 @@
 #include "header.h"
 #include "MediaInfo.h"
-#include <picture_utility.h>
-#include <wx/wfstream.h>
 #include <wx/file.h>
 
 

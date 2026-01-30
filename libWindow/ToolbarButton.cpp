@@ -3,8 +3,6 @@
 #include <theme.h>
 #include <LibResource.h>
 #include "WindowMain.h"
-#include <wx/sstream.h>
-#include <wx/txtstrm.h>
 
 CToolbarButton::CToolbarButton(const CThemeToolbarButton& theme)
 {

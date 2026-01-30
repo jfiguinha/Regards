@@ -9,9 +9,7 @@
 
 #include "PosterisationFilter.h"
 #include "PosterisationEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>

@@ -9,9 +9,7 @@
 
 #include "SolarisationFilter.h"
 #include "SolarisationEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>

@@ -3,13 +3,10 @@
 #include "SqlResult.h"
 #include <ImageVideoThumbnail.h>
 #include <libPicture.h>
-#include <wx/file.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
-#include <LoadingResource.h>
 #include <ConvertUtility.h>
 #include <FileUtility.h>
-#include <picture_utility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 

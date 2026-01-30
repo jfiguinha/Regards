@@ -9,9 +9,7 @@
 
 #include "VignetteFilter.h"
 #include "VignetteEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>

@@ -22,9 +22,7 @@
 #include "avif.h"
 #include <ximage.h>
 #include <ParamInit.h>
-#include <RegardsConfigParam.h>
 #include "ascii.h"
-#include "convertmattowxbmp.h"
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -33,11 +31,9 @@
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <ConvertUtility.h>
-#include <picture_utility.h>
 #include <picture_id.h>
 #include <LibResource.h>
 #include "OpenCVVideoPlayer.h"
-#include "VideoPlayer.h"
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -46,13 +42,6 @@
 #include "wic.h"
 #endif
 
-
-#ifndef __APPLE__
-#include <wx/wxpoppler.h>
-#include <wx/pdfdocument.h>
-#endif 
-#include "PictureData.h"
-//#include <SqlPhotos.h>
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
@@ -63,7 +52,6 @@
 #include "raw.h"
 #endif
 #include "jxl.h"
-#include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)
 #include <videothumb.h>
@@ -80,20 +68,16 @@ using namespace Regards::exiv2;
 
 //Dialog Save
 #include <GifOption.h>
-#include <JpegOption.h>
 #include <TiffOption.h>
 #include <PngOption.h>
 #include <webpOption.h>
-#include <bpgoption.h>
 #include <BmpOption.h>
 #include <ExrOption.h>
 #include <J2kOption.h>
 #include <JxrOption.h>
-#include <PDFOption.h>
 #include <SqlPhotos.h>
 #include <CompressionOption.h>
 #include "imageinfo.hpp"
-#include <opencv2/core/core.hpp>
 #include "RegardsPDF.h"
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1

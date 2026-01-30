@@ -1,7 +1,6 @@
 #include <header.h>
 #include "CentralWindow.h"
 #include "AnimationToolbar.h"
-#include "ToolbarSlide.h"
 #include <LibResource.h>
 #include <ToolbarButton.h>
 #if defined(__WXMSW__)

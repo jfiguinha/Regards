@@ -9,7 +9,6 @@
 #include <ImageLoadingFormat.h>
 #include <hqdn3d.h>
 #include "MeanShift.h"
-#include <fstream>
 #include <opencv2/xphoto.hpp>
 #include <FaceDetector.h>
 #include "VideoStabilization.h"
@@ -19,7 +18,6 @@
 #include <RegardsConfigParam.h>
 #include <ConvertUtility.h>
 #include <opencv2/xphoto/inpainting.hpp>
-#include "opencv2/fuzzy.hpp"
 #include <avir.h>
 #include "InterpolationFilters.h"
 using namespace Regards::OpenCV;

@@ -1,7 +1,6 @@
 // ReSharper disable All
 #include "header.h"
 #include "TreeControl.h"
-#include <wx/dcbuffer.h>
 #include "TreeElementTriangle.h"
 #include "TreeElementSlide.h"
 #include "TreeElementDelete.h"

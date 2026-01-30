@@ -1,9 +1,7 @@
 #include <header.h>
 #include "OilPaintingFilter.h"
 #include "OilPaintingEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>

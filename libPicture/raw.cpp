@@ -1,21 +1,12 @@
 #include <header.h>
 #include "raw.h"
 #include "RegardsRaw.h"
-#include <FreeImage.h>
 #include <ximage.h>
 #include <ImageLoadingFormat.h>
 #include <libraw/libraw.h>
-#ifdef TURBOJPEG
-#include <turbojpeg.h>
-#endif
 #include <ConvertUtility.h>
-#ifdef __NEW_EXIV2__
-#include "PictureMetadataExiv_new.h"
-#else
-#include "PictureMetadataExiv.h"
-#endif
+
 using namespace Regards::Picture;
-using namespace Regards::exiv2;
 
 CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {

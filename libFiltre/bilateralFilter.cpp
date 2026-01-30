@@ -9,9 +9,7 @@
 
 #include "bilateralFilter.h"
 #include "BilateralEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>

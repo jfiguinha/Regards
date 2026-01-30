@@ -2,7 +2,6 @@
 #include "CropFilter.h"
 #include "EffectParameter.h"
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <ImageLoadingFormat.h>

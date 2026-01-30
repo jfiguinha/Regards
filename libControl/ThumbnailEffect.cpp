@@ -8,12 +8,10 @@
 #include <LibResource.h>
 #include <FiltreEffet.h>
 #include "wx/stdpaths.h"
-#include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
 #include <FilterData.h>
 #include <LoadingResource.h>
-#include <picture_id.h>
 #include <ImageLoadingFormat.h>
 
 

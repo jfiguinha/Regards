@@ -29,11 +29,8 @@
 #include <GpsEngine.h>
 #include <wx/filename.h>
 #include <ImageLoadingFormat.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
 #include <WindowMain.h>
 #include <config_id.h>
-#include "FolderProcess.h"
 #ifdef EXIV2
 #include <MetadataExiv2.h>
 #elif defined(WIN32)

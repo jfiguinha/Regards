@@ -4,7 +4,6 @@
 #include <wx/dc.h>
 #include <wx/bitmap.h>
 #include <LibResource.h>
-#include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
 CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleBarInterface) :

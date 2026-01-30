@@ -2,15 +2,11 @@
 #include "SqlThumbnail.h"
 #include "SqlResult.h"
 #include <FileUtility.h>
-#include <libPicture.h>
-#include <wx/file.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
-#include <LoadingResource.h>
 #include <ConvertUtility.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
-using namespace Regards::Picture;
 
 CSqlThumbnail::CSqlThumbnail()
 	: CSqlExecuteRequest(L"RegardsDB")

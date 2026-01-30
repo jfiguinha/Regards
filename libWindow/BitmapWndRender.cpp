@@ -9,24 +9,18 @@
 #include <RegardsConfigParam.h>
 #include <wx/dcbuffer.h>
 #include <chrono>
-#include <MetadataExiv2.h>
 #include <window_id.h>
-#include <config_id.h>
 #include <SqlPhotos.h>
-#include <OpenCLEffect.h>
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #endif
 #include <ImageLoadingFormat.h>
 #include "RenderBitmapOpenGL.h"
-#include <utility.h>
 #include <WindowUtility.h>
-#include <picture_utility.h>
+
 using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
-using namespace Regards::exiv2;
-using namespace Regards::OpenCL;
 using namespace std::chrono;
 extern bool processrecognitionison;
 

@@ -4,7 +4,6 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <window_id.h>
-#include "MainWindow.h"
 #include <SqlFindFolderCatalog.h>
 #include <SqlPhotoCriteria.h>
 #include <SqlInsertFile.h>
@@ -12,7 +11,6 @@
 #include <directoryctrl.h>
 #include <wx/dir.h>
 #include <wx/busyinfo.h>
-#include "ConvertUtility.h"
 #include "SqlFolderCatalog.h"
 #include "SQLRemoveData.h"
 

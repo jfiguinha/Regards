@@ -9,7 +9,6 @@
 #include <libPicture.h>
 #include <picture_id.h>
 #include <ThumbnailMessage.h>
-#include "PictureElement.h"
 #include <wx/display.h>
 #include "AnimationToolbar.h"
 #include "PanelPhotoWnd.h"

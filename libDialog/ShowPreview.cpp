@@ -8,23 +8,18 @@
 #include <wx/filename.h>
 #include <libPicture.h>
 #include <ParamInit.h>
-#include <RegardsConfigParam.h>
-#include <array>
 #include <BitmapWnd3d.h>
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
-#include <MetadataExiv2.h>
 #include <videothumb.h>
 #include <FileUtility.h>
-#include <picture_utility.h>
-#include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
 #include "ffmpeg_transcoding.h"
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
-using namespace Regards::exiv2;
-
+using namespace Regards::Video;
 extern wxImage defaultPicture;
 
 

@@ -8,7 +8,6 @@
 #include <header.h>
 #include "FiltreEffectWnd.h"
 #include "InfoEffectWnd.h"
-#include "CloudsEffectParameter.h"
 #include "BitmapWndViewer.h"
 #include "BitmapWnd3d.h"
 #include <window_id.h>
@@ -16,12 +15,11 @@
 #include <TitleBar.h>
 #include <ImageLoadingFormat.h>
 #include <TreeWindow.h>
-#include <SqlPhotos.h>
 #include "ShowElement.h"
 #include "effect_id.h"
 using namespace Regards::Window;
 using namespace Regards::Control;
-using namespace Regards::Sqlite;
+
 
 CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
                                                const CThemeTree& themeTree, int bitmapWindowId)

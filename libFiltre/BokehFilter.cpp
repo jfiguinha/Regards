@@ -10,7 +10,6 @@
 #include "BokehFilter.h"
 #include "BokehEffectParameter.h"
 #include <LibResource.h>
-#include <FilterData.h>
 #include <BitmapDisplay.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>

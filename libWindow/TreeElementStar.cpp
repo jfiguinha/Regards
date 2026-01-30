@@ -1,7 +1,6 @@
 #include "header.h"
 #include "TreeElementStar.h"
 #include "LibResource.h"
-#include <wx/sstream.h>
 #include <SqlCriteria.h>
 #include <SqlPhotoCriteria.h>
 #include <WindowMain.h>

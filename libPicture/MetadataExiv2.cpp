@@ -1,18 +1,13 @@
 #include "header.h"
 #include "MetadataExiv2.h"
-#include <FreeImage.h>
 #ifdef __NEW_EXIV2__
 #include "PictureMetadataExiv_new.h"
 #else
 #include "PictureMetadataExiv.h"
 #endif
-#include <ximage.h>
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>
-#include "ConvertUtility.h"
-
-#include <libexif/exif-data.h>
 
 using namespace Regards::Picture;
 using namespace Regards::exiv2;

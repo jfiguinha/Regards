@@ -8,7 +8,6 @@
 #include <FileUtility.h>
 #include <ImageLoadingFormat.h>
 #include <libPicture.h>
-#include <picture_utility.h>
 #include "ThumbnailBuffer.h"
 #include <wx/file.h>
 #include <wx/dir.h>

@@ -9,8 +9,6 @@
 #else
 #include <wx/url.h>
 #endif
-
-#include <wx/sstream.h>
 #include <wx/wfstream.h>
 using namespace Regards::Internet;
 

@@ -3,7 +3,6 @@
 #include "VideoConverterFrame.h"
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
-#include <wx/dir.h>
 #include <wx/filename.h>
 #include <MediaInfo.h>
 #include <ffmpeg_application.h>

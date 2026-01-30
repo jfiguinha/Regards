@@ -1,14 +1,8 @@
 // ReSharper disable All
 #include "header.h"
 #include "BitmapWnd3d.h"
-#include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
 
-
-#include <opencv2/core/opengl.hpp>
-#include <utility.h>
 
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>

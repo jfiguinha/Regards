@@ -9,9 +9,7 @@
 
 #include "WaveFilter.h"
 #include "WaveEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>

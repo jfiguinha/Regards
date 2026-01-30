@@ -1,7 +1,5 @@
 #include <header.h>
 #include "FolderProcess.h"
-#include <IconeList.h>
-#include "InfosSeparationBar.h"
 #include <Photos.h>
 #include <FolderCatalog.h>
 #include <SqlFindFolderCatalog.h>
@@ -10,24 +8,17 @@
 #include <SqlThumbnail.h>
 #include <SqlThumbnailVideo.h>
 #include <window_id.h>
-#include <LibResource.h>
 #include <MainWindow.h>
 #include <MainParam.h>
 #include <MainParamInit.h>
 #include <SqlInsertFile.h>
-#include <CategoryFolderWindow.h>
-#include <ThumbnailBuffer.h>
-#include <config_id.h>
 #include <TreatmentData.h>
-#include <ThumbnailDataSQL.h>
-#include <theme.h>
 #include <MainTheme.h>
 #include <MainThemeInit.h>
 #include <ThreadLoadingBitmap.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <libPicture.h>
-#include <CentralWindow.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;

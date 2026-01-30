@@ -2,7 +2,6 @@
 #include "MasterWindow.h"
 #include "WindowUtility.h"
 #include <wx/busyinfo.h>
-#include <window_id.h>
 #include <LibResource.h>
 using namespace Regards::Window;
 

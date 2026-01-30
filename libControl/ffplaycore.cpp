@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ffplaycore.h"
 #include <window_id.h>
-#include <fstream>
 #include <ConvertUtility.h>
 #include <x265.h>
 

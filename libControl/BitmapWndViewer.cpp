@@ -10,8 +10,6 @@
 #include <LibResource.h>
 #include "wx/stdpaths.h"
 #include <FilterData.h>
-#include <wx/sstream.h>
-#include <wx/txtstrm.h>
 #include <ViewerParam.h>
 #include <wx/mimetype.h>
 #include <GLTexture.h>
@@ -22,7 +20,6 @@
 #include "DiaporamaEffect.h"
 #include <wx/busyinfo.h>
 #include <wx/activityindicator.h>
-#include <ViewerParam.h>
 #include <MainParam.h>
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
@@ -36,7 +33,7 @@
 #else
     #include "email.h"
 #endif
-#include <config_id.h>
+
 using namespace Regards::Filter;
 using namespace Regards::Control;
 using namespace Regards::OpenGL;

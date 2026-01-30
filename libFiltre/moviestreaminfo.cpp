@@ -21,7 +21,6 @@
 
 extern "C" {
 #include <libavutil/opt.h>
-#include <libavfilter/avfilter.h>
 }
 
 #include <libavutil/dict.h>

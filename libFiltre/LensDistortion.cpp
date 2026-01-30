@@ -9,9 +9,7 @@
 
 #include "LensDistortion.h"
 #include "LensDistortionEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>

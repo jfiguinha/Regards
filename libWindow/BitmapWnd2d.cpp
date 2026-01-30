@@ -1,7 +1,6 @@
 // ReSharper disable All
 #include "header.h"
 #include "BitmapWnd2d.h"
-#include "BitmapWndRender.h"
 
 //-----------------------------------------------------------------------------
 //

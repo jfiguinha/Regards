@@ -22,7 +22,6 @@
 #include <wx/dcscreen.h>
 #include <LibResource.h>
 #include <libPicture.h>
-#include <wx/dcbuffer.h>
 
 #ifndef WX_PRECOMP
 #include "wx/hash.h"
@@ -35,7 +34,6 @@
 #include "wx/msgdlg.h"
 #include "wx/choice.h"
 #include "wx/textctrl.h"
-#include "wx/layout.h"
 #include "wx/sizer.h"
 #include "wx/textdlg.h"
 #include "wx/gdicmn.h"
@@ -51,16 +49,12 @@
 #include "wx/artprov.h"
 #include "wx/mimetype.h"
 
-#if wxUSE_STATLINE
-#include "wx/statline.h"
-#endif
 
 #if defined(__WXMAC__)
     #include  "wx/osx/private.h"  // includes mac headers
 #endif
 
 #ifdef __WINDOWS__
-#include "wx/msw/winundef.h"
 #include "wx/volume.h"
 
 // MinGW has _getdrive() and _chdrive(), Cygwin doesn't.

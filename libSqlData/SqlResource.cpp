@@ -1,9 +1,7 @@
 #include "header.h"
 #include "SqlResource.h"
 #include <lz4.h>
-
 #include <libPicture.h>
-#include <fstream>
 #include <ImageLoadingFormat.h>
 #include "PictureData.h"
 #include <wx/textfile.h>

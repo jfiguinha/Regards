@@ -1,7 +1,6 @@
 #include "header.h"
 #include "CheckVersion.h"
 #include <ConvertUtility.h>
-#include <wx/zipstrm.h>
 #ifdef USECURL
 #include <curl/curl.h>
 #define SKIP_PEER_VERIFICATION
@@ -10,8 +9,6 @@
 #include <wx/url.h>
 #endif
 
-#include <wx/sstream.h>
-#include <wx/wfstream.h>
 using namespace Regards::Internet;
 
 struct SDataDownload

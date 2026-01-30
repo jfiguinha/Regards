@@ -9,9 +9,7 @@
 
 #include "SwirlFilter.h"
 #include "SwirlEffectParameter.h"
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>

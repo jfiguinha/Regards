@@ -1,16 +1,13 @@
 #include <header.h>
 #include "DecodeRaw.h"
 #include <DecodeRawParameter.h>
-
 #include <LibResource.h>
-#include <FilterData.h>
 #include <Metadata.h>
 #include <ConvertUtility.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include "DecodeRawPicture.h"
-#include <wx/busyinfo.h>
 using namespace Regards::Filter;
 
 

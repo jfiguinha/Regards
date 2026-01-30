@@ -1,6 +1,5 @@
 #include "header.h"
 #include "OpenCVVideoPlayer.h"
-#include <opencv2/core/core.hpp>
 #include <ConvertUtility.h>
 using namespace Regards::Video;
 using namespace cv;

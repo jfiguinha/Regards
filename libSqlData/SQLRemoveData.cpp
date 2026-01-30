@@ -9,13 +9,10 @@
 #include "SqlFindCriteria.h"
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
-#include <libPicture.h>
 #include "SqlFaceRecognition.h"
 #include "SqlPhotoGPS.h"
-#include <libPicture.h>
 #include "SqlPhotoCategorieUsenet.h"
 using namespace Regards::Sqlite;
-using namespace Regards::Picture;
 
 CSQLRemoveData::CSQLRemoveData()
 {

@@ -12,7 +12,6 @@
 #include <propvarutil.h>
 #include <chrono>
 #include <OpenCLEffectVideo.h>
-#include <fstream>
 #include <VideoStabilization.h>
 
 // The required link libraries 

@@ -5,13 +5,9 @@
 #include <opencv2/face/facemark.hpp>
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
-#include <opencv2/face/facerec.hpp>
 #include "DetectFace.h"
 #include "DetectFacePCN.h"
-#include <fstream>
-#include <opencv2/tracking/tracking_by_matching.hpp>
 #include <opencv2/objdetect/face.hpp>
-#include <FileUtility.h>
 #include "realesrgan.h"
 #include "gfpgan.h"
 #include <ConvertUtility.h>

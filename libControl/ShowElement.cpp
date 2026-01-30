@@ -5,15 +5,11 @@
 #else
 #include <window_id.h>
 #endif
-#include <libPicture.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <array>
 #include <ImageLoadingFormat.h>
 #include <SqlPhotos.h>
-#include <MetadataExiv2.h>
 #include <DeepLearning.h>
-#include "effect_id.h"
 #include "BitmapWndViewer.h"
 
 //--------------------------------------------------
@@ -23,18 +19,14 @@
 #include "VideoControl_soft.h"
 #include <window_id.h>
 #include "SlideToolbar.h"
-#include <ViewerParam.h>
 #include <BitmapWnd3d.h>
 #include <SavePicture.h>
-#include <ImageLoadingFormat.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
-
-using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::Control;
-using namespace Regards::exiv2;
+
 
 class CThreadRotate
 {

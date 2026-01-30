@@ -1,6 +1,5 @@
 #include <header.h>
 #include "PreviewToolbar.h"
-#include "ToolbarSlide.h"
 #include <LibResource.h>
 #include <ToolbarInterface.h>
 #include "MainWindow.h"
