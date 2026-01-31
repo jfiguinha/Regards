@@ -34,8 +34,6 @@ namespace Regards::Window
 		int GetNumPhotoId(const int& numItem);
 		int GetNumItem();
 
-		void UpdateRenderIcone(CThreadLoadingBitmap* threadLoadingBitmap);
-
 		int GetHauteur()
 		{
 			return posHauteur;
@@ -154,8 +152,7 @@ namespace Regards::Window
 		static bool ItemFilenameCompFonct(wxString filename, CIcone *  icone) /* Définit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
-		
-		void update_render_icone(wxCommandEvent& event);
+
         void RefreshThumbnail(wxCommandEvent& event);
 
 

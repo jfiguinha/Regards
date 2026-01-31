@@ -701,6 +701,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 		else
 			image = defaultPictureThumbnailPicture;
 		photoDefault = true;
+		returnValue = 1;
 	}
 
 

@@ -226,14 +226,6 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		delete old;
 	}
 
-	
-    /*
-	if (oldIconeList != nullptr)
-	{
-		delete oldIconeList;
-		oldIconeList = nullptr;
-	}
-    */
 
 	nbElementInIconeList = iconeList->GetNbElement();
     

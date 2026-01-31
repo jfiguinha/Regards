@@ -1086,17 +1086,15 @@ void CMainWindow::ProcessIdle()
 	{
 		wxString path = *photoList.begin();
 
-		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-		event->SetExtraLong(photoList.size());
-		wxQueueEvent(this, event);
-
-		thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
-
-		
 		std::map<wxString, bool>::iterator it = listFile.find(path);
 		if (it == listFile.end())
+		{
 			listFile[path] = true;
-
+			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+			event->SetExtraLong(photoList.size());
+			wxQueueEvent(this, event);
+			thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
+		}
 		photoList.erase(photoList.begin() + 0);
 	}
 
@@ -1150,64 +1148,10 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
-	if (processEnd)
-		return;
-
-	wxString firstFile = "";
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
-
-	CLibPicture libPicture;
-	int iFormat = libPicture.TestImageFormat(localName);
-
-	int nbProcesseur = 1;
-	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
-		nbProcesseur = config->GetThumbnailProcess() + 1;
-
-	if (nbProcess < nbProcesseur)
-	{
-		int type = event.GetInt();
-		int longWindow = event.GetExtraLong();
-		if (type == 1)
-		{
-			thumbnailProcess->ProcessThumbnail(localName, type, longWindow, nbProcess);
-		}
-		else
-		{
-			std::map<wxString, bool>::iterator it = listFile.find(localName);
-			if (it == listFile.end())
-			{
-				std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
-				if (itPhoto != photoList.end())
-					photoList.erase(itPhoto);
-
-				thumbnailProcess->ProcessThumbnail(localName, type, longWindow, nbProcess);
-				listFile[localName] = true;
-			}
-		}
-	}
-	else if (photoList.size() > 0)
-	{
-		firstFile = *filename;
-
-		for (int i = 0; i < photoList.size(); i++)
-		{
-			wxString oldFile = photoList[i];
-			if (*filename == oldFile)
-			{
-				photoList[i] = firstFile;
-				break;
-			}
-			else
-			{
-				photoList[i] = firstFile;
-				firstFile = oldFile;
-			}
-		}
-		processIdle = true;
-	}
-
-
+	photoList.insert(photoList.begin(), localName);
+	processIdle = true;
 	delete filename;
 }
 
