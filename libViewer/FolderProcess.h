@@ -45,7 +45,7 @@ namespace Regards::Viewer
 			mainWindow = nullptr;
 		}
 
-		CThreadVideoData::~CThreadVideoData()
+		~CThreadVideoData()
 		{
 		};
 
