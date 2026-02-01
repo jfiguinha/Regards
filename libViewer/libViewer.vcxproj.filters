@@ -315,5 +315,8 @@
     </None>
     <None Include="THUMBNAILFACE_OPTIMIZATION.md" />
     <None Include="THUMBNAILFACE_PHASE1_APPLIED.md" />
+    <None Include="THUMBNAILFACE_PHASE1_COMPLETE.md" />
+    <None Include="THUMBNAILFACE_REAPPLIED_SUCCESS.md" />
+    <None Include="GIT_COMMIT_GUIDE.md" />
   </ItemGroup>
 </Project>
