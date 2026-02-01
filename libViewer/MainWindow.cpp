@@ -79,15 +79,10 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	if (viewerTheme != nullptr)
 	{
-		//CThemeToolbar theme;
-		//viewerTheme->GetMainToolbarTheme(&theme);
-		//toolbar = new CToolbar(this, wxID_ANY, theme, false);
-
 		CThemeToolbar theme_infos;
 		viewerTheme->GetInfosToolbarTheme(&theme_infos);
 		theme_infos.position = NAVIGATOR_CENTER;
 		toolbarViewerMode = new CToolbarViewerMode(this, wxID_ANY, theme_infos, this, false);
-		//wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface, const bool& vertical
 	}
 
 	if (viewerTheme != nullptr)
@@ -727,12 +722,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
-		// int typeAffichage = config->GetTypeAffichage();          
-		 //if(typeAffichage != SHOW_ALL)
-		 //{
 		UpdateFolderStatic();
-		//  }
-
 	}
 }
 
@@ -1095,7 +1085,7 @@ void CMainWindow::ProcessIdle()
 			wxQueueEvent(this, event);
 			thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
 		}
-		photoList.erase(photoList.begin() + 0);
+		photoList.erase(photoList.begin());
 	}
 
 	if (photoList.empty())
@@ -1150,6 +1140,11 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
 	wxString* filename = (wxString*)event.GetClientData();
 	wxString localName = wxString(*filename);
+
+	std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
+	if (itPhoto != photoList.end())
+		photoList.erase(itPhoto);
+
 	photoList.insert(photoList.begin(), localName);
 	processIdle = true;
 	delete filename;
