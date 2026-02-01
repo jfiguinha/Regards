@@ -31,9 +31,6 @@ namespace Regards::Viewer
 		void MoveIcone(const int& numElement, const int& numFace);
 
 	private:
-		// Helpers for optimization
-		void RefreshThumbnailAndNotify();
-		bool ProcessMoveFace(int targetNumFace);
 
 		void OnSelectIcon(wxCommandEvent& event);
 		void DeleteEmptyFace();

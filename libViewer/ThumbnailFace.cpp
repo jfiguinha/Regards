@@ -5,7 +5,6 @@
 #include "ViewerParam.h"
 #include <SqlFaceThumbnail.h>
 #include <SqlFindFacePhoto.h>
-#include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
 #include <InfosSeparationBarFace.h>
 #include <SqlFaceRecognition.h>
@@ -16,88 +15,8 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-// ============================================================================
-// HELPERS - Face Icon Management
-// ============================================================================
-
-namespace CastHelpers {
-    inline CSqlFaceThumbnail* ToFaceThumbnail(CIcone* icone) {
-        return icone ? static_cast<CSqlFaceThumbnail*>(icone->GetData()) : nullptr;
-    }
-    
-    inline CInfosSeparationBarFace* ToFaceSeparator(CInfosSeparationBar* sep) {
-        return sep ? static_cast<CInfosSeparationBarFace*>(sep) : nullptr;
-    }
-}
-
-class FaceIterator {
-public:
-    template<typename Func>
-    static void ForEachFaceIcon(const std::vector<CInfosSeparationBar*>& listSeparator,
-                               CIconeList* iconeList, Func callback) {
-        if (!iconeList) return;
-        
-        for (CInfosSeparationBar* separatorBar : listSeparator) {
-            if (separatorBar == nullptr) continue;
-            
-            auto faceSep = CastHelpers::ToFaceSeparator(separatorBar);
-            if (!faceSep) continue;
-            
-            for (int i = 0; i < faceSep->listElement.size(); i++) {
-                int numElement = faceSep->listElement.at(i);
-                CIcone* icone = iconeList->GetElement(numElement);
-                if (icone == nullptr) continue;
-                
-                auto thumbnailData = CastHelpers::ToFaceThumbnail(icone);
-                if (!callback(faceSep, i, icone, thumbnailData, numElement)) {
-                    break;
-                }
-            }
-        }
-    }
-    
-    template<typename Func>
-    static void ForEachFaceIconWithErase(std::vector<CInfosSeparationBar*>& listSeparator,
-                                        CIconeList* iconeList, Func callback) {
-        if (!iconeList) return;
-        
-        for (CInfosSeparationBar* separatorBar : listSeparator) {
-            if (separatorBar == nullptr) continue;
-            
-            auto faceSep = CastHelpers::ToFaceSeparator(separatorBar);
-            if (!faceSep) continue;
-            
-            for (int i = 0; i < faceSep->listElement.size(); i++) {
-                int numElement = faceSep->listElement.at(i);
-                CIcone* icone = iconeList->GetElement(numElement);
-                if (icone == nullptr) continue;
-                
-                auto thumbnailData = CastHelpers::ToFaceThumbnail(icone);
-                if (callback(faceSep, i, icone, thumbnailData, numElement)) {
-                    faceSep->listElement.erase(faceSep->listElement.begin() + i);
-                    i--;
-                }
-            }
-        }
-    }
-};
-
-class IconFinder {
-public:
-    static CIcone* FindByFaceAndFile(const std::vector<CIcone*>& iconList,
-                                     int numFace, const wxString& filename) {
-        auto it = std::find_if(iconList.begin(), iconList.end(),
-            [numFace, &filename](CIcone* ico) {
-                auto data = CastHelpers::ToFaceThumbnail(ico);
-                return data && data->GetNumFace() == numFace && 
-                       data->GetFilename() == filename;
-            });
-        return it != iconList.end() ? *it : nullptr;
-    }
-};
-
 CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
-                               const bool& testValidity)
+	const bool& testValidity)
 	: CThumbnailVerticalSeparator(parent, id, themeThumbnail, testValidity)
 {
 	barseparationHeight = 40;
@@ -147,7 +66,7 @@ void CThumbnailFace::OnPictureClick(CThumbnailData* data)
 
 
 void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
-                                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement)
+	const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement)
 {
 	auto infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -161,12 +80,12 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		CFaceFilePath numFace = listPhotoFace.at(i);
 		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
 
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone * e)
-			{ 
-				CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *) e->GetData();
+		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+			{
+				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
 				return thumbnailData->GetNumFace() == numFace.numFace && thumbnailData->GetFilename() == numFace.faceFilePath;
-			
-		});
+
+			});
 
 		if (it == pIconeList.end())
 		{
@@ -195,9 +114,9 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		}
 		else
 		{
-			CIcone* icone = (CIcone *)*it;
+			CIcone* icone = (CIcone*)*it;
 			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)icone->GetData();
-            thumbnailData->SetNumPhotoId(numFace.numPhoto);
+			thumbnailData->SetNumPhotoId(numFace.numPhoto);
 			thumbnailData->SetNumElement(nbElement++);
 			icone->SetNumElement(thumbnailData->GetNumElement());
 			iconeListLocal->AddElement(icone);
@@ -245,20 +164,20 @@ void CThumbnailFace::init()
 
 
 	tbb::parallel_for(0, size, 1, [=](int i)
-	{
-		int photo = iconeListLocal->GetPhotoId(i);
-		CIcone *  ico = iconeList->FindElementPhotoId(photo);
-		if (ico != nullptr)
 		{
-			CIcone *  iconew = iconeListLocal->GetElement(i);
-			if (iconew != nullptr)
+			int photo = iconeListLocal->GetPhotoId(i);
+			CIcone* ico = iconeList->FindElementPhotoId(photo);
+			if (ico != nullptr)
 			{
-				iconew->SetChecked(ico->IsChecked());
-				iconew->SetState(ico->GetState());
-			}
+				CIcone* iconew = iconeListLocal->GetElement(i);
+				if (iconew != nullptr)
+				{
+					iconew->SetChecked(ico->IsChecked());
+					iconew->SetState(ico->GetState());
+				}
 
+			}
 		}
-	}
 	);
 
 
@@ -273,7 +192,7 @@ void CThumbnailFace::init()
 		bool find = false;
 		CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
 		int numFace = thumbnailData->GetNumFace();
-        wxString filename = thumbnailData->GetFilename();
+		wxString filename = thumbnailData->GetFilename();
 
 		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
@@ -297,11 +216,11 @@ void CThumbnailFace::init()
 		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 			{
 				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
-				return (thumbnailData->GetNumFace() == _clean->GetNumFace() &&  thumbnailData->GetFilename() == _clean->GetFilename());
+				return (thumbnailData->GetNumFace() == _clean->GetNumFace() && thumbnailData->GetFilename() == _clean->GetFilename());
 
 			});
 
-		if(it != pIconeList.end())
+		if (it != pIconeList.end())
 			pIconeList.erase(it);
 	}
 
@@ -321,7 +240,7 @@ void CThumbnailFace::init()
 	needToRefresh = true;
 }
 
-bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone *  icone, CWindowMain* parent)
+bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -335,7 +254,7 @@ bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone *  icone, CWi
 	return false;
 }
 
-CIcone *  CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
+CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
@@ -361,7 +280,7 @@ void CThumbnailFace::DeleteEmptyFace()
 	//Test Si Infos Bar Vide
 	for (int i = 0; i < listSeparator.size(); i++)
 	{
-		auto infosSeparationBarFace = CastHelpers::ToFaceSeparator(listSeparator.at(i));
+		auto infosSeparationBarFace = static_cast<CInfosSeparationBarFace*>(listSeparator.at(i));
 		if (infosSeparationBarFace != nullptr)
 		{
 			if (infosSeparationBarFace->listElement.size() == 0)
@@ -380,70 +299,85 @@ void CThumbnailFace::DeleteEmptyFace()
 	facePhoto.RebuildLink();
 }
 
-void CThumbnailFace::RefreshThumbnailAndNotify()
-{
-	widthThumbnail = 0;
-	heightThumbnail = 0;
-	ResizeThumbnail();
-	
-	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-	auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-	wxQueueEvent(mainWnd, eventChange);
-	needToRefresh = true;
-}
-
-bool CThumbnailFace::ProcessMoveFace(int targetNumFace)
-{
-	bool faceMove = false;
-	CSqlFaceRecognition faceRecognition;
-	
-	FaceIterator::ForEachFaceIconWithErase(listSeparator, iconeList,
-		[this, targetNumFace, &faceRecognition, &faceMove]
-		(CInfosSeparationBarFace* sep, int i, CIcone* ico, 
-		 CSqlFaceThumbnail* data, int numElem) {
-			
-			if (!ico->IsChecked()) return false;
-			
-			int numFaceCompatible = faceRecognition.GetCompatibleFace(data->GetNumFace());
-			if (numFaceCompatible == targetNumFace) {
-				return false;
-			}
-			
-			faceMove = true;
-			MoveIcone(numElem, targetNumFace);
-			faceRecognition.MoveFaceRecognition(data->GetNumFace(), targetNumFace);
-			ico->SetChecked(false);
-			return true; // erase
-		});
-	
-	return faceMove;
-}
-
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
 void CThumbnailFace::MoveFace(const wxString& faceName)
 {
 	vector<CThumbnailData*> listItem;
 	GetSelectItem(listItem);
 
+	CSqlFaceRecognition faceRecognition;
 	CSqlFaceLabel sqlfaceLabel;
 	int numFace = sqlfaceLabel.GetNumFace(faceName);
 
-	if (ProcessMoveFace(numFace)) {
-		DeleteEmptyFace();
-		RefreshThumbnailAndNotify();
+	for (CInfosSeparationBar* separatorBar : listSeparator)
+	{
+		if (separatorBar != nullptr)
+		{
+			vector<int> numElementToDelete;
+			for (int i = 0; i < separatorBar->listElement.size(); i++)
+			{
+				int numElement = separatorBar->listElement.at(i);
+				CIcone* icone = iconeList->GetElement(numElement);
+				if (icone != nullptr)
+				{
+					if (icone->IsChecked())
+					{
+						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+						int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
+						if (numFaceCompatible != numFace)
+						{
+							MoveIcone(numElement, numFace);
+							faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
+							separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
+							i--;
+						}
+					}
+					icone->SetChecked(false);
+				}
+			}
+		}
 	}
+
+	DeleteEmptyFace();
+
+
+	widthThumbnail = 0;
+	heightThumbnail = 0;
+	ResizeThumbnail();
+
+	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+	wxQueueEvent(mainWnd, eventChange);
+
+	needToRefresh = true;
 }
 
 vector<int> CThumbnailFace::GetFaceSelectID()
 {
 	vector<int> listFace;
-	FaceIterator::ForEachFaceIcon(listSeparator, iconeList,
-		[&listFace](CInfosSeparationBarFace* sep, int i, CIcone* ico, 
-		            CSqlFaceThumbnail* data, int numElem) {
-			if (ico->IsChecked() && data) {
-				listFace.push_back(data->GetNumFace());
+	for (CInfosSeparationBar* separatorBar : listSeparator)
+	{
+		if (separatorBar != nullptr)
+		{
+			vector<int> numElementToDelete;
+			for (int i = 0; i < separatorBar->listElement.size(); i++)
+			{
+				int numElement = separatorBar->listElement.at(i);
+				CIcone* icone = iconeList->GetElement(numElement);
+				if (icone != nullptr)
+				{
+					bool needToMove = false;
+					if (icone->IsChecked())
+					{
+						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+						listFace.push_back(thumbnailData->GetNumFace());
+					}
+				}
 			}
-			return true;
-		});
+		}
+	}
 	return listFace;
 }
 
@@ -500,10 +434,56 @@ int CThumbnailFace::FindSeparatorFace(const int& xPos, const int& yPos)
 
 void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 {
+	bool faceMove = false;
 	int numFace = FindSeparatorFace(x, y);
-	if (numFace != 0 && ProcessMoveFace(numFace)) {
+	CSqlFaceRecognition faceRecognition;
+
+	if (numFace != 0)
+	{
+		for (CInfosSeparationBar* separatorBar : listSeparator)
+		{
+			if (separatorBar != nullptr)
+			{
+				vector<int> numElementToDelete;
+				for (int i = 0; i < separatorBar->listElement.size(); i++)
+				{
+					int numElement = separatorBar->listElement.at(i);
+					CIcone* icone = iconeList->GetElement(numElement);
+					if (icone != nullptr)
+					{
+						bool needToMove = false;
+						if (icone->IsChecked())
+						{
+							auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+							int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
+							if (numFaceCompatible != numFace)
+							{
+								faceMove = true;
+								needToMove = true;
+								MoveIcone(numElement, numFace);
+								faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
+								separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
+								i--;
+							}
+						}
+						if (needToMove)
+							icone->SetChecked(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (faceMove)
+	{
 		DeleteEmptyFace();
-		RefreshThumbnailAndNotify();
+		widthThumbnail = 0;
+		heightThumbnail = 0;
+		ResizeThumbnail();
+
+		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(mainWnd, eventChange);
 	}
 }
 
@@ -512,7 +492,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)
 	{
-		auto faceSeparator = CastHelpers::ToFaceSeparator(separator);
+		auto faceSeparator = static_cast<CInfosSeparationBarFace*>(separator);
 		if (faceSeparator != nullptr)
 		{
 			bool select = faceSeparator->GetSelected();
@@ -530,7 +510,7 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 
 void CThumbnailFace::OnSelectIcon(wxCommandEvent& event)
 {
-	
+
 	auto faceSeparator = static_cast<CInfosSeparationBarFace*>(event.GetClientData());
 	if (faceSeparator != nullptr)
 	{
@@ -550,9 +530,9 @@ void CThumbnailFace::OnSelectIcon(wxCommandEvent& event)
 
 
 
-void CThumbnailFace::DeleteIcone(CIcone *  numSelect)
+void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 {
-	auto face_thumbnail = CastHelpers::ToFaceThumbnail(numSelect);
+	auto face_thumbnail = static_cast<CSqlFaceThumbnail*>(numSelect->GetData());
 	if (face_thumbnail != nullptr)
 	{
 		CSqlFacePhoto facePhoto;
@@ -568,7 +548,7 @@ void CThumbnailFace::DeleteIcone(CIcone *  numSelect)
 	}
 }
 
-bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent) /* Définit une fonction. */
+bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
@@ -586,7 +566,7 @@ bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowM
 	return false;
 }
 
-CIcone *  CThumbnailFace::FindElement(const int& xPos, const int& yPos)
+CIcone* CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 {
 	if (!threadDataProcess)
 		return nullptr;
@@ -594,4 +574,3 @@ CIcone *  CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
-

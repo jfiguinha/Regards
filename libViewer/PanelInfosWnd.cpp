@@ -29,6 +29,7 @@ using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Control;
+
 /**
  * \brief 
  */
@@ -36,6 +37,49 @@ using namespace Regards::Control;
 wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
+
+// ============================================================================
+// HELPERS - PanelInfosWnd Optimization
+// ============================================================================
+
+namespace GeolocHelper {
+	// Helper: Get geolocation parameters
+	inline void GetGeolocParameters(wxString& urlServer, wxString& apiKey)
+	{
+		apiKey = "";
+		CRegardsConfigParam* param = CParamInit::getInstance();
+		if (param != nullptr)
+		{
+			urlServer = param->GetGeoLocUrlServer();
+			apiKey = param->GetApiKey();
+		}
+	}
+
+	// Helper: Create and configure CFileGeolocation
+	inline CFileGeolocation* CreateAndSetFile(const wxString& filename)
+	{
+		wxString urlServer;
+		wxString apiKey;
+		GetGeolocParameters(urlServer, apiKey);
+		
+		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+		auto fileGeoloc = new CFileGeolocation(urlServer, apiKey);
+		fileGeoloc->SetFile(filename, notGeo);
+		return fileGeoloc;
+	}
+
+	// Helper: Update toolbar GPS status
+	inline void UpdateGpsStatus(CToolbarInfos* toolbar, CFileGeolocation* fileGeoloc)
+	{
+		if (fileGeoloc != nullptr)
+		{
+			if (!fileGeoloc->HasGps())
+				toolbar->SetMapInactif();
+			else
+				toolbar->SetMapActif();
+		}
+	}
+}
 
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelInfosWnd", parent, id), id_(id)
@@ -268,42 +312,17 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
-		wxString urlServer;
-		wxString apiKey = "";
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-		{
-			urlServer = param->GetGeoLocUrlServer();
-			apiKey = param->GetApiKey();
-		}
-
-		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-		auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
-		fileGeolocalisation->SetFile(filename, notGeo);
+		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
 		if (!this->isVideo)
 		{
 			infosToolbar->SetVideoToolbar();
 			infosToolbar->SetInfosActif();
-
-			if (!fileGeolocalisation->HasGps())
-				infosToolbar->SetMapInactif();
-			else
-				infosToolbar->SetMapActif();
+			GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 		}
 		else
 		{
-			if (!fileGeolocalisation->HasGps())
-			{
-				if (webBrowser->IsShown())
-					infosToolbar->SetInfosActif();
-
-				infosToolbar->SetMapInactif();
-			}
-			else
-			{
-				infosToolbar->SetMapActif();
-			}
+			GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 		}
 
 		delete fileGeolocalisation;
@@ -319,45 +338,21 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 	else
 		infosToolbar->SetPictureThumbnailToolbar();
 
-
 	if (this->filename != filename)
 	{
-		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-		wxString urlServer = "";
-		wxString apiKey = "";
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-		{
-			urlServer = param->GetGeoLocUrlServer();
-			apiKey = param->GetApiKey();
-		}
-		auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
-
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
-		fileGeolocalisation->SetFile(filename, notGeo);
 
-		if (!fileGeolocalisation->HasGps())
-			infosToolbar->SetMapInactif();
-		else
-			infosToolbar->SetMapActif();
+		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
+
+		GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 
 		if (windowVisible == WM_INFOS)
 			infosToolbar->SetInfosActif();
 
-		if (!fileGeolocalisation->HasGps())
-		{
-			infosToolbar->SetMapInactif();
-
-			if (webBrowser->IsShown())
-				if (!fileGeolocalisation->HasGps())
-					infosToolbar->SetInfosActif();
-		}
-
 		delete fileGeolocalisation;
 
 		this->isVideo = false;
-
 
 		LoadInfo();
 	}
@@ -546,19 +541,9 @@ void CPanelInfosWnd::HistogramUpdate()
 
 wxString CPanelInfosWnd::MapsUpdate()
 {
-	wxString urlServer;
-	wxString apiKey = "";
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-	{
-		urlServer = param->GetGeoLocUrlServer();
-		apiKey = param->GetApiKey();
-	}
+	auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
-	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-	auto fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
-	fileGeolocalisation->SetFile(filename, notGeo);
-	wxString url = L"http://www.openstreetmap.org/?mlat="; // NOLINT(clang-diagnostic-shadow)
+	wxString url = L"http://www.openstreetmap.org/?mlat=";
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"&mlon=");
 	url.append(fileGeolocalisation->GetLongitude());
@@ -566,7 +551,6 @@ wxString CPanelInfosWnd::MapsUpdate()
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"/");
 	url.append(fileGeolocalisation->GetLongitude());
-
 
 	delete fileGeolocalisation;
 

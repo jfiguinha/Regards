@@ -2085,47 +2085,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 
         case JPEG:
-            {
-                if (isThumbnail)
-                {
-                    cv::Mat picture;
-                    tjscalingfactor *scalingfactors = nullptr, sf = {1, 1};
-                    int nsf = 0;
-                    size_t _jpegSize;
-                    uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
-
-                    //unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
-                    //Getting the size
-                    if (_compressedImage != nullptr && _jpegSize > 0)
-                    {
-                        int jpegSubsamp, width = 0, height = 0;
-
-
-                        tjhandle _jpegDecompressor = tjInitDecompress();
-
-
-                        tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
-                                            &jpegSubsamp);
-
-						CalculThumbSizeFromScreenDef(width, height);
-
-                        picture = cv::Mat(height, width, CV_8UC4);
-
-                        tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
-                                      picture.size().width, 0, picture.size().height, TJPF_BGRX,
-                                      TJFLAG_FASTDCT);
-
-                        tjDestroy(_jpegDecompressor);
-
-                        bitmap->SetPicture(picture);
-                        bitmap->SetFilename(fileName);
-
-                        delete[] _compressedImage;
-                    }
-                    break;
-                }
-                
-            }
 		case PNM:
 		case WEBP:
 		case BMP:
@@ -2133,8 +2092,44 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				try
 				{
+					if (isThumbnail && iFormat == JPEG)
+					{
+						cv::Mat picture;
+						tjscalingfactor* scalingfactors = nullptr, sf = { 1, 1 };
+						int nsf = 0;
+						size_t _jpegSize;
+						uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
 
-  
+						//unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
+						//Getting the size
+						if (_compressedImage != nullptr && _jpegSize > 0)
+						{
+							int jpegSubsamp, width = 0, height = 0;
+
+
+							tjhandle _jpegDecompressor = tjInitDecompress();
+
+
+							tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
+								&jpegSubsamp);
+
+							CalculThumbSizeFromScreenDef(width, height);
+
+							picture = cv::Mat(height, width, CV_8UC4);
+
+							tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
+								picture.size().width, 0, picture.size().height, TJPF_BGRX,
+								TJFLAG_FASTDCT);
+
+							tjDestroy(_jpegDecompressor);
+
+							bitmap->SetPicture(picture);
+							bitmap->SetFilename(fileName);
+
+							delete[] _compressedImage;
+						}
+					}
+					else
                     {
                         cv::Mat matPicture;
                         
