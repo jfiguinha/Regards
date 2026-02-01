@@ -313,5 +313,7 @@
     <None Include="gtk-zoom-out.xpm">
       <Filter>Resource</Filter>
     </None>
+    <None Include="THUMBNAILFACE_OPTIMIZATION.md" />
+    <None Include="THUMBNAILFACE_PHASE1_APPLIED.md" />
   </ItemGroup>
 </Project>

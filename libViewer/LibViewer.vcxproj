@@ -972,6 +972,8 @@
   <ItemGroup>
     <None Include="gtk-zoom-in.xpm" />
     <None Include="gtk-zoom-out.xpm" />
+    <None Include="THUMBNAILFACE_OPTIMIZATION.md" />
+    <None Include="THUMBNAILFACE_PHASE1_APPLIED.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
