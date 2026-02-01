@@ -972,7 +972,17 @@ void CMainWindow::UpdateFolderStatic()
 				}
 
 				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
-					localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+				{
+					try
+					{
+						localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+					}
+					catch (...)
+					{
+						localFilename = "";
+					}
+				}
+					
 			}
 
 

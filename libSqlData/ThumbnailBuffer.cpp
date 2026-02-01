@@ -17,20 +17,23 @@ int  CThumbnailBuffer::vectorSize = 0;
 
 void CThumbnailBuffer::RemovePicture(const wxString& filename)
 {
-	muPictureBuffer.lock();
-
-	std::map<wxString, cv::Mat>::iterator it = listPicture.find(filename);
-
-	if (it != listPicture.end())
 	{
-		listPicture.erase(it);
-		muListFile.lock();
-		std::vector<wxString>::iterator local = std::find(listFile.begin(), listFile.end(), filename);
-		listFile.erase(local);
-		muListFile.unlock();
+		std::lock_guard<std::mutex> lock(muPictureBuffer);
+		auto it = listPicture.find(filename);
+		if (it != listPicture.end())
+		{
+			listPicture.erase(it);
+		}
 	}
-	muPictureBuffer.unlock();
-	
+
+	{
+		std::lock_guard<std::mutex> lock(muListFile);
+		auto it = std::find(listFile.begin(), listFile.end(), filename);
+		if (it != listFile.end())
+		{
+			listFile.erase(it);
+		}
+	}
 }
 
 PhotosVector* CThumbnailBuffer::GetVectorList()
@@ -45,100 +48,79 @@ int CThumbnailBuffer::GetVectorSize()
 
 wxString CThumbnailBuffer::FindPhotoByPath(wxString path)
 {
-    wxString file = "";
-    bool isFound = false;
-    muNewVector.lock();
+    std::lock_guard<std::mutex> lock(muNewVector);
 
     auto p = std::find_if(
         newPhotosVectorList->begin(), newPhotosVectorList->end(),
-        [&](const auto& val)
-    {
-        auto photo = static_cast<CPhotos>(val);
-        return photo.GetPath() == path;
-    }
+        [&path](const auto& val)
+        {
+            return static_cast<CPhotos>(val).GetPath() == path;
+        }
     );
 
     if (p != newPhotosVectorList->end())
     {
-        file = p->GetPath();
-        isFound = true;
+        return p->GetPath();
     }
-    muNewVector.unlock();
-
-    return file;
+    
+    return "";
 }
 
 wxString CThumbnailBuffer::FindPhotoById(int id)
 {
-    wxString file = "";
-    bool isFound = false;
-    muNewVector.lock();
+    std::lock_guard<std::mutex> lock(muNewVector);
 
     auto p = std::find_if(
         newPhotosVectorList->begin(), newPhotosVectorList->end(),
-        [&](const auto& val)
-    {
-        auto photo = static_cast<CPhotos>(val);
-		return photo.GetId() == id;
-    }
+        [id](const auto& val)
+        {
+            return static_cast<CPhotos>(val).GetId() == id;
+        }
     );
 
     if (p != newPhotosVectorList->end())
     {
-        file = p->GetPath();
-        isFound = true;
+        return p->GetPath();
     }
-    muNewVector.unlock();
-
-    return file;
+    
+    return "";
 }
 
 bool CThumbnailBuffer::FindValidFile(wxString localFilename)
 {
-    bool isFound = false;
-    muNewVector.lock();
+    std::lock_guard<std::mutex> lock(muNewVector);
 
     auto p = std::find_if(
         newPhotosVectorList->begin(), newPhotosVectorList->end(),
-        [&](const auto& val)
-    {
-        auto photo = static_cast<CPhotos>(val);
-		return photo.GetPath() == localFilename;
-    }
+        [&localFilename](const auto& val)
+        {
+            return static_cast<CPhotos>(val).GetPath() == localFilename;
+        }
     );
 
-    if (p != newPhotosVectorList->end())
-        isFound = true;
-
-    muNewVector.unlock();
-
-    return isFound;
+    return p != newPhotosVectorList->end();
 }
 
 CPhotos CThumbnailBuffer::GetVectorValue(int i)
 {
-    bool find = false;
-    CPhotos photo;
-    muNewVector.lock();
-    if (i < newPhotosVectorList->size())
+    std::lock_guard<std::mutex> lock(muNewVector);
+    
+    if (i >= 0 && i < static_cast<int>(newPhotosVectorList->size()))
     {
-        find = true;
-        photo = newPhotosVectorList->at(i);
+        return newPhotosVectorList->at(i);
     }
-	muNewVector.unlock();
-
-    if(!find)
-        throw("not exist");
-    return photo;
+    
+    throw std::out_of_range("GetVectorValue: index out of range");
 }
 
 void CThumbnailBuffer::InitVectorList(PhotosVector * newVector)
 {
     PhotosVector* old = newPhotosVectorList;
-    muNewVector.lock();
-    newPhotosVectorList = newVector;
-    vectorSize = newPhotosVectorList->size();
-    muNewVector.unlock();
+    {
+        std::lock_guard<std::mutex> lock(muNewVector);
+        newPhotosVectorList = newVector;
+        vectorSize = newPhotosVectorList->size();
+    }
     if (old != nullptr)
     {
         old->clear();
@@ -148,65 +130,67 @@ void CThumbnailBuffer::InitVectorList(PhotosVector * newVector)
 
 cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
 {
-	cv::Mat image;
-	float diff_min = 0;
-	wxString keyToDelete = "";
-	int sizeBuffer = 100;
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-	{
-		sizeBuffer = param->GetBufferSize();
-	}
+    cv::Mat image;
+    int sizeBuffer = 100;
     
-    if(sizeBuffer > 0)
+    CRegardsConfigParam* param = CParamInit::getInstance();
+    if (param != nullptr)
     {
+        sizeBuffer = param->GetBufferSize();
+    }
+    
+    if (sizeBuffer <= 0)
+    {
+        return cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+    }
 
-        muPictureBuffer.lock();
-
-        std::map<wxString, cv::Mat>::iterator it = listPicture.find(filename);
+    {
+        std::lock_guard<std::mutex> lock(muPictureBuffer);
+        auto it = listPicture.find(filename);
 
         if (it == listPicture.end())
         {
-           // image.LoadFile(filename, wxBITMAP_TYPE_ANY);
-           	image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
-            //image = Regards::Picture::CLibPicture::ReadPicture(filename);
+            image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
             listPicture[filename] = image;
-            muListFile.lock();
-            listFile.push_back(filename);
-            muListFile.unlock();
+            
+            {
+                std::lock_guard<std::mutex> fileLock(muListFile);
+                listFile.push_back(filename);
+            }
         }
         else
         {
-
             image = it->second;
-            muListFile.lock();
-            std::vector<wxString>::iterator it = std::find(listFile.begin(), listFile.end(), filename);
-            listFile.erase(it);
-            listFile.push_back(filename);
-            muListFile.unlock();
+            
+            {
+                std::lock_guard<std::mutex> fileLock(muListFile);
+                auto fileIt = std::find(listFile.begin(), listFile.end(), filename);
+                if (fileIt != listFile.end())
+                {
+                    listFile.erase(fileIt);
+                }
+                listFile.push_back(filename);
+            }
         }
-        muPictureBuffer.unlock();
-
-        if (listFile.size() > sizeBuffer)
-        {
-            muListFile.lock();
-            wxString firstFile = listFile[0];
-            listFile.erase(listFile.begin());
-            muListFile.unlock();
-
-            muPictureBuffer.lock();
-            std::map<wxString, cv::Mat>::iterator it = listPicture.find(firstFile);
-            listPicture.erase(it);
-            muPictureBuffer.unlock();
-        }
-
     }
-    else
+
     {
-        image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
-        //image = Regards::Picture::CLibPicture::ReadPicture(filename);
-        listPicture[filename] = image;
+        std::lock_guard<std::mutex> fileLock(muListFile);
+        if (static_cast<int>(listFile.size()) > sizeBuffer)
+        {
+            wxString firstFile = listFile.front();
+            listFile.erase(listFile.begin());
+            
+            {
+                std::lock_guard<std::mutex> picLock(muPictureBuffer);
+                auto it = listPicture.find(firstFile);
+                if (it != listPicture.end())
+                {
+                    listPicture.erase(it);
+                }
+            }
+        }
     }
-	
-	return image;
+
+    return image;
 }
