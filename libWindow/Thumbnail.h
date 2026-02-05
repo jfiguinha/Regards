@@ -79,6 +79,8 @@ namespace Regards::Window
 		//void ProcessIdle() {} override;
 		void PaintNow();
 		void Render(wxDC& dc);
+		void RenderIcons(wxDC& dc);
+		void RenderBackground(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
 		CIcone *  GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
@@ -149,7 +151,6 @@ namespace Regards::Window
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 		void RefreshIconeVideo(const int& idPhoto);
-		static bool ItemFilenameCompFonct(wxString filename, CIcone *  icone) /* Définit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 
@@ -261,6 +262,7 @@ namespace Regards::Window
 		std::mutex muEraseList;
 		std::vector<CListToClean *> listToErrase;
 		std::vector<CIcone *> pIconeList;
+		std::vector<wxString> listIconeToGenerate;
 		wxWindowID localid;
 		
 	};

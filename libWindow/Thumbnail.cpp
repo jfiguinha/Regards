@@ -1078,10 +1078,29 @@ bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
     }  
     return isProcess;  
 }
+
+
+void CThumbnail::RenderIcons(wxDC& dc)
+{
+	listIconeToGenerate.clear();
+	RenderIcone(&dc);
+	if (!listIconeToGenerate.empty())
+	{
+		wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+			evt.SetClientData(&listIconeToGenerate);
+			evt.SetInt(0);
+			evt.SetExtraLong(localid);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+}
+
+
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
-   // printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
-    
 	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
 
@@ -1090,7 +1109,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 		nbProcesseur = config->GetThumbnailProcess();
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
-	   
+
 	if (preprocess_thumbnail)
 	{
 		if (value == 1)
@@ -1103,24 +1122,13 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 					//const bool isLoad = pThumbnailData->IsLoad();
 					if (!isProcess) // && !isLoad)
 					{
-						wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
-						if (window != nullptr)
-						{
-							wxString* localName = new wxString(pThumbnailData->GetFilename());
-							wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
-							evt.SetClientData(localName);
-							evt.SetInt(0);
-							evt.SetExtraLong(localid);
-							window->GetEventHandler()->AddPendingEvent(evt);
-						}
+						listIconeToGenerate.push_back(pThumbnailData->GetFilename());
 						pThumbnailData->SetIsProcess(true);
 					}
 				}
 			}
 		}
 	}
-	
-
 
 }
 
@@ -1319,6 +1327,13 @@ void CThumbnail::PaintNow()
 	Render(dc);
 }
 
+void CThumbnail::RenderBackground(wxDC& dc)
+{
+	wxRect rc = GetWindowRect();
+	FillRect(&dc, rc, themeThumbnail.colorBack);
+}
+
+
 void CThumbnail::Render(wxDC& dc)
 {
 
@@ -1372,10 +1387,13 @@ void CThumbnail::Render(wxDC& dc)
 
 	render = true;
 	
+	RenderBackground(dc);
+	RenderIcons(dc);
+
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 
-	RenderIcone(&dc);
+	//RenderIcone(&dc);
 
 	render = false;
 	oldPosLargeur = posLargeur;

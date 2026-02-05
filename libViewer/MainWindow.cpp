@@ -1148,16 +1148,36 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
-	wxString* filename = (wxString*)event.GetClientData();
-	wxString localName = wxString(*filename);
+	if (event.GetInt() == 0)
+	{
 
-	std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
-	if (itPhoto != photoList.end())
-		photoList.erase(itPhoto);
+		std::vector<wxString>* listIconeToGenerate = (std::vector<wxString>*)event.GetClientData();
+		//wxString localName = wxString(*filename);
 
-	photoList.insert(photoList.begin(), localName);
+		for (int i = 0; i < listIconeToGenerate->size(); i++)
+		{
+			wxString localName = listIconeToGenerate->at(listIconeToGenerate->size() - 1 - i);
+
+			std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
+			if (itPhoto != photoList.end())
+				photoList.erase(itPhoto);
+
+			photoList.insert(photoList.begin(), localName);
+		}
+	}
+	else
+	{
+		wxString* filename = (wxString*)event.GetClientData();
+		wxString localName = wxString(*filename);
+
+		std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
+		if (itPhoto != photoList.end())
+			photoList.erase(itPhoto);
+
+		photoList.insert(photoList.begin(), localName);
+		delete filename;
+	}
 	processIdle = true;
-	delete filename;
 }
 
 //---------------------------------------------------------------
