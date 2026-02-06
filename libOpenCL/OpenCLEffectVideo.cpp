@@ -1,8 +1,6 @@
 // ReSharper disable All
 #include <header.h>
 #include "OpenCLEffectVideo.h"
-
-#include "utility.h"
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
@@ -611,10 +609,6 @@ void COpenCLEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter,
 		}
 
 		//muBitmap.unlock();
-	}
-	else
-	{
-
 	}
 }
 
