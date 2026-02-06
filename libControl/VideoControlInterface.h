@@ -19,7 +19,7 @@ class CVideoControlInterface
 public:
 	virtual ~CVideoControlInterface() = default;
 	virtual void SetPos(int64_t pos) = 0;
-	virtual void SetData(void* data, const float& sample_aspect_ratio, void* WIN32Context) = 0;
+	virtual void SetData(void* data, bool isHardwareDecoding, const float& sample_aspect_ratio, void* WIN32Context) = 0;
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
     virtual void ErrorDecodingFrame() = 0;

@@ -113,8 +113,6 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
     }
 
     
-    dst = av_frame_alloc();
-    
 }
 
 vector<int> CVideoControlSoft::GetListTimer()
@@ -1047,12 +1045,18 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (ffmfc)
 		delete ffmfc;
 
-	//if (thumbnailVideo != nullptr)
-	//	delete thumbnailVideo;
+	if (scaleContext != nullptr)
+		sws_freeContext(scaleContext);
+	scaleContext = nullptr;
 
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
 	localContext = nullptr;
+
+	if (dst != nullptr)
+		av_frame_free(&dst);
+
+	dst = nullptr;
 }
 
 void CVideoControlSoft::SetSubtituleText(const char* textSub, int timing)
@@ -1138,6 +1142,15 @@ int CVideoControlSoft::Play(const wxString& movie)
 			if (localContext != nullptr)
 				sws_freeContext(localContext);
 			localContext = nullptr;
+
+			if (scaleContext != nullptr)
+				sws_freeContext(scaleContext);
+			scaleContext = nullptr;
+
+			if (dst != nullptr)
+				av_frame_free(&dst);
+
+			dst = nullptr;
 
 			//thumbnailVideo = new CThumbnailVideo(movie, true);
 
@@ -1834,17 +1847,104 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 }
 
 
-void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
+void CVideoControlSoft::SetData(void* data, bool isHardwareDecoding, const float& sample_aspect_ratio, void* dxva2Context)
 {
-    //printf("CVideoControlSoft::SetData \n");
-    auto src_frame = static_cast<AVFrame*>(data);
-    CopyFrame(src_frame);
-    videoRenderStart = true;
-    widthVideo = src_frame->width;
-    heightVideo = src_frame->height;
-    ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-    video_aspect_ratio = sample_aspect_ratio;
-   
+
+	auto src_frame = static_cast<AVFrame*>(data);
+
+	if (!isHardwareDecoding)
+		CopyFrame(src_frame);
+	else
+	{
+		if (IsSupportOpenCL())
+		{
+			int nWidth = src_frame->width;
+			int nHeight = src_frame->height;
+
+			int _colorSpace = 0;
+			int isLimited = 0;
+			if (colorRange == "Limited")
+				isLimited = 1;
+
+			if (colorSpace == "BT.601")
+			{
+				_colorSpace = 1;
+			}
+			else if (colorSpace == "BT.709")
+			{
+				_colorSpace = 2;
+			}
+			else if (colorSpace == "BT.2020")
+			{
+				_colorSpace = 3;
+			}
+
+			COpenCLEffectVideo openclEffectVideo;
+			openclEffectVideo.SetAVFrame(nullptr, src_frame, _colorSpace, isLimited);
+
+			if (dst == nullptr)
+			{
+				dst = av_frame_alloc();
+				dst->format = AV_PIX_FMT_YUV420P;
+				dst->width = src_frame->width;
+				dst->height = src_frame->height;
+				av_image_alloc(dst->data, dst->linesize, src_frame->width, src_frame->height,
+					AV_PIX_FMT_YUV420P, 1);
+			}
+
+			av_frame_copy_props(dst, src_frame);
+
+			openclEffectVideo.GetYUV420P(dst->data[0], dst->data[1], dst->data[2],
+				src_frame->width, src_frame->height);
+		}
+		else
+		{
+			if (dst == nullptr)
+			{
+				dst = av_frame_alloc();
+				dst->format = AV_PIX_FMT_YUV420P;
+				dst->width = src_frame->width;
+				dst->height = src_frame->height;
+				av_image_alloc(dst->data, dst->linesize, src_frame->width, src_frame->height,
+					AV_PIX_FMT_YUV420P, 1);
+			}
+
+			if (scaleContext == nullptr)
+			{
+				scaleContext = sws_alloc_context();
+
+				av_opt_set_int(scaleContext, "srcw", src_frame->width, 0);
+				av_opt_set_int(scaleContext, "srch", src_frame->height, 0);
+				av_opt_set_int(scaleContext, "src_format", src_frame->format, 0);
+				av_opt_set_int(scaleContext, "dstw", src_frame->width, 0);
+				av_opt_set_int(scaleContext, "dsth", src_frame->height, 0);
+				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+				{
+					sws_freeContext(scaleContext);
+					throw std::logic_error("Failed to initialise scale context");
+				}
+			}
+
+			if (scaleContext != nullptr)
+			{
+				sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
+					dst->data, dst->linesize);
+			}
+
+
+			av_frame_copy_props(dst, src_frame);
+		}
+	}
+
+	videoRenderStart = true;
+	widthVideo = src_frame->width;
+	heightVideo = src_frame->height;
+	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
+	video_aspect_ratio = sample_aspect_ratio;
+
 #ifdef WIN32
 	needToRefresh = false;
 	parentRender->Refresh();
