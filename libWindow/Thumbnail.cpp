@@ -1362,6 +1362,7 @@ void CThumbnail::Render(wxDC& dc)
 	TestMaxY();
 
 	render = true;
+
 	listIconeToGenerate.clear();
 
 	wxRect rc = GetWindowRect();
@@ -1383,6 +1384,7 @@ void CThumbnail::Render(wxDC& dc)
 	}
 
 	render = false;
+
 	oldPosLargeur = posLargeur;
 	oldPosHauteur = posHauteur;
 
