@@ -306,6 +306,10 @@ protected:
     AVFrame *dst = nullptr;
     std::mutex muframe; 
 
+	cv::UMat frameHard;
+	std::mutex muHard;
+	bool hardwareDecoding = false;
+
 	wxString subtitleText = "";
 	int typeSubtitle = 0;
 

@@ -1056,7 +1056,6 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (dst != nullptr)
 		av_frame_free(&dst);
 
-	dst = nullptr;
 }
 
 void CVideoControlSoft::SetSubtituleText(const char* textSub, int timing)
@@ -1338,11 +1337,21 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-        
-        
-        muframe.lock();
-        SetFrameData(dst);
-        muframe.unlock();
+		if (IsSupportOpenCL() && openclEffectYUV != nullptr && hardwareDecoding)
+		{
+			muHard.lock();
+			Regards::Picture::CPictureArray pictureArray(frameHard);
+			openclEffectYUV->SetMatrix(pictureArray);
+			muHard.unlock();
+		}
+		else
+		{
+
+			muframe.lock();
+			SetFrameData(dst);
+			muframe.unlock();
+		}
+
  
 		if (!pictureFrame.empty() && !IsSupportOpenCL() && !IsSupportCuda())
 		{
@@ -1851,6 +1860,7 @@ void CVideoControlSoft::SetData(void* data, bool isHardwareDecoding, const float
 {
 
 	auto src_frame = static_cast<AVFrame*>(data);
+	this->hardwareDecoding = isHardwareDecoding;
 
 	if (!isHardwareDecoding)
 		CopyFrame(src_frame);
@@ -1882,6 +1892,13 @@ void CVideoControlSoft::SetData(void* data, bool isHardwareDecoding, const float
 			COpenCLEffectVideo openclEffectVideo;
 			openclEffectVideo.SetAVFrame(nullptr, src_frame, _colorSpace, isLimited);
 
+			
+			Regards::Picture::CPictureArray src = openclEffectVideo.GetMatrix();
+			muHard.lock();
+			src.copyTo(frameHard);
+			muHard.unlock();
+			
+			/*
 			if (dst == nullptr)
 			{
 				dst = av_frame_alloc();
@@ -1896,6 +1913,7 @@ void CVideoControlSoft::SetData(void* data, bool isHardwareDecoding, const float
 
 			openclEffectVideo.GetYUV420P(dst->data[0], dst->data[1], dst->data[2],
 				src_frame->width, src_frame->height);
+			*/			
 		}
 		else
 		{
