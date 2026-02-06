@@ -20,7 +20,7 @@ using namespace Regards::OpenGL;
 using namespace cv::ocl;
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
-
+extern int openclOpenGLInterop;
 
 void CHECK_ERROR_GL() {
     GLenum err = glGetError();
@@ -241,9 +241,6 @@ int GLTexture::GetHeight()
 
 void GLTexture::DeleteInteropTexture()
 {
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
-
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
 		pimpl_->DeleteTextureInterop();
@@ -252,9 +249,7 @@ void GLTexture::DeleteInteropTexture()
 
 bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 {   
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
-    
+   
     //openclOpenGLInterop = 0;
 
 	int kind = bitmap.Kind();
@@ -298,6 +293,7 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 
 			if (!isOk)
 			{
+				CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 				openclOpenGLInterop = false;
 				pimpl_->DeleteTextureInterop();
 				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
@@ -360,8 +356,7 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
 
 	checkErrors("GLTexture::Delete()");
 

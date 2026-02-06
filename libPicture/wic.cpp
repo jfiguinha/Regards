@@ -78,7 +78,7 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
 		{
 			const UINT stride = cx * sizeof(DWORD);
 			const UINT buf_size = cy * stride;
-			auto buf = new byte[buf_size];
+			auto buf = new BYTE[buf_size];
 
 			hr = m_pConvertedSourceBitmap->CopyPixels(
 				nullptr,
@@ -216,7 +216,7 @@ cv::Mat CWic::GetPicture(const string& filename, const int& numPicture)
 		{
 			const UINT stride = cx * sizeof(DWORD);
 			const UINT buf_size = cy * stride;
-			auto buf = new byte[buf_size];
+			auto buf = new BYTE[buf_size];
 
 			hr = m_pConvertedSourceBitmap->CopyPixels(
 				nullptr,

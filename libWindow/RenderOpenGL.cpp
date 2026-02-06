@@ -41,6 +41,7 @@ public:
 
 extern string platformName;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
+extern int openclOpenGLInterop;
 extern bool isOpenCLInitialized;
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
@@ -50,7 +51,6 @@ CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 {
 	width = 0;
 	height = 0;
-	this->openclOpenGLInterop = false;
 	textureDisplay = nullptr;
 }
 

@@ -29,6 +29,7 @@
 using namespace cv::cuda;
 #endif
 
+int openclOpenGLInterop = 0;
 string platformName = "";
 bool isOpenCLInitialized = false;
 bool firstElementToShow = true;
@@ -330,6 +331,10 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 			}
 		}
 	}
+
+
+
+	openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
 }
 
 // 'Main program' equivalent: the program execution "starts" here
@@ -481,7 +486,8 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->InitAllHandlers();
 
 	CFiltreData::CreateFilterList();
-    
+
+   
     bool firstInitialisation = true;
 	std::set_terminate(onTerminate);
     
