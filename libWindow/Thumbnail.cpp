@@ -1078,30 +1078,10 @@ bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
     }  
     return isProcess;  
 }
-
-
-void CThumbnail::RenderIcons(wxDC& dc)
-{
-	listIconeToGenerate.clear();
-	RenderIcone(&dc);
-	if (!listIconeToGenerate.empty())
-	{
-		wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
-		if (window != nullptr)
-		{
-			std::vector<wxString> * listToSend = new std::vector<wxString>(this->listIconeToGenerate);
-			wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
-			evt.SetClientData(listToSend);
-			evt.SetInt(0);
-			evt.SetExtraLong(localid);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-	}
-}
-
-
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
+   // printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
+    
 	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
 
@@ -1110,7 +1090,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 		nbProcesseur = config->GetThumbnailProcess();
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
-
+	   
 	if (preprocess_thumbnail)
 	{
 		if (value == 1)
@@ -1130,6 +1110,8 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const
 			}
 		}
 	}
+	
+
 
 }
 
@@ -1328,13 +1310,6 @@ void CThumbnail::PaintNow()
 	Render(dc);
 }
 
-void CThumbnail::RenderBackground(wxDC& dc)
-{
-	wxRect rc = GetWindowRect();
-	FillRect(&dc, rc, themeThumbnail.colorBack);
-}
-
-
 void CThumbnail::Render(wxDC& dc)
 {
 
@@ -1387,14 +1362,25 @@ void CThumbnail::Render(wxDC& dc)
 	TestMaxY();
 
 	render = true;
-	
-	RenderBackground(dc);
-	RenderIcons(dc);
+	listIconeToGenerate.clear();
 
 	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeThumbnail.colorBack);
 
-	//RenderIcone(&dc);
+	RenderIcone(&dc);
+	if (listIconeToGenerate.size() > 0)
+	{
+		wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+		if (window != nullptr)
+		{
+			std::vector<wxString>* listToSend = new std::vector<wxString>(this->listIconeToGenerate);
+			wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
+			evt.SetClientData(listToSend);
+			evt.SetInt(0);
+			evt.SetExtraLong(localid);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
 
 	render = false;
 	oldPosLargeur = posLargeur;
