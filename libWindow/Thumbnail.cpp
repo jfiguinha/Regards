@@ -1089,8 +1089,9 @@ void CThumbnail::RenderIcons(wxDC& dc)
 		wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
 		if (window != nullptr)
 		{
+			std::vector<wxString> * listToSend = new std::vector<wxString>(this->listIconeToGenerate);
 			wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
-			evt.SetClientData(&listIconeToGenerate);
+			evt.SetClientData(listToSend);
 			evt.SetInt(0);
 			evt.SetExtraLong(localid);
 			window->GetEventHandler()->AddPendingEvent(evt);

@@ -1152,17 +1152,20 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 	{
 
 		std::vector<wxString>* listIconeToGenerate = (std::vector<wxString>*)event.GetClientData();
-		//wxString localName = wxString(*filename);
-
-		for (int i = 0; i < listIconeToGenerate->size(); i++)
+		if (listIconeToGenerate != nullptr)
 		{
-			wxString localName = listIconeToGenerate->at(listIconeToGenerate->size() - 1 - i);
+			for (int i = 0; i < listIconeToGenerate->size(); i++)
+			{
+				wxString localName = listIconeToGenerate->at(listIconeToGenerate->size() - 1 - i);
 
-			std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
-			if (itPhoto != photoList.end())
-				photoList.erase(itPhoto);
+				std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
+				if (itPhoto != photoList.end())
+					photoList.erase(itPhoto);
 
-			photoList.insert(photoList.begin(), localName);
+				photoList.insert(photoList.begin(), localName);
+			}
+			listIconeToGenerate->clear();
+			delete listIconeToGenerate;
 		}
 	}
 	else
