@@ -3,8 +3,7 @@
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
 #include <mutex>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
+#include "DataAVFrame.h"
 #include <ConvertUtility.h>
 #include <RGBAQuad.h>
 using namespace std;
@@ -273,6 +272,11 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	SDL_DestroyCond(is->continue_read_thread);
 	sws_freeContext(is->img_convert_ctx);
 	sws_freeContext(is->sub_convert_ctx);
+
+	if (localContext != nullptr)
+		sws_freeContext(localContext);
+	localContext = nullptr;
+
 	av_free(is->filename);
 
 	av_free(is);
@@ -335,7 +339,48 @@ void CFFmfcPimpl::video_display(VideoState* is)
 				dlg->SetPos(vp->pts * 1000);
 
 		if (dlg != nullptr)
-			dlg->SetData(vp->frame,isHardwareDecoding, video_aspect_ratio, nullptr);
+		{
+			auto tmp_frame = static_cast<AVFrame*>(vp->frame);
+
+
+			CDataAVFrame* dataFrame = new CDataAVFrame();
+
+			dataFrame->matFrame = new cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
+
+			if (localContext == nullptr)
+			{
+				localContext = sws_alloc_context();
+
+				av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
+				av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
+				av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
+				av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
+				av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
+				av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+				av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+				if (sws_init_context(localContext, nullptr, nullptr) < 0)
+				{
+					sws_freeContext(localContext);
+					localContext = nullptr;
+				}
+			}
+
+			int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
+			uint8_t* convertedFrameBuffer = dataFrame->matFrame->data;
+			int linesize = tmp_frame->width * 4;
+
+			sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+				&convertedFrameBuffer, &linesize);
+
+			dataFrame->width = tmp_frame->width;
+			dataFrame->height = tmp_frame->height;
+			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
+			dataFrame->sample_aspect_ratio = video_aspect_ratio;
+
+			dlg->SetData(dataFrame);
+		}
+			
 		//}
 
 		if (is->subtitle_st)
@@ -789,33 +834,7 @@ int CFFmfcPimpl::queue_picture(VideoState* is, AVFrame* src_frame, double pts, d
 	return 0;
 }
 
-AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* frame)
-{
-	AVFrame* copyFrame = av_frame_alloc();
-	copyFrame->format = frame->format;
-	copyFrame->width = frame->width;
-	copyFrame->height = frame->height;
-	//copyFrame->ch_layout.nb_channels = frame->ch_layout.nb_channels;
-	copyFrame->ch_layout = frame->ch_layout;
-	copyFrame->nb_samples = frame->nb_samples;
-	av_frame_get_buffer(copyFrame, 32);
-	av_frame_copy(copyFrame, frame);
-	av_frame_copy_props(copyFrame, frame);
-	return copyFrame;
-}
 
-void CFFmfcPimpl::CopyFrameToDest(AVFrame* frame)
-{
-	dst->format = frame->format;
-	dst->width = frame->width;
-	dst->height = frame->height;
-	//dst->channels = frame->channels;
-	dst->ch_layout = frame->ch_layout;
-	dst->nb_samples = frame->nb_samples;
-	av_frame_get_buffer(dst, 32);
-	av_frame_copy(dst, frame);
-	av_frame_copy_props(dst, frame);
-}
 
 int CFFmfcPimpl::get_master_sync_type(VideoState* is)
 {
@@ -2929,6 +2948,10 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	is->iformat = iformat;
 	is->ytop = 0;
 	is->xleft = 0;
+
+	if (localContext != nullptr)
+		sws_freeContext(localContext);
+	localContext = nullptr;
 
 	/* start video display */
 	if (frame_queue_init(&is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1) < 0)

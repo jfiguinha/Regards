@@ -33,7 +33,8 @@ namespace Regards
 			}
 
 			virtual bool IsOk();
-			void SetMatrix(Regards::Picture::CPictureArray& frame);
+			void SetMatrix(Regards::Picture::CPictureArray& frame) override;
+			void SetMatrix(cv::Mat* frame) override;
 			Regards::Picture::CPictureArray GetMatrix(const bool& src = true);
 
 			void AutoContrast();

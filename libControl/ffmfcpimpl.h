@@ -527,16 +527,7 @@ public:
 	/* display the current picture, if any */
 	void video_display(VideoState* is);
 
-	void CopyFrameToDest(AVFrame* frame);
 
-	/* get the current audio clock value */
-	//double get_audio_clock(VideoState *is);
-
-	/* get the current video clock value */
-	//double get_video_clock(VideoState *is);
-
-	/* get the current external clock value */
-	//double get_external_clock(VideoState *is);
 
 	/* get the current master clock value */
 	double get_master_clock(VideoState* is);
@@ -640,7 +631,6 @@ public:
 
 	void step_to_next_frame(VideoState* is);
 
-	AVFrame* CopyFrame(AVFrame* frame);
 
 	AVBufferRef* hw_device_ctx = nullptr;
 	static enum AVPixelFormat hw_pix_fmt;
@@ -713,8 +703,8 @@ public:
 	int packet_index = 0;
 	int videoOutputMode = 24;
 	bool first = true;
-	AVFrame* dst = av_frame_alloc();
-	SwsContext* scaleContext = nullptr;
+
+	SwsContext* localContext = nullptr;
 
 #ifdef WIN32
 	wxString acceleratorHardware = "d3d11va";

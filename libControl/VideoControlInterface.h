@@ -6,7 +6,7 @@ extern "C" {
 
 class CRegardsBitmap;
 class CffmpegToBitmap;
-
+class CDataAVFrame;
 #define PAUSE 1
 #define PLAY 2
 #define STOP 3
@@ -19,7 +19,7 @@ class CVideoControlInterface
 public:
 	virtual ~CVideoControlInterface() = default;
 	virtual void SetPos(int64_t pos) = 0;
-	virtual void SetData(void* data, bool isHardwareDecoding, const float& sample_aspect_ratio, void* WIN32Context) = 0;
+	virtual void SetData(CDataAVFrame * dataFrame) = 0;
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
     virtual void ErrorDecodingFrame() = 0;

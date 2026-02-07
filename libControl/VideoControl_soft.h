@@ -19,7 +19,7 @@ using namespace Regards::Video;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
-
+class CDataAVFrame;
 class Chqdn3d;
 
 namespace Regards
@@ -62,7 +62,7 @@ public:
 	void DiaporamaMode(const bool& value);
 	vector<int> GetZoomValue();
 	virtual cv::Mat SavePicture(bool& isFromBuffer);
-	bool IsFFmpegDecode();
+
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter* effectParameter);
 	void UpdateFiltre(CEffectParameter* effectParameter);
@@ -83,7 +83,7 @@ public:
 	bool GetPausedValue();
 	void RedrawFrame();
 	void SetRotation(const int& rotation) override;
-	void SetData(void* data, bool isHardwareDecoding, const float& sample_aspect_ratio, void* WIN32Context) override;
+	void SetData(CDataAVFrame* dataFrame) override;
 	void UpdateScreenRatio() override;
 
 	void Rotate90();
@@ -156,15 +156,14 @@ protected:
 
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
-	void RenderToGLTexture();
 	void RenderToTexture(IEffectVideo * openclEffect);
-	//GLTexture* RenderFFmpegToTexture();
+
 
 	void ZoomOn();
 	void ZoomOut();
 	void CalculCenterPicture();
 	bool IsCPUContext();
-	void SetFrameData(AVFrame *dst);
+
 
 	int GetBitmapWidth();
 	int GetBitmapHeight();
@@ -173,7 +172,7 @@ protected:
 
 	void TestMaxX();
 	void TestMaxY();
-	void RenderFFmpegToTexture(cv::Mat& source);
+	void RenderFFmpegToTexture();
 
 	void StopVideoThread(wxCommandEvent& event);
 	float CalculRatio(const int& pictureWidth, const int& pictureHeight);
@@ -188,9 +187,9 @@ protected:
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();
 	Chqdn3d* hq3d = nullptr;
-	cv::Mat GetBitmapRGBA(AVFrame* tmp_frame);
+
     int Play(const wxString& movie);
-    void CopyFrame(AVFrame* src);
+
 
 
 	int mouseScrollX = 0;
@@ -231,10 +230,7 @@ protected:
 
 	bool videoRender = false;;
 	bool videoStartRender = false;
-	//thread* _threadVideo = nullptr;
-	//bool threadVideoEnd = true;
-	//GLTexture* glTextureSrc = nullptr;
-	//cv::Mat bitmap;
+
 	IEffectVideo * openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
@@ -255,12 +251,12 @@ protected:
 	bool oldBicubic = false;
 	bool repeatVideo = false;
 	int isCPU = -1;
-	bool isffmpegDecode = false;
-	bool deleteTexture = false;
+
+
 	int nbFrame;
 	wxString message;
 	cv::Mat pictureSubtitle;
-	cv::Mat pictureFrame;
+	CDataAVFrame * pictureFrame = nullptr;
 	//cv::Mat pictureVideo;
 	int64_t videoPosition = 0;
 	int64_t oldvideoPosition = 0;
@@ -289,10 +285,9 @@ protected:
     std::atomic<bool> needToRefresh{ false };
 
 	bool inverted = true;
-	cv::Mat previousFrame;
+
 	COpenCVStabilization* openCVStabilization = nullptr;
-	SwsContext* localContext = nullptr;
-	SwsContext* scaleContext = nullptr;
+
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
 	wxString colorRange = "";
@@ -301,14 +296,6 @@ protected:
 	int sizesrc = 0;
     
     bool startVideoAfterProblem = false;
-    
-    //Frame Copy
-    AVFrame *dst = nullptr;
-    std::mutex muframe; 
-
-	cv::UMat frameHard;
-	std::mutex muHard;
-	bool hardwareDecoding = false;
 
 	wxString subtitleText = "";
 	int typeSubtitle = 0;
@@ -316,4 +303,5 @@ protected:
 	int widthContext = 0;
 	int heightContext = 0;
 	bool errorDecoding = false;
+	bool isHardwareDecoding = false;
 };

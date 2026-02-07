@@ -33,6 +33,16 @@ void COpenCLEffectVideo::SetMatrix(Regards::Picture::CPictureArray& bitmap)
 	isOk = true;
 }
 
+void COpenCLEffectVideo::SetMatrix(cv::Mat* frame)
+{
+	if (frame->channels() == 4)
+		cv::cvtColor(*frame, paramSrc, cv::COLOR_BGRA2BGR);
+	else
+		frame->copyTo(paramSrc);
+	needToTranscode = false;
+	isOk = true;
+}
+
 Regards::Picture::CPictureArray COpenCLEffectVideo::GetMatrix(const bool& src)
 {
 
