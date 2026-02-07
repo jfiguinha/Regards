@@ -6,7 +6,11 @@
 #include "DataAVFrame.h"
 #include <ConvertUtility.h>
 #include <RGBAQuad.h>
+#include <RegardsConfigParam.h>
+#include <OpenCLEffectVideo.h>
+#include <ParamInit.h>
 using namespace std;
+using namespace Regards::OpenCL;
 
 #ifdef WIN32
 wxString listHardware[] = {"cuda", "qsv", "d3d11va", "dxva2", "opencl"};
@@ -336,7 +340,17 @@ void CFFmfcPimpl::video_display(VideoState* is)
 
 		if (dlg != nullptr)
 			if (!is->paused)
-				dlg->SetPos(vp->pts * 1000);
+			{
+				
+				int64_t pos = vp->pts * 1000;
+				wxCommandEvent evt(wxEVENT_SETFRAMEPOS);
+				evt.SetExtraLong(pos);
+				wxPostEvent(dlg->GetMainWindow(), evt);
+				
+				//is->_pimpl->start_time
+				//dlg->SetPos(vp->pts * 1000);
+			}
+				
 
 		if (dlg != nullptr)
 		{
@@ -344,11 +358,12 @@ void CFFmfcPimpl::video_display(VideoState* is)
 
 
 			CDataAVFrame* dataFrame = new CDataAVFrame();
-			dataFrame->width = vp->frame->width;
-			dataFrame->height = vp->frame->height;
-			dataFrame->ratioVideo = static_cast<float>(vp->frame->width) / static_cast<float>(vp->frame->height);
+
+			dataFrame->matFrame = new cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
+			dataFrame->width = tmp_frame->width;
+			dataFrame->height = tmp_frame->height;
+			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
 			dataFrame->sample_aspect_ratio = video_aspect_ratio;
-			dataFrame->matFrame = new cv::Mat(vp->frame->height, vp->frame->width, CV_8UC4);
 
 			if (localContext == nullptr)
 			{
@@ -369,7 +384,6 @@ void CFFmfcPimpl::video_display(VideoState* is)
 				}
 			}
 
-
 			if (localContext != nullptr)
 			{
 				int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
@@ -380,8 +394,12 @@ void CFFmfcPimpl::video_display(VideoState* is)
 					&convertedFrameBuffer, &linesize);
 			}
 
+			//dlg->SetData(dataFrame);
 
-			dlg->SetData(dataFrame);
+			wxCommandEvent event(wxEVENT_UPDATEFRAME);
+			event.SetClientData(dataFrame);
+			wxPostEvent(dlg->GetMainWindow(), event);
+
 		}
 			
 		//}
@@ -400,7 +418,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 						{
 							AVSubtitleRect* rect = sp->sub.rects[i];
 							//AVPicture picture = rect->pict;
-							cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
+							cv::Mat* bitmap = new cv::Mat(rect->h, rect->w, CV_8UC4);
 							uint8_t* data = rect->data[0];
 
 							for (int y = 0; y < rect->h; y++)
@@ -411,12 +429,20 @@ void CFFmfcPimpl::video_display(VideoState* is)
 									int j = *data++;
 									RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
 									CRgbaquad color(r, g, b, a);
-									int i = (x << 2) + (y * (bitmap.cols << 2));
-									memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
+									int i = (x << 2) + (y * (bitmap->cols << 2));
+									memcpy(bitmap->data + i, &color, sizeof(CRgbaquad));
 								}
 							}
 							if (dlg != nullptr)
-								dlg->SetSubtitulePicture(bitmap);
+							{
+								wxCommandEvent event(wxEVENT_SETSUBTITLEIMAGE);
+								event.SetClientData(bitmap);
+								wxPostEvent(dlg->GetMainWindow(), event);
+							}
+							else
+							{
+								delete bitmap;
+							}
 						}
 					}
 					else if (sp->sub.format == 1 && (vp->pts >= sp->pts - (static_cast<float>(sp->sub.end_display_time))))
@@ -439,7 +465,13 @@ void CFFmfcPimpl::video_display(VideoState* is)
 
 						}
 						if (dlg != nullptr)
-							dlg->SetSubtituleText(text, sp->sub.end_display_time);
+						{
+							wxString* _textSub = new wxString(text);
+							wxCommandEvent event(wxEVENT_SETSUBTITLETEXT);
+							event.SetClientData(_textSub);
+							event.SetInt(sp->sub.end_display_time);
+							wxPostEvent(dlg->GetMainWindow(), event);
+						}
 					}
 
 				}
@@ -447,7 +479,8 @@ void CFFmfcPimpl::video_display(VideoState* is)
 		}
 		else if (dlg != nullptr)
 		{
-			dlg->DeleteSubtitulePicture();
+			wxCommandEvent event(wxEVENT_DELETESUBTITLEIMAGE);
+			wxPostEvent(dlg->GetMainWindow(), event);
 		}
 	}
 }
@@ -708,78 +741,6 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 					is->frame_drops_late++;
 					frame_queue_next(&is->pictq);
 					goto retry;
-				}
-			}
-
-			if (is->subtitle_st)
-			{
-				while (frame_queue_nb_remaining(&is->subpq) > 0)
-				{
-					sp = frame_queue_peek(&is->subpq);
-
-					if (frame_queue_nb_remaining(&is->subpq) > 1)
-						sp2 = frame_queue_peek_next(&is->subpq);
-					else
-						sp2 = NULL;
-
-					if (sp->sub.format == 0 && (sp->serial != is->subtitleq.serial
-						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time / 1000)))
-						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time / 1000)))))
-					{
-						if (sp->uploaded)
-						{
-							int i;
-							for (i = 0; i < sp->sub.num_rects; i++)
-							{
-								AVSubtitleRect* sub_rect = sp->sub.rects[i];
-								uint8_t* pixels;
-								int pitch, j;
-
-								AVSubtitleRect* rect = sp->sub.rects[i];
-								cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
-								uint8_t* data = rect->data[0];
-								for (int y = 0; y < rect->h; y++)
-								{
-									for (int x = 0; x < rect->w; x++)
-									{
-										int r, g, b, a;
-										int j = *data++;
-										RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
-										CRgbaquad color(r, g, b, a);
-										int i = (x << 2) + (y * (bitmap.cols << 2));
-										memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
-										//bitmap->SetColorValue(x, y, color);
-									}
-								}
-								if (dlg != nullptr)
-									dlg->SetSubtitulePicture(bitmap);
-							}
-
-						}
-						frame_queue_next(&is->subpq);
-					}
-					else if (sp->sub.format == 1 && (sp->serial != is->subtitleq.serial
-						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time)))
-						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time)))))
-					{
-						if (sp->uploaded)
-						{
-							wxString text = "";
-							for (int i = 0; i < sp->sub.num_rects; i++)
-							{
-								AVSubtitleRect* rect = sp->sub.rects[i];
-								text += rect->ass;
-							}
-							if (dlg != nullptr)
-								dlg->SetSubtituleText(text, sp->sub.end_display_time);
-
-						}
-						frame_queue_next(&is->subpq);
-					}
-					else
-					{
-						break;
-					}
 				}
 			}
 
@@ -1635,9 +1596,12 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 	hw_pix_fmt = AV_PIX_FMT_NONE;
 	fprintf(stderr, "Failed to get HW surface format.\n");
 
-    if (dlg != nullptr)
-        dlg->ErrorDecodingFrame();
-    
+	if (dlg != nullptr)
+	{
+		wxCommandEvent event(wxEVENT_ERRORDECODINGFRAME);
+		wxPostEvent(dlg->GetMainWindow(), event);
+	}
+   
 	return AV_PIX_FMT_NONE;
 }
 
@@ -2353,7 +2317,12 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 				long rotation = get_rotation(is->video_st);
 				if (dlg != nullptr)
-					dlg->SetRotation(rotation);
+				{
+					wxCommandEvent event(EVENT_VIDEOROTATION);
+					event.SetExtraLong(rotation);
+					wxPostEvent(dlg->GetMainWindow(), event);
+				}
+
 
 				/*
 	            auto matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(
@@ -2758,7 +2727,16 @@ int CFFmfcPimpl::read_thread(void* arg)
 	is->refresh_tid = new std::thread(refresh_thread, is);
 
 	if (is->_pimpl->dlg != nullptr)
-		is->_pimpl->dlg->SetVideoDuration(is->ic->duration, is->ic->start_time);
+	{
+		//is->_pimpl->dlg->SetVideoDuration(is->ic->duration, is->ic->start_time);
+		DataTimeDuration* dtTime = new DataTimeDuration();
+		dtTime->duration = is->ic->duration;
+		dtTime->startTime = is->ic->start_time;
+		wxCommandEvent evt(wxEVENT_UPDATEMOVIETIME);
+		evt.SetClientData(dtTime);
+		wxPostEvent(is->_pimpl->dlg->GetMainWindow(), evt);// is->_pimpl->dlg->GetMainWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
+		
 
 	for (;;)
 	{
