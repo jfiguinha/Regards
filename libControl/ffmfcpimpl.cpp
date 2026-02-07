@@ -344,8 +344,11 @@ void CFFmfcPimpl::video_display(VideoState* is)
 
 
 			CDataAVFrame* dataFrame = new CDataAVFrame();
-
-			dataFrame->matFrame = new cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
+			dataFrame->width = vp->frame->width;
+			dataFrame->height = vp->frame->height;
+			dataFrame->ratioVideo = static_cast<float>(vp->frame->width) / static_cast<float>(vp->frame->height);
+			dataFrame->sample_aspect_ratio = video_aspect_ratio;
+			dataFrame->matFrame = new cv::Mat(vp->frame->height, vp->frame->width, CV_8UC4);
 
 			if (localContext == nullptr)
 			{
@@ -366,17 +369,17 @@ void CFFmfcPimpl::video_display(VideoState* is)
 				}
 			}
 
-			int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
-			uint8_t* convertedFrameBuffer = dataFrame->matFrame->data;
-			int linesize = tmp_frame->width * 4;
 
-			sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-				&convertedFrameBuffer, &linesize);
+			if (localContext != nullptr)
+			{
+				int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
+				uint8_t* convertedFrameBuffer = dataFrame->matFrame->data;
+				int linesize = tmp_frame->width * 4;
 
-			dataFrame->width = tmp_frame->width;
-			dataFrame->height = tmp_frame->height;
-			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
-			dataFrame->sample_aspect_ratio = video_aspect_ratio;
+				sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+					&convertedFrameBuffer, &linesize);
+			}
+
 
 			dlg->SetData(dataFrame);
 		}
