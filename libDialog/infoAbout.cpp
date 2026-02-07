@@ -57,7 +57,7 @@ void CInfoAbout::Init()
 	auto treeDataAnnee = new CTreeData();
 	treeDataAnnee->SetIsParent(false);
 	treeDataAnnee->SetKey("Copyright");
-	treeDataAnnee->SetValue("2014 - 2025");
+	treeDataAnnee->SetValue("2014 - 2026");
 	tr.append_child(child, treeDataAnnee);
 
 	auto treeDataLib = new CTreeData();

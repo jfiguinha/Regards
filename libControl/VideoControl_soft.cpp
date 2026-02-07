@@ -1288,15 +1288,15 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
+		if (IsSupportOpenCL() && openclEffectYUV != nullptr)
 		{
 			openclEffectYUV->SetMatrix(pictureFrame->matFrame);
+		}
+
+		if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 			RenderToTexture();
-		}
 		else
-		{
 			RenderFFmpegToTexture();
-		}
 
 
 		muVideoEffect.lock();
