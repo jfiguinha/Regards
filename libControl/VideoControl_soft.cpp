@@ -112,7 +112,7 @@ vector<int> CVideoControlSoft::GetListCommand()
 		wxEVENT_UPDATEPOSMOVIETIME, wxEVENT_SCROLLMOVE, wxEVENT_ENDVIDEOTHREAD,
 		wxEVENT_STOPVIDEO, EVENT_VIDEOSTART, wxEVENT_LEFTPOSITION,
 		wxEVENT_TOPPOSITION, wxEVENT_SETPOSITION, EVENT_VIDEOROTATION,
-		wxEVENT_UPDATEMOVIETIME, wxEVENT_UPDATEFRAME, wxEVENT_PAUSEMOVIE
+		wxEVENT_UPDATEMOVIETIME, wxEVENT_UPDATEFRAME, wxEVENT_PAUSEMOVIE, wxEVENT_SETSUBTITLETEXT
 	};
 }
 
@@ -183,6 +183,9 @@ void CVideoControlSoft::OnCommand(wxCommandEvent& event)
 
 	case wxEVENT_PAUSEMOVIE:
 		OnPauseMovie(event);
+		break;
+	case wxEVENT_SETSUBTITLETEXT:
+		OnSetSubtitle(event);
 		break;
 	}
 }
@@ -1025,31 +1028,48 @@ CVideoControlSoft::~CVideoControlSoft()
 
 }
 
+void CVideoControlSoft::OnSetSubtitle(wxCommandEvent& event)
+{
+	wxString* textSub = static_cast<wxString*>(event.GetClientData());
+	if (textSub != nullptr)
+	{
+		muSubtitle.lock();
+		int timing = event.GetInt();
+		subtitleText = *textSub;
+		std::vector<wxString> listString = CConvertUtility::split(subtitleText, ',');
+		int timeShow = atoi(listString.at(0));
+		if (listString.size() > 9)
+		{
+			subtitleText = "";
+			for (int i = 8; i < listString.size(); i++)
+			{
+				subtitleText.append(listString.at(i) + ",");
+			}
+			subtitleText = subtitleText.SubString(0, subtitleText.size() - 1);
+		}
+		else
+			subtitleText = listString.at(listString.size() - 1);
+
+
+		subtilteUpdate = true;
+		typeSubtitle = 1;
+		if (assSubtitleTimer->IsRunning())
+			assSubtitleTimer->Stop();
+		assSubtitleTimer->StartOnce(timing);
+		muSubtitle.unlock();
+
+		delete textSub;
+	}
+
+}
+
 void CVideoControlSoft::SetSubtituleText(const char* textSub, int timing)
 {
-	muSubtitle.lock();
-	subtitleText = textSub;
-	std::vector<wxString> listString = CConvertUtility::split(subtitleText, ',');
-	int timeShow = atoi(listString.at(0));
-	if (listString.size() > 9)
-	{
-		subtitleText = "";
-		for (int i = 8; i < listString.size(); i++)
-		{
-			subtitleText.append(listString.at(i) + ",");
-		}
-		subtitleText = subtitleText.SubString(0,subtitleText.size() - 1);
-	}
-	else
-		subtitleText = listString.at(listString.size() - 1);
-	
-	
-	subtilteUpdate = true;
-	typeSubtitle = 1;
-	if (assSubtitleTimer->IsRunning())
-		assSubtitleTimer->Stop();
-	assSubtitleTimer->StartOnce(10);
-	muSubtitle.unlock();
+	wxString* _textSub = new wxString(textSub);
+	wxCommandEvent event(wxEVENT_SETSUBTITLETEXT);
+	event.SetClientData(_textSub);
+	event.SetInt(timing);
+	wxPostEvent(parentRender, event);
 }
 
 

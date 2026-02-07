@@ -133,7 +133,7 @@ protected:
 	void OnPlayStop(wxTimerEvent& event);
 	void OnSetPos(wxCommandEvent& event);
 	void OnSetData(wxCommandEvent& event);
-
+	void OnSetSubtitle(wxCommandEvent& event);
     void ErrorDecodingFrame();
     
 	void CalculPositionPicture(const float& x, const float& y);
