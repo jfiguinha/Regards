@@ -23,6 +23,7 @@
 #include <ParamInit.h>
 #include <OpenCLEffectVideo.h>
 #include "DataAVFrame.h"
+#include <FaceDetector.h>
 #ifdef USE_CUDA
 #include <CudaEffectVideo.h>
 #endif
@@ -2045,6 +2046,16 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 			Regards::Picture::CPictureArray output = openCVStabilization->CorrectFrame(pictureArray);
 			output.copyTo(image);
 		}
+	}
+
+	if (videoEffectParameter.filmEnhance)
+	{
+		image = CFaceDetector::SuperResolution(image);
+	}
+	if (videoEffectParameter.filmcolorisation)
+	{
+
+		image = CFaceDetector::Colorisation(image);
 	}
 
 	if (videoEffectParameter.autoConstrast)
