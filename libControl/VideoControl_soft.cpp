@@ -1288,25 +1288,16 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		std::clock_t start;
-		start = std::clock();
-		double duration;
-
-		if (IsSupportOpenCL())
+		if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			openclEffectYUV->SetMatrix(pictureFrame->matFrame);
-		}
- 
-		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
-		{
-			RenderToTexture(openclEffectYUV);
+			RenderToTexture();
 		}
 		else
 		{
 			RenderFFmpegToTexture();
 		}
 
-		duration = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
 
 		muVideoEffect.lock();
 		wxFloatRect floatRect;
@@ -1983,10 +1974,10 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 
 }
 
-void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
+void CVideoControlSoft::RenderToTexture()
 {
     
-	if (openclEffect == nullptr)
+	if (openclEffectYUV == nullptr)
 		return;
 
 	int widthOutput = 0;
@@ -2008,19 +1999,19 @@ void CVideoControlSoft::RenderToTexture(IEffectVideo * openclEffect)
         if (videoEffectParameter.stabilizeVideo)
         {
             if (openCVStabilization == nullptr)
-                openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, openclEffect->GetType());
-            openclEffect->ApplyStabilization(&videoEffectParameter, openCVStabilization);
+                openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, openclEffectYUV->GetType());
+			openclEffectYUV->ApplyStabilization(&videoEffectParameter, openCVStabilization);
         }
-        openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+		openclEffectYUV->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
                                                (int)GetZoomRatio() * 100);
 
 		if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
 			effectEnable)
 		{
-			openclEffect->ApplyOpenCVEffect(&videoEffectParameter);
+			openclEffectYUV->ApplyOpenCVEffect(&videoEffectParameter);
 		}
 
-        Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(openclEffect->GetMatrix(false)); 
+        Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(openclEffectYUV->GetMatrix(false));
 		renderOpenGL->SetData(pictureArray);
 
         int nError = glGetError();
@@ -2062,14 +2053,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 		CFiltreEffetCPU::BrightnessAndContrastAuto(image, 1.0);
 	}
 
-	/*
-	if (videoEffectParameter.sepiaEnable)
-	{
-		frameStabilized = true;
-		CFiltreEffetCPU::Sepia(image);
-	}
-    */
-	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
+
 	return frameStabilized;
 }
 

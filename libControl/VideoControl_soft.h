@@ -156,7 +156,7 @@ protected:
 
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
-	void RenderToTexture(IEffectVideo * openclEffect);
+	void RenderToTexture();
 
 
 	void ZoomOn();
