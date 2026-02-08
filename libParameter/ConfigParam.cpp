@@ -18,16 +18,25 @@ CConfigParam::~CConfigParam()
 bool CConfigParam::OpenFile(const wxString& configFile)
 {
 	filename = configFile;
+
 	doc.clear();
-	// Read the xml file into a vector
-	ifstream theFile(CConvertUtility::ConvertToStdString(filename));
-	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
-	if (buffer.size() > 0)
+
+	try
 	{
-		buffer.push_back('\0');
-		// Parse the buffer using the xml file parsing library into doc 
-		doc.parse<0>(&buffer[0]);
-		LoadParameter();
+		// Read the xml file into a vector
+		ifstream theFile(CConvertUtility::ConvertToStdString(filename));
+		vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
+		if (buffer.size() > 0)
+		{
+			buffer.push_back('\0');
+			// Parse the buffer using the xml file parsing library into doc 
+			doc.parse<0>(&buffer[0]);
+			LoadParameter();
+		}
+	}
+	catch (...)
+	{
+		wxMessageBox("Unable to open config file : " + filename);
 	}
 	return true;
 }
