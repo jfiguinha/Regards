@@ -174,3 +174,30 @@ void CPictureArray::copyTo(cv::UMat& m)
 	cv::UMat mat = getUMat();
 	mat.copyTo(m);
 }
+
+bool CPictureArray::empty()
+{
+	if (kind == cv::_InputArray::KindFlag::MAT)
+	{
+		return gpuMat.empty();
+	}
+	else if (kind == cv::_InputArray::KindFlag::UMAT)
+	{
+		return umat.empty();
+	}
+	return mat.empty();
+}
+
+
+void CPictureArray::Release()
+{
+	if (kind == cv::_InputArray::KindFlag::MAT)
+	{
+		gpuMat.release();
+	}
+	else if (kind == cv::_InputArray::KindFlag::UMAT)
+	{
+		umat.release();
+	}
+	mat.release();
+}

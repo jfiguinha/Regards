@@ -527,6 +527,7 @@ public:
 	/* display the current picture, if any */
 	void video_display(VideoState* is);
 
+	int IsSupportOpenCL();
 
 
 	/* get the current master clock value */
@@ -714,6 +715,8 @@ public:
 	wxString acceleratorHardware = "cuda";
 #endif
     
+	wxString colorRange = "";
+	wxString colorSpace = "";
 	bool isHardwareDecoding = false;
 	bool isOpenGLDecoding = false;
 	int find_stream_info = 1;

@@ -9,6 +9,7 @@
 #include <RegardsConfigParam.h>
 #include <OpenCLEffectVideo.h>
 #include <ParamInit.h>
+#include <MediaInfo.h>
 using namespace std;
 using namespace Regards::OpenCL;
 
@@ -319,6 +320,23 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 	}
 }
 
+int CFFmfcPimpl::IsSupportOpenCL()
+{
+	return false;
+	/*
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	//if (cv::ocl::Context::getDefault(false).empty())
+	//	return 0;
+
+	return supportOpenCL;
+	*/
+}
+
+
 /* display the current picture, if any */
 void CFFmfcPimpl::video_display(VideoState* is)
 {
@@ -356,45 +374,77 @@ void CFFmfcPimpl::video_display(VideoState* is)
 		{
 			auto tmp_frame = static_cast<AVFrame*>(vp->frame);
 
-
 			CDataAVFrame* dataFrame = new CDataAVFrame();
-
-			dataFrame->matFrame = new cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 			dataFrame->width = tmp_frame->width;
 			dataFrame->height = tmp_frame->height;
 			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
 			dataFrame->sample_aspect_ratio = video_aspect_ratio;
 
-			if (localContext == nullptr)
+			if (IsSupportOpenCL() && !isHardwareDecoding)
 			{
-				localContext = sws_alloc_context();
+				cv::UMat bgr;
+				int nWidth = tmp_frame->width;
+				int nHeight = tmp_frame->height;
 
-				av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
-				av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
-				av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
-				av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
-				av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
-				av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-				av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+				int _colorSpace = 0;
+				int isLimited = 0;
+				if (colorRange == "Limited")
+					isLimited = 1;
 
-				if (sws_init_context(localContext, nullptr, nullptr) < 0)
+				if (colorSpace == "BT.601")
 				{
-					sws_freeContext(localContext);
-					localContext = nullptr;
+					_colorSpace = 1;
 				}
-			}
+				else if (colorSpace == "BT.709")
+				{
+					_colorSpace = 2;
+				}
+				else if (colorSpace == "BT.2020")
+				{
+					_colorSpace = 3;
+				}
 
-			if (localContext != nullptr)
+				COpenCLEffectVideo openclEffectVideo;
+				openclEffectVideo.SetAVFrame(nullptr, tmp_frame, _colorSpace, isLimited);
+				dataFrame->matFrame = openclEffectVideo.GetMatrix();
+			}
+			else
 			{
-				int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
-				uint8_t* convertedFrameBuffer = dataFrame->matFrame->data;
-				int linesize = tmp_frame->width * 4;
 
-				sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-					&convertedFrameBuffer, &linesize);
+				cv::Mat matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
+
+
+				if (localContext == nullptr)
+				{
+					localContext = sws_alloc_context();
+
+					av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
+					av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
+					av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
+					av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
+					av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
+					av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+					av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+					if (sws_init_context(localContext, nullptr, nullptr) < 0)
+					{
+						sws_freeContext(localContext);
+						localContext = nullptr;
+					}
+				}
+
+				if (localContext != nullptr)
+				{
+					int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
+					uint8_t* convertedFrameBuffer = matFrame.data;
+					int linesize = tmp_frame->width * 4;
+
+					sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+						&convertedFrameBuffer, &linesize);
+				}
+
+				dataFrame->matFrame.SetArray(matFrame);
 			}
-
-			//dlg->SetData(dataFrame);
 
 			wxCommandEvent event(wxEVENT_UPDATEFRAME);
 			event.SetClientData(dataFrame);
@@ -2933,6 +2983,10 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
 	localContext = nullptr;
+
+
+	colorRange = CMediaInfo::GetColorRange(filename);
+	colorSpace = CMediaInfo::GetColorSpace(filename);
 
 	/* start video display */
 	if (frame_queue_init(&is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1) < 0)

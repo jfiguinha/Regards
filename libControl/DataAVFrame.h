@@ -1,4 +1,6 @@
 #pragma once
+#include "PictureArray.h"
+
 
 class CDataAVFrame
 {
@@ -11,14 +13,10 @@ public:
 
 	~CDataAVFrame()
 	{
-		if(matFrame != nullptr)
-		{
-			delete matFrame;
-			matFrame = nullptr;
-		}
+		matFrame.Release();
 	}
 	float sample_aspect_ratio = 0.0;
-	cv::Mat * matFrame = nullptr;
+	Regards::Picture::CPictureArray matFrame;
 	int width;
 	int height;
 	float ratioVideo;

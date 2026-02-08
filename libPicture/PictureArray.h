@@ -27,6 +27,8 @@ namespace Regards
 			void copyTo(cv::Mat& m);
 			void copyTo(cv::cuda::GpuMat& d_mat);
 			void copyTo(cv::UMat& m);
+			bool empty();
+			void Release();
 
 		protected:
 			cv::_InputArray::KindFlag kind;

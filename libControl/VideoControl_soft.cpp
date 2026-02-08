@@ -256,8 +256,8 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 	}
 	else if(pictureFrame != nullptr)
 	{
-		if(pictureFrame->matFrame != nullptr)
-			pictureFrame->matFrame->copyTo(bitmap);
+		if (!pictureFrame->matFrame.empty())
+			pictureFrame->matFrame.copyTo(bitmap);
 		//muBitmap.unlock();
 	}
 
@@ -2046,7 +2046,7 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
 	if(pictureFrame != nullptr)
-		if (pictureFrame->matFrame->empty())
+		if (pictureFrame->matFrame.empty())
 			return;
 
     if(widthOutput > 0 && heightOutput > 0)
@@ -2063,9 +2063,9 @@ void CVideoControlSoft::RenderFFmpegToTexture()
         cv::Mat cvImage;
 		if (pictureFrame != nullptr)
 		{
-			if (pictureFrame->matFrame != nullptr)
+			if (!pictureFrame->matFrame.empty())
 			{
-				pictureFrame->matFrame->copyTo(cvImage);
+				pictureFrame->matFrame.copyTo(cvImage);
 
 				cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
 
