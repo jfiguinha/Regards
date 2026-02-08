@@ -366,5 +366,6 @@ int CViewerPDF::GetAnimationPosition()
 
 bool CViewerPDF::GetProcessEnd()
 {
+    printf("CViewerPDF::GetProcessEnd() \n");
 	return true;
 }

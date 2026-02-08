@@ -1348,6 +1348,8 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
+    printf("CMainWindow::GetProcessEnd() \n");
+    
 	if (nbProcessMD5 > 0 || nbProcess > 0 || isCheckingFile)
 		return false;
 

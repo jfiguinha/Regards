@@ -812,6 +812,8 @@ CEffectParameter* CVideoControlSoft::GetParameter()
 
 bool CVideoControlSoft::GetProcessEnd()
 {
+    printf("CVideoControlSoft::GetProcessEnd() \n");
+    
 	if (!videoEnd)
 	{
 		if (stopVideo && !processVideoEnd)

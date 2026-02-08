@@ -109,6 +109,7 @@ void MyApp::MacOpenFile(const wxString &fileName)
 
 int MyApp::Close()
 {
+   
 	CSqlInit::KillSqlEngine();
 	CPrintEngine::Kill();
 
@@ -120,12 +121,11 @@ int MyApp::Close()
 	if (frameStart != nullptr)
 		frameStart->Destroy();
 
-
 	sqlite3_shutdown();
 #ifdef USECURL
 	curl_global_cleanup();
 #endif
-	this->Exit();
+	//this->Exit();
 
 	CWindowMain::listMainWindow.clear();
 
@@ -146,7 +146,7 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	//exit(0);
+	exit(0);
 
 	return 0;
 }

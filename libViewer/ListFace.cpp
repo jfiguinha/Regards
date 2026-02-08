@@ -606,6 +606,8 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 
 bool CListFace::GetProcessEnd()
 {
+     printf("CListFace::GetProcessEnd() nbProcessFacePhoto : %d et nbProcessFaceRecognition : %d \n", nbProcessFacePhoto, nbProcessFaceRecognition);
+     
 	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
 	return true;

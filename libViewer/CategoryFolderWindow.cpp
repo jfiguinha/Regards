@@ -285,6 +285,8 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 
 bool CCategoryFolderWindow::GetProcessEnd()
 {
+     printf("CCategoryFolderWindow::GetProcessEnd() \n");
+     
 	if (pimpl->numProcess > 0)
 		return false;
 	return true;

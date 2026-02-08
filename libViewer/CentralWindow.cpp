@@ -1747,6 +1747,8 @@ bool CCentralWindow::ScreenMode()
 
 bool CCentralWindow::GetProcessEnd()
 {
+    printf("CCentralWindow::GetProcessEnd() \n");
+    
 	StopAnimation();
 
 	if (diaporamaTimer->IsRunning())
