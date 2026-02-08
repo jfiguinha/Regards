@@ -1098,12 +1098,6 @@ void CMainWindow::ProcessIdle()
 		photoList.erase(photoList.begin());
 	}
 
-	if (photoList.empty())
-	{
-		CSqlPhotosWithoutThumbnail sqlPhoto;
-		sqlPhoto.GetPhotoList(&photoList, 0);
-	}
-
 	//No more photo to process
 	if (photoList.empty())
 	{
@@ -1119,6 +1113,8 @@ void CMainWindow::ProcessIdle()
 
 	if (hasDoneOneThings)
 		processIdle = true;
+	else
+		processIdle = false;
 
 }
 
