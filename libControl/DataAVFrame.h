@@ -12,7 +12,7 @@ public:
 
 	virtual ~CDataAVFrame()
 	{
-		matFrame.Release();
+		matFrame.release();
 		if (dst != nullptr)
 		{
 			av_free(dst);
@@ -21,7 +21,7 @@ public:
 
 	}
 	float sample_aspect_ratio = 0.0;
-	Regards::Picture::CPictureArray matFrame;
+	cv::Mat matFrame;
 	int width;
 	int height;
 	bool isHardwareDecoding = false;

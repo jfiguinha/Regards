@@ -409,7 +409,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			else
 			{
 
-				cv::Mat matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
+				dataFrame->matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 
 				if (localContext == nullptr)
@@ -434,14 +434,13 @@ void CFFmfcPimpl::video_display(VideoState* is)
 				if (localContext != nullptr)
 				{
 					int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
-					uint8_t* convertedFrameBuffer = matFrame.data;
+					uint8_t* convertedFrameBuffer = dataFrame->matFrame.data;
 					int linesize = tmp_frame->width * 4;
 
 					sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
 						&convertedFrameBuffer, &linesize);
 				}
 
-				dataFrame->matFrame.SetArray(matFrame);
 			}
 
 			wxCommandEvent event(wxEVENT_UPDATEFRAME);
