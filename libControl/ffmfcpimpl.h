@@ -552,6 +552,8 @@ public:
 
 	void sync_clock_to_slave(Clock* c, Clock* slave);
 
+	AVFrame* CopyFrame(AVFrame* src);
+
 	//½âÂë³É¹¦ºóÓÃÓÚÏÔÊ¾£¬Ò²ÊÇ·Åµ½ÁíÒ»¸ö¶ÓÁÐÖÐ£¿
 	int queue_picture(VideoState* is, AVFrame* src_frame, double pts, double duration, int64_t pos, int serial);
 

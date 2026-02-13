@@ -129,6 +129,7 @@ protected:
 	void OnDeleteSubtitulePicture(wxCommandEvent& event);
     void ErrorDecodingFrame();
 	void OnSetFramePos(wxCommandEvent& event);
+	void OnUpdateFiltreEffect(wxCommandEvent& event);
 	void CalculPositionPicture(const float& x, const float& y);
 	//static void GenerateThumbnailVideo(void* data);
 	int IsSupportOpenCL();
@@ -214,9 +215,6 @@ protected:
 	wxString standByMovie;
 	CFFmfc* ffmfc;
 	wxCursor hCursorHand;
-	//mutex muBitmap;
-	mutex muVideoEffect;
-
     
     bool isHardwareDecoder = true;
 

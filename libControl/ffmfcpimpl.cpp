@@ -322,8 +322,6 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 
 int CFFmfcPimpl::IsSupportOpenCL()
 {
-	return false;
-	/*
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -333,7 +331,30 @@ int CFFmfcPimpl::IsSupportOpenCL()
 	//	return 0;
 
 	return supportOpenCL;
-	*/
+}
+
+AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* src)
+{
+
+	int ret = 0;
+
+	AVFrame* dst = av_frame_alloc();
+
+	memcpy(dst, src, sizeof(AVFrame));
+
+	dst->format = src->format;
+	dst->width = src->width;
+	dst->height = src->height;
+
+	memcpy(dst->data, src->data, sizeof(src->data));
+
+	if (ret < 0)
+	{
+		av_frame_unref(dst);
+		dst = nullptr;
+	}
+
+	return dst;
 }
 
 
@@ -379,34 +400,11 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			dataFrame->height = tmp_frame->height;
 			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
 			dataFrame->sample_aspect_ratio = video_aspect_ratio;
+			dataFrame->isHardwareDecoding = isHardwareDecoding;
 
 			if (IsSupportOpenCL() && !isHardwareDecoding)
 			{
-				cv::UMat bgr;
-				int nWidth = tmp_frame->width;
-				int nHeight = tmp_frame->height;
-
-				int _colorSpace = 0;
-				int isLimited = 0;
-				if (colorRange == "Limited")
-					isLimited = 1;
-
-				if (colorSpace == "BT.601")
-				{
-					_colorSpace = 1;
-				}
-				else if (colorSpace == "BT.709")
-				{
-					_colorSpace = 2;
-				}
-				else if (colorSpace == "BT.2020")
-				{
-					_colorSpace = 3;
-				}
-
-				COpenCLEffectVideo openclEffectVideo;
-				openclEffectVideo.SetAVFrame(nullptr, tmp_frame, _colorSpace, isLimited);
-				dataFrame->matFrame = openclEffectVideo.GetMatrix();
+				dataFrame->dst = CopyFrame(vp->frame);
 			}
 			else
 			{
