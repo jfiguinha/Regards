@@ -14,7 +14,7 @@ using namespace std;
 using namespace Regards::OpenCL;
 
 #ifdef WIN32
-wxString listHardware[] = {"cuda", "qsv", "d3d11va", "dxva2", "opencl"};
+wxString listHardware[] = { "cuda", "qsv", "d3d11va", "dxva2", "opencl" };
 int sizeList = 5;
 #elif defined(__APPLE__)
 wxString listHardware[] = { "videotoolbox", "opencl" };
@@ -78,152 +78,154 @@ int CFFmfcPimpl::percentageToDb(int p, int maxValue)
 
 int CFFmfcPimpl::packet_queue_put_private(PacketQueue* q, AVPacket* pkt)
 {
-    MyAVPacketList pkt1;
-    int ret;
+	MyAVPacketList pkt1;
+	int ret;
 
-    if (q->abort_request)
-       return -1;
+	if (q->abort_request)
+		return -1;
 
 
-    pkt1.pkt = pkt;
-    pkt1.serial = q->serial;
+	pkt1.pkt = pkt;
+	pkt1.serial = q->serial;
 
-    ret = av_fifo_write(q->pkt_list, &pkt1, 1);
-    if (ret < 0)
-        return ret;
-    q->nb_packets++;
-    q->size += pkt1.pkt->size + sizeof(pkt1);
-    q->duration += pkt1.pkt->duration;
-    /* XXX: should duplicate packet data in DV case */
-    SDL_CondSignal(q->cond);
-    return 0;
+	ret = av_fifo_write(q->pkt_list, &pkt1, 1);
+	if (ret < 0)
+		return ret;
+	q->nb_packets++;
+	q->size += pkt1.pkt->size + sizeof(pkt1);
+	q->duration += pkt1.pkt->duration;
+	/* XXX: should duplicate packet data in DV case */
+	SDL_CondSignal(q->cond);
+	return 0;
 }
 
 //Íù¶ÓÁÐÀïÌí¼ÓPacket
 int CFFmfcPimpl::packet_queue_put(PacketQueue* q, AVPacket* pkt)
 {
-    AVPacket *pkt1;
-    int ret;
+	AVPacket* pkt1;
+	int ret;
 
-    pkt1 = av_packet_alloc();
-    if (!pkt1) {
-        av_packet_unref(pkt);
-        return -1;
-    }
-    av_packet_move_ref(pkt1, pkt);
+	pkt1 = av_packet_alloc();
+	if (!pkt1) {
+		av_packet_unref(pkt);
+		return -1;
+	}
+	av_packet_move_ref(pkt1, pkt);
 
-    SDL_LockMutex(q->mutex);
-    ret = packet_queue_put_private(q, pkt1);
-    SDL_UnlockMutex(q->mutex);
+	SDL_LockMutex(q->mutex);
+	ret = packet_queue_put_private(q, pkt1);
+	SDL_UnlockMutex(q->mutex);
 
-    if (ret < 0)
-        av_packet_free(&pkt1);
+	if (ret < 0)
+		av_packet_free(&pkt1);
 
-    return ret;
+	return ret;
 }
 
-int CFFmfcPimpl::packet_queue_put_nullpacket(PacketQueue *q, AVPacket *pkt, int stream_index)
+int CFFmfcPimpl::packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index)
 {
-    pkt->stream_index = stream_index;
-    return packet_queue_put(q, pkt);
+	pkt->stream_index = stream_index;
+	return packet_queue_put(q, pkt);
 }
 
 
 /* packet queue handling */
 int CFFmfcPimpl::packet_queue_init(PacketQueue* q)
 {
-    memset(q, 0, sizeof(PacketQueue));
-    q->pkt_list = av_fifo_alloc2(1, sizeof(MyAVPacketList), AV_FIFO_FLAG_AUTO_GROW);
-    if (!q->pkt_list)
-        return AVERROR(ENOMEM);
-    q->mutex = SDL_CreateMutex();
-    if (!q->mutex) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    q->cond = SDL_CreateCond();
-    if (!q->cond) {
-        av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-        return AVERROR(ENOMEM);
-    }
-    q->abort_request = 1;
-    return 0;
+	memset(q, 0, sizeof(PacketQueue));
+	q->pkt_list = av_fifo_alloc2(1, sizeof(MyAVPacketList), AV_FIFO_FLAG_AUTO_GROW);
+	if (!q->pkt_list)
+		return AVERROR(ENOMEM);
+	q->mutex = SDL_CreateMutex();
+	if (!q->mutex) {
+		av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
+		return AVERROR(ENOMEM);
+	}
+	q->cond = SDL_CreateCond();
+	if (!q->cond) {
+		av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
+		return AVERROR(ENOMEM);
+	}
+	q->abort_request = 1;
+	return 0;
 }
 
 void CFFmfcPimpl::packet_queue_flush(PacketQueue* q)
 {
-    MyAVPacketList pkt1;
+	MyAVPacketList pkt1;
 
-    SDL_LockMutex(q->mutex);
-    while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0)
-        av_packet_free(&pkt1.pkt);
-    q->nb_packets = 0;
-    q->size = 0;
-    q->duration = 0;
-    q->serial++;
-    SDL_UnlockMutex(q->mutex);
+	SDL_LockMutex(q->mutex);
+	while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0)
+		av_packet_free(&pkt1.pkt);
+	q->nb_packets = 0;
+	q->size = 0;
+	q->duration = 0;
+	q->serial++;
+	SDL_UnlockMutex(q->mutex);
 }
 
 void CFFmfcPimpl::packet_queue_destroy(PacketQueue* q)
 {
-    packet_queue_flush(q);
-    av_fifo_freep2(&q->pkt_list);
-    SDL_DestroyMutex(q->mutex);
-    SDL_DestroyCond(q->cond);
+	packet_queue_flush(q);
+	av_fifo_freep2(&q->pkt_list);
+	SDL_DestroyMutex(q->mutex);
+	SDL_DestroyCond(q->cond);
 }
 
 void CFFmfcPimpl::packet_queue_abort(PacketQueue* q)
 {
-    SDL_LockMutex(q->mutex);
+	SDL_LockMutex(q->mutex);
 
-    q->abort_request = 1;
+	q->abort_request = 1;
 
-    SDL_CondSignal(q->cond);
+	SDL_CondSignal(q->cond);
 
-    SDL_UnlockMutex(q->mutex);
+	SDL_UnlockMutex(q->mutex);
 }
 
 void CFFmfcPimpl::packet_queue_start(PacketQueue* q)
 {
-    SDL_LockMutex(q->mutex);
-    q->abort_request = 0;
-    q->serial++;
-    SDL_UnlockMutex(q->mutex);
+	SDL_LockMutex(q->mutex);
+	q->abort_request = 0;
+	q->serial++;
+	SDL_UnlockMutex(q->mutex);
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
 int CFFmfcPimpl::packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int* serial)
 {
-    MyAVPacketList pkt1;
-    int ret;
+	MyAVPacketList pkt1;
+	int ret;
 
-    SDL_LockMutex(q->mutex);
+	SDL_LockMutex(q->mutex);
 
-    for (;;) {
-        if (q->abort_request) {
-            ret = -1;
-            break;
-        }
+	for (;;) {
+		if (q->abort_request) {
+			ret = -1;
+			break;
+		}
 
-        if (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
-            q->nb_packets--;
-            q->size -= pkt1.pkt->size + sizeof(pkt1);
-            q->duration -= pkt1.pkt->duration;
-            av_packet_move_ref(pkt, pkt1.pkt);
-            if (serial)
-                *serial = pkt1.serial;
-            av_packet_free(&pkt1.pkt);
-            ret = 1;
-            break;
-        } else if (!block) {
-            ret = 0;
-            break;
-        } else {
-            SDL_CondWait(q->cond, q->mutex);
-        }
-    }
-    SDL_UnlockMutex(q->mutex);
-    return ret;
+		if (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
+			q->nb_packets--;
+			q->size -= pkt1.pkt->size + sizeof(pkt1);
+			q->duration -= pkt1.pkt->duration;
+			av_packet_move_ref(pkt, pkt1.pkt);
+			if (serial)
+				*serial = pkt1.serial;
+			av_packet_free(&pkt1.pkt);
+			ret = 1;
+			break;
+		}
+		else if (!block) {
+			ret = 0;
+			break;
+		}
+		else {
+			SDL_CondWait(q->cond, q->mutex);
+		}
+	}
+	SDL_UnlockMutex(q->mutex);
+	return ret;
 }
 
 void CFFmfcPimpl::free_subpicture(SubPicture* sp)
@@ -333,6 +335,7 @@ int CFFmfcPimpl::IsSupportOpenCL()
 	return supportOpenCL;
 }
 
+
 AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* src)
 {
 
@@ -357,13 +360,12 @@ AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* src)
 	return dst;
 }
 
-
 /* display the current picture, if any */
 void CFFmfcPimpl::video_display(VideoState* is)
 {
-    //printf("CFFmfcPimpl::video_display \n");
-    
-    
+	//printf("CFFmfcPimpl::video_display \n");
+
+
 	int ret = 0;
 	Frame* vp;
 	Frame* sp = NULL;
@@ -380,16 +382,16 @@ void CFFmfcPimpl::video_display(VideoState* is)
 		if (dlg != nullptr)
 			if (!is->paused)
 			{
-				
+
 				int64_t pos = vp->pts * 1000;
 				wxCommandEvent evt(wxEVENT_SETFRAMEPOS);
 				evt.SetExtraLong(pos);
 				wxPostEvent(dlg->GetMainWindow(), evt);
-				
+
 				//is->_pimpl->start_time
 				//dlg->SetPos(vp->pts * 1000);
 			}
-				
+
 
 		if (dlg != nullptr)
 		{
@@ -440,7 +442,6 @@ void CFFmfcPimpl::video_display(VideoState* is)
 					sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
 						&convertedFrameBuffer, &linesize);
 				}
-
 			}
 
 			wxCommandEvent event(wxEVENT_UPDATEFRAME);
@@ -448,7 +449,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			wxPostEvent(dlg->GetMainWindow(), event);
 
 		}
-			
+
 		//}
 
 		if (is->subtitle_st)
@@ -520,7 +521,6 @@ void CFFmfcPimpl::video_display(VideoState* is)
 							wxPostEvent(dlg->GetMainWindow(), event);
 						}
 					}
-
 				}
 			}
 		}
@@ -594,7 +594,7 @@ double CFFmfcPimpl::compute_target_delay(double delay, VideoState* is)
 	{
 		/* if video is slave, we try to correct big delays by
 		   duplicating or deleting a frame */
-		//if(disable_framedelay)
+		   //if(disable_framedelay)
 		diff = get_clock(&is->vidclk) - get_master_clock(is);
 
 		/* skip or repeat frame. We take into account the
@@ -613,7 +613,7 @@ double CFFmfcPimpl::compute_target_delay(double delay, VideoState* is)
 	}
 
 	av_log(NULL, AV_LOG_TRACE, "video: delay=%0.3f A-V=%f\n",
-	       delay, -diff);
+		delay, -diff);
 
 	return delay;
 }
@@ -714,7 +714,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 	auto is = static_cast<VideoState*>(opaque);
 	double time;
 
-	Frame *sp, *sp2;
+	Frame* sp, * sp2;
 
 	if (!is->paused && get_master_sync_type(is) == AV_SYNC_EXTERNAL_CLOCK && is->realtime)
 		check_external_clock_speed(is);
@@ -740,7 +740,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 		else
 		{
 			double last_duration, duration, delay;
-			Frame *vp, *lastvp;
+			Frame* vp, * lastvp;
 
 			/* dequeue the picture */
 			lastvp = frame_queue_peek_last(&is->pictq);
@@ -788,6 +788,90 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 					is->frame_drops_late++;
 					frame_queue_next(&is->pictq);
 					goto retry;
+				}
+			}
+
+
+			//Subtitle
+			if (is->subtitle_st)
+			{
+				while (frame_queue_nb_remaining(&is->subpq) > 0)
+				{
+					sp = frame_queue_peek(&is->subpq);
+
+					if (frame_queue_nb_remaining(&is->subpq) > 1)
+						sp2 = frame_queue_peek_next(&is->subpq);
+					else
+						sp2 = NULL;
+
+					if (sp->sub.format == 0 && (sp->serial != is->subtitleq.serial
+						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time / 1000)))
+						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time / 1000)))))
+					{
+						if (sp->uploaded)
+						{
+							int i;
+							for (i = 0; i < sp->sub.num_rects; i++)
+							{
+								AVSubtitleRect* sub_rect = sp->sub.rects[i];
+								uint8_t* pixels;
+								int pitch, j;
+
+								AVSubtitleRect* rect = sp->sub.rects[i];
+								cv::Mat* bitmap = new cv::Mat(rect->h, rect->w, CV_8UC4);
+								uint8_t* data = rect->data[0];
+								for (int y = 0; y < rect->h; y++)
+								{
+									for (int x = 0; x < rect->w; x++)
+									{
+										int r, g, b, a;
+										int j = *data++;
+										RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
+										CRgbaquad color(r, g, b, a);
+										int i = (x << 2) + (y * (bitmap->cols << 2));
+										memcpy(bitmap->data + i, &color, sizeof(CRgbaquad));
+										//bitmap->SetColorValue(x, y, color);
+									}
+								}
+								if (dlg != nullptr)
+								{
+									wxCommandEvent event(wxEVENT_SETSUBTITLEIMAGE);
+									event.SetClientData(bitmap);
+									wxPostEvent(dlg->GetMainWindow(), event);
+								}
+							}
+
+						}
+						frame_queue_next(&is->subpq);
+					}
+					else if (sp->sub.format == 1 && (sp->serial != is->subtitleq.serial
+						|| (is->vidclk.pts > (sp->pts + ((float)sp->sub.end_display_time)))
+						|| (sp2 && is->vidclk.pts > (sp2->pts + ((float)sp2->sub.start_display_time)))))
+					{
+						if (sp->uploaded)
+						{
+							wxString text = "";
+							for (int i = 0; i < sp->sub.num_rects; i++)
+							{
+								AVSubtitleRect* rect = sp->sub.rects[i];
+								text += rect->ass;
+							}
+							if (dlg != nullptr)
+							{
+								wxString* _textSub = new wxString(text);
+								wxCommandEvent event(wxEVENT_SETSUBTITLETEXT);
+								event.SetClientData(_textSub);
+								event.SetInt(sp->sub.end_display_time);
+								wxPostEvent(dlg->GetMainWindow(), event);
+							}
+
+						}
+						frame_queue_next(&is->subpq);
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 
@@ -928,19 +1012,19 @@ int CFFmfcPimpl::video_thread(void* arg)
 	int last_vfilter_idx = 0;
 #endif
 
-    if (!frame)
-        return AVERROR(ENOMEM);
+	if (!frame)
+		return AVERROR(ENOMEM);
 
-    for (;;)
-    {
-        ret = is->_pimpl->get_video_frame(is, frame);
-        if (ret < 0)
-            goto the_end;
-        if (!ret)
-            continue;
+	for (;;)
+	{
+		ret = is->_pimpl->get_video_frame(is, frame);
+		if (ret < 0)
+			goto the_end;
+		if (!ret)
+			continue;
 
-        AVRational tb_frame = {frame_rate.den, frame_rate.num};
-        duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
+		AVRational tb_frame = { frame_rate.den, frame_rate.num };
+		duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
 		pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
 		ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
 		av_frame_unref(frame);
@@ -1234,8 +1318,8 @@ int CFFmfcPimpl::synchronize_audio(VideoState* is, int nb_samples)
 					wanted_nb_samples = av_clip(wanted_nb_samples, min_nb_samples, max_nb_samples);
 				}
 				av_log(NULL, AV_LOG_TRACE, "diff=%f adiff=%f sample_diff=%d apts=%0.3f %f\n",
-				       diff, avg_diff, wanted_nb_samples - nb_samples,
-				       is->audio_clock, is->audio_diff_threshold);
+					diff, avg_diff, wanted_nb_samples - nb_samples,
+					is->audio_clock, is->audio_diff_threshold);
 			}
 		}
 		else
@@ -1370,7 +1454,7 @@ int  CFFmfcPimpl::audio_decode_frame(VideoState* is)
 /* prepare a new audio buffer */
 void  CFFmfcPimpl::sdl_audio_callback(void* opaque, Uint8* stream, int len)
 {
-	VideoState* is = (VideoState *)opaque;
+	VideoState* is = (VideoState*)opaque;
 	int audio_size, len1;
 
 	is->_pimpl->audio_callback_time = av_gettime_relative();
@@ -1413,7 +1497,7 @@ void  CFFmfcPimpl::sdl_audio_callback(void* opaque, Uint8* stream, int len)
 	}
 }
 
-int CFFmfcPimpl::audio_open(void* opaque, AVChannelLayout* wanted_channel_layout, int wanted_sample_rate, struct AudioParams* audio_hw_params)
+int CFFmfcPimpl::audio_open(void* opaque, AVChannelLayout* wanted_channel_layout, int wanted_sample_rate, AudioParams* audio_hw_params)
 {
 	VideoState* is = (VideoState*)opaque;
 	SDL_AudioSpec wanted_spec, spec;
@@ -1502,20 +1586,20 @@ int CFFmfcPimpl::check_stream_specifier(AVFormatContext* s, AVStream* st, const 
 }
 
 AVDictionary* CFFmfcPimpl::filter_codec_opts(AVDictionary* opts, enum AVCodecID codec_id,
-                                             AVFormatContext* s, AVStream* st, AVCodec* codec)
+	AVFormatContext* s, AVStream* st, AVCodec* codec)
 {
 	AVDictionary* ret = nullptr;
 	AVDictionaryEntry* t = nullptr;
 	int flags = s->oformat
-		            ? AV_OPT_FLAG_ENCODING_PARAM
-		            : AV_OPT_FLAG_DECODING_PARAM;
+		? AV_OPT_FLAG_ENCODING_PARAM
+		: AV_OPT_FLAG_DECODING_PARAM;
 	char prefix = 0;
 	const AVClass* cc = avcodec_get_class();
 
 	if (!codec)
 		codec = s->oformat
-			        ? (AVCodec*)avcodec_find_encoder(codec_id)
-			        : (AVCodec*)avcodec_find_decoder(codec_id);
+		? (AVCodec*)avcodec_find_encoder(codec_id)
+		: (AVCodec*)avcodec_find_decoder(codec_id);
 	if (!codec)
 		return nullptr;
 
@@ -1552,11 +1636,11 @@ AVDictionary* CFFmfcPimpl::filter_codec_opts(AVDictionary* opts, enum AVCodecID 
 		if (av_opt_find(&cc, t->key, nullptr, flags, AV_OPT_SEARCH_FAKE_OBJ) ||
 			(codec && codec->priv_class &&
 				av_opt_find(&codec->priv_class, t->key, nullptr, flags,
-				            AV_OPT_SEARCH_FAKE_OBJ)))
+					AV_OPT_SEARCH_FAKE_OBJ)))
 			av_dict_set(&ret, t->key, t->value, 0);
 		else if (t->key[0] == prefix &&
 			av_opt_find(&cc, t->key + 1, nullptr, flags,
-			            AV_OPT_SEARCH_FAKE_OBJ))
+				AV_OPT_SEARCH_FAKE_OBJ))
 			av_dict_set(&ret, t->key + 1, t->value, 0);
 
 		if (p)
@@ -1581,7 +1665,7 @@ void CFFmfcPimpl::uninit_opts(void)
 }
 
 AVDictionary** CFFmfcPimpl::setup_find_stream_info_opts(AVFormatContext* s,
-                                                        AVDictionary* codec_opts)
+	AVDictionary* codec_opts)
 {
 	int i;
 	AVDictionary** opts;
@@ -1592,12 +1676,12 @@ AVDictionary** CFFmfcPimpl::setup_find_stream_info_opts(AVFormatContext* s,
 	if (!opts)
 	{
 		av_log(nullptr, AV_LOG_ERROR,
-		       "Could not alloc memory for stream options.\n");
+			"Could not alloc memory for stream options.\n");
 		return nullptr;
 	}
 	for (i = 0; i < s->nb_streams; i++)
 		opts[i] = filter_codec_opts(codec_opts, s->streams[i]->codecpar->codec_id,
-		                            s, s->streams[i], nullptr);
+			s, s->streams[i], nullptr);
 	return opts;
 }
 #endif
@@ -1617,7 +1701,7 @@ int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType 
 	if (hw_device_ctx == NULL)
 	{
 		if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
-		                                  nullptr, nullptr, 0)) < 0)
+			nullptr, nullptr, 0)) < 0)
 		{
 			fprintf(stderr, "Failed to create specified HW device.\n");
 			return err;
@@ -1630,7 +1714,7 @@ int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType 
 
 
 enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
-                                              const enum AVPixelFormat* pix_fmts)
+	const enum AVPixelFormat* pix_fmts)
 {
 	const enum AVPixelFormat* p;
 
@@ -1648,7 +1732,7 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 		wxCommandEvent event(wxEVENT_ERRORDECODINGFRAME);
 		wxPostEvent(dlg->GetMainWindow(), event);
 	}
-   
+
 	return AV_PIX_FMT_NONE;
 }
 
@@ -1706,20 +1790,20 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 							frame->pts = frame->pkt_dts;
 						}
 					}
-                    /*
-                    if (ret < 0)
-                    {
-                        acceleratorHardware = "none";
-                        if (dlg != nullptr)
-                            dlg->ErrorDecodingFrame();
-                    }
-                    */
+					/*
+					if (ret < 0)
+					{
+						acceleratorHardware = "none";
+						if (dlg != nullptr)
+							dlg->ErrorDecodingFrame();
+					}
+					*/
 					break;
 				case AVMEDIA_TYPE_AUDIO:
 					ret = avcodec_receive_frame(d->avctx, frame);
 					if (ret >= 0)
 					{
-						AVRational tb = {1, frame->sample_rate};
+						AVRational tb = { 1, frame->sample_rate };
 						if (frame->pts != AV_NOPTS_VALUE)
 							frame->pts = av_rescale_q(frame->pts, d->avctx->pkt_timebase, tb);
 						else if (d->next_pts != AV_NOPTS_VALUE)
@@ -1740,8 +1824,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 				}
 				if (ret >= 0)
 					return 1;
-			}
-			while (ret != AVERROR(EAGAIN));
+			} while (ret != AVERROR(EAGAIN));
 		}
 
 		do
@@ -1768,8 +1851,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 			if (d->queue->serial == d->pkt_serial)
 				break;
 			av_packet_unref(d->pkt);
-		}
-		while (1);
+		} while (1);
 
 		if (d->avctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
 		{
@@ -1794,7 +1876,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 			if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN))
 			{
 				av_log(d->avctx, AV_LOG_ERROR,
-				       "Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
+					"Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
 				d->packet_pending = 1;
 			}
 			else
@@ -1957,7 +2039,7 @@ static inline int cmp_audio_fmts(enum AVSampleFormat fmt1, int64_t channel_count
 
 int CFFmfcPimpl::audio_thread(void* arg)
 {
-	VideoState* is = (VideoState *)arg;
+	VideoState* is = (VideoState*)arg;
 	AVFrame* frame = av_frame_alloc();
 	Frame* af;
 	int last_serial = -1;
@@ -2080,7 +2162,7 @@ the_end:
 */
 
 bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceType& type, AVCodecContext* avctx,
-                               AVCodec* codec, AVDictionary* & opts, VideoState* is, AVStream* video)
+	AVCodec* codec, AVDictionary*& opts, VideoState* is, AVStream* video)
 {
 	bool isSuccess = false;
 	bool error = false;
@@ -2107,7 +2189,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 		if (!config)
 		{
 			fprintf(stderr, "Decoder %s does not support device type %s.\n",
-			        codec->name, av_hwdevice_get_type_name(type));
+				codec->name, av_hwdevice_get_type_name(type));
 			return false;
 		}
 		if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
@@ -2159,7 +2241,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 double CFFmfcPimpl::get_rotation(AVStream* st)
 {
 	uint8_t* displaymatrix = av_stream_get_side_data(st,
-	                                                 AV_PKT_DATA_DISPLAYMATRIX, NULL);
+		AV_PKT_DATA_DISPLAYMATRIX, NULL);
 	double theta = 0;
 	if (displaymatrix)
 		theta = -av_display_rotation_get((int32_t*)displaymatrix);
@@ -2168,9 +2250,9 @@ double CFFmfcPimpl::get_rotation(AVStream* st)
 
 	if (fabs(theta - 90 * round(theta / 90)) > 2)
 		av_log(NULL, AV_LOG_WARNING, "Odd rotation angle.\n"
-		       "If you want to help, upload a sample "
-		       "of this file to https://streams.videolan.org/upload/ "
-		       "and contact the ffmpeg-devel mailing list. (ffmpeg-devel@ffmpeg.org)");
+			"If you want to help, upload a sample "
+			"of this file to https://streams.videolan.org/upload/ "
+			"and contact the ffmpeg-devel mailing list. (ffmpeg-devel@ffmpeg.org)");
 
 	return theta;
 }
@@ -2206,7 +2288,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		goto fail;
 	avctx->pkt_timebase = ic->streams[stream_index]->time_base;
 
-	
+
 	if (acceleratorHardware != "")
 	{
 		if (avctx->codec_id == AV_CODEC_ID_AV1 && acceleratorHardware == "cuda")
@@ -2242,10 +2324,10 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 	{
 		if (forced_codec_name)
 			av_log(NULL, AV_LOG_WARNING,
-			       "No codec could be found with name '%s'\n", forced_codec_name);
+				"No codec could be found with name '%s'\n", forced_codec_name);
 		else
 			av_log(NULL, AV_LOG_WARNING,
-			       "No decoder could be found for codec %s\n", avcodec_get_name(avctx->codec_id));
+				"No decoder could be found for codec %s\n", avcodec_get_name(avctx->codec_id));
 		ret = AVERROR(EINVAL);
 	}
 
@@ -2255,7 +2337,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres > codec->max_lowres)
 		{
 			av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
-			       codec->max_lowres);
+				codec->max_lowres);
 			stream_lowres = codec->max_lowres;
 		}
 		avctx->lowres = stream_lowres;
@@ -2269,16 +2351,16 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (stream_lowres)
 			av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
-        
-        if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
-            if (acceleratorHardware != "" && acceleratorHardware != "none")
-            {
-                printf("Test hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-                AVStream* video = ic->streams[stream_index];
-                isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
-            }
-        }
+
+		if (avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+		{
+			if (acceleratorHardware != "" && acceleratorHardware != "none")
+			{
+				printf("Test hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+				AVStream* video = ic->streams[stream_index];
+				isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
+			}
+		}
 
 		if (!isSuccess)
 		{
@@ -2309,88 +2391,88 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		switch (avctx->codec_type)
 		{
 		case AVMEDIA_TYPE_AUDIO:
+		{
 			{
-				{
-					AVFilterContext* sink;
+				AVFilterContext* sink;
 
-					is->audio_filter_src.freq = avctx->sample_rate;
-					ret = av_channel_layout_copy(&is->audio_filter_src.ch_layout, &avctx->ch_layout);
-					if (ret < 0)
-						goto fail;
-					is->audio_filter_src.fmt = avctx->sample_fmt;
-					if ((ret = configure_audio_filters(is, afilters, 0)) < 0)
-						goto fail;
-					sink = is->out_audio_filter;
-					sample_rate = av_buffersink_get_sample_rate(sink);
-					ret = av_buffersink_get_ch_layout(sink, &ch_layout);
-					if (ret < 0)
-						goto fail;
-				}
-
-				/* prepare audio output */
-				if ((ret = audio_open(is, &ch_layout, sample_rate, &is->audio_tgt)) < 0)
+				is->audio_filter_src.freq = avctx->sample_rate;
+				ret = av_channel_layout_copy(&is->audio_filter_src.ch_layout, &avctx->ch_layout);
+				if (ret < 0)
 					goto fail;
-				is->audio_hw_buf_size = ret;
-				is->audio_src = is->audio_tgt;
-				is->audio_buf_size = 0;
-				is->audio_buf_index = 0;
-
-				/* init averaging filter */
-				is->audio_diff_avg_coef = exp(log(0.01) / AUDIO_DIFF_AVG_NB);
-				is->audio_diff_avg_count = 0;
-				/* since we do not have a precise anough audio FIFO fullness,
-				   we correct audio sync only if larger than this threshold */
-				is->audio_diff_threshold = (double)(is->audio_hw_buf_size) / is->audio_tgt.bytes_per_sec;
-
-				is->audio_stream = stream_index;
-				is->audio_st = ic->streams[stream_index];
-
-				if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, is->continue_read_thread)) < 0)
+				is->audio_filter_src.fmt = avctx->sample_fmt;
+				if ((ret = configure_audio_filters(is, afilters, 0)) < 0)
 					goto fail;
-				if (is->ic->iformat->flags & AVFMT_NOTIMESTAMPS) {
-					is->auddec.start_pts = is->audio_st->start_time;
-					is->auddec.start_pts_tb = is->audio_st->time_base;
-				}
-				if ((ret = decoder_start(&is->auddec, audio_thread, "audio_decoder", is)) < 0)
-					goto out;
-				SDL_PauseAudioDevice(audio_dev, 0);
+				sink = is->out_audio_filter;
+				sample_rate = av_buffersink_get_sample_rate(sink);
+				ret = av_buffersink_get_ch_layout(sink, &ch_layout);
+				if (ret < 0)
+					goto fail;
 			}
-			break;
+
+			/* prepare audio output */
+			if ((ret = audio_open(is, &ch_layout, sample_rate, &is->audio_tgt)) < 0)
+				goto fail;
+			is->audio_hw_buf_size = ret;
+			is->audio_src = is->audio_tgt;
+			is->audio_buf_size = 0;
+			is->audio_buf_index = 0;
+
+			/* init averaging filter */
+			is->audio_diff_avg_coef = exp(log(0.01) / AUDIO_DIFF_AVG_NB);
+			is->audio_diff_avg_count = 0;
+			/* since we do not have a precise anough audio FIFO fullness,
+			   we correct audio sync only if larger than this threshold */
+			is->audio_diff_threshold = (double)(is->audio_hw_buf_size) / is->audio_tgt.bytes_per_sec;
+
+			is->audio_stream = stream_index;
+			is->audio_st = ic->streams[stream_index];
+
+			if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, is->continue_read_thread)) < 0)
+				goto fail;
+			if (is->ic->iformat->flags & AVFMT_NOTIMESTAMPS) {
+				is->auddec.start_pts = is->audio_st->start_time;
+				is->auddec.start_pts_tb = is->audio_st->time_base;
+			}
+			if ((ret = decoder_start(&is->auddec, audio_thread, "audio_decoder", is)) < 0)
+				goto out;
+			SDL_PauseAudioDevice(audio_dev, 0);
+		}
+		break;
 
 		case AVMEDIA_TYPE_VIDEO:
+		{
+			is->video_stream = stream_index;
+			is->video_st = ic->streams[stream_index];
+
+			long rotation = get_rotation(is->video_st);
+			if (dlg != nullptr)
 			{
-				is->video_stream = stream_index;
-				is->video_st = ic->streams[stream_index];
-
-				long rotation = get_rotation(is->video_st);
-				if (dlg != nullptr)
-				{
-					wxCommandEvent event(EVENT_VIDEOROTATION);
-					event.SetExtraLong(rotation);
-					wxPostEvent(dlg->GetMainWindow(), event);
-				}
-
-
-				/*
-	            auto matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(
-	                is->video_st, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
-	
-	            if (matrix)
-	            {
-	                long rotation = lround(av_display_rotation_get(matrix));
-	                if (dlg != nullptr)
-	                    dlg->SetRotation(rotation);
-	            }
-				*/
-
-				if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
-					goto fail;
-
-				if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
-					goto out;
-				is->queue_attachments_req = 1;
-				break;
+				wxCommandEvent event(EVENT_VIDEOROTATION);
+				event.SetExtraLong(rotation);
+				wxPostEvent(dlg->GetMainWindow(), event);
 			}
+
+
+			/*
+			auto matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(
+				is->video_st, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+
+			if (matrix)
+			{
+				long rotation = lround(av_display_rotation_get(matrix));
+				if (dlg != nullptr)
+					dlg->SetRotation(rotation);
+			}
+			*/
+
+			if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
+				goto fail;
+
+			if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
+				goto out;
+			is->queue_attachments_req = 1;
+			break;
+		}
 
 
 		case AVMEDIA_TYPE_SUBTITLE:
@@ -2544,13 +2626,13 @@ int CFFmfcPimpl::is_realtime(AVFormatContext* s, char* filename)
 	if (!strcmp(s->iformat->name, "rtp")
 		|| !strcmp(s->iformat->name, "rtsp")
 		|| !strcmp(s->iformat->name, "sdp")
-	)
+		)
 		return 1;
 
 	if (s->pb && (!strncmp(filename, "rtp:", 4)
-			|| !strncmp(filename, "udp:", 4)
+		|| !strncmp(filename, "udp:", 4)
 		)
-	)
+		)
 		return 1;
 	return 0;
 }
@@ -2650,7 +2732,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 		if (err < 0)
 		{
 			av_log(NULL, AV_LOG_WARNING,
-			       "%s: could not find codec parameters\n", is->filename);
+				"%s: could not find codec parameters\n", is->filename);
 			ret = -1;
 			goto fail;
 		}
@@ -2681,7 +2763,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 		if (ret < 0)
 		{
 			av_log(NULL, AV_LOG_WARNING, "%s: could not seek to position %0.3f\n",
-			       is->filename, (double)timestamp / AV_TIME_BASE);
+				is->filename, (double)timestamp / AV_TIME_BASE);
 		}
 	}
 
@@ -2710,22 +2792,22 @@ int CFFmfcPimpl::read_thread(void* arg)
 
 	if (!is->_pimpl->video_disable)
 		st_index[AVMEDIA_TYPE_VIDEO] =
-			av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO,
-			                    st_index[AVMEDIA_TYPE_VIDEO], -1, NULL, 0);
+		av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO,
+			st_index[AVMEDIA_TYPE_VIDEO], -1, NULL, 0);
 	if (!is->_pimpl->audio_disable)
 		st_index[AVMEDIA_TYPE_AUDIO] =
-			av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
-			                    st_index[AVMEDIA_TYPE_AUDIO],
-			                    st_index[AVMEDIA_TYPE_VIDEO],
-			                    NULL, 0);
+		av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
+			st_index[AVMEDIA_TYPE_AUDIO],
+			st_index[AVMEDIA_TYPE_VIDEO],
+			NULL, 0);
 	if (!is->_pimpl->video_disable && !is->_pimpl->subtitle_disable)
 		st_index[AVMEDIA_TYPE_SUBTITLE] =
-			av_find_best_stream(ic, AVMEDIA_TYPE_SUBTITLE,
-			                    st_index[AVMEDIA_TYPE_SUBTITLE],
-			                    (st_index[AVMEDIA_TYPE_AUDIO] >= 0
-				                     ? st_index[AVMEDIA_TYPE_AUDIO]
-				                     : st_index[AVMEDIA_TYPE_VIDEO]),
-			                    NULL, 0);
+		av_find_best_stream(ic, AVMEDIA_TYPE_SUBTITLE,
+			st_index[AVMEDIA_TYPE_SUBTITLE],
+			(st_index[AVMEDIA_TYPE_AUDIO] >= 0
+				? st_index[AVMEDIA_TYPE_AUDIO]
+				: st_index[AVMEDIA_TYPE_VIDEO]),
+			NULL, 0);
 
 
 	is->show_mode = (VideoState::ShowMode)SHOW_MODE_NONE;
@@ -2763,7 +2845,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 	if (is->video_stream < 0 && is->audio_stream < 0)
 	{
 		av_log(NULL, AV_LOG_FATAL, "Failed to open file '%s' or configure filtergraph\n",
-		       is->filename);
+			is->filename);
 		ret = -1;
 		goto fail;
 	}
@@ -2783,7 +2865,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 		evt.SetClientData(dtTime);
 		wxPostEvent(is->_pimpl->dlg->GetMainWindow(), evt);// is->_pimpl->dlg->GetMainWindow()->GetEventHandler()->AddPendingEvent(evt);
 	}
-		
+
 
 	for (;;)
 	{
@@ -2819,7 +2901,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 			if (ret < 0)
 			{
 				av_log(NULL, AV_LOG_ERROR,
-				       "%s: error while seeking\n", is->ic->url);
+					"%s: error while seeking\n", is->ic->url);
 			}
 			else
 			{
@@ -2862,7 +2944,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 				|| (is->_pimpl->stream_has_enough_packets(is->audio_st, is->audio_stream, &is->audioq) &&
 					is->_pimpl->stream_has_enough_packets(is->video_st, is->video_stream, &is->videoq) &&
 					is->_pimpl->
-					    stream_has_enough_packets(is->subtitle_st, is->subtitle_stream, &is->subtitleq))))
+					stream_has_enough_packets(is->subtitle_st, is->subtitle_stream, &is->subtitleq))))
 		{
 			/* wait 10 ms */
 			SDL_LockMutex(wait_mutex);
@@ -2872,10 +2954,10 @@ int CFFmfcPimpl::read_thread(void* arg)
 		}
 		if (!is->paused &&
 			(!is->audio_st || (is->auddec.finished == is->audioq.serial && is->_pimpl->
-			                                                                   frame_queue_nb_remaining(&is->sampq) ==
+				frame_queue_nb_remaining(&is->sampq) ==
 				0)) &&
 			(!is->video_st || (is->viddec.finished == is->videoq.serial && is->_pimpl->
-			                                                                   frame_queue_nb_remaining(&is->pictq) ==
+				frame_queue_nb_remaining(&is->pictq) ==
 				0)))
 		{
 			if (is->_pimpl->loop != 1 && (!is->_pimpl->loop || --is->_pimpl->loop))
@@ -3189,7 +3271,7 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 	if (err < 0)
 	{
 		av_log(avctx, AV_LOG_ERROR, "Failed to transfer data to "
-		       "output frame: %d.\n", err);
+			"output frame: %d.\n", err);
 		goto fail;
 	}
 
@@ -3230,10 +3312,10 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 	av_frame_unref(input);
 	av_frame_move_ref(input, output);
 	av_frame_free(&output);
-    
-    
-    
-   
+
+
+
+
 
 	return 0;
 

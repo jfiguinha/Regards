@@ -1331,6 +1331,11 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		
 		if (videoEffectParameter.showFPS)
 		{
+			if (!fpsTimer->IsRunning())
+				fpsTimer->Start(1000);
+
+			//msgFrame = wxString::Format("FPS : %d", nbFrame);
+
         #ifndef WIN32
             double scale_factor = parentRender->GetContentScaleFactor();
         #else
@@ -1711,9 +1716,9 @@ void CVideoControlSoft::OnSetPos(wxCommandEvent& event)
 
 void CVideoControlSoft::OnSetFramePos(wxCommandEvent& event)
 {
-	int64_t pos = event.GetExtraLong();
-	int64_t videoPosition = (pos * 1000) - startingTime;
-	videoPosition = videoPosition / 1000;
+	//int64_t pos = event.GetExtraLong();
+	//int64_t videoPosition = (pos * 1000) - startingTime;
+	//videoPosition = videoPosition / 1000;
 	if (!videoEnd)
 	{
 		videoPosition = event.GetExtraLong();

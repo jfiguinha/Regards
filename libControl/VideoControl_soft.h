@@ -205,7 +205,7 @@ protected:
 	bool exit;
 	bool quitWindow;
 	bool videoStart;
-	wxString msgFrame;
+	wxString msgFrame = "";
 	CWindowMain* windowMain;
 	wxTimer* fpsTimer;
 	wxTimer* playStartTimer;
