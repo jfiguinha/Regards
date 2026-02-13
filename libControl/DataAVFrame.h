@@ -15,7 +15,7 @@ public:
 		matFrame.Release();
 		if (dst != nullptr)
 		{
-			av_frame_unref(dst);
+			av_free(dst);
 			dst = nullptr;
 		}
 
