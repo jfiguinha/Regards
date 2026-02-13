@@ -1331,11 +1331,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		
 		if (videoEffectParameter.showFPS)
 		{
-			if (!fpsTimer->IsRunning())
-				fpsTimer->Start(1000);
-
-			//msgFrame = wxString::Format("FPS : %d", nbFrame);
-
         #ifndef WIN32
             double scale_factor = parentRender->GetContentScaleFactor();
         #else
