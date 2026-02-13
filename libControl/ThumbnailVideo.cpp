@@ -131,7 +131,10 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	if (numItem == -1 && videoPos > 0)
 	{
 		CIcone* icone = iconeList->GetLastElement();
-		numItem = icone->GetNumElement();
+		if (icone != nullptr)
+			numItem = icone->GetNumElement();
+		else
+			return;
 	}
 
 
