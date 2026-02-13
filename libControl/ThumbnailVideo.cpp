@@ -87,7 +87,7 @@ bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone * icone, CWindow
 
 int CThumbnailVideo::FindNumItem(const int& videoPos)
 {
-	int numItem = 0;
+	int numItem = -1;
 	pItemCompFonct _pf = &ItemCompFonct;
 	CIcone * icone = iconeList->FindElement(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
@@ -121,11 +121,17 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	if (nbIconeElement == 0)
 		return;
 
-	const int numItem = FindNumItem(videoPos);
+	int numItem = FindNumItem(videoPos);
 
-	if (numItem == numItemSelected && videoPos != 0)
+	if (numItem == numItemSelected && videoPos > 0)
 	{
 		return;
+	}
+
+	if (numItem == -1 && videoPos > 0)
+	{
+		CIcone* icone = iconeList->GetLastElement();
+		numItem = icone->GetNumElement();
 	}
 
 

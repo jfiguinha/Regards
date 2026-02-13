@@ -23,6 +23,7 @@ namespace Regards::Window
 		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
 		bool FindElement(wxString filename);
 		void SortByFilename();
+		CIcone* GetLastElement();
 	private:
 		IconeVector pIconeList;
 		//mutex muList;
