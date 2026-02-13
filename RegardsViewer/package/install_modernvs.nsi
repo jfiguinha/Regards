@@ -19,11 +19,11 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 !define MUI_PRODUCT "RegardsViewer 2.0"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
-!define MUI_VERSION "2.83.5"
+!define MUI_VERSION "2.83.6"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
-  Name "Regards Viewer 2.83.5"
+  Name "Regards Viewer 2.83.6"
   OutFile "RegardsViewer2Setup.exe"
 
   ;Default installation folder
@@ -141,7 +141,7 @@ Section "RegardsViewer" SecRegardsViewer
 
 
   ;ADD YOUR OWN FILES HERE...
-  DetailPrint "*** Installing Regards Viewer 2.83.5..."
+  DetailPrint "*** Installing Regards Viewer 2.83.6..."
   File "Prerequisites\RegardsViewer2.zip"
   ZipDLL::extractall "$INSTDIR\RegardsViewer2.zip" $INSTDIR
   ;Store installation folder
@@ -191,7 +191,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.83.5"
+  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.83.6"
   LangString DESC_SecVisualStudio ${LANG_ENGLISH} "Visual Studio 2017 Redistribuable x64"
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
