@@ -136,7 +136,7 @@ namespace Regards::Window
 		void OnKeyDown(wxKeyEvent& event) override;
 		void OnKeyUp(wxKeyEvent& event) override;
 		void OnIdle(wxIdleEvent& evt) override;
-
+		
 		bool UpdateExifInfos();
 
 		void OnTimer(wxTimerEvent& event) override
@@ -169,9 +169,9 @@ namespace Regards::Window
 		virtual void OnMoveTop(wxCommandEvent& event);
 		virtual void OnMoveBottom(wxCommandEvent& event);
 		virtual void OnScrollMove(wxCommandEvent& event);
-
+		virtual void OnUpdateFiltre(wxCommandEvent& event);
 		int IsSupportCuda();
-		int GetExifOrientation(const int& angle);
+		//int GetExifOrientation(const int& angle);
 		virtual bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) { return false; };
 
 		virtual void AfterRender()

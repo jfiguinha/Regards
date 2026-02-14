@@ -124,6 +124,7 @@ vector<int> CBitmapWndRender::GetListCommand()
 	list.push_back(wxEVENT_MOVETOP); //, wxCommandEventHandler(CBitmapWnd::OnMoveTop));
 	list.push_back(wxEVENT_MOVEBOTTOM); //, wxCommandEventHandler(CBitmapWnd::OnMoveBottom));
 	list.push_back(wxEVENT_SCROLLMOVE); //, wxCommandEventHandler(CBitmapWnd::OnScrollMove));
+	list.push_back(wxEVENT_UPDATEEFFECTFILTER);
 	return list;
 };
 
@@ -161,11 +162,18 @@ void CBitmapWndRender::OnCommand(wxCommandEvent& event)
 	case wxEVENT_SCROLLMOVE:
 		OnScrollMove(event);
 		break;
+	case wxEVENT_UPDATEEFFECTFILTER:
+		OnUpdateFiltre(event);
+		break;
 	}
 
 	
 }
 
+void CBitmapWndRender::OnUpdateFiltre(wxCommandEvent& event)
+{
+
+}
 
 void CBitmapWndRender::SetParent(wxWindow* parent)
 {

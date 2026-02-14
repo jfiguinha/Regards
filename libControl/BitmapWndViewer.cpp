@@ -138,8 +138,10 @@ CEffectParameter* CBitmapWndViewer::GetParameter()
 	return effectParameter;
 }
 
-void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
+
+void CBitmapWndViewer::OnUpdateFiltre(wxCommandEvent& event)
 {
+	auto effectParameter = static_cast<CEffectParameter*>(event.GetClientData());
 	this->effectParameter = effectParameter;
 	updateFilter = true;
 	if (mouseUpdate != nullptr)
@@ -152,6 +154,13 @@ void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
 	}
 
 	RefreshWindow();
+}
+
+void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
+{
+	wxCommandEvent event(wxEVENT_UPDATEEFFECTFILTER);
+	event.SetClientData(effectParameter);
+	wxPostEvent(parentRender, event);
 }
 
 void CBitmapWndViewer::SetDiaporamaMode()
