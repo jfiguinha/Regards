@@ -95,6 +95,10 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
             wxString color = regardsParam->GetOpenGLOutputColor();
 
 #ifndef __APPLE__
+		try
+		{
+            printf("glGetInternalformativ test if is it available \n"); 
+            
 			GLint format, type;
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &format);
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
@@ -106,10 +110,18 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 				color = "BGRA";
 			else
 				color = "RGBA";
+        }
+        catch(...)
+        {
+			printf("glGetInternalformativ is not available \n"); 
+            color = "RGBA"; 
+        }
 #else
             color = "RGBA";      
 #endif 
     
+        try
+        {
 			cv::UMat bitmapMatrix;
 			if (u.channels() == 3)
 			{
