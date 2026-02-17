@@ -18,6 +18,10 @@
 
 #ifdef __WXGTK__
 #include <epoxy/glx.h>
+#if wxUSE_GLCANVAS_EGL == 1
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#endif
 #endif
 
 
@@ -304,7 +308,20 @@ void COpenCLContext::initializeContextFromGL()
 
 #elif defined(__WXGTK__)
        
-    printf("initializeContextFromGL x11\n");
+#if wxUSE_GLCANVAS_EGL == 1
+
+        printf("initializeContextFromGL wayland\n");
+
+		EGLContext eglContext = eglGetCurrentContext();
+		EGLDisplay eglDisplay = eglGetCurrentDisplay();
+
+		cl_context_properties properties[] = { CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+		CL_GL_CONTEXT_KHR, (cl_context_properties)eglContext,
+		CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0 };
+
+#else
+
+        printf("initializeContextFromGL x11\n");
     
 		// Create CL context properties, add GLX context & handle to DC
 		GLXContext glxcontext = glXGetCurrentContext();
@@ -316,7 +333,7 @@ void COpenCLContext::initializeContextFromGL()
 		 CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
 		 0
 		};
-
+#endif
 #endif
 
         printf("initializeContextFromGL 4\n");

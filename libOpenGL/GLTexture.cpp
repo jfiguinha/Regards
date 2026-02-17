@@ -89,10 +89,8 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 
 	if (isOpenCLCompatible)
 	{
-		try
-		{
-            CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-            wxString color = regardsParam->GetOpenGLOutputColor();
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        wxString color = regardsParam->GetOpenGLOutputColor();
 
 #ifndef __APPLE__
 		try
