@@ -6,10 +6,6 @@
 
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
-#elif defined(__WXGTK__)
-#if wxUSE_GLCANVAS_EGL == 1
-#include <EGL/egl.h>
-#endif
 #endif
 
 
