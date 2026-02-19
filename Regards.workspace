@@ -45,7 +45,6 @@
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="Yes"/>
     <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
-    <Project Name="webview" Path="webview/webview.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -141,7 +140,6 @@
       <Project Name="libOpenCVMissingGTK" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux_cuda" ConfigName="Debug"/>
-      <Project Name="webview" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -217,7 +215,6 @@
       <Project Name="libOpenCVMissingGTK" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux_cuda" ConfigName="Release"/>
-      <Project Name="webview" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
