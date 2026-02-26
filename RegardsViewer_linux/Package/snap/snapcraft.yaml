@@ -59,11 +59,7 @@ parts:
   regardsviewer:
     plugin: dump
     source: https://github.com/jfiguinha/Regards/releases/download/v2.83.6/RegardsViewer_2.83.6.6-linux-x86_64.tar.gz
-    build-packages:
-      - libwebkit2gtk-4.1-dev
-      - libsdl2-dev
     stage-packages:
-      - freeglut3
       - libdrm2
       - libglu1-mesa
       - libgnutls30

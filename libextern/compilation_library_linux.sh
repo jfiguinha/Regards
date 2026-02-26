@@ -32,6 +32,7 @@ cd vcpkg
 ./vcpkg install openal-soft
 ./vcpkg install ncnn[vulkan]
 ./vcpkg install boost-lexical-cast
+./vcpkg install freeglut
 cd ..
 
 #Compile heif-master
