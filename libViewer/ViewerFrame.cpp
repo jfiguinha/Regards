@@ -141,7 +141,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
 
 
-	bool openFirstFile = true;
+	bool openFirstFile = false;
 	
 	
 	//Verify if file exist
@@ -150,7 +150,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	
 	//SetIcon(wxIcon(wxT("regards.xpm")));
 	if (fileToOpen != "")
-		openFirstFile = false;
+		openFirstFile = true;
 
 
 
@@ -284,9 +284,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxEVT_FULLSCREEN,  wxCommandEventHandler(CViewerFrame::OnWindowFullScreen));
 	
     if(openFirstFile)
-        OpenPictureFile();
-    else
-        loadPictureStartTimer->Start(10, true);
+		loadPictureStartTimer->Start(10, true);
 
 
 

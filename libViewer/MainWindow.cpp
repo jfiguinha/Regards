@@ -989,7 +989,7 @@ void CMainWindow::UpdateFolderStatic()
 			centralWnd->SetListeFile(localFilename, typeAffichage);
 			listFile.clear();
 			thumbnailPos = 0;
-			firstFileToShow = "";
+			//firstFileToShow = "";
 
 			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 			init = true;
