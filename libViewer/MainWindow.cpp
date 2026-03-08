@@ -54,7 +54,7 @@ bool firstTime = true;
 
 extern wxImage defaultPicture;
 
-CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const bool& openFirstFile, const wxString& fileToOpen)
+CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const wxString& fileToOpen)
 	: CWindowMain("CMainWindow", parent, id)
 {
 	fullscreen = false;

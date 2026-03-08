@@ -156,7 +156,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 
 
-	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile, fileToOpen);
+	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, fileToOpen);
 
 	//mainWindow->Show(true);
 	//mainWindowWaiting->Show(false);
