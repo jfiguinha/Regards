@@ -1,59 +1,97 @@
 #pragma once
 
+typedef struct
+{
+    double* Weights;  // Normalized weights of neighboring pixels
+    int Left, Right;   // Bounds of source pixels window
+} ContributionType;  // Contirbution information for a single pixel
+
+typedef struct
+{
+    ContributionType* ContribRow; // Row (or column) of contribution weights 
+    unsigned int WindowSize,              // Filter window size (of affecting source pixels) 
+        LineLength;              // Length of line (no. or rows / cols) 
+} LineContribType;               // Contribution information for an entire line (row or column)
+
+
 class C2PassScale
 {
 public:
 
-    double GetWidth()                   { return m_dWidth; }
-    void   SetWidth (double dWidth)     { m_dWidth = dWidth; }
 
-    C2PassScale()  
+	double GetWidth() { return m_dWidth; }
+	void   SetWidth(double dWidth) { m_dWidth = dWidth; }
+
+	C2PassScale()
 	{
 		m_dWidth = 1.0f;
 	};
 
-    C2PassScale(double dWidth)  
+	C2PassScale(double dWidth)
 	{
 		m_dWidth = dWidth;
 	};
 
+    virtual ~C2PassScale() {}
 
 	void Execute(const cv::Mat& in, cv::Mat& Out);
 
-private:
-
-	uint8_t GetValue(double r);
-
-	typedef struct 
-	{ 
-	   double *Weights;  // Normalized weights of neighboring pixels
-	   int Left,Right;   // Bounds of source pixels window
-	} ContributionType;  // Contirbution information for a single pixel
-
-	typedef struct 
-	{ 
-	   ContributionType *ContribRow; // Row (or column) of contribution weights 
-	   int WindowSize,              // Filter window size (of affecting source pixels) 
-			LineLength;              // Length of line (no. or rows / cols) 
-	} LineContribType;               // Contribution information for an entire line (row or column)
-
-    LineContribType *AllocContributions (int uLineLength, int uWindowSize);
-
-    void FreeContributions (LineContribType * p);
-
-    LineContribType *CalcContributions(int uLineSize, int uSrcSize, double  dScale);
-
-	void Scale(uint32_t* pOrigImage, int uOrigWidth, int uOrigHeight, uint32_t* pDstImage, int uNewWidth, int uNewHeight);
-
-
-    void HorizScale(uint32_t *pSrc, int uSrcWidth,int uSrcHeight,uint32_t *pDst,int uResWidth,int uResHeight);
-    void VertScale(uint32_t *pSrc, int uSrcWidth, int uSrcHeight, uint32_t *pDst, int uResWidth, int uResHeight);
 
 protected:
 
-	double m_dWidth;
+    double m_dWidth;
 
-	virtual double Filter(const double &dVal);
+    virtual double Filter(const double& dVal);
+
+private:
+
+    void Scale(
+        unsigned char* pOrigImage,
+        unsigned int        uOrigWidth,
+        unsigned int        uOrigHeight,
+        unsigned char* pDstImage,
+        unsigned int        uNewWidth,
+        unsigned int        uNewHeight);
+
+    LineContribType* AllocContributions(unsigned int uLineLength,
+        unsigned int uWindowSize);
+
+    void FreeContributions(LineContribType* p);
+
+    LineContribType* CalcContributions(unsigned int    uLineSize,
+        unsigned int    uSrcSize,
+        double  dScale);
+
+    void ScaleRow(unsigned char* pSrc,
+        unsigned int                uSrcWidth,
+        unsigned char* pRes,
+        unsigned int                uResWidth,
+        unsigned int                uRow,
+        LineContribType* Contrib);
+
+    void HorizScale(unsigned char* pSrc,
+        unsigned int                uSrcWidth,
+        unsigned int                uSrcHeight,
+        unsigned char* pDst,
+        unsigned int                uResWidth,
+        unsigned int                uResHeight);
+
+    void ScaleCol(unsigned char* pSrc,
+        unsigned int                uSrcWidth,
+        unsigned char* pRes,
+        unsigned int                uResWidth,
+        unsigned int                uResHeight,
+        unsigned int                uCol,
+        LineContribType* Contrib);
+
+    void VertScale(unsigned char* pSrc,
+        unsigned int                uSrcWidth,
+        unsigned int                uSrcHeight,
+        unsigned char* pDst,
+        unsigned int                uResWidth,
+        unsigned int                uResHeight);
+
+ 
 };
 
 
@@ -616,4 +654,3 @@ public:
 		return(0.0);
 	}
 };
-
