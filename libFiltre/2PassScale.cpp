@@ -4,10 +4,15 @@ extern double value[256];
 
 #ifndef WIN32
 
+typedef uint64_t            ULONG_PTR;
 typedef unsigned long       DWORD;
 typedef int                 BOOL;
 typedef unsigned char       BYTE;
 typedef unsigned short      WORD;
+typedef ULONG_PTR DWORD_PTR;
+
+#define LOBYTE(w)              ((BYTE)((DWORD_PTR)(w) & 0xFF))
+#define HIBYTE(w)              ((BYTE)((DWORD_PTR)(w) >> 8))
 
 #define RGB(r,g,b)          ((uint32_t)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
 #define GetRValue(rgb)      (LOBYTE(rgb))

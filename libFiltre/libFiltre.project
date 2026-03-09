@@ -28,6 +28,8 @@
   </Plugins>
   <VirtualDirectory Name="Filter">
     <VirtualDirectory Name="interpolation">
+      <File Name="2PassScale.h"/>
+      <File Name="2PassScale.cpp"/>
       <File Name="scalingfilter.h"/>
       <File Name="InterpolationFilters.h"/>
       <File Name="InterpolationBicubic.h"/>
