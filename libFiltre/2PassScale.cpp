@@ -3,6 +3,12 @@
 extern double value[256];
 
 #ifndef WIN32
+
+typedef unsigned long       DWORD;
+typedef int                 BOOL;
+typedef unsigned char       BYTE;
+typedef unsigned short      WORD;
+
 #define RGB(r,g,b)          ((uint32_t)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
 #define GetRValue(rgb)      (LOBYTE(rgb))
 #define GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
