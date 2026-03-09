@@ -1,5 +1,5 @@
 #include "header.h"
-#include "TwoPassScale.h"
+#include "2PassScale.h"
 extern double value[256];
 
 #define BYTE unsigned char
