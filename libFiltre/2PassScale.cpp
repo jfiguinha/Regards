@@ -3,6 +3,7 @@
 extern double value[256];
 
 #ifndef WIN32
+#define RGB(r,g,b)          ((uint32_t)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
 #define GetRValue(rgb)      (LOBYTE(rgb))
 #define GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
 #define GetBValue(rgb)      (LOBYTE((rgb)>>16))
