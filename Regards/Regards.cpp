@@ -353,7 +353,8 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
-
+	for (int i = 0; i < 256; i++)
+		value[i] = static_cast<double>(i);
 	//putenv("OPENCV_OPENCL_DEVICE=:GPU:0");
 	//OPENCV_OPENCL_DEVICE=:GPU:1
 	// 

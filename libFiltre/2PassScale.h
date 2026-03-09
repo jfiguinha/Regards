@@ -1,50 +1,79 @@
 #pragma once
+
+class C2PassScale
+{
+public:
+
+    double GetWidth()                   { return m_dWidth; }
+    void   SetWidth (double dWidth)     { m_dWidth = dWidth; }
+
+    C2PassScale()  
+	{
+		m_dWidth = 1.0f;
+	};
+
+    C2PassScale(double dWidth)  
+	{
+		m_dWidth = dWidth;
+	};
+
+
+	void Execute(const cv::Mat& in, cv::Mat& Out);
+
+private:
+
+	uint8_t GetValue(double r);
+
+	typedef struct 
+	{ 
+	   double *Weights;  // Normalized weights of neighboring pixels
+	   int Left,Right;   // Bounds of source pixels window
+	} ContributionType;  // Contirbution information for a single pixel
+
+	typedef struct 
+	{ 
+	   ContributionType *ContribRow; // Row (or column) of contribution weights 
+	   int WindowSize,              // Filter window size (of affecting source pixels) 
+			LineLength;              // Length of line (no. or rows / cols) 
+	} LineContribType;               // Contribution information for an entire line (row or column)
+
+    LineContribType *AllocContributions (int uLineLength, int uWindowSize);
+
+    void FreeContributions (LineContribType * p);
+
+    LineContribType *CalcContributions(int uLineSize, int uSrcSize, double  dScale);
+
+	void Scale(uint32_t* pOrigImage, int uOrigWidth, int uOrigHeight, uint32_t* pDstImage, int uNewWidth, int uNewHeight);
+
+
+    void HorizScale(uint32_t *pSrc, int uSrcWidth,int uSrcHeight,uint32_t *pDst,int uResWidth,int uResHeight);
+    void VertScale(uint32_t *pSrc, int uSrcWidth, int uSrcHeight, uint32_t *pDst, int uResWidth, int uResHeight);
+
+protected:
+
+	double m_dWidth;
+
+	virtual double Filter(const double &dVal);
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//Filtre supportée :
+// Box, Bilinear, Gaussian, Hamming, Cubic, Blackman
+/////////////////////////////////////////////////////////////////////////////
+
+
+
 #define FILTER_PI  double (3.1415926535897932384626433832795)
 #define FILTER_2PI double (2.0 * 3.1415926535897932384626433832795)
 #define FILTER_4PI double (4.0 * 3.1415926535897932384626433832795)
 
-struct s_rgb
-{
-	unsigned int b : 8;
-	unsigned int g : 8;
-	unsigned int r : 8;
-	unsigned int alpha : 8;
-};
-
-class CInterpolationBicubic
+class CBoxFilter : public C2PassScale
 {
 public:
 
-    struct weightX
-	{
-	public:
-		float tabF[4];
-	};
-
-	CInterpolationBicubic(const double & dWidth = 0.0f);
-	~CInterpolationBicubic();
-	void Execute(const cv::Mat& in, cv::Mat& Out);
-
-protected:
-
-	virtual inline double Filter(const double &x);
-			
-	virtual inline void Bicubic(const cv::Mat& in, uchar*& data, const int& x, const int& y, float* tabF1, float* tabF);
-
-    inline int clamp(const int& val, const int& minval, const int& maxval);
-	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
-
-	weightX * wX;
-	weightX * wY;
-	double m_dWidth;
-};
-
-
-class CBoxFilter : public CInterpolationBicubic
-{
-public:
-
-	CBoxFilter(double dWidth = double(0.5)) : CInterpolationBicubic(dWidth) {}
+	CBoxFilter(double dWidth = double(0.5)) : C2PassScale(dWidth) {}
 	virtual ~CBoxFilter() {}
 
 	virtual double Filter(const double& dVal) { return (fabs(dVal) <= m_dWidth ? 1.0 : 0.0); }
@@ -53,11 +82,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CBilinearFilter : public CInterpolationBicubic
+class CBilinearFilter : public C2PassScale
 {
 public:
 
-	CBilinearFilter(double dWidth = double(1.0)) : CInterpolationBicubic(dWidth) {}
+	CBilinearFilter(double dWidth = double(1.0)) : C2PassScale(dWidth) {}
 	virtual ~CBilinearFilter() {}
 
 	virtual double Filter(const double& dVal)
@@ -70,11 +99,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CGaussianFilter : public CInterpolationBicubic
+class CGaussianFilter : public C2PassScale
 {
 public:
 
-	CGaussianFilter(double dWidth = double(1.25)) : CInterpolationBicubic(dWidth) {}
+	CGaussianFilter(double dWidth = double(1.25)) : C2PassScale(dWidth) {}
 	virtual ~CGaussianFilter() {}
 
 	virtual double Filter(const double& dVal)
@@ -90,11 +119,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CHammingFilter : public CInterpolationBicubic
+class CHammingFilter : public C2PassScale
 {
 public:
 
-	CHammingFilter(double dWidth = double(1.0)) : CInterpolationBicubic(dWidth) {}
+	CHammingFilter(double dWidth = double(1.0)) : C2PassScale(dWidth) {}
 	virtual ~CHammingFilter() {}
 
 	virtual double Filter(const double& dVal)
@@ -112,11 +141,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CCubicFilter : public CInterpolationBicubic
+class CCubicFilter : public C2PassScale
 {
 public:
 
-	CCubicFilter(double dWidth = double(2.0)) : CInterpolationBicubic(dWidth) {}
+	CCubicFilter(double dWidth = double(2.0)) : C2PassScale(dWidth) {}
 	virtual ~CCubicFilter() {}
 
 	virtual double Filter(const double& x)
@@ -144,11 +173,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CBlackmanFilter : public CInterpolationBicubic
+class CBlackmanFilter : public C2PassScale
 {
 public:
 
-	CBlackmanFilter(double dWidth = double(1.0)) : CInterpolationBicubic(dWidth) {}
+	CBlackmanFilter(double dWidth = double(1.0)) : C2PassScale(dWidth) {}
 	virtual ~CBlackmanFilter() {}
 
 	virtual double Filter(const double& dVal)
@@ -166,11 +195,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CQuadraticFilter : public CInterpolationBicubic
+class CQuadraticFilter : public C2PassScale
 {
 public:
 
-	CQuadraticFilter(double dWidth = double(1.5)) : CInterpolationBicubic(dWidth) {}
+	CQuadraticFilter(double dWidth = double(1.5)) : C2PassScale(dWidth) {}
 	virtual ~CQuadraticFilter() {}
 
 	virtual double Filter(const double& x)
@@ -197,11 +226,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CMitchellFilter : public CInterpolationBicubic
+class CMitchellFilter : public C2PassScale
 {
 public:
 
-	CMitchellFilter(double dWidth = double(2.0)) : CInterpolationBicubic(dWidth) {}
+	CMitchellFilter(double dWidth = double(2.0)) : C2PassScale(dWidth) {}
 	virtual ~CMitchellFilter() {}
 
 	virtual double Filter(const double& x)
@@ -239,11 +268,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CTriangleFilter : public CInterpolationBicubic
+class CTriangleFilter : public C2PassScale
 {
 public:
 
-	CTriangleFilter(double dWidth = double(1.0)) : CInterpolationBicubic(dWidth) {}
+	CTriangleFilter(double dWidth = double(1.0)) : C2PassScale(dWidth) {}
 	virtual ~CTriangleFilter() {}
 
 	virtual double Filter(const double& x)
@@ -267,11 +296,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CSincFilter : public CInterpolationBicubic
+class CSincFilter : public C2PassScale
 {
 public:
 
-	CSincFilter(double dWidth = double(1.5)) : CInterpolationBicubic(dWidth) {}
+	CSincFilter(double dWidth = double(1.5)) : C2PassScale(dWidth) {}
 	virtual ~CSincFilter() {}
 
 	virtual double Filter(const double& x)
@@ -312,11 +341,11 @@ const double Qone[] =
 };
 
 
-class CBesselFilter : public CInterpolationBicubic
+class CBesselFilter : public C2PassScale
 {
 public:
 
-	CBesselFilter(double dWidth = double(1.5)) : CInterpolationBicubic(dWidth) {}
+	CBesselFilter(double dWidth = double(1.5)) : C2PassScale(dWidth) {}
 	virtual ~CBesselFilter() {}
 
 	virtual double Filter(const double& x)
@@ -357,7 +386,7 @@ private:
 	double P1(double x)
 	{
 		double p, q;
-		register long i;
+		long i;
 
 		p = Pone[5];
 		q = Qone[5];
@@ -373,7 +402,7 @@ private:
 	{
 		double p, q;
 
-		register long i;
+		long i;
 
 		p = Pone[5];
 		q = Qone[5];
@@ -389,7 +418,7 @@ private:
 	{
 		double p, q;
 
-		register long i;
+		long i;
 
 		const double
 			Pone[] =
@@ -431,11 +460,11 @@ private:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CBlackmanBesselFilter : public CInterpolationBicubic
+class CBlackmanBesselFilter : public C2PassScale
 {
 public:
 
-	CBlackmanBesselFilter(double dWidth = double(3.2383)) : CInterpolationBicubic(dWidth) {}
+	CBlackmanBesselFilter(double dWidth = double(3.2383)) : C2PassScale(dWidth) {}
 	virtual ~CBlackmanBesselFilter() {}
 
 	virtual double Filter(const double& x)
@@ -458,11 +487,11 @@ private:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CLanczosFilter : public CInterpolationBicubic
+class CLanczosFilter : public C2PassScale
 {
 public:
 
-	CLanczosFilter(double dWidth = double(3.0)) : CInterpolationBicubic(dWidth) {}
+	CLanczosFilter(double dWidth = double(3.0)) : C2PassScale(dWidth) {}
 	virtual ~CLanczosFilter() {}
 
 	virtual double Filter(const double& x)
@@ -488,11 +517,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CBlackmanSincFilter : public CInterpolationBicubic
+class CBlackmanSincFilter : public C2PassScale
 {
 public:
 
-	CBlackmanSincFilter(double dWidth = double(4.0)) : CInterpolationBicubic(dWidth) {}
+	CBlackmanSincFilter(double dWidth = double(4.0)) : C2PassScale(dWidth) {}
 	virtual ~CBlackmanSincFilter() {}
 
 	virtual double Filter(const double& x)
@@ -512,11 +541,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CCatromFilter : public CInterpolationBicubic
+class CCatromFilter : public C2PassScale
 {
 public:
 
-	CCatromFilter(double dWidth = double(2.0)) : CInterpolationBicubic(dWidth) {}
+	CCatromFilter(double dWidth = double(2.0)) : C2PassScale(dWidth) {}
 	virtual ~CCatromFilter() {}
 
 	virtual double Filter(const double& x)
@@ -543,11 +572,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CHanningFilter : public CInterpolationBicubic
+class CHanningFilter : public C2PassScale
 {
 public:
 
-	CHanningFilter(double dWidth = double(1.0)) : CInterpolationBicubic(dWidth) {}
+	CHanningFilter(double dWidth = double(1.0)) : C2PassScale(dWidth) {}
 	virtual ~CHanningFilter() {}
 
 	virtual double Filter(const double& x)
@@ -564,11 +593,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-class CHermiteFilter : public CInterpolationBicubic
+class CHermiteFilter : public C2PassScale
 {
 public:
 
-	CHermiteFilter(double dWidth = double(1.5)) : CInterpolationBicubic(dWidth) {}
+	CHermiteFilter(double dWidth = double(1.5)) : C2PassScale(dWidth) {}
 	virtual ~CHermiteFilter() {}
 
 	virtual double Filter(const double& x)

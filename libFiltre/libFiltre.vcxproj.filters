@@ -348,6 +348,9 @@
     <ClInclude Include="InterpolationFilters.h">
       <Filter>Filter\Interpolation</Filter>
     </ClInclude>
+    <ClInclude Include="2PassScale.h">
+      <Filter>Filter\Interpolation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -516,6 +519,9 @@
       <Filter>Filter\Interpolation</Filter>
     </ClCompile>
     <ClCompile Include="InterpolationBicubic.cpp">
+      <Filter>Filter\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="2PassScale.cpp">
       <Filter>Filter\Interpolation</Filter>
     </ClCompile>
   </ItemGroup>

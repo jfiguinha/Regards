@@ -159,7 +159,7 @@ wxImage defaultPictureThumbnailVideo;
 bool preprocessisAvailable = true;
 ncnn::VulkanDevice * vkdev = nullptr;
 std::mutex muProcessAvailable;
-float value[256];
+double value[256];
 
 float clamp(float val, float minval, float maxval)
 {
