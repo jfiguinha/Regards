@@ -342,9 +342,6 @@
     <ClInclude Include="CudaEffect.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="InterpolationBicubic.h">
-      <Filter>Filter\Interpolation</Filter>
-    </ClInclude>
     <ClInclude Include="InterpolationFilters.h">
       <Filter>Filter\Interpolation</Filter>
     </ClInclude>
@@ -516,9 +513,6 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="avir_opencl.cpp">
-      <Filter>Filter\Interpolation</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationBicubic.cpp">
       <Filter>Filter\Interpolation</Filter>
     </ClCompile>
     <ClCompile Include="2PassScale.cpp">

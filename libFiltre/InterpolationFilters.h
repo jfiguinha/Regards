@@ -5,8 +5,5 @@
 // Box, Bilinear, Gaussian, Hamming, Cubic, Blackman
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef TWOPASSSCALE
 #include "2PassScale.h"
-#else
-#include "InterpolationBicubic.h"
-#endif
+
