@@ -32,9 +32,7 @@
       <File Name="2PassScale.cpp"/>
       <File Name="scalingfilter.h"/>
       <File Name="InterpolationFilters.h"/>
-      <File Name="InterpolationBicubic.h"/>
       <File Name="InpaintFilterParam.h"/>
-      <File Name="InterpolationBicubic.cpp"/>
       <File Name="avir_opencl.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="Meanshift">

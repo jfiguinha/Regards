@@ -1448,11 +1448,7 @@ Mat CFiltreEffetCPU::Interpolation(const Mat& inputData, const int& widthOut, co
 		else if (method > 7)
 		{
 			int local_method = method - 7 + 1000;
-#ifdef TWOPASSSCALE
 			std::unique_ptr<C2PassScale> m_LocalFilter;
-#else
-			std::unique_ptr<CInterpolationBicubic> m_LocalFilter;
-#endif
 
 			switch (local_method)
 			{
