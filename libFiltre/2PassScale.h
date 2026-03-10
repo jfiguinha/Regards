@@ -32,7 +32,10 @@ public:
 		m_dWidth = dWidth;
 	};
 
-    virtual ~C2PassScale() {}
+    virtual ~C2PassScale() 
+	{
+
+	}
 
 	void Execute(const cv::Mat& in, cv::Mat& Out);
 
@@ -62,27 +65,12 @@ private:
         unsigned int    uSrcSize,
         double  dScale);
 
-    void ScaleRow(unsigned char* pSrc,
-        unsigned int                uSrcWidth,
-        unsigned char* pRes,
-        unsigned int                uResWidth,
-        unsigned int                uRow,
-        LineContribType* Contrib);
-
     void HorizScale(unsigned char* pSrc,
         unsigned int                uSrcWidth,
         unsigned int                uSrcHeight,
         unsigned char* pDst,
         unsigned int                uResWidth,
         unsigned int                uResHeight);
-
-    void ScaleCol(unsigned char* pSrc,
-        unsigned int                uSrcWidth,
-        unsigned char* pRes,
-        unsigned int                uResWidth,
-        unsigned int                uResHeight,
-        unsigned int                uCol,
-        LineContribType* Contrib);
 
     void VertScale(unsigned char* pSrc,
         unsigned int                uSrcWidth,
@@ -91,7 +79,12 @@ private:
         unsigned int                uResWidth,
         unsigned int                uResHeight);
 
- 
+	static LineContribType* ContribV;
+	static int olduResHeight;
+	static int olduSrcHeight;
+	static LineContribType* ContribH;
+	static int olduResWidth;
+	static int olduSrcWidth;
 };
 
 

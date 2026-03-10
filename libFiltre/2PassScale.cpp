@@ -4,14 +4,16 @@ extern double value[256];
 
 #define BYTE unsigned char
 
+LineContribType* C2PassScale::ContribV = nullptr;
+int C2PassScale::olduResHeight = 0;
+int C2PassScale::olduSrcHeight = 0;
+LineContribType* C2PassScale::ContribH = nullptr;
+int C2PassScale::olduResWidth = 0;
+int C2PassScale::olduSrcWidth = 0;
 
 void C2PassScale::Execute(const cv::Mat& in, cv::Mat& Out)
 {
-    if (in.empty())
-    {
-        return;
-    }
-    if (in.channels() != 3)
+    if (in.empty() || in.channels() != 3)
     {
         return;
     }
@@ -24,7 +26,7 @@ void C2PassScale::Execute(const cv::Mat& in, cv::Mat& Out)
         in.rows,
         (unsigned char*)Out.data,
         Out.cols,
-		Out.rows);
+        Out.rows);
 }
 
 LineContribType* C2PassScale::AllocContributions(unsigned int uLineLength, unsigned int uWindowSize)
@@ -54,13 +56,18 @@ double C2PassScale::Filter(const double& dVal)
 
 void C2PassScale::FreeContributions(LineContribType* p)
 {
-    for (unsigned int u = 0; u < p->LineLength; u++)
+    if (p != nullptr)
     {
-        // Free contribs for every pixel
-        delete[] p->ContribRow[u].Weights;
+        for (unsigned int u = 0; u < p->LineLength; u++)
+        {
+            // Free contribs for every pixel
+            delete[] p->ContribRow[u].Weights;
+        }
+        delete[] p->ContribRow;    // Free list of pixels contribs
+        delete p;                   // Free contribs header
+        p = nullptr;
     }
-    delete[] p->ContribRow;    // Free list of pixels contribs
-    delete p;                   // Free contribs header
+
 }
 
 
@@ -129,36 +136,6 @@ LineContribType* C2PassScale::CalcContributions(unsigned int uLineSize, unsigned
 }
 
 
-void C2PassScale::ScaleRow(unsigned char* pSrc,
-    unsigned int                uSrcWidth,
-    unsigned char* pRes,
-    unsigned int                uResWidth,
-    unsigned int                uRow,
-    LineContribType* Contrib)
-{
-    unsigned char* pSrcRow = &(pSrc[uRow * uSrcWidth * 3]);
-    unsigned char* pDstRow = &(pRes[uRow * uResWidth * 3]);
-    for (unsigned int x = 0; x < uResWidth; x++)
-    {   // Loop through row
-        float r = 0;
-        float g = 0;
-        float b = 0;
-        int iLeft = Contrib->ContribRow[x].Left;    // Retrieve left boundries
-        int iRight = Contrib->ContribRow[x].Right;  // Retrieve right boundries
-        for (int i = iLeft; i <= iRight; i++)
-        {   // Scan between boundries
-            // Accumulate weighted effect of each neighboring pixel
-            r += (float)(Contrib->ContribRow[x].Weights[i - iLeft] * value[pSrcRow[i * 3]]);
-            g += (float)(Contrib->ContribRow[x].Weights[i - iLeft] * value[pSrcRow[i * 3 + 1]]);
-            b += (float)(Contrib->ContribRow[x].Weights[i - iLeft] * value[pSrcRow[i * 3 + 2]]);
-        }
-        pDstRow[x * 3] = (BYTE)(r + 0.5) & 0xff; // Place result in destination pixel
-        pDstRow[x * 3 + 1] = (BYTE)(g + 0.5) & 0xff;
-        pDstRow[x * 3 + 2] = (BYTE)(b + 0.5) & 0xff;
-    }
-}
-
-
 void C2PassScale::HorizScale(unsigned char* pSrc,
     unsigned int                uSrcWidth,
     unsigned int                uSrcHeight,
@@ -172,51 +149,52 @@ void C2PassScale::HorizScale(unsigned char* pSrc,
         return;
     }
     // Allocate and calculate the contributions
-    LineContribType* Contrib = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
+    //LineContribType* Contrib = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
+       
+    // Allocate and calculate the contributions
+    if (uResWidth != olduResWidth || olduSrcWidth != uSrcWidth)
+    {
+        FreeContributions(ContribH);
+        ContribH = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
+        olduResWidth = uResWidth;
+        olduSrcWidth = uSrcWidth;
+    }
+
+    const unsigned int uSrcRowBytes = uSrcWidth * 3;
+    const unsigned int uResRowBytes = uResWidth * 3;
+
     for (unsigned int u = 0; u < uResHeight; u++)
-    {   // Step through rows
-        ScaleRow(pSrc,
-            uSrcWidth,
-            pDst,
-            uResWidth,
-            u,
-            Contrib);    // Scale each row 
-    }
-    FreeContributions(Contrib);  // Free contributions structure
-}
+    {
+        unsigned char* pSrcRow = pSrc + u * uSrcRowBytes;
+        unsigned char* pDstRow = pDst + u * uResRowBytes;
 
+        for (unsigned int x = 0; x < uResWidth; x++)
+        {
+            double r = 0.0;
+            double g = 0.0;
+            double b = 0.0;
 
-void C2PassScale::ScaleCol(unsigned char* pSrc,
-    unsigned int                uSrcWidth,
-    unsigned char* pRes,
-    unsigned int                uResWidth,
-    unsigned int                uResHeight,
-    unsigned int                uCol,
-    LineContribType* Contrib)
-{
-    for (unsigned int y = 0; y < uResHeight; y++)
-    {    // Loop through column
-        float r = 0;
-        float g = 0;
-        float b = 0;
-        int iLeft = Contrib->ContribRow[y].Left;    // Retrieve left boundries
-        int iRight = Contrib->ContribRow[y].Right;  // Retrieve right boundries
-        for (int i = iLeft; i <= iRight; i++)
-        {   // Scan between boundries
-            // Accumulate weighted effect of each neighboring pixel
-            unsigned char* pCurSrc = &pSrc[(i * uSrcWidth + uCol) * 3];
-            r += float(Contrib->ContribRow[y].Weights[i - iLeft] * value[*pCurSrc]);
-            g += float(Contrib->ContribRow[y].Weights[i - iLeft] * value[*(pCurSrc + 1)]);
-            b += float(Contrib->ContribRow[y].Weights[i - iLeft] * value[*(pCurSrc + 2)]);
+            const int iLeft = ContribH->ContribRow[x].Left;
+            const int iRight = ContribH->ContribRow[x].Right;
+            double* pWeights = ContribH->ContribRow[x].Weights;
+
+            for (int i = iLeft; i <= iRight; i++)
+            {
+                const double weight = pWeights[i - iLeft];
+                const unsigned char* pPixel = pSrcRow + i * 3;
+
+                r += weight * value[*pPixel];
+                g += weight * value[*(pPixel + 1)];
+                b += weight * value[*(pPixel + 2)];
+            }
+
+            unsigned char* pDstPixel = pDstRow + x * 3;
+            pDstPixel[0] = static_cast<BYTE>(min(255.0, max(0.0, r + 0.5)));
+            pDstPixel[1] = static_cast<BYTE>(min(255.0, max(0.0, g + 0.5)));
+            pDstPixel[2] = static_cast<BYTE>(min(255.0, max(0.0, b + 0.5)));
         }
-        int off = (y * uResWidth + uCol) * 3;
-        pRes[off] = (BYTE)(r + 0.5) & 0xff;   // Place result in destination pixel
-        pRes[off + 1] = (BYTE)(g + 0.5) & 0xff;
-        pRes[off + 2] = (BYTE)(b + 0.5) & 0xff;
     }
 }
-
-
 
 void C2PassScale::VertScale(unsigned char* pSrc,
     unsigned int                uSrcWidth,
@@ -233,18 +211,50 @@ void C2PassScale::VertScale(unsigned char* pSrc,
         return;
     }
     // Allocate and calculate the contributions
-    LineContribType* Contrib = CalcContributions(uResHeight, uSrcHeight, double(uResHeight) / double(uSrcHeight));
-    for (unsigned int u = 0; u < uResWidth; u++)
-    {   // Step through columns
-        ScaleCol(pSrc,
-            uSrcWidth,
-            pDst,
-            uResWidth,
-            uResHeight,
-            u,
-            Contrib);   // Scale each column
+    if (uResHeight != olduResHeight || olduSrcHeight != uSrcHeight)
+    {
+        FreeContributions(ContribV);
+        ContribV = CalcContributions(uResHeight, uSrcHeight, double(uResHeight) / double(uSrcHeight));
+		olduResHeight = uResHeight;
+		olduSrcHeight = uSrcHeight;
     }
-    FreeContributions(Contrib);     // Free contributions structure
+   
+
+    const unsigned int uSrcRowBytes = uSrcWidth * 3;
+    const unsigned int uResRowBytes = uResWidth * 3;
+
+    // Improved loop order for better cache locality
+    for (unsigned int y = 0; y < uResHeight; y++)
+    {
+        const int iLeft = ContribV->ContribRow[y].Left;
+        const int iRight = ContribV->ContribRow[y].Right;
+        double* pWeights = ContribV->ContribRow[y].Weights;
+
+        unsigned char* pDstRow = pDst + y * uResRowBytes;
+
+        for (unsigned int u = 0; u < uResWidth; u++)
+        {
+            double r = 0.0;
+            double g = 0.0;
+            double b = 0.0;
+
+            for (int i = iLeft; i <= iRight; i++)
+            {
+                const double weight = pWeights[i - iLeft];
+                const unsigned char* pPixel = pSrc + (i * uSrcWidth + u) * 3;
+
+                r += weight * value[*pPixel];
+                g += weight * value[*(pPixel + 1)];
+                b += weight * value[*(pPixel + 2)];
+            }
+
+            unsigned char* pDstPixel = pDstRow + u * 3;
+            pDstPixel[0] = static_cast<BYTE>(min(255.0, max(0.0, r + 0.5)));
+            pDstPixel[1] = static_cast<BYTE>(min(255.0, max(0.0, g + 0.5)));
+            pDstPixel[2] = static_cast<BYTE>(min(255.0, max(0.0, b + 0.5)));
+        }
+    }
+        // Free contributions structure
 }
 
 void C2PassScale::Scale(
