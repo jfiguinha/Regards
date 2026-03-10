@@ -10,7 +10,10 @@ int C2PassScale::olduSrcHeight = 0;
 LineContribType* C2PassScale::ContribH = nullptr;
 int C2PassScale::olduResWidth = 0;
 int C2PassScale::olduSrcWidth = 0;
-
+unsigned char* C2PassScale::pTemp  = nullptr;
+int C2PassScale::olduNewWidth= 0;
+int C2PassScale::olduOrigHeight= 0;
+    
 void C2PassScale::Execute(const cv::Mat& in, cv::Mat& Out)
 {
     if (in.empty() || in.channels() != 3)
@@ -265,8 +268,15 @@ void C2PassScale::Scale(
     unsigned int        uNewWidth,
     unsigned int        uNewHeight)
 {
-    // Scale source image horizontally into temporary image
-    unsigned char* pTemp = (unsigned char*)malloc(uNewWidth * uOrigHeight * 3);
+    if(olduNewWidth != uNewWidth || olduOrigHeight != uOrigHeight)
+    {
+        if(pTemp != nullptr)
+            free(pTemp);
+        pTemp = (unsigned char*)malloc(uNewWidth * uOrigHeight * 3);
+        olduNewWidth = uNewWidth;
+        olduOrigHeight = uOrigHeight;
+    }
+
     HorizScale(pOrigImage,
         uOrigWidth,
         uOrigHeight,
@@ -281,7 +291,7 @@ void C2PassScale::Scale(
         pDstImage,
         uNewWidth,
         uNewHeight);
-    free(pTemp);
+    
 
 }
 

@@ -85,6 +85,9 @@ private:
 	static LineContribType* ContribH;
 	static int olduResWidth;
 	static int olduSrcWidth;
+    static unsigned char* pTemp;
+    static int olduNewWidth;
+    static int olduOrigHeight;
 };
 
 
