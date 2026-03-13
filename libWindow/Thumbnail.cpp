@@ -913,6 +913,10 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				if (element->type == 0)
 				{
 					printf("CThumbnail::listToErrase %i \n", i);
+					CIconeList* pIconeListToClean = element->list;
+					if (pIconeListToClean != nullptr)
+						pIconeListToClean->EraseThumbnailListWithIcon();
+
 					delete element->list;
 					element->list = nullptr;
 				}
