@@ -34,7 +34,7 @@ namespace Regards::Viewer
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 
 	protected:
-		CIconeList* PregenerateList();
+		void PregenerateList();
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
 

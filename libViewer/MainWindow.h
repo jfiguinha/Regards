@@ -82,7 +82,7 @@ namespace Regards::Viewer
 
 		bool FindNextValidFile();
 		bool FindPreviousValidFile();
-
+		bool FindNextValidFile(wxString filename);
 		void OnEditFile(wxCommandEvent& event);
 
 		void OnUpdateInfos(wxCommandEvent& event);

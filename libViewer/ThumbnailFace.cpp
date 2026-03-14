@@ -79,15 +79,6 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 	{
 		CFaceFilePath numFace = listPhotoFace.at(i);
 		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
-				return thumbnailData->GetNumFace() == numFace.numFace && thumbnailData->GetFilename() == numFace.faceFilePath;
-
-			});
-
-		if (it == pIconeList.end())
 		{
 			auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
 			thumbnailData->SetNumPhotoId(numFace.numPhoto);
@@ -109,17 +100,6 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			pBitmapIcone->SetShowDelete(true);
 			iconeListLocal->AddElement(pBitmapIcone);
-
-			pIconeList.push_back(pBitmapIcone);
-		}
-		else
-		{
-			CIcone* icone = (CIcone*)*it;
-			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)icone->GetData();
-			thumbnailData->SetNumPhotoId(numFace.numPhoto);
-			thumbnailData->SetNumElement(nbElement++);
-			icone->SetNumElement(thumbnailData->GetNumElement());
-			iconeListLocal->AddElement(icone);
 		}
 	}
 
@@ -130,15 +110,13 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 void CThumbnailFace::init()
 {
-	std::vector<CIcone*> pIconeListToClean;
-	auto iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
 	auto viewerParam = CMainParamInit::getInstance();
 	threadDataProcess = false;
 	double pertinence = 0.0;
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
+	iconeList->EraseThumbnailListWithIcon();
 
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -157,19 +135,19 @@ void CThumbnailFace::init()
 	for (int i = 0; i < listFace.size(); i++)
 	{
 		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
-		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
+		AddSeparatorBar(iconeList, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	int size = iconeListLocal->GetNbElement();
+	int size = iconeList->GetNbElement();
 
 
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
-			int photo = iconeListLocal->GetPhotoId(i);
+			int photo = iconeList->GetPhotoId(i);
 			CIcone* ico = iconeList->FindElementPhotoId(photo);
 			if (ico != nullptr)
 			{
-				CIcone* iconew = iconeListLocal->GetElement(i);
+				CIcone* iconew = iconeList->GetElement(i);
 				if (iconew != nullptr)
 				{
 					iconew->SetChecked(ico->IsChecked());
@@ -181,51 +159,7 @@ void CThumbnailFace::init()
 	);
 
 
-
-	oldIconeList = iconeList;
-	iconeList = iconeListLocal;
-
 	nbElementInIconeList = iconeList->GetNbElement();
-
-	for (CIcone* ico : pIconeList)
-	{
-		bool find = false;
-		CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
-		int numFace = thumbnailData->GetNumFace();
-		wxString filename = thumbnailData->GetFilename();
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)ico->GetData();
-			if (thumbnailData->GetNumFace() == numFace && thumbnailData->GetFilename() == filename)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-			pIconeListToClean.push_back(ico);
-	}
-
-	for (CIcone* ico : pIconeListToClean)
-	{
-		CSqlFaceThumbnail* _clean = (CSqlFaceThumbnail*)ico->GetData();
-
-		std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-			{
-				CSqlFaceThumbnail* thumbnailData = (CSqlFaceThumbnail*)e->GetData();
-				return (thumbnailData->GetNumFace() == _clean->GetNumFace() && thumbnailData->GetFilename() == _clean->GetFilename());
-
-			});
-
-		if (it != pIconeList.end())
-			pIconeList.erase(it);
-	}
-
-	EraseThumbnailList(oldIconeList);
-	EraseIconeList(pIconeListToClean);
 
 	AfterSetList();
 

@@ -849,13 +849,15 @@ void CMainWindow::SetPosProgressBar(const int& position)
 	wxQueueEvent(this, event);
 }
 
+
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
-bool CMainWindow::FindNextValidFile()
+bool CMainWindow::FindNextValidFile(wxString filename)
 {
 	bool isFound = false;
 	wxString lastFile = centralWnd->ImageFin(false);
+	localFilename = filename;
 	do
 	{
 		isFound = CThumbnailBuffer::FindValidFile(localFilename);
@@ -870,6 +872,14 @@ bool CMainWindow::FindNextValidFile()
 	} while (!isFound);
 
 	return isFound;
+}
+
+//---------------------------------------------------------------
+//
+//---------------------------------------------------------------
+bool CMainWindow::FindNextValidFile()
+{
+	return FindNextValidFile(localFilename);
 }
 
 //---------------------------------------------------------------
@@ -981,8 +991,30 @@ void CMainWindow::UpdateFolderStatic()
 					{
 						localFilename = "";
 					}
+				}	
+			}
+			else
+			{
+				bool isFound = false;
+
+				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
+				{
+					isFound = FindNextValidFile(firstFileToShow);
+					if (!isFound)
+						isFound = FindPreviousValidFile();
 				}
-					
+
+				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
+				{
+					try
+					{
+						localFilename = CThumbnailBuffer::GetVectorValue(0).GetPath();
+					}
+					catch (...)
+					{
+						localFilename = "";
+					}
+				}
 			}
 
 

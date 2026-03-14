@@ -2,12 +2,8 @@
 #include <header.h>
 #include "ThumbnailFolder.h"
 #include "MainWindow.h"
-#include <LibResource.h>
 #include <ThumbnailDataSQL.h>
-#include <SqlFindPhotos.h>
-#include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
-#include <SqlPhotosWithoutThumbnail.h>
 #include "TreatmentData.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
@@ -65,56 +61,24 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->ShowExpandIcon(true);
 	int local_nbElement = iconeListLocal->GetNbElement();
-	tbb::concurrent_vector<int>* list = new tbb::concurrent_vector<int>();
+
 	int size = _pictures->size();
     
+
 	tbb::parallel_for(0, size, 1, [=](int i)
-	{
-		try
 		{
 			CPhotos photo = _pictures->at(i);
+			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
+			thumbnailData->SetNumPhotoId(photo.GetId());
+			thumbnailData->SetNumElement(local_nbElement + i);
 
-			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-				{
-					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-					return thumbnailData->GetNumPhotoId() == photo.GetId();
-
-				});
-
-			if (it != pIconeList.end())
-			{
-				CIcone* icone = (CIcone*)*it;
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
-				thumbnailData->SetNumElement(local_nbElement + i);
-				icone->SetNumElement(thumbnailData->GetNumElement());
-				iconeListLocal->AddElement(icone);
-			}
-			else
-				list->push_back(i);
-
-		}
-		catch(...)
-		{
-
-		}
-	}
-    );
-
-	for (int i : *list)
-	{
-		CPhotos photo = _pictures->at(i);
-		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
-		thumbnailData->SetNumPhotoId(photo.GetId());
-		thumbnailData->SetNumElement(local_nbElement + i);
-
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->ShowSelectButton(true);
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeListLocal->AddElement(pBitmapIcone);
-		pIconeList.push_back(pBitmapIcone);
-	}
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->ShowSelectButton(true);
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
+		});
 
 	iconeListLocal->SortById();
 
@@ -125,10 +89,6 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 
 	nbElement += size;
 
-	delete list;
-	
-	//if (size > 0)
-	//	listSeparator.push_back(infosSeparationBar);
 	return infosSeparationBar;
 }
 
@@ -147,9 +107,9 @@ void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
 
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
-    std::vector<CIcone*> pIconeListToClean;
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = iconeList;
+
+	iconeList->EraseThumbnailListWithIcon();
+
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -167,27 +127,27 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	if (typeLocal == SHOW_ALL)
 	{
 		CTreatmentDataFolder dataYear;
-		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
+		dataYear.MainTreatment(_listSeparator, iconeList, this, i);
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
 		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(_listSeparator, iconeListLocal, this, i);
+		dataYear.MainTreatment(_listSeparator, iconeList, this, i);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
 		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(_listSeparator, iconeListLocal, this, i);
+		dataMonth.MainTreatment(_listSeparator, iconeList, this, i);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
 		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(_listSeparator, iconeListLocal, this, i);
+		dataLocalisation.MainTreatment(_listSeparator, iconeList, this, i);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
 		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(_listSeparator, iconeListLocal, this, i);
+		dataDay.MainTreatment(_listSeparator, iconeList, this, i);
 	}
 
 
@@ -197,7 +157,6 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		config->SetTypeAffichage(typeAffichage);
 	}
 
-	iconeList = iconeListLocal;
 	listSeparator = _listSeparator;
 
 	//------------------------------------------------------------------
@@ -226,14 +185,8 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 		delete old;
 	}
 
-
 	nbElementInIconeList = iconeList->GetNbElement();
     
-	GenerateCleanupListFile(pIconeListToClean);
-
-	EraseThumbnailList(oldIconeList);
-	EraseIconeList(pIconeListToClean);
-
 	//---------------------------------
 	//Application de l'état
 	//---------------------------------
@@ -263,6 +216,10 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	ResizeThumbnail();
 
 	needToRefresh = true;
+
+	listSelectItem.clear();
+
+	
 }
 
 void CThumbnailFolder::Init(const int& typeAffichage)
@@ -276,87 +233,45 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 
 void CThumbnailFolder::SetListeFile()
 {
-	std::vector<CIcone*> pIconeListToClean;
-	CIconeList* iconeListLocal = new CIconeList();
+	iconeList->EraseThumbnailListWithIcon();
 	threadDataProcess = false;
 	thumbnailPos = 0;
 	int size = CThumbnailBuffer::GetVectorSize();
-	tbb::concurrent_vector<int>* list = new tbb::concurrent_vector<int>();
 
-	tbb::parallel_for(0, size, 1, [=](int i)      
-	{
-		try
+	tbb::parallel_for(0, size, 1, [=](int i)
 		{
-			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
-
-			std::vector<CIcone*>::iterator it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-				{
-					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)e->GetData();
-					return thumbnailData->GetFilename() == fileEntry.GetPath();
-
-				});
-
-			if (it != pIconeList.end())
+			try
 			{
-				CIcone* icone = (CIcone*)*it;
-				CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)icone->GetData();
+				CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
+
+				wxString filename = fileEntry.GetPath();
+				CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
 				thumbnailData->SetNumPhotoId(fileEntry.GetId());
 				thumbnailData->SetNumElement(i);
-				icone->SetNumElement(thumbnailData->GetNumElement());
-				icone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
-				iconeListLocal->AddElement(icone);
+
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
+
+				iconeList->AddElement(pBitmapIcone);
 			}
-			else
-				list->push_back(i);
-		}
-		catch(...)
-		{
+			catch (...)
+			{
 
-		}
-	}
-    );
+			}
+		});
 
 
-	for (int i : *list)
-	{
-		try
-		{
-			CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
-
-			wxString filename = fileEntry.GetPath();
-			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
-			thumbnailData->SetNumPhotoId(fileEntry.GetId());
-			thumbnailData->SetNumElement(i);
-
-
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
-
-			iconeListLocal->AddElement(pBitmapIcone);
-			pIconeList.push_back(pBitmapIcone);
-		}
-		catch(...)
-		{
-
-		}
-	}
-
-	delete list;
-
-	iconeListLocal->SortById();
-
-	CIconeList* oldIconeList = iconeList;
-	iconeList = iconeListLocal;
+	iconeList->SortById();
 
 	nbElementInIconeList = iconeList->GetNbElement();
     
-	GenerateCleanupListFile(pIconeListToClean);
 
-	EraseThumbnailList(oldIconeList);
-	EraseIconeList(pIconeListToClean);
+	
+
 	//----------------------------------------------------------
 	// 
 	//EraseThumbnailList(oldIconeList);
