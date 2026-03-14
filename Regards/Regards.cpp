@@ -160,6 +160,8 @@ int MyApp::Close()
 
 	if (testFrame != nullptr)
 		delete testFrame;
+        
+    exit(0);
 
 	return 0;
 }
