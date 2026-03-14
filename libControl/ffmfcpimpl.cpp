@@ -404,7 +404,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			dataFrame->sample_aspect_ratio = video_aspect_ratio;
 			dataFrame->isHardwareDecoding = isHardwareDecoding;
 
-			if (IsSupportOpenCL() && !isHardwareDecoding)
+			if (IsSupportOpenCL() && !isHardwareDecoding && (tmp_frame->format == AV_PIX_FMT_NV12 || tmp_frame->format == AV_PIX_FMT_YUV420P))
 			{
 				dataFrame->dst = CopyFrame(vp->frame);
 			}
