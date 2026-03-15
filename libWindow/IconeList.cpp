@@ -96,6 +96,20 @@ int CIconeList::GetPhotoId(const int& numElement)
 	return photoId;
 }
 
+void CIconeList::RemoveElement(int numElement)
+{
+	CIcone* icone = nullptr;
+	if (numElement < pIconeList.size())
+		icone = pIconeList[numElement];
+	if (icone != nullptr)
+	{
+		delete(icone);
+		icone = nullptr;
+	}
+	pIconeList[numElement] = nullptr;
+
+}
+
 CIcone* CIconeList::GetElement(const int& numElement)
 {
 	CIcone* icone = nullptr;
@@ -142,6 +156,22 @@ bool CIconeList::FindElement(wxString filename)
 		return true;
 
 	return false;
+}
+
+CIcone * CIconeList::FindElementByFilename(wxString filename)
+{
+	IconeVector::iterator it;
+	CIcone* element = nullptr;
+	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
+		{
+			CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
+			return thumbnailData->GetFilename() == filename;
+
+		});
+
+	if (it != pIconeList.end())
+		element = *it;
+	return element;
 }
 
 CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)

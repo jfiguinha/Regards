@@ -24,6 +24,8 @@ namespace Regards::Window
 		bool FindElement(wxString filename);
 		void SortByFilename();
 		CIcone* GetLastElement();
+		void RemoveElement(int numElement);
+		CIcone * FindElementByFilename(wxString filename);
 	private:
 		IconeVector pIconeList;
 		//mutex muList;
