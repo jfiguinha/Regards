@@ -1289,6 +1289,9 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 //---------------------------------------------------------------
 CMainWindow::~CMainWindow()
 {
+	if (loadPictureStartTimer->IsRunning())
+		loadPictureStartTimer->Stop();
+
 	delete(toolbarViewerMode);
 	delete(progressBar);
 	delete(statusBar);
