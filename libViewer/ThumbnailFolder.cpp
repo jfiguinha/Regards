@@ -133,29 +133,39 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
 	int size = iconeList->GetNbElement();
+	static std::atomic<int> nbElement = 0;
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
 			if (!find)
-				iconeList->RemoveElement(i);
-		});
-
-	CIconeList* newIconeList = new CIconeList();
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			if (ico != nullptr)
 			{
-				ico->SetNumElement(i);
-				newIconeList->AddElement(ico);
+				iconeList->RemoveElement(i);
+				nbElement++;
 			}
-
+				
 		});
 
-	delete iconeList;
+	if (nbElement > 0)
+	{
+		CIconeList* newIconeList = new CIconeList();
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				CIcone* ico = iconeList->GetElement(i);
+				if (ico != nullptr)
+				{
+					ico->SetNumElement(i);
+					newIconeList->AddElement(ico);
+				}
 
-	iconeList = newIconeList;
+			});
+
+		delete iconeList;
+
+		iconeList = newIconeList;
+	}
+
+
 
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -280,30 +290,66 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 
 void CThumbnailFolder::SetListeFile()
 {
-	iconeList->EraseThumbnailListWithIcon();
+	int iconWidth = themeThumbnail.themeIcone.GetWidth();
+	int size = iconeList->GetNbElement();
+	static std::atomic<int> nbElement = 0;
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+			if (!find)
+			{
+				iconeList->RemoveElement(i);
+				nbElement++;
+			}
+
+		});
+
+	if (nbElement > 0)
+	{
+		CIconeList* newIconeList = new CIconeList();
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				CIcone* ico = iconeList->GetElement(i);
+				if (ico != nullptr)
+				{
+					ico->SetNumElement(i);
+					newIconeList->AddElement(ico);
+				}
+
+			});
+
+		delete iconeList;
+
+		iconeList = newIconeList;
+	}
+
 	threadDataProcess = false;
 	thumbnailPos = 0;
-	int size = CThumbnailBuffer::GetVectorSize();
+	size = CThumbnailBuffer::GetVectorSize();
 
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			try
 			{
 				CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
-
 				wxString filename = fileEntry.GetPath();
-				CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
-				thumbnailData->SetNumPhotoId(fileEntry.GetId());
-				thumbnailData->SetNumElement(i);
+				bool find = iconeList->FindElement(filename);
+				if (!find)
+				{
+					CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
+					thumbnailData->SetNumPhotoId(fileEntry.GetId());
+					thumbnailData->SetNumElement(i);
 
 
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-				pBitmapIcone->SetData(thumbnailData);
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
+					auto pBitmapIcone = new CIcone();
+					pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+					pBitmapIcone->SetData(thumbnailData);
+					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+					pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
 
-				iconeList->AddElement(pBitmapIcone);
+					iconeList->AddElement(pBitmapIcone);
+				}
 			}
 			catch (...)
 			{
@@ -311,14 +357,24 @@ void CThumbnailFolder::SetListeFile()
 			}
 		});
 
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* icone = iconeList->GetElement(i);
+			if (icone != nullptr)
+			{
+				icone->SetNumElement(i);
+				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+				if (data != nullptr)
+				{
+					data->SetNumElement(i);
+				}
+			}
+		});
 
 	iconeList->SortById();
 
 	nbElementInIconeList = iconeList->GetNbElement();
     
-
-	
-
 	//----------------------------------------------------------
 	// 
 	//EraseThumbnailList(oldIconeList);

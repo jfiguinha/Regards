@@ -57,29 +57,37 @@ void CThumbnailViewerPicture::PregenerateList()
 	
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
 	int size = iconeList->GetNbElement();
+	static std::atomic<int> nbElement = 0;
+
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
 			if (!find)
-				iconeList->RemoveElement(i);
-		});
-
-	CIconeList* newIconeList = new CIconeList();
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			if (ico != nullptr)
 			{
-				ico->SetNumElement(i);
-				newIconeList->AddElement(ico);
+				iconeList->RemoveElement(i);
+				nbElement++;
 			}
-
 		});
 
-	delete iconeList;
+	if (nbElement > 0)
+	{
+		CIconeList* newIconeList = new CIconeList();
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				CIcone* ico = iconeList->GetElement(i);
+				if (ico != nullptr)
+				{
+					ico->SetNumElement(i);
+					newIconeList->AddElement(ico);
+				}
 
-	iconeList = newIconeList;
+			});
+
+		delete iconeList;
+
+		iconeList = newIconeList;
+	}
 
 	size = CThumbnailBuffer::GetVectorSize();
 
@@ -114,7 +122,6 @@ void CThumbnailViewerPicture::PregenerateList()
 			}
 		});
 
-	iconeList->SortByFilename();
 
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
@@ -130,7 +137,7 @@ void CThumbnailViewerPicture::PregenerateList()
 			}
 		});
 
-
+	iconeList->SortByFilename();
 }
 
 
@@ -150,31 +157,38 @@ void CThumbnailViewerPicture::SetListeFile()
 	threadDataProcess = false;
 	//iconeList->EraseThumbnailListWithIcon();
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
-
+	static std::atomic<int> nbElement = 0;
 	int size = iconeList->GetNbElement();
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CIcone* ico = iconeList->GetElement(i);
 			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
 			if (!find)
-				iconeList->RemoveElement(i);
-		});
-
-	CIconeList* newIconeList = new CIconeList();
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			if (ico != nullptr)
 			{
-				ico->SetNumElement(i);
-				newIconeList->AddElement(ico);
+				nbElement++;
+				iconeList->RemoveElement(i);
 			}
-
+				
 		});
 
-	delete iconeList;
+	if (nbElement > 0)
+	{
+		CIconeList* newIconeList = new CIconeList();
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				CIcone* ico = iconeList->GetElement(i);
+				if (ico != nullptr)
+				{
+					ico->SetNumElement(i);
+					newIconeList->AddElement(ico);
+				}
 
-	iconeList = newIconeList;
+			});
+
+		delete iconeList;
+
+		iconeList = newIconeList;
+	}
 
 	size = CThumbnailBuffer::GetVectorSize();
 
@@ -209,9 +223,19 @@ void CThumbnailViewerPicture::SetListeFile()
 			}
 		});
 
-
-
-
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* icone = iconeList->GetElement(i);
+			if (icone != nullptr)
+			{
+				icone->SetNumElement(i);
+				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+				if (data != nullptr)
+				{
+					data->SetNumElement(i);
+				}
+			}
+		});
 
 	iconeList->SortById();
 
