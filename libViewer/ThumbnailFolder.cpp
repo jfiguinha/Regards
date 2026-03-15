@@ -60,7 +60,7 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(PhotosVector* _pi
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->ShowExpandIcon(true);
-	int local_nbElement = iconeListLocal->GetNbElement();
+	int local_nbElement = nbElement;// iconeListLocal->GetNbElement();
 
 	int size = _pictures->size();
 
@@ -68,16 +68,38 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(PhotosVector* _pi
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CPhotos photo = _pictures->at(i);
-			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(local_nbElement + i);
+			wxString filename = photo.GetPath();
 
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->ShowSelectButton(true);
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
+			bool find = iconeList->FindElement(photo.GetPath());
+			if (!find)
+			{
+				CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
+				thumbnailData->SetNumPhotoId(photo.GetId());
+				thumbnailData->SetNumElement(local_nbElement + i);
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->ShowSelectButton(true);
+				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetFilename(photo.GetPath());
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				iconeListLocal->AddElement(pBitmapIcone);
+			}
+			else
+			{
+				CIcone* icone = iconeList->FindElementByFilename(photo.GetPath());
+				if (icone != nullptr)
+				{
+					icone->SetNumElement(local_nbElement + i);
+					auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+					if (data != nullptr)
+					{
+						data->SetNumElement(local_nbElement + i);
+						icone->SetNumElement(data->GetNumElement());
+					}
+					
+				}
+			}
 		});
 
 	iconeListLocal->SortById();
@@ -108,7 +130,39 @@ void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
 
-	iconeList->EraseThumbnailListWithIcon();
+	//iconeList->EraseThumbnailListWithIcon();
+	int size = iconeList->GetNbElement();
+	static std::atomic<int> nbElement = 0;
+
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+			if (!find)
+			{
+				iconeList->RemoveElement(i);
+				nbElement++;
+			}
+		});
+
+	if (nbElement > 0)
+	{
+		CIconeList* newIconeList = new CIconeList();
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				CIcone* ico = iconeList->GetElement(i);
+				if (ico != nullptr)
+				{
+					ico->SetNumElement(i);
+					newIconeList->AddElement(ico);
+				}
+
+			});
+
+		delete iconeList;
+
+		iconeList = newIconeList;
+	}
 
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -122,7 +176,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	int i = 0;
 	int typeLocal = typeAffichage;
-	int size = CThumbnailBuffer::GetVectorSize();
+	size = CThumbnailBuffer::GetVectorSize();
 
 	if (typeLocal == SHOW_ALL)
 	{
@@ -190,7 +244,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 	//---------------------------------
 	//Application de l'état
 	//---------------------------------
-
+	/*
 	if (listSelectItem.size() > 0)
 	{
 		for (CThumbnailData* data : listSelectItem)
@@ -203,7 +257,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 				icone->SetSelected(true);
 			}
 		}
-	}
+	}*/
 
 	AfterSetList();
 

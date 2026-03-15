@@ -32,6 +32,7 @@ namespace Regards::Viewer
 
 	private:
 
+		void InitListFace();
 		void OnSelectIcon(wxCommandEvent& event);
 		void DeleteEmptyFace();
 		int FindSeparatorFace(const int& xPos, const int& yPos);
