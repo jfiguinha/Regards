@@ -166,6 +166,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	if (firstFileToShow == "")
 	{
+		//Open Default Folder in first time
 		loadPictureStartTimer->Start(10, true);
 	}
 
@@ -1294,6 +1295,7 @@ CMainWindow::~CMainWindow()
 	delete(centralWnd);
 	delete(folderProcess);
 	delete(thumbnailProcess);
+	delete(loadPictureStartTimer);
 	//delete(toolbar);
 }
 
