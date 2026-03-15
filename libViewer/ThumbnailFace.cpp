@@ -137,6 +137,8 @@ void CThumbnailFace::InitListFace()
 	static std::atomic<int> nbElement = 0;
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
+
+
 	CSqlFindFacePhoto sqlFindFacePhoto;
 	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(pertinence);
 	for (int i = 0; i < iconeList->GetNbElement(); i++)
@@ -165,7 +167,6 @@ void CThumbnailFace::InitListFace()
 				CIcone* ico = iconeList->GetElement(i);
 				if (ico != nullptr)
 				{
-					ico->SetNumElement(i);
 					newIconeList->AddElement(ico);
 				}
 
