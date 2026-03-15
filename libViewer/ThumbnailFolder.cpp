@@ -238,24 +238,6 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
-	//---------------------------------
-	//Application de l'état
-	//---------------------------------
-	/*
-	if (listSelectItem.size() > 0)
-	{
-		for (CThumbnailData* data : listSelectItem)
-		{
-			int itemId = GetNumItemById(data->GetNumPhotoId());
-			CIcone* icone = iconeList->GetElement(itemId);
-			if (icone != nullptr)
-			{
-				icone->SetChecked(true);
-				icone->SetSelected(true);
-			}
-		}
-	}*/
-
 	AfterSetList();
 
 	thumbnailPos = 0;
