@@ -60,7 +60,7 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->ShowExpandIcon(true);
-	int local_nbElement = iconeListLocal->GetNbElement();
+	int local_nbElement = nbElement;
 
 	int size = _pictures->size();
     
@@ -68,23 +68,44 @@ CInfosSeparationBarExplorer * CThumbnailFolder::AddSeparatorBar(PhotosVector * _
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CPhotos photo = _pictures->at(i);
-			CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(local_nbElement + i);
 
-			auto pBitmapIcone = new CIcone();
-			pBitmapIcone->ShowSelectButton(true);
-			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeListLocal->AddElement(pBitmapIcone);
+			bool find = iconeListLocal->FindElement(photo.GetPath());
+			if (!find)
+			{
+
+				CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
+				thumbnailData->SetNumPhotoId(photo.GetId());
+				thumbnailData->SetNumElement(local_nbElement + i);
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->ShowSelectButton(true);
+				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetFilename(photo.GetPath());
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				iconeListLocal->AddElement(pBitmapIcone);
+			}
+			else
+			{
+				CIcone* pBitmapIcone = iconeListLocal->FindElementByFilename(photo.GetPath());
+				if (pBitmapIcone != nullptr)
+				{
+					CThumbnailDataSQL* thumbnailData = (CThumbnailDataSQL*)pBitmapIcone->GetData();
+					thumbnailData->SetNumPhotoId(photo.GetId());
+					thumbnailData->SetNumElement(local_nbElement + i);
+					pBitmapIcone->ShowSelectButton(true);
+					pBitmapIcone->SetNumElement(local_nbElement + i);
+					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+					pBitmapIcone->SetFilename(photo.GetPath());
+				}
+			}
 		});
 
 	iconeListLocal->SortById();
 
 	for (auto i = 0; i < size; i++)
 	{
-		infosSeparationBar->listElement.push_back(local_nbElement + i);
+		infosSeparationBar->listElement.push_back(nbElement + i);
 	}
 
 	nbElement += size;
@@ -108,7 +129,33 @@ void CThumbnailFolder::SortVectorByFilename(PhotosVector* vector)
 void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 {
 
-	iconeList->EraseThumbnailListWithIcon();
+	//iconeList->EraseThumbnailListWithIcon();
+
+	int iconWidth = themeThumbnail.themeIcone.GetWidth();
+	int size = iconeList->GetNbElement();
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+			if (!find)
+				iconeList->RemoveElement(i);
+		});
+
+	CIconeList* newIconeList = new CIconeList();
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* ico = iconeList->GetElement(i);
+			if (ico != nullptr)
+			{
+				ico->SetNumElement(i);
+				newIconeList->AddElement(ico);
+			}
+
+		});
+
+	delete iconeList;
+
+	iconeList = newIconeList;
 
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -122,7 +169,7 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 	int i = 0;
 	int typeLocal = typeAffichage;
-	int size = CThumbnailBuffer::GetVectorSize();
+	size = CThumbnailBuffer::GetVectorSize();
 
 	if (typeLocal == SHOW_ALL)
 	{

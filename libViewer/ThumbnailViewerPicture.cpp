@@ -53,7 +53,8 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 
 void CThumbnailViewerPicture::PregenerateList()
 {
-	iconeList->EraseThumbnailListWithIcon();
+	//iconeList->EraseThumbnailListWithIcon();
+	
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
 	int size = iconeList->GetNbElement();
 	tbb::parallel_for(0, size, 1, [=](int i)
@@ -115,19 +116,19 @@ void CThumbnailViewerPicture::PregenerateList()
 
 	iconeList->SortByFilename();
 
-	for (int i = 0; i < size; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
+	tbb::parallel_for(0, size, 1, [=](int i)
 		{
-			icone->SetNumElement(i);
-			auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
-			if (data != nullptr)
+			CIcone* icone = iconeList->GetElement(i);
+			if (icone != nullptr)
 			{
-				data->SetNumElement(i);
+				icone->SetNumElement(i);
+				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+				if (data != nullptr)
+				{
+					data->SetNumElement(i);
+				}
 			}
-		}
-	}
+		});
 
 
 }

@@ -42,7 +42,7 @@ public:
 		std::map<wxString, PhotosVector *> listMap;
 		std::map<wxString, wxString> listLibelle;
 		this->numElement = numElement;
-		this->iconeListLocal = iconeListLocal;
+
 		int size = CThumbnailBuffer::GetVectorSize();
 		for (int i = 0; i < size; i++)
 		{
@@ -103,7 +103,7 @@ protected:
 	//PhotosVector listPhoto;
 	bool first = true;
 	int numElement = 0;
-	CIconeList* iconeListLocal = nullptr;
+
 };
 
 class CTreatmentDataFolder : public CTreatmentData
