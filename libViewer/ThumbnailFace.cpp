@@ -144,7 +144,7 @@ void CThumbnailFace::InitListFace()
 
 
 	CSqlFindFacePhoto sqlFindFacePhoto;
-	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(pertinence);
+	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListAllPhotoFace(pertinence);
 	for (int i = 0; i < iconeList->GetNbElement(); i++)
 	{
 		CIcone* icone = iconeList->GetElement(i);
