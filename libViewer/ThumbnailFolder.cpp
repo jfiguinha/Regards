@@ -278,82 +278,8 @@ void CThumbnailFolder::InitTypeAffichage(const int& typeAffichage)
 
 void CThumbnailFolder::Init(const int& typeAffichage)
 {
-	if (noVscroll)
-		SetListeFile();
-	else
 		InitTypeAffichage(typeAffichage);
-
 }
-
-void CThumbnailFolder::SetListeFile()
-{
-	iconeList->EraseThumbnailListWithIcon();
-	threadDataProcess = false;
-	thumbnailPos = 0;
-	int size = CThumbnailBuffer::GetVectorSize();
-
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			try
-			{
-				CPhotos fileEntry = CThumbnailBuffer::GetVectorValue(i);
-
-				wxString filename = fileEntry.GetPath();
-				CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(filename, false, false);
-				thumbnailData->SetNumPhotoId(fileEntry.GetId());
-				thumbnailData->SetNumElement(i);
-
-
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-				pBitmapIcone->SetData(thumbnailData);
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetWindowPos(themeThumbnail.themeIcone.GetWidth() * i, 0);
-
-				iconeList->AddElement(pBitmapIcone);
-			}
-			catch (...)
-			{
-
-			}
-		});
-
-
-	iconeList->SortById();
-
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* icone = iconeList->GetElement(i);
-			if (icone != nullptr)
-			{
-				icone->SetNumElement(i);
-				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
-				if (data != nullptr)
-				{
-					data->SetNumElement(i);
-				}
-			}
-		});
-
-	nbElementInIconeList = iconeList->GetNbElement();
-
-
-
-
-	//----------------------------------------------------------
-	// 
-	//EraseThumbnailList(oldIconeList);
-
-	AfterSetList();
-
-	threadDataProcess = true;
-	widthThumbnail = 0;
-	heightThumbnail = 0;
-	ResizeThumbnail();
-
-	needToRefresh = true;
-}
-
 
 bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */

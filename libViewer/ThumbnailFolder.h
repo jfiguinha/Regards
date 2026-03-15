@@ -31,7 +31,6 @@ namespace Regards::Viewer
 
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
-		void SetListeFile();
 
 		CIcone *  FindElementWithVScroll(const int& xPos, const int& yPos) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
