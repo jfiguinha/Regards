@@ -97,7 +97,7 @@ namespace Regards::Viewer
 		void OnFaceAdd(wxCommandEvent& event);
 		void OnVersionUpdate(wxCommandEvent& event);
 		void UpdateStatusBarMessage(wxCommandEvent& event);
-
+		void OnOpenFile(wxTimerEvent& event);
 		void OnDeleteFace(wxCommandEvent& event);
 		void OnExit(wxCommandEvent& event);
 		void InitPictures(wxCommandEvent& event);
@@ -153,7 +153,7 @@ namespace Regards::Viewer
 		CCentralWindow* centralWnd;
 		CToolbarViewerMode* toolbarViewerMode;
 		std::thread* versionUpdate = nullptr;
-
+		wxTimer * loadPictureStartTimer;
 		bool isCheckingFile = false;
 		IStatusBarInterface* statusBarViewer;
 		wxRect posWindow;

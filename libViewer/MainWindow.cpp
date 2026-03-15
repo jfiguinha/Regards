@@ -36,7 +36,8 @@
 #include <ParamInit.h>
 #include "FolderProcess.h"
 #include <wx/mimetype.h>
-
+#include <wx/stdpaths.h>
+#include <wx/dir.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -47,7 +48,7 @@ using namespace Regards::Sqlite;
 bool firstTime = true;
 
 
-
+constexpr auto TIMER_LOADPICTURESTART = 0x10005;
 
 
 
@@ -92,7 +93,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false);
 	}
 	this->statusBarViewer = statusbar;
-
+	loadPictureStartTimer = new wxTimer(this, TIMER_LOADPICTURESTART);
 	/*----------------------------------------------------------------------
 	 *
 	 * Manage Event
@@ -135,7 +136,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATEMESSAGE, wxCommandEventHandler(CMainWindow::UpdateMessage));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnRefreshThumbnail));
 	Connect(wxEVENT_ICONETHUMBNAILGENERATION, wxCommandEventHandler(CMainWindow::OnProcessThumbnail));
-
+	Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnOpenFile), nullptr, this);
 	Connect(wxEVENT_UPDATECHECKINSTATUS, wxCommandEventHandler(CMainWindow::OnCheckInUpdateStatus));
 	Connect(wxEVENT_UPDATECHECKINFOLDER, wxCommandEventHandler(CMainWindow::OnRemoveFileFromCheckIn));
 	/*----------------------------------------------------------------------
@@ -163,6 +164,10 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (fileToOpen != "")
 		firstFileToShow = localFilename = fileToOpen;
 
+	if (firstFileToShow == "")
+	{
+		loadPictureStartTimer->Start(10, true);
+	}
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -187,6 +192,39 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	processIdle = true;
 	processEnd = false;
 }
+
+
+void CMainWindow::OnOpenFile(wxTimerEvent& event)
+{
+	CLibPicture libPicture;
+	wxString dirpath = "";
+
+	wxArrayString files;
+	dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
+	wxDir::GetAllFiles(dirpath, &files, wxEmptyString, wxDIR_FILES);
+	if (files.size() > 0)
+		sort(files.begin(), files.end());
+
+	for (wxString file : files)
+	{
+		if (libPicture.TestImageFormat(file) != 0)
+		{
+			firstFileToShow = file;
+			break;
+		}
+	}
+		
+
+	if (firstFileToShow != "")
+	{
+		auto file = new wxString(firstFileToShow);
+		wxCommandEvent evt(wxEVENT_OPENFILEORFOLDER);
+		evt.SetInt(1);
+		evt.SetClientData(file);
+		this->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 
 void CMainWindow::OnRemoveFileFromCheckIn(wxCommandEvent& event)
 {

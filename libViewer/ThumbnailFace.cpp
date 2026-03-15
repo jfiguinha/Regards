@@ -81,6 +81,73 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		infosSeparationBar->listElement.push_back(local_nbElement + i);
 		{
 			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
+			CIcone* icone = nullptr;
+			for (auto j = 0; j < iconeListLocal->GetNbElement(); j++)
+			{
+				icone = iconeListLocal->GetElement(j);
+				if (icone != nullptr)
+				{
+					auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+					if (data != nullptr)
+					{
+						if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
+						{
+							find = true;
+							data->SetNumElement(local_nbElement + i);
+							icone->SetNumElement(data->GetNumElement());
+							break;
+						}
+					}
+				}
+
+			}
+
+			if (!find)
+			{
+				auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
+				thumbnailData->SetNumPhotoId(numFace.numPhoto);
+				thumbnailData->SetNumElement(local_nbElement + i);
+
+				CLibPicture libPicture;
+				if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+				{
+					CSqlFacePhoto facePhoto;
+					int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
+					thumbnailData->SetNumFrame(positionVideo);
+				}
+
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->ShowSelectButton(true);
+				pBitmapIcone->SetNumElement(local_nbElement + i);
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetShowDelete(true);
+				pBitmapIcone->SetFilename(numFace.faceFilePath);
+				iconeListLocal->AddElement(pBitmapIcone);
+			}
+		}
+	}
+
+	nbElement += listPhotoFace.size();
+
+
+	if (listPhotoFace.size() > 0)
+		listSeparator.push_back(infosSeparationBar);
+	/*
+	auto infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
+	infosSeparationBar->SetTitle(libelle);
+	infosSeparationBar->SetParentWindow(this);
+	infosSeparationBar->SetWidth(GetWindowWidth());
+	infosSeparationBar->SetNumFace(faceName);
+	int local_nbElement = nbElement;
+
+	for (auto i = 0; i < listPhotoFace.size(); i++)
+	{
+		CFaceFilePath numFace = listPhotoFace.at(i);
+		infosSeparationBar->listElement.push_back(local_nbElement + i);
+		{
+			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
 			CIcone* icone = FindFaceElement(numFace.faceFilePath, numFace.numFace);
 			if (icone != nullptr)
 			{
@@ -125,6 +192,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 	if (listPhotoFace.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
+	*/
 }
 
 bool CThumbnailFace::ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone)
@@ -148,7 +216,54 @@ CIcone* CThumbnailFace::FindFaceElement(wxString filepath, int numFace)
 }
 
 void CThumbnailFace::InitListFace()
-{
+{	
+	auto viewerParam = CMainParamInit::getInstance();
+	double pertinence = 0.0;
+	static std::atomic<int> nbElement = 0;
+	if (viewerParam != nullptr)
+		pertinence = viewerParam->GetPertinenceValue();
+
+	CIconeList* newIconeList = new CIconeList();
+	CSqlFindFacePhoto sqlFindFacePhoto;
+	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListAllPhotoFace(pertinence);
+	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		wxString filename = icone->GetFilename();
+		bool find = false;
+		for (CFaceFilePath filePath : listPhotoFace)
+		{
+			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+			if (filePath.faceFilePath == filename && filePath.numFace == data->GetNumFace())
+			{
+				find = true;
+				break;
+			}
+		}
+		if(!find)
+		{
+			iconeList->RemoveElement(i);
+			nbElement++;
+		}
+		else
+			newIconeList->AddElement(icone);
+	}
+
+	
+
+	if (nbElement > 0)
+	{
+		delete iconeList;
+		iconeList = newIconeList;
+	}
+	else
+	{
+		delete newIconeList;
+	}
+
+	int size = iconeList->GetNbElement();
+
+	/*
 	auto viewerParam = CMainParamInit::getInstance();
 	double pertinence = 0.0;
 	static std::atomic<int> nbElement = 0;
@@ -185,7 +300,8 @@ void CThumbnailFace::InitListFace()
 		}
 		else
 			delete newIconeList;
-	}
+	}*/
+
 }
 
 void CThumbnailFace::init()
