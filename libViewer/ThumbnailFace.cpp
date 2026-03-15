@@ -172,16 +172,17 @@ void CThumbnailFace::InitListFace()
 		CIcone* icone = iconeList->GetElement(i);
 		wxString filename = icone->GetFilename();
 		bool find = false;
+		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
 
 		for (CFaceFilePath filePath : listPhotoFace)
 		{
-			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
 			if (filePath.faceFilePath == filename && filePath.numFace == data->GetNumFace())
 			{
 				find = true;
 				break;
 			}
 		}
+		
 
 		if (!find)
 		{
