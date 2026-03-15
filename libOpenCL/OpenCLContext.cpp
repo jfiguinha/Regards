@@ -89,7 +89,10 @@ void COpenCLContext::AssociateToVulkan()
 			select = numAmd;
 		else if(findIntel)
 			select = numIntel;
+
 		vkdev = ncnn::get_gpu_device(select);
+
+		
 	}
 
 }
