@@ -87,13 +87,9 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 				auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
 				if (data != nullptr)
 				{
-					if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
-					{
-						find = true;
-						data->SetNumElement(local_nbElement + i);
-						icone->SetNumElement(data->GetNumElement());
-						break;
-					}
+					find = true;
+					data->SetNumElement(local_nbElement + i);
+					icone->SetNumElement(data->GetNumElement());
 				}
 			}
 			
