@@ -54,9 +54,7 @@ CRegardsConfigParam::CRegardsConfigParam()
     useCuda = 0;
     openGLOutputColor = "RGBA";
     videoEffectParameter = new CVideoEffectParameter();
-#ifdef WIN32
-	inverseRotation = 1;
-#endif
+
 }
 
 CVideoEffectParameter * CRegardsConfigParam::GetVideoEffectParameter()
