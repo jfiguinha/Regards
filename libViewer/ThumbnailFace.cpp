@@ -116,6 +116,23 @@ void CThumbnailFace::init()
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
+	std::map<wxString, bool> listCheckFace;
+	std::map<wxString, long> listStateFace;
+
+	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		if (icone != nullptr)
+		{
+			auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+			if (thumbnailData != nullptr)
+			{
+				listCheckFace[thumbnailData->GetFilename()] = icone->IsChecked();
+				listStateFace[thumbnailData->GetFilename()] = icone->GetState();
+			}
+		}
+	}
+
 	iconeList->EraseThumbnailListWithIcon();
 
 	//---------------------------------
@@ -138,25 +155,31 @@ void CThumbnailFace::init()
 		AddSeparatorBar(iconeList, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	int size = iconeList->GetNbElement();
-
-
-	tbb::parallel_for(0, size, 1, [=](int i)
+	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		if (icone != nullptr)
 		{
-			int photo = iconeList->GetPhotoId(i);
-			CIcone* ico = iconeList->FindElementPhotoId(photo);
-			if (ico != nullptr)
+			auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+			if (thumbnailData != nullptr)
 			{
-				CIcone* iconew = iconeList->GetElement(i);
-				if (iconew != nullptr)
 				{
-					iconew->SetChecked(ico->IsChecked());
-					iconew->SetState(ico->GetState());
+					auto it = listCheckFace.find(thumbnailData->GetFilename());
+					if (it != listCheckFace.end())
+					{
+						icone->SetChecked(it->second);
+					}
 				}
-
+				{
+					auto it = listStateFace.find(thumbnailData->GetFilename());
+					if (it != listStateFace.end())
+					{
+						icone->SetState(it->second);
+					}
+				}
 			}
 		}
-	);
+	}
 
 
 	nbElementInIconeList = iconeList->GetNbElement();

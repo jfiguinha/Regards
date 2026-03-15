@@ -80,6 +80,18 @@ std::vector<CFaceFilePath> CSqlFindFacePhoto::GetListPhotoFace(const int& numFac
 	return listFace;
 }
 
+std::vector<CFaceFilePath> CSqlFindFacePhoto::GetListAllPhotoFace(const double& pertinence)
+{
+	type = 3;
+	listFace.clear();
+	wxString value = wxString::Format(wxT("%f"), pertinence / 100.0f);
+	ExecuteRequest(
+		"SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where Pertinence > "
+		+ value);
+	//ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where NumFaceCompatible = " + to_string(numFace));
+	return listFace;
+}
+
 std::vector<wxString> CSqlFindFacePhoto::GetPhotoListNotProcess()
 {
 	type = 0;
