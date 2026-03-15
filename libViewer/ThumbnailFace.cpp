@@ -166,16 +166,15 @@ void CThumbnailFace::InitListFace()
 	{
 		CIcone* icone = iconeList->GetElement(i);
 		wxString filename = icone->GetFilename();
+		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+		std::vector<CFaceFilePath>::iterator it = std::find_if(listPhotoFace.begin(),
+			listPhotoFace.end(),
+			[&](const CFaceFilePath& val) { return val.faceFilePath == filename && val.numFace == data->GetNumFace(); });
 
-		for (CFaceFilePath filePath : listPhotoFace)
+		if(it != listPhotoFace.end())
 		{
-			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-			if (filePath.faceFilePath == filename && filePath.numFace == data->GetNumFace())
-			{
-				iconeList->RemoveElement(i);
-				nbElement++;
-				break;
-			}
+			iconeList->RemoveElement(i);
+			nbElement++;
 		}
 	}
 
