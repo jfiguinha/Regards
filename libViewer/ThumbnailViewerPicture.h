@@ -21,8 +21,6 @@ namespace Regards::Viewer
 		CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                        const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailViewerPicture(void) override;
-		void Init(const int& typeAffichage = SHOW_ALL);
-		void SetListeFile();
 		void ApplyListeFile();
 		vector<wxString> GetFileList();
 

@@ -36,12 +36,6 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
 	}
 }
 
-
-void CThumbnailViewerPicture::Init(const int& typeAffichage)
-{
-	SetListeFile();
-}
-
 vector<wxString> CThumbnailViewerPicture::GetFileList()
 {
 	vector<wxString> list;
@@ -151,106 +145,6 @@ void CThumbnailViewerPicture::ApplyListeFile()
 	ResizeThumbnail();
 	threadDataProcess = true;
 	needToRefresh = true;
-}
-
-void CThumbnailViewerPicture::SetListeFile()
-{
-	threadDataProcess = false;
-	//iconeList->EraseThumbnailListWithIcon();
-	int iconWidth = themeThumbnail.themeIcone.GetWidth();
-	static std::atomic<int> nbElement = 0;
-	int size = iconeList->GetNbElement();
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
-			if (!find)
-			{
-				nbElement++;
-				iconeList->RemoveElement(i);
-			}
-				
-		});
-
-	if (nbElement > 0)
-	{
-		CIconeList* newIconeList = new CIconeList();
-		tbb::parallel_for(0, size, 1, [=](int i)
-			{
-				CIcone* ico = iconeList->GetElement(i);
-				if (ico != nullptr)
-				{
-					ico->SetNumElement(i);
-					newIconeList->AddElement(ico);
-				}
-
-			});
-
-		delete iconeList;
-
-		iconeList = newIconeList;
-	}
-
-	size = CThumbnailBuffer::GetVectorSize();
-
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			try
-			{
-				CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-
-				wxString filename = photo.GetPath();
-
-				bool find = iconeList->FindElement(photo.GetPath());
-				if (!find)
-				{
-					auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-					thumbnailData->SetNumPhotoId(photo.GetId());
-					thumbnailData->SetNumElement(i);
-
-					auto pBitmapIcone = new CIcone();
-					pBitmapIcone->SetNumElement(i);
-					pBitmapIcone->SetData(thumbnailData);
-					pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-					pBitmapIcone->SetWindowPos(i * iconWidth, 0);
-					pBitmapIcone->SetFilename(filename);
-					iconeList->AddElement(pBitmapIcone);
-				}
-
-			}
-			catch (const std::exception& e)
-			{
-				std::cerr << "Error creating icon at index " << i << ": " << e.what() << std::endl;
-			}
-		});
-
-	iconeList->SortById();
-
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* icone = iconeList->GetElement(i);
-			if (icone != nullptr)
-			{
-				icone->SetNumElement(i);
-				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
-				if (data != nullptr)
-				{
-					data->SetNumElement(i);
-				}
-			}
-		});
-
-	
-
-	nbElementInIconeList = iconeList->GetNbElement();
-
-
-	AfterSetList();
-	ResizeThumbnail();
-
-	threadDataProcess = true;
-	needToRefresh = true;
-
 }
 
 void CThumbnailViewerPicture::ResizeThumbnail()
