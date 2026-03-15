@@ -321,6 +321,20 @@ void CThumbnailFolder::SetListeFile()
 
 	iconeList->SortById();
 
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			CIcone* icone = iconeList->GetElement(i);
+			if (icone != nullptr)
+			{
+				icone->SetNumElement(i);
+				auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+				if (data != nullptr)
+				{
+					data->SetNumElement(i);
+				}
+			}
+		});
+
 	nbElementInIconeList = iconeList->GetNbElement();
 
 

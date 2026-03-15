@@ -122,6 +122,7 @@ void CThumbnailViewerPicture::PregenerateList()
 			}
 		});
 
+	iconeList->SortByFilename();
 
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
@@ -137,7 +138,7 @@ void CThumbnailViewerPicture::PregenerateList()
 			}
 		});
 
-	iconeList->SortByFilename();
+	
 }
 
 
@@ -223,6 +224,8 @@ void CThumbnailViewerPicture::SetListeFile()
 			}
 		});
 
+	iconeList->SortById();
+
 	tbb::parallel_for(0, size, 1, [=](int i)
 		{
 			CIcone* icone = iconeList->GetElement(i);
@@ -237,7 +240,7 @@ void CThumbnailViewerPicture::SetListeFile()
 			}
 		});
 
-	iconeList->SortById();
+	
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
