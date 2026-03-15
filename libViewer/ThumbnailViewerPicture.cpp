@@ -53,35 +53,37 @@ void CThumbnailViewerPicture::PregenerateList()
 	int size = iconeList->GetNbElement();
 	static std::atomic<int> nbElement = 0;
 
-	tbb::parallel_for(0, size, 1, [=](int i)
-		{
-			CIcone* ico = iconeList->GetElement(i);
-			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
-			if (!find)
-			{
-				iconeList->RemoveElement(i);
-				nbElement++;
-			}
-		});
-
-	if (nbElement > 0)
+	if (size > 0)
 	{
 		CIconeList* newIconeList = new CIconeList();
+
 		tbb::parallel_for(0, size, 1, [=](int i)
 			{
 				CIcone* ico = iconeList->GetElement(i);
-				if (ico != nullptr)
-				{
-					ico->SetNumElement(i);
+				bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+				if (!find)
+					iconeList->RemoveElement(i);
+				else
 					newIconeList->AddElement(ico);
-				}
 
 			});
 
-		delete iconeList;
-
-		iconeList = newIconeList;
+		if (newIconeList->GetNbElement() > 0)
+		{
+			delete iconeList;
+			iconeList = newIconeList;
+		}
+		else
+		{
+			delete newIconeList;
+		}
 	}
+	else if (CThumbnailBuffer::GetVectorSize() == 0)
+	{
+		iconeList->EraseThumbnailListWithIcon();
+	}
+
+
 
 	size = CThumbnailBuffer::GetVectorSize();
 
@@ -132,7 +134,7 @@ void CThumbnailViewerPicture::PregenerateList()
 			}
 		});
 
-	
+	nbElementInIconeList = iconeList->GetNbElement();
 }
 
 

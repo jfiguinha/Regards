@@ -155,43 +155,36 @@ void CThumbnailFace::InitListFace()
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
-
+	CIconeList* newIconeList = new CIconeList();
 	CSqlFindFacePhoto sqlFindFacePhoto;
 	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListAllPhotoFace(pertinence);
-	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	if (listPhotoFace.size() > 0)
 	{
-		CIcone* icone = iconeList->GetElement(i);
-		wxString filename = icone->GetFilename();
-		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-		std::vector<CFaceFilePath>::iterator it = std::find_if(listPhotoFace.begin(),
-			listPhotoFace.end(),
-			[&](const CFaceFilePath& val) { return val.faceFilePath == filename && val.numFace == data->GetNumFace(); });
 
-		if(it != listPhotoFace.end())
+		for (int i = 0; i < iconeList->GetNbElement(); i++)
 		{
-			iconeList->RemoveElement(i);
-			nbElement++;
-		}
-	}
+			CIcone* icone = iconeList->GetElement(i);
+			wxString filename = icone->GetFilename();
+			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+			std::vector<CFaceFilePath>::iterator it = std::find_if(listPhotoFace.begin(),
+				listPhotoFace.end(),
+				[&](const CFaceFilePath& val) { return val.faceFilePath == filename && val.numFace == data->GetNumFace(); });
 
-	int size = iconeList->GetNbElement();
-	
-	if (nbElement > 0)
-	{
-		CIconeList* newIconeList = new CIconeList();
-		tbb::parallel_for(0, size, 1, [=](int i)
+			if (it != listPhotoFace.end())
 			{
-				CIcone* ico = iconeList->GetElement(i);
-				if (ico != nullptr)
-				{
-					newIconeList->AddElement(ico);
-				}
+				iconeList->RemoveElement(i);
+			}
+			else
+				newIconeList->AddElement(icone);
+		}
 
-			});
-
-		delete iconeList;
-
-		iconeList = newIconeList;
+		if (newIconeList->GetNbElement() > 0)
+		{
+			delete iconeList;
+			iconeList = newIconeList;
+		}
+		else
+			delete newIconeList;
 	}
 }
 
