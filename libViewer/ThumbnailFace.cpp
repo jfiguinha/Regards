@@ -80,7 +80,26 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		CFaceFilePath numFace = listPhotoFace.at(i);
 		infosSeparationBar->listElement.push_back(local_nbElement + i);
 		{
-			bool find = iconeList->FindElement(numFace.faceFilePath);
+			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
+			for (int i = 0; i < iconeList->GetNbElement(); i++)
+			{
+				CIcone* icone = iconeList->GetElement(i);
+				if (icone != nullptr)
+				{
+					auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+					if (data != nullptr)
+					{
+						if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
+						{
+							find = true;
+							data->SetNumElement(local_nbElement + i);
+							icone->SetNumElement(data->GetNumElement());
+							break;
+						}
+					}
+				}
+			}
+
 			if (!find)
 			{
 				auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
@@ -105,21 +124,6 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 				pBitmapIcone->SetFilename(numFace.faceFilePath);
 				iconeListLocal->AddElement(pBitmapIcone);
 			}
-			else
-			{
-				CIcone* icone = iconeList->FindElementByFilename(numFace.faceFilePath);
-				if (icone != nullptr)
-				{
-					auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-					if (data != nullptr)
-					{
-						data->SetNumElement(local_nbElement + i);
-						icone->SetNumElement(data->GetNumElement());
-					}
-
-				}
-			}
-
 		}
 	}
 
