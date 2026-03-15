@@ -7,10 +7,9 @@
 #else
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
-#include <CL/cl_gl_ext.h>
+
 #endif
 
-#include <epoxy/gl.h>
 
 #ifdef WIN32
 #include <epoxy/wgl.h>
@@ -23,14 +22,14 @@
 #include <EGL/eglext.h>
 #endif
 #endif
-
-
-
+#include <ncnn/gpu.h>
 #include <utility.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include "utility_opencl.h"
 #include <LibResource.h>
+
+
 #if defined (__APPLE__) || defined(MACOSX)
 static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 #else
@@ -43,6 +42,58 @@ extern bool isOpenCLInitialized;
 using namespace Regards::OpenCL;
 extern std::map<wxString, cv::ocl::Program> openclBinaryMapping;
 extern string buildOption;
+extern ncnn::VulkanDevice* vkdev;
+
+void COpenCLContext::AssociateToVulkan()
+{
+	if (cv::ocl::haveOpenCL())
+	{
+		bool findNvidia = false;
+		bool findIntel = false;
+		bool findAmd = false;
+		int numNvidia = 0;
+		int numAmd = 0;
+		int numIntel = 0;
+		int select = 0;
+		cl_uint numPlatforms = ncnn::get_gpu_count();
+		for (int i = 0; i < numPlatforms; i++)
+		{
+			const ncnn::GpuInfo& pguInfo = ncnn::get_gpu_info(i);
+			string deviceName = pguInfo.device_name();
+			for (auto& c : deviceName)
+			{
+				c = tolower(c);
+			}
+			if (deviceName.find("nvidia") != std::string::npos)
+			{
+				findNvidia = true;
+				numNvidia = i;
+			}
+
+			if (deviceName.find("amd") != std::string::npos)
+			{
+				findAmd = true;
+				numAmd = i;
+			}
+
+			if (deviceName.find("intel") != std::string::npos)
+			{
+				findIntel = true;
+				numIntel = i;
+			}
+		}
+
+		if(findNvidia)
+			select = numNvidia;
+		else if(findAmd)
+			select = numAmd;
+		else if(findIntel)
+			select = numIntel;
+		vkdev = ncnn::get_gpu_device(select);
+	}
+
+}
+
 
 wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
 {

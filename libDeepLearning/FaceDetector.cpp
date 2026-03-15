@@ -547,17 +547,18 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 
 						sexeAndAge = DetermineSexeAndAge(resizedImage);
                         
+
                         if(resizedImage.size().width < 200 && resizedImage.size().height < 200)
                         {
                             bg_upsample = CFaceDetector::SuperResolution(resizedImage);
-
+							/*
                             ncnn::Mat gfpgan_result;
                             gfpgan->process(bg_upsample, gfpgan_result);
                             to_ocv(gfpgan_result, resizedImage);
 
                             resize(resizedImage, localFace, size);
-                        
-                            ImageToJpegBuffer(localFace, buff);
+							*/
+                            ImageToJpegBuffer(bg_upsample, buff);
                         }
                         else
                             ImageToJpegBuffer(resizedImage, buff);

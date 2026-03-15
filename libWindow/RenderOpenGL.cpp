@@ -94,6 +94,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 			}
 			else if (regardsParam->GetIsOpenCLSupport())
 #else
+			 COpenCLContext::AssociateToVulkan();
 			 if (regardsParam->GetIsOpenCLSupport())
 #endif
 			{
