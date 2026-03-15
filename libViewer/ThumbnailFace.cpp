@@ -99,7 +99,6 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 						}
 					}
 				}
-
 			}
 
 			if (!find)
@@ -134,65 +133,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 
 	if (listPhotoFace.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
-	/*
-	auto infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
-	infosSeparationBar->SetTitle(libelle);
-	infosSeparationBar->SetParentWindow(this);
-	infosSeparationBar->SetWidth(GetWindowWidth());
-	infosSeparationBar->SetNumFace(faceName);
-	int local_nbElement = nbElement;
 
-	for (auto i = 0; i < listPhotoFace.size(); i++)
-	{
-		CFaceFilePath numFace = listPhotoFace.at(i);
-		infosSeparationBar->listElement.push_back(local_nbElement + i);
-		{
-			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
-			CIcone* icone = FindFaceElement(numFace.faceFilePath, numFace.numFace);
-			if (icone != nullptr)
-			{
-				auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-				if (data != nullptr)
-				{
-					find = true;
-					data->SetNumElement(local_nbElement + i);
-					icone->SetNumElement(data->GetNumElement());
-				}
-			}
-			
-			if (!find)
-			{
-				auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
-				thumbnailData->SetNumPhotoId(numFace.numPhoto);
-				thumbnailData->SetNumElement(local_nbElement + i);
-
-				CLibPicture libPicture;
-				if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
-				{
-					CSqlFacePhoto facePhoto;
-					int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
-					thumbnailData->SetNumFrame(positionVideo);
-				}
-
-
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->ShowSelectButton(true);
-				pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-				pBitmapIcone->SetData(thumbnailData);
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetShowDelete(true);
-				pBitmapIcone->SetFilename(numFace.faceFilePath);
-				iconeListLocal->AddElement(pBitmapIcone);
-			}
-		}
-	}
-
-	nbElement += listPhotoFace.size();
-
-
-	if (listPhotoFace.size() > 0)
-		listSeparator.push_back(infosSeparationBar);
-	*/
 }
 
 bool CThumbnailFace::ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone)
@@ -231,6 +172,7 @@ void CThumbnailFace::InitListFace()
 		CIcone* icone = iconeList->GetElement(i);
 		wxString filename = icone->GetFilename();
 		bool find = false;
+
 		for (CFaceFilePath filePath : listPhotoFace)
 		{
 			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
@@ -240,7 +182,8 @@ void CThumbnailFace::InitListFace()
 				break;
 			}
 		}
-		if(!find)
+
+		if (!find)
 		{
 			iconeList->RemoveElement(i);
 			nbElement++;
@@ -248,8 +191,6 @@ void CThumbnailFace::InitListFace()
 		else
 			newIconeList->AddElement(icone);
 	}
-
-	
 
 	if (nbElement > 0)
 	{
@@ -262,46 +203,6 @@ void CThumbnailFace::InitListFace()
 	}
 
 	int size = iconeList->GetNbElement();
-
-	/*
-	auto viewerParam = CMainParamInit::getInstance();
-	double pertinence = 0.0;
-	static std::atomic<int> nbElement = 0;
-	if (viewerParam != nullptr)
-		pertinence = viewerParam->GetPertinenceValue();
-
-	CIconeList* newIconeList = new CIconeList();
-	CSqlFindFacePhoto sqlFindFacePhoto;
-	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListAllPhotoFace(pertinence);
-	if (listPhotoFace.size() > 0)
-	{
-
-		for (int i = 0; i < iconeList->GetNbElement(); i++)
-		{
-			CIcone* icone = iconeList->GetElement(i);
-			wxString filename = icone->GetFilename();
-			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-			std::vector<CFaceFilePath>::iterator it = std::find_if(listPhotoFace.begin(),
-				listPhotoFace.end(),
-				[&](const CFaceFilePath& val) { return val.faceFilePath == filename && val.numFace == data->GetNumFace(); });
-
-			if (it != listPhotoFace.end())
-			{
-				iconeList->RemoveElement(i);
-			}
-			else
-				newIconeList->AddElement(icone);
-		}
-
-		if (newIconeList->GetNbElement() > 0)
-		{
-			delete iconeList;
-			iconeList = newIconeList;
-		}
-		else
-			delete newIconeList;
-	}*/
-
 }
 
 void CThumbnailFace::init()
@@ -312,26 +213,6 @@ void CThumbnailFace::init()
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
-	/*
-	std::map<wxString, bool> listCheckFace;
-	std::map<wxString, long> listStateFace;
-
-	for (int i = 0; i < iconeList->GetNbElement(); i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-			if (thumbnailData != nullptr)
-			{
-				listCheckFace[thumbnailData->GetFilename()] = icone->IsChecked();
-				listStateFace[thumbnailData->GetFilename()] = icone->GetState();
-			}
-		}
-	}
-
-	iconeList->EraseThumbnailListWithIcon();
-	*/
 
 	InitListFace();
 
@@ -354,34 +235,6 @@ void CThumbnailFace::init()
 		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
 		AddSeparatorBar(iconeList, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
-
-	/*
-	for (int i = 0; i < iconeList->GetNbElement(); i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-			if (thumbnailData != nullptr)
-			{
-				{
-					auto it = listCheckFace.find(thumbnailData->GetFilename());
-					if (it != listCheckFace.end())
-					{
-						icone->SetChecked(it->second);
-					}
-				}
-				{
-					auto it = listStateFace.find(thumbnailData->GetFilename());
-					if (it != listStateFace.end())
-					{
-						icone->SetState(it->second);
-					}
-				}
-			}
-		}
-	}
-	*/
 
 
 	nbElementInIconeList = iconeList->GetNbElement();
