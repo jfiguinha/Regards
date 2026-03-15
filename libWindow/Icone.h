@@ -173,5 +173,6 @@ namespace Regards::Window
 
 	using IconeVector = tbb::concurrent_vector<CIcone *>;
 	using pItemCompFonct = bool(*)(int, int, CIcone *, CWindowMain*);
+	using pItemCompFonctFace = bool(*)(wxString, int, CIcone*);
 	using pItemStringCompFonct = bool(*)(wxString,CIcone *);
 }

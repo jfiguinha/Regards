@@ -81,25 +81,22 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		infosSeparationBar->listElement.push_back(local_nbElement + i);
 		{
 			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
-			for (int i = 0; i < iconeList->GetNbElement(); i++)
+			CIcone* icone = FindFaceElement(numFace.faceFilePath, numFace.numFace);
+			if (icone != nullptr)
 			{
-				CIcone* icone = iconeList->GetElement(i);
-				if (icone != nullptr)
+				auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+				if (data != nullptr)
 				{
-					auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-					if (data != nullptr)
+					if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
 					{
-						if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
-						{
-							find = true;
-							data->SetNumElement(local_nbElement + i);
-							icone->SetNumElement(data->GetNumElement());
-							break;
-						}
+						find = true;
+						data->SetNumElement(local_nbElement + i);
+						icone->SetNumElement(data->GetNumElement());
+						break;
 					}
 				}
 			}
-
+			
 			if (!find)
 			{
 				auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
@@ -134,6 +131,26 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		listSeparator.push_back(infosSeparationBar);
 }
 
+bool CThumbnailFace::ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone)
+/* Définit une fonction. */
+{
+	if (icone != nullptr)
+	{
+		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+		if (data->GetFilename() == filepath && numFace == data->GetNumFace())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+CIcone* CThumbnailFace::FindFaceElement(wxString filepath, int numFace)
+{
+	pItemCompFonctFace _pf = &ItemCompFonctFindFaceElement;
+	return iconeList->FindFaceElement(filepath, numFace, &_pf);
+}
+
 void CThumbnailFace::InitListFace()
 {
 	auto viewerParam = CMainParamInit::getInstance();
@@ -152,7 +169,8 @@ void CThumbnailFace::InitListFace()
 
 		for (CFaceFilePath filePath : listPhotoFace)
 		{
-			if (filePath.faceFilePath == filename)
+			auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+			if (filePath.faceFilePath == filename && filePath.numFace == data->GetNumFace())
 			{
 				iconeList->RemoveElement(i);
 				nbElement++;
@@ -296,6 +314,8 @@ CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
+
+
 
 
 void CThumbnailFace::MoveIcone(const int& numElement, const int& numFace)

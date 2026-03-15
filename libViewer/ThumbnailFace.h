@@ -36,8 +36,10 @@ namespace Regards::Viewer
 		void OnSelectIcon(wxCommandEvent& event);
 		void DeleteEmptyFace();
 		int FindSeparatorFace(const int& xPos, const int& yPos);
+		CIcone* FindFaceElement(wxString filepath, int numFace);
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
+		static bool ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone);
 		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
 		                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement);
 		CIcone *  FindElementWithVScroll(const int& xPos, const int& yPos) override;

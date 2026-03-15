@@ -21,6 +21,7 @@ namespace Regards::Window
 		void SortById();
 		CIcone* FindElementPhotoId(const int& photoId);
 		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
+		CIcone* FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf);
 		bool FindElement(wxString filename);
 		void SortByFilename();
 		CIcone* GetLastElement();

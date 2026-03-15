@@ -50,6 +50,24 @@ public:
 
 };
 
+class CItemFaceString
+{
+public:
+	CItemFaceString(wxString filename, int numFace, pItemCompFonctFace* pf) : _filename(filename), _numFace(numFace), _pf(pf)
+	{
+	}
+
+	bool operator()(CIcone* icone)
+	{
+		return (*_pf)(_filename, _numFace, icone);
+	}
+
+	wxString _filename;
+	int _numFace;
+	pItemCompFonctFace* _pf;
+
+};
+
 class CItemString
 {
 public:
@@ -198,6 +216,18 @@ CIcone* CIconeList::FindElementPhotoId(const int& photoId)
 	return element;
 }
 
+CIcone* CIconeList::FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf)
+{
+	IconeVector::iterator it;
+	CIcone* element = nullptr;
+	it = find_if(pIconeList.begin(), pIconeList.end(), CItemFaceString(filepath, numFace, _pf));
+
+	if (it != pIconeList.end())
+		element = *it;
+
+
+	return element;
+}
 
 CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
 {
