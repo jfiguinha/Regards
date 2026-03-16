@@ -160,7 +160,7 @@ void CThumbnailFace::InitListFace()
 {	
 	auto viewerParam = CMainParamInit::getInstance();
 	double pertinence = 0.0;
-	static std::atomic<int> nbElement = 0;
+    int nbElement = 0;
 	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 

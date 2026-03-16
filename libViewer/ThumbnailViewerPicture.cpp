@@ -51,7 +51,7 @@ void CThumbnailViewerPicture::PregenerateList()
 	
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
 	int size = iconeList->GetNbElement();
-	static std::atomic<int> nbElement = 0;
+	//static std::atomic<int> nbElement = 0;
 
 	if (size > 0)
 	{
