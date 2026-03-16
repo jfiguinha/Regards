@@ -59,7 +59,7 @@ public:
 	void DiaporamaMode(const bool& value);
 	vector<int> GetZoomValue();
 	virtual cv::Mat SavePicture(bool& isFromBuffer);
-
+	bool IsAvailable();
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter* effectParameter);
 	void UpdateFiltre(CEffectParameter* effectParameter);
@@ -233,7 +233,7 @@ protected:
 	std::atomic<int> widthVideo;
 	std::atomic<int> heightVideo;
     std::atomic<float> ratioVideo{1.0f};
-    
+	std::atomic<bool> isAvailable = true;
 	int angle;
     
 	bool flipV;

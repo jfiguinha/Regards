@@ -61,7 +61,7 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 	startingTime = 0;
 	old_width = 0;
 	old_height = 0;
-
+	isAvailable = true;
 	pause = false;
 	config = nullptr;
 	angle = 0;
@@ -392,18 +392,18 @@ void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	//muRefresh.lock();
+	
 	needToRefresh = true;
-	//muRefresh.unlock();
+	
 }
 
 void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	//muRefresh.lock();
+	
 	needToRefresh = true;
-	//muRefresh.unlock();
+	
 }
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
@@ -489,9 +489,9 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 	
 
-	//muRefresh.lock();
+	
 	needToRefresh = true;
-	//muRefresh.unlock();
+	
 }
 
 
@@ -596,9 +596,9 @@ void CVideoControlSoft::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-	//muRefresh.lock();
+	
 	needToRefresh = true;
-	//muRefresh.unlock();
+	
 }
 
 void CVideoControlSoft::MoveRight()
@@ -763,9 +763,9 @@ void CVideoControlSoft::OnUpdateFiltreEffect(wxCommandEvent& event)
 	{
 		if (pause)
 		{
-			//muRefresh.lock();
+			
 			needToRefresh = true;
-			//muRefresh.unlock();
+			
 		}
 	}
 
@@ -791,9 +791,9 @@ bool CVideoControlSoft::GetPausedValue()
 
 void CVideoControlSoft::RedrawFrame()
 {
-	//muRefresh.lock();
+	
 	needToRefresh = true;
-	//muRefresh.unlock();
+	
 }
 
 void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -852,13 +852,8 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 		}
 	}
 
-	bool localRefresh = false;
-	//muRefresh.lock();
-	localRefresh = needToRefresh;
-	needToRefresh = false;
-
-	//muRefresh.unlock();
-	if (localRefresh)
+	
+	if (needToRefresh)
 	{
 		parentRender->Refresh();
 	}
@@ -1208,9 +1203,16 @@ void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
 {
 }
 
+bool CVideoControlSoft::IsAvailable()
+{
+	return isAvailable;
+}
+
 
 void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
+	isAvailable = false;
+
 	if (renderBitmapOpenGL == nullptr)
 	{
 		this->renderOpenGL = renderOpenGL;
@@ -1391,6 +1393,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		ErrorDecodingFrame();
 	}
 
+	isAvailable = true;
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1815,9 +1818,9 @@ void CVideoControlSoft::Resize()
 			UpdateScrollBar();
 		}
 
-		//muRefresh.lock();
+		
 		needToRefresh = true;
-		//muRefresh.unlock();
+		
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
@@ -2159,9 +2162,9 @@ void CVideoControlSoft::FlipVertical()
 	flipV = !flipV;
 	if (pause)
 	{
-		//muRefresh.lock();
+		
 		needToRefresh = true;
-		//muRefresh.unlock();
+		
 	}
 
 	CSqlPhotos sqlPhotos;
@@ -2174,9 +2177,9 @@ void CVideoControlSoft::FlipHorizontal()
 	flipH = !flipH;
 	if (pause)
 	{
-		//muRefresh.lock();
+		
 		needToRefresh = true;
-		//muRefresh.unlock();
+		
 	}
 
 	CSqlPhotos sqlPhotos;

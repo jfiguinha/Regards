@@ -24,6 +24,7 @@ public:
 
 	virtual ~CVideoControlInterface() = default;
 	virtual wxWindow * GetMainWindow() = 0;
+	virtual bool IsAvailable() = 0;
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
 };
