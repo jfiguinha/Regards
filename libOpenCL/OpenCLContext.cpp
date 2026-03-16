@@ -54,7 +54,7 @@ void COpenCLContext::AssociateToVulkan()
 		int numNvidia = 0;
 		int numAmd = 0;
 		int numIntel = 0;
-		int select = 0;
+		int select = -1;
 		cl_uint numPlatforms = ncnn::get_gpu_count();
 		for (int i = 0; i < numPlatforms; i++)
 		{
@@ -89,8 +89,9 @@ void COpenCLContext::AssociateToVulkan()
 			select = numAmd;
 		else if(findIntel)
 			select = numIntel;
-
-		vkdev = ncnn::get_gpu_device(select);
+		
+		if(select != -1)
+			vkdev = ncnn::get_gpu_device(select);
 
 		
 	}

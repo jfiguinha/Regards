@@ -161,7 +161,8 @@ int MyApp::Close()
 	if (testFrame != nullptr)
 		delete testFrame;
         
-	ncnn::destroy_gpu_instance();
+	if(vkdev != nullptr)
+		ncnn::destroy_gpu_instance();
 
     exit(0);
 
