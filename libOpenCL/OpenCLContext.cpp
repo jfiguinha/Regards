@@ -51,9 +51,11 @@ void COpenCLContext::AssociateToVulkan()
 		bool findNvidia = false;
 		bool findIntel = false;
 		bool findAmd = false;
+		bool findApple = false;
 		int numNvidia = 0;
 		int numAmd = 0;
 		int numIntel = 0;
+		int numApple = 0;
 		int select = -1;
 		cl_uint numPlatforms = ncnn::get_gpu_count();
 		for (int i = 0; i < numPlatforms; i++)
@@ -81,14 +83,22 @@ void COpenCLContext::AssociateToVulkan()
 				findIntel = true;
 				numIntel = i;
 			}
+
+			if (deviceName.find("apple") != std::string::npos)
+			{
+				findApple = true;
+				numApple = i;
+			}
 		}
 
-		if(findNvidia)
+		if (findNvidia)
 			select = numNvidia;
-		else if(findAmd)
+		else if (findAmd)
 			select = numAmd;
-		else if(findIntel)
+		else if (findIntel)
 			select = numIntel;
+		else if (findApple)
+			select = numApple;
 		
 		if(select != -1)
 			vkdev = ncnn::get_gpu_device(select);
