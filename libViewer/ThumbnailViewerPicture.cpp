@@ -12,7 +12,7 @@ using namespace Regards::Sqlite;
 std::mutex CThumbnailViewerPicture::localmu;
 
 CThumbnailViewerPicture::CThumbnailViewerPicture(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
-                                                 const bool& testValidity)
+	const bool& testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {
 	widthThumbnail = 0;
@@ -22,8 +22,7 @@ CThumbnailViewerPicture::CThumbnailViewerPicture(wxWindow* parent, wxWindowID id
 
 
 CThumbnailViewerPicture::~CThumbnailViewerPicture(void)
-{
-}
+{}
 
 void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
 {
@@ -48,79 +47,84 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 {
 	//iconeList->EraseThumbnailListWithIcon();
-	
+
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
-
-	if (isDeleteFolder)
-	{
+	<<<<<< < HEAD
+		====== =
 		int size = iconeList->GetNbElement();
-		static std::atomic<int> nbElement = 0;
+	//static std::atomic<int> nbElement = 0;
+	>>>>>> > 59d267ba287ed72c78cf599628a521e113fbab3b
 
-		if (size > 0)
+		if (isDeleteFolder)
 		{
-			CIconeList* newIconeList = new CIconeList();
+			int size = iconeList->GetNbElement();
+			static std::atomic<int> nbElement = 0;
+
+			if (size > 0)
+			{
+				CIconeList* newIconeList = new CIconeList();
+
+				tbb::parallel_for(0, size, 1, [=](int i)
+					{
+						CIcone* ico = iconeList->GetElement(i);
+						bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+						if (!find)
+							iconeList->RemoveElement(i);
+						else
+							newIconeList->AddElement(ico);
+
+					});
+
+				if (newIconeList->GetNbElement() > 0)
+				{
+					delete iconeList;
+					iconeList = newIconeList;
+				}
+				else
+				{
+					delete newIconeList;
+				}
+			}
+			else if (CThumbnailBuffer::GetVectorSize() == 0)
+			{
+				iconeList->EraseThumbnailListWithIcon();
+			}
+		}
+		else
+		{
+			int size = CThumbnailBuffer::GetVectorSize();
 
 			tbb::parallel_for(0, size, 1, [=](int i)
 				{
-					CIcone* ico = iconeList->GetElement(i);
-					bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
-					if (!find)
-						iconeList->RemoveElement(i);
-					else
-						newIconeList->AddElement(ico);
-
-				});
-
-			if (newIconeList->GetNbElement() > 0)
-			{
-				delete iconeList;
-				iconeList = newIconeList;
-			}
-			else
-			{
-				delete newIconeList;
-			}
-		}
-		else if (CThumbnailBuffer::GetVectorSize() == 0)
-		{
-			iconeList->EraseThumbnailListWithIcon();
-		}
-	}
-	else
-	{
-		int size = CThumbnailBuffer::GetVectorSize();
-
-		tbb::parallel_for(0, size, 1, [=](int i)
-			{
-				try
-				{
-					CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
-
-					wxString filename = photo.GetPath();
-
-					bool find = iconeList->FindElement(photo.GetPath());
-					if (!find)
+					try
 					{
-						auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
-						thumbnailData->SetNumPhotoId(photo.GetId());
-						thumbnailData->SetNumElement(i);
+						CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
 
-						auto pBitmapIcone = new CIcone();
-						pBitmapIcone->SetNumElement(i);
-						pBitmapIcone->SetData(thumbnailData);
-						pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-						pBitmapIcone->SetWindowPos(i * iconWidth, 0);
-						pBitmapIcone->SetFilename(filename);
-						iconeList->AddElement(pBitmapIcone);
+						wxString filename = photo.GetPath();
+
+						bool find = iconeList->FindElement(photo.GetPath());
+						if (!find)
+						{
+							auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
+							thumbnailData->SetNumPhotoId(photo.GetId());
+							thumbnailData->SetNumElement(i);
+
+							auto pBitmapIcone = new CIcone();
+							pBitmapIcone->SetNumElement(i);
+							pBitmapIcone->SetData(thumbnailData);
+							pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+							pBitmapIcone->SetWindowPos(i * iconWidth, 0);
+							pBitmapIcone->SetFilename(filename);
+							iconeList->AddElement(pBitmapIcone);
+						}
+
 					}
-
-				}
-				catch (const std::exception& e)
-				{
-					std::cerr << "Error creating icon at index " << i << ": " << e.what() << std::endl;
-				}
-			});
-	}
+					catch (const std::exception& e)
+					{
+						std::cerr << "Error creating icon at index " << i << ": " << e.what() << std::endl;
+					}
+				});
+		}
 
 	iconeList->SortByFilename();
 
@@ -170,14 +174,14 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 #else
 	tbb::parallel_for(0, nbElementInIconeList, 1, [this, iconWidth](int i)
 #endif    
-	{
-		CIcone* pBitmapIcone = iconeList->GetElement(i);
-		if (pBitmapIcone != nullptr)
 		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(i * iconWidth, 0);
+			CIcone* pBitmapIcone = iconeList->GetElement(i);
+			if (pBitmapIcone != nullptr)
+			{
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(i * iconWidth, 0);
+			}
 		}
-	}
 #ifdef USE_TBB_VECTOR
 	);
 #endif
@@ -195,7 +199,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC* deviceContext)
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 				const wxRect rc = pBitmapIcone->GetPos();
-				
+
 				const int left = rc.x - posLargeur;
 				const int right = rc.x + rc.width - posLargeur;
 
@@ -217,12 +221,12 @@ bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone* icone, C
 {
 	auto viewerPicture = static_cast<CThumbnailViewerPicture*>(parent);
 	const wxRect rc = icone->GetPos();
-	
+
 	const int left = rc.x - viewerPicture->GetLargeur();
 	const int right = rc.x + rc.width - viewerPicture->GetLargeur();
 	const int top = rc.y - viewerPicture->GetHauteur();
 	const int bottom = rc.y + rc.height - viewerPicture->GetHauteur();
-	
+
 	return (left < xPos && xPos < right) && (top < yPos && yPos < bottom);
 }
 

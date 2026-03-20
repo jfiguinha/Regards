@@ -233,7 +233,7 @@ protected:
 	std::atomic<int> widthVideo;
 	std::atomic<int> heightVideo;
     std::atomic<float> ratioVideo{1.0f};
-	std::atomic<bool> isAvailable = true;
+	std::atomic<bool> isAvailable;
 	int angle;
     
 	bool flipV;
