@@ -1947,6 +1947,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
                             picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), orientation, isThumbnail);
                         else
                         {
+							applyExif = true;
 							if (isThumbnail)
 							{
 								CMetadataExiv2 metadata(fileName);
@@ -1977,6 +1978,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 									int delay = 4;
 									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
 									resize = true;
+									applyExif = false;
 								}
 							}	
 							else
@@ -1988,7 +1990,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
 								}
 							}
-                            applyExif = true;
+                           
                         }
                     
                     }
