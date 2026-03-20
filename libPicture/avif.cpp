@@ -7,26 +7,24 @@ using namespace Regards::Picture;
 
 CAvif::CAvif()
 {
-    
+
 }
 
 CAvif::~CAvif()
-{
-}
+{}
 
 
 
-
-cv::Mat GetPictureLocal(const char * filename, avifDecoder * decoder)
+cv::Mat GetPictureLocal(const char* filename, avifDecoder* decoder, int& rotation)
 {
     cv::Mat out;
-    if(decoder == nullptr)
+    if (decoder == nullptr)
         return out;
 
     avifImage* decoded = avifImageCreateEmpty();
     avifResult result;
     result = avifDecoderSetIOFile(decoder, filename);
-        
+
     if (result != AVIF_RESULT_OK) {
         fprintf(stderr, "Cannot open file for read: %s\n", filename);
         goto cleanup;
@@ -62,18 +60,20 @@ cv::Mat GetPictureLocal(const char * filename, avifDecoder * decoder)
                 //cv::flip(out, out, 0);
             }
             avifRGBImageFreePixels(&dstRGB);
+
+            rotation = decoded->irot.angle;
         }
-        
+
     }
-    
+
 cleanup:
     avifImageDestroy(decoded);
-        
-	return out;
+
+    return out;
 }
 
 
-cv::Mat GetPictureThumbnail(const char* filename, const int &width, const int &height, avifDecoder* decoder)
+cv::Mat GetPictureThumbnail(const char* filename, const int& width, const int& height, avifDecoder* decoder)
 {
     cv::Mat out;
     if (decoder == nullptr)
@@ -107,9 +107,9 @@ cv::Mat GetPictureThumbnail(const char* filename, const int &width, const int &h
 
             decodeResult = avifImageScale(decoded, width, height,
                 &decoder->diag);
-                
+
             if (decodeResult != AVIF_RESULT_OK)
-                 goto cleanup;
+                goto cleanup;
 
             avifRGBImage dstRGB;
             avifRGBImageSetDefaults(&dstRGB, decoded);
@@ -146,26 +146,26 @@ bool CAvif::IsOccupied()
     return false;
 }
 
-cv::Mat CAvif::GetPicture(const char * filename)
+cv::Mat CAvif::GetPicture(const char* filename, int& rotation)
 {
     cv::Mat out;
 
-    avifDecoder* decoder = avifDecoderCreate(); 
+    avifDecoder* decoder = avifDecoderCreate();
 #if defined(__APPLE_) || defined(__ARM64__) 
     decoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
 #else
     decoder->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
 #endif  
-    out = GetPictureLocal(filename, decoder);
+    out = GetPictureLocal(filename, decoder, rotation);
     avifDecoderDestroy(decoder);
 
-        
-	return out;
+
+    return out;
 }
 
 
 
-cv::Mat CAvif::GetPictureThumb(const char* filename, const int &width, const int &heigth)
+cv::Mat CAvif::GetPictureThumb(const char* filename, const int& width, const int& heigth)
 {
     /*
     cv::Mat out;
@@ -175,7 +175,7 @@ cv::Mat CAvif::GetPictureThumb(const char* filename, const int &width, const int
     if (decoderThumb == nullptr)
     {
         decoderThumb = avifDecoderCreate();
-#if defined(__APPLE_) || defined(__ARM64__) 
+#if defined(__APPLE_) || defined(__ARM64__)
         decoderThumb->codecChoice = AVIF_CODEC_CHOICE_AUTO;
 #else
         decoderThumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;

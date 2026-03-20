@@ -1983,11 +1983,18 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 							}	
 							else
 							{
-								picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName));
+								int angle = 0;
+								picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), angle);
 								if(picture.empty())
 								{
 									int delay = 4;
 									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
+								}
+								if (orientation == 0 && angle > 0)
+								{
+									int rotateCode = 360 - angle * 90;
+									rotateCode = rotateCode / 90 - 1;
+									cv::rotate(picture, picture, rotateCode);
 								}
 							}
                            
