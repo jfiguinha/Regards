@@ -16,16 +16,16 @@ namespace Regards::Viewer
 		                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailFolder(void) override;
 		
-		void Init(const int& typeAffichage);
+		void Init(const int& typeAffichage, const bool& isDeleteFolder);
 		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
+		void ChangeTypeAffichage(const int& typeAffichage, bool needFindNewItem = false);
 
 	protected:
-		void InitTypeAffichage(const int& typeAffichage);
+
 		void OnPictureClick(CThumbnailData* data) override;
 		void ResizeThumbnail() override;
-		static bool compareInterval(int i1, int i2);
 		static bool compareFilename(CPhotos i1, CPhotos i2);
-		void SortVectorByFilename(PhotosVector* vector);
+
 	private:
 
 
@@ -47,6 +47,7 @@ namespace Regards::Viewer
 		int widthThumbnail;
 		int heightThumbnail;
 		bool updateThumbnail = false;
+		bool needFindNewItem = false;
 		//std::mutex muVector;
 		//std::mutex muThumb;
 		//std::thread* thread_thumbnail = nullptr;

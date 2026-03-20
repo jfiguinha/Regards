@@ -176,7 +176,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 		faceDetection = regardsParam->GetFaceDetection();
 	}
 
-	UpdateFolderStatic();
+	UpdateFolderStatic(false);
 	int pictureSize = CThumbnailBuffer::GetVectorSize();
 	CThreadCheckFile* checkFile = new CThreadCheckFile();
 	checkFile->mainWindow = this;
@@ -230,7 +230,7 @@ void CMainWindow::OnOpenFile(wxTimerEvent& event)
 void CMainWindow::OnRemoveFileFromCheckIn(wxCommandEvent& event)
 {
 	updateCriteria = true;
-	UpdateFolderStatic();
+	UpdateFolderStatic(true);
 	processIdle = true;
 }
 
@@ -751,7 +751,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	UpdateFolderStatic();
+	UpdateFolderStatic(false);
 	//processIdle = true;
 }
 
@@ -761,7 +761,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
-		UpdateFolderStatic();
+		UpdateFolderStatic(false);
 	}
 }
 
@@ -945,7 +945,7 @@ bool CMainWindow::FindPreviousValidFile()
 }
 
 
-void CMainWindow::UpdateFolderStatic()
+void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder)
 {
 	printf("CMainWindow::UpdateFolderStatic() \n");
 	//
@@ -1057,7 +1057,7 @@ void CMainWindow::UpdateFolderStatic()
 			}
 
 
-			centralWnd->SetListeFile(localFilename, typeAffichage);
+			centralWnd->SetListeFile(localFilename, isDeleteFolder, typeAffichage);
 			listFile.clear();
 			thumbnailPos = 0;
 			//firstFileToShow = "";
@@ -1113,7 +1113,7 @@ void CMainWindow::ProcessIdle()
 		folderProcess->RefreshFolder(folderChange, nbFile);
 		if (folderChange || nbFile > 0)
 		{
-			UpdateFolderStatic();
+			UpdateFolderStatic(false);
 			updateCriteria = true;
 			processIdle = true;
 
@@ -1359,7 +1359,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 {
 	int typeId = event.GetInt();
 	const auto newPath = static_cast<wxString*>(event.GetClientData());
-
+	bool isDelete = false;
 	if (newPath != nullptr)
 	{
 		if (typeId == wxEVENT_ADDFOLDER)
@@ -1378,6 +1378,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		{
 			wxString folder = *newPath;
 			statusBarViewer->RemoveFSEntry(folder);
+			isDelete = true;
 		}
 	}
 
@@ -1392,7 +1393,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 	}
 
 	delete newPath;
-	UpdateFolderStatic();
+	UpdateFolderStatic(isDelete);
 	processIdle = true;
 	//this->Show(true);
 }
@@ -1511,7 +1512,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 	}
 
 	updateCriteria = true;
-	UpdateFolderStatic();
+	UpdateFolderStatic(false);
 	processIdle = true;
 
 	centralWnd->LoadPicture(fileToOpen);

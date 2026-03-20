@@ -154,7 +154,7 @@ int CListPicture::GetThumbnailHeight()
 void CListPicture::ChangeTypeAffichage(const long& typeAffichage)
 {
 	this->typeAffichage = typeAffichage;
-	thumbnailFolder->Init(typeAffichage);
+	thumbnailFolder->ChangeTypeAffichage(typeAffichage);
 }
 
 void CListPicture::SetActifItem(const int& numItem, const bool& move)
@@ -171,11 +171,11 @@ int CListPicture::GetNumItem()
 	return 0;
 }
 
-void CListPicture::SetListeFile(const int& typeAffichage)
+void CListPicture::SetListeFile(const int& typeAffichage, const bool& isDeleteFolder)
 {
 	if (thumbnailFolder != nullptr)
 	{
-		thumbnailFolder->Init(typeAffichage);
+		thumbnailFolder->Init(typeAffichage, isDeleteFolder);
 		thumbnailFolder->SetCheck(true);
 	}
 }

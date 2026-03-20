@@ -21,7 +21,7 @@ namespace Regards::Viewer
 		CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                        const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailViewerPicture(void) override;
-		void ApplyListeFile();
+		void ApplyListeFile(const bool& isDeleteFolder);
 		vector<wxString> GetFileList();
 
 		int GetHeight() override
@@ -32,7 +32,7 @@ namespace Regards::Viewer
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 
 	protected:
-		void PregenerateList();
+		void PregenerateList(const bool& isDeleteFolder);
 		void ResizeThumbnail() override;
 		void ResizeThumbnailWithoutVScroll();
 

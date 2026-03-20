@@ -72,7 +72,7 @@ namespace Regards::Viewer
 
 	private:
 
-		void UpdateFolderStatic();
+		void UpdateFolderStatic(const bool & isDeleteFolder);
 
 		static void NewVersionAvailable(void* param);
 

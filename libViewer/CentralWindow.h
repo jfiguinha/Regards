@@ -103,7 +103,7 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-			void SetListeFile(const wxString& filename, const int& typeAffichage);
+			void SetListeFile(const wxString& filename, const bool& isDeleteFolder, const int& typeAffichage);
 			int LoadPicture(const wxString& filename, const bool& refresh = false);
 			bool IsVideo();
 			void SaveParameter() override;

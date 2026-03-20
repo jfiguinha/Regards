@@ -1357,14 +1357,14 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 
 
 
-void CCentralWindow::SetListeFile(const wxString& filename, const int& typeAffichage)
+void CCentralWindow::SetListeFile(const wxString& filename, const bool& isDeleteFolder, const int& typeAffichage)
 {
 
 	if (listPicture != nullptr)
-		listPicture->SetListeFile(typeAffichage);
+		listPicture->SetListeFile(typeAffichage, isDeleteFolder);
 
 	if (thumbnailPicture != nullptr)
-		thumbnailPicture->ApplyListeFile();
+		thumbnailPicture->ApplyListeFile(isDeleteFolder);
 
 	LoadPicture(filename);
 }
