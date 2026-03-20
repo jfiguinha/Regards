@@ -49,8 +49,6 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 	//iconeList->EraseThumbnailListWithIcon();
 
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
-	int size = iconeList->GetNbElement();
-
 	if (isDeleteFolder)
 	{
 		int size = iconeList->GetNbElement();
