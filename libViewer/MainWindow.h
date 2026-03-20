@@ -66,11 +66,7 @@ namespace Regards::Viewer
 		}
 
 
-	public:
-
-		std::atomic<int> nbProcessMD5;
-
-	private:
+private:
 
 		void UpdateFolderStatic(const bool & isDeleteFolder);
 
@@ -165,7 +161,7 @@ namespace Regards::Viewer
 		bool multithread;
 		bool needToReload;
 		int typeAffichage;
-		std::atomic<bool> updateCriteria;
+		bool updateCriteria;
 		bool updateFolder = false;
 		bool refreshFolder;
 

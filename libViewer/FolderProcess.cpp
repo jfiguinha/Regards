@@ -49,7 +49,7 @@ void CThreadCheckFile::CheckFile(void* param)
 				CMainParam* config = CMainParamInit::getInstance();
 				if (config != nullptr)
 				{
-					if (config->GetCheckThumbnailValidity() && checkFile->mainWindow->nbProcessMD5 < nbProcesseur)
+					if (config->GetCheckThumbnailValidity())
 					{
 						CSqlThumbnail sqlThumbnail;
 						CSqlThumbnailVideo sqlThumbnailVideo;

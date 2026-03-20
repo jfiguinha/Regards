@@ -52,8 +52,6 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 	if (isDeleteFolder)
 	{
 		int size = iconeList->GetNbElement();
-		static std::atomic<int> nbElement = 0;
-
 		if (size > 0)
 		{
 			CIconeList* newIconeList = new CIconeList();

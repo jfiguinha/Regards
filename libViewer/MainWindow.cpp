@@ -59,7 +59,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	: CWindowMain("CMainWindow", parent, id)
 {
 	fullscreen = false;
-	nbProcessMD5 = 0;
 	showToolbar = true;
 	multithread = true;
 	needToReload = false;
@@ -1445,7 +1444,7 @@ bool CMainWindow::GetProcessEnd()
 {
     printf("CMainWindow::GetProcessEnd() \n");
     
-	if (nbProcessMD5 > 0 || nbProcess > 0 || isCheckingFile)
+	if (nbProcess > 0 || isCheckingFile)
 		return false;
 
 	return true;
