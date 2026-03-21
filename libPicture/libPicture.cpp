@@ -1983,6 +1983,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 							}	
 							else
 							{
+								CMetadataExiv2 metadata(fileName);
+								orientation = metadata.GetOrientation();
+
 								int angle = 0;
 								picture = CAvif::GetPicture(CConvertUtility::ConvertToUTF8(fileName), angle);
 								if(picture.empty())
@@ -1990,11 +1993,18 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 									int delay = 4;
 									picture = CHeic::GetPicture(CConvertUtility::ConvertToUTF8(fileName), delay, numPicture);
 								}
-								if (orientation == 0 && angle > 0)
+								if (orientation == -1 && angle > 0)
 								{
-									int rotateCode = 360 - angle * 90;
-									rotateCode = rotateCode / 90 - 1;
-									cv::rotate(picture, picture, rotateCode);
+									/*
+									enum RotateFlags {
+									ROTATE_90_CLOCKWISE = 0, //!<Rotate 90 degrees clockwise
+									ROTATE_180 = 1, //!<Rotate 180 degrees clockwise
+									ROTATE_90_COUNTERCLOCKWISE = 2, //!<Rotate 270 degrees clockwise
+									*/
+									static vector<int> tabConvert = { 0,2,1,0 };
+									//int rotateCode = 360 - angle * 90;
+									//rotateCode = rotateCode / 90 - 1;
+									cv::rotate(picture, picture, tabConvert[angle]);
 								}
 							}
                            
