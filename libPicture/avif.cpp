@@ -167,28 +167,6 @@ cv::Mat CAvif::GetPicture(const char* filename, int& rotation)
 
 cv::Mat CAvif::GetPictureThumb(const char* filename, const int& width, const int& heigth)
 {
-    /*
-    cv::Mat out;
-
-    muPicture.lock();
-    isOccupied = true;
-    if (decoderThumb == nullptr)
-    {
-        decoderThumb = avifDecoderCreate();
-#if defined(__APPLE_) || defined(__ARM64__)
-        decoderThumb->codecChoice = AVIF_CODEC_CHOICE_AUTO;
-#else
-        decoderThumb->codecChoice = AVIF_CODEC_CHOICE_DAV1D;
-#endif
-    }
-
-    out = GetPictureThumbnail(filename, width, heigth, decoderThumb);
-    isOccupied = false;
-    muPicture.unlock();
-
-    return out;
-    */
-
     cv::Mat out;
 
     avifDecoder* decoder = avifDecoderCreate();
