@@ -118,7 +118,7 @@ void CFolderProcess::UpdateCriteria(bool criteriaSendMessage)
 	wxWindow* window = mainWindow->FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+		wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
 		evt.SetExtraLong((criteriaSendMessage == true) ? 1 : 0);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}

@@ -19,7 +19,6 @@ namespace Regards::Viewer
 	protected:
 		void SetFolder(wxCommandEvent& folderEvent);
 		void OnSelChanged(wxCommandEvent& aEvent);
-		void SaveParameter(wxCommandEvent& event);
 		void UpdateCriteria(wxCommandEvent& event);
 		void OnRefreshData(wxCommandEvent& event);
 

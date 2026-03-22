@@ -475,7 +475,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement* element, wxWindow* window,
 
 		if (criteriawindow)
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+			wxCommandEvent evt(wxEVENT_UPDATECRITERIA);
 			evt.SetExtraLong(2);
 			criteriawindow->GetEventHandler()->AddPendingEvent(evt);
 		}

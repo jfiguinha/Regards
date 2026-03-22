@@ -102,9 +102,8 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 
 	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), nullptr, this);
 	Connect(wxEVENT_SETFOLDER, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
-	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
 	Connect(wxEVENT_SELCHANGED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
-	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
+	Connect(wxEVENT_UPDATECRITERIA, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
 	categoryFolderWnd->UpdateCriteria(false);
@@ -115,12 +114,6 @@ CPanelPhotoWnd::~CPanelPhotoWnd()
 	delete(categoryFolderWnd);
 	delete(folderWnd);
 	delete(photoToolbar);
-}
-
-void CPanelPhotoWnd::SaveParameter(wxCommandEvent& event)
-{
-	if (categoryFolderWnd != nullptr)
-		categoryFolderWnd->InitSaveParameter();
 }
 
 void CPanelPhotoWnd::UpdateCriteria(wxCommandEvent& event)
