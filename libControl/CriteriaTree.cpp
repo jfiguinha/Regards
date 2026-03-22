@@ -569,6 +569,9 @@ void CCriteriaTree::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 					data->GetKey(), dataLink->GetLinkPath(),
 					dataLink->GetLinkType());
+
+				if (data->GetValue() == "")
+					data->SetValue("Geolocation is unknown");
 			}
 			else
 				tree_element_texte = CreateTexteElement(
