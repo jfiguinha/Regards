@@ -22,16 +22,9 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 		auto it = listPicture.find(filename);
 		if (it != listPicture.end())
 		{
+            cv::Mat picture = it->second;
+            picture.release();
 			listPicture.erase(it);
-		}
-	}
-
-	{
-		std::lock_guard<std::mutex> lock(muListFile);
-		auto it = std::find(listFile.begin(), listFile.end(), filename);
-		if (it != listFile.end())
-		{
-			listFile.erase(it);
 		}
 	}
 }
@@ -143,49 +136,24 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
     {
         return cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
     }
-
+    else
     {
         std::lock_guard<std::mutex> lock(muPictureBuffer);
-        auto it = listPicture.find(filename);
-
-        if (it == listPicture.end())
         {
-            image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
-            listPicture[filename] = image;
-            
+            auto it = listPicture.find(filename);
+            if (it == listPicture.end())
             {
-                std::lock_guard<std::mutex> fileLock(muListFile);
-                listFile.push_back(filename);
+                image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+                listPicture[filename] = image;
             }
-        }
-        else
-        {
-            image = it->second;
-            
-            {
-                std::lock_guard<std::mutex> fileLock(muListFile);
-                auto fileIt = std::find(listFile.begin(), listFile.end(), filename);
-                if (fileIt != listFile.end())
-                {
-                    listFile.erase(fileIt);
-                }
-                listFile.push_back(filename);
-            }
-        }
-    }
 
-    {
-        std::lock_guard<std::mutex> fileLock(muListFile);
-        if (static_cast<int>(listFile.size()) > sizeBuffer)
-        {
-            wxString firstFile = listFile.front();
-            listFile.erase(listFile.begin());
-            
+            if (static_cast<int>(listPicture.size()) > sizeBuffer)
             {
-                std::lock_guard<std::mutex> picLock(muPictureBuffer);
-                auto it = listPicture.find(firstFile);
+                auto it = listPicture.begin();
                 if (it != listPicture.end())
                 {
+                    cv::Mat picture = it->second;
+                    picture.release();
                     listPicture.erase(it);
                 }
             }
