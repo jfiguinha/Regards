@@ -562,7 +562,6 @@
     <Project Name="FaceRecognition"/>
     <Project Name="libavutil"/>
     <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
     <Project Name="libScanner"/>
     <Project Name="FaceRecognition_mac"/>
     <Project Name="libDeepLearning"/>
@@ -576,5 +575,6 @@
     <Project Name="libheif"/>
     <Project Name="libVideoEffect"/>
     <Project Name="libPicture"/>
+    <Project Name="libAppleFunction"/>
   </Dependencies>
 </CodeLite_Project>
