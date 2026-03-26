@@ -374,7 +374,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.84.2/" \
+	-e "s/VERSION/2.84.3/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -457,7 +457,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.84.2/" \
+	-e "s/VERSION/2.84.3/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -562,7 +562,6 @@
     <Project Name="FaceRecognition"/>
     <Project Name="libavutil"/>
     <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
     <Project Name="libScanner"/>
     <Project Name="FaceRecognition_mac"/>
     <Project Name="libDeepLearning"/>
@@ -576,5 +575,6 @@
     <Project Name="libheif"/>
     <Project Name="libVideoEffect"/>
     <Project Name="libPicture"/>
+    <Project Name="libAppleFunction"/>
   </Dependencies>
 </CodeLite_Project>
