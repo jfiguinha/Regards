@@ -146,6 +146,10 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
                 image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
                 listPicture[filename] = image;
             }
+            else
+            {
+                image = listPicture[filename];
+            }
 
             if (static_cast<int>(listPicture.size()) > sizeBuffer)
             {
