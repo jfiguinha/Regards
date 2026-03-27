@@ -138,19 +138,19 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
     }
     else
     {
-        if (static_cast<int>(listPicture.size()) > sizeBuffer)
-        {
-            auto it = listPicture.begin();
-            if (it != listPicture.end())
-            {
-                cv::Mat picture = it->second;
-                picture.release();
-                listPicture.erase(it);
-            }
-        }
-
         std::lock_guard<std::mutex> lock(muPictureBuffer);
         {
+            if (static_cast<int>(listPicture.size()) > sizeBuffer)
+            {
+                auto it = listPicture.begin();
+                if (it != listPicture.end())
+                {
+                    cv::Mat picture = it->second;
+                    picture.release();
+                    listPicture.erase(it);
+                }
+            }
+
             auto it = listPicture.find(filename);
             if (it == listPicture.end())
             {
