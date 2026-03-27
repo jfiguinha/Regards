@@ -899,7 +899,7 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, float left, float top, float 
 void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color)
 {
 
-	printf("GLSLShader IDR_GLSL_COLOR \n ");
+	//printf("GLSLShader IDR_GLSL_COLOR \n ");
 	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
 	if (m_pShader != nullptr)
 	{
