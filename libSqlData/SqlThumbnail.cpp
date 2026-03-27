@@ -91,7 +91,6 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 
 cv::Mat CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 {
-    //printf("CSqlThumbnail::GetThumbnail : Error : %s \n", path.ToStdString().c_str());
 	wxLogNull logNo;
 	type = 6;
 	wxString fullpath(path);
@@ -100,15 +99,11 @@ cv::Mat CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 
 
 	cv::Mat image;
-	//if (numPhoto == 0)
-	//	return image;
-
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	
 	if (wxFileExists(thumbnail))
 	{
-        //image = CLibPicture::ReadPicture(thumbnail);
-        image = cv::imread(CConvertUtility::ConvertToStdString(thumbnail), cv::IMREAD_COLOR);
+		image = CThumbnailBuffer::GetPicture(thumbnail);
 	}
 
 	if (image.empty())
