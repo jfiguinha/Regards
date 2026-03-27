@@ -1140,7 +1140,10 @@ void wxGenericDirCtrl::SetPath(const wxString& path)
 
 void wxGenericDirCtrl::AddPath(const wxString& path)
 {
-	m_selectedPath.push_back(path);
+	auto position = std::find(m_selectedPath.begin(), m_selectedPath.end(), path);
+	if (position == m_selectedPath.end()) // == myVector.end() means the element was not found
+		m_selectedPath.push_back(path);
+	
 }
 
 void wxGenericDirCtrl::RemovePath(const wxString& path)
