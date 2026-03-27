@@ -131,7 +131,7 @@ protected:
 	void OnSetFramePos(wxCommandEvent& event);
 	void OnUpdateFiltreEffect(wxCommandEvent& event);
 	void CalculPositionPicture(const float& x, const float& y);
-	//static void GenerateThumbnailVideo(void* data);
+
 	int IsSupportOpenCL();
 	int IsSupportCuda();
 	bool ApplyOpenCVEffect(cv::Mat& image);

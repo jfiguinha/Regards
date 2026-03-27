@@ -856,6 +856,7 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	if (needToRefresh)
 	{
 		parentRender->Refresh();
+		needToRefresh = false;
 	}
 }
 
@@ -1255,8 +1256,8 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	double scale_factor = 1.0f;
 #endif
 
-	std::clock_t start;
-	start = std::clock();
+	//std::clock_t start;
+	//start = std::clock();
 
 
 	int width = parentRender->GetSize().GetWidth() * scale_factor;
@@ -1753,7 +1754,6 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
-
 
 
 void CVideoControlSoft::OnSetData(wxCommandEvent& event)
