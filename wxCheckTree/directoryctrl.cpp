@@ -1132,7 +1132,7 @@ void wxGenericDirCtrl::GetFilePaths(wxArrayString& paths) const
 
 void wxGenericDirCtrl::SetPath(const wxString& path)
 {
-	m_selectedPath.push_back(path);
+	AddPath(path);
 	m_defaultPath = path;
 	if (m_rootId)
 		ExpandPath(path);
