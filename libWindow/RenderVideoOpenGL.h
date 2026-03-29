@@ -33,13 +33,14 @@ namespace Regards::OpenGL
 		void RenderWithEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 		                      const float& iTime,
 		                      const bool& inverted);
-
+		void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, const bool& inverted);
 		void RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 
 		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 	private:
 
+		void RenderOpenGLEffect(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime);
 		GLTexture* textureVideo = nullptr;
 		GLTexture* textureSubtitle = nullptr;
 		CRenderOpenGL* renderOpenGL = nullptr;

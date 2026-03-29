@@ -1353,8 +1353,29 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		else
 		{	
 
-			//Render Direct to OpenGL 
+			/*
+			Code with interpolation just for test
+			//Render Direct to OpenGL
+			cv::Mat render = cv::Mat(heightOutput, widthOutput, CV_8UC4);
+			pictureArray.SetArray(render);
+			renderOpenGL->SetData(pictureArray);
 
+			wxFloatRect floatRect;
+			floatRect.left = 0;
+			floatRect.right = 1.0f;
+			floatRect.top = 0;
+			floatRect.bottom = 1.0f;
+
+			pictureArray.SetArray(pictureFrame->matFrame);
+
+			renderBitmapOpenGL->SetVideoTexture(pictureArray);
+
+			renderBitmapOpenGL->RenderWithInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, inverted);
+			//renderBitmapOpenGL->RenderWithInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
+
+			*/
+
+			//Render Direct to OpenGL 
 			wxFloatRect floatRect;
 			floatRect.left = 0;
 			floatRect.right = 1.0f;
