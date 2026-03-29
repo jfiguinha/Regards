@@ -110,7 +110,7 @@ void CSqlResource::InsertOpenCLUchar(const wstring& idName, const wstring& mimeT
 {
 	const wxString data = readFileBytes(filename);
 	auto out = new char[data.size()];
-	const int taille = LZ4_compress(CConvertUtility::ConvertToUTF8(data), out, data.size());
+	const int taille = LZ4_compress_default(CConvertUtility::ConvertToUTF8(data), out, data.size(), data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512,
 	         L"INSERT INTO OpenclUcharResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)",

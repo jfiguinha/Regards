@@ -690,6 +690,7 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 			0, 1
 		};
 
+
 		if (flipV)
 		{
 			vertices[1] = 1;

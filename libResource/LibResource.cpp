@@ -259,6 +259,14 @@ int CLibResource::GetExtensionId(const wxString& extension)
 	return id;
 }
 
+wxString CLibResource::GetOpenGLShaderFromDB(const wxString& idName)
+{
+	CSqlResource sqlResource;
+	wxString program = sqlResource.GetText(idName);
+	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
+	return program;
+}
+
 wxString CLibResource::GetOpenGLShaderProgram(const wxString& idName)
 {
 	CSqlResource sqlResource;

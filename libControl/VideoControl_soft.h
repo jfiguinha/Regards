@@ -109,6 +109,7 @@ public:
 	int UpdateResized() override;
     
     wxString GetAcceleratorHardware();
+	bool ApplyVideoEffect() override;
 
 protected:
 	void OnSetPosition(wxCommandEvent& event);
@@ -131,7 +132,7 @@ protected:
 	void OnSetFramePos(wxCommandEvent& event);
 	void OnUpdateFiltreEffect(wxCommandEvent& event);
 	void CalculPositionPicture(const float& x, const float& y);
-
+	
 	int IsSupportOpenCL();
 	int IsSupportCuda();
 	bool ApplyOpenCVEffect(cv::Mat& image);
@@ -184,8 +185,8 @@ protected:
 
     int Play(const wxString& movie);
 
-
-
+	Regards::Picture::CPictureArray pictureArrayScreen;
+	Regards::Picture::CPictureArray pictureArray;
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;
@@ -228,7 +229,7 @@ protected:
 	CVideoEffectParameter videoEffectParameter;
     
     
-    
+	cv::Mat matScreen;
 	std::atomic<float> video_aspect_ratio;
 	std::atomic<int> widthVideo;
 	std::atomic<int> heightVideo;

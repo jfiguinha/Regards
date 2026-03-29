@@ -1,0 +1,18 @@
+uniform sampler2D textureScreen;
+uniform int width;
+uniform int height;
+
+void main(void)
+{	
+	 //------------------------------------------------------------
+	 //Variable													   
+	 //------------------------------------------------------------
+	//vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
+	
+	ivec2 coord = gl_TexCoord[0].st;
+	vec4 src_color = texture2D(textureScreen, vec2(float(coord.x) / float(width), float(coord.y) / float(height)));
+
+	gl_FragColor = vec4(src_color.r, src_color.g, src_color.b, 1.0f);
+}
+
+

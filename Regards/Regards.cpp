@@ -514,6 +514,9 @@ bool MyApp::OnInit()
 
 	CheckGeolocalisationServiceAvailability();
 
+
+	wxString toto = CLibResource::GetOpenGLShaderFromDB("IDR_GLSL_SHADER_BILINEAR");
+
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
 #else
