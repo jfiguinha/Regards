@@ -182,11 +182,10 @@ void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter
 
 void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
 {
-	GLTexture* glTexture = renderOpenGL->GetGLTexture();
-	glTexture->Enable();
+	textureVideo->Enable();
 
-	int width_local = glTexture->GetWidth();
-	int height_local = glTexture->GetHeight();
+	int width_local = textureVideo->GetWidth();
+	int height_local = textureVideo->GetHeight();
 
 	if (effectParameter->effectEnable)
 	{
@@ -197,7 +196,7 @@ void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter*
 			float timer = rand() % 1000 + 1;
 
 			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("texUnit", glTexture->GetTextureID()))
+			if (!m_pShader->SetTexture("texUnit", textureVideo->GetTextureID()))
 			{
 				printf("SetTexture texUnit failed \n ");
 			}
@@ -316,12 +315,12 @@ void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter*
 		RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, inverted);
 	}
 
-	glTexture->Disable();
+	textureVideo->Disable();
 }
 
 void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int &angle, wxRect & rc, const bool& inverted)
 {
-	textureVideo->Enable();
+	
 	glPushMatrix();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -465,7 +464,7 @@ void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int&
 
 	glFlush();
 
-	textureVideo->Disable();
+	
 }
 
 
