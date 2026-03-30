@@ -385,34 +385,37 @@ void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int&
 	bool _flipH = flipH;
 	bool _flipV = flipV;
 
-	float xFactor = (float)rc.width / (float)textureVideo->GetWidth();
-	float yFactor = (float)rc.height / (float)textureVideo->GetHeight();
+	//float xFactor = (float)rc.width / (float)textureVideo->GetWidth();
+	//float yFactor = (float)rc.height / (float)textureVideo->GetHeight();
 
 	int left = 0;
 	int top = 0;
 
-	if (widthOut == rc.width && rc.height == heightOut)
+	if (renderOpenGL->GetWidth() > rc.width)
 	{
-		left = (renderOpenGL->GetWidth() - textureVideo->GetWidth() * xFactor) / 2;
-		top = (renderOpenGL->GetHeight() - textureVideo->GetHeight() * yFactor) / 2;
+		left = (renderOpenGL->GetWidth() - rc.width) / 2;
 	}
 	else
 	{
-		//left = abs(renderOpenGL->GetWidth() - textureVideo->GetWidth() * xFactor) / 2;
-		//top = abs(renderOpenGL->GetHeight() - textureVideo->GetHeight() * yFactor) / 2;
-		int mxleft = abs(renderOpenGL->GetWidth() - textureVideo->GetWidth() * xFactor);
-		int mxtop = abs(renderOpenGL->GetHeight() - textureVideo->GetHeight() * yFactor);
+		int diff = rc.width - renderOpenGL->GetWidth();
+		left = (diff - rc.x) - diff;
+	}
 
-		left = (mxleft - rc.x) - mxleft;
-		top = rc.y - mxtop;
+	if (renderOpenGL->GetHeight() > rc.height)
+	{
+		top = (renderOpenGL->GetHeight() - rc.height) / 2;
+	}
+	else
+	{
+		top = rc.y - (rc.height - renderOpenGL->GetHeight());
 	}
 
 	GLfloat vertices[] = {
 		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(textureVideo->GetWidth() * xFactor) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(textureVideo->GetWidth() * xFactor) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(textureVideo->GetHeight() * yFactor) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(textureVideo->GetHeight() * yFactor) + static_cast<GLfloat>(top)
+		static_cast<GLfloat>(rc.width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(rc.width) + static_cast<GLfloat>(left),
+		static_cast<GLfloat>(rc.height) + static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left), static_cast<GLfloat>(rc.height) + static_cast<GLfloat>(top)
 	};
 
 	if (angle == 180)
