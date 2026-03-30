@@ -34,7 +34,7 @@ namespace Regards::OpenGL
 		                      const float& iTime,
 		                      const bool& inverted);
 		void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, const bool& inverted);
-		void RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
+		void RenderWithOpenGLInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 
 		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
