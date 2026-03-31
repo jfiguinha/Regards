@@ -289,8 +289,8 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 				glGenTextures(1, &m_nTextureID);
 				//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
 				glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -313,6 +313,11 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 	if (!isOk)
 	{
 		isOk = SetTextureData(bitmap);
+		if (!isOk)
+		{
+			Delete();
+			isOk = SetTextureData(bitmap);
+		}
 	}
 
 	return isOk;
@@ -338,12 +343,13 @@ bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap)
     }
     catch (cv::Exception& e)
     {
+		
         const char* err_msg = e.what();
         std::cout << "exception caught: " << err_msg << std::endl;
         std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
         isOk = false;
     }
- 	return true;   
+ 	return isOk;
 }
 
 
@@ -386,6 +392,12 @@ void GLTexture::Delete()
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		checkErrors("GLTexture::Delete()");
+	}
+
+	if(tex != nullptr)
+	{
+		delete tex;
+		tex = nullptr;
 	}
 
 

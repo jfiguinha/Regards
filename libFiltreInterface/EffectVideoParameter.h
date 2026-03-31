@@ -156,7 +156,7 @@ public:
 	bool stabilizeVideo = false;
 	int stabilizeImageBuffere = 2;
 	int interpolation = 0;
-
+	int interpolationQuality = 0;
 	int templateWindowSize = 7;
 	int searchWindowSize = 21;
 	int h = 3;

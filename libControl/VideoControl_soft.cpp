@@ -1212,6 +1212,8 @@ bool CVideoControlSoft::IsAvailable()
 
 bool CVideoControlSoft::ApplyVideoEffect()
 {
+	if(videoEffectParameter.interpolationQuality > 0)
+		return true;
 	return (videoEffectParameter.autoConstrast || videoEffectParameter.stabilizeVideo || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation || videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.effectEnable;
 }
 
@@ -1274,7 +1276,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	//std::clock_t start;
 	//start = std::clock();
-
+	
 
 	int width = parentRender->GetSize().GetWidth() * scale_factor;
 	int height = parentRender->GetSize().GetHeight() * scale_factor;
@@ -1304,59 +1306,68 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (ApplyVideoEffect())
+		if (IsSupportOpenCL() && openclEffectYUV != nullptr)
 		{
-			if (IsSupportOpenCL() && openclEffectYUV != nullptr)
+			if (pictureFrame->dst != nullptr)
 			{
-				if (pictureFrame->dst != nullptr)
-				{
-					int _colorSpace = 0;
-					int isLimited = 0;
-					if (colorRange == "Limited")
-						isLimited = 1;
+				int _colorSpace = 0;
+				int isLimited = 0;
+				if (colorRange == "Limited")
+					isLimited = 1;
 
-					if (colorSpace == "BT.601")
-					{
-						_colorSpace = 1;
-					}
-					else if (colorSpace == "BT.709")
-					{
-						_colorSpace = 2;
-					}
-					else if (colorSpace == "BT.2020")
-					{
-						_colorSpace = 3;
-					}
-					openclEffectYUV->SetAVFrame(&videoEffectParameter, pictureFrame->dst, _colorSpace, isLimited);
-				}
-				else
+				if (colorSpace == "BT.601")
 				{
-					Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(pictureFrame->matFrame);
-					openclEffectYUV->SetMatrix(mat);
+					_colorSpace = 1;
 				}
+				else if (colorSpace == "BT.709")
+				{
+					_colorSpace = 2;
+				}
+				else if (colorSpace == "BT.2020")
+				{
+					_colorSpace = 3;
+				}
+				openclEffectYUV->SetAVFrame(&videoEffectParameter, pictureFrame->dst, _colorSpace, isLimited);
 			}
+			else if(ApplyVideoEffect())
+			{
+				Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(pictureFrame->matFrame);
+				openclEffectYUV->SetMatrix(mat);
+			}
+		}
 
+		if (ApplyVideoEffect() || pictureFrame->dst != nullptr)
+		{
 			if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 				RenderToTexture();
 			else
 				RenderFFmpegToTexture();
 
-			//Render Direct to OpenGL 
-			wxFloatRect floatRect;
-			floatRect.left = 0;
-			floatRect.right = 1.0f;
-			floatRect.top = 0;
-			floatRect.bottom = 1.0f;
-
 			renderBitmapOpenGL->SetVideoTexture(pictureArray);
-
-			renderBitmapOpenGL->RenderWithOpenGLInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
-
 		}
+		else
+		{
+			Regards::Picture::CPictureArray pictureArray;
+			pictureArray.SetArray(pictureFrame->matFrame);
+			renderBitmapOpenGL->SetVideoTexture(pictureArray);
+		}
+
+		//Render Direct to OpenGL 
+		wxFloatRect floatRect;
+		floatRect.left = 0;
+		floatRect.right = 1.0f;
+		floatRect.top = 0;
+		floatRect.bottom = 1.0f;
+
+		
+
+		renderBitmapOpenGL->RenderWithOpenGLInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
+
+		/*
 		else
 		{	
 
-			/*
+
 			Code with interpolation just for test
 			//Render Direct to OpenGL
 			cv::Mat render = cv::Mat(heightOutput, widthOutput, CV_8UC4);
@@ -1376,7 +1387,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			renderBitmapOpenGL->RenderWithInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, inverted);
 			//renderBitmapOpenGL->RenderWithInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
 
-			*/
+			
 
 			//Render Direct to OpenGL 
 			wxFloatRect floatRect;
@@ -1390,7 +1401,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			renderBitmapOpenGL->SetVideoTexture(pictureArray);
 
 			renderBitmapOpenGL->RenderWithOpenGLInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
-		}
+		}*/
 	
 		if (videoEffectParameter.showFPS)
 		{
@@ -2055,6 +2066,23 @@ void CVideoControlSoft::RenderToTexture()
 		openclEffectYUV->ApplyStabilization(&videoEffectParameter, openCVStabilization);
     }
 
+	if(videoEffectParameter.interpolationQuality == 1)
+	{
+		int filterInterpolation = 0;
+		int widthOutput = 0;
+		int heightOutput = 0;
+		wxRect rc(0, 0, 0, 0);
+		CalculPositionVideo(widthOutput, heightOutput, rc);
+
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+		if (regardsParam != nullptr)
+			filterInterpolation = regardsParam->GetInterpolationType();
+
+		openclEffectYUV->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
+			(int)GetZoomRatio() * 100);
+	}
+
 	if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
 		effectEnable)
 	{
@@ -2116,10 +2144,12 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 
 void CVideoControlSoft::RenderFFmpegToTexture()
 {
-	if (pictureFrame != nullptr)
-		if (pictureFrame->matFrame.empty())
-			return;
+	if (pictureFrame == nullptr)
+		return;
+	if (pictureFrame->matFrame.empty())
+		return;
 
+	Regards::Picture::CPictureArray pictureArrayLocal;
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
 	{
 		cv::Mat cvImage;
@@ -2135,17 +2165,36 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 			hq3d->ApplyDenoise3D(cvImage);
 		}
 
+		if (videoEffectParameter.interpolationQuality == 1)
+		{
+			int filterInterpolation = 0;
+			int widthOutput = 0;
+			int heightOutput = 0;
+			wxRect rc(0, 0, 0, 0);
+			CalculPositionVideo(widthOutput, heightOutput, rc);
+
+			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+			if (regardsParam != nullptr)
+				filterInterpolation = regardsParam->GetInterpolationType();
+
+			cvImage = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
+				flipH, flipV, angle, (int)GetZoomRatio() * 100);
+		}
+
 		if (videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
 		{
 			ApplyOpenCVEffect(cvImage);
 		}
 
-		pictureArray.SetArray(cvImage);
+		pictureArrayLocal.SetArray(cvImage);
 	}
 	else
 	{
-		pictureArray.SetArray(pictureFrame->matFrame);
+		pictureArrayLocal.SetArray(pictureFrame->matFrame);
 	}
+
+	pictureArray = pictureArrayLocal;
 }
 				
 

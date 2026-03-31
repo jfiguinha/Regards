@@ -363,9 +363,30 @@ void CRenderVideoOpenGL::RenderWithOpenGLInterpolationAndEffect(CVideoEffectPara
 			RenderOpenGLEffect(m_pShader, textureVideo, effectParameter, rect, iTime);
 		}
 
-		RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, inverted);
+		if (effectParameter->interpolationQuality > 0)
+		{
+			int width_local = textureVideo->GetWidth();
+			int height_local = textureVideo->GetHeight();
+
+			int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
+			int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
+
+			renderOpenGL->RenderQuad(textureVideo, left_local, top_local, inverted);
+		}
+		else
+			RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, inverted);
 		if (m_pShader != nullptr)
 			m_pShader->DisableShader();
+	}
+	else if (effectParameter->interpolationQuality > 0)
+	{
+		int width_local = textureVideo->GetWidth();
+		int height_local = textureVideo->GetHeight();
+
+		int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
+		int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
+
+		renderOpenGL->RenderQuad(textureVideo, left_local, top_local, inverted);
 	}
 	else
 	{

@@ -56,6 +56,7 @@ CVideoFilter::CVideoFilter()
 	enableSepia = CLibResource::LoadStringFromResource(L"LBLenableSepia", 1); //L"Effect.Sepia";
 	libelleTemplateWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingTemplate", 1);
 	libellesearchWindowSize = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSearchWindowSize", 1);
+	libelleInterpolationQuality = "Interpolation Quality";
 }
 
 CVideoFilter::~CVideoFilter()
@@ -120,6 +121,8 @@ void CVideoFilter::Filter(CEffectParameter* effectParameter, const wxString& fil
 	                              &videoEffectParameter->showFPS, 2, 2);
 	filtreInterface->AddTreeInfos(enableEffect, new CTreeElementValueInt(videoEffectParameter->effectEnable),
 	                              &videoEffectParameter->effectEnable, 2, 2);
+	filtreInterface->AddTreeInfos(libelleInterpolationQuality, new CTreeElementValueInt(videoEffectParameter->interpolationQuality),
+		&videoEffectParameter->interpolationQuality, 2, 2);
 	filtreInterface->AddTreeInfos(libelleAutoContrast, new CTreeElementValueInt(videoEffectParameter->autoConstrast),
 	                              &videoEffectParameter->autoConstrast, 2, 2);
 	filtreInterface->AddTreeInfos(enableFilmgrain, new CTreeElementValueInt(videoEffectParameter->filmgrainenable),
@@ -257,11 +260,10 @@ void CVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEle
 	{
 		videoEffectParameter->uSigma = value;
 	}
-	/*
-	else if (key == enableOpenCL)
+	else if (key == libelleInterpolationQuality)
 	{
-		videoEffectParameter->enableOpenCL = value;
-	}    */
+		videoEffectParameter->interpolationQuality = value;
+	}    
 	else if (key == effectDenoising)
 	{
 		videoEffectParameter->denoisingLevel = value;

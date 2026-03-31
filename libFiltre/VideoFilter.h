@@ -69,6 +69,6 @@ namespace Regards::Filter
 		wxString libelleStabilizeNbFrame;
 		wxString libelleTemplateWindowSize;
 		wxString libellesearchWindowSize;
-
+		wxString libelleInterpolationQuality;
 	};
 }
