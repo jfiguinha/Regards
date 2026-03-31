@@ -2143,16 +2143,16 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 
 void CVideoControlSoft::RenderFFmpegToTexture()
 {
+	cv::Mat cvImage;
+
 	if (pictureFrame == nullptr)
 		return;
 	if (pictureFrame->matFrame.empty())
 		return;
 
 	Regards::Picture::CPictureArray pictureArrayLocal;
-	if (videoEffectParameter.denoiseEnable && videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
+	if (videoEffectParameter.stabilizeVideo)
 	{
-		cv::Mat cvImage;
-
 		cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
 
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2163,29 +2163,37 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 				hq3d->UpdateParameter(widthVideo, heightVideo, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 			hq3d->ApplyDenoise3D(cvImage);
 		}
+	}
 
-		if (videoEffectParameter.interpolationQuality == 1)
-		{
-			int filterInterpolation = 0;
-			int widthOutput = 0;
-			int heightOutput = 0;
-			wxRect rc(0, 0, 0, 0);
-			CalculPositionVideo(widthOutput, heightOutput, rc);
+	if (videoEffectParameter.interpolationQuality == 1)
+	{
+		if(cvImage.empty())
+			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
+		else if (cvImage.channels() == 4)
+			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
 
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		int filterInterpolation = 0;
+		int widthOutput = 0;
+		int heightOutput = 0;
+		wxRect rc(0, 0, 0, 0);
+		CalculPositionVideo(widthOutput, heightOutput, rc);
 
-			if (regardsParam != nullptr)
-				filterInterpolation = regardsParam->GetInterpolationType();
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
-			cvImage = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
-				flipH, flipV, angle, (int)GetZoomRatio() * 100);
-		}
+		if (regardsParam != nullptr)
+			filterInterpolation = regardsParam->GetInterpolationType();
 
-		if (videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
-		{
-			ApplyOpenCVEffect(cvImage);
-		}
+		cvImage = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation,
+			flipH, flipV, angle, (int)GetZoomRatio() * 100);
+	}
 
+	if (videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
+	{
+		ApplyOpenCVEffect(cvImage);
+	}
+
+	if(!cvImage.empty())
+	{
 		pictureArrayLocal.SetArray(cvImage);
 	}
 	else
