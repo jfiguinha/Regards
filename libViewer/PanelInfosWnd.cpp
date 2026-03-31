@@ -486,7 +486,7 @@ void CPanelInfosWnd::LoadInfo()
 	case WM_HISTORY:
 		HistoryUpdate();
 		infosToolbar->SetHistoryPush();
-		windowVisible = WM_INFOS;
+		windowVisible = WM_HISTORY;
 		break;
 	case WM_EFFECT:
 		if (!thumbnailEffectWnd->IsShown())
@@ -494,7 +494,7 @@ void CPanelInfosWnd::LoadInfo()
 		EffectUpdate();
 		infosToolbar->SetEffectPush();
 		thumbnailEffectWnd->Refresh();
-		windowVisible = WM_INFOS;
+		windowVisible = WM_EFFECT;
 		break;
 	case WM_AUDIOVIDEO:
 		if (!thumbnailEffectWnd->IsShown())
@@ -504,7 +504,7 @@ void CPanelInfosWnd::LoadInfo()
 		AudioVideoUpdate();
 		infosToolbar->SetAudioVideoPush();
 		thumbnailEffectWnd->Refresh();
-		windowVisible = WM_INFOS;
+		windowVisible = WM_AUDIOVIDEO;
 		break;
 	case WM_VIDEOEFFECT:
 		if (!thumbnailEffectWnd->IsShown())
@@ -514,7 +514,7 @@ void CPanelInfosWnd::LoadInfo()
 		VideoEffectUpdate();
 		infosToolbar->SetVideoEffectPush();
 		thumbnailEffectWnd->Refresh();
-		windowVisible = WM_INFOS;
+		windowVisible = WM_VIDEOEFFECT;
 		break;
 
 	case WM_CRITERIA:
@@ -530,7 +530,7 @@ void CPanelInfosWnd::LoadInfo()
 				DisplayURL(newUrl);
 			url = newUrl;
 			infosToolbar->SetMapPush();
-			windowVisible = WM_INFOS;
+			windowVisible = WM_MAPS;
 		}
 		break;
 
