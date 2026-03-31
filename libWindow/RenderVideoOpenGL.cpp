@@ -35,7 +35,7 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 	textureSubtitle = nullptr;
 }
 
-
+/*
 void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter,
 	const wxFloatRect& rect, const float& iTime, const bool& inverted)
 {
@@ -196,14 +196,17 @@ void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter*
 	textureVideo->Disable();
 	glTexture->Disable();
 }
+*/
 
-void CRenderVideoOpenGL::RenderOpenGLEffect(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime)
+void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime)
 {
 	srand(time(nullptr));
 	float timer = rand() % 1000 + 1;
 
 	int width_local = glTexture->GetWidth();
 	int height_local = glTexture->GetHeight();
+
+	m_pShader->EnableShader();
 
 	if (!m_pShader->SetTexture("texUnit", glTexture->GetTextureID()))
 	{
@@ -313,6 +316,8 @@ void CRenderVideoOpenGL::RenderOpenGLEffect(GLSLShader* m_pShader, GLTexture* gl
 	{
 		printf("SetParam uKSigma failed \n ");
 	}
+
+	m_pShader->DisableShader();
 }
 
 void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
@@ -323,9 +328,7 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wx
 	{
 		GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
 		if (m_pShader != nullptr)
-		{
-			RenderOpenGLEffect(m_pShader, textureVideo, effectParameter, rect, iTime);
-		}
+			RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
 
 		if (effectParameter->interpolationQuality > 0)
 		{
@@ -339,8 +342,7 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wx
 		}
 		else
 			RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, inverted);
-		if (m_pShader != nullptr)
-			m_pShader->DisableShader();
+			
 	}
 	else if (effectParameter->interpolationQuality > 0)
 	{
