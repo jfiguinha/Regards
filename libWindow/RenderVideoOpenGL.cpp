@@ -206,7 +206,7 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTextur
 	int width_local = glTexture->GetWidth();
 	int height_local = glTexture->GetHeight();
 
-	m_pShader->EnableShader();
+
 
 	if (!m_pShader->SetTexture("texUnit", glTexture->GetTextureID()))
 	{
@@ -317,18 +317,23 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTextur
 		printf("SetParam uKSigma failed \n ");
 	}
 
-	m_pShader->DisableShader();
+	
 }
 
 void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
 {
+	GLSLShader* m_pShader = nullptr;
 	textureVideo->Enable();
 
 	if (effectParameter->effectEnable)
 	{
-		GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
 		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
 			RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
+		}
+			
 
 		if (effectParameter->interpolationQuality > 0)
 		{
@@ -360,6 +365,8 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wx
 	}
 
 	textureVideo->Disable();
+	if(m_pShader != nullptr)
+		m_pShader->DisableShader();
 }
 
 void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int &angle, wxRect & rc, const bool& inverted)
