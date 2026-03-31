@@ -185,8 +185,8 @@ protected:
 
     int Play(const wxString& movie);
 
-	Regards::Picture::CPictureArray pictureArrayScreen;
-	Regards::Picture::CPictureArray pictureArray;
+
+	CPictureArray pictureArray;
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;

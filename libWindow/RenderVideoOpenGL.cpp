@@ -315,43 +315,7 @@ void CRenderVideoOpenGL::RenderOpenGLEffect(GLSLShader* m_pShader, GLTexture* gl
 	}
 }
 
-
-void CRenderVideoOpenGL::RenderWithEffect(CVideoEffectParameter* effectParameter,
-                                          const wxFloatRect& rect, const float& iTime, const bool& inverted)
-{
-	GLTexture* glTexture = renderOpenGL->GetGLTexture();
-	glTexture->Enable();
-
-	int width_local = glTexture->GetWidth();
-	int height_local = glTexture->GetHeight();
-
-	int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
-	int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
-
-	if (effectParameter->effectEnable)
-	{
-		GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			RenderOpenGLEffect(m_pShader, glTexture, effectParameter, rect, iTime);
-
-		}
-
-		renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
-		if (m_pShader != nullptr)
-			m_pShader->DisableShader();
-	}
-	else
-	{
-		renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
-	}
-
-	glTexture->Disable();
-}
-
-
-void CRenderVideoOpenGL::RenderWithOpenGLInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
+void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
 {
 	textureVideo->Enable();
 

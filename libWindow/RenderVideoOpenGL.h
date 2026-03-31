@@ -30,15 +30,14 @@ namespace Regards::OpenGL
 		GLTexture* GetVideoTexturePt();
 		void SetSubtitle(cv::Mat& subtitle);
 		void ShowSubtitle();
-		void RenderWithEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
-		                      const float& iTime,
-		                      const bool& inverted);
-		void CRenderVideoOpenGL::RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, const bool& inverted);
-		void RenderWithOpenGLInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
+		void Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 
-		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 	private:
+
+		void RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, const bool& inverted);
+		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
+
 
 		void RenderOpenGLEffect(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime);
 		GLTexture* textureVideo = nullptr;
