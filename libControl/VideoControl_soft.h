@@ -15,6 +15,7 @@ extern "C" {
 #include <IBitmapRenderInterface.h>
 
 using namespace Regards::Window;
+using namespace Regards::Picture;
 using namespace Regards::Video;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;

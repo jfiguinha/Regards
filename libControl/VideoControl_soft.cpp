@@ -1361,7 +1361,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 		
 
-		renderBitmapOpenGL->RenderWithOpenGLInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
+		renderBitmapOpenGL->Render(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
 
 		/*
 		else
