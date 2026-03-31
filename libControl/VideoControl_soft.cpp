@@ -2153,7 +2153,10 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 	Regards::Picture::CPictureArray pictureArrayLocal;
 	if (videoEffectParameter.stabilizeVideo)
 	{
-		cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
+		if (cvImage.empty())
+			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
+		else if (cvImage.channels() == 4)
+			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
 
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 		{
@@ -2189,6 +2192,11 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 
 	if (videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
 	{
+		if (cvImage.empty())
+			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
+		else if (cvImage.channels() == 4)
+			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
+
 		ApplyOpenCVEffect(cvImage);
 	}
 
