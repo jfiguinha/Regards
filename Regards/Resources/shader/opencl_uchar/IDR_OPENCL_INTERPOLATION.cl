@@ -5,7 +5,7 @@
 
 // Inline device function to convert 32-bit unsigned integer to floating point rgba color 
 //*****************************************************************
-float4 rgbaUintToFloat4(uint c)
+inline float4 rgbaUintToFloat4(uint c)
 {
     float4 rgba;
     rgba.x = c & 0xff;
@@ -17,7 +17,7 @@ float4 rgbaUintToFloat4(uint c)
 
 // Inline device function to convert floating point rgba color to 32-bit unsigned integer
 //*****************************************************************
-uint rgbaFloat4ToUint(float4 rgba, float fScale)
+inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
 {
     unsigned int uiPackedPix = 0U;
     uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
@@ -27,261 +27,96 @@ uint rgbaFloat4ToUint(float4 rgba, float fScale)
     return uiPackedPix;
 }
 
-
-float BilinearFilter( float x)
+// Pre-computed filter functions inline - avoid function call overhead
+inline float KernelFilter_selection(float x, int type)
 {
-	return (x < 1.0f ? 1.0f - x : 0.0); 
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-float GaussianFilter( float x)
-{
-	if (fabs (x) > 1.25) 
-	{
-		return 0.0;
-	}
-	return exp(-x * x / 2.0) / sqrt (FILTER_2PI); 
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-float HammingFilter( float x)
-{
-	if (x > 1.0f) 
-	{
-		return 0.0; 
-	}
-	float dWindow = 0.54 + 0.46 * cos (FILTER_2PI * x); 
-	float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x); 
-	return dWindow * dSinc;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float CubicFilter( float x) 
-{
-	if (x > 2.0) 
-	{
-		return 0.0; 
-	}
-
-	if (x < -2.0)
-		return(0.0);
-	if (x < -1.0)
-		return((2.0+x)*(2.0+x)*(2.0+x)/6.0);
-	if (x < 0.0)
-		return((4.0+x*x*(-6.0-3.0*x))/6.0);
-	if (x < 1.0)
-		return((4.0+x*x*(-6.0+3.0*x))/6.0);
-	if (x < 2.0)
-		return((2.0-x)*(2.0-x)*(2.0-x)/6.0);
-	return(0.0);
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float BlackmanFilter( float x) 
-{
-	if (x > 1.0f) 
-	{
-		return 0.0; 
-	}
-	float dN = 2.0 * 1.0f + 1.0; 
-	return 0.42 + 0.5 * cos(FILTER_2PI * x / ( dN - 1.0 )) + 0.08 * cos (FILTER_4PI * x / ( dN - 1.0 )); 
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
- 
-float QuadraticFilter( float x) 
-{
-	if (x > 1.5f) 
-	{
-		return 0.0f; 
-	}
-
-	if (x < -1.5)
-		return(0.0);
-	if (x < -0.5)
-		return(0.5*(x+1.5)*(x+1.5));
-	if (x < 0.5)
-		return(0.75-x*x);
-	if (x < 1.5)
-		return(0.5*(x-1.5)*(x-1.5));
-	return(0.0);
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-float MitchellFilter( float x) 
-{
-	if (x > 2.0f) 
-		return 0.0; 
-
-	#define B   (1.0/3.0)
-	#define C   (1.0/3.0)
-	#define P0  ((  6.0- 2.0*B       )/6.0)
-	#define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
-	#define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
-	#define Q0  ((       8.0*B+24.0*C)/6.0)
-	#define Q1  ((     -12.0*B-48.0*C)/6.0)
-	#define Q2  ((       6.0*B+30.0*C)/6.0)
-	#define Q3  ((     - 1.0*B- 6.0*C)/6.0)
-
-	if (x < -2.0)
-		return(0.0);
-	if (x < -1.0)
-		return(Q0-x*(Q1-x*(Q2-x*Q3)));
-	if (x < 0.0)
-		return(P0+x*x*(P2-x*P3));
-	if (x < 1.0)
-		return(P0+x*x*(P2+x*P3));
-	if (x < 2.0)
-		return(Q0+x*(Q1+x*(Q2+x*Q3)));
-	return(0.0);
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float TriangleFilter( float x) 
-{
-	if (x > 1.0f) 
-		return 0.0f; 
-	if (x < -1.0f)
-		return(0.0f);
-	if (x < 0.0f)
-		return(1.0f+x);
-	if (x < 1.0f)
-		return(1.0f-x);
-	return(0.0f);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float CatromFilter( float x )
-{
-	float m_dWidth = 2.0f;
-	if (x > m_dWidth) 
-	{
-		return 0.0f; 
-	}
-
-	if (x < -2.0f)
-		return(0.0f);
-	if (x < -1.0f)
-		return(0.5f*(4.0f+x*(8.0f+x*(5.0f+x))));
-	if (x < 0.0f)
-		return(0.5f*(2.0f+x*x*(-5.0f-3.0f*x)));
-	if (x < 1.0f)
-		return(0.5f*(2.0f+x*x*(-5.0f+3.0f*x)));
-	if (x < 2.0f)
-		return(0.5f*(4.0f+x*(-8.0f+x*(5.0f-x))));
-	return(0.0f);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float HanningFilter( float x )
-{
-	if (x > 1.0f) 
-	{
-		return 0.0f; 
-	}
-
-	return(0.54f+0.46f*cos(FILTER_PI*x));
-}
-		
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float HermiteFilter( float x )
-{
-	float m_dWidth = 1.5f;
-	if (x > m_dWidth) 
-		return 0.0; 
-
-	if (x < -1.0)
-		return(0.0);
-	if (x < 0.0)
-		return((2.0*(-x)-3.0)*(-x)*(-x)+1.0);
-	if (x < 1.0)
-		return((2.0*x-3.0)*x*x+1.0);
-	return(0.0);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-float BboxFilter( float f )
-{
-	float width = 0.5f;
-	return (f <= width ? 1.0f : 0.0f);
+    switch(type)
+    {
+        case 1: // BboxFilter
+            return (x <= 0.5f ? 1.0f : 0.0f);
+            
+        case 2: // HermiteFilter
+            if (x > 1.5f) return 0.0f;
+            if (x < -1.0f) return 0.0f;
+            if (x < 0.0f) return (2.0f*(-x)-3.0f)*(-x)*(-x)+1.0f;
+            if (x < 1.0f) return (2.0f*x-3.0f)*x*x+1.0f;
+            return 0.0f;
+            
+        case 3: // HanningFilter
+            if (x > 1.0f) return 0.0f;
+            return 0.54f + 0.46f*cos(FILTER_PI*x);
+            
+        case 4: // CatromFilter
+            if (x > 2.0f) return 0.0f;
+            if (x < -2.0f) return 0.0f;
+            if (x < -1.0f) return 0.5f*(4.0f+x*(8.0f+x*(5.0f+x)));
+            if (x < 0.0f) return 0.5f*(2.0f+x*x*(-5.0f-3.0f*x));
+            if (x < 1.0f) return 0.5f*(2.0f+x*x*(-5.0f+3.0f*x));
+            if (x < 2.0f) return 0.5f*(4.0f+x*(-8.0f+x*(5.0f-x)));
+            return 0.0f;
+            
+        case 5: // MitchellFilter
+            if (x > 2.0f) return 0.0f;
+            #define B   (1.0f/3.0f)
+            #define C   (1.0f/3.0f)
+            #define P0  ((  6.0f- 2.0f*B       )/6.0f)
+            #define P2  ((-18.0f+12.0f*B+ 6.0f*C)/6.0f)
+            #define P3  (( 12.0f- 9.0f*B- 6.0f*C)/6.0f)
+            #define Q0  ((       8.0f*B+24.0f*C)/6.0f)
+            #define Q1  ((     -12.0f*B-48.0f*C)/6.0f)
+            #define Q2  ((       6.0f*B+30.0f*C)/6.0f)
+            #define Q3  ((     - 1.0f*B- 6.0f*C)/6.0f)
+            if (x < -2.0f) return 0.0f;
+            if (x < -1.0f) return Q0-x*(Q1-x*(Q2-x*Q3));
+            if (x < 0.0f) return P0+x*x*(P2-x*P3);
+            if (x < 1.0f) return P0+x*x*(P2+x*P3);
+            if (x < 2.0f) return Q0+x*(Q1+x*(Q2+x*Q3));
+            return 0.0f;
+            
+        case 6: // TriangleFilter
+            if (x > 1.0f) return 0.0f;
+            if (x < -1.0f) return 0.0f;
+            if (x < 0.0f) return 1.0f+x;
+            return 1.0f-x;
+            
+        case 7: // QuadraticFilter
+            if (x > 1.5f) return 0.0f;
+            if (x < -1.5f) return 0.0f;
+            if (x < -0.5f) return 0.5f*(x+1.5f)*(x+1.5f);
+            if (x < 0.5f) return 0.75f-x*x;
+            return 0.5f*(x-1.5f)*(x-1.5f);
+            
+        case 8: // BlackmanFilter
+            if (x > 1.0f) return 0.0f;
+            float dN = 3.0f;
+            return 0.42f + 0.5f * cos(FILTER_2PI * x / ( dN - 1.0f )) + 0.08f * cos (FILTER_4PI * x / ( dN - 1.0f ));
+            
+        case 9: // HammingFilter
+            if (x > 1.0f) return 0.0f;
+            float dWindow = 0.54f + 0.46f * cos (FILTER_2PI * x);
+            float dSinc = (x == 0) ? 1.0f : sin (FILTER_PI * x) / (FILTER_PI * x);
+            return dWindow * dSinc;
+            
+        case 10: // GaussianFilter
+            if (fabs(x) > 1.25f) return 0.0f;
+            return exp(-x * x / 2.0f) / sqrt (FILTER_2PI);
+            
+        case 11: // BilinearFilter
+            return (x < 1.0f ? 1.0f - x : 0.0f);
+            
+        default: // CubicFilter
+            if (x > 2.0f) return 0.0f;
+            if (x < -2.0f) return 0.0f;
+            if (x < -1.0f) return (2.0f+x)*(2.0f+x)*(2.0f+x)/6.0f;
+            if (x < 0.0f) return (4.0f+x*x*(-6.0f-3.0f*x))/6.0f;
+            if (x < 1.0f) return (4.0f+x*x*(-6.0f+3.0f*x))/6.0f;
+            if (x < 2.0f) return (2.0f-x)*(2.0f-x)*(2.0f-x)/6.0f;
+            return 0.0f;
+    }
 }
 
 
-float KernelFilter_selection( float f, int type)
-{
-	if(type == 1)
-	{
-		return BboxFilter(f);
-	}
-	else if(type == 2)
-	{
-		return HermiteFilter(f);
-	}
-	else if(type == 3)
-	{
-		return HanningFilter(f);
-	}	
-	else if(type == 4)
-	{
-		return CatromFilter(f);
-	}		
-	else if(type == 5)
-	{
-		return MitchellFilter(f);
-	}	
-	else if(type == 6)
-	{
-		return TriangleFilter(f);
-	}	
-	else if(type == 7)
-	{
-		return QuadraticFilter(f);
-	}	
-	else if(type == 8)
-	{
-		return BlackmanFilter(f);
-	}	
-	else if(type == 9)
-	{
-		return HammingFilter(f);
-	}	
-	else if(type == 10)
-	{
-		return GaussianFilter(f);
-	}
-	else if(type == 11)
-	{
-		return BilinearFilter(f);
-	}	
-	else
-	{
-		return CubicFilter(f);
-	}
-}
-
-float4 GetColorSrc(int x, int y, const __global uint *input, int widthIn, int heightIn)
+inline float4 GetColorSrc(int x, int y, const __global uint *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
@@ -291,7 +126,7 @@ float4 GetColorSrc(int x, int y, const __global uint *input, int widthIn, int he
 	return (float4)0.0f;
 }
 
-uint GetColorSrc_short(int x, int y, const __global uint *input, int widthIn, int heightIn)
+inline uint GetColorSrc_short(int x, int y, const __global uint *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
@@ -301,7 +136,7 @@ uint GetColorSrc_short(int x, int y, const __global uint *input, int widthIn, in
 	return 0;
 }
 
-uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
+inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
 	float4 nDenom = 0.0f;
 	int valueA = (int)x;
@@ -335,7 +170,7 @@ uint KernelExecution(float x, float y, const __global uint *input, int widthIn, 
     return rgbaFloat4ToUint((sum / nDenom),1.0f);
 }
 
-uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y, float left, float top)
+inline uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y, float left, float top)
 {
 	float posX = (float)x * ratioX + left * ratioX;
 	float posY = (float)y * ratioY + top * ratioY;

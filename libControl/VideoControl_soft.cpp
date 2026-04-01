@@ -724,6 +724,7 @@ void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 void CVideoControlSoft::OnUpdateFiltreEffect(wxCommandEvent& event)
 {
 	bool updateScroll = false;
+	int pos = videoEffectParameter.zoomSelect;
 	auto videoParameter = static_cast<CVideoEffectParameter*>(event.GetClientData());
 	if (videoParameter->streamAudioUpdate)
 	{
@@ -754,6 +755,7 @@ void CVideoControlSoft::OnUpdateFiltreEffect(wxCommandEvent& event)
 
 	videoEffectParameter = *videoParameter;
 
+	videoEffectParameter.zoomSelect = pos;
 
 	if (updateScroll)
 	{
