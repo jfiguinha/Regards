@@ -1,7 +1,6 @@
-uniform sampler2D texUnit;
+uniform sampler2D texVideo;
 uniform float fWidth;
 uniform float fHeight;
-uniform sampler2D texVideo;
 uniform float videoWidth;
 uniform float videoHeight;
 uniform int interpolation;
@@ -156,7 +155,7 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	float texelSizeX = 1.0 / fWidth; //size of one texel 
 	float texelSizeY = 1.0 / fHeight; //size of one texel 
 	vec2 resolution = vec2(texelSizeX, texelSizeY); 
-	return tex2DBiLinear(texVideo, vec2(posX,posY) + resolution * vec2(xDiff, yDiff)); //texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+	return tex2DBiLinear(texVideo, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
 }
 
 
@@ -246,9 +245,9 @@ vec4 vhsImage(vec4 color)
     vec2 offsetR = vec2(0.006 * sin(iTime), 0.0) * colorOffsetIntensity;
     vec2 offsetG = vec2(0.0073 * (cos(iTime * 0.97)), 0.0) * colorOffsetIntensity;
     
-    float r = clamp(tex2DBiLinear(texVideo, uv + offsetR).r,0.0,1.0); //clamp(texture2D(texUnit, uv + offsetR).r,0.0,1.0);
-    float g = clamp(tex2DBiLinear(texVideo, uv + offsetG).g,0.0,1.0); //clamp(texture2D(texUnit, uv + offsetG).g,0.0,1.0);
-    float b = clamp(tex2DBiLinear(texVideo, uv).b,0.0,1.0); //clamp(texture2D(texUnit, uv).b,0.0,1.0);
+    float r = clamp(tex2DBiLinear(texVideo, uv + offsetR).r,0.0,1.0);
+    float g = clamp(tex2DBiLinear(texVideo, uv + offsetG).g,0.0,1.0);
+    float b = clamp(tex2DBiLinear(texVideo, uv).b,0.0,1.0);
 
     return vec4(r, g, b, 1.0);
 }
@@ -353,7 +352,7 @@ vec4 ApplyFilter(vec4 src_color)
 //------------------------------------------------------------
 //Denoise													   
 //------------------------------------------------------------
-vec4 Denoise(vec4 centrPx, sampler2D tex)
+vec4 Denoise(vec4 centrPx)
 {
     float radius = floor(kSigma*sigma);
     float radQ = radius * radius;
@@ -394,7 +393,7 @@ void main(void)
 	float x = gl_TexCoord[0].s;
 	float y = gl_TexCoord[0].t;
 	vec2 tex_coord = gl_TexCoord[0].st;
-	vec4 src_color = tex2DBiLinear(texVideo, tex_coord);//texture2D(texUnit, tex_coord).rgba;
+	vec4 src_color = tex2DBiLinear(texVideo, tex_coord);
 		
 	if(x > left && x < right && y > top && y < bottom)													
 	{
@@ -413,7 +412,7 @@ void main(void)
 		
 		if(denoise == 1)
 		{
-			src_color = Denoise(src_color, texUnit);
+			src_color = Denoise(src_color);
 		}
 
 		if(filmgrain == 1)
@@ -433,19 +432,3 @@ void main(void)
 	}
 	gl_FragColor = src_color;
 }
-
-
-/*
-//------------------------------------------------------------
-//Main code													   
-//------------------------------------------------------------
-void main(void)
-{		
-	float x = gl_TexCoord[0].s;
-	float y = gl_TexCoord[0].t;
-	vec2 tex_coord = gl_TexCoord[0].st;
-	vec4 src_color =  tex2DBiLinear(texVideo, tex_coord);
-		
-	gl_FragColor = src_color;
-}
-*/

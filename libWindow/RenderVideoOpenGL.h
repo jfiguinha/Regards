@@ -32,7 +32,8 @@ namespace Regards::OpenGL
 		void ShowSubtitle();
 		void Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
-
+		void RenderWithInterpolationAndEffect(CVideoEffectParameter* effectParameter,
+			const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 	private:
 
 		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
