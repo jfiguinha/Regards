@@ -204,7 +204,7 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTextur
 	
 }
 
-void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
+void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
 {
 
 
@@ -237,6 +237,13 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, const wx
 		if (m_pShader != nullptr)
 		{
 			m_pShader->EnableShader();
+
+			rect.top = (float)((glTexture->GetHeight() - heightOut) / 2) / (float)glTexture->GetHeight();
+			rect.bottom = 1.0f - rect.top;
+
+			rect.left = (float)((glTexture->GetWidth() - widthOut) / 2) / (float)glTexture->GetWidth();
+			rect.right = 1.0f - rect.left;
+
 			RenderShader(m_pShader, glTexture, effectParameter, rect, iTime);
 			renderOpenGL->RenderQuad(glTexture, 0, 0, inverted);
 		}

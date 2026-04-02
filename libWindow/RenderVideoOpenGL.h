@@ -30,7 +30,7 @@ namespace Regards::OpenGL
 		GLTexture* GetVideoTexturePt();
 		void SetSubtitle(cv::Mat& subtitle);
 		void ShowSubtitle();
-		void Render(CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
+		void Render(CVideoEffectParameter* effectParameter, wxFloatRect& rect,
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 	private:
 
