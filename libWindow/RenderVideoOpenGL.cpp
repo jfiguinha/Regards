@@ -45,6 +45,61 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 }
 
 
+void CRenderVideoOpenGL::RenderShaderInterpolation(GLSLShader* m_pShader, GLTexture* glTexture, const wxFloatRect& rect, int interpolation, int flipH, int flipV, int angle)
+{
+	srand(time(nullptr));
+	float timer = rand() % 1000 + 1;
+
+	int width_local = glTexture->GetWidth();
+	int height_local = glTexture->GetHeight();
+	/*
+	uniform int flipH;
+uniform int flipV;
+uniform int angle;
+	*/
+
+	if (!m_pShader->SetTexture("ImageTexture", glTexture->GetTextureID()))
+	{
+		printf("SetTexture ImageTexture failed \n ");
+	}
+	if (!m_pShader->SetParam("widthTex", glTexture->GetWidth()))
+	{
+		printf("SetParam widthTex failed \n ");
+	}
+	if (!m_pShader->SetParam("heightTex", glTexture->GetHeight()))
+	{
+		printf("SetParam heightTex failed \n ");
+	}
+	if (!m_pShader->SetParam("flipH", flipH))
+	{
+		printf("SetParam flipH failed \n ");
+	}
+	if (!m_pShader->SetParam("flipV", flipV))
+	{
+		printf("SetParam flipV failed \n ");
+	}
+	if (!m_pShader->SetParam("angle", angle))
+	{
+		printf("SetParam angle failed \n ");
+	}
+	if (!m_pShader->SetParam("top", rect.top))
+	{
+		printf("SetParam top failed \n ");
+	}
+	if (!m_pShader->SetParam("left", rect.left))
+	{
+		printf("SetParam left failed \n ");
+	}
+	if (!m_pShader->SetParam("right", rect.right))
+	{
+		printf("SetParam right failed \n ");
+	}
+	if (!m_pShader->SetParam("bottom", rect.bottom))
+	{
+		printf("SetParam bottom failed \n ");
+	}
+}
+
 void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime)
 {
 	srand(time(nullptr));
@@ -161,8 +216,6 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTextur
 	{
 		printf("SetParam uKSigma failed \n ");
 	}
-
-	
 }
 
 void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatRect& rect, const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
@@ -222,6 +275,8 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 
 			RenderShader(m_pShader, glTexture, effectParameter, rect, iTime);
 			renderOpenGL->RenderQuad(glTexture, 0, 0, inverted);
+
+			m_pShader->DisableShader();
 		}
 
 	}
@@ -251,8 +306,9 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 			renderOpenGL->RenderQuad(textureVideo, left_local, top_local, inverted);
 		}
 		else
+		{
 			RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, inverted);
-
+		}
 
 		textureVideo->Disable();
 		if (m_pShader != nullptr)

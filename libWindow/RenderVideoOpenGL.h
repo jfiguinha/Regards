@@ -34,6 +34,7 @@ namespace Regards::OpenGL
 			const float& iTime, int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 	private:
 
+		void RenderShaderInterpolation(GLSLShader* m_pShader, GLTexture* glTexture, const wxFloatRect& rect, int interpolation, int flipH, int flipV, int angle);
 		void RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted);
 		void RenderShader(GLSLShader* m_pShader, GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float& iTime);
 		GLTexture* textureVideo = nullptr;
