@@ -66,6 +66,7 @@ namespace Regards::OpenGL
 
 
 		GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
+		void RenderQuad(int width, int height, int left, int top, bool inverted);
 		void RenderQuad(GLTexture* texture, int left = 0, int top = 0, bool inverted = false);
         void RenderQuad(GLTexture* texture, float left = 0, float top = 0, float scale = 0, bool inverted = false);
 		void RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH,

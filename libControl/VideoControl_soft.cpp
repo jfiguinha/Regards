@@ -1373,12 +1373,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderOpenGL->SetData(pictureArray);
 
 		//Render Direct to OpenGL
-		/*
-		cv::Mat render = cv::Mat(heightOutput, widthOutput, CV_8UC4);
-		pictureArray.SetArray(render);
-		renderOpenGL->SetData(pictureArray);
-		renderBitmapOpenGL->RenderWithInterpolationAndEffect(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
-		*/
 		renderBitmapOpenGL->Render(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
 
 	

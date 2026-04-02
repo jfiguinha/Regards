@@ -258,7 +258,56 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
 		glViewport(0, 0, glTexture->GetWidth(), glTexture->GetHeight());
 		textureVideo->Enable();
-		RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, !inverted);
+		{
+			/*
+			GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_INTERPOLATION");
+			if (m_pShader != nullptr)
+			{
+				m_pShader->EnableShader();
+				if (!m_pShader->SetTexture("ImageTexture", textureVideo->GetTextureID()))
+				{
+					printf("SetTexture ImageTexture failed \n ");
+				}
+				if (!m_pShader->SetParam("widthTex", textureVideo->GetWidth()))
+				{
+					printf("SetParam sharpness failed \n ");
+				}
+				if (!m_pShader->SetParam("heightTex", textureVideo->GetHeight()))
+				{
+					printf("SetParam sharpness failed \n ");
+				}
+				if (!m_pShader->SetParam("flipH", flipH))
+				{
+					printf("SetParam flipH failed \n ");
+				}
+				if (!m_pShader->SetParam("flipV", flipV))
+				{
+					printf("SetParam flipV failed \n ");
+				}
+				if (!m_pShader->SetParam("angle", angle))
+				{
+					printf("SetParam angle failed \n ");
+				}
+				if (!m_pShader->SetParam("left", rect.left))
+				{
+					printf("SetParam left failed \n ");
+				}
+				if (!m_pShader->SetParam("top", rect.top))
+				{
+					printf("SetParam top failed \n ");
+				}
+			}
+
+			int left_local = (glTexture->GetWidth() - widthOut) / 2;
+			int top_local = (glTexture->GetHeight() - heightOut) / 2;
+
+			renderOpenGL->RenderQuad(widthOut, heightOut, left_local, top_local, !inverted);
+			*/
+			RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, !inverted);
+
+			//m_pShader->DisableShader();
+		}
+		
 		textureVideo->Disable();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -291,9 +340,18 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 			if (m_pShader != nullptr)
 			{
 				m_pShader->EnableShader();
+
+				rect.top = (float)((textureVideo->GetHeight() - heightOut) / 2) / (float)textureVideo->GetHeight();
+				rect.bottom = 1.0f - rect.top;
+
+				rect.left = (float)((textureVideo->GetWidth() - widthOut) / 2) / (float)textureVideo->GetWidth();
+				rect.right = 1.0f - rect.left;
+
 				RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
 			}
 		}
+
+
 
 		if (effectParameter->interpolationQuality > 0)
 		{
