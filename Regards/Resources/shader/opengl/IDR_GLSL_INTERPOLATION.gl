@@ -1,20 +1,24 @@
 uniform sampler2D ImageTexture;
-uniform float intensity;
-uniform float fWidth;
-uniform float fHeight;
+uniform float widthTex;
+uniform float heightText;
+uniform int flipH;
+uniform int flipV;
+uniform int angle;
+uniform float left;
+uniform float top;
 
 // Function to get a texel data from a texture with GL_NEAREST property.
 // Bi-Linear interpolation is implemented in this function with the 
 // help of nearest four data.
 vec4 tex2DBiLinear( sampler2D textureSampler_i, vec2 texCoord_i )
 {
-	float texelSizeX = 1.0 / fWidth; //size of one texel 
-	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	float texelSizeX = 1.0 / widthTex; //size of one texel 
+	float texelSizeY = 1.0 / heightText; //size of one texel 
 
-	int nX = int( texCoord_i.x * fWidth );
-	int nY = int( texCoord_i.y * fHeight );
-	vec2 texCoord_New = vec2( ( float( nX ) + 0.5 ) / fWidth,
-							  ( float( nY ) + 0.5 ) / fHeight );
+	int nX = int( texCoord_i.x * widthTex );
+	int nY = int( texCoord_i.y * heightText );
+	vec2 texCoord_New = vec2( ( float( nX ) + 0.5 ) / widthTex,
+							  ( float( nY ) + 0.5 ) / heightText );
 	// Take nearest two data in current row.
     vec4 p0q0 = texture2D(textureSampler_i, texCoord_New);
     vec4 p1q0 = texture2D(textureSampler_i, texCoord_New + vec2(texelSizeX, 0));
@@ -23,14 +27,14 @@ vec4 tex2DBiLinear( sampler2D textureSampler_i, vec2 texCoord_i )
     vec4 p0q1 = texture2D(textureSampler_i, texCoord_New + vec2(0, texelSizeY));
     vec4 p1q1 = texture2D(textureSampler_i, texCoord_New + vec2(texelSizeX , texelSizeY));
 
-    float a = fract( texCoord_i.x * fWidth ); // Get Interpolation factor for X direction.
+    float a = fract( texCoord_i.x * widthTex ); // Get Interpolation factor for X direction.
 											 // Fraction near to valid data.
 
 	// Interpolation in X direction.
     vec4 pInterp_q0 = mix( p0q0, p1q0, a ); // Interpolates top row in X direction.
     vec4 pInterp_q1 = mix( p0q1, p1q1, a ); // Interpolates bottom row in X direction.
 
-    float b = fract( texCoord_i.y * fHeight ); // Get Interpolation factor for Y direction.
+    float b = fract( texCoord_i.y * heightText ); // Get Interpolation factor for Y direction.
     return mix( pInterp_q0, pInterp_q1, b ); // Interpolate in Y direction.
 }
 
@@ -39,7 +43,74 @@ vec4 tex2DBiLinear( sampler2D textureSampler_i, vec2 texCoord_i )
 // Shader for creating GL_LINEAR interpolation in shader.
 void main()
 {
-	vec4 Data = tex2DBiLinear( ImageTexture, gl_TexCoord[0].st );
-	gl_FragColor = Data;
+	//vec4 Data = tex2DBiLinear( ImageTexture, gl_TexCoord[0].st );
+	float x = gl_TexCoord[0].s;
+	float y = gl_TexCoord[0].t;
+	
+	float widthIn = 1.0;
+	float heightIn = 1.0;
+	
+	if(x > left && x < right && y > top && y < bottom)													
+	{
+		float posX = x + left;
+		float posY = y + top;
+
+		if (angle == 270)
+		{
+			float srcx = posY;
+			float srcy = posX;
+
+			posX = srcx;
+			posY = srcy;
+
+			posX = widthIn - posX - 1;
+		}
+		else if (angle == 180)
+		{
+			posX = widthIn - posX - 1;
+			posY = heightIn - posY - 1;
+		}
+		else if (angle == 90)
+		{
+			float srcx = posY;
+			float srcy = posX;
+
+			posX = srcx;
+			posY = srcy;
+
+			posY = heightIn - posY - 1;
+		}
+		
+		if(angle == 90 || angle == 270)
+		{
+			if (flipV == 1)
+			{
+				posX = widthIn - posX - 1;
+			}
+
+			if (flipH == 1)
+			{
+				posY = heightIn - posY - 1;
+			}
+		
+		}
+		else
+		{
+			if (flipH == 1)
+			{
+				posX = widthIn - posX - 1;
+			}
+
+			if (flipV == 1)
+			{
+				posY = heightIn - posY - 1;
+			}
+		}
+		
+		return tex2DBiLinear(ImageTexture, vec2(posX, posY));
+	}
+
+	
+	gl_FragColor = vec4(0.0);
 }
 
