@@ -25,53 +25,6 @@ CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
 }
 
 
-bool CRenderVideoOpenGL::CreateFrameBuffer()
-{
-	GLTexture* glTexture = renderOpenGL->GetGLTexture();
-	glTexture->Enable();
-
-	if (FramebufferName == 0)
-	{
-		// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer
-		glGenFramebuffers(1, &FramebufferName);
-		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-	}
-
-	if (depthrenderbuffer != 0 && (glTexture->GetHeight() != heightBuffer || glTexture->GetWidth() != widthBuffer))
-	{
-		glDeleteRenderbuffers(1, &depthrenderbuffer);
-		depthrenderbuffer = 0;
-		heightBuffer = glTexture->GetHeight();
-		widthBuffer = glTexture->GetWidth();
-	}
-	else if (depthrenderbuffer == 0 && (glTexture->GetHeight() != heightBuffer || glTexture->GetWidth() != widthBuffer))
-	{
-		heightBuffer = glTexture->GetHeight();
-		widthBuffer = glTexture->GetWidth();
-	}
-
-	if(depthrenderbuffer == 0)
-	{
-		// The depth buffer
-		glGenRenderbuffers(1, &depthrenderbuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, widthBuffer, heightBuffer);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-		// Set "renderedTexture" as our colour attachement #0
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glTexture->GetTextureID(), 0);
-		// Set the list of draw buffers.
-		GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-		glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-		// Always check that our framebuffer is ok
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			return false;
-	}
-
-	return true;
-}
-
 CRenderVideoOpenGL::~CRenderVideoOpenGL()
 {
 	if (textureVideo != nullptr)
@@ -81,6 +34,14 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 	if (textureSubtitle != nullptr)
 		delete(textureSubtitle);
 	textureSubtitle = nullptr;
+
+	if (FFrameBuffer != 0)
+	{
+
+		// cleanup
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDeleteFramebuffers(1, &FFrameBuffer);
+	}
 }
 
 
@@ -210,20 +171,35 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 
 	if (effectParameter->effectEnable && effectParameter->interpolationQuality == 0)
 	{
-		GLuint fboId;
-		GLuint FFrameBuffer = 0;
-		GLuint depthrenderbuffer = 0;
-		int widthBuffer = 0;
-		int heightBuffer = 0;
+
 
 		GLTexture* glTexture = renderOpenGL->GetGLTexture();
 		glTexture->Enable();
 
+		if (FFrameBuffer == 0)
+		{
+			widthBuffer = glTexture->GetWidth();
+			heightBuffer = glTexture->GetHeight();
+		}
+
+		if (FFrameBuffer != 0 && (widthBuffer != glTexture->GetWidth() || heightBuffer != glTexture->GetHeight()))
+		{
+			// cleanup
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDeleteFramebuffers(1, &FFrameBuffer);
+			FFrameBuffer = 0;
+		}
+
 		// setup FBO
-		glGenFramebuffers(1, &FFrameBuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->GetTextureID(), 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		if (FFrameBuffer == 0)
+		{
+			glGenFramebuffers(1, &FFrameBuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->GetTextureID(), 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			widthBuffer = glTexture->GetWidth();
+			heightBuffer = glTexture->GetHeight();
+		}
 
 		// render to FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
@@ -248,9 +224,6 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 			renderOpenGL->RenderQuad(glTexture, 0, 0, inverted);
 		}
 
-		// cleanup
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDeleteFramebuffers(1, &FFrameBuffer);
 	}
 	else
 	{
