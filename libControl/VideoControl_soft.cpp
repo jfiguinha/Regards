@@ -1361,6 +1361,17 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		floatRect.top = 0;
 		floatRect.bottom = 1.0f;
 
+		if (render.empty())
+		{
+			render = cv::Mat(renderOpenGL->GetHeight(), renderOpenGL->GetWidth(), CV_8UC4, cv::Scalar(0, 0, 0, 0));
+		}
+		else if (render.rows != renderOpenGL->GetHeight() || render.cols != renderOpenGL->GetWidth())
+		{
+			render = cv::Mat(renderOpenGL->GetHeight(), renderOpenGL->GetWidth(), CV_8UC4, cv::Scalar(0, 0, 0, 0));
+		}
+		pictureArray.SetArray(render);
+		renderOpenGL->SetData(pictureArray);
+
 		//Render Direct to OpenGL
 		/*
 		cv::Mat render = cv::Mat(heightOutput, widthOutput, CV_8UC4);
@@ -1917,12 +1928,8 @@ void CVideoControlSoft::SetZoomIndex(const int& pos)
 	zoomRatio = videoEffectParameter.tabZoom[pos];
 	videoEffectParameter.zoomSelect = pos;
 	
-
-	if (zoomRatio != 1.0f)
-	{
-		CalculPositionPicture(centerX, centerY);
-		UpdateScrollBar();
-	}
+	CalculPositionPicture(centerX, centerY);
+	UpdateScrollBar();
 }
 
 

@@ -279,7 +279,7 @@ protected:
 	bool inverted = true;
 
 	COpenCVStabilization* openCVStabilization = nullptr;
-
+	cv::Mat render;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
 	wxString colorRange = "";
