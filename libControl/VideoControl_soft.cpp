@@ -1096,6 +1096,9 @@ int CVideoControlSoft::Play(const wxString& movie)
 {
     if (videoEnd || stopVideo)
 	{
+		if (renderBitmapOpenGL != nullptr)
+			renderBitmapOpenGL->Cleanup();
+
 		if (movie != filename)
 		{
 			if (openCVStabilization != nullptr)
@@ -1105,8 +1108,6 @@ int CVideoControlSoft::Play(const wxString& movie)
 
 			if (playStartTimer->IsRunning())
 				playStartTimer->Stop();
-
-
 			
 			videoEffectParameter.ratioSelect = 0;
 			
@@ -1296,7 +1297,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		if (!fpsTimer->IsRunning())
 			fpsTimer->Start(1000);
 	}
-   
+
 
 
 	int widthOutput = 0;
@@ -1372,7 +1373,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		pictureArray.SetArray(render);
 		renderOpenGL->SetData(pictureArray);
 
-		//Render Direct to OpenGL
 		renderBitmapOpenGL->Render(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
 
 	
@@ -2049,7 +2049,7 @@ void CVideoControlSoft::RenderToTexture()
 			filterInterpolation = regardsParam->GetInterpolationType();
 
 		openclEffectYUV->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
-			(int)GetZoomRatio() * 100);
+					(int)GetZoomRatio() * 100);
 	}
 
 	if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.
@@ -2058,7 +2058,10 @@ void CVideoControlSoft::RenderToTexture()
 		openclEffectYUV->ApplyOpenCVEffect(&videoEffectParameter);
 	}
 
-    pictureArray = openclEffectYUV->GetMatrix(false);
+	if (videoEffectParameter.interpolationQuality == 1)
+		pictureArray = openclEffectYUV->GetMatrix(false);
+	else
+		pictureArray = openclEffectYUV->GetMatrix();
 
 }
 

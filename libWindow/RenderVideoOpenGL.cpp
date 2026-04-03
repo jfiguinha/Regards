@@ -27,6 +27,11 @@ CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
 
 CRenderVideoOpenGL::~CRenderVideoOpenGL()
 {
+	Cleanup();
+}
+
+void CRenderVideoOpenGL::Cleanup()
+{
 	if (textureVideo != nullptr)
 		delete(textureVideo);
 	textureVideo = nullptr;
@@ -42,8 +47,11 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(1, &FFrameBuffer);
 	}
-}
 
+	FFrameBuffer = 0;
+	widthBuffer = 0;
+	heightBuffer = 0;
+}
 
 void CRenderVideoOpenGL::RenderShaderInterpolation(GLSLShader* m_pShader, GLTexture* glTexture, const wxFloatRect& rect, int interpolation, int flipH, int flipV, int angle)
 {
@@ -303,7 +311,11 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 
 			renderOpenGL->RenderQuad(widthOut, heightOut, left_local, top_local, !inverted);
 			*/
-			RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, !inverted);
+
+			if (angle == 90 || angle == 270)
+				RenderWithInterpolation(heightOut, widthOut, flipH, flipV, angle, rc, inverted);
+			else
+				RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, !inverted);
 
 			//m_pShader->DisableShader();
 		}
@@ -332,10 +344,13 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 	else
 	{
 		GLSLShader* m_pShader = nullptr;
+
 		textureVideo->Enable();
 
 		if (effectParameter->effectEnable)
 		{
+			
+
 			m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
 			if (m_pShader != nullptr)
 			{
@@ -349,6 +364,7 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 
 				RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
 			}
+
 		}
 
 
@@ -369,6 +385,8 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		}
 
 		textureVideo->Disable();
+
+
 		if (m_pShader != nullptr)
 			m_pShader->DisableShader();
 	}

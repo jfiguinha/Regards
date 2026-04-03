@@ -288,3 +288,25 @@ __kernel void InterpolationZone(__global uint *output, const __global uint *inpu
 		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
 	}
 }
+
+
+__kernel void InterpolationDirect(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int type)
+{
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+
+    if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
+    {
+		float ratioX = (float)widthIn / bitmapWidth;
+		float ratioY = (float)heightIn / bitmapHeight;
+		int position = x + y * widthOut;
+		float posX = (float)x * ratioX;
+		float posY = (float)y * ratioY;
+		
+		if(type == 12)
+			output[position] = GetColorSrc_short(posX, posY, input, widthIn, heightIn);
+		else
+			output[position] = KernelExecution(posX, posY, input, widthIn, heightIn, type);
+	}
+}
+
