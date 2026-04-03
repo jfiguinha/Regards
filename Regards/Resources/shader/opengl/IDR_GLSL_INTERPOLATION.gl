@@ -53,10 +53,72 @@ void main()
 	int top_local = (heightIn - heightOut) / 2;
 	int xPixel = texCoord_i.x * widthIn;
 	int yPixel = texCoord_i.y * heightIn;
+	
+	if(left_local < 0)
+		left_local = 0;
+	if(top_local < 0)
+		top_local = 0;
+	
 	if(xPixel >= left_local && yPixel >= top_local && xPixel < (widthIn - left_local) && yPixel < (heightIn - top_local))
     {
-		float x_local = (float)(xPixel - left_local)/widthOut;
-		float y_local = (float)(yPixel - top_local)/heightOut;
+		float posX = (float)(xPixel - left_local) + left;
+		float posY = (float)(yPixel - top_local) + top;
+		
+		if (angle == 270)
+		{
+			int srcx = posY;
+			int srcy = posX;
+
+			posX = srcx;
+			posY = srcy;
+
+			posX = widthOut - posX - 1;
+		}
+		else if (angle == 180)
+		{
+			posX = widthOut - posX - 1;
+			posY = heightOut - posY - 1;
+		}
+		else if (angle == 90)
+		{
+			int srcx = posY;
+			int srcy = posX;
+
+			posX = srcx;
+			posY = srcy;
+
+			posY = heightOut - posY - 1;
+		}
+		
+		if(angle == 90 || angle == 270)
+		{
+			if (flipV == 1)
+			{
+				posX = widthOut - posX - 1;
+			}
+
+			if (flipH == 1)
+			{
+				posY = heightOut - posY - 1;
+			}
+		
+		}
+		else
+		{
+			if (flipH == 1)
+			{
+				posX = widthOut - posX - 1;
+			}
+
+			if (flipV == 1)
+			{
+				posY = heightOut - posY - 1;
+			}
+		}
+			
+			
+		float x_local = (float)(posX)/widthOut;
+		float y_local = (float)(posY)/heightOut;
 		
 		vec4 data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
 		gl_FragColor = data;//vec4(1.0,0.0,0.0,0.0);

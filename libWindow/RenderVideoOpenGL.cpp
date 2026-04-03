@@ -291,11 +291,11 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 				{
 					printf("SetParam heightIn failed \n ");
 				}
-				if (!m_pShader->SetIntegerParam("widthOut", widthOut))
+				if (!m_pShader->SetIntegerParam("widthOut", rc.width))
 				{
 					printf("SetParam widthOut failed \n ");
 				}
-				if (!m_pShader->SetIntegerParam("heightOut", heightOut))
+				if (!m_pShader->SetIntegerParam("heightOut", rc.height))
 				{
 					printf("SetParam heightOut failed \n ");
 				}
