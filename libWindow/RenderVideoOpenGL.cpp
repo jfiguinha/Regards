@@ -267,7 +267,6 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		glViewport(0, 0, glTexture->GetWidth(), glTexture->GetHeight());
 		textureVideo->Enable();
 		{
-			/*
 			GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_INTERPOLATION");
 			if (m_pShader != nullptr)
 			{
@@ -284,39 +283,55 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 				{
 					printf("SetParam sharpness failed \n ");
 				}
-				if (!m_pShader->SetParam("flipH", flipH))
+				if (!m_pShader->SetIntegerParam("widthIn", widthBuffer))
+				{
+					printf("SetParam widthIn failed \n ");
+				}
+				if (!m_pShader->SetIntegerParam("heightIn", heightBuffer))
+				{
+					printf("SetParam heightIn failed \n ");
+				}
+				if (!m_pShader->SetIntegerParam("widthOut", widthOut))
+				{
+					printf("SetParam widthOut failed \n ");
+				}
+				if (!m_pShader->SetIntegerParam("heightOut", heightOut))
+				{
+					printf("SetParam heightOut failed \n ");
+				}
+				if (!m_pShader->SetIntegerParam("flipH", flipH))
 				{
 					printf("SetParam flipH failed \n ");
 				}
-				if (!m_pShader->SetParam("flipV", flipV))
+				if (!m_pShader->SetIntegerParam("flipV", flipV))
 				{
 					printf("SetParam flipV failed \n ");
 				}
-				if (!m_pShader->SetParam("angle", angle))
+				if (!m_pShader->SetIntegerParam("angle", angle))
 				{
 					printf("SetParam angle failed \n ");
 				}
-				if (!m_pShader->SetParam("left", rect.left))
+				if (!m_pShader->SetIntegerParam("left", rc.x))
 				{
 					printf("SetParam left failed \n ");
 				}
-				if (!m_pShader->SetParam("top", rect.top))
+				if (!m_pShader->SetIntegerParam("top", rc.y))
 				{
 					printf("SetParam top failed \n ");
 				}
 			}
 
-			int left_local = (glTexture->GetWidth() - widthOut) / 2;
-			int top_local = (glTexture->GetHeight() - heightOut) / 2;
+			int left_local = 0;// (glTexture->GetWidth() - widthOut) / 2;
+			int top_local = 0;//(glTexture->GetHeight() - heightOut) / 2;
 
-			renderOpenGL->RenderQuad(widthOut, heightOut, left_local, top_local, !inverted);
-			*/
-
+			renderOpenGL->RenderQuad(glTexture->GetWidth(), glTexture->GetHeight(), left_local, top_local, !inverted);
+			
+			/*
 			if (angle == 90 || angle == 270)
 				RenderWithInterpolation(heightOut, widthOut, flipH, flipV, angle, rc, inverted);
 			else
 				RenderWithInterpolation(widthOut, heightOut, flipH, flipV, angle, rc, !inverted);
-
+			*/
 			//m_pShader->DisableShader();
 		}
 		

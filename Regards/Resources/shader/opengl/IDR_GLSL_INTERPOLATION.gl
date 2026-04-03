@@ -1,6 +1,10 @@
 uniform sampler2D ImageTexture;
 uniform float widthTex;
 uniform float heightTex;
+uniform int widthIn;
+uniform int heightIn;
+uniform int widthOut;
+uniform int heightOut;
 uniform int flipH;
 uniform int flipV;
 uniform int angle;
@@ -45,64 +49,21 @@ void main()
 	vec2 texCoord_i = gl_TexCoord[0].st;
 	float x = texCoord_i.x;
 	float y = texCoord_i.y;
-	float widthIn = 1.0;
-	float heightIn = 1.0;
-	float posX = x + left;
-	float posY = y + top;
-
-	if (angle == 270)
-	{
-		int srcx = posY;
-		int srcy = posX;
-
-		posX = srcx;
-		posY = srcy;
-
-		posX = widthIn - posX - 1;
-	}
-	else if (angle == 180)
-	{
-		posX = widthIn - posX - 1;
-		posY = heightIn - posY - 1;
-	}
-	else if (angle == 90)
-	{
-		int srcx = posY;
-		int srcy = posX;
-
-		posX = srcx;
-		posY = srcy;
-
-		posY = heightIn - posY - 1;
-	}
-	
-	if(angle == 90 || angle == 270)
-	{
-		if (flipV == 1)
-		{
-			posX = widthIn - posX;
-		}
-
-		if (flipH == 1)
-		{
-			posY = heightIn - posY;
-		}
-	
+	int left_local = (widthIn - widthOut) / 2;
+	int top_local = (heightIn - heightOut) / 2;
+	int xPixel = texCoord_i.x * widthIn;
+	int yPixel = texCoord_i.y * heightIn;
+	if(xPixel >= left_local && yPixel >= top_local && xPixel < (widthIn - left_local) && yPixel < (heightIn - top_local))
+    {
+		float x_local = (float)(xPixel - left_local)/widthOut;
+		float y_local = (float)(yPixel - top_local)/heightOut;
+		
+		vec4 data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
+		gl_FragColor = data;//vec4(1.0,0.0,0.0,0.0);
 	}
 	else
 	{
-		if (flipH == 1)
-		{
-			posX = widthIn - posX;
-		}
-
-		if (flipV == 1)
-		{
-			posY = heightIn - posY;
-		}
+		gl_FragColor = vec4(0.0,0.0,0.0,0.0);
 	}
-	
-	vec4 data = tex2DBiLinear( ImageTexture, vec2(posX, posY));
-	gl_FragColor = data;
 }
 
