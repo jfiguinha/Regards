@@ -322,7 +322,8 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 	}
 	else
 	{
-		RenderShaderInterpolation(rc, flipH, flipV, angle, !inverted);
+		//RenderShaderInterpolation(rc, flipH, flipV, angle, !inverted);
+		RenderWithInterpolation(renderOpenGL->GetWidth(), renderOpenGL->GetHeight(), flipH, flipV, angle, rc, inverted);
 	}
 
 
