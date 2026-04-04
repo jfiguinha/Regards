@@ -1,4 +1,3 @@
-#version 120 core
 uniform sampler2D ImageTexture;
 uniform float widthTex;
 uniform float heightTex;
