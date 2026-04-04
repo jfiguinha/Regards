@@ -1,3 +1,4 @@
+#version 120 core
 uniform sampler2D ImageTexture;
 uniform float widthTex;
 uniform float heightTex;
@@ -49,10 +50,10 @@ void main()
 	vec2 texCoord_i = gl_TexCoord[0].st;
 	float x = texCoord_i.x;
 	float y = texCoord_i.y;
-	int left_local = (widthIn - widthOut) / 2;
-	int top_local = (heightIn - heightOut) / 2;
-	int xPixel = texCoord_i.x * widthIn;
-	int yPixel = texCoord_i.y * heightIn;
+	float left_local = (widthIn - widthOut) / 2;
+	float top_local = (heightIn - heightOut) / 2;
+	float xPixel = texCoord_i.x * widthIn;
+	float yPixel = texCoord_i.y * heightIn;
 	
 	if(left_local < 0)
 		left_local = 0;
@@ -61,8 +62,8 @@ void main()
 	
 	if(xPixel >= left_local && yPixel >= top_local && xPixel < (widthIn - left_local) && yPixel < (heightIn - top_local))
     {
-		float posX = (float)(xPixel - left_local) + left;
-		float posY = (float)(yPixel - top_local) + top;
+		float posX = (xPixel - left_local) + left;
+		float posY = (yPixel - top_local) + top;
 		
 		if (angle == 270)
 		{
@@ -120,12 +121,12 @@ void main()
 		}
 			
 		
-		float x_local = (float)(posX)/widthOut;
-		float y_local = (float)(posY)/heightOut;
+		float x_local = (posX)/widthOut;
+		float y_local = (posY)/heightOut;
 		if(angle == 90 || angle == 270)
 		{
-			x_local = (float)(posX)/heightOut;
-			y_local = (float)(posY)/widthOut;
+			x_local = (posX)/heightOut;
+			y_local = (posY)/widthOut;
 		}
 		
 		vec4 data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
