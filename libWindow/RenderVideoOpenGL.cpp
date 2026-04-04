@@ -246,8 +246,6 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 
 	if (effectParameter->effectEnable && effectParameter->interpolationQuality == 0)
 	{
-
-
 		if (FFrameBuffer == 0)
 		{
 			widthBuffer = glTexture->GetWidth();

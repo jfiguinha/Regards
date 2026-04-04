@@ -297,8 +297,8 @@ __kernel void InterpolationDirect(__global uint *output, const __global uint *in
 
     if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
     {
-		float ratioX = (float)widthIn / bitmapWidth;
-		float ratioY = (float)heightIn / bitmapHeight;
+		float ratioX = (float)widthIn / widthOut;
+		float ratioY = (float)heightIn / heightOut;
 		int position = x + y * widthOut;
 		float posX = (float)x * ratioX;
 		float posY = (float)y * ratioY;
