@@ -80,11 +80,11 @@ void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool&
 		{
 			printf("SetParam heightIn failed \n ");
 		}
-		if (!m_pShader->SetIntegerParam("widthOut", rc.width + 1))
+		if (!m_pShader->SetIntegerParam("widthOut", rc.width))
 		{
 			printf("SetParam widthOut failed \n ");
 		}
-		if (!m_pShader->SetIntegerParam("heightOut", rc.height + 1))
+		if (!m_pShader->SetIntegerParam("heightOut", rc.height))
 		{
 			printf("SetParam heightOut failed \n ");
 		}
