@@ -26,7 +26,7 @@ namespace Regards::OpenGL
 		CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL);
 		~CRenderVideoOpenGL();
 		GLTexture* GetVideoTexture(const int& width, const int& height);
-		void SetVideoTexture(Regards::Picture::CPictureArray& pictureArray);
+		void SetVideoTexture(Regards::Picture::CPictureArray& pictureArray, const bool& deleteTexture = false);
 		GLTexture* GetVideoTexturePt();
 		void SetSubtitle(cv::Mat& subtitle);
 		void ShowSubtitle();
@@ -46,5 +46,6 @@ namespace Regards::OpenGL
 		GLuint depthrenderbuffer = 0;
 		int widthBuffer = 0;
 		int heightBuffer = 0;
+		bool firstTime = true;
 	};
 }

@@ -589,6 +589,7 @@ void COpenCLEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter,
 {
 	int nWidth = tmp_frame->width;
 	int nHeight = tmp_frame->height;
+	interpolatePicture = false;
 
 	if (tmp_frame->format == AV_PIX_FMT_NV12)
 	{

@@ -88,6 +88,10 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 		CVideoEffectParameter * parameter = config->GetVideoEffectParameter();
 		videoEffectParameter = *parameter;
 		videoEffectParameter.interpolation = config->GetInterpolationType();
+		autoconstrast = videoEffectParameter.autoConstrast;
+		applyStabilization = videoEffectParameter.stabilizeVideo;
+		filmEnhance = videoEffectParameter.filmEnhance;
+		filmcolorisation = videoEffectParameter.filmcolorisation;
     }
 
     
@@ -1341,12 +1345,26 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 		if (ApplyVideoEffect() || pictureFrame->dst != nullptr)
 		{
+			int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
 			if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 				RenderToTexture();
 			else
 				RenderFFmpegToTexture();
 
-			renderBitmapOpenGL->SetVideoTexture(pictureArray);
+			bool deleteTexture = false;
+			if((applyStabilization != videoEffectParameter.stabilizeVideo || 
+				autoconstrast != videoEffectParameter.autoConstrast || 
+				filmEnhance != videoEffectParameter.filmEnhance || 
+				filmcolorisation != videoEffectParameter.filmcolorisation) && openclOpenGLInterop)
+			{
+				autoconstrast = videoEffectParameter.autoConstrast;
+				applyStabilization = videoEffectParameter.stabilizeVideo;
+				filmEnhance = videoEffectParameter.filmEnhance;
+				filmcolorisation = videoEffectParameter.filmcolorisation;
+				deleteTexture = true;
+			}
+			renderBitmapOpenGL->SetVideoTexture(pictureArray, deleteTexture);
 		}
 		else
 		{
