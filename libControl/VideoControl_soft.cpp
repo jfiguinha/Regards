@@ -1369,9 +1369,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		else if (render.rows != renderOpenGL->GetHeight() || render.cols != renderOpenGL->GetWidth())
 		{
 			render = cv::Mat(renderOpenGL->GetHeight(), renderOpenGL->GetWidth(), CV_8UC4, cv::Scalar(0, 0, 0, 0));
-
 		}
-
 		pictureArray.SetArray(render);
 		renderOpenGL->SetData(pictureArray);
 		renderBitmapOpenGL->Render(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
