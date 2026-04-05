@@ -53,10 +53,13 @@ void CRenderVideoOpenGL::Cleanup()
 	heightBuffer = 0;
 }
 
-void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool& flipH, const bool& flipV, const int& angle, const bool& inverted)
+void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool& flipH, const bool& flipV, const int& angle, const bool& inverted, const int &interpolation)
 {
 	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_INTERPOLATION");
+	int localInterpolation = interpolation - 7;
+	if(localInterpolation < 0)
+		localInterpolation = 11;
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
@@ -107,6 +110,10 @@ void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool&
 		if (!m_pShader->SetIntegerParam("top", rc.y))
 		{
 			printf("SetParam top failed \n ");
+		}
+		if (!m_pShader->SetIntegerParam("interpolation", localInterpolation))
+		{
+			printf("SetParam interpolation failed \n ");
 		}
 	}
 
@@ -274,7 +281,7 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
 		glViewport(0, 0, glTexture->GetWidth(), glTexture->GetHeight());
 		textureVideo->Enable();
-		RenderShaderInterpolation(rc, flipH, flipV, angle, inverted);
+		RenderShaderInterpolation(rc, flipH, flipV, angle, inverted, effectParameter->interpolation);
 		textureVideo->Disable();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

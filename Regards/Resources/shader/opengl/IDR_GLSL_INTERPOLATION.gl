@@ -10,25 +10,179 @@ uniform int flipV;
 uniform int angle;
 uniform int left;
 uniform int top;
+uniform int interpolation;
+
+//Implementation de l'interpolation bicubic en OpenCL
+#define FILTER_PI 3.1415926535f
+#define FILTER_2PI 2.0f * 3.1415926535f
+#define FILTER_4PI 4.0f * 3.1415926535f
+
+
+// from http://www.java-gaming.org/index.php?topic=35123.0
+vec4 cubic(float v){
+    vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
+    vec4 s = n * n * n;
+    float x = s.x;
+    float y = s.y - 4.0 * s.x;
+    float z = s.z - 4.0 * s.y + 6.0 * s.x;
+    float w = 6.0 - x - y - z;
+    return vec4(x, y, z, w) * (1.0/6.0);
+}
+
+// Pre-computed filter functions inline - avoid function call overhead
+inline float KernelFilter_selection(float x)
+{
+    switch(interpolation)
+    {
+        case 1: // BboxFilter
+            return (x <= 0.5 ? 1.0 : 0.0);
+            
+        case 2: // HermiteFilter
+            if (x > 1.5) return 0.0;
+            if (x < -1.0) return 0.0;
+            if (x < 0.0) return (2.0*(-x)-3.0)*(-x)*(-x)+1.0;
+            if (x < 1.0) return (2.0*x-3.0)*x*x+1.0;
+            return 0.0;
+            
+        case 3: // HanningFilter
+            if (x > 1.0) return 0.0;
+            return 0.54 + 0.46*cos(FILTER_PI*x);
+            
+        case 4: // CatromFilter
+            if (x > 2.0) return 0.0;
+            if (x < -2.0) return 0.0;
+            if (x < -1.0) return 0.5*(4.0+x*(8.0+x*(5.0+x)));
+            if (x < 0.0) return 0.5*(2.0+x*x*(-5.0-3.0*x));
+            if (x < 1.0) return 0.5*(2.0+x*x*(-5.0+3.0*x));
+            if (x < 2.0) return 0.5*(4.0+x*(-8.0+x*(5.0-x)));
+            return 0.0;
+            
+        case 5: // MitchellFilter
+            if (x > 2.0) return 0.0;
+            #define B   (1.0/3.0)
+            #define C   (1.0/3.0)
+            #define P0  ((  6.0- 2.0*B       )/6.0)
+            #define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
+            #define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
+            #define Q0  ((       8.0*B+24.0*C)/6.0)
+            #define Q1  ((     -12.0*B-48.0*C)/6.0)
+            #define Q2  ((       6.0*B+30.0*C)/6.0)
+            #define Q3  ((     - 1.0*B- 6.0*C)/6.0)
+            if (x < -2.0) return 0.0;
+            if (x < -1.0) return Q0-x*(Q1-x*(Q2-x*Q3));
+            if (x < 0.0) return P0+x*x*(P2-x*P3);
+            if (x < 1.0) return P0+x*x*(P2+x*P3);
+            if (x < 2.0) return Q0+x*(Q1+x*(Q2+x*Q3));
+            return 0.0;
+            
+        case 6: // TriangleFilter
+            if (x > 1.0) return 0.0;
+            if (x < -1.0) return 0.0;
+            if (x < 0.0) return 1.0+x;
+            return 1.0-x;
+            
+        case 7: // QuadraticFilter
+            if (x > 1.5) return 0.0;
+            if (x < -1.5) return 0.0;
+            if (x < -0.5) return 0.5*(x+1.5)*(x+1.5);
+            if (x < 0.5) return 0.75-x*x;
+            return 0.5*(x-1.5)*(x-1.5);
+            
+        case 8: // BlackmanFilter
+            if (x > 1.0) return 0.0;
+            float dN = 3.0;
+            return 0.42f + 0.5 * cos(FILTER_2PI * x / ( dN - 1.0 )) + 0.08f * cos (FILTER_4PI * x / ( dN - 1.0 ));
+            
+        case 9: // HammingFilter
+            if (x > 1.0) return 0.0;
+            float dWindow = 0.54f + 0.46f * cos (FILTER_2PI * x);
+            float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x);
+            return dWindow * dSinc;
+            
+        case 10: // GaussianFilter
+            if (abs(x) > 1.25) return 0.0;
+            return exp(-x * x / 2.0) / sqrt (FILTER_2PI);
+            
+        case 11: // BilinearFilter
+            return (x < 1.0 ? 1.0 - x : 0.0);
+            
+        default: // CubicFilter
+            if (x > 2.0) return 0.0;
+            if (x < -2.0) return 0.0;
+            if (x < -1.0) return (2.0+x)*(2.0+x)*(2.0+x)/6.0;
+            if (x < 0.0) return (4.0+x*x*(-6.0-3.0*x))/6.0;
+            if (x < 1.0) return (4.0+x*x*(-6.0+3.0*x))/6.0;
+            if (x < 2.0) return (2.0-x)*(2.0-x)*(2.0-x)/6.0;
+            return 0.0;
+    }
+}
+
+//------------------------------------------------------------
+//TextureValue													   
+//------------------------------------------------------------
+vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
+{
+	float texelSizeX = 1.0 / widthTex; //size of one texel 
+	float texelSizeY = 1.0 / heightTex; //size of one texel 
+	
+	float pixelX = posX * widthTex + xDiff;
+	float pixelY = posY * heightTex + yDiff;
+	
+	if(pixelX >= 0 && pixelX < widthTex && pixelY >= 0 && pixelY < heightTex)
+	{
+		vec2 resolution = vec2(texelSizeX, texelSizeY); 
+		return texture2D(ImageTexture, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+	}
+	return vec4(0.0,0.0,0.0,0.0);
+}
+
+vec4 textureInterpolation(sampler2D sampler, vec2 texCoord_i){
+  
+    vec2 fxy = fract(texCoord_i);
+    vec4 xcubic = vec4(0.0);
+	vec4 ycubic = vec4(0.0);
+	
+	if(interpolation == 0)
+	{
+	    xcubic = cubic(fxy.x);
+		ycubic = cubic(fxy.y);
+	}
+	else
+	{
+		ycubic = vec4(KernelFilter_selection(fxy.y)); 
+		xcubic = vec4(KernelFilter_selection(fxy.x));
+	}
+  
+    vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
+
+	// Take nearest two data in current row.
+    vec4 sample0 = TextureValue(texCoord_i.x, texCoord_i.y, 0, 0);
+    vec4 sample1 = TextureValue(texCoord_i.x, texCoord_i.y, 1, 0);
+
+	// Take nearest two data in bottom row.
+    vec4 sample2 = TextureValue(texCoord_i.x, texCoord_i.y, 0, 1);
+    vec4 sample3 = TextureValue(texCoord_i.x, texCoord_i.y, 1, 1);
+
+    float sx = s.x / (s.x + s.y);
+    float sy = s.z / (s.z + s.w);
+
+    return mix(
+       mix(sample3, sample2, sx), mix(sample1, sample0, sx)
+    , sy);
+}
+
 // Function to get a texel data from a texture with GL_NEAREST property.
 // Bi-Linear interpolation is implemented in this function with the 
 // help of nearest four data.
 vec4 tex2DBiLinear( sampler2D textureSampler_i, vec2 texCoord_i )
 {
-	float texelSizeX = 1.0 / widthTex; //size of one texel 
-	float texelSizeY = 1.0 / heightTex; //size of one texel 
-
-	int nX = int( texCoord_i.x * widthTex );
-	int nY = int( texCoord_i.y * heightTex );
-	vec2 texCoord_New = vec2( ( float( nX ) + 0.5 ) / widthTex,
-							  ( float( nY ) + 0.5 ) / heightTex );
 	// Take nearest two data in current row.
-    vec4 p0q0 = texture2D(textureSampler_i, texCoord_New);
-    vec4 p1q0 = texture2D(textureSampler_i, texCoord_New + vec2(texelSizeX, 0));
+    vec4 p0q0 = TextureValue(texCoord_i.x, texCoord_i.y, 0, 0);
+    vec4 p1q0 = TextureValue(texCoord_i.x, texCoord_i.y, 1, 0);
 
 	// Take nearest two data in bottom row.
-    vec4 p0q1 = texture2D(textureSampler_i, texCoord_New + vec2(0, texelSizeY));
-    vec4 p1q1 = texture2D(textureSampler_i, texCoord_New + vec2(texelSizeX , texelSizeY));
+    vec4 p0q1 = TextureValue(texCoord_i.x, texCoord_i.y, 0, 1);
+    vec4 p1q1 = TextureValue(texCoord_i.x, texCoord_i.y, 1, 1);
 
     float a = fract( texCoord_i.x * widthTex ); // Get Interpolation factor for X direction.
 											 // Fraction near to valid data.
@@ -128,8 +282,12 @@ void main()
 			y_local = (posY)/widthOut;
 		}
 		
-		vec4 data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
-		gl_FragColor = data;//vec4(1.0,0.0,0.0,0.0);
+		vec4 data = vec4(0.0,0.0,0.0,0.0);
+		if(interpolation == 11)
+			data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
+		else
+			data = textureInterpolation( ImageTexture, vec2(x_local, y_local));
+		gl_FragColor = data;
 	}
 	else
 	{

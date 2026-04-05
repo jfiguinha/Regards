@@ -27,13 +27,15 @@ bool GLSLShader::check_shader_compile_status(GLuint obj)
 	glGetShaderiv(obj, GL_COMPILE_STATUS, &status);
 	if (status == GL_FALSE)
 	{
-		char cBuffer[2400];
+		//char cBuffer[4096];
 		GLint length;
 		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
-		//cBuffer = new char[length + 1];
+		char * cBuffer = new char[length + 1];
 		glGetShaderInfoLog(obj, length, &length, cBuffer);
 
 		printf("Error %s \n", cBuffer);
+
+		delete[] cBuffer;
 		return false;
 	}
 	printf("check_shader_compile_status is OK \n");
