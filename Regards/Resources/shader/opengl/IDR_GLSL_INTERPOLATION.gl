@@ -12,11 +12,6 @@ uniform int left;
 uniform int top;
 uniform int interpolation;
 
-//Implementation de l'interpolation bicubic en OpenCL
-#define FILTER_PI 3.1415926535
-#define FILTER_2PI 2.0 * 3.1415926535
-#define FILTER_4PI 4.0 * 3.1415926535
-
 
 // from http://www.java-gaming.org/index.php?topic=35123.0
 vec4 cubic(float v){
@@ -27,94 +22,6 @@ vec4 cubic(float v){
     float z = s.z - 4.0 * s.y + 6.0 * s.x;
     float w = 6.0 - x - y - z;
     return vec4(x, y, z, w) * (1.0/6.0);
-}
-
-// Pre-computed filter functions inline - avoid function call overhead
-float KernelFilter_selection(float x)
-{
-    switch(interpolation)
-    {
-        case 1: // BboxFilter
-            return (x <= 0.5 ? 1.0 : 0.0);
-            
-        case 2: // HermiteFilter
-            if (x > 1.5) return 0.0;
-            if (x < -1.0) return 0.0;
-            if (x < 0.0) return (2.0*(-x)-3.0)*(-x)*(-x)+1.0;
-            if (x < 1.0) return (2.0*x-3.0)*x*x+1.0;
-            return 0.0;
-            
-        case 3: // HanningFilter
-            if (x > 1.0) return 0.0;
-            return 0.54 + 0.46*cos(FILTER_PI*x);
-            
-        case 4: // CatromFilter
-            if (x > 2.0) return 0.0;
-            if (x < -2.0) return 0.0;
-            if (x < -1.0) return 0.5*(4.0+x*(8.0+x*(5.0+x)));
-            if (x < 0.0) return 0.5*(2.0+x*x*(-5.0-3.0*x));
-            if (x < 1.0) return 0.5*(2.0+x*x*(-5.0+3.0*x));
-            if (x < 2.0) return 0.5*(4.0+x*(-8.0+x*(5.0-x)));
-            return 0.0;
-            
-        case 5: // MitchellFilter
-            if (x > 2.0) return 0.0;
-            #define B   (1.0/3.0)
-            #define C   (1.0/3.0)
-            #define P0  ((  6.0- 2.0*B       )/6.0)
-            #define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
-            #define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
-            #define Q0  ((       8.0*B+24.0*C)/6.0)
-            #define Q1  ((     -12.0*B-48.0*C)/6.0)
-            #define Q2  ((       6.0*B+30.0*C)/6.0)
-            #define Q3  ((     - 1.0*B- 6.0*C)/6.0)
-            if (x < -2.0) return 0.0;
-            if (x < -1.0) return Q0-x*(Q1-x*(Q2-x*Q3));
-            if (x < 0.0) return P0+x*x*(P2-x*P3);
-            if (x < 1.0) return P0+x*x*(P2+x*P3);
-            if (x < 2.0) return Q0+x*(Q1+x*(Q2+x*Q3));
-            return 0.0;
-            
-        case 6: // TriangleFilter
-            if (x > 1.0) return 0.0;
-            if (x < -1.0) return 0.0;
-            if (x < 0.0) return 1.0+x;
-            return 1.0-x;
-            
-        case 7: // QuadraticFilter
-            if (x > 1.5) return 0.0;
-            if (x < -1.5) return 0.0;
-            if (x < -0.5) return 0.5*(x+1.5)*(x+1.5);
-            if (x < 0.5) return 0.75-x*x;
-            return 0.5*(x-1.5)*(x-1.5);
-            
-        case 8: // BlackmanFilter
-            if (x > 1.0) return 0.0;
-            float dN = 3.0;
-            return 0.42f + 0.5 * cos(FILTER_2PI * x / ( dN - 1.0 )) + 0.08f * cos (FILTER_4PI * x / ( dN - 1.0 ));
-            
-        case 9: // HammingFilter
-            if (x > 1.0) return 0.0;
-            float dWindow = 0.54f + 0.46f * cos (FILTER_2PI * x);
-            float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x);
-            return dWindow * dSinc;
-            
-        case 10: // GaussianFilter
-            if (abs(x) > 1.25) return 0.0;
-            return exp(-x * x / 2.0) / sqrt (FILTER_2PI);
-            
-        case 11: // BilinearFilter
-            return (x < 1.0 ? 1.0 - x : 0.0);
-            
-        default: // CubicFilter
-            if (x > 2.0) return 0.0;
-            if (x < -2.0) return 0.0;
-            if (x < -1.0) return (2.0+x)*(2.0+x)*(2.0+x)/6.0;
-            if (x < 0.0) return (4.0+x*x*(-6.0-3.0*x))/6.0;
-            if (x < 1.0) return (4.0+x*x*(-6.0+3.0*x))/6.0;
-            if (x < 2.0) return (2.0-x)*(2.0-x)*(2.0-x)/6.0;
-            return 0.0;
-    }
 }
 
 //------------------------------------------------------------
@@ -136,22 +43,14 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	return vec4(0.0,0.0,0.0,0.0);
 }
 
-vec4 textureInterpolation(sampler2D sampler, vec2 texCoord_i){
+vec4 textureBicubic(sampler2D sampler, vec2 texCoord_i){
   
     vec2 fxy = fract(texCoord_i);
     vec4 xcubic = vec4(0.0);
 	vec4 ycubic = vec4(0.0);
-	
-	if(interpolation == 0)
-	{
-	    xcubic = cubic(fxy.x);
-		ycubic = cubic(fxy.y);
-	}
-	else
-	{
-		ycubic = vec4(KernelFilter_selection(fxy.y)); 
-		xcubic = vec4(KernelFilter_selection(fxy.x));
-	}
+
+	xcubic = cubic(fxy.x);
+	ycubic = cubic(fxy.y);
   
     vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
 
@@ -283,8 +182,10 @@ void main()
 		}
 		
 		vec4 data = vec4(0.0,0.0,0.0,0.0);
-		if(interpolation == 11)
+		if(interpolation == 1)
 			data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
+		else if(interpolation == 2)
+			data = textureBicubic( ImageTexture, vec2(x_local, y_local));
 		else
 			data = textureInterpolation( ImageTexture, vec2(x_local, y_local));
 		gl_FragColor = data;

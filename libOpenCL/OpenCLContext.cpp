@@ -157,8 +157,10 @@ cv::ocl::Program COpenCLContext::GetProgram(const wxString & programName)
 
     // Compile the kernel code
     cv::String errmsg;
-    //openclBinaryMapping[programName] = context.getProg(programSource, buildOption, errmsg);
-    return context.getProg(programSource, buildOption, errmsg);
+	it = openclBinaryMapping.find(programName);
+	if(it == openclBinaryMapping.end())
+		openclBinaryMapping[programName] = context.getProg(programSource, buildOption, errmsg);
+	return openclBinaryMapping[programName];
 }
 
 
