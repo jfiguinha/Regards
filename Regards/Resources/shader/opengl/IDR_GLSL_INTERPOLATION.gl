@@ -13,9 +13,9 @@ uniform int top;
 uniform int interpolation;
 
 //Implementation de l'interpolation bicubic en OpenCL
-#define FILTER_PI 3.1415926535f
-#define FILTER_2PI 2.0f * 3.1415926535f
-#define FILTER_4PI 4.0f * 3.1415926535f
+#define FILTER_PI 3.1415926535
+#define FILTER_2PI 2.0 * 3.1415926535
+#define FILTER_4PI 4.0 * 3.1415926535
 
 
 // from http://www.java-gaming.org/index.php?topic=35123.0
@@ -30,7 +30,7 @@ vec4 cubic(float v){
 }
 
 // Pre-computed filter functions inline - avoid function call overhead
-inline float KernelFilter_selection(float x)
+float KernelFilter_selection(float x)
 {
     switch(interpolation)
     {

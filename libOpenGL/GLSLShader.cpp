@@ -27,15 +27,13 @@ bool GLSLShader::check_shader_compile_status(GLuint obj)
 	glGetShaderiv(obj, GL_COMPILE_STATUS, &status);
 	if (status == GL_FALSE)
 	{
-		//char cBuffer[4096];
 		GLint length;
 		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
-		char * cBuffer = new char[length + 1];
-		glGetShaderInfoLog(obj, length, &length, cBuffer);
-
-		printf("Error %s \n", cBuffer);
-
-		delete[] cBuffer;
+		// The maxLength includes the NULL character
+		std::vector<GLchar> errorLog(length);
+		glGetShaderInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
+		std::string s(begin(errorLog), end(errorLog));
+		cout << s.c_str() << endl;
 		return false;
 	}
 	printf("check_shader_compile_status is OK \n");
