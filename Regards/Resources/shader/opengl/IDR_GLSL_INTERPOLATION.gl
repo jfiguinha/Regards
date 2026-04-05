@@ -184,10 +184,10 @@ void main()
 		vec4 data = vec4(0.0,0.0,0.0,0.0);
 		if(interpolation == 1)
 			data = tex2DBiLinear( ImageTexture, vec2(x_local, y_local));
-		else if(interpolation == 2)
+		else if(interpolation >= 2)
 			data = textureBicubic( ImageTexture, vec2(x_local, y_local));
 		else
-			data = textureInterpolation( ImageTexture, vec2(x_local, y_local));
+			data = TextureValue(x_local, y_local, 0, 0);
 		gl_FragColor = data;
 	}
 	else

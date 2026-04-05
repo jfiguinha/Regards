@@ -57,9 +57,7 @@ void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool&
 {
 	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_INTERPOLATION");
-	int localInterpolation = interpolation - 7;
-	if(localInterpolation < 0)
-		localInterpolation = 11;
+
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
@@ -111,7 +109,7 @@ void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool&
 		{
 			printf("SetParam top failed \n ");
 		}
-		if (!m_pShader->SetIntegerParam("interpolation", localInterpolation))
+		if (!m_pShader->SetIntegerParam("interpolation", interpolation))
 		{
 			printf("SetParam interpolation failed \n ");
 		}

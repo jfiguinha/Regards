@@ -48,28 +48,13 @@ bool GLSLShader::check_program_link_status(GLuint obj)
 	glGetProgramiv(obj, GL_LINK_STATUS, &status);
 	if (status == GL_FALSE)
 	{
-		char cBuffer[800];
 		GLint length;
 		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
-		//cBuffer = new char[length + 1];
-		glGetShaderInfoLog(obj, length, &length, cBuffer);
-
-		printf("Error %s \n", cBuffer);
-		/*
-		int nOutCount = 0;
-		WCHAR *pWideChar = new WCHAR[length + 1];
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, cBuffer, length, pWideChar, nOutCount);
-		for (auto nStr = 0; nStr < length; nStr++)
-		{
-			short s = cBuffer[nStr];
-			pWideChar[nStr] = s;
-		}
-		pWideChar[length] = 0;
-#ifdef _DEBUG
-		OutputDebugString(pWideChar);
-#endif
-		delete[] pWideChar;
-		*/
+		// The maxLength includes the NULL character
+		std::vector<GLchar> errorLog(length);
+		glGetShaderInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
+		std::string s(begin(errorLog), end(errorLog));
+		cout << s.c_str() << endl;
 		return false;
 	}
 	return true;
