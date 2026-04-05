@@ -248,8 +248,9 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 	
 	glTexture->Enable();
 	textureVideo->Enable();
-	if (effectParameter->interpolationQuality == 0)
+	if (effectParameter->interpolationQuality == 0 && (effectParameter->interpolation > 0 || effectParameter->effectEnable))
 	{
+
 		if (FFrameBuffer == 0)
 		{
 			widthBuffer = glTexture->GetWidth();
@@ -278,12 +279,21 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		// render to FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
 		glViewport(0, 0, glTexture->GetWidth(), glTexture->GetHeight());
-		textureVideo->Enable();
-		RenderShaderInterpolation(rc, flipH, flipV, angle, inverted, effectParameter->interpolation);
-		textureVideo->Disable();
+		if (effectParameter->interpolation > 0)
+		{
+			textureVideo->Enable();
+			RenderShaderInterpolation(rc, flipH, flipV, angle, inverted, effectParameter->interpolation);
+			textureVideo->Disable();
+		}
+		else
+		{
+			textureVideo->Enable();
+			RenderWithInterpolation(renderOpenGL->GetWidth(), renderOpenGL->GetHeight(), flipH, flipV, angle, rc, !inverted);
+			textureVideo->Disable();
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		
+
 		if (effectParameter->effectEnable)
 		{
 			m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
@@ -306,6 +316,8 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		}
 
 		renderOpenGL->RenderQuad(glTexture, 0, 0, inverted);
+
+
 	}
 	else if(effectParameter->interpolationQuality > 0)
 	{
