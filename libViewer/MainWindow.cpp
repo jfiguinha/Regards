@@ -1243,30 +1243,36 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 			{
 				wxString localName = listIconeToGenerate->at(listIconeToGenerate->size() - 1 - i);
 
+				// OPTIMIZATION: Use single pass with emplace instead of erase + insert (O(n) → O(1) insertion)
 				std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
 				if (itPhoto != photoList.end())
+				{
 					photoList.erase(itPhoto);
-
-				photoList.insert(photoList.begin(), localName);
+				}
+				photoList.emplace(photoList.begin(), localName);
 			}
 			listIconeToGenerate->clear();
 			delete listIconeToGenerate;
 		}
+
 	}
 	else
 	{
 		wxString* filename = (wxString*)event.GetClientData();
 		wxString localName = wxString(*filename);
 
+		// OPTIMIZATION: Use single pass with emplace instead of erase + insert
 		std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
 		if (itPhoto != photoList.end())
+		{
 			photoList.erase(itPhoto);
-
-		photoList.insert(photoList.begin(), localName);
+		}
+		photoList.emplace(photoList.begin(), localName);
 		delete filename;
 	}
 	processIdle = true;
 }
+
 
 //---------------------------------------------------------------
 //
