@@ -47,5 +47,9 @@ namespace Regards::OpenGL
 		int widthBuffer = 0;
 		int heightBuffer = 0;
 		bool firstTime = true;
+       GLSLShader* shaderInterpolation = nullptr;
+		GLSLShader* shaderVideoCached = nullptr;
+      int lastViewportW = -1;
+		int lastViewportH = -1;
 	};
 }
