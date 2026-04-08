@@ -1805,11 +1805,9 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 	}
 }
 
-
-void CVideoControlSoft::OnSetData(wxCommandEvent& event)
+void CVideoControlSoft::SetData(CDataAVFrame* dataFrame)
 {
 	CDataAVFrame* old = pictureFrame;
-	CDataAVFrame* dataFrame = static_cast<CDataAVFrame*>(event.GetClientData());
 	if (dataFrame != nullptr)
 	{
 		videoRenderStart = true;
@@ -1826,6 +1824,13 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		needToRefresh = false;
 		parentRender->Refresh();
 	}
+}
+
+void CVideoControlSoft::OnSetData(wxCommandEvent& event)
+{
+	
+	CDataAVFrame* dataFrame = static_cast<CDataAVFrame*>(event.GetClientData());
+	SetData(dataFrame);
 }
 
 
@@ -2127,7 +2132,6 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 	}
 
 
-	Regards::Picture::CPictureArray pictureArrayLocal;
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
