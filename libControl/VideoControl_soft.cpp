@@ -1227,13 +1227,14 @@ bool CVideoControlSoft::ApplyVideoEffect()
 void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
 	isAvailable = false;
+#ifdef _DEBUG
     using std::chrono::high_resolution_clock;
     using std::chrono::duration_cast;
     using std::chrono::duration;
     using std::chrono::milliseconds;
 
     auto t1 = high_resolution_clock::now();
-    
+#endif
 	if (renderBitmapOpenGL == nullptr)
 	{
 		this->renderOpenGL = renderOpenGL;
@@ -1457,6 +1458,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	isAvailable = true;
     
+#ifdef _DEBUG
     auto t2 = high_resolution_clock::now();
 
     /* Getting number of milliseconds as an integer. */
@@ -1467,6 +1469,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
     std::cout << "Video Frame Render Time : " << ms_int.count() << "ms\n";
     //std::cout << ms_double.count() << "ms\n";
+#endif
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
