@@ -37,7 +37,7 @@ namespace Regards::Viewer
 		static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		static void FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		void RefreshThreadFolder(CFolderCatalog* folder);
-		void OnTimerRefresh(wxTimerEvent& event);
+
 		void ProcessIdle() override;
 		time_t start;
 		int nbGpsRequest = 0;
