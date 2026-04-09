@@ -46,5 +46,6 @@ namespace Regards::OpenGL
 		GLuint depthrenderbuffer = 0;
 		int widthBuffer = 0;
 		int heightBuffer = 0;
+		bool firstTime = true;
 	};
 }

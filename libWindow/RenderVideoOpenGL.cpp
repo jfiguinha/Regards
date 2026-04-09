@@ -53,7 +53,7 @@ void CRenderVideoOpenGL::Cleanup()
 	heightBuffer = 0;
 }
 
-void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool& flipH, const bool& flipV, const int& angle, const bool& inverted, const int& interpolation)
+void CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool& flipH, const bool& flipV, const int& angle, const bool& inverted, const int &interpolation)
 {
 	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_INTERPOLATION");
@@ -245,12 +245,12 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 {
 	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	GLSLShader* m_pShader = nullptr;
-
+	
+	glTexture->Enable();
+	textureVideo->Enable();
 	if (effectParameter->interpolationQuality == 0 && (effectParameter->interpolation > 0 || effectParameter->effectEnable))
 	{
         bool updateViewport = false;
-        
-
 		if (FFrameBuffer == 0)
 		{
 			widthBuffer = glTexture->GetWidth();
@@ -268,7 +268,6 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		// setup FBO
 		if (FFrameBuffer == 0)
 		{
-            glTexture->Enable();
 			glGenFramebuffers(1, &FFrameBuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->GetTextureID(), 0);
@@ -276,23 +275,26 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 			widthBuffer = glTexture->GetWidth();
 			heightBuffer = glTexture->GetHeight();
             updateViewport = true;
-             glTexture->Disable();
 		}
 
 		// render to FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, FFrameBuffer);
-        glTexture->Enable();
         if(updateViewport)
             glViewport(0, 0, glTexture->GetWidth(), glTexture->GetHeight());
-        textureVideo->Enable();
-		if (effectParameter->interpolation > 0)		
+		if (effectParameter->interpolation > 0)
+		{
+			textureVideo->Enable();
 			RenderShaderInterpolation(rc, flipH, flipV, angle, inverted, effectParameter->interpolation);
-        else
+			textureVideo->Disable();
+		}
+		else
+		{
+			textureVideo->Enable();
 			RenderWithInterpolation(renderOpenGL->GetWidth(), renderOpenGL->GetHeight(), flipH, flipV, angle, rc, !inverted);
-			
-		textureVideo->Disable();
-        glTexture->Disable();
+			textureVideo->Disable();
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 		if (effectParameter->effectEnable)
 		{
@@ -310,59 +312,57 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 				RenderShader(m_pShader, glTexture, effectParameter, rect, iTime);
 			}
 		}
+		else
+		{
+			glTexture->Enable();
+		}
 
-        glTexture->Enable();
 		renderOpenGL->RenderQuad(glTexture, 0, 0, inverted);
-        glTexture->Disable();
+
+
 	}
-    else
-    {
-        textureVideo->Enable();
-        
-        if (effectParameter->interpolationQuality > 0)
-        {
-            GLSLShader* m_pShader = nullptr;
-            m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
+	else if(effectParameter->interpolationQuality > 0)
+	{
+		GLSLShader* m_pShader = nullptr;
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
 
-            if (m_pShader != nullptr)
-            {
-                m_pShader->EnableShader();
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
 
-                rect.top = (float)((textureVideo->GetHeight() - heightOut) / 2) / (float)textureVideo->GetHeight();
-                rect.bottom = 1.0f - rect.top;
+			rect.top = (float)((textureVideo->GetHeight() - heightOut) / 2) / (float)textureVideo->GetHeight();
+			rect.bottom = 1.0f - rect.top;
 
-                rect.left = (float)((textureVideo->GetWidth() - widthOut) / 2) / (float)textureVideo->GetWidth();
-                rect.right = 1.0f - rect.left;
+			rect.left = (float)((textureVideo->GetWidth() - widthOut) / 2) / (float)textureVideo->GetWidth();
+			rect.right = 1.0f - rect.left;
 
-                RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
-            }
+			RenderShader(m_pShader, textureVideo, effectParameter, rect, iTime);
+		}
 
-            int width_local = textureVideo->GetWidth();
-            int height_local = textureVideo->GetHeight();
+		int width_local = textureVideo->GetWidth();
+		int height_local = textureVideo->GetHeight();
 
-            int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
-            int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
+		int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
+		int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
 
-            renderOpenGL->RenderQuad(textureVideo, left_local, top_local, inverted);
-        }
-        else
-        {
-            RenderWithInterpolation(renderOpenGL->GetWidth(), renderOpenGL->GetHeight(), flipH, flipV, angle, rc, inverted);
-        }
-        
-        textureVideo->Disable();
+		renderOpenGL->RenderQuad(textureVideo, left_local, top_local, inverted);
+	}
+	else
+	{
+		RenderWithInterpolation(renderOpenGL->GetWidth(), renderOpenGL->GetHeight(), flipH, flipV, angle, rc, inverted);
+	}
 
-    }
-
-    if (m_pShader != nullptr)
+	if (m_pShader != nullptr)
 		m_pShader->DisableShader();
 
+	textureVideo->Disable();
+	glTexture->Disable();
 
 }
 
-void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int& angle, wxRect& rc, const bool& inverted)
+void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int& heightOut, const bool& flipH, const bool& flipV, const int &angle, wxRect & rc, const bool& inverted)
 {
-
+	
 	glPushMatrix();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -509,7 +509,7 @@ void CRenderVideoOpenGL::RenderWithInterpolation(const int& widthOut, const int&
 
 	glFlush();
 
-
+	
 }
 
 
@@ -519,10 +519,10 @@ void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 	//
 	//textureSubtitle = nullptr;
 
-	if (textureSubtitle == nullptr)
+	if(textureSubtitle == nullptr)
 		textureSubtitle = new GLTexture();
-
-	Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(subtitle);
+        
+    Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(subtitle);
 	textureSubtitle->SetData(mat);
 }
 
@@ -552,7 +552,7 @@ GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& heig
 	return textureVideo;
 }
 
-void CRenderVideoOpenGL::SetVideoTexture(Regards::Picture::CPictureArray& pictureArray, const bool& deleteTexture)
+void CRenderVideoOpenGL::SetVideoTexture(Regards::Picture::CPictureArray & pictureArray, const bool &deleteTexture)
 {
 	if (textureVideo == nullptr)
 		textureVideo = new GLTexture();

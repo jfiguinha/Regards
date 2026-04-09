@@ -51,10 +51,7 @@ void CMasterWindow::ThreadIdle(void* data)
 {
 	auto main = static_cast<CMasterWindow*>(data);
 	if (main != nullptr && !endProgram)
-    {
-        //printf("CMasterWindow::ThreadIdle Name : %s \n", main->name.ToStdString().c_str());
 		main->ProcessIdle();
-    }
 	main->PushThreadIdleEvent();
 }
 

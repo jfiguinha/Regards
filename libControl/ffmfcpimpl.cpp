@@ -443,12 +443,11 @@ void CFFmfcPimpl::video_display(VideoState* is)
 						&convertedFrameBuffer, &linesize);
 				}
 			}
-			//dlg->SetData(dataFrame);
-			
+
 			wxCommandEvent event(wxEVENT_UPDATEFRAME);
 			event.SetClientData(dataFrame);
 			wxPostEvent(dlg->GetMainWindow(), event);
-			
+
 		}
 
 		//}

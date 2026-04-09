@@ -51,7 +51,7 @@ public:
 	int GetVolume();
 	void SetVolume(const int& pos);
 	void ChangeVideoFormat();
-	void SetData(CDataAVFrame* dataFrame);
+
 	void QuitMovie();
 	int GetZoomIndex();
 	void SetZoomIndex(const int& pos);

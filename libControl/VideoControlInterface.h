@@ -10,7 +10,6 @@ extern "C" {
 #define EVENT_VIDEOSTOP 1003
 #define EVENT_REFRESHSCREEN 1002
 
-class CDataAVFrame;
 
 class DataTimeDuration
 {
@@ -29,5 +28,4 @@ public:
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
 	virtual bool ApplyVideoEffect() = 0;
-	virtual void SetData(CDataAVFrame* dataFrame) = 0;
 };
