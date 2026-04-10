@@ -313,29 +313,30 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
+        bool enableTexture= true;
 		if (effectParameter->effectEnable)
 		{            
 			m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
 			if (m_pShader != nullptr)
 			{
-                if(m_pShader->EnableShader())
-                {                    
-                    rect.top = (float)((glTexture->GetHeight() - rc.height) / 2) / (float)glTexture->GetHeight();
-                    rect.bottom = 1.0f - rect.top;
-
-                    rect.left = (float)((glTexture->GetWidth() - rc.width) / 2) / (float)glTexture->GetWidth();
-                    rect.right = 1.0f - rect.left;
-
-                    RenderShader(m_pShader, glTexture, effectParameter, rect, iTime);
-                }
-                else
+                if(m_pShader->IsOk())
                 {
-                    glTexture->Enable();
+                    if(m_pShader->EnableShader())
+                    {                    
+                        rect.top = (float)((glTexture->GetHeight() - rc.height) / 2) / (float)glTexture->GetHeight();
+                        rect.bottom = 1.0f - rect.top;
+
+                        rect.left = (float)((glTexture->GetWidth() - rc.width) / 2) / (float)glTexture->GetWidth();
+                        rect.right = 1.0f - rect.left;
+
+                        RenderShader(m_pShader, glTexture, effectParameter, rect, iTime);
+                        
+                        enableTexture = false;
+                    }
                 }
 			}
 		}
-		else
+		if(enableTexture)
 		{
 			glTexture->Enable();
 		}
