@@ -18,6 +18,7 @@ namespace Regards
 			bool DeleteShader();
 			bool EnableShader();
 			bool DisableShader();
+            bool IsOk();
 			// This function attach a texture to shader parameter.
 			// pParamName_i is parameter name given in shader.
 			bool SetTexture(const char* pParamName_i, int nTextureID_i);
@@ -48,6 +49,7 @@ namespace Regards
 			GLuint m_hVertexHandle;
 			GLuint m_hComputeHandle;
 
+            bool isOk = false;
 			bool isLink = false;
 		};
 	}

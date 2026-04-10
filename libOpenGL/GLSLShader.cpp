@@ -20,6 +20,11 @@ GLSLShader::~GLSLShader(void)
 	DeleteShader();
 }
 
+ bool GLSLShader::IsOk()
+ {
+     return isOk;
+ }
+
 // helper to check and display for shader compiler errors
 bool GLSLShader::check_shader_compile_status(GLuint obj)
 {
@@ -67,12 +72,17 @@ bool GLSLShader::CreateProgram(const wxString& nProgramID_i, GLenum glSlShaderTy
 
 	if (glSlShaderType_i == GL_VERTEX_SHADER)
 	{
-		return CreateVertexProgram(nProgramID_i);
+		isOk = CreateVertexProgram(nProgramID_i);
+        return isOk;
 	}
 	if (glSlShaderType_i == GL_COMPUTE_SHADER)
-		return CreateComputeProgram(nProgramID_i);
+    {
+		isOk = CreateComputeProgram(nProgramID_i);
+        return isOk;
+    }
 
-	return CreateShaderProgram(nProgramID_i);
+	isOk = CreateShaderProgram(nProgramID_i);
+    return isOk;
 }
 
 bool GLSLShader::CreateShaderProgram(const wxString& nProgramID_i)
@@ -114,6 +124,7 @@ bool GLSLShader::CreateShaderProgram(const wxString& nProgramID_i)
 		// Provide the infolog in whatever manor you deem best.
 		// Exit with failure.
 		glDeleteShader(m_hShaderHandle); // Don't leak the shader.
+        delete[] src;
 		return false;
 	}
 	glAttachShader(m_hProgramObject, m_hShaderHandle);
@@ -140,7 +151,11 @@ bool GLSLShader::CreateComputeProgram(const wxString& nProgramID_i)
 	glCompileShader(m_hComputeHandle);
 
 	if (!check_shader_compile_status(m_hComputeHandle))
-		return false;
+    {
+        delete[] data;
+        return false;
+    }
+		
 
 	glAttachShader(m_hProgramObject, m_hComputeHandle);
 	delete[] data;
@@ -167,7 +182,11 @@ bool GLSLShader::CreateVertexProgram(const wxString& nProgramID_i)
 	glCompileShader(m_hVertexHandle);
 
 	if (!check_shader_compile_status(m_hVertexHandle))
-		return false;
+    {
+        delete[] data;
+        return false;
+    }
+		
 
 	glAttachShader(m_hProgramObject, m_hVertexHandle);
 	delete[] data;
