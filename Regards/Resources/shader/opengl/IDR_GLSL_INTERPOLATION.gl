@@ -27,15 +27,15 @@ vec4 cubic(float v){
 //------------------------------------------------------------
 //TextureValue													   
 //------------------------------------------------------------
-vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
+vec4 TextureValue(float posX, float posY, int xDiff, int yDiff)
 {
 	float texelSizeX = 1.0 / widthTex; //size of one texel 
 	float texelSizeY = 1.0 / heightTex; //size of one texel 
 	
-	float pixelX = posX * widthTex + xDiff;
-	float pixelY = posY * heightTex + yDiff;
+	float pixelX = posX * widthTex + float(xDiff);
+	float pixelY = posY * heightTex + float(yDiff);
 	
-	if(pixelX >= 0 && pixelX < widthTex && pixelY >= 0 && pixelY < heightTex)
+	if(pixelX >= 0.0 && pixelX < widthTex && pixelY >= 0.0 && pixelY < heightTex)
 	{
 		vec2 resolution = vec2(texelSizeX, texelSizeY); 
 		return texture2D(ImageTexture, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
@@ -102,20 +102,23 @@ void main()
 	vec2 texCoord_i = gl_TexCoord[0].st;
 	float x = texCoord_i.x;
 	float y = texCoord_i.y;
-	float left_local = (widthIn - widthOut) / 2;
-	float top_local = (heightIn - heightOut) / 2;
-	float xPixel = texCoord_i.x * widthIn;
-	float yPixel = texCoord_i.y * heightIn;
+	float left_local = float((widthIn - widthOut) / 2);
+	float top_local = float((heightIn - heightOut) / 2);
+	float xPixel = texCoord_i.x * float(widthIn);
+	float yPixel = texCoord_i.y * float(heightIn);
+
+    float fwidthOut = float(widthOut);
+    float fheightOut = float(heightOut);
 	
-	if(left_local < 0)
-		left_local = 0;
-	if(top_local < 0)
-		top_local = 0;
+	if(left_local < 0.0)
+		left_local = 0.0;
+	if(top_local < 0.0)
+		top_local = 0.0;
 	
-	if(xPixel >= left_local && yPixel >= top_local && xPixel < (widthIn - left_local) && yPixel < (heightIn - top_local))
+	if(xPixel >= left_local && yPixel >= top_local && xPixel < (float(widthIn) - left_local) && yPixel < (float(heightIn) - top_local))
     {
-		float posX = (xPixel - left_local) + left;
-		float posY = (yPixel - top_local) + top;
+		float posX = (xPixel - left_local) + float(left);
+		float posY = (yPixel - top_local) + float(top);
 		
 		if (angle == 270)
 		{
@@ -125,14 +128,14 @@ void main()
 			posX = srcx;
 			posY = srcy;
 			
-			posY = widthOut - posY - 1;
+			posY = fwidthOut - posY - 1.0;
 
-			//posX = widthOut - posX - 1;
+			//posX = fwidthOut - posX - 1.0;
 		}
 		else if (angle == 180)
 		{
-			posX = widthOut - posX - 1;
-			posY = heightOut - posY - 1;
+			posX = fwidthOut - posX - 1.0;
+			posY = fheightOut - posY - 1.0;
 		}
 		else if (angle == 90)
 		{
@@ -142,20 +145,20 @@ void main()
 			posX = srcx;
 			posY = srcy;
 
-			//posY = widthOut - posY - 1;
-			posX = heightOut - posX - 1;
+			//posY = fwidthOut - posY - 1.0;
+			posX = fheightOut - posX - 1.0;
 		}
 		
 		if(angle == 90 || angle == 270)
 		{
 			if (flipV == 1)
 			{
-				posX = heightOut - posX - 1;
+				posX = fheightOut - posX - 1.0;
 			}
 
 			if (flipH == 1)
 			{
-				posY = widthOut - posY - 1;
+				posY = fwidthOut - posY - 1.0;
 			}
 		
 		}
@@ -163,22 +166,22 @@ void main()
 		{
 			if (flipH == 1)
 			{
-				posX = widthOut - posX - 1;
+				posX = fwidthOut - posX - 1.0;
 			}
 
 			if (flipV == 1)
 			{
-				posY = heightOut - posY - 1;
+				posY = fheightOut - posY - 1.0;
 			}
 		}
 			
 		
-		float x_local = (posX)/widthOut;
-		float y_local = (posY)/heightOut;
+		float x_local = (posX)/fwidthOut;
+		float y_local = (posY)/fheightOut;
 		if(angle == 90 || angle == 270)
 		{
-			x_local = (posX)/heightOut;
-			y_local = (posY)/widthOut;
+			x_local = (posX)/fheightOut;
+			y_local = (posY)/fwidthOut;
 		}
 		
 		vec4 data = vec4(0.0,0.0,0.0,0.0);
