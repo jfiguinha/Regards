@@ -68,7 +68,7 @@ namespace Regards::Viewer
 
 private:
 
-		void UpdateFolderStatic(const bool & isDeleteFolder);
+		void UpdateFolderStatic(const bool & isDeleteFolder, const bool& refreshPhotos = false);
 
 		static void NewVersionAvailable(void* param);
 

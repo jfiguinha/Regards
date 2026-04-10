@@ -944,7 +944,7 @@ bool CMainWindow::FindPreviousValidFile()
 }
 
 
-void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder)
+void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &refreshPhotos)
 {
 	//printf("CMainWindow::UpdateFolderStatic() \n");
 	//
@@ -962,7 +962,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder)
 
 		if (requestSql != "" && this->GetInit())
 		{
-			if (oldRequest != requestSql)
+			if (oldRequest != requestSql || refreshPhotos)
 				sqlFindPhotos.SearchPhotos(requestSql);
 			oldRequest = requestSql;
 		}
@@ -1056,7 +1056,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder)
 			}
 
 
-			centralWnd->SetListeFile(localFilename, isDeleteFolder, typeAffichage);
+			centralWnd->SetListeFile(localFilename, (isDeleteFolder || refreshPhotos), typeAffichage);
 			listFile.clear();
 			thumbnailPos = 0;
 			//firstFileToShow = "";
@@ -1105,14 +1105,15 @@ void CMainWindow::ProcessIdle()
 		updateCriteria = false;
 		hasDoneOneThings = true;
 	}
-	else if (refreshFolder)
+	
+	if (refreshFolder)
 	{
 		int nbFile = 0;
 		bool folderChange = false;
 		folderProcess->RefreshFolder(folderChange, nbFile);
 		if (folderChange || nbFile > 0)
 		{
-			UpdateFolderStatic(false);
+			UpdateFolderStatic(false, true);
 			updateCriteria = true;
 			processIdle = true;
 
