@@ -1120,10 +1120,10 @@ int CVideoControlSoft::Play(const wxString& movie)
 			if (aspectRatio.den != 0 && aspectRatio.num != 0)
 			{
 				float video_aspect_ratio = (float)aspectRatio.num / (float)aspectRatio.den;
-				printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
+				//printf("video_aspect_ratio %d %d \n", aspectRatio.num, aspectRatio.den);
 				for (int i = 0; i < videoEffectParameter.tabRatio.size(); i++)
 				{
-					printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
+					//printf("video_aspect_ratio %f \n", videoEffectParameter.tabRatio[i]);
 					if (video_aspect_ratio < videoEffectParameter.tabRatio[i])
 					{
 						

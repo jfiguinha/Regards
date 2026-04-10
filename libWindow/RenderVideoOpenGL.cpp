@@ -21,7 +21,8 @@ CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
 	textureVideo = nullptr;
 	fboId = 0;
 	this->renderOpenGL = renderOpenGL;
-
+    frameBufferSupport = epoxy_has_gl_extension("GL_EXT_framebuffer_object");
+    printf("CRenderVideoOpenGL frameBufferSupport %b \n", frameBufferSupport);
 }
 
 
@@ -246,9 +247,11 @@ void CRenderVideoOpenGL::Render(CVideoEffectParameter* effectParameter, wxFloatR
 	GLTexture* glTexture = renderOpenGL->GetGLTexture();
 	GLSLShader* m_pShader = nullptr;
 	
+    
+    
 	glTexture->Enable();
 	textureVideo->Enable();
-	if (effectParameter->interpolationQuality == 0 && (effectParameter->interpolation > 0 || effectParameter->effectEnable))
+	if (frameBufferSupport && effectParameter->interpolationQuality == 0 && (effectParameter->interpolation > 0 || effectParameter->effectEnable))
 	{
         bool updateViewport = false;
 		if (FFrameBuffer == 0)

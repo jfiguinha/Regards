@@ -47,5 +47,6 @@ namespace Regards::OpenGL
 		int widthBuffer = 0;
 		int heightBuffer = 0;
 		bool firstTime = true;
+        bool frameBufferSupport = false;
 	};
 }
