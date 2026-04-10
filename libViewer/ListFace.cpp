@@ -606,7 +606,7 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 
 bool CListFace::GetProcessEnd()
 {
-     printf("CListFace::GetProcessEnd() nbProcessFacePhoto : %d et nbProcessFaceRecognition : %d \n", nbProcessFacePhoto, nbProcessFaceRecognition);
+     //printf("CListFace::GetProcessEnd() nbProcessFacePhoto : %d et nbProcessFaceRecognition : %d \n", nbProcessFacePhoto, nbProcessFaceRecognition);
      
 	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
@@ -785,14 +785,14 @@ CListFace::~CListFace()
 	if (config != nullptr)
 		config->SetSlideFacePos(positionTab);
 
-    printf("~CListFace() \n");
+    //printf("~CListFace() \n");
     delete(thumbnailFace);
     delete(thumbFaceToolbar);
     delete(thumbscrollbar);
     delete(thumbFacePertinenceToolbar);
 	delete(windowManager);
     
-    printf("~CListFace() end \n");
+    //printf("~CListFace() end \n");
 }
 
 int CListFace::GetThumbnailHeight()

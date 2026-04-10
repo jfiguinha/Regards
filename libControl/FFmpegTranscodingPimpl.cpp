@@ -2712,9 +2712,9 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			streamVideo->time_base = streamVideoToEncode->time_base;
 			streamVideo->avg_frame_rate = streamVideoToEncode->avg_frame_rate;
             
-            printf("streamVideoToEncode FrameRate : %d %d \n",  streamVideoToEncode->codecpar->framerate.num, streamVideoToEncode->codecpar->framerate.den);
-            printf("streamVideoToEncode r_frame_rate : %d %d \n",  streamVideoToEncode->r_frame_rate.num, streamVideoToEncode->r_frame_rate.den);
-            printf("streamVideoToEncode Time Base : %d %d \n",  streamVideoToEncode->time_base.num, streamVideoToEncode->time_base.den);
+            //printf("streamVideoToEncode FrameRate : %d %d \n",  streamVideoToEncode->codecpar->framerate.num, streamVideoToEncode->codecpar->framerate.den);
+            //printf("streamVideoToEncode r_frame_rate : %d %d \n",  streamVideoToEncode->r_frame_rate.num, streamVideoToEncode->r_frame_rate.den);
+            //printf("streamVideoToEncode Time Base : %d %d \n",  streamVideoToEncode->time_base.num, streamVideoToEncode->time_base.den);
 
 			c->bit_rate = 1000 * videoCompressOption->videoBitRate;
 			c->gop_size = framerate;
@@ -2767,8 +2767,8 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 		}
 		
         
-        printf("ffmpeg FrameRate : %d %d \n",  c->framerate.num, c->framerate.den);
-        printf("ffmpeg Time Base : %d %d \n",  c->time_base.num, c->time_base.den);
+        //printf("ffmpeg FrameRate : %d %d \n",  c->framerate.num, c->framerate.den);
+        //printf("ffmpeg Time Base : %d %d \n",  c->time_base.num, c->time_base.den);
 
 		const int ret = avcodec_open2(c, p_codec, &param);
 		if (ret < 0)

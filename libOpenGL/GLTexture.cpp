@@ -53,11 +53,11 @@ public:
 
 cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
-    printf("CreateTextureInterop 1 \n");
+   // printf("CreateTextureInterop 1 \n");
 	cl_int status = 0;
 	if (clImage == nullptr)
 	{
-        printf("CreateTextureInterop 2 : GLTexture ID : %i \n", glTexture->GetTextureID());
+       // printf("CreateTextureInterop 2 : GLTexture ID : %i \n", glTexture->GetTextureID());
     
         cl_context context = (cl_context)clExecCtx.getContext().ptr();
         cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
@@ -66,7 +66,7 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 		                                &status);
 		if (status == CL_SUCCESS)
 		{
-            printf("CreateTextureInterop CL_SUCCESS \n");
+           // printf("CreateTextureInterop CL_SUCCESS \n");
 			status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
 		}
 
@@ -74,7 +74,7 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 			isOpenCLCompatible = true;
 		else
 		{
-            printf("CreateTextureInterop CL_ERROR : %i \n", status);
+            //printf("CreateTextureInterop CL_ERROR : %i \n", status);
 			DeleteTextureInterop();
 			isOpenCLCompatible = false;
 		}
@@ -95,14 +95,14 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 #ifndef __APPLE__
 		try
 		{
-            printf("glGetInternalformativ test if is it available \n"); 
+            //printf("glGetInternalformativ test if is it available \n"); 
             
 			GLint format, type;
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &format);
 			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
 
-			printf("GL_TEXTURE_IMAGE_FORMAT Dec : %d Hex : %#08x\n", format, format);
-			printf("GL_TEXTURE_IMAGE_TYPE Dec : %d Hex : %#08x\n", type, type);
+			//printf("GL_TEXTURE_IMAGE_FORMAT Dec : %d Hex : %#08x\n", format, format);
+			//printf("GL_TEXTURE_IMAGE_TYPE Dec : %d Hex : %#08x\n", type, type);
 
 			if (type == 35863)
 				color = "BGRA";
@@ -111,7 +111,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
         }
         catch(...)
         {
-			printf("glGetInternalformativ is not available \n"); 
+			//printf("glGetInternalformativ is not available \n"); 
             color = "RGBA"; 
         }
 #else
@@ -179,7 +179,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
 			status = -1;
 			isOk = false;
-			printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
+			//printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
 		}
 	}
 

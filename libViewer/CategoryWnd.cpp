@@ -865,7 +865,7 @@ void CCategoryWnd::RefreshCriteriaSearch()
 
 void CCategoryWnd::UpdateScreenRatio()
 {
-	printf("CCategoryWnd::UpdateScreenRatio() \n");
+	//printf("CCategoryWnd::UpdateScreenRatio() \n");
 	UpdateElement();
 	eventControl->UpdateTreeControl();
 }

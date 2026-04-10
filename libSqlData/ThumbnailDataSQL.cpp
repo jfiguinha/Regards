@@ -56,7 +56,7 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 	if (videoCaptureCV != nullptr)
 		delete videoCaptureCV;
         
-    printf("CThumbnailDataSQL delete \n");
+   // printf("CThumbnailDataSQL delete \n");
 }
 
 int CThumbnailDataSQL::GetNbFrame()

@@ -77,12 +77,12 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		int epoxyversion = epoxy_gl_version();
 		bool pboSupported = epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
 
-        printf("CRenderOpenGL::Init \n");
+       // printf("CRenderOpenGL::Init \n");
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if (regardsParam != nullptr)
 		{
-             printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
+             //printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
             
 #ifdef USE_CUDA
 
@@ -113,7 +113,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 #else
 				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 				{
-                     printf("CRenderOpenGL::Init 2 \n");
+                   //  printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
 						COpenCLContext::initializeContextFromGL();

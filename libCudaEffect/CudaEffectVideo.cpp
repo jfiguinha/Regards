@@ -293,7 +293,7 @@ void CCudaEffectVideo::ApplyVideoEffect(CVideoEffectParameter* videoEffectParame
 
 void CCudaEffectVideo::SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited)
 {
-    printf("CCudaEffectVideo::SetAVFrame \n");
+    //printf("CCudaEffectVideo::SetAVFrame \n");
 	int nWidth = tmp_frame->width;
 	int nHeight = tmp_frame->height;
 	try

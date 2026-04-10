@@ -45,7 +45,7 @@ int CColorization::load(const std::string& param_path, const std::string& model_
 
 cv::Mat CColorization::colorization(const cv::Mat& bgr)
 {
-    printf("CColorization::colorization \n");
+   // printf("CColorization::colorization \n");
     cv::Mat out_image;
 	try
 	{

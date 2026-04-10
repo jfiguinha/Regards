@@ -458,7 +458,7 @@ void CCentralWindow::OnPictureLast(wxCommandEvent& event)
 
 void CCentralWindow::OnTimerDiaporama(wxTimerEvent& event)
 {
-	printf("OnTimerDiaporama \n");
+	////printf("OnTimerDiaporama \n");
 
 	ImageSuivante();
 }
@@ -471,7 +471,7 @@ wxString CCentralWindow::GetFilename()
 
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
-	printf("CCentralWindow::OnVideoEnd \n");
+	////printf("CCentralWindow::OnVideoEnd \n");
 
 	stopVideo = false;
 	videoStart = false;
@@ -565,7 +565,7 @@ void CCentralWindow::OnVideoStop(wxCommandEvent& event)
 
 void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 {
-	printf("CCentralWindow::OnVideoStart \n");
+	//printf("CCentralWindow::OnVideoStart \n");
 
 	if (ffmfc != nullptr)
 	{
@@ -927,7 +927,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 
 void CCentralWindow::HideToolbar()
 {
-	printf("CCentralWindow::HideToolbar \n");
+	//printf("CCentralWindow::HideToolbar \n");
 	showToolbar = false;
 	if (isFullscreen)
 	{
@@ -947,7 +947,7 @@ void CCentralWindow::HideToolbar()
 
 void CCentralWindow::ShowToolbar()
 {
-	printf("CCentralWindow::ShowToolbar \n");
+	//printf("CCentralWindow::ShowToolbar \n");
 
 	showToolbar = true;
 
@@ -1107,7 +1107,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 void CCentralWindow::StopLoadingPicture()
 {
-	printf("CCentralWindow::StopLoadingPicture \n");
+	//printf("CCentralWindow::StopLoadingPicture \n");
 	//showBitmapWindow->StopLoadingPicture();
 	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
 	if (bitmapWindow != nullptr)
@@ -1120,7 +1120,7 @@ void CCentralWindow::StopLoadingPicture()
 
 void CCentralWindow::StopAnimation()
 {
-	printf("CCentralWindow::StopAnimation \n");
+	//printf("CCentralWindow::StopAnimation \n");
 	animationPosition = 0;
 	if (animationTimer->IsRunning())
 		animationTimer->Stop();
@@ -1129,7 +1129,7 @@ void CCentralWindow::StopAnimation()
 
 void CCentralWindow::SetPanelInfos(const bool& isThumbnail)
 {
-	printf("CCentralWindow::SetPanelInfos \n");
+	//printf("CCentralWindow::SetPanelInfos \n");
 	if (panelInfosWindow->GetFilename() != filename)
 	{
 		if (isVideo)
@@ -1154,7 +1154,7 @@ void CCentralWindow::SetPanelInfos(const bool& isThumbnail)
 
 void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 {
-	//printf("CCentralWindow::SetVideoPos \n");
+	////printf("CCentralWindow::SetVideoPos \n");
 	int64_t pos = event.GetExtraLong();
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(pos);
@@ -1162,7 +1162,7 @@ void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 {
-	//printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
+	////printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
 
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(animationPosition);
@@ -1220,7 +1220,7 @@ void CCentralWindow::StopAnimationEvent(wxCommandEvent& event)
 
 void CCentralWindow::AnimationSetPosition(wxCommandEvent& event)
 {
-	printf("CCentralWindow::AnimationSetPosition \n");
+	//printf("CCentralWindow::AnimationSetPosition \n");
 
 	const auto videoTime = static_cast<int64_t*>(event.GetClientData());
 	if (thumbnailVideo != nullptr && videoTime != nullptr)
@@ -1531,7 +1531,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
             panelInfosClick->SetWindow(panelInfosWindow);
             panelInfosClick->Show(true);
             panelInfosClick->SetTitle("Informations");
-            printf("CCentralWindow::SetMode Show Infos : %d \n", showInfos);
+            //printf("CCentralWindow::SetMode Show Infos : %d \n", showInfos);
 
 			if (windowInit)
 				if (!showInfos)
@@ -1747,7 +1747,7 @@ bool CCentralWindow::ScreenMode()
 
 bool CCentralWindow::GetProcessEnd()
 {
-    printf("CCentralWindow::GetProcessEnd() \n");
+    //printf("CCentralWindow::GetProcessEnd() \n");
     
 	StopAnimation();
 
@@ -1812,7 +1812,7 @@ void CCentralWindow::StartLoadingPicture()
 bool CCentralWindow::SetAnimation(const wxString& filename)
 {
     
-    printf("CCentralWindow::SetAnimation : %s \n", filename.ToStdString().c_str());
+    //printf("CCentralWindow::SetAnimation : %s \n", filename.ToStdString().c_str());
     
 	if (windowMode == WINDOW_VIEWER)
 		windowManager->ShowWindow(Pos::wxTOP);

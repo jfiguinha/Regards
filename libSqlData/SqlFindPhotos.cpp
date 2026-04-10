@@ -47,7 +47,7 @@ void CSqlFindPhotos::UpdatePhotosExtension()
 		int indexId = libPicture.TestImageFormat(photo.GetPath());
 		ExecuteRequestWithNoResult(
 			"UPDATE PHOTOS SET ExtensionId = " + to_string(indexId) + " WHERE NumPhoto = " + to_string(photo.GetId()));
-		printf("CSqlFindPhotos::UpdatePhotosExtension \n");
+		//printf("CSqlFindPhotos::UpdatePhotosExtension \n");
 	}
 }
 
@@ -249,7 +249,7 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int& numCatalog, vector<int>& 
 		}
 
 		reqSQIn += ") Group By NumPhoto";
-		printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
+		//printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
 		//ExecuteRequest(reqSQIn);
 		return reqSQIn;
 	}

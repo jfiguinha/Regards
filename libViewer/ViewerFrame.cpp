@@ -439,7 +439,7 @@ void CViewerFrame::OnExportDiaporama(wxCommandEvent& event)
 
 void CViewerFrame::OnWindowFullScreen(wxCommandEvent & event)
 {
-    //printf("Process OnWindowFullScreen /n");
+    ////printf("Process OnWindowFullScreen /n");
     if(!fullscreen)
         SetFullscreen();
 }
@@ -681,7 +681,7 @@ void CViewerFrame::OnClose(wxCloseEvent& event)
 
 void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
 {
-	//printf("OnFileSystemModified \n");
+	////printf("OnFileSystemModified \n");
 	const wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
 	mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	eventFileSysTimer->Stop();
@@ -699,7 +699,7 @@ void CViewerFrame::CheckAllProcessEnd(wxTimerEvent& event)
 {
 	nbTime++;
 
-    printf("Get Nb Main Windows %d \n", CMasterWindow::listProcessWindow.size());
+    //printf("Get Nb Main Windows %d \n", CMasterWindow::listProcessWindow.size());
     
 
 	if (nbTime < 50)
@@ -708,13 +708,13 @@ void CViewerFrame::CheckAllProcessEnd(wxTimerEvent& event)
 		{
 			if (window != nullptr)
 			{
-                printf("CheckAllProcessEnd %s \n", window->GetWaitingMessage().ToStdString().c_str());
+                //printf("CheckAllProcessEnd %s \n", window->GetWaitingMessage().ToStdString().c_str());
                 
 				if (!window->GetProcessEnd())
 				{
                     wxTheApp->Yield();
                     
-                    printf("CheckAllProcessEnd %s not end \n", window->GetWaitingMessage().ToStdString().c_str());
+                    //printf("CheckAllProcessEnd %s not end \n", window->GetWaitingMessage().ToStdString().c_str());
                     
 					const wxString message = window->GetWaitingMessage();
 					mainWindowWaiting->SetTexte(message);
@@ -762,7 +762,7 @@ void CViewerFrame::Exit()
 
 void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
-    printf("void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event) \n");
+    //printf("void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event) \n");
 	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
@@ -822,7 +822,7 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
 				/*
-				printf("Image Suivante \n");
+				//printf("Image Suivante \n");
 				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 				if (mainWindow != nullptr)
 				{
@@ -972,8 +972,8 @@ void CViewerFrame::SetFullscreen()
         //this->Maximize();
         int sizeWeight = wxDisplay().GetGeometry().GetHeight() - (height + top);
         double scaleFactor = GetContentScaleFactor();
-        printf("SetFullscreen left : %d top : %d sizeWeight : %d \n", left, top, sizeWeight);
-        printf("SetFullscreen width : %d height : %d scaleFactor : %f \n", wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight(), scaleFactor);
+        //printf("SetFullscreen left : %d top : %d sizeWeight : %d \n", left, top, sizeWeight);
+        //printf("SetFullscreen width : %d height : %d scaleFactor : %f \n", wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight(), scaleFactor);
         //mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight() - sizeWeight + 5);
         */
       //  mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight()- sizeWeight + 5);

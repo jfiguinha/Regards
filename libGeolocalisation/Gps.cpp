@@ -133,8 +133,8 @@ bool CGps::IsLocalisationAvailable(const wxString& server, const wxString& apiKe
 	}
 
 
-	printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
-	printf("Data : %s \n", data.data);
+	//printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
+	//printf("Data : %s \n", data.data);
 
 	free(data.data);
 
@@ -219,7 +219,7 @@ bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitud
 	
 	try
 	{
-		printf("CGps GeolocalisationGPS \n");
+		//printf("CGps GeolocalisationGPS \n");
 
 
 		this->latitude = latitude;
@@ -252,8 +252,8 @@ bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitud
 		//wxString mystring2(chars, wxConvUTF8);
 		wxString xml(data.data, wxConvUTF8);
 
-		printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
-		printf("Data : %s \n", data.data);
+		//printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
+		//printf("Data : %s \n", data.data);
 
 		geoPluginVector.clear();
 		ImportationGeocodePlugin(xml);

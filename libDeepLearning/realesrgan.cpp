@@ -93,7 +93,7 @@ int RealESRGAN::inference(const cv::Mat& in, ncnn::Mat& out,int w, int h)
 }
 int RealESRGAN::tile_process(const cv::Mat& inimage, cv::Mat& outimage)
 {
-    printf("RealESRGAN::tile_process \n"); 
+    //printf("RealESRGAN::tile_process \n"); 
         
     cv::Mat pad_inimage;
     int img_pad_w = 0, img_pad_h = 0;

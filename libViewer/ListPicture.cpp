@@ -132,18 +132,18 @@ CListPicture::~CListPicture()
 		config->SetSlideFolderPos(positionTab);
 
 
-     printf("~CListPicture() thumbToolbar \n");
+     //printf("~CListPicture() thumbToolbar \n");
     delete(thumbToolbar);
-     printf("~CListPicture() thumbToolbarZoom \n");
+     //printf("~CListPicture() thumbToolbarZoom \n");
     delete(thumbToolbarZoom);
-     printf("~CListPicture() thumbnailFolder \n");
+     //printf("~CListPicture() thumbnailFolder \n");
     delete(thumbnailFolder);
-    printf("~CListPicture() thumbscrollbar \n");
+    //printf("~CListPicture() thumbscrollbar \n");
     delete(thumbscrollbar);
-    printf("~CListPicture() windowManager \n");
+    //printf("~CListPicture() windowManager \n");
 	delete(windowManager);
         
-    printf("~CListPicture() end \n");
+    //printf("~CListPicture() end \n");
 }
 
 int CListPicture::GetThumbnailHeight()

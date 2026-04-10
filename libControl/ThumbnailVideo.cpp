@@ -44,7 +44,7 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 
 void CThumbnailVideo::UpdateThumbnailIcone(wxCommandEvent& event)
 {
-	printf("CMainWindow::UpdateThumbnailIcone \n");
+	//printf("CMainWindow::UpdateThumbnailIcone \n");
 	CThreadLoadingBitmap* threadLoadingBitmap = (CThreadLoadingBitmap*)event.GetClientData();
 	if (threadLoadingBitmap == nullptr)
 		return;

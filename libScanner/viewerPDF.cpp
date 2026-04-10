@@ -232,7 +232,7 @@ void CViewerPDF::SetPosition(const long& timePosition)
 
 void CViewerPDF::UpdateScreenRatio()
 {
-	printf("CViewerPDF::UpdateScreenRatio() \n");
+	//printf("CViewerPDF::UpdateScreenRatio() \n");
 	windowManager->UpdateScreenRatio();
 }
 
@@ -252,7 +252,7 @@ void CViewerPDF::LoadAnimationBitmap(const wxString& filename, const int& numFra
 	oldFilename = filename;
 	oldAnimationPosition = numFrame;
 
-	printf("CViewerPDF::LoadAnimationBitmap %d \n", numFrame);
+	//printf("CViewerPDF::LoadAnimationBitmap %d \n", numFrame);
 	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
 		CLibPicture libPicture;
@@ -366,6 +366,6 @@ int CViewerPDF::GetAnimationPosition()
 
 bool CViewerPDF::GetProcessEnd()
 {
-    printf("CViewerPDF::GetProcessEnd() \n");
+    //printf("CViewerPDF::GetProcessEnd() \n");
 	return true;
 }

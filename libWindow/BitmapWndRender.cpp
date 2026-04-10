@@ -1226,7 +1226,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
     
     auto stop = std::chrono::system_clock::now(); 
 
-    printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
+    //printf("CBitmapWndRender::OnMouseWheel : %d \n", move);
     std::chrono::duration<float> t_diff = stop - start;
     std::chrono::milliseconds t_diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t_diff);
 	switch (move)
@@ -1256,7 +1256,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
             if(t_diff_ms.count() < 100)
                 break;
             
-            printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTURENEXT \n");
+           // printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTURENEXT \n");
             wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
             if(central != nullptr)
             {
@@ -1272,7 +1272,7 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
             if(t_diff_ms.count() < 100)
                 break;
                 
-            printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTUREPREVIOUS \n");
+           // printf("void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event) wxEVENT_PICTUREPREVIOUS \n");
             wxWindow * central = parentRender->GetParent()->FindWindowById(CENTRALVIEWERWINDOWID);
             if(central != nullptr)
             {

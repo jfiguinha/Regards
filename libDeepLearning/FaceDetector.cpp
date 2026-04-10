@@ -128,7 +128,7 @@ static void LoadGFPGAN()
 
 static void LoadColorisationNCNN()
 {
-    printf("LoadColorisation() \n");
+    //printf("LoadColorisation() \n");
     
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
@@ -312,7 +312,7 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible, const bool& cudaComp
 		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
 		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
 
-        printf("CFaceDetector::LoadModel \n");
+       // printf("CFaceDetector::LoadModel \n");
 		detectFace.LoadModel(openCLCompatible, cudaCompatible);
 		detectFacePCN.LoadModel(openCLCompatible, cudaCompatible);
 
@@ -353,7 +353,7 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 
 cv::Mat CFaceDetector::Colorisation(const cv::Mat& Face)
 {
-    printf("CFaceDetector::Colorisation \n");
+   // printf("CFaceDetector::Colorisation \n");
 	LoadColorisationNCNN();
 	//return colorreal_net->colorization(Face);
     return colorreal_net->Execute(Face);

@@ -210,7 +210,7 @@ void CFFmfc::AspectEvent(wxCommandEvent& event)
 
 void CFFmfc::ExitEvent(wxCommandEvent& event)
 {
-    printf("CFFmfc::ExitEvent \n");
+    //printf("CFFmfc::ExitEvent \n");
 	_pimpl->do_exit(cur_stream);
 }
 
@@ -284,7 +284,7 @@ bool CFFmfc::Quit()
     
     
     x265_cleanup();
-	printf("CFFmfc::Quit \n");
+	//printf("CFFmfc::Quit \n");
 	bool isExitNow = false;
 	if (_pimpl->exit_remark == 0)
 	{
@@ -480,7 +480,7 @@ wxString CFFmfc::Getfilename()
 int CFFmfc::SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
-    printf("CFFmfc::SetFile \n");
+    //printf("CFFmfc::SetFile \n");
 
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();

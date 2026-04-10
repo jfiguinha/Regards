@@ -159,7 +159,7 @@ public:
     {
         try
         {
-            printf("MediaInfo OpenFile \n");
+            //printf("MediaInfo OpenFile \n");
             if (wxFile::Exists(fileName))
             {
                 size_t taille = MI.Open(CConvertUtility::ConvertToStdWstring(fileName));

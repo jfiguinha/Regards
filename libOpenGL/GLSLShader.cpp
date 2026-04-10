@@ -36,7 +36,7 @@ bool GLSLShader::check_shader_compile_status(GLuint obj)
 		cout << s.c_str() << endl;
 		return false;
 	}
-	printf("check_shader_compile_status is OK \n");
+	//printf("check_shader_compile_status is OK \n");
 	return true;
 }
 
@@ -91,9 +91,9 @@ bool GLSLShader::CreateShaderProgram(const wxString& nProgramID_i)
 	int length = static_cast<int>(dataProgram.size()) + 1;
 	auto src = new char[length];
 	strcpy(src, CConvertUtility::ConvertToUTF8(dataProgram));
-	printf("Opengl shader : \n");
-	printf(src);
-	printf("Opengl end shader : \n");
+	//printf("Opengl shader : \n");
+	//printf(src);
+	//printf("Opengl end shader : \n");
 	//printf(src);
 
 	glShaderSource(m_hShaderHandle, 1, (const GLcharARB**)&src, &length);

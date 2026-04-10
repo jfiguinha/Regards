@@ -377,7 +377,7 @@ void CCudaFilter::BrightnessAndContrastAuto(cv::cuda::GpuMat& inputData, float c
 		cv::cuda::cvtColor(gpuframe_3channel, inputData, COLOR_YUV2BGR, 4);
 		*/
         
-        printf("Use Cuda Auto Contrast \n");
+        //printf("Use Cuda Auto Contrast \n");
         
         cv::cuda::GpuMat gray;
         int histSize = 256;
@@ -673,14 +673,14 @@ void CCudaFilter::MotionBlurCompute(const vector<double>& kernelMotion, const ve
             _offsets.push_back(_local);
         }
         
-        printf("CCudaFilter::MotionBlurCompute Begin \n");
+        //printf("CCudaFilter::MotionBlurCompute Begin \n");
 		//cv::cuda::cvtColor(inputData, inputData, cv::COLOR_BGR2BGRA);
 		CMotionBlur motionBlur;
 		motionBlur.SetParameter(kernelMotion, _offsets, kernelSize);
 		motionBlur.ApplyEffect(inputData, out);
 
-        printf("CCudaFilter::MotionBlurCompute End width : %d height : %d \n", out.size().width, 
-            out.size().height);
+       // printf("CCudaFilter::MotionBlurCompute End width : %d height : %d \n", out.size().width, 
+       //     out.size().height);
 		//motionBlur(inputData, out, kernelMotion, offsets, kernelSize);
 		out.copyTo(inputData);
         
@@ -1361,8 +1361,8 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		}
         
         
-        printf("Rect : x : %d y : %d width : %d height : %d \n", rectGlobal.x, rectGlobal.y,
-            rectGlobal.width, rectGlobal.height);
+       // printf("Rect : x : %d y : %d width : %d height : %d \n", rectGlobal.x, rectGlobal.y,
+      //      rectGlobal.width, rectGlobal.height);
 
 		//cv::cv::cuda::GpuMat crop;
 		if (rectGlobal.x == 0 && rectGlobal.y == 0 && rectGlobal.width == inputData.size().width && rectGlobal.height == inputData.size().height)
@@ -1420,8 +1420,8 @@ cv::cuda::GpuMat CCudaFilter::Interpolation(const int& widthOut, const int& heig
 		INTER_NEAREST_EXACT = 6,
 		*/
         
-        printf("Resize : width : %d height : %d \n",cvImage.size().width, cvImage.size().height);
-        printf("Resize : width : %d height : %d \n",widthOut, heightOut);
+        //printf("Resize : width : %d height : %d \n",cvImage.size().width, cvImage.size().height);
+       // printf("Resize : width : %d height : %d \n",widthOut, heightOut);
         
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		int superDnn = regardsParam->GetSuperResolutionType();

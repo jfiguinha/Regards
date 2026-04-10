@@ -47,7 +47,7 @@ CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapIn
 
 bool CBitmapInfos::GetProcessEnd()
 {
-    printf("CBitmapInfos::GetProcessEnd() \n");
+   // printf("CBitmapInfos::GetProcessEnd() \n");
 	if (gpsTimer->IsRunning())
 		gpsTimer->Stop();
 

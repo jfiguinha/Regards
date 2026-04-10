@@ -21,10 +21,10 @@ CDraw::~CDraw()
 
 bool CDraw::VerifierValiditerPoint(const wxPoint& pt)
 {
-    printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", pt.x, pt.y);
-    printf("CDraw::VerifierValiditerPoint m_rcAffichage \n");
-    printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", m_rcAffichage.x, m_rcAffichage.y);
-    printf("CDraw::VerifierValiditerPoint width : %d - height : %d \n", m_rcAffichage.width, m_rcAffichage.height);
+   // printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", pt.x, pt.y);
+   // printf("CDraw::VerifierValiditerPoint m_rcAffichage \n");
+  //  printf("CDraw::VerifierValiditerPoint x : %d - y : %d \n", m_rcAffichage.x, m_rcAffichage.y);
+  //  printf("CDraw::VerifierValiditerPoint width : %d - height : %d \n", m_rcAffichage.width, m_rcAffichage.height);
 	if (pt.x < m_rcAffichage.x || (pt.x > (m_rcAffichage.x + m_rcAffichage.width)) || (pt.y > (m_rcAffichage.y + m_rcAffichage.height)) || (pt.y < m_rcAffichage.y))
 		return false;
 
@@ -139,9 +139,9 @@ void CDraw::DessinerCarre(wxDC* deviceContext, const int32_t& iLargeur, const in
 
 void CDraw::SetMaxPosition(const wxRect& m_rcPicture)
 {
-    printf("CDraw::SetMaxPosition m_rcPicture \n");
-    printf("CDraw::SetMaxPosition x : %d - y : %d \n", m_rcPicture.x, m_rcPicture.y);
-    printf("CDraw::SetMaxPosition width : %d - height : %d \n", m_rcPicture.width, m_rcPicture.height);
+   // printf("CDraw::SetMaxPosition m_rcPicture \n");
+   // printf("CDraw::SetMaxPosition x : %d - y : %d \n", m_rcPicture.x, m_rcPicture.y);
+   // printf("CDraw::SetMaxPosition width : %d - height : %d \n", m_rcPicture.width, m_rcPicture.height);
     
 
 	m_rcAffichage = m_rcPicture;

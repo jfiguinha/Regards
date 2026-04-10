@@ -29,7 +29,7 @@ bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPh
 		//Old Criteria
 		int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(listPhotoCriteria.numPhotoId, insertCriteria->type);
 
-		printf("insertCriteria value : %s \n", CConvertUtility::ConvertToUTF8(insertCriteria->value));
+		//printf("insertCriteria value : %s \n", CConvertUtility::ConvertToUTF8(insertCriteria->value));
 
 		insertCriteria->id = sqlCriteria.GetOrInsertCriteriaId(listPhotoCriteria.numCatalog, insertCriteria->type,
 		                                                       insertCriteria->value, insertCriteria->isNew);

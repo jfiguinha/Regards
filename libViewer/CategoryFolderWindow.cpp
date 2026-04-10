@@ -174,7 +174,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	pimpl->refreshTimer->Start();
 
 	
-	printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
+	//printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
 	if (param != nullptr)
 		nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
 
@@ -190,7 +190,7 @@ void CCategoryFolderWindow::OnRefreshFolder(wxCommandEvent& event)
 
 void CCategoryFolderWindow::OnTimerRefresh(wxTimerEvent& event)
 {
-	printf(" CCategoryFolderWindow::OnTimerRefresh %d \n", pimpl->nbGpsFile);
+	//printf(" CCategoryFolderWindow::OnTimerRefresh %d \n", pimpl->nbGpsFile);
 	nbGpsRequest = 0;
 	processIdle = true;
 }
@@ -257,7 +257,7 @@ void CCategoryFolderWindow::init()
 
 void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 {
-	printf("CCategoryFolderWindow::UpdateCriteria() \n");
+	//printf("CCategoryFolderWindow::UpdateCriteria() \n");
 	pimpl->needToSendMessage = need_to_send_message;
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr && treeWindow != nullptr)
@@ -285,7 +285,7 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 
 bool CCategoryFolderWindow::GetProcessEnd()
 {
-     printf("CCategoryFolderWindow::GetProcessEnd() \n");
+     //printf("CCategoryFolderWindow::GetProcessEnd() \n");
      
 	if (pimpl->numProcess > 0)
 		return false;
@@ -318,8 +318,8 @@ void CCategoryFolderWindow::ProcessIdle()
 		//CPhotos photo = sql_insert_file.GetPhotoToProcess();
         CPhotos photo = pimpl->m_photosVector[0];
         
-		printf("CCategoryFolderWindow::ProcessIdle : Nb Photo : %d Path : %s \n", nbPhotos,
-		       CConvertUtility::ConvertToUTF8(photo.GetPath()));
+		//printf("CCategoryFolderWindow::ProcessIdle : Nb Photo : %d Path : %s \n", nbPhotos,
+		 //printf("error CImageVideoThumbnail creation\n");      CConvertUtility::ConvertToUTF8(photo.GetPath()));
 
 		if (photo.GetId() != -1)
 		{
@@ -620,14 +620,14 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 	listCriteriaPhoto.numPhotoId = findPhotoCriteria->numPhoto;
 	listCriteriaPhoto.photoPath = findPhotoCriteria->photoPath;
 
-	printf("FindGPSPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath));
+	//printf("FindGPSPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath));
 
 	fileGeolocalisation.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
 
 	if (fileGeolocalisation.HasGps())
 	{
-		printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
+		//printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		fileGeolocalisation.Geolocalisation(&listCriteriaPhoto);
 		if (listCriteriaPhoto.listCriteria.size() > 0)
 		{
@@ -638,7 +638,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 		else
 		{
 			findPhotoCriteria->isOk = false;
-			printf("Error gps informations \n");
+			//printf("Error gps informations \n");
 		}
 	}
 
@@ -669,13 +669,13 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	listCriteriaPhoto.numPhotoId = findPhotoCriteria->numPhoto;
 	listCriteriaPhoto.photoPath = findPhotoCriteria->photoPath;
 
-	printf("FindPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
+	//printf("FindPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 
 	geoloc.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
 	if (!geoloc.HasGps())
 	{
-		printf("Has not GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
+		//printf("Has not GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		auto insertCriteria = new CInsertCriteria();
 		insertCriteria->type = CATEGORIE_GEO;
 		insertCriteria->value = CLibResource::LoadStringFromResource(L"LBLNOTGEO", 1);
@@ -697,8 +697,8 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 
 	wxString datetime = geoloc.GetDateTimeInfos();
 
-	printf("FindPhotoCriteria %s datetime %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath),
-	       CConvertUtility::ConvertToUTF8(datetime));
+	//printf("FindPhotoCriteria %s datetime %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath),
+	 //      CConvertUtility::ConvertToUTF8(datetime));
 
 	if (datetime.Length() >= 10)
 	{

@@ -49,7 +49,7 @@ void GetHandleMetadata(heif_image_handle * handle, uint8_t * & buffer, unsigned 
             break;
     }
     
-    printf("size : %d local_data : %u \n",size, buffer);
+    //printf("size : %d local_data : %u \n",size, buffer);
 
 }
 
@@ -375,7 +375,7 @@ cv::Mat CHeic::GetPicture(const char * filename, int& orientation, const bool & 
 		//std::cerr << err.get_message() << "\n";
 	}
 
-    printf("Rotation HEIF : %d \n", orientation );
+   // printf("Rotation HEIF : %d \n", orientation );
 
 	return picture;
 }
@@ -439,7 +439,7 @@ cv::Mat CHeic::GetThumbnailPicture(const char * filename, int& orientation)
 			int th_width = heif_image_handle_get_width(thumbnail_handle);
 			int th_height = heif_image_handle_get_height(thumbnail_handle);
 
-			printf("  thumbnail: %dx%d\n", th_width, th_height);
+			//printf("  thumbnail: %dx%d\n", th_width, th_height);
 
 
 			picture = cv::Mat(th_height, th_width, CV_8UC3);

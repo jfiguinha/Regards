@@ -146,7 +146,7 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 	CSqlCriteria sqlCriteria;
 	CSqlPhotoCriteria sqlPhotoCriteria;
 
-	printf("CFileGeolocation Geolocalisation \n");
+	//printf("CFileGeolocation Geolocalisation \n");
 	//Execution de la requête de géolocalisation
 	if (hasGps)
 	{
@@ -155,7 +155,7 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 		{
 			if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
 			{
-				printf("GeolocalisationGPS OK \n");
+				//printf("GeolocalisationGPS OK \n");
 				ImportCountry();
 				GeoPluginVector* geoPluginVector = gps->GetGpsList();
 				for (auto it = geoPluginVector->begin(); it != geoPluginVector->end(); ++it)
@@ -179,12 +179,12 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 					}
 				}
 			}
-			else
-				printf("GeolocalisationGPS FALSE \n");
+			//else
+			//	printf("GeolocalisationGPS FALSE \n");
 		}
 		catch (...)
 		{
-			printf("GeolocalisationGPS CGps * Error \n");
+			//printf("GeolocalisationGPS CGps * Error \n");
 		}
 
 		delete gps;

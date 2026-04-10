@@ -930,7 +930,7 @@ void CThumbnail::RefreshThumbnail(wxCommandEvent& event)
 {
     preprocessisAvailable = true;
     needToRefresh = true;
-    printf("CThumbnail::RefreshThumbnail \n");
+    //printf("CThumbnail::RefreshThumbnail \n");
 }
 
 bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
@@ -947,7 +947,7 @@ bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
             if (window != nullptr)
             {
                 
-                printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
+                //printf("CThumbnail::RenderBitmap preprocessisAvailable : %d preprocess_thumbnail : %d \n", preprocessisAvailable, preprocess_thumbnail);
                 wxString* localName = new wxString(pThumbnailData->GetFilename());
                 wxCommandEvent evt(wxEVENT_ICONETHUMBNAILGENERATION);
                 evt.SetClientData(localName);
@@ -962,7 +962,7 @@ bool CThumbnail::UpdateThumbnail(CIcone *  pBitmapIcone)
 }
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
-   // printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
+   // //printf("CThumbnail::RenderBitmap PreprocessThumbnail localid : %d \n", localid);
     
 	if (pBitmapIcone == nullptr || !pBitmapIcone->GetVisibility())
 		return;
@@ -1430,7 +1430,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
 	int move;
 
-	//printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
+	////printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
 
 	if (event.GetWheelRotation() > 0)
 		move = 0;

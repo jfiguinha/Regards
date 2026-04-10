@@ -1706,7 +1706,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else if (jpegImage.IsOk() && jpegImage.GetWidth() > 0 && jpegImage.GetHeight() > 0)
 		{
-			printf("File to process : %s \n", CConvertUtility::ConvertToUTF8(fileName));
+			//printf("File to process : %s \n", CConvertUtility::ConvertToUTF8(fileName));
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
 			imageLoading->SetPicture(jpegImage);

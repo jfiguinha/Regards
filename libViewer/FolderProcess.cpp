@@ -137,7 +137,7 @@ void CFolderProcess::RefreshFolder(bool & folderChange, int & nbFile)
 
 
 
-	//Test de la validité des répertoires
+	//Test de la validitÃ© des rÃ©pertoires
 	for (CFolderCatalog folderlocal : folderList)
 	{
 		if (!wxDirExists(folderlocal.GetFolderPath()))
@@ -148,7 +148,7 @@ void CFolderProcess::RefreshFolder(bool & folderChange, int & nbFile)
 		}
 	}
 
-	//Test de la validité des fichiers
+	//Test de la validitÃ© des fichiers
 	PhotosVector photoList;
 	CSqlFindPhotos findphotos;
 	findphotos.GetAllPhotos(&photoList);
@@ -205,10 +205,6 @@ void CThumbnailProcess::ProcessThumbnail(wxString filename, int type, long longW
 		pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
 
 	}
-	else
-	{
-		printf("error");
-	}
 
 }
 
@@ -231,7 +227,7 @@ void CThumbnailProcess::LoadPicture(void* param)
 
 	if (!threadLoadingBitmap->bitmapIcone.empty())
 	{
-		//Enregistrement en base de données
+		//Enregistrement en base de donnÃ©es
 		CSqlThumbnail sqlThumbnail;
 		wxFileName file(threadLoadingBitmap->filename);
 		wxULongLong sizeFile = file.GetSize();

@@ -678,7 +678,7 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd* left, int width, int y, int
 			left->rect.y = y;
 			left->rect.width = (width / 4);
 			left->rect.height = left_height;
-			printf("SetWindowLeftSize %d \n", left->rect.width);
+			//printf("SetWindowLeftSize %d \n", left->rect.width);
 		}
 
 		if (left->separationBar != nullptr)
@@ -708,13 +708,13 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd* right, int width, int y, i
     if(width <= 0 || right_height <= 0)
         return;
         
-	printf("SetWindowRightSize width : %d y : %d right_height : %d  \n", width, y, right_height);
+	//printf("SetWindowRightSize width : %d y : %d right_height : %d  \n", width, y, right_height);
 
 	if (!right->fixe)
 	{
 		wxRect rect = right->rect;
-		printf("SetWindowRightSize rect.x : %d rect.y : %d rect.width : %d rect.height : %d \n", rect.x, rect.y,
-		       rect.width, rect.height);
+		//printf("SetWindowRightSize rect.x : %d rect.y : %d rect.width : %d rect.height : %d \n", rect.x, rect.y,
+		 //      rect.width, rect.height);
 		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
 		{
 			//Initialize value 25%
@@ -723,7 +723,7 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd* right, int width, int y, i
 			right->rect.width = (width / 4);
 			right->rect.height = right_height;
 
-			printf("SetWindowRightSize %d \n", right->rect.width);
+			//printf("SetWindowRightSize %d \n", right->rect.width);
 		}
 
 		if (right->separationBar != nullptr)
@@ -828,7 +828,7 @@ void CWindowManager::ResetPosition()
 	int width = GetSize().x;
 	int height = GetSize().y;
 
-	printf("ResetPosition() width : %d height : %d \n", width, height);
+	//printf("ResetPosition() width : %d height : %d \n", width, height);
 
 
 	wxRect rect;
@@ -939,8 +939,8 @@ void CWindowManager::Init_Central()
 		central->rect.width = width;
 		central->rect.height = height;
 
-		printf("central x %d \n", central->rect.x);
-		printf("central width %d \n", central->rect.width);
+		//printf("central x %d \n", central->rect.x);
+		//printf("central width %d \n", central->rect.width);
 	}
 }
 
@@ -955,7 +955,7 @@ void CWindowManager::Init()
 	int width = GetSize().x;
 	int height = GetSize().y;
 
-	printf("Init() width : %d height : %d \n", width, height);
+	//printf("Init() width : %d height : %d \n", width, height);
 
 	if (left != nullptr)
 		if (left->isTop)
@@ -1515,7 +1515,7 @@ void CWindowManager::Resize()
 
 #ifdef _DEBUG
 #ifdef WIN32
-					//wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
+					//ws//printf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
 					//OutputDebugString(temp);
 #endif
 #endif
@@ -1545,7 +1545,7 @@ void CWindowManager::Resize()
 							windowToAdd->separationBar->separationBar->SetSize(windowToAdd->separationBar->rect);
 #ifdef _DEBUG
 #ifdef WIN32
-							//wsprintf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
+							//ws//printf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
 							//OutputDebugString(temp);
 #endif
 #endif

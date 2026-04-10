@@ -275,7 +275,7 @@ void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 
 void CMainWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
-	printf("CMainWindow::UpdateThumbnailIcone \n");
+	//printf("CMainWindow::UpdateThumbnailIcone \n");
 
 
 	nbProcess--;
@@ -349,8 +349,8 @@ void CMainWindow::NewVersionAvailable(void* param)
 	if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
 	if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
 
-	printf("serverVersion %d \n", localServerVersion);
-	printf("localVersion %d \n", localValueVersion);
+	//printf("serverVersion %d \n", localServerVersion);
+	//printf("localVersion %d \n", localValueVersion);
 
 	if (serverVersion != "error" && serverVersion != "")
 	{
@@ -946,7 +946,7 @@ bool CMainWindow::FindPreviousValidFile()
 
 void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder)
 {
-	printf("CMainWindow::UpdateFolderStatic() \n");
+	//printf("CMainWindow::UpdateFolderStatic() \n");
 	//
 	//wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	//wxBusyInfo wait(libelle);
@@ -1444,7 +1444,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-    printf("CMainWindow::GetProcessEnd() \n");
+    //printf("CMainWindow::GetProcessEnd() \n");
     
 	if (nbProcess > 0 || isCheckingFile)
 		return false;
@@ -1549,7 +1549,7 @@ bool CMainWindow::IsFullscreen()
 
 void CMainWindow::InitPictures(wxCommandEvent& event)
 {
-	printf("InitPictures \n");
+	//printf("InitPictures \n");
 	refreshFolder = true;
 	processIdle = true;
 }
@@ -1558,7 +1558,7 @@ void CMainWindow::InitPictures(wxCommandEvent& event)
 void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 {
 	updateCriteria = true;
-	printf("OnFaceInfosUpdate /n");
+	//printf("OnFaceInfosUpdate /n");
 	processIdle = true;
 }
 
