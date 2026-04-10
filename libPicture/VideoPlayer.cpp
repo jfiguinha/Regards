@@ -225,7 +225,7 @@ public:
 	int OpenVideoFile(const char* videoFilename)
 	{
         AVCodec* decoder = nullptr;
-		printf("Filename OpenVideoFile : %s \n", videoFilename);
+		//printf("Filename OpenVideoFile : %s \n", videoFilename);
 
         packet = av_packet_alloc();
         if (!packet)

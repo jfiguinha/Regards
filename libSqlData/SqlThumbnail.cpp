@@ -135,7 +135,7 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 				picture->SetFilename(thumbnail);
 			else
 			{
-				printf("error");
+				//printf("error");
 				DeleteThumbnail(numPhoto);
 			}
 		}

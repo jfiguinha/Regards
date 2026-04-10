@@ -286,7 +286,7 @@ void COpenCLContext::initializeContextFromGL()
     // printf("initializeContextFromGL 5\n");
 #else
 
-     printf("initializeContextFromGL 1\n");
+     //printf("initializeContextFromGL 1\n");
     
 	cl_uint numPlatforms;
 	cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
@@ -337,14 +337,14 @@ void COpenCLContext::initializeContextFromGL()
 		platformCompatible.push_back(i);
 	}
     
-    printf("initializeContextFromGL 2\n");
+    //printf("initializeContextFromGL 2\n");
 
 	for (int j = 0; j < platformCompatible.size(); j++)
 	{
 		int i = platformCompatible[j];
 		std::string platformName = cv::ocl::PlatformInfo(&platforms[i]).name();
         
-        printf("platformName : %i - %s \n", i, platformName.c_str());
+        //printf("platformName : %i - %s \n", i, platformName.c_str());
 
 		clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
 			clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
@@ -403,7 +403,7 @@ void COpenCLContext::initializeContextFromGL()
 #endif
 #endif
 
-        printf("initializeContextFromGL 4\n");
+       // printf("initializeContextFromGL 4\n");
 
 		// query device
 		device = NULL;
@@ -429,7 +429,7 @@ void COpenCLContext::initializeContextFromGL()
 	if (found < 0)
 		CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
         
-     printf("initializeContextFromGL 6\n");
+    // printf("initializeContextFromGL 6\n");
 
 	cl_platform_id platform = platforms[found];
 	platformName = cv::ocl::PlatformInfo(&platform).name();
@@ -437,15 +437,15 @@ void COpenCLContext::initializeContextFromGL()
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
         
-    printf("platformName : %i - %s \n", found, platformName.c_str());
+   // printf("platformName : %i - %s \n", found, platformName.c_str());
         
-    printf("initializeContextFromGL 7\n");
+  //  printf("initializeContextFromGL 7\n");
 	
 	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
     
-    printf("initializeContextFromGL 8\n");
+    //printf("initializeContextFromGL 8\n");
 
 #endif
 }

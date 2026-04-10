@@ -31,7 +31,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 		                          JXL_DEC_COLOR_ENCODING |
 		                          JXL_DEC_FULL_IMAGE))
 	{
-		fprintf(stderr, "JxlDecoderSubscribeEvents failed\n");
+		f//printf(stderr, "JxlDecoderSubscribeEvents failed\n");
 		return false;
 	}
 
@@ -39,7 +39,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 	                                                   JxlResizableParallelRunner,
 	                                                   runner.get()))
 	{
-		fprintf(stderr, "JxlDecoderSetParallelRunner failed\n");
+		f//printf(stderr, "JxlDecoderSetParallelRunner failed\n");
 		return false;
 	}
 
@@ -54,19 +54,19 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 
 		if (status == JXL_DEC_ERROR)
 		{
-			fprintf(stderr, "Decoder error\n");
+			f//printf(stderr, "Decoder error\n");
 			return false;
 		}
 		if (status == JXL_DEC_NEED_MORE_INPUT)
 		{
-			fprintf(stderr, "Error, already provided all input\n");
+			f//printf(stderr, "Error, already provided all input\n");
 			return false;
 		}
 		if (status == JXL_DEC_BASIC_INFO)
 		{
 			if (JXL_DEC_SUCCESS != JxlDecoderGetBasicInfo(dec.get(), &info))
 			{
-				fprintf(stderr, "JxlDecoderGetBasicInfo failed\n");
+				f//printf(stderr, "JxlDecoderGetBasicInfo failed\n");
 				return false;
 			}
 			xsize = info.xsize;
@@ -84,7 +84,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				JxlDecoderGetICCProfileSize(
 					dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
 			{
-				fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+				f//printf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 				return false;
 			}
             
@@ -94,7 +94,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				JXL_COLOR_PROFILE_TARGET_DATA,
 				icc_profile->data(), icc_profile->size()))
 			{
-				fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+				f//printf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
 				return false;
 			}
 #else
@@ -102,7 +102,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				JxlDecoderGetICCProfileSize(
 					dec.get(), &format, JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
 			{
-				fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+				f//printf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 				return false;
 			}
             
@@ -112,7 +112,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 				JXL_COLOR_PROFILE_TARGET_DATA,
 				icc_profile->data(), icc_profile->size()))
 			{
-				fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+				f//printf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
 				return false;
 			}
 #endif
@@ -124,12 +124,12 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 			if (JXL_DEC_SUCCESS !=
 				JxlDecoderImageOutBufferSize(dec.get(), &format, &buffer_size))
 			{
-				fprintf(stderr, "JxlDecoderImageOutBufferSize failed\n");
+				f//printf(stderr, "JxlDecoderImageOutBufferSize failed\n");
 				return false;
 			}
 			if (buffer_size != xsize * ysize * 16)
 			{
-				fprintf(stderr, "Invalid out buffer size %zu %zu\n", buffer_size,
+				f//printf(stderr, "Invalid out buffer size %zu %zu\n", buffer_size,
 				        xsize * ysize * 16);
 				return false;
 			}
@@ -142,7 +142,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 			                                                   matFloat.data,
 			                                                   pixels_buffer_size))
 			{
-				fprintf(stderr, "JxlDecoderSetImageOutBuffer failed\n");
+				f//printf(stderr, "JxlDecoderSetImageOutBuffer failed\n");
 				return false;
 			}
 		}
@@ -160,7 +160,7 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 		}
 		else
 		{
-			fprintf(stderr, "Unknown decoder status\n");
+			f//printf(stderr, "Unknown decoder status\n");
 			return false;
 		}
 	}
@@ -183,7 +183,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 	JxlDecoder* dec = JxlDecoderCreate(nullptr);
 	if (!dec)
 	{
-		fprintf(stderr, "JxlDecoderCreate failed\n");
+		f//printf(stderr, "JxlDecoderCreate failed\n");
 		return nullptr;
 	}
 
@@ -193,7 +193,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 		JxlDecoderSubscribeEvents(
 			dec, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME))
 	{
-		fprintf(stderr, "JxlDecoderSubscribeEvents failed\n");
+		f//printf(stderr, "JxlDecoderSubscribeEvents failed\n");
 		JxlDecoderDestroy(dec);
 		return nullptr;
 	}
@@ -211,7 +211,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 
 		if (status == JXL_DEC_ERROR)
 		{
-			fprintf(stderr, "Decoder error\n");
+			f//printf(stderr, "Decoder error\n");
 			break;
 		}
 		if (status == JXL_DEC_NEED_MORE_INPUT)
@@ -231,7 +231,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 			size_t read_size = fread(data + remaining, 1, chunk_size, file);
 			if (read_size == 0 && feof(file))
 			{
-				fprintf(stderr, "Unexpected EOF\n");
+				f//printf(stderr, "Unexpected EOF\n");
 				break;
 			}
 			data_size = remaining + read_size;
@@ -246,40 +246,40 @@ void* CJxl::DecodeJpegDim(FILE* file)
 		{
 			if (JXL_DEC_SUCCESS != JxlDecoderGetBasicInfo(dec, info))
 			{
-				fprintf(stderr, "JxlDecoderGetBasicInfo failed\n");
+				f//printf(stderr, "JxlDecoderGetBasicInfo failed\n");
 				break;
 			}
 
 			seen_basic_info = 1;
-			printf("dimensions: %ux%u\n", info->xsize, info->ysize);
-			printf("have_container: %d\n", info->have_container);
-			printf("uses_original_profile: %d\n", info->uses_original_profile);
-			printf("bits_per_sample: %d\n", info->bits_per_sample);
+			//printf("dimensions: %ux%u\n", info->xsize, info->ysize);
+			//printf("have_container: %d\n", info->have_container);
+			//printf("uses_original_profile: %d\n", info->uses_original_profile);
+			//printf("bits_per_sample: %d\n", info->bits_per_sample);
 			if (info->exponent_bits_per_sample)
-				printf("float, with exponent_bits_per_sample: %d\n",
+				//printf("float, with exponent_bits_per_sample: %d\n",
 				       info->exponent_bits_per_sample);
 			if (info->intensity_target != 255.f || info->min_nits != 0.f ||
 				info->relative_to_max_display != 0 ||
 				info->relative_to_max_display != 0.f)
 			{
-				printf("intensity_target: %f\n", info->intensity_target);
-				printf("min_nits: %f\n", info->min_nits);
-				printf("relative_to_max_display: %d\n", info->relative_to_max_display);
-				printf("linear_below: %f\n", info->linear_below);
+				////printf("intensity_target: %f\n", info->intensity_target);
+				////printf("min_nits: %f\n", info->min_nits);
+				////printf("relative_to_max_display: %d\n", info->relative_to_max_display);
+				////printf("linear_below: %f\n", info->linear_below);
 			}
-			printf("have_preview: %d\n", info->have_preview);
+			////printf("have_preview: %d\n", info->have_preview);
 			if (info->have_preview)
 			{
-				printf("preview xsize: %u\n", info->preview.xsize);
-				printf("preview ysize: %u\n", info->preview.ysize);
+				////printf("preview xsize: %u\n", info->preview.xsize);
+				////printf("preview ysize: %u\n", info->preview.ysize);
 			}
-			printf("have_animation: %d\n", info->have_animation);
+			////printf("have_animation: %d\n", info->have_animation);
 			if (info->have_animation)
 			{
-				printf("ticks per second (numerator / denominator): %u / %u\n",
+				////printf("ticks per second (numerator / denominator): %u / %u\n",
 				       info->animation.tps_numerator, info->animation.tps_denominator);
-				printf("num_loops: %u\n", info->animation.num_loops);
-				printf("have_timecodes: %d\n", info->animation.have_timecodes);
+				////printf("num_loops: %u\n", info->animation.num_loops);
+				////printf("have_timecodes: %d\n", info->animation.have_timecodes);
 			}
 			const char* const orientation_string[8] = {
 				"Normal", "Flipped horizontally",
@@ -289,14 +289,14 @@ void* CJxl::DecodeJpegDim(FILE* file)
 			};
 			if (info->orientation > 0 && info->orientation < 9)
 			{
-				printf("orientation: %d (%s)\n", info->orientation,
+				////printf("orientation: %d (%s)\n", info->orientation,
 				       orientation_string[info->orientation - 1]);
 			}
 			else
 			{
-				fprintf(stderr, "Invalid orientation\n");
+				f////printf(stderr, "Invalid orientation\n");
 			}
-			printf("num_extra_channels: %d\n", info->num_extra_channels);
+			////printf("num_extra_channels: %d\n", info->num_extra_channels);
 
 			const char* const ec_type_names[7] = {
 				"Alpha", "Depth",
@@ -309,25 +309,25 @@ void* CJxl::DecodeJpegDim(FILE* file)
 				JxlExtraChannelInfo extra;
 				if (JXL_DEC_SUCCESS != JxlDecoderGetExtraChannelInfo(dec, i, &extra))
 				{
-					fprintf(stderr, "JxlDecoderGetExtraChannelInfo failed\n");
+					f////printf(stderr, "JxlDecoderGetExtraChannelInfo failed\n");
 					break;
 				}
-				printf("extra channel %u:\n", i);
-				printf("  type: %s\n",
+				////printf("extra channel %u:\n", i);
+				////printf("  type: %s\n",
 				       (extra.type < 7
 					        ? ec_type_names[extra.type]
 					        : (extra.type == JXL_CHANNEL_OPTIONAL
 						           ? "Unknown but can be ignored"
 						           : "Unknown, please update your libjxl")));
-				printf("  bits_per_sample: %u\n", extra.bits_per_sample);
+				//printf("  bits_per_sample: %u\n", extra.bits_per_sample);
 				if (extra.exponent_bits_per_sample > 0)
 				{
-					printf("  float, with exponent_bits_per_sample: %u\n",
+					//printf("  float, with exponent_bits_per_sample: %u\n",
 					       extra.exponent_bits_per_sample);
 				}
 				if (extra.dim_shift > 0)
 				{
-					printf("  dim_shift: %u (upsampled %ux)\n", extra.dim_shift,
+					//printf("  dim_shift: %u (upsampled %ux)\n", extra.dim_shift,
 					       1 << extra.dim_shift);
 				}
 				if (extra.name_length)
@@ -336,32 +336,32 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					if (JXL_DEC_SUCCESS != JxlDecoderGetExtraChannelName(
 						dec, i, name, extra.name_length + 1))
 					{
-						fprintf(stderr, "JxlDecoderGetExtraChannelName failed\n");
+						f//printf(stderr, "JxlDecoderGetExtraChannelName failed\n");
 						free(name);
 						break;
 					}
 					free(name);
-					printf("  name: %s\n", name);
+					//printf("  name: %s\n", name);
 				}
 				if (extra.type == JXL_CHANNEL_ALPHA)
-					printf("  alpha_premultiplied: %d (%s)\n", extra.alpha_premultiplied,
+					//printf("  alpha_premultiplied: %d (%s)\n", extra.alpha_premultiplied,
 					       extra.alpha_premultiplied
 						       ? "Premultiplied"
 						       : "Non-premultiplied");
 				if (extra.type == JXL_CHANNEL_SPOT_COLOR)
 				{
-					printf("  spot_color: (%f, %f, %f) with opacity %f\n",
+					//printf("  spot_color: (%f, %f, %f) with opacity %f\n",
 					       extra.spot_color[0], extra.spot_color[1], extra.spot_color[2],
 					       extra.spot_color[3]);
 				}
 				if (extra.type == JXL_CHANNEL_CFA)
-					printf("  cfa_channel: %u\n", extra.cfa_channel);
+					//printf("  cfa_channel: %u\n", extra.cfa_channel);
 			}
 		}
 		else if (status == JXL_DEC_COLOR_ENCODING)
 		{
 			JxlPixelFormat format = {4, JXL_TYPE_FLOAT, JXL_LITTLE_ENDIAN, 0};
-			printf("color profile:\n");
+			//printf("color profile:\n");
 
 #ifdef __NEW_JXL__
 			JxlColorEncoding color_encoding;
@@ -377,7 +377,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 				                                   &color_encoding))
 #endif
 			{
-				printf("  format: JPEG XL encoded color profile\n");
+				//printf("  format: JPEG XL encoded color profile\n");
 				const char* const cs_string[4] = {
 					"RGB color", "Grayscale", "XYB",
 					"Unknown"
@@ -397,51 +397,51 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					"Perceptual", "Relative",
 					"Saturation", "Absolute"
 				};
-				printf("  color_space: %d (%s)\n", color_encoding.color_space,
+				//printf("  color_space: %d (%s)\n", color_encoding.color_space,
 				       cs_string[color_encoding.color_space]);
-				printf("  white_point: %d (%s)\n", color_encoding.white_point,
+				//printf("  white_point: %d (%s)\n", color_encoding.white_point,
 				       wp_string[color_encoding.white_point]);
 				if (color_encoding.white_point == JXL_WHITE_POINT_CUSTOM)
 				{
-					printf("  white_point XY: %f %f\n", color_encoding.white_point_xy[0],
+					//printf("  white_point XY: %f %f\n", color_encoding.white_point_xy[0],
 					       color_encoding.white_point_xy[1]);
 				}
 				if (color_encoding.color_space == JXL_COLOR_SPACE_RGB ||
 					color_encoding.color_space == JXL_COLOR_SPACE_UNKNOWN)
 				{
-					printf("  primaries: %d (%s)\n", color_encoding.primaries,
+					//printf("  primaries: %d (%s)\n", color_encoding.primaries,
 					       pr_string[color_encoding.primaries]);
 					if (color_encoding.primaries == JXL_PRIMARIES_CUSTOM)
 					{
-						printf("  red primaries XY: %f %f\n",
+						//printf("  red primaries XY: %f %f\n",
 						       color_encoding.primaries_red_xy[0],
 						       color_encoding.primaries_red_xy[1]);
-						printf("  green primaries XY: %f %f\n",
+						//printf("  green primaries XY: %f %f\n",
 						       color_encoding.primaries_green_xy[0],
 						       color_encoding.primaries_green_xy[1]);
-						printf("  blue primaries XY: %f %f\n",
+						//printf("  blue primaries XY: %f %f\n",
 						       color_encoding.primaries_blue_xy[0],
 						       color_encoding.primaries_blue_xy[1]);
 					}
 				}
 				if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_GAMMA)
 				{
-					printf("  transfer_function: gamma: %f\n", color_encoding.gamma);
+					//printf("  transfer_function: gamma: %f\n", color_encoding.gamma);
 				}
 				else
 				{
-					printf("  transfer_function: %d (%s)\n",
+					//printf("  transfer_function: %d (%s)\n",
 					       color_encoding.transfer_function,
 					       tf_string[color_encoding.transfer_function]);
 				}
-				printf("  rendering_intent: %d (%s)\n", color_encoding.rendering_intent,
+				//printf("  rendering_intent: %d (%s)\n", color_encoding.rendering_intent,
 				       ri_string[color_encoding.rendering_intent]);
 			}
 			else
 			{
 				// The profile is not in JPEG XL encoded form, get as ICC profile
 				// instead.
-				printf("  format: ICC profile\n");
+				//printf("  format: ICC profile\n");
 				size_t profile_size;
 #ifdef __NEW_JXL__
 				if (JXL_DEC_SUCCESS !=
@@ -449,7 +449,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					                            JXL_COLOR_PROFILE_TARGET_ORIGINAL,
 					                            &profile_size))
 				{
-					fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+					f//printf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 					continue;
 				}
 #else
@@ -458,14 +458,14 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					                            JXL_COLOR_PROFILE_TARGET_ORIGINAL,
 					                            &profile_size))
 				{
-					fprintf(stderr, "JxlDecoderGetICCProfileSize failed\n");
+					f//printf(stderr, "JxlDecoderGetICCProfileSize failed\n");
 					continue;
 				}
 #endif
-				printf("  ICC profile size: %zu\n", profile_size);
+				//printf("  ICC profile size: %zu\n", profile_size);
 				if (profile_size < 132)
 				{
-					fprintf(stderr, "ICC profile too small\n");
+					f//printf(stderr, "ICC profile too small\n");
 					continue;
 				}
 				auto profile = static_cast<uint8_t*>(malloc(profile_size));
@@ -475,7 +475,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					                               JXL_COLOR_PROFILE_TARGET_ORIGINAL,
 					                               profile, profile_size))
 				{
-					fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+					f//printf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
 					free(profile);
 					continue;
 				}
@@ -485,14 +485,14 @@ void* CJxl::DecodeJpegDim(FILE* file)
 					                               JXL_COLOR_PROFILE_TARGET_ORIGINAL,
 					                               profile, profile_size))
 				{
-					fprintf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
+					f//printf(stderr, "JxlDecoderGetColorAsICCProfile failed\n");
 					free(profile);
 					continue;
 				}
 #endif
-				printf("  CMM type: \"%.4s\"\n", profile + 4);
-				printf("  color space: \"%.4s\"\n", profile + 16);
-				printf("  rendering intent: %d\n", static_cast<int>(profile[67]));
+				//printf("  CMM type: \"%.4s\"\n", profile + 4);
+				//printf("  color space: \"%.4s\"\n", profile + 16);
+				//printf("  rendering intent: %d\n", static_cast<int>(profile[67]));
 				free(profile);
 			}
 		}
@@ -500,31 +500,31 @@ void* CJxl::DecodeJpegDim(FILE* file)
 		{
 			if (JXL_DEC_SUCCESS != JxlDecoderGetFrameHeader(dec, &frame_header))
 			{
-				fprintf(stderr, "JxlDecoderGetFrameHeader failed\n");
+				f//printf(stderr, "JxlDecoderGetFrameHeader failed\n");
 				break;
 			}
-			printf("frame:\n");
+			//printf("frame:\n");
 			if (frame_header.name_length)
 			{
 				auto name = static_cast<char*>(malloc(frame_header.name_length + 1));
 				if (JXL_DEC_SUCCESS !=
 					JxlDecoderGetFrameName(dec, name, frame_header.name_length + 1))
 				{
-					fprintf(stderr, "JxlDecoderGetFrameName failed\n");
+					f//printf(stderr, "JxlDecoderGetFrameName failed\n");
 					free(name);
 					break;
 				}
 				free(name);
-				printf("  name: %s\n", name);
+				//printf("  name: %s\n", name);
 			}
 			float ms = frame_header.duration * 1000.f *
 				info->animation.tps_denominator / info->animation.tps_numerator;
 			if (info->have_animation)
 			{
-				printf("  Duration: %u ticks (%f ms)\n", frame_header.duration, ms);
+				//printf("  Duration: %u ticks (%f ms)\n", frame_header.duration, ms);
 				if (info->animation.have_timecodes)
 				{
-					printf("  Time code: %X\n", frame_header.timecode);
+					//printf("  Time code: %X\n", frame_header.timecode);
 				}
 			}
 
@@ -532,7 +532,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
 		}
 		else
 		{
-			fprintf(stderr, "Unexpected decoder status\n");
+			f//printf(stderr, "Unexpected decoder status\n");
 			break;
 		}
 	}
@@ -561,7 +561,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	                                                   JxlThreadParallelRunner,
 	                                                   runner.get()))
 	{
-		fprintf(stderr, "JxlEncoderSetParallelRunner failed\n");
+		f//printf(stderr, "JxlEncoderSetParallelRunner failed\n");
 		return false;
 	}
 
@@ -576,7 +576,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	basic_info.uses_original_profile = JXL_FALSE;
 	if (JXL_ENC_SUCCESS != JxlEncoderSetBasicInfo(enc.get(), &basic_info))
 	{
-		fprintf(stderr, "JxlEncoderSetBasicInfo failed\n");
+		f//printf(stderr, "JxlEncoderSetBasicInfo failed\n");
 		return false;
 	}
 
@@ -586,7 +586,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	if (JXL_ENC_SUCCESS !=
 		JxlEncoderSetColorEncoding(enc.get(), &color_encoding))
 	{
-		fprintf(stderr, "JxlEncoderSetColorEncoding failed\n");
+		f//printf(stderr, "JxlEncoderSetColorEncoding failed\n");
 		return false;
 	}
 
@@ -595,7 +595,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 		                        &pixel_format, matFloat.data,
 		                        matFloat.rows * matFloat.cols * 4 * sizeof(float)))
 	{
-		fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
+		f//printf(stderr, "JxlEncoderAddImageFrame failed\n");
 		return false;
 	}
 
@@ -617,7 +617,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	compressed->resize(next_out - compressed->data());
 	if (JXL_ENC_SUCCESS != process_result)
 	{
-		fprintf(stderr, "JxlEncoderProcessOutput failed\n");
+		f//printf(stderr, "JxlEncoderProcessOutput failed\n");
 		return false;
 	}
 
@@ -636,7 +636,7 @@ void CJxl::GetDimensions(const wxString& jxl_filename, int& width, int& height)
 	FILE* file = fopen(CConvertUtility::ConvertToUTF8(jxl_filename), "rb");
 	if (!file)
 	{
-		fprintf(stderr, "Failed to read file %s\n", CConvertUtility::ConvertToUTF8(jxl_filename));
+		f//printf(stderr, "Failed to read file %s\n", CConvertUtility::ConvertToUTF8(jxl_filename));
 		return;
 	}
 
@@ -644,7 +644,7 @@ void CJxl::GetDimensions(const wxString& jxl_filename, int& width, int& height)
 
 	if (info == nullptr)
 	{
-		fprintf(stderr, "Couldn't print basic info\n");
+		f//printf(stderr, "Couldn't print basic info\n");
 		return;
 	}
 	width = info->xsize;

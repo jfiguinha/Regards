@@ -170,10 +170,7 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bo
 		}
 
 	}
-	else
-	{
-		printf("GetVideoFrame error \n");
-	}
+
 
 	
 

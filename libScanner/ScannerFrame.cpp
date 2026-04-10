@@ -336,7 +336,7 @@ wxString CScannerFrame::ScanPage()
 	wxImage image;
 #ifdef __APPLE__
     wxArrayString output;
-    printf("CScannerFrame::ScanPage \n");
+    //printf("CScannerFrame::ScanPage \n");
     //Find all file with Scan
     pdfFile = CFileUtility::GetTempFile("Scan.pdf");
         

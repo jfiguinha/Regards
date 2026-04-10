@@ -145,19 +145,19 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* m_pShader, GLTexture* glTextur
 	}
 	if (!m_pShader->SetParam("top", rect.top))
 	{
-		printf("SetParam colorboost failed \n ");
+		printf("SetParam top failed \n ");
 	}
 	if (!m_pShader->SetParam("left", rect.left))
 	{
-		printf("SetParam colorboost failed \n ");
+		printf("SetParam left failed \n ");
 	}
 	if (!m_pShader->SetParam("right", rect.right))
 	{
-		printf("SetParam colorboost failed \n ");
+		printf("SetParam right failed \n ");
 	}
 	if (!m_pShader->SetParam("bottom", rect.bottom))
 	{
-		printf("SetParam colorboost failed \n ");
+		printf("SetParam bottom failed \n ");
 	}
 	if (!m_pShader->SetIntegerParam("effectenable", effectParameter->effectEnable))
 	{

@@ -19,7 +19,7 @@ public:
 	{
 		this->useOpenCV = false;// useOpenCV;
 		this->filename = fileName;
-		printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
+		//printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if (regardsParam != nullptr)
@@ -316,7 +316,7 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 			}
 			catch (...)
 			{
-				printf("error \n");
+				printf("error CImageVideoThumbnail creation\n");
 			}
 		}
 	}
@@ -350,7 +350,7 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 			}
 			catch (...)
 			{
-				printf("error \n");
+				printf("error CImageVideoThumbnail creation\n");
 			}
 		}
 	}

@@ -104,7 +104,7 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(Mat& dest, const int& nbFrame, 
 	}
 	else
 	{
-		printf("Error");
+		printf("CThumbnailVideoOpenCVExportImpl::CopyPicture Error");
 	}
 	return 0;
 }
