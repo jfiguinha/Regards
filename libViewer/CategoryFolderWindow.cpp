@@ -537,22 +537,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		}
 	}
 
-
-}
-
-
-void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
-{
-    pimpl->muVector.lock();
-    int nbPhotos = pimpl->m_photosVector.size();
-    pimpl->muVector.unlock();
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
-	if (pimpl->startUpdateCriteria&& pimpl->numProcess <= 0 && nbPhotos == 0)
+	if (pimpl->startUpdateCriteria && pimpl->numProcess <= 0 && nbPhotos == 0)
 	{
 		pimpl->startUpdateCriteria = false;
 		//Send Update Folder
@@ -560,6 +545,18 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 		evt.SetExtraLong(-1);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+}
+
+
+void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
+{
+	if (needToRefresh)
+	{
+		this->Refresh();
+		needToRefresh = false;
+	}
+
 
 	if (endProgram)
 	{
