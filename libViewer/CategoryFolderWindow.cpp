@@ -158,7 +158,6 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	}
 	pimpl->refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	Connect(EVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CCategoryFolderWindow::CriteriaPhotoUpdate));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CCategoryFolderWindow::OnIdle));
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CCategoryFolderWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
 	Connect(wxEVENT_REFRESHFOLDER, wxCommandEventHandler(CCategoryFolderWindow::OnRefreshFolder));
@@ -549,14 +548,8 @@ void CCategoryFolderWindow::ProcessIdle()
 }
 
 
-void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
+void CCategoryFolderWindow::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 
 	if (endProgram)
 	{
@@ -564,8 +557,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 			pimpl->refreshTimer->Stop();
 	}
     
-    
-
+ 
 	StartThread();
 }
 

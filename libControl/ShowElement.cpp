@@ -141,7 +141,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowElement::OnIdle));
+
 	Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowElement::OnViewerDblClick));
 	Connect(wxEVT_BITMAPZOOMIN, wxCommandEventHandler(CShowElement::OnViewerZoomIn));
 	Connect(wxEVT_BITMAPZOOMOUT, wxCommandEventHandler(CShowElement::OnViewerZoomOut));
@@ -462,7 +462,7 @@ void CShowElement::TransitionEnd()
 	}
 }
 
-void CShowElement::OnIdle(wxIdleEvent& evt)
+void CShowElement::IdleFunction()
 {
 	if (refreshSlider && videoSlider->IsShown())
 		videoSlider->Refresh();

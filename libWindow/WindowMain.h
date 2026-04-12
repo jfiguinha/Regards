@@ -38,7 +38,7 @@ namespace Regards
 
 			void PushThreadIdleEvent() override
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_IDLETHREADING);
+				wxCommandEvent evt(wxEVENT_IDLETHREADING);
 				GetEventHandler()->AddPendingEvent(evt);
 			}
 
@@ -110,8 +110,7 @@ namespace Regards
 			Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
 			Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowMain::OnResize));
 			Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
-			Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED,
-			        wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
+			Connect(wxEVENT_IDLETHREADING, wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
 			Connect(wxEVT_IDLE, wxIdleEventHandler(CWindowMain::OnIdle));
 		}
 

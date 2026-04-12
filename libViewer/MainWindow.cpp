@@ -104,7 +104,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_INFOS, wxCommandEventHandler(CMainWindow::OnUpdateInfos));
 	Connect(wxEVENT_REFRESHFOLDERLIST, wxCommandEventHandler(CMainWindow::RefreshFolderList));
 	Connect(TOOLBAR_UPDATE_ID, wxCommandEventHandler(CMainWindow::OnShowToolbar));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
+
 
 	Connect(wxEVENT_ENDCHECKFILE, wxCommandEventHandler(CMainWindow::OnEndCheckFile));
 	Connect(wxEVENT_UPDATEFOLDER, wxCommandEventHandler(CMainWindow::OnUpdateFolder));
@@ -1274,14 +1274,8 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
-void CMainWindow::OnIdle(wxIdleEvent& evt)
+void CMainWindow::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 	StartThread();
 }
 

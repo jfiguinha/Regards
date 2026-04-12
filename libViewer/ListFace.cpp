@@ -154,8 +154,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		*/
 	}
 
-
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
@@ -588,14 +586,8 @@ void CListFace::FacialRecognition(void* param)
 	}
 }
 
-void CListFace::OnIdle(wxIdleEvent& evt)
+void CListFace::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 	if (endProgram)
 	{
 		processIdle = false;

@@ -50,7 +50,7 @@ namespace Regards
 		private:
 			static void FacialDetectionRecognition(void* param);
 
-			void OnIdle(wxIdleEvent& evt) override;
+			void IdleFunction() override;
 			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void OnRefreshFolder(wxCommandEvent& event);

@@ -113,7 +113,7 @@ namespace Regards
 			int GetAngleAndFlipFromExif(const int& exif, int& angle, int& flipH, int& flipV);
 
 		private:
-			void OnIdle(wxIdleEvent& evt) override;
+			void IdleFunction() override;
 			void OnViewerDblClick(wxCommandEvent& event);
 			void OnViewerZoomIn(wxCommandEvent& event);
 			void OnViewerZoomOut(wxCommandEvent& event);
