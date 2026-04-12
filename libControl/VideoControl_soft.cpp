@@ -860,11 +860,12 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	}
 
 	
-	if (needToRefresh)
+	if (needToRefresh && pause)
 	{
 		parentRender->Refresh();
 		needToRefresh = false;
 	}
+    needToRefresh = false;
 }
 
 
