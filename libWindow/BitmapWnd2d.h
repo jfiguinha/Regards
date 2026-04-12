@@ -1,10 +1,6 @@
 #pragma once
 #include "WindowMain.h"
-#include <RegardsConfigParam.h>
-#include <theme.h>
 #include "IBitmapWnd.h"
-#include "SliderInterface.h"
-#include <BitmapDisplay.h>
 using namespace std;
 class CRegardsBitmap;
 class CFiltreEffet;

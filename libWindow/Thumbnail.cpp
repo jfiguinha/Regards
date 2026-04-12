@@ -10,7 +10,7 @@
 #include "LibResource.h"
 #include <ThumbnailData.h>
 #include <libPicture.h>
-#include <ThreadLoadingBitmap.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
