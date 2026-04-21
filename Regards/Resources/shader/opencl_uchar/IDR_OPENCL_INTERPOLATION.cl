@@ -136,6 +136,32 @@ inline uint GetColorSrc_short(int x, int y, const __global uint *input, int widt
 	return 0;
 }
 
+/*
+inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
+{
+	// Take nearest two data in current row.
+    float4 p0q0 = GetColorSrc(x, y, input, widthIn, heightIn);
+    float4 p1q0 = GetColorSrc(x + 1, y, input, widthIn, heightIn);
+
+	// Take nearest two data in bottom row.
+    float4 p0q1 = GetColorSrc(x, y + 1, input, widthIn, heightIn);
+    float4 p1q1 = GetColorSrc(x + 1, y + 1, input, widthIn, heightIn);
+
+    float a = KernelFilter_selection(x,type); // Get Interpolation factor for X direction.
+											 // Fraction near to valid data.
+
+	// Interpolation in X direction.
+    float4 pInterp_q0 = mix( p0q0, p1q0, a ); // Interpolates top row in X direction.
+    float4 pInterp_q1 = mix( p0q1, p1q1, a ); // Interpolates bottom row in X direction.
+
+    float b = KernelFilter_selection( y, type ); // Get Interpolation factor for Y direction.
+    float4 sum = mix( pInterp_q0, pInterp_q1, b ); // Interpolate in Y direction.
+	
+	return rgbaFloat4ToUint(sum,1.0f);
+}
+*/
+
+
 inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
 	float4 nDenom = 0.0f;

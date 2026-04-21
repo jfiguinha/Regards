@@ -67,18 +67,18 @@ namespace Regards::Window
 		void UpdateScreenRatio() override;
 
 		void Resize() override;
-		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
-		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
+		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
-        virtual void ProcessVideo() {};
-		
+		virtual void ProcessVideo() {};
+
 	protected:
 
 		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
-		CIcone *  GetIconeById(const int& idPhoto);
+		CIcone* GetIconeById(const int& idPhoto);
 		int GetNumItemById(const int& idPhoto);
 		int GetNbIconSelected();
 
@@ -91,32 +91,27 @@ namespace Regards::Window
 		void TestMaxX();
 		void TestMaxY();
 
-		virtual void DeleteIcone(CIcone *  numSelect)
-		{
-		};
+		virtual void DeleteIcone(CIcone* numSelect)
+		{};
 
 		virtual void OnMouseRelease(const int& x, const int& y)
-		{
-		};
+		{};
 
 		virtual void FindOtherElement(wxDC* dc, const int& x, const int& y)
-		{
-		};
+		{};
 
 		void OpenFileViewer(const wxString& filename);
 		void SetIconeSize(const int& width, const int& height);
 
 		virtual void CreateOrLoadStorageFile()
-		{
-		};
+		{};
 
-		virtual CIcone *  FindElement(const int& xPos, const int& yPos);
+		virtual CIcone* FindElement(const int& xPos, const int& yPos);
 
 		virtual void ResizeThumbnail()
-		{
-		};
+		{};
 
-		void IdleFunction() override;
+		void OnIdle(wxIdleEvent& evt) override;
 		void on_paint(wxPaintEvent& event);
 		void OnMouseMove(wxMouseEvent& event);
 		void OnLButtonDown(wxMouseEvent& event);
@@ -135,7 +130,7 @@ namespace Regards::Window
 		virtual void OnPictureClick(CThumbnailData* data) = 0;
 		void InitScrollingPos();
 		virtual void AfterSetList();
-		void RenderBitmap(wxDC* deviceContext, CIcone *  pBitmapIcone, const int& posLargeur, const int& posHauteur);
+		void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 		void OnAnimation(wxTimerEvent& event);
 		void OnRefreshIconeSelect(wxTimerEvent& event);
 		void OnRefreshIconeActif(wxTimerEvent& event);
@@ -145,16 +140,16 @@ namespace Regards::Window
 		virtual void RenderIcone(wxDC* dc) = 0;
 		virtual void UpdateScroll() = 0;
 		void RefreshIconeVideo(const int& idPhoto);
-		static bool ItemFilenameCompFonct(wxString filename, CIcone *  icone) /* Définit une fonction. */;
+		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
 
 		void ExecuteTimer(const int& numId, wxTimer* refresh);
 
-        void RefreshThumbnail(wxCommandEvent& event);
+		void RefreshThumbnail(wxCommandEvent& event);
 
 
-		CIcone *  GetIconeByPath(const wxString& filepath);
-		static bool ItemCompFonctPath(wxString filepath, CIcone *  icone);
-        bool UpdateThumbnail(CIcone *  pBitmapIcone);
+		CIcone* GetIconeByPath(const wxString& filepath);
+		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
+		bool UpdateThumbnail(CIcone* pBitmapIcone);
 		//------------------------------------------------------------
 		//Variable
 		//------------------------------------------------------------
@@ -163,6 +158,7 @@ namespace Regards::Window
 		void MoveBottom();
 		void MoveRight();
 
+		bool preprocessisAvailable = true;
 		bool isMouseOnWindow = false;
 		bool enableTimer = true;
 		int nbElement = 0;
@@ -252,9 +248,9 @@ namespace Regards::Window
 		bool firstRefresh = true;
 
 		bool needToRefresh = false;
-        bool stopToGetNbElement = false;
+		bool stopToGetNbElement = false;
 		std::vector<wxString> listIconeToGenerate;
 		wxWindowID localid;
-		
+
 	};
 }
