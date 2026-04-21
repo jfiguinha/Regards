@@ -548,8 +548,13 @@ void CCategoryFolderWindow::ProcessIdle()
 }
 
 
-void CCategoryFolderWindow::IdleFunction()
+bool CCategoryFolderWindow::IdleFunction()
 {
+	if (needToRefresh)
+	{
+		this->Refresh();
+		needToRefresh = false;
+	}
 
 	if (endProgram)
 	{
@@ -559,6 +564,8 @@ void CCategoryFolderWindow::IdleFunction()
     
  
 	StartThread();
+
+	return true;
 }
 
 

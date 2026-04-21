@@ -111,7 +111,7 @@ namespace Regards::Window
 		virtual void ResizeThumbnail()
 		{};
 
-		void OnIdle(wxIdleEvent& evt) override;
+		virtual bool IdleFunction() override;
 		void on_paint(wxPaintEvent& event);
 		void OnMouseMove(wxMouseEvent& event);
 		void OnLButtonDown(wxMouseEvent& event);
@@ -158,7 +158,6 @@ namespace Regards::Window
 		void MoveBottom();
 		void MoveRight();
 
-		bool preprocessisAvailable = true;
 		bool isMouseOnWindow = false;
 		bool enableTimer = true;
 		int nbElement = 0;

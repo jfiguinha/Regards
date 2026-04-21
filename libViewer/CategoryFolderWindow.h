@@ -31,7 +31,7 @@ namespace Regards::Viewer
 		void CriteriaPhotoUpdate(wxCommandEvent& event);
 		void RefreshCriteriaSearch(wxCommandEvent& event);
 		void OnRefreshFolder(wxCommandEvent& event);
-		void IdleFunction() override;
+		bool IdleFunction() override;
 		bool GetProcessEnd() override;
 
 		static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);

@@ -43,7 +43,7 @@ namespace Regards::Window
 		void SetWindowWidth(const int& width);
 		virtual int GetWindowWidth();
 
-		virtual void IdleFunction() = 0;
+		virtual bool IdleFunction() = 0;
 
 		virtual void UpdateScreenRatio() = 0;
 

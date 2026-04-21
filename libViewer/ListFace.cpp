@@ -586,14 +586,22 @@ void CListFace::FacialRecognition(void* param)
 	}
 }
 
-void CListFace::IdleFunction()
+bool CListFace::IdleFunction()
 {
+	if (needToRefresh)
+	{
+		this->Refresh();
+		needToRefresh = false;
+	}
+
 	if (endProgram)
 	{
 		processIdle = false;
 	}
 
 	StartThread();
+
+	return true;
 }
 
 bool CListFace::GetProcessEnd()

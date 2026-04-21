@@ -10,14 +10,13 @@
 #include "LibResource.h"
 #include <ThumbnailData.h>
 #include <libPicture.h>
-#include <ThreadLoadingBitmap.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
 class CImageLoadingFormat;
-extern bool preprocessisAvailable;
-extern std::mutex muProcessAvailable;
+
 #define TIMER_LOADING 4
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
@@ -387,7 +386,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	//this->statusbar = statusbar;
 
 	this->themeThumbnail = themeThumbnail;
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CThumbnail::OnIdle));
+
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnail::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnail::OnLButtonDown));
@@ -744,7 +743,6 @@ void CThumbnail::AfterSetList()
 		}
 	}
 
-	preprocessisAvailable = true;
 }
 
 
@@ -789,16 +787,15 @@ void CThumbnail::ExecuteTimer(const int& numId, wxTimer* refresh)
 			refresh->Start(timeActif, TRUE);
 }
 
-void CThumbnail::OnIdle(wxIdleEvent& evt)
+bool CThumbnail::IdleFunction()
 {
 	if (endProgram)
-		return;
+		return true;
 
 	if (needToRefresh)
 	{
 		this->Refresh();
 		needToRefresh = false;
-		preprocessisAvailable = true;
 	}
 
 	if (processIdle)
@@ -818,7 +815,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 		ExecuteTimer(numActifPhotoId, refreshActifTimer);
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
 	}
-
+	return true;
 }
 
 bool CThumbnail::GetProcessEnd()
@@ -928,9 +925,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 void CThumbnail::RefreshThumbnail(wxCommandEvent& event)
 {
-	preprocessisAvailable = true;
 	needToRefresh = true;
-	//printf("CThumbnail::RefreshThumbnail \n");
 }
 
 bool CThumbnail::UpdateThumbnail(CIcone* pBitmapIcone)

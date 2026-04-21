@@ -123,7 +123,7 @@ private:
 		void Resize() override;
 		//void ExportVideo(const wxString& filename);
 		void ProcessIdle() override;
-		void IdleFunction() override;
+		bool IdleFunction() override;
 
 		//------------------------------------------------------
 		void UpdateMessage(wxCommandEvent& event);
