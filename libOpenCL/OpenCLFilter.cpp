@@ -1914,9 +1914,26 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		}
 		else if (method > 7)
 		{
+
+			clock_t start, end;
+			start = clock();
+
 			// Appelle une autre version d'Interpolation pour les méthodes avancées
 			int localMethod = method - 7;
 			cvDestBgra = Interpolation(widthOut, heightOut, cvDestBgra, cvDestBgra.cols, cvDestBgra.rows, localMethod);
+
+			end = clock();
+
+			double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+
+#ifdef WIN32
+			OutputDebugString(L"Time taken by program is : ");
+			OutputDebugString(to_wstring(time_taken).c_str());
+			OutputDebugString(L" sec \n");
+#else
+			cout << "Time taken by program is : " << fixed << time_taken << setprecision(5);
+			cout << " sec " << endl;
+#endif
 		}
 		else if (cvDestBgra.cols != widthOut || cvDestBgra.rows != heightOut)
 		{

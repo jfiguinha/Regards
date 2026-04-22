@@ -139,17 +139,6 @@ inline uint GetColorSrc_short(int x, int y, const __global uint *input, int widt
 /*
 inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
-	int valueA = (int)x;
-	int valueB = (int)y;
-	float realA = x - valueA;
-	float realB = y - valueB;
-
-	float4 fy2 = KernelFilter_selection(realB, type);
-	float4 fy3 = KernelFilter_selection(-(1.0f - realB), type);
-	
-	float4 fx2 = KernelFilter_selection(- realA, type);
-	float4 fx3 = KernelFilter_selection(1.0f - realA, type);
-
 	// Take nearest two data in current row.
     float4 p0q0 = GetColorSrc(x, y, input, widthIn, heightIn);
     float4 p1q0 = GetColorSrc(x + 1, y, input, widthIn, heightIn);
@@ -158,77 +147,53 @@ inline uint KernelExecution(float x, float y, const __global uint *input, int wi
     float4 p0q1 = GetColorSrc(x, y + 1, input, widthIn, heightIn);
     float4 p1q1 = GetColorSrc(x + 1, y + 1, input, widthIn, heightIn);
 
-	// Interpolation in X direction.
-    float4 pInterp_q0 = mix( p0q0, p1q0, fx2); // Interpolates top row in X direction.
-    float4 pInterp_q1 = mix( p0q1, p1q1, fx3); // Interpolates bottom row in X direction.
+    float a = KernelFilter_selection(x,type); // Get Interpolation factor for X direction.
+											 // Fraction near to valid data.
 
-    float4 sum = mix( pInterp_q0, pInterp_q1, fy2 * fy3); // Interpolate in Y direction.
+	// Interpolation in X direction.
+    float4 pInterp_q0 = mix( p0q0, p1q0, a ); // Interpolates top row in X direction.
+    float4 pInterp_q1 = mix( p0q1, p1q1, a ); // Interpolates bottom row in X direction.
+
+    float b = KernelFilter_selection( y, type ); // Get Interpolation factor for Y direction.
+    float4 sum = mix( pInterp_q0, pInterp_q1, b ); // Interpolate in Y direction.
 	
 	return rgbaFloat4ToUint(sum,1.0f);
 }
 */
 
 
-// Helper: Horizontal pass - interpolate across 3 pixels in X direction using mix
-inline float4 FilterHorizontal(float x, int y, const __global uint *input, int widthIn, int heightIn, int type)
-{
-	int valueA = (int)x;
-	float realA = x - valueA;
-
-	float fx0 = KernelFilter_selection(-1.0f - realA, type);
-	float fx1 = KernelFilter_selection(-realA, type);
-	float fx2 = KernelFilter_selection(1.0f - realA, type);
-
-	float fxSum = fx0 + fx1 + fx2;
-	float fxInv = 1.0f / fxSum;
-
-	float4 col0 = GetColorSrc(valueA - 1, y, input, widthIn, heightIn);
-	float4 col1 = GetColorSrc(valueA, y, input, widthIn, heightIn);
-	float4 col2 = GetColorSrc(valueA + 1, y, input, widthIn, heightIn);
-
-	float w0 = fx0 * fxInv;
-	float w1 = fx1 * fxInv;
-	float w2 = fx2 * fxInv;
-
-	float4 mix01 = mix(col0, col1, w1 / (w0 + w1));
-	return mix(mix01, col2, w2 / (w1 + w2));
-}
-
-// Helper: Vertical pass - interpolate across 3 pixels in Y direction using mix
-inline float4 FilterVertical(float4 row0, float4 row1, float4 row2, float y, int type)
-{
-	int valueB = (int)y;
-	float realB = y - valueB;
-
-	float fy0 = KernelFilter_selection(-1.0f - realB, type);
-	float fy1 = KernelFilter_selection(-realB, type);
-	float fy2 = KernelFilter_selection(1.0f - realB, type);
-
-	float fySum = fy0 + fy1 + fy2;
-	float fyInv = 1.0f / fySum;
-
-	float w0 = fy0 * fyInv;
-	float w1 = fy1 * fyInv;
-	float w2 = fy2 * fyInv;
-
-	float4 mix01 = mix(row0, row1, w1 / (w0 + w1));
-	return mix(mix01, row2, w2 / (w1 + w2));
-}
-
-// Two-pass separable filter interpolation with 3x3 kernel support using mix
 inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
+	float4 nDenom = 0.0f;
+	int valueA = (int)x;
 	int valueB = (int)y;
+	float realA = x - valueA;
+	float realB = y - valueB;
+	
+	float4 fy1 = KernelFilter_selection(-(-1.0f - realB), type);
+	float4 fy2 = KernelFilter_selection(realB, type);
+	float4 fy3 = KernelFilter_selection(-(1.0f - realB), type);
+	
+	float4 fx1 = KernelFilter_selection(-1.0f - realA, type);
+	float4 fx2 = KernelFilter_selection(- realA, type);
+	float4 fx3 = KernelFilter_selection(1.0f - realA, type);
+	
+	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
 
-	// Pass 1: Horizontal filtering on 3 rows
-	float4 row0 = FilterHorizontal(x, valueB - 1, input, widthIn, heightIn, type);
-	float4 row1 = FilterHorizontal(x, valueB, input, widthIn, heightIn, type);
-	float4 row2 = FilterHorizontal(x, valueB + 1, input, widthIn, heightIn, type);
+	
+	float4 sum = GetColorSrc(x - 1, y - 1, input, widthIn, heightIn) * (fy1 * fx1);
+	sum += GetColorSrc(x , y - 1, input, widthIn, heightIn) * (fy1 * fx2);
+	sum += GetColorSrc(x + 1, y - 1, input, widthIn, heightIn) * (fy1 * fx3);
+	
+	sum += GetColorSrc(x - 1, y, input, widthIn, heightIn) * (fy2 * fx1);
+	sum += GetColorSrc(x , y, input, widthIn, heightIn) * (fy2 * fx2);
+	sum += GetColorSrc(x + 1, y, input, widthIn, heightIn) * (fy2 * fx3);
 
-	// Pass 2: Vertical filtering using mix
-	float4 result = FilterVertical(row0, row1, row2, y, type);
-
-	return rgbaFloat4ToUint(result, 1.0f);
+	sum += GetColorSrc(x - 1, y + 1, input, widthIn, heightIn) * (fy3 * fx1);
+	sum += GetColorSrc(x , y + 1, input, widthIn, heightIn) * (fy3 * fx2);
+	sum += GetColorSrc(x + 1, y + 1, input, widthIn, heightIn) * (fy3 * fx3);
+	
+    return rgbaFloat4ToUint((sum / nDenom),1.0f);
 }
 
 inline uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y, float left, float top)
@@ -319,11 +284,10 @@ __kernel void Interpolation(__global uint *output, const __global uint *input, i
 			ratioX = (float)widthIn / (float)height;
 			ratioY = (float)heightIn / (float)width;	
 		}
-
+		
 		int position = x + y * widthOut;
 		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, 0, 0);
 	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
 }
 
 __kernel void InterpolationZone(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
@@ -349,7 +313,6 @@ __kernel void InterpolationZone(__global uint *output, const __global uint *inpu
 		int position = x + y * widthOut;
 		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
 	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
 }
 
 
@@ -371,6 +334,5 @@ __kernel void InterpolationDirect(__global uint *output, const __global uint *in
 		else
 			output[position] = KernelExecution(posX, posY, input, widthIn, heightIn, type);
 	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
 }
 
