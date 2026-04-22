@@ -139,6 +139,17 @@ inline uint GetColorSrc_short(int x, int y, const __global uint *input, int widt
 /*
 inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
+	int valueA = (int)x;
+	int valueB = (int)y;
+	float realA = x - valueA;
+	float realB = y - valueB;
+
+	float4 fy2 = KernelFilter_selection(realB, type);
+	float4 fy3 = KernelFilter_selection(-(1.0f - realB), type);
+	
+	float4 fx2 = KernelFilter_selection(- realA, type);
+	float4 fx3 = KernelFilter_selection(1.0f - realA, type);
+
 	// Take nearest two data in current row.
     float4 p0q0 = GetColorSrc(x, y, input, widthIn, heightIn);
     float4 p1q0 = GetColorSrc(x + 1, y, input, widthIn, heightIn);
@@ -147,15 +158,11 @@ inline uint KernelExecution(float x, float y, const __global uint *input, int wi
     float4 p0q1 = GetColorSrc(x, y + 1, input, widthIn, heightIn);
     float4 p1q1 = GetColorSrc(x + 1, y + 1, input, widthIn, heightIn);
 
-    float a = KernelFilter_selection(x,type); // Get Interpolation factor for X direction.
-											 // Fraction near to valid data.
-
 	// Interpolation in X direction.
-    float4 pInterp_q0 = mix( p0q0, p1q0, a ); // Interpolates top row in X direction.
-    float4 pInterp_q1 = mix( p0q1, p1q1, a ); // Interpolates bottom row in X direction.
+    float4 pInterp_q0 = mix( p0q0, p1q0, fx2); // Interpolates top row in X direction.
+    float4 pInterp_q1 = mix( p0q1, p1q1, fx3); // Interpolates bottom row in X direction.
 
-    float b = KernelFilter_selection( y, type ); // Get Interpolation factor for Y direction.
-    float4 sum = mix( pInterp_q0, pInterp_q1, b ); // Interpolate in Y direction.
+    float4 sum = mix( pInterp_q0, pInterp_q1, fy2 * fy3); // Interpolate in Y direction.
 	
 	return rgbaFloat4ToUint(sum,1.0f);
 }
