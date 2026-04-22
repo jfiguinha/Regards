@@ -73,9 +73,8 @@ namespace Regards::Window
 			return "Window waiting : " + to_string(this->GetId());
 		}
 
-		virtual bool IdleFunction() override
+		virtual void IdleFunction() override
 		{
-			return false;
 		}
 
 		virtual void ForceRefresh()

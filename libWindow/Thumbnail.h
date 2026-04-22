@@ -111,7 +111,7 @@ namespace Regards::Window
 		virtual void ResizeThumbnail()
 		{};
 
-		virtual bool IdleFunction() override;
+		virtual void IdleFunction() override;
 		void on_paint(wxPaintEvent& event);
 		void OnMouseMove(wxMouseEvent& event);
 		void OnLButtonDown(wxMouseEvent& event);
@@ -246,7 +246,6 @@ namespace Regards::Window
 		int nbElementInIconeList = 0;
 		bool firstRefresh = true;
 
-		bool needToRefresh = false;
 		bool stopToGetNbElement = false;
 		std::vector<wxString> listIconeToGenerate;
 		wxWindowID localid;

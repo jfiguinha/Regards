@@ -547,7 +547,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 				CIcone *  icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
 				if (icone != nullptr)
 				{
-					bool needToRefresh = false;
+					bool _localneedToRefresh = false;
 					CThumbnailData* pThumbnailData = icone->GetData();
 					if (pThumbnailData->GetFilename() == threadLoadingBitmap->filename && icone !=
 						nullptr
@@ -558,10 +558,10 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 						pThumbnailData->SetIsLoading(false);
 						if (!render)
 						{
-							needToRefresh = true;
+							_localneedToRefresh = true;
 						}
 					}
-					if (needToRefresh)
+					if (_localneedToRefresh)
 						needToRefresh = true;
 				}
 			}

@@ -787,16 +787,10 @@ void CThumbnail::ExecuteTimer(const int& numId, wxTimer* refresh)
 			refresh->Start(timeActif, TRUE);
 }
 
-bool CThumbnail::IdleFunction()
+void CThumbnail::IdleFunction()
 {
 	if (endProgram)
-		return true;
-
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
+		return;
 
 	if (processIdle)
 		StartThread();
@@ -815,7 +809,6 @@ bool CThumbnail::IdleFunction()
 		ExecuteTimer(numActifPhotoId, refreshActifTimer);
 		ExecuteTimer(numSelectPhotoId, refreshSelectTimer);
 	}
-	return true;
 }
 
 bool CThumbnail::GetProcessEnd()

@@ -548,14 +548,8 @@ void CCategoryFolderWindow::ProcessIdle()
 }
 
 
-bool CCategoryFolderWindow::IdleFunction()
+void CCategoryFolderWindow::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 	if (endProgram)
 	{
 		if (pimpl->refreshTimer->IsRunning())
@@ -564,8 +558,6 @@ bool CCategoryFolderWindow::IdleFunction()
     
  
 	StartThread();
-
-	return true;
 }
 
 

@@ -329,12 +329,11 @@ namespace Regards::Window
 		IMouseUpdate* mouseUpdate;
 		CEffectParameter* effectParameter;
 		bool openGLRenderBitmap = true;
-		bool needToRefresh = false;
 		bool endProgram = false;
 		wxWindow* parentRender = nullptr;
 
 		double scale_factor = 1.0f;
-
+		bool needToRefresh = false;
         std::chrono::system_clock::time_point start;
 		int widthOutputOld = 0;
 		int heightOutputOld = 0;

@@ -1274,17 +1274,9 @@ void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
-bool CMainWindow::IdleFunction()
+void CMainWindow::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 	StartThread();
-
-	return true;
 }
 
 

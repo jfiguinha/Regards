@@ -462,20 +462,13 @@ void CShowElement::TransitionEnd()
 	}
 }
 
-bool CShowElement::IdleFunction()
+void CShowElement::IdleFunction()
 {
-	if (needToRefresh)
-	{
-		this->Refresh();
-		needToRefresh = false;
-	}
-
 	if (refreshSlider && videoSlider->IsShown())
 		videoSlider->Refresh();
 
 	refreshSlider = false;
 
-	return true;
 }
 
 //---------------------------------------------------------------------------------------
