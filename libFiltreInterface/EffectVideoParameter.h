@@ -59,7 +59,7 @@ public:
 		SharpenEnable = 1;
 		MedianEnable = 1;
 		ColorBoostEnable = 1;
-		BicubicEnable = 0;
+
 		rotation = 0;
 		showFPS = 0;
 		grayEnable = 0;
@@ -81,8 +81,6 @@ public:
 		denoisingLevel = 4;
 		templateWindowSize = 6;
 		searchWindowSize = 4;
-
-		effectEnable = 0;
 
 		filmgrainenable = 0;
 		filmcolorisation = 0;
@@ -127,8 +125,7 @@ public:
 	int MedianEnable;
 	int denoiseEnable;
 	int ColorBoostEnable;
-	int BicubicEnable;
-	//int   enableOpenCL;
+
 	int rotation;
 	int bandcEnable;
 	int showFPS;

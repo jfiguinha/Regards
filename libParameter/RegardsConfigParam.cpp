@@ -528,7 +528,13 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("effectEnable", to_string(videoEffectParameter->effectEnable)));
+    sectionPosition->append_node(node("autoConstrast", to_string(videoEffectParameter->autoConstrast)));
+	sectionPosition->append_node(node("stabilizeVideo", to_string(videoEffectParameter->stabilizeVideo)));
+	sectionPosition->append_node(node("stabilizeImageBuffere", to_string(videoEffectParameter->stabilizeImageBuffere)));
+	sectionPosition->append_node(node("interpolation", to_string(videoEffectParameter->interpolation)));
+	sectionPosition->append_node(node("interpolationQuality", to_string(videoEffectParameter->interpolationQuality)));
 	sectionPosition->append_node(node("sharpness", to_string(videoEffectParameter->sharpness)));
+    sectionPosition->append_node(node("bandcEnable", to_string(videoEffectParameter->bandcEnable)));
 	sectionPosition->append_node(node("contrast", to_string(videoEffectParameter->contrast)));
 	sectionPosition->append_node(node("brightness", to_string(videoEffectParameter->brightness)));
 	sectionPosition->append_node(node("color_boost_0", to_string(videoEffectParameter->color_boost[0])));
@@ -538,7 +544,6 @@ void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("SharpenEnable", to_string(videoEffectParameter->SharpenEnable)));
 	sectionPosition->append_node(node("MedianEnable", to_string(videoEffectParameter->MedianEnable)));
 	sectionPosition->append_node(node("ColorBoostEnable", to_string(videoEffectParameter->ColorBoostEnable)));
-	sectionPosition->append_node(node("BicubicEnable", to_string(videoEffectParameter->BicubicEnable)));
 	sectionPosition->append_node(node("rotation", to_string(videoEffectParameter->rotation)));
 	sectionPosition->append_node(node("showFPS", to_string(videoEffectParameter->showFPS)));
 	sectionPosition->append_node(node("grayEnable", to_string(videoEffectParameter->grayEnable)));
@@ -556,7 +561,6 @@ void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("filmcolorisation", to_string(videoEffectParameter->filmcolorisation)));
 	sectionPosition->append_node(node("filmEnhance", to_string(videoEffectParameter->filmEnhance)));
 	sectionPosition->append_node(node("ratioSelect", to_string(videoEffectParameter->ratioSelect)));
-	sectionPosition->append_node(node("interpolation", to_string(videoEffectParameter->interpolationQuality)));
 	sectionPosition->append_node(node("subtitleSize", to_string(videoEffectParameter->subtitleSize)));
 	sectionPosition->append_node(node("subtitleRedColor", to_string(videoEffectParameter->subtitleRedColor)));
 	sectionPosition->append_node(node("subtitleGreenColor", to_string(videoEffectParameter->subtitleGreenColor)));
@@ -569,18 +573,36 @@ void CRegardsConfigParam::GetVideoEffectParameter(xml_node<>* position_node)
 {
  	wxString value;
 	wxString nodeName;
-    vector<wxString> listParam = {"effectEnable","sharpness","contrast","brightness","color_boost_0","color_boost_1","color_boost_2","color_boost_3","SharpenEnable","MedianEnable","ColorBoostEnable","BicubicEnable","rotation","showFPS","grayEnable","vhsEnable","sepiaEnable","denoiseEnable","uSigma","uThreshold","uKSigma","openglDenoise","denoisingLevel","templateWindowSize","searchWindowSize","filmgrainenable","filmcolorisation","filmEnhance","ratioSelect","subtitleSize", "subtitleRedColor", "subtitleGreenColor", "subtitleBlueColor" };
+    vector<wxString> listParam = {"effectEnable","autoConstrast", "stabilizeVideo", 
+        "stabilizeImageBuffere", "interpolation", "interpolationQuality","sharpness",
+        "contrast","brightness","color_boost_0","color_boost_1","color_boost_2",
+        "color_boost_3","SharpenEnable","MedianEnable","ColorBoostEnable",
+        "rotation","showFPS","grayEnable","vhsEnable",
+        "sepiaEnable","denoiseEnable","uSigma","uThreshold","uKSigma",
+        "openglDenoise","denoisingLevel","templateWindowSize","searchWindowSize",
+        "filmgrainenable","filmcolorisation","filmEnhance","ratioSelect","subtitleSize", 
+        "subtitleRedColor", "subtitleGreenColor", "subtitleBlueColor", "bandcEnable" };
 	for(int i = 0;i < listParam.size();i++)
     {
         xml_node<>* child_node = position_node->first_node(listParam[i]);
         if (child_node != nullptr)
         {
-            
-            
             if(listParam[i] == "effectEnable")
                 videoEffectParameter->effectEnable = atoi(child_node->value());
+            else if(listParam[i] == "autoConstrast")
+                 videoEffectParameter->autoConstrast = atoi(child_node->value());
+            else if(listParam[i] == "stabilizeVideo")
+                videoEffectParameter->stabilizeVideo = atoi(child_node->value());
+            else if(listParam[i] == "stabilizeImageBuffere")
+                videoEffectParameter->stabilizeImageBuffere = atoi(child_node->value());
+            else if(listParam[i] == "interpolation")
+                videoEffectParameter->interpolation = atoi(child_node->value());
+            else if(listParam[i] == "interpolationQuality")
+                videoEffectParameter->interpolationQuality = atoi(child_node->value());
             else if(listParam[i] == "sharpness")
                 videoEffectParameter->sharpness = atoi(child_node->value());
+            else if(listParam[i] == "bandcEnable")
+                videoEffectParameter->bandcEnable = atoi(child_node->value());
             else if(listParam[i] == "contrast") 
                 videoEffectParameter->contrast = atoi(child_node->value());
             else if(listParam[i] == "brightness") 
@@ -599,8 +621,6 @@ void CRegardsConfigParam::GetVideoEffectParameter(xml_node<>* position_node)
                 videoEffectParameter->MedianEnable = atoi(child_node->value());
             else if(listParam[i] == "ColorBoostEnable") 
                 videoEffectParameter->ColorBoostEnable = atoi(child_node->value());
-            else if(listParam[i] == "BicubicEnable") 
-                videoEffectParameter->BicubicEnable = atoi(child_node->value());
             else if(listParam[i] == "rotation") 
                 videoEffectParameter->rotation = atoi(child_node->value());
             else if(listParam[i] == "showFPS") 
@@ -643,8 +663,6 @@ void CRegardsConfigParam::GetVideoEffectParameter(xml_node<>* position_node)
 				videoEffectParameter->subtitleGreenColor = atoi(child_node->value());
 			else if (listParam[i] == "subtitleBlueColor")
 				videoEffectParameter->subtitleBlueColor = atoi(child_node->value());
-			else if (listParam[i] == "interpolation")
-				videoEffectParameter->interpolationQuality = atoi(child_node->value());
         }
     }
 

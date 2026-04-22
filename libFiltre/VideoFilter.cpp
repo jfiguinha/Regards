@@ -306,10 +306,6 @@ void CVideoFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeEle
 	{
 		videoEffectParameter->filmgrainenable = value;
 	}
-	else if (key == enableBicubicInterpolation)
-	{
-		videoEffectParameter->BicubicEnable = value;
-	}
 	else if (key == enableSepia)
 	{
 		videoEffectParameter->sepiaEnable = value;
