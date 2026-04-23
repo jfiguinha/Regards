@@ -193,8 +193,20 @@ void COpenCLFilter::DetailEnhance(UMat& inputData, const double& sigma_s, const 
 	try
 	{
 		UMat dest;
+
+		if (inputData.channels() == 4)
+		{
+			cvtColor(inputData, dest, COLOR_BGRA2BGR);
+		}
+
 		cv::detailEnhance(inputData, dest, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+
+		if (inputData.channels() == 4)
+		{
+			cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		}
+		else
+			dest.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -209,8 +221,21 @@ void COpenCLFilter::EdgePreservingFilter(UMat& inputData, const int& flags, cons
 	try
 	{
 		UMat dest;
+
+		if (inputData.channels() == 4)
+		{
+			cvtColor(inputData, dest, COLOR_BGRA2BGR);
+		}
+
 		edgePreservingFilter(inputData, dest, flags, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+
+		if (inputData.channels() == 4)
+		{
+			cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		}
+		else
+			dest.copyTo(inputData);
+
 	}
 	catch (Exception& e)
 	{
@@ -224,10 +249,20 @@ void COpenCLFilter::PencilSketch(UMat& inputData, const double& sigma_s, const d
 {
 	try
 	{
+
 		UMat img1;
 		UMat dest;
+
+		if (inputData.channels() == 4)
+			cvtColor(inputData, dest, COLOR_BGRA2BGR);
+
 		pencilSketch(inputData, img1, dest, sigma_s, sigma_r, shade_factor);
-		dest.copyTo(inputData);
+
+		if (inputData.channels() == 4)
+			cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		else
+			dest.copyTo(inputData);
+
 	}
 	catch (Exception& e)
 	{
@@ -242,8 +277,15 @@ void COpenCLFilter::Stylization(UMat& inputData, const double& sigma_s, const do
 	try
 	{
 		UMat dest;
+		if (inputData.channels() == 4)
+			cvtColor(inputData, dest, COLOR_BGRA2BGR);
+
 		stylization(inputData, dest, sigma_s, sigma_r);
-		dest.copyTo(inputData);
+
+		if (inputData.channels() == 4)
+			cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		else
+			dest.copyTo(inputData);
 	}
 	catch (Exception& e)
 	{
@@ -259,8 +301,16 @@ void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int
 	try
 	{
 		UMat dest;
+		if (inputData.channels() == 4)
+			cvtColor(inputData, dest, COLOR_BGRA2BGR);
+
 		bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
-		dest.copyTo(inputData);
+
+		if (inputData.channels() == 4)
+			cvtColor(dest, inputData, COLOR_BGR2BGRA);
+		else
+			dest.copyTo(inputData);
+
 	}
 	catch (Exception& e)
 	{
@@ -497,8 +547,21 @@ void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 
 		UMat dest;
 		UMat inputDataBgra;
-		cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
-		cvtColor(inputData, inputDataBgra, COLOR_BGR2BGRA);
+
+		int nbChannels = inputData.channels();
+		if (inputData.channels() == 3)
+		{
+			cvtColor(inputData, inputDataBgra, COLOR_BGR2BGRA);
+		}
+		else
+		{
+			inputDataBgra = inputData;
+		}
+
+		if (cvDestBgra.channels() == 3)
+		{
+			cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
+		}
 
 		vector<COpenCLParameter*> vecParam;
 		auto clBuffer = static_cast<cl_mem>(inputDataBgra.handle(ACCESS_READ));
@@ -543,7 +606,10 @@ void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 			}
 		}
 
-		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		if (nbChannels == 3)
+			cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		else
+			inputData = dest;
 	}
 	catch (Exception& e)
 	{
@@ -603,7 +669,11 @@ void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 	{
 		UMat dest;
 		UMat cvDestBgra;
-		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+		int nbChannels = inputData.channels();
+		if (inputData.channels() == 3)
+			cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+		else
+			cvDestBgra = inputData;
 
 		vector<COpenCLParameter*> vecParam;
 		auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -640,7 +710,10 @@ void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
 			}
 		}
 
-		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		if (nbChannels == 3)
+			cvtColor(dest, inputData, COLOR_BGRA2BGR);
+		else
+			inputData = dest;
 	}
 	catch (Exception& e)
 	{
@@ -687,7 +760,11 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	
 	UMat dest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	int nbChannels = inputData.channels();
+	if (inputData.channels() == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -751,7 +828,11 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	delete[] kernel;
 	delete[] offsetsMotion;
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 void COpenCLFilter::Emboss(UMat& inputData)
@@ -864,6 +945,7 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 	
 	UMat dest;
 	UMat cvDestBgra;
+	int nbChannels = inputData.channels();
 	if (inputData.channels() == 3)
 		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
 	else
@@ -898,7 +980,10 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
@@ -924,7 +1009,11 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, UMat& inpu
 	
 	UMat dest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	int nbChannels = inputData.channels();
+	if (nbChannels == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -961,7 +1050,10 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, UMat& inpu
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 
@@ -970,7 +1062,11 @@ void COpenCLFilter::LensDistortion(const float& strength, UMat& inputData)
 	
 	UMat dest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	int nbChannels = inputData.channels();
+	if (nbChannels == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	double _strength = static_cast<double>(strength) / 100;
 	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
@@ -1011,7 +1107,10 @@ void COpenCLFilter::LensDistortion(const float& strength, UMat& inputData)
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
@@ -1063,7 +1162,12 @@ void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 	UMat dest;
 	UMat cvDest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+
+	int nbChannels = inputData.channels();
+	if (nbChannels == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -1101,7 +1205,10 @@ void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 void COpenCLFilter::Median(UMat& inputData)
@@ -1124,7 +1231,11 @@ void COpenCLFilter::Noise(UMat& inputData)
 	
 	UMat dest;
 	UMat cvDestBgra;
-	cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	int nbChannels = inputData.channels();
+	if(nbChannels == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -1155,7 +1266,10 @@ void COpenCLFilter::Noise(UMat& inputData)
 		}
 	}
 
-	cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 
@@ -1178,7 +1292,11 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputDa
 	UMat dest;
 	UMat cvDest;
 	UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	int nbChannels = inputData.channels();
+	if (nbChannels == 3)
+		cvtColor(inputData, cvDestBgra, COLOR_BGR2BGRA);
+	else
+		cvDestBgra = inputData;
 
 	vector<COpenCLParameter*> vecParam;
 	auto clBuffer = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
@@ -1221,7 +1339,10 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, UMat& inputDa
 		}
 	}
 
-	cv::cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	if (nbChannels == 3)
+		cvtColor(dest, inputData, COLOR_BGRA2BGR);
+	else
+		inputData = dest;
 }
 
 

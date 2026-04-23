@@ -103,11 +103,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 			local.copyTo(input);
 
 		filename = bitmap->GetFilename();
-		//vector<cv::Mat> channels;
-		//cv::extractChannel(local, alphaChannel, 3);
-		//cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
-		//local.copyTo(input);
-		//delete _bitmap;
+
 		preview = false;
 	}
 }
@@ -782,10 +778,10 @@ int COpenCLEffect::GaussianBlur(const int& radius, const int& boxSize)
 }
 
 void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-                                  int flipH, int flipV, int angle, int ratio)
+                                  int flipH, int flipV, int angle, int ratio, bool bgraOutput)
 {
 	{
-		paramOutput = openclFilter->Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio);
+		paramOutput = openclFilter->Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio, bgraOutput);
 		preview = true;
 	}
 }

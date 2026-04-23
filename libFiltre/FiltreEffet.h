@@ -77,7 +77,7 @@ public:
 	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 
 	void Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH,
-	                   int flipV, int angle, int ratio);
+	                   int flipV, int angle, int ratio, bool bgraOutput = false);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	int LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType, const int& iIntensity,
 	              const int& iColor, const int& iColorIntensity);

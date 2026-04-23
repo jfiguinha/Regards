@@ -40,7 +40,7 @@ public:
 	void SetBitmap(CImageLoadingFormat* bitmap) override;
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius) override;
 	void Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH,
-	                   int flipV, int angle, int ratio) override;
+	                   int flipV, int angle, int ratio, bool bgraOutput = false) override;
 	int LensDistortionFilter(const int& size) override;
 	cv::Mat GetBitmap(const bool& source) override;
 	wxImage GetwxImage() override;

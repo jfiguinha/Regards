@@ -53,7 +53,7 @@ namespace Regards::FiltreEffet
 		                  const int& searchWindowSize) override;
 		int OilPaintingEffect(const int& size, const int& dynRatio) override { return -1; };
 		void Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-		                   int flipH, int flipV, int angle, int ratio) override;
+		                   int flipH, int flipV, int angle, int ratio, bool bgraOutput = false) override;
 		int CartoonifyImage(const int& mode) override { return -1; };
 		int NiveauDeGris() override;
 		int RedEye() override { return -1; };

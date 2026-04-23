@@ -1512,7 +1512,7 @@ Mat CFiltreEffetCPU::Interpolation(const Mat& inputData, const int& widthOut, co
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-                                    int flipH, int flipV, int angle, int ratio)
+                                    int flipH, int flipV, int angle, int ratio, bool bgraOutput)
 {
 	paramOutput = Interpolation(input, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
 	preview = true;
