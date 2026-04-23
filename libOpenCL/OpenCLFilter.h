@@ -8,8 +8,8 @@
 #include <CL/cl.h>
 #endif
 #include <hqdn3d.h>
-#include <GLTexture.h>
-using namespace Regards::OpenGL;
+
+
 
 class CAvirFilterParam;
 class CSuperSampling;
@@ -20,6 +20,12 @@ namespace Regards
 	{
 		class COpenCLProgram;
 
+
+		struct OpenCLMemoryTemp
+		{
+			cl_mem cl_image = nullptr;
+			cv::UMat openclMem;
+		};
 
 		class COpenCLFilter
 		{
@@ -33,7 +39,6 @@ namespace Regards
 				this->isVideo = isVideo;
 			}
 
-			COpenCLProgram* GetProgram(const wxString& numProgram);
 			void Emboss(cv::UMat& inputData);
 
 			void Sharpen(cv::UMat& inputData);
@@ -66,7 +71,7 @@ namespace Regards
 			void Rotate(const wxString& functionName, const int& widthOut, const int& heightOut, const double& angle,
 			            cv::UMat& inputData);
 			cv::UMat Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-			                       cv::UMat& inputData, int flipH, int flipV, int angle, int ratio);
+			                       cv::UMat& inputData, int flipH, int flipV, int angle, int ratio, bool bgraOutput = false);
 			void Fusion(cv::UMat& inputData, const cv::UMat& secondPictureData, const float& pourcentage);
 			void BrightnessAndContrastAuto(cv::UMat& inputData, float clipHistPercent);
 			void BilateralEffect(cv::UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
@@ -95,9 +100,9 @@ namespace Regards
 
 			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
 
-			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, int width, int height, const int& method);
-			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, const int& method, int width, int height, int flipH, int flipV, int angle);
-			cv::UMat Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int width, int height, int flipH, int flipV, int angle);
+			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, int width, int height, const int& method, bool bgraOutput);
+			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, const int& method, int width, int height, int flipH, int flipV, int angle, bool bgraOutput);
+			cv::UMat Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int width, int height, int flipH, int flipV, int angle, bool bgraOutput);
 			
 	
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle,
@@ -110,7 +115,7 @@ namespace Regards
 			int oldheightDenoise = 0;
 			CAvirFilterParam* param = nullptr;
 			bool isVideo = false;
-			cv::UMat cvDestBgra;
+			std::map<wxString, OpenCLMemoryTemp *> openclMemTempMap;
             CSuperSampling * superSampling;
 
 		};

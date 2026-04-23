@@ -1745,7 +1745,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL
 
                 glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
-                 Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
+                Regards::Picture::CPictureArray mat = filtreEffet->GetMatrix();
                 glTexture->SetData(mat);
             }
 

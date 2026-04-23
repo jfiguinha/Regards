@@ -270,6 +270,12 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 	{
 		cv::UMat umatBitmap = bitmap.getUMat();
 
+		if (umatBitmap.channels() == 4)
+		{
+			format = GL_BGRA;
+			dataformat = GL_BGRA;
+		}
+
 		if (pimpl_ == nullptr && openclOpenGLInterop)
 			pimpl_ = new CTextureGLPriv();
 

@@ -1315,36 +1315,75 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (IsSupportOpenCL() && openclEffectYUV != nullptr)
+#ifdef _DEBUG
 		{
-			if (pictureFrame->dst != nullptr)
-			{
-				int _colorSpace = 0;
-				int isLimited = 0;
-				if (colorRange == "Limited")
-					isLimited = 1;
+			using std::chrono::high_resolution_clock;
+			using std::chrono::duration_cast;
+			using std::chrono::duration;
+			using std::chrono::milliseconds;
 
-				if (colorSpace == "BT.601")
-				{
-					_colorSpace = 1;
-				}
-				else if (colorSpace == "BT.709")
-				{
-					_colorSpace = 2;
-				}
-				else if (colorSpace == "BT.2020")
-				{
-					_colorSpace = 3;
-				}
-				openclEffectYUV->SetAVFrame(&videoEffectParameter, pictureFrame->dst, _colorSpace, isLimited);
-			}
-			else if(ApplyVideoEffect())
+			auto t1 = high_resolution_clock::now();
+#endif	
+
+			if (IsSupportOpenCL() && openclEffectYUV != nullptr)
 			{
-				Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(pictureFrame->matFrame);
-				openclEffectYUV->SetMatrix(mat);
+				if (pictureFrame->dst != nullptr)
+				{
+					int _colorSpace = 0;
+					int isLimited = 0;
+					if (colorRange == "Limited")
+						isLimited = 1;
+
+					if (colorSpace == "BT.601")
+					{
+						_colorSpace = 1;
+					}
+					else if (colorSpace == "BT.709")
+					{
+						_colorSpace = 2;
+					}
+					else if (colorSpace == "BT.2020")
+					{
+						_colorSpace = 3;
+					}
+					openclEffectYUV->SetAVFrame(&videoEffectParameter, pictureFrame->dst, _colorSpace, isLimited, true);
+				}
+				else if (ApplyVideoEffect())
+				{
+					Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(pictureFrame->matFrame);
+					openclEffectYUV->SetMatrix(mat);
+				}
 			}
+
+#ifdef _DEBUG
+			auto t2 = high_resolution_clock::now();
+
+			/* Getting number of milliseconds as an integer. */
+			auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+			/* Getting number of milliseconds as a double. */
+			duration<double, std::milli> ms_double = t2 - t1;
+
+
+#ifdef WIN32
+			OutputDebugString(L"Time taken by videoRenderStart is : ");
+			OutputDebugString(to_wstring(ms_int.count()).c_str());
+			OutputDebugString(L" ms \n");
+#else
+			std::cout << "Time taken by videoRenderStart is : " << ms_int.count() << "ms\n";
+#endif
 		}
+#endif
 
+#ifdef _DEBUG
+		{
+			using std::chrono::high_resolution_clock;
+			using std::chrono::duration_cast;
+			using std::chrono::duration;
+			using std::chrono::milliseconds;
+
+			auto t1 = high_resolution_clock::now();
+#endif	
 		if (ApplyVideoEffect() || pictureFrame->dst != nullptr)
 		{
 			int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
@@ -1375,6 +1414,36 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			renderBitmapOpenGL->SetVideoTexture(pictureArray);
 		}
 
+#ifdef _DEBUG
+		auto t2 = high_resolution_clock::now();
+
+		/* Getting number of milliseconds as an integer. */
+		auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+		/* Getting number of milliseconds as a double. */
+		duration<double, std::milli> ms_double = t2 - t1;
+
+
+#ifdef WIN32
+		OutputDebugString(L"Time taken by videoRenderStart part 2 is : ");
+		OutputDebugString(to_wstring(ms_int.count()).c_str());
+		OutputDebugString(L" ms \n");
+#else
+		std::cout << "Time taken by videoRenderStart part 2 is : " << ms_int.count() << "ms\n";
+#endif
+		}
+#endif
+
+#ifdef _DEBUG
+		{
+			using std::chrono::high_resolution_clock;
+			using std::chrono::duration_cast;
+			using std::chrono::duration;
+			using std::chrono::milliseconds;
+
+			auto t1 = high_resolution_clock::now();
+#endif	
+
 		//Render Direct to OpenGL 
 		wxFloatRect floatRect;
 		floatRect.left = 0;
@@ -1404,6 +1473,26 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
         #endif
 			renderOpenGL->Print(0, 1, scale_factor, CConvertUtility::ConvertToUTF8(msgFrame));
 		}
+
+#ifdef _DEBUG
+		auto t2 = high_resolution_clock::now();
+
+		/* Getting number of milliseconds as an integer. */
+		auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+		/* Getting number of milliseconds as a double. */
+		duration<double, std::milli> ms_double = t2 - t1;
+
+
+#ifdef WIN32
+		OutputDebugString(L"Time taken by videoRenderStart part 3 is : ");
+		OutputDebugString(to_wstring(ms_int.count()).c_str());
+		OutputDebugString(L" ms \n");
+#else
+		std::cout << "Time taken by videoRenderStart part 3 is : " << ms_int.count() << "ms\n";
+#endif
+		}
+#endif
 
 		if (videoEffectParameter.enableSubtitle)
 		{
@@ -1468,8 +1557,16 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
     /* Getting number of milliseconds as a double. */
     duration<double, std::milli> ms_double = t2 - t1;
 
+
+#ifdef WIN32
+	OutputDebugString(L"Time taken by CVideoControlSoft::OnPaint3D is : ");
+	OutputDebugString(to_wstring(ms_int.count()).c_str());
+	OutputDebugString(L" ms \n");
+#else
     std::cout << "Video Frame Render Time : " << ms_int.count() << "ms\n";
+#endif
     //std::cout << ms_double.count() << "ms\n";
+
 #endif
 }
 
@@ -2070,7 +2167,7 @@ void CVideoControlSoft::RenderToTexture()
 			filterInterpolation = regardsParam->GetInterpolationType();
 
 		openclEffectYUV->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation,
-					(int)GetZoomRatio() * 100);
+					(int)GetZoomRatio() * 100, true);
 	}
 
 	if ((videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.

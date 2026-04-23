@@ -346,8 +346,22 @@ cv::Mat CFaceDetector::SuperResolution(const cv::Mat& Face)
 {
 	LoadRealESRGAN();
 	cv::Mat img_up;
-	real_net->tile_process(Face, img_up);
-	cv::resize(img_up, img_up, Face.size());
+	if (Face.channels() == 4)
+	{
+		cv::Mat FaceBGR;
+		cv::cvtColor(Face, FaceBGR, cv::COLOR_BGRA2BGR);
+		real_net->tile_process(FaceBGR, img_up);
+		cv::resize(img_up, img_up, Face.size());
+		cv::cvtColor(img_up, img_up, cv::COLOR_BGR2BGRA);
+	}
+	else
+	{
+		
+		real_net->tile_process(Face, img_up);
+		cv::resize(img_up, img_up, Face.size());
+		
+	}
+
 	return img_up;
 }
 
