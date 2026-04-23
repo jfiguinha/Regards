@@ -565,8 +565,6 @@ void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("subtitleRedColor", to_string(videoEffectParameter->subtitleRedColor)));
 	sectionPosition->append_node(node("subtitleGreenColor", to_string(videoEffectParameter->subtitleGreenColor)));
 	sectionPosition->append_node(node("subtitleBlueColor", to_string(videoEffectParameter->subtitleBlueColor)));
-
-	
 }
 
 void CRegardsConfigParam::GetVideoEffectParameter(xml_node<>* position_node)
@@ -665,7 +663,6 @@ void CRegardsConfigParam::GetVideoEffectParameter(xml_node<>* position_node)
 				videoEffectParameter->subtitleBlueColor = atoi(child_node->value());
         }
     }
-
 }
 
 int CRegardsConfigParam::GetDiaporamaTime()
