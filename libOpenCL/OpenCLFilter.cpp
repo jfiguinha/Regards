@@ -1888,7 +1888,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 				cv::UMat src;
 				if(cvDestBgra.channels() == 3)
 					cvtColor(cvDestBgra, src, cv::COLOR_BGR2BGRA);
-				else
+				else if (cvDestBgra.channels() == 4)
 					src = cvDestBgra;
 				avir::CImageResizer ImageResizer(8);
 				avir::CImageResizerVars Vars;
@@ -1931,11 +1931,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 					out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
                 }
 				
-				//out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
-				if (cvDestBgra.channels() == 3)
-					cvtColor(out, cvDestBgra, cv::COLOR_BGRA2BGR);
-				else
-					cvDestBgra = out;
+				cvDestBgra = out;
 
 #ifdef _DEBUG
 				end = clock();
@@ -2039,6 +2035,11 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		if (cvDestBgra.channels() == 3)
 			cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
 
+	}
+	else
+	{
+		if (cvDestBgra.channels() == 4)
+			cvtColor(cvDestBgra, cvDestBgra, COLOR_BGRA2BGR);
 	}
 
 	return cvDestBgra;
