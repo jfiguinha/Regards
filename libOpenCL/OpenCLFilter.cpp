@@ -1886,7 +1886,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 				clock_t start, end;
 				start = clock();
 				cv::UMat src;
-				cvtColor(cvDestBgra, src, cv::COLOR_BGR2BGRA);
+				if(cvDestBgra.channels() == 3)
+					cvtColor(cvDestBgra, src, cv::COLOR_BGR2BGRA);
+				else
+					src = cvDestBgra;
 				avir::CImageResizer ImageResizer(8);
 				avir::CImageResizerVars Vars;
 				Vars.UseSRGBGamma = true;
@@ -1929,8 +1932,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
                 }
 				
 				//out = ImageResizer.resizeImageOpenCL(src, src.cols, src.rows, widthOut, heightOut, 4, 0, param, &Vars);
-					
-                cvtColor(out, cvDestBgra, cv::COLOR_BGRA2BGR);
+				if (cvDestBgra.channels() == 3)
+					cvtColor(out, cvDestBgra, cv::COLOR_BGRA2BGR);
+				else
+					cvDestBgra = out;
 
 #ifdef _DEBUG
 				end = clock();
