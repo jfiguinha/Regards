@@ -2003,9 +2003,10 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 			
 			try
 			{
-				
+#if _DEBUG
 				clock_t start, end;
 				start = clock();
+#endif
 				cv::UMat src;
 				if(cvDestBgra.channels() == 3)
 					cvtColor(cvDestBgra, src, cv::COLOR_BGR2BGRA);
