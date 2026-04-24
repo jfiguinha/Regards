@@ -63,6 +63,7 @@ namespace Regards
 			bool pboSupported = false;
             GLenum dataformat;
 			GLuint pboIds[1];
+			
 		};
 	}
 }

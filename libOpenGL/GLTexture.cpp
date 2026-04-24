@@ -46,6 +46,7 @@ public:
 
 	cl_mem clImage = nullptr;
 	bool isOpenCLCompatible = true;
+	bool isBGRATexture = false;
 	//cl_context context;
 	//cl_command_queue q;
 };
@@ -138,7 +139,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			}
 			else
 			{
-				if (color == "BGRA")
+				if (color == "BGRA" && !isBGRATexture)
 				{
 					cvtColor(u, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 				}
@@ -268,16 +269,22 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
 
 	if(kind == cv::_InputArray::KindFlag::UMAT && openclOpenGLInterop)
 	{
+		if (pimpl_ == nullptr && openclOpenGLInterop)
+			pimpl_ = new CTextureGLPriv();
+
 		cv::UMat umatBitmap = bitmap.getUMat();
 
 		if (umatBitmap.channels() == 4)
 		{
 			format = GL_BGRA;
 			dataformat = GL_BGRA;
+			pimpl_->isBGRATexture = true;
+		}
+		else
+		{
+			pimpl_->isBGRATexture = false;
 		}
 
-		if (pimpl_ == nullptr && openclOpenGLInterop)
-			pimpl_ = new CTextureGLPriv();
 
 		if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 		{
