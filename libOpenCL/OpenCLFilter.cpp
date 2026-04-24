@@ -1861,8 +1861,12 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	//UMat paramSrc(height, width, CV_8UC4);
 
 	// Récupère le buffer OpenCL associé
-	if(memInfo->cl_image == nullptr)
+	if (memInfo->cl_image == nullptr)
+	{
+		memInfo->openclMem.create(height, width, CV_8UC4);
 		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
+	}
+		
 
 	// Exécute le code OpenCL
 	ExecuteOpenCLCode(programName, functionName, vecParam, width, height, memInfo->cl_image);
