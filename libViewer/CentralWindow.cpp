@@ -736,6 +736,24 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
     
 	//return RefreshPicture(filename);
 	int numLocalItem = 0;
+    //Send Infos about Picture
+    //Send Infos about Picture
+    if(wxFileExists(filename))
+    {
+        CLibPicture libPicture;
+        int width = 0;
+        int height = 0;
+        int rotation = 0;
+        libPicture.GetPictureDimensions(filename, width, height, rotation);
+        auto pictureInfos = new CPictureInfosMessage();
+        pictureInfos->filename = filename;
+        pictureInfos->infos = to_string(width) + "x" + to_string(height);
+
+        wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+        wxCommandEvent evt(wxEVENT_INFOS);
+        evt.SetClientData(pictureInfos);
+        mainWindow->GetEventHandler()->AddPendingEvent(evt);
+    }
 
 	if (windowMode == WINDOW_EXPLORER)
 	{
@@ -1000,19 +1018,6 @@ void CCentralWindow::ShowPicture(CBitmapReturn* pictureData, const int& redraw)
 			//SetPicture(pictureData->bitmap, pictureData->isThumbnail);
 			if (pictureData->bitmap != nullptr && pictureData->bitmap->IsOk())
 			{
-				//Send Infos about Picture
-				{
-					auto pictureInfos = new CPictureInfosMessage();
-					pictureInfos->filename = filename;
-					pictureInfos->infos = to_string(pictureData->bitmap->GetWidth()) + "x" + to_string(
-						pictureData->bitmap->GetHeight());
-
-					wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
-					wxCommandEvent evt(wxEVENT_INFOS);
-					evt.SetClientData(pictureInfos);
-					mainWindow->GetEventHandler()->AddPendingEvent(evt);
-				}
-
 				StopAnimation();
 				bool isSetImage = false;
 				isAnimation = false;
