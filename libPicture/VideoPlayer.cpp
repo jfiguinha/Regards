@@ -237,40 +237,20 @@ cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& in
 		if (applyOrientation)
 		{
 			int orientation = pimpl->GetOrientation();
-			if (!invertRotation)
-			{
-				switch (orientation)
-				{
-				case -270:
-				case 90:
-					cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
-					break;
-				case 180:
-					cv::rotate(image, image, cv::ROTATE_180);
-					break;
-				case -90:
-				case 270:
-					cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
-					break;
-				}
-			}
-			else
-			{
-				switch (orientation)
-				{
-				case -270:
-				case 90:
-					cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
-					break;
-				case 180:
-					cv::rotate(image, image, cv::ROTATE_180);
-					break;
-				case -90:
-				case 270:
-					cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
-					break;
-				}
-			}
+            switch (orientation)
+            {
+            case -270:
+            case 90:
+                cv::rotate(image, image, invertRotation ? cv::ROTATE_90_CLOCKWISE : cv::ROTATE_90_COUNTERCLOCKWISE);
+                break;
+            case 180:
+                cv::rotate(image, image, cv::ROTATE_180);
+                break;
+            case -90:
+            case 270:
+                cv::rotate(image, image, invertRotation ? cv::ROTATE_90_COUNTERCLOCKWISE : cv::ROTATE_90_CLOCKWISE);
+                break;
+            }
 
 		}
 
