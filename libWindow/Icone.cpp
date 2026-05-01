@@ -798,6 +798,7 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 
 		}
 	}
+    
 }
 
 //----------------------------------------------------------------------------------

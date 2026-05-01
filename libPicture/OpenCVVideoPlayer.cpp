@@ -145,10 +145,11 @@ int COpenCVVideoPlayer::SeekToPos(const int& sec)
 cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 {
 	cv::Mat frame;
-	*capture >> frame;
+	capture->read(frame);
+    
 	if (!frame.empty())
 	{
-		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+		//cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
 		if (applyOrientation)
 		{
@@ -170,9 +171,5 @@ cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bo
 		}
 
 	}
-
-
-	
-
 	return frame;
 }

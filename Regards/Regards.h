@@ -281,7 +281,7 @@ private:
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
-	
+
 
 	CScannerFrame * framePDF = nullptr;
 	CVideoConverterFrame* frameVideoConverter = nullptr;

@@ -255,6 +255,7 @@ CIcone* CIconeList::GetLastElement()
 
 void CIconeList::EraseThumbnailListWithIcon()
 {
+    printf("CIconeList::EraseThumbnailListWithIcon() \n");
  	for (CIcone* pIcone : pIconeList)
 	{
 		if (pIcone != nullptr)
@@ -268,6 +269,7 @@ void CIconeList::EraseThumbnailListWithIcon()
 
 void CIconeList::EraseThumbnailList()
 {
+    printf("CIconeList::EraseThumbnailList() \n");
 	/*/
 	for (CIcone* pIcone : pIconeList)
 	{

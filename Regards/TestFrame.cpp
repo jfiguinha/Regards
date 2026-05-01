@@ -9,7 +9,9 @@
 #include <LibResource.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <ThumbnailBuffer.h>
 #define TIMER_FPS 0x10001
 
 
@@ -45,6 +47,7 @@ enum
 	ID_WINDOWFOLDER = 18,
 	ID_WINDOWVIEWER = 19,
 	ID_WINDOWPICTURE = 20,
+    ID_OPEN = 21,
 	ID_VIDEO = 1018,
 	ID_AUDIO = 1019,
 	ID_SUBTITLE = 1020,
@@ -70,7 +73,11 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 #endif
 
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_INFOS
+    panelInfosWindow = new CPanelInfosWnd(this, PANELINFOSWNDSCANNERID);
+#endif
+
+#ifdef SHOW_THUMBNAILVIDEO
     viewerTheme->GetThumbnailTheme(&themeVideo);
     thumbnailVideo = new Regards::Viewer::CThumbnailViewerVideo(this, THUMBNAILVIDEOWINDOW, themeVideo, true);
     scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
@@ -78,6 +85,17 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
     scrollVideoWindow->SetPageSize(200);
     scrollVideoWindow->SetLineSize(200);
 #endif
+
+#ifdef SHOW_THUMBNAIL
+    viewerTheme->GetThumbnailTheme(&themeVideo);
+    thumbnail = new Regards::Viewer::CThumbnailViewerPicture(this, THUMBNAILVIEWERPICTURE, themeVideo, true);
+    scrollWindow = new CScrollbarWnd(this, thumbnail, wxID_ANY);
+    scrollWindow->HideVerticalScroll();
+    scrollWindow->SetPageSize(200);
+    scrollWindow->SetLineSize(200);
+	thumbnail->SetNoVScroll(true);
+#endif
+
 	auto menuFile = new wxMenu;
 
 	wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize", 1);
@@ -132,6 +150,7 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
 	menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
 
+    menuFile->Append(ID_OPEN, "&Open", "Open");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 #ifdef WIN32
 	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
@@ -159,20 +178,86 @@ CTestFrame::CTestFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 
 	wxWindow::SetLabel(wxT("Regards Viewer"));
 #ifdef SHOW_VIDEO
-	videoWindow->PlayFirstMovie(false);
+	videoWindow->PlayFirstMovie(true);
 	bitmapWindowRender->Show(true);
 	videoWindow->ShrinkVideo();
 #endif
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_THUMBNAILVIDEO
     thumbnailVideo->Show(true);
     scrollVideoWindow->Show(true);
+#endif
+#ifdef SHOW_THUMBNAIL
+    thumbnail->Show(true);
+    scrollWindow->Show(true);
 #endif
 
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CTestFrame::OnStop), nullptr, this);
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CTestFrame::OnSize));
+    Connect(ID_OPEN, wxEVT_MENU, wxCommandEventHandler(CTestFrame::OnOpenFile));
 
 	stopMovie = new wxTimer(this, wxTIMER_DIAPORAMA);
 }
+
+void CTestFrame::OnOpenFile(wxCommandEvent& event)
+{
+    wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
+
+	wxFileDialog openFileDialog(nullptr, openPicture, lastFolder, "",
+		"*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return; // the user changed idea..
+
+	wxFileName filename(openFileDialog.GetPath());
+	lastFolder = filename.GetPath();
+    
+#ifdef SHOW_INFOS
+    CLibPicture libPicture;
+    bool isThumbnail = false;
+    
+    cout << "Filename : " << openFileDialog.GetPath() << endl;
+    
+    if (libPicture.TestIsVideo(openFileDialog.GetPath()))
+        panelInfosWindow->SetVideoFile(openFileDialog.GetPath());
+    else
+        panelInfosWindow->SetBitmapFile(openFileDialog.GetPath(), isThumbnail);
+
+    panelInfosWindow->Refresh();
+    panelInfosWindow->Update();
+#endif
+
+#ifdef SHOW_THUMBNAIL
+
+	wxArrayString files;
+	wxDir::GetAllFiles(lastFolder, &files, wxEmptyString, wxDIR_FILES);
+    int i = 0;
+    PhotosVector* _pictures = new PhotosVector();
+    for(wxString file : files)
+    {
+		CPhotos _cPhoto;
+        _cPhoto.SetId(i++);
+        _cPhoto.SetPath(file);
+		_cPhoto.SetCreateDate("20201203");
+		_cPhoto.SetGpsInfos("");
+		_pictures->push_back(_cPhoto);
+    }
+
+    CThumbnailBuffer::InitVectorList(_pictures);
+    if(firstTime)
+    {
+        thumbnail->ApplyListeFile(false);
+        firstTime = false;
+    }
+    else
+        thumbnail->ApplyListeFile(true);
+#endif
+
+#ifdef SHOW_VIDEO
+    StopMovie();
+	PlayMovie(openFileDialog.GetPath());
+#endif
+}
+
 
 void CTestFrame::OnStop(wxTimerEvent& event)
 {
@@ -185,7 +270,7 @@ void CTestFrame::OnStop(wxTimerEvent& event)
 
     i++;
 
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_THUMBNAILVIDEO
     thumbnailVideo->EraseThumbnail(1);
     thumbnailVideo->SetFile(filename, 20);
     thumbnailVideo->ProcessVideo();
@@ -205,9 +290,17 @@ void CTestFrame::OnSize(wxSizeEvent& event)
 	bitmapWindowRender->SetSize(0, 0, _width, _height);
 	bitmapWindowRender->Refresh();
 #endif
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_THUMBNAILVIDEO
 	scrollVideoWindow->SetSize(0, 0, _width, _height);
 	scrollVideoWindow->Refresh();
+#endif
+#ifdef SHOW_THUMBNAIL
+	scrollWindow->SetSize(0, 0, _width, _height);
+	scrollWindow->Refresh();
+#endif
+#ifdef SHOW_INFOS
+	panelInfosWindow->SetSize(0, 0, _width, _height);
+	panelInfosWindow->Refresh();
 #endif
 }
 
@@ -217,11 +310,11 @@ void CTestFrame::PlayMovie(const wxString& openfile)
 #ifdef SHOW_VIDEO
 	videoWindow->PlayMovie(openfile, true);
 #endif
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_THUMBNAILVIDEO
     thumbnailVideo->SetFile(openfile, 20);
 #endif
     filename = openfile;
-    stopMovie->StartOnce(10000);
+    //stopMovie->StartOnce(10000);
 }
 
 void CTestFrame::StopMovie()
@@ -240,11 +333,21 @@ CTestFrame::~CTestFrame()
 	if (bitmapWindowRender != nullptr)
 		delete(bitmapWindowRender);
 #endif
-#ifdef SHOW_THUMBNAIL
+#ifdef SHOW_THUMBNAILVIDEO
 	if (thumbnailVideo != nullptr)
 		delete(thumbnailVideo);
 
 	if (scrollVideoWindow != nullptr)
 		delete(scrollVideoWindow);
+#endif
+#ifdef SHOW_THUMBNAIL
+	if (thumbnail != nullptr)
+		delete(thumbnail);
+
+	if (scrollWindow != nullptr)
+		delete(scrollWindow);
+#endif
+#ifdef SHOW_INFOS
+    delete panelInfosWindow;
 #endif
 }

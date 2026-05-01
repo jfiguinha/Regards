@@ -546,6 +546,16 @@ bool MyApp::OnInit()
 		frameVideoConverter->Show(true);
 		frameVideoConverter->ExportVideo(fileToOpen);
 	}
+	if(appName == "RegardsTest")
+	{
+		wxDisplay display;
+		wxRect screen = display.GetClientArea();
+		testFrame = new CTestFrame("RegardsTest", wxDefaultPosition, wxSize(50,50));
+		testFrame->Centre(wxBOTH);
+		testFrame->SetFocus();  // focus on my window
+		testFrame->Raise();  // bring window to front
+		testFrame->Show(true);
+	}
 	else if(appName == "RegardsPDF")
 	{
 		wxDisplay display;

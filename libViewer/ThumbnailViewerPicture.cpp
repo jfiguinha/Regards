@@ -8,6 +8,8 @@
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
+#define TEST
+
 
 std::mutex CThumbnailViewerPicture::localmu;
 
@@ -46,6 +48,53 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 
 void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 {
+#ifdef TEST
+	iconeList->EraseThumbnailListWithIcon();
+	int size = CThumbnailBuffer::GetVectorSize();
+	int iconWidth = themeThumbnail.themeIcone.GetWidth();
+
+
+	tbb::parallel_for(0, size, 1, [=](int i)
+		{
+			try
+			{
+				CPhotos photo = CThumbnailBuffer::GetVectorValue(i);
+
+				wxString filename = photo.GetPath();
+				auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
+				thumbnailData->SetNumPhotoId(photo.GetId());
+				thumbnailData->SetNumElement(i);
+
+				auto pBitmapIcone = new CIcone();
+				pBitmapIcone->SetNumElement(i);
+				pBitmapIcone->SetData(thumbnailData);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(i * iconWidth, 0);
+				pBitmapIcone->SetFilename(filename);
+				iconeList->AddElement(pBitmapIcone);
+			}
+			catch (const std::exception& e)
+			{
+				std::cerr << "Error creating icon at index " << i << ": " << e.what() << std::endl;
+			}
+		});
+
+	iconeList->SortByFilename();
+
+	for (int i = 0; i < size; i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		if (icone != nullptr)
+		{
+			icone->SetNumElement(i);
+			auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+			if (data != nullptr)
+			{
+				data->SetNumElement(i);
+			}
+		}
+	}
+#else
 	//iconeList->EraseThumbnailListWithIcon();
 
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
@@ -136,6 +185,7 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 		});
 
 	nbElementInIconeList = iconeList->GetNbElement();
+#endif
 }
 
 

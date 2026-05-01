@@ -56,7 +56,10 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 	if (videoCaptureCV != nullptr)
 		delete videoCaptureCV;
         
-   // printf("CThumbnailDataSQL delete \n");
+    printf("CThumbnailDataSQL delete \n");
+    
+    frameOut.release();
+    cvImg.release();
 }
 
 int CThumbnailDataSQL::GetNbFrame()
@@ -85,7 +88,7 @@ bool CThumbnailDataSQL::TestBitmap()
 	CSqlThumbnail sqlThumbnail;
 	wxFileName file(filename);
 	wxULongLong sizeFile = file.GetSize();
-	return sqlThumbnail.TestThumbnail(filename.Clone(), sizeFile.ToString());
+	return sqlThumbnail.TestThumbnail(filename, sizeFile.ToString());
 }
 
 cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
@@ -113,7 +116,7 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	{
 		
 		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
-		frameOut = sqlThumbnail.GetThumbnail(filename.Clone(), isDefault);
+		frameOut = sqlThumbnail.GetThumbnail(filename, isDefault);
 		if (isDefault)
 			frameOut = GetDefaultPicture();
 	}
