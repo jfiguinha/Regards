@@ -39,6 +39,9 @@
     <ClInclude Include="..\Regards\openexr_3\half.h">
       <Filter>OpenExr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Regards\TestFrame.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration.xrc">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Regards\TestFrame.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
