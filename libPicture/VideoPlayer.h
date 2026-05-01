@@ -29,14 +29,18 @@ namespace Regards
 			int GetTotalFrame() override;
 			int GetWidth() override;
 			int GetHeight() override;
-
+			bool SupportThumbnail() override
+			{
+				return true;
+			}
 			bool IsOk() override;
 
 			void GetAspectRatio(int& ascpectNominator, int& ascpectDenominator) override;
 
 			int GetOrientation() override;
 			cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool & invertRotation = true) override;
-			 AspectRatio GetAspectRatio() override;
+			cv::Mat GetVideoThumbnailFrame(const int& thumbnailWidth, const int& thumbnailHeight) override;
+			AspectRatio GetAspectRatio() override;
 
 		private:
 			CVideoPlayerPimpl* pimpl;

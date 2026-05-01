@@ -139,6 +139,9 @@
     <ClCompile Include="PictureArray.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
+    <ClCompile Include="moviedecoder.cpp">
+      <Filter>ThumbnailVideoGenerator\thumbnailgenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -309,6 +312,9 @@
     <ClInclude Include="PictureArray.h">
       <Filter>datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="moviedecoder.h">
+      <Filter>ThumbnailVideoGenerator\thumbnailgenerator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -352,6 +358,9 @@
     </Filter>
     <Filter Include="avif">
       <UniqueIdentifier>{c1d69a5c-7064-4351-8906-7564d3a42ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThumbnailVideoGenerator\thumbnailgenerator">
+      <UniqueIdentifier>{3e5d9ba8-56e8-4d3e-976e-26a5ba6dfdf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

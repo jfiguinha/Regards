@@ -28,7 +28,10 @@ namespace Regards
 			int GetTotalFrame() override;
 			int GetWidth() override;
 			int GetHeight() override; 
-            
+			bool SupportThumbnail() override
+			{
+				return false;
+			}
             AspectRatio GetAspectRatio() override;
 
 			bool IsOk() override;
@@ -37,7 +40,7 @@ namespace Regards
 
 			int GetOrientation() override;
 			cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool& invertRotation = true) override;
-			
+			cv::Mat GetVideoThumbnailFrame(const int& thumbnailWidth, const int& thumbnailHeight) override;
 
 		private:
 

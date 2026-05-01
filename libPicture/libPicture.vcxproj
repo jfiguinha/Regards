@@ -860,6 +860,7 @@
     <ClInclude Include="MediaInfo.h" />
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="MetadataExiv2.h" />
+    <ClInclude Include="moviedecoder.h" />
     <ClInclude Include="OpenCVVideoPlayer.h" />
     <ClInclude Include="PDFOption.h" />
     <ClInclude Include="pfm.h" />
@@ -923,6 +924,7 @@
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="MediaInfo.cpp" />
     <ClCompile Include="MetadataExiv2.cpp" />
+    <ClCompile Include="moviedecoder.cpp" />
     <ClCompile Include="OpenCVVideoPlayer.cpp" />
     <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="pfm.cpp" />

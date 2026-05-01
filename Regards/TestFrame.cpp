@@ -256,6 +256,12 @@ void CTestFrame::OnOpenFile(wxCommandEvent& event)
     StopMovie();
 	PlayMovie(openFileDialog.GetPath());
 #endif
+
+#ifdef SHOW_THUMBNAILVIDEO
+	thumbnailVideo->EraseThumbnail(1);
+	thumbnailVideo->SetFile(openFileDialog.GetPath(), 20);
+	thumbnailVideo->ProcessVideo();
+#endif    
 }
 
 

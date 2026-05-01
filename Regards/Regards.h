@@ -71,6 +71,15 @@ extern "C" {
 #endif
 }
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavfilter/avfilter.h>
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
+#include <libavformat/avformat.h>
+#include <libavutil/display.h>
+}
+
 #define YUV       0
 #define YCBCR     1
 #define OPP       2
@@ -178,6 +187,7 @@ public:
 	MyApp(
 	)
 	{
+
 		logNo = new wxLogNull();
 		//Init x11
 		regardsParam = nullptr;

@@ -142,6 +142,11 @@ int COpenCVVideoPlayer::SeekToPos(const int& sec)
 	return 0;
 }
 
+cv::Mat COpenCVVideoPlayer::GetVideoThumbnailFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+{
+	return cv::Mat();
+}
+
 cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 {
 	cv::Mat frame;

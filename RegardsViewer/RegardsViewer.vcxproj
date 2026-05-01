@@ -1252,6 +1252,7 @@ XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(
     <ClInclude Include="..\Regards\openexr_3\half.h" />
     <ClInclude Include="..\Regards\Regards.h" />
     <ClInclude Include="..\Regards\SqlInit.h" />
+    <ClInclude Include="..\Regards\TestFrame.h" />
     <ClInclude Include="..\Regards\toFloat.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -1393,6 +1394,7 @@ XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(
     <ClCompile Include="..\Regards\Regards.cpp">
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
     </ClCompile>
+    <ClCompile Include="..\Regards\TestFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc" />

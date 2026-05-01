@@ -8,7 +8,7 @@
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
-#define TEST
+//#define TEST
 
 
 std::mutex CThumbnailViewerPicture::localmu;

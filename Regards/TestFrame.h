@@ -11,7 +11,7 @@ using namespace Regards::Video;
 using namespace Regards::Viewer;
 class CVideoControlSoft;
 
-#define SHOW_THUMBNAIL
+#define SHOW_THUMBNAILVIDEO
 
 namespace Regards
 {
