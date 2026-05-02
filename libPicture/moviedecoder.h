@@ -88,6 +88,7 @@ namespace Regards
             bool m_UseEmbeddedData;
             bool initFilter = false;
 			bool isNextEmpty = false;
+            std::string scaleOld = "";
         };
 
     }

@@ -538,6 +538,16 @@ cv::Mat MovieDecoder::getScaledVideoFrame(const std::string& scaledSize, bool ma
 		return cv::Mat();
 
 	cv::Mat videoFrame;
+    
+    if(scaleOld != scaledSize)
+    {
+        initFilter = false;
+        scaleOld = scaledSize;
+        if (m_pFilterGraph) {
+            avfilter_graph_free(&m_pFilterGraph);
+        }
+    }
+    
     if(!initFilter)
         initializeFilterGraph(m_pFormatContext->streams[m_VideoStream]->time_base, scaledSize, maintainAspectRatio);
 
