@@ -61,7 +61,7 @@ void CThumbnailVideo::UpdateThumbnailIcone(wxCommandEvent& event)
 	delete threadLoadingBitmap;
     
     
-
+    needToRefresh = true;
 		
 }
 
@@ -381,7 +381,7 @@ void CThumbnailVideo::UpdateVideoThumbnail(const wxString& videoFile)
 	else
 		process_end = true;
 
-
+    needToRefresh = true;
 }
 
 void CThumbnailVideo::LoadVideoThumbnail(void * param)
