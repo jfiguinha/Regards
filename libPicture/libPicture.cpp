@@ -1534,12 +1534,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 			{
 				bool isFind = false;
 				CVideoThumb* thumbnail = new CVideoThumb(szFileName);
-				vector<CImageVideoThumbnail*> listVideo;
-				listVideo = thumbnail->GetVideoListFrame(widthThumbnail, heightThumbnail);
-				for (CImageVideoThumbnail* cxVideo : listVideo)
-				{
-					listThumbnail.push_back(cxVideo);
-				}
+				thumbnail->GetVideoListFrame(listThumbnail, widthThumbnail, heightThumbnail);
 				delete thumbnail;
 				break;
 			}
@@ -2615,29 +2610,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case MOV:
 		{
 			CMediaInfo::GetVideoDimensions(fileName, width, height);
-			/*
-			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			bool isFind = false;
-			CVideoThumb* thumbnail = nullptr;
-			muMovie.lock();
-			std::map<wxString, Regards::Video::CVideoThumb*>::iterator it;
-			it = movieList.find(fileName);
-			if (it != movieList.end())
-			{
-				thumbnail = movieList[fileName];
-				thumbnail->GetVideoDimensions(width, height);
-				isFind = true;
-			}
-			muMovie.unlock();
-			if (!isFind)
-			{
-				thumbnail = new CVideoThumb(fileName, false);
-				muMovie.lock();
-				movieList[fileName] = thumbnail;
-				thumbnail->GetVideoDimensions(width, height);
-				muMovie.unlock();
-			}
-			*/
 		}
 		break;
 #ifdef LIBHEIC

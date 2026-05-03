@@ -287,9 +287,9 @@ int64_t CVideoThumb::GetMovieDuration()
 	return pimpl->m_videoMovieDuration;
 }
 
-vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail)
+void CVideoThumb::GetVideoListFrame(vector<CImageVideoThumbnail*> & listPicture, const int& widthThumbnail, const int& heightThumbnail)
 {
-	vector<CImageVideoThumbnail*> listPicture;
+	
 
 	int duration = pimpl->m_videoMovieDuration;
 
@@ -300,7 +300,6 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 			try
 			{
 				auto cxVideo = new CImageVideoThumbnail();
-				cv::Mat image;
 				int timePosition = 0;
 
 
@@ -311,13 +310,12 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 				try
 				{
 					pimpl->SetMoviePos(i);
-					pimpl->GetThumbnail(image, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail);
 				}
 				catch (...)
 				{
 				}
 				cxVideo->timePosition = i;
-				cxVideo->image = image;//CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)
@@ -333,7 +331,6 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 			try
 			{
 				auto cxVideo = new CImageVideoThumbnail();
-				cv::Mat image;
 				int timePosition = 0;
 
 
@@ -345,13 +342,12 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 				try
 				{
 					pimpl->SetPercent(cxVideo->percent);
-					pimpl->GetThumbnail(image, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail);
 				}
 				catch (...)
 				{
 				}
 				cxVideo->timePosition = pimpl->m_seekTimeInSecond;
-				cxVideo->image = image;//CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)
@@ -360,6 +356,4 @@ vector<CImageVideoThumbnail*> CVideoThumb::GetVideoListFrame(const int& widthThu
 			}
 		}
 	}
-
-	return listPicture;
 }

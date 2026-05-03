@@ -21,6 +21,7 @@ public:
 
 	~CImageVideoThumbnail()
 	{
+        image.release();
 	};
 
 	//wxImage image;

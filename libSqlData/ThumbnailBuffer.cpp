@@ -3,8 +3,9 @@
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
 #include <ConvertUtility.h>
-
-
+#include <FileUtility.h>
+#include <iostream>
+#include <fstream>
 
 
 std::map<wxString, cv::Mat> CThumbnailBuffer::listPicture;
@@ -14,6 +15,31 @@ std::mutex CThumbnailBuffer::muPictureBuffer;
 std::mutex CThumbnailBuffer::muListFile;
 std::mutex CThumbnailBuffer::muNewVector;
 int  CThumbnailBuffer::vectorSize = 0;
+
+
+static cv::Mat GetMatrixFromFile(const wxString& szFilePath)
+{
+    
+    cv::Mat image;
+    if(wxFileExists(szFilePath))
+    {
+        std::ifstream infile(CConvertUtility::ConvertToStdString(szFilePath)); // and since you want bytes rather than
+                                        // characters, strongly consider opening the
+                                        // File in binary mode with std::ios_base::binary
+        // Get length of file
+        infile.seekg(0, std::ios::end);
+        size_t length = infile.tellg();
+        infile.seekg(0, std::ios::beg);
+        image = cv::Mat( 1, length, CV_8UC1);
+        
+        printf("GetMatrixFromFile File : %s Size : %d \n", CConvertUtility::ConvertToStdString(szFilePath).c_str(), length);
+        // Read file
+        infile.read((char *)image.data, length);
+        
+    }
+    return image;
+}
+
 
 void CThumbnailBuffer::RemovePicture(const wxString& filename)
 {
@@ -121,6 +147,8 @@ void CThumbnailBuffer::InitVectorList(PhotosVector * newVector)
     }
 }
 
+
+
 cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
 {
     cv::Mat image;
@@ -140,6 +168,7 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
     {
         std::lock_guard<std::mutex> lock(muPictureBuffer);
         {
+            cv::Mat rawData;
             if (static_cast<int>(listPicture.size()) > sizeBuffer)
             {
                 auto it = listPicture.begin();
@@ -154,13 +183,15 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
             auto it = listPicture.find(filename);
             if (it == listPicture.end())
             {
-                image = cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
-                listPicture[filename] = image;
+                rawData = GetMatrixFromFile(filename);
+                listPicture[filename] = rawData;
             }
             else
             {
-                image = listPicture[filename];
+                rawData = listPicture[filename];
             }
+            
+            image = cv::imdecode(rawData, cv::IMREAD_COLOR);
         }
     }
 

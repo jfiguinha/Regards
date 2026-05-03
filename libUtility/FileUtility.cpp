@@ -3,6 +3,8 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
+#include "ConvertUtility.h"
+
 
 CFileUtility::CFileUtility(void)
 {
