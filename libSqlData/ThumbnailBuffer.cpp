@@ -3,9 +3,8 @@
 #include <ParamInit.h>
 #include "RegardsConfigParam.h"
 #include <ConvertUtility.h>
-#include <FileUtility.h>
 #include <iostream>
-#include <fstream>
+#include <wx/file.h>
 
 
 std::map<wxString, cv::Mat> CThumbnailBuffer::listPicture;
@@ -17,30 +16,6 @@ std::mutex CThumbnailBuffer::muNewVector;
 int  CThumbnailBuffer::vectorSize = 0;
 
 
-static cv::Mat GetMatrixFromFile(const wxString& szFilePath)
-{
-    
-    cv::Mat image;
-    if(wxFileExists(szFilePath))
-    {
-        std::ifstream infile(CConvertUtility::ConvertToStdString(szFilePath)); // and since you want bytes rather than
-                                        // characters, strongly consider opening the
-                                        // File in binary mode with std::ios_base::binary
-        // Get length of file
-        infile.seekg(0, std::ios::end);
-        size_t length = infile.tellg();
-        infile.seekg(0, std::ios::beg);
-        image = cv::Mat( 1, length, CV_8UC1);
-        
-        printf("GetMatrixFromFile File : %s Size : %d \n", CConvertUtility::ConvertToStdString(szFilePath).c_str(), length);
-        // Read file
-        infile.read((char *)image.data, length);
-        
-    }
-    return image;
-}
-
-
 void CThumbnailBuffer::RemovePicture(const wxString& filename)
 {
 	{
@@ -48,9 +23,16 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 		auto it = listPicture.find(filename);
 		if (it != listPicture.end())
 		{
-            cv::Mat picture = it->second;
-            picture.release();
 			listPicture.erase(it);
+		}
+	}
+
+	{
+		std::lock_guard<std::mutex> lock(muListFile);
+		auto it = std::find(listFile.begin(), listFile.end(), filename);
+		if (it != listFile.end())
+		{
+			listFile.erase(it);
 		}
 	}
 }
@@ -147,8 +129,6 @@ void CThumbnailBuffer::InitVectorList(PhotosVector * newVector)
     }
 }
 
-
-
 cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
 {
     cv::Mat image;
@@ -164,36 +144,70 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
     {
         return cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
     }
-    else
+
     {
         std::lock_guard<std::mutex> lock(muPictureBuffer);
+        auto it = listPicture.find(filename);
+
+        if (it == listPicture.end())
         {
-            cv::Mat rawData;
-            if (static_cast<int>(listPicture.size()) > sizeBuffer)
+            size_t _jpegSize;
+
+            if (wxFile::Exists(filename))
             {
-                auto it = listPicture.begin();
-                if (it != listPicture.end())
-                {
-                    cv::Mat picture = it->second;
-                    picture.release();
-                    listPicture.erase(it);
-                }
+                wxFile file(filename);
+                size_t _jpegSize = file.Length();
+                image = cv::Mat(1, _jpegSize, CV_8UC1);
+                if (file.IsOpened())
+                    file.Read(image.data, _jpegSize);
+                file.Close();
             }
 
-            auto it = listPicture.find(filename);
-            if (it == listPicture.end())
-            {
-                rawData = GetMatrixFromFile(filename);
-                listPicture[filename] = rawData;
-            }
-            else
-            {
-                rawData = listPicture[filename];
-            }
+            //cv::Mat decoded = cv::imdecode(image, cv::IMREAD_COLOR);
+  
+            listPicture[filename] = image;
             
-            image = cv::imdecode(rawData, cv::IMREAD_COLOR);
+            {
+                std::lock_guard<std::mutex> fileLock(muListFile);
+                listFile.push_back(filename);
+            }
+        }
+        else
+        {
+            image = it->second;
+            
+            {
+                std::lock_guard<std::mutex> fileLock(muListFile);
+                auto fileIt = std::find(listFile.begin(), listFile.end(), filename);
+                if (fileIt != listFile.end())
+                {
+                    listFile.erase(fileIt);
+                }
+                listFile.push_back(filename);
+            }
         }
     }
 
-    return image;
+    {
+        std::lock_guard<std::mutex> fileLock(muListFile);
+        if (static_cast<int>(listFile.size()) > sizeBuffer)
+        {
+            wxString firstFile = listFile.front();
+            listFile.erase(listFile.begin());
+            
+            {
+                std::lock_guard<std::mutex> picLock(muPictureBuffer);
+                auto it = listPicture.find(firstFile);
+                if (it != listPicture.end())
+                {
+                    listPicture.erase(it);
+                }
+            }
+        }
+    }
+
+    cv::Mat decoded = cv::imdecode(image, cv::IMREAD_COLOR);
+    if (decoded.empty())
+        return cv::imread(CConvertUtility::ConvertToStdString(filename), cv::IMREAD_COLOR);
+    return decoded;
 }

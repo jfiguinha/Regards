@@ -22,6 +22,9 @@
     <Filter Include="ExecuteRequest">
       <UniqueIdentifier>{0e76815a-5e01-46ac-829d-018194508321}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Buffer">
+      <UniqueIdentifier>{15645678-ef94-4ce8-9f7d-1a277e4322ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -169,7 +172,7 @@
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailBuffer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -303,7 +306,7 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailBuffer.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Buffer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
