@@ -166,7 +166,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (firstFileToShow == "")
 	{
 		//Open Default Folder in first time
-		loadPictureStartTimer->Start(10, true);
+		loadPictureStartTimer->Start(100, true);
 	}
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
@@ -750,18 +750,15 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
+	//localFilename = centralWnd->GetFilename();
 	UpdateFolderStatic(false);
 	//processIdle = true;
 }
 
 void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 {
-
-	CMainParam* config = CMainParamInit::getInstance();
-	if (config != nullptr)
-	{
-		UpdateFolderStatic(false);
-	}
+	//localFilename = centralWnd->GetFilename();
+	UpdateFolderStatic(false);
 }
 
 //---------------------------------------------------------------
@@ -769,6 +766,7 @@ void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 //---------------------------------------------------------------
 wxString CMainWindow::GetFilename()
 {
+	localFilename = centralWnd->GetFilename();
 	return localFilename;
 }
 
@@ -1037,7 +1035,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 
 				if (!isFound && CThumbnailBuffer::GetVectorSize() > 0)
 				{
-					isFound = FindNextValidFile(firstFileToShow);
+					isFound = FindNextValidFile(localFilename);
 					if (!isFound)
 						isFound = FindPreviousValidFile();
 				}
@@ -1059,7 +1057,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 			centralWnd->SetListeFile(localFilename, (isDeleteFolder || refreshPhotos), typeAffichage);
 			listFile.clear();
 			thumbnailPos = 0;
-			//firstFileToShow = "";
+			firstFileToShow = "";
 
 			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 			init = true;
@@ -1361,10 +1359,10 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		if (typeId == wxEVENT_ADDFOLDER)
 		{
 			//Folder 
-			firstFileToShow = *newPath;
-			if (firstFileToShow != "")
+			localFilename = *newPath;
+			if (localFilename != "")
 			{
-				wxFileName filename(firstFileToShow);
+				wxFileName filename(localFilename);
 				wxString folder = filename.GetPath();
 				statusBarViewer->AddFSEntry(folder);
 			}
