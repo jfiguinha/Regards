@@ -7,6 +7,8 @@
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include <wx/dir.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -443,6 +445,17 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			sqlVersion.InsertVersion("2.71.0.0");
 			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Gender NVARCHAR(255);");
 			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Age NVARCHAR(255);");
+		}
+		if (sqlVersion.GetVersion() == "2.71.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.72.0.0");
+			CRegardsConfigParam* param = CParamInit::getInstance();
+			if (param != nullptr)
+			{
+				param->SetThumbnailOpenCV(0);
+			}
+
 		}
 	}
 	return hr;
