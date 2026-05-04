@@ -750,14 +750,14 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	//localFilename = centralWnd->GetFilename();
+	localFilename = centralWnd->GetFilename();
 	UpdateFolderStatic(false);
 	//processIdle = true;
 }
 
 void CMainWindow::OnCriteriaUpdate(wxCommandEvent& event)
 {
-	//localFilename = centralWnd->GetFilename();
+	localFilename = centralWnd->GetFilename();
 	UpdateFolderStatic(false);
 }
 
