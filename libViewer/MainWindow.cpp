@@ -1359,10 +1359,10 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		if (typeId == wxEVENT_ADDFOLDER)
 		{
 			//Folder 
-			localFilename = *newPath;
-			if (localFilename != "")
+			firstFileToShow = *newPath;
+			if (firstFileToShow != "")
 			{
-				wxFileName filename(localFilename);
+				wxFileName filename(firstFileToShow);
 				wxString folder = filename.GetPath();
 				statusBarViewer->AddFSEntry(folder);
 			}
