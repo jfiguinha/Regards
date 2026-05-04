@@ -23,6 +23,8 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 		auto it = listPicture.find(filename);
 		if (it != listPicture.end())
 		{
+            cv::Mat data = it->second;
+            data.release();
 			listPicture.erase(it);
 		}
 	}
@@ -151,8 +153,6 @@ cv::Mat CThumbnailBuffer::GetPicture(const wxString& filename)
 
         if (it == listPicture.end())
         {
-            size_t _jpegSize;
-
             if (wxFile::Exists(filename))
             {
                 wxFile file(filename);
