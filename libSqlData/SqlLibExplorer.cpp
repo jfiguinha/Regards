@@ -455,7 +455,6 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			{
 				param->SetThumbnailOpenCV(0);
 			}
-
 		}
 	}
 	return hr;
