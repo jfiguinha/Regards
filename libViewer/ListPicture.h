@@ -29,7 +29,7 @@ namespace Regards
 			int GetNumItem();
 			void SetActifItem(const int& numItem, const bool& move);
 			int GetThumbnailHeight();
-			void SetListeFile(const int& typeAffichage, const bool& isDeleteFolder);
+			void SetListeFile(const int& typeAffichage, const bool& isDeleteFolder, const bool& isSqlUpdate);
 			void ChangeTypeAffichage(const long& typeAffichage);
 			void Resize() override;
 

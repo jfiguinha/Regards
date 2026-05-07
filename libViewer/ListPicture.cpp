@@ -171,11 +171,11 @@ int CListPicture::GetNumItem()
 	return 0;
 }
 
-void CListPicture::SetListeFile(const int& typeAffichage, const bool& isDeleteFolder)
+void CListPicture::SetListeFile(const int& typeAffichage, const bool& isDeleteFolder, const bool& isSqlUpdate)
 {
 	if (thumbnailFolder != nullptr)
 	{
-		thumbnailFolder->Init(typeAffichage, isDeleteFolder);
+		thumbnailFolder->Init(typeAffichage, isDeleteFolder, isSqlUpdate);
 		thumbnailFolder->SetCheck(true);
 	}
 }

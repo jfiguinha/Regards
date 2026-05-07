@@ -16,7 +16,7 @@ namespace Regards::Viewer
 		                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 		~CThumbnailFolder(void) override;
 		
-		void Init(const int& typeAffichage, const bool& isDeleteFolder);
+		void Init(const int& typeAffichage, const bool& isDeleteFolder, const bool& isSqlUpdate);
 		CInfosSeparationBarExplorer * AddSeparatorBar(PhotosVector * _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) override;
 		void ChangeTypeAffichage(const int& typeAffichage, bool needFindNewItem = false);
 

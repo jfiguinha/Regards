@@ -951,6 +951,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 
 	wxBusyCursor busy;
 	{
+		bool isSqlUpdate = false;
 		wxString requestSql = "";
 		CSqlFindPhotos sqlFindPhotos;
 
@@ -961,7 +962,11 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 		if (requestSql != "" && this->GetInit())
 		{
 			if (oldRequest != requestSql || refreshPhotos)
+			{
+				isSqlUpdate = true;
 				sqlFindPhotos.SearchPhotos(requestSql);
+			}
+				
 			oldRequest = requestSql;
 		}
 
@@ -1005,7 +1010,8 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 		if (!noupdate)
 		{
 			CThumbnailBuffer::InitVectorList(_pictures);
-
+			//refreshFolder = true;
+			//processIdle = true;
 			if (firstFileToShow == "")
 			{
 				bool isFound = false;
@@ -1054,11 +1060,11 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 			}
 
 
-			centralWnd->SetListeFile(localFilename, (isDeleteFolder || refreshPhotos), typeAffichage);
+			centralWnd->SetListeFile(localFilename, (isDeleteFolder || refreshPhotos), isSqlUpdate, typeAffichage);
 			listFile.clear();
 			thumbnailPos = 0;
 			firstFileToShow = "";
-
+			
 			nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 			init = true;
 

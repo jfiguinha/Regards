@@ -242,9 +242,9 @@ void CThumbnailFolder::ChangeTypeAffichage(const int& typeAffichage, bool needFi
 	listSelectItem.clear();
 }
 
-void CThumbnailFolder::Init(const int& typeAffichage, const bool& isDeleteFolder)
+void CThumbnailFolder::Init(const int& typeAffichage, const bool& isDeleteFolder, const bool &isSqlUpdate)
 {
-	if (isDeleteFolder)
+	if (isDeleteFolder || isSqlUpdate)
 	{
 		int size = iconeList->GetNbElement();
 		if (size > 0)

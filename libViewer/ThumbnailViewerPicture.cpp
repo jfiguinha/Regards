@@ -46,7 +46,7 @@ vector<wxString> CThumbnailViewerPicture::GetFileList()
 	return list;
 }
 
-void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
+void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const bool& isSqlUpdate)
 {
 #ifdef TEST
 	iconeList->EraseThumbnailListWithIcon();
@@ -98,7 +98,7 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 	//iconeList->EraseThumbnailListWithIcon();
 
 	int iconWidth = themeThumbnail.themeIcone.GetWidth();
-	if (isDeleteFolder)
+	if (isDeleteFolder || isSqlUpdate)
 	{
 		int size = iconeList->GetNbElement();
 		if (size > 0)
@@ -131,7 +131,9 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 			iconeList->EraseThumbnailListWithIcon();
 		}
 	}
-	else
+	
+
+	if(isSqlUpdate || !isDeleteFolder)
 	{
 		int size = CThumbnailBuffer::GetVectorSize();
 
@@ -189,10 +191,10 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder)
 }
 
 
-void CThumbnailViewerPicture::ApplyListeFile(const bool& isDeleteFolder)
+void CThumbnailViewerPicture::ApplyListeFile(const bool& isDeleteFolder, const bool& isSqlUpdate)
 {
 	threadDataProcess = false;
-	PregenerateList(isDeleteFolder);
+	PregenerateList(isDeleteFolder, isSqlUpdate);
 	nbElementInIconeList = iconeList->GetNbElement();
 	AfterSetList();
 	ResizeThumbnail();
