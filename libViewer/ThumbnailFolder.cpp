@@ -244,7 +244,7 @@ void CThumbnailFolder::ChangeTypeAffichage(const int& typeAffichage, bool needFi
 
 void CThumbnailFolder::Init(const int& typeAffichage, const bool& isDeleteFolder, const bool &isSqlUpdate)
 {
-	if (isDeleteFolder || isSqlUpdate)
+	if ((isDeleteFolder || isSqlUpdate) && nbElementInIconeList > 0)
 	{
 		int size = iconeList->GetNbElement();
 		if (size > 0)
@@ -254,12 +254,14 @@ void CThumbnailFolder::Init(const int& typeAffichage, const bool& isDeleteFolder
 			tbb::parallel_for(0, size, 1, [=](int i)
 				{
 					CIcone* ico = iconeList->GetElement(i);
-					bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
-					if (!find)
-						iconeList->RemoveElement(i);
-					else
-						newIconeList->AddElement(ico);
-
+					if (ico != nullptr)
+					{
+						bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+						if (!find)
+							iconeList->RemoveElement(i);
+						else
+							newIconeList->AddElement(ico);
+					}
 				});
 
 			if (newIconeList->GetNbElement() > 0)

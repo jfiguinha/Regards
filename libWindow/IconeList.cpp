@@ -165,8 +165,13 @@ bool CIconeList::FindElement(wxString filename)
 
 	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 		{
-			CThumbnailData * thumbnailData = (CThumbnailData*)e->GetData();
-			return thumbnailData->GetFilename() == filename;
+			if (e != nullptr)
+			{
+				CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
+				return thumbnailData->GetFilename() == filename;
+			}
+			else
+				return false;
 
 		});
 
@@ -182,8 +187,13 @@ CIcone * CIconeList::FindElementByFilename(wxString filename)
 	CIcone* element = nullptr;
 	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
 		{
-			CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
-			return thumbnailData->GetFilename() == filename;
+			if (e != nullptr)
+			{
+				CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
+				return thumbnailData->GetFilename() == filename;
+			}
+			else
+				return false;
 
 		});
 
@@ -287,7 +297,9 @@ void CIconeList::EraseThumbnailList()
 // according to starting times.
 bool compareInterval(CIcone* i1, CIcone* i2)
 {
-	return (i1->GetNumElement() < i2->GetNumElement());
+	if (i1 != nullptr && i2 != nullptr)
+		return (i1->GetNumElement() < i2->GetNumElement());
+	return false;
 }
 
 void CIconeList::SortById()
@@ -300,7 +312,9 @@ void CIconeList::SortById()
 // according to starting times.
 bool compareFilename(CIcone* i1, CIcone* i2)
 {
-	return (i1->GetFilename() < i2->GetFilename());
+	if (i1 != nullptr && i2 != nullptr)
+		return (i1->GetFilename() < i2->GetFilename());
+	return false;
 }
 
 void CIconeList::SortByFilename()

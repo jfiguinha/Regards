@@ -144,9 +144,12 @@ CIcone* CThumbnail::GetIconeByPath(const wxString& filepath)
 bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent)
 /* Définit une fonction. */
 {
-	CThumbnailData* pThumbnailData = icone->GetData();
-	if (pThumbnailData->GetNumPhotoId() == xPos)
-		return true;
+	if (icone != nullptr)
+	{
+		CThumbnailData* pThumbnailData = icone->GetData();
+		if (pThumbnailData->GetNumPhotoId() == xPos)
+			return true;
+	}
 	return false;
 }
 
@@ -172,6 +175,9 @@ int CThumbnail::GetNumPhotoId(const int& numItem)
 
 void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 {
+	if (nbElementInIconeList == 0)
+		return;
+
 	int numItem = GetNumItemById(idPhoto);
 
 	isMovingScroll = move;
