@@ -41,6 +41,7 @@
 #define USE_TBB
 #endif
 
+#define CALC_FFMPEG_VERSION(a,b,c) ( a<<16 | b<<8 | c )
 
 #define CL_TARGET_OPENCL_VERSION 120
 

@@ -436,8 +436,14 @@ enum AVPixelFormat CFFmpegTranscodingPimpl::get_hw_format(AVCodecContext* ctx,
 
 double CFFmpegTranscodingPimpl::get_rotation(AVStream* st)
 {
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 	uint8_t* displaymatrix = av_stream_get_side_data(st,
-	                                                 AV_PKT_DATA_DISPLAYMATRIX, NULL);
+		AV_PKT_DATA_DISPLAYMATRIX, NULL);
+#else
+	uint8_t* displaymatrix = (uint8_t*)av_packet_side_data_get(st->codecpar->coded_side_data,
+		st->codecpar->nb_coded_side_data,
+		AV_PKT_DATA_DISPLAYMATRIX);
+#endif
 	double theta = 0;
 	if (displaymatrix)
 		theta = -av_display_rotation_get((int32_t*)displaymatrix);
@@ -1088,6 +1094,7 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 
 	if (codec_id == AV_CODEC_ID_H264 && encoderName == "amf")
 	{
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 		// Set profile and level
 		pCodecCtx->profile = FF_PROFILE_UNKNOWN;
 		if (videoCompressOption->encoder_profile != "")
@@ -1100,6 +1107,19 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 				pCodecCtx->profile = FF_PROFILE_H264_HIGH;
 		}
 		pCodecCtx->level = FF_LEVEL_UNKNOWN;
+#else
+		pCodecCtx->profile = AV_PROFILE_UNKNOWN;
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "baseline")
+				pCodecCtx->profile = AV_PROFILE_H264_BASELINE;
+			else if (videoCompressOption->encoder_profile == "main")
+				pCodecCtx->profile = AV_PROFILE_H264_MAIN;
+			else if (videoCompressOption->encoder_profile == "high")
+				pCodecCtx->profile = AV_PROFILE_H264_HIGH;
+		}
+		pCodecCtx->level = AV_LEVEL_UNKNOWN;
+#endif
 		if (videoCompressOption->encoder_level != "")
 		{
 			int i = 1;
@@ -1114,6 +1134,7 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 
 	if (codec_id == AV_CODEC_ID_H265 && encoderName == "amf")
 	{
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 		// Set profile and level
 		pCodecCtx->profile = FF_PROFILE_UNKNOWN;
 		if (videoCompressOption->encoder_profile != "")
@@ -1122,6 +1143,15 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 				pCodecCtx->profile = FF_PROFILE_HEVC_MAIN;
 		}
 		pCodecCtx->level = FF_LEVEL_UNKNOWN;
+#else
+		pCodecCtx->profile = AV_PROFILE_UNKNOWN;
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "main")
+				pCodecCtx->profile = AV_PROFILE_HEVC_MAIN;
+		}
+		pCodecCtx->level = AV_LEVEL_UNKNOWN;
+#endif
 		if (videoCompressOption->encoder_level != "")
 		{
 			int i = 1;
@@ -2579,7 +2609,9 @@ void CFFmpegTranscodingPimpl::Release()
 			{
 				if (stream_ctx[i].enc_ctx != nullptr)
 				{
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 					avcodec_close(stream_ctx[i].enc_ctx);
+#endif
 					avcodec_free_context(&stream_ctx[i].enc_ctx);
 				}
 			}
@@ -2749,8 +2781,18 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 
 		if (rotate != 0 && streamVideo != nullptr)
 		{
+			int32_t display_matrix[9];
+
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 			uint8_t* sd = av_stream_new_side_data(streamVideo, AV_PKT_DATA_DISPLAYMATRIX,
-			                                      sizeof(int32_t) * 9);
+				sizeof(display_matrix));
+#else
+			uint8_t* sd = (uint8_t *)av_packet_side_data_new(&streamVideo->codecpar->coded_side_data,
+				&streamVideo->codecpar->nb_coded_side_data,
+				AV_PKT_DATA_DISPLAYMATRIX,
+				sizeof(display_matrix), 0);
+#endif
+
 			if (sd)
 				av_display_rotation_set((int32_t*)sd, rotate);
 		}
@@ -2778,8 +2820,9 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 			{
 				printf("Error (%s) returned from encoded video", str_err);
 			}
-
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 			avcodec_close(c);
+#endif
 			avcodec_free_context(&c);
 			c = nullptr;
 		}

@@ -185,7 +185,11 @@ void MovieStreamInfo::destroy()
 {
 	if (m_pVideoCodecContext)
 	{
+	#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 		avcodec_close(m_pVideoCodecContext);
+	#else
+		avcodec_free_context(&m_pVideoCodecContext);
+	#endif
 		m_pVideoCodecContext = nullptr;
 	}
 

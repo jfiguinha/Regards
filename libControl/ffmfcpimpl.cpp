@@ -1015,8 +1015,11 @@ int CFFmfcPimpl::video_thread(void* arg)
 	if (!frame)
 		return AVERROR(ENOMEM);
 
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 	for (;;)
 	{
+
+
 		ret = is->_pimpl->get_video_frame(is, frame);
 		if (ret < 0)
 			goto the_end;
@@ -1026,13 +1029,48 @@ int CFFmfcPimpl::video_thread(void* arg)
 		AVRational tb_frame = { frame_rate.den, frame_rate.num };
 		duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
 		pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
+
 		ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
+
 		av_frame_unref(frame);
 
 
 		if (ret < 0)
 			goto the_end;
 	}
+#else
+	for (;;) {
+		ret = is->_pimpl->get_video_frame(is, frame);
+		if (ret < 0)
+			goto the_end;
+		if (!ret)
+			continue;
+
+
+		while (ret >= 0) {
+			FrameData* fd;
+
+			is->frame_last_returned_time = av_gettime_relative() / 1000000.0;
+
+			fd = frame->opaque_ref ? (FrameData*)frame->opaque_ref->data : NULL;
+
+			is->frame_last_filter_delay = av_gettime_relative() / 1000000.0 - is->frame_last_returned_time;
+			if (fabs(is->frame_last_filter_delay) > AV_NOSYNC_THRESHOLD / 10.0)
+				is->frame_last_filter_delay = 0;
+
+			AVRational tb_frame = { frame_rate.den, frame_rate.num };
+			duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
+			pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
+			ret = is->_pimpl->queue_picture(is, frame, pts, duration, fd ? fd->pkt_pos : -1, is->viddec.pkt_serial);
+			av_frame_unref(frame);
+			if (is->videoq.serial != is->viddec.pkt_serial)
+				break;
+		}
+
+		if (ret < 0)
+			goto the_end;
+	}
+#endif
 the_end:
 	av_frame_free(&frame);
 
@@ -2240,8 +2278,14 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 
 double CFFmfcPimpl::get_rotation(AVStream* st)
 {
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 	uint8_t* displaymatrix = av_stream_get_side_data(st,
 		AV_PKT_DATA_DISPLAYMATRIX, NULL);
+#else
+	uint8_t* displaymatrix = (uint8_t *)av_packet_side_data_get(st->codecpar->coded_side_data,
+		st->codecpar->nb_coded_side_data,
+		AV_PKT_DATA_DISPLAYMATRIX);
+#endif
 	double theta = 0;
 	if (displaymatrix)
 		theta = -av_display_rotation_get((int32_t*)displaymatrix);
@@ -2519,14 +2563,14 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 		av_freep(&is->audio_buf1);
 		is->audio_buf1_size = 0;
 		is->audio_buf = NULL;
-
+		/*
 		if (is->rdft)
 		{
 			av_rdft_end(is->rdft);
 			av_freep(&is->rdft_data);
 			is->rdft = NULL;
 			is->rdft_bits = 0;
-		}
+		}*/
 		break;
 	case AVMEDIA_TYPE_VIDEO:
 
@@ -2716,7 +2760,9 @@ int CFFmfcPimpl::read_thread(void* arg)
 	if (is->_pimpl->genpts)
 		ic->flags |= AVFMT_FLAG_GENPTS;
 
+#if(LIBAVCODEC_BUILD < CALC_FFMPEG_VERSION(61, 9, 108))
 	av_format_inject_global_side_data(ic);
+#endif
 
 	if (is->_pimpl->find_stream_info)
 	{
