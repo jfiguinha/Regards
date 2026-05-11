@@ -22,6 +22,9 @@
 #include <FilterData.h>
 #include <OpenCLContext.h>
 #include <Gps.h>
+#ifdef __WXGTK__
+#include <fontconfig/fontconfig.h>
+#endif
 
 #ifdef USE_CUDA
 #include <opencv2/cudaarithm.hpp>
@@ -349,9 +352,6 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 			}
 		}
 	}
-
-
-
 	openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
 }
 
@@ -378,6 +378,11 @@ bool MyApp::OnInit()
     //wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
 #endif
 
+#ifdef __WXGTK__
+    FcBool result = FcInit();
+    if(result)
+        printf("Font Config Initialized \n");
+#endif
     /*
   
 

@@ -42,7 +42,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 #include "libavutil/opt.h"
 #include "libavfilter/buffersrc.h"
-#include "libavcodec/avfft.h"
+//#include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
 #include "libavutil/display.h"
 #include "libavutil/common.h"
