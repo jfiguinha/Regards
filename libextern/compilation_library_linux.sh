@@ -7,19 +7,19 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2026.04.27_linux.zip
-mv vcpkg-2026.04.27 vcpkg
+unzip vcpkg-2025.09.17_linux.zip
+mv vcpkg-2025.09.17 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxwidgets[webview]
 ./vcpkg install x265
 ./vcpkg install libde265
-./vcpkg install libavif[aom,dav1d]
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opengl,opencl,gtk]
 ./vcpkg install opencl
 ./vcpkg install tbb
-./vcpkg install exiv2[nls,xmp,png,bmff] --recurse
+./vcpkg install exiv2[video,xmp,bmff]
+./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
 ./vcpkg install jasper
@@ -29,6 +29,7 @@ cd vcpkg
 ./vcpkg install freeimage
 ./vcpkg install libjxl
 ./vcpkg install libepoxy
+./vcpkg install openal-soft
 ./vcpkg install ncnn[vulkan]
 ./vcpkg install boost-lexical-cast
 ./vcpkg install freeglut
@@ -43,8 +44,7 @@ make -j$NBPROC
 cd ..
 cd ..
 
-tar -xJf ffmpeg-master_linux.tar.xz
-mv ffmpeg-n8.1-latest-linux64-gpl-shared-8.1 ffmpeg-master
+unzip ffmpeg-master_linux.zip
 
 #Compile qpdf
 FILE=release-qpdf-10.3.2.zip
