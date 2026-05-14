@@ -18,6 +18,8 @@
 #include "unchecked_mo.xpm"
 #include <wx/icon.h>
 #include <wx/imaglist.h>
+#include <wx/version.h> 
+#include <wx/display.h>
 
 wxDEFINE_EVENT(wxEVT_CHECKTREE_FOCUS, wxTreeEvent);
 wxDEFINE_EVENT(wxEVT_CHECKTREE_CHOICE, wxTreeEvent);
@@ -123,17 +125,57 @@ wxCheckTree::~wxCheckTree()
 
 void wxCheckTree::Init()
 {
+    wxIcon icons[8];
 	wxImageList* states;
+    wxVersionInfo versionLib = wxGetLibraryVersionInfo();
+    if(versionLib.GetMajor() >= 3 && versionLib.GetMinor() >= 3)
+    {
+        wxDisplay display(this);
+        printf("Display %u: ppi = %dx%d, scale factor = %G", 
+            0, display.GetPPI().x, display.GetPPI().y, display.GetScaleFactor());
+            
+        double scale_factor = display.GetScaleFactor();
 
-	wxIcon icons[8];
-	icons[0] = wxIcon(unchecked2_xpm);
-	icons[1] = wxIcon(unchecked_mo_xpm);
-	icons[2] = wxIcon(unchecked_ld_xpm);
-	icons[3] = wxIcon(unchecked_d_xpm);
-	icons[4] = wxIcon(checked2_xpm);
-	icons[5] = wxIcon(checked_mo_xpm);
-	icons[6] = wxIcon(checked_ld_xpm);
-	icons[7] = wxIcon(checked_d_xpm);
+        wxBitmap bitmap_0(unchecked2_xpm);
+        wxBitmap bitmap_1(unchecked_mo_xpm);
+        wxBitmap bitmap_2(unchecked_ld_xpm);
+        wxBitmap bitmap_3(unchecked_d_xpm);
+        
+        wxBitmap bitmap_4(checked2_xpm);
+        wxBitmap bitmap_5(checked_mo_xpm);
+        wxBitmap bitmap_6(checked_ld_xpm);
+        wxBitmap bitmap_7(checked_d_xpm);
+        
+        bitmap_0.SetScaleFactor(scale_factor);
+        bitmap_1.SetScaleFactor(scale_factor);
+        bitmap_2.SetScaleFactor(scale_factor);
+        bitmap_3.SetScaleFactor(scale_factor);
+        bitmap_4.SetScaleFactor(scale_factor);
+        bitmap_5.SetScaleFactor(scale_factor);
+        bitmap_6.SetScaleFactor(scale_factor);
+        bitmap_7.SetScaleFactor(scale_factor);
+
+        
+        icons[0].CopyFromBitmap(bitmap_0);
+        icons[1].CopyFromBitmap(bitmap_1);
+        icons[2].CopyFromBitmap(bitmap_2);
+        icons[3].CopyFromBitmap(bitmap_3);
+        icons[4].CopyFromBitmap(bitmap_4);
+        icons[5].CopyFromBitmap(bitmap_5);
+        icons[6].CopyFromBitmap(bitmap_6);
+        icons[7].CopyFromBitmap(bitmap_7);
+    }
+    else
+    {
+        icons[0] = wxIcon(unchecked2_xpm);
+        icons[1] = wxIcon(unchecked_mo_xpm);
+        icons[2] = wxIcon(unchecked_ld_xpm);
+        icons[3] = wxIcon(unchecked_d_xpm);
+        icons[4] = wxIcon(checked2_xpm);
+        icons[5] = wxIcon(checked_mo_xpm);
+        icons[6] = wxIcon(checked_ld_xpm);
+        icons[7] = wxIcon(checked_d_xpm);
+    }
 
 	int width = icons[0].GetWidth(),
 	    height = icons[0].GetHeight();
