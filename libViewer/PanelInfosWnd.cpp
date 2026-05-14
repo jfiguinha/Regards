@@ -24,11 +24,13 @@
 #include <wx/filename.h>
 #include <wx/busyinfo.h>
 #include "ParamInit.h"
+
 using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Control;
+
 
 /**
  * \brief 
@@ -328,6 +330,10 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
+		CFileGeolocation fileGeo("", "");
+		fileGeo.SetFile(filename, "");
+		bool hasGps = fileGeo.HasGps();
+
 		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
 		if (!this->isVideo)
@@ -342,8 +348,16 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		}
 
 		delete fileGeolocalisation;
-		LoadInfo();
+		if (windowVisible == WM_MAPS && firstTime && hasGps)
+			ClickShowButton(WM_MAPS);
+		else if (windowVisible == WM_MAPS && !hasGps)
+		{
+			ClickShowButton(WM_INFOS);
+		}
+		else
+			LoadInfo();
 		this->isVideo = true;
+		firstTime = false;
 	}
 }
 
@@ -359,6 +373,10 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
+		CFileGeolocation fileGeo("","");
+		fileGeo.SetFile(filename, "");
+		bool hasGps = fileGeo.HasGps();
+
 		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
 		GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
@@ -370,8 +388,18 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 
 		this->isVideo = false;
 
-		LoadInfo();
+		if (windowVisible == WM_MAPS && firstTime && hasGps)
+			ClickShowButton(WM_MAPS);
+		else if (windowVisible == WM_MAPS && !hasGps)
+		{
+			ClickShowButton(WM_INFOS);
+		}
+		else
+			LoadInfo();
+
+		firstTime = false;
 	}
+
 }
 
 void CPanelInfosWnd::ShowFiltreEvent(wxCommandEvent& event)
@@ -525,6 +553,8 @@ void CPanelInfosWnd::LoadInfo()
 
 	case WM_MAPS:
 		{
+			if (!webBrowser->IsShown())
+				webBrowser->Show(true);
 			wxString newUrl = MapsUpdate();
 			if (url != newUrl)
 				DisplayURL(newUrl);
@@ -583,6 +613,8 @@ void CPanelInfosWnd::DisplayURL(const wxString& url)
 {
 	webBrowser->LoadURL(url);
 	infosToolbar->SetMapActif();
+	if(!webBrowser->IsShown())
+		webBrowser->Show(true);
 	Resize();
 }
 

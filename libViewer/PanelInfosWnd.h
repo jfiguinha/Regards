@@ -79,8 +79,8 @@ namespace Regards
 			bool isVideo;
 			wxString filename;
 			wxString url;
-			bool firstTime;
 			wxWindowID id_;
+			bool firstTime = true;
 		};
 	}
 }
