@@ -15,17 +15,22 @@ extern wxImage defaultPicture;
 class CVideoThumbPimpl
 {
 public:
-	CVideoThumbPimpl(const wxString& fileName)
+	CVideoThumbPimpl(const wxString& fileName, bool useOpenCV = false, bool force = false)
 	{
 		this->useOpenCV = false;// useOpenCV;
 		this->filename = fileName;
 		//printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-
-		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-		if (regardsParam != nullptr)
+		if (!force)
 		{
-			this->useOpenCV = regardsParam->GetThumbnailOpenCV();
+			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+			if (regardsParam != nullptr)
+			{
+				this->useOpenCV = regardsParam->GetThumbnailOpenCV();
+			}
 		}
+		else
+			this->useOpenCV = useOpenCV;
+
 
 		if(this->useOpenCV)
 			videoThumbnailer = new COpenCVVideoPlayer(filename);
@@ -199,11 +204,11 @@ public:
 	bool useOpenCV = false;
 };
 
-CVideoThumb::CVideoThumb(const wxString& fileName)
+CVideoThumb::CVideoThumb(const wxString& fileName, bool useOpenCV, bool force)
 {
 	
 	this->fileName = fileName;
-	pimpl = new CVideoThumbPimpl(fileName);
+	pimpl = new CVideoThumbPimpl(fileName, useOpenCV, force);
 }
 
 bool CVideoThumb::isOk()

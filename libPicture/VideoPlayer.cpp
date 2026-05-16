@@ -225,7 +225,14 @@ CVideoPlayer::CVideoPlayer(const wxString& filename) : IVideoPlayer(filename)
 	pimpl = new CVideoPlayerPimpl();
 	ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(filename));
 	this->filename = filename;
-	pimpl->SeekToPos(0);
+	try
+	{
+		pimpl->SeekToPos(0);
+	}
+	catch (...)
+	{
+
+	}
 }
 
 cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)

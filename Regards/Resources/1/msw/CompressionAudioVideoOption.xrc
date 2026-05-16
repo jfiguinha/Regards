@@ -902,41 +902,23 @@
 					</object>
 				</object>
 			</object>
-			<!-- Right Column: Preview Panel -->
 			<object class="sizeritem">
-				<flag>wxEXPAND</flag>
-				<border>5</border>
+				<size>640,500</size>
+				<border>1</border>
 				<option>1</option>
 				<object class="wxPanel" name="IDPANEL">
-					<object class="wxBoxSizer">
-						<orient>wxVERTICAL</orient>
-						<!-- Preview Picture Group -->
-						<object class="sizeritem">
-							<flag>wxEXPAND|wxALL</flag>
-							<border>5</border>
-							<option>1</option>
-							<object class="wxStaticBoxSizer">
-								<label>Preview Picture</label>
-								<orient>wxVERTICAL</orient>
-								<!-- Bitmap -->
-								<object class="sizeritem">
-									<flag>wxEXPAND|wxALL</flag>
-									<border>5</border>
-									<option>1</option>
-									<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
-										<size>620,400</size>
-									</object>
-								</object>
-							</object>
+					<object class="wxStaticBox" name="ID_STPREVIEWPICTURE">
+							<label>Preview Picture</label>
+							<pos>5,5</pos>
+							<size>640,500</size>
 						</object>
-						<!-- Refresh Button -->
-						<object class="sizeritem">
-							<flag>wxALIGN_CENTER|wxALL</flag>
-							<border>5</border>
-							<object class="wxButton" name="ID_BTPREVIEW">
-								<label>Refresh</label>
-							</object>
-						</object>
+					<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
+						<pos>20,20</pos>
+						<size>620,470</size>
+					</object>
+					<object class="wxButton" name="ID_BTPREVIEW">
+						<label>Refresh</label>
+						<pos>300,510</pos>
 					</object>
 				</object>
 			</object>

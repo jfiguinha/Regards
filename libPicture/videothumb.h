@@ -13,7 +13,7 @@ namespace Regards
 		class CVideoThumb
 		{
 		public:
-			CVideoThumb(const wxString& fileName);
+			CVideoThumb(const wxString& fileName, bool useOpenCV = false, bool force = false);
 			~CVideoThumb();
 			bool isOk();
 			cv::Mat GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight);

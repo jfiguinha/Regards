@@ -2049,6 +2049,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		else
 			mat = bitmap;
 
+		if (mat.channels() == 3)
+			cv::cvtColor(mat, mat, cv::COLOR_BGR2BGRA);
+
 		if (dst_hardware == nullptr)
 		{
 			dst_hardware = av_frame_alloc();
@@ -2284,7 +2287,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	frameOutput.copyTo(frameOutputWithoutEffect);
 	CPictureUtility::ApplyRotation(frameOutput, rotation);
 	frameOutput = ApplyProcess(frameOutput);
-
+	if (frameOutput.channels() == 3)
+		cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 
 	AVFrame* frame = av_frame_alloc();
 	if (!frame)
@@ -2848,6 +2852,8 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		CPictureUtility::ApplyRotation(decodeFrame, rotation);
 		//cv::flip(decodeFrame, decodeFrame, 0);
 		frameOutput = ApplyProcess(decodeFrame);
+		if (frameOutput.channels() == 3)
+			cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 
 		//*bitmapOut = bitmap;
 

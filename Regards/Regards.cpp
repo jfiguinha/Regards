@@ -551,7 +551,7 @@ bool MyApp::OnInit()
 		frameVideoConverter->Show(true);
 		frameVideoConverter->ExportVideo(fileToOpen);
 	}
-	if(appName == "RegardsTest")
+	else if(appName == "RegardsTest")
 	{
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
