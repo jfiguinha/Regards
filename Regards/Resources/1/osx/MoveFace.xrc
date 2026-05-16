@@ -4,22 +4,37 @@
 		<title>Move Face</title>
 		<centered>1</centered>
 		<size>335,200</size>
-		<object class="wxComboBox" name="ID_COMBOBOX2">
-			<pos>16,50</pos>
-			<size>248,30</size>
-		</object>
-		<object class="wxStaticText" name="ID_STATICTEXT1">
-			<label>New Face Selection :</label>
-			<pos>24,24</pos>
-			<size>240,20</size>
-		</object>
-		<object class="wxButton" name="ID_BUTTON1">
-			<label>OK</label>
-			<pos>48,154</pos>
-		</object>
-		<object class="wxButton" name="ID_BUTTON2">
-			<label>Cancel</label>
-			<pos>200,154</pos>
+		<object class="wxBoxSizer" name="main_sizer">
+			<orient>wxVERTICAL</orient>
+			<sizeritem border="5" flag="wxALL|wxEXPAND">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>New Face Selection :</label>
+				</object>
+			</sizeritem>
+			<sizeritem border="5" flag="wxALL|wxEXPAND">
+				<object class="wxComboBox" name="ID_COMBOBOX2">
+				</object>
+			</sizeritem>
+			<sizeritem border="5" flag="wxALL|wxEXPAND">
+				<object class="wxBoxSizer" name="button_sizer">
+					<orient>wxHORIZONTAL</orient>
+					<sizeritem border="5" flag="wxALL">
+						<object class="wxButton" name="ID_BUTTON1">
+							<label>OK</label>
+						</object>
+					</sizeritem>
+					<sizeritem border="5" flag="wxALL|wxEXPAND">
+						<object class="spacer">
+							<size>1,0</size>
+						</object>
+					</sizeritem>
+					<sizeritem border="5" flag="wxALL">
+						<object class="wxButton" name="ID_BUTTON2">
+							<label>Cancel</label>
+						</object>
+					</sizeritem>
+				</object>
+			</sizeritem>
 		</object>
 	</object>
 </resource>

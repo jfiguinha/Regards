@@ -3,23 +3,43 @@
 	<object class="wxDialog" name="KeywordDialogBox">
 		<title>Keyword List</title>
 		<centered>1</centered>
-		<size>400,306</size>
-		<object class="wxCheckListBox" name="ID_CHECKLIST">
-			<label>Extension Option</label>
-			<style>wxLB_SINGLE | wxLB_HSCROLL</style>
-			<content>
-			</content>
-			<default>-1</default>
-			<pos>5,20</pos>
-			<size>390,216</size>
-		</object>
-		<object class="wxButton" name="ID_OK">
-			<label>OK</label>
-			<pos>88,260</pos>
-		</object>
-		<object class="wxButton" name="ID_CANCEL">
-			<label>Cancel</label>
-			<pos>224,260</pos>
+		<size>400,350</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!-- Keyword List -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>1</option>
+				<object class="wxCheckListBox" name="ID_CHECKLIST">
+					<style>wxLB_SINGLE | wxLB_HSCROLL</style>
+					<content>
+					</content>
+					<default>-1</default>
+				</object>
+			</object>
+			<!-- OK and Cancel Buttons -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_OK">
+							<label>OK</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_CANCEL">
+							<label>Cancel</label>
+						</object>
+					</object>
+				</object>
+			</object>
 		</object>
 	</object>
 </resource>

@@ -3,369 +3,721 @@
 	<object class="wxDialog" name="ConfigRegards">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>363,300</size>
+		<size>400,350</size>
 		<style>wxDEFAULT_DIALOG_STYLE</style>		
 		<object class="wxBoxSizer">
-			<cols>0</cols>
-			<rows>2</rows>
 			<orient>wxVERTICAL</orient>
-				<object class="sizeritem">
-					<border>5</border>
-					<option>1</option>
-					<object class="wxNotebook">
-						<size>400,350</size>
-						<style>wxBK_TOP</style>
-						<object class="notebookpage">
-							<label>Effect</label>
-							<object class="wxPanel" name="page_1">
-								<object class="wxStaticBox" name="sbInterpolation">
-									<label>Transition Effect</label>
-									<pos>0,0</pos>
-									<size>180,70</size>
-								</object>
-								<object class="wxComboBox" name="ID_RBTRANSITIONEFFECT">
-									<default>0</default>
-									<pos>5,20</pos>
-									<size>170,20</size>
-									<value>Transition Effect</value>
-									<content>
-										<item>None</item>
-										<item>Fading</item>
-										<item>Move</item>
-										<item>Page Curl</item>
-									</content>
-								</object>
-								<object class="wxRadioBox" name="ID_RBROTATEAUTO">
-									<label>Use Rotate Auto</label>
-									<style>wxRA_SPECIFY_COLS</style>
-									<content>
-										<item>Yes</item>
-										<item>No</item>
-									</content>
-									<default>-1</default>
-									<pos>200,0</pos>
-									<size>180,70</size>
-								</object>
-									<object class="wxStaticBox" name="sbInterpolation">
-										<label>Interpolation Filter</label>
-										<pos>200,74</pos>
-										<size>180,70</size>
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>1</option>
+				<object class="wxNotebook">
+					<style>wxBK_TOP</style>
+					<object class="notebookpage">
+						<label>Effect</label>
+						<object class="wxPanel" name="page_1">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<!-- Row 1: Transition Effect and Use Rotate Auto -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Transition Effect Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Transition Effect</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_RBTRANSITIONEFFECT">
+														<default>0</default>
+														<size>170,20</size>
+														<value>Transition Effect</value>
+														<content>
+															<item>None</item>
+															<item>Fading</item>
+															<item>Move</item>
+															<item>Page Curl</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Use Rotate Auto Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Use Rotate Auto</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBROTATEAUTO">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
 									</object>
-									<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
-										<pos>205,94</pos>
-										<size>170,20</size>
-										<value>NEAREST</value>
-										<content>
-											<item>NEAREST</item>
-											<item>LINEAR</item>
-											<item>CUBIC</item>
-											<item>AREA</item>
-											<item>LANCZOS4</item>
-											<item>LINEAR_EXACT</item>
-											<item>NEAREST_EXACT</item>
-											<item>AVIR</item>
-											<item>BboxFilter</item>
-											<item>HermiteFilter</item>
-											<item>HanningFilter</item>
-											<item>CatromFilter</item>
-											<item>MitchellFilter</item>
-											<item>TriangleFilter</item>
-											<item>QuadraticFilter</item>
-											<item>BlackmanFilter</item>
-											<item>HammingFilter</item>
-										</content>
-									</object>
-									<object class="wxRadioBox" name="ID_RBAUTOCONTRAST">
-										<label>Constrast Correction</label>
-										<style>wxRA_SPECIFY_COLS</style>
-										<content>
-											<item>Yes</item>
-											<item>No</item>
-										</content>
-										<default>-1</default>
-										<pos>0,74</pos>
-										<size>180,70</size>
-									</object>
-									<object class="wxStaticBox" name="sbInterpolation">
-										<label>Transition Diaporama Effect</label>
-										<pos>0,150</pos>
-										<size>180,70</size>
-									</object>
-									<object class="wxComboBox" name="ID_RBDIAPORAMATRANSITIONEFFECT">
-										<default>0</default>
-										<pos>5,170</pos>
-										<size>170,20</size>
-										<value>Diaporama Transition Effect</value>
-										<content>
-											<item>None</item>
-											<item>Zoom</item>
-											<item>Fading</item>
-											<item>Move</item>
-										</content>
-									</object>
-									<object class="wxStaticBox" name="sbInterpolation">
-										<label>Diaporama Music</label>
-										<pos>200,150</pos>
-										<size>180,70</size>
-									</object>
-									<object class="wxTextCtrl" name="ID_TXTMUSICDIAPORAMAPATH">
-										<default>0</default>
-										<pos>205,170</pos>
-										<size>140,20</size>
-									</object>
-									<object class="wxButton" name="ID_MUSICDIAPORAMAPATH">
-										<label>...</label>
-										<pos>350,170</pos>
-										<size>20,20</size>
-									</object>
-									<object class="wxRadioBox" name="ID_RBUSESUPERDNN">
-										<label>Use Super Resolution Filter</label>
-										<style>wxRA_SPECIFY_COLS</style>
-										<content>
-											<item>Yes</item>
-											<item>No</item>
-										</content>
-										<default>-1</default>
-										<pos>0,220</pos>
-										<size>180,70</size>
-									</object>									
-									<object class="wxStaticBox" name="sbInterpolation">
-										<label>Super Resolution Filter</label>
-										<pos>200,220</pos>
-										<size>180,70</size>
-									</object>
-									<object class="wxComboBox" name="ID_CBUSESUPERDNNFILTER">
-										<pos>205,240</pos>
-										<size>170,20</size>
-										<value>EDSR</value>
-										<content>
-											<item>EDSR</item>
-											<item>ESPCN</item>
-											<item>FSRCNN</item>
-											<item>LapSRN</item>
-											<item>None</item>
-										</content>
-									</object>										
-							</object>
-						</object>	
-						<object class="notebookpage">
-							<label>Process</label>
-							<object class="wxPanel" name="page_3">
-								<object class="wxStaticBox" name="sbProcess">
-									<label>Process</label>
-									<pos>0,0</pos>
-									<size>380,130</size>
 								</object>
-								<object class="wxStaticText" name="ID_STTHUMBNAIL">
-									<label>THUMBNAIL :</label>
-									<pos>16,30</pos>
-									<size>100,24</size>
-								</object>		
-								<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
-									<value>0</value>
-									<pos>120,30</pos>
-									<size>120,21</size>
+								<!-- Row 2: Contrast Correction and Interpolation Filter -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Contrast Correction Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Contrast Correction</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBAUTOCONTRAST">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Interpolation Filter Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Interpolation Filter</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
+														<size>170,20</size>
+														<value>NEAREST</value>
+														<content>
+															<item>NEAREST</item>
+															<item>LINEAR</item>
+															<item>CUBIC</item>
+															<item>AREA</item>
+															<item>LANCZOS4</item>
+															<item>LINEAR_EXACT</item>
+															<item>NEAREST_EXACT</item>
+															<item>AVIR</item>
+															<item>BboxFilter</item>
+															<item>HermiteFilter</item>
+															<item>HanningFilter</item>
+															<item>CatromFilter</item>
+															<item>MitchellFilter</item>
+															<item>TriangleFilter</item>
+															<item>QuadraticFilter</item>
+															<item>BlackmanFilter</item>
+															<item>HammingFilter</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
 								</object>
-								<object class="wxStaticText" name="ID_STEXIF">
-									<label>EXIF :</label>
-									<pos>16,60</pos>
-									<size>100,24</size>
-								</object>			
-								<object class="wxSpinCtrl" name="ID_SCEXIF">
-									<value>0</value>
-									<pos>120,60</pos>
-									<size>120,21</size>
+								<!-- Row 3: Transition Diaporama Effect and Diaporama Music -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Transition Diaporama Effect Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Transition Diaporama Effect</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_RBDIAPORAMATRANSITIONEFFECT">
+														<default>0</default>
+														<size>170,20</size>
+														<value>Diaporama Transition Effect</value>
+														<content>
+															<item>None</item>
+															<item>Zoom</item>
+															<item>Fading</item>
+															<item>Move</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Diaporama Music Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Diaporama Music</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxBoxSizer">
+														<orient>wxHORIZONTAL</orient>
+														<object class="sizeritem">
+															<flag>wxEXPAND|wxALL</flag>
+															<border>5</border>
+															<option>1</option>
+															<object class="wxTextCtrl" name="ID_TXTMUSICDIAPORAMAPATH">
+																<default>0</default>
+																<size>140,20</size>
+															</object>
+														</object>
+														<object class="sizeritem">
+															<flag>wxALL</flag>
+															<border>5</border>
+															<object class="wxButton" name="ID_MUSICDIAPORAMAPATH">
+																<label>...</label>
+															</object>
+														</object>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
 								</object>
-								<object class="wxStaticText" name="ID_STFACE">
-									<label>Face :</label>
-									<pos>16,90</pos>
-									<size>100,24</size>
-								</object>			
-								<object class="wxSpinCtrl" name="ID_SCFACE">
-									<value>1</value>
-									<pos>120,90</pos>
-									<size>120,21</size>
+								<!-- Row 4: Use Super Resolution Filter and Super Resolution Filter -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Use Super Resolution Filter Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Use Super Resolution Filter</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBUSESUPERDNN">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Super Resolution Filter Group -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Super Resolution Filter</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_CBUSESUPERDNNFILTER">
+														<size>170,20</size>
+														<value>EDSR</value>
+														<content>
+															<item>EDSR</item>
+															<item>ESPCN</item>
+															<item>FSRCNN</item>
+															<item>LapSRN</item>
+															<item>None</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
 								</object>
-								<object class="wxRadioBox" name="ID_RBVIDEOFACEDETECTION">
-										<label>Video Face Detection</label>
-										<style>wxRA_SPECIFY_COLS</style>
-										<content>
-											<item>Yes</item>
-											<item>No</item>
-										</content>
-										<default>-1</default>
-										<pos>0,130</pos>
-										<size>380,70</size>
-								</object>
-								<object class="wxStaticBox" name="sbHardwareAccelerate">
-									<label>Hardware Accelerator</label>
-									<pos>0,210</pos>
-									<size>380,70</size>
-								</object>
-								<object class="wxComboBox" name="ID_CBHARDWAREACCELERATE">
-									<pos>10,240</pos>
-									<size>170,20</size>
-									<value>CPU</value>
-									<content>
-									</content>
-								</object>	
 							</object>
 						</object>
-						<object class="notebookpage">
+					</object>	
+					<object class="notebookpage">
+						<label>Process</label>
+						<object class="wxPanel" name="page_3">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<!-- Process Group -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Process</label>
+										<orient>wxVERTICAL</orient>
+										<!-- THUMBNAIL -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+													<border>5</border>
+													<size>100,-1</size>
+													<object class="wxStaticText" name="ID_STTHUMBNAIL">
+														<label>THUMBNAIL :</label>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
+														<value>0</value>
+														<size>120,21</size>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- EXIF -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+													<border>5</border>
+													<size>100,-1</size>
+													<object class="wxStaticText" name="ID_STEXIF">
+														<label>EXIF :</label>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxSpinCtrl" name="ID_SCEXIF">
+														<value>0</value>
+														<size>120,21</size>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- FACE -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+													<border>5</border>
+													<size>100,-1</size>
+													<object class="wxStaticText" name="ID_STFACE">
+														<label>Face :</label>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxSpinCtrl" name="ID_SCFACE">
+														<value>1</value>
+														<size>120,21</size>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+								<!-- Video Face Detection -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Video Face Detection</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxRadioBox" name="ID_RBVIDEOFACEDETECTION">
+												<style>wxRA_SPECIFY_COLS</style>
+												<content>
+													<item>Yes</item>
+													<item>No</item>
+												</content>
+												<default>-1</default>
+											</object>
+										</object>
+									</object>
+								</object>
+								<!-- Hardware Accelerator -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Hardware Accelerator</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxComboBox" name="ID_CBHARDWAREACCELERATE">
+												<size>170,20</size>
+												<value>CPU</value>
+												<content>
+												</content>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
 						<label>External Program</label>
-							<object class="wxPanel" name="page_4">
-								<object class="wxStaticBox" name="sbPictureExternalProgram">
-									<label>Picture External Program</label>
-									<pos>0,10</pos>
-									<size>360,70</size>
+						<object class="wxPanel" name="page_4">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<!-- Picture External Program -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Picture External Program</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxTextCtrl" name="ID_TXTPICTUREPATH">
+														<default>0</default>
+														<size>255,20</size>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxALL</flag>
+													<border>5</border>
+													<object class="wxButton" name="ID_PICTUREPATH">
+														<label>...</label>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
 								</object>
-								<object class="wxTextCtrl" name="ID_TXTPICTUREPATH">
-									<default>0</default>
-									<pos>5,35</pos>
-									<size>255,20</size>
+								<!-- Video External Program -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Video External Program</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxTextCtrl" name="ID_TXTVIDEOPATH">
+														<default>0</default>
+														<size>255,20</size>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxALL</flag>
+													<border>5</border>
+													<object class="wxButton" name="ID_VIDEOPATH">
+														<label>...</label>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
 								</object>
-								<object class="wxButton" name="ID_PICTUREPATH">
-									<label>...</label>
-									<pos>270,35</pos>
+								<object class="sizeritem">
+									<flag>wxEXPAND</flag>
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+									</object>
 								</object>
-								<object class="wxStaticBox" name="sbVideoExternalProgram">
-									<label>Video External Program</label>
-									<pos>0,84</pos>
-									<size>360,80</size>
-								</object>
-								<object class="wxTextCtrl" name="ID_TXTVIDEOPATH">
-									<default>0</default>
-									<pos>5,120</pos>
-									<size>255,20</size>
-								</object>
-								<object class="wxButton" name="ID_VIDEOPATH">
-									<label>...</label>
-									<pos>270,120</pos>
-								</object>
+							</object>
 						</object>
 					</object>		
 					<object class="notebookpage">
-					<label>Geolocalisae</label>
+						<label>Geolocalisae</label>
 						<object class="wxPanel" name="page_5">
-							<object class="wxStaticBox" name="sbPictureExternalProgram">
-								<label>ApiKey from geoplugin.net</label>
-								<pos>0,10</pos>
-								<size>360,70</size>
-							</object>
-							<object class="wxTextCtrl" name="ID_TXTAPIKEY">
-								<default>0</default>
-								<pos>5,35</pos>
-								<size>255,20</size>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<!-- ApiKey from geoplugin.net -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>ApiKey from geoplugin.net</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxTextCtrl" name="ID_TXTAPIKEY">
+												<default>0</default>
+												<size>255,20</size>
+											</object>
+										</object>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<flag>wxEXPAND</flag>
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+									</object>
+								</object>
 							</object>
 						</object>
 					</object>					
 					<object class="notebookpage">
 						<label>Other Parameter</label>
 						<object class="wxPanel" name="page_6">
-							<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
-								<label>Database in memory</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Yes</item>
-									<item>No</item>
-								</content>
-								<default>-1</default>
-								<pos>0,0</pos>
-								<size>190,70</size>
-							</object>	
-							<object class="wxRadioBox" name="ID_RBFACEDETECTION">
-								<label>Detect Face</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Yes</item>
-									<item>No</item>
-								</content>
-								<default>-1</default>
-								<pos>190,0</pos>
-								<size>190,70</size>
-							</object>								
-							<object class="wxStaticBox" name="sbDiaporama">
-								<label>Diaporama Sequence</label>
-								<pos>0,80</pos>
-								<size>380,50</size>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<!-- Row 1: Database in memory and Detect Face -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Database in memory -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Database in memory</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Detect Face -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Detect Face</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBFACEDETECTION">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+								<!-- Diaporama Sequence -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticBoxSizer">
+										<label>Diaporama Sequence</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<object class="wxBoxSizer">
+												<orient>wxHORIZONTAL</orient>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+													<border>5</border>
+													<object class="wxStaticText" name="ID_STTIME">
+														<label>Time :</label>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<option>1</option>
+													<object class="wxSpinCtrl" name="ID_SCTIME">
+														<value>0</value>
+														<size>120,21</size>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+								<!-- Row 2: Video Decoder Hardware and Video Encoder Hardware -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- Video Decoder Hardware -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Video Decoder Hardware</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_CBVIDEODECODERHARD">
+														<size>170,20</size>
+														<value>none</value>
+														<content>
+															<item>none</item>
+															<item>cuda</item>
+															<item>qsv</item>
+															<item>d3d11va</item>
+															<item>dxva2</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Video Encoder Hardware -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Video Encoder Hardware</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_CBVIDEOENCODERHARD">
+														<size>170,20</size>
+														<value>none</value>
+														<content>
+															<item>none</item>
+															<item>nvenc</item>
+															<item>amf</item>
+															<item>qsv</item>
+															<item>libmfx</item>
+														</content>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+								<!-- Row 3: OpenCL OpenGL Interop and Window Skin -->
+								<object class="sizeritem">
+									<flag>wxEXPAND|wxALL</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<!-- OpenCL OpenGL Interop -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>OpenCL OpenGL Interop</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="ID_RBOPENGLOPENCLINTEROP">
+														<style>wxRA_SPECIFY_COLS</style>
+														<content>
+															<item>Yes</item>
+															<item>No</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+										<!-- Window Skin -->
+										<object class="sizeritem">
+											<flag>wxEXPAND|wxALL</flag>
+											<border>5</border>
+											<option>1</option>
+											<object class="wxStaticBoxSizer">
+												<label>Window Skin</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<flag>wxEXPAND|wxALL</flag>
+													<border>5</border>
+													<object class="wxComboBox" name="ID_RBSKINCOLOR">
+														<size>170,20</size>
+														<content>
+															<item>Auto</item>
+															<item>Light</item>
+															<item>Dark</item>
+														</content>
+														<default>-1</default>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<flag>wxEXPAND</flag>
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+									</object>
+								</object>
 							</object>
-							<object class="wxSpinCtrl" name="ID_SCTIME">
-								<value>0</value>
-								<pos>120,100</pos>
-								<size>120,21</size>
-							</object>
-							<object class="wxStaticText" name="ID_STTIME">
-								<label>Time :</label>
-								<pos>16,100</pos>
-								<size>40,24</size>
-							</object>
-							<object class="wxStaticBox" name="sbVideoDecoderHard">
-								<label>Video Decoder Hardware</label>
-								<pos>0,150</pos>
-								<size>190,70</size>
-							</object>
-							<object class="wxComboBox" name="ID_CBVIDEODECODERHARD">
-								<pos>10,170</pos>
-								<size>170,20</size>
-								<value>none</value>
-								<content>
-									<item>none</item>
-									<item>cuda</item>
-									<item>qsv</item>
-									<item>d3d11va</item>
-									<item>dxva2</item>
-								</content>
-							</object>		
-							<object class="wxStaticBox" name="sbVideoEncoderHard">
-								<label>Video Encoder Hardware</label>
-								<pos>190,150</pos>
-								<size>190,70</size>
-							</object>
-							<object class="wxComboBox" name="ID_CBVIDEOENCODERHARD">
-								<pos>200,170</pos>
-								<size>170,20</size>
-								<value>none</value>
-								<content>
-									<item>none</item>
-									<item>nvenc</item>
-									<item>amf</item>
-									<item>qsv</item>
-									<item>libmfx</item>
-								</content>
-							</object>
-							<object class="wxRadioBox" name="ID_RBOPENGLOPENCLINTEROP">
-								<label>OpenCL OpenGL Interop</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Yes</item>
-									<item>No</item>
-								</content>
-								<default>-1</default>
-								<pos>0,220</pos>
-								<size>190,70</size>
-							</object>	
-							<object class="wxStaticBox" name="sbWindowSkin">
-								<label>Window Skin</label>
-								<pos>200,220</pos>
-								<size>190,70</size>
-							</object>
-							<object class="wxComboBox" name="ID_RBSKINCOLOR">
-								<label>Window Skin</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Auto</item>
-									<item>Light</item>
-									<item>Dark</item>
-								</content>
-								<default>-1</default>
-								<pos>210,240</pos>
-								<size>170,20</size>
-							</object>							
-							</object>
-					</object>
+						</object>
 					</object>
 				</object>
-				<object class="sizeritem">
+			</object>
+			<!-- OK and Cancel buttons -->
+			<object class="sizeritem">
 				<flag>wxALIGN_CENTRE|wxALL</flag>
 				<border>5</border>
 				<object class="wxBoxSizer">
@@ -386,6 +738,6 @@
 					</object>
 				</object>
 			</object>
-        </object>		
+		</object>		
 	</object>
 </resource>

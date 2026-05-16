@@ -3,51 +3,107 @@
 	<object class="wxDialog" name="JpegOption">
 		<title>Jpeg Compression</title>
 		<centered>1</centered>
-		<size>400,356</size>
-		<object class="wxRadioBox" name="ID_RBCODEC">
-			<label>Codec Option</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<content>
-				<item>Baseline</item>
-				<item>Arithmetic</item>
-				<item>Grayscale</item>
-				<item>Optimize</item>
-				<item>Progressive</item>
-				<item>Lossless</item>
-				<item>Smoothing</item>
-				<item>Subsample_422</item>
-				<item>Subsample_444</item>
-			</content>
-			<default>-1</default>
-			<pos>0,0</pos>
-			<size>400,216</size>
-		</object>
-		<object class="wxButton" name="ID_OK">
-			<label>OK</label>
-			<pos>88,312</pos>
-		</object>
-		<object class="wxButton" name="ID_CANCEL">
-			<label>Cancel</label>
-			<pos>224,312</pos>
-		</object>
-		<object class="wxStaticBox" name="ID_SBCOMPRESSION">
-			<label>Compression Level</label>
-			<pos>0,224</pos>
-			<size>400,72</size>
-		</object>
-		<object class="wxSlider" name="ID_SLCOMPRESSION">
-			<pos>48,248</pos>
-			<size>304,24</size>
-		</object>
-		<object class="wxStaticText" name="ID_STATICTEXT2">
-			<label>High</label>
-			<pos>24,248</pos>
-			<size>24,16</size>
-		</object>
-		<object class="wxStaticText" name="ID_STATICTEXT1">
-			<label>Low</label>
-			<pos>352,248</pos>
-			<size>32,24</size>
+		<size>400,380</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!-- Codec Option RadioBox -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>0</option>
+				<object class="wxRadioBox" name="ID_RBCODEC">
+					<label>Codec Option</label>
+					<style>wxRA_SPECIFY_COLS</style>
+					<content>
+						<item>Baseline</item>
+						<item>Arithmetic</item>
+						<item>Grayscale</item>
+						<item>Optimize</item>
+						<item>Progressive</item>
+						<item>Lossless</item>
+						<item>Smoothing</item>
+						<item>Subsample_422</item>
+						<item>Subsample_444</item>
+					</content>
+					<default>-1</default>
+				</object>
+			</object>
+			<!-- Compression Level StaticBoxSizer -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>1</option>
+				<object class="wxStaticBoxSizer" name="ID_SBCOMPRESSION">
+					<label>Compression Level</label>
+					<orient>wxVERTICAL</orient>
+					<!-- High/Slider/Low Row -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>5</border>
+						<option>0</option>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<!-- High Label -->
+							<object class="sizeritem">
+								<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+								<border>2</border>
+								<option>0</option>
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>High</label>
+								</object>
+							</object>
+							<!-- Slider -->
+							<object class="sizeritem">
+								<flag>wxEXPAND|wxALL</flag>
+								<border>2</border>
+								<option>1</option>
+								<object class="wxSlider" name="ID_SLCOMPRESSION">
+								</object>
+							</object>
+							<!-- Low Label -->
+							<object class="sizeritem">
+								<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+								<border>2</border>
+								<option>0</option>
+								<object class="wxStaticText" name="ID_STATICTEXT1">
+									<label>Low</label>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+			<!-- Spacer -->
+			<object class="sizeritem">
+				<flag>wxEXPAND</flag>
+				<border>0</border>
+				<option>1</option>
+			</object>
+			<!-- OK and Cancel Buttons -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER|wxALL</flag>
+				<border>5</border>
+				<option>0</option>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<option>0</option>
+						<object class="wxButton" name="ID_OK">
+							<label>OK</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<option>0</option>
+						<object class="wxButton" name="ID_CANCEL">
+							<label>Cancel</label>
+						</object>
+					</object>
+				</object>
+			</object>
 		</object>
 	</object>
 </resource>

@@ -4,24 +4,59 @@
 		<title>Face Pertinence</title>
 		<centered>1</centered>
 		<size>400,202</size>
-		<object class="wxStaticBox" name="ID_STBOX">
-			<label>Pertinence Minimal</label>
-			<pos>0,0</pos>
-			<size>408,112</size>
-		</object>
-		<object class="wxSpinCtrl" name="ID_SPVALUE">
-			<value>0</value>
-			<max>300</max>
-			<pos>16,48</pos>
-			<size>312,27</size>
-		</object>
-		<object class="wxButton" name="ID_BTOK">
-			<label>OK</label>
-			<pos>24,136</pos>
-		</object>
-		<object class="wxButton" name="ID_BTCANCEL">
-			<label>Cancel</label>
-			<pos>232,136</pos>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!-- Pertinence Minimal StaticBoxSizer -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>0</option>
+				<object class="wxStaticBoxSizer" name="ID_STBOX">
+					<label>Pertinence Minimal</label>
+					<orient>wxVERTICAL</orient>
+					<!-- SpinCtrl -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>10</border>
+						<option>0</option>
+						<object class="wxSpinCtrl" name="ID_SPVALUE">
+							<value>0</value>
+							<max>300</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<!-- Spacer -->
+			<object class="sizeritem">
+				<flag>wxEXPAND</flag>
+				<border>0</border>
+				<option>1</option>
+			</object>
+			<!-- OK and Cancel Buttons -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER|wxALL</flag>
+				<border>5</border>
+				<option>0</option>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<option>0</option>
+						<object class="wxButton" name="ID_BTOK">
+							<label>OK</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER|wxALL</flag>
+						<border>5</border>
+						<option>0</option>
+						<object class="wxButton" name="ID_BTCANCEL">
+							<label>Cancel</label>
+						</object>
+					</object>
+				</object>
+			</object>
 		</object>
 	</object>
 </resource>

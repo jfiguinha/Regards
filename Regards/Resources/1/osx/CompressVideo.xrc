@@ -3,47 +3,112 @@
 	<object class="wxDialog" name="CompressVideo">
 		<title>Video Compression</title>
 		<centered>1</centered>
-		<size>400,400</size>
-		<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
-			<pos>24,20</pos>
-			<size>344,240</size>
-		</object>
-		<object class="wxStaticText" name="ID_STPROGRESS">
-			<label>Progression :</label>
-			<pos>32,260</pos>
-			<size>72,13</size>
-		</object>
-		<object class="wxStaticText" name="ID_STTEXT2">
-			<label>Time Elapsed : </label>
-			<pos>32,290</pos>
-		</object>	
-		<object class="wxStaticText" name="ID_STTIMEELAPSED">
-			<label>Time Elapsed :</label>
-			<pos>120,290</pos>
-		</object>			
-		<object class="wxStaticText" name="ID_STTEXT1">
-			<label>Nb Frame :</label>
-			<pos>200,290</pos>
-		</object>	
-		<object class="wxStaticText" name="ID_STFRAME">
-			<label>Nb Frame per second :</label>
-			<pos>300,290</pos>
-		</object>
-		<object class="wxStaticText" name="ID_STTEXT2">
-			<label>Time Missing : </label>
-			<pos>32,310</pos>
-		</object>	
-		<object class="wxStaticText" name="ID_STTIMEMISSING">
-			<label>Time Missing :</label>
-			<pos>120,310</pos>
-		</object>		
-		<object class="wxGauge" name="ID_GAUGEPRG">
-			<pos>24,340</pos>
-			<size>344,28</size>
-		</object>
-		<object class="wxButton" name="ID_BUTTON1">
-			<label>Cancel</label>
-			<pos>152,370</pos>
+		<size>400,450</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!-- Video Bitmap -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<option>1</option>
+				<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
+					<size>344,240</size>
+				</object>
+			</object>
+			<!-- Progression Label -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxStaticText" name="ID_STPROGRESS">
+					<label>Progression :</label>
+				</object>
+			</object>
+			<!-- Time Elapsed Row -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<!-- Time Elapsed Label -->
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+						<border>5</border>
+						<size>100,-1</size>
+						<object class="wxStaticText" name="ID_STTEXT2">
+							<label>Time Elapsed :</label>
+						</object>
+					</object>
+					<!-- Time Elapsed Value -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+						<object class="wxStaticText" name="ID_STTIMEELAPSED">
+							<label>Time Elapsed :</label>
+						</object>
+					</object>
+					<!-- Nb Frame Label -->
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+						<border>5</border>
+						<size>90,-1</size>
+						<object class="wxStaticText" name="ID_STTEXT1">
+							<label>Nb Frame :</label>
+						</object>
+					</object>
+					<!-- Nb Frame Value -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+						<object class="wxStaticText" name="ID_STFRAME">
+							<label>Nb Frame per second :</label>
+						</object>
+					</object>
+				</object>
+			</object>
+			<!-- Time Missing Row -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<!-- Time Missing Label -->
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+						<border>5</border>
+						<size>100,-1</size>
+						<object class="wxStaticText">
+							<label>Time Missing :</label>
+						</object>
+					</object>
+					<!-- Time Missing Value -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+						<object class="wxStaticText" name="ID_STTIMEMISSING">
+							<label>Time Missing :</label>
+						</object>
+					</object>
+				</object>
+			</object>
+			<!-- Progress Gauge -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxGauge" name="ID_GAUGEPRG">
+					<size>344,28</size>
+				</object>
+			</object>
+			<!-- Cancel Button -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER|wxALL</flag>
+				<border>5</border>
+				<object class="wxButton" name="ID_BUTTON1">
+					<label>Cancel</label>
+				</object>
+			</object>
 		</object>
 	</object>
 </resource>

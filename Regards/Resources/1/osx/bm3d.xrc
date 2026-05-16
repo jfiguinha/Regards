@@ -3,24 +3,50 @@
 	<object class="wxDialog" name="Bm3dDlg">
 		<title>Bm3d Filter</title>
 		<centered>1</centered>
-		<size>400,167</size>
-		<object class="wxGauge" name="ID_GAUGE1">
-			<pos>24,64</pos>
-			<size>344,28</size>
-		</object>
-		<object class="wxStaticText" name="ID_STATICTEXT1">
-			<label>Process :</label>
-			<pos>32,32</pos>
-			<size>72,13</size>
-		</object>
-		<object class="wxStaticText" name="ID_STATICTEXT2">
-			<label>Label</label>
-			<pos>96,32</pos>
-			<size>248,16</size>
-		</object>
-		<object class="wxButton" name="ID_BUTTON1">
-			<label>Cancel</label>
-			<pos>152,120</pos>
+		<size>400,170</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!-- Process Information -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<!-- Process Label -->
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Process :</label>
+						</object>
+					</object>
+					<!-- Process Name -->
+					<object class="sizeritem">
+						<flag>wxEXPAND|wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Label</label>
+						</object>
+					</object>
+				</object>
+			</object>
+			<!-- Progress Gauge -->
+			<object class="sizeritem">
+				<flag>wxEXPAND|wxALL</flag>
+				<border>5</border>
+				<object class="wxGauge" name="ID_GAUGE1">
+					<size>344,28</size>
+				</object>
+			</object>
+			<!-- Cancel Button -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER|wxALL</flag>
+				<border>5</border>
+				<object class="wxButton" name="ID_BUTTON1">
+					<label>Cancel</label>
+				</object>
+			</object>
 		</object>
 	</object>
 </resource>
