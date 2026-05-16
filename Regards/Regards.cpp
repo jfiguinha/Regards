@@ -481,9 +481,16 @@ bool MyApp::OnInit()
 #ifdef GLUT
 #ifndef __APPLE__
 
-	//int argc = 1;
-	//if (argc > 1)
-	//	appName = wxTheApp->argv[argc - 1];
+	if (argc > 1)
+	{
+		if (argc == 3)
+		{
+			wxString parameter = wxTheApp->argv[1];
+			if (parameter == "-p")
+				appName = wxTheApp->argv[argc - 1];
+		}
+	}
+
 
 	int _argc = 1;
 	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
