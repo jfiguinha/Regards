@@ -158,6 +158,8 @@
     <File Name="InfosSeparationBarEffect.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
@@ -190,6 +192,7 @@
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../Otherlib/OpenCV"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
@@ -284,6 +287,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

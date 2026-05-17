@@ -39,11 +39,11 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
-    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="Yes"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
     <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -60,6 +60,7 @@
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
     <Project Name="libCudaEffect" Path="libCudaEffect/libCudaEffect.project" Active="No"/>
     <Project Name="libVideoEffect" Path="libVideoEffect/libVideoEffect.project" Active="No"/>
+    <Project Name="OpenCV" Path="Otherlib/OpenCV/OpenCV.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsVideoConverter">
     <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project" Active="No"/>
@@ -134,6 +135,7 @@
       <Project Name="libVideoConverter" ConfigName="Debug"/>
       <Project Name="RegardsPDF_linux" ConfigName="Debug"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Debug"/>
+	  <Project Name="OpenCV" ConfigName="Debug"/>
       <Project Name="ffplay" ConfigName="Debug"/>
       <Project Name="libCudaEffect" ConfigName="Debug"/>
       <Project Name="libVideoEffect" ConfigName="Debug"/>
@@ -159,6 +161,7 @@
       <Project Name="libUtility" ConfigName="Release"/>
       <Project Name="libVideoThumbnail" ConfigName="Release"/>
       <Project Name="libViewer" ConfigName="Release"/>
+	  <Project Name="OpenCV" ConfigName="Release"/>
       <Project Name="libWindow" ConfigName="Release"/>
       <Project Name="include" ConfigName="Release"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Release"/>

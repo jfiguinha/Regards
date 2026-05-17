@@ -10,7 +10,13 @@
 
 class CTextureGLPriv;
 class CTextureCudaPriv;
-class cv::ogl::Texture2D;
+namespace cv
+{
+	namespace ogl
+	{
+        class Texture2D;
+    }
+}
 
 namespace Regards
 {
