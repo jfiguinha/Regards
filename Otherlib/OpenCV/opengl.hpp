@@ -378,7 +378,7 @@ namespace cv {
 
             int rows() const;
             int cols() const;
-            Size size() const;
+            cv::Size size() const;
             bool empty() const;
 
             Format format() const;

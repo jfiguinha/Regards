@@ -2,8 +2,11 @@
 #include "OpenCLContext.h"
 
 #ifdef __APPLE__
+
 #include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
+#include <OpenCL/cl_gl.h>
+
 #else
 #include <CL/cl.h>
 #include <CL/cl_gl.h>

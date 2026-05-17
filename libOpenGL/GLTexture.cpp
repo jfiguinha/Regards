@@ -350,8 +350,8 @@ bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap)
         tex->bind();
         //tex->setAutoRelease(false);
         m_nTextureID = tex->texId();
-        width = tex->size().width;
-        height = tex->size().height;
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
         isOk = true;
     }
     catch (cv::Exception& e)

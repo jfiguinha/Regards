@@ -16,7 +16,7 @@ mv vcpkg-2025.10.17 vcpkg
 
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install wxwidgets[webview] --allow-unsupported --x-abi-tools-use-exact-versions
+./vcpkg install wxwidgets[webview] --allow-unsupported --x-abi-tools-use-exact-versions --recurse
 ./vcpkg install sdl2
 cd ..
 
@@ -33,21 +33,21 @@ cd ..
 
 cd vcpkg
 ./vcpkg install ffmpeg[gpl,aom,dav1d,x265,x264,openh264,vpx,webp,vorbis,mp3lame,openjpeg,opus,fdk-aac,ffmpeg] --allow-unsupported --x-abi-tools-use-exact-versions
-./vcpkg install opencv4[contrib,dnn,core,ffmpeg,jpeg,tbb,png,tiff,webp,openexr,opengl] --allow-unsupported --x-abi-tools-use-exact-versions
+./vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,tbb,png,tiff,webp,openexr,opencl] --allow-unsupported --x-abi-tools-use-exact-versions
 ./vcpkg install libde265
-./vcpkg install exiv2[xmp,bmff]
+./vcpkg install exiv2[nls,xmp,png,bmff]
 ./vcpkg install libavif[aom,dav1d]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
 ./vcpkg install jasper
-./vcpkg install libraw[dng-lossy,openmp]
+./vcpkg install libraw[dng-lossy]
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install libjxl
-./vcpkg install openal-soft
 ./vcpkg install libepoxy
 ./vcpkg install boost-lexical-cast
+./vcpkg install tesseract
 cd ..
 
 #Compile heif-master
