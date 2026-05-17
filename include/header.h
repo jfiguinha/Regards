@@ -66,6 +66,8 @@
 #endif
 
 
+#define HAVE_OPENGL
+
 #ifndef __WXGTK__
 #include <epoxy/gl.h>
 #ifdef WIN32

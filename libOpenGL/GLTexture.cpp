@@ -14,7 +14,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
-#include <opencv2/core/opengl.hpp>
+#include <opengl.hpp>
 using namespace Regards::OpenGL;
 
 using namespace cv::ocl;

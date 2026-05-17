@@ -1,6 +1,6 @@
 #include "header.h"
 #include "PictureArray.h"
-#include <opencv2/core/opengl.hpp>
+#include <opengl.hpp>
 using namespace Regards::Picture;
 
 CPictureArray::CPictureArray(const cv::_InputArray::KindFlag& type)

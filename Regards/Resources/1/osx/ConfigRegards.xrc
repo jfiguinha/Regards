@@ -465,12 +465,6 @@
 										</object>
 									</object>
 								</object>
-								<object class="sizeritem">
-									<flag>wxEXPAND</flag>
-									<object class="wxBoxSizer">
-										<orient>wxVERTICAL</orient>
-									</object>
-								</object>
 							</object>
 						</object>
 					</object>		
@@ -494,12 +488,6 @@
 												<size>255,20</size>
 											</object>
 										</object>
-									</object>
-								</object>
-								<object class="sizeritem">
-									<flag>wxEXPAND</flag>
-									<object class="wxBoxSizer">
-										<orient>wxVERTICAL</orient>
 									</object>
 								</object>
 							</object>
@@ -703,12 +691,6 @@
 												</object>
 											</object>
 										</object>
-									</object>
-								</object>
-								<object class="sizeritem">
-									<flag>wxEXPAND</flag>
-									<object class="wxBoxSizer">
-										<orient>wxVERTICAL</orient>
 									</object>
 								</object>
 							</object>

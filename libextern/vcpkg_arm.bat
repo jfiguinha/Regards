@@ -4,7 +4,7 @@ vcpkg install sdl2:arm64-windows
 vcpkg install x265:arm64-windows
 vcpkg install libde265:arm64-windows
 vcpkg install tesseract:arm64-windows --allow-unsupported
-vcpkg install opencv4[contrib,core,dnn,ffmpeg,jpeg,tbb,png,tiff,webp,openexr,opengl]:arm64-windows --recurse --allow-unsupported
+vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr,opencl]:arm64-windows --recurse --allow-unsupported
 vcpkg install opencl:arm64-windows
 vcpkg install dav1d:arm64-windows
 vcpkg install exiv2[video,xmp,bmff]:arm64-windows

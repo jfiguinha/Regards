@@ -5,10 +5,12 @@
 #include <CL/cl_gl.h>
 #endif
 
+
 #include <PictureArray.h>
 
 class CTextureGLPriv;
 class CTextureCudaPriv;
+class cv::ogl::Texture2D;
 
 namespace Regards
 {

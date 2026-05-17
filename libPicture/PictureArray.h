@@ -1,5 +1,6 @@
 #pragma once
 
+
 namespace Regards
 {
 	namespace Picture
