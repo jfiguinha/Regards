@@ -309,3 +309,6 @@
 /Regards/Resources/shader/opengl/bak
 /libextern/ffmpeg-master.old
 /Otherlib/OpenCV/x64/Debug
+/ARM64/RegardsViewer/Release
+/Otherlib/OpenCV/ARM64
+/Otherlib/OpenCV/x64/Release
