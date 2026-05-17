@@ -4,7 +4,7 @@ vcpkg install sdl2
 vcpkg install x265
 vcpkg install libde265
 vcpkg install tesseract
-vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr,opencl]
+vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,tbb,png,tiff,webp,openexr,opencl] --recurse
 vcpkg install opencl
 vcpkg install dav1d
 vcpkg install exiv2[nls,xmp,png,bmff]
@@ -21,3 +21,4 @@ vcpkg install libepoxy
 vcpkg install boost-lexical-cast
 vcpkg install freeglut
 vcpkg install libxml2
+
