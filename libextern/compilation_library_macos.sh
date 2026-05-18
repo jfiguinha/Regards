@@ -8,8 +8,8 @@ echo $LOCALPATH
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-unzip vcpkg-2025.10.17_macos.zip
-mv vcpkg-2025.10.17 vcpkg
+unzip vcpkg-2026.04.27_macos.zip
+mv vcpkg-2026.04.27_macos vcpkg
 
 #unzip ports_vcpkg_macos.zip
 #cp -r ports_vcpkg/opencv4 vcpkg/ports
