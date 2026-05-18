@@ -121,6 +121,7 @@
     <Project Name="libffmpeg"/>
     <Project Name="libVideoConverter"/>
     <Project Name="libVideoEffect"/>
+    <Project Name="OpenCV"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -209,8 +210,9 @@
         <Library Value="Theme"/>
         <Library Value="Parameter"/>
         <Library Value="OpenCL"/>
+        <Library Value="OpenCV"/>
         <Library Value="CxImage"/>
-        <Library Value="wx_gtk3u_gl-3.2"/>
+        <Library Value="wx_gtk3u_gl-3.3"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
@@ -262,7 +264,6 @@
         <Library Value="opencv_features2d4"/>
         <Library Value="opencv_flann4"/>
         <Library Value="opencv_fuzzy4"/>
-        <Library Value="opencv_hdf4"/>
         <Library Value="opencv_hfs4"/>
         <Library Value="opencv_imgcodecs4"/>
         <Library Value="opencv_img_hash4"/>
@@ -284,7 +285,6 @@
         <Library Value="opencv_structured_light4"/>
         <Library Value="opencv_superres4"/>
         <Library Value="opencv_surface_matching4"/>
-        <Library Value="opencv_text4"/>
         <Library Value="opencv_tracking4"/>
         <Library Value="opencv_video4"/>
         <Library Value="opencv_videoio4"/>
@@ -299,13 +299,15 @@
         <Library Value="opencv_imgproc4"/>
         <Library Value="opencv_ximgproc4"/>
         <Library Value="opencv_core4"/>
+        <Library Value="ipphal"/>
         <Library Value="ippiw"/>
         <Library Value="ippicv"/>
-        <Library Value="OpenEXR-3_3"/>
-        <Library Value="OpenEXRCore-3_3"/>
-        <Library Value="OpenEXRUtil-3_3"/>
-        <Library Value="Iex-3_3"/>
-        <Library Value="IlmThread-3_3"/>
+        <Library Value="OpenEXR-3_4"/>
+        <Library Value="OpenEXRCore-3_4"/>
+        <Library Value="OpenEXRUtil-3_4"/>
+        <Library Value="openjph"/>
+        <Library Value="Iex-3_4"/>
+        <Library Value="IlmThread-3_4"/>
         <Library Value="Imath-3_2"/>
         <Library Value="deflate"/>
         <Library Value="archive"/>
@@ -341,11 +343,13 @@
         <Library Value="absl_malloc_internal"/>
         <Library Value="absl_base"/>
         <Library Value="absl_stacktrace"/>
+        <Library Value="absl_borrowed_fixup_buffer"/>
         <Library Value="absl_cord"/>
         <Library Value="absl_throw_delegate"/>
         <Library Value="absl_cordz_info"/>
         <Library Value="absl_cord_internal"/>
         <Library Value="absl_raw_hash_set"/>
+        <Library Value="absl_hashtablez_sampler"/>
         <Library Value="absl_str_format_internal"/>
         <Library Value="absl_status"/>
         <Library Value="absl_statusor"/>
@@ -359,7 +363,6 @@
         <Library Value="absl_crc32c"/>
         <Library Value="absl_crc_internal"/>
         <Library Value="absl_city"/>
-        <Library Value="absl_low_level_hash"/>
         <Library Value="absl_time_zone"/>
         <Library Value="absl_symbolize"/>
         <Library Value="absl_demangle_internal"/>
@@ -373,15 +376,15 @@
         <Library Value="dav1d"/>
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
-        <Library Value="wx_gtk3u_gl-3.2"/>
-        <Library Value="wx_gtk3u_webview-3.2"/>
-        <Library Value="wx_baseu_net-3.2"/>
-        <Library Value="wx_baseu_xml-3.2"/>
-        <Library Value="wx_gtk3u_xrc-3.2"/>
-        <Library Value="wx_gtk3u_html-3.2"/>
-        <Library Value="wx_gtk3u_core-3.2"/>
-        <Library Value="wx_baseu-3.2"/>
-        <Library Value="wxscintilla-3.2"/>
+        <Library Value="wx_gtk3u_gl-3.3"/>
+        <Library Value="wx_gtk3u_webview-3.3"/>
+        <Library Value="wx_baseu_net-3.3"/>
+        <Library Value="wx_baseu_xml-3.3"/>
+        <Library Value="wx_gtk3u_xrc-3.3"/>
+        <Library Value="wx_gtk3u_html-3.3"/>
+        <Library Value="wx_gtk3u_core-3.3"/>
+        <Library Value="wx_baseu-3.3"/>
+        <Library Value="wxscintilla-3.3"/>
         <Library Value="openjp2"/>
         <Library Value="exif"/>
         <Library Value="INIReader"/>
@@ -464,7 +467,6 @@
         <Library Value="tinyxml2"/>
         <Library Value="utf8_range"/>
         <Library Value="utf8_validity"/>
-        <Library Value="openal"/>
         <Library Value="omp"/>
       </Linker>
       <ResourceCompiler Options=""/>
@@ -509,6 +511,7 @@
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Debug"/>
+        <LibraryPath Value="../Otherlib/OpenCV/Debug"/>
         <LibraryPath Value="../libOpenCLEngine/Debug"/>
         <LibraryPath Value="../libVideoConverter/Debug"/>
       </Linker>
@@ -526,21 +529,22 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux/lib/libvulkan.so.1.4.309 ./Debug/libvulkan.so</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.61 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.61 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavfilter.so.10 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavformat.so.61 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.59 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.58 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.8 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux/lib/libvulkan.so.1.4.341 ./Debug/libvulkan.so</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.62 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.62 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavfilter.so.11 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavformat.so.62 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.60 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.9 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/ffmpeg ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/opencl_dll/*.so.* ./Debug</Command>
+        <Command Enabled="yes">sh patch_debug.sh</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>
-        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o</Command>
-        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o.d</Command>
-        <Command Enabled="yes">sh patch_debug.sh</Command>
+        <Command Enabled="yes">rm ./Debug/*.o</Command>
+        <Command Enabled="yes">rm ./Debug/*.o.*</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -601,6 +605,7 @@
         <LibraryPath Value="../libOpenCVMissingGTK/Release"/>
         <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
+        <LibraryPath Value="../Otherlib/OpenCV/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Release"/>
@@ -620,21 +625,22 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux/lib/libvulkan.so.1.4.309 ./Release/libvulkan.so</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.61 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.61 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavfilter.so.10 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavformat.so.61 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.59 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libpostproc.so.58 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.8 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/vcpkg/installed/x64-linux/lib/libvulkan.so.1.4.341 ./Release/libvulkan.so</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavcodec.so.62 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavdevice.so.62 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavfilter.so.11 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavformat.so.62 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.60 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.6 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.9 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/ffmpeg ./Release</Command>
         <Command Enabled="yes">cp ../libextern/opencl_dll/*.so.* ./Release</Command>
         <Command Enabled="yes">sh patch_release.sh</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
+        <Command Enabled="yes">rm ./Release/*.o</Command>
+        <Command Enabled="yes">rm ./Release/*.o.*</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
