@@ -413,6 +413,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\heif-master\lib\arm64\Debug;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Debug;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|ARM64'">
     <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
@@ -423,6 +424,7 @@
     <LibraryPath>$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
     <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <OutDir>$(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
     <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
@@ -1117,28 +1119,28 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf29.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\ncnn.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\poppler*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lcms2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\de265.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\dav1d.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freetype.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.87.0.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract55.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libcurl.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\z.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Debug\heif_writer_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\release\qpdf29.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\ncnn.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\poppler*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\lcms2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\de265.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\dav1d.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\freetype.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\openjp2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\leptonica-1.87.0.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\tesseract55.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libcurl.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\z.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\mediainfo\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</Command>
     </PostBuildEvent>
@@ -1224,11 +1226,11 @@ XCOPY /Y "$(SolutionDir)libextern\ffmpeg-master\bin\*.dll"  $(SolutionDir)$(Plat
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\  
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_writer_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf29.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\  
+XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_writer_shared.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\release\qpdf29.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\ffmpeg.exe" $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\mediainfo\*.dll"  $(SolutionDir)$(Platform)\RegardsViewer\$(Configuration)\</Command>
