@@ -19,8 +19,9 @@ namespace Regards
 			virtual ~CSqlEngine();
 
 			static CSqlLib* getInstance(const wxString& baseName);
-			static void Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib);
+			static bool Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib);
 			static void kill(const wxString& baseName);
+
 
 		private:
 			static vector<DataBase> _listOfBase;

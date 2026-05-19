@@ -16,6 +16,25 @@ CSqlLib::CSqlLib()
 	pRes = nullptr;
 }
 
+bool CSqlLib::RecoverDatabaseFile(const wxString& filename)
+{
+	// Ouvre le fichier en lecture seule et tente la récupération
+	sqlite3* pFile = nullptr;
+	int rc = sqlite3_open(CConvertUtility::ConvertToUTF8(filename), &pFile);
+	if (rc != SQLITE_OK)
+	{
+		if (pFile)
+			sqlite3_close(pFile);
+		return false;
+	}
+
+	int recoverRc = recoverDatabase(pFile);
+
+	sqlite3_close(pFile);
+
+	return (recoverRc == SQLITE_OK);
+}
+
 
 CSqlLib::~CSqlLib()
 {
@@ -55,14 +74,11 @@ int CSqlLib::recoverDatabase(sqlite3 *db){
   if( sqlite3_recover_errcode(p)!=SQLITE_OK ){
     const char *zErr = sqlite3_recover_errmsg(p);
     int errCode = sqlite3_recover_errcode(p);
-    if( eVerbosity>0 ){
-      printf("recovery error: %s (%d)\n", zErr, errCode);
-    }
+    wxMessageBox(wxString::Format("recovery error: %s (%d)", zErr, errCode));
   }
   rc = sqlite3_recover_finish(p);
-  if( eVerbosity>0 && rc ){
-     printf("recovery returns error code %d\n", rc);
-  }
+  wxMessageBox(wxString::Format("recovery returns error code %d\n", rc));
+
   return rc;
 }
 

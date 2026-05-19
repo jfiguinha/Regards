@@ -20,6 +20,9 @@ namespace Regards
 
 			virtual bool InitDatabase(const wxString& lpFilename) = 0;
 
+			// Expose a public wrapper to trigger database recovery on a given file
+			bool RecoverDatabaseFile(const wxString& filename);
+
 			virtual bool CheckVersion(const wxString& lpFilename)
 			{
 				return false;

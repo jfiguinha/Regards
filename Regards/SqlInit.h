@@ -18,7 +18,7 @@ namespace Regards::Sqlite
 		};
 
 
-		static void InitializeSQLServerDatabase(const wxString& folder, const bool& load_inmemory)
+		static bool InitializeSQLServerDatabase(const wxString& folder, const bool& load_inmemory)
 		{
 			wxString libelleNotGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 			auto libExplorer = new CSqlLibExplorer(false, libelleNotGeo, load_inmemory);
@@ -30,7 +30,7 @@ namespace Regards::Sqlite
                 filename.append("/regards.db");
 #endif
 
-			CSqlEngine::Initialize(filename, L"RegardsDB", libExplorer);
+			return CSqlEngine::Initialize(filename, L"RegardsDB", libExplorer);
 		}
 
 

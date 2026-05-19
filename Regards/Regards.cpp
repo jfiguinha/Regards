@@ -513,8 +513,17 @@ bool MyApp::OnInit()
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
-	CLibResource::InitializeSQLServerDatabase(resourcePath);
-	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
+	if(!CLibResource::InitializeSQLServerDatabase(resourcePath))
+	{
+		wxMessageBox("Unable to initialize Resource.db SQL database");
+		exit(0);
+	}
+
+	if (!CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory))
+	{
+		wxMessageBox("Unable to initialize Regards.db SQL database");
+		exit(0);
+	}
 
 	CFilterWindowParam::InitFilterOpenCLCompatible();
 
