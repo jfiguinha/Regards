@@ -9,6 +9,7 @@ vcpkg install opencl
 vcpkg install dav1d
 vcpkg install exiv2[nls,xmp,png,bmff]
 vcpkg install libavif[aom,dav1d]
+vcpkg install libheif[aom,hevc] --recurse
 vcpkg install libmediainfo
 vcpkg install libexif
 vcpkg install jasper

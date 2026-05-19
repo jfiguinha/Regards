@@ -9,6 +9,7 @@ vcpkg install opencl:arm64-windows
 vcpkg install dav1d:arm64-windows
 vcpkg install exiv2[video,xmp,bmff]:arm64-windows
 vcpkg install libavif[aom,dav1d]:arm64-windows
+vcpkg install libheif[aom,hevc]:arm64-windows
 vcpkg install libmediainfo:arm64-windows
 vcpkg install libexif:arm64-windows
 vcpkg install jasper:arm64-windows
