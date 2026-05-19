@@ -19,6 +19,7 @@ cd vcpkg
 ./vcpkg install opencv4[contrib,core,dnn,ffmpeg,ipp,jpeg,openmp,png,tiff,webp,openexr,opencl] --recurse
 ./vcpkg install opencl
 ./vcpkg install tbb
+./vcpkg install libheif[aom,core,hevc]
 ./vcpkg install exiv2[nls,xmp,png,bmff] --recurse
 ./vcpkg install libmediainfo
 ./vcpkg install libexif

@@ -37,6 +37,7 @@ cd vcpkg
 ./vcpkg install libde265
 ./vcpkg install exiv2[nls,xmp,png,bmff]
 ./vcpkg install libavif[aom,dav1d]
+./vcpkg install libheif[aom,core,hevc]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
 ./vcpkg install jasper

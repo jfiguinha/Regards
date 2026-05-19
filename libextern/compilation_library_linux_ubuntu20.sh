@@ -20,6 +20,7 @@ cd vcpkg
 ./vcpkg install tbb
 ./vcpkg install exiv2[video,xmp,bmff]
 ./vcpkg install libavif[aom,dav1d]
+./vcpkg install libheif[aom,core,hevc]
 ./vcpkg install libmediainfo
 ./vcpkg install libexif
 ./vcpkg install jasper

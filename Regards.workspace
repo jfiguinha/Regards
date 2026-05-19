@@ -16,7 +16,6 @@
       <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project" Active="No"/>
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
-    <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
@@ -104,17 +103,9 @@
       <Project Name="libbpg" ConfigName="Release"/>
       <Project Name="libRegardsBpg" ConfigName="Release"/>
       <Project Name="libPsd" ConfigName="Release"/>
-      <Project Name="FaceRecognition_unix" ConfigName="Release"/>
-      <Project Name="FaceRecognition_windows" ConfigName="Release"/>
-      <Project Name="libRegardsBpg_unix" ConfigName="Release"/>
-      <Project Name="libRegardsBpg_windows" ConfigName="Release"/>
       <Project Name="RegardsViewer_mac" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux" ConfigName="Release"/>
       <Project Name="libAppleFunction" ConfigName="Release"/>
-      <Project Name="FaceRecognition_mac" ConfigName="Release"/>
-      <Project Name="libRegardsBpg_mac" ConfigName="Release"/>
-      <Project Name="FaceRecognition" ConfigName="Release"/>
-      <Project Name="libavcodec" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
       <Project Name="RawSpeed" ConfigName="Release"/>
       <Project Name="wxIA" ConfigName="Release"/>
@@ -133,14 +124,11 @@
       <Project Name="libVideoThumbnail" ConfigName="Release"/>
       <Project Name="libheif" ConfigName="Release"/>
       <Project Name="libVideoConverter" ConfigName="Release"/>
-      <Project Name="RegardsPDF_linux" ConfigName="Release"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Release"/>
       <Project Name="ffplay" ConfigName="Release"/>
       <Project Name="libCudaEffect" ConfigName="Release"/>
       <Project Name="libVideoEffect" ConfigName="Release"/>
-      <Project Name="libOpenCVMissingGTK" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux" ConfigName="Release"/>
-      <Project Name="RegardsViewer_linux_cuda" ConfigName="Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>
@@ -179,17 +167,9 @@
       <Project Name="libbpg" ConfigName="Debug"/>
       <Project Name="libRegardsBpg" ConfigName="Debug"/>
       <Project Name="libPsd" ConfigName="Debug"/>
-      <Project Name="FaceRecognition_unix" ConfigName="Debug"/>
-      <Project Name="FaceRecognition_windows" ConfigName="Debug"/>
-      <Project Name="libRegardsBpg_unix" ConfigName="Debug"/>
-      <Project Name="libRegardsBpg_windows" ConfigName="Debug"/>
       <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
       <Project Name="libAppleFunction" ConfigName="Debug"/>
-      <Project Name="FaceRecognition_mac" ConfigName="Debug"/>
-      <Project Name="libRegardsBpg_mac" ConfigName="Debug"/>
-      <Project Name="FaceRecognition" ConfigName="Debug"/>
-      <Project Name="libavcodec" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
       <Project Name="RawSpeed" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
@@ -209,13 +189,10 @@
       <Project Name="libVideoThumbnail" ConfigName="Debug"/>
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="libVideoConverter" ConfigName="Debug"/>
-      <Project Name="RegardsPDF_linux" ConfigName="Debug"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Debug"/>
       <Project Name="OpenCV" ConfigName="Debug"/>
-      <Project Name="ffplay" ConfigName="Debug"/>
       <Project Name="libCudaEffect" ConfigName="Debug"/>
       <Project Name="libVideoEffect" ConfigName="Debug"/>
-      <Project Name="libOpenCVMissingGTK" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux_cuda" ConfigName="Debug"/>
       <Project Name="OpenCV" ConfigName="Debug"/>
