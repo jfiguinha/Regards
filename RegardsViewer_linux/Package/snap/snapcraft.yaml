@@ -49,16 +49,21 @@ layout:
         bind: $SNAP/gnome-platform/usr/share/libdrm
     /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:
         bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/GL:
+        bind: $SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/GL
     /usr/share/glvnd:
         bind: $SNAP/usr/share/glvnd
+    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libxcb-glx.so.0:
+        symlink: $SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libxcb-glx.so.0
    
  
 environment:
   SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
   GTK_USE_PORTAL: '1'
-  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/graphics/dri:$SNAP/graphics/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/xorg:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/dri:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
-  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/graphics/dri:$SNAP/graphics/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/xorg:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+  LIBGL_DRIVERS_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:$SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d:$SNAP/gnome-platform/usr/share/glvnd/egl_vendor.d
+  MESA_LOADER_DRIVER_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:$SNAP/gnome-platform/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
   EGL_PLATFORM: wayland
   MESA_LOG_LEVEL: debug
   XKB_CONFIG_DATA: $SNAP/usr/share/X11/xkb
@@ -67,7 +72,7 @@ environment:
 parts:
   regardsviewer:
     plugin: dump
-    source: https://github.com/jfiguinha/Regards/releases/download/v2.83.6/RegardsViewer_2.83.6.6-linux-x86_64.tar.gz
+    source: RegardsViewer_2.85.3.0-linux-x86_64.tar.gz
     stage-packages:
       - libdrm2
       - libglu1-mesa
@@ -105,10 +110,12 @@ parts:
       - libatk1.0-0  
       - libsane
       - libnotify4
-      - mesa-dri-drivers
       - libglvnd0
       - libglvnd-dev
-    
+      - libgl1-mesa-glx
+      - libglx0
+      - libxcb-glx0
+
 apps:
   regardsviewer:
     command: usr/bin/RegardsViewer
