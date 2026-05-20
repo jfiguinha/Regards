@@ -5,7 +5,7 @@ issues:
 donation: https://fr.tipeee.com/regardsviewer
 website: https://regardsviewerlite.tiiny.site
 base: core22 # the base snap is the execution environment for this snap
-version: '2.83.6.6' # just for humans, typically '1.2+git' or '1.3.2'
+version: '2.85.3.0' # just for humans, typically '1.2+git' or '1.3.2'
 summary: Regards is a modern photo viewer. # 79 char long summary
 description: Regards is a modern photo viewer with highDPI definition screen Support Picture format reading and writing
 grade: stable # must be 'stable' to release into candidate/stable channels
@@ -33,8 +33,12 @@ plugs:
         interface: content
         target: $SNAP/gnome-platform
         default-provider: gnome-42-2204
-    
+
 layout:
+    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libgweather-4:
+        symlink: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libgweather-4
+    /usr/lib/evolution-data-server:
+        symlink: $SNAP/usr/lib/evolution-data-server
     /usr/bin/gnome-control-center:
         symlink: $SNAP/usr/bin/gnome-control-center
     /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1:
@@ -43,17 +47,22 @@ layout:
         bind: $SNAP/gnome-platform/usr/share/xml/iso-codes
     /usr/share/libdrm:
         bind: $SNAP/gnome-platform/usr/share/libdrm
+    /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri:
+        bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+    /usr/share/glvnd:
+        bind: $SNAP/usr/share/glvnd
    
  
 environment:
   SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
   GTK_USE_PORTAL: '1'
-  LD_LIBRARY_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/graphics/dri:$SNAP/graphics/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/xorg:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/dri
+  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/graphics/dri:$SNAP/graphics/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/xorg:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/dri:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+  EGL_PLATFORM: wayland
+  MESA_LOG_LEVEL: debug
   XKB_CONFIG_DATA: $SNAP/usr/share/X11/xkb
   GTK_EXE_PREFIX: $SNAP/usr
-  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d
-  EGL_PLATFORM: wayland
 
 parts:
   regardsviewer:
@@ -96,6 +105,9 @@ parts:
       - libatk1.0-0  
       - libsane
       - libnotify4
+      - mesa-dri-drivers
+      - libglvnd0
+      - libglvnd-dev
     
 apps:
   regardsviewer:
