@@ -333,7 +333,7 @@ void CMainWindow::OnVersionUpdate(wxCommandEvent& event)
 void CMainWindow::NewVersionAvailable(void* param)
 {
 	int hasUpdate = 0;
-	CToolbar* toolbar = (CToolbar*)param;
+	CMainWindow* main = (CMainWindow*)param;
 	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
 	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
 	CCheckVersion _checkVersion(serverURL);
@@ -362,7 +362,7 @@ void CMainWindow::NewVersionAvailable(void* param)
 
 	wxCommandEvent event(wxVERSION_UPDATE_EVENT);
 	event.SetInt(hasUpdate);
-	wxPostEvent(toolbar, event);
+	wxPostEvent(main, event);
 }
 
 
@@ -411,8 +411,11 @@ void CMainWindow::ClickShowButton(const int& id, const int& refresh)
 		wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
 		wxMimeTypesManager manager;
 		wxFileType* filetype = manager.GetFileTypeFromExtension("html");
-		wxString command = filetype->GetOpenCommand(siteweb);
-		wxExecute(command);
+        if(filetype != nullptr)
+        {
+            wxString command = filetype->GetOpenCommand(siteweb);
+            wxExecute(command);
+        }
 	}
 	break;
 
@@ -462,6 +465,9 @@ void CMainWindow::OnFaceAdd(wxCommandEvent& event)
 		}
 		else
 		{
+			numFace->clear();
+			delete numFace;
+
 			wxString wronglabelsize = CLibResource::LoadStringFromResource(L"wronglabelsize", 1);
 			wxString error_labelsize = CLibResource::LoadStringFromResource(L"erroronlabelsize", 1);
 			wxMessageBox(wronglabelsize, error_labelsize, wxICON_ERROR);
@@ -648,10 +654,11 @@ void CMainWindow::OnPrint(wxCommandEvent& event)
 void CMainWindow::SetDataToStatusBar(void* thumbMessage, const wxString& picture)
 {
 	const auto thumbnailMessage = static_cast<CThumbnailMessage*>(thumbMessage);
-	const wxString message = picture + to_string(thumbnailMessage->nbPhoto);
+	
 
 	if (thumbnailMessage != nullptr)
 	{
+        const wxString message = picture + to_string(thumbnailMessage->nbPhoto);
 		if (statusBarViewer != nullptr)
 		{
 			statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
@@ -1175,18 +1182,6 @@ void CMainWindow::ProcessIdle()
 
 	if (photoList.empty())
 	{
-		nbElement = 0;
-		hasDoneOneThings = false;
-		needToRefresh = true;
-		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-		event->SetExtraLong(nbElement);
-		wxQueueEvent(this, event);
-	}
-	else
-		hasDoneOneThings = true;
-
-	if (photoList.empty())
-	{
 		CSqlPhotosWithoutThumbnail sqlPhoto;
 		sqlPhoto.GetPhotoList(&photoList, 0);
 		if (photoList.empty())
@@ -1291,15 +1286,13 @@ CMainWindow::~CMainWindow()
 {
 	if (loadPictureStartTimer->IsRunning())
 		loadPictureStartTimer->Stop();
+        
+    if (versionUpdate && versionUpdate->joinable()) 
+        versionUpdate->join();
 
-	delete(toolbarViewerMode);
-	delete(progressBar);
-	delete(statusBar);
-	delete(centralWnd);
 	delete(folderProcess);
 	delete(thumbnailProcess);
 	delete(loadPictureStartTimer);
-	//delete(toolbar);
 }
 
 //---------------------------------------------------------------
@@ -1391,8 +1384,8 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		CSqlPhotosWithoutThumbnail sqlPhoto;
 		sqlPhoto.GetPhotoList(&photoList, 0);
 	}
-
-	delete newPath;
+    if(newPath != nullptr)
+        delete newPath;
 	UpdateFolderStatic(isDelete);
 	processIdle = true;
 	//this->Show(true);
@@ -1426,10 +1419,8 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 	if (pictureInfos != nullptr)
 	{
 		wxString filename = pictureInfos->filename;
-		if (filename[0] != '\0')
-		{
-			statusBarViewer->SetText(1, filename);
-		}
+        if(filename.size() > 0)
+           statusBarViewer->SetText(1, filename);
 
 		statusBarViewer->SetText(0, pictureInfos->infos);
 

@@ -303,9 +303,8 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat& img)
 		memcpy(d, s, imsize);
 
 		unsigned char* wxalpha = new unsigned char[im2.rows * im2.cols];
+        memcpy(wxalpha, alpha.data, im2.rows * im2.cols);
 		wx.SetAlpha(wxalpha);
-		memcpy(wxalpha, alpha.data, im2.rows * im2.cols);
-
 	}
 	else
 	{
@@ -867,8 +866,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 
 				pictureMetadata.CopyMetadata(fileTemp);
-                
-
+    
 				CMetadataExiv2 metadata(fileTemp);
 				metadata.GetMetadataBuffer(data, size);
 				if (size > 0)
@@ -1029,6 +1027,7 @@ int CLibPicture::SavePicture(const wxString& fileNameIn, const wxString& fileNam
 				filenameOutput = fileNameOut;
 			}
 			SavePicture(filenameOutput, picture, option, quality);
+            delete picture;
 		}
 	}
 
@@ -1150,7 +1149,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 
 	for (auto i = 0; i < size; i++)
 	{
-		const int pourcentage = 0;
+		//const int pourcentage = 0;
 		const float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 		auto cxVideo = new CImageVideoThumbnail();
 
@@ -1162,7 +1161,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 		if (isAnimation)
 			cxVideo->timePosition = i;
 		else
-			cxVideo->timePosition = pourcentage * percent;
+			cxVideo->timePosition = 0;
 		cxVideo->filename = szFileName;
 		cxVideo->rotation = rotation;
 		//delete picture;
@@ -1263,8 +1262,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& 
 				imageVideoThumbnail->filename = szFileName;
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 4;
-				imageVideoThumbnail->percent = static_cast<int>(static_cast<float>(i) / static_cast<float>(
-					m_ani_images)) * 100.0f;
+				imageVideoThumbnail->percent = (int)(((float)i / (float)m_ani_images) * 100.0f);
 				imageVideoThumbnail->timePosition = i;
 				listThumbnail.push_back(imageVideoThumbnail);
 			}
@@ -1311,7 +1309,6 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 		{
 			wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
 			return wxImage::GetImageCount(szFileName, bitmapType);
-			break;
 		}
 
 	case WEBP:
@@ -1559,7 +1556,8 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
         cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(szFileName),
                                 cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
-        cv::resize(matPicture, imageVideoThumbnail->image, cv::Size(widthThumbnail, heightThumbnail), cv::INTER_LINEAR);
+        if(!matPicture.empty())
+            cv::resize(matPicture, imageVideoThumbnail->image, cv::Size(widthThumbnail, heightThumbnail), cv::INTER_LINEAR);
 		//imageVideoThumbnail->image.LoadFile(szFileName);
 		//imageVideoThumbnail->image = imageVideoThumbnail->image.ResampleBicubic(widthThumbnail, heightThumbnail);
 		imageVideoThumbnail->filename = szFileName;
@@ -1576,7 +1574,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 int CLibPicture::GetVideoDuration(const wxString& szFileName)
 {
 	int64_t duration = 0;
-	bool is_valid;
+
 	if (listMovieDuration.find(szFileName) != listMovieDuration.end())
 	{
 		duration = listMovieDuration[szFileName];
@@ -2131,9 +2129,16 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 							picture = cv::Mat(height, width, CV_8UC4);
 
-							tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
-								picture.size().width, 0, picture.size().height, TJPF_BGRX,
-								TJFLAG_FASTDCT);
+                            try
+                            {
+                                tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
+                                    picture.size().width, 0, picture.size().height, TJPF_BGRX,
+                                    TJFLAG_FASTDCT);
+                            }
+                            catch(...)
+                            {
+                                
+                            }
 
 							tjDestroy(_jpegDecompressor);
 
@@ -2172,8 +2177,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				try
 				{
-					cv::Mat matPicture =
-						cv::imread(CConvertUtility::ConvertToStdString(fileName), cv::IMREAD_COLOR);
+					cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(fileName), cv::IMREAD_UNCHANGED);
 					if (!matPicture.empty())
 					{
 						bitmap->SetFilename(fileName);
@@ -2490,6 +2494,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
     if (info) {
         width = info.size().width;
         height = info.size().height;
+        rotation = 0;
         return 0;
     }
 
