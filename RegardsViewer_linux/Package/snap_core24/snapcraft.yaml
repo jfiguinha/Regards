@@ -1,0 +1,140 @@
+name: regardsviewer
+title: RegardsViewer 2.0
+contact: appt.jf@outlook.fr
+issues:
+donation: https://fr.tipeee.com/regardsviewer
+website: https://regardsviewerlite.tiiny.site
+base: core24
+version: '2.85.3.8'
+summary: Regards is a modern photo viewer.
+description: Regards is a modern photo viewer with highDPI definition screen Support Picture format reading and writing
+grade: stable
+confinement: strict
+license: GPL-3.0
+compression: lzo
+
+plugs:
+    desktop:
+        mount-host-font-cache: true
+    gtk-3-themes:
+        interface: content
+        target: $SNAP/data-dir/themes
+        default-provider: gtk-common-themes
+    icon-themes:
+        interface: content
+        target: $SNAP/data-dir/icons
+        default-provider: gtk-common-themes
+    sound-themes:
+        interface: content
+        target: $SNAP/data-dir/sounds
+        default-provider: gtk-common-themes
+    gnome-46-2404:
+        interface: content
+        target: $SNAP/gnome-platform
+        default-provider: gnome-46-2404
+
+layout:
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libgweather-4:
+        symlink: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libgweather-4
+    /usr/lib/evolution-data-server:
+        symlink: $SNAP/usr/lib/evolution-data-server
+    /usr/bin/gnome-control-center:
+        symlink: $SNAP/usr/bin/gnome-control-center
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkit2gtk-4.1:
+        bind: $SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkit2gtk-4.1
+    /usr/share/xml/iso-codes:
+        bind: $SNAP/gnome-platform/usr/share/xml/iso-codes
+    /usr/share/libdrm:
+        bind: $SNAP/gnome-platform/usr/share/libdrm
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri:
+        bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/GL:
+        symlink: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/GL
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libGL.so.1:
+        symlink: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libGL.so.1
+    /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libEGL.so.1:
+        symlink: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libEGL.so.1
+
+environment:
+  SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
+  GTK_USE_PORTAL: '1'
+  LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri:$SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$LD_LIBRARY_PATH
+  LIBGL_DRIVERS_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri:$SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri
+  MESA_LOADER_DRIVER_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri:$SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/dri
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/usr/share/glvnd/egl_vendor.d:$SNAP/gnome-platform/usr/share/glvnd/egl_vendor.d
+  # LIBGL_ALWAYS_INDIRECT supprimé : déprécié sur Mesa >= 23, inutile sur core24
+  EGL_PLATFORM: x11
+  # MESA_LOG_LEVEL: debug  # décommenter si besoin de débogage GPU
+  XKB_CONFIG_DATA: $SNAP/usr/share/X11/xkb
+  GTK_EXE_PREFIX: $SNAP/usr
+
+parts:
+  regardsviewer:
+    plugin: dump
+    source: RegardsViewer_2.85.3.0-linux-x86_64.tar.gz
+    stage-packages:
+      - libdrm2
+      - libglu1-mesa
+      - libgnutls30
+      - libsdl2-2.0-0
+      - libslang2
+      - libsnappy1v5
+      - libssh-gcrypt-4
+      - libusb-1.0-0
+      - libv4l-0
+      - libv4l2rds0
+      - libva-drm2
+      - libva-glx2
+      - libva-wayland2
+      - libx11-6
+      - libxau6
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-xfixes0
+      - libxcb1
+      - libxdmcp6
+      - libxext6
+      - libxml2
+      - libwebkit2gtk-4.1-0
+      - libxv1
+      - libzmq5
+      - ocl-icd-libopencl1
+      - libice6
+      - libsm6
+      - libepoxy0
+      - curl
+      - libatk1.0-0
+      - libsane1
+      - libnotify4
+      - libglvnd0
+      # libglvnd-dev supprimé : paquet -dev inutile en runtime
+      - libgl1-mesa-dri
+      # libgl1-mesa-glx supprimé : fusionné dans libgl1 sur Ubuntu 24.04
+      # libd3dadapter9-mesa supprimé : retiré d'Ubuntu 24.04
+      - libvdpau1
+      - libxshmfence1
+      - libxcb-dri2-0
+      - libxcb-dri3-0
+      - libxcb-glx0
+
+apps:
+  regardsviewer:
+    command: usr/bin/RegardsViewer
+    desktop: usr/share/applications/RegardsViewer.desktop
+    extensions: [gnome]
+    plugs:
+      - process-control
+      - x11
+      - audio-playback
+      - hardware-observe
+      - opengl
+      - alsa
+      - mount-observe
+      - removable-media
+      - dvb
+      - pulseaudio
+      - wayland
+      - network
+      - home
+      - desktop
+      - desktop-legacy
