@@ -206,11 +206,7 @@ cl_device_id COpenCLContext::GetListOfDevice(cl_platform_id platform, cl_device_
 		if (type == CL_DEVICE_TYPE_GPU)
 		{
 			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
-			supported = supportExt.find(CL_GL_SHARING_EXT);
-			if (supported > 0)
-				supported = 1;
-			else
-				supported = 0;
+            supported = (supportExt.find(CL_GL_SHARING_EXT) != wxString::npos) ? 1 : 0;
 		}
 
 		if (!supported)
@@ -439,16 +435,12 @@ void COpenCLContext::initializeContextFromGL()
 
 	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		platformName, platform, context, device);
-        
-   // printf("platformName : %i - %s \n", found, platformName.c_str());
-        
-  //  printf("initializeContextFromGL 7\n");
-	
-	clRetainContext(context);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
     
-    //printf("initializeContextFromGL 8\n");
+	clReleaseDevice(device);
+	clReleaseContext(context);
+	clExecCtx.bind();
 
 #endif
 }

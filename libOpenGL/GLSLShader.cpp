@@ -54,10 +54,10 @@ bool GLSLShader::check_program_link_status(GLuint obj)
 	if (status == GL_FALSE)
 	{
 		GLint length;
-		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
+		glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &length);
 		// The maxLength includes the NULL character
 		std::vector<GLchar> errorLog(length);
-		glGetShaderInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
+		glGetProgramInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
 		std::string s(begin(errorLog), end(errorLog));
 		cout << s.c_str() << endl;
 		return false;
@@ -136,7 +136,7 @@ bool GLSLShader::CreateComputeProgram(const wxString& nProgramID_i)
 {
 	m_hComputeHandle = glCreateShader(GL_COMPUTE_SHADER);
 
-	if (0 == m_hVertexHandle)
+	if (0 == m_hComputeHandle)
 	{
 		return false;
 	}

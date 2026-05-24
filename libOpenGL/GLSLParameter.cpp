@@ -48,8 +48,7 @@ void CGLSLParameterTabFloat::Add(GLint progHandle)
 		return;
 	}
 
-	if (nParamObj != -1)
-		glUniform1fv(nParamObj, size, value);
+	glUniform1fv(nParamObj, size, value);
 }
 
 void CGLSLParameterTabInt::Add(GLint progHandle)
@@ -60,8 +59,7 @@ void CGLSLParameterTabInt::Add(GLint progHandle)
 		return;
 	}
 
-	if (nParamObj != -1)
-		glUniform1iv(nParamObj, size, value);
+	glUniform1iv(nParamObj, size, value);
 }
 
 void CGLSLParameterTexture::Add(GLint progHandle)

@@ -21,7 +21,7 @@ using namespace dnn_superres;
 bool COpenCLFilter::isUsed = false;
 int COpenCLFilter::numTexture = -1;
 extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern std::map<wxString, vector<char>> openclBinaryMapping;
+
 #define OPENCV_METHOD
 
 
@@ -58,7 +58,7 @@ private:
 string CSuperSampling::GenerateModelPath(string modelName, int scale)
 {
 	wxString path = "";
-#ifdef WIN32
+#ifdef WIN32openclBinaryMapping
 	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
 #else
 	path = CFileUtility::GetResourcesFolderPath() + "/model/" + modelName + "_x" + to_string(scale) + ".pb";
@@ -183,6 +183,10 @@ COpenCLFilter::~COpenCLFilter()
 		delete param;
 		param = nullptr;
 	}
+    
+    for (auto& pair : openclMemTempMap)
+        delete pair.second;
+    openclMemTempMap.clear();
     
     delete superSampling;
 
