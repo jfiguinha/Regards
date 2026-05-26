@@ -39,11 +39,9 @@
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="Yes"/>
-    <Project Name="RegardsViewer_linux_cuda" Path="RegardsViewer_linux_cuda/RegardsViewer_linux_cuda.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -57,9 +55,7 @@
   <VirtualDirectory Name="OpenCL - OpenGL">
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
-    <Project Name="libCudaEffect" Path="libCudaEffect/libCudaEffect.project" Active="No"/>
     <Project Name="libVideoEffect" Path="libVideoEffect/libVideoEffect.project" Active="No"/>
-    <Project Name="OpenCV" Path="Otherlib/OpenCV/OpenCV.project"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsVideoConverter">
     <Project Name="libVideoConverter" Path="libVideoConverter/libVideoConverter.project" Active="No"/>
@@ -83,7 +79,6 @@
       <Project Name="libUtility" ConfigName="Release"/>
       <Project Name="libVideoThumbnail" ConfigName="Release"/>
       <Project Name="libViewer" ConfigName="Release"/>
-      <Project Name="OpenCV" ConfigName="Release"/>
       <Project Name="libWindow" ConfigName="Release"/>
       <Project Name="include" ConfigName="Release"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Release"/>
@@ -103,7 +98,6 @@
       <Project Name="libbpg" ConfigName="Release"/>
       <Project Name="libRegardsBpg" ConfigName="Release"/>
       <Project Name="libPsd" ConfigName="Release"/>
-      <Project Name="RegardsViewer_mac" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux" ConfigName="Release"/>
       <Project Name="libAppleFunction" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
@@ -126,7 +120,6 @@
       <Project Name="libVideoConverter" ConfigName="Release"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Release"/>
       <Project Name="ffplay" ConfigName="Release"/>
-      <Project Name="libCudaEffect" ConfigName="Release"/>
       <Project Name="libVideoEffect" ConfigName="Release"/>
       <Project Name="RegardsViewer_linux" ConfigName="Release"/>
     </WorkspaceConfiguration>
@@ -167,7 +160,6 @@
       <Project Name="libbpg" ConfigName="Debug"/>
       <Project Name="libRegardsBpg" ConfigName="Debug"/>
       <Project Name="libPsd" ConfigName="Debug"/>
-      <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
       <Project Name="libAppleFunction" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
@@ -190,11 +182,8 @@
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="libVideoConverter" ConfigName="Debug"/>
       <Project Name="RegardsVideoConverter_linux" ConfigName="Debug"/>
-      <Project Name="OpenCV" ConfigName="Debug"/>
-      <Project Name="libCudaEffect" ConfigName="Debug"/>
       <Project Name="libVideoEffect" ConfigName="Debug"/>
       <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
-      <Project Name="RegardsViewer_linux_cuda" ConfigName="Debug"/>
       <Project Name="OpenCV" ConfigName="Debug"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
