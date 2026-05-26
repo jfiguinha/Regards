@@ -24,13 +24,8 @@
 #include <OpenCLEffectVideo.h>
 #include "DataAVFrame.h"
 #include <FaceDetector.h>
-#ifdef USE_CUDA
-#include <CudaEffectVideo.h>
-#endif
+
 using namespace Regards::OpenCV;
-#ifdef USE_CUDA
-using namespace Regards::Cuda;
-#endif
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 
@@ -1241,18 +1236,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		this->renderOpenGL = renderOpenGL;
 		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
-
-#ifdef USE_CUDA
-
-	if (IsSupportCuda())
-	{
-		if (openclEffectYUV == nullptr)
-		{
-			openclEffectYUV = new CCudaEffectVideo();
-		}
-	}
-
-#endif
 
    // printf("CVideoControlSoft::OnPaint3D 1 \n");
 

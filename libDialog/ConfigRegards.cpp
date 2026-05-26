@@ -9,10 +9,6 @@
 #include <ffmpeg_application.h>
 #include <opencv2/core/ocl.hpp>
 #include <Gps.h>
-#ifdef USE_CUDA
-#include <opencv2/cudaarithm.hpp>
-using namespace cv::cuda;
-#endif
 using namespace Regards::Viewer;
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
@@ -137,12 +133,6 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	cbHardwareAccelerator->AppendString("CPU");
 	if (cv::ocl::haveOpenCL())
 		cbHardwareAccelerator->AppendString("OpenCL");
-
-#ifdef USE_CUDA
-	int cuda_devices_number = getCudaEnabledDeviceCount();
-	if(cuda_devices_number > 0)
-		cbHardwareAccelerator->AppendString("Cuda");
-#endif
 
 	init();
 
@@ -454,7 +444,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	wxString urlServer = "";
 	wxString apiKey = txtAPIKey->GetValue();
-	//Géolocalisation
+	//GÃ©olocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{

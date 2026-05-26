@@ -2,7 +2,7 @@
 #include "VideoStabilization.h"
 #include "VideoStabilizationCpu.h"
 #include "VideoStabilizationOpenCL.h"
-#include "VideoStabilizationCuda.h"
+
 using namespace Regards::OpenCV;
 using namespace cv;
 
@@ -22,11 +22,6 @@ COpenCVStabilization::COpenCVStabilization(const int& nbFrame, const int& type)
 	case TYPE_OPENCL:
 		opencvStabilization = new COpenCVStabilizationOpenCL(nbFrame);
 		break;
-#ifdef USE_CUDA
-	case TYPE_CUDA:
-		opencvStabilization = new COpenCVStabilizationCuda(nbFrame);
-		break;
-#endif
 
 	}
 }

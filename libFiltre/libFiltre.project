@@ -189,7 +189,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="interface">
     <VirtualDirectory Name="src">
-      <File Name="CudaEffect.cpp"/>
       <File Name="OpenCLEffect.cpp"/>
       <File Name="FiltreEffetCPU.cpp"/>
       <File Name="FiltreEffet.cpp"/>
@@ -197,7 +196,6 @@
       <File Name="FilterData.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="CudaEffect.h"/>
       <File Name="OpenCLEffect.h"/>
       <File Name="FiltreEffetCPU.h"/>
       <File Name="FiltreEffet.h"/>

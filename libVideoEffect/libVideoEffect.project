@@ -4,13 +4,11 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="VideoStabilizationCpu.cpp"/>
-    <File Name="VideoStabilizationCuda.cpp"/>
     <File Name="VideoStabilizationOpenCL.cpp"/>
     <File Name="VideoStabilization.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="VideoStabilizationCpu.h"/>
-    <File Name="VideoStabilizationCuda.h"/>
     <File Name="VideoStabilizationOpenCL.h"/>
     <File Name="IEffectVideo.h"/>
     <File Name="VideoStabilization.h"/>
