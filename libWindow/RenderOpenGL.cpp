@@ -42,6 +42,25 @@ extern bool isOpenCLInitialized;
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 
+static inline void FillTexCoords(GLfloat* tex,
+                                 bool inverted,
+                                 bool flipH,
+                                 bool flipV)
+{
+    float left   = flipH ? 1.0f : 0.0f;
+    float right  = flipH ? 0.0f : 1.0f;
+    float top    = flipV ? 1.0f : 0.0f;
+    float bottom = flipV ? 0.0f : 1.0f;
+
+    if (inverted)
+        std::swap(top, bottom);
+
+    tex[0] = left;  tex[1] = top;
+    tex[2] = right; tex[3] = top;
+    tex[4] = right; tex[5] = bottom;
+    tex[6] = left;  tex[7] = bottom;
+}
+
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
@@ -149,7 +168,7 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString te
 {
 	float font_height = 15;
     void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
-	float font_width = glutBitmapWidth(font_choose, 'x');;
+	float font_width = glutBitmapWidth(font_choose, 'x');
     int xPos = 0;
 
 	std::vector<wxString> list = CConvertUtility::split(text, '\\');
@@ -224,32 +243,30 @@ GLSLShader* CRenderOpenGL::CreateShader(const wxString& shaderName, GLenum glSlS
 	return m_pShader;
 }
 
-GLSLShader* CRenderOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
+GLSLShader* CRenderOpenGL::FindShader(const wxString& shaderName,
+                                      GLenum shaderType)
 {
-	for (COpenGLShader* shader : listShader)
-	{
-		if (shader->shaderName == shaderName)
-			return shader->m_pShader;
-	}
+    auto it = shaderMap.find(shaderName);
 
-	auto openGLShader = new COpenGLShader();
-	openGLShader->m_pShader = CreateShader(shaderName, glSlShaderType_i);
-	openGLShader->shaderName = shaderName;
+    if (it != shaderMap.end())
+        return it->second->m_pShader;
 
-	listShader.push_back(openGLShader);
+    auto shader = std::make_unique<COpenGLShader>();
 
-	return openGLShader->m_pShader;
+    shader->shaderName = shaderName;
+    shader->m_pShader = CreateShader(shaderName, shaderType);
+
+    GLSLShader* result = shader->m_pShader;
+
+    shaderMap[shaderName] = std::move(shader);
+
+    return result;
 }
 
 CRenderOpenGL::~CRenderOpenGL()
 {
 	if (textureDisplay != nullptr)
 		delete(textureDisplay);
-
-	for (COpenGLShader* shader : listShader)
-		delete shader;
-
-	listShader.clear();
 }
 
 wxGLContext* CRenderOpenGL::GetGLContext()
@@ -373,7 +390,7 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, 
 #else   
 	int xPos = 0;
     
-    cout << "Scale Factor : " << to_string(scale_factor) << endl;
+    //cout << "Scale Factor : " << to_string(scale_factor) << endl;
 
 	std::vector<wxString> list = CConvertUtility::split(text, '\\');
 	if (list.size() > 0)
@@ -420,7 +437,52 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, 
     */
 
 
-};
+}
+
+void CRenderOpenGL::RenderQuadInternal(float width,
+                                       float height,
+                                       int left,
+                                       int top,
+                                       bool inverted,
+                                       bool flipH,
+                                       bool flipV)
+{
+    glPushMatrix();
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    const GLfloat vertices[8] =
+    {
+        static_cast<GLfloat>(left),
+        static_cast<GLfloat>(top),
+
+        static_cast<GLfloat>(left + width),
+        static_cast<GLfloat>(top),
+
+        static_cast<GLfloat>(left + width),
+        static_cast<GLfloat>(top + height),
+
+        static_cast<GLfloat>(left),
+        static_cast<GLfloat>(top + height)
+    };
+
+    GLfloat texCoords[8];
+    FillTexCoords(texCoords, inverted, flipH, flipV);
+
+    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+
+    glDrawArrays(GL_QUADS, 0, 4);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glPopMatrix();
+
+    // SAFE OPTIMIZATION:
+    // glFlush() supprimé volontairement
+}
 
 
 GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And Initialize The GL Window
@@ -490,101 +552,38 @@ void CRenderOpenGL::CreateScreenRender(const int& width, const int& height, cons
 
 void CRenderOpenGL::RenderQuad(GLTexture* texture, int left, int top, bool inverted)
 {
-	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-	glEnableClientState(GL_VERTEX_ARRAY);
+    if (texture == nullptr)
+        return;
 
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth()) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth()) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(texture->GetHeight()) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(texture->GetHeight()) + static_cast<GLfloat>(top)
-	};
+    RenderQuadInternal(
+        static_cast<float>(texture->GetWidth()),
+        static_cast<float>(texture->GetHeight()),
+        left,
+        top,
+        inverted,
+        false,
+        false);
 
-	GLfloat texVertices[8];
-
-	if (inverted)
-	{
-		GLfloat vertices[] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	else
-	{
-		GLfloat vertices[] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glPopMatrix();
-
-	glFlush();
+	
 }
 
 
 void CRenderOpenGL::RenderQuad(int width, int height, int left, int top, bool inverted)
 {
-	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-	glEnableClientState(GL_VERTEX_ARRAY);
+    if (textureDisplay == nullptr)
+        return;
 
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top)
-	};
+    RenderQuadInternal(
+        static_cast<float>(textureDisplay->GetWidth()),
+        static_cast<float>(textureDisplay->GetHeight()),
+        left,
+        top,
+        inverted,
+        false,
+        false);
 
-	GLfloat texVertices[8];
 
-	if (inverted)
-	{
-		GLfloat vertices[] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	else
-	{
-		GLfloat vertices[] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glPopMatrix();
-
-	glFlush();
+	
 }
 
 
@@ -592,173 +591,38 @@ void CRenderOpenGL::RenderQuad(int width, int height, int left, int top, bool in
 void CRenderOpenGL::RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH,
                                const bool& flipV, int left, int top, bool inverted)
 {
-	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-	glEnableClientState(GL_VERTEX_ARRAY);
+    if (texture == nullptr)
+        return;
 
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top)
-	};
+    RenderQuadInternal(
+        static_cast<float>(texture->GetWidth()),
+        static_cast<float>(texture->GetHeight()),
+        left,
+        top,
+        inverted,
+        flipH,
+        flipV);
 
-	GLfloat texVertices[8];
-
-	if (inverted)
-	{
-		GLfloat vertices[] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
-
-		if (flipV)
-		{
-			vertices[1] = 0;
-			vertices[3] = 0;
-			vertices[5] = 1;
-			vertices[7] = 1;
-		}
-
-		if (flipH)
-		{
-			vertices[0] = 1;
-			vertices[2] = 0;
-			vertices[4] = 0;
-			vertices[6] = 1;
-		}
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	else
-	{
-		GLfloat vertices[] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
-
-		if (flipV)
-		{
-			vertices[1] = 1;
-			vertices[3] = 1;
-			vertices[5] = 0;
-			vertices[7] = 0;
-		}
-
-		if (flipH)
-		{
-			vertices[0] = 1;
-			vertices[2] = 0;
-			vertices[4] = 0;
-			vertices[6] = 1;
-		}
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glPopMatrix();
-
-	glFlush();
+	
 }
 
 
 void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool& flipV, int left, int top,
                                bool inverted)
 {
-	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-	glEnableClientState(GL_VERTEX_ARRAY);
+    if (texture == nullptr)
+        return;
 
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth()) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth()) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(texture->GetHeight()) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(texture->GetHeight()) + static_cast<GLfloat>(top)
-	};
+    RenderQuadInternal(
+        static_cast<float>(texture->GetWidth()),
+        static_cast<float>(texture->GetHeight()),
+        left,
+        top,
+        inverted,
+        flipH,
+        flipV);
 
-	GLfloat texVertices[8];
-
-	if (inverted)
-	{
-		GLfloat vertices[] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
-
-		if (flipV)
-		{
-			vertices[1] = 0;
-			vertices[3] = 0;
-			vertices[5] = 1;
-			vertices[7] = 1;
-		}
-
-		if (flipH)
-		{
-			vertices[0] = 1;
-			vertices[2] = 0;
-			vertices[4] = 0;
-			vertices[6] = 1;
-		}
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	else
-	{
-		GLfloat vertices[] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
-
-
-		if (flipV)
-		{
-			vertices[1] = 1;
-			vertices[3] = 1;
-			vertices[5] = 0;
-			vertices[7] = 0;
-		}
-
-		if (flipH)
-		{
-			vertices[0] = 1;
-			vertices[2] = 0;
-			vertices[4] = 0;
-			vertices[6] = 1;
-		}
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glPopMatrix();
-
-	glFlush();
+	
 }
 
 void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
@@ -885,64 +749,25 @@ int CRenderOpenGL::LoadFont(const wxString & fontName)
 
 void CRenderOpenGL::RenderQuad(GLTexture* texture, float left, float top, float scale, bool inverted)
 {
- 	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-	glEnableClientState(GL_VERTEX_ARRAY);
+   if (texture == nullptr)
+        return;
 
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth() * scale) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(texture->GetWidth() * scale) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(texture->GetHeight() * scale) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(texture->GetHeight() * scale) + static_cast<GLfloat>(top)
-	};
+    RenderQuadInternal(
+        texture->GetWidth() * scale,
+        texture->GetHeight() * scale,
+        static_cast<int>(left),
+        static_cast<int>(top),
+        inverted,
+        false,
+        false);
 
-	GLfloat texVertices[8];
-
-	if (inverted)
-	{
-		GLfloat vertices[] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-	else
-	{
-		GLfloat vertices[] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
-
-		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
-	}
-
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glPopMatrix();
-
-	glFlush();   
+	   
 }
 
-void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color)
+void CRenderOpenGL::RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color)
 {
-
-	//printf("GLSLShader IDR_GLSL_COLOR \n ");
-	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
 	if (m_pShader != nullptr)
 	{
-		m_pShader->EnableShader();
 		if (!m_pShader->SetTexture("text", glTexture->GetTextureID()))
 		{
 			printf("SetTexture textureScreen failed \n ");
@@ -953,11 +778,6 @@ void CRenderOpenGL::RenderCharacter(GLTexture* glTexture, const float & left, co
 		}
 	}
 	RenderQuad(glTexture, left, top, scale, true);
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-
-	
-	//glTexture->Disable();
 }
 
 // render line of text
@@ -971,11 +791,17 @@ void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBindTexture(GL_TEXTURE_2D, 1);
+    GLSLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
+	if (m_pShader != nullptr)
+		m_pShader->EnableShader();
+    else 
+        return;
+        
     // iterate through all characters
     wxString::const_iterator c;
     for (c = text.begin(); c != text.end(); c++) 
     {
-        Character ch = Characters[*c];
+        const Character& ch = Characters[*c];
 
         float xpos = x + ch.Bearing.x * scale;
         float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -995,23 +821,15 @@ void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec
         };
         */
         if(ch.glTexture != nullptr)
-			RenderCharacter(ch.glTexture, xpos, ypos, scale, color);
+			RenderCharacter(m_pShader, ch.glTexture, xpos, ypos, scale, color);
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
+    
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+        
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_BLEND);
 }
 
-// render line of text
-// -------------------
-void CRenderOpenGL::RenderChar(char c, float x, float y, float scale, vec3f color)
-{
-    Character ch = Characters[c];
-
-    float xpos = x + ch.Bearing.x * scale;
-    float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-    
-    RenderCharacter(ch.glTexture, xpos, ypos, scale, color);
-
-}
