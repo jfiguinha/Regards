@@ -101,7 +101,8 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	showToolbar = true;
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
 	firstElement = true;
-
+	CThemeSlider themeSlider;
+	CTheme themeVideo;
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -116,28 +117,22 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	if (config != nullptr)
 	{
 		config->GetBitmapToolbarTheme(&themeToolbar);
+        config->GetVideoControlTheme(&themeVideo);
+        config->GetVideoSliderTheme(&themeSlider);
+		config->GetBitmapToolbarTheme(&themeToolbar);
+        config->GetBitmapWindowTheme(&themeBitmap);
+        config->GetScrollTheme(&themeScroll);
 	}
-
-	pictureToolbar = nullptr;
 
 	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false, exportPicture);
 	pictureToolbar->SetTabValue(value);
-
-	if (config != nullptr)
-		config->GetBitmapWindowTheme(&themeBitmap);
-
-	//			CBitmapWndRender(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 
 	bitmapWindow = new CBitmapWndViewer(pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	bitmapWindow->SetTabValue(value);
 
 	bitmapWindowRender = new CBitmapWnd3D(this, bitmapViewerId);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
-
-	if (config != nullptr)
-		config->GetScrollTheme(&themeScroll);
-
-	scrollbar = nullptr;
+	
 
 	scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
@@ -173,30 +168,10 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	videoPosOld = 0;
 	isDiaporama = false;
 	//decoder = "";
-	CThemeSlider themeSlider;
-	CTheme themeVideo;
 
-	if (config != nullptr)
-	{
-		config->GetVideoControlTheme(&themeVideo);
-	}
-
-	softRender = true;
 	videoWindow = new CVideoControlSoft(windowMain, this, this);
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
-
-	if (config != nullptr)
-	{
-		CThemeSlider theme;
-		config->GetVideoSliderTheme(&theme);
-	}
-
-	if (config != nullptr)
-	{
-		config->GetBitmapToolbarTheme(&themeToolbar);
-	}
-
 
 	videoSlider = new CSliderVideo(this, wxID_ANY, this, themeSlider);
 	slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
@@ -503,6 +478,9 @@ void CShowElement::RotateRecognition(void* param)
 void CShowElement::OnRotateDetect(wxCommandEvent& event)
 {
 	auto path = static_cast<CThreadRotate*>(event.GetClientData());
+    if(path == nullptr)
+        return;
+        
 	if (path->thread != nullptr)
 	{
 		path->thread->join();
@@ -519,8 +497,7 @@ void CShowElement::OnRotateDetect(wxCommandEvent& event)
 		sqlPhotos.InsertPhotoExif(path->filename, path->exif);
 	}
 
-	if (path != nullptr)
-		delete path;
+	delete path;
 }
 
 void CShowElement::IsNextPicture(const bool& value)
@@ -688,9 +665,6 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 
 		if (numEffect != 0)
 		{
-			//if (firstPicture)
-			//	bitmap->Flip();
-
 			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;
@@ -752,11 +726,6 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		}
 		else
 			tempImage = nullptr;
-
-		//if (firstPicture)
-		//	tempImage = nullptr;
-
-		firstPicture = false;
 
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
@@ -888,16 +857,16 @@ void CShowElement::OnSave(wxCommandEvent& event)
 	{
 		bool isFromBuffer = false;
 		cv::Mat bitmap = videoWindow->SavePicture(isFromBuffer);
-		auto imageLoading = new CImageLoadingFormat();
-		/*
-		if (!isFromBuffer)
-		{
-			if (videoWindow->IsFFmpegDecode())
-				cv::flip(bitmap, bitmap, 0);
-		}
-		*/
-		imageLoading->SetPicture(bitmap);
-		CSavePicture::SavePicture(nullptr, imageLoading, filename);
+        auto imageLoading = new CImageLoadingFormat();
+        try
+        {
+            imageLoading->SetPicture(bitmap);
+            CSavePicture::SavePicture(nullptr, imageLoading, filename);
+        }
+        catch(...)
+        {
+            
+        }
 		if (imageLoading != nullptr)
 			delete imageLoading;
 	}
@@ -1340,15 +1309,14 @@ void CShowElement::HideToolbar()
 
 bool CShowElement::IsToolbarMouseOver()
 {
-	if (!isVideo)
+	if (isVideo && pictureToolbar != nullptr)
 	{
-		if (videoSlider != nullptr)
-			return videoSlider->IsMouseOver();
-
-		return false;
+        return pictureToolbar->IsMouseOver();
+    }
+    else if (videoSlider != nullptr)
+    {
+		return videoSlider->IsMouseOver();
 	}
-	if (pictureToolbar != nullptr)
-		return pictureToolbar->IsMouseOver();
 
 	return false;
 }

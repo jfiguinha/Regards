@@ -129,8 +129,9 @@ bool CThumbnail::ItemCompFonctPath(wxString filepath, CIcone* icone)
 /* Définit une fonction. */
 {
 	CThumbnailData* pThumbnailData = icone->GetData();
-	if (pThumbnailData->GetFilename() == filepath)
-		return true;
+    if(pThumbnailData != nullptr)
+        if (pThumbnailData->GetFilename() == filepath)
+            return true;
 	return false;
 }
 
@@ -533,7 +534,7 @@ void CThumbnail::RefreshIconeVideo(const int& idPhoto)
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
-	int idPhoto = event.GetId();
+	int idPhoto = event.GetInt();
 	RefreshIcone(idPhoto);
 	needToRefresh = true;
 }
@@ -1104,7 +1105,8 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		if (numActifPhotoId != -1)
 		{
 			CIcone* numActif = GetIconeById(numActifPhotoId);
-			bitmapIconDrag = numActif->GetCopyIcone();
+            if(numActif != nullptr)
+                bitmapIconDrag = numActif->GetCopyIcone();
 		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
 		auto alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];

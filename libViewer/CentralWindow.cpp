@@ -56,7 +56,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 {
 	oldWindowMode = 0;
 	panelPhotoWnd = nullptr;
-	viewerconfig = nullptr;
 	isFullscreen = false;
 	isDiaporama = false;
 	showToolbar = true;
@@ -108,10 +107,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	//Add Criteria Window
 	if (viewerTheme != nullptr)
 	{
-		bool isPanelVisible = true;
-		if (viewerconfig != nullptr)
-			viewerconfig->GetShowFilter(isPanelVisible);
-
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFOLDERCATEGORY", 1);
 		CThemePane theme_pane;
 		viewerTheme->GetPaneTheme(&theme_pane);
@@ -131,14 +126,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	if (viewerTheme != nullptr)
 	{
 		bool checkValidity = true;
-		bool isPanelVisible = true;
-
-		if (config != nullptr)
-		{
-			config->GetShowVideoThumbnail(isPanelVisible);
-			checkValidity = config->GetCheckThumbnailValidity();
-		}
-
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
 		CThemePane theme_pane;
 		CThemeToolbar themetoolbar;
@@ -166,12 +153,10 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	if (viewerTheme != nullptr)
 	{
 		bool checkValidity = false;
-		bool isPanelVisible = true;
 		CMainTheme* viewer_theme = CMainThemeInit::getInstance();
 
 		if (config != nullptr)
 		{
-			config->GetShowThumbnail(isPanelVisible);
 			checkValidity = config->GetCheckThumbnailValidity();
 		}
 
@@ -415,8 +400,12 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
     if(threadLoadingBitmap->type == 30)
     {
        	wxWindow* mainWindow = this->FindWindowById(threadLoadingBitmap->longWindow);
-        wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-        mainWindow->GetEventHandler()->AddPendingEvent(evt); 
+        if(mainWindow != nullptr)
+        {
+            wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+            mainWindow->GetEventHandler()->AddPendingEvent(evt); 
+        }
+
     }
 
 
@@ -750,9 +739,11 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
         pictureInfos->infos = to_string(width) + "x" + to_string(height);
 
         wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
-        wxCommandEvent evt(wxEVENT_INFOS);
-        evt.SetClientData(pictureInfos);
-        mainWindow->GetEventHandler()->AddPendingEvent(evt);
+        if(mainWindow != nullptr){
+            wxCommandEvent evt(wxEVENT_INFOS);
+            evt.SetClientData(pictureInfos);
+            mainWindow->GetEventHandler()->AddPendingEvent(evt);
+        }
     }
 
 	if (windowMode == WINDOW_EXPLORER)
@@ -1217,8 +1208,11 @@ void CCentralWindow::StopAnimationEvent(wxCommandEvent& event)
 	if (isDiaporama)
 	{
 		CMainParam* viewerParam = CMainParamInit::getInstance();
-		const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+        if(viewerParam != nullptr)
+        {
+            const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+            diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+        }
 	}
 }
 
@@ -1648,15 +1642,14 @@ void CCentralWindow::UpdateScreenRatio()
 	int size = scrollPictureWindow->GetHeight();
 	int size_new_video = themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2;
 
-	windowManager->SetWindowSize(Pos::wxBOTTOM, true, size_new_video);
-	windowManager->SetWindowSize(Pos::wxTOP, true, size_new_video);
-	windowManager->Init();
-
-	if (windowManager != nullptr)
+    if (windowManager != nullptr)
+    {
+        windowManager->SetWindowSize(Pos::wxBOTTOM, true, size_new_video);
+        windowManager->SetWindowSize(Pos::wxTOP, true, size_new_video);
+        windowManager->Init();
 		windowManager->UpdateScreenRatio();
-
-	windowManager->Resize();
-
+        windowManager->Resize();
+    }
 }
 
 void  CCentralWindow::UpdateThumbnailIconeSize(wxCommandEvent& event)
@@ -1914,25 +1907,24 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 {
 	CLibPicture libPicture;
 	CImageLoadingFormat* bitmap = libPicture.LoadPicture(pictureData->picture);
-
-	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
+    if (bitmap == nullptr)
+        bitmap = new CImageLoadingFormat();
+        
+	if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)
 	{
 		bitmap->SetPicture(defaultPicture);
 	}
 	bitmap->SetFilename(pictureData->picture);
 
-
-	if (bitmap != nullptr)
-	{
-		auto bitmapReturn = new CBitmapReturn();
-		bitmapReturn->myThread = nullptr;
-		bitmapReturn->isThumbnail = false;
-		bitmapReturn->bitmap = bitmap;
-		auto event = new wxCommandEvent(EVENT_SHOWPICTURE);
-		event->SetClientData(bitmapReturn);
-		event->SetInt(0);
-		wxQueueEvent(pictureData->mainWindow, event);
-	}
+    auto bitmapReturn = new CBitmapReturn();
+    bitmapReturn->myThread = nullptr;
+    bitmapReturn->isThumbnail = false;
+    bitmapReturn->bitmap = bitmap;
+    auto event = new wxCommandEvent(EVENT_SHOWPICTURE);
+    event->SetClientData(bitmapReturn);
+    event->SetInt(0);
+    wxQueueEvent(pictureData->mainWindow, event);
+	
 }
 
 

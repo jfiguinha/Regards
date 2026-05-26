@@ -1,7 +1,15 @@
 #include "header.h"
 #include "videothumb.h"
+
+#define USE_FFMPEG
+
 #include "ImageVideoThumbnail.h"
+
+#ifdef USE_FFMPEG
+#include "FFmpegVideoThumb.h"
+#else
 #include "OpenCVVideoPlayer.h"
+#endif
 #include "VideoPlayer.h"
 #include <libPicture.h>
 #include <ConvertUtility.h>
@@ -9,6 +17,8 @@
 #include <RegardsConfigParam.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
+
+
 
 extern wxImage defaultPicture;
 
@@ -33,7 +43,13 @@ public:
 
 
 		if(this->useOpenCV)
-			videoThumbnailer = new COpenCVVideoPlayer(filename);
+        {
+#ifdef USE_FFMPEG
+            videoThumbnailer = new CFFmpegVideoThumb(filename);
+#else
+            videoThumbnailer = new COpenCVVideoPlayer(filename);
+#endif
+        }
 		else
 			videoThumbnailer = new CVideoPlayer(filename);
         isOk = videoThumbnailer->IsOk();

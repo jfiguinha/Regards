@@ -7,20 +7,15 @@ using namespace cv;
 COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(fileName)
 {
 	filename = CConvertUtility::ConvertToStdString(fileName);
-	capture = new cv::VideoCapture(filename, cv::CAP_FFMPEG);
-
-	isOpen = capture->isOpened();
-
-	/*
-	cv::Mat frame;
-
-	if (isOpen)
-		*capture >> frame;
-
-	cv::Size s = frame.size();
-	height = s.height;
-	width = s.width;
-	*/
+    try
+    {
+        capture = new cv::VideoCapture(filename, cv::CAP_FFMPEG);
+        isOpen = capture->isOpened();
+    }
+    catch(...)
+    {
+        capture = nullptr;
+    }
 }
 
 AspectRatio COpenCVVideoPlayer::GetAspectRatio()
@@ -36,7 +31,8 @@ AspectRatio COpenCVVideoPlayer::GetAspectRatio()
 
 COpenCVVideoPlayer::~COpenCVVideoPlayer()
 {
-	delete capture;
+    if(capture != nullptr)
+        delete capture;
 }
 
 
@@ -62,13 +58,14 @@ void COpenCVVideoPlayer::SkipFrame(const int& nbFrame)
 
 int COpenCVVideoPlayer::GetDuration()
 {
+    if (!isOpen)
+		return 0;
+        
 	double fps = capture->get(CAP_PROP_FPS);
 	double frame_count = int(capture->get(CAP_PROP_FRAME_COUNT));
-	double duration = frame_count / fps;
-
-	if (!isOpen)
-		return 0;
-
+    double duration = 0;
+    if(fps > 0)
+        duration = frame_count / fps;
 	return duration;
 }
 
@@ -133,12 +130,14 @@ int COpenCVVideoPlayer::SeekToPos(const int& sec)
 {
 	if (!isOpen)
 		return -1;
-
-	double fps = capture->get(CAP_PROP_FPS);
-	double noFrame = fps * sec;
-	if (sec != 0)
+	if (sec > 0)
+    {
+        double fps = capture->get(CAP_PROP_FPS);
+        double noFrame = fps * sec;
 		capture->set(CAP_PROP_POS_FRAMES, noFrame);
-
+    }
+    else
+        capture->set(CAP_PROP_POS_FRAMES, 0);
 	return 0;
 }
 
@@ -150,6 +149,10 @@ cv::Mat COpenCVVideoPlayer::GetVideoThumbnailFrame(const int& thumbnailWidth, co
 cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
 {
 	cv::Mat frame;
+    if (!isOpen)
+        return frame;
+    
+    
 	capture->read(frame);
     
 	if (!frame.empty())

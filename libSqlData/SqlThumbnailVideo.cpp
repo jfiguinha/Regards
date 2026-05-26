@@ -225,6 +225,7 @@ bool CSqlThumbnailVideo::EraseFolderThumbnail(const int& numFolder)
 #else
 					wxRemoveFile(thumbnail);
 #endif
+                    CThumbnailBuffer::RemovePicture(thumbnail);
 				}
 			}
 		}
@@ -247,22 +248,25 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult* sqlResult)
 		{
 		case 0:
 
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					videoThumbnail->rotation = sqlResult->ColumnDataInt(i);
-					break;
-				case 1:
-					videoThumbnail->percent = sqlResult->ColumnDataInt(i);
-					break;
-				case 2:
-					videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
-					break;
-				default: ;
-				}
-			}
+            if(videoThumbnail != nullptr)
+            {
+                for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+                {
+                    switch (i)
+                    {
+                    case 0:
+                        videoThumbnail->rotation = sqlResult->ColumnDataInt(i);
+                        break;
+                    case 1:
+                        videoThumbnail->percent = sqlResult->ColumnDataInt(i);
+                        break;
+                    case 2:
+                        videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
+                        break;
+                    default: ;
+                    }
+                }
+            }
 			break;
 
 		case 2:

@@ -48,7 +48,7 @@ namespace Regards
 			bool isVisible;
 			bool isThumbnail;
 			bool isDiaporama;
-			int processLoadPicture;
+			std::atomic<bool> processLoadPicture;
 			thread* myThread;
 		};
 
@@ -160,7 +160,7 @@ namespace Regards
 			CListPicture* listPicture;
 			CThumbnailViewerPicture* thumbnailPicture;
 			CPanelPhotoWnd* panelPhotoWnd;
-			CMainParam* viewerconfig;
+
 			
 			CPanelWithClickToolbar* panelInfosClick;
 			bool isNext = false;
