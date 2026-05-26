@@ -25,7 +25,7 @@ namespace Regards::Viewer
 
 		static void CheckFile(void* param);
 
-		std::thread* checkFile = nullptr;
+		std::unique_ptr<std::thread> checkFile;
 		CMainWindow* mainWindow;
 
 	};

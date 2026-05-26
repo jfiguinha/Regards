@@ -130,25 +130,17 @@ CListPicture::~CListPicture()
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		config->SetSlideFolderPos(positionTab);
+    delete windowManager;
 
-
-     //printf("~CListPicture() thumbToolbar \n");
-    delete(thumbToolbar);
-     //printf("~CListPicture() thumbToolbarZoom \n");
-    delete(thumbToolbarZoom);
-     //printf("~CListPicture() thumbnailFolder \n");
-    delete(thumbnailFolder);
-    //printf("~CListPicture() thumbscrollbar \n");
-    delete(thumbscrollbar);
-    //printf("~CListPicture() windowManager \n");
-	delete(windowManager);
-        
-    //printf("~CListPicture() end \n");
 }
 
 int CListPicture::GetThumbnailHeight()
 {
-	return thumbnailFolder->GetIconeHeight() + thumbscrollbar->GetBarHeight();
+    if (!thumbnailFolder || !thumbscrollbar)
+        return 0;
+
+    return thumbnailFolder->GetIconeHeight()
+         + thumbscrollbar->GetBarHeight();
 }
 
 void CListPicture::ChangeTypeAffichage(const long& typeAffichage)
@@ -182,17 +174,20 @@ void CListPicture::SetListeFile(const int& typeAffichage, const bool& isDeleteFo
 
 void CListPicture::ThumbnailZoomOn(wxCommandEvent& event)
 {
-	thumbnailFolder->ZoomOn();
+    if (thumbnailFolder)
+        thumbnailFolder->ZoomOn();
 }
 
 void CListPicture::ThumbnailZoomOff(wxCommandEvent& event)
 {
-	thumbnailFolder->ZoomOff();
+    if (thumbnailFolder)
+        thumbnailFolder->ZoomOff();
 }
 
 void CListPicture::ThumbnailZoomPosition(wxCommandEvent& event)
 {
-	thumbnailFolder->ZoomPosition(event.GetExtraLong());
+    if (thumbnailFolder)
+        thumbnailFolder->ZoomPosition(event.GetExtraLong());
 }
 
 void CListPicture::GenerateIndexFile(wxCommandEvent& event)
@@ -242,14 +237,14 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
                 
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->SetNumElement(data->GetNumElement());
-				pBitmapIcone->SetData(data);
-				pBitmapIcone->SetBackgroundColor(color);
-				pBitmapIcone->SetTheme(themeIcone);
-				pBitmapIcone->SetSizeIcone(width, height);
-				pBitmapIcone->SetWindowPos(x, y);
-				pBitmapIcone->RenderIcone(&memdc, 0, 0, false, false);
+                CIcone bitmapIcone;
+                bitmapIcone.SetNumElement(data->GetNumElement());
+                bitmapIcone.SetData(data);
+                bitmapIcone.SetBackgroundColor(color);
+                bitmapIcone.SetTheme(themeIcone);
+                bitmapIcone.SetSizeIcone(width, height);
+                bitmapIcone.SetWindowPos(x, y);
+                bitmapIcone.RenderIcone(&memdc, 0, 0, false, false);
 
 			}
 
@@ -711,7 +706,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 	CriteriaVector m_criteriaVector;
 	sqlFindCriteria.SearchCriteria(&m_criteriaVector, data->GetNumPhotoId());
 
-	for (CCriteria criteria : m_criteriaVector)
+	for (CCriteria& criteria : m_criteriaVector)
 	{
 		if (criteria.GetCategorieId() == 1)
 			criteriaGps = criteria.GetLibelle();

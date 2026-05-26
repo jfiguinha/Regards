@@ -4,6 +4,8 @@
 #include <ToolbarInterface.h>
 #include "IconeList.h"
 #include <InfosSeparationBar.h>
+#include <deque>
+#include <unordered_set>
 using namespace Regards::Window;
 
 
@@ -27,7 +29,7 @@ namespace Regards::Viewer
 	class CToolbarViewerMode;
 	class CFolderProcess;
 	class CThumbnailProcess;
-
+    class CCategoryFolderWindow;
 
 
 	class CMainWindow : public CWindowMain, public CToolbarInterface
@@ -60,13 +62,23 @@ namespace Regards::Viewer
 
 		void SaveParameter() override;
 
-		bool GetInit()
-		{
-			return init;
-		}
+        bool GetInit() const noexcept
+        {
+            return init;
+        }
 
 
 private:
+    
+        struct WxStringHash
+        {
+            std::size_t operator()(
+                const wxString& value) const
+            {
+                return std::hash<std::wstring>{}(
+                    value.ToStdWstring());
+            }
+        };
 
 		void UpdateFolderStatic(const bool & isDeleteFolder, const bool& refreshPhotos = false);
 
@@ -125,18 +137,36 @@ private:
 		void ProcessIdle() override;
 		void IdleFunction() override;
 
-		//------------------------------------------------------
+		
 		void UpdateMessage(wxCommandEvent& event);
 
 		void UpdateThumbnailIcone(wxCommandEvent& event);
 		int nbElementInIconeList = 0;
 		int nbPhotoElement = 0;
 		int nbElement = 0;
-		int nbProcess = 0;
+		std::atomic<int> nbProcess{0};
 		bool stopToGetNbElement = false;
 		int thumbnailPos = 0;
-		//std::map<wxString, bool> listFile;
 
+        //------------------------------------------------------
+        //Initialisation
+        //------------------------------------------------------
+
+        void InitState();
+        void InitTheme();
+        void InitUI(IStatusBarInterface* statusbar);
+        void BindEvents();
+        void InitConfig(const wxString& fileToOpen);
+        void InitBackgroundTasks();
+        
+        //
+        void SetViewerModeEvent(int mode);
+
+        //--------------------------------------------------
+        //UpdateFolder
+        bool HasPictureListChanged(const PhotosVector* newPictures) const;
+        void ResolveCurrentFilename();
+        void RefreshDependentWindows(CCategoryFolderWindow* categoryFolder);
 
 		bool isCheckNewVersion = false;
 		wxString tempVideoFile = "";
@@ -175,9 +205,13 @@ private:
 		wxString firstFileToShow = "";
 		wxString oldRequest = "";
 		bool init = true;
-		vector<wxString> photoList;
-		CFolderProcess* folderProcess = nullptr;
-		std::map<wxString, bool> listFile;
-		CThumbnailProcess* thumbnailProcess = nullptr;
+        std::mutex photoListMutex;
+		std::deque<wxString> photoList;
+        std::unordered_set<
+            wxString,
+            WxStringHash> listFile;
+        
+        std::unique_ptr<CFolderProcess> folderProcess;
+        std::unique_ptr<CThumbnailProcess> thumbnailProcess;
 	};
 }
