@@ -47,123 +47,120 @@ extern std::map<wxString, cv::ocl::Program> openclBinaryMapping;
 extern string buildOption;
 extern ncnn::VulkanDevice* vkdev;
 
+cl_command_queue COpenCLContext::s_queue = nullptr;;
+
 void COpenCLContext::AssociateToVulkan()
 {
-	if (cv::ocl::haveOpenCL())
-	{
-		bool findNvidia = false;
-		bool findIntel = false;
-		bool findAmd = false;
-		bool findApple = false;
-		int numNvidia = 0;
-		int numAmd = 0;
-		int numIntel = 0;
-		int numApple = 0;
-		int select = -1;
-		cl_uint numPlatforms = ncnn::get_gpu_count();
-		for (int i = 0; i < numPlatforms; i++)
-		{
-			const ncnn::GpuInfo& pguInfo = ncnn::get_gpu_info(i);
-			string deviceName = pguInfo.device_name();
-			for (auto& c : deviceName)
-			{
-				c = tolower(c);
-			}
-			if (deviceName.find("nvidia") != std::string::npos)
-			{
-				findNvidia = true;
-				numNvidia = i;
-			}
+    if (!cv::ocl::haveOpenCL())
+        return;
 
-			if (deviceName.find("amd") != std::string::npos)
-			{
-				findAmd = true;
-				numAmd = i;
-			}
+    constexpr const char* preferredGpu[] =
+    {
+        "nvidia",
+        "amd",
+        "intel",
+        "apple"
+    };
 
-			if (deviceName.find("intel") != std::string::npos)
-			{
-				findIntel = true;
-				numIntel = i;
-			}
+    int selectedIndex = -1;
+    int selectedPriority = INT_MAX;
 
-			if (deviceName.find("apple") != std::string::npos)
-			{
-				findApple = true;
-				numApple = i;
-			}
-		}
+    const int gpuCount = ncnn::get_gpu_count();
 
-		if (findNvidia)
-			select = numNvidia;
-		else if (findAmd)
-			select = numAmd;
-		else if (findIntel)
-			select = numIntel;
-		else if (findApple)
-			select = numApple;
-		
-		if(select != -1)
-			vkdev = ncnn::get_gpu_device(select);
+    for (int i = 0; i < gpuCount; ++i)
+    {
+        const ncnn::GpuInfo& info =
+            ncnn::get_gpu_info(i);
 
-		
-	}
+        std::string deviceName =
+            info.device_name();
 
+        std::transform(deviceName.begin(),
+                       deviceName.end(),
+                       deviceName.begin(),
+                       [](unsigned char c)
+                       {
+                           return std::tolower(c);
+                       });
+
+        for (int priority = 0;
+             priority < 4;
+             ++priority)
+        {
+            if (deviceName.find(preferredGpu[priority])
+                != std::string::npos)
+            {
+                if (priority < selectedPriority)
+                {
+                    selectedPriority = priority;
+                    selectedIndex = i;
+                }
+                break;
+            }
+        }
+    }
+
+    if (selectedIndex >= 0)
+    {
+        vkdev =
+            ncnn::get_gpu_device(selectedIndex);
+    }
 }
 
-
-wxString COpenCLContext::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
+wxString COpenCLContext::GetDeviceInfo(
+    cl_device_id device,
+    cl_device_info param_name)
 {
-	try
-	{
-		// Get the length for the i-th device name
-		size_t device_name_length = 0;
-		cl_int err = clGetDeviceInfo(
-			device,
-			param_name,
-			0,
-			nullptr,
-			&device_name_length
-		);
-		Error::CheckError(err);
+    size_t size = 0;
 
-		// Get the name itself for the i-th device
-		// use vector for automatic memory management
-		vector<char> device_name(device_name_length);
-		err = clGetDeviceInfo(
-			device,
-			param_name,
-			device_name_length,
-			&device_name[0],
-			nullptr
-		);
-		Error::CheckError(err);
+    cl_int err =
+        clGetDeviceInfo(device,
+                        param_name,
+                        0,
+                        nullptr,
+                        &size);
 
-		return wxString(&device_name[0]);
-	}
-	catch (...)
-	{
-	}
+    if (err != CL_SUCCESS || size == 0)
+        return {};
 
-	return "";
+    std::vector<char> buffer(size);
+
+    err = clGetDeviceInfo(device,
+                          param_name,
+                          size,
+                          buffer.data(),
+                          nullptr);
+
+    if (err != CL_SUCCESS)
+        return {};
+
+    return wxString(buffer.data());
 }
 
-cv::ocl::Program COpenCLContext::GetProgram(const wxString & programName)
+cv::ocl::Program COpenCLContext::GetProgram(const wxString& programName)
 {
-	cv::String module_name = "REGARDS";
+    auto it = openclBinaryMapping.find(programName);
 
-	std::map<wxString, cv::ocl::Program>::iterator it;
+    if (it != openclBinaryMapping.end())
+    {
+        return it->second;
+    }
 
-    wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
+    const wxString kernelSource =
+        CLibResource::GetOpenCLUcharProgram(programName);
+
     cv::ocl::ProgramSource programSource(kernelSource);
-    cv::ocl::Context context = clExecCtx.getContext();//ocl::Context::getDefault(false);
 
-    // Compile the kernel code
+    cv::ocl::Context context = clExecCtx.getContext();
+
     cv::String errmsg;
-	it = openclBinaryMapping.find(programName);
-	if(it == openclBinaryMapping.end())
-		openclBinaryMapping[programName] = context.getProg(programSource, buildOption, errmsg);
-	return openclBinaryMapping[programName];
+
+    auto [insertedIt, inserted] =
+        openclBinaryMapping.emplace(
+            programName,
+            context.getProg(programSource, buildOption, errmsg));
+
+    return insertedIt->second;
 }
 
 
@@ -577,12 +574,22 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	}
 }
 
-cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties queue_properties)
+cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties props)
 {
-	cl_int err = 0;
-	cl_command_queue queue = clCreateCommandQueue((cl_context)clExecCtx.getContext().ptr(), (cl_device_id)clExecCtx.getDevice().ptr(), queue_properties, &err);
-	Error::CheckError(err);
-	return queue;
+    if (s_queue)
+        return s_queue;
+
+    cl_int err = 0;
+
+    s_queue = clCreateCommandQueue(
+            (cl_context)clExecCtx.getContext().ptr(),
+            (cl_device_id)clExecCtx.getDevice().ptr(),
+            props,
+            &err);
+
+    Error::CheckError(err);
+
+    return s_queue;
 }
 
 
@@ -613,13 +620,6 @@ void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void* dataOut, const
 		err = clEnqueueReadBuffer(queue, cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
 		ErrorOpenCL::CheckError(err);
 		err = clFinish(queue);
-		ErrorOpenCL::CheckError(err);
-	}
-
-
-	if (queue)
-	{
-		cl_int err = clReleaseCommandQueue(queue);
 		ErrorOpenCL::CheckError(err);
 	}
 }

@@ -290,7 +290,9 @@ bool GLTexture::SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap)
     cv::Mat rgba;
     const int ch = mat.channels();
     if (ch == 3)
-        cv::cvtColor(mat, rgba, cv::COLOR_BGR2RGBA);
+    {
+        cv::cvtColor(mat, rgba, cv::COLOR_BGR2BGRA);
+    }
     else if (ch == 1)
         cv::cvtColor(mat, rgba, cv::COLOR_GRAY2RGBA);
     else if (ch == 4)
@@ -309,6 +311,8 @@ bool GLTexture::SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap)
     const int newH = rgba.rows;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    GLenum dataformat = GL_BGRA;
 
     if (m_nTextureID == static_cast<GLuint>(-1))
     {
@@ -321,7 +325,7 @@ bool GLTexture::SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
                      newW, newH, 0,
-                     GL_BGRA, GL_UNSIGNED_BYTE, rgba.data);
+                     dataformat, GL_UNSIGNED_BYTE, rgba.data);
         CHECK_ERROR_GL("SetTextureDataCPU glTexImage2D");
     }
     else if (newW != width || newH != height)
@@ -330,7 +334,7 @@ bool GLTexture::SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap)
         glBindTexture(GL_TEXTURE_2D, m_nTextureID);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
                      newW, newH, 0,
-                     GL_BGRA, GL_UNSIGNED_BYTE, rgba.data);
+                     dataformat, GL_UNSIGNED_BYTE, rgba.data);
         CHECK_ERROR_GL("SetTextureDataCPU glTexImage2D resize");
     }
     else
@@ -339,7 +343,7 @@ bool GLTexture::SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap)
         glBindTexture(GL_TEXTURE_2D, m_nTextureID);
         glTexSubImage2D(GL_TEXTURE_2D, 0,
                         0, 0, newW, newH,
-                        GL_BGRA, GL_UNSIGNED_BYTE, rgba.data);
+                        dataformat, GL_UNSIGNED_BYTE, rgba.data);
         CHECK_ERROR_GL("SetTextureDataCPU glTexSubImage2D");
     }
 
