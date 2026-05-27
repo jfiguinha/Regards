@@ -38,6 +38,7 @@
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
+#include "CheckVersion.h"
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -514,7 +515,7 @@ void CMainWindow::NewVersionAvailable(void* param)
 	CMainWindow* main = (CMainWindow*)param;
 	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
 	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
-	CCheckVersion _checkVersion(serverURL);
+	Regards::Internet::CCheckVersion _checkVersion(serverURL);
 	wxString serverVersion = _checkVersion.GetLastVersion();
 	serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
 

@@ -88,11 +88,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		windowMode = 1;
 	}
-    
-	if (regardsParam != nullptr)
-	{
-		faceDetection = regardsParam->GetFaceDetection();
-	}
+
     if(!faceDetection && windowMode == WINDOW_FACE)
     {
         windowMode = 1;
@@ -259,59 +255,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
 }
 
-/*
-void CCentralWindow::RefreshThumbnail(int type, int longWindow)
-{
-	switch (longWindow)
-	{
-	case THUMBNAILVIDEOWINDOW:
-		if (thumbnailVideo != nullptr)wxEVENT_ENDLOADPICTURE
-		{
-			if (type == 1)
-			{
-				auto event = new wxCommandEvent(wxEVENT_REFRESHVIDEOTHUMBNAIL);
-				wxQueueEvent(thumbnailVideo, event);
-			}
-
-			if (thumbnailVideo->IsShown())
-				thumbnailVideo->Refresh();
-		}
-		break;
-
-	case LISTPICTUREID:
-		if (listPicture != nullptr)
-		{
-			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
-			if (ptFolder->IsShown())
-				ptFolder->Refresh();
-		}
-		break;
-	case LISTFACEID:
-		if (listFace != nullptr)
-		{
-			CThumbnailFace* ptListFace = listFace->GetThumbnailFace();
-			if (ptListFace->IsShown())
-				ptListFace->Refresh();
-		}
-		break;
-	case THUMBNAILVIEWERPICTURE:
-		if (listPicture != nullptr)
-		{
-			CThumbnailFolder* ptFolder = listPicture->GetPtThumbnailFolder();
-			if (ptFolder->IsShown())
-				ptFolder->Refresh();
-		}
-		break;
-	}	
-}
-
-
-void CCentralWindow::OnRefreshThumbnail(wxCommandEvent& event)
-{
-	RefreshThumbnail(event.GetInt(), event.GetExtraLong());
-}
-*/
-
 void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 {
 
@@ -416,23 +359,11 @@ void CCentralWindow::UpdateThumbnailIcone(wxCommandEvent& event)
 void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
 {
 	ImagePrecedente();
-
-	/*
-	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
-	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
-	mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	*/
 }
 
 void CCentralWindow::OnPictureNext(wxCommandEvent& event)
 {
 	ImageSuivante();
-
-	/*
-	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
-	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
-	mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	*/
 }
 
 void CCentralWindow::OnPictureFirst(wxCommandEvent& event)
@@ -460,19 +391,11 @@ wxString CCentralWindow::GetFilename()
 
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
-	////printf("CCentralWindow::OnVideoEnd \n");
-
 	stopVideo = false;
 	videoStart = false;
 
 	if (loadPicture)
 	{
-		//auto pictureElement = new CPictureElement();
-		//pictureElement->filename = filename;
-		//pictureElement->reloadResource = true;
-		//wxCommandEvent evt(wxEVENT_LOADPICTURE);
-		//evt.SetClientData(pictureElement);
-		//this->GetEventHandler()->AddPendingEvent(evt);
 		LoadPicture(filename, true);
 	}
 	else if (isDiaporama)
@@ -491,7 +414,6 @@ void CCentralWindow::StopDiaporama(wxCommandEvent& event)
 		if (previewWindow != nullptr)
 			previewWindow->StopDiaporamaMode();
 
-		isDiaporama = false;
 		if (diaporamaTimer->IsRunning())
 			diaporamaTimer->Stop();
 	}
@@ -512,18 +434,15 @@ bool CCentralWindow::IsDiaporamaStart()
 
 void CCentralWindow::TransitionEnd()
 {
-	if (isDiaporama)
-	{
-		//CMainParam* viewerParam = CMainParamInit::getInstance();
-		//const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-		//diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
-		diaporamaTimer->Start(1000, wxTIMER_ONE_SHOT);
-	}
-	if (musicPause && isDiaporama)
-	{
-		musicPause = false;
-		StartMusic();
-	}
+    if (isDiaporama)
+    {
+        diaporamaTimer->Start(1000, wxTIMER_ONE_SHOT);
+        if (musicPause)
+        {
+            musicPause = false;
+            StartMusic();
+        }
+    }
 }
 
 void CCentralWindow::StartDiaporama(wxCommandEvent& event)
@@ -591,14 +510,14 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 				localFilename = thumbnailPicture->GetFilename(numItem);
 			}
 		}
-		else if (windowMode == WINDOW_FACE)
+		else if (windowMode == WINDOW_FACE && listFace != nullptr)
 		{
 			numItem = listFace->ImageSuivante();
 			localFilename = listFace->GetFilename(numItem);
 		}
 	}
 
-	if (localFilename != "" && loadPicture)
+	if (localFilename.empty() && loadPicture)
 	{
 		isNext = true;
 		LoadPicture(localFilename);
@@ -632,7 +551,7 @@ wxString CCentralWindow::ImageFin(const bool& loadPicture)
 	}
 
 
-	if (localFilename != "" && loadPicture)
+	if (localFilename.empty() && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
@@ -670,7 +589,7 @@ wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 		}
 	}
 
-	if (localFilename != "" && loadPicture)
+	if (localFilename.empty() && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
@@ -701,7 +620,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 				localFilename = thumbnailPicture->GetFilename(numItem);
 			}
 		}
-		else if (windowMode == WINDOW_FACE)
+		else if (windowMode == WINDOW_FACE && listFace)
 		{
 			numItem = listFace->ImagePrecedente();
 			localFilename = listFace->GetFilename(numItem);
@@ -709,7 +628,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 	}
 
 
-	if (localFilename != "" && loadPicture)
+	if (localFilename.empty() && loadPicture)
 	{
 		isNext = false;
 		LoadPicture(localFilename);
@@ -797,7 +716,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 		{
 			CLibPicture libPicture;
 			bool isVideoValid = true;
-			bool isVideo = false;
+			isVideo = false;
 
 			if (libPicture.TestIsVideo(filename))
 			{
@@ -1199,8 +1118,12 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 void CCentralWindow::StartDiaporamaMessage(wxCommandEvent& event)
 {
 	CMainParam* viewerParam = CMainParamInit::getInstance();
-	const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-	diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+    if(viewerParam != nullptr)
+    {
+	    const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+	    diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+    }
+
 }
 
 void CCentralWindow::StopAnimationEvent(wxCommandEvent& event)
@@ -1252,19 +1175,6 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-	if (!init)
-	{
-		if (wxDisplay().GetGeometry().GetWidth() == GetWindowWidth())
-		{
-			init = true;
-		}
-		else
-		{
-			if (windowManager != nullptr)
-				windowManager->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight());
-		}
-	}
-
     windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 }
 
@@ -1336,12 +1246,11 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 		}
 	}
 
-	if (!isSetImage)
-	{
-		if (image != nullptr && image->IsOk())
-			delete image;
-		image = nullptr;
-	}
+    if (!isSetImage && image != nullptr)
+    {
+        delete image;
+        image = nullptr;
+    }
 }
 
 
@@ -1466,7 +1375,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	previewWindow->SetNormalMode();
 	panelInfosWindow->Show(false);
 	panelInfosClick->Show(false);
-	if (faceDetection)
+	if (faceDetection && listFace != nullptr)
 		listFace->Show(false);
 	listPicture->Show(false);
 
@@ -1551,7 +1460,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 
-			if (faceDetection)
+			if (faceDetection && listFace != nullptr)
 			{
 				panelInfosClick->Show(true);
 				if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
@@ -1658,8 +1567,6 @@ void  CCentralWindow::UpdateThumbnailIconeSize(wxCommandEvent& event)
 	CThemePane theme_pane;
 	CThemeThumbnail themeVideo;
 	
-	int height = event.GetInt();
-	int size = scrollPictureWindow->GetHeight();
 	int size_new_video = themeVideo.themeIcone.GetHeight()  + theme_pane.GetHeight() * 2;
 
 	windowManager->SetWindowSize(Pos::wxBOTTOM, true, size_new_video);
@@ -1815,16 +1722,19 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	if (windowMode == WINDOW_VIEWER)
 		windowManager->ShowWindow(Pos::wxTOP);
 	StopAnimation();
+
 	CLibPicture libPicture;
 	bool refresh = isAnimation ? false : true;
-	bool result = false;
+
 	isVideo = false;
 	isAnimation = true;
 	isPicture = false;
 	oldAnimationPosition = -1;
 	oldFilename = L"";
+
 	int iFormat = libPicture.TestImageFormat(filename);
 	nbThumbnail = libPicture.GetNbImage(filename);
+
 	if (nbThumbnail > 0)
 		thumbnailVideo->SetFile(filename, nbThumbnail);
 
@@ -1848,7 +1758,6 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 	if (refresh)
 		needToRefresh = true;
 
-
 	SetPanelInfos(false);
 
 	if (previewWindow != nullptr)
@@ -1862,7 +1771,7 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 		wxCommandEvent evt(wxEVENT_ANIMATIONSTART);
 		previewWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	return result;
+	return True;
 }
 
 
@@ -1941,7 +1850,7 @@ void CCentralWindow::OnStopAudio(wxCommandEvent& event)
 	musicStop = true;
 	if (config != nullptr)
 		musicDiaporama = config->GetMusicDiaporama();
-	if (musicDiaporama != "" && !ffmfcQuit)
+	if (musicDiaporama.empty() && ffmfc != nullptr && !ffmfcQuit)
 	{
 		ffmfc->Quit();
 		ffmfc->SetFile(nullptr, CConvertUtility::ConvertToStdString(musicDiaporama), "", false, 100);
@@ -1975,12 +1884,11 @@ void CCentralWindow::StartMusic()
 
 void CCentralWindow::StopMusic()
 {
-	if (!musicStop)
-	{
-		musicPosition = ffmfc->GetTimePosition();
-		if (ffmfc != nullptr)
-			ffmfc->Quit();
-		ffmfcQuit = true;
-		musicStop = true;
-	}
+    if (!musicStop && ffmfc != nullptr)
+    {
+        musicPosition = ffmfc->GetTimePosition();
+        ffmfc->Quit();
+        ffmfcQuit = true;
+        musicStop = true;
+    }
 }

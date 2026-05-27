@@ -72,11 +72,9 @@ private:
     
         struct WxStringHash
         {
-            std::size_t operator()(
-                const wxString& value) const
+            std::size_t operator()(const wxString& value) const
             {
-                return std::hash<std::wstring>{}(
-                    value.ToStdWstring());
+                return std::hash<std::wstring>{}(value.ToStdWstring());
             }
         };
 
@@ -207,9 +205,7 @@ private:
 		bool init = true;
         std::mutex photoListMutex;
 		std::deque<wxString> photoList;
-        std::unordered_set<
-            wxString,
-            WxStringHash> listFile;
+        std::unordered_set<wxString, WxStringHash> listFile;
         
         std::unique_ptr<CFolderProcess> folderProcess;
         std::unique_ptr<CThumbnailProcess> thumbnailProcess;

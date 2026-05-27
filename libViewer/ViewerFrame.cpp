@@ -735,26 +735,31 @@ void CViewerFrame::Exit()
 	{
 		nbTime = 0;
 		CWindowMain::SetEndProgram();
-		eventFileSysTimer->Stop();
-		loadPictureTimer->Stop();
-//#ifndef __WXGTK__
+        if(eventFileSysTimer != nullptr)
+            eventFileSysTimer->Stop();
+            
+        if(loadPictureTimer != nullptr)
+            loadPictureTimer->Stop();
+            
+        if(mainWindow != nullptr)
+            mainWindow->Show(false);
+        
 		mainWindowWaiting = new CWaitingWindow(this, wxID_ANY);
-		mainWindow->Show(false);
-		mainWindowWaiting->Show(true);
-		mainWindowWaiting->SetSize(0, 0, mainWindow->GetWindowWidth(), mainWindow->GetWindowHeight());
-		mainWindowWaiting->Refresh();
-		exitTimer->Start(10, wxTIMER_ONE_SHOT);
-/*
-#else
-        onExit = true;
-        Exit();
-#endif
-*/
+        if(mainWindowWaiting != nullptr)
+        {
+            mainWindowWaiting->Show(true);
+            mainWindowWaiting->SetSize(0, 0, mainWindow->GetWindowWidth(), mainWindow->GetWindowHeight());
+            mainWindowWaiting->Refresh();      
+        }
+        
+        if(exitTimer != nullptr)
+            exitTimer->Start(10, wxTIMER_ONE_SHOT);
 	}
 	else
 	{
 		CMainThemeInit::SaveTheme();
-		mainInterface->Close();
+        if(mainInterface != nullptr)
+            mainInterface->Close();
 		onExit = true;
 	}
 }
@@ -769,16 +774,18 @@ void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 		wxCommandEvent evt(eventToLoop);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
+    
+    if(endLoadPictureTimer != nullptr)
+    {
+        if (endLoadPictureTimer->IsRunning())
+            endLoadPictureTimer->Stop();
 
-	if (endLoadPictureTimer->IsRunning())
-		endLoadPictureTimer->Stop();
+        endLoadPictureTimer->Start(1000, true);
+    }
 
-	endLoadPictureTimer->Start(1000, true);
 
-	//if (repeatEvent)
-	//	loadPictureTimer->Start(200, true);
-	//else
-	loadPictureTimer->Stop();
+    if(loadPictureTimer != nullptr)
+        loadPictureTimer->Stop();
 }
 
 void CViewerFrame::OnTimerEndLoadPicture(wxTimerEvent& event)
@@ -821,15 +828,6 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 				if (pictureEndLoading)
 					loadPictureTimer->Start(50, true);
 				pictureEndLoading = false;
-				/*
-				//printf("Image Suivante \n");
-				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-				if (mainWindow != nullptr)
-				{
-					wxCommandEvent evt(wxEVENT_PICTURENEXT);
-					mainWindow->GetEventHandler()->AddPendingEvent(evt);
-				}
-				*/
 			}
 			break;
 
@@ -963,22 +961,7 @@ void CViewerFrame::SetFullscreen()
 #ifdef __APPLE__
         int top = 0, left = 0, width = 0, height = 0;
         CToggleScreen toggle;
-        toggle.ToggleFullscreen(this);
-        /*
-        toggle.GetFullscreenSize(width, height, left, top);
-        oldWidth = mainWindow->GetWindowWidth();
-        oldHeight = mainWindow->GetWindowHeight();
-        //mainWindow->SetSize(0, 0, oldWidth, oldHeight);
-        //this->Maximize();
-        int sizeWeight = wxDisplay().GetGeometry().GetHeight() - (height + top);
-        double scaleFactor = GetContentScaleFactor();
-        //printf("SetFullscreen left : %d top : %d sizeWeight : %d \n", left, top, sizeWeight);
-        //printf("SetFullscreen width : %d height : %d scaleFactor : %f \n", wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight(), scaleFactor);
-        //mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight() - sizeWeight + 5);
-        */
-      //  mainWindow->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), wxDisplay().GetGeometry().GetHeight()- sizeWeight + 5);
-
-        
+        toggle.ToggleFullscreen(this);       
 #else
 		this->ShowFullScreen(true);
 #endif
