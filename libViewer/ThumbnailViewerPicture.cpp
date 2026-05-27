@@ -154,7 +154,7 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 
 						wxString filename = photo.GetPath();
 
-						bool find = iconeList->FindElement(photo.GetPath());
+						bool find = iconeList->IfElementExistByFilename(photo.GetPath());
 						if (!find)
 						{
 							auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
@@ -289,5 +289,5 @@ bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone* icone, C
 CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }

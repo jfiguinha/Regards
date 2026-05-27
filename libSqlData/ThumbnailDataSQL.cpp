@@ -7,8 +7,7 @@ using namespace Regards::Sqlite;
 #include <wx/filename.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <OpenCVVideoPlayer.h>
-#include <VideoPlayer.h>
+#include <FFmpegVideoThumb.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
@@ -51,12 +50,6 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 			CSqlThumbnailVideo sqlThumbnailVideo;
 			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
-	}
-
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		useOpenCV = regardsParam->GetThumbnailOpenCV();
 	}
 }
 
@@ -137,17 +130,7 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 		// et le bloc de fallback ci-dessous renverra frameOut sans planter.
 		if (videoCaptureCV == nullptr)
 		{
-			try
-			{
-				if (useOpenCV)
-					videoCaptureCV = std::make_unique<COpenCVVideoPlayer>(filename);
-				else
-					videoCaptureCV = std::make_unique<CVideoPlayer>(filename);
-			}
-			catch (...)
-			{
-				// Échec d'initialisation : on tombera dans le fallback frameOut.
-			}
+			videoCaptureCV = std::make_unique<CFFmpegVideoThumb>(filename);
 		}
 
 		// FIX [critique #1] : le garde-fou qui était mort est désormais utile :
@@ -166,7 +149,7 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 			// la vérification redondante est supprimée.
 			if (mouseOn && videoCaptureCV != nullptr)
 			{
-				bool invertRotation = !useOpenCV ? false : true;
+				bool invertRotation = false;
 
 				frameOut = videoCaptureCV->GetVideoFrame(true, invertRotation);
 				if (frameOut.empty())

@@ -89,7 +89,7 @@ int CThumbnailVideo::FindNumItem(const int& videoPos)
 {
 	int numItem = -1;
 	pItemCompFonct _pf = &ItemCompFonct;
-	CIcone * icone = iconeList->FindElement(videoPos, 0, &_pf, this);
+	CIcone * icone = iconeList->FindElementByPosition(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
 	{
 		if (iFormat < 100)

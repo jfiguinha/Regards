@@ -33,15 +33,7 @@
   <VirtualDirectory Name="VideoThumbnail">
     <File Name="FFmpegVideoThumb.h"/>
     <File Name="FFmpegVideoThumb.cpp"/>
-    <VirtualDirectory Name="MovieDecoder">
-      <File Name="moviedecoder.h"/>
-      <File Name="moviedecoder.cpp"/>
-    </VirtualDirectory>
     <File Name="aspectratio.h"/>
-    <File Name="OpenCVVideoPlayer.h"/>
-    <File Name="OpenCVVideoPlayer.cpp"/>
-    <File Name="VideoPlayer.cpp"/>
-    <File Name="VideoPlayer.h"/>
     <File Name="videothumb.cpp"/>
     <File Name="videothumb.h"/>
   </VirtualDirectory>

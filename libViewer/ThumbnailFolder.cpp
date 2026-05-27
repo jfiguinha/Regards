@@ -72,7 +72,7 @@ CInfosSeparationBarExplorer* CThumbnailFolder::AddSeparatorBar(PhotosVector* _pi
 				CPhotos photo = _pictures->at(i);
 				wxString filename = photo.GetPath();
 				bool find = true;
-				find = iconeList->FindElement(photo.GetPath());
+				find = iconeList->IfElementExistByFilename(photo.GetPath());
 				if (!find)
 				{
 					CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity, false);
@@ -300,7 +300,7 @@ bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWi
 CIcone* CThumbnailFolder::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }
 
 
@@ -481,7 +481,7 @@ bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowM
 CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }
 
 

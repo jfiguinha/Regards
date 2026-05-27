@@ -33,7 +33,7 @@
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <LibResource.h>
-#include "OpenCVVideoPlayer.h"
+#include "FFmpegVideoThumb.h"
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -1601,7 +1601,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	if (duration > 0)
     {
-        	COpenCVVideoPlayer player(szFileName);
+        	CFFmpegVideoThumb player(szFileName);
             bool isOpen = player.isOpened();
             return isOpen;
     }

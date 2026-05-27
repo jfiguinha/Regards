@@ -51,7 +51,6 @@ private:
 	int videoFramePos = 0;
 	bool mouseOn = false;
 	bool generateVideoPlayer = false;
-	bool useOpenCV = false;
 
 	// FIX [critique #2] : unique_ptr garantit la destruction et évite le delete
 	// manuel tout en restant compatible avec le polymorphisme IVideoPlayer.

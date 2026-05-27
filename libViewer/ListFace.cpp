@@ -23,7 +23,7 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-#include <OpenCVVideoPlayer.h>
+#include <FFmpegVideoThumb.h>
 extern bool processrecognitionison;
 extern bool isOpenCLInitialized;
 
@@ -81,78 +81,68 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
-	if (viewerTheme != nullptr)
+	if (viewerTheme != nullptr && config != nullptr)
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
 		windowManager = new CWindowManager(this, wxID_ANY, theme);
-	}
+           
+        if(windowManager != nullptr)
+        {
+            {
+                CThemeThumbnail themeThumbnail;
+                CThemeScrollBar theme;
+                viewerTheme->GetScrollTheme(&theme);
+                viewerTheme->GetThumbnailTheme(&themeThumbnail);
+                thumbnailFace = new CThumbnailFace(windowManager, THUMBNAILFACE, themeThumbnail, checkValidity);
+                thumbscrollbar = new CScrollbarWnd(windowManager, thumbnailFace, wxID_ANY);
+                thumbscrollbar->ShowVerticalScroll();
+                thumbnailFace->SetNoVScroll(false);
+                thumbnailFace->SetCheck(true);
+                thumbnailFace->ChangeTabValue(valueZoom, positionTab);
+                thumbnailFace->init();
 
+                windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);    
+            }
+            
+            {
+                CThemeToolbar theme;
+                viewerTheme->GetBitmapToolbarTheme(&theme);
 
-	if (viewerTheme != nullptr)
-	{
-		CThemeThumbnail themeThumbnail;
-		CThemeScrollBar theme;
-		viewerTheme->GetScrollTheme(&theme);
-		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFace = new CThumbnailFace(windowManager, THUMBNAILFACE, themeThumbnail, checkValidity);
-		thumbscrollbar = new CScrollbarWnd(windowManager, thumbnailFace, wxID_ANY);
-		thumbscrollbar->ShowVerticalScroll();
-		thumbnailFace->SetNoVScroll(false);
-		thumbnailFace->SetCheck(true);
-		thumbnailFace->ChangeTabValue(valueZoom, positionTab);
-		thumbnailFace->init();
+                thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
+                thumbFaceToolbar->SetTabValue(valueZoom);
+                thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
 
-		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
-	}
+                windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY,
+                     false);
+            }
+            
+            {
+                CThemeToolbar theme;
+                int position = 2;
 
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar theme;
-		//viewerTheme->GetThumbnailToolbarTheme(theme);
-		viewerTheme->GetBitmapToolbarTheme(&theme);
+                double pertinence = config->GetPertinenceValue();
+                int pertinenceValue = pertinence;
+                for (int i = 0; i < value.size(); i++)
+                {
+                    if (pertinenceValue == value[i])
+                        position = i;
+                }
+                
 
-		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
-		thumbFaceToolbar->SetTabValue(valueZoom);
-		thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
+                viewerTheme->GetThumbnailToolbarTheme(theme);
+                thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);
+                thumbFacePertinenceToolbar->SetTabValue(value);
+                thumbFacePertinenceToolbar->SetTrackBarPosition(position);
+                windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(),
+                                         rect, wxID_ANY, false);
 
-		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY,
-		                         false);
-	}
+            }
 
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar theme;
-		int position = 2;
-		if (config != nullptr)
-		{
-			double pertinence = config->GetPertinenceValue();
-			int pertinenceValue = pertinence;
-			for (int i = 0; i < value.size(); i++)
-			{
-				if (pertinenceValue == value[i])
-					position = i;
-			}
-		}
+        }
 
-		viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);
-		//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
-		thumbFacePertinenceToolbar->SetTabValue(value);
-		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
-		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(),
-		                         rect, wxID_ANY, false);
+    }
 
-		/*
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
-
-		titleBar = new CTitleBar(windowManager, wxID_ANY, this);
-		titleBar->SetRefresh(true);
-		titleBar->SetTitle(libelle);
-		titleBar->SetClosable(false);
-		windowManager->AddWindow(titleBar, Pos::wxTOP, true, titleBar->GetHeight(), rect, wxID_ANY, false);
-		*/
-	}
 
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
@@ -167,12 +157,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
 
-
 	processIdle = true;
-
 	nbProcessFacePhoto = 0;
-
-
 	isLoadingResource = false;
 	listProcessWindow.push_back(this);
 }
@@ -194,13 +180,6 @@ int CListFace::ImageSuivante()
 	int numItem = -1;
 	if (thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImageSuivante();
-	/*
-	if(numItem =- -1)
-	{
-		int photoId = thumbnailFace->GetNumPhotoId(numItem);
-		thumbnailFace->SetActifItem(photoId, false);
-	}
-	*/
 	return numItem;
 }
 
@@ -224,13 +203,7 @@ int CListFace::ImagePrecedente()
 	int numItem = 0;
 	if (thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImagePrecedente();
-	/*
-	if(numItem =- -1)
-	{
-		int photoId = thumbnailFace->GetNumPhotoId(numItem);
-		thumbnailFace->SetActifItem(photoId, false);
-	}
-	*/
+
 	return numItem;
 }
 
@@ -522,7 +495,7 @@ void CListFace::FacialRecognition(void* param)
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
-		COpenCVVideoPlayer video(path->filename);
+		CFFmpegVideoThumb video(path->filename);
 		int width = 0;
 		int height = 0;
 		path->nbFace = 0;

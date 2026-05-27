@@ -17,18 +17,20 @@ namespace Regards::Window
         void EraseThumbnailListWithIcon();
 		void AddElement(CIcone* icone);
 		wxString GetFilename(const int& numElement);
-		CIcone* FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
-		void SortById();
-		CIcone* FindElementPhotoId(const int& photoId);
-		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
+		CIcone* FindElementByPosition(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
+		CIcone* FindElementByPhotoId(const int& photoId);
+		CIcone* FindElementByFilename(const wxString& filename);
+        bool IfElementExistByFilename(const wxString& filename);
 		CIcone* FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf);
-		bool FindElement(wxString filename);
-		void SortByFilename();
 		CIcone* GetLastElement();
 		void RemoveElement(int numElement);
-		CIcone * FindElementByFilename(wxString filename);
+        void SortById();
+        void SortByFilename();
+        
 	private:
+        
 		IconeVector pIconeList;
-		//mutex muList;
+		std::unordered_map<int, CIcone*> pIconeByPhotoId;
+        std::unordered_map<wxString, CIcone*> pIconeByFilename;
 	};
 }

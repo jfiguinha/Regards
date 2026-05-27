@@ -25,30 +25,6 @@ public:
 
 };
 
-//Class use for finding element in IconeList
-class CItemPhotoId
-{
-public:
-	CItemPhotoId(int photoId) : _photoId(photoId)
-	{
-	}
-
-	bool operator()(CIcone* icone)
-	{
-		int photoId = 0;
-		if (icone != nullptr)
-		{
-			CThumbnailData* data = icone->GetData();
-			if (data != nullptr)
-				photoId = data->GetNumPhotoId();
-		}
-		return _photoId == photoId;
-	}
-
-	int _photoId;
-	
-
-};
 
 class CItemFaceString
 {
@@ -67,24 +43,6 @@ public:
 	pItemCompFonctFace* _pf;
 
 };
-
-class CItemString
-{
-public:
-	CItemString(wxString filename, pItemStringCompFonct * pf) : _filename(filename), _pf(pf)
-	{
-	}
-
-	bool operator()(CIcone* icone)
-	{
-		return (*_pf)(_filename, icone);
-	}
-
-	wxString _filename;
-	pItemStringCompFonct * _pf;
-
-};
-
 
 int CIconeList::GetNbElement()
 {
@@ -116,16 +74,29 @@ int CIconeList::GetPhotoId(const int& numElement)
 
 void CIconeList::RemoveElement(int numElement)
 {
-	CIcone* icone = nullptr;
-	if (numElement < pIconeList.size())
-		icone = pIconeList[numElement];
-	if (icone != nullptr)
-	{
-		delete(icone);
-		icone = nullptr;
-	}
-	pIconeList[numElement] = nullptr;
+    if (numElement >= pIconeList.size())
+        return;
 
+    CIcone* icone = pIconeList[numElement];
+
+    if (icone != nullptr)
+    {
+        if (CThumbnailData* data = icone->GetData();
+            data != nullptr)
+        {
+            pIconeByPhotoId.erase(
+                data->GetNumPhotoId()
+            );
+            
+            pIconeByFilename.erase(
+                data->GetFilename()
+            );
+        }
+
+        delete icone;
+    }
+
+    pIconeList[numElement] = nullptr;
 }
 
 CIcone* CIconeList::GetElement(const int& numElement)
@@ -139,7 +110,17 @@ CIcone* CIconeList::GetElement(const int& numElement)
 
 void CIconeList::AddElement(CIcone* icone)
 {
-	pIconeList.push_back(icone);
+    if (icone == nullptr)
+        return;
+
+    pIconeList.push_back(icone);
+
+    if (CThumbnailData* data = icone->GetData();
+        data != nullptr)
+    {
+        pIconeByPhotoId[data->GetNumPhotoId()] = icone;
+        pIconeByFilename[data->GetFilename()] = icone;
+    }
 }
 
 wxString CIconeList::GetFilename(const int& numElement)
@@ -159,71 +140,35 @@ wxString CIconeList::GetFilename(const int& numElement)
 	return filename;
 }
 
-bool CIconeList::FindElement(wxString filename)
+ bool CIconeList::IfElementExistByFilename(const wxString& filename)
+ {
+     auto it = pIconeByFilename.find(filename);
+
+    if (it != pIconeByFilename.end())
+        return true;
+
+    return false;    
+ }
+
+CIcone* CIconeList::FindElementByFilename(const wxString& filename)
 {
-	IconeVector::iterator it;
+    auto it = pIconeByFilename.find(filename);
 
-	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-		{
-			if (e != nullptr)
-			{
-				CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
-				return thumbnailData->GetFilename() == filename;
-			}
-			else
-				return false;
+    if (it != pIconeByFilename.end())
+        return it->second;
 
-		});
-
-	if (it != pIconeList.end())
-		return true;
-
-	return false;
+    return nullptr;
 }
 
-CIcone * CIconeList::FindElementByFilename(wxString filename)
+
+CIcone* CIconeList::FindElementByPhotoId(const int& photoId)
 {
-	IconeVector::iterator it;
-	CIcone* element = nullptr;
-	it = std::find_if(pIconeList.begin(), pIconeList.end(), [&](CIcone* e)
-		{
-			if (e != nullptr)
-			{
-				CThumbnailData* thumbnailData = (CThumbnailData*)e->GetData();
-				return thumbnailData->GetFilename() == filename;
-			}
-			else
-				return false;
+    auto it = pIconeByPhotoId.find(photoId);
 
-		});
+    if (it != pIconeByPhotoId.end())
+        return it->second;
 
-	if (it != pIconeList.end())
-		element = *it;
-	return element;
-}
-
-CIcone* CIconeList::FindElement(wxString filename, pItemStringCompFonct * _pf)
-{
-	IconeVector::iterator it;
-	CIcone* element = nullptr;
-	it = find_if(pIconeList.begin(), pIconeList.end(), CItemString(filename, _pf));
-
-	if (it != pIconeList.end())
-		element = *it;
-	return element;
-}
-
-CIcone* CIconeList::FindElementPhotoId(const int& photoId)
-{
-	IconeVector::iterator it;
-	CIcone* element = nullptr;
-	it = find_if(pIconeList.begin(), pIconeList.end(), CItemPhotoId(photoId));
-
-	if (it != pIconeList.end())
-		element = *it;
-
-
-	return element;
+    return nullptr;
 }
 
 CIcone* CIconeList::FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf)
@@ -239,7 +184,7 @@ CIcone* CIconeList::FindFaceElement(wxString filepath, int numFace, pItemCompFon
 	return element;
 }
 
-CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
+CIcone* CIconeList::FindElementByPosition(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
 {
 	IconeVector::iterator it;
 	CIcone* element = nullptr;
@@ -251,6 +196,7 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 	
 	return element;
 }
+
 
 CIcone* CIconeList::GetLastElement()
 {
@@ -274,24 +220,17 @@ void CIconeList::EraseThumbnailListWithIcon()
 			pIcone = nullptr;
 		}
 	}
-	pIconeList.clear();   
+    pIconeList.clear();
+    pIconeByPhotoId.clear();
+    pIconeByFilename.clear();
 }
 
 void CIconeList::EraseThumbnailList()
 {
-    printf("CIconeList::EraseThumbnailList() \n");
-	/*/
-	for (CIcone* pIcone : pIconeList)
-	{
-		if (pIcone != nullptr)
-		{
-			delete(pIcone);
-			pIcone = nullptr;
-		}
-	}*/
-	pIconeList.clear();
+    pIconeList.clear();
+    pIconeByPhotoId.clear();
+    pIconeByFilename.clear();
 }
-
 
 // Compares two intervals
 // according to starting times.

@@ -107,7 +107,7 @@ CIcone * CThumbnailEffect::FindElement(const int& xPos, const int& yPos)
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElement(x, y, &_pf, this);
+	return iconeList->FindElementByPosition(x, y, &_pf, this);
 }
 
 

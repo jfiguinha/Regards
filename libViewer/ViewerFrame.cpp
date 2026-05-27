@@ -179,53 +179,22 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxString labelConfiguration = CLibResource::LoadStringFromResource(L"labelConfiguration", 1); //L"Configuration";
 	wxString labelConfiguration_link = CLibResource::LoadStringFromResource(L"labelConfiguration_link", 1);
 	//L"&Configuration";
-	wxString labelEraseDataBase = CLibResource::LoadStringFromResource(L"labelEraseDataBase", 1); //L"Erase Database";
-	wxString labelEraseDataBase_link = CLibResource::LoadStringFromResource(L"labelEraseDataBase_link", 1);
-	//L"&Erase Database";
-	wxString labelThumbnailRight = CLibResource::LoadStringFromResource(L"labelThumbnailRight", 1); //L"Right Position";
-	wxString labelThumbnailRight_link = CLibResource::LoadStringFromResource(L"labelThumbnailRight_link", 1);
-	//L"&Right Position";
-	wxString labelThumbnailBottom = CLibResource::LoadStringFromResource(L"labelThumbnailBottom", 1);
-	//L"Bottom Position";
-	wxString labelThumbnailBottom_link = CLibResource::LoadStringFromResource(L"labelThumbnailBottom_link", 1);
-	//L"&Bottom Position";
-	wxString labelPageSetup = CLibResource::LoadStringFromResource(L"labelPageSetup", 1); //L"Page setup";
-	wxString labelPageSetup_link = CLibResource::LoadStringFromResource(L"labelPageSetup_link", 1); //L"Page Set&up...";
-	wxString labelPageMargins = CLibResource::LoadStringFromResource(L"labelPageMargins", 1); // L"Page margins";
-	wxString labelPageMargins_link = CLibResource::LoadStringFromResource(L"labelPageMargins_link", 1);
+
 	//L"Page margins...";
 	wxString labelFile = CLibResource::LoadStringFromResource(L"labelFile", 1); //L"&File";
-	wxString labelParameter = CLibResource::LoadStringFromResource(L"labelParameter", 1); //L"&Parameter";
 	wxString labelSizeIcon = CLibResource::LoadStringFromResource(L"labelSizeIcon", 1); //L"&Icon Size";
-	wxString labelWindow = CLibResource::LoadStringFromResource(L"labelWindow", 1); //L"&Icon Size";
-	wxString labelThumbnail = CLibResource::LoadStringFromResource(L"labelThumbnail", 1); //L"&Thumbnail";
 	wxString labelHelp = CLibResource::LoadStringFromResource(L"labelHelp", 1); //L"&Help";
 
 	//auto menuWindow = new wxMenu;
-	wxString labelWindowFace = CLibResource::LoadStringFromResource(L"labelWindowFace", 1);
-	wxString labelWindowFaceLink = CLibResource::LoadStringFromResource(L"labelWindowFaceLink", 1);
-	wxString labelWindowFolder = CLibResource::LoadStringFromResource(L"labelWindowFolder", 1);
-	wxString labelWindowFolderLink = CLibResource::LoadStringFromResource(L"labelWindowFolderLink", 1);
-	wxString labelWindowViewer = CLibResource::LoadStringFromResource(L"labelWindowViewer", 1);
-	wxString labelWindowViewerLink = CLibResource::LoadStringFromResource(L"labelWindowViewerLink", 1);
-	wxString labelWindowPicture = CLibResource::LoadStringFromResource(L"labelWindowPicture", 1);
-	wxString labelWindowPictureLink = CLibResource::LoadStringFromResource(L"labelWindowPictureLink", 1);
-    
+    wxString labelPageSetup = CLibResource::LoadStringFromResource(L"labelPageSetup", 1); //L"Page setup";
+	wxString labelPageSetup_link = CLibResource::LoadStringFromResource(L"labelPageSetup_link", 1); //L"Page Set&up...";
     
 	wxString export_diaporama = CLibResource::LoadStringFromResource(L"LBLEXPORTDIAPORAMA", 1);
-	wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
     wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
     
     auto menuTools = new wxMenu;
 	menuTools->Append(ID_DIAPORAMA, export_diaporama, export_diaporama);
 
-    /*
-	menuWindow->Append(ID_WINDOWFACE, labelWindowFaceLink, labelWindowFace);
-	menuWindow->Append(ID_WINDOWFOLDER, labelWindowFolderLink, labelWindowFolder);
-	menuWindow->Append(ID_WINDOWVIEWER, labelWindowViewerLink, labelWindowViewer);
-	menuWindow->Append(ID_WINDOWPICTURE, labelWindowPictureLink, labelWindowPicture);
-    */
-    
 	auto menuSizeIcon = new wxMenu;
 	menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
 	menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
@@ -492,7 +461,6 @@ void CViewerFrame::OpenPictureFile()
 
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
-	wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
 	wxBusyCursor busy;
 	//wxBusyInfo wait(libelle);
 
