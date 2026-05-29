@@ -122,6 +122,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="picture_factory.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="jxl.cpp"/>
     <File Name="ascii.cpp"/>
@@ -133,6 +134,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="picture_factory.h"/>
     <File Name="avif.h"/>
     <File Name="imageinfo.hpp"/>
     <File Name="jxl.h"/>

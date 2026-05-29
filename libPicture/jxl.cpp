@@ -551,7 +551,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
  * @param ysize height of the input image
  * @param compressed will be populated with the compressed bytes
  */
-bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
+bool CJxl::EncodeJxlOneshot(const cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 {
 	auto enc = JxlEncoderMake(/*memory_manager=*/nullptr);
 	auto runner = JxlThreadParallelRunnerMake(
@@ -624,7 +624,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	return true;
 }
 
-void CJxl::WriteFile(cv::Mat& matFloat, const wxString& path)
+void CJxl::WriteFile(const cv::Mat& matFloat, const wxString& path)
 {
 	std::vector<uint8_t> compressed;
 	EncodeJxlOneshot(matFloat, &compressed);
