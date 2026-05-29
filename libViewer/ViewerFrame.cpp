@@ -38,8 +38,6 @@
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
 
-static constexpr int TIMER_EVENTFILEFS      = 3;
-static constexpr int TIMER_LOADPICTURESTART = 5;
 
 using namespace std;
 using namespace Regards::Viewer;
@@ -222,6 +220,7 @@ void CViewerFrame::BindEvents()
     
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
     Connect(TIMER_LOADPICTURESTART, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnOpenFile), nullptr, this);
+    Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
     Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
     
 	mainWindow_->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
@@ -435,9 +434,9 @@ void CViewerFrame::OnOpenFile(wxTimerEvent&)
     OpenPictureFile();
 }
 
-void CViewerFrame::OnTimerLoadPicture(wxTimerEvent&)
+void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
-    // Délégué au NavigationController (timer interne)
+    navigationCtrl_->OnLoadPicture(event);
 }
 
 void CViewerFrame::OnTimerEndLoadPicture(wxTimerEvent&)

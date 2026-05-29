@@ -517,7 +517,7 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 		}
 	}
 
-	if (localFilename.empty() && loadPicture)
+	if (!localFilename.empty() && loadPicture)
 	{
 		isNext = true;
 		LoadPicture(localFilename);
@@ -551,7 +551,7 @@ wxString CCentralWindow::ImageFin(const bool& loadPicture)
 	}
 
 
-	if (localFilename.empty() && loadPicture)
+	if (!localFilename.empty() && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
@@ -589,7 +589,7 @@ wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 		}
 	}
 
-	if (localFilename.empty() && loadPicture)
+	if (!localFilename.empty() && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
@@ -628,7 +628,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 	}
 
 
-	if (localFilename.empty() && loadPicture)
+	if (!localFilename.empty() && loadPicture)
 	{
 		isNext = false;
 		LoadPicture(localFilename);

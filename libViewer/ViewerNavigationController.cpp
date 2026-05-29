@@ -3,9 +3,6 @@
 #include "MainWindow.h"
 #include "window_mode_id.h"
 
-// IDs privés aux timers de ce contrôleur
-static constexpr int NAV_TIMER_LOADPICTURE    = 100;
-static constexpr int NAV_TIMER_LOADPICTUREEND = 101;
 
 using namespace Regards::Viewer;
 
@@ -16,13 +13,31 @@ CViewerNavigationController::CViewerNavigationController(wxEvtHandler* parent, C
     // soient traités dans la boucle d'événements wxWidgets.
     // Le parent doit binder NAV_TIMER_LOADPICTURE et NAV_TIMER_LOADPICTUREEND
     // vers OnTimerNavigation() et OnTimerEndNavigation().
-    loadPictureTimer_    = std::make_unique<wxTimer>(dynamic_cast<wxWindow*>(parent), NAV_TIMER_LOADPICTURE);
-    endLoadPictureTimer_ = std::make_unique<wxTimer>(dynamic_cast<wxWindow*>(parent), NAV_TIMER_LOADPICTUREEND);
+    loadPictureTimer_    = std::make_unique<wxTimer>(dynamic_cast<wxWindow*>(parent), TIMER_LOADPICTURE);
+    endLoadPictureTimer_ = std::make_unique<wxTimer>(dynamic_cast<wxWindow*>(parent), TIMER_LOADPICTUREEND);
 }
 
 void CViewerNavigationController::OnPictureEndLoading()
 {
     pictureEndLoading_ = true;
+}
+
+void CViewerNavigationController::OnLoadPicture(wxTimerEvent& event)
+{
+    //printf("void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event) \n");
+    wxWindow* mainWindow = mainWindow_->FindWindowById(CENTRALVIEWERWINDOWID);
+    if (mainWindow != nullptr)
+    {
+        wxCommandEvent evt(eventToLoop_);
+        mainWindow->GetEventHandler()->AddPendingEvent(evt);
+    }
+
+    if (endLoadPictureTimer_->IsRunning())
+        endLoadPictureTimer_->Stop();
+
+    endLoadPictureTimer_->Start(1000, true);
+
+    loadPictureTimer_->Stop();
 }
 
 void CViewerNavigationController::OnKeyUp(wxKeyEvent& event)

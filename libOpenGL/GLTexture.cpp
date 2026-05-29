@@ -116,6 +116,104 @@ void CTextureGLPriv::DeleteTextureInterop()
     clImage = nullptr;
 }
 
+bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
+{
+    bool isOk = true;
+    cl_int status = 0;
+
+    if (isOpenCLCompatible)
+    {
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        wxString color = regardsParam->GetOpenGLOutputColor();
+
+#ifndef __APPLE__
+        try
+        {
+            //printf("glGetInternalformativ test if is it available \n"); 
+
+            GLint format, type;
+           // glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &format);
+            glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
+
+            //printf("GL_TEXTURE_IMAGE_FORMAT Dec : %d Hex : %#08x\n", format, format);
+            //printf("GL_TEXTURE_IMAGE_TYPE Dec : %d Hex : %#08x\n", type, type);
+
+            if (type == GL_UNSIGNED_INT_8_8_8_8_REV)
+                color = "BGRA";
+            else
+                color = "RGBA";
+        }
+        catch (...)
+        {
+            //printf("glGetInternalformativ is not available \n"); 
+            color = "RGBA";
+        }
+#else
+        color = "RGBA";
+#endif 
+
+        try
+        {
+            cv::UMat bitmapMatrix;
+            if (u.channels() == 3)
+            {
+                cvtColor(u, bitmapMatrix, cv::COLOR_BGR2RGBA);
+            }
+            else if (u.channels() == 1)
+            {
+                cvtColor(u, bitmapMatrix, cv::COLOR_GRAY2RGBA);
+            }
+            else
+            {
+                if (color == "BGRA" && !isBGRATexture)
+                {
+                    cvtColor(u, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+                }
+                else
+                    bitmapMatrix = u;
+            }
+
+
+            cl_context context = (cl_context)clExecCtx.getContext().ptr();
+            cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
+
+            cv::Size srcSize = u.size();
+            status = CreateTextureInterop(glTexture);
+
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
+
+            auto clBuffer = static_cast<cl_mem>(bitmapMatrix.handle(cv::ACCESS_READ));
+            size_t offset = 0; // TODO
+            size_t dst_origin[3] = { 0, 0, 0 };
+            size_t region[3] = { static_cast<size_t>(bitmapMatrix.cols), static_cast<size_t>(bitmapMatrix.rows), 1 };
+            status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, nullptr, nullptr);
+
+            if (status == CL_SUCCESS)
+            {
+                status = clFinish(q); // TODO Use events
+            }
+            else
+            {
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+                isOk = false;
+            }
+        }
+        catch (cv::Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
+            status = -1;
+            isOk = false;
+            //printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
+        }
+    }
+
+    return isOk;
+}
+/*
+
 // ---------------------------------------------------------------------------
 bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
@@ -203,7 +301,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 
     return true;
 }
-
+*/
 // ===========================================================================
 // GLTexture
 // ===========================================================================
