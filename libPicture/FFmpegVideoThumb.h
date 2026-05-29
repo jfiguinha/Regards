@@ -55,8 +55,6 @@ namespace Regards
             // FIX : invertRotation est maintenant réellement utilisé
             cv::Mat     GetVideoFrame(const bool& applyOrientation = true,
                                       const bool& invertRotation   = false) override;
-            cv::Mat     GetVideoThumbnailFrame(const int& thumbnailWidth,
-                                               const int& thumbnailHeight) override;
 
         private:
             // Libère toutes les ressources FFmpeg dans le bon ordre

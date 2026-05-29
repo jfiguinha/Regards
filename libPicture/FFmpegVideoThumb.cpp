@@ -383,12 +383,3 @@ cv::Mat CFFmpegVideoThumb::ApplyRotation(cv::Mat& src, const int& orientation,
     }
     return dst;
 }
-
-// FIX [mineur #10] : stub documenté explicitement, SupportThumbnail() = false
-cv::Mat CFFmpegVideoThumb::GetVideoThumbnailFrame(const int& /*thumbnailWidth*/,
-                                                    const int& /*thumbnailHeight*/)
-{
-    // Non supporté par ce backend.
-    // Vérifier SupportThumbnail() avant d'appeler cette méthode.
-    return cv::Mat();
-}

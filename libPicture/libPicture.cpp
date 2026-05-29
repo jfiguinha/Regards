@@ -1530,7 +1530,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadAllVideoThumbnail(const wxString&
 		case MOV:
 			{
 				bool isFind = false;
-				CVideoThumb* thumbnail = new CVideoThumb(szFileName);
+				CVideoThumb* thumbnail = new CVideoThumb(szFileName, true, false);
 				thumbnail->GetVideoListFrame(listThumbnail, widthThumbnail, heightThumbnail);
 				delete thumbnail;
 				break;
