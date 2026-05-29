@@ -77,6 +77,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ViewerNavigationController.cpp"/>
+    <File Name="ScannerLauncher.cpp"/>
+    <File Name="PrintService.cpp"/>
+    <File Name="ModelManager.cpp"/>
+    <File Name="FileWatcherService.cpp"/>
     <File Name="PicturePanel.cpp"/>
     <File Name="WaitingWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
@@ -92,6 +97,11 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ViewerNavigationController.h"/>
+    <File Name="ScannerLauncher.h"/>
+    <File Name="PrintService.h"/>
+    <File Name="ModelManager.h"/>
+    <File Name="FileWatcherService.h"/>
     <File Name="window_mode_id.h"/>
     <File Name="TreatmentData.h"/>
     <File Name="StatusText.h"/>
