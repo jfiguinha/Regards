@@ -1771,7 +1771,7 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 		wxCommandEvent evt(wxEVENT_ANIMATIONSTART);
 		previewWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	return True;
+	return true;
 }
 
 

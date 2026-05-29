@@ -33,9 +33,6 @@
     <ClInclude Include="VideoStabilizationOpenCL.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="VideoStabilizationCuda.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="VideoStabilization.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="VideoStabilizationOpenCL.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoStabilizationCuda.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp">

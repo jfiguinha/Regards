@@ -63,7 +63,6 @@
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp" />
     <ClCompile Include="VideoStabilizationCpu.cpp" />
-    <ClCompile Include="VideoStabilizationCuda.cpp" />
     <ClCompile Include="VideoStabilizationOpenCL.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +71,6 @@
     <ClInclude Include="VideoStabilizationInterface.h" />
     <ClInclude Include="VideoStabilization.h" />
     <ClInclude Include="VideoStabilizationCpu.h" />
-    <ClInclude Include="VideoStabilizationCuda.h" />
     <ClInclude Include="VideoStabilizationOpenCL.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
