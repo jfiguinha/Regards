@@ -337,7 +337,6 @@ libFiltre/libFiltre.txt
 /libOpenCL/Release
 /libOpenGL/Release
 /libParameter/Release
-/libPicture
 /libResource/Release
 libGeolocalisation/libGeolocalisation.txt
 libOpenCL/libOpenCL.txt
@@ -376,3 +375,5 @@ libSqlData/libSqlData.txt
 libSqlEngine/libSqlEngine.txt
 libUtility/libUtility.txt
 libVideoEffect/libVideoEffect.txt
+/libPicture/Release
+/libPicture

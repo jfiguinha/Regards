@@ -759,8 +759,6 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 	refreshMouseMove->Stop();
 
-	wxClientDC dc(this);
-
 	isMoving = true;
 	bool needtoRedraw = false;
 	isMovingScroll = true;
@@ -790,7 +788,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		else if (yPos > this->GetWindowHeight() - 100)
 			MoveBottom();
 		else
-			needToRefresh = true;
+			needtoRedraw = true;
 	}
 	else
 	{
@@ -828,28 +826,17 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			if (pBitmapIcone->GetState() != ACTIFICONE)
 			{
 				numActifPhotoId = iconePhotoId;
-
-				//pBitmapIcone = FindElement(xPos, yPos);
-
 				if (pBitmapIcone != nullptr)
-				{
 					pBitmapIcone->SetActive(true);
-					//pBitmapIcone->RenderIcone(&dc, -posLargeur, -posHauteur, flipHorizontal, flipVertical, true);
-				}
-				//needtoRedraw = true;
 			}
 		}
 
 
 		if (needtoRedraw)
-		{
 			needToRefresh = true;
-		}
 
 		refreshMouseMove->Start(1000, true);
 	}
-
-
 }
 
 void CThumbnail::RefreshThumbnail(wxCommandEvent& event)
@@ -1110,13 +1097,6 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 	Render(dc);
 }
 
-
-void CThumbnail::PaintNow()
-{
-	wxClientDC dc(this);
-	Render(dc);
-}
-
 void CThumbnail::Render(wxDC& dc)
 {
 
@@ -1365,7 +1345,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 
 	if (controlKeyPush)
 		move += 10;
-
+		void PaintNow();
 
 	switch (move)
 	{

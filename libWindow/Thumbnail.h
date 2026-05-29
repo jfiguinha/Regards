@@ -75,7 +75,6 @@ namespace Regards::Window
 
 	protected:
 
-		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);
