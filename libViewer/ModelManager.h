@@ -1,6 +1,6 @@
 #pragma once
-#include <wx/wx.h>
-#include <wx/progdlg.h>
+
+
 
 namespace Regards::Viewer
 {

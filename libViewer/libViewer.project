@@ -77,6 +77,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="WindowModeController.cpp"/>
+    <File Name="ViewerController.cpp"/>
+    <File Name="ThumbnailController.cpp"/>
+    <File Name="SlideshowController.cpp"/>
+    <File Name="MusicController.cpp"/>
+    <File Name="MediaLoader.cpp"/>
     <File Name="ViewerNavigationController.cpp"/>
     <File Name="ScannerLauncher.cpp"/>
     <File Name="PrintService.cpp"/>
@@ -97,6 +103,12 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="WindowModeController.h"/>
+    <File Name="ViewerController.h"/>
+    <File Name="ThumbnailController.h"/>
+    <File Name="SlideshowController.h"/>
+    <File Name="MusicController.h"/>
+    <File Name="MediaLoader.h"/>
     <File Name="ViewerNavigationController.h"/>
     <File Name="ScannerLauncher.h"/>
     <File Name="PrintService.h"/>

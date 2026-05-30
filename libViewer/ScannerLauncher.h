@@ -1,6 +1,4 @@
 #pragma once
-#include <wx/wx.h>
-
 namespace Regards::Viewer
 {
     // Lance le processus scanner externe (RegardsViewer -p RegardsPDF).

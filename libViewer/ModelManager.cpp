@@ -6,7 +6,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-
+#include <wx/progdlg.h>
 using namespace Regards::Viewer;
 using namespace Regards::Internet;
 

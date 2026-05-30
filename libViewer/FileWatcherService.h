@@ -1,5 +1,4 @@
 #pragma once
-#include <wx/wx.h>
 #include <wx/fswatcher.h>
 #include <FolderCatalog.h>
 #include <memory>

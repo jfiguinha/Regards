@@ -1,5 +1,4 @@
 #pragma once
-#include <wx/wx.h>
 
 static constexpr auto TIMER_LOADPICTURE = 2;
 static constexpr int TIMER_EVENTFILEFS = 3;
