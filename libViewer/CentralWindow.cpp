@@ -78,106 +78,98 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
     if (left.width  < 50) left  = {0, 0, 0, 0};
     if (right.width < 50) right = {0, 0, 0, 0};
 
-    // ── Panel: photo search (left) ────────────────────────────────────
+   
     if (viewerTheme != nullptr)
     {
-        wxString libelle = CLibResource::LoadStringFromResource(L"LBLFOLDERCATEGORY", 1);
-        CThemePane theme_pane;
-        viewerTheme->GetPaneTheme(&theme_pane);
+        // ── Panel: photo search (left) ────────────────────────────────────
+        {
+            wxString libelle = CLibResource::LoadStringFromResource(L"LBLFOLDERCATEGORY", 1);
+            CThemePane theme_pane;
+            viewerTheme->GetPaneTheme(&theme_pane);
 
-        panelPhotoWnd = std::make_unique<CPanelPhotoWnd>(windowManager.get(), CRITERIAFOLDERWINDOWID);
-        windowManager->AddPanel(panelPhotoWnd.get(), Pos::wxLEFT, false, widthInfosWindow, left,
-                                libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, false, true);
-    }
+            panelPhotoWnd = std::make_unique<CPanelPhotoWnd>(windowManager.get(), CRITERIAFOLDERWINDOWID);
+            windowManager->AddPanel(panelPhotoWnd.get(), Pos::wxLEFT, false, widthInfosWindow, left,
+                libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, false, true);
+        }
+        // ── Panel: video thumbnail strip (top) ────────────────────────────
+        {
+            CThemePane     theme_pane;
+            CThemeThumbnail themeVideo;
+            viewerTheme->GetPaneTheme(&theme_pane);
+            viewerTheme->GetThumbnailTheme(&themeVideo);
 
-    // ── Panel: video thumbnail strip (top) ────────────────────────────
-    if (viewerTheme != nullptr)
-    {
-        CThemePane     theme_pane;
-        CThemeThumbnail themeVideo;
-        viewerTheme->GetPaneTheme(&theme_pane);
-        viewerTheme->GetThumbnailTheme(&themeVideo);
+            wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
+            thumbnailVideo = std::make_unique<CThumbnailViewerVideo>(windowManager.get(), THUMBNAILVIDEOWINDOW, themeVideo, true);
+            scrollVideoWindow = std::make_unique<CScrollbarWnd>(windowManager.get(), thumbnailVideo.get(), wxID_ANY);
+            scrollVideoWindow->HideVerticalScroll();
+            scrollVideoWindow->SetPageSize(200);
+            scrollVideoWindow->SetLineSize(200);
+            windowManager->AddPanel(scrollVideoWindow.get(), Pos::wxTOP, true,
+                themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2,
+                rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true, true);
+        }
 
-        wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
-        thumbnailVideo = std::make_unique<CThumbnailViewerVideo>(windowManager.get(), THUMBNAILVIDEOWINDOW, themeVideo, true);
-        scrollVideoWindow = std::make_unique<CScrollbarWnd>(windowManager.get(), thumbnailVideo.get(), wxID_ANY);
-        scrollVideoWindow->HideVerticalScroll();
-        scrollVideoWindow->SetPageSize(200);
-        scrollVideoWindow->SetLineSize(200);
-        windowManager->AddPanel(scrollVideoWindow.get(), Pos::wxTOP, true,
-                                themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2,
-                                rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true, true);
-    }
+        // ── Panel: picture thumbnail strip (bottom) ───────────────────────
+        {
+            bool checkValidity = false;
+            if (config != nullptr)
+                checkValidity = config->GetCheckThumbnailValidity();
 
-    // ── Panel: picture thumbnail strip (bottom) ───────────────────────
-    if (viewerTheme != nullptr)
-    {
-        bool checkValidity = false;
-        if (config != nullptr)
-            checkValidity = config->GetCheckThumbnailValidity();
+            CThemePane     theme_pane;
+            CThemeThumbnail themeThumbnail;
+            viewerTheme->GetPaneTheme(&theme_pane);
+            viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-        CThemePane     theme_pane;
-        CThemeThumbnail themeThumbnail;
-        viewerTheme->GetPaneTheme(&theme_pane);
-        viewerTheme->GetThumbnailTheme(&themeThumbnail);
+            wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);
+            thumbnailPicture = std::make_unique<CThumbnailViewerPicture>(windowManager.get(), THUMBNAILVIEWERPICTURE,
+                themeThumbnail, checkValidity);
+            scrollPictureWindow = std::make_unique<CScrollbarWnd>(windowManager.get(), thumbnailPicture.get(), wxID_ANY);
+            scrollPictureWindow->HideVerticalScroll();
+            scrollPictureWindow->SetPageSize(200);
+            scrollPictureWindow->SetLineSize(200);
+            thumbnailPicture->SetNoVScroll(true);
+            windowManager->AddPanel(scrollPictureWindow.get(), Pos::wxBOTTOM, true,
+                themeThumbnail.themeIcone.GetHeight() + theme_pane.GetHeight() * 2,
+                rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
+        }
 
-        wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);
-        thumbnailPicture = std::make_unique<CThumbnailViewerPicture>(windowManager.get(), THUMBNAILVIEWERPICTURE,
-                                                                       themeThumbnail, checkValidity);
-        scrollPictureWindow = std::make_unique<CScrollbarWnd>(windowManager.get(), thumbnailPicture.get(), wxID_ANY);
-        scrollPictureWindow->HideVerticalScroll();
-        scrollPictureWindow->SetPageSize(200);
-        scrollPictureWindow->SetLineSize(200);
-        thumbnailPicture->SetNoVScroll(true);
-        windowManager->AddPanel(scrollPictureWindow.get(), Pos::wxBOTTOM, true,
-                                themeThumbnail.themeIcone.GetHeight() + theme_pane.GetHeight() * 2,
-                                rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
-    }
+        // ── Panel: info panel (right) ─────────────────────────────────────
+        {
+            wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+            panelInfosWindow = std::make_unique<CPanelInfosWnd>(windowManager.get(), PANELINFOSWNDID);
+            panelInfosClick = windowManager->AddPanel(panelInfosWindow.get(), Pos::wxRIGHT, false,
+                widthInfosWindow, right, libelle,
+                "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
+        }
 
-    // ── Panel: info panel (right) ─────────────────────────────────────
-    if (viewerTheme != nullptr)
-    {
-        wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
-        panelInfosWindow = std::make_unique<CPanelInfosWnd>(windowManager.get(), PANELINFOSWNDID);
-        panelInfosClick = windowManager->AddPanel(panelInfosWindow.get(), Pos::wxRIGHT, false,
-                                                   widthInfosWindow, right, libelle,
-                                                   "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
-    }
+        // ── Central preview ───────────────────────────────────────────────
+        previewWindow = std::make_unique<CPreviewWnd>(windowManager.get(), PREVIEWVIEWERID);
+        windowManager->AddWindow(previewWindow.get(), Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
-    // ── Central preview ───────────────────────────────────────────────
-    previewWindow = std::make_unique<CPreviewWnd>(windowManager.get(), PREVIEWVIEWERID);
-    windowManager->AddWindow(previewWindow.get(), Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
-
-    // ── List views ────────────────────────────────────────────────────
-    if (viewerTheme != nullptr)
-    {
-        listPicture = std::make_unique<CListPicture>(windowManager.get(), LISTPICTUREID);
-        listPicture->Show(false);
+        // ── List views ────────────────────────────────────────────────────
+        {
+            listPicture = std::make_unique<CListPicture>(windowManager.get(), LISTPICTUREID);
+            listPicture->Show(false);
 #ifndef __NOFACE_DETECTION__
-        listFace = std::make_unique<CListFace>(windowManager.get(), LISTFACEID);
-        listFace->Show(false);
+            listFace = std::make_unique<CListFace>(windowManager.get(), LISTFACEID);
+            listFace->Show(false);
 #endif
+        }
     }
 
     // ── Sub-controllers ───────────────────────────────────────────────
     musicController = std::make_unique <CMusicController>(this);
 
-    thumbnailController = std::make_unique<CThumbnailController>(thumbnailPicture.get(), thumbnailVideo.get(),
-                                                   listPicture.get(), listFace.get());
+    thumbnailController = std::make_unique<CThumbnailController>(thumbnailPicture.get(), thumbnailVideo.get(),listPicture.get(), listFace.get());
 
-    mediaLoader = std::make_unique<CMediaLoader>(this, previewWindow.get(), panelInfosWindow.get(),
-                                   thumbnailPicture.get(), thumbnailVideo.get(), musicController.get());
+    mediaLoader = std::make_unique<CMediaLoader>(this, previewWindow.get(), panelInfosWindow.get(),thumbnailPicture.get(), thumbnailVideo.get(), musicController.get());
     mediaLoader->windowMode = initialWindowMode;
 
-    viewerController = std::make_unique<CViewerController>(this, thumbnailPicture.get(), listPicture.get(),
-                                                           listFace.get(), previewWindow.get(), mediaLoader.get());
+    viewerController = std::make_unique<CViewerController>(this, thumbnailPicture.get(), listPicture.get(),listFace.get(), previewWindow.get(), mediaLoader.get());
 
-    slideshowController = std::make_unique<CSlideshowController>(this, previewWindow.get(),
-                                                                   musicController.get(), viewerController.get());
+    slideshowController = std::make_unique<CSlideshowController>(this, previewWindow.get(),musicController.get(), viewerController.get());
 
-    windowModeController = std::make_unique<CWindowModeController>(this, windowManager.get(), panelInfosClick,
-                                                                     previewWindow.get(), panelInfosWindow.get(),
-                                                                     listPicture.get(), listFace.get(), faceDetection);
+    windowModeController = std::make_unique<CWindowModeController>(this, windowManager.get(), panelInfosClick,previewWindow.get(), panelInfosWindow.get(), listPicture.get(), listFace.get(), faceDetection);
 
     // ── wxWidgets event bindings ──────────────────────────────────────
     Connect(wxEVT_ANIMATIONTIMERSTOP,    wxCommandEventHandler(CCentralWindow::StopAnimationEvent));
