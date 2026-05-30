@@ -95,27 +95,27 @@ namespace Regards::Viewer
         void OnQuitAudio(wxCommandEvent& event);
 
         // ── UI widgets (still owned here, passed by pointer to sub-controllers)
-        CListPicture*            listPicture      = nullptr;
-        CThumbnailViewerPicture* thumbnailPicture = nullptr;
-        CPanelPhotoWnd*          panelPhotoWnd    = nullptr;
-        CPanelWithClickToolbar*  panelInfosClick  = nullptr;
+        std::unique_ptr<CListPicture>         listPicture      = nullptr;
+        std::unique_ptr<CThumbnailViewerPicture> thumbnailPicture = nullptr;
+        std::unique_ptr<CPanelPhotoWnd>          panelPhotoWnd    = nullptr;
+        CPanelWithClickToolbar *  panelInfosClick  = nullptr;
 #ifndef __NOFACE_DETECTION__
-        CListFace*               listFace         = nullptr;
+        std::unique_ptr<CListFace>               listFace         = nullptr;
 #endif
-        CScrollbarWnd*           scrollVideoWindow   = nullptr;
-        CThumbnailViewerVideo*   thumbnailVideo      = nullptr;
-        CPanelInfosWnd*          panelInfosWindow    = nullptr;
-        CPreviewWnd*             previewWindow       = nullptr;
-        CScrollbarWnd*           scrollPictureWindow = nullptr;
-        CWindowManager*          windowManager       = nullptr;
+        std::unique_ptr<CScrollbarWnd>           scrollVideoWindow   = nullptr;
+        std::unique_ptr<CThumbnailViewerVideo>   thumbnailVideo      = nullptr;
+        std::unique_ptr<CPanelInfosWnd>          panelInfosWindow    = nullptr;
+        std::unique_ptr<CPreviewWnd>             previewWindow       = nullptr;
+        std::unique_ptr<CScrollbarWnd>           scrollPictureWindow = nullptr;
+        std::unique_ptr<CWindowManager>          windowManager       = nullptr;
 
         // ── Sub-controllers ─────────────────────────────────────────────
-        CMusicController*        musicController      = nullptr;
-        CThumbnailController*    thumbnailController  = nullptr;
-        CMediaLoader*            mediaLoader          = nullptr;
-        CViewerController*       viewerController     = nullptr;
-        CSlideshowController*    slideshowController  = nullptr;
-        CWindowModeController*   windowModeController = nullptr;
+        std::unique_ptr<CMusicController>        musicController      = nullptr;
+        std::unique_ptr<CThumbnailController>    thumbnailController  = nullptr;
+        std::unique_ptr<CMediaLoader>            mediaLoader          = nullptr;
+        std::unique_ptr<CViewerController>      viewerController     = nullptr;
+        std::unique_ptr<CSlideshowController>    slideshowController  = nullptr;
+        std::unique_ptr<CWindowModeController>       windowModeController = nullptr;
 
         int  faceDetection = 0;
     };

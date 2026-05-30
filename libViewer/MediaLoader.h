@@ -74,7 +74,14 @@ namespace Regards::Viewer
 
         bool IsVideo() const { return isVideo; }
         bool IsAnimation() const { return isAnimation; }
-
+        void SetVideoStart()
+        {
+            videoStart = true;
+        }
+        void SetVideoStop()
+        {
+            stopVideo = true;
+        }
         void LoadAnimationBitmap(const wxString& filename, const int& numFrame);
 
         // ── State exposed to ViewerController via references ──────────
