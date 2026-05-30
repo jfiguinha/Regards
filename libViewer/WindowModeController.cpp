@@ -6,14 +6,7 @@
 #include "PanelInfosWnd.h"
 #include <WindowManager.h>
 #include <PanelWithClickToolbar.h>
-#include <LibResource.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
-#include "MainTheme.h"
-#include "MainThemeInit.h"
 #include "window_mode_id.h"
-#include <picture_id.h>
-#include <ThumbnailMessage.h>
 #include <ViewerParamInit.h>
 #include <ViewerParam.h>
 

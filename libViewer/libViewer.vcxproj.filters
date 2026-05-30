@@ -231,6 +231,15 @@
     <ClInclude Include="WindowModeController.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="FolderRefreshService.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MainViewerController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailScheduler.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -375,6 +384,15 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="WindowModeController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MainViewerController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderRefreshService.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailScheduler.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

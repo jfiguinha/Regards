@@ -3,7 +3,6 @@
 #include <LibResource.h>
 #include <FileUtility.h>
 #include "DownloadFile.h"
-#include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/progdlg.h>

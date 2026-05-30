@@ -7,7 +7,6 @@
 #include <ThreadLoadingBitmap.h>
 #include <ThumbnailFolder.h>
 #include <ThumbnailFace.h>
-#include <ThumbnailMessage.h>
 
 using namespace Regards::Viewer;
 

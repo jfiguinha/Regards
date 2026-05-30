@@ -1,7 +1,7 @@
+#include <header.h>
 #include "ThumbnailScheduler.h"
-#include "ThumbnailProcess.h"          // CThumbnailProcess
+#include "FolderProcess.h"          // CThumbnailProcess
 #include <SqlPhotosWithoutThumbnail.h> // CSqlPhotosWithoutThumbnail
-#include <ThumbnailBuffer.h>           // CThumbnailBuffer
 #include <window_id.h>
 #include <wx/event.h>
 
@@ -21,6 +21,7 @@ void ThumbnailScheduler::ReloadFromDatabase()
     std::lock_guard<std::mutex> lock(photoListMutex);
     CSqlPhotosWithoutThumbnail sqlPhoto;
     sqlPhoto.GetPhotoList(&photoList, 0);
+    listFile.clear();
 }
 
 void ThumbnailScheduler::PrioritizeFile(const wxString& filename)

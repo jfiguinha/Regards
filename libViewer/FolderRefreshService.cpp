@@ -1,14 +1,12 @@
+#include <header.h>
 #include "FolderRefreshService.h"
 #include "CentralWindow.h"
 #include "CategoryFolderWindow.h"
 #include "SqlFindPhotos.h"
-#include <SqlPhotosWithoutThumbnail.h>
 #include <ThumbnailBuffer.h>
-#include <ParamInit.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <window_id.h>
-#include <wx/busyinfo.h>
 
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;

@@ -5,12 +5,8 @@
 #include <LibResource.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include <libPicture.h>
-#include <picture_id.h>
-#include <ThumbnailMessage.h>
 #include <wx/display.h>
 #include "PanelPhotoWnd.h"
-#include <ConvertUtility.h>
 #include "ListPicture.h"
 #include "WindowManager.h"
 #include "ThumbnailViewerVideo.h"
@@ -216,10 +212,45 @@ CCentralWindow::~CCentralWindow()
 // Public API — thin forwarders
 // ─────────────────────────────────────────────────────────────────────────────
 
-wxString CCentralWindow::ImageSuivante(const bool& lp)    { return viewerController->ImageSuivante(lp); }
-wxString CCentralWindow::ImagePrecedente(const bool& lp)  { return viewerController->ImagePrecedente(lp); }
-wxString CCentralWindow::ImageFin(const bool& lp)         { return viewerController->ImageFin(lp); }
-wxString CCentralWindow::ImageDebut(const bool& lp)       { return viewerController->ImageDebut(lp); }
+void CCentralWindow::ControlThumbnailVisibility()
+{
+    if (mediaLoader->IsAnimation() || mediaLoader->IsVideo())
+    {
+        windowModeController->ShowTopWindow();
+        needToRefresh = true;
+    }
+    else
+    {
+        windowModeController->HideTopWindow();
+        needToRefresh = true;
+    }
+}
+
+wxString CCentralWindow::ImageSuivante(const bool& lp)    
+{ 
+    wxString file = viewerController->ImageSuivante(lp); 
+    ControlThumbnailVisibility();
+    return file;
+}
+wxString CCentralWindow::ImagePrecedente(const bool& lp)  
+{ 
+    wxString file = viewerController->ImagePrecedente(lp);
+    ControlThumbnailVisibility();
+    return file;
+}
+wxString CCentralWindow::ImageFin(const bool& lp)         
+{   
+    wxString file = viewerController->ImageFin(lp);
+    ControlThumbnailVisibility();
+    return file;
+}
+wxString CCentralWindow::ImageDebut(const bool& lp)       
+{ 
+    wxString file = viewerController->ImageDebut(lp);
+    ControlThumbnailVisibility();
+    return file;
+}
+
 wxString CCentralWindow::GetFilename()                     { return viewerController->GetFilename(); }
 int      CCentralWindow::GetNbElement()                    { return viewerController->GetNbElement(); }
 
@@ -229,16 +260,7 @@ int CCentralWindow::LoadPicture(const wxString& f, const bool& r)
 
     viewerController->SetFilename(f);
     int returnValue = mediaLoader->LoadPicture(f, r); 
-    if(mediaLoader->IsAnimation() || mediaLoader->IsVideo())
-    {
-        windowModeController->ShowTopWindow();
-		needToRefresh = true;
-    }
-    else
-    {
-		windowModeController->HideTopWindow();
-        needToRefresh = true;
-    }
+    ControlThumbnailVisibility();
     return returnValue;
 }
 
@@ -296,7 +318,11 @@ bool CCentralWindow::GetProcessEnd()
 // Event handlers — all one-liners delegating to sub-controllers
 // ─────────────────────────────────────────────────────────────────────────────
 
-void CCentralWindow::OnVideoEnd(wxCommandEvent& e)           { mediaLoader->OnVideoEnd(e); }
+void CCentralWindow::OnVideoEnd(wxCommandEvent& e)           
+{ 
+    mediaLoader->OnVideoEnd(e); 
+    ControlThumbnailVisibility();
+}
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& e)       { mediaLoader->OnTimerAnimation(e); }
 void CCentralWindow::SetVideoPos(wxCommandEvent& e)          { mediaLoader->SetVideoPos(e); }
 void CCentralWindow::AnimationSetPosition(wxCommandEvent& e) { mediaLoader->AnimationSetPosition(e); }
@@ -322,11 +348,11 @@ void CCentralWindow::OnVideoStop(wxCommandEvent& /*e*/)
 void CCentralWindow::OnAnimationStart(wxCommandEvent& /*e*/) { mediaLoader->StartAnimation(); }
 void CCentralWindow::OnAnimationStop(wxCommandEvent& /*e*/)  { mediaLoader->StopAnimation(); }
 
-void CCentralWindow::OnShowPicture(wxCommandEvent& e)         { viewerController->OnShowPicture(e); }
-void CCentralWindow::OnPicturePrevious(wxCommandEvent& e)     { viewerController->OnPicturePrevious(e); }
-void CCentralWindow::OnPictureNext(wxCommandEvent& e)         { viewerController->OnPictureNext(e); }
-void CCentralWindow::OnPictureFirst(wxCommandEvent& e)        { viewerController->OnPictureFirst(e); }
-void CCentralWindow::OnPictureLast(wxCommandEvent& e)         { viewerController->OnPictureLast(e); }
+void CCentralWindow::OnShowPicture(wxCommandEvent& e)         { viewerController->OnShowPicture(e); ControlThumbnailVisibility();}
+void CCentralWindow::OnPicturePrevious(wxCommandEvent& e)     { viewerController->OnPicturePrevious(e); ControlThumbnailVisibility();}
+void CCentralWindow::OnPictureNext(wxCommandEvent& e)         { viewerController->OnPictureNext(e); ControlThumbnailVisibility();}
+void CCentralWindow::OnPictureFirst(wxCommandEvent& e)        { viewerController->OnPictureFirst(e); ControlThumbnailVisibility();}
+void CCentralWindow::OnPictureLast(wxCommandEvent& e)         { viewerController->OnPictureLast(e); ControlThumbnailVisibility(); }
 
 void CCentralWindow::StartDiaporama(wxCommandEvent& e)        { slideshowController->StartDiaporama(e); }
 void CCentralWindow::StopDiaporama(wxCommandEvent& e)         { slideshowController->StopDiaporama(e); }

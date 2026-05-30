@@ -1,9 +1,5 @@
 #pragma once
-#include <deque>
 #include <unordered_set>
-#include <mutex>
-#include <atomic>
-#include <wx/string.h>
 
 namespace Regards::Viewer
 {

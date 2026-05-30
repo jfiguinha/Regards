@@ -888,9 +888,11 @@
     <ClInclude Include="FaceInfosUpdate.h" />
     <ClInclude Include="FileWatcherService.h" />
     <ClInclude Include="FolderProcess.h" />
+    <ClInclude Include="FolderRefreshService.h" />
     <ClInclude Include="KeywordManagementWindow.h" />
     <ClInclude Include="KeywordWnd.h" />
     <ClInclude Include="KeywordWndToolbar.h" />
+    <ClInclude Include="MainViewerController.h" />
     <ClInclude Include="md5check.h" />
     <ClInclude Include="MediaLoader.h" />
     <ClInclude Include="ModelManager.h" />
@@ -916,6 +918,7 @@
     <ClInclude Include="ThumbnailFacePertinenceToolBar.h" />
     <ClInclude Include="ThumbnailFaceToolBar.h" />
     <ClInclude Include="ThumbnailFolder.h" />
+    <ClInclude Include="ThumbnailScheduler.h" />
     <ClInclude Include="ThumbnailToolBar.h" />
     <ClInclude Include="ThumbnailToolBarZoom.h" />
     <ClInclude Include="ThumbnailViewerPicture.h" />
@@ -954,12 +957,14 @@
     <ClCompile Include="ExportDiaporama.cpp" />
     <ClCompile Include="FileWatcherService.cpp" />
     <ClCompile Include="FolderProcess.cpp" />
+    <ClCompile Include="FolderRefreshService.cpp" />
     <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="KeywordManagementWindow.cpp" />
     <ClCompile Include="KeywordWnd.cpp" />
     <ClCompile Include="KeywordWndToolbar.cpp" />
     <ClCompile Include="ListFace.cpp" />
     <ClCompile Include="ListPicture.cpp" />
+    <ClCompile Include="MainViewerController.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="md5check.cpp" />
     <ClCompile Include="MediaLoader.cpp" />
@@ -978,6 +983,7 @@
     <ClCompile Include="ThumbnailFacePertinenceToolBar.cpp" />
     <ClCompile Include="ThumbnailFaceToolBar.cpp" />
     <ClCompile Include="ThumbnailFolder.cpp" />
+    <ClCompile Include="ThumbnailScheduler.cpp" />
     <ClCompile Include="ThumbnailToolBar.cpp" />
     <ClCompile Include="ThumbnailToolBarZoom.cpp" />
     <ClCompile Include="ThumbnailViewerPicture.cpp" />

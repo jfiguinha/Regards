@@ -1,10 +1,7 @@
 #pragma once
 #include <StatusBarInterface.h>
-#include "wx/print.h"
-#include <MyFrameIntro.h>
 #include <MainInterface.h>
-#include <FolderCatalog.h>
-#include <memory>
+
 
 // Services extraits
 #include "ModelManager.h"
@@ -13,7 +10,7 @@
 #include "ScannerLauncher.h"
 #include "ViewerNavigationController.h"
 
-using namespace Regards::Introduction;
+
 
 class CImageLoadingFormat;
 

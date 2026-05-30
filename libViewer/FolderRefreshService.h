@@ -1,7 +1,5 @@
 #pragma once
 #include <Photos.h>
-#include <wx/string.h>
-#include <wx/event.h>
 
 namespace Regards::Viewer
 {

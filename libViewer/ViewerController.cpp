@@ -6,9 +6,7 @@
 #include "ListFace.h"
 #include "PreviewWnd.h"
 #include <SqlPhotos.h>
-#include <ShowElement.h>
 #include "window_mode_id.h"
-#include "PanelInfosWnd.h"
 #include <ImageLoadingFormat.h>
 using namespace Regards::Viewer;
 
@@ -120,6 +118,7 @@ wxString CViewerController::LoadingNextPicture(const bool& loadPicture, LoadingM
         isNext = true;
         mediaLoader->LoadPicture(filename);
     }
+    return filename;
 }
 
 wxString CViewerController::ImageSuivante(const bool& loadPicture)

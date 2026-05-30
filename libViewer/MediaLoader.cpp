@@ -9,14 +9,12 @@
 #include <ImageLoadingFormat.h>
 #include <libPicture.h>
 #include <LibResource.h>
-#include <ConvertUtility.h>
 #include <SqlPhotos.h>
 #include <SqlThumbnail.h>
 #include <ImageVideoThumbnail.h>
 #include <ShowElement.h>
 #include <picture_id.h>
 #include <ThumbnailMessage.h>
-#include "window_mode_id.h"
 #include "ViewerController.h"   // for CBitmapReturn & EVENT_SHOWPICTURE
 
 #define DELAY_ANIMATION 20
@@ -287,9 +285,6 @@ void CMediaLoader::SetVideo(const wxString& path)
 
 bool CMediaLoader::SetAnimation(const wxString& filename)
 {
-    if (windowMode == WINDOW_VIEWER)
-        /* caller's windowManager->ShowWindow(Pos::wxTOP) handled by WindowModeController */;
-
     StopAnimation();
 
     CLibPicture libPicture;
@@ -315,9 +310,6 @@ bool CMediaLoader::SetAnimation(const wxString& filename)
 
     animationPosition = 0;
     LoadAnimationBitmap(filename, 0);
-
-    if (refresh)
-        ; // needToRefresh handled in CCentralWindow
 
     SetPanelInfos(false);
 

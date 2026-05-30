@@ -4,7 +4,6 @@
 #include "ViewerController.h"
 #include "PreviewWnd.h"
 #include <ViewerParam.h>
-#include "window_mode_id.h"
 #include <ViewerParamInit.h>
 using namespace Regards::Viewer;
 
