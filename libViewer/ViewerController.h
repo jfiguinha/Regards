@@ -58,7 +58,16 @@ namespace Regards::Viewer
         void ShowPicture(CBitmapReturn* pictureData, const int& redraw);
 
     private:
+        enum LoadingMode
+        {
+            Next = 0,
+            Previous = 1,
+            First = 2,
+            Last = 3,
+        };
+
         int GetPhotoId(const wxString& filename) const;
+        wxString LoadingNextPicture(const bool& loadPicture, LoadingMode mode);
 
         wxWindow*                parent           = nullptr;
         CThumbnailViewerPicture* thumbnailPicture = nullptr;

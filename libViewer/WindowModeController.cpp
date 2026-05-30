@@ -303,11 +303,36 @@ void CWindowModeController::HideToolbar()
     }
 }
 
+void CWindowModeController::HideTopWindow()
+{
+    if (showToolbar)
+    {
+        if (windowMode == WINDOW_VIEWER)
+        {
+            const int showVideoThumbnail = windowManager->GetWindowIsShow(Pos::wxTOP);
+            if (showVideoThumbnail)
+            {
+                windowManager->HideWindow(Pos::wxTOP);
+                windowManager->Resize();
+            }
+        }
+    }
+}
+
 void CWindowModeController::ShowTopWindow()
 {
-    if(showToolbar)
+    if (showToolbar)
+    {
         if (windowMode == WINDOW_VIEWER)
-            windowManager->ShowWindow(Pos::wxBOTTOM);
+        {
+            const int showVideoThumbnail = windowManager->GetWindowIsShow(Pos::wxTOP);
+            if (!showVideoThumbnail)
+            {
+                windowManager->ShowWindow(Pos::wxTOP);
+                windowManager->Resize();
+            }
+        }
+    }
 }
 
 void CWindowModeController::ShowToolbar()

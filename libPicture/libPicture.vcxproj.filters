@@ -136,6 +136,9 @@
     <ClCompile Include="FFmpegVideoThumb.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="picture_factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -308,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="FFmpegVideoThumb.h">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="picture_factory.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

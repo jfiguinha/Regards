@@ -892,7 +892,9 @@
     <ClInclude Include="KeywordWnd.h" />
     <ClInclude Include="KeywordWndToolbar.h" />
     <ClInclude Include="md5check.h" />
+    <ClInclude Include="MediaLoader.h" />
     <ClInclude Include="ModelManager.h" />
+    <ClInclude Include="MusicController.h" />
     <ClInclude Include="myFrame.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="CentralWindow.h" />
@@ -907,7 +909,9 @@
     <ClInclude Include="PreviewWnd.h" />
     <ClInclude Include="PrintService.h" />
     <ClInclude Include="ScannerLauncher.h" />
+    <ClInclude Include="SlideshowController.h" />
     <ClInclude Include="StatusText.h" />
+    <ClInclude Include="ThumbnailController.h" />
     <ClInclude Include="ThumbnailFace.h" />
     <ClInclude Include="ThumbnailFacePertinenceToolBar.h" />
     <ClInclude Include="ThumbnailFaceToolBar.h" />
@@ -922,10 +926,12 @@
     <ClInclude Include="ToolbarPhoto.h" />
     <ClInclude Include="ToolbarViewerMode.h" />
     <ClInclude Include="TreatmentData.h" />
+    <ClInclude Include="ViewerController.h" />
     <ClInclude Include="ViewerFrame.h" />
     <ClInclude Include="ViewerNavigationController.h" />
     <ClInclude Include="ViewerTheme.h" />
     <ClInclude Include="WaitingWindow.h" />
+    <ClInclude Include="WindowModeController.h" />
     <ClInclude Include="window_mode_id.h" />
   </ItemGroup>
   <ItemGroup>
@@ -956,7 +962,9 @@
     <ClCompile Include="ListPicture.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="md5check.cpp" />
+    <ClCompile Include="MediaLoader.cpp" />
     <ClCompile Include="ModelManager.cpp" />
+    <ClCompile Include="MusicController.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="PanelPhotoWnd.cpp" />
     <ClCompile Include="PicturePanel.cpp" />
@@ -964,6 +972,8 @@
     <ClCompile Include="PreviewWnd.cpp" />
     <ClCompile Include="PrintService.cpp" />
     <ClCompile Include="ScannerLauncher.cpp" />
+    <ClCompile Include="SlideshowController.cpp" />
+    <ClCompile Include="ThumbnailController.cpp" />
     <ClCompile Include="ThumbnailFace.cpp" />
     <ClCompile Include="ThumbnailFacePertinenceToolBar.cpp" />
     <ClCompile Include="ThumbnailFaceToolBar.cpp" />
@@ -977,9 +987,11 @@
     <ClCompile Include="ToolbarKeyword.cpp" />
     <ClCompile Include="ToolbarPhoto.cpp" />
     <ClCompile Include="ToolbarViewerMode.cpp" />
+    <ClCompile Include="ViewerController.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
     <ClCompile Include="ViewerNavigationController.cpp" />
     <ClCompile Include="WaitingWindow.cpp" />
+    <ClCompile Include="WindowModeController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-zoom-in.xpm" />

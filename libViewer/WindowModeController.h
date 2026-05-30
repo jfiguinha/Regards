@@ -56,7 +56,7 @@ namespace Regards::Viewer
         bool GetIsFullscreen()  const { return isFullscreen; }
         bool GetShowToolbar()   const { return showToolbar; }
         void ShowTopWindow();
-        
+        void HideTopWindow();
         // State flags shared with MediaLoader
         bool isVideo      = false;
         bool isAnimation  = false;

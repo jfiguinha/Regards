@@ -250,11 +250,18 @@ int      CCentralWindow::GetNbElement()                    { return viewerContro
 
 int CCentralWindow::LoadPicture(const wxString& f, const bool& r)
 { 
+
+    viewerController->SetFilename(f);
     int returnValue = mediaLoader->LoadPicture(f, r); 
-    if(mediaLoader->IsAnimation())
+    if(mediaLoader->IsAnimation() || mediaLoader->IsVideo())
     {
         windowModeController->ShowTopWindow();
 		needToRefresh = true;
+    }
+    else
+    {
+		windowModeController->HideTopWindow();
+        needToRefresh = true;
     }
     return returnValue;
 }
