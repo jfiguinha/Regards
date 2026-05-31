@@ -881,6 +881,12 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="AnimationToolbar.h" />
     <ClInclude Include="CategoryFolderWindow.h" />
+    <ClInclude Include="CategoryHierarchyIndex.h" />
+    <ClInclude Include="CategoryQueryService.h" />
+    <ClInclude Include="CategoryRepository.h" />
+    <ClInclude Include="CategorySelectionController.h" />
+    <ClInclude Include="CategoryTreeStatePersistence.h" />
+    <ClInclude Include="CategoryTreeView.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="CriteriaWindow.h" />
@@ -950,6 +956,12 @@
     </ClCompile>
     <ClCompile Include="AnimationToolbar.cpp" />
     <ClCompile Include="CategoryFolderWindow.cpp" />
+    <ClCompile Include="CategoryHierarchyIndex.cpp" />
+    <ClCompile Include="CategoryQueryService.cpp" />
+    <ClCompile Include="CategoryRepository.cpp" />
+    <ClCompile Include="CategorySelectionController.cpp" />
+    <ClCompile Include="CategoryTreeStatePersistence.cpp" />
+    <ClCompile Include="CategoryTreeView.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="CentralWindow.cpp" />

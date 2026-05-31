@@ -436,7 +436,7 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 		tr.begin(parent), tr.end(parent),
 		[&](const auto& data)
 		{
-			if(data != nullptr)
+			if (data != nullptr)
 				return data->GetKey() == key;
 		}
 	);
@@ -445,22 +445,6 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 		return nullptr;
 
 	return p;
-
-	/*
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
-
-	for (auto i = 0; i < parent.number_of_children(); i++)
-	{
-		CTreeData * data = *it;
-		if (data->GetKey() == key)
-		{
-			return it;
-		}
-		it++;
-	}
-
-	return nullptr;
-	*/
 }
 
 tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key)

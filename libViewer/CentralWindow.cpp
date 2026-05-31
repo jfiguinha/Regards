@@ -154,18 +154,19 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
     }
 
     // ── Sub-controllers ───────────────────────────────────────────────
-    musicController = std::make_unique <CMusicController>(this);
+    musicController = std::make_unique<CMusicController>(this);
 
-    thumbnailController = std::make_unique < CThumbnailController>(thumbnailPicture, thumbnailVideo,listPicture, listFace);
+    thumbnailController = std::make_unique<CThumbnailController>(thumbnailPicture, thumbnailVideo,listPicture, listFace);
 
-    mediaLoader = std::make_unique < CMediaLoader>(this, previewWindow, panelInfosWindow,thumbnailPicture, thumbnailVideo, musicController);
+    mediaLoader = std::make_unique<CMediaLoader>(this, previewWindow, panelInfosWindow,thumbnailPicture, thumbnailVideo, musicController.get());
+    
     mediaLoader->windowMode = initialWindowMode;
 
-    viewerController = std::make_unique < CViewerController>(this, thumbnailPicture, listPicture,listFace, previewWindow, mediaLoader);
+    viewerController = std::make_unique<CViewerController>(this, thumbnailPicture, listPicture,listFace, previewWindow, mediaLoader.get());
 
-    slideshowController = std::make_unique < CSlideshowController>(this, previewWindow,musicController, viewerController);
+    slideshowController = std::make_unique<CSlideshowController>(this, previewWindow,musicController.get(), viewerController.get());
 
-    windowModeController = std::make_unique < CWindowModeController>(this, windowManager, panelInfosClick,previewWindow, panelInfosWindow, listPicture, listFace, faceDetection);
+    windowModeController = std::make_unique<CWindowModeController>(this, windowManager, panelInfosClick,previewWindow, panelInfosWindow, listPicture, listFace, faceDetection);
 
     // ── wxWidgets event bindings ──────────────────────────────────────
     Connect(wxEVT_ANIMATIONTIMERSTOP,    wxCommandEventHandler(CCentralWindow::StopAnimationEvent));
