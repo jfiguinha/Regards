@@ -25,16 +25,12 @@ namespace Regards::Viewer
     class CategoryHierarchyIndex
     {
     public:
-        CategoryHierarchyIndex(CategoryRepository& repo,
+        CategoryHierarchyIndex(tree<CTreeData*> * tr, CategoryRepository& repo,
                                const std::vector<wxString>& monthNames);
 
         // Construction complète de l'arbre (appelée par CCategoryWnd::Init)
         // faceDetection : 0 = désactivé, ≠0 = actif
         void Build(int faceDetection);
-
-        // Accès à l'arbre (lecture seule pour les autres classes)
-        const tree<CTreeData*>& Tree() const { return tr_; }
-        tree<CTreeData*>&       Tree()       { return tr_; }
 
         // Recherches
         tree<CTreeData*>::iterator FindExifKey(const wxString& exifKey);
@@ -61,7 +57,7 @@ namespace Regards::Viewer
 
         CategoryRepository&         repo_;
         const std::vector<wxString>& monthNames_;
-        tree<CTreeData*>            tr_;
+        tree<CTreeData*> *            tr_;
         int                         idElement_ = 0;
     };
 }

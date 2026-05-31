@@ -886,7 +886,6 @@
     <ClInclude Include="CategoryRepository.h" />
     <ClInclude Include="CategorySelectionController.h" />
     <ClInclude Include="CategoryTreeStatePersistence.h" />
-    <ClInclude Include="CategoryTreeView.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="CriteriaWindow.h" />
@@ -961,7 +960,6 @@
     <ClCompile Include="CategoryRepository.cpp" />
     <ClCompile Include="CategorySelectionController.cpp" />
     <ClCompile Include="CategoryTreeStatePersistence.cpp" />
-    <ClCompile Include="CategoryTreeView.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="CentralWindow.cpp" />

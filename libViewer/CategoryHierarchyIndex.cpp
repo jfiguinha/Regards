@@ -8,22 +8,22 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 // -----------------------------------------------------------------------------
-CategoryHierarchyIndex::CategoryHierarchyIndex(CategoryRepository& repo,
+CategoryHierarchyIndex::CategoryHierarchyIndex(tree<CTreeData*> * tr, CategoryRepository& repo,
                                                const std::vector<wxString>& monthNames)
-    : repo_(repo), monthNames_(monthNames)
+    : tr_(tr), repo_(repo), monthNames_(monthNames)
 {
 }
 
-// -----------------------------------------------------------------------------
+// --------------------------------------   ---------------------------------------
 void CategoryHierarchyIndex::Build(int faceDetection)
 {
-    tr_.clear();
+    tr_->clear();
     idElement_ = 0;
 
     CatalogVector catalogs;
     repo_.GetCatalogs(catalogs);
 
-    auto top = tr_.begin();
+    auto top = tr_->begin();
     for (CPhotoCatalog& catalog : catalogs)
     {
         auto treeData = new CTreeDataCategory();
@@ -39,7 +39,7 @@ void CategoryHierarchyIndex::Build(int faceDetection)
         treeData->SetExifKey(catalog.GetLibelle());
         treeData->SetTypeElement(TYPECATALOG);
 
-        auto child = tr_.insert(top, treeData);
+        auto child = tr_->insert(top, treeData);
         treeData->child = child;
 
         InitCatalogCategorie(child, idElement_, numCatalog, faceDetection);
@@ -71,7 +71,7 @@ void CategoryHierarchyIndex::InitCatalogCategorie(tree<CTreeData*>::iterator par
         treeData->SetKey(cat.GetLibelle());
         treeData->SetTypeElement(TYPECATEGORIE);
 
-        auto child = tr_.append_child(parent, treeData);
+        auto child = tr_->append_child(parent, treeData);
         treeData->child = child;
 
         switch (cat.GetId())
@@ -104,7 +104,7 @@ void CategoryHierarchyIndex::LoadFolder(int numCatalog,
         treeData->SetIsParent(false);
         treeData->SetKey(folder.GetFolderPath());
         treeData->SetTypeElement(TYPEFOLDER);
-        auto child = tr_.append_child(parent, treeData);
+        auto child = tr_->append_child(parent, treeData);
         treeData->child = child;
     }
 }
@@ -128,7 +128,7 @@ void CategoryHierarchyIndex::LoadFace(int numCatalog,
         treeData->SetIsParent(false);
         treeData->SetKey(face.faceName);
         treeData->SetTypeElement(TYPEFACE);
-        auto child = tr_.append_child(parent, treeData);
+        auto child = tr_->append_child(parent, treeData);
         treeData->child = child;
     }
 }
@@ -216,8 +216,8 @@ CategoryHierarchyIndex::AddCategorie(int numCatalog, int numCategorie,
             treeData->SetExifKey(exifKey);
             auto insertBefore = FindChild(child, exifKey);
             child = (insertBefore == nullptr)
-                ? tr_.append_child(child, treeData)
-                : tr_.insert(insertBefore, treeData);
+                ? tr_->append_child(child, treeData)
+                : tr_->insert(insertBefore, treeData);
             treeData->child = child;
         }
 
@@ -233,7 +233,7 @@ CategoryHierarchyIndex::AddCategorie(int numCatalog, int numCategorie,
 tree<CTreeData*>::iterator CategoryHierarchyIndex::FindKey(const wxString& key, tree<CTreeData*>::iterator& parent)
 {
     auto p = std::find_if(
-        tr_.begin(parent), tr_.end(parent),
+        tr_->begin(parent), tr_->end(parent),
         [&](const auto& data)
         {
             if (data != nullptr)
@@ -241,7 +241,7 @@ tree<CTreeData*>::iterator CategoryHierarchyIndex::FindKey(const wxString& key, 
         }
     );
 
-    if (p == tr_.end(parent))
+    if (p == tr_->end(parent))
         return nullptr;
 
     return p;
@@ -251,24 +251,24 @@ tree<CTreeData*>::iterator CategoryHierarchyIndex::FindKey(const wxString& key, 
 tree<CTreeData*>::iterator
 CategoryHierarchyIndex::FindExifKey(const wxString& exifKey)
 {
-    for (auto it = tr_.begin(); it != tr_.end(); ++it)
+    for (auto it = tr_->begin(); it != tr_->end(); ++it)
         if ((*it)->GetExifKey() == exifKey) return it;
-    return tr_.end();
+    return tr_->end();
 }
 
 tree<CTreeData*>::iterator
 CategoryHierarchyIndex::FindFolderKey(const wxString& path)
 {
-    for (auto it = tr_.begin(); it != tr_.end(); ++it)
+    for (auto it = tr_->begin(); it != tr_->end(); ++it)
         if ((*it)->GetKey() == path) return it;
-    return tr_.end();
+    return tr_->end();
 }
 
 tree<CTreeData*>::iterator
 CategoryHierarchyIndex::FindChild(tree<CTreeData*>::iterator parent,
                                    const wxString& catlibelle)
 {
-    auto it    = tr_.begin(parent);
+    auto it    = tr_->begin(parent);
     auto itOld = it;
     for (auto i = 0; i < parent.number_of_children(); ++i, ++it)
     {
