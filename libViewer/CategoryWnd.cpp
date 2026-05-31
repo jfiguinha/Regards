@@ -81,9 +81,8 @@ void CCategoryWnd::Init()
 
 	index_->Build(faceDetection);
 
-	CreateElement();
-
-	UpdateElement();
+	RenderElement(RenderMode::Create);
+	RenderElement(RenderMode::Update);
 }
 
 wxString CCategoryWnd::GetSqlRequest()
@@ -118,7 +117,7 @@ void CCategoryWnd::ClickOnElement(CPositionElement* element, wxWindow* window, c
 
 		persistence_->SaveTriangleState(vectorPosElementDynamic);
 
-		UpdateElement();
+		RenderElement(RenderMode::Update);
 		eventControl->UpdateTreeControl();
 	}
 }
@@ -137,7 +136,7 @@ void CCategoryWnd::RefreshCriteriaSearch()
 void CCategoryWnd::UpdateScreenRatio()
 {
 	//printf("CCategoryWnd::UpdateScreenRatio() \n");
-	UpdateElement();
+	RenderElement(RenderMode::Update);
 	eventControl->UpdateTreeControl();
 }
 
@@ -270,140 +269,7 @@ void CCategoryWnd::AdvanceRow(int xPos, CPositionElement* posElement)
 }
 
 
-//------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-
-void CCategoryWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
-{
-	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
-	CPositionElement* pos_element;
-
-	for (auto i = 0; i < parent.number_of_children(); i++)
-	{
-		const int profondeur = tr.depth(it);
-		auto data = static_cast<CTreeDataCategory*>(*it);
-		if (profondeur == 1 && (!data->GetValue().empty() || it.number_of_children() == 0))
-		{
-			int xPos = widthPosition * (profondeur + 1);
-
-			pos_element = RenderText(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			AdvanceRow(xPos, pos_element);
-		}
-		else if (!data->GetValue().empty() || it.number_of_children() == 0)
-		{
-			int xPos = widthPosition * (profondeur + 1);
-
-			pos_element = RenderCheckBox(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			xPos += pos_element->GetWidth() + themeTree.GetMargeX();
-
-			pos_element = RenderText(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			AdvanceRow(xPos, pos_element);
-		}
-		else
-		{
-			int xPos = widthPosition * profondeur;
-
-			pos_element = RenderTriangle(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			xPos += pos_element->GetWidth() + themeTree.GetMargeX();
-
-			pos_element = RenderCheckBox(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			xPos += pos_element->GetWidth() + themeTree.GetMargeX();
-
-			pos_element = RenderText(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			AdvanceRow(xPos, pos_element);
-
-			CreateChildTree(it);
-		}
-		++it;
-	}
-}
-
-
-void CCategoryWnd::CreateElement()
-{
-	vectorPosElement.clear();
-	vectorPosElementDynamic.clear();
-	tree<CTreeData*>::sibling_iterator it = tr.begin();
-	const auto itend = tr.end();
-	yPos = 0;
-	nbRow = 0;
-	widthPosition = 0;
-
-	while (it != itend)
-	{
-		auto data = static_cast<CTreeDataCategory*>(*it);
-		const int profondeur = tr.depth(it);
-		if (profondeur == 0)
-		{
-			CPositionElement* posElement;
-			int xPos = themeTree.GetMargeX();
-			int widthElement = 0;
-	
-			posElement = RenderTriangle(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			widthPosition = xPos + posElement->GetWidth();
-			xPos += posElement->GetWidth() + themeTree.GetMargeX();
-			bool check = persistence_->GetCheckState(data->GetExifKey(), data->GetKey(), data->GetNumCategorie());
-
-			posElement = RenderCheckBox(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			xPos += posElement->GetWidth() + themeTree.GetMargeX();
-
-			posElement = RenderText(data,
-				xPos,
-				yPos,
-				false,
-				RenderMode::Create);
-
-			AdvanceRow(xPos, posElement);
-
-			CreateChildTree(it);
-		}
-		++it;
-	}
-}
-
-
-void CCategoryWnd::UpdateElement(const bool& init)
+void CCategoryWnd::RenderElement(RenderMode mode)
 {
 	tree<CTreeData*>::sibling_iterator it = tr.begin();
 	const auto itend = tr.end();
@@ -427,6 +293,9 @@ void CCategoryWnd::UpdateElement(const bool& init)
 		if (profondeur == 0)
 		{
 			bool isVisible = true;
+			if (mode == RenderMode::Create)
+				isVisible = false;
+
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
 			CPositionElement* posElement = nullptr;
@@ -436,7 +305,7 @@ void CCategoryWnd::UpdateElement(const bool& init)
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			tree_element_triangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
 
@@ -447,7 +316,7 @@ void CCategoryWnd::UpdateElement(const bool& init)
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
@@ -455,25 +324,35 @@ void CCategoryWnd::UpdateElement(const bool& init)
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			AdvanceRow(xPos, posElement);
 
-			const bool isOpen = tree_element_triangle->GetOpen();
-			if (isOpen)
-				UpdateChildTree(it, init);
+			if(mode == RenderMode::Create)
+			{
+				RenderChildElement(it, mode);
+			}
+			else
+			{
+				const bool isOpen = tree_element_triangle->GetOpen();
+				if (isOpen)
+					RenderChildElement(it, mode);
+			}
 		}
 		++it;
 	}
 }
 
-void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init)
+void CCategoryWnd::RenderChildElement(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode)
 {
 	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		bool isVisible = true;
+		if (mode == RenderMode::Create)
+			isVisible = false;
+
 		CPositionElement* posElement = nullptr;
 		const int profondeur = tr.depth(it);
 		auto data = static_cast<CTreeDataCategory*>(*it);
@@ -485,7 +364,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			AdvanceRow(xPos, posElement);
 		}
@@ -497,7 +376,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
@@ -505,7 +384,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			AdvanceRow(xPos, posElement);
 		}
@@ -518,7 +397,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
@@ -528,7 +407,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
@@ -536,13 +415,21 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				xPos,
 				yPos,
 				isVisible,
-				RenderMode::Update);
+				mode);
 
 			AdvanceRow(xPos, posElement);
 
-			const bool isShow = tree_element_triangle->GetOpen();
-			if (isShow)
-				UpdateChildTree(it, init);
+			if (mode == RenderMode::Create)
+			{
+				RenderChildElement(it, mode);
+			}
+			else
+			{
+				const bool isShow = tree_element_triangle->GetOpen();
+				if (isShow)
+					RenderChildElement(it, mode);
+			}
+
 		}
 		++it;
 	}

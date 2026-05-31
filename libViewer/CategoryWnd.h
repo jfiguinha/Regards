@@ -55,10 +55,8 @@ namespace Regards
 			};
 
 			//Draw Tree
-			void CreateElement();
-			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
-			void UpdateElement(const bool& init = false);
-			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init);
+			void RenderElement(RenderMode mode);
+			void RenderChildElement(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
 
 			CPositionElement* RenderText(
 				CTreeDataCategory* data,
