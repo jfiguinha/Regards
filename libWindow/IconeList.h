@@ -1,5 +1,6 @@
 #pragma once
 #include "Icone.h"
+#include <tbb/concurrent_unordered_map.h>
 
 namespace Regards::Window
 {
@@ -30,7 +31,7 @@ namespace Regards::Window
 	private:
         
 		IconeVector pIconeList;
-		std::unordered_map<int, CIcone*> pIconeByPhotoId;
-        std::unordered_map<wxString, CIcone*> pIconeByFilename;
+		tbb::concurrent_unordered_map<int, CIcone*> pIconeByPhotoId;
+        tbb::concurrent_unordered_map<wxString, CIcone*> pIconeByFilename;
 	};
 }

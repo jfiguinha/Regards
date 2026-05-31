@@ -256,6 +256,11 @@ int CMediaLoader::LoadPicture(const wxString& newFilename, const bool& refresh)
         thumbnailPicture->SetActifItem(GetPhotoId(this->filename), true);
 
     numElementToLoad++;
+
+    auto* event = new wxCommandEvent(wxEVENT_ENDLOADPICTURE);
+    event->SetClientData(new wxString(this->filename));
+    wxQueueEvent(parent, event);
+
     return 0;
 }
 

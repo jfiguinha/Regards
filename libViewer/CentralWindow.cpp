@@ -176,6 +176,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
     Connect(VIDEO_UPDATE_ID,               wxCommandEventHandler(CCentralWindow::SetVideoPos));
     Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerAnimation), nullptr, this);
     Connect(EVENT_SHOWPICTURE,             wxCommandEventHandler(CCentralWindow::OnShowPicture));
+    Connect(wxEVENT_ENDLOADPICTURE,        wxCommandEventHandler(CCentralWindow::OnEndLoadPicture));
     Connect(VIDEO_START,                   wxCommandEventHandler(CCentralWindow::OnVideoStart));
     Connect(wxVIDEO_STOP,                  wxCommandEventHandler(CCentralWindow::OnVideoStop));
     Connect(wxEVENT_ANIMATIONSTART,        wxCommandEventHandler(CCentralWindow::OnAnimationStart));
@@ -211,9 +212,9 @@ CCentralWindow::~CCentralWindow()
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API — thin forwarders
 // ─────────────────────────────────────────────────────────────────────────────
-
-void CCentralWindow::ControlThumbnailVisibility()
+void CCentralWindow::OnEndLoadPicture(wxCommandEvent& event)
 {
+	wxString* filename = event.GetClientData() != nullptr ? static_cast<wxString*>(event.GetClientData()) : nullptr;
     if (mediaLoader->IsAnimation() || mediaLoader->IsVideo())
     {
         windowModeController->ShowTopWindow();
@@ -224,31 +225,30 @@ void CCentralWindow::ControlThumbnailVisibility()
         windowModeController->HideTopWindow();
         needToRefresh = true;
     }
+
+    if (filename != nullptr)
+    {
+        viewerController->SetFilename(*filename);
+        delete filename;
+        filename = nullptr;
+    }
 }
 
 wxString CCentralWindow::ImageSuivante(const bool& lp)    
 { 
-    wxString file = viewerController->ImageSuivante(lp); 
-    ControlThumbnailVisibility();
-    return file;
+    return viewerController->ImageSuivante(lp);
 }
 wxString CCentralWindow::ImagePrecedente(const bool& lp)  
 { 
-    wxString file = viewerController->ImagePrecedente(lp);
-    ControlThumbnailVisibility();
-    return file;
+    return viewerController->ImagePrecedente(lp);
 }
 wxString CCentralWindow::ImageFin(const bool& lp)         
 {   
-    wxString file = viewerController->ImageFin(lp);
-    ControlThumbnailVisibility();
-    return file;
+    return viewerController->ImageFin(lp);
 }
 wxString CCentralWindow::ImageDebut(const bool& lp)       
 { 
-    wxString file = viewerController->ImageDebut(lp);
-    ControlThumbnailVisibility();
-    return file;
+    return viewerController->ImageDebut(lp);
 }
 
 wxString CCentralWindow::GetFilename()                     { return viewerController->GetFilename(); }
@@ -257,11 +257,8 @@ int      CCentralWindow::GetNbElement()                    { return viewerContro
 
 int CCentralWindow::LoadPicture(const wxString& f, const bool& r)
 { 
-
     viewerController->SetFilename(f);
-    int returnValue = mediaLoader->LoadPicture(f, r); 
-    ControlThumbnailVisibility();
-    return returnValue;
+    return mediaLoader->LoadPicture(f, r);
 }
 
 bool     CCentralWindow::IsVideo()                         { return mediaLoader->IsVideo(); }
@@ -282,6 +279,7 @@ void     CCentralWindow::Resize()                          { windowModeControlle
 void CCentralWindow::SetListeFile(const wxString& filename, const bool& isDeleteFolder,
                                    const bool& isSqlUpdate, const int& typeAffichage)
 {
+    
     if (listPicture != nullptr)
         listPicture->SetListeFile(typeAffichage, isDeleteFolder, isSqlUpdate);
     if (thumbnailPicture != nullptr)
@@ -321,7 +319,7 @@ bool CCentralWindow::GetProcessEnd()
 void CCentralWindow::OnVideoEnd(wxCommandEvent& e)           
 { 
     mediaLoader->OnVideoEnd(e); 
-    ControlThumbnailVisibility();
+    
 }
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& e)       { mediaLoader->OnTimerAnimation(e); }
 void CCentralWindow::SetVideoPos(wxCommandEvent& e)          { mediaLoader->SetVideoPos(e); }
@@ -348,11 +346,11 @@ void CCentralWindow::OnVideoStop(wxCommandEvent& /*e*/)
 void CCentralWindow::OnAnimationStart(wxCommandEvent& /*e*/) { mediaLoader->StartAnimation(); }
 void CCentralWindow::OnAnimationStop(wxCommandEvent& /*e*/)  { mediaLoader->StopAnimation(); }
 
-void CCentralWindow::OnShowPicture(wxCommandEvent& e)         { viewerController->OnShowPicture(e); ControlThumbnailVisibility();}
-void CCentralWindow::OnPicturePrevious(wxCommandEvent& e)     { viewerController->OnPicturePrevious(e); ControlThumbnailVisibility();}
-void CCentralWindow::OnPictureNext(wxCommandEvent& e)         { viewerController->OnPictureNext(e); ControlThumbnailVisibility();}
-void CCentralWindow::OnPictureFirst(wxCommandEvent& e)        { viewerController->OnPictureFirst(e); ControlThumbnailVisibility();}
-void CCentralWindow::OnPictureLast(wxCommandEvent& e)         { viewerController->OnPictureLast(e); ControlThumbnailVisibility(); }
+void CCentralWindow::OnShowPicture(wxCommandEvent& e)         { viewerController->OnShowPicture(e); }
+void CCentralWindow::OnPicturePrevious(wxCommandEvent& e)     { viewerController->OnPicturePrevious(e); }
+void CCentralWindow::OnPictureNext(wxCommandEvent& e)         { viewerController->OnPictureNext(e); }
+void CCentralWindow::OnPictureFirst(wxCommandEvent& e)        { viewerController->OnPictureFirst(e); }
+void CCentralWindow::OnPictureLast(wxCommandEvent& e)         { viewerController->OnPictureLast(e);  }
 
 void CCentralWindow::StartDiaporama(wxCommandEvent& e)        { slideshowController->StartDiaporama(e); }
 void CCentralWindow::StopDiaporama(wxCommandEvent& e)         { slideshowController->StopDiaporama(e); }

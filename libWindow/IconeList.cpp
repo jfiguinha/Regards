@@ -81,17 +81,12 @@ void CIconeList::RemoveElement(int numElement)
 
     if (icone != nullptr)
     {
-        if (CThumbnailData* data = icone->GetData();
-            data != nullptr)
-        {
-            pIconeByPhotoId.erase(
-                data->GetNumPhotoId()
-            );
-            
-            pIconeByFilename.erase(
-                data->GetFilename()
-            );
-        }
+		if (CThumbnailData* data = icone->GetData();
+			data != nullptr)
+		{
+			pIconeByPhotoId[data->GetNumPhotoId()] = nullptr;
+			pIconeByFilename[data->GetFilename()] = nullptr;
+		}
 
         delete icone;
     }
@@ -154,7 +149,7 @@ CIcone* CIconeList::FindElementByFilename(const wxString& filename)
 {
     auto it = pIconeByFilename.find(filename);
 
-    if (it != pIconeByFilename.end())
+    if (it != pIconeByFilename.end() && it->second != nullptr)
         return it->second;
 
     return nullptr;
@@ -165,7 +160,7 @@ CIcone* CIconeList::FindElementByPhotoId(const int& photoId)
 {
     auto it = pIconeByPhotoId.find(photoId);
 
-    if (it != pIconeByPhotoId.end())
+    if (it != pIconeByPhotoId.end() && it->second != nullptr)
         return it->second;
 
     return nullptr;

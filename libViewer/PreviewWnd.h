@@ -60,6 +60,18 @@ namespace Regards
 			void SetFaceMode();
 			void StopDiaporamaMode();
 			void UpdateInfos();
+			bool isVideo()
+			{
+				return mediaMode_ == MediaMode::Video;
+			}
+			bool isBitmap()
+			{
+				return mediaMode_ == MediaMode::Bitmap;
+			}	
+			bool isAnimation()
+			{
+				return mediaMode_ == MediaMode::Animation;
+			}
 
 		protected:
 			void ShowScreenButton(wxCommandEvent& event);
@@ -76,21 +88,34 @@ namespace Regards
 			void ShowExportButton(wxCommandEvent& event);
 
 
-			CShowElement* showElement;
+			std::unique_ptr<CShowElement> showElement = nullptr;
 
-			CAnimationToolbar* animationToolbar;
-			CPreviewToolbar* previewToolbar;
-			CBitmapInfos* bitmapInfos;
-			CFiltreToolbar* filtreToolbar;
+			std::unique_ptr<CAnimationToolbar> animationToolbar = nullptr;
+			std::unique_ptr<CPreviewToolbar> previewToolbar = nullptr;
+			std::unique_ptr<CBitmapInfos> bitmapInfos = nullptr;
+			std::unique_ptr<CFiltreToolbar> filtreToolbar = nullptr;
 
-			bool isAnimation;
-			bool isBitmap;
-			bool isVideo;
+			enum class MediaMode
+			{
+				Aucun,
+				Bitmap,
+				Animation,
+				Video
+			};
+
+
+			MediaMode mediaMode_ = MediaMode::Aucun;
+			//PreviewMode previewMode_ = PreviewMode::Normal;
+
+
+			//bool isAnimation;
+			//bool isBitmap;
+			//bool isVideo;
 			bool isEffect;
 			bool showToolbar;
 			bool fullscreen;
 			bool isDiaporama;
-			int isOldState = 0;
+
 			wxString oldfilename;
 			CThemeBitmapWindow themeBitmap;
 			wxWindowID id_;

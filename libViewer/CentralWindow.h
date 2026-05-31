@@ -93,7 +93,8 @@ namespace Regards::Viewer
         void ChangeTypeAffichage(wxCommandEvent& event);
         void OnStopAudio(wxCommandEvent& event);
         void OnQuitAudio(wxCommandEvent& event);
-        void ControlThumbnailVisibility();
+		void OnEndLoadPicture(wxCommandEvent& event);
+       
 
         // ── UI widgets (still owned here, passed by pointer to sub-controllers)
         std::unique_ptr<CListPicture>         listPicture      = nullptr;

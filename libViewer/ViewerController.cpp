@@ -150,7 +150,7 @@ void CViewerController::ShowPicture(CBitmapReturn* pictureData, const int& redra
     processLoadPicture = false;
     bool isPictureToShow = false;
     if(filename.empty())
-        filename = pictureData->bitmap != nullptr ? pictureData->bitmap->GetFilename() : wxEmptyString;
+        filename = pictureData->bitmap != nullptr ? pictureData->bitmap->GetFilename() : wxString();
 
 	if (pictureData->bitmap != nullptr && filename == pictureData->bitmap->GetFilename())
         isPictureToShow = true;

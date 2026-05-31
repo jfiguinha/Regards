@@ -5,7 +5,7 @@
 #include "FolderRefreshService.h"
 #include "MainViewerController.h"
 #include <memory>
-
+#include <thread>
 class IStatusBarInterface;
 
 namespace Regards::Viewer
@@ -19,12 +19,6 @@ namespace Regards::Viewer
     class CImageList;
     class CExportDiaporama;
     class CToolbar;
-    class CMainParam;
-    class CCentralWindow;
-    class CToolbarViewerMode;
-    class CFolderProcess;
-    class CThumbnailProcess;
-    class CCategoryFolderWindow;
 
     class CMainWindow : public Regards::Window::CWindowMain, public Regards::Window::CToolbarInterface
     {
@@ -134,16 +128,18 @@ namespace Regards::Viewer
         // ── Processus de fond ─────────────────────────────────────────
         std::unique_ptr<CFolderProcess>   folderProcess;
         std::unique_ptr<CThumbnailProcess> thumbnailProcess;
-        std::thread* versionUpdate = nullptr;
+        std::jthread versionUpdate;;
 
         // ── État général ──────────────────────────────────────────────
         CMainParam* viewerParam     = nullptr;
         bool        multithread     = true;
         bool        needToReload    = false;
         int         typeAffichage   = 0;
+
         bool        updateCriteria  = true;
         bool        updateFolder    = false;
         bool        refreshFolder   = false;
+
         bool        start           = true;
         bool        criteriaSendMessage = false;
         bool        checkVersion    = true;
