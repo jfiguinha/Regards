@@ -160,8 +160,8 @@ namespace Regards::Viewer
 
         // Fenêtres enfants
         
-        std::unique_ptr<CMainWindow>    mainWindow_;
-        std::unique_ptr<CWaitingWindow> mainWindowWaiting;
+        CMainWindow *    mainWindow_;
+        CWaitingWindow* mainWindowWaiting;
         // Services
         std::unique_ptr<CModelManager>               modelManager_;
         std::unique_ptr<CFileWatcherService>         fileWatcherService_;

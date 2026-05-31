@@ -88,13 +88,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     const bool openFirstFile = !fileToOpen_.IsEmpty();
 
     // 4. Fenêtre principale
-    mainWindow_ = std::make_unique<CMainWindow>(this, MAINVIEWERWINDOWID, this, fileToOpen_);
+    mainWindow_ = new CMainWindow(this, MAINVIEWERWINDOWID, this, fileToOpen_);
 
     // 5. Services
     fileWatcherService_  = std::make_unique<CFileWatcherService>(this);
     printService_        = std::make_unique<CPrintService>(this);
     scannerLauncher_     = std::make_unique<CScannerLauncher>();
-    navigationCtrl_      = std::make_unique<CViewerNavigationController>(this, mainWindow_.get());
+    navigationCtrl_      = std::make_unique<CViewerNavigationController>(this, mainWindow_);
 
     // 6. Timers propres à la frame
     InitTimers();
@@ -339,7 +339,7 @@ void CViewerFrame::Exit()
         if(mainWindow_ != nullptr)
             mainWindow_->Show(false);
         
-		mainWindowWaiting = std::make_unique<CWaitingWindow>(this, wxID_ANY);
+		mainWindowWaiting = new CWaitingWindow(this, wxID_ANY);
         if(mainWindowWaiting != nullptr)
         {
             mainWindowWaiting->Show(true);

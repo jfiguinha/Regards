@@ -106,25 +106,25 @@ CShowElement::CShowElement(wxWindow* parent,
     };
 
     // --- Widgets image ---
-    pictureToolbar = std::make_unique<CBitmapToolbar>(this, wxID_ANY, bitmapViewerId,
-                                                     themeToolbar, false, exportPicture);
+    pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId,
+        themeToolbar, false, exportPicture);
     pictureToolbar->SetTabValue(zoomValues);
 
-    bitmapWindow = std::make_unique<CBitmapWndViewer>(pictureToolbar.get(), mainViewerId,
-                                                      themeBitmap, bitmapInterface);
+    bitmapWindow = new CBitmapWndViewer(pictureToolbar, mainViewerId,
+        themeBitmap, bitmapInterface);
     bitmapWindow->SetTabValue(zoomValues);
 
-    bitmapWindowRender = std::make_unique<CBitmapWnd3D>(this, bitmapViewerId);
-    bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow.get());
+    bitmapWindowRender = new CBitmapWnd3D(this, bitmapViewerId);
+    bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 
-    scrollbar = std::make_unique<CScrollbarWnd>(this, bitmapWindowRender.get(), wxID_ANY, "BitmapScroll");
+    scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
     // --- Widgets vidéo ---
-    videoWindow  = std::make_unique<CVideoControlSoft>(windowMain, this, this);
-    videoSlider  = std::make_unique<CSliderVideo>(this, wxID_ANY, this, themeSlider);
-    slideToolbar = std::make_unique<CSlideToolbar>(this, wxID_ANY, themeToolbar);
+    videoWindow = new CVideoControlSoft(windowMain, this, this);
+    videoSlider = new CSliderVideo(this, wxID_ANY, this, themeSlider);
+    slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
 
-    bitmapWindowRender->UpdateRenderInterface(bitmapWindow.get());
+    bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 
     for (int i = 0; i <= 100; ++i)
         sound_value.push_back(i);
@@ -175,8 +175,8 @@ IViewerMode* CShowElement::ActiveViewer() const
     // éviter l'allocation heap tout en restant simple.
     static thread_local BitmapViewerMode bm(nullptr);
     static thread_local VideoViewerMode  vm(nullptr);
-    if (!isVideo) { bm = BitmapViewerMode(bitmapWindow.get()); return &bm; }
-    else          { vm = VideoViewerMode(videoWindow.get());   return &vm; }
+    if (!isVideo) { bm = BitmapViewerMode(bitmapWindow); return &bm; }
+    else          { vm = VideoViewerMode(videoWindow);   return &vm; }
 }
 
 void CShowElement::FlipVertical()   { ActiveViewer()->FlipVertical();   }
@@ -353,9 +353,10 @@ void CShowElement::HideToolbar()
 
 bool CShowElement::IsToolbarMouseOver()
 {
-    if (isVideo)
-        return pictureToolbar ? pictureToolbar->IsMouseOver() : false;
-    return videoSlider ? videoSlider->IsMouseOver() : false;
+    if (!isVideo)
+        return pictureToolbar && pictureToolbar->IsMouseOver();
+
+    return videoSlider && videoSlider->IsMouseOver();
 }
 
 // ============================================================================
@@ -373,10 +374,10 @@ namespace
     }
 }
 
-void CShowElement::OnMoveLeft(wxCommandEvent& e)   { ForwardScrollEvent(scrollbar.get(), wxEVENT_MOVELEFT,   e); }
-void CShowElement::OnMoveRight(wxCommandEvent& e)  { ForwardScrollEvent(scrollbar.get(), wxEVENT_MOVERIGHT,  e); }
-void CShowElement::OnMoveTop(wxCommandEvent& e)    { ForwardScrollEvent(scrollbar.get(), wxEVENT_MOVETOP,    e); }
-void CShowElement::OnMoveBottom(wxCommandEvent& e) { ForwardScrollEvent(scrollbar.get(), wxEVENT_MOVEBOTTOM, e); }
+void CShowElement::OnMoveLeft(wxCommandEvent& e)   { ForwardScrollEvent(scrollbar, wxEVENT_MOVELEFT,   e); }
+void CShowElement::OnMoveRight(wxCommandEvent& e)  { ForwardScrollEvent(scrollbar, wxEVENT_MOVERIGHT,  e); }
+void CShowElement::OnMoveTop(wxCommandEvent& e)    { ForwardScrollEvent(scrollbar, wxEVENT_MOVETOP,    e); }
+void CShowElement::OnMoveBottom(wxCommandEvent& e) { ForwardScrollEvent(scrollbar, wxEVENT_MOVEBOTTOM, e); }
 
 void CShowElement::OnControlSize(wxCommandEvent& event)
 {
@@ -461,7 +462,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
     pictureToolbar->Show(true);
     slideToolbar->Show(false);
     videoSlider->Show(false);
-    bitmapWindowRender->UpdateRenderInterface(bitmapWindow.get());
+    bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 
     // On ne garde plus l'ancienne tempImage si ce n'est pas une miniature
     if (!isThumbnail)
@@ -513,6 +514,14 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
         bitmapWindow->SetBitmap(bitmap, false);
         bitmapWindow->ApplyPicturePosition(angle, flipH, flipV);
     }
+
+	if (configRegards->GetDetectOrientation() && !isThumbnail)
+	{
+		CThreadRotate* tr = new CThreadRotate;
+		tr->filename = filename;
+		tr->mainWindow = this;
+		tr->thread = new std::thread(RotateRecognition, tr);
+	}
 
     firstElement = false;
 
@@ -636,7 +645,7 @@ bool CShowElement::SetVideo(const wxString& fn, const int& /*rotation*/, const b
     pictureToolbar->Show(false);
     slideToolbar->Show(true);
     videoSlider->Show(true);
-    bitmapWindowRender->UpdateRenderInterface(videoWindow.get());
+    bitmapWindowRender->UpdateRenderInterface(videoWindow);
 
     videoTotalTime = 0;
     videoPosOld    = 0;
@@ -701,7 +710,7 @@ void CShowElement::ChangeAudio(const int& langue)
 
 CVideoControlSoft* CShowElement::GetVideoControl()
 {
-    return videoWindow.get();
+    return videoWindow;
 }
 
 cv::Mat CShowElement::GetVideoBitmap()

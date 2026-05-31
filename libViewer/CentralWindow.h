@@ -97,19 +97,19 @@ namespace Regards::Viewer
        
 
         // ── UI widgets (still owned here, passed by pointer to sub-controllers)
-        std::unique_ptr<CListPicture>         listPicture      = nullptr;
-        std::unique_ptr<CThumbnailViewerPicture> thumbnailPicture = nullptr;
-        std::unique_ptr<CPanelPhotoWnd>          panelPhotoWnd    = nullptr;
+        CListPicture *         listPicture      = nullptr;
+        CThumbnailViewerPicture *  thumbnailPicture = nullptr;
+        CPanelPhotoWnd *           panelPhotoWnd    = nullptr;
         CPanelWithClickToolbar *  panelInfosClick  = nullptr;
 #ifndef __NOFACE_DETECTION__
-        std::unique_ptr<CListFace>               listFace         = nullptr;
+        CListFace *                listFace         = nullptr;
 #endif
-        std::unique_ptr<CScrollbarWnd>           scrollVideoWindow   = nullptr;
-        std::unique_ptr<CThumbnailViewerVideo>   thumbnailVideo      = nullptr;
-        std::unique_ptr<CPanelInfosWnd>          panelInfosWindow    = nullptr;
-        std::unique_ptr<CPreviewWnd>             previewWindow       = nullptr;
-        std::unique_ptr<CScrollbarWnd>           scrollPictureWindow = nullptr;
-        std::unique_ptr<CWindowManager>          windowManager       = nullptr;
+        CScrollbarWnd *            scrollVideoWindow   = nullptr;
+        CThumbnailViewerVideo *    thumbnailVideo      = nullptr;
+        CPanelInfosWnd *           panelInfosWindow    = nullptr;
+        CPreviewWnd *              previewWindow       = nullptr;
+        CScrollbarWnd *            scrollPictureWindow = nullptr;
+        CWindowManager *           windowManager       = nullptr;
 
         // ── Sub-controllers ─────────────────────────────────────────────
         std::unique_ptr<CMusicController>        musicController      = nullptr;

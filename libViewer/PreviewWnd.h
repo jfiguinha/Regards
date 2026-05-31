@@ -88,12 +88,12 @@ namespace Regards
 			void ShowExportButton(wxCommandEvent& event);
 
 
-			std::unique_ptr<CShowElement> showElement = nullptr;
+			CShowElement* showElement = nullptr;
 
-			std::unique_ptr<CAnimationToolbar> animationToolbar = nullptr;
-			std::unique_ptr<CPreviewToolbar> previewToolbar = nullptr;
+			CAnimationToolbar* animationToolbar = nullptr;
+			CPreviewToolbar* previewToolbar = nullptr;
 			std::unique_ptr<CBitmapInfos> bitmapInfos = nullptr;
-			std::unique_ptr<CFiltreToolbar> filtreToolbar = nullptr;
+			CFiltreToolbar* filtreToolbar = nullptr;
 
 			enum class MediaMode
 			{

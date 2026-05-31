@@ -43,19 +43,19 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal
 		{
 			CThemeToolbar theme;
 			viewerTheme->GetPreviewToolbarTheme(&theme);
-			previewToolbar = std::make_unique<CPreviewToolbar>(this, wxID_ANY, theme, this, false);
-			animationToolbar = std::make_unique<CAnimationToolbar>(this, ANIMATIONTOOLBARWINDOWID, theme, this, false);
+			previewToolbar = new CPreviewToolbar(this, wxID_ANY, theme, this, false);
+			animationToolbar = new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this, false);
 		}
 
 
 		{
 			CThemeToolbar theme;
 			viewerTheme->GetFiltreToolbarTheme(&theme);
-			filtreToolbar = std::make_unique<CFiltreToolbar>(this, wxID_ANY, theme, false);
+			filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
 			viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 		}
 
-		showElement = std::make_unique<CShowElement>(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this,
+		showElement = new CShowElement(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this,
 			viewerTheme, true);
 	}
 
