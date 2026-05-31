@@ -19,6 +19,9 @@ namespace Regards
 	namespace Viewer
 	{
 		class CMainParam;
+		class CategoryQueryService;
+		class CategoryRepository;
+		class CategoryTreeStatePersistence;
 
 		class CCategoryWnd : public CTreeControl
 		{
@@ -37,9 +40,7 @@ namespace Regards
 			};
 
 		protected:
-			void SaveState();
-			void LoadState();
-			void SaveStateTriangle();
+
 			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 			                    const int& posLargeur, const int& posHauteur) override;
 
@@ -50,7 +51,7 @@ namespace Regards
 			tree<CTreeData*>::iterator FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle);
 			tree<CTreeData*>::iterator FindExifKey(const wxString& exifkey);
 			tree<CTreeData*>::iterator FindFolderKey(const wxString& exifkey);
-			void UpdateSQLSearchCriteria();
+
 			wxString GetCatalogLibelle(const int& numCatalog);
 
 			void LoadCategorie(const int& numCategorie, tree<CTreeData*>::iterator parent, int numParent);
@@ -68,22 +69,27 @@ namespace Regards
 			CPositionElement* VerifChildParentCheckBox(const int& numParent, bool& isAllUnchecked, const bool& checkOn);
 			void VerifParentCheckBox(CTreeDataCategory* treeData, const bool& checkOn);
 			void GestionCheckBoxParent(const int& numParent, const bool& check);
-			bool GetCheckState(const wxString& exifKey, const wxString& key, const int& numCategorie);
-			bool GetTriangleState(const wxString& exifKey, const wxString& key);
 
+
+
+			std::unique_ptr<CategoryRepository>           repo_;
+			std::unique_ptr<CategoryQueryService>         queryService_;
+			std::unique_ptr<CategoryTreeStatePersistence> persistence_;
 			//Variable
 			int numCatalog;
 			int idElement;
 			int yPos;
-			wxString sqlRequest;
-			wxString oldsqlRequest;
-			wxString stateValue;
-			wxString stateTriangleValue;
-			vector<wxString> MonthName;
+
+
+			std::vector<wxString> monthNames_;
 			int widthPosition;
-			vector<int> listPhoto;
+			std::vector<int> listPhoto;
 			CMainParam* config;
 			CWindowMain* windowMain;
+
+
+			wxString     sqlRequest_;
+			wxString     oldSqlRequest_;
 		};
 	}
 }
