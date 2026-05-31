@@ -47,11 +47,43 @@ namespace Regards
 			                    const int& posLargeur, const int& posHauteur) override;
 
 		private:
+
+			enum class RenderMode
+			{
+				Create,
+				Update
+			};
+
 			//Draw Tree
 			void CreateElement();
 			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 			void UpdateElement(const bool& init = false);
 			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init);
+
+			CPositionElement* RenderText(
+				CTreeDataCategory* data,
+				int & xPos,
+				int & yPos,
+				bool visible,
+				RenderMode mode);
+
+			CPositionElement* RenderCheckBox(
+				CTreeDataCategory* data,
+				int & xPos,
+				int & yPos,
+				bool visible,
+				RenderMode mode);
+
+			CPositionElement* RenderTriangle(
+				CTreeDataCategory* data,
+				int& xPos,
+				int& yPos,
+				bool visible,
+				RenderMode mode);
+
+			void AdvanceRow(
+				int xPos,
+				CPositionElement* posElement);
 
 			std::unique_ptr<CategoryHierarchyIndex>       index_;
 			std::unique_ptr<CategoryRepository>           repo_;
@@ -65,7 +97,7 @@ namespace Regards
 
 			std::vector<wxString> monthNames_;
 			int widthPosition;
-			std::vector<int> listPhoto;
+
 			CMainParam* config;
 			CWindowMain* windowMain;
 
