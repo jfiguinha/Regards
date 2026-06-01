@@ -202,12 +202,134 @@ CTreeElementTriangle* CTreeControl::CreateTriangleElement(const int& width, cons
 	return treeElementTriangle;
 }
 
+
+
 CTreeElementDelete* CTreeControl::CreateDeleteElement(const int& width, const int& height)
 {
 	auto treeElementDelete = new CTreeElementDelete();
 	treeElementDelete->SetTheme(&themeTree.themeDelete);
 	treeElementDelete->SetZoneSize(width, height);
 	return treeElementDelete;
+}
+
+CPositionElement* CTreeControl::RenderText(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_TEXTE);
+
+	if (posElement == nullptr)
+	{
+		auto* text = CreateTexteElement(
+			themeTree.GetRowWidth(),
+			themeTree.GetRowHeight(),
+			data->GetKey());
+
+		text->SetVisible(visible);
+
+		posElement = CreatePositionElement(
+			xPos,
+			yPos,
+			nbRow,
+			0,
+			text->GetWidth(),
+			text->GetHeight(),
+			ELEMENT_TEXTE,
+			text,
+			data,
+			false);
+	}
+	else
+	{
+		auto* text =
+			static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
+
+		text->SetVisible(visible);
+		text->SetElementPos(xPos, yPos);
+
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+
+	return posElement;
+}
+
+
+
+
+
+CPositionElement* CTreeControl::RenderCheckBox(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_CHECKBOX);
+
+	if (posElement == nullptr)
+	{
+		bool check = GetCheckState(data);
+		CTreeElementCheckBox* tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+			tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
+
+
+	}
+	else
+	{
+		CTreeElementCheckBox* tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+		tree_element_check->SetVisible(visible);
+		tree_element_check->SetElementPos(xPos, yPos);
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+
+	return posElement;
+}
+
+CPositionElement* CTreeControl::RenderTriangle(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_TRIANGLE);
+
+	if (posElement == nullptr)
+	{
+		bool isOpen = GetTriangleState(data);
+		CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			isOpen);
+		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
+			data);
+
+	}
+	else
+	{
+		CTreeElementTriangle* tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+		tree_element_triangle->SetVisible(visible);
+		tree_element_triangle->SetElementPos(xPos, yPos);
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+
+	return posElement;
 }
 
 CTreeElementTexte* CTreeControl::CreateTexteElement(const int& width, const int& height, const wxString& libelle)
@@ -318,21 +440,6 @@ CPositionElement* CTreeControl::GetElement(CTreeData* data, const int& typeEleme
 
 	return *p;
 
-	/*
-	for (CPositionElement * value : vectorPosElement)
-	{
-		if (value != nullptr)
-		{
-			CTreeData * dataElement = value->GetTreeData();
-			if (dataElement == data && value->GetType() == typeElement)
-			{
-				return value;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
@@ -373,43 +480,6 @@ CPositionElement* CTreeControl::FindElement(const int& x, const int& y)
 		return nullptr;
 
 	return *p;
-
-	/*
-	for (CPositionElement * value : vectorPosElementDynamic)
-	{
-		if (value != nullptr)
-		{
-			try
-			{
-				CTreeElement * treeElement = value->GetTreeElement();
-				if (treeElement != nullptr)
-				{
-					if (treeElement->IsVisible())
-					{
-						int xPos = 0;
-						if (value->GetRow() > 0)
-							xPos = GetWidthRow(value->GetRow() - 1);
-
-						int x1 = value->GetX() + xPos;
-						int x2 = value->GetX() + xPos + value->GetWidth();
-						int y1 = value->GetY();
-						int y2 = value->GetY() + value->GetHeight();
-						if ((x1 <= x && x <= x2) && (y1 <= y && y <= y2))
-						{
-							return value;
-						}
-					}
-				}
-			}
-			catch (...)
-			{
-
-			}
-		}
-	}
-	
-	return nullptr;
-	*/
 }
 
 CPositionElement* CTreeControl::CreatePositionElement(const int& x, const int& y, const int& numColumn,
@@ -449,18 +519,6 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 
 tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key)
 {
-	/*
-	tree<CTreeData *>::iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
-	while (it != itend) {
-		CTreeData * data = *it;
-		if (data->GetKey() == key)
-			return it;
-		it++;
-	}
-
-	return nullptr;
-	*/
 	auto p = std::find_if(
 		tr.begin(), tr.end(),
 		[&](const auto& data)

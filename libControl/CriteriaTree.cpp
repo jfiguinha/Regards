@@ -414,13 +414,6 @@ void CCriteriaTree::CreateElement()
 					themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(),
 					data->GetValue(), datastar->GetNumPhotoId());
 			}
-			/*
-			else if (data->GetType() == 7)
-			{
-				CTreeDataKeyWord * dataLink = (CTreeDataKeyWord *)data;
-				treeElementTexte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), dataLink->GetValue());
-			}
-			*/
 			else
 				treeElementTexte = CreateTexteElement(
 					themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());

@@ -1,22 +1,10 @@
 #include <header.h>
 #include "CategoryWnd.h"
-#include <SqlFindFacePhoto.h>
-#include <Criteria.h>
-#include <SqlPhotoCategorie.h>
-#include <SqlFindCriteria.h>
-#include <SqlFindPhotos.h>
-#include <SqlCatalog.h>
 #include "TreeDataCategory.h"
-#include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
-#include <TreeElementCheckBox.h>
-#include <SqlFindFolderCatalog.h>
-#include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <LibResource.h>
 #include <ConvertUtility.h>
-#include <ThumbnailData.h>
-#include <SqlFindCatalog.h>
 #include <theme.h>
 #include <TreeWindow.h>
 #include <ParamInit.h>
@@ -99,26 +87,29 @@ void CCategoryWnd::ClickOnElement(CPositionElement* element, wxWindow* window, c
 {
 	//CTreeElement * treeElement = element->GetTreeElement();
 
-	if (element->GetType() == ELEMENT_CHECKBOX)
+	switch(element->GetType())
 	{
-		selectionCtrl_->OnCheckBoxClicked(element, vectorPosElementDynamic);
+		case ELEMENT_CHECKBOX:
+		{
+			selectionCtrl_->OnCheckBoxClicked(element, vectorPosElementDynamic);
 
-		persistence_->SaveCheckState(vectorPosElementDynamic);
+			persistence_->SaveCheckState(vectorPosElementDynamic);
 
-		queryService_->UpdateAndNotify(vectorPosElementDynamic, oldSqlRequest_);
+			queryService_->UpdateAndNotify(vectorPosElementDynamic, oldSqlRequest_);
 
-		//UpdateElement();
-		eventControl->UpdateTreeControl();
-	}
-	else if (element->GetType() == ELEMENT_TRIANGLE)
-	{
-		auto triangle = dynamic_cast<CTreeElementTriangle*>(element->GetTreeElement());
-		triangle->ClickElement(window, x, y);
-
-		persistence_->SaveTriangleState(vectorPosElementDynamic);
-
-		RenderElement(RenderMode::Update);
-		eventControl->UpdateTreeControl();
+			//UpdateElement();
+			eventControl->UpdateTreeControl();
+			break;
+		}
+		case ELEMENT_TRIANGLE:
+		{
+			auto triangle = dynamic_cast<CTreeElementTriangle*>(element->GetTreeElement());
+			triangle->ClickElement(window, x, y);
+			persistence_->SaveTriangleState(vectorPosElementDynamic);
+			RenderElement(RenderMode::Update);
+			eventControl->UpdateTreeControl();
+			break;
+		}
 	}
 }
 
@@ -140,122 +131,17 @@ void CCategoryWnd::UpdateScreenRatio()
 	eventControl->UpdateTreeControl();
 }
 
-CPositionElement* CCategoryWnd::RenderText(
-	CTreeDataCategory* data,
-	int & xPos,
-	int & yPos,
-	bool visible,
-	RenderMode mode)
+
+bool CCategoryWnd::GetCheckState(CTreeData* data)
 {
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TEXTE);
-
-	if (posElement == nullptr)
-	{
-		auto* text = CreateTexteElement(
-			themeTree.GetRowWidth(),
-			themeTree.GetRowHeight(),
-			data->GetKey());
-
-		text->SetVisible(visible);
-
-		posElement = CreatePositionElement(
-			xPos,
-			yPos,
-			nbRow,
-			0,
-			text->GetWidth(),
-			text->GetHeight(),
-			ELEMENT_TEXTE,
-			text,
-			data,
-			false);
-	}
-	else
-	{
-		auto* text =
-			static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-
-		text->SetVisible(visible);
-		text->SetElementPos(xPos, yPos);
-
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
+	CTreeDataCategory* dataCategory =static_cast<CTreeDataCategory*>(data);
+	return persistence_->GetCheckState(data->GetExifKey(), data->GetKey(), dataCategory->GetNumCategorie());
+}
+bool CCategoryWnd::GetTriangleState(CTreeData* data)
+{
+	return persistence_->GetTriangleState(data->GetExifKey(), data->GetKey());
 }
 
-
-CPositionElement* CCategoryWnd::RenderCheckBox(
-	CTreeDataCategory* data,
-	int & xPos,
-	int & yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_CHECKBOX);
-
-	if (posElement == nullptr)
-	{
-		bool check = persistence_->GetCheckState(data->GetExifKey(), data->GetKey(), data->GetNumCategorie());
-		CTreeElementCheckBox* tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
-			tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
-
-		
-	}
-	else
-	{
-		CTreeElementCheckBox * tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
-		tree_element_check->SetVisible(visible);
-		tree_element_check->SetElementPos(xPos, yPos);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
-}
-
-CPositionElement* CCategoryWnd::RenderTriangle(
-	CTreeDataCategory* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TRIANGLE);
-
-	if (posElement == nullptr)
-	{
-		bool isOpen = persistence_->GetTriangleState(data->GetExifKey(), data->GetKey());
-		CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
-			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			isOpen);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-			treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
-			data);
-		
-	}
-	else
-	{
-		CTreeElementTriangle * tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-		tree_element_triangle->SetVisible(visible);
-		tree_element_triangle->SetElementPos(xPos, yPos);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
-}
 
 void CCategoryWnd::AdvanceRow(int xPos, CPositionElement* posElement)
 {

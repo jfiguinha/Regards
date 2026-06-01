@@ -76,6 +76,46 @@ namespace Regards::Window
 		virtual void UpdateScreenRatio() = 0;
 
 	protected:
+
+		virtual bool GetCheckState(CTreeData* data)
+		{
+			return true;
+		}
+
+		virtual bool GetTriangleState(CTreeData* data)
+		{
+			return true;
+		}
+
+		enum class RenderMode
+		{
+			Create,
+			Update
+		};
+
+		CPositionElement* RenderText(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderCheckBox(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderTriangle(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+
+
 		wxColour GetBackgroundColour(const int& yPos);
 
 		//Tree Window

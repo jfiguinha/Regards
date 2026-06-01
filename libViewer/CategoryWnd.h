@@ -48,36 +48,13 @@ namespace Regards
 
 		private:
 
-			enum class RenderMode
-			{
-				Create,
-				Update
-			};
+			bool GetCheckState(CTreeData* data) override;
+			bool GetTriangleState(CTreeData* data) override;
 
 			//Draw Tree
 			void RenderElement(RenderMode mode);
 			void RenderChildElement(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
 
-			CPositionElement* RenderText(
-				CTreeDataCategory* data,
-				int & xPos,
-				int & yPos,
-				bool visible,
-				RenderMode mode);
-
-			CPositionElement* RenderCheckBox(
-				CTreeDataCategory* data,
-				int & xPos,
-				int & yPos,
-				bool visible,
-				RenderMode mode);
-
-			CPositionElement* RenderTriangle(
-				CTreeDataCategory* data,
-				int& xPos,
-				int& yPos,
-				bool visible,
-				RenderMode mode);
 
 			void AdvanceRow(
 				int xPos,
