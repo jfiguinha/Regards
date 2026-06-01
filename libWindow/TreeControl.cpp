@@ -287,7 +287,7 @@ CPositionElement* CTreeControl::RenderCheckBox(
 	}
 	else
 	{
-		CTreeElementCheckBox* tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+		CTreeElementCheckBox* tree_element_check = static_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
 		tree_element_check->SetVisible(visible);
 		tree_element_check->SetElementPos(xPos, yPos);
 		posElement->SetX(xPos);

@@ -121,6 +121,7 @@ namespace Regards::Window
 		//Tree Window
 		tree<CTreeData*>::iterator FindKey(const wxString& key, tree<CTreeData*>::iterator& parent);
 		tree<CTreeData*>::iterator FindKey(const wxString& key);
+
 		void EraseChildTree(tree<CTreeData*>::sibling_iterator& parent);
 		void ClearData();
 
