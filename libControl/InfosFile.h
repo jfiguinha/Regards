@@ -30,21 +30,25 @@ namespace Regards
 			void SetFile(const wxString& filename);
 			const wxString GetFilename();
 			void UpdateScreenRatio() override;
-			void CreateElement();
+			
 
 			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
 			                    const wxString& key) override
 			{
 			};
 
+			void CreateElement();
+
 		private:
 			void MouseOver(wxDC* dc, CPositionElement* element, const int& x, const int& y, const int& posLargeur,
 			               const int& posHauteur, bool& update) override;
 			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 			                    const int& posLargeur, const int& posHauteur) override;
-			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
-			void UpdateElement();
-			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
+			
+			void RenderElement(RenderMode mode);
+			void RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
+			
+			
 			void AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
 			                  tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child);
 

@@ -163,14 +163,7 @@ void CCategoryWnd::RenderElement(RenderMode mode)
 	nbRow = 0;
 	widthPosition = 0;
 
-	for (CPositionElement* value : vectorPosElement)
-	{
-		if (value != nullptr)
-		{
-			CTreeElement* treeElement = value->GetTreeElement();
-			treeElement->SetVisible(false);
-		}
-	}
+	HideAll();
 
 	while (it != itend)
 	{
@@ -201,6 +194,7 @@ void CCategoryWnd::RenderElement(RenderMode mode)
 			posElement = RenderCheckBox(data,
 				xPos,
 				yPos,
+				GetCheckState(data),
 				isVisible,
 				mode);
 
@@ -261,6 +255,7 @@ void CCategoryWnd::RenderChildElement(tree<CTreeData*>::sibling_iterator& parent
 			posElement = RenderCheckBox(data,
 				xPos,
 				yPos,
+				GetCheckState(data),
 				isVisible,
 				mode);
 
@@ -292,6 +287,7 @@ void CCategoryWnd::RenderChildElement(tree<CTreeData*>::sibling_iterator& parent
 			posElement = RenderCheckBox(data,
 				xPos,
 				yPos,
+				GetCheckState(data),
 				isVisible,
 				mode);
 

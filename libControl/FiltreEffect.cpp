@@ -329,7 +329,7 @@ CPositionElement* CFiltreEffect::RenderListBox(
 
 	if (posElement == nullptr)
 	{
-		CTreeElementListBox* treeElementListbox = CreateListBoxElement(
+		CTreeElementListBox * treeElementListbox = CreateListBoxElement(
 			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 			data->GetMetadataValue(), data->GetIndex(),
 			data->GetExifKey());
@@ -369,7 +369,7 @@ CPositionElement* CFiltreEffect::RenderSlide(
 
 	if (posElement == nullptr)
 	{
-		CTreeElementSlide* treeElementSlide = CreateSlideElement(
+		CTreeElementSlide * treeElementSlide = CreateSlideElement(
 			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 			data->GetInitValue(), data->GetVectorValue(),
 			data->GetExifKey());
@@ -435,6 +435,7 @@ void CFiltreEffect::RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, 
 					pos_element = RenderCheckBox(data,
 						xPos,
 						yPos,
+						data->GetBoolValue(),
 						isVisible,
 						mode);
 					break;
@@ -498,7 +499,7 @@ void CFiltreEffect::RenderElement(RenderMode mode)
 	CPositionElement* posElement = nullptr;
 	CTreeElementTriangle* treeElementTriangle = nullptr;
 
-	for (CPositionElement* value : vectorPosElement)
+	for (auto value : vectorPosElement)
 	{
 		if (value != nullptr)
 		{
@@ -534,7 +535,7 @@ void CFiltreEffect::RenderElement(RenderMode mode)
 				isVisible,
 				mode);
 
-			treeElementTriangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+			treeElementTriangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
 
 			widthPosition = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();

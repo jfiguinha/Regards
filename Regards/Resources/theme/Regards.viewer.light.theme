@@ -774,7 +774,7 @@
 					<tailleX>120</tailleX>
 					<tailleY>30</tailleY>
 					<rectangleSize>0</rectangleSize>
-					<colorBack>rgb(255, 255, 255)</colorBack>
+					<colorBack>rgb(156, 156, 156)</colorBack>
 					<actifTop>rgb(197, 197, 197)</actifTop>
 					<actifBottom>rgb(128, 128, 128)</actifBottom>
 					<rectTop>rgb(222, 222, 222)</rectTop>

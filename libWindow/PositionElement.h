@@ -81,6 +81,6 @@ namespace Regards::Window
 		wxColour colorBackground;
 	};
 
-
+	using PositionElementMemoryVector = tbb::concurrent_vector<std::unique_ptr<CPositionElement>>;
 	using PositionElementVector = tbb::concurrent_vector<CPositionElement*>;
 }

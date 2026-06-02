@@ -9,6 +9,8 @@
 #include "TreeElementCheckBox.h"
 #include "TreeElementListBox.h"
 #include "TreeElementStar.h"
+#include "TreeDataStars.h"
+#include "TreeDataLink.h"
 #include "TreeData.h"
 using namespace Regards::Window;
 
@@ -158,6 +160,17 @@ void CTreeControl::GenerateWindowBitmap(wxDC* deviceContext, const int& width, c
 		}
 	}
 }
+void CTreeControl::HideAll()
+{
+	for (auto value: vectorPosElement)
+	{
+		if (value != nullptr)
+		{
+			CTreeElement* treeElement = value->GetTreeElement();
+			treeElement->SetVisible(false);
+		}
+	}
+}
 
 CTreeElementCheckBox* CTreeControl::CreateCheckBoxElement(const int& width, const int& height, const bool& check)
 {
@@ -212,12 +225,56 @@ CTreeElementDelete* CTreeControl::CreateDeleteElement(const int& width, const in
 	return treeElementDelete;
 }
 
-CPositionElement* CTreeControl::RenderText(
+
+CPositionElement* CTreeControl::RenderStar(
 	CTreeData* data,
 	int& xPos,
 	int& yPos,
 	bool visible,
 	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_STAR);
+
+	if (posElement == nullptr)
+	{
+		auto treedataStar = static_cast<CTreeDataStars*>(data);
+		CTreeElementStar* treeElementStar = CreateStarElement(
+			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			data->GetKey(), data->GetValue(),
+			treedataStar->GetNumPhotoId());
+
+		treeElementStar->SetVisible(visible);
+		posElement = CreatePositionElement(
+			xPos, yPos, nbRow, 1, treeElementStar->GetWidth(),
+			themeTree.GetRowHeight(), ELEMENT_STAR, treeElementStar,
+			data);
+	}
+	else
+	{
+		auto* text =
+			static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
+
+		text->SetVisible(visible);
+		text->SetElementPos(xPos, yPos);
+
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+
+	return posElement;
+
+}
+
+CPositionElement* CTreeControl::RenderText(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode,
+	bool addDynamic)
 {
 	CPositionElement* posElement = nullptr;
 
@@ -243,7 +300,7 @@ CPositionElement* CTreeControl::RenderText(
 			ELEMENT_TEXTE,
 			text,
 			data,
-			false);
+			addDynamic);
 	}
 	else
 	{
@@ -261,13 +318,143 @@ CPositionElement* CTreeControl::RenderText(
 }
 
 
+CPositionElement* CTreeControl::RenderTextValue(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_TEXTEVALUE);
+
+	if (posElement != nullptr)
+	{
+		auto element_texte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
+		element_texte->SetVisible(visible);
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+	else
+	{
+		auto tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			data->GetValue());
+		tree_element_texte->SetVisible(visible);
+		posElement = CreatePositionElement(xPos, yPos, nbRow, 1, tree_element_texte->GetWidth(),
+			tree_element_texte->GetHeight(), ELEMENT_TEXTEVALUE,
+			tree_element_texte, data, false);
+	}
+	return posElement;
+}
 
 
+CPositionElement* CTreeControl::RenderTextLink(
+	CTreeData* data,
+	int& xPos,
+	int& yPos,
+	bool visible,
+	RenderMode mode)
+{
+	CPositionElement* posElement = nullptr;
+
+	if (mode == RenderMode::Update)
+		posElement = GetElement(data, ELEMENT_TEXTE);
+
+	if (posElement != nullptr)
+	{
+		auto element_texte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
+		element_texte->SetVisible(visible);
+		posElement->SetX(xPos);
+		posElement->SetY(yPos);
+	}
+	else
+	{
+		auto dataLink = static_cast<CTreeDataLink*>(data);
+		auto tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				data->GetKey(), dataLink->GetLinkPath(),
+				dataLink->GetLinkType());
+		tree_element_texte->SetVisible(visible);
+		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+			false);
+	}
+	return posElement;
+}
+
+
+void CTreeControl::AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
+	tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child)
+{
+	wchar_t seps[] = L".";
+	int item = 0;
+	vector<wchar_t> informations;
+	informations.resize(exifKey.size() + 1);
+	wcscpy(&informations[0], exifKey.c_str());
+	wchar_t* token1;
+	wchar_t* token = wcstok(&informations[0], seps, &token1); // C4996
+
+	// Note: strtok is deprecated; consider using strtok_s instead
+	while (token != nullptr)
+	{
+		auto treeData = new CTreeData();
+		treeData->SetKey(token);
+		wchar_t* token2 = wcstok(&informations[0], seps, &token1); // C4996
+
+
+		if (token2 != nullptr)
+		{
+			treeData->SetIsParent(true);
+
+			if (index > 0)
+			{
+				tree<CTreeData*>::iterator it;
+				//Recherche de la clé
+				if (item == 0)
+				{
+
+					it = FindKey(treeData->GetKey());
+				}
+				else
+				{
+					it = FindKey(treeData->GetKey(), child);
+				}
+
+				if (it != nullptr)
+				{
+					child = it;
+					item++;
+					delete(treeData);
+					continue;
+				}
+			}
+
+			if (item > 0)
+			{
+				child = tr.append_child(child, treeData);
+			}
+			else
+			{
+				child = tr.insert(top, treeData);
+			}
+		}
+		else
+		{
+			treeData->SetIsParent(false);
+			treeData->SetValue(exifValue);
+			treeData->SetExifKey(exifKey);
+			tr.append_child(child, treeData);
+		}
+		item++;
+	}
+}
 
 CPositionElement* CTreeControl::RenderCheckBox(
 	CTreeData* data,
 	int& xPos,
 	int& yPos,
+	bool check,
 	bool visible,
 	RenderMode mode)
 {
@@ -278,7 +465,7 @@ CPositionElement* CTreeControl::RenderCheckBox(
 
 	if (posElement == nullptr)
 	{
-		bool check = GetCheckState(data);
+		//bool check = GetCheckState(data);
 		CTreeElementCheckBox* tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
 			tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
