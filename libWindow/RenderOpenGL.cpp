@@ -28,6 +28,8 @@
 #define USE_GLUT
 #endif
 
+
+
 class CFreeTypeFace
 {
 public:
@@ -35,10 +37,9 @@ public:
 	FT_Face face;
 };
 
-extern string platformName;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern int openclOpenGLInterop;
-extern bool isOpenCLInitialized;
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 
@@ -63,7 +64,7 @@ GLTexture* CRenderOpenGL::GetTextureDisplay()
 
 bool CRenderOpenGL::GetOpenGLInterop()
 {
-	return openclOpenGLInterop;
+	return application_context.openclOpenGLInterop;
 }
 
 
@@ -90,29 +91,29 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
                 
 #ifdef TOTO
                 
-                isOpenCLInitialized = true;
-                openclOpenGLInterop = false;
+                application_context.isOpenCLInitialized = true;
+                application_context.openclOpenGLInterop = false;
                 COpenCLContext::CreateDefaultOpenCLContext();
 
-				if (!isOpenCLInitialized)
+				if (!application_context.isOpenCLInitialized)
 				{
 					regardsParam->SetIsOpenCLSupport(false);
 				}
-				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(application_context.openclOpenGLInterop);
 #else
-				if (cv::ocl::haveOpenCL() && !isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
+				if (cv::ocl::haveOpenCL() && !application_context.isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
 				{
                    //  printf("CRenderOpenGL::Init 2 \n");
 					try
 					{
 						COpenCLContext::initializeContextFromGL();
-						isOpenCLInitialized = true;
-						openclOpenGLInterop = true;
-						//cv::ocl::Device(clExecCtx.getContext().device(0));
+						application_context.isOpenCLInitialized = true;
+						application_context.openclOpenGLInterop = true;
+						//cv::ocl::Device(application_context.clExecCtx.getContext().device(0));
 					}
 					catch (cv::Exception& e)
 					{
-                        openclOpenGLInterop = false;
+                        application_context.openclOpenGLInterop = false;
 						const char* err_msg = e.what();
 						std::cout << "exception caught: " << err_msg << std::endl;
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
@@ -121,11 +122,11 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 				}
 
-				if (!isOpenCLInitialized)
+				if (!application_context.isOpenCLInitialized)
 				{
 					regardsParam->SetIsOpenCLSupport(false);
 				}
-				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+				regardsParam->SetIsOpenCLOpenGLInteropSupport(application_context.openclOpenGLInterop);
 #endif
 			}
 		}

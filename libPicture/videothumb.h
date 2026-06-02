@@ -13,7 +13,7 @@ namespace Regards
 		class CVideoThumb
 		{
 		public:
-			CVideoThumb(const wxString& fileName, bool useOpenCV = false, bool force = false);
+			CVideoThumb(const wxString& fileName, const bool& applyOrientation = true, const bool& invertRotation = true);
 			~CVideoThumb();
 			bool isOk();
 			cv::Mat GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight);
@@ -26,8 +26,10 @@ namespace Regards
             AspectRatio GetAspectRatio();
     
 		private:
-			CVideoThumbPimpl* pimpl;
+			std::unique_ptr<CVideoThumbPimpl> pimpl;
 			wxString fileName;
+			bool applyOrientation = true;
+			bool invertRotation = true;
 		};
 	}
 }

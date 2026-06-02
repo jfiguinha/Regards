@@ -449,6 +449,88 @@ void CViewerFrame::OnOpenFile(wxTimerEvent& event)
     OpenPictureFile();
 }
 
+// ---------------------------------------------------------------------------
+// Ouverture fichier initial
+// ---------------------------------------------------------------------------
+void CViewerFrame::OpenPictureFile()
+{
+	CLibPicture libPicture;
+	wxString dirpath;
+
+	if (fileToOpen.IsEmpty())
+	{
+		dirpath = wxStandardPaths::Get()
+			.GetUserDir(wxStandardPaths::Dir_Pictures);
+
+		wxDir dir(dirpath);
+
+		wxString bestImage;
+
+		std::function<void(const wxString&)> scanDirectory;
+		scanDirectory = [&](const wxString& path)
+			{
+				wxDir localDir(path);
+
+				if (!localDir.IsOpened())
+					return;
+
+				wxString filename;
+				bool cont = localDir.GetFirst(&filename);
+
+				while (cont)
+				{
+					wxString fullPath =
+						path + wxFILE_SEP_PATH + filename;
+
+					if (wxDirExists(fullPath))
+					{
+						scanDirectory(fullPath);
+					}
+					else
+					{
+						// filtre rapide par extension
+						wxFileName fn(fullPath);
+
+						if (libPicture.TestImageFormat(fullPath) != 0)
+						{
+							if (bestImage.IsEmpty() ||
+								fullPath.CmpNoCase(bestImage) < 0)
+							{
+								bestImage = fullPath;
+							}
+						}
+
+					}
+
+					cont = localDir.GetNext(&filename);
+				}
+			};
+
+		scanDirectory(dirpath);
+
+		fileToOpen = bestImage;
+	}
+
+	if (!fileToOpen.IsEmpty())
+	{
+		auto file = new wxString(fileToOpen);
+
+		wxCommandEvent evt(wxEVENT_OPENFILEORFOLDER);
+		evt.SetInt(1);
+		evt.SetClientData(file);
+
+		mainWindow->GetEventHandler()
+			->AddPendingEvent(evt);
+
+		if (dirpath.IsEmpty())
+			mainWindow->SetPictureMode();
+		else
+			mainWindow->SetViewerMode();
+	}
+}
+
+/*
+
 void CViewerFrame::OpenPictureFile()
 {
  	CLibPicture libPicture;
@@ -488,7 +570,7 @@ void CViewerFrame::OpenPictureFile()
 			mainWindow->SetViewerMode();
 	}   
 }
-
+*/
 
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {

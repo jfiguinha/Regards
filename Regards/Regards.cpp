@@ -25,21 +25,15 @@
 #ifdef __WXGTK__
 #include <fontconfig/fontconfig.h>
 #endif
-
-int openclOpenGLInterop = 0;
-string platformName = "";
-bool isOpenCLInitialized = false;
-bool firstElementToShow = true;
-int numElementToLoad = 5;
-string buildOption = "";//"-cl-mad-enable -cl-unsafe-math-optimizations";
-cv::ocl::OpenCLExecutionContext clExecCtx;
-std::map<wxString, cv::ocl::Program> openclBinaryMapping;
-bool isGPsAvailable = false;
+#include <appcontext.h>
+AppContext application_context;
+ncnn::VulkanDevice* vkdev = nullptr;
 
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
+
 extern int Start(int argc, char **argv);
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -212,9 +206,9 @@ void MyApp::CheckGeolocalisationServiceAvailability()
 	}
 	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
 	if (!result)
-		isGPsAvailable = false;
+		application_context.isGPsAvailable = false;
 	else
-		isGPsAvailable = true;
+		application_context.isGPsAvailable = true;
 
 	if (!result && ShowInfosGeolocUnavailable)
 	{
@@ -267,24 +261,19 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 				COpenCLContext::CreateDefaultOpenCLContext();
 			}
 
-			if (!isOpenCLInitialized)
+			if (!application_context.isOpenCLInitialized)
 			{
 				regardsParam->SetIsOpenCLSupport(false);
 				cout << "OpenCL is not Initialized..." << endl;
 			}
 		}
 	}
-	openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+	application_context.openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
 }
 
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
-	for (int i = 0; i < 256; i++)
-		value[i] = static_cast<double>(i);
-	//putenv("OPENCV_OPENCL_DEVICE=:GPU:0");
-	//OPENCV_OPENCL_DEVICE=:GPU:1
-	// 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())
@@ -305,21 +294,7 @@ bool MyApp::OnInit()
     if(result)
         printf("Font Config Initialized \n");
 #endif
-    /*
-  
 
-	wxInitAllImageHandlers();
-	// folder:
-    SaveIcon(wxART_FOLDER, "folder.png");
-    SaveIcon(wxART_FOLDER_OPEN, "folder_open.png");
-    SaveIcon(wxART_HARDDISK, "harddisk.png");   
-    SaveIcon(wxART_CDROM, "cdrom.png"); 
-    SaveIcon(wxART_FLOPPY, "floppy.png"); 
-    SaveIcon(wxART_REMOVABLE, "removable.png"); 
-    SaveIcon(wxART_NORMAL_FILE, "normal.png");                                       
-
-    exit(0);
-    */
 
 #ifdef WIN32
 	LCID lcid = GetThreadLocale();
@@ -470,9 +445,9 @@ bool MyApp::OnInit()
 	int svgWidth = 256;
 	int svgHeight = 256;
     
-    defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
-	defaultPictureThumbnailPicture = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", svgWidth, svgHeight).ConvertToDisabled();
-	defaultPictureThumbnailVideo = CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight).ConvertToDisabled();
+	application_context.LoadWxDefaultPicture(CLibResource::GetPhotoCancel());
+	application_context.SetWxDefaultPictureThumbnail(CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", svgWidth, svgHeight).ConvertToDisabled());
+	application_context.SetWxDefaultPictureThumbnailVideo(CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight).ConvertToDisabled());
 
 	if(appName == "RegardsConverter")
 	{

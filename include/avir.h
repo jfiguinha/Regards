@@ -54,7 +54,7 @@
 #include <cmath>
 #include "avir_opencl.h"
 #include "avir_step.h"
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 using namespace Regards::OpenCL;
 using namespace cv;
 

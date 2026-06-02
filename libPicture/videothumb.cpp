@@ -1,41 +1,24 @@
 #include "header.h"
 #include "videothumb.h"
 #include "ImageVideoThumbnail.h"
-#include "OpenCVVideoPlayer.h"
-#include "VideoPlayer.h"
+#include "FFmpegVideoThumb.h"
 #include <libPicture.h>
-#include <ConvertUtility.h>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
-extern wxImage defaultPicture;
+
 
 class CVideoThumbPimpl
 {
 public:
-	CVideoThumbPimpl(const wxString& fileName, bool useOpenCV = false, bool force = false)
+	CVideoThumbPimpl(const wxString& fileName)
 	{
-		this->useOpenCV = false;// useOpenCV;
 		this->filename = fileName;
-		//printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
-		if (!force)
-		{
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-			if (regardsParam != nullptr)
-			{
-				this->useOpenCV = regardsParam->GetThumbnailOpenCV();
-			}
-		}
-		else
-			this->useOpenCV = useOpenCV;
-
-
-		if(this->useOpenCV)
-			videoThumbnailer = new COpenCVVideoPlayer(filename);
-		else
-			videoThumbnailer = new CVideoPlayer(filename);
+        videoThumbnailer = std::make_unique<CFFmpegVideoThumb>(fileName);
+            
         isOk = videoThumbnailer->IsOk();
         if(isOk)
         {
@@ -58,8 +41,7 @@ public:
 
 	~CVideoThumbPimpl()
 	{
-		if(videoThumbnailer != nullptr)
-			delete videoThumbnailer;
+
 	}
 
 	void SetPercent(const int& percent)
@@ -115,9 +97,10 @@ public:
        return videoThumbnailer->GetAspectRatio();
     }
 
-	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight)
+	void GetThumbnail(cv::Mat& image, const int& thumbnailWidth, const int& thumbnailHeight, const bool& applyOrientation, const bool& invertRotation)
 	{
-		//GeneratePointer();
+		if(videoThumbnailer == nullptr)
+            return;
 
 		if (m_seekTimeInSecond > 0)
 		{
@@ -131,59 +114,27 @@ public:
 			}
 		}
 			
-		if (videoThumbnailer->SupportThumbnail())
-		{
-			image = videoThumbnailer->GetVideoThumbnailFrame(thumbnailWidth, thumbnailHeight);
 
-			int orientation = videoThumbnailer->GetOrientation();
-			switch (orientation)
-			{
-			case -270:
-			case 90:
-				cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
-				break;
-			case 180:
-				cv::rotate(image, image, cv::ROTATE_180);
-				break;
-			case -90:
-			case 270:
-				cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
-				break;
-			}
-				
-			/*
-			int scaledSize = 0;
-			bool maintainAspectRatio = true;
-			int scaledWidth = thumbnailWidth;
-			int scaledHeight = thumbnailHeight;
-			calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
-			*/
-
-			
-		}
+		image = videoThumbnailer->GetVideoFrame(applyOrientation, invertRotation);
+		if (image.empty())
+			image = application_context.GetDefaultPicture();
 		else
 		{
-			image = videoThumbnailer->GetVideoFrame();
-			if (image.empty())
-				image = CLibPicture::mat_from_wx(defaultPicture);
-			else
+			videowidth = image.size().width;
+			videoheight = image.size().height;
+			//int rotation = videoThumbnailer->GetOrientation();
+
+			if (thumbnailWidth > 0 && thumbnailHeight > 0)
 			{
-				videowidth = image.size().width;
-				videoheight = image.size().height;
-				//int rotation = videoThumbnailer->GetOrientation();
+				int scaledSize = 0;
+				bool maintainAspectRatio = true;
 
-				if (thumbnailWidth > 0 && thumbnailHeight > 0)
-				{
-					int scaledSize = 0;
-					bool maintainAspectRatio = true;
+				int scaledWidth = thumbnailWidth;
+				int scaledHeight = thumbnailHeight;
+				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
-					int scaledWidth = thumbnailWidth;
-					int scaledHeight = thumbnailHeight;
-					calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+				resize(image, image, cv::Size(scaledWidth, scaledHeight));
 
-					resize(image, image, cv::Size(scaledWidth, scaledHeight));
-
-				}
 			}
 		}
 
@@ -193,7 +144,7 @@ public:
 	int ascpectDenominator = 0;
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
-	IVideoPlayer* videoThumbnailer = nullptr;
+    std::unique_ptr<IVideoPlayer> videoThumbnailer;
 	int width = 0;
 	int height = 0;
 	int videowidth = 0;
@@ -201,29 +152,32 @@ public:
 	int rotation = 0;
 	bool isOk = false;
 	wxString filename = "";
-	bool useOpenCV = false;
 };
 
-CVideoThumb::CVideoThumb(const wxString& fileName, bool useOpenCV, bool force)
+CVideoThumb::CVideoThumb(const wxString& fileName, const bool& applyOrientation, const bool& invertRotation)
 {
-	
+	this->applyOrientation = applyOrientation;
+	this->invertRotation = invertRotation;
 	this->fileName = fileName;
-	pimpl = new CVideoThumbPimpl(fileName, useOpenCV, force);
+    pimpl = std::make_unique<CVideoThumbPimpl>(fileName);
 }
 
 bool CVideoThumb::isOk()
 {
-	return pimpl->IsOpen();
+    if(pimpl != nullptr)
+        return pimpl->IsOpen();
+    return false;
 }
 
 CVideoThumb::~CVideoThumb()
 {
-	delete pimpl;
 }
 
 AspectRatio CVideoThumb::GetAspectRatio()
 {
-    return pimpl->GetAspectRatio();
+    if(pimpl != nullptr)
+        return pimpl->GetAspectRatio();
+    return AspectRatio();
 }
 
 int CVideoThumb::GetOrientation()
@@ -245,14 +199,18 @@ void CVideoThumb::GetVideoDimensions(int& width, int& height)
 cv::Mat CVideoThumb::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
-	try
-	{
-		pimpl->SetMoviePos(0);
-		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
-	}
-	catch (...)
-	{
-	}
+    if(pimpl != nullptr)
+    {
+        try
+        {
+            pimpl->SetMoviePos(0);
+            pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight, applyOrientation, invertRotation);
+        }
+        catch (...)
+        {
+        }
+    
+    }
 	return image;
 }
 
@@ -260,29 +218,34 @@ cv::Mat CVideoThumb::GetVideoFramePos(const int64& timePosition, const int& thum
                                           const int& thumbnailHeight)
 {
 	cv::Mat image;
-	try
-	{
-		pimpl->SetMoviePos(timePosition);
-		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
-	}
-	catch (...)
-	{
-	}
+    if(pimpl != nullptr)
+    {
+        try
+        {
+            pimpl->SetMoviePos(timePosition);
+            pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight, applyOrientation, invertRotation);
+        }
+        catch (...)
+        {
+        }
+    }
 	return image;
 }
 
 cv::Mat CVideoThumb::GetVideoFramePercent(const int& percent, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
-
-	try
-	{
-		pimpl->SetPercent(percent);
-		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
-	}
-	catch (...)
-	{
-	}
+    if(pimpl != nullptr)
+    {
+        try
+        {
+            pimpl->SetPercent(percent);
+            pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight, applyOrientation, invertRotation);
+        }
+        catch (...)
+        {
+        }
+    }
 	return image;
 }
 
@@ -305,9 +268,6 @@ void CVideoThumb::GetVideoListFrame(vector<CImageVideoThumbnail*> & listPicture,
 			try
 			{
 				auto cxVideo = new CImageVideoThumbnail();
-				int timePosition = 0;
-
-
 				cxVideo->rotation = 0;
 				cxVideo->filename = fileName;
 
@@ -315,7 +275,7 @@ void CVideoThumb::GetVideoListFrame(vector<CImageVideoThumbnail*> & listPicture,
 				try
 				{
 					pimpl->SetMoviePos(i);
-					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail, applyOrientation, invertRotation);
 				}
 				catch (...)
 				{
@@ -336,18 +296,14 @@ void CVideoThumb::GetVideoListFrame(vector<CImageVideoThumbnail*> & listPicture,
 			try
 			{
 				auto cxVideo = new CImageVideoThumbnail();
-				int timePosition = 0;
-
-
 				cxVideo->rotation = 0;
 				cxVideo->percent = i;
 				cxVideo->filename = fileName;
 
-
 				try
 				{
 					pimpl->SetPercent(cxVideo->percent);
-					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(cxVideo->image, widthThumbnail, heightThumbnail, applyOrientation, invertRotation);
 				}
 				catch (...)
 				{

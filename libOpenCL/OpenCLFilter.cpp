@@ -11,6 +11,8 @@
 #include <LibResource.h>
 #include <opencv2/dnn_superres.hpp>
 #include <avir.h>
+#include <appcontext.h>
+extern AppContext application_context;
 
 using namespace Regards::OpenCL;
 using namespace cv;
@@ -20,8 +22,7 @@ using namespace dnn_superres;
 
 bool COpenCLFilter::isUsed = false;
 int COpenCLFilter::numTexture = -1;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern std::map<wxString, vector<char>> openclBinaryMapping;
+
 #define OPENCV_METHOD
 
 
@@ -1790,7 +1791,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	{
 
 
-		ocl::Context context = clExecCtx.getContext();
+		ocl::Context context = application_context.clExecCtx.getContext();
 		ocl::Program program = COpenCLContext::GetProgram(programName);
 
 		ocl::Kernel kernel(functionName, program);

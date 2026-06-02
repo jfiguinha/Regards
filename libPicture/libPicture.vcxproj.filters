@@ -82,9 +82,6 @@
     <ClCompile Include="pfm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailVideoExport.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="videothumb.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
@@ -118,14 +115,8 @@
     <ClCompile Include="DecodeRawPicture.cpp">
       <Filter>libraw</Filter>
     </ClCompile>
-    <ClCompile Include="OpenCVVideoPlayer.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="convertmattowxbmp.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoPlayer.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
     <ClCompile Include="PictureMetadataExiv_new.cpp">
       <Filter>libexif</Filter>
@@ -139,8 +130,11 @@
     <ClCompile Include="PictureArray.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="moviedecoder.cpp">
-      <Filter>ThumbnailVideoGenerator\thumbnailgenerator</Filter>
+    <ClCompile Include="FFmpegVideoThumb.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVideoExport.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,9 +243,6 @@
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailVideoExport.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="videothumb.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
@@ -285,17 +276,11 @@
     <ClInclude Include="DecodeRawParameter.h">
       <Filter>libraw</Filter>
     </ClInclude>
-    <ClInclude Include="OpenCVVideoPlayer.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="VideoPlayerInterface.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="convertmattowxbmp.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VideoPlayer.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="PictureMetadataExiv_new.h">
       <Filter>libexif</Filter>
@@ -312,8 +297,11 @@
     <ClInclude Include="PictureArray.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="moviedecoder.h">
-      <Filter>ThumbnailVideoGenerator\thumbnailgenerator</Filter>
+    <ClInclude Include="FFmpegVideoThumb.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVideoExport.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,9 +346,6 @@
     </Filter>
     <Filter Include="avif">
       <UniqueIdentifier>{c1d69a5c-7064-4351-8906-7564d3a42ba7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThumbnailVideoGenerator\thumbnailgenerator">
-      <UniqueIdentifier>{3e5d9ba8-56e8-4d3e-976e-26a5ba6dfdf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

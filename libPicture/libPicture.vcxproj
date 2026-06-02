@@ -846,6 +846,7 @@
     <ClInclude Include="DiaporamaMove.h" />
     <ClInclude Include="DiaporamaTransition.h" />
     <ClInclude Include="ExrOption.h" />
+    <ClInclude Include="FFmpegVideoThumb.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="hqdn3d.h" />
@@ -860,8 +861,6 @@
     <ClInclude Include="MediaInfo.h" />
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="MetadataExiv2.h" />
-    <ClInclude Include="moviedecoder.h" />
-    <ClInclude Include="OpenCVVideoPlayer.h" />
     <ClInclude Include="PDFOption.h" />
     <ClInclude Include="pfm.h" />
     <ClInclude Include="PictureArray.h" />
@@ -883,7 +882,6 @@
     <ClInclude Include="ThumbnailDiaporama.h" />
     <ClInclude Include="ThumbnailVideoExport.h" />
     <ClInclude Include="TiffOption.h" />
-    <ClInclude Include="VideoPlayer.h" />
     <ClInclude Include="VideoPlayerInterface.h" />
     <ClInclude Include="videothumb.h" />
     <ClInclude Include="webpOption.h" />
@@ -913,6 +911,7 @@
     <ClCompile Include="DiaporamaMove.cpp" />
     <ClCompile Include="DiaporamaTransition.cpp" />
     <ClCompile Include="ExrOption.cpp" />
+    <ClCompile Include="FFmpegVideoThumb.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="hqdn3d.cpp" />
@@ -924,8 +923,6 @@
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="MediaInfo.cpp" />
     <ClCompile Include="MetadataExiv2.cpp" />
-    <ClCompile Include="moviedecoder.cpp" />
-    <ClCompile Include="OpenCVVideoPlayer.cpp" />
     <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="pfm.cpp" />
     <ClCompile Include="PictureArray.cpp" />
@@ -944,7 +941,6 @@
     <ClCompile Include="ThumbnailDiaporama.cpp" />
     <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
-    <ClCompile Include="VideoPlayer.cpp" />
     <ClCompile Include="videothumb.cpp" />
     <ClCompile Include="webpOption.cpp" />
     <ClCompile Include="wic.cpp" />

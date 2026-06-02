@@ -7,14 +7,10 @@
 #include "LoadingResource.h"
 #include "WindowMain.h"
 #include <config_id.h>
-#include <wx/sstream.h>
 #ifdef WIN32
 #endif
 #include <RegardsConfigParam.h>
-#include <ThumbnailDataStorage.h>
-#include <ThumbnailDataSQL.h>
 #include <libPicture.h>
-#include <SqlFaceThumbnail.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
@@ -696,10 +692,10 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	{
 		if(pThumbnailData->IsVideo() || pThumbnailData->IsAnimation())
 		{
-			image = defaultPictureThumbnailVideo;
+			image = application_context.GetWxDefaultVideoThumbnail();
 		}
 		else
-			image = defaultPictureThumbnailPicture;
+			image = application_context.GetWxDefaultPictureThumbnail();
 		photoDefault = true;
 		returnValue = 1;
 	}

@@ -46,9 +46,9 @@ using namespace Regards::FiltreEffet;
 
 #include "window_mode_id.h"
 
-extern bool firstElementToShow;
-extern int numElementToLoad;
-extern wxImage defaultPicture;
+#include <appcontext.h>
+extern AppContext application_context;
+
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
                                const CThemeSplitter& theme, const bool& horizontal)
@@ -731,8 +731,8 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 
 int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 {
-    if(numElementToLoad != 0)
-        firstElementToShow = false;
+    if(application_context.numElementToLoad != 0)
+		application_context.firstElementToShow = false;
     
 	//return RefreshPicture(filename);
 	int numLocalItem = 0;
@@ -938,7 +938,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool& refresh)
 			isNext = false;
 	}
 
-	numElementToLoad++;
+	application_context.numElementToLoad++;
 
 	return 0;
 }
@@ -1917,7 +1917,8 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 
 	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
 	{
-		bitmap->SetPicture(defaultPicture);
+		cv::Mat picture = application_context.GetDefaultPicture();
+		bitmap->SetPicture(picture);
 	}
 	bitmap->SetFilename(pictureData->picture);
 

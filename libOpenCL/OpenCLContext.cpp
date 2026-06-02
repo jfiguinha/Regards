@@ -39,12 +39,10 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-extern string platformName;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern bool isOpenCLInitialized;
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::OpenCL;
-extern std::map<wxString, cv::ocl::Program> openclBinaryMapping;
-extern string buildOption;
 extern ncnn::VulkanDevice* vkdev;
 
 void COpenCLContext::AssociateToVulkan()
@@ -156,14 +154,14 @@ cv::ocl::Program COpenCLContext::GetProgram(const wxString & programName)
 
     wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
     cv::ocl::ProgramSource programSource(kernelSource);
-    cv::ocl::Context context = clExecCtx.getContext();//ocl::Context::getDefault(false);
+    cv::ocl::Context context = application_context.clExecCtx.getContext();//ocl::Context::getDefault(false);
 
     // Compile the kernel code
     cv::String errmsg;
-	it = openclBinaryMapping.find(programName);
-	if(it == openclBinaryMapping.end())
-		openclBinaryMapping[programName] = context.getProg(programSource, buildOption, errmsg);
-	return openclBinaryMapping[programName];
+	it = application_context.openclBinaryMapping.find(programName);
+	if(it == application_context.openclBinaryMapping.end())
+		application_context.openclBinaryMapping[programName] = context.getProg(programSource, application_context.buildOption, errmsg);
+	return application_context.openclBinaryMapping[programName];
 }
 
 
@@ -284,7 +282,7 @@ void COpenCLContext::initializeContextFromGL()
 
 	clReleaseDevice(device);
 	clReleaseContext(context);
-	clExecCtx.bind();
+	application_context.clExecCtx.bind();
 
     // printf("initializeContextFromGL 5\n");
 #else
@@ -435,10 +433,10 @@ void COpenCLContext::initializeContextFromGL()
     // printf("initializeContextFromGL 6\n");
 
 	cl_platform_id platform = platforms[found];
-	platformName = cv::ocl::PlatformInfo(&platform).name();
+	application_context.platformName = cv::ocl::PlatformInfo(&platform).name();
 
-	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
-		platformName, platform, context, device);
+	application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::create(
+		application_context.platformName, platform, context, device);
         
    // printf("platformName : %i - %s \n", found, platformName.c_str());
         
@@ -534,11 +532,11 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	
 	cv::ocl::Context context;
 	if (!context.create(cv::ocl::Device::TYPE_GPU))
-		isOpenCLInitialized = false;
+		application_context.isOpenCLInitialized = false;
 	else
-		isOpenCLInitialized = true;
+		application_context.isOpenCLInitialized = true;
 
-	if (!isOpenCLInitialized) {
+	if (!application_context.isOpenCLInitialized) {
 		cl_int errNum;
 		cl_uint numPlatforms;
 		cl_platform_id firstPlatformId;
@@ -565,22 +563,22 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 		else
 		{
 			context.fromHandle(_context);
-			isOpenCLInitialized = true;
+			application_context.isOpenCLInitialized = true;
 		}
 			
 
 		cout << "Created CPU context" << endl;
 	}
 
-	if (isOpenCLInitialized)
+	if (application_context.isOpenCLInitialized)
 	{
 		//cv::ocl::Device(context.device(0));
-		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
-		platformName = clExecCtx.getDevice().vendorName();
+		application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+		application_context.platformName = application_context.clExecCtx.getDevice().vendorName();
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if(regardsParam != nullptr)
-			regardsParam->SetOpenCLPlatformName(platformName);
+			regardsParam->SetOpenCLPlatformName(application_context.platformName);
 		//wxMessageBox(wxString::Format("OpenCL initialized with platform: %s", platformName), "OpenCL Info", wxOK | wxICON_INFORMATION);
 	}
 }
@@ -588,7 +586,7 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties queue_properties)
 {
 	cl_int err = 0;
-	cl_command_queue queue = clCreateCommandQueue((cl_context)clExecCtx.getContext().ptr(), (cl_device_id)clExecCtx.getDevice().ptr(), queue_properties, &err);
+	cl_command_queue queue = clCreateCommandQueue((cl_context)application_context.clExecCtx.getContext().ptr(), (cl_device_id)application_context.clExecCtx.getDevice().ptr(), queue_properties, &err);
 	Error::CheckError(err);
 	return queue;
 }

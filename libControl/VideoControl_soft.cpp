@@ -24,6 +24,9 @@
 #include <OpenCLEffectVideo.h>
 #include "DataAVFrame.h"
 #include <FaceDetector.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
@@ -35,13 +38,8 @@ using namespace Regards::Sqlite;
 #define TIMER_PLAYSTOP 0x10003
 #define TIMER_SUBTITLE 0x10004
 
-extern bool firstElementToShow;
+
 AVFrame* copyFrameBuffer = nullptr;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-
-
-
-extern float clamp(float val, float minval, float maxval);
 
 
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, IVideoInterface* eventPlayer)
@@ -1368,8 +1366,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 #endif	
 		if (ApplyVideoEffect() || pictureFrame->dst != nullptr)
 		{
-			int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
-
 			if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 				RenderToTexture();
 			else
@@ -1379,7 +1375,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			if((applyStabilization != videoEffectParameter.stabilizeVideo || 
 				autoconstrast != videoEffectParameter.autoConstrast || 
 				filmEnhance != videoEffectParameter.filmEnhance || 
-				filmcolorisation != videoEffectParameter.filmcolorisation) && openclOpenGLInterop)
+				filmcolorisation != videoEffectParameter.filmcolorisation) && application_context.openclOpenGLInterop)
 			{
 				autoconstrast = videoEffectParameter.autoConstrast;
 				applyStabilization = videoEffectParameter.stabilizeVideo;
@@ -1514,7 +1510,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (!videoStartRender)
     {
-        if(firstElementToShow)
+        if(application_context.firstElementToShow)
             playStartTimer->Start(1000, true);
         else
             playStartTimer->Start(100, true);

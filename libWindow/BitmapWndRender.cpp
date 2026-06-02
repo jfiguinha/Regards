@@ -22,7 +22,8 @@ using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace std::chrono;
-extern bool processrecognitionison;
+#include <appcontext.h>
+extern AppContext application_context;
 
 
 #define TIMER_RESIZE 1

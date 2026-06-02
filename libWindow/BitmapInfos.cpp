@@ -18,7 +18,8 @@ using namespace Regards::exiv2;
 using namespace std;
 
 #define GPS_TIME 1000
-extern bool isGPsAvailable;
+#include <appcontext.h>
+extern AppContext application_context;
 
 struct InfosGps
 {
@@ -59,7 +60,7 @@ bool CBitmapInfos::GetProcessEnd()
 
 void CBitmapInfos::OnStartGps(wxTimerEvent& event)
 {
-	if (isGPsAvailable)
+	if (application_context.isGPsAvailable)
 	{
 		if (threadGps == nullptr)
 		{
@@ -252,7 +253,7 @@ void CBitmapInfos::UpdateData()
 		
 	}
     
-    if(hasGps && gpsInfos == "" && isGPsAvailable)
+    if(hasGps && gpsInfos == "" && application_context.isGPsAvailable)
     {
         gpsTimer->StartOnce(100);
     }

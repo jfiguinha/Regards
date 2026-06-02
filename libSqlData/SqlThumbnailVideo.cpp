@@ -7,10 +7,12 @@
 #include "ThumbnailBuffer.h"
 #include <ConvertUtility.h>
 #include <FileUtility.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-extern wxImage defaultPictureThumbnailVideo;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
 	: CSqlExecuteRequest(L"RegardsDB"), nbElement(0), numPhoto(0)
@@ -91,7 +93,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
             videoThumbnail->image = CThumbnailBuffer::GetPicture(thumbnail);
 			if (videoThumbnail->image.empty())
 			{
-				videoThumbnail->image = CLibPicture::mat_from_wx(defaultPictureThumbnailVideo);
+				videoThumbnail->image = application_context.GetDefaultVideoThumbnail();
 			}
 			videoThumbnail->filename = thumbnail;
 		}

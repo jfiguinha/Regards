@@ -33,7 +33,6 @@
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <LibResource.h>
-#include "OpenCVVideoPlayer.h"
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -79,12 +78,15 @@ using namespace Regards::exiv2;
 #include <CompressionOption.h>
 #include "imageinfo.hpp"
 #include "RegardsPDF.h"
+#include "FFmpegVideoThumb.h"
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1
 #define TYPE_IMAGE_REGARDSIMAGE 2
 #define OR ||
 
 #include "MediaInfo.h"
+#include <appcontext.h>
+extern AppContext application_context;
 
 //using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -92,9 +94,7 @@ using namespace Regards::Video;
 using namespace Regards::Sqlite;
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
-extern float clamp(float val, float minval, float maxval);
 
-extern wxImage defaultPicture;
 std::map<wxString, int64_t> CLibPicture::listMovieDuration;
 
 void CLibPicture::CalculThumbSizeFromScreenDef(int &width, int &height)
@@ -1086,7 +1086,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				CVideoThumb* thumbnail = new CVideoThumb(szFileName);
 				mat = thumbnail->GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
 				if (mat.empty())
-					mat = CLibPicture::mat_from_wx(defaultPicture);
+					mat = application_context.GetDefaultPicture();
 
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
@@ -1201,7 +1201,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadwxImageThumbnail(const wxString& 
 	if (m_ani_images == 0)
 	{
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
-		imageVideoThumbnail->image = mat_from_wx(defaultPicture);
+		imageVideoThumbnail->image = application_context.GetDefaultPictureThumbnail();
 		imageVideoThumbnail->filename = szFileName;
 		imageVideoThumbnail->rotation = 0;
 		imageVideoThumbnail->delay = 4;
@@ -1603,9 +1603,8 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	if (duration > 0)
     {
-        	COpenCVVideoPlayer player(szFileName);
-            bool isOpen = player.isOpened();
-            return isOpen;
+		CFFmpegVideoThumb player(szFileName);
+		return player.isOpened();
     }
         
         
@@ -2352,7 +2351,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				cv::Mat mat;
 				mat = thumbnail->GetVideoFramePercent(percent, 0, 0);
 				if (mat.empty())
-					mat = CLibPicture::mat_from_wx(defaultPicture);
+					mat = application_context.GetDefaultPicture();
 				orientation = thumbnail->GetOrientation();
 				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(orientation);

@@ -3,13 +3,15 @@
 #include "OpenCLEffect.h"
 #include <MotionBlur.h>
 #include <ImageLoadingFormat.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 #define minmax
 
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern string platformName;
+
 #define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)

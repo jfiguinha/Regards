@@ -369,6 +369,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="appcontext.h" />
     <ClInclude Include="avir.h" />
     <ClInclude Include="avir_dil.h" />
     <ClInclude Include="avir_float4_sse.h" />

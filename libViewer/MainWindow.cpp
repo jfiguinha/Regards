@@ -53,7 +53,7 @@ constexpr auto TIMER_LOADPICTURESTART = 0x10005;
 
 
 
-extern wxImage defaultPicture;
+
 
 CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const wxString& fileToOpen)
 	: CWindowMain("CMainWindow", parent, id)

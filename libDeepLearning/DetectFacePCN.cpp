@@ -10,6 +10,9 @@
 #include <FileUtility.h>
 #include <picture_utility.h>
 #include <ConvertUtility.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace cv;
 using namespace dnn;
 
@@ -176,8 +179,8 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCom
 
 	try
 	{
-		if (!clExecCtx.empty())
-			clExecCtx.bind();
+		if (!application_context.clExecCtx.empty())
+			application_context.clExecCtx.bind();
 
 #ifdef WIN32
 		wxString detection_model_path = documentPath + "\\model\\PCN.caffemodel";

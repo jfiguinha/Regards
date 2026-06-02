@@ -112,28 +112,6 @@ int args[] = {
 	0
 };
 
-// c: pointer to original argc
-// v: pointer to original argv
-// o: option name after hyphen
-// d: default value (if NULL, the option takes no argument)
-const char* pick_option(int* c, char** v, const char* o, const char* d)
-{
-	int id = d ? 1 : 0;
-	for (int i = 0; i < *c - id; i++)
-	{
-		if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o))
-		{
-			char* r = v[i + id] + 1 - id;
-			for (int j = i; j < *c - id; j++)
-				v[j] = v[j + id + 1];
-			*c -= id + 1;
-			return r;
-		}
-	}
-	return d;
-}
-
-
 [[noreturn]] void onTerminate() noexcept
 {
 	if (auto exc = std::current_exception())
@@ -162,21 +140,8 @@ const char* pick_option(int* c, char** v, const char* o, const char* d)
 	std::_Exit(EXIT_FAILURE);
 }
 
-wxImage defaultPicture;
-wxImage defaultPictureThumbnailPicture;
-wxImage defaultPictureThumbnailVideo;
 
-ncnn::VulkanDevice * vkdev = nullptr;
 
-double value[256];
-
-float clamp(float val, float minval, float maxval)
-{
-	//return std::clamp(val, minval, maxval);
-	return std::max(minval, std::min(val, maxval));
-}
-
-//const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp
 class MyApp : public wxApp, public IMainInterface, public IVideoConverterInterface
@@ -200,9 +165,6 @@ public:
 #ifdef __WXGTK__
 		int result = XInitThreads();
 #endif
-
-		for (auto i = 0; i < 256; i++)
-			value[i] = static_cast<float>(i);
 
 		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------

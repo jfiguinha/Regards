@@ -8,8 +8,8 @@
 #include <ImageLoadingFormat.h>
 #include <config_id.h>
 #include <ParamInit.h>
-
-extern float value[256];
+#include <appcontext.h>
+extern AppContext application_context;
 using namespace Regards::FiltreEffet;
 using namespace std;
 

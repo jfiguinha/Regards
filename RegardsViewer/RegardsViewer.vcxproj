@@ -1371,9 +1371,6 @@ XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Otherlib\OpenCV\OpenCV.vcxproj">
-      <Project>{4f767219-9dc8-4058-b4fb-560033402342}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Otherlib\wxIA\wxIA.vcxproj">
       <Project>{d83ea5f5-d8b4-4632-aa26-dfb31490af96}</Project>
     </ProjectReference>

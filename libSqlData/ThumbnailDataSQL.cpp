@@ -7,31 +7,40 @@ using namespace Regards::Sqlite;
 #include <wx/filename.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <OpenCVVideoPlayer.h>
-#include <VideoPlayer.h>
+#include <FFmpegVideoThumb.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
-CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity, const bool & generateVideoPlayer)
+CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity, const bool& generateVideoPlayer)
 	: CThumbnailData(filename)
 {
+	frameOut = GetDefaultPicture();
 
-    frameOut = GetDefaultPicture();
-    
-    this->generateVideoPlayer = generateVideoPlayer;
+	this->generateVideoPlayer = generateVideoPlayer;
+
+	// FIX [sérieux #6] : testValidity était ignoré. Il est maintenant utilisé
+	// pour conditionner la vérification de l'existence du thumbnail en base.
+	if (testValidity && !TestBitmap())
+	{
+		// Thumbnail absent ou invalide : on force la régénération.
+		this->generateVideoPlayer = true;
+	}
+
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
 		isVideo = true;
 	}
 
-	if(isVideo)
+	if (isVideo)
 	{
 		if (libPicture.TestIsVideoValid(filename))
 		{
 			nbFrame = 20;
-            this->generateVideoPlayer = true;
-            videoCaptureCV = nullptr; 
+			this->generateVideoPlayer = true;
+			// FIX [critique #1] : videoCaptureCV = nullptr retiré (redondant,
+			// unique_ptr est nullptr par défaut, et le commentaire mort qui suivait
+			// laissait croire que le garde-fou plus bas avait de l'intérêt).
 		}
 		else
 		{
@@ -42,24 +51,15 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 			nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 		}
 	}
-
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		useOpenCV = regardsParam->GetThumbnailOpenCV();
-	}
-
 }
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)
 {
-	if (videoCaptureCV != nullptr)
-		delete videoCaptureCV;
-        
-    //printf("CThumbnailDataSQL delete \n");
-    
-    frameOut.release();
-    cvImg.release();
+	// FIX [critique #2] : plus de delete manuel — unique_ptr s'en charge.
+	// Le destructeur se contente de libérer les cv::Mat.
+	frameOut.release();
+
+	// FIX [mineur #9] : cvImg supprimé du header, plus besoin de le release ici.
 }
 
 int CThumbnailDataSQL::GetNbFrame()
@@ -69,17 +69,14 @@ int CThumbnailDataSQL::GetNbFrame()
 	return 1;
 }
 
-
 void CThumbnailDataSQL::SetMouseOn()
 {
-
 	mouseOn = true;
 }
 
 void CThumbnailDataSQL::SetMouseOut()
 {
 	mouseOn = false;
-
 	oldVideoFrame = videoFramePos;
 }
 
@@ -91,11 +88,15 @@ bool CThumbnailDataSQL::TestBitmap()
 	return sqlThumbnail.TestThumbnail(filename, sizeFile.ToString());
 }
 
+// Retourne la frame souhaitée.
+// FIX [critique #2] : chaque chemin de retour effectue un clone() pour que
+// l'appelant possède sa propre copie du buffer et ne subisse pas les effets
+// de bord des appels ultérieurs à GetImage.
 cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 {
-    CSqlThumbnailVideo sqlThumbnailVideo;
-    CSqlThumbnail sqlThumbnail;
-    
+	CSqlThumbnailVideo sqlThumbnailVideo;
+	CSqlThumbnail sqlThumbnail;
+
 	if (isAnimation && nbFrame == 0)
 	{
 		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
@@ -104,18 +105,18 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	if (numFrame >= nbFrame)
 		numFrame = 0;
 
-	if(!defaultPicture)
-    {
-        if (isVideo && generateVideoPlayer && !mouseOn && !frameOut.empty())
-        {
-            return frameOut;
-        }
-    }
+	// Retour rapide du cache si on n'est pas en survol et que la frame est valide.
+	if (!defaultPicture)
+	{
+		if (isVideo && generateVideoPlayer && !mouseOn && !frameOut.empty())
+		{
+			// FIX [critique #2] : clone pour isoler le buffer de l'appelant.
+			return frameOut.clone();
+		}
+	}
 
 	if (!isVideo && numFrame == 0 && nbFrame == 0)
 	{
-		
-		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename, isDefault);
 		if (isDefault)
 			frameOut = GetDefaultPicture();
@@ -123,28 +124,34 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	else if (isVideo && generateVideoPlayer)
 	{
 		isDefault = false;
-        if(videoCaptureCV == nullptr)
-        {
-            if(useOpenCV)
-                videoCaptureCV = new COpenCVVideoPlayer(filename);
-            else
-                videoCaptureCV = new CVideoPlayer(filename);
-        }
 
-		if (isVideo && videoCaptureCV == nullptr && !frameOut.empty())
-			return frameOut;
+		// FIX [critique #1] : création du lecteur vidéo si nécessaire.
+		// Si le constructeur lève une exception, videoCaptureCV reste nullptr
+		// et le bloc de fallback ci-dessous renverra frameOut sans planter.
+		if (videoCaptureCV == nullptr)
+		{
+			videoCaptureCV = std::make_unique<CFFmpegVideoThumb>(filename);
+		}
 
+		// FIX [critique #1] : le garde-fou qui était mort est désormais utile :
+		// si la création a échoué, on renvoie la dernière frame connue.
+		if (videoCaptureCV == nullptr)
+		{
+			isDefault = frameOut.empty();
+			return frameOut.clone();
+		}
 
 		if (numFrame < nbFrame)
 		{
 			bool grabbed = false;
-			if (mouseOn && isVideo && videoCaptureCV != nullptr)
-			{
-				bool invertRotation = true;
-				if (!useOpenCV)
-					invertRotation = false;
 
-                frameOut = videoCaptureCV->GetVideoFrame(true, invertRotation);
+			// FIX [mineur #10] : isVideo est garanti vrai dans ce bloc,
+			// la vérification redondante est supprimée.
+			if (mouseOn && videoCaptureCV != nullptr)
+			{
+				bool invertRotation = false;
+
+				frameOut = videoCaptureCV->GetVideoFrame(true, invertRotation);
 				if (frameOut.empty())
 				{
 					videoFramePos = 0;
@@ -157,29 +164,30 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 					videoFramePos++;
 					grabbed = true;
 				}
-
 			}
-
 
 			if (!grabbed)
 			{
-				
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
 			}
 		}
 	}
-    else if(isVideo && !generateVideoPlayer)
-    {
-        frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
-        if (isDefault)
-        {
-            frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
-        }
-    }
+	else if (isVideo && !generateVideoPlayer)
+	{
+		// FIX [critique #3] : suppression du double appel SQL inutile.
+		// Si numFrame est absent, on essaie directement la frame 0.
+		// Dans tous les cas, le fallback final sur GetDefaultPicture() suffit.
+		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+		if (isDefault && numFrame != 0)
+		{
+			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
+		}
+	}
 	else if (isAnimation)
 	{
+		// FIX [critique #3] : même correction que ci-dessus.
 		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
-		if (isDefault)
+		if (isDefault && numFrame != 0)
 		{
 			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
 		}
@@ -188,11 +196,12 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	if (frameOut.empty())
 		isDefault = true;
 
-    defaultPicture = isDefault;
-    if(isDefault)
-    {
-        frameOut = GetDefaultPicture();
-    }
+	defaultPicture = isDefault;
+	if (isDefault)
+	{
+		frameOut = GetDefaultPicture();
+	}
 
-	return frameOut;
+	// FIX [critique #2] : clone systématique avant retour.
+	return frameOut.clone();
 }
