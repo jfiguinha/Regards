@@ -14,7 +14,8 @@
 #endif
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-
+#include <appcontext.h>
+extern AppContext application_context;
 // Supprimé : #include <opencv2/core/opengl.hpp>
 // cv::ogl::Texture2D retiré — dépendance opencv_highgui avec support OpenGL
 // optionnel souvent absent sur les builds Linux standard, et source de fuites
@@ -23,10 +24,6 @@
 
 using namespace Regards::OpenGL;
 using namespace cv::ocl;
-
-extern string                          platformName;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern int                             openclOpenGLInterop;
 
 // ---------------------------------------------------------------------------
 // Helper GL error — log sans exit()
@@ -67,8 +64,8 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
     if (clImage != nullptr)
         return CL_SUCCESS;
 
-    cl_context       context = static_cast<cl_context>(clExecCtx.getContext().ptr());
-    cl_command_queue q       = static_cast<cl_command_queue>(clExecCtx.getQueue().ptr());
+    cl_context       context = static_cast<cl_context>(application_context.clExecCtx.getContext().ptr());
+    cl_command_queue q       = static_cast<cl_command_queue>(application_context.clExecCtx.getQueue().ptr());
 
     cl_int status = 0;
     clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D,
@@ -99,7 +96,7 @@ void CTextureGLPriv::DeleteTextureInterop()
     if (clImage == nullptr)
         return;
 
-    cl_command_queue q = static_cast<cl_command_queue>(clExecCtx.getQueue().ptr());
+    cl_command_queue q = static_cast<cl_command_queue>(application_context.clExecCtx.getQueue().ptr());
 
     clFinish(q);
 
@@ -174,8 +171,8 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
             }
 
 
-            cl_context context = (cl_context)clExecCtx.getContext().ptr();
-            cl_command_queue q = (cl_command_queue)clExecCtx.getQueue().ptr();
+            cl_context context = (cl_context)application_context.clExecCtx.getContext().ptr();
+            cl_command_queue q = (cl_command_queue)application_context.clExecCtx.getQueue().ptr();
 
             cv::Size srcSize = u.size();
             status = CreateTextureInterop(glTexture);
@@ -276,7 +273,7 @@ GLTexture::~GLTexture()
 // ---------------------------------------------------------------------------
 void GLTexture::DeleteInteropTexture()
 {
-    if (pimpl_ && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
+    if (pimpl_ && pimpl_->isOpenCLCompatible && application_context.openclOpenGLInterop)
         pimpl_->DeleteTextureInterop();
 }
 
@@ -369,7 +366,7 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
     bool isOk = false;
 
     // Chemin OpenCL/GL interop (UMat sur GPU)
-    if (bitmap.Kind() == cv::_InputArray::KindFlag::UMAT && openclOpenGLInterop)
+    if (bitmap.Kind() == cv::_InputArray::KindFlag::UMAT && application_context.openclOpenGLInterop)
     {
         if (!pimpl_)
             pimpl_ = std::make_unique<CTextureGLPriv>();
@@ -420,9 +417,9 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap)
             if (!isOk)
             {
                 CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-                openclOpenGLInterop = 0;
+                application_context.openclOpenGLInterop = 0;
                 pimpl_->DeleteTextureInterop();
-                regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
+                regardsParam->SetIsOpenCLOpenGLInteropSupport(application_context.openclOpenGLInterop);
             }
         }
     }
@@ -466,7 +463,7 @@ void GLTexture::Delete()
     {
         glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 
-        if (pimpl_ && openclOpenGLInterop)
+        if (pimpl_ && application_context.openclOpenGLInterop)
             pimpl_->DeleteTextureInterop();
 
         glDeleteTextures(1, &m_nTextureID);

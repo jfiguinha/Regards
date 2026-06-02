@@ -3,7 +3,6 @@
 #include "OpenCLParameter.h"
 #include "OpenCLContext.h"
 
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
 using namespace Regards::OpenCL;
 using namespace cv;
 

@@ -3,15 +3,12 @@
 #include "ImageVideoThumbnail.h"
 #include "FFmpegVideoThumb.h"
 #include <libPicture.h>
-#include <ConvertUtility.h>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
+#include <appcontext.h>
+extern AppContext application_context;
 using namespace Regards::Video;
 using namespace Regards::Picture;
 
 
-
-extern wxImage defaultPicture;
 
 class CVideoThumbPimpl
 {
@@ -119,7 +116,7 @@ public:
 
 		image = videoThumbnailer->GetVideoFrame(applyOrientation, invertRotation);
 		if (image.empty())
-			image = CLibPicture::mat_from_wx(defaultPicture);
+			image = application_context.GetDefaultPicture();
 		else
 		{
 			videowidth = image.size().width;

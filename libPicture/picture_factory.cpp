@@ -73,6 +73,8 @@ using namespace Regards::exiv2;
 #include "imageinfo.hpp"
 #include "RegardsPDF.h"
 #include "MediaInfo.h"
+#include <appcontext.h>
+extern AppContext application_context;
 
 #define TYPE_IMAGE_CXIMAGE      0
 #define TYPE_IMAGE_WXIMAGE      1
@@ -85,8 +87,7 @@ using namespace Regards::Sqlite;
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
 
-extern float   clamp(float val, float minval, float maxval);
-extern wxImage defaultPicture;
+
 
 // ── Définitions des membres statiques ────────────────────────────────────────
 std::map<wxString, int64_t> MetadataService::videoDurationCache_;
@@ -920,13 +921,13 @@ void ImageLoader::Load(const wxString& fileName, bool isThumbnail,
                         for (int j = 0; j < w; ++j, k += 4)
                         {
                             d[k]   = static_cast<uint8_t>(
-                                clamp(float(pixels[i][j].b), 0.f, 1.f) * 255.f);
+                                application_context.clamp(float(pixels[i][j].b), 0.f, 1.f) * 255.f);
                             d[k+1] = static_cast<uint8_t>(
-                                clamp(float(pixels[i][j].g), 0.f, 1.f) * 255.f);
+                                application_context.clamp(float(pixels[i][j].g), 0.f, 1.f) * 255.f);
                             d[k+2] = static_cast<uint8_t>(
-                                clamp(float(pixels[i][j].r), 0.f, 1.f) * 255.f);
+                                application_context.clamp(float(pixels[i][j].r), 0.f, 1.f) * 255.f);
                             d[k+3] = static_cast<uint8_t>(
-                                clamp(float(pixels[i][j].a), 0.f, 1.f) * 255.f);
+                                application_context.clamp(float(pixels[i][j].a), 0.f, 1.f) * 255.f);
                         }
                     bitmap->SetPicture(picture);
                     bitmap->SetFilename(fileName);
@@ -1144,7 +1145,7 @@ void ImageLoader::Load(const wxString& fileName, bool isThumbnail,
                 static_cast<int>((static_cast<float>(numPicture) / 20.f) * 100.f);
             cv::Mat mat = thumb->GetVideoFramePercent(percent, 0, 0);
             if (mat.empty())
-                mat = ImageConverter::WxToCvMat(defaultPicture);
+                mat = application_context.GetDefaultPicture();
             orientation = thumb->GetOrientation();
             bitmap->SetPicture(mat);
             bitmap->SetOrientation(orientation);
@@ -1787,7 +1788,7 @@ CImageLoadingFormat* VideoThumbnailService::LoadVideoFrame(
             CVideoThumb* thumb = new CVideoThumb(fileName);
             cv::Mat mat = thumb->GetVideoFramePercent(percent, tw, th);
             if (mat.empty())
-                mat = ImageConverter::WxToCvMat(defaultPicture);
+                mat = application_context.GetDefaultPicture();
             bitmap->SetPicture(mat);
             bitmap->SetOrientation(thumb->GetOrientation());
             bitmap->SetFilename(fileName);
@@ -1867,7 +1868,7 @@ std::vector<CImageVideoThumbnail*> VideoThumbnailService::LoadWxMultiPage(
     if (nbFrames == 0)
     {
         auto* e = new CImageVideoThumbnail();
-        e->image        = ImageConverter::WxToCvMat(defaultPicture);
+        e->image        = application_context.GetDefaultPicture();
         e->filename     = fileName;
         e->rotation     = 0;
         e->delay        = 4;

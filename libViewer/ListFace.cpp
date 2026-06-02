@@ -24,8 +24,8 @@
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
 #include <FFmpegVideoThumb.h>
-extern bool processrecognitionison;
-extern bool isOpenCLInitialized;
+#include <appcontext.h>
+extern AppContext application_context;
 
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -33,8 +33,6 @@ using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
-
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 //#define CAFFE
 
@@ -365,8 +363,8 @@ void CListFace::LoadResource(void* param)
 void CListFace::FacialDetectionRecognition(void* param)
 {
 
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
+	if (!application_context.clExecCtx.empty())
+		application_context.clExecCtx.bind();
 
 	auto path = static_cast<CThreadFace*>(param);
 	wxString filename = path->filename;
@@ -584,7 +582,7 @@ void CListFace::ProcessIdle()
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
 
-	if (!isOpenCLInitialized && (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsUseCuda()))
+	if (!application_context.isOpenCLInitialized && (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsUseCuda()))
 	{
 		processIdle = true;
 		return;

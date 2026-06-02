@@ -2,9 +2,11 @@
 #include "Gps.h"
 #include <curl/curl.h>
 #include <ConvertUtility.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Internet;
 
-extern bool isGPsAvailable;
 
 class CGpscurl
 {
@@ -211,7 +213,7 @@ bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitud
 {
 	bool returnValue = true;
 
-	if (!isGPsAvailable)
+	if (!application_context.isGPsAvailable)
 	{
 		return false;
 	}

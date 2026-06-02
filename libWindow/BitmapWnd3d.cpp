@@ -8,8 +8,9 @@
 #include <OpenGL/OpenGL.h>
 #endif
 
+#include <appcontext.h>
+extern AppContext application_context;
 
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 //-----------------------------------------------------------------------------
 //
@@ -193,8 +194,8 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	// Recording the starting clock tick.
 	//start = clock();
 
-	if (!clExecCtx.empty())
-		clExecCtx.bind();
+	if (!application_context.clExecCtx.empty())
+		application_context.clExecCtx.bind();
 	renderOpenGL->SetCurrent(*this);
 
     /*

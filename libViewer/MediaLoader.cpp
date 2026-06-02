@@ -16,12 +16,10 @@
 #include <picture_id.h>
 #include <ThumbnailMessage.h>
 #include "ViewerController.h"   // for CBitmapReturn & EVENT_SHOWPICTURE
+#include <appcontext.h>
+extern AppContext application_context;
 
 #define DELAY_ANIMATION 20
-
-extern bool     firstElementToShow;
-extern int      numElementToLoad;
-extern wxImage  defaultPicture;
 
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
@@ -114,8 +112,8 @@ void CMediaLoader::SetPanelInfos(const bool& isThumbnail)
 
 int CMediaLoader::LoadPicture(const wxString& newFilename, const bool& refresh)
 {
-    if (numElementToLoad != 0)
-        firstElementToShow = false;
+    if (application_context.numElementToLoad != 0)
+        application_context.firstElementToShow = false;
 
     // Broadcast dimensions to main window status bar
     if (wxFileExists(newFilename))
@@ -255,7 +253,7 @@ int CMediaLoader::LoadPicture(const wxString& newFilename, const bool& refresh)
     if (thumbnailPicture != nullptr)
         thumbnailPicture->SetActifItem(GetPhotoId(this->filename), true);
 
-    numElementToLoad++;
+    application_context.numElementToLoad++;
 
     auto* event = new wxCommandEvent(wxEVENT_ENDLOADPICTURE);
     event->SetClientData(new wxString(this->filename));
@@ -539,8 +537,13 @@ void CMediaLoader::LoadingNewPicture(CThreadPictureData* pictureData)
     if (bitmap == nullptr)
         bitmap = new CImageLoadingFormat();
 
+
     if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)
-        bitmap->SetPicture(defaultPicture);
+    {
+        cv::Mat picture = application_context.GetDefaultPicture();
+        bitmap->SetPicture(picture);
+    }
+       
 
     bitmap->SetFilename(pictureData->picture);
 

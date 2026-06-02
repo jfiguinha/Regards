@@ -82,8 +82,7 @@ namespace Regards::OpenGL
         
 		void LoadCharacter(unsigned char c, CFreeTypeFace & face);
         void RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color);
-		void CreateDefaultOpenCLContext();
-		void initializeContextFromGL();
+
         void RenderQuadInternal(float width,
                                        float height,
                                        int left,

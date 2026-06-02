@@ -1,6 +1,9 @@
 #pragma once
 #include <LoadingResource.h>
 #include <libPicture.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 class CRegardsBitmap;
 
 #define TYPEPHOTO 1
@@ -12,9 +15,6 @@ class CRegardsBitmap;
 #define TYPEFACE 7
 #define TYPEMULTIPAGE 8
 #define SQLITE 1
-
-extern wxImage defaultPictureThumbnailPicture;
-extern wxImage defaultPictureThumbnailVideo;
 
 class CImageLoadingFormat;
 
@@ -139,8 +139,8 @@ protected:
 	cv::Mat GetDefaultPicture()
 	{
 		if (isVideo || isAnimation)
-			return Regards::Picture::CLibPicture::mat_from_wx(defaultPictureThumbnailVideo);
-		return  Regards::Picture::CLibPicture::mat_from_wx(defaultPictureThumbnailPicture);
+			return application_context.GetDefaultVideoThumbnail();
+		return  application_context.GetDefaultPictureThumbnail();
 	}
 
 	int numCatalog;

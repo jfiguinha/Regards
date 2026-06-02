@@ -36,6 +36,7 @@
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 
+
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;

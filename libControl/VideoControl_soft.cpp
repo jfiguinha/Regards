@@ -24,7 +24,7 @@
 #include <OpenCLEffectVideo.h>
 #include "DataAVFrame.h"
 #include <FaceDetector.h>
-
+#include <appcontext.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
@@ -36,13 +36,10 @@ using namespace Regards::Sqlite;
 #define TIMER_PLAYSTOP 0x10003
 #define TIMER_SUBTITLE 0x10004
 
-extern bool firstElementToShow;
+extern AppContext application_context;
 AVFrame* copyFrameBuffer = nullptr;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 
-
-extern float clamp(float val, float minval, float maxval);
 
 
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, IVideoInterface* eventPlayer)
@@ -1515,7 +1512,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (!videoStartRender)
     {
-        if(firstElementToShow)
+        if(application_context.firstElementToShow)
             playStartTimer->Start(1000, true);
         else
             playStartTimer->Start(100, true);

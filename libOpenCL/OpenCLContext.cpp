@@ -31,7 +31,9 @@
 #include <RegardsConfigParam.h>
 #include "utility_opencl.h"
 #include <LibResource.h>
-
+#include <appcontext.h>
+extern AppContext application_context;
+extern ncnn::VulkanDevice* vkdev;
 
 #if defined (__APPLE__) || defined(MACOSX)
 static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
@@ -39,13 +41,9 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-extern string platformName;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
-extern bool isOpenCLInitialized;
+
 using namespace Regards::OpenCL;
-extern std::map<wxString, cv::ocl::Program> openclBinaryMapping;
-extern string buildOption;
-extern ncnn::VulkanDevice* vkdev;
+
 
 cl_command_queue COpenCLContext::s_queue = nullptr;;
 
@@ -102,8 +100,7 @@ void COpenCLContext::AssociateToVulkan()
 
     if (selectedIndex >= 0)
     {
-        vkdev =
-            ncnn::get_gpu_device(selectedIndex);
+		vkdev = ncnn::get_gpu_device(selectedIndex);
     }
 }
 
@@ -139,9 +136,9 @@ wxString COpenCLContext::GetDeviceInfo(
 
 cv::ocl::Program COpenCLContext::GetProgram(const wxString& programName)
 {
-    auto it = openclBinaryMapping.find(programName);
+    auto it = application_context.openclBinaryMapping.find(programName);
 
-    if (it != openclBinaryMapping.end())
+    if (it != application_context.openclBinaryMapping.end())
     {
         return it->second;
     }
@@ -151,14 +148,14 @@ cv::ocl::Program COpenCLContext::GetProgram(const wxString& programName)
 
     cv::ocl::ProgramSource programSource(kernelSource);
 
-    cv::ocl::Context context = clExecCtx.getContext();
+    cv::ocl::Context context = application_context.clExecCtx.getContext();
 
     cv::String errmsg;
 
     auto [insertedIt, inserted] =
-        openclBinaryMapping.emplace(
+        application_context.openclBinaryMapping.emplace(
             programName,
-            context.getProg(programSource, buildOption, errmsg));
+            context.getProg(programSource, application_context.buildOption, errmsg));
 
     return insertedIt->second;
 }
@@ -428,16 +425,16 @@ void COpenCLContext::initializeContextFromGL()
     // printf("initializeContextFromGL 6\n");
 
 	cl_platform_id platform = platforms[found];
-	platformName = cv::ocl::PlatformInfo(&platform).name();
+	application_context.platformName = cv::ocl::PlatformInfo(&platform).name();
 
-	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
-		platformName, platform, context, device);
+	application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::create(
+		application_context.platformName, platform, context, device);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
     
 	clReleaseDevice(device);
 	clReleaseContext(context);
-	clExecCtx.bind();
+	application_context.clExecCtx.bind();
 
 #endif
 }
@@ -523,11 +520,11 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	
 	cv::ocl::Context context;
 	if (!context.create(cv::ocl::Device::TYPE_GPU))
-		isOpenCLInitialized = false;
+		application_context.isOpenCLInitialized = false;
 	else
-		isOpenCLInitialized = true;
+		application_context.isOpenCLInitialized = true;
 
-	if (!isOpenCLInitialized) {
+	if (!application_context.isOpenCLInitialized) {
 		cl_int errNum;
 		cl_uint numPlatforms;
 		cl_platform_id firstPlatformId;
@@ -554,22 +551,22 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 		else
 		{
 			context.fromHandle(_context);
-			isOpenCLInitialized = true;
+			application_context.isOpenCLInitialized = true;
 		}
 			
 
 		cout << "Created CPU context" << endl;
 	}
 
-	if (isOpenCLInitialized)
+	if (application_context.isOpenCLInitialized)
 	{
 		//cv::ocl::Device(context.device(0));
-		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
-		platformName = clExecCtx.getDevice().vendorName();
+		application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+		application_context.platformName = application_context.clExecCtx.getDevice().vendorName();
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if(regardsParam != nullptr)
-			regardsParam->SetOpenCLPlatformName(platformName);
+			regardsParam->SetOpenCLPlatformName(application_context.platformName);
 		//wxMessageBox(wxString::Format("OpenCL initialized with platform: %s", platformName), "OpenCL Info", wxOK | wxICON_INFORMATION);
 	}
 }
@@ -582,8 +579,8 @@ cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties 
     cl_int err = 0;
 
     s_queue = clCreateCommandQueue(
-            (cl_context)clExecCtx.getContext().ptr(),
-            (cl_device_id)clExecCtx.getDevice().ptr(),
+            (cl_context)application_context.clExecCtx.getContext().ptr(),
+            (cl_device_id)application_context.clExecCtx.getDevice().ptr(),
             props,
             &err);
 

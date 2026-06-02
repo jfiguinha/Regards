@@ -696,10 +696,10 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	{
 		if(pThumbnailData->IsVideo() || pThumbnailData->IsAnimation())
 		{
-			image = defaultPictureThumbnailVideo;
+			image = application_context.GetWxDefaultVideoThumbnail();
 		}
 		else
-			image = defaultPictureThumbnailPicture;
+			image = application_context.GetWxDefaultPictureThumbnail();
 		photoDefault = true;
 		returnValue = 1;
 	}

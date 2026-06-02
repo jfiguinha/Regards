@@ -4,12 +4,15 @@
 #include <ThumbnailDataStorage.h>
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Control;
 using namespace Regards::Scanner;
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define wxTIMER_PROCESS 1001
-extern wxImage defaultPicture;
+
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                          const bool& testValidity)
@@ -154,7 +157,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 
 			if (thumbnail->image.empty())
 			{
-				thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
+				thumbnail->image = application_context.GetDefaultPicture();
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);

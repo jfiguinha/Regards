@@ -6,10 +6,12 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
-extern string platformName;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
@@ -183,7 +185,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 	const int& flipH, const int& flipV, const int& angle,
 	const int& bicubic, int ratio, bool bgraOutput)
 {
-	if (!clExecCtx.empty() && !paramSrc.empty())
+	if (!application_context.clExecCtx.empty() && !paramSrc.empty())
 	{
 
 		
@@ -305,12 +307,12 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
+	inputY->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
 	vecParam.push_back(inputY);
 
 	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
+	inputUV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
 	vecParam.push_back(inputUV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
@@ -403,7 +405,7 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 
 	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
+	inputUV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
 	vecParam.push_back(inputUV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
@@ -485,17 +487,17 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 	vector<COpenCLParameter*> vecParam;
 	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
+	inputY->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
 	vecParam.push_back(inputY);
 
 	COpenCLParameterByteArray* inputU = new COpenCLParameterByteArray();
 	inputU->SetLibelle("inputU");
-	inputU->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferU, sizeU, flag);
+	inputU->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferU, sizeU, flag);
 	vecParam.push_back(inputU);
 
 	COpenCLParameterByteArray* inputV = new COpenCLParameterByteArray();
 	inputV->SetLibelle("inputV");
-	inputV->SetValue((cl_context)clExecCtx.getContext().ptr(), bufferV, sizeV, flag);
+	inputV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferV, sizeV, flag);
 	vecParam.push_back(inputV);
 
 	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();

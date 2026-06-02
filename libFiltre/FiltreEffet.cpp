@@ -9,8 +9,6 @@
 #include <config_id.h>
 #include <ParamInit.h>
 
-extern float value[256];
-
 using namespace Regards::FiltreEffet;
 using namespace std;
 

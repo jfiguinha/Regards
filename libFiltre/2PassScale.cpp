@@ -1,6 +1,7 @@
 #include "header.h"
 #include "2PassScale.h"
-extern double value[256];
+#include <appcontext.h>
+extern AppContext application_context;
 
 #define BYTE unsigned char
 
@@ -186,9 +187,9 @@ void C2PassScale::HorizScale(unsigned char* pSrc,
                 const double weight = pWeights[i - iLeft];
                 const unsigned char* pPixel = pSrcRow + i * 3;
 
-                r += weight * value[*pPixel];
-                g += weight * value[*(pPixel + 1)];
-                b += weight * value[*(pPixel + 2)];
+                r += weight * application_context.value[*pPixel];
+                g += weight * application_context.value[*(pPixel + 1)];
+                b += weight * application_context.value[*(pPixel + 2)];
             }
 
             unsigned char* pDstPixel = pDstRow + x * 3;
@@ -246,9 +247,9 @@ void C2PassScale::VertScale(unsigned char* pSrc,
                 const double weight = pWeights[i - iLeft];
                 const unsigned char* pPixel = pSrc + (i * uSrcWidth + u) * 3;
 
-                r += weight * value[*pPixel];
-                g += weight * value[*(pPixel + 1)];
-                b += weight * value[*(pPixel + 2)];
+                r += weight * application_context.value[*pPixel];
+                g += weight * application_context.value[*(pPixel + 1)];
+                b += weight * application_context.value[*(pPixel + 2)];
             }
 
             unsigned char* pDstPixel = pDstRow + u * 3;

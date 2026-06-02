@@ -6,11 +6,12 @@
 #include <libPicture.h>
 #include <ScrollbarWnd.h>
 #include <ImageVideoThumbnail.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
-
-extern wxImage defaultPicture;
 
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, const wxWindowID idCTreeWithScrollbarInterface,
                                                  const CThemeThumbnail& themeThumbnail,
@@ -54,7 +55,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 		if (thumbnail->image.empty())
 		{
-			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
+			thumbnail->image = application_context.GetDefaultPicture();
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -161,7 +162,7 @@ void CThumbnailFileSelection::SetListeFile()
 
 		if (thumbnail->image.empty())
 		{
-			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
+			thumbnail->image = application_context.GetDefaultPicture();
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
