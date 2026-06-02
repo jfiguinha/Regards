@@ -5,63 +5,73 @@
 #include <CL/cl_gl.h>
 #endif
 
+
 #include <PictureArray.h>
-#include <memory>
-#include <string>
 
 class CTextureGLPriv;
+class CTextureCudaPriv;
+namespace cv
+{
+	namespace ogl
+	{
+        class Texture2D;
+    }
+}
 
 namespace Regards
 {
-    namespace OpenGL
-    {
-        class GLTexture
-        {
-        public:
-            GLTexture();
-            GLTexture(const int& textureId, const int& width, const int& height);
-            ~GLTexture();
+	namespace OpenGL
+	{
+		// Handle texture related opertions in this class.
+		class GLTexture
+		{
+		public:
 
-            // Non copiable — une texture OpenGL est une ressource GPU unique.
-            GLTexture(const GLTexture&)            = delete;
-            GLTexture& operator=(const GLTexture&) = delete;
+			GLTexture(void);
+            GLTexture(const int& textureId, const int &width, const int &height);
+			~GLTexture(void);
 
-            // Move autorisé : transfert de propriété sans copie GPU
-            GLTexture(GLTexture&& other) noexcept;
-            GLTexture& operator=(GLTexture&& other) noexcept;
+			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
+			void Delete();
+			void DeleteInteropTexture();
+			void Enable();
+			bool SetData(Regards::Picture::CPictureArray& bitmap);
 
-            void SetFilterType(GLint filterType, GLint filterValue);
-            void Delete();
-            void DeleteInteropTexture();
-            void Enable();
-            bool SetData(Regards::Picture::CPictureArray& bitmap);
+			void Disable()
+			{
+				//glDisable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
 
-            void Disable()
-            {
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
+			int GetTextureID()
+			{
+				return m_nTextureID;
+			}
 
-            GLuint GetTextureID() const { return m_nTextureID; }
-            int    GetWidth()     const { return width;  }
-            int    GetHeight()    const { return height; }
+			cl_mem GetOpenCLTexture();
 
-        protected:
-            void checkErrors(const std::string& desc);
+			int GetWidth();
+			int GetHeight();
 
-            // Chemin CPU : upload direct via glTexImage2D / glTexSubImage2D.
-            // Remplace l'ancien SetTextureData qui dépendait de cv::ogl::Texture2D.
-            bool SetTextureDataCPU(Regards::Picture::CPictureArray& bitmap);
 
-            GLuint m_nTextureID = static_cast<GLuint>(-1);
-            int    width        = 0;
-            int    height       = 0;
-            GLenum format       = GL_BGRA_EXT;
-            GLenum dataformat   = GL_RGBA8;
-            bool   pboSupported = false;
-            GLuint pboIds[1]    = {0};
+		protected:
 
-            // cv::ogl::Texture2D supprimé — plus de dépendance opencv_highgui/opengl
-            std::unique_ptr<CTextureGLPriv> pimpl_;
-        };
-    }
+			void checkErrors(std::string desc);
+			GLuint m_nTextureID;
+
+            bool SetTextureData(Regards::Picture::CPictureArray& bitmap);
+
+			CTextureGLPriv* pimpl_ = nullptr;
+			
+			cv::ogl::Texture2D * tex = nullptr;
+
+			int width;
+			int height;
+			GLenum format;
+			bool pboSupported = false;
+            GLenum dataformat;
+			GLuint pboIds[1];
+			
+		};
+	}
 }

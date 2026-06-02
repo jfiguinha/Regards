@@ -7,7 +7,7 @@
 #include <wx/animate.h>
 #include <queue>
 #include "ThreadLoadingBitmap.h"
-
+using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
@@ -75,6 +75,7 @@ namespace Regards::Window
 
 	protected:
 
+		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);
@@ -141,11 +142,11 @@ namespace Regards::Window
 		void RefreshIconeVideo(const int& idPhoto);
 		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
 
-		void ExecuteTimer(const int& numId, std::unique_ptr<wxTimer> & refresh);
-        bool IsVisible(CIcone* icone);
+		void ExecuteTimer(const int& numId, wxTimer* refresh);
+
 		void RefreshThumbnail(wxCommandEvent& event);
-        void SendMoveEvent(wxEventType type);
-        void RefreshAnimatedIcon(int photoId);
+
+
 		CIcone* GetIconeByPath(const wxString& filepath);
 		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
 		bool UpdateThumbnail(CIcone* pBitmapIcone);
@@ -161,8 +162,9 @@ namespace Regards::Window
 		bool enableTimer = true;
 		int nbElement = 0;
 		int nbPhotoElement = 0;
-
-		
+		//Variable
+		//std::mutex lockIconeList;
+		CIconeList* iconeList;
 
 		bool processThumbnailVideo = false;
 		wxString videoFilename = "";
@@ -189,9 +191,13 @@ namespace Regards::Window
 
 		//wxBitmap bitmapFolder;
 		wxBitmap bitmapPhoto;
-		std::vector<int> TabSize;
+		vector<int> TabSize;
 		int Max;
 
+		wxTimer* refreshMouseMove;
+		wxTimer* refreshActifTimer;
+		wxTimer* refreshSelectTimer;
+		wxTimer* timeClick;
 		CThemeThumbnail themeThumbnail;
 
 		int controlWidth;
@@ -202,7 +208,7 @@ namespace Regards::Window
 		int timeActif = 0;
 		int timeSelect = 0;
 
-		
+		wxActivityIndicator* m_waitingAnimation;
 		bool animationStart = false;
 		int numActifPhotoId = -1;
 		int numSelectPhotoId = -1;
@@ -214,7 +220,8 @@ namespace Regards::Window
 
 		int stepLoading;
 
-
+		wxAnimation* m_animation;
+		wxTimer* timerAnimation;
 		bool render;
 		bool check;
 		bool testValidity;
@@ -242,17 +249,6 @@ namespace Regards::Window
 		bool stopToGetNbElement = false;
 		std::vector<wxString> listIconeToGenerate;
 		wxWindowID localid;
-        
-        //std::unordered_map<int, CIcone*> iconByPhotoId;
-        
-        CIconeList * iconeList = nullptr;
-		std::unique_ptr<wxAnimation> m_animation;
-		std::unique_ptr<wxTimer> timerAnimation;
-        
-		std::unique_ptr<wxTimer> refreshMouseMove;
-		std::unique_ptr<wxTimer> refreshActifTimer;
-		std::unique_ptr<wxTimer> refreshSelectTimer;
-		std::unique_ptr<wxTimer> timeClick;
-        std::unique_ptr<wxActivityIndicator> m_waitingAnimation;
+
 	};
 }

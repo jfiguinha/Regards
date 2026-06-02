@@ -1,5 +1,6 @@
 #include <header.h>
 #include "OpenCLFilter.h"
+
 #include "utility.h"
 #include <opencv2/xphoto.hpp>
 #include <FileUtility.h>
@@ -7,10 +8,9 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <opencv2/core/ocl.hpp>
+#include <LibResource.h>
 #include <opencv2/dnn_superres.hpp>
 #include <avir.h>
-#include <appcontext.h>
-extern AppContext application_context;
 
 using namespace Regards::OpenCL;
 using namespace cv;
@@ -18,6 +18,10 @@ using namespace cv;
 using namespace dnn;
 using namespace dnn_superres;
 
+bool COpenCLFilter::isUsed = false;
+int COpenCLFilter::numTexture = -1;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+extern std::map<wxString, vector<char>> openclBinaryMapping;
 #define OPENCV_METHOD
 
 
@@ -29,9 +33,7 @@ using namespace dnn_superres;
 bool isUsed = false;
 std::mutex muDnnSuperResImpl;
 int numTexture = -1;
-
-bool COpenCLFilter::isUsed = false;
-int COpenCLFilter::numTexture = -1;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 class CSuperSampling
 {
@@ -56,7 +58,7 @@ private:
 string CSuperSampling::GenerateModelPath(string modelName, int scale)
 {
 	wxString path = "";
-#ifdef WIN32openclBinaryMapping
+#ifdef WIN32
 	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
 #else
 	path = CFileUtility::GetResourcesFolderPath() + "/model/" + modelName + "_x" + to_string(scale) + ".pb";
@@ -181,10 +183,6 @@ COpenCLFilter::~COpenCLFilter()
 		delete param;
 		param = nullptr;
 	}
-    
-    for (auto& pair : openclMemTempMap)
-        delete pair.second;
-    openclMemTempMap.clear();
     
     delete superSampling;
 
@@ -1792,7 +1790,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	{
 
 
-		ocl::Context context = application_context.clExecCtx.getContext();
+		ocl::Context context = clExecCtx.getContext();
 		ocl::Program program = COpenCLContext::GetProgram(programName);
 
 		ocl::Kernel kernel(functionName, program);

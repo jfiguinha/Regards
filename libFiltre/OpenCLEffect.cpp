@@ -8,6 +8,8 @@
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
+extern string platformName;
 #define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)

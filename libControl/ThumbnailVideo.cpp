@@ -9,7 +9,7 @@
 #include <SqlThumbnail.h>
 #include <ImageVideoThumbnail.h>
 #include <ConvertUtility.h>
-#include <appcontext.h>
+
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -17,7 +17,7 @@ using namespace Regards::Picture;
 #define wxEVENT_ENDTHUMBNAIL 1002
 #define wxEVENT_ENDUPDATEVIDEOTHUMBNAIL 1003
 
-extern AppContext application_context;
+extern wxImage defaultPicture;
 
 
 struct ThumbnailVideoThread
@@ -89,7 +89,7 @@ int CThumbnailVideo::FindNumItem(const int& videoPos)
 {
 	int numItem = -1;
 	pItemCompFonct _pf = &ItemCompFonct;
-	CIcone * icone = iconeList->FindElementByPosition(videoPos, 0, &_pf, this);
+	CIcone * icone = iconeList->FindElement(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
 	{
 		if (iFormat < 100)
@@ -315,7 +315,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 			if (thumbnail->image.empty())
 			{
-				thumbnail->image = application_context.GetDefaultPicture();
+				thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);
@@ -423,15 +423,15 @@ void CThumbnailVideo::LoadVideoThumbnail(void * param)
 	}
 	else //Not support video
 	{
-		threadLoadingBitmap->bitmapIcone = application_context.GetDefaultPicture();
+		threadLoadingBitmap->bitmapIcone = CLibPicture::mat_from_wx(defaultPicture);
 		wxString filename = threadLoadingBitmap->filename;
 
 		//wxBitmap bitmap = wxBitmap(defaultPicture);
 
 
 		CSqlThumbnailVideo sqlThumbnailVideo;
-		wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, application_context.GetWxDefaultPicture().GetWidth(), application_context.GetWxDefaultPicture().GetHeight(), 0, 0, 0, 0);
-		application_context.GetWxDefaultPicture().SaveFile(localName, wxBITMAP_TYPE_JPEG);
+		wxString localName = sqlThumbnailVideo.InsertThumbnail(filename, defaultPicture.GetWidth(), defaultPicture.GetHeight(), 0, 0, 0, 0);
+		defaultPicture.SaveFile(localName, wxBITMAP_TYPE_JPEG);
 	}
 
 	for (CImageVideoThumbnail* bitmap : listVideo)

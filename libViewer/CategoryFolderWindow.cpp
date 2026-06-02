@@ -27,9 +27,7 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
 
-#include <appcontext.h>
-extern AppContext application_context;
-
+extern bool isGPsAvailable;
 
 #define NUMCATALOGID 1
 
@@ -154,9 +152,9 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 		pimpl->urlServer = param->GetGeoLocUrlServer();
 		pimpl->apiKey = param->GetApiKey();
 		if(pimpl->apiKey == "")
-			application_context.isGPsAvailable = false;
+			isGPsAvailable = false;
 		else
-			application_context.isGPsAvailable = true;
+			isGPsAvailable = true;
 	}
 	pimpl->refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	Connect(EVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CCategoryFolderWindow::CriteriaPhotoUpdate));
@@ -480,7 +478,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	int diff = difftime(ending, start);
 
-	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET && application_context.isGPsAvailable)
+	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET && isGPsAvailable)
 	{
 		auto findPhotoCriteria = new CFindPhotoCriteria();
 		findPhotoCriteria->urlServer = pimpl->urlServer;

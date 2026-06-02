@@ -79,75 +79,43 @@ CToolbarInfos::~CToolbarInfos()
 {
 }
 
-void CToolbarInfos::DisablePush()
-{
-	infos->SetPush(false);
-	history->SetPush(false);
-	effect->SetPush(false);
-	audiovideo->SetPush(false);
-	videoeffect->SetPush(false);
-	map->SetPush(false);
-	effectParameter->SetPush(false);
-	criteria->SetPush(false);
-	histogramParameter->SetPush(false);
-
-	infos->SetInactif();
-	history->SetInactif();
-	effect->SetInactif();
-	audiovideo->SetInactif();
-	videoeffect->SetInactif();
-	map->SetInactif();
-	effectParameter->SetInactif();
-	criteria->SetInactif();
-	histogramParameter->SetInactif();
-
-}
-
 void CToolbarInfos::SetHistogramPush()
 {
-	DisablePush();
 	histogramParameter->SetPush(true);
 }
 
 void CToolbarInfos::SetInfosPush()
 {
-	DisablePush();
 	infos->SetPush(true);
 }
 
 void CToolbarInfos::SetMapPush()
-{	
-	DisablePush();
+{
 	map->SetPush(true);
 }
 
 void CToolbarInfos::SetAudioVideoPush()
 {
-	DisablePush();
 	audiovideo->SetPush(true);
 }
 
 void CToolbarInfos::SetVideoEffectPush()
 {
-	DisablePush();
 	videoeffect->SetPush(true);
 }
 
 void CToolbarInfos::SetEffectPush()
 {
-	DisablePush();
 	effect->SetPush(true);
 }
 
 void CToolbarInfos::SetHistoryPush()
 {
-	DisablePush();
 	history->SetPush(true);
 }
 
 void CToolbarInfos::SetEffectParameterPush()
 {
-	DisablePush();
 	effectParameter->SetPush(true);
 }
 

@@ -835,9 +835,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ascii.h" />
-    <ClInclude Include="aspectratio.h" />
     <ClInclude Include="avif.h" />
-    <ClInclude Include="BitmapYUV.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
@@ -848,7 +846,6 @@
     <ClInclude Include="DiaporamaMove.h" />
     <ClInclude Include="DiaporamaTransition.h" />
     <ClInclude Include="ExrOption.h" />
-    <ClInclude Include="FFmpegVideoThumb.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="hqdn3d.h" />
@@ -863,13 +860,14 @@
     <ClInclude Include="MediaInfo.h" />
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="MetadataExiv2.h" />
+    <ClInclude Include="moviedecoder.h" />
+    <ClInclude Include="OpenCVVideoPlayer.h" />
     <ClInclude Include="PDFOption.h" />
     <ClInclude Include="pfm.h" />
     <ClInclude Include="PictureArray.h" />
     <ClInclude Include="PictureData.h" />
     <ClInclude Include="PictureMetadataExiv.h" />
     <ClInclude Include="PictureMetadataExiv_new.h" />
-    <ClInclude Include="picture_factory.h" />
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="raw.h" />
     <ClInclude Include="RegardsPDF.h" />
@@ -885,6 +883,7 @@
     <ClInclude Include="ThumbnailDiaporama.h" />
     <ClInclude Include="ThumbnailVideoExport.h" />
     <ClInclude Include="TiffOption.h" />
+    <ClInclude Include="VideoPlayer.h" />
     <ClInclude Include="VideoPlayerInterface.h" />
     <ClInclude Include="videothumb.h" />
     <ClInclude Include="webpOption.h" />
@@ -914,7 +913,6 @@
     <ClCompile Include="DiaporamaMove.cpp" />
     <ClCompile Include="DiaporamaTransition.cpp" />
     <ClCompile Include="ExrOption.cpp" />
-    <ClCompile Include="FFmpegVideoThumb.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="hqdn3d.cpp" />
@@ -926,13 +924,14 @@
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="MediaInfo.cpp" />
     <ClCompile Include="MetadataExiv2.cpp" />
+    <ClCompile Include="moviedecoder.cpp" />
+    <ClCompile Include="OpenCVVideoPlayer.cpp" />
     <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="pfm.cpp" />
     <ClCompile Include="PictureArray.cpp" />
     <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="PictureMetadataExiv.cpp" />
     <ClCompile Include="PictureMetadataExiv_new.cpp" />
-    <ClCompile Include="picture_factory.cpp" />
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="raw.cpp" />
     <ClCompile Include="RegardsPDF.cpp" />
@@ -945,6 +944,7 @@
     <ClCompile Include="ThumbnailDiaporama.cpp" />
     <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
+    <ClCompile Include="VideoPlayer.cpp" />
     <ClCompile Include="videothumb.cpp" />
     <ClCompile Include="webpOption.cpp" />
     <ClCompile Include="wic.cpp" />

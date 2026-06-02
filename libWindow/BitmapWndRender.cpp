@@ -18,16 +18,17 @@
 #include "RenderBitmapOpenGL.h"
 #include <WindowUtility.h>
 
-
 using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace std::chrono;
+extern bool processrecognitionison;
 
 
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
 
+extern float clamp(float val, float minval, float maxval);
 
 std::vector<int> _value = {
 	1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200,

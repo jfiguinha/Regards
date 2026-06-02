@@ -204,9 +204,6 @@ void CInfoAbout::Init()
 
 void CInfoAbout::CreateElement()
 {
-	RenderMode mode = RenderMode::Create;
-	CTreeElementTriangle* tree_element_triangle = nullptr;
-	CPositionElement* posElement = nullptr;
 	bool isVisible = true;
 	widthPosition = 0;
 	vectorPosElement.clear();
@@ -226,13 +223,14 @@ void CInfoAbout::CreateElement()
 			int widthElement = 0;
 			CTreeElementTexte* tree_element_texte;
 
-			posElement = RenderTriangle(data,
-				xPos,
-				yPos,
-				isVisible,
-				mode);
-
-			tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+				themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				true);
+			treeElementTriangle->SetVisible(isVisible);
+			CPositionElement* posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                                                     treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
+			                                                     treeElementTriangle,
+			                                                     data);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 			widthPosition = posElement->GetWidth() + themeTree.GetMargeX();
@@ -240,21 +238,19 @@ void CInfoAbout::CreateElement()
 
 			if (data->GetType() == 2)
 			{
-
-				posElement = RenderTextLink(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
+				auto dataLink = static_cast<CTreeDataLink*>(data);
+				tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				                                            data->GetKey(), dataLink->GetLinkPath(),
+				                                            dataLink->GetLinkType());
 			}
 			else
-			{
-				posElement = RenderText(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
-			}
+				tree_element_texte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+
+			tree_element_texte->SetVisible(isVisible);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+			                                   false);
 
 			widthElement += xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
@@ -262,8 +258,7 @@ void CInfoAbout::CreateElement()
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
 
-			const bool isOpen = tree_element_triangle->GetOpen();
-			if (isOpen)
+			if (treeElementTriangle->GetOpen())
 				CreateChildTree(it);
 		}
 		++it;
@@ -283,7 +278,6 @@ void CInfoAbout::ClickOnElement(CPositionElement* element, wxWindow* window, con
 
 void CInfoAbout::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	RenderMode mode = RenderMode::Create;
 	CPositionElement* posElement;
 	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
@@ -299,23 +293,23 @@ void CInfoAbout::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		{
 			int xPos = widthPosition * (profondeur + 1);
 			int widthElementColumn2 = 0;
+			CTreeElementTexte* tree_element_texte;
+
 			if (data->GetType() == 2)
 			{
-
-				posElement = RenderTextLink(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
+				auto dataLink = static_cast<CTreeDataLink*>(data);
+				tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				                                            data->GetKey(), dataLink->GetLinkPath(),
+				                                            dataLink->GetLinkType());
 			}
 			else
-			{
-				posElement = RenderText(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
-			}
+				tree_element_texte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+
+			tree_element_texte->SetVisible(isVisible);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+			                                   false);
 
 			const int widthElementColumn1 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 
@@ -325,22 +319,20 @@ void CInfoAbout::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 
 				if (data->GetType() == 2)
 				{
-
-					posElement = RenderTextLink(data,
-						xPos,
-						yPos,
-						isVisible,
-						mode);
+					auto dataLink = static_cast<CTreeDataLink*>(data);
+					tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					                                            data->GetValue(), dataLink->GetLinkPath(),
+					                                            dataLink->GetLinkType());
 				}
 				else
-				{
-					posElement = RenderText(data,
-						xPos,
-						yPos,
-						isVisible,
-						mode);
-				}
+					tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					                                        data->GetValue());
 
+				tree_element_texte->SetVisible(isVisible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 1, tree_element_texte->GetWidth(),
+				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTEVALUE,
+				                                   tree_element_texte,
+				                                   data, (data->GetType() == 2));
 				widthElementColumn2 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			}
 
@@ -356,33 +348,32 @@ void CInfoAbout::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		else
 		{
 			int xPos = widthPosition * profondeur;
-			posElement = RenderTriangle(data,
-				xPos,
-				yPos,
-				isVisible,
-				mode);
-
-			CTreeElementTriangle * tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+			CTreeElementTexte* tree_element_texte;
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+				themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				true);
+			treeElementTriangle->SetVisible(isVisible);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
+			                                   data);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
 			if (data->GetType() == 2)
 			{
-
-				posElement = RenderTextLink(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
+				auto dataLink = static_cast<CTreeDataLink*>(data);
+				tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				                                            data->GetKey(), dataLink->GetLinkPath(),
+				                                            dataLink->GetLinkType());
 			}
 			else
-			{
-				posElement = RenderText(data,
-					xPos,
-					yPos,
-					isVisible,
-					mode);
-			}
+				tree_element_texte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+
+			tree_element_texte->SetVisible(isVisible);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+			                                   false);
 
 			int widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();

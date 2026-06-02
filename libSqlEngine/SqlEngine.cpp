@@ -35,13 +35,13 @@ CSqlLib* CSqlEngine::getInstance(const wxString& baseName)
 }
 
 
-bool CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib)
+void CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib)
 {
 	auto i = std::find_if(_listOfBase.begin(),
 	                      _listOfBase.end(),
 	                      [&](const auto& val) { return val.baseName == baseName; });
 	if (i != _listOfBase.end())
-		return false;
+		return;
 
 	//for (DataBase db : _listOfBase)
 	//	if (db.baseName == baseName)
@@ -53,26 +53,15 @@ bool CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, 
 	bool hr = db._singleton->InitDatabase(filename);
 	if (!(hr))
 	{
-		// Tenter la récupération sur le fichier
-		bool ok = db._singleton->RecoverDatabaseFile(filename);
-
-		// Reouvrir la connexion (non readonly et sans load_inmemory ici)
-		if (ok)
-		{
-			ok = db._singleton->OpenConnection(filename, false, false);
-			if (ok)
-				db._singleton->CheckVersion(filename);
-		}
-		else
-			return false;
+		delete db._singleton;
+		db._singleton = nullptr;
 	}
 	else
 	{
 		_listOfBase.push_back(db);
-		db._singleton->CheckVersion(filename);
 	}
 
-	return true;
+	db._singleton->CheckVersion(filename);
 }
 
 void CSqlEngine::kill(const wxString& baseName)

@@ -11,9 +11,6 @@
 #include <GpsEngine.h>
 #include <wx/filename.h>
 #include <MetadataExiv2.h>
-#include <appcontext.h>
-extern AppContext application_context;
-
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
@@ -21,7 +18,7 @@ using namespace Regards::exiv2;
 using namespace std;
 
 #define GPS_TIME 1000
-
+extern bool isGPsAvailable;
 
 struct InfosGps
 {
@@ -62,7 +59,7 @@ bool CBitmapInfos::GetProcessEnd()
 
 void CBitmapInfos::OnStartGps(wxTimerEvent& event)
 {
-	if (application_context.isGPsAvailable)
+	if (isGPsAvailable)
 	{
 		if (threadGps == nullptr)
 		{
@@ -255,7 +252,7 @@ void CBitmapInfos::UpdateData()
 		
 	}
     
-    if(hasGps && gpsInfos == "" && application_context.isGPsAvailable)
+    if(hasGps && gpsInfos == "" && isGPsAvailable)
     {
         gpsTimer->StartOnce(100);
     }

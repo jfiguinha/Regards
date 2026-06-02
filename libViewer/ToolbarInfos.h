@@ -39,7 +39,7 @@ namespace Regards::Viewer
 	private:
 		void Resize() override;
 		void EventManager(const int& id) override;
-		void DisablePush();
+
 		CToolbarInterface* toolbarInterface;
 		bool isVideo;
 		CToolbarTexte* infos;

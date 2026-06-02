@@ -270,7 +270,7 @@ bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWind
 CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
-	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
 
@@ -587,5 +587,5 @@ CIcone* CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 		return nullptr;
 
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }

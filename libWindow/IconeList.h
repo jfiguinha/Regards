@@ -1,6 +1,5 @@
 #pragma once
 #include "Icone.h"
-#include <tbb/concurrent_unordered_map.h>
 
 namespace Regards::Window
 {
@@ -18,20 +17,18 @@ namespace Regards::Window
         void EraseThumbnailListWithIcon();
 		void AddElement(CIcone* icone);
 		wxString GetFilename(const int& numElement);
-		CIcone* FindElementByPosition(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
-		CIcone* FindElementByPhotoId(const int& photoId);
-		CIcone* FindElementByFilename(const wxString& filename);
-        bool IfElementExistByFilename(const wxString& filename);
+		CIcone* FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
+		void SortById();
+		CIcone* FindElementPhotoId(const int& photoId);
+		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
 		CIcone* FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf);
+		bool FindElement(wxString filename);
+		void SortByFilename();
 		CIcone* GetLastElement();
 		void RemoveElement(int numElement);
-        void SortById();
-        void SortByFilename();
-        
+		CIcone * FindElementByFilename(wxString filename);
 	private:
-        
 		IconeVector pIconeList;
-		tbb::concurrent_unordered_map<int, CIcone*> pIconeByPhotoId;
-        tbb::concurrent_unordered_map<wxString, CIcone*> pIconeByFilename;
+		//mutex muList;
 	};
 }

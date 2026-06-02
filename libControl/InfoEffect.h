@@ -33,9 +33,9 @@ namespace Regards::Control
 		void MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
 		               const int& posLargeur, const int& posHauteur, bool& update) override;
 
-
-		void RenderElement(RenderMode mode);
-		void RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
+		void CreateElement();
+		void UpdateElement();
+		void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 
 		int numEvent;
 		int yPos;

@@ -6,12 +6,11 @@
 #include <libPicture.h>
 #include <ScrollbarWnd.h>
 #include <ImageVideoThumbnail.h>
-#include <appcontext.h>
-extern AppContext application_context;
-
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
+
+extern wxImage defaultPicture;
 
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, const wxWindowID idCTreeWithScrollbarInterface,
                                                  const CThemeThumbnail& themeThumbnail,
@@ -55,7 +54,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 		if (thumbnail->image.empty())
 		{
-			thumbnail->image = application_context.GetDefaultPicture();
+			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -162,7 +161,7 @@ void CThumbnailFileSelection::SetListeFile()
 
 		if (thumbnail->image.empty())
 		{
-			thumbnail->image = application_context.GetDefaultPicture();
+			thumbnail->image = CLibPicture::mat_from_wx(defaultPicture);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -220,7 +219,7 @@ bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone *  i
 CIcone *  CThumbnailFileSelection::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompWithVScrollFonct;
-	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
 
@@ -362,7 +361,7 @@ bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone *  icone,
 CIcone *  CThumbnailFileSelection::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
 

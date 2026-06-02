@@ -15,14 +15,12 @@
 #include <FileUtility.h>
 #include "CompressionAudioVideoOption.h"
 #include "ffmpeg_transcoding.h"
-#include <appcontext.h>
-extern AppContext application_context;
 
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::Video;
-
+extern wxImage defaultPicture;
 
 
 void CShowPreview::UpdateScreenRatio()
@@ -123,7 +121,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	if (videoOriginal != nullptr)
 		delete videoOriginal;
 
-	videoOriginal = new CVideoThumb(filename);
+	videoOriginal = new CVideoThumb(filename, true, true);
 	timeTotal = videoOriginal->GetMovieDuration();
 	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
@@ -281,10 +279,10 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CVideoThumb video(fileTemp);
+			CVideoThumb video(fileTemp, true, true);
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 			if (showPreview->decodeFrame.empty())
-				showPreview->decodeFrame = application_context.GetDefaultPicture();
+				showPreview->decodeFrame = CLibPicture::mat_from_wx(defaultPicture);
 
 #ifndef WIN32_MFT
 			//cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);

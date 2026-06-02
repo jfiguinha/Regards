@@ -103,12 +103,6 @@ using namespace Regards::Viewer;
 
 
 #include <wx/glcanvas.h>
-#include <memory>
-#include <functional>
-
-// unique_ptr for wx top-level windows that calls Destroy() as deleter
-template<typename T>
-using WxPtr = std::unique_ptr<T, std::function<void(T*)>>;
 int args[] = {
 	wx_GL_COMPAT_PROFILE,
 	WX_GL_SAMPLES, 4,
@@ -117,6 +111,27 @@ int args[] = {
 	WX_GL_DEPTH_SIZE, 16,
 	0
 };
+
+// c: pointer to original argc
+// v: pointer to original argv
+// o: option name after hyphen
+// d: default value (if NULL, the option takes no argument)
+const char* pick_option(int* c, char** v, const char* o, const char* d)
+{
+	int id = d ? 1 : 0;
+	for (int i = 0; i < *c - id; i++)
+	{
+		if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o))
+		{
+			char* r = v[i + id] + 1 - id;
+			for (int j = i; j < *c - id; j++)
+				v[j] = v[j + id + 1];
+			*c -= id + 1;
+			return r;
+		}
+	}
+	return d;
+}
 
 
 [[noreturn]] void onTerminate() noexcept
@@ -147,7 +162,19 @@ int args[] = {
 	std::_Exit(EXIT_FAILURE);
 }
 
+wxImage defaultPicture;
+wxImage defaultPictureThumbnailPicture;
+wxImage defaultPictureThumbnailVideo;
 
+ncnn::VulkanDevice * vkdev = nullptr;
+
+double value[256];
+
+float clamp(float val, float minval, float maxval)
+{
+	//return std::clamp(val, minval, maxval);
+	return std::max(minval, std::min(val, maxval));
+}
 
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
 
@@ -157,7 +184,38 @@ class MyApp : public wxApp, public IMainInterface, public IVideoConverterInterfa
 public:
 	// override base class virtuals
 	// ----------------------------
-	MyApp();
+	MyApp(
+	)
+	{
+
+		logNo = new wxLogNull();
+		//Init x11
+		regardsParam = nullptr;
+		frameStart = nullptr;
+		//frameViewer = nullptr;
+#ifdef USECURL
+		curl_global_init(CURL_GLOBAL_ALL);
+#endif
+
+#ifdef __WXGTK__
+		int result = XInitThreads();
+#endif
+
+		for (auto i = 0; i < 256; i++)
+			value[i] = static_cast<float>(i);
+
+		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
+		//------SDL------------------------
+		//³õÊ¼»¯
+		if (SDL_Init(flags))
+		{
+			std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
+			wxMessageBox(_T("Could not initialize SDL Audio"));
+			//exit(1);
+		}
+	}
+
+
 
 	void OnInitCmdLine(wxCmdLineParser& parser) override;
 	bool OnCmdLineParsed(wxCmdLineParser& parser) override;
@@ -183,8 +241,8 @@ public:
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
 
-		frameViewer = WxPtr<CViewerFrame>(new CViewerFrame("Regards Viewer", wxDefaultPosition,
-		                               wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen), [](CViewerFrame* p){ if(p) p->Destroy(); });
+		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition,
+		                               wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
 #endif
@@ -199,7 +257,7 @@ public:
 		}
         else
         {
-            frameStart = WxPtr<MyFrameIntro>(new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this), [](MyFrameIntro* p){ if(p) p->Destroy(); });
+            frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
             frameStart->Centre(wxBOTH);
             frameStart->Show(true);
         }
@@ -225,26 +283,20 @@ private:
 	void CheckGeolocalisationServiceAvailability();
 	void CheckOpenCLAvailability(bool configFileExist);
 
-	bool InitializeLocale();
-	bool InitializeDirectories();
-	bool InitializeDatabase();
-	bool InitializeResources();
-	void LaunchApplication();
-
 	CRegardsConfigParam* regardsParam= nullptr;
-
+	MyFrameIntro* frameStart= nullptr;
+	CViewerFrame* frameViewer= nullptr;
 	wxString fileToOpen;
 	wxString appName = "";
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
-	void LoadPicture(const int& svgWidth, const int& svgHeight);
 
-	WxPtr<CScannerFrame> framePDF;
-	WxPtr<CVideoConverterFrame> frameVideoConverter;
-	WxPtr<CTestFrame> testFrame;
-	WxPtr<MyFrameIntro> frameStart;
-	WxPtr<CViewerFrame> frameViewer;
+
+	CScannerFrame * framePDF = nullptr;
+	CVideoConverterFrame* frameVideoConverter = nullptr;
+	CTestFrame* testFrame = nullptr;
+	
 	
 	bool startVideoConverter = false;
 	bool startRegardsPDF = false;

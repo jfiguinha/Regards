@@ -24,7 +24,7 @@ namespace Regards
 			{
 				return false;
 			}
-			bool RecoverDatabaseFile(const wxString& filename);
+
 			int ExecuteSQLWithNoResult(const wxString& query);
 			bool ExecuteSQLSelect(const wxString& query, CSqlResult* sqlResult);
 			bool ExecuteSQLBlobInsert(const wxString& query, const int& numCol, const void* zBlob, const int& nBlob,

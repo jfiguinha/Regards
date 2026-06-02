@@ -24,7 +24,6 @@ CSqlThumbnail::~CSqlThumbnail()
 bool CSqlThumbnail::TestThumbnail(const wxString& path, const wxString& hash)
 {
 	type = 2;
-    find = false;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest(
@@ -39,7 +38,6 @@ bool CSqlThumbnail::TestThumbnail(const wxString& path, const wxString& hash)
 bool CSqlThumbnail::TestThumbnail(const wxString& path)
 {
 	type = 2;
-    find = false;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
@@ -56,7 +54,6 @@ wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, 
 {
 	bool returnValue = true;
 	type = 6;
-    numPhoto = -1;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
@@ -131,8 +128,16 @@ CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 		{
 			picture = new CImageLoadingFormat();
 			cv::Mat image = CThumbnailBuffer::GetPicture(thumbnail);
-            picture->SetPicture(image);
-            picture->SetFilename(thumbnail);
+			//CLibPicture libPicture;
+			//picture = libPicture.LoadPicture(thumbnail);
+			picture->SetPicture(image);
+			if (picture != nullptr)
+				picture->SetFilename(thumbnail);
+			else
+			{
+				//printf("error");
+				DeleteThumbnail(numPhoto);
+			}
 		}
 	}
 

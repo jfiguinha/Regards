@@ -13,9 +13,6 @@
 #include <ConvertUtility.h>
 #include <picture_utility.h>
 #include "colornet.h"
-#include <appcontext.h>
-extern AppContext application_context;
-
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -29,6 +26,8 @@ using namespace std;
 
 const double cosine_similar_thresh = 0.363;
 std::map<int, Mat> listScore;
+
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 struct FaceValueIntegration
 {

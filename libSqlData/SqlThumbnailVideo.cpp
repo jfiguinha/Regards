@@ -5,16 +5,12 @@
 #include <libPicture.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
+#include <ConvertUtility.h>
 #include <FileUtility.h>
-
-
-#include <appcontext.h>
-extern AppContext application_context;
-
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-
+extern wxImage defaultPictureThumbnailVideo;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
 	: CSqlExecuteRequest(L"RegardsDB"), nbElement(0), numPhoto(0)
@@ -95,7 +91,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString& path, const int& nu
             videoThumbnail->image = CThumbnailBuffer::GetPicture(thumbnail);
 			if (videoThumbnail->image.empty())
 			{
-				videoThumbnail->image = application_context.GetDefaultVideoThumbnail();
+				videoThumbnail->image = CLibPicture::mat_from_wx(defaultPictureThumbnailVideo);
 			}
 			videoThumbnail->filename = thumbnail;
 		}
@@ -229,7 +225,6 @@ bool CSqlThumbnailVideo::EraseFolderThumbnail(const int& numFolder)
 #else
 					wxRemoveFile(thumbnail);
 #endif
-                    CThumbnailBuffer::RemovePicture(thumbnail);
 				}
 			}
 		}
@@ -252,25 +247,22 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult* sqlResult)
 		{
 		case 0:
 
-            if(videoThumbnail != nullptr)
-            {
-                for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-                {
-                    switch (i)
-                    {
-                    case 0:
-                        videoThumbnail->rotation = sqlResult->ColumnDataInt(i);
-                        break;
-                    case 1:
-                        videoThumbnail->percent = sqlResult->ColumnDataInt(i);
-                        break;
-                    case 2:
-                        videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
-                        break;
-                    default: ;
-                    }
-                }
-            }
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					videoThumbnail->rotation = sqlResult->ColumnDataInt(i);
+					break;
+				case 1:
+					videoThumbnail->percent = sqlResult->ColumnDataInt(i);
+					break;
+				case 2:
+					videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
+					break;
+				default: ;
+				}
+			}
 			break;
 
 		case 2:

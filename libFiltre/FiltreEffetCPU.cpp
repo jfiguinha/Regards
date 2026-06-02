@@ -26,6 +26,7 @@ using namespace Regards::DeepLearning;
 using namespace cv;
 using namespace dnn;
 using namespace dnn_superres;
+extern float value[256];
 using namespace Regards::FiltreEffet;
 
 #define EDSR 0

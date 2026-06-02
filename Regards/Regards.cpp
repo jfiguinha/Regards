@@ -21,66 +21,36 @@
 #include <FilterWindowParam.h>
 #include <FilterData.h>
 #include <OpenCLContext.h>
-#include <appcontext.h>
 #include <Gps.h>
 #ifdef __WXGTK__
 #include <fontconfig/fontconfig.h>
 #endif
-#include <ncnn/gpu.h>
 
-AppContext application_context;
-ncnn::VulkanDevice* vkdev = nullptr;
+#ifdef USE_CUDA
+#include <opencv2/cudaarithm.hpp>
+#include <cudnn.h>
+using namespace cv::cuda;
+#endif
+
+int openclOpenGLInterop = 0;
+string platformName = "";
+bool isOpenCLInitialized = false;
+bool firstElementToShow = true;
+int numElementToLoad = 5;
+string buildOption = "";//"-cl-mad-enable -cl-unsafe-math-optimizations";
+cv::ocl::OpenCLExecutionContext clExecCtx;
+std::map<wxString, cv::ocl::Program> openclBinaryMapping;
+bool isGPsAvailable = false;
 
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
-
 extern int Start(int argc, char **argv);
-
-// Simple logging helpers to unify output (uses std::cout / std::cerr as requested)
-static void LogInfo(const wxString& msg)
-{
-	std::cout << msg.ToStdString() << std::endl;
-}
-
-static void LogError(const wxString& msg)
-{
-	std::cerr << msg.ToStdString() << std::endl;
-}
-
-MyApp::MyApp()
-{
-
-	logNo = new wxLogNull();
-	//Init x11
-	regardsParam = nullptr;
-	frameStart = nullptr;
-	//frameViewer = nullptr;
-#ifdef USECURL
-	curl_global_init(CURL_GLOBAL_ALL);
-#endif
-
-#ifdef __WXGTK__
-	int result = XInitThreads();
-#endif
-
-
-
-	int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
-	//------SDL------------------------
-	//³õÊ¼»¯
-	if (SDL_Init(flags))
-	{
-		std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
-		wxMessageBox(_T("Could not initialize SDL Audio"));
-		//exit(1);
-	}
-}
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
-	LogInfo("Application Parameter :");
+	cout << "Application Parameter : " << endl;
 	parser.SetDesc(g_cmdLineDesc);
 	// must refuse '/' as parameter starter or cannot use "/path" style paths
 	parser.SetSwitchChars(wxT("-"));
@@ -114,12 +84,12 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 		fileToOpen = files[0];
 	}
 	
-	if (parser.Found("program", &appName))
-		LogInfo("App : " + appName);
+	if(parser.Found("program", &appName))
+		cout << "App : " << appName << endl;
 	// then do what you need with them.
 	
-	LogInfo("Application Parameter :");
-	LogInfo("File : " + fileToOpen);
+	cout << "Application Parameter : " << endl;
+	cout << "File : " << fileToOpen << endl;
 	
 	return true;
 }
@@ -151,8 +121,8 @@ int MyApp::Close()
 	if (regardsParam != nullptr)
 		regardsParam->SaveFile();
 
-	// Reset unique_ptrs; their deleters will call Destroy() on wx windows
-	// (frameStart may be a top-level window)
+	if (frameStart != nullptr)
+		frameStart->Destroy();
 
 	sqlite3_shutdown();
 #ifdef USECURL
@@ -179,18 +149,25 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	// unique_ptr will free resources when reset/destroyed
-	frameStart.reset();
-	frameViewer.reset();
-	framePDF.reset();
-	frameVideoConverter.reset();
-	testFrame.reset();
+	if (frameStart != nullptr)
+		delete frameStart;
+
+	if (frameViewer != nullptr)
+		delete frameViewer;
+
+	if (framePDF != nullptr)
+		delete framePDF;
+
+	if (frameVideoConverter != nullptr)
+		delete frameVideoConverter;
+
+	if (testFrame != nullptr)
+		delete testFrame;
         
 	if(vkdev != nullptr)
 		ncnn::destroy_gpu_instance();
 
-	// Signal the main loop to exit instead of abruptly terminating the process
-	ExitMainLoop();
+    exit(0);
 
 	return 0;
 }
@@ -241,9 +218,9 @@ void MyApp::CheckGeolocalisationServiceAvailability()
 	}
 	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
 	if (!result)
-		application_context.isGPsAvailable = false;
+		isGPsAvailable = false;
 	else
-		application_context.isGPsAvailable = true;
+		isGPsAvailable = true;
 
 	if (!result && ShowInfosGeolocUnavailable)
 	{
@@ -256,17 +233,90 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 {
 
 	bool testOpenCL = true;
+
+#ifdef USE_CUDA
+
+	printf("Test if Is Use Cuda \n");
+
+	if (!configFileExist)
+	{
+		int cuda_devices_number = getCudaEnabledDeviceCount();
+		if (cuda_devices_number > 0)
+		{
+			regardsParam->SetIsUseCuda(1);
+			regardsParam->SetIsCudaSupport(1);
+		}
+	}
+
+	if (regardsParam->GetIsUseCuda())
+	{
+		int cuda_devices_number = getCudaEnabledDeviceCount();
+
+		if (cuda_devices_number > 0)
+		{
+			printf("cuda_devices_number : %d \n", cuda_devices_number);
+
+			try
+			{
+				cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
+			}
+			catch (Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				exit(0);
+			}
+			cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
+			DeviceInfo _deviceInfo;
+			bool _isd_evice_compatible = _deviceInfo.isCompatible();
+			cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
+
+			regardsParam->SetIsCudaSupport(1);
+			testOpenCL = false;
+
+			auto cudnn_bversion = cudnnGetVersion();
+			auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
+			if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
+			{
+				std::ostringstream oss;
+				oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
+				//CV_LOG_WARNING(NULL, oss.str().c_str());
+			}
+			else
+			{
+				cout << "CuDNN is OK" << endl;
+			}
+		}
+		else
+		{
+			regardsParam->SetIsCudaSupport(0);
+			printf("cuda platform not found \n");
+		}
+
+
+
+	}
+	else
+		regardsParam->SetIsCudaSupport(0);
+
+#else
+
+	printf("Not Test if Is Use Cuda \n");
 	regardsParam->SetIsCudaSupport(0);
+
+#endif
+
 
 	if (testOpenCL)
 	{
 		if (!ocl::haveOpenCL())
 		{
-			LogInfo("OpenCL is not available...");
+			cout << "OpenCL is not avaiable..." << endl;
 		}
 		else
 		{
-			LogInfo("OpenCL is available...");
+			cout << "OpenCL is avaiable..." << endl;
 		}
 
 		if (!configFileExist)
@@ -288,26 +338,30 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 		{
 			if (!ocl::haveOpenCL())
 			{
-				LogInfo("OpenCL is not available...");
+				cout << "OpenCL is not avaiable..." << endl;
 			}
 			else
 			{
 				COpenCLContext::CreateDefaultOpenCLContext();
 			}
 
-			if (!application_context.isOpenCLInitialized)
+			if (!isOpenCLInitialized)
 			{
 				regardsParam->SetIsOpenCLSupport(false);
-				LogInfo("OpenCL is not Initialized...");
+				cout << "OpenCL is not Initialized..." << endl;
 			}
 		}
 	}
-	application_context.openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+	openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
 }
 
-
-bool MyApp::InitializeLocale()
+// 'Main program' equivalent: the program execution "starts" here
+bool MyApp::OnInit()
 {
+	for (int i = 0; i < 256; i++)
+		value[i] = static_cast<double>(i);
+	//putenv("OPENCV_OPENCL_DEVICE=:GPU:0");
+	//OPENCV_OPENCL_DEVICE=:GPU:1
 	// 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
@@ -316,34 +370,34 @@ bool MyApp::InitializeLocale()
 
 	if (wxWebView::IsBackendAvailable(wxWebViewBackendEdge))
 	{
-		LogInfo("WebView Edge backend available");
+		printf("toto");
 	}
 
 #ifdef __APPLE__
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
-	//wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
+    //wxSystemOptions::SetOption( wxMAC_WINDOW_PLAIN_TRANSITION, 0 );
 #endif
 
 #ifdef __WXGTK__
-	FcBool result = FcInit();
-	if (result)
-		LogInfo("Font Config Initialized");
+    FcBool result = FcInit();
+    if(result)
+        printf("Font Config Initialized \n");
 #endif
-	/*
-
+    /*
+  
 
 	wxInitAllImageHandlers();
 	// folder:
-	SaveIcon(wxART_FOLDER, "folder.png");
-	SaveIcon(wxART_FOLDER_OPEN, "folder_open.png");
-	SaveIcon(wxART_HARDDISK, "harddisk.png");
-	SaveIcon(wxART_CDROM, "cdrom.png");
-	SaveIcon(wxART_FLOPPY, "floppy.png");
-	SaveIcon(wxART_REMOVABLE, "removable.png");
-	SaveIcon(wxART_NORMAL_FILE, "normal.png");
+    SaveIcon(wxART_FOLDER, "folder.png");
+    SaveIcon(wxART_FOLDER_OPEN, "folder_open.png");
+    SaveIcon(wxART_HARDDISK, "harddisk.png");   
+    SaveIcon(wxART_CDROM, "cdrom.png"); 
+    SaveIcon(wxART_FLOPPY, "floppy.png"); 
+    SaveIcon(wxART_REMOVABLE, "removable.png"); 
+    SaveIcon(wxART_NORMAL_FILE, "normal.png");                                       
 
-	exit(0);
-	*/
+    exit(0);
+    */
 
 #ifdef WIN32
 	LCID lcid = GetThreadLocale();
@@ -358,7 +412,7 @@ bool MyApp::InitializeLocale()
 	setlocale(LC_ALL, buffer);
 
 #elif __APPLE__
-	std::locale::global(std::locale(""));
+    std::locale::global(std::locale(""));
 
 #else
 
@@ -374,34 +428,32 @@ bool MyApp::InitializeLocale()
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 #endif
 
-	return true;
-}
+    wxString programPath = CFileUtility::GetProgramFolderPath();
+    
+    cout << "Program Path : " << programPath << endl;
 
-bool MyApp::InitializeDirectories()
-{
-	wxString programPath = CFileUtility::GetProgramFolderPath();
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
+    wxString regardsdb_path = CFileUtility::GetResourcesFolderPathWithExt("regards.db");
+    wxString regardsdocumentdb_path = CFileUtility::GetDocumentFolderPathWithExt("regards.db");
 
-	cout << "Program Path : " << programPath << endl;
-
-	wxString regardsdb_path = CFileUtility::GetResourcesFolderPathWithExt("regards.db");
-	wxString regardsdocumentdb_path = CFileUtility::GetDocumentFolderPathWithExt("regards.db");
-
-	if (!LocaleMakeDir("Thumbnail"))
+	if(!LocaleMakeDir("Thumbnail"))
 	{
 		printf("Unable to make folder Thumbnail");
 		exit(0);
-	}
-	if (!LocaleMakeDir("ThumbnailVideo"))
+	}	
+	if(!LocaleMakeDir("ThumbnailVideo"))
 	{
 		printf("Unable to make folder ThumbnailVideo");
 		exit(0);
-	}
-	if (!LocaleMakeDir("temp"))
+	}	
+	if(!LocaleMakeDir("temp"))
 	{
 		printf("Unable to make folder temp");
 		exit(0);
-	}
-	if (!LocaleMakeDir("Face"))
+	}	
+	if(!LocaleMakeDir("Face"))
 	{
 		printf("Unable to make folder Face");
 		exit(0);
@@ -411,35 +463,11 @@ bool MyApp::InitializeDirectories()
 		printf("Unable to make folder Face");
 		exit(0);
 	}
+    
+    if(!wxFileExists(regardsdocumentdb_path))
+        wxCopyFile(regardsdb_path, regardsdocumentdb_path);
 
-	if (!wxFileExists(regardsdocumentdb_path))
-		wxCopyFile(regardsdb_path, regardsdocumentdb_path);
-
-	return true;
-}
-
-bool MyApp::InitializeDatabase()
-{
 	sqlite3_initialize();
-	return true;
-}
-
-void MyApp::LoadPicture(const int& svgWidth, const int& svgHeight)
-{
-	application_context.LoadWxDefaultPicture(CLibResource::GetPhotoCancel());
-	application_context.LoadWxDefaultPictureThumbnail(CLibResource::GetPhotoCancel());
-	application_context.LoadWxDefaultPictureThumbnailVideo(CLibResource::GetPhotoCancel());		
-}
-
-
-bool MyApp::InitializeResources()
-{
-
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-	//task_scheduler_init init;
-	//int n = tbb::task_scheduler_init::default_num_threads();
-
 
 	wxInitAllImageHandlers();
 
@@ -471,8 +499,12 @@ bool MyApp::InitializeResources()
 #endif
 
 #ifndef NDEBUG
-	::wxMessageBox("toto");
+    ::wxMessageBox("toto");
 #endif
+
+	//task_scheduler_init init;
+	//int n = tbb::task_scheduler_init::default_num_threads();
+	bool configFileExist = CParamInit::IsConfigFileExist();
 
 	//Chargement des paramËtres de l'application
 	regardsParam = new CRegardsConfigParam();
@@ -481,17 +513,8 @@ bool MyApp::InitializeResources()
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
-	if (!CLibResource::InitializeSQLServerDatabase(resourcePath))
-	{
-		wxMessageBox("Unable to initialize Resource.db SQL database");
-		exit(0);
-	}
-
-	if (!CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory))
-	{
-		wxMessageBox("Unable to initialize Regards.db SQL database");
-		exit(0);
-	}
+	CLibResource::InitializeSQLServerDatabase(resourcePath);
+	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
 
 	CFilterWindowParam::InitFilterOpenCLCompatible();
 
@@ -500,11 +523,10 @@ bool MyApp::InitializeResources()
 
 	CFiltreData::CreateFilterList();
 
-	bool configFileExist = CParamInit::IsConfigFileExist();
-
-	bool firstInitialisation = true;
+   
+    bool firstInitialisation = true;
 	std::set_terminate(onTerminate);
-
+    
 	CheckOpenCLAvailability(configFileExist);
 
 	CheckGeolocalisationServiceAvailability();
@@ -518,91 +540,65 @@ bool MyApp::InitializeResources()
 #ifdef __APPLE__
 	wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/osx";
 #else
-	wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/linux";
+    wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/linux";
 #endif
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
 	int svgWidth = 256;
 	int svgHeight = 256;
+    
+    defaultPicture.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+	defaultPictureThumbnailPicture = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", svgWidth, svgHeight).ConvertToDisabled();
+	defaultPictureThumbnailVideo = CLibResource::CreatePictureFromSVG("IDB_MOVIE", svgWidth, svgHeight).ConvertToDisabled();
 
-	LoadPicture(svgWidth, svgHeight);	
-
-	return true;
-}
-
-void MyApp::LaunchApplication()
-{
-
-	if (appName == "RegardsConverter")
+	if(appName == "RegardsConverter")
 	{
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
-		frameVideoConverter = WxPtr<CVideoConverterFrame>(new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(50, 50), this), [](CVideoConverterFrame* p){ if(p) p->Destroy(); });
+		frameVideoConverter = new CVideoConverterFrame("RegardsConverter", wxDefaultPosition, wxSize(50,50), this);
 		frameVideoConverter->Centre(wxBOTH);
 		frameVideoConverter->SetFocus();  // focus on my window
 		frameVideoConverter->Raise();  // bring window to front
 		frameVideoConverter->Show(true);
 		frameVideoConverter->ExportVideo(fileToOpen);
 	}
-	else if (appName == "RegardsTest")
+	else if(appName == "RegardsTest")
 	{
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
-		testFrame = WxPtr<CTestFrame>(new CTestFrame("RegardsTest", wxDefaultPosition, wxSize(50, 50)), [](CTestFrame* p){ if(p) p->Destroy(); });
+		testFrame = new CTestFrame("RegardsTest", wxDefaultPosition, wxSize(50,50));
 		testFrame->Centre(wxBOTH);
 		testFrame->SetFocus();  // focus on my window
 		testFrame->Raise();  // bring window to front
 		testFrame->Show(true);
 	}
-	else if (appName == "RegardsPDF")
+	else if(appName == "RegardsPDF")
 	{
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
 		//	CScannerFrame(const wxString &title, ISCannerInterface * mainInterface, const wxPoint &pos, const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
-		framePDF = WxPtr<CScannerFrame>(new CScannerFrame("RegardsPDF", this, wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight())), [](CScannerFrame* p){ if(p) p->Destroy(); });
+		framePDF = new CScannerFrame("RegardsPDF", this,  wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()));
 		framePDF->Centre(wxBOTH);
 		framePDF->SetFocus();  // focus on my window
 		framePDF->Raise();  // bring window to front
 		framePDF->Show(true);
-		framePDF->OnOpen();
+		framePDF->OnOpen();	
 	}
 	else
 	{
-		/*
+        /*
 		frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 		frameStart->Centre(wxBOTH);
 		frameStart->Show(true);
-		*/
-		ShowViewer();
+        */
+        ShowViewer();
 
 		CViewerFrame::SetViewerMode(true);
 	}
-}
-
-// 'Main program' equivalent: the program execution "starts" here
-bool MyApp::OnInit()
-{
 
 
-	if (!wxApp::OnInit())
-		return false;
-	// Ensure unique_ptr frame members are explicitly null-initialized
-	// (unique_ptrs default to nullptr, but be explicit for clarity)
-	frameStart.reset();
-	frameViewer.reset();
-	framePDF.reset();
-	frameVideoConverter.reset();
-	testFrame.reset();
 
-	if (!InitializeLocale()) return false;
-	if (!InitializeDirectories()) return false;
-	if (!InitializeDatabase()) return false;
-	if (!InitializeResources()) return false;
-
-	LaunchApplication();
-
-	return true;
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the

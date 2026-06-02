@@ -696,10 +696,10 @@ void CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const 
 	{
 		if(pThumbnailData->IsVideo() || pThumbnailData->IsAnimation())
 		{
-			image = application_context.GetWxDefaultVideoThumbnail();
+			image = defaultPictureThumbnailVideo;
 		}
 		else
-			image = application_context.GetWxDefaultPictureThumbnail();
+			image = defaultPictureThumbnailPicture;
 		photoDefault = true;
 		returnValue = 1;
 	}
@@ -812,25 +812,17 @@ int CIcone::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, 
 		return 0;
 
 
-	try
+	if (pThumbnailData != nullptr)
 	{
-		if (pThumbnailData != nullptr)
+		if (pThumbnailData->GetNbFrame() > 1 && (state == ACTIFICONE || state == SELECTEDICONE))
 		{
-			if (pThumbnailData->GetNbFrame() > 1 && (state == ACTIFICONE || state == SELECTEDICONE))
-			{
-				int numFrame = pThumbnailData->GetNumFrame();
-				pThumbnailData->SetNumFrame(numFrame + 1);
-			}
+			int numFrame = pThumbnailData->GetNumFrame();
+			pThumbnailData->SetNumFrame(numFrame + 1);
 		}
-
-		GetBitmapIcone(returnValue, flipHorizontal, flipVertical, forceRedraw);
-		dc->DrawBitmap(localmemBitmap_backup, x + posLargeur, y + posHauteur);
-	}
-	catch(...)
-	{
-		printf("toto");
 	}
 
+	GetBitmapIcone(returnValue, flipHorizontal, flipVertical, forceRedraw);
+	dc->DrawBitmap(localmemBitmap_backup, x + posLargeur, y + posHauteur);
 	return returnValue;
 }
 

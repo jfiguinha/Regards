@@ -338,12 +338,25 @@ int CFFmfcPimpl::IsSupportOpenCL()
 
 AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* src)
 {
+
+	int ret = 0;
+
 	AVFrame* dst = av_frame_alloc();
+
 	memcpy(dst, src, sizeof(AVFrame));
+
 	dst->format = src->format;
 	dst->width = src->width;
 	dst->height = src->height;
+
 	memcpy(dst->data, src->data, sizeof(src->data));
+
+	if (ret < 0)
+	{
+		av_frame_unref(dst);
+		dst = nullptr;
+	}
+
 	return dst;
 }
 
@@ -826,9 +839,6 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 									event.SetClientData(bitmap);
 									wxPostEvent(dlg->GetMainWindow(), event);
 								}
-                                else{
-                                    delete bitmap;
-                                }
 							}
 
 						}
@@ -844,8 +854,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 							for (int i = 0; i < sp->sub.num_rects; i++)
 							{
 								AVSubtitleRect* rect = sp->sub.rects[i];
-                                if(rect != nullptr)
-                                    text += rect->ass;
+								text += rect->ass;
 							}
 							if (dlg != nullptr)
 							{
@@ -1866,7 +1875,6 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 		{
 			if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN))
 			{
-                av_packet_unref(d->pkt);
 				av_log(d->avctx, AV_LOG_ERROR,
 					"Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
 				d->packet_pending = 1;
@@ -3086,7 +3094,6 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	init_clock(&is->vidclk, &is->videoq.serial);
 	init_clock(&is->audclk, &is->audioq.serial);
 	init_clock(&is->extclk, &is->extclk.serial);
-    
 	is->audio_clock_serial = -1;
 	/*
 	if (percentVolume < 0)
@@ -3273,10 +3280,7 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 		goto fail;
 	}
 
-	//output->pts = input->pkt_dts;
-    
-    av_frame_copy_props(output, input);
-    output->pts = input->pts;
+	output->pts = input->pkt_dts;
 	ist->hwaccel_retrieved_pix_fmt = (AVPixelFormat)output->format;
 	/*
 	err = av_frame_copy_props(output, input);

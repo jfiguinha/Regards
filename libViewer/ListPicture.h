@@ -1,4 +1,5 @@
 #pragma once
+#include "MainWindow.h"
 #include <ExportFile.h>
 #include <WindowMain.h>
 using namespace Regards::Window;

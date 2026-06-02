@@ -9,8 +9,6 @@
 #include "TreeElementCheckBox.h"
 #include "TreeElementListBox.h"
 #include "TreeElementStar.h"
-#include "TreeDataStars.h"
-#include "TreeDataLink.h"
 #include "TreeData.h"
 using namespace Regards::Window;
 
@@ -160,17 +158,6 @@ void CTreeControl::GenerateWindowBitmap(wxDC* deviceContext, const int& width, c
 		}
 	}
 }
-void CTreeControl::HideAll()
-{
-	for (auto value: vectorPosElement)
-	{
-		if (value != nullptr)
-		{
-			CTreeElement* treeElement = value->GetTreeElement();
-			treeElement->SetVisible(false);
-		}
-	}
-}
 
 CTreeElementCheckBox* CTreeControl::CreateCheckBoxElement(const int& width, const int& height, const bool& check)
 {
@@ -215,308 +202,12 @@ CTreeElementTriangle* CTreeControl::CreateTriangleElement(const int& width, cons
 	return treeElementTriangle;
 }
 
-
-
 CTreeElementDelete* CTreeControl::CreateDeleteElement(const int& width, const int& height)
 {
 	auto treeElementDelete = new CTreeElementDelete();
 	treeElementDelete->SetTheme(&themeTree.themeDelete);
 	treeElementDelete->SetZoneSize(width, height);
 	return treeElementDelete;
-}
-
-
-CPositionElement* CTreeControl::RenderStar(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_STAR);
-
-	if (posElement == nullptr)
-	{
-		auto treedataStar = static_cast<CTreeDataStars*>(data);
-		CTreeElementStar* treeElementStar = CreateStarElement(
-			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			data->GetKey(), data->GetValue(),
-			treedataStar->GetNumPhotoId());
-
-		treeElementStar->SetVisible(visible);
-		posElement = CreatePositionElement(
-			xPos, yPos, nbRow, 1, treeElementStar->GetWidth(),
-			themeTree.GetRowHeight(), ELEMENT_STAR, treeElementStar,
-			data);
-	}
-	else
-	{
-		auto* text =
-			static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-
-		text->SetVisible(visible);
-		text->SetElementPos(xPos, yPos);
-
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
-
-}
-
-CPositionElement* CTreeControl::RenderText(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode,
-	bool addDynamic)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TEXTE);
-
-	if (posElement == nullptr)
-	{
-		auto* text = CreateTexteElement(
-			themeTree.GetRowWidth(),
-			themeTree.GetRowHeight(),
-			data->GetKey());
-
-		text->SetVisible(visible);
-
-		posElement = CreatePositionElement(
-			xPos,
-			yPos,
-			nbRow,
-			0,
-			text->GetWidth(),
-			text->GetHeight(),
-			ELEMENT_TEXTE,
-			text,
-			data,
-			addDynamic);
-	}
-	else
-	{
-		auto* text =
-			static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-
-		text->SetVisible(visible);
-		text->SetElementPos(xPos, yPos);
-
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
-}
-
-
-CPositionElement* CTreeControl::RenderTextValue(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TEXTEVALUE);
-
-	if (posElement != nullptr)
-	{
-		auto element_texte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-		element_texte->SetVisible(visible);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-	else
-	{
-		auto tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			data->GetValue());
-		tree_element_texte->SetVisible(visible);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 1, tree_element_texte->GetWidth(),
-			tree_element_texte->GetHeight(), ELEMENT_TEXTEVALUE,
-			tree_element_texte, data, false);
-	}
-	return posElement;
-}
-
-
-CPositionElement* CTreeControl::RenderTextLink(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TEXTE);
-
-	if (posElement != nullptr)
-	{
-		auto element_texte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-		element_texte->SetVisible(visible);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-	else
-	{
-		auto dataLink = static_cast<CTreeDataLink*>(data);
-		auto tree_element_texte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				data->GetKey(), dataLink->GetLinkPath(),
-				dataLink->GetLinkType());
-		tree_element_texte->SetVisible(visible);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
-			tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
-			false);
-	}
-	return posElement;
-}
-
-
-void CTreeControl::AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
-	tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child)
-{
-	wchar_t seps[] = L".";
-	int item = 0;
-	vector<wchar_t> informations;
-	informations.resize(exifKey.size() + 1);
-	wcscpy(&informations[0], exifKey.c_str());
-	wchar_t* token1;
-	wchar_t* token = wcstok(&informations[0], seps, &token1); // C4996
-
-	// Note: strtok is deprecated; consider using strtok_s instead
-	while (token != nullptr)
-	{
-		auto treeData = new CTreeData();
-		treeData->SetKey(token);
-		wchar_t* token2 = wcstok(&informations[0], seps, &token1); // C4996
-
-
-		if (token2 != nullptr)
-		{
-			treeData->SetIsParent(true);
-
-			if (index > 0)
-			{
-				tree<CTreeData*>::iterator it;
-				//Recherche de la clé
-				if (item == 0)
-				{
-
-					it = FindKey(treeData->GetKey());
-				}
-				else
-				{
-					it = FindKey(treeData->GetKey(), child);
-				}
-
-				if (it != nullptr)
-				{
-					child = it;
-					item++;
-					delete(treeData);
-					continue;
-				}
-			}
-
-			if (item > 0)
-			{
-				child = tr.append_child(child, treeData);
-			}
-			else
-			{
-				child = tr.insert(top, treeData);
-			}
-		}
-		else
-		{
-			treeData->SetIsParent(false);
-			treeData->SetValue(exifValue);
-			treeData->SetExifKey(exifKey);
-			tr.append_child(child, treeData);
-		}
-		item++;
-	}
-}
-
-CPositionElement* CTreeControl::RenderCheckBox(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool check,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_CHECKBOX);
-
-	if (posElement == nullptr)
-	{
-		//bool check = GetCheckState(data);
-		CTreeElementCheckBox* tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
-			tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
-
-
-	}
-	else
-	{
-		CTreeElementCheckBox* tree_element_check = static_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
-		tree_element_check->SetVisible(visible);
-		tree_element_check->SetElementPos(xPos, yPos);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
-}
-
-CPositionElement* CTreeControl::RenderTriangle(
-	CTreeData* data,
-	int& xPos,
-	int& yPos,
-	bool visible,
-	RenderMode mode)
-{
-	CPositionElement* posElement = nullptr;
-
-	if (mode == RenderMode::Update)
-		posElement = GetElement(data, ELEMENT_TRIANGLE);
-
-	if (posElement == nullptr)
-	{
-		bool isOpen = GetTriangleState(data);
-		CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
-			themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			isOpen);
-		posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-			treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
-			data);
-
-	}
-	else
-	{
-		CTreeElementTriangle* tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-		tree_element_triangle->SetVisible(visible);
-		tree_element_triangle->SetElementPos(xPos, yPos);
-		posElement->SetX(xPos);
-		posElement->SetY(yPos);
-	}
-
-	return posElement;
 }
 
 CTreeElementTexte* CTreeControl::CreateTexteElement(const int& width, const int& height, const wxString& libelle)
@@ -627,6 +318,21 @@ CPositionElement* CTreeControl::GetElement(CTreeData* data, const int& typeEleme
 
 	return *p;
 
+	/*
+	for (CPositionElement * value : vectorPosElement)
+	{
+		if (value != nullptr)
+		{
+			CTreeData * dataElement = value->GetTreeData();
+			if (dataElement == data && value->GetType() == typeElement)
+			{
+				return value;
+			}
+		}
+	}
+
+	return nullptr;
+	*/
 }
 
 
@@ -667,6 +373,43 @@ CPositionElement* CTreeControl::FindElement(const int& x, const int& y)
 		return nullptr;
 
 	return *p;
+
+	/*
+	for (CPositionElement * value : vectorPosElementDynamic)
+	{
+		if (value != nullptr)
+		{
+			try
+			{
+				CTreeElement * treeElement = value->GetTreeElement();
+				if (treeElement != nullptr)
+				{
+					if (treeElement->IsVisible())
+					{
+						int xPos = 0;
+						if (value->GetRow() > 0)
+							xPos = GetWidthRow(value->GetRow() - 1);
+
+						int x1 = value->GetX() + xPos;
+						int x2 = value->GetX() + xPos + value->GetWidth();
+						int y1 = value->GetY();
+						int y2 = value->GetY() + value->GetHeight();
+						if ((x1 <= x && x <= x2) && (y1 <= y && y <= y2))
+						{
+							return value;
+						}
+					}
+				}
+			}
+			catch (...)
+			{
+
+			}
+		}
+	}
+	
+	return nullptr;
+	*/
 }
 
 CPositionElement* CTreeControl::CreatePositionElement(const int& x, const int& y, const int& numColumn,
@@ -693,7 +436,7 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 		tr.begin(parent), tr.end(parent),
 		[&](const auto& data)
 		{
-			if (data != nullptr)
+			if(data != nullptr)
 				return data->GetKey() == key;
 		}
 	);
@@ -702,10 +445,38 @@ tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTree
 		return nullptr;
 
 	return p;
+
+	/*
+	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+
+	for (auto i = 0; i < parent.number_of_children(); i++)
+	{
+		CTreeData * data = *it;
+		if (data->GetKey() == key)
+		{
+			return it;
+		}
+		it++;
+	}
+
+	return nullptr;
+	*/
 }
 
 tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key)
 {
+	/*
+	tree<CTreeData *>::iterator it = tr.begin();
+	tree<CTreeData *>::iterator itend = tr.end();
+	while (it != itend) {
+		CTreeData * data = *it;
+		if (data->GetKey() == key)
+			return it;
+		it++;
+	}
+
+	return nullptr;
+	*/
 	auto p = std::find_if(
 		tr.begin(), tr.end(),
 		[&](const auto& data)

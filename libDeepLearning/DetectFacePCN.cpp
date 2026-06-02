@@ -10,11 +10,9 @@
 #include <FileUtility.h>
 #include <picture_utility.h>
 #include <ConvertUtility.h>
-#include <appcontext.h>
-extern AppContext application_context;
-
 using namespace cv;
 using namespace dnn;
+
 
 #define M_PI  3.14159265358979323846
 #define CLAMP(x, l, u)  ((x) < (l) ? (l) : ((x) > (u) ? (u) : (x)))
@@ -32,7 +30,7 @@ static Net net_2; // And finally we load the DNN responsible for face recognitio
 static Net net_3; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFacePCN::muDnnAccess;
 bool CDetectFacePCN::isload = false;
-
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 
 CDetectFacePCN::CDetectFacePCN(void)
@@ -178,8 +176,8 @@ void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCom
 
 	try
 	{
-		if (!application_context.clExecCtx.empty())
-			application_context.clExecCtx.bind();
+		if (!clExecCtx.empty())
+			clExecCtx.bind();
 
 #ifdef WIN32
 		wxString detection_model_path = documentPath + "\\model\\PCN.caffemodel";

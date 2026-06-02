@@ -31,9 +31,15 @@
     <File Name="RegardsPDF.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
-    <File Name="FFmpegVideoThumb.h"/>
-    <File Name="FFmpegVideoThumb.cpp"/>
+    <VirtualDirectory Name="MovieDecoder">
+      <File Name="moviedecoder.h"/>
+      <File Name="moviedecoder.cpp"/>
+    </VirtualDirectory>
     <File Name="aspectratio.h"/>
+    <File Name="OpenCVVideoPlayer.h"/>
+    <File Name="OpenCVVideoPlayer.cpp"/>
+    <File Name="VideoPlayer.cpp"/>
+    <File Name="VideoPlayer.h"/>
     <File Name="videothumb.cpp"/>
     <File Name="videothumb.h"/>
   </VirtualDirectory>
@@ -122,7 +128,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="picture_factory.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="jxl.cpp"/>
     <File Name="ascii.cpp"/>
@@ -134,7 +139,6 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="picture_factory.h"/>
     <File Name="avif.h"/>
     <File Name="imageinfo.hpp"/>
     <File Name="jxl.h"/>
@@ -149,6 +153,8 @@
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
@@ -269,6 +275,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

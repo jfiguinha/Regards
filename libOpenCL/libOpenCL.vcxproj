@@ -407,7 +407,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <StringPooling>true</StringPooling>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -625,7 +625,7 @@
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ConformanceMode>false</ConformanceMode>
       <Optimization>Full</Optimization>

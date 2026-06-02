@@ -4,15 +4,19 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="VideoStabilizationCpu.cpp"/>
+    <File Name="VideoStabilizationCuda.cpp"/>
     <File Name="VideoStabilizationOpenCL.cpp"/>
     <File Name="VideoStabilization.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="VideoStabilizationCpu.h"/>
+    <File Name="VideoStabilizationCuda.h"/>
     <File Name="VideoStabilizationOpenCL.h"/>
     <File Name="IEffectVideo.h"/>
     <File Name="VideoStabilization.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options="" Assembler="">
@@ -118,6 +122,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

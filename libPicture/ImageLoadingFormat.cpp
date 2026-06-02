@@ -18,7 +18,7 @@ using namespace Regards::exiv2;
 #endif
 using namespace Regards::Picture;
 
-
+extern float value[256];
 
 int CImageLoadingFormat::GetPosition(const int& x, const int& y)
 {

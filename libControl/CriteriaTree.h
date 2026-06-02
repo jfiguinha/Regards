@@ -27,7 +27,6 @@ namespace Regards
 			void SetFile(const wxString& filename, const int& numPhotoId);
 			wxString GetFilename();
 			void UpdateScreenRatio() override;
-			
 			void CreateElement();
 
 			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
@@ -40,21 +39,10 @@ namespace Regards
 			               const int& posHauteur, bool& update) override;
 			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 			                    const int& posLargeur, const int& posHauteur) override;
-			
+			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 			void AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
 			                  tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child);
 
-			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
-			//void RenderElement(RenderMode mode);
-			//void RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
-
-			
-			CPositionElement* RenderTextLinkValue(
-				CTreeData* data,
-				int& xPos,
-				int& yPos,
-				bool visible);
-			
 
 			int yPos;
 			int rotation;

@@ -1,8 +1,8 @@
 #include <header.h>
 #include "realesrgan.h"
 #include "Sig17Slice.h"
-extern ncnn::VulkanDevice* vkdev;
 
+extern ncnn::VulkanDevice* vkdev;
 
 RealESRGAN::RealESRGAN()
 {

@@ -76,78 +76,11 @@ namespace Regards::Window
 		virtual void UpdateScreenRatio() = 0;
 
 	protected:
-
-		void HideAll();
-
-		virtual bool GetCheckState(CTreeData* data)
-		{
-			return true;
-		}
-
-		virtual bool GetTriangleState(CTreeData* data)
-		{
-			return true;
-		}
-
-		enum class RenderMode
-		{
-			Create,
-			Update
-		};
-
-		CPositionElement* RenderStar(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
-		CPositionElement* RenderText(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode,
-			bool addDynamic = false);
-
-		CPositionElement* RenderCheckBox(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool check,
-			bool visible,
-			RenderMode mode);
-
-		CPositionElement* RenderTriangle(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
-		CPositionElement* RenderTextValue(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
-		CPositionElement* RenderTextLink(
-			CTreeData* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
 		wxColour GetBackgroundColour(const int& yPos);
-
-		void AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
-			tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child);
 
 		//Tree Window
 		tree<CTreeData*>::iterator FindKey(const wxString& key, tree<CTreeData*>::iterator& parent);
 		tree<CTreeData*>::iterator FindKey(const wxString& key);
-
 		void EraseChildTree(tree<CTreeData*>::sibling_iterator& parent);
 		void ClearData();
 

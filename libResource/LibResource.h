@@ -12,7 +12,7 @@ public:
 	~CLibResource()
 	{
 	};
-	static bool InitializeSQLServerDatabase(const wxString& folder);
+	static void InitializeSQLServerDatabase(const wxString& folder);
 	static void KillSqlEngine();
 	static wxString LoadBitmapFromResource(const wxString& idName);
 	static wxString LoadStringFromResource(const wxString& idName, const int& idLang);

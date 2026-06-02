@@ -11,9 +11,6 @@ public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam() override;
 
-	int GetDetectRotation();	
-	void SetDetectRotation(const int& isDetectRotation);
-
 	int GetThumbnailOpenCV();
 	void SetThumbnailOpenCV(const int& isThumbnailOpenCV);
 
@@ -231,7 +228,6 @@ protected:
 	int useSuperResolution = 0;
 	int skinWindowMode = 0;
 
-	int isDetectRotation = 0;
 	int videoFaceDetection = 0;
 	int faceDetection = 1;
 	int fastFaceDetection = 1;

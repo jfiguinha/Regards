@@ -276,7 +276,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	}
 
 	toolbarWindow = infosToolbar;
-	windowVisible = -1;
+
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
 }
@@ -316,13 +316,8 @@ void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 		infosToolbar->SetPictureThumbnailToolbar();
+		infosToolbar->SetInfosActif();
 		infosToolbar->SetMapInactif();
-
-		if (windowVisible != WM_INFOS)
-		{
-			windowVisible = WM_INFOS;
-			this->ClickShowButton(WM_INFOS);
-		}
 		LoadInfo();
 		this->isVideo = false;
 	}
@@ -353,14 +348,14 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		}
 
 		delete fileGeolocalisation;
-
-
-		if (windowVisible != WM_INFOS)
+		if (windowVisible == WM_MAPS && firstTime && hasGps)
+			ClickShowButton(WM_MAPS);
+		else if (windowVisible == WM_MAPS && !hasGps)
 		{
-			windowVisible = WM_INFOS;
-			this->ClickShowButton(WM_INFOS);
+			ClickShowButton(WM_INFOS);
 		}
-		LoadInfo();
+		else
+			LoadInfo();
 		this->isVideo = true;
 		firstTime = false;
 	}
@@ -386,17 +381,21 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 
 		GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 
+		if (windowVisible == WM_INFOS)
+			infosToolbar->SetInfosActif();
+
 		delete fileGeolocalisation;
 
 		this->isVideo = false;
 
-
-		if (windowVisible != WM_INFOS)
+		if (windowVisible == WM_MAPS && firstTime && hasGps)
+			ClickShowButton(WM_MAPS);
+		else if (windowVisible == WM_MAPS && !hasGps)
 		{
-			windowVisible = WM_INFOS;
-			this->ClickShowButton(WM_INFOS);
+			ClickShowButton(WM_INFOS);
 		}
-		LoadInfo();
+		else
+			LoadInfo();
 
 		firstTime = false;
 	}

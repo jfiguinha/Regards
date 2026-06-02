@@ -10,7 +10,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/timestamp.h>
 }
-#include <FFmpegVideoThumb.h>
+#include <OpenCVVideoPlayer.h>
 #include <wx/mstream.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
@@ -167,7 +167,7 @@ private:
 
 	cv::Mat frameOutput;
 	cv::Mat frameOutputWithoutEffect;
-	Regards::Video::CFFmpegVideoThumb * capture = nullptr;
+	Regards::Video::COpenCVVideoPlayer * capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
     AVPixelFormat outputFormat = AV_PIX_FMT_YUV420P;
 };

@@ -47,6 +47,7 @@ namespace Regards
 
 			virtual int GetOrientation() = 0;
 			virtual cv::Mat GetVideoFrame(const bool& applyOrientation = true, const bool& invertRotation = true) = 0;
+			virtual cv::Mat GetVideoThumbnailFrame(const int& thumbnailWidth, const int& thumbnailHeight) = 0;
 		};
 	}
 }

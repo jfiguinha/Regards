@@ -50,16 +50,10 @@ namespace Regards
 			tree<CTreeData*>::iterator FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle);
 
 			//Draw Tree
-			void RenderElement(RenderMode mode);
-			void RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
-
-			CPositionElement* RenderDelete(
-				CTreeDataCategory* data,
-				int& xPos,
-				int& yPos,
-				bool visible,
-				RenderMode mode);
-
+			void CreateElement();
+			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
+			void UpdateElement(const bool& init = false);
+			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init);
 			void InitKeyWordCategorie(tree<CTreeData*>::iterator parent, int numParent);
 			//Gestion des check box
 			bool GetCheckState(const wxString& exifKey, const wxString& key);

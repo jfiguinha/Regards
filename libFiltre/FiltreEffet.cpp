@@ -9,6 +9,12 @@
 #include <config_id.h>
 #include <ParamInit.h>
 
+#ifdef USE_CUDA
+#include "CudaEffect.h"
+#endif
+
+extern float value[256];
+
 using namespace Regards::FiltreEffet;
 using namespace std;
 
@@ -168,7 +174,26 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, co
 
 	bool local_useOpenCL = false;
 
-	local_useOpenCL = regardsParam->GetIsOpenCLSupport();	
+#ifdef USE_CUDA
+
+	//(regardsParam->GetIsUseCuda()
+	//bool useCuda = regardsParam->GetIsUseCuda();
+	bool supportCuda = regardsParam->GetIsCudaSupport();
+	if (useCuda && supportCuda)
+	{
+		filtreEffet = new CCudaEffect(backColor, bitmap);
+		this->numLib = LIBCUDA;
+	}
+	else
+		local_useOpenCL = regardsParam->GetIsOpenCLSupport();
+#else
+
+	local_useOpenCL = regardsParam->GetIsOpenCLSupport();
+
+#endif
+
+	
+	
 
 	if (local_useOpenCL && useOpenCL)
 	{

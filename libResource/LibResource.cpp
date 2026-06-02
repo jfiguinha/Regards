@@ -25,7 +25,7 @@ wxString CLibResource::GetPhotoCancel()
 #endif
 }
 
-bool CLibResource::InitializeSQLServerDatabase(const wxString& folder)
+void CLibResource::InitializeSQLServerDatabase(const wxString& folder)
 {
 	auto libResource = new CSqlLibResource(true, true);
 	wxString filename = folder;
@@ -35,7 +35,7 @@ bool CLibResource::InitializeSQLServerDatabase(const wxString& folder)
     filename.append(L"/resource.db");
 #endif
 	printf("ResourceDB %s \n", CConvertUtility::ConvertToUTF8(filename));
-	return CSqlEngine::Initialize(filename, L"ResourceDB", libResource);
+	CSqlEngine::Initialize(filename, L"ResourceDB", libResource);
 }
 
 void CLibResource::KillSqlEngine()

@@ -10,7 +10,6 @@
 #include <EffectParameter.h>
 #include <MouseUpdate.h>
 #include <vec3.h>
-#include <unordered_map>
 using namespace Regards::OpenGL;
 
 //#define RENDEROPENGL WM_USER+1
@@ -77,26 +76,21 @@ namespace Regards::OpenGL
 
 		GLTexture* GetTextureDisplay();
         
-       
+        void RenderChar(char c, float x, float y, float scale, vec3f color);
+        
 	protected:
         
 		void LoadCharacter(unsigned char c, CFreeTypeFace & face);
-        void RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color);
-
-        void RenderQuadInternal(float width,
-                                       float height,
-                                       int left,
-                                       int top,
-                                       bool inverted,
-                                       bool flipH,
-                                       bool flipV);
+        void RenderCharacter(GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color);
+		void CreateDefaultOpenCLContext();
+		void initializeContextFromGL();
 		GLTexture* textureDisplay;
 		int width;
 		int height;
 		GLuint base;
 		wxString version;
 		float myGLVersion;
-		std::unordered_map<wxString, std::unique_ptr<COpenGLShader>> shaderMap;
+		vector<COpenGLShader*> listShader;
 		bool isInit = false;
 		IMouseUpdate* mouseUpdate;
 

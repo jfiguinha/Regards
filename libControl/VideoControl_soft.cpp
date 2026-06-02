@@ -24,8 +24,13 @@
 #include <OpenCLEffectVideo.h>
 #include "DataAVFrame.h"
 #include <FaceDetector.h>
-#include <appcontext.h>
+#ifdef USE_CUDA
+#include <CudaEffectVideo.h>
+#endif
 using namespace Regards::OpenCV;
+#ifdef USE_CUDA
+using namespace Regards::Cuda;
+#endif
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 
@@ -36,10 +41,13 @@ using namespace Regards::Sqlite;
 #define TIMER_PLAYSTOP 0x10003
 #define TIMER_SUBTITLE 0x10004
 
-extern AppContext application_context;
+extern bool firstElementToShow;
 AVFrame* copyFrameBuffer = nullptr;
+extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 
+
+extern float clamp(float val, float minval, float maxval);
 
 
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, IVideoInterface* eventPlayer)
@@ -1234,6 +1242,18 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
 
+#ifdef USE_CUDA
+
+	if (IsSupportCuda())
+	{
+		if (openclEffectYUV == nullptr)
+		{
+			openclEffectYUV = new CCudaEffectVideo();
+		}
+	}
+
+#endif
+
    // printf("CVideoControlSoft::OnPaint3D 1 \n");
 
 	if (IsSupportOpenCL() && openclEffectYUV == nullptr)
@@ -1512,7 +1532,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (!videoStartRender)
     {
-        if(application_context.firstElementToShow)
+        if(firstElementToShow)
             playStartTimer->Start(1000, true);
         else
             playStartTimer->Start(100, true);

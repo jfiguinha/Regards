@@ -51,21 +51,10 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numSuperResolution = 0;
 	useSuperResolution = 0;
 	cudaSupport = 0;
-	isDetectRotation = 0;
     useCuda = 0;
     openGLOutputColor = "RGBA";
     videoEffectParameter = new CVideoEffectParameter();
 
-}
-
-int CRegardsConfigParam::GetDetectRotation()
-{
-	return isDetectRotation;
-}
-
-void CRegardsConfigParam::SetDetectRotation(const int& isDetectRotation)
-{
-	this->isDetectRotation = isDetectRotation;
 }
 
 CVideoEffectParameter * CRegardsConfigParam::GetVideoEffectParameter()
@@ -534,7 +523,6 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("cudaSupport", to_string(cudaSupport)));
     sectionPosition->append_node(node("useCuda", to_string(useCuda)));
 	sectionPosition->append_node(node("inverseRotation", to_string(inverseRotation)));
-	sectionPosition->append_node(node("detectRotation", to_string(isDetectRotation)));
 }
 
 void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
@@ -924,14 +912,6 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		
 		isThumbnailOpenCV = atoi(child_node->value());
 	}
-	child_node = position_node->first_node("detectRotation");
-	if (child_node != nullptr)
-	{
-
-
-		isDetectRotation = atoi(child_node->value());
-	}
-	
 }
 
 

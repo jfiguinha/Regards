@@ -27,7 +27,7 @@
 #define HQDN3D_SPATIAL_CHROMA_DEFAULT  3.0f
 #define HQDN3D_TEMPORAL_LUMA_DEFAULT   6.0f
 
-
+extern float value[256];
 
 #define ABS(A) ( (A) > 0 ? (A) : -(A) )
 

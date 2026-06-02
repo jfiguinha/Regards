@@ -1,0 +1,180 @@
+#include "header.h"
+#include "OpenCVVideoPlayer.h"
+#include <ConvertUtility.h>
+using namespace Regards::Video;
+using namespace cv;
+
+COpenCVVideoPlayer::COpenCVVideoPlayer(const wxString& fileName) : IVideoPlayer(fileName)
+{
+	filename = CConvertUtility::ConvertToStdString(fileName);
+	capture = new cv::VideoCapture(filename, cv::CAP_FFMPEG);
+
+	isOpen = capture->isOpened();
+
+	/*
+	cv::Mat frame;
+
+	if (isOpen)
+		*capture >> frame;
+
+	cv::Size s = frame.size();
+	height = s.height;
+	width = s.width;
+	*/
+}
+
+AspectRatio COpenCVVideoPlayer::GetAspectRatio()
+{
+    AspectRatio aspectRatio;
+  	if (isOpen)
+    {
+        aspectRatio.num = capture->get(CAP_PROP_SAR_NUM);
+        aspectRatio.den = capture->get(CAP_PROP_SAR_DEN);  
+    }
+    return aspectRatio;
+}
+
+COpenCVVideoPlayer::~COpenCVVideoPlayer()
+{
+	delete capture;
+}
+
+
+bool COpenCVVideoPlayer::isOpened()
+{
+	return isOpen;
+}
+
+void COpenCVVideoPlayer::SeekToBegin()
+{
+	if (isOpen)
+		capture->set(CAP_PROP_POS_FRAMES, 0);
+}
+
+void COpenCVVideoPlayer::SkipFrame(const int& nbFrame)
+{
+	if (!isOpen)
+		return;
+
+	capture->set(CAP_PROP_POS_FRAMES, nbFrame);
+
+}
+
+int COpenCVVideoPlayer::GetDuration()
+{
+	double fps = capture->get(CAP_PROP_FPS);
+	double frame_count = int(capture->get(CAP_PROP_FRAME_COUNT));
+	double duration = frame_count / fps;
+
+	if (!isOpen)
+		return 0;
+
+	return duration;
+}
+
+int COpenCVVideoPlayer::GetFps()
+{
+	if(isOpen)
+		return capture->get(CAP_PROP_FPS);
+	return 0;
+}
+
+int COpenCVVideoPlayer::GetTotalFrame()
+{
+	if (isOpen)
+		return capture->get(CAP_PROP_FRAME_COUNT);
+	return 0;
+}
+
+int COpenCVVideoPlayer::GetWidth()
+{
+	if (isOpen)
+		return capture->get(CAP_PROP_FRAME_WIDTH);
+	return width;
+}
+
+int COpenCVVideoPlayer::GetHeight()
+{
+	if (isOpen)
+		return capture->get(CAP_PROP_FRAME_HEIGHT);
+	return height;
+}
+
+bool COpenCVVideoPlayer::IsOk()
+{
+	return isOpen;
+}
+
+void COpenCVVideoPlayer::GetAspectRatio(int& ascpectNominator, int& ascpectDenominator)
+{
+	if (isOpen)
+	{
+		ascpectNominator = capture->get(CAP_PROP_SAR_NUM);
+		ascpectDenominator = capture->get(CAP_PROP_SAR_DEN);
+	}
+	else
+	{
+		ascpectNominator = 0;
+		ascpectDenominator = 0;
+	}
+}
+
+int COpenCVVideoPlayer::GetOrientation()
+{
+	if (!isOpen)
+		return 0;
+	int orientation = capture->get(CAP_PROP_ORIENTATION_META);
+	if (orientation < -360 || orientation > 360)
+		orientation = 0;
+	return orientation;
+}
+
+int COpenCVVideoPlayer::SeekToPos(const int& sec)
+{
+	if (!isOpen)
+		return -1;
+
+	double fps = capture->get(CAP_PROP_FPS);
+	double noFrame = fps * sec;
+	if (sec != 0)
+		capture->set(CAP_PROP_POS_FRAMES, noFrame);
+
+	return 0;
+}
+
+cv::Mat COpenCVVideoPlayer::GetVideoThumbnailFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+{
+	return cv::Mat();
+}
+
+cv::Mat COpenCVVideoPlayer::GetVideoFrame(const bool& applyOrientation, const bool& invertRotation)
+{
+	cv::Mat frame;
+	capture->read(frame);
+    
+	if (!frame.empty())
+	{
+		//cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+
+		if (applyOrientation)
+		{
+
+			int orientation = GetOrientation();
+
+			switch (orientation)
+			{
+			case 90:
+				cv::rotate(frame, frame, cv::ROTATE_90_CLOCKWISE);
+				break;
+			case 180:
+				cv::rotate(frame, frame, cv::ROTATE_180);
+				break;
+			case 270:
+				cv::rotate(frame, frame, cv::ROTATE_90_COUNTERCLOCKWISE);
+				break;
+			}
+		}
+
+	}
+	return frame;
+}

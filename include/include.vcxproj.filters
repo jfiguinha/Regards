@@ -66,9 +66,6 @@
     <ClInclude Include="avir_step.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="appcontext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header.cpp">
