@@ -3,9 +3,6 @@
 
 #define TYPE_CPU 1
 #define TYPE_OPENCL 2
-#ifdef USE_CUDA
-#define TYPE_CUDA 3
-#endif
 
 namespace cv
 {

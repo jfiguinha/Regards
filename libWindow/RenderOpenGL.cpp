@@ -84,19 +84,8 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		{
              //printf("CRenderOpenGL::Init 1 OpenCL Support : %d GetIsOpenCLOpenGLInteropSupport : %d \n",regardsParam->GetIsOpenCLSupport(), regardsParam->GetIsOpenCLOpenGLInteropSupport());
             
-#ifdef USE_CUDA
-
-			if (regardsParam->GetIsCudaSupport())
-			{
-				openclOpenGLInterop = false;
-				platformName = "NVIDIA";
-				COpenCLContext::AssociateToVulkan();
-			}
-			else if (regardsParam->GetIsOpenCLSupport())
-#else
 			 COpenCLContext::AssociateToVulkan();
 			 if (regardsParam->GetIsOpenCLSupport())
-#endif
 			{
                 
 #ifdef TOTO

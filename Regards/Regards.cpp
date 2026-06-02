@@ -26,12 +26,6 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
-#ifdef USE_CUDA
-#include <opencv2/cudaarithm.hpp>
-#include <cudnn.h>
-using namespace cv::cuda;
-#endif
-
 int openclOpenGLInterop = 0;
 string platformName = "";
 bool isOpenCLInitialized = false;
@@ -233,80 +227,8 @@ void MyApp::CheckOpenCLAvailability(bool configFileExist)
 {
 
 	bool testOpenCL = true;
-
-#ifdef USE_CUDA
-
-	printf("Test if Is Use Cuda \n");
-
-	if (!configFileExist)
-	{
-		int cuda_devices_number = getCudaEnabledDeviceCount();
-		if (cuda_devices_number > 0)
-		{
-			regardsParam->SetIsUseCuda(1);
-			regardsParam->SetIsCudaSupport(1);
-		}
-	}
-
-	if (regardsParam->GetIsUseCuda())
-	{
-		int cuda_devices_number = getCudaEnabledDeviceCount();
-
-		if (cuda_devices_number > 0)
-		{
-			printf("cuda_devices_number : %d \n", cuda_devices_number);
-
-			try
-			{
-				cv::cuda::GpuMat test = cv::cuda::GpuMat(256, 256, CV_8UC4);
-			}
-			catch (Exception& e)
-			{
-				const char* err_msg = e.what();
-				std::cout << "exception caught: " << err_msg << std::endl;
-				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-				exit(0);
-			}
-			cout << "CUDA Device(s) Number: " << cuda_devices_number << endl;
-			DeviceInfo _deviceInfo;
-			bool _isd_evice_compatible = _deviceInfo.isCompatible();
-			cout << "CUDA Device(s) Compatible: " << _isd_evice_compatible << endl;
-
-			regardsParam->SetIsCudaSupport(1);
-			testOpenCL = false;
-
-			auto cudnn_bversion = cudnnGetVersion();
-			auto cudnn_major_bversion = cudnn_bversion / 1000, cudnn_minor_bversion = cudnn_bversion % 1000 / 100;
-			if (cudnn_major_bversion != CUDNN_MAJOR || cudnn_minor_bversion < CUDNN_MINOR)
-			{
-				std::ostringstream oss;
-				oss << "cuDNN reports version " << cudnn_major_bversion << "." << cudnn_minor_bversion << " which is not compatible with the version " << CUDNN_MAJOR << "." << CUDNN_MINOR << " with which OpenCV was built";
-				//CV_LOG_WARNING(NULL, oss.str().c_str());
-			}
-			else
-			{
-				cout << "CuDNN is OK" << endl;
-			}
-		}
-		else
-		{
-			regardsParam->SetIsCudaSupport(0);
-			printf("cuda platform not found \n");
-		}
-
-
-
-	}
-	else
-		regardsParam->SetIsCudaSupport(0);
-
-#else
-
 	printf("Not Test if Is Use Cuda \n");
 	regardsParam->SetIsCudaSupport(0);
-
-#endif
-
 
 	if (testOpenCL)
 	{
