@@ -8,15 +8,12 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 
-
 #define TYPE_SLIDE 1
 #define TYPE_CHECKBOX 2
 #define TYPE_LISTBOX 3
 
 namespace Regards::Window
 {
-	class CTreeDataEffect;
-
 	class CFiltreEffect : public CTreeControl, public IFiltreEffectInterface
 	{
 	public:
@@ -41,23 +38,10 @@ namespace Regards::Window
 		void UnclickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 		                      const int& posLargeur, const int& posHauteur) override;
 
-		CPositionElement* RenderListBox(
-			CTreeDataEffect * data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
-		CPositionElement* RenderSlide(
-			CTreeDataEffect* data,
-			int& xPos,
-			int& yPos,
-			bool visible,
-			RenderMode mode);
-
-		void RenderElement(RenderMode mode);
-		void RenderChildTree(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
-
+		void UpdateElement();
+		void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
+		void CreateElement();
+		void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 		void AddTreeInfos(const wxString& exifKey, CTreeElementValue* position, void* value, int typeValue,
 		                  const int& index, tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child,
 		                  const int& type);
