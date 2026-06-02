@@ -45,7 +45,7 @@ using namespace Regards::Sqlite;
 
 bool firstTime = true;
 constexpr auto TIMER_LOADPICTURESTART = 0x10005;
-extern wxImage defaultPicture;
+
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Construction / destruction

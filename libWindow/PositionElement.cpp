@@ -6,7 +6,8 @@ using namespace Regards::Window;
 
 CPositionElement::~CPositionElement()
 {
-	delete(treeElement);
+	if(treeElement != nullptr)
+		delete(treeElement);
 }
 
 int CPositionElement::GetRow()
