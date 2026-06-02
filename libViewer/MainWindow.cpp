@@ -183,8 +183,14 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	isCheckingFile = true;
 	std::this_thread::sleep_for(100ms);
 
-	CSqlPhotosWithoutThumbnail sqlPhoto;
-	sqlPhoto.GetPhotoList(&photoList, 0);
+	{
+		std::lock_guard<std::mutex> lock(photoListMutex);
+		CSqlPhotosWithoutThumbnail sqlPhoto;
+		sqlPhoto.GetPhotoList(&photoList, 0);
+	}
+
+
+
 	versionUpdate = new std::thread(NewVersionAvailable, this);
 
 	isCheckNewVersion = true;
@@ -266,7 +272,10 @@ void CMainWindow::OnEndCheckFile(wxCommandEvent& event)
 
 void CMainWindow::OnRefreshThumbnail(wxCommandEvent& event)
 {
+	std::lock_guard<std::mutex> lock(photoListMutex);
 	nbProcess = 0;
+	thumbnailPos = 0;
+	photoList.clear();
 	listFile.clear();
 	processIdle = true;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
@@ -1088,6 +1097,73 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 }
 
 
+bool CMainWindow::Tick(int nbProcesseur, int nbElementInIconeList)
+{
+	bool hasPendingWork = false;
+
+	// 1. Essaie de dispatcher un item si le quota n'est pas atteint
+	{
+		std::lock_guard<std::mutex> lock(photoListMutex);
+
+		const bool canProcess =
+			nbElementInIconeList > 0 &&
+			!photoList.empty() &&
+			nbProcess < nbProcesseur;
+
+		if (canProcess)
+		{
+			wxString path = photoList.front();
+			photoList.pop_front();
+
+			if (listFile.insert(path).second)   // pas encore en cours
+			{
+				// Notifie la barre de statut
+				auto* evt = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+				evt->SetExtraLong(static_cast<long>(photoList.size()));
+				wxQueueEvent(this, evt);
+
+				int nb = nbProcess.load();
+				thumbnailProcess->ProcessThumbnail(path, 0, 0, nb);
+				nbProcess.store(nb);
+
+				hasPendingWork = true;
+			}
+		}
+	}
+
+	// 2. Recharge la file si elle est vide
+	{
+		std::unique_lock<std::mutex> lock(photoListMutex);
+
+		if (photoList.empty())
+		{
+			CSqlPhotosWithoutThumbnail sqlPhoto;
+			sqlPhoto.GetPhotoList(&photoList, 0);
+			const bool stillEmpty = photoList.empty();
+			lock.unlock();
+
+			if (stillEmpty)
+			{
+				// Plus rien à générer — informe la barre de statut
+				auto* evt = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
+				evt->SetExtraLong(0L);
+				wxQueueEvent(this, evt);
+				// hasPendingWork reste false
+			}
+			else
+			{
+				hasPendingWork = true;
+			}
+		}
+		else
+		{
+			hasPendingWork = true;
+		}
+	}
+
+	return hasPendingWork;
+}
+
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
@@ -1157,52 +1233,12 @@ void CMainWindow::ProcessIdle()
 	}
 
 
-	if (nbElementInIconeList > 0 && photoList.size() > 0 && nbProcess < nbProcesseur)
-	{
-		wxString path = *photoList.begin();
-
-		std::map<wxString, bool>::iterator it = listFile.find(path);
-		if (it == listFile.end())
-		{
-			listFile[path] = true;
-			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-			event->SetExtraLong(photoList.size());
-			wxQueueEvent(this, event);
-			thumbnailProcess->ProcessThumbnail(path, 0, 0, nbProcess);
-		}
-		photoList.erase(photoList.begin());
-	}
-
-	if (photoList.empty())
-	{
-		nbElement = 0;
-		hasDoneOneThings = false;
-		needToRefresh = true;
-		auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-		event->SetExtraLong(nbElement);
-		wxQueueEvent(this, event);
-	}
-	else
-		hasDoneOneThings = true;
-
-	if (photoList.empty())
-	{
-		CSqlPhotosWithoutThumbnail sqlPhoto;
-		sqlPhoto.GetPhotoList(&photoList, 0);
-		if (photoList.empty())
-		{
-			nbElement = 0;
-			hasDoneOneThings = false;
-			needToRefresh = true;
-			auto event = new wxCommandEvent(wxEVENT_UPDATEMESSAGE);
-			event->SetExtraLong(nbElement);
-			wxQueueEvent(this, event);
-		}
-		else
-			hasDoneOneThings = true;
-	}
-	else
-		hasDoneOneThings = true;
+	//---------------------------------------
+	// Scheduling des miniatures
+	//---------------------------------------
+	nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
+	if (Tick(nbProcesseur, nbElementInIconeList))
+		processIdle = true;
 
 
 	if (hasDoneOneThings)
@@ -1236,41 +1272,49 @@ void CMainWindow::UpdateMessage(wxCommandEvent& event)
 
 }
 
+void CMainWindow::PrioritizeFile(const wxString& filename)
+{
+	std::lock_guard<std::mutex> lock(photoListMutex);
+	auto it = std::find(photoList.begin(), photoList.end(), filename);
+	if (it != photoList.end())
+		photoList.erase(it);
+	photoList.push_front(filename);
+}
+
+void CMainWindow::PrioritizeFiles(const std::vector<wxString>& files)
+{
+	std::lock_guard<std::mutex> lock(photoListMutex);
+	// Insertion en ordre inversé pour que files[0] se retrouve en tête
+	for (int i = static_cast<int>(files.size()) - 1; i >= 0; --i)
+	{
+		const wxString& name = files[i];
+		auto it = std::find(photoList.begin(), photoList.end(), name);
+		if (it != photoList.end())
+			photoList.erase(it);
+		photoList.push_front(name);
+	}
+}
+
 void CMainWindow::OnProcessThumbnail(wxCommandEvent& event)
 {
 	if (event.GetInt() == 0)
 	{
-
-		std::vector<wxString>* listIconeToGenerate = (std::vector<wxString>*)event.GetClientData();
-		if (listIconeToGenerate != nullptr)
+		auto* list = static_cast<vector<wxString>*>(event.GetClientData());
+		if (list)
 		{
-			for (int i = 0; i < listIconeToGenerate->size(); i++)
-			{
-				wxString localName = listIconeToGenerate->at(listIconeToGenerate->size() - 1 - i);
-
-				// OPTIMIZATION: Use single pass with emplace instead of erase + insert (O(n) → O(1) insertion)
-				std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
-				if (itPhoto != photoList.end())
-				{
-					photoList.erase(itPhoto);
-				}
-				photoList.emplace(photoList.begin(), localName);
-			}
-			listIconeToGenerate->clear();
-			delete listIconeToGenerate;
+			PrioritizeFiles(*list);
+			list->clear();
+			delete list;
 		}
 	}
 	else
 	{
-		wxString* filename = (wxString*)event.GetClientData();
-		wxString localName = wxString(*filename);
-
-		std::vector<wxString>::iterator itPhoto = std::find(photoList.begin(), photoList.end(), localName);
-		if (itPhoto != photoList.end())
-			photoList.erase(itPhoto);
-
-		photoList.insert(photoList.begin(), localName);
-		delete filename;
+		auto* fn = static_cast<wxString*>(event.GetClientData());
+		if (fn)
+		{
+			PrioritizeFile(*fn);
+			delete fn;
+		}
 	}
 	processIdle = true;
 }

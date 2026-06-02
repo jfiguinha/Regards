@@ -1,9 +1,7 @@
 #pragma once
-#include <Photos.h>
 #include <WindowMain.h>
 #include <ToolbarInterface.h>
-#include "IconeList.h"
-#include <InfosSeparationBar.h>
+#include <unordered_set>
 using namespace Regards::Window;
 
 
@@ -129,10 +127,23 @@ private:
 		void UpdateMessage(wxCommandEvent& event);
 
 		void UpdateThumbnailIcone(wxCommandEvent& event);
+
+		void PrioritizeFile(const wxString& filename);
+		void PrioritizeFiles(const std::vector<wxString>& files);
+		bool Tick(int nbProcesseur, int nbElementInIconeList);
+
+		struct WxStringHash
+		{
+			std::size_t operator()(const wxString& v) const
+			{
+				return std::hash<std::wstring>{}(v.ToStdWstring());
+			}
+		};
+
 		int nbElementInIconeList = 0;
 		int nbPhotoElement = 0;
 		int nbElement = 0;
-		int nbProcess = 0;
+		std::atomic<int> nbProcess{0};
 		bool stopToGetNbElement = false;
 		int thumbnailPos = 0;
 		//std::map<wxString, bool> listFile;
@@ -175,9 +186,12 @@ private:
 		wxString firstFileToShow = "";
 		wxString oldRequest = "";
 		bool init = true;
-		vector<wxString> photoList;
 		CFolderProcess* folderProcess = nullptr;
-		std::map<wxString, bool> listFile;
+
+		mutable std::mutex photoListMutex;
+		std::deque<wxString>                              photoList;
+		std::unordered_set<wxString, WxStringHash>        listFile;
+
 		CThumbnailProcess* thumbnailProcess = nullptr;
 	};
 }

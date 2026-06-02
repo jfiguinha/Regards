@@ -125,44 +125,20 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData*>& vectorData)
 	}
 }
 
-bool CThumbnail::ItemCompFonctPath(wxString filepath, CIcone* icone)
-/* Définit une fonction. */
-{
-	CThumbnailData* pThumbnailData = icone->GetData();
-	if (pThumbnailData->GetFilename() == filepath)
-		return true;
-	return false;
-}
 
 CIcone* CThumbnail::GetIconeByPath(const wxString& filepath)
 {
-	pItemStringCompFonct _pf = &ItemCompFonctPath;
-	return iconeList->FindElement(filepath, &_pf);
-}
-
-
-bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent)
-/* Définit une fonction. */
-{
-	if (icone != nullptr)
-	{
-		CThumbnailData* pThumbnailData = icone->GetData();
-		if (pThumbnailData->GetNumPhotoId() == xPos)
-			return true;
-	}
-	return false;
+	return iconeList->FindElementByFilename(filepath);
 }
 
 CIcone* CThumbnail::GetIconeById(const int& idPhoto)
 {
-	pItemCompFonct _pf = &ItemCompFonctPhotoId;
-	return iconeList->FindElement(idPhoto, 0, &_pf, this);
+	return iconeList->FindElementPhotoId(idPhoto);
 }
 
 int CThumbnail::GetNumItemById(const int& idPhoto)
 {
-	pItemCompFonct _pf = &ItemCompFonctPhotoId;
-	CIcone* icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
+	CIcone* icone = iconeList->FindElementPhotoId(idPhoto);
 	if (icone != nullptr)
 		return icone->GetNumElement();
 	return 0;

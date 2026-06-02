@@ -68,7 +68,7 @@ namespace Regards::Window
 
 		void Resize() override;
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
-		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
 		virtual void ProcessVideo() {};
@@ -148,7 +148,7 @@ namespace Regards::Window
 
 
 		CIcone* GetIconeByPath(const wxString& filepath);
-		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
+
 		bool UpdateThumbnail(CIcone* pBitmapIcone);
 		//------------------------------------------------------------
 		//Variable

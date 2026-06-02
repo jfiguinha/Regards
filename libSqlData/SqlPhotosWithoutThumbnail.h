@@ -12,7 +12,7 @@ namespace Regards
 		public:
 			CSqlPhotosWithoutThumbnail();
 			~CSqlPhotosWithoutThumbnail() override;
-			void GetPhotoList(vector<wxString>* photoList, int nbElement = 20);
+			void GetPhotoList(std::deque<wxString> * photoList, int nbElement = 20);
 			int GetPhotoElement();
 
 		private:
@@ -22,7 +22,7 @@ namespace Regards
 			int typeResult;
 			int priority;
 			int nbElement = 0;
-			vector<wxString>* photoList;
+			std::deque<wxString> * photoList;
 			wxString fullpath;
 		};
 	}

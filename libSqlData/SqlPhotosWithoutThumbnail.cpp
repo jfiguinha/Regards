@@ -24,7 +24,7 @@ int CSqlPhotosWithoutThumbnail::GetPhotoElement()
 	return nbElement;
 }
 
-void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString>* photoList, int nbElement)
+void CSqlPhotosWithoutThumbnail::GetPhotoList(std::deque<wxString> * photoList, int nbElement)
 {
 	this->nbElement = nbElement;
 	this->photoList = photoList;

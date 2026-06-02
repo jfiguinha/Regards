@@ -1,5 +1,6 @@
 #pragma once
 #include "Icone.h"
+#include <tbb/concurrent_unordered_map.h>
 
 namespace Regards::Window
 {
@@ -20,7 +21,6 @@ namespace Regards::Window
 		CIcone* FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent);
 		void SortById();
 		CIcone* FindElementPhotoId(const int& photoId);
-		CIcone* FindElement(wxString filename, pItemStringCompFonct * _pf);
 		CIcone* FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf);
 		bool FindElement(wxString filename);
 		void SortByFilename();
@@ -29,6 +29,8 @@ namespace Regards::Window
 		CIcone * FindElementByFilename(wxString filename);
 	private:
 		IconeVector pIconeList;
+		tbb::concurrent_unordered_map<wxString, CIcone*> pIconeByFilename;
+		tbb::concurrent_unordered_map<int, CIcone*> pIconeByPhotoId;
 		//mutex muList;
 	};
 }
