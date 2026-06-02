@@ -37,16 +37,19 @@ public:
 	void LoadWxDefaultPicture(const wxString& fileName)
 	{
 		defaultPicture = wxImage(fileName);
+		defaultPictureMat = WxToCvMat(defaultPicture);
 	}
 
 	void LoadWxDefaultPictureThumbnail(const wxString& fileName)
 	{
 		defaultPictureThumbnailPicture = wxImage(fileName);
+		defaultPictureMatThumbnailPicture = WxToCvMat(defaultPictureThumbnailPicture);
 	}
 
 	void LoadWxDefaultPictureThumbnailVideo(const wxString& fileName)
 	{
 		defaultPictureThumbnailVideo = wxImage(fileName);
+		defaultPictureMatThumbnailVideo = WxToCvMat(defaultPictureThumbnailVideo);
 	}
 
 	wxImage GetWxDefaultPicture()
@@ -61,9 +64,10 @@ public:
 
 	cv::Mat GetDefaultPicture()
 	{
-		if (defaultPicture.IsOk() && defaultPictureMat.empty())
+		if (defaultPictureMat.empty())
 			defaultPictureMat = WxToCvMat(defaultPicture);
-		else
+
+		if (defaultPictureMat.empty())
 		{
 			return cv::Mat();
 		}
@@ -83,9 +87,10 @@ public:
 
 	cv::Mat GetDefaultPictureThumbnail()
 	{
-		if (defaultPictureThumbnailPicture.IsOk() && defaultPictureMatThumbnailPicture.empty())
+		if(defaultPictureMatThumbnailPicture.empty())
 			defaultPictureMatThumbnailPicture = WxToCvMat(defaultPictureThumbnailPicture);
-		else
+
+		if (defaultPictureMatThumbnailPicture.empty())
 		{
 			return cv::Mat();
 		}
@@ -104,9 +109,10 @@ public:
 
 	cv::Mat GetDefaultVideoThumbnail()
 	{
-		if (defaultPictureThumbnailVideo.IsOk() && defaultPictureMatThumbnailVideo.empty())
+		if(defaultPictureMatThumbnailVideo.empty())
 			defaultPictureMatThumbnailVideo = WxToCvMat(defaultPictureThumbnailVideo);
-		else
+
+		if (defaultPictureMatThumbnailVideo.empty())
 		{
 			return cv::Mat();
 		}
