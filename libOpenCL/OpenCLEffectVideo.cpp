@@ -6,10 +6,12 @@
 #include "hqdn3d.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
-using namespace Regards::OpenCL;
-using namespace Regards::OpenCV;
 #include <appcontext.h>
 extern AppContext application_context;
+
+using namespace Regards::OpenCL;
+using namespace Regards::OpenCV;
+
 
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
