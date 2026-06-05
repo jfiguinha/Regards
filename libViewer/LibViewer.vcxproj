@@ -893,7 +893,6 @@
     <ClInclude Include="md5check.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="CentralWindow.h" />
-    <ClInclude Include="ImageList.h" />
     <ClInclude Include="ListFace.h" />
     <ClInclude Include="ListPicture.h" />
     <ClInclude Include="MainWindow.h" />
@@ -940,7 +939,6 @@
     <ClCompile Include="CriteriaWindow.cpp" />
     <ClCompile Include="ExportDiaporama.cpp" />
     <ClCompile Include="FolderProcess.cpp" />
-    <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="KeywordManagementWindow.cpp" />
     <ClCompile Include="KeywordWnd.cpp" />
     <ClCompile Include="KeywordWndToolbar.cpp" />

@@ -40,7 +40,8 @@ namespace Regards::Window
 		void DrawBackground(wxDC* deviceContext, const wxRect& rc);
 		void GenerateNavigatorButton(wxDC* deviceContext);
 		void RedrawElement(wxDC* dc, CToolbarElement* nav);
-
+		void DisablePush();
+		void SetAllDisable();
 
 		wxBitmap hbmNavigator;
 

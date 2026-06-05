@@ -175,6 +175,23 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 
 }
 
+void CToolbarWindow::DisablePush()
+{
+	for (CToolbarElement* nav : navElement)
+	{
+		nav->SetPush(false);
+	}
+}
+
+void CToolbarWindow::SetAllDisable()
+{
+	for (CToolbarElement* nav : navElement)
+	{
+		nav->SetInactif();
+	}
+
+}
+
 
 void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 {

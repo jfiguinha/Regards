@@ -106,14 +106,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	height = 0;
 	url = "http://www.google.fr";
 
-	CMainParam* config = CMainParamInit::getInstance();
-	if (config != nullptr)
-		windowVisible = config->GetVisibleWindowPanelInfos();
-	else
-		windowVisible = WM_INFOS;
-
-	if (windowVisible == WM_HISTOGRAM)
-		windowVisible = WM_INFOS;
+	windowVisible = -1;
 
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
@@ -316,9 +309,18 @@ void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 		infosToolbar->SetPictureThumbnailToolbar();
-		infosToolbar->SetInfosActif();
+
 		infosToolbar->SetMapInactif();
-		LoadInfo();
+		if (windowVisible != WM_INFOS)
+		{
+			windowVisible = WM_INFOS;
+			infosToolbar->SetInfosActif();
+		}
+		else
+		{
+			LoadInfo();
+		}
+		
 		this->isVideo = false;
 	}
 }
@@ -333,13 +335,11 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		CFileGeolocation fileGeo("", "");
 		fileGeo.SetFile(filename, "");
 		bool hasGps = fileGeo.HasGps();
-
 		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
 		if (!this->isVideo)
 		{
 			infosToolbar->SetVideoToolbar();
-			infosToolbar->SetInfosActif();
 			GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 		}
 		else
@@ -348,14 +348,17 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		}
 
 		delete fileGeolocalisation;
-		if (windowVisible == WM_MAPS && firstTime && hasGps)
-			ClickShowButton(WM_MAPS);
-		else if (windowVisible == WM_MAPS && !hasGps)
+
+		if (windowVisible != WM_INFOS)
 		{
-			ClickShowButton(WM_INFOS);
+			windowVisible = WM_INFOS;
+			infosToolbar->SetInfosActif();
 		}
 		else
+		{
 			LoadInfo();
+		}
+
 		this->isVideo = true;
 		firstTime = false;
 	}
@@ -381,21 +384,20 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 
 		GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 
-		if (windowVisible == WM_INFOS)
-			infosToolbar->SetInfosActif();
-
 		delete fileGeolocalisation;
 
 		this->isVideo = false;
 
-		if (windowVisible == WM_MAPS && firstTime && hasGps)
-			ClickShowButton(WM_MAPS);
-		else if (windowVisible == WM_MAPS && !hasGps)
+		if (windowVisible != WM_INFOS)
 		{
-			ClickShowButton(WM_INFOS);
+			windowVisible = WM_INFOS;
+			infosToolbar->SetInfosActif();
 		}
 		else
+		{
 			LoadInfo();
+		}
+
 
 		firstTime = false;
 	}

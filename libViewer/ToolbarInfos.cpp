@@ -120,15 +120,17 @@ void CToolbarInfos::SetEffectParameterPush()
 }
 
 
+
 void CToolbarInfos::SetInfosActif()
 {
-	//infos->SetActif();
+	SetAllDisable();
 	infos->SetVisible(true);
 	toolbarInterface->ClickShowButton(WM_INFOS);
 }
 
 void CToolbarInfos::SetMapActif()
 {
+	SetAllDisable();
 	map->SetVisible(true);
 	needToRefresh = true;
 }
@@ -141,6 +143,7 @@ void CToolbarInfos::SetMapInactif()
 
 void CToolbarInfos::SetEffectActif()
 {
+	SetAllDisable();
 	effect->SetVisible(true);
 	needToRefresh = true;
 }
@@ -165,13 +168,12 @@ void CToolbarInfos::SetEffectParameterInactif()
 
 void CToolbarInfos::SetEffectParameterActif(const wxString& libelle)
 {
+
 	if (libelle != "")
 	{
 		effectParameter->SetVisible(true);
 		effectParameter->SetLibelle(libelle);
 		effectParameter->SetLibelleTooltip(libelle);
-		if (navPush != nullptr)
-			navPush->SetInactif();
 		effectParameter->SetActif();
 		needToRefresh = true;
 	}

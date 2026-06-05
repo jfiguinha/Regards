@@ -1087,11 +1087,8 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 				}
 			}
 
-			if (categoryFolder != nullptr)
-			{
-				wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
-				categoryFolder->GetEventHandler()->AddPendingEvent(evt);
-			}
+			refreshFolder = true;
+			processIdle = true;
 		}
 	}
 }
@@ -1238,13 +1235,14 @@ void CMainWindow::ProcessIdle()
 	//---------------------------------------
 	nbElementInIconeList = CThumbnailBuffer::GetVectorSize();
 	if (Tick(nbProcesseur, nbElementInIconeList))
-		processIdle = true;
-
+		hasDoneOneThings = true;
 
 	if (hasDoneOneThings)
 		processIdle = true;
 	else
 		processIdle = false;
+
+
 
 }
 

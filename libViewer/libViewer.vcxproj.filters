@@ -69,9 +69,6 @@
     <ClInclude Include="ViewerFrame.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ImageList.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailFace.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
@@ -196,9 +193,6 @@
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageList.cpp">
-      <Filter>DataStructure</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailFace.cpp">
       <Filter>Thumbnail\source</Filter>
