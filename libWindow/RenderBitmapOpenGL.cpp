@@ -21,6 +21,35 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL)
 	textureArrowRight = nullptr;
 	textureArrowLeft = nullptr;
 	this->renderOpenGL = renderOpenGL;
+
+
+}
+
+// Dessine un quad (x,y,w,h) avec UV [0..1].
+// Ordre TRIANGLE_STRIP : TL, TR, BL, BR.
+void CRenderBitmapOpenGL::DrawRect(int x, int y, int w, int h)
+{
+	EnsureVAO();
+
+	const float fx = static_cast<float>(x);
+	const float fy = static_cast<float>(y);
+	const float fw = static_cast<float>(w);
+	const float fh = static_cast<float>(h);
+
+	const float verts[16] = {
+		fx,      fy,      0.f, 0.f,   // TL
+		fx + fw, fy,      1.f, 0.f,   // TR
+		fx,      fy + fh, 0.f, 1.f,   // BL
+		fx + fw, fy + fh, 1.f, 1.f,   // BR
+	};
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(vao_);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
 }
 
 GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
@@ -28,7 +57,7 @@ GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum g
 	return renderOpenGL->FindShader(shaderName, glSlShaderType_i);
 }
 
-void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & colorActifReplacement)
+void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor& colorActifReplacement)
 {
 	wxColor colorToReplace = wxColor(0, 0, 0);
 
@@ -37,10 +66,10 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & 
 	wxImage arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
 
 
-    arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                      colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue()); 
-    arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                      colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
 
 	CImageLoadingFormat arrowLeft;
@@ -50,166 +79,158 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor & 
 	arrowRight.SetPicture(arrowNext);
 
 	if (textureArrowRight == nullptr)
-		textureArrowRight = new GLTexture();
+		textureArrowRight = std::make_unique<GLTexture>();
 
 	Regards::Picture::CPictureArray mat = arrowRight.GetMatrix();
 	textureArrowRight->SetData(mat);
 
 	if (textureArrowLeft == nullptr)
-		textureArrowLeft = new GLTexture();
-	
-    mat = arrowLeft.GetMatrix();
+		textureArrowLeft = std::make_unique<GLTexture>();
+
+	mat = arrowLeft.GetMatrix();
 	textureArrowLeft->SetData(mat);
 }
 
 
 
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left,
-                                                 const int& top, const bool& flipH, const bool& flipV,
-                                                 const bool& inverted)
+	const int& top, const bool& flipH, const bool& flipV,
+	const bool& inverted)
 {
+	if (!glTexture) return;
+
 	glTexture->Enable();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n ");
-	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
-	if (m_pShader != nullptr)
-	{
-		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("textureScreen", glTexture->GetTextureID()))
-		{
-			printf("SetTexture textureScreen failed \n ");
-		}
-		if (!m_pShader->SetParam("intensity", alpha))
-		{
-			printf("SetParam intensity failed \n ");
-		}
-	}
-	renderOpenGL->RenderQuad(glTexture, flipH, flipV, left, top, inverted);
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
 
+	GLSLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	if (shader)
+	{
+		shader->EnableShader();
+		shader->SetTexture("textureScreen", glTexture->GetTextureID());
+		shader->SetParam("intensity", alpha);
+	}
+
+	renderOpenGL->RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+
+	if (shader) shader->DisableShader();
 	glDisable(GL_BLEND);
 	glTexture->Disable();
 }
 
 void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height,
-                                           const int& left, const int& top, const bool& blend)
+	const int& left, const int& top, const bool& blend)
 {
-	textureTransition->Enable();
+	if (!textureTransition) return;
+
 	if (blend)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	glPushMatrix();
-
-#if defined(__APPLE__)
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-#else
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-#endif
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top)
-	};
-
-	GLfloat texVertices[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
-	};
-
-
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-#if defined(__APPLE__)
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#else
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-#endif
-
-	glPopMatrix();
+	textureTransition->Enable();
+	DrawRect(left, top, width, height);
+	textureTransition->Disable();
 
 	if (blend)
 		glDisable(GL_BLEND);
-
-	textureTransition->Disable();
 }
 
 
 void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
-                                                    const int& height, const int& left, const int& top)
+	const int& height, const int& left, const int& top)
 {
+	if (!textureTransition) return;
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	textureTransition->Enable();
-	printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n ");
-	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
-	if (m_pShader != nullptr)
+
+	GLSLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	if (shader)
 	{
-		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("textureScreen", textureTransition->GetTextureID()))
-		{
-			printf("SetTexture textureScreen failed \n ");
-		}
-		if (!m_pShader->SetParam("intensity", alpha))
-		{
-			printf("SetParam intensity failed \n ");
-		}
+		shader->EnableShader();
+		shader->SetTexture("textureScreen", textureTransition->GetTextureID());
+		shader->SetParam("intensity", alpha);
 	}
-	ShowSecondBitmap(textureTransition, width, height, left, top);
+
+	DrawRect(left, top, width, height);
 
 	textureTransition->Disable();
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
+	if (shader) shader->DisableShader();
+
+	glDisable(GL_BLEND);
 }
 
 
 CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 {
-	if (textureArrowRight != nullptr)
-		delete(textureArrowRight);
-
-	if (textureArrowLeft != nullptr)
-		delete(textureArrowLeft);
+	if (vao_)
+		glDeleteVertexArrays(1, &vao_);
+	if (vbo_)
+		glDeleteBuffers(1, &vbo_);
 }
 
 void CRenderBitmapOpenGL::ShowArrowNext()
 {
-	int left = renderOpenGL->GetWidth() - textureArrowLeft->GetWidth();
-	int top = (renderOpenGL->GetHeight() - textureArrowRight->GetHeight()) / 2;
+	if (!textureArrowRight) return;
+
+	const int left = renderOpenGL->GetWidth() - textureArrowRight->GetWidth();
+	const int top = (renderOpenGL->GetHeight() - textureArrowRight->GetHeight()) / 2;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowRight->Enable();
-	renderOpenGL->RenderQuad(textureArrowRight, left, top);
+	renderOpenGL->RenderQuad(textureArrowRight.get(), left, top);
 	textureArrowRight->Disable();
+
 	glDisable(GL_BLEND);
 }
 
 void CRenderBitmapOpenGL::ShowArrowPrevious()
 {
-	int left = 0;
-	int top = (renderOpenGL->GetHeight() - textureArrowLeft->GetHeight()) / 2;
+	if (!textureArrowLeft) return;
+
+	const int left = 0;
+	const int top = (renderOpenGL->GetHeight() - textureArrowLeft->GetHeight()) / 2;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowLeft->Enable();
-	renderOpenGL->RenderQuad(textureArrowLeft, left, top);
+	renderOpenGL->RenderQuad(textureArrowLeft.get(), left, top);
 	textureArrowLeft->Disable();
 
 	glDisable(GL_BLEND);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  VAO/VBO local (pour ShowSecondBitmap / DrawRect)
+// ═══════════════════════════════════════════════════════════════════════════
+
+void CRenderBitmapOpenGL::EnsureVAO()
+{
+	if (vao_) return;    // déjà créé
+
+	glGenVertexArrays(1, &vao_);
+	glGenBuffers(1, &vbo_);
+
+	glBindVertexArray(vao_);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+	// 4 sommets × (vec2 pos + vec2 uv) = 16 floats
+	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+
+	// location 0 : vec2 aPos
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	// location 1 : vec2 aTexCoord
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+		(void*)(2 * sizeof(float)));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }

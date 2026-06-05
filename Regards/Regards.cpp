@@ -26,6 +26,9 @@
 #include <fontconfig/fontconfig.h>
 #endif
 #include <appcontext.h>
+extern "C" {
+#include <libavformat/avformat.h>
+}
 AppContext application_context;
 ncnn::VulkanDevice* vkdev = nullptr;
 

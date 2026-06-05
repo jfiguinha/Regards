@@ -65,7 +65,6 @@ CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 {
 	width = 0;
 	height = 0;
-	textureDisplay = nullptr;
 }
 
 
@@ -76,7 +75,7 @@ bool CRenderOpenGL::IsInit()
 
 GLTexture* CRenderOpenGL::GetTextureDisplay()
 {
-	return textureDisplay;
+	return textureDisplay.get();
 }
 
 bool CRenderOpenGL::GetOpenGLInterop()
@@ -152,7 +151,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		isInit = true;
 
 
-		textureDisplay = new GLTexture();
+		textureDisplay = std::make_unique<GLTexture>();
         
 
 #ifndef USE_GLUT
@@ -235,9 +234,9 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString te
 	}
 }
 
-GLSLShader* CRenderOpenGL::CreateShader(const wxString& shaderName, GLenum glSlShaderType_i)
+std::unique_ptr<GLSLShader>  CRenderOpenGL::CreateShader(const wxString& shaderName, GLenum glSlShaderType_i)
 {
-	auto m_pShader = new GLSLShader();
+	auto m_pShader = std::make_unique<GLSLShader>();
 	m_pShader->CreateProgram(shaderName, glSlShaderType_i);
 	return m_pShader;
 }
@@ -248,14 +247,14 @@ GLSLShader* CRenderOpenGL::FindShader(const wxString& shaderName,
     auto it = shaderMap.find(shaderName);
 
     if (it != shaderMap.end())
-        return it->second->m_pShader;
+        return it->second->m_pShader.get();
 
     auto shader = std::make_unique<COpenGLShader>();
 
     shader->shaderName = shaderName;
     shader->m_pShader = CreateShader(shaderName, shaderType);
 
-    GLSLShader* result = shader->m_pShader;
+    GLSLShader* result = shader->m_pShader.get();
 
     shaderMap[shaderName] = std::move(shader);
 
@@ -264,8 +263,7 @@ GLSLShader* CRenderOpenGL::FindShader(const wxString& shaderName,
 
 CRenderOpenGL::~CRenderOpenGL()
 {
-	if (textureDisplay != nullptr)
-		delete(textureDisplay);
+
 }
 
 wxGLContext* CRenderOpenGL::GetGLContext()
@@ -512,7 +510,7 @@ bool CRenderOpenGL::SetData(Regards::Picture::CPictureArray& bitmap)
 
 GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
 {
-	return textureDisplay;
+	return textureDisplay.get();
 }
 
 int CRenderOpenGL::GetWidth()
@@ -632,7 +630,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* e
 
 	if (!renderPreview)
 	{
-		RenderQuad(textureDisplay, left, top, inverted);
+		RenderQuad(textureDisplay.get(), left, top, inverted);
 	}
 
 	textureDisplay->Disable();
@@ -640,7 +638,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* e
 
 GLTexture* CRenderOpenGL::GetGLTexture()
 {
-	return textureDisplay;
+	return textureDisplay.get();
 }
 
 void CRenderOpenGL::LoadCharacter(unsigned char c, CFreeTypeFace& face)

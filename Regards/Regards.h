@@ -42,7 +42,6 @@
 
 #ifdef SDL2
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
 #endif
 
 #ifdef __WXMSW__
@@ -60,49 +59,8 @@
 #include <dlfcn.h>
 #endif
 
-#ifdef FFMPEG
-#define CONFIG_AVFILTER 1
-
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-
-#if CONFIG_AVFILTER
-#endif
-}
-
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavfilter/avfilter.h>
-#include <libavfilter/buffersink.h>
-#include <libavfilter/buffersrc.h>
-#include <libavformat/avformat.h>
-#include <libavutil/display.h>
-}
-
-#define YUV       0
-#define YCBCR     1
-#define OPP       2
-#define RGB       3
-#define DCT       4
-#define BIOR      5
-#define HADAMARD  6
-#define NONE      7
-
-
-#endif
-
-using namespace std;
-using namespace Regards::Print;
-using namespace Regards::Introduction;
-using namespace Regards::Viewer;
-
-#ifndef __APPLE__
-#include <GL/glut.h>
-#endif
-
-
 #include <wx/glcanvas.h>
+
 int args[] = {
 	wx_GL_COMPAT_PROFILE,
 	WX_GL_SAMPLES, 4,
@@ -111,6 +69,12 @@ int args[] = {
 	WX_GL_DEPTH_SIZE, 16,
 	0
 };
+
+using namespace std;
+using namespace Regards::Print;
+using namespace Regards::Introduction;
+using namespace Regards::Viewer;
+
 
 [[noreturn]] void onTerminate() noexcept
 {
@@ -246,26 +210,19 @@ private:
 	void CheckOpenCLAvailability(bool configFileExist);
 
 	CRegardsConfigParam* regardsParam= nullptr;
+
 	MyFrameIntro* frameStart= nullptr;
 	CViewerFrame* frameViewer= nullptr;
+	CScannerFrame* framePDF = nullptr;
+	CVideoConverterFrame* frameVideoConverter = nullptr;
+	CTestFrame* testFrame = nullptr;
+
 	wxString fileToOpen;
 	wxString appName = "";
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull* logNo;
 
-
-	CScannerFrame * framePDF = nullptr;
-	CVideoConverterFrame* frameVideoConverter = nullptr;
-	CTestFrame* testFrame = nullptr;
-	
-	
-	bool startVideoConverter = false;
-	bool startRegardsPDF = false;
-
-#ifdef __WXMSW__
-	//ULONG_PTR m_gdiplusToken;   // class member
-#endif
 };
 
 // Create a new application object: this macro will allow wxWidgets to create

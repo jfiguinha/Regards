@@ -24,15 +24,8 @@ namespace Regards::OpenGL
 	class COpenGLShader
 	{
 	public:
-		virtual ~COpenGLShader()
-		{
-			if (m_pShader != nullptr)
-				delete m_pShader;
-		}
-
-
 		wxString shaderName;
-		GLSLShader* m_pShader = nullptr;
+		std::unique_ptr<GLSLShader> m_pShader = nullptr;
 	};
 
 	class CRenderOpenGL : public wxGLContext
@@ -59,7 +52,7 @@ namespace Regards::OpenGL
         int LoadFont(const wxString & fontName);
 		int GetWidth();
 		int GetHeight();
-		GLSLShader* CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
+		std::unique_ptr<GLSLShader> CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 		GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 
 		//void RenderToTexture();
@@ -90,7 +83,7 @@ namespace Regards::OpenGL
                                        bool inverted,
                                        bool flipH,
                                        bool flipV);
-		GLTexture* textureDisplay;
+		std::unique_ptr<GLTexture> textureDisplay;
 		int width;
 		int height;
 		GLuint base;

@@ -21,17 +21,23 @@ namespace Regards::OpenGL
 		void ShowArrowNext();
 		void ShowArrowPrevious();
 		void ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height, const int& left,
-		                      const int& top, const bool& blend = true);
+			const int& top, const bool& blend = true);
 		void RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left, const int& top,
-		                            const bool& flipH, const bool& flipV, const bool& inverted);
+			const bool& flipH, const bool& flipV, const bool& inverted);
 		void ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
-		                               const int& height, const int& left, const int& top);
+			const int& height, const int& left, const int& top);
 
 		GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 
 	private:
-		GLTexture* textureArrowRight;
-		GLTexture* textureArrowLeft;
+
+		std::unique_ptr<GLTexture> textureArrowRight;
+		std::unique_ptr<GLTexture> textureArrowLeft;
 		CRenderOpenGL* renderOpenGL = nullptr;
+		GLuint vao_ = 0;
+		GLuint vbo_ = 0;
+
+		void EnsureVAO();
+		void DrawRect(int x, int y, int w, int h);
 	};
 }
