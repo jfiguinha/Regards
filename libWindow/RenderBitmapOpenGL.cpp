@@ -1,6 +1,6 @@
 #include "header.h"
 
-// stdafx.h : fichier Include pour les fichiers Include système standard,
+// stdafx.h : fichier Include pour les fichiers Include système standard,
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
@@ -21,35 +21,6 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL)
 	textureArrowRight = nullptr;
 	textureArrowLeft = nullptr;
 	this->renderOpenGL = renderOpenGL;
-
-
-}
-
-// Dessine un quad (x,y,w,h) avec UV [0..1].
-// Ordre TRIANGLE_STRIP : TL, TR, BL, BR.
-void CRenderBitmapOpenGL::DrawRect(int x, int y, int w, int h)
-{
-	EnsureVAO();
-
-	const float fx = static_cast<float>(x);
-	const float fy = static_cast<float>(y);
-	const float fw = static_cast<float>(w);
-	const float fh = static_cast<float>(h);
-
-	const float verts[16] = {
-		fx,      fy,      0.f, 0.f,   // TL
-		fx + fw, fy,      1.f, 0.f,   // TR
-		fx,      fy + fh, 0.f, 1.f,   // BL
-		fx + fw, fy + fh, 1.f, 1.f,   // BR
-	};
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(vao_);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glBindVertexArray(0);
 }
 
 GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
@@ -121,20 +92,55 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int
 void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height,
 	const int& left, const int& top, const bool& blend)
 {
-	if (!textureTransition) return;
-
+	textureTransition->Enable();
 	if (blend)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	textureTransition->Enable();
-	DrawRect(left, top, width, height);
-	textureTransition->Disable();
+	glPushMatrix();
+
+#if defined(__APPLE__)
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+#else
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+#endif
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	GLfloat vertices[] = {
+		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(width) + static_cast<GLfloat>(left),
+		static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top)
+	};
+
+	GLfloat texVertices[] = {
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1
+	};
+
+
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+#if defined(__APPLE__)
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#else
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+#endif
+
+	glPopMatrix();
 
 	if (blend)
 		glDisable(GL_BLEND);
+
+	textureTransition->Disable();
 }
 
 
@@ -156,7 +162,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition
 		shader->SetParam("intensity", alpha);
 	}
 
-	DrawRect(left, top, width, height);
+	ShowSecondBitmap(textureTransition, width, height, left, top);
 
 	textureTransition->Disable();
 	if (shader) shader->DisableShader();
@@ -167,12 +173,8 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition
 
 CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 {
-	if (vao_)
-		glDeleteVertexArrays(1, &vao_);
-	if (vbo_)
-		glDeleteBuffers(1, &vbo_);
-}
 
+}
 void CRenderBitmapOpenGL::ShowArrowNext()
 {
 	if (!textureArrowRight) return;
@@ -205,32 +207,4 @@ void CRenderBitmapOpenGL::ShowArrowPrevious()
 	textureArrowLeft->Disable();
 
 	glDisable(GL_BLEND);
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  VAO/VBO local (pour ShowSecondBitmap / DrawRect)
-// ═══════════════════════════════════════════════════════════════════════════
-
-void CRenderBitmapOpenGL::EnsureVAO()
-{
-	if (vao_) return;    // déjà créé
-
-	glGenVertexArrays(1, &vao_);
-	glGenBuffers(1, &vbo_);
-
-	glBindVertexArray(vao_);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-	// 4 sommets × (vec2 pos + vec2 uv) = 16 floats
-	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
-
-	// location 0 : vec2 aPos
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	// location 1 : vec2 aTexCoord
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-		(void*)(2 * sizeof(float)));
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 }

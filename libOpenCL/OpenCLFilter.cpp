@@ -2158,9 +2158,9 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 	}
 
 
-	if (bgraOutput && cvDestBgra.channels() == 3)
-		cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
-	else if (cvDestBgra.channels() == 4)
+	//if (bgraOutput && cvDestBgra.channels() == 3)
+	//	cvtColor(cvDestBgra, cvDestBgra, COLOR_BGR2BGRA);
+	if (cvDestBgra.channels() == 4)
 		cvtColor(cvDestBgra, cvDestBgra, COLOR_BGRA2BGR);
 
 	return cvDestBgra;
