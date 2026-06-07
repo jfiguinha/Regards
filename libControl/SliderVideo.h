@@ -82,15 +82,6 @@ namespace Regards::Video
 		wxImage buttonSpeaker;
 		wxImage button;
 
-		/*
-            wxString buttonPlayVector;
-            wxString buttonPauseVector;
-            wxString buttonVolumeUpVector;
-            wxString buttonVolumeDownVector;
-            wxString buttonSpeakerVector;
-            wxString buttonVector;
-            */
-
 		wxColor colorToReplace;
 		wxColor colorActifReplacement;
 		wxColor colorInactifReplacement;

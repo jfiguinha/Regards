@@ -16,7 +16,7 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 	m_bIconeOn = false;
 	numButtonActif = -1;
 	navPush = nullptr;
-	pushButton = new wxTimer(this, TIMER_PUSHID);
+	pushButton = std::make_unique<wxTimer>(this, TIMER_PUSHID);
 	themeToolbar = theme;
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CToolbarWindow::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CToolbarWindow::OnMouseMove));
@@ -52,7 +52,6 @@ CToolbarWindow::~CToolbarWindow()
 		pushButton->Stop();
 	}
 	EmptyNavigator();
-	delete(pushButton);
 }
 
 
@@ -237,7 +236,11 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	wxBitmap pictureBuffer(nav->GetWidth(), nav->GetHeight());
+	if (pictureBuffer.GetWidth() != nav->GetWidth() || pictureBuffer.GetHeight() != nav->GetHeight())
+	{
+		pictureBuffer.Create(nav->GetWidth(), nav->GetHeight());
+	}
+
 	wxMemoryDC memDC(pictureBuffer);
 
 	wxRect rc;
@@ -340,8 +343,8 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext, const wxRect& rc)
 
 	if (showLine)
 	{
-		CThemeToolbarTexte theme;
-		wxPen penTop(theme.rectTop, theme.GetRectangleSize(), wxPENSTYLE_SOLID);
+		
+		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
 		deviceContext->SetPen(penTop);
 		deviceContext->DrawLine(0, GetWindowHeight(), GetWindowWidth(), GetWindowHeight());
 		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
@@ -354,7 +357,11 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext)
 {
 	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
-		background.Create(GetWindowWidth(), GetWindowHeight());
+		if (background.GetWidth() != GetWindowWidth() || background.GetHeight() != GetWindowHeight())
+		{
+			background.Create(GetWindowWidth(), GetWindowHeight());
+		}
+		
 		wxMemoryDC memDC(background);
 		wxRect rc = GetWindowRect();
 		DrawBackground(&memDC, rc);

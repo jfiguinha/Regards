@@ -15,6 +15,11 @@ namespace Regards::Window
 			sleeptime = 50;
 		}
 
+		~CWindowMainPimpl()
+		{
+			DeleteThread();
+		}
+
 		void DeleteThread()
 		{
 			if (threadIdle != nullptr)
@@ -91,18 +96,18 @@ namespace Regards::Window
 		};
 
 
-		CWindowMainPimpl* windowMainPimpl;
+		std::unique_ptr<CWindowMainPimpl> windowMainPimpl;
 		wxString name;
 		
-		bool processStop;
-		bool processIdle;
+		std::atomic_bool processStop;
+		std::atomic_bool processIdle;
 		int id;
 
 	public:
 		double scaleFactor;
-		static bool endProgram;
-		static bool stopProcess;
-		static vector<CMasterWindow*> listMainWindow;
-		static vector<CMasterWindow*> listProcessWindow;
+		static std::atomic_bool endProgram;
+		static std::atomic_bool stopProcess;
+		static tbb::concurrent_vector<CMasterWindow*> listMainWindow;
+		static tbb::concurrent_vector<CMasterWindow*> listProcessWindow;
 	};
 }

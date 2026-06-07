@@ -48,6 +48,7 @@ namespace Regards::Window
 		VectorNavigatorElement navElement;
 		CToolbarElement* navPush;
 		CThemeToolbar themeToolbar;
+		CThemeToolbarTexte themeTexte;
 		bool saveLastPush;
 		bool isVertical;
 		bool showLine = false;
@@ -60,8 +61,9 @@ namespace Regards::Window
 		bool m_bMouseMove;
 		bool m_bMouseOver;
 
+		wxBitmap pictureBuffer;
 		wxBitmap background;
 		wxImage backPicture;
-		wxTimer* pushButton;
+		std::unique_ptr<wxTimer> pushButton;
 	};
 }

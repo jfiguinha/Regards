@@ -2,7 +2,7 @@
 #include "GpsEngine.h"
 using namespace Regards::Window;
 
-CListOfWindow* CGpsEngine::listofWindow = nullptr;
+std::unique_ptr<CListOfWindow> CGpsEngine::listofWindow = nullptr;
 
 CListOfWindow::CListOfWindow()
 {
@@ -29,31 +29,16 @@ void CListOfWindow::SendMessageToWindow(const wxString& filename, const int& typ
 	}
 }
 
-
-CGpsEngine::CGpsEngine()
-{
-}
-
-CGpsEngine::~CGpsEngine()
-{
-}
-
 CListOfWindow* CGpsEngine::getInstance()
 {
 	Initialize();
-	return listofWindow;
+	return listofWindow.get();
 }
 
 void CGpsEngine::Initialize()
 {
 	if (listofWindow == nullptr)
 	{
-		listofWindow = new CListOfWindow();
+		listofWindow = std::make_unique<CListOfWindow>();
 	}
-}
-
-void CGpsEngine::kill()
-{
-	if (listofWindow == nullptr)
-		delete listofWindow;
 }

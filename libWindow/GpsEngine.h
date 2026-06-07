@@ -19,13 +19,12 @@ namespace Regards::Window
 	class CGpsEngine
 	{
 	public:
-		CGpsEngine();
-		virtual ~CGpsEngine();
+		CGpsEngine() {};
+		virtual ~CGpsEngine() {};
 		static CListOfWindow* getInstance();
 		static void Initialize();
-		static void kill();
 
 	private:
-		static CListOfWindow* listofWindow;
+		static std::unique_ptr<CListOfWindow> listofWindow;
 	};
 }

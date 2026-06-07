@@ -6,10 +6,10 @@
 using namespace Regards::Window;
 
 
-bool CMasterWindow::endProgram = false;
-vector<CMasterWindow*> CMasterWindow::listMainWindow;
-vector<CMasterWindow*> CMasterWindow::listProcessWindow;
-bool CMasterWindow::stopProcess = false;
+std::atomic_bool CMasterWindow::endProgram = false;
+tbb::concurrent_vector<CMasterWindow*> CMasterWindow::listMainWindow;
+tbb::concurrent_vector<CMasterWindow*> CMasterWindow::listProcessWindow;
+std::atomic_bool CMasterWindow::stopProcess = false;
 
 void CMasterWindow::StopAllProcess(const wxString& title, const wxString& message, wxWindow* parentWindow,
                                    const int& nbTry)
@@ -19,8 +19,7 @@ void CMasterWindow::StopAllProcess(const wxString& title, const wxString& messag
 	wxWindowDisabler disableAll;
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLSTOPWORKINGMSG", 1);
 
-
-	auto wait = new wxBusyInfo(libelle);
+	std::unique_ptr<wxBusyInfo> wait = std::make_unique<wxBusyInfo>(libelle);
 
 	int i = 0;
 	bool all_stop;
@@ -44,7 +43,6 @@ void CMasterWindow::StopAllProcess(const wxString& title, const wxString& messag
 	}
 	while (!all_stop && i < nbTry);
 
-	delete wait;
 }
 
 void CMasterWindow::ThreadIdle(void* data)
@@ -90,7 +88,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 CMasterWindow::CMasterWindow(void)
 {
 	processStop = false;
-	windowMainPimpl = new CWindowMainPimpl();
+	windowMainPimpl = std::unique_ptr<CWindowMainPimpl>();
 	processEnd = true;
 	processIdle = false;
 	id = listMainWindow.size();
@@ -101,9 +99,6 @@ CMasterWindow::~CMasterWindow(void)
 {
 	if (id < listMainWindow.size())
 		listMainWindow[id] = nullptr;
-
-	if (windowMainPimpl != nullptr)
-		delete windowMainPimpl;
 }
 
 void CMasterWindow::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
@@ -156,7 +151,8 @@ void CMasterWindow::StartThread()
 {
 	if (processIdle && windowMainPimpl->threadIdle == nullptr && !endProgram && !stopProcess)
 	{
-		windowMainPimpl->threadIdle = new thread(ThreadIdle, this);
+		//ProcessIdle();
+		windowMainPimpl->threadIdle = new std::thread(ThreadIdle, this);
 		processEnd = false;
 	}
 }
