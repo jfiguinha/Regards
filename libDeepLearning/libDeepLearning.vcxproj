@@ -105,6 +105,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="colornet.cpp" />
     <ClCompile Include="DeepLearning.cpp" />
     <ClCompile Include="DetectFace.cpp" />
     <ClCompile Include="DetectFacePCN.cpp" />
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="colornet.h" />
     <ClInclude Include="DeepLearning.h" />
     <ClInclude Include="DetectFace.h" />
     <ClInclude Include="DetectFacePCN.h" />
