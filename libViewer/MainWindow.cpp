@@ -1068,6 +1068,7 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 				}
 			}
 
+			
 
 			centralWnd->SetListeFile(localFilename, (isDeleteFolder || refreshPhotos), isSqlUpdate, typeAffichage);
 			listFile.clear();
@@ -1086,6 +1087,13 @@ void CMainWindow::UpdateFolderStatic(const bool& isDeleteFolder, const bool &ref
 					window->GetEventHandler()->AddPendingEvent(evt);
 				}
 			}
+
+			if (categoryFolder != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_REFRESHFOLDER);
+				categoryFolder->GetEventHandler()->AddPendingEvent(evt);
+			}
+			
 
 			refreshFolder = true;
 			processIdle = true;
@@ -1432,6 +1440,10 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		photoList.clear();
 		CSqlPhotosWithoutThumbnail sqlPhoto;
 		sqlPhoto.GetPhotoList(&photoList, 0);
+
+		auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(CATEGORYFOLDERWINDOWID));
+		if(categoryFolder)
+			categoryFolder->init();
 	}
 
 	delete newPath;

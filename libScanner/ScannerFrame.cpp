@@ -48,7 +48,7 @@ wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd = Gdiplus
 
 //Connect(wxEVT_MOVE, wxMoveEventHandler(Move::OnMove));
 BEGIN_EVENT_TABLE(CScannerFrame, wxFrame)
-		EVT_CLOSE(CScannerFrame::OnCloseWindow)
+EVT_CLOSE(CScannerFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
 
@@ -59,9 +59,9 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface * mainInterface, const wxPoint& pos,
-                             const wxSize& size,
-                             long style) :
+CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface* mainInterface, const wxPoint& pos,
+	const wxSize& size,
+	long style) :
 	wxFrame(nullptr, FRAMESCANNER_ID, title, pos, size, style)
 {
 	SetIcon(wxICON(sample));
@@ -75,7 +75,7 @@ CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface * mainInte
 	CMainThemeInit::Initialize(viewerTheme);
 #ifndef __APPLE__
 #if __WXSCANSANE__
-    scanSane = new wxScanSane();	
+	scanSane = new wxScanSane();
 #endif
 #endif
 	// create a menu bar
@@ -135,8 +135,8 @@ CScannerFrame::~CScannerFrame()
 {
 #ifndef __APPLE__
 #if __WXSCANSANE__
-    if(scanSane != nullptr)
-        delete scanSane;
+	if (scanSane != nullptr)
+		delete scanSane;
 #endif
 #endif
 	if (centralWindow != nullptr)
@@ -264,7 +264,7 @@ wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd)
 	{
 		auto format = img->GetPixelFormat();
 		auto bmp = new Gdiplus::Bitmap(w, h, format);
-		auto g = std::make_unique<Gdiplus::Graphics>(Gdiplus::Graphics::FromImage(bmp));
+		auto g = std::unique_ptr<Gdiplus::Graphics>(Gdiplus::Graphics::FromImage(bmp));
 		g->Clear(bkgd);
 		g->DrawImage(img, 0, 0, w, h);
 
@@ -335,44 +335,44 @@ wxString CScannerFrame::ScanPage()
 	wxString pdfFile = "";
 	wxImage image;
 #ifdef __APPLE__
-    wxArrayString output;
-    //printf("CScannerFrame::ScanPage \n");
-    //Find all file with Scan
-    pdfFile = CFileUtility::GetTempFile("Scan.pdf");
-        
-   // wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
-    wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
-	
+	wxArrayString output;
+	//printf("CScannerFrame::ScanPage \n");
+	//Find all file with Scan
+	pdfFile = CFileUtility::GetTempFile("Scan.pdf");
+
+	// wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
+	wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
+
 	if (!wxFileExists(pdfFile))
 		pdfFile = "";
-    
-    /*
-    CScannerWindow d(this, -1, _("Acquire"));
-    if (d.ShowModal() == wxID_OK)
-    {
-        //image = d.GetImage();
-    }
-    */
+
+	/*
+	CScannerWindow d(this, -1, _("Acquire"));
+	if (d.ShowModal() == wxID_OK)
+	{
+		//image = d.GetImage();
+	}
+	*/
 
 #else
 #if __WXSCANSANE__
 
-    scanSane->SelectSource("", true, this);
+	scanSane->SelectSource("", true, this);
 
-    if(scanSane->IsSourceSelected())
-    {
-        wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
-        if (d.ShowModal() == wxID_OK)
-        {
-            image = d.GetImage();
-        }
-    }
-    else
-    {
+	if (scanSane->IsSourceSelected())
+	{
+		wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
+		if (d.ShowModal() == wxID_OK)
+		{
+			image = d.GetImage();
+		}
+	}
+	else
+	{
 		wxString selectScanner = CLibResource::LoadStringFromResource("LBLSELECTSCANNERSOURCE", 1);
 		wxString infos = CLibResource::LoadStringFromResource("labelInformations", 1);
-        wxMessageBox(selectScanner, infos);
-    }
+		wxMessageBox(selectScanner, infos);
+	}
 #else
 	{
 		DataClasses myData;
@@ -460,14 +460,14 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 	case ID_OCR:
 	case ID_PRINT:
-		{
-			wxString filename = centralWindow->GetFilename();
-			if (filename != "")
-				event.Enable(true);
-			else
-				event.Enable(false);
-			break;
-		}
-	default: ;
+	{
+		wxString filename = centralWindow->GetFilename();
+		if (filename != "")
+			event.Enable(true);
+		else
+			event.Enable(false);
+		break;
+	}
+	default:;
 	}
 }

@@ -662,7 +662,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 
 	geoloc.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
-	if (!geoloc.HasGps())
+	if (!geoloc.HasGps() || !application_context.isGPsAvailable)
 	{
 		//printf("Has not GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		auto insertCriteria = new CInsertCriteria();
@@ -675,11 +675,9 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 		//Insert GPS info into GPS table
 		CSqlPhotoGPS photoGPS;
 		photoGPS.InsertPhoto(listCriteriaPhoto.numPhotoId, listCriteriaPhoto.photoPath, findPhotoCriteria->numFolderId);
-
 		findPhotoCriteria->_photoGPS.numPhoto = listCriteriaPhoto.numPhotoId;
 		findPhotoCriteria->_photoGPS.filepath = listCriteriaPhoto.photoPath;
 		findPhotoCriteria->_photoGPS.numFolderId = findPhotoCriteria->numFolderId;
-		
 	}
 	findPhotoCriteria->hasGps = geoloc.HasGps();
 	findPhotoCriteria->fromGps = false;
