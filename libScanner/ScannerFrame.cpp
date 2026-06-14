@@ -264,7 +264,7 @@ wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd)
 	{
 		auto format = img->GetPixelFormat();
 		auto bmp = new Gdiplus::Bitmap(w, h, format);
-		auto g = std::unique_ptr<Gdiplus::Graphics>(Gdiplus::Graphics::FromImage(bmp));
+		auto g = std::make_unique<Gdiplus::Graphics>(Gdiplus::Graphics::FromImage(bmp));
 		g->Clear(bkgd);
 		g->DrawImage(img, 0, 0, w, h);
 

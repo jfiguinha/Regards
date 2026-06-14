@@ -88,7 +88,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 CMasterWindow::CMasterWindow(void)
 {
 	processStop = false;
-	windowMainPimpl = std::unique_ptr<CWindowMainPimpl>();
+	windowMainPimpl = std::make_unique<CWindowMainPimpl>();
 	processEnd = true;
 	processIdle = false;
 	id = listMainWindow.size();
