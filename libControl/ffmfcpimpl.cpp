@@ -1988,22 +1988,21 @@ int CFFmfcPimpl::configure_audio_filters(VideoState* is, const char* afilters, i
 	if (ret < 0)
 		goto end;
 
-
-	ret = avfilter_graph_create_filter(&filt_asink,
-		avfilter_get_by_name("abuffersink"), "ffplay_abuffersink",
-		NULL, NULL, is->agraph);
-	if (ret < 0)
+	filt_asink = avfilter_graph_alloc_filter(is->agraph,
+		avfilter_get_by_name("abuffersink"), "ffplay_abuffersink");
+	if (!filt_asink) {
+		ret = AVERROR(ENOMEM);
 		goto end;
+	}
 
-	if ((ret = av_opt_set_int_list(filt_asink, "sample_fmts", sample_fmts, AV_SAMPLE_FMT_NONE, AV_OPT_SEARCH_CHILDREN)) < 0)
-		goto end;
-	if ((ret = av_opt_set_int(filt_asink, "all_channel_counts", 1, AV_OPT_SEARCH_CHILDREN)) < 0)
+	if ((ret = av_opt_set_int(filt_asink, "all_channel_counts", 0, AV_OPT_SEARCH_CHILDREN)) < 0)
 		goto end;
 
 	if (force_output_format) {
 		av_bprint_clear(&bp);
 		av_channel_layout_describe_bprint(&is->audio_tgt.ch_layout, &bp);
 		sample_rates[0] = is->audio_tgt.freq;
+
 		if ((ret = av_opt_set_int(filt_asink, "all_channel_counts", 0, AV_OPT_SEARCH_CHILDREN)) < 0)
 			goto end;
 		if ((ret = av_opt_set(filt_asink, "ch_layouts", bp.str, AV_OPT_SEARCH_CHILDREN)) < 0)
@@ -2011,6 +2010,13 @@ int CFFmfcPimpl::configure_audio_filters(VideoState* is, const char* afilters, i
 		if ((ret = av_opt_set_int_list(filt_asink, "sample_rates", sample_rates, -1, AV_OPT_SEARCH_CHILDREN)) < 0)
 			goto end;
 	}
+
+	if ((ret = av_opt_set_int_list(filt_asink, "sample_fmts", sample_fmts,
+		AV_SAMPLE_FMT_NONE, AV_OPT_SEARCH_CHILDREN)) < 0)
+		goto end;
+
+	if ((ret = avfilter_init_str(filt_asink, NULL)) < 0)
+		goto end;
 
 
 	if ((ret = configure_filtergraph(is->agraph, afilters, filt_asrc, filt_asink)) < 0)
