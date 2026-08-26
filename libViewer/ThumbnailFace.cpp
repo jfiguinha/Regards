@@ -3,7 +3,7 @@
 #include "MainWindow.h"
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <SqlFaceThumbnail.h>
+#include <ThumbnailDataFace.h>
 #include <SqlFindFacePhoto.h>
 #include <ScrollbarWnd.h>
 #include <InfosSeparationBarFace.h>
@@ -32,108 +32,121 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 
 CThumbnailFace::~CThumbnailFace(void)
 {
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
-	{
-		delete(infosSeparationBar);
-	}
-
 	listSeparator.clear();
 }
 
-void CThumbnailFace::OnPictureClick(CThumbnailData* data)
+void CThumbnailFace::OnPictureClick(const int& numPhotoId)
 {
 	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
-		evt.SetExtraLong(data->GetNumPhotoId());
+		evt.SetExtraLong(numPhotoId);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-
-	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(data->GetFilename()))
+	CIcone* icone = GetIconeById(numPhotoId);
+	if (icone != nullptr)
 	{
-		wxWindow* window = this->FindWindowById(BITMAPWINDOWVIEWERID);
-		if (window != nullptr)
+		if (icone->GetPtData() != nullptr)
 		{
-			wxCommandEvent evt(wxEVENT_SETPOSITION);
-			evt.SetExtraLong(data->GetNumFrame());
-			window->GetEventHandler()->AddPendingEvent(evt);
+			CLibPicture libPicture;
+			if (libPicture.TestIsVideo(icone->GetPtData()->GetFilename()))
+			{
+				wxWindow* window = this->FindWindowById(BITMAPWINDOWVIEWERID);
+				if (window != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_SETPOSITION);
+					evt.SetExtraLong(icone->GetPtData()->GetNumFrame());
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
+			}
 		}
 	}
 }
 
 
-
-void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
-	const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement)
+void CThumbnailFace::AddSeparatorBar(
+	CIconeList* iconeListLocal,
+	const wxString& libelle,
+	const CFaceName& faceName,
+	const std::vector<CFaceFilePath>& listPhotoFace,
+	int& nbElement,
+	const std::unordered_map<FaceKey, CIcone*, FaceKeyHash>& iconIndex)
 {
-	auto infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
+	auto infosSeparationBar = std::make_unique<CInfosSeparationBarFace>(themeThumbnail.themeSeparation);
+
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetParentWindow(this);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	infosSeparationBar->SetNumFace(faceName);
-	int local_nbElement = nbElement;
 
-	for (auto i = 0; i < listPhotoFace.size(); i++)
+	const int firstElement = nbElement;
+
+	CLibPicture libPicture;
+	CSqlFacePhoto facePhoto;
+
+	for (size_t i = 0; i < listPhotoFace.size(); ++i)
 	{
-		CFaceFilePath numFace = listPhotoFace.at(i);
-		infosSeparationBar->listElement.push_back(local_nbElement + i);
+		const auto& photo = listPhotoFace[i];
+
+		const int elementIndex =
+			firstElement + static_cast<int>(i);
+
+		infosSeparationBar->listElement.push_back(elementIndex);
+
+		FaceKey key
 		{
-			bool find = false;// iconeList->FindElement(numFace.faceFilePath);
-			CIcone* icone = nullptr;
-			for (auto j = 0; j < iconeListLocal->GetNbElement(); j++)
-			{
-				icone = iconeListLocal->GetElement(j);
-				if (icone != nullptr)
-				{
-					auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-					if (data != nullptr)
-					{
-						if (data->GetFilename() == numFace.faceFilePath && numFace.numFace == data->GetNumFace())
-						{
-							find = true;
-							data->SetNumElement(local_nbElement + i);
-							icone->SetNumElement(data->GetNumElement());
-							break;
-						}
-					}
-				}
-			}
+			photo.faceFilePath,
+			photo.numFace
+		};
 
-			if (!find)
-			{
-				auto thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
-				thumbnailData->SetNumPhotoId(numFace.numPhoto);
-				thumbnailData->SetNumElement(local_nbElement + i);
+		auto it = iconIndex.find(key);
 
-				CLibPicture libPicture;
-				if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
-				{
-					CSqlFacePhoto facePhoto;
-					int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
-					thumbnailData->SetNumFrame(positionVideo);
-				}
+		if (it != iconIndex.end())
+		{
+			auto* icone = it->second;
 
+			auto* data =
+				static_cast<CThumbnailDataFace*>(icone->GetPtData());
 
-				auto pBitmapIcone = new CIcone();
-				pBitmapIcone->ShowSelectButton(true);
-				pBitmapIcone->SetNumElement(local_nbElement + i);
-				pBitmapIcone->SetData(thumbnailData);
-				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-				pBitmapIcone->SetShowDelete(true);
-				pBitmapIcone->SetFilename(numFace.faceFilePath);
-				iconeListLocal->AddElement(pBitmapIcone);
-			}
+			data->SetNumElement(elementIndex);
+			icone->SetNumElement(elementIndex);
+
+			continue;
 		}
+
+		auto* thumbnailData =
+			new CThumbnailDataFace(
+				photo.faceFilePath,
+				photo.numFace);
+
+		thumbnailData->SetNumPhotoId(photo.numPhoto);
+		thumbnailData->SetNumElement(elementIndex);
+
+		if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+		{
+			thumbnailData->SetNumFrame(
+				facePhoto.GetVideoFacePosition(photo.numFace));
+		}
+
+		auto* pBitmapIcone =
+			new CIcone(thumbnailData);
+
+		pBitmapIcone->ShowSelectButton(true);
+		pBitmapIcone->SetNumElement(elementIndex);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetShowDelete(true);
+		pBitmapIcone->SetFilename(photo.faceFilePath);
+
+		iconeListLocal->AddElement(pBitmapIcone);
 	}
 
-	nbElement += listPhotoFace.size();
+	nbElement += static_cast<int>(listPhotoFace.size());
 
-
-	if (listPhotoFace.size() > 0)
-		listSeparator.push_back(infosSeparationBar);
-
+	if (!listPhotoFace.empty())
+	{
+		listSeparator.push_back(std::move(infosSeparationBar));
+	}
 }
 
 bool CThumbnailFace::ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone)
@@ -141,7 +154,7 @@ bool CThumbnailFace::ItemCompFonctFindFaceElement(wxString filepath, int numFace
 {
 	if (icone != nullptr)
 	{
-		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+		auto data = static_cast<CThumbnailDataFace*>(icone->GetPtData());
 		if (data->GetFilename() == filepath && numFace == data->GetNumFace())
 		{
 			return true;
@@ -167,43 +180,40 @@ void CThumbnailFace::InitListFace()
 	CIconeList* newIconeList = new CIconeList();
 	CSqlFindFacePhoto sqlFindFacePhoto;
 	std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListAllPhotoFace(pertinence);
-	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	std::unordered_set<FaceKey, FaceKeyHash> validFaces;
+
+	for (const auto& face : listPhotoFace)
 	{
-		CIcone* icone = iconeList->GetElement(i);
-		wxString filename = icone->GetFilename();
-		bool find = false;
-		auto data = static_cast<CSqlFaceThumbnail*>(icone->GetData());
-
-		for (CFaceFilePath filePath : listPhotoFace)
-		{
-			if (filePath.faceFilePath == filename && filePath.numFace == data->GetNumFace())
+		validFaces.insert(
 			{
-				find = true;
-				break;
-			}
-		}
-		
+				face.faceFilePath,
+				face.numFace
+			});
+	}
 
-		if (!find)
+	for (int i = 0; i < iconeList->GetNbElement(); ++i)
+	{
+		auto* icone = iconeList->GetElement(i);
+
+		auto* data =
+			static_cast<CThumbnailDataFace*>(icone->GetPtData());
+
+		FaceKey key
 		{
-			iconeList->RemoveElement(i);
-			nbElement++;
+			data->GetFilename(),
+			data->GetNumFace()
+		};
+
+		if (validFaces.find(key) != validFaces.end())
+		{
+			newIconeList->AddElement(icone);
 		}
 		else
-			newIconeList->AddElement(icone);
+		{
+			iconeList->RemoveElement(i);
+			--i;
+		}
 	}
-
-	if (nbElement > 0)
-	{
-		delete iconeList;
-		iconeList = newIconeList;
-	}
-	else
-	{
-		delete newIconeList;
-	}
-
-	int size = iconeList->GetNbElement();
 }
 
 void CThumbnailFace::init()
@@ -217,13 +227,23 @@ void CThumbnailFace::init()
 
 	InitListFace();
 
-	//---------------------------------
-	//Sauvegarde de l'état
-	//---------------------------------
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	std::unordered_map<FaceKey, CIcone*, FaceKeyHash> iconIndex;
+
+	for (int i = 0; i < iconeList->GetNbElement(); ++i)
 	{
-		delete(infosSeparationBar);
+		auto* icone = iconeList->GetElement(i);
+
+		if (auto* data =
+			static_cast<CThumbnailDataFace*>(icone->GetPtData()))
+		{
+			iconIndex.insert(
+				{
+					{ data->GetFilename(), data->GetNumFace() },
+					icone
+				});
+		}
 	}
+
 
 	listSeparator.clear();
 
@@ -234,7 +254,7 @@ void CThumbnailFace::init()
 	for (int i = 0; i < listFace.size(); i++)
 	{
 		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
-		AddSeparatorBar(iconeList, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
+		AddSeparatorBar(iconeList.get(), listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement, iconIndex);
 	}
 
 
@@ -270,7 +290,7 @@ bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWind
 CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }
 
 
@@ -278,9 +298,9 @@ CIcone* CThumbnailFace::FindElementWithVScroll(const int& xPos, const int& yPos)
 
 void CThumbnailFace::MoveIcone(const int& numElement, const int& numFace)
 {
-	for (CInfosSeparationBar* separatorBar : listSeparator)
+	for (auto& separatorBar : listSeparator)
 	{
-		auto infosSeparationBarFace = static_cast<CInfosSeparationBarFace*>(separatorBar);
+		auto infosSeparationBarFace = static_cast<CInfosSeparationBarFace*>(separatorBar.get());
 		if (numFace == infosSeparationBarFace->GetNumFace())
 		{
 			infosSeparationBarFace->listElement.push_back(numElement);
@@ -292,21 +312,24 @@ void CThumbnailFace::MoveIcone(const int& numElement, const int& numFace)
 void CThumbnailFace::DeleteEmptyFace()
 {
 	CSqlFaceLabel sqlfaceLabel;
-	//Test Si Infos Bar Vide
-	for (int i = 0; i < listSeparator.size(); i++)
-	{
-		auto infosSeparationBarFace = static_cast<CInfosSeparationBarFace*>(listSeparator.at(i));
-		if (infosSeparationBarFace != nullptr)
-		{
-			if (infosSeparationBarFace->listElement.size() == 0)
-			{
-				sqlfaceLabel.DeleteFaceLabelDatabase(infosSeparationBarFace->GetNumFace());
 
-				listSeparator.erase(listSeparator.begin() + i);
-				delete infosSeparationBarFace;
-				infosSeparationBarFace = nullptr;
-				i--;
-			}
+	auto it = listSeparator.begin();
+
+	while (it != listSeparator.end())
+	{
+		auto* faceBar = static_cast<CInfosSeparationBarFace*>(it->get());
+
+		if (faceBar != nullptr &&
+			faceBar->listElement.empty())
+		{
+			sqlfaceLabel.DeleteFaceLabelDatabase(
+				faceBar->GetNumFace());
+
+			it = listSeparator.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 
@@ -319,14 +342,11 @@ void CThumbnailFace::DeleteEmptyFace()
 //-----------------------------------------------------------------
 void CThumbnailFace::MoveFace(const wxString& faceName)
 {
-	vector<CThumbnailData*> listItem;
-	GetSelectItem(listItem);
-
 	CSqlFaceRecognition faceRecognition;
 	CSqlFaceLabel sqlfaceLabel;
 	int numFace = sqlfaceLabel.GetNumFace(faceName);
 
-	for (CInfosSeparationBar* separatorBar : listSeparator)
+	for (auto& separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
 		{
@@ -339,7 +359,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 				{
 					if (icone->IsChecked())
 					{
-						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+						auto thumbnailData = static_cast<CThumbnailDataFace*>(icone->GetPtData());
 						int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
 						if (numFaceCompatible != numFace)
 						{
@@ -372,7 +392,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 vector<int> CThumbnailFace::GetFaceSelectID()
 {
 	vector<int> listFace;
-	for (CInfosSeparationBar* separatorBar : listSeparator)
+	for (auto& separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
 		{
@@ -386,7 +406,7 @@ vector<int> CThumbnailFace::GetFaceSelectID()
 					bool needToMove = false;
 					if (icone->IsChecked())
 					{
-						auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+						auto thumbnailData = static_cast<CThumbnailDataFace*>(icone->GetPtData());
 						listFace.push_back(thumbnailData->GetNumFace());
 					}
 				}
@@ -404,14 +424,14 @@ CInfosSeparationBar* CThumbnailFace::FindSeparatorElement(const int& xPos, const
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
-	for (CInfosSeparationBar* separatorBar : listSeparator)
+	for (auto& separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
 		{
 			wxRect rc = separatorBar->GetPos();
 			if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
 			{
-				return separatorBar;
+				return separatorBar.get();
 			}
 		}
 	}
@@ -428,13 +448,13 @@ int CThumbnailFace::FindSeparatorFace(const int& xPos, const int& yPos)
 	{
 		if (i == listSeparator.size() - 1)
 		{
-			auto faceSeparator = static_cast<CInfosSeparationBarFace*>(listSeparator[i]);
+			auto faceSeparator = static_cast<CInfosSeparationBarFace*>(listSeparator[i].get()); // static_cast<CInfosSeparationBarFace*>(listSeparator[i]);
 			numFace = faceSeparator->GetNumFace();
 		}
 		else
 		{
-			auto separatorBarFirst = static_cast<CInfosSeparationBarFace*>(listSeparator[i]);
-			auto separatorBarSecond = static_cast<CInfosSeparationBarFace*>(listSeparator[i + 1]);
+			auto separatorBarFirst = static_cast<CInfosSeparationBarFace*>(listSeparator[i].get());
+			auto separatorBarSecond = static_cast<CInfosSeparationBarFace*>(listSeparator[i + 1].get());
 			wxRect rcFirst = separatorBarFirst->GetPos();
 			wxRect rcSecond = separatorBarSecond->GetPos();
 			if (y > (rcFirst.y + rcFirst.height) && y < rcSecond.y)
@@ -455,7 +475,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 
 	if (numFace != 0)
 	{
-		for (CInfosSeparationBar* separatorBar : listSeparator)
+		for (auto& separatorBar : listSeparator)
 		{
 			if (separatorBar != nullptr)
 			{
@@ -469,7 +489,7 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 						bool needToMove = false;
 						if (icone->IsChecked())
 						{
-							auto thumbnailData = static_cast<CSqlFaceThumbnail*>(icone->GetData());
+							auto thumbnailData = static_cast<CThumbnailDataFace*>(icone->GetPtData());
 							int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
 							if (numFaceCompatible != numFace)
 							{
@@ -547,7 +567,7 @@ void CThumbnailFace::OnSelectIcon(wxCommandEvent& event)
 
 void CThumbnailFace::DeleteIcone(CIcone* numSelect)
 {
-	auto face_thumbnail = static_cast<CSqlFaceThumbnail*>(numSelect->GetData());
+	auto face_thumbnail = static_cast<CThumbnailDataFace*>(numSelect->GetPtData());
 	if (face_thumbnail != nullptr)
 	{
 		CSqlFacePhoto facePhoto;
@@ -587,5 +607,5 @@ CIcone* CThumbnailFace::FindElement(const int& xPos, const int& yPos)
 		return nullptr;
 
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }

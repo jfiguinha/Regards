@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlFaceRecognition();
-			~CSqlFaceRecognition() override;
+			~CSqlFaceRecognition() = default;
 			bool InsertFaceRecognition(int numFace, int numFaceCompatible);
 			bool UpdateFaceRecognition(int OldnumFaceCompatible, int NewnumFaceCompatible);
 			bool MoveFaceRecognition(int numFace, int NewnumFaceCompatible);

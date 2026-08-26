@@ -830,6 +830,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
@@ -857,9 +858,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="COpenCLAvirResizer.h" />
     <ClInclude Include="OpenCLContext.h" />
     <ClInclude Include="OpenCLEffectVideo.h" />
     <ClInclude Include="OpenCLFilter.h" />
+    <ClInclude Include="OpenCLKernelBuilder.h" />
     <ClInclude Include="OpenCLParameter.h" />
     <ClInclude Include="utility_opencl.h" />
   </ItemGroup>
@@ -874,9 +877,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="COpenCLAvirResizer.cpp" />
     <ClCompile Include="OpenCLContext.cpp" />
     <ClCompile Include="OpenCLEffectVideo.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
+    <ClCompile Include="OpenCLKernelBuilder.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />
     <ClCompile Include="utility_opencl.cpp" />
   </ItemGroup>

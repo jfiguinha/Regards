@@ -8,13 +8,6 @@ public:
 	{
 
 	}
-	;
-
-	~Chqdn3dEffectParameter() override
-	{
-	};
-
-
 
 	double LumSpac = 4;
 	double temporalLumaDefault = 6.0;

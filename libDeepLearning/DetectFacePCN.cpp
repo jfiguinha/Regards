@@ -16,7 +16,6 @@ extern AppContext application_context;
 using namespace cv;
 using namespace dnn;
 
-
 #define M_PI  3.14159265358979323846
 #define CLAMP(x, l, u)  ((x) < (l) ? (l) : ((x) > (u) ? (u) : (x)))
 #define EPS  1e-5
@@ -33,7 +32,7 @@ static Net net_2; // And finally we load the DNN responsible for face recognitio
 static Net net_3; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFacePCN::muDnnAccess;
 bool CDetectFacePCN::isload = false;
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
+
 
 
 CDetectFacePCN::CDetectFacePCN(void)
@@ -103,6 +102,8 @@ void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listO
 			face.myROI = rect;
 			face.angle = static_cast<int>(360.0 - facelocal.angle) % 360;
 			face.confidence = facelocal.score;
+
+
 			frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
 			listOfFace.push_back(face);
 			pointOfFace.push_back(face.myROI);
@@ -173,33 +174,14 @@ int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 
 void CDetectFacePCN::LoadModel(const bool& openCLCompatible, const bool& cudaCompatible)
 {
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    
-	wxString config = documentPath + "\\model\\deploy.prototxt";
-
 	try
 	{
-		if (!application_context.clExecCtx.empty())
-			application_context.clExecCtx.bind();
-
-#ifdef WIN32
-		wxString detection_model_path = documentPath + "\\model\\PCN.caffemodel";
-		wxString pcn1_proto = documentPath + "\\model\\PCN-1.prototxt";
-		wxString pcn2_proto = documentPath + "\\model\\PCN-2.prototxt";
-		wxString pcn3_proto = documentPath + "\\model\\PCN-3.prototxt";
-#else
-        wxString detection_model_path = documentPath + "/model/PCN.caffemodel";
-        wxString pcn1_proto = documentPath + "/model/PCN-1.prototxt";
-        wxString pcn2_proto = documentPath + "/model/PCN-2.prototxt";
-        wxString pcn3_proto = documentPath + "/model/PCN-3.prototxt";
-#endif
-
-		net_1 = readNet(CConvertUtility::ConvertToStdString(pcn1_proto),
-		                CConvertUtility::ConvertToStdString(detection_model_path));
-		net_2 = readNet(CConvertUtility::ConvertToStdString(pcn2_proto),
-		                CConvertUtility::ConvertToStdString(detection_model_path));
-		net_3 = readNet(CConvertUtility::ConvertToStdString(pcn3_proto),
-		                CConvertUtility::ConvertToStdString(detection_model_path));
+		net_1 = readNet(CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN-1.prototxt")),
+		                CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN.caffemodel")));
+		net_2 = readNet(CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN-2.prototxt")),
+		                CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN.caffemodel")));
+		net_3 = readNet(CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN-3.prototxt")),
+		                CConvertUtility::ConvertToStdString(CFileUtility::GetFullpathModel("PCN.caffemodel")));
 
 
 		net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);

@@ -45,10 +45,6 @@ public:
 		exp_preser = 0.0;
 	};
 
-	~CDecodeRawParameter() override
-	{
-	};
-
 
 	float bright; //Brightness (default 1.0).
 	int highlight; //0-9: Highlight mode (0=clip, 1=unclip, 2=blend, 3+=rebuild).

@@ -6,13 +6,16 @@
 #include <IconeList.h>
 #include <wx/filename.h>
 #include <map>
+#include <memory>
 using namespace Regards::Window;
 
 
 class ISeparatorClass
 {
 public:
-	virtual CInfosSeparationBarExplorer* AddSeparatorBar(PhotosVector* _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) = 0;
+	// Retourne un unique_ptr : l'appelant (MainTreatment) devient propriétaire
+	// et le déplace ensuite dans InfosSeparationBarVector (vector de unique_ptr).
+	virtual std::unique_ptr<CInfosSeparationBarExplorer> AddSeparatorBar(PhotosVector* _pictures, CIconeList* iconeListLocal, const wxString& libelle, int& nbElement) = 0;
 };
 
 class CTreatmentData
@@ -20,7 +23,7 @@ class CTreatmentData
 public:
 	virtual ~CTreatmentData() = default;
 	virtual wxString GenerateValue() = 0;
-	virtual void SortList(PhotosVector * listPhotos) {};
+	virtual void SortList(PhotosVector* listPhotos) {};
 
 	static bool cmp(pair<wxString, PhotosVector*>& a, pair<wxString, PhotosVector*>& b)
 	{
@@ -37,39 +40,45 @@ public:
 
 	}
 
-	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass * folder, int& numElement)
+	void MainTreatment(InfosSeparationBarVector* listSeparator, CIconeList* iconeListLocal, ISeparatorClass* folder, int& numElement)
 	{
-		std::map<wxString, PhotosVector *> listMap;
+		// Les PhotosVector sont possédés par la map via unique_ptr : plus de new/delete
+		// manuels, et plus de fuite possible si une exception survient en cours de route.
+		std::map<wxString, std::unique_ptr<PhotosVector>> listMap;
 		std::map<wxString, wxString> listLibelle;
 		this->numElement = numElement;
 
 		int size = CThumbnailBuffer::GetVectorSize();
 		for (int i = 0; i < size; i++)
 		{
-			
+
 			CPhotos photos = CThumbnailBuffer::GetVectorValue(i);
 			UpdateVariable(photos);
 
 			wxString libelle = GenerateLibelle();
 			wxString value = GenerateValue();
 
-			std::map<wxString, PhotosVector*>::iterator it = listMap.find(value);
+			auto it = listMap.find(value);
 			if (it != listMap.end())
 			{
-				PhotosVector* listVector = listMap[value];
-				listVector->push_back(photos);
+				it->second->push_back(photos);
 			}
 			else
 			{
-				PhotosVector* listVector = new PhotosVector();
-				listMap[value] = listVector;
-				listLibelle[value] = libelle;
+				auto listVector = std::make_unique<PhotosVector>();
 				listVector->push_back(photos);
-
+				listLibelle[value] = libelle;
+				listMap[value] = std::move(listVector);
 			}
 		}
 
-		vector<std::pair<wxString, PhotosVector*>> myvector{ listMap.begin(), listMap.end() };
+		// myvector ne fait que référencer les PhotosVector toujours possédés par listMap ;
+		// il sert uniquement au tri, pas à la propriété.
+		vector<std::pair<wxString, PhotosVector*>> myvector;
+		myvector.reserve(listMap.size());
+		for (auto& entry : listMap)
+			myvector.emplace_back(entry.first, entry.second.get());
+
 		SortList(myvector);
 
 		for (auto it : myvector)
@@ -79,18 +88,17 @@ public:
 
 			SortList(listVector);
 
-			CInfosSeparationBarExplorer* infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, listLibelle[value], numElement);
+			auto infosSeparationBar = folder->AddSeparatorBar(listVector, iconeListLocal, listLibelle[value], numElement);
 			infosSeparationBar->SetLongTitle(value);
 			if (infosSeparationBar->listElement.size() > 0)
-				listSeparator->push_back(infosSeparationBar);
-			listVector->clear();
-			delete listVector;
+				// Conversion implicite unique_ptr<CInfosSeparationBarExplorer> -> unique_ptr<CInfosSeparationBar>
+				listSeparator->push_back(std::move(infosSeparationBar));
 			//CreateSeparatorBar(listSeparator, listVector, GenerateLibelle(), folder);
 		}
 
 		SortList(listSeparator);
-		listMap.clear();
-		myvector.clear();
+		// listMap se vide automatiquement ici (sortie de portée) : chaque PhotosVector
+		// encapsulé dans un unique_ptr est détruit sans appel explicite à delete.
 	};
 
 	virtual bool TestParameter(const CPhotos& photos) = 0;
@@ -117,7 +125,7 @@ public:
 
 	wxString GenerateLibelle() override
 	{
-        wxString seg = fname.GetDirs().back();
+		wxString seg = fname.GetDirs().back();
 		return seg;
 	}
 
@@ -127,9 +135,9 @@ public:
 	}
 
 
-	static bool cmp_path(CPhotos & a, CPhotos & b)
+	static bool cmp_path(CPhotos& a, CPhotos& b)
 	{
-		return a.GetPath() <  b.GetPath();
+		return a.GetPath() < b.GetPath();
 	}
 
 	void SortList(PhotosVector* listPhotos) override
@@ -143,7 +151,7 @@ public:
 		dirName = fname.GetPath();
 	}
 
-	static bool cmp_path_separator(CInfosSeparationBar * a, CInfosSeparationBar * b)
+	static bool cmp_path_separator(const std::unique_ptr<CInfosSeparationBar>& a, const std::unique_ptr<CInfosSeparationBar>& b)
 	{
 		return a->GetLongTitle() < b->GetLongTitle();
 	}
@@ -155,7 +163,7 @@ public:
 
 private:
 	wxString dirName = "";
-    wxFileName fname;
+	wxFileName fname;
 };
 
 class CTreatmentDataYear : public CTreatmentData
@@ -200,7 +208,7 @@ public:
 
 	wxString GenerateValue() override
 	{
-		return CConvertUtility::GenerateValue(year, 4) + CConvertUtility::GenerateValue(month,2);
+		return CConvertUtility::GenerateValue(year, 4) + CConvertUtility::GenerateValue(month, 2);
 	}
 
 	void UpdateVariable(const CPhotos& photos) override

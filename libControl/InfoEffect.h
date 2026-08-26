@@ -10,7 +10,7 @@ namespace Regards::Control
 	public:
 		CInfoEffect(CTreeElementControlInterface* interfaceControl, CModificationManager* modificationManager,
 		            int bitmapWindowId);
-		~CInfoEffect() override;
+		~CInfoEffect() = default;
 
 		wxString GetFilename();
 		void Init(CImageLoadingFormat* bitmap, const wxString& libelle, const wxString& key);
@@ -27,14 +27,13 @@ namespace Regards::Control
 	private:
 		void InitTree(const wxString& libelle, const wxString& key);
 		wxString GetNumModification();
-
+		void SetBitmapToViewer(CImageLoadingFormat* bitmap);
 		void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 		                    const int& posLargeur, const int& posHauteur) override;
 		void MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
 		               const int& posLargeur, const int& posHauteur, bool& update) override;
 
-		void CreateElement();
-		void UpdateElement();
+		void CreateElement(RenderMode mode);
 		void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 
 		int numEvent;
@@ -42,7 +41,8 @@ namespace Regards::Control
 		int index;
 		tree<CTreeData*>::iterator top;
 		tree<CTreeData*>::iterator child;
-		//tree<CTreeData *>::iterator childStart;
+	
+		//Pointeur externe
 		CModificationManager* modificationManager;
 		int widthPosition;
 		wxString filename;

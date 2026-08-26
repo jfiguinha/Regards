@@ -1,383 +1,517 @@
-// ReSharper disable All
+
 #include <header.h>
-#include "circle.h"
-#include <RGBAQuad.h>
 #include <LibResource.h>
+#include <RGBAQuad.h>
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <mutex>
+#include <vector>
+
 #include "Color.h"
+#include "circle.h"
 
 using namespace Regards::FiltreEffet;
-const double pi = 3.14159265358979323846264338327950288419716939937510;
+
+namespace {
+    constexpr double PI = 3.141592653589793238462643383279502884;
+
+    constexpr int RGB_CHANNELS = 3;
+
+    inline float GetDistance(const int x, const int y, const int centerX,
+        const int centerY) {
+        const int dx = x - centerX;
+        const int dy = y - centerY;
+
+        return std::sqrt(static_cast<float>(dx * dx + dy * dy));
+    }
+
+    inline uint8_t GetAlphaFromDistance(const float distance, const int radius) {
+        if (radius <= 0 || distance >= radius) return 0;
+
+        const float value = 255.0f - (distance / static_cast<float>(radius)) * 255.0f;
+
+        return static_cast<uint8_t>(std::clamp(value, 0.0f, 255.0f));
+    }
+
+    inline void EnsureAlpha(wxImage& image) {
+        if (!image.HasAlpha()) image.InitAlpha();
+    }
+
+    inline int ClampIndex(const int value, const int minValue, const int maxValue) {
+        return std::clamp(value, minValue, maxValue);
+    }
+}  // namespace
 
 std::map<int, wxImage> CCircle::listOfCircle;
+std::mutex CCircle::circleMutex;
 
-void CCircle::CleanCircle()
-{
-	listOfCircle.clear();
+void CCircle::CleanCircle() {
+    std::lock_guard<std::mutex> lock(circleMutex);
+
+    listOfCircle.clear();
 }
 
-wxImage CCircle::GetCircle(const int& rayon)
-{
-	if (listOfCircle.find(rayon) != listOfCircle.end())
-	{
-		return listOfCircle.at(rayon).Copy();
-	}
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", rayon, rayon);
-	listOfCircle[rayon] = image;
-	return image.Copy();
+wxImage CCircle::GetCircle(const int& rayon) {
+    if (rayon <= 0) return {};
+
+    {
+        std::lock_guard<std::mutex> lock(circleMutex);
+
+        const auto it = listOfCircle.find(rayon);
+
+        if (it != listOfCircle.end()) return it->second.Copy();
+    }
+
+    wxImage image =
+        CLibResource::CreatePictureFromSVG("IDB_CIRCLE", rayon, rayon);
+
+    if (!image.IsOk()) return {};
+
+    EnsureAlpha(image);
+
+    {
+        std::lock_guard<std::mutex> lock(circleMutex);
+
+        const auto [it, inserted] = listOfCircle.emplace(rayon, image);
+
+        if (!inserted) return it->second.Copy();
+    }
+
+    return image.Copy();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-//
-///////////////////////////////////////////////////////////////////////////////////////
-wxImage CCircle::GenerateCircle(const CRgbaquad& m_color, const int& iTaille, const float& fAlpha)
-{
-	wxImage image = GetCircle(iTaille * 2);
-	// CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille * 2, iTaille * 2);
+wxImage CCircle::GenerateCircle(const CRgbaquad& color, const int& taille,
+    const float& alphaValue) {
+    if (taille <= 0) return {};
 
-	uint8_t* alpha = nullptr;
-	if (image.HasAlpha())
-		alpha = image.GetAlpha();
+    wxImage image = GetCircle(taille * 2);
 
-	uint8_t* data = image.GetData();
+    if (!image.IsOk()) return {};
 
-	const int width = image.GetWidth();
-	const int height = image.GetHeight();
+    EnsureAlpha(image);
 
-	tbb::parallel_for(0, height, 1, [=](int y)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
-			{
-				if (alpha != nullptr)
-					alpha[i] *= (1.0f - fAlpha);
-			}
-		}
-	});
+    uint8_t* alpha = image.GetAlpha();
 
-	image.Replace(0, 0, 0,
-	              m_color.GetRed(), m_color.GetGreen(), m_color.GetBlue());
+    uint8_t* data = image.GetData();
 
-	return image;
+    if (alpha == nullptr || data == nullptr) {
+        return {};
+    }
+
+    const int width = image.GetWidth();
+
+    const int height = image.GetHeight();
+
+    const float alphaFactor = std::clamp(alphaValue, 0.0f, 1.0f);
+
+    const uint8_t red = color.GetRed();
+
+    const uint8_t green = color.GetGreen();
+
+    const uint8_t blue = color.GetBlue();
+
+    tbb::parallel_for(0, height, 1, [=](const int y) {
+        const int rowOffset = y * width;
+
+        for (int x = 0; x < width; ++x) {
+            const int index = rowOffset + x;
+
+            const int pixel = index * RGB_CHANNELS;
+
+            if (data[pixel] == 0 && data[pixel + 1] == 0 && data[pixel + 2] == 0) {
+                alpha[index] =
+                    static_cast<uint8_t>(alpha[index] * (1.0f - alphaFactor));
+            }
+        }
+        });
+
+    image.Replace(0, 0, 0, red, green, blue);
+
+    return image;
 }
 
+wxImage CCircle::GradientTransparent(const CRgbaquad& color, const int& taille,
+    const float& alphaValue) {
+    if (taille <= 0) return {};
 
-///////////////////////////////////////////////////////////////////////////////////////
-//
-///////////////////////////////////////////////////////////////////////////////////////
-wxImage CCircle::GradientTransparent(const CRgbaquad& m_color, const int& iTaille, const float& fAlpha)
-{
-	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+    wxImage image = GetCircle(taille);
 
-	int rayon = iTaille / 2;
+    if (!image.IsOk()) return {};
 
-	uint8_t* alpha = nullptr;
-	if (image.HasAlpha())
-		alpha = image.GetAlpha();
+    EnsureAlpha(image);
 
-	uint8_t* data = image.GetData();
+    uint8_t* alpha = image.GetAlpha();
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+    uint8_t* data = image.GetData();
 
+    if (alpha == nullptr || data == nullptr) {
+        return {};
+    }
 
-	tbb::parallel_for(0, height, 1, [=](int y)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
-			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
-				if (image.HasAlpha())
-					alpha[i] = 0;
-				if (fValue <= rayon)
-				{
-					const int valeurAlpha = 255 - (int)((fValue / (float)rayon) * 255.0f);
-					if (image.HasAlpha())
-						alpha[i] = valeurAlpha;
-				}
-			}
-		}
-	});
+    const int width = image.GetWidth();
 
-	image.Replace(0, 0, 0,
-	              m_color.GetRed(), m_color.GetGreen(), m_color.GetBlue());
+    const int height = image.GetHeight();
 
-	return image;
+    const int radius = taille / 2;
+
+    if (radius <= 0) return image;
+
+    const float alphaFactor = std::clamp(alphaValue, 0.0f, 1.0f);
+
+    const uint8_t red = color.GetRed();
+
+    const uint8_t green = color.GetGreen();
+
+    const uint8_t blue = color.GetBlue();
+
+    tbb::parallel_for(0, height, 1, [=](const int y) {
+        const int rowOffset = y * width;
+
+        for (int x = 0; x < width; ++x) {
+            const int index = rowOffset + x;
+
+            const int pixel = index * RGB_CHANNELS;
+
+            if (data[pixel] != 0 || data[pixel + 1] != 0 || data[pixel + 2] != 0) {
+                continue;
+            }
+
+            const float distance = GetDistance(x, y, radius, radius);
+
+            uint8_t resultAlpha = GetAlphaFromDistance(distance, radius);
+
+            resultAlpha = static_cast<uint8_t>(resultAlpha * (1.0f - alphaFactor));
+
+            alpha[index] = resultAlpha;
+        }
+        });
+
+    image.Replace(0, 0, 0, red, green, blue);
+
+    return image;
 }
 
-wxImage CCircle::Burst(const int& iTaille, const int& iColor, const int& iIntensity, const int& iColorIntensity)
-{
-	float y1 = 0.6f;
-	float x1 = 0.5f;
+wxImage CCircle::Burst(const int& taille, const int& color,
+    const int& intensity, const int& colorIntensity) {
+    if (taille <= 0) return {};
 
-	float a = (y1 - 1.0f) / (x1 * (x1 - 1.0f));
-	float b = 1.0f - a;
-	vector<CRgbaquad> listColor;
+    constexpr float y1 = 0.6f;
+    constexpr float x1 = 0.5f;
 
-	const int rayon = iTaille / 2;
+    const float a = (y1 - 1.0f) / (x1 * (x1 - 1.0f));
 
-	for (int i = 0; i <= iTaille; i++)
-	{
-		float k = (float)i / (float)iTaille;
+    const float b = 1.0f - a;
 
-		float f_alpha = a * (k * k) + b * k;
+    std::vector<CRgbaquad> listColor(static_cast<size_t>(taille + 1));
 
-		if (f_alpha < 0.0f)
-			f_alpha = 0.0f;
+    for (int i = 0; i <= taille; ++i) {
+        const float k = static_cast<float>(i) / static_cast<float>(taille);
 
-		HSB m_value = {iColor, static_cast<long>(iColorIntensity * f_alpha), 100};
-		CRgbaquad m_rgbValue;
-		CColor::HSBToRGB(m_value, m_rgbValue);
-		m_rgbValue.SetAlpha(f_alpha * 255.0f);
-		listColor.push_back(m_rgbValue);
-	}
+        float alpha = a * k * k + b * k;
 
+        alpha = std::max(0.0f, alpha);
 
-	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+        HSB value = { color, static_cast<long>(colorIntensity * alpha), 100 };
 
-	uint8_t* alpha = nullptr;
-	if (image.HasAlpha())
-		alpha = image.GetAlpha();
+        CRgbaquad rgb;
 
-	uint8_t* data = image.GetData();
+        CColor::HSBToRGB(value, rgb);
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+        rgb.SetAlpha(
+            static_cast<uint8_t>(std::clamp(alpha * 255.0f, 0.0f, 255.0f)));
 
+        listColor[i] = rgb;
+    }
 
-	tbb::parallel_for(0, height, 1, [=](int y)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
-			{
-				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
-				int distance = (int)fValue;
-				alpha[i] = 0;
-				if (fValue <= rayon)
-				{
-					int valeurAlpha = 255 - (int)((fValue / (float)rayon) * 255.0f);
+    wxImage image = GetCircle(taille);
 
-					if (alpha != nullptr)
-						alpha[i] = valeurAlpha;
-				}
+    if (!image.IsOk()) return {};
 
-				if (distance <= iTaille)
-				{
-					data[i * 3] = listColor[distance].GetRed();
-					data[i * 3 + 1] = listColor[distance].GetGreen();
-					data[i * 3 + 2] = listColor[distance].GetBlue();
-				}
-				i++;
-			}
-		}
-	});
+    EnsureAlpha(image);
 
-	return image;
+    uint8_t* alpha = image.GetAlpha();
+
+    uint8_t* data = image.GetData();
+
+    if (alpha == nullptr || data == nullptr) {
+        return {};
+    }
+
+    const int width = image.GetWidth();
+
+    const int height = image.GetHeight();
+
+    const int radius = taille / 2;
+
+    tbb::parallel_for(0, height, 1, [=, &listColor](const int y) {
+        const int rowOffset = y * width;
+
+        for (int x = 0; x < width; ++x) {
+            const int index = rowOffset + x;
+
+            const int pixel = index * RGB_CHANNELS;
+
+            if (data[pixel] != 0 || data[pixel + 1] != 0 || data[pixel + 2] != 0) {
+                continue;
+            }
+
+            const float distance = GetDistance(x, y, radius, radius);
+
+            const int distanceIndex = static_cast<int>(distance);
+
+            alpha[index] = 0;
+
+            if (distance <= radius) {
+                alpha[index] = GetAlphaFromDistance(distance, radius);
+            }
+
+            if (distanceIndex >= 0 &&
+                distanceIndex < static_cast<int>(listColor.size())) {
+                const CRgbaquad& rgb = listColor[distanceIndex];
+
+                data[pixel] = rgb.GetRed();
+
+                data[pixel + 1] = rgb.GetGreen();
+
+                data[pixel + 2] = rgb.GetBlue();
+            }
+        }
+        });
+
+    return image;
 }
 
-wxImage CCircle::HaloGradient(const int& iTaille, const int& iWidth, const float& fAlpha2)
-{
-	vector<CRgbaquad> listColor;
-	int rayon = iTaille / 2;
-	int iNb = (360 / iWidth);
-	int i = 0;
+wxImage CCircle::HaloGradient(const int& taille, const int& widthValue,
+    const float& alphaValue) {
+    if (taille <= 0 || widthValue <= 0) {
+        return {};
+    }
 
-	for (i = iTaille - iWidth; i <= iTaille; i++)
-	{
-		int j = iTaille - i;
-		HSB m_value = {iNb * j, 50, 100};
-		CRgbaquad m_rgbValue;
-		CColor::HSBToRGB(m_value, m_rgbValue);
+    const int radius = taille / 2;
 
-		listColor.push_back(m_rgbValue);
-	}
+    const int width = std::min(widthValue, radius);
 
+    if (width <= 0) return {};
 
-	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+    const int number = 360 / width;
 
-	uint8_t* alpha = nullptr;
-	if (image.HasAlpha())
-		alpha = image.GetAlpha();
+    std::vector<CRgbaquad> listColor(static_cast<size_t>(width + 1));
 
-	uint8_t* data = image.GetData();
+    for (int i = taille - width; i <= taille; ++i) {
+        const int j = taille - i;
 
-	//int size = image.GetHeight() * image.GetWidth();
+        HSB value = { number * j, 50, 100 };
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+        CColor::HSBToRGB(value, listColor[j]);
+    }
 
+    wxImage image = GetCircle(taille);
 
-	tbb::parallel_for(0, height, 1, [=](int y)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			int i1 = y * width + x;
-			if (data[i1 * 3] == 0 && data[i1 * 3 + 1] == 0 && data[i1 * 3 + 2] == 0)
-			{
-				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
-				int distance = (int)fValue;
-				alpha[i1] = 0;
+    if (!image.IsOk()) return {};
 
-				if (distance <= rayon && distance >= (rayon - iWidth))
-				{
-					int position = iWidth - (rayon - distance);
-					data[i1 * 3] = listColor[position].GetRed();
-					data[i1 * 3 + 1] = listColor[position].GetGreen();
-					data[i1 * 3 + 2] = listColor[position].GetBlue();
-					alpha[i1] = 255 - (fAlpha2 * 255.0f);
-				}
-				else
-				{
-					int position = iWidth - (rayon - distance);
-					if (position > 0)
-					{
-						data[i1 * 3] = listColor[iWidth].GetRed();
-						data[i1 * 3 + 1] = listColor[iWidth].GetGreen();
-						data[i1 * 3 + 2] = listColor[iWidth].GetBlue();
-					}
-					else
-					{
-						data[i1 * 3] = listColor[0].GetRed();
-						data[i1 * 3 + 1] = listColor[0].GetGreen();
-						data[i1 * 3 + 2] = listColor[0].GetBlue();
-					}
-				}
-			}
-		}
-	});
+    EnsureAlpha(image);
 
-	return image;
+    uint8_t* alpha = image.GetAlpha();
+
+    uint8_t* data = image.GetData();
+
+    if (alpha == nullptr || data == nullptr) {
+        return {};
+    }
+
+    const int imageWidth = image.GetWidth();
+
+    const int imageHeight = image.GetHeight();
+
+    const float alphaFactor = std::clamp(alphaValue, 0.0f, 1.0f);
+
+    tbb::parallel_for(0, imageHeight, 1, [=, &listColor](const int y) {
+        const int rowOffset = y * imageWidth;
+
+        for (int x = 0; x < imageWidth; ++x) {
+            const int index = rowOffset + x;
+
+            const int pixel = index * RGB_CHANNELS;
+
+            if (data[pixel] != 0 || data[pixel + 1] != 0 || data[pixel + 2] != 0) {
+                continue;
+            }
+
+            const float distance = GetDistance(x, y, radius, radius);
+
+            const int distanceInt = static_cast<int>(distance);
+
+            alpha[index] = 0;
+
+            if (distanceInt <= radius && distanceInt >= radius - width) {
+                const int position =
+                    ClampIndex(width - (radius - distanceInt), 0, width);
+
+                const CRgbaquad& rgb = listColor[position];
+
+                data[pixel] = rgb.GetRed();
+
+                data[pixel + 1] = rgb.GetGreen();
+
+                data[pixel + 2] = rgb.GetBlue();
+
+                alpha[index] = static_cast<uint8_t>(
+                    std::clamp(255.0f * (1.0f - alphaFactor), 0.0f, 255.0f));
+            }
+        }
+        });
+
+    return image;
 }
 
+wxImage CCircle::Halo(const int& color, const int& colorIntensity,
+    const int& taille, const int& widthValue,
+    const float& alphaValue, const int& centre) {
+    if (taille <= 0 || widthValue <= 0) {
+        return {};
+    }
 
-wxImage CCircle::Halo(const int& iColor, const int& iColorIntensity, const int& iTaille, const int& iWidth,
-                      const float& fAlpha2, const int& iCentre)
-{
-	int rayon = iTaille / 2;
-	vector<CRgbaquad> listColorCenter;
-	vector<CRgbaquad> listColorOut;
-	/*
-	cv::Mat out = cv::Mat(iTaille, iTaille, CV_8UC3);
-	cv::circle(out, cv::Point(rayon, rayon), rayon, cv::Scalar(0, 0, 0), cv::FILLED);
+    const int radius = taille / 2;
 
-	long imsize = out.rows * out.cols * out.channels();
-	wxImage image(out.cols, out.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = out.data;
-	unsigned char* d = image.GetData();
-	memcpy(d, s, imsize);
+    const int width = std::min(widthValue, taille);
 
-	uint8_t* charAlpha = new uint8_t[iTaille* iTaille];
-	image.SetAlpha(charAlpha);
-	*/
-	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+    wxImage image = GetCircle(taille);
 
-	float y1 = 0.3f;
-	float x1 = 0.5f;
-	float a = (y1 - 1.0f) / (x1 * (x1 - 1.0f));
-	float b = 1.0f - a;
-	int i = 0;
+    if (!image.IsOk()) return {};
 
-	if (iCentre)
-	{
-		for (i = 0; i < iTaille - iWidth; i++)
-		{
-			float fAlpha = ((float)i / (float)(iTaille));
-			fAlpha = (a * (fAlpha * fAlpha) + b * fAlpha);
+    EnsureAlpha(image);
 
-			if (fAlpha < 0.0f)
-				fAlpha = 0.0f;
+    std::vector<CRgbaquad> listColorCenter;
 
-			HSB m_value = {iColor, static_cast<long>((fAlpha * iColorIntensity)), 100};
-			CRgbaquad m_rgbValue;
-			CColor::HSBToRGB(m_value, m_rgbValue);
-			listColorCenter.push_back(m_rgbValue);
-			//MidpointCircle(x, y, i, m_rgbValue, fAlpha2);
-		}
-	}
+    std::vector<CRgbaquad> listColorOut(static_cast<size_t>(width + 1));
 
-	const double m_dCent = 100;
-	for (i = iTaille - iWidth; i <= iTaille; i++)
-	{
-		float fAlpha;
-		int j = 100 - i;
-		if (j < 0)
-			fAlpha = 1.0f;
-		else
-		{
-			double m_iIntensity = (double)i / m_dCent;
-			double m = (asin(m_iIntensity) * 90) / pi;
-			m_iIntensity = exp(-m * m * 0.006) * 0.50 + exp(-m * 0.03) * (1 - 0.50);
+    const float alphaFactor = std::clamp(alphaValue, 0.0f, 1.0f);
 
-			fAlpha = 1.0f - m_iIntensity;
+    if (centre) {
+        const int centerCount = std::max(0, taille - width);
 
-			if (fAlpha > 1.0f)
-				fAlpha = 1.0f;
-		}
+        listColorCenter.resize(static_cast<size_t>(centerCount));
 
-		HSB m_value = {iColor, static_cast<long>((fAlpha * iColorIntensity)), 100};
-		CRgbaquad m_rgbValue;
-		CColor::HSBToRGB(m_value, m_rgbValue);
-		listColorOut.push_back(m_rgbValue);
-		/*
-		if (i == iTaille - 1)
-			MidpointCircle(x, y, i, m_rgbValue, fAlpha2, true);
-		else
-			MidpointCircle(x, y, i, m_rgbValue, fAlpha2);
-		*/
-	}
+        constexpr float y1 = 0.3f;
+        constexpr float x1 = 0.5f;
 
-	uint8_t* alpha = nullptr;
-	if (image.HasAlpha())
-		alpha = image.GetAlpha();
+        const float a = (y1 - 1.0f) / (x1 * (x1 - 1.0f));
 
-	uint8_t* data = image.GetData();
+        const float b = 1.0f - a;
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+        for (int i = 0; i < centerCount; ++i) {
+            float value = static_cast<float>(i) / static_cast<float>(taille);
 
-	//for (auto y = 0; y < height; y++)
-	//{
-	tbb::parallel_for(0, height, 1, [=](int y)
-	{
-		for (auto x = 0; x < width; x++)
-		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
-			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
-				int distance = (int)fValue;
-				alpha[i] = 0;
+            value = a * value * value + b * value;
 
-				if (distance < (rayon - iWidth) && iCentre)
-				{
-					data[i * 3] = listColorCenter[distance].GetRed();
-					data[i * 3 + 1] = listColorCenter[distance].GetGreen();
-					data[i * 3 + 2] = listColorCenter[distance].GetBlue();
-					alpha[i] = 255 - (fAlpha2 * 255.0f);
-				}
-				else if (distance <= rayon && distance >= (rayon - iWidth))
-				{
-					int position = iWidth - (rayon - distance);
-					data[i * 3] = listColorOut[position].GetRed();
-					data[i * 3 + 1] = listColorOut[position].GetGreen();
-					data[i * 3 + 2] = listColorOut[position].GetBlue();
-					alpha[i] = 255 - (fAlpha2 * 255.0f);
-				}
-				else
-				{
-					data[i * 3] = 255;
-					data[i * 3 + 1] = 255;
-					data[i * 3 + 2] = 255;
-				}
-			}
-			i++;
-		}
-	});
+            value = std::max(0.0f, value);
 
-	return image;
+            HSB hsb = { color, static_cast<long>(value * colorIntensity), 100 };
+
+            CColor::HSBToRGB(hsb, listColorCenter[i]);
+        }
+    }
+
+    constexpr double center = 100.0;
+
+    for (int i = taille - width; i <= taille; ++i) {
+        float fAlpha;
+
+        const int j = 100 - i;
+
+        if (j < 0) {
+            fAlpha = 1.0f;
+        }
+        else {
+            double intensity = static_cast<double>(i) / center;
+
+            // Protection de asin().
+            intensity = std::clamp(intensity, -1.0, 1.0);
+
+            const double m = (std::asin(intensity) * 90.0) / PI;
+
+            intensity = std::exp(-m * m * 0.006) * 0.50 + std::exp(-m * 0.03) * 0.50;
+
+            fAlpha = static_cast<float>(1.0 - intensity);
+
+            fAlpha = std::clamp(fAlpha, 0.0f, 1.0f);
+        }
+
+        HSB value = { color, static_cast<long>(fAlpha * colorIntensity), 100 };
+
+        CColor::HSBToRGB(value,
+            listColorOut[static_cast<size_t>(i - (taille - width))]);
+    }
+
+    uint8_t* alpha = image.GetAlpha();
+
+    uint8_t* data = image.GetData();
+
+    if (alpha == nullptr || data == nullptr) {
+        return {};
+    }
+
+    const int imageWidth = image.GetWidth();
+
+    const int imageHeight = image.GetHeight();
+
+    tbb::parallel_for(
+        0, imageHeight, 1, [=, &listColorCenter, &listColorOut](const int y) {
+            const int rowOffset = y * imageWidth;
+
+            for (int x = 0; x < imageWidth; ++x) {
+                const int index = rowOffset + x;
+
+                const int pixel = index * RGB_CHANNELS;
+
+                if (data[pixel] != 0 || data[pixel + 1] != 0 ||
+                    data[pixel + 2] != 0) {
+                    continue;
+                }
+
+                const float distance = GetDistance(x, y, radius, radius);
+
+                const int distanceInt = static_cast<int>(distance);
+
+                alpha[index] = 0;
+
+                if (distanceInt < radius - width && centre) {
+                    if (distanceInt >= 0 &&
+                        distanceInt < static_cast<int>(listColorCenter.size())) {
+                        const CRgbaquad& rgb = listColorCenter[distanceInt];
+
+                        data[pixel] = rgb.GetRed();
+
+                        data[pixel + 1] = rgb.GetGreen();
+
+                        data[pixel + 2] = rgb.GetBlue();
+
+                        alpha[index] =
+                            static_cast<uint8_t>(255.0f * (1.0f - alphaFactor));
+                    }
+                }
+                else if (distanceInt <= radius && distanceInt >= radius - width) {
+                    const int position =
+                        ClampIndex(width - (radius - distanceInt), 0, width);
+
+                    const CRgbaquad& rgb = listColorOut[position];
+
+                    data[pixel] = rgb.GetRed();
+
+                    data[pixel + 1] = rgb.GetGreen();
+
+                    data[pixel + 2] = rgb.GetBlue();
+
+                    alpha[index] = static_cast<uint8_t>(255.0f * (1.0f - alphaFactor));
+                }
+                else {
+                    data[pixel] = 255;
+                    data[pixel + 1] = 255;
+                    data[pixel + 2] = 255;
+                }
+            }
+        });
+
+    return image;
 }

@@ -16,22 +16,12 @@ void CDeepLearning::CleanRecognition()
 
 vector<int> CDeepLearning::FindFace(const cv::Mat& pictureData, const wxString& filename, const bool& fastDetection)
 {
-	//bool fastDetection = true;
-	muLoading.lock();
-	const bool isLoading = isload;
-	muLoading.unlock();
-	/*
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-		fastDetection = param->GetFastDetectionFace();
-*/
-	if (isLoading)
+	if (IsResourceReady())
 	{
 		CFaceDetector faceDetector(fastDetection);
 		return faceDetector.FindFace(pictureData, filename);
 	}
-	vector<int> list;
-	return list;
+	return vector<int>();
 }
 
 
@@ -39,43 +29,48 @@ void CDeepLearning::LoadRessource(const bool& openCLCompatible, const bool& cuda
 {
 	//CDetectRotation::LoadModel(rotation_json);
 	CFaceDetector::LoadModel(openCLCompatible, cudaCompatible);
-	muLoading.lock();
-	isload = true;
-	muLoading.unlock();
+	try
+	{
+		std::lock_guard<std::mutex> lock(muLoading);
+		isload = true;
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "CDeepLearning LoadRessource Execution Error : " << e.what() << std::endl;
+		return;
+	}
 }
 
 
-void CDeepLearning::DetectEyes(const cv::Mat& pBitmap, const bool& fastDetection)
+void CDeepLearning::RemoveRedEyes(cv::Mat& pBitmap, const bool& fastDetection)
 {
 	std::vector<wxRect> listEye;
-	muLoading.lock();
-	const bool isLoading = isload;
-	muLoading.unlock();
-
-
-	if (isLoading)
+	if (IsResourceReady())
 	{
 		CFaceDetector faceDetector(fastDetection);
-		faceDetector.DetectEyes(pBitmap);
+		faceDetector.RemoveRedEyes(pBitmap);
 	}
 }
 
 bool CDeepLearning::IsResourceReady()
 {
-	muLoading.lock();
-	const bool isLoading = isload;
-	muLoading.unlock();
+	bool isLoading = false;
+	try
+	{
+		std::lock_guard<std::mutex> lock(muLoading);
+		isLoading = isload;
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "CDeepLearning::IsResourceReady Execution Error: " << e.what() << std::endl;
+	}
 	return isLoading;
 }
 
 int CDeepLearning::GetExifOrientation(const cv::Mat& pBitmap, const bool& fastDetection)
 {
-	muLoading.lock();
-	const bool isLoading = isload;
-	muLoading.unlock();
 
-
-	if (isLoading)
+	if (IsResourceReady())
 	{
 		CDetectRotation detectRotation;
 		return detectRotation.GetExifOrientation(pBitmap, fastDetection);
@@ -88,11 +83,7 @@ bool CDeepLearning::FindFaceCompatible(const int& numFace, const bool& fastDetec
 {
 	bool returnValue = false;
 
-	muLoading.lock();
-	const bool isLoading = isload;
-	muLoading.unlock();
-
-	if (isLoading)
+	if (IsResourceReady())
 	{
 		CFaceDetector faceDetector(fastDetection);
 		returnValue = faceDetector.FaceRecognition(numFace);

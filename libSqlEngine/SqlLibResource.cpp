@@ -4,8 +4,8 @@ using namespace Regards::Sqlite;
 
 CSqlLibResource::CSqlLibResource(const bool& readOnly, const bool& load_inmemory)
 {
-	this->readonly = readOnly;
-	this->load_inmemory = load_inmemory;
+	this->m_readonly = readOnly;
+	this->m_loadInMemory = load_inmemory;
 }
 
 
@@ -30,7 +30,7 @@ bool CSqlLibResource::InitDatabase(const wxString& lpFilename)
 
 	if (wxFileExists(lpFilename))
 	{
-		return OpenConnection(lpFilename, readonly, load_inmemory);
+		return OpenConnection(lpFilename, m_readonly, m_loadInMemory);
 	}
 	return hr;
 }

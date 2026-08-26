@@ -9,9 +9,6 @@ public:
 		angle = 0;
 	};
 
-	~CFreeRotateEffectParameter() override
-	{
-	};
 
 	int angle;
 };

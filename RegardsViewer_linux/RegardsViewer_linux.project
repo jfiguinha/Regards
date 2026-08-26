@@ -29,11 +29,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../Regards/TestFrame.cpp"/>
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="../Regards/TestFrame.h"/>
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
@@ -116,16 +114,14 @@
     <Project Name="libScanner"/>
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
-    <Project Name="libheif"/>
     <Project Name="libResource"/>
     <Project Name="libffmpeg"/>
     <Project Name="libVideoConverter"/>
     <Project Name="libVideoEffect"/>
-    <Project Name="OpenCV"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions;" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++17;-pthread;" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libSqlite"/>
@@ -181,7 +177,6 @@
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.1;-ljavascriptcoregtk-4.1;-pthread">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <Library Value="Viewer"/>
-        <Library Value="ffmpeg"/>
         <Library Value="Scanner"/>
         <Library Value="VideoConverter"/>
         <Library Value="wxCheckTree"/>
@@ -210,7 +205,6 @@
         <Library Value="Theme"/>
         <Library Value="Parameter"/>
         <Library Value="OpenCL"/>
-        <Library Value="OpenCV"/>
         <Library Value="CxImage"/>
         <Library Value="wx_gtk3u_gl-3.3"/>
         <Library Value="GL"/>
@@ -459,15 +453,14 @@
         <Library Value="wayland-cursor"/>
         <Library Value="Xss"/>
         <Library Value="lz4"/>
-        <Library Value="zstd"/>
         <Library Value="gomp"/>
+        <Library Value="zstd"/>
         <Library Value="wayland-client"/>
         <Library Value="wayland-egl"/>
         <Library Value="yuv"/>
         <Library Value="tinyxml2"/>
         <Library Value="utf8_range"/>
         <Library Value="utf8_validity"/>
-        <Library Value="omp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

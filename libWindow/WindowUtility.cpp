@@ -14,40 +14,22 @@ void CWindowUtility::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
 
 void CWindowUtility::DrawTexte(wxDC* dc, const wxString& libelle, const int& xPos, const int& yPos, CThemeFont font)
 {
-	try
-	{
-		int fontSize = font.GetFontSize();
-		wxColour color = font.GetColorFont();
-		wxFont _font(fontSize, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-		dc->SetFont(_font);
-		//dc->SetBackgroundMode(wxSOLID);
-		dc->SetTextForeground(color);
-
-		dc->DrawText(libelle, xPos, yPos);
-		dc->SetFont(wxNullFont);
-	}
-	catch (...)
-	{
-	}
+	int fontSize = font.GetFontSize();
+	wxColour color = font.GetColorFont();
+	wxFont _font(fontSize, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+	dc->SetFont(_font);
+	dc->SetTextForeground(color);
+	dc->DrawText(libelle, xPos, yPos);
+	dc->SetFont(wxNullFont);
 }
 
 wxSize CWindowUtility::GetSizeTexte(wxDC* dc, const wxString& libelle, CThemeFont font)
 {
-	// Create a memory DC
-	
 	wxSize size;
-	try
-	{
-		wxMemoryDC temp_dc(dc);
- 		wxFont _font(font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-		temp_dc.SetFont(_font);
-		size = temp_dc.GetTextExtent(libelle);
-		temp_dc.SetFont(wxNullFont);
-	}
-	catch (...)
-	{
-
-	}
-
+	wxMemoryDC temp_dc(dc);
+ 	wxFont _font(font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+	temp_dc.SetFont(_font);
+	size = temp_dc.GetTextExtent(libelle);
+	temp_dc.SetFont(wxNullFont);
 	return size;
 };

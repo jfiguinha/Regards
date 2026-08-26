@@ -15,49 +15,19 @@ CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, co
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
-	wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL", 1); //L"History";
-	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
-	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
-	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY", 1);
-	wxString add_label = CLibResource::LoadStringFromResource(L"LBLFACEADD", 1);
 
-	auto add = new CToolbarButton(themeToolbar.button);
-	add->SetButtonResourceId(L"IDB_PLUS");
-	add->SetCommandId(WM_ADD);
-	add->SetLibelleTooltip(add_label);
-	navElement.push_back(add);
+	add = CreateButton(L"IDB_PLUS", L"LBLFACEADD", WM_ADD, false);
+	copy = CreateButton(L"IDB_MULTIPLESELECT", L"LBLCOPY", WM_COPY, false);
+	moins = CreateButton(L"IDB_ZOOMMOINS", L"LBLZOOMOFF", WM_ZOOMOUT, false);
 
-	auto copy = new CToolbarButton(themeToolbar.button);
-	copy->SetButtonResourceId(L"IDB_MULTIPLESELECT");
-	copy->SetCommandId(WM_COPY);
-	copy->SetLibelleTooltip(copy_label);
-	navElement.push_back(copy);
+	slide = std::make_unique<CToolbarSlide>(themeToolbar.slider, this);
+	navElement.push_back(slide.get());
 
-	auto moins = new CToolbarButton(themeToolbar.button);
-	moins->SetButtonResourceId(L"IDB_ZOOMMOINS");
-	moins->SetCommandId(WM_ZOOMOUT);
-	moins->SetLibelleTooltip(zoomoff);
-	navElement.push_back(moins);
+	plus = CreateButton(L"IDB_ZOOMPLUS", L"LBLZOOMON", WM_ZOOMON, false);
+	refreshButton = CreateButton(L"IDB_FOLDER_REFRESH", L"LBLREFRESHTHUMBNAIL", WM_REFRESH, false);
 
-	slide = new CToolbarSlide(themeToolbar.slider, this);
-	navElement.push_back(slide);
-
-	auto plus = new CToolbarButton(themeToolbar.button);
-	plus->SetButtonResourceId(L"IDB_ZOOMPLUS");
-	plus->SetCommandId(WM_ZOOMON);
-	plus->SetLibelleTooltip(zoomon);
-	navElement.push_back(plus);
-
-	auto refreshButton = new CToolbarButton(themeToolbar.button);
-	refreshButton->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
-	refreshButton->SetCommandId(WM_REFRESH);
-	refreshButton->SetLibelleTooltip(refresh);
-	navElement.push_back(refreshButton);
 }
 
-CThumbnailFaceToolBar::~CThumbnailFaceToolBar()
-{
-}
 
 bool CThumbnailFaceToolBar::ZoomOn()
 {

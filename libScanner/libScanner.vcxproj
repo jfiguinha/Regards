@@ -378,7 +378,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include;../libOpenCL</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;_HAS_STD_BYTE=0;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -524,7 +524,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include;../libOpenCL</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;TURBOJPEG;_HAS_STD_BYTE=0;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -686,7 +686,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libOpenCL;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

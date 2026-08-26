@@ -13,7 +13,9 @@
 #include <wx/busyinfo.h>
 #include "SqlFolderCatalog.h"
 #include "SQLRemoveData.h"
-
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
+#include <ModificationManager.h>
 namespace Regards::Viewer
 {
 	class CListFace;
@@ -86,7 +88,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(categoryFolderWnd);
 		tabInfosFile->SetId(WM_CRITERIA);
-		listWindow.push_back(tabInfosFile);
+		listWindow.push_back(std::move(tabInfosFile));
 	}
 
 	if (viewerTheme != nullptr)
@@ -107,13 +109,6 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
 	categoryFolderWnd->UpdateCriteria(false);
-}
-
-CPanelPhotoWnd::~CPanelPhotoWnd()
-{
-	delete(categoryFolderWnd);
-	delete(folderWnd);
-	delete(photoToolbar);
 }
 
 void CPanelPhotoWnd::UpdateCriteria(wxCommandEvent& event)
@@ -260,28 +255,43 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, wxString* file, const
 	wxString localFilename = "";
 	wxString msg = "In progress ...";
 
+
+
 	wxArrayString files;
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-
-		//Indication d'imporation des critères 
-		CSqlFolderCatalog sqlFolderCatalog;
-		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
-
-		//printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
-
-		if (idFolder == -1)
-		{
-			idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
-			//Insert la liste des photos dans la base de données.
-			CSqlInsertFile sqlInsertFile;
-			sqlInsertFile.AddFileFromFolder(this, nullptr, files, folder, idFolder, localFilename);
-			//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
-		}
 	
+	wxProgressDialog dlg
+	(
+		"Progress in progress",
+		"Please wait, starting...",
+		files.size(),
+		nullptr,
+		wxPD_ELAPSED_TIME |
+		wxPD_ESTIMATED_TIME |
+		wxPD_REMAINING_TIME |
+		wxPD_AUTO_HIDE |
+		wxPD_SMOOTH // - makes indeterminate mode bar on WinXP very small
+	);
+	
+	//Indication d'imporation des critères 
+	CSqlFolderCatalog sqlFolderCatalog;
+	int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
 
+	//printf("AddFolder : %s \n", CConvertUtility::ConvertToStdString(folder));
+
+	if (idFolder == -1)
+	{
+		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
+		//Insert la liste des photos dans la base de données.
+		CSqlInsertFile sqlInsertFile;
+		sqlInsertFile.AddFileFromFolder(this, &dlg, files, folder, idFolder, localFilename);
+		//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToStdString(localFilename));
+	}
+	
+	dlg.Close();
 
 	wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
@@ -323,8 +333,7 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
 		if (idFolder != -1)
 		{
-			CSQLRemoveData sqlRemoveData;
-			sqlRemoveData.DeleteFolder(idFolder);
+			CSQLRemoveData::DeleteFolder(idFolder);
 		}
 
 		SetStopProcess(false);

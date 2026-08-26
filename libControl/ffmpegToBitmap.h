@@ -7,7 +7,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
-class CRegardsBitmap;
+;
 
 class CffmpegToBitmap
 {

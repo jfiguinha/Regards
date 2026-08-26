@@ -9,6 +9,8 @@
 #include <wx/dir.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#include "SqlTransaction.h"
+#include <wx/filename.h>
 using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -90,28 +92,36 @@ using namespace Regards::Sqlite;
 #define SQL_DROP_PHOTO_CATEGORIE_USENET_PROCESSING_NAME "DROP TABLE PHOTOCATEGORIE_PROCESSING"
 
 #define SQL_CREATE_PHOTO_GPS_TABLE "CREATE TABLE PHOTOSGPS (NumPhoto INT, FullPath NVARCHAR(255), NumFolderId INT)"
-#define SQL_DROP_PHOTO_GP_TABLE "DROP TABLE PHOTOSGPS"
+//#define SQL_DROP_PHOTO_GP_TABLE "DROP TABLE PHOTOSGPS"
 
 #define SQL_CREATE_OPENCLKERNEL_TABLE "CREATE TABLE OPENCLKERNEL (numProgram NVARCHAR(255), platformName NVARCHAR(255), numDevice INT, typeData INT, openCLKernel BLOB)"
 #define SQL_DROP_OPENCLKERNEL_TABLE "DROP TABLE OPENCLKERNEL"
 
-#define  SQL_CREATE_SEARCH_VIEW_VIEW "CREATE VIEW SEARCH_VIEW AS SELECT NumPhoto, FullPath, CreateDate, GeoGPS, \
-substr(CreateDate, 0, 5) as Year, substr(CreateDate, 6, 2) as Month, substr(CreateDate, 9, 2) as Day, \
-strftime('%w', REPLACE(CreateDate, '.', '-')) as DayOfWeek FROM PHOTOSSEARCHCRITERIA Order By Year, Month, Day"
+#define SQL_CREATE_SEARCH_VIEW_VIEW "CREATE VIEW SEARCH_VIEW AS SELECT NumPhoto, FullPath, CreateDate, GeoGPS FROM PHOTOSSEARCHCRITERIA"
 
+#define SQL_DROP_VIEW_SEARCH_VIEW "DROP VIEW SEARCH_VIEW"
 
+#define SQL_DROP_OPENCLKERNEL_TABLE "DROP TABLE OPENCLKERNEL"
 
-CSqlLibExplorer::CSqlLibExplorer(const bool& readOnly, const wxString& libelleNotGeo, const bool& load_inmemory)
+#define SQL_CREATE_INDEX_CRITERIA_FOLDER "CREATE INDEX IF NOT EXISTS IDX_PHOTOS_CRITERIA_FOLDER ON PHOTOS(CriteriaInsert, NumFolderCatalog)"
+
+#define SQL_CREATE_INDEX_PHOTO_CRITERIA "CREATE INDEX IF NOT EXISTS IDX_PHOTOSCRITERIA_PHOTO_CRITERIA ON PHOTOSCRITERIA(NumPhoto, NumCriteria)"
+
+#define SQL_CREATE_INDEX_PHOTO_FOLDER "CREATE INDEX IF NOT EXISTS IDX_PHOTOS_FOLDER_PHOTO ON PHOTOS(NumFolderCatalog, NumPhoto)"
+
+#define SQL_CREATE_INDEX_FOLDER_CATALOG	"CREATE INDEX IF NOT EXISTS IDX_FOLDERCATALOG_CATALOG_FOLDER ON FOLDERCATALOG(NumCatalog, NumFolderCatalog)"
+
+#define SQL_CREATE_INDEX_PHOTOS_FullPath "CREATE INDEX IF NOT EXISTS idx_PHOTOS_FullPath ON PHOTOS(FullPath)"
+#define SQL_CREATE_INDEX_PHOTOS_NumFolderCatalog "CREATE INDEX IF NOT EXISTS idx_PHOTOS_NumFolderCatalog ON PHOTOS(NumFolderCatalog)"
+#define SQL_CREATE_INDEX_PHOTOSCRITERIA_NumPhoto "CREATE INDEX IF NOT EXISTS idx_PHOTOSCRITERIA_NumPhoto ON PHOTOSCRITERIA(NumPhoto)"
+#define SQL_CREATE_INDEX_PHOTOSCRITERIA_NumCriteria "CREATE INDEX IF NOT EXISTS idx_PHOTOSCRITERIA_NumCriteria ON PHOTOSCRITERIA(NumCriteria)"
+
+CSqlLibExplorer::CSqlLibExplorer(const bool& readOnly, const wxString& libelleNotGeo, const bool& m_loadInMemory)
 	: CSqlLib()
 {
-	this->readonly = readOnly;
-	this->load_inmemory = load_inmemory;
+	this->m_readonly = readOnly;
+	this->m_loadInMemory = m_loadInMemory;
 	this->libelleNotGeo = libelleNotGeo;
-}
-
-
-CSqlLibExplorer::~CSqlLibExplorer()
-{
 }
 
 
@@ -164,11 +174,11 @@ bool CSqlLibExplorer::InitDatabase(const wxString& lpFilename)
 
 	if (!wxFileExists(lpFilename))
 	{
-		hr = CreateDatabase(lpFilename, load_inmemory);
+		hr = CreateDatabase(lpFilename, m_loadInMemory);
 	}
 	else
 	{
-		OpenConnection(lpFilename, false, load_inmemory);
+		OpenConnection(lpFilename, false, m_loadInMemory);
 		//ExecuteSQLWithNoResult("VACUUM;");
 		hr = ExecuteSQLWithNoResult("PRAGMA auto_vacuum = FULL;");
 		hr = ExecuteSQLWithNoResult("PRAGMA journal_mode = WAL;");
@@ -190,32 +200,36 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 		hr = ExecuteSQLWithNoResult("PRAGMA auto_vacuum = FULL");
 
 		CSqlVersion sqlVersion;
-		if (sqlVersion.GetVersion() == "2.0.0.2")
+		wxString version = sqlVersion.GetVersion();
+		if (version == "2.0.0.2")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOGPS_TABLE);
 			//hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.2.0.0");
+			version = "2.2.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.2.0.0")
+		if (version == "2.2.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSSEARCH);
 			//hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.4.0.0");
+			version = "2.4.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.4.0.0")
+		if (version == "2.4.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.5.0.0");
+			version = "2.5.0.0";	
 		}
 
-		if (sqlVersion.GetVersion() == "2.5.0.0")
+		if (version == "2.5.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_PHOTO_TABLE);
 			//hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_DESCRIPTOR_TABLE);
@@ -230,33 +244,36 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 				"INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (4,3,'Gente');");
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.11.0.0");
-			//sqlVersion.UpdateVersion("2.5.0.0", "2.11.0.0");
+			version = "2.11.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.11.0.0")
+		if (version == "2.11.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_GPS_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.13.0.0");
+			version = "2.13.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.13.0.0")
+		if (version == "2.13.0.0")
 		{
 			hr = ExecuteSQLWithNoResult("ALTER TABLE PHOTOS ADD COLUMN Process INT;");
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.14.0.0");
+			version = "2.14.0.0";
 			hr = ExecuteSQLWithNoResult("UPDATE PHOTOS SET Process = 0");
 			hr = ExecuteSQLWithNoResult("UPDATE PHOTOS SET Process = 1 where CriteriaInsert = 1");
 		}
 
-		if (sqlVersion.GetVersion() == "2.14.0.0")
+		if (version == "2.14.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.15.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_VIDEOTHUMBNAIL_TABLE);
+			version = "2.15.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.15.0.0")
+		if (version == "2.15.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.15.1.0");
@@ -275,31 +292,35 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 					TestIsAnimation(photo.GetPath()))
 					sqlThumbnail.DeleteThumbnail(photo.GetId());
 			}
+			version = "2.15.1.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.15.1.0")
+		if (version == "2.15.1.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.16.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_OPENCLKERNEL_TABLE);
+			version = "2.16.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.16.0.0")
+		if (version == "2.16.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.17.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE OPENCLKERNEL");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_OPENCLKERNEL_TABLE);
+			version = "2.17.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.17.0.0")
+		if (version == "2.17.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.18.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE);
+			version = "2.18.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.18.0.0")
+		if (version == "2.18.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.33.0.0");
@@ -309,16 +330,18 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 				"INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,1,'Category');");
 			hr = ExecuteSQLWithNoResult(
 				"INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,3,'Categoria');");
+			version = "2.33.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.33.0.0")
+		if (version == "2.33.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.60.0.0");
 			hr = ExecuteSQLWithNoResult("UPDATE FACEPHOTO SET Pertinence = 0.7");
+			version = "2.60.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.60.0.0")
+		if (version == "2.60.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.62.0.0");
@@ -344,16 +367,18 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 				"INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'4 Star');");
 			hr = ExecuteSQLWithNoResult(
 				"INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'5 Star');");
+			version = "2.62.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.62.0.0")
+		if (version == "2.62.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.64.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_VIDEO_TABLE);
+			version = "2.64.0.0";
 		}
 
-		if (sqlVersion.GetVersion() == "2.64.0.0")
+		if (version == "2.64.0.0")
 		{
 			hr = ExecuteSQLWithNoResult("ALTER TABLE PHOTOS ADD COLUMN Multifiles INT;");
 
@@ -390,20 +415,19 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			//hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
+
+			version = "2.65.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.65.0.0")
+		if (version == "2.65.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.66.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_EXIF_TABLE);
-			wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-			documentPath.append("\\Face");
-#else
-			documentPath.append("/Face");
-#endif
+			wxFileName documentPath(CFileUtility::GetDocumentFolderPath());
+			documentPath.AppendDir("Face");
+
 			wxArrayString files;
-			wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+			wxDir::GetAllFiles(documentPath.GetFullPath(), &files, wxEmptyString, wxDIR_FILES);
 			CLibPicture libPicture;
 
 			for (wxString file : files)
@@ -413,40 +437,46 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 					LoadAndRotate(file, 180);
 				}
 			}
+			version = "2.66.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.66.0.0")
+		if (version == "2.66.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.67.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_SEARCH_VIEW_VIEW);
+			version = "2.67.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.67.0.0")
+		if (version == "2.67.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.68.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE PHOTOSSEARCHCRITERIA");
+			version = "2.68.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.68.0.0")
+		if (version == "2.68.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.69.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE FACEDESCRIPTOR");
+			version = "2.69.0.0";
 		}
-        if (sqlVersion.GetVersion() == "2.69.0.0")
+        if (version == "2.69.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.70.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSWIHOUTTHUMBNAIL);
             hr = ExecuteSQLWithNoResult(SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL);
+			version = "2.70.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.70.0.0")
+		if (version == "2.70.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.71.0.0");
 			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Gender NVARCHAR(255);");
 			hr = ExecuteSQLWithNoResult("ALTER TABLE FACEPHOTO ADD COLUMN Age NVARCHAR(255);");
+			version = "2.71.0.0";
 		}
-		if (sqlVersion.GetVersion() == "2.71.0.0")
+		if (version == "2.71.0.0")
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.72.0.0");
@@ -455,6 +485,23 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			{
 				param->SetThumbnailOpenCV(0);
 			}
+			version = "2.72.0.0";
+		}
+		if (version == "2.72.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.73.0.0");
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_CRITERIA_FOLDER);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTO_CRITERIA);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTO_FOLDER);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_FOLDER_CATALOG);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOS_FullPath);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOS_NumFolderCatalog);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOSCRITERIA_NumPhoto);
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOSCRITERIA_NumCriteria);
+			hr = ExecuteSQLWithNoResult(SQL_DROP_VIEW_SEARCH_VIEW);
+			hr = ExecuteSQLWithNoResult(SQL_DROP_OPENCLKERNEL_TABLE);
+			version = "2.73.0.0";
 		}
 	}
 	return hr;
@@ -471,13 +518,15 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 // Returns: NOERROR if succesfull
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& load_inmemory)
+bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& m_loadInMemory)
 {
 	wxString libelle;
 	wxString query;
 
-	if (!OpenConnection(databasePath, false, load_inmemory))
+	if (!OpenConnection(databasePath, false, m_loadInMemory))
 		return false;
+
+	CSqlTransaction sqlTransaction;
 
 	int hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOFOLDER_TABLE);
 	if (hr == -1)
@@ -526,8 +575,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
-	BeginTransaction();
-
 	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.71.0.0');");
 	if (hr == -1)
 	{
@@ -553,7 +600,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
-	CommitTransection();
+	
 
 	// Create CATEGORIE table
 	//
@@ -583,8 +630,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 	{
 		goto Exit;
 	}
-
-	BeginTransaction();
 
 	hr = ExecuteSQLWithNoResult(
 		"INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (1,2,'Geographique');");
@@ -715,9 +760,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
-	CommitTransection();
-
-
 	// Create CATEGORIE table
 	//
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_COUNTRY_TABLE);
@@ -725,8 +767,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 	{
 		goto Exit;
 	}
-
-	BeginTransaction();
 
 	hr = ExecuteSQLWithNoResult(
 		"INSERT INTO COUNTRY (NumCountry, CodeCountry, LibelleContinent, LibelleCountry) VALUES (1,'A1','None','Anonymous Proxy');");
@@ -1299,7 +1339,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 	hr = ExecuteSQLWithNoResult(
 		"INSERT INTO COUNTRY (NumCountry, CodeCountry, LibelleContinent, LibelleCountry) VALUES (248,'ZW','Africa','Zimbabwe');");
 
-	CommitTransection();
+	sqlTransaction.commit();
 
 	// Create CATALOG ICONEFILE table
 	//
@@ -1380,18 +1420,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_GPS_TABLE);
-	if (hr == -1)
-	{
-		goto Exit;
-	}
-
-
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_OPENCLKERNEL_TABLE);
-	if (hr == -1)
-	{
-		goto Exit;
-	}
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE);
 	if (hr == -1)
@@ -1405,18 +1433,27 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& l
 		goto Exit;
 	}
 
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_GPS_TABLE);
+
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTO_EXIF);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOFOLDER);
 	//hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
 
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_SEARCH_VIEW_VIEW);
-    
+   
     hr = ExecuteSQLWithNoResult(SQL_CREATE_VIEW_PHOTOSWITHOUTTHUMBNAIL);
 
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_CRITERIA_FOLDER);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTO_CRITERIA);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTO_FOLDER);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_FOLDER_CATALOG);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOS_FullPath);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOS_NumFolderCatalog);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOSCRITERIA_NumPhoto);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_INDEX_PHOTOSCRITERIA_NumCriteria);
 Exit:
 
-
+	sqlTransaction.commit();
 	return (hr != -1);
 }

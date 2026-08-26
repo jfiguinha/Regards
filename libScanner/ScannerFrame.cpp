@@ -48,7 +48,7 @@ wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd = Gdiplus
 
 //Connect(wxEVT_MOVE, wxMoveEventHandler(Move::OnMove));
 BEGIN_EVENT_TABLE(CScannerFrame, wxFrame)
-EVT_CLOSE(CScannerFrame::OnCloseWindow)
+		EVT_CLOSE(CScannerFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
 
@@ -59,23 +59,21 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface* mainInterface, const wxPoint& pos,
-	const wxSize& size,
-	long style) :
+CScannerFrame::CScannerFrame(const wxString& title, const wxString& openfile, ISCannerInterface * mainInterface, const wxPoint& pos,
+                             const wxSize& size,
+                             long style) :
 	wxFrame(nullptr, FRAMESCANNER_ID, title, pos, size, style)
 {
 	SetIcon(wxICON(sample));
 	Maximize();
 	this->mainInterface = mainInterface;
 
-	viewerParam = new CMainParam();
-	CMainParamInit::Initialize(viewerParam);
+	viewerParam = CMainParamInit::getInstance();
+	viewerTheme = CMainThemeInit::getInstance();
 
-	viewerTheme = new CMainTheme();
-	CMainThemeInit::Initialize(viewerTheme);
 #ifndef __APPLE__
 #if __WXSCANSANE__
-	scanSane = new wxScanSane();
+    scanSane = std::make_unique<wxScanSane>();
 #endif
 #endif
 	// create a menu bar
@@ -107,8 +105,9 @@ CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface* mainInter
 	// create a status bar just for fun (by default with 1 pane only)
 	CreateStatusBar(1);
 
+	centralWindow = new Regards::Scanner::CCentralWindow(this, openfile, SCANNER_CENTRALVIEWERWINDOWID, this);
 	auto sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(centralWindow = new CCentralWindow(this, SCANNER_CENTRALVIEWERWINDOWID, this), 1, wxEXPAND);
+	sizer->Add(centralWindow, 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
@@ -125,22 +124,7 @@ CScannerFrame::CScannerFrame(const wxString& title, ISCannerInterface* mainInter
 
 void CScannerFrame::OnCloseWindow(wxCloseEvent& event)
 {
-	if (mainInterface != nullptr)
-	{
-		mainInterface->Close();
-	}
-}
-
-CScannerFrame::~CScannerFrame()
-{
-#ifndef __APPLE__
-#if __WXSCANSANE__
-	if (scanSane != nullptr)
-		delete scanSane;
-#endif
-#endif
-	if (centralWindow != nullptr)
-		delete centralWindow;
+	Exit();
 }
 
 int CScannerFrame::OnOpen()
@@ -162,35 +146,44 @@ void CScannerFrame::OnExport(wxCommandEvent& event)
 
 void CScannerFrame::OnPrint(wxCommandEvent& event)
 {
-	CLibPicture libPicture;
+
 	wxString filename = centralWindow->GetFilename();
 	if (filename != "")
 	{
-		CImageLoadingFormat* image = libPicture.LoadPicture(filename);
-		if (image != nullptr)
-			PrintPreview(image);
+		PrintPreview(filename);
 	}
 }
 
-
-void CScannerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
+void CScannerFrame::PrintPreview(CBitmapPrintout * bitmapPrintout)
 {
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
 
-	auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), nullptr, &printDialogData);
+	std::unique_ptr<wxPrintPreview> preview = std::make_unique<wxPrintPreview>(bitmapPrintout, nullptr, &printDialogData);
 	if (!preview->IsOk())
 	{
-		delete preview;
 		wxLogError(wxT("There was a problem previewing.\nPerhaps your current printer is not set correctly?"));
 		return;
 	}
 	wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
-	auto frame = new wxPreviewFrame(preview, this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
+	auto frame = new wxPreviewFrame(preview.get(), this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
 	frame->Centre(wxBOTH);
 	frame->InitializeWithModality(wxPreviewFrame_AppModal);
 	frame->Show();
+}
+
+void CScannerFrame::PrintPreview(cv::Mat& picture)
+{
+	Regards::Control::CBitmapPrintout* bitmap = new CBitmapPrintout(picture);
+	PrintPreview(bitmap);
+
+}
+
+void CScannerFrame::PrintPreview(const wxString &filename)
+{
+	Regards::Control::CBitmapPrintout* bitmap = new CBitmapPrintout(filename);
+	PrintPreview(bitmap);
 }
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
@@ -203,48 +196,19 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 
 void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-#ifdef __APPLE__
-	if (mainInterface != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
-		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		Exit();
-	}
-#else
-	if (mainInterface != nullptr)
-	{
-		mainInterface->Close();
-	}
-#endif
+	Exit();
 }
 
 void CScannerFrame::Exit()
 {
 	if (mainInterface != nullptr)
 		mainInterface->Close();
+	exit(0);
 }
 
 void CScannerFrame::OnClose()
 {
-#ifdef __APPLE__
-	if (mainInterface != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
-		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	else
-	{
-		Exit();
-	}
-#else
-	if (mainInterface != nullptr)
-	{
-		mainInterface->Close();
-	}
-#endif
+	Exit();
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -335,44 +299,37 @@ wxString CScannerFrame::ScanPage()
 	wxString pdfFile = "";
 	wxImage image;
 #ifdef __APPLE__
-	wxArrayString output;
-	//printf("CScannerFrame::ScanPage \n");
-	//Find all file with Scan
-	pdfFile = CFileUtility::GetTempFile("Scan.pdf");
-
-	// wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
-	wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
-
+    wxArrayString output;
+    //printf("CScannerFrame::ScanPage \n");
+    //Find all file with Scan
+    pdfFile = CFileUtility::GetTempFile("Scan.pdf");
+        
+   // wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
+    wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
+	
 	if (!wxFileExists(pdfFile))
 		pdfFile = "";
 
-	/*
-	CScannerWindow d(this, -1, _("Acquire"));
-	if (d.ShowModal() == wxID_OK)
-	{
-		//image = d.GetImage();
-	}
-	*/
 
 #else
 #if __WXSCANSANE__
 
-	scanSane->SelectSource("", true, this);
+    scanSane->SelectSource("", true, this);
 
-	if (scanSane->IsSourceSelected())
-	{
-		wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
-		if (d.ShowModal() == wxID_OK)
-		{
-			image = d.GetImage();
-		}
-	}
-	else
-	{
+    if(scanSane->IsSourceSelected())
+    {
+        wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane.get());
+        if (d.ShowModal() == wxID_OK)
+        {
+            image = d.GetImage();
+        }
+    }
+    else
+    {
 		wxString selectScanner = CLibResource::LoadStringFromResource("LBLSELECTSCANNERSOURCE", 1);
 		wxString infos = CLibResource::LoadStringFromResource("labelInformations", 1);
-		wxMessageBox(selectScanner, infos);
-	}
+        wxMessageBox(selectScanner, infos);
+    }
 #else
 	{
 		DataClasses myData;
@@ -434,13 +391,8 @@ wxString CScannerFrame::ScanPage()
 	{
 		pdfFile = CFileUtility::GetTempFile("scanner.pdf");
 		if (wxFileExists(pdfFile))
-		{
-#ifdef WIN32
-			std::remove(pdfFile);
-#else
 			wxRemoveFile(pdfFile);
-#endif
-		}
+
 		CRegardsPDF::SaveToPDF(&image, pdfFile);
 	}
 #endif
@@ -460,14 +412,14 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 	case ID_OCR:
 	case ID_PRINT:
-	{
-		wxString filename = centralWindow->GetFilename();
-		if (filename != "")
-			event.Enable(true);
-		else
-			event.Enable(false);
-		break;
-	}
-	default:;
+		{
+			wxString filename = centralWindow->GetFilename();
+			if (filename != "")
+				event.Enable(true);
+			else
+				event.Enable(false);
+			break;
+		}
+	default: ;
 	}
 }

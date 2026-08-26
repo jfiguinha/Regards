@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlFindPhotos();
-			~CSqlFindPhotos() override;
+			~CSqlFindPhotos() = default;
 			void UpdatePhotosExtension();
 			bool SearchPhotos(PhotosVector* photosVector);
 			bool SearchPhotos(vector<int>* listPhoto);
@@ -36,15 +36,18 @@ namespace Regards
 			bool SearchPhotosByCriteriaFolder(PhotosVector* photosVector);
 
 		private:
+
 			bool FindIfViewExist();
 			int TraitementResultPhotoDataCriteria(CSqlResult* sqlResult);
 			int TraitementResultPhoto(CSqlResult* sqlResult);
 			int TraitementResultNumPhoto(CSqlResult* sqlResult);
 			int TraitementResultFilename(CSqlResult* sqlResult);
-			bool DeleteAllInSearchPhotos();
+			int GetDayOfWeek(int year, int month, int day);
 			wxString GetSearchSQL(vector<int> list);
 			int TraitementResult(CSqlResult* sqlResult) override;
+
 			PhotosVector* m_photosVector;
+			vector<int> m_idlistPhotoToDelete;
 			vector<wxString> * fileList;
 			vector<int>* m_listPhoto;
 			int typeResult;

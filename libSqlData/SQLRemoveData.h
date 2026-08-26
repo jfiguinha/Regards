@@ -5,17 +5,22 @@ namespace Regards
 {
 	namespace Sqlite
 	{
-		class CSQLRemoveData
-		{
-		public:
-			CSQLRemoveData();
-			~CSQLRemoveData();
+        class CSQLRemoveData
+        {
+        public:
+            // Classe utilitaire : pas d'instanciation
+            CSQLRemoveData() = delete;
 
-			static bool DeleteCatalog(const int& numCatalog);
-			static bool DeleteFolder(const int& numFolder);
-			static bool DeleteListPhoto(const vector<int>& listPhoto, CriteriaVector* criteriaVector);
-			static bool DeletePhoto(const int& idPhoto);
-			static bool DeleteFaceDatabase();
-		};
+            // Retournent true si tout s'est bien passé
+            static bool DeleteCatalog(int numCatalog);
+            static bool DeleteFolder(int numFolder);
+            static bool DeleteListPhoto(const std::vector<int>& listPhoto, CriteriaVector* criteriaVector);
+            static bool DeletePhoto(int idPhoto);
+            static bool DeleteFaceDatabase();
+
+        private:
+            // Logique face factorisée, réutilisée par DeleteCatalog et DeleteFaceDatabase
+            static bool DeleteFaceData();
+        };
 	}
 }

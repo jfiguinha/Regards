@@ -19,7 +19,7 @@ public:
     MyEmailImpl ( void );
     ~MyEmailImpl( void );
 
-    void SendEmail(const wxString &to, const wxString &subject, const wxString & filePicture);
+    void SendEmail(const wxString &to, const wxString &subject, const wxString &body, const wxString & filePicture);
 
 
 };

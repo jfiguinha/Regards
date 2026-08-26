@@ -11,11 +11,12 @@
 #include <MouseUpdate.h>
 #include <vec3.h>
 #include <unordered_map>
+#include <OpenCLContext.h>
 using namespace Regards::OpenGL;
-
+using namespace Regards::OpenCL;
 //#define RENDEROPENGL WM_USER+1
 
-class CRegardsBitmap;
+;
 class Character;
 class CFreeTypeFace;
 
@@ -38,8 +39,8 @@ namespace Regards::OpenGL
 		GLTexture* GetGLTexture();
 		wxGLContext* GetGLContext();
 		bool GetOpenGLInterop();
-		bool SetData(Regards::Picture::CPictureArray& bitmap);
-		void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
+		bool SetData(Regards::Picture::CPictureArray& bitmap, const bool& deleteOldData = false);
+		bool CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
 		GLTexture* GetDisplayTexture(const int& width, const int& height);
 		void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
 		                    const int& top, const bool& inverted = false);
@@ -69,7 +70,7 @@ namespace Regards::OpenGL
 		                bool inverted = false);
 
 		GLTexture* GetTextureDisplay();
-        
+		COpenCLContext* GetOpenCLContext(){ return openCLContext.get(); };
        
 	protected:
         
@@ -93,6 +94,9 @@ namespace Regards::OpenGL
 		bool isInit = false;
 		IMouseUpdate* mouseUpdate;
 
+
+		//OpenCL interop
+		std::unique_ptr<COpenCLContext> openCLContext = nullptr;
 		int widthFont = 0;
 		int heightFont = 0;
         std::map<GLchar, Character> Characters;

@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 #ifndef WX_PRECOMP
 //(*HeadersPCH(TiffOption)
 #include <wx/checklst.h>
@@ -9,7 +10,7 @@
 #endif
 //(*Headers(TiffOption)
 //*)
-class CRegardsBitmap;
+;
 
 class CompressVideo : public wxDialog
 {
@@ -26,6 +27,7 @@ public:
 	wxStaticText* labelTimeMissing;
 	//wxPanel * panel;
 	bool IsOk();
+	bool IsCancel();
 	void SetPos(const int& max, const int& pos);
 	void SetBitmap(cv::Mat& bmp);
 	void SetTextProgression(const wxString& texte, const int& type = 0);
@@ -43,7 +45,12 @@ private:
 	void OnSetBitmap(wxCommandEvent& event);
 	wxBitmap _localBmp;
 	//*)
-	bool isOk;
+	// Written from the UI thread (OnbtnCancelClick) and read from the FFmpeg
+	// encode worker thread (via IsOk()) now that EncodeFile runs on a
+	// std::thread: must be atomic to avoid a data race / UB, and to
+	// guarantee the worker actually observes a cancellation in time.
+	std::atomic<bool> isOk = false;
+	std::atomic<bool> isCancel = false;
 	int rotation = 0;
 	wxImage scale;
 	std::mutex muBitmap;

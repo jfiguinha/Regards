@@ -1,168 +1,204 @@
+
 #include <header.h>
-// Color.cpp: implementation of the CColor class.
-//
-//////////////////////////////////////////////////////////////////////
-#include "Color.h"
 #include <RGBAQuad.h>
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+
+#include "Color.h"
+
 using namespace Regards::FiltreEffet;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+namespace {
+    constexpr float INV_255 = 1.0f / 255.0f;
+    constexpr float RGB_MAX = 255.0f;
 
-CColor::CColor()
-{
+    inline int ClampByte(const float value) {
+        return static_cast<int>(std::clamp(std::lround(value), 0L, 255L));
+    }
+
+    inline int ClampPercent(const long value) {
+        return static_cast<int>(std::clamp(value, 0L, 100L));
+    }
+
+    inline long NormalizeHue(const long hue) {
+        long result = hue % 360;
+
+        if (result < 0) result += 360;
+
+        return result;
+    }
+}  // namespace
+
+CColor::CColor() = default;
+
+CColor::~CColor() = default;
+
+CRgbaquad CColor::YUVtoRGB(const CRgbaquad& yuvColor) {
+    const float Y = yuvColor.GetFRed();
+
+    const float U = static_cast<float>(yuvColor.GetGreen()) - 128.0f;
+
+    const float V = static_cast<float>(yuvColor.GetBlue()) - 128.0f;
+
+    // BT.601 full range
+    const int R = ClampByte(Y + 1.403f * V);
+
+    const int G = ClampByte(Y - 0.344f * U - 0.714f * V);
+
+    const int B = ClampByte(Y + 1.770f * U);
+
+    CRgbaquad rgb(static_cast<uint8_t>(R), static_cast<uint8_t>(G),
+        static_cast<uint8_t>(B), yuvColor.GetAlpha());
+
+    return rgb;
 }
 
-CColor::~CColor()
-{
+CRgbaquad CColor::RGBtoYUV(const CRgbaquad& color) {
+    const float R = static_cast<float>(color.GetRed());
+
+    const float G = static_cast<float>(color.GetGreen());
+
+    const float B = static_cast<float>(color.GetBlue());
+
+    const int Y = ClampByte(0.299f * R + 0.587f * G + 0.114f * B);
+
+    const int U = ClampByte((B - static_cast<float>(Y)) * 0.565f + 128.0f);
+
+    const int V = ClampByte((R - static_cast<float>(Y)) * 0.713f + 128.0f);
+
+    CRgbaquad yuv(static_cast<uint8_t>(Y), static_cast<uint8_t>(U),
+        static_cast<uint8_t>(V), color.GetAlpha());
+
+    return yuv;
 }
 
-CRgbaquad CColor::YUVtoRGB(const CRgbaquad& lYUVColor)
-{
-	int32_t U, V, R, G, B;
-	float Y = lYUVColor.GetFRed();
-	U = lYUVColor.GetGreen() - 128;
-	V = lYUVColor.GetBlue() - 128;
+int CColor::HSBToRGB(HSB& HSBValue, CRgbaquad& rgb) {
+    const long hue = NormalizeHue(HSBValue.Hue);
 
-	//	R = (int32_t)(1.164 * Y + 2.018 * U);
-	//	G = (int32_t)(1.164 * Y - 0.813 * V - 0.391 * U);
-	//	B = (int32_t)(1.164 * Y + 1.596 * V);
-	R = static_cast<int32_t>(Y + 1.403f * V);
-	G = static_cast<int32_t>(Y - 0.344f * U - 0.714f * V);
-	B = static_cast<int32_t>(Y + 1.770f * U);
+    const int saturation = ClampPercent(HSBValue.Saturation);
 
-	R = min(255, max(0, R));
-	G = min(255, max(0, G));
-	B = min(255, max(0, B));
-	auto rgb = CRgbaquad(static_cast<uint8_t>(R), static_cast<uint8_t>(G), static_cast<uint8_t>(B), 0);
-	return rgb;
+    const int brightness = ClampPercent(HSBValue.Brightness);
+
+    const float s = static_cast<float>(saturation) / 100.0f;
+
+    const float v = static_cast<float>(brightness) / 100.0f;
+
+    if (s <= 0.0f) {
+        const int value = ClampByte(v * RGB_MAX);
+
+        rgb = CRgbaquad(static_cast<uint8_t>(value), static_cast<uint8_t>(value),
+            static_cast<uint8_t>(value));
+
+        return 0;
+    }
+
+    const float h = static_cast<float>(hue) / 60.0f;
+
+    const int sector = static_cast<int>(h);
+
+    const float fraction = h - static_cast<float>(sector);
+
+    const float p = v * (1.0f - s);
+
+    const float q = v * (1.0f - s * fraction);
+
+    const float t = v * (1.0f - s * (1.0f - fraction));
+
+    float red = 0.0f;
+    float green = 0.0f;
+    float blue = 0.0f;
+
+    switch (sector) {
+    case 0:
+        red = v;
+        green = t;
+        blue = p;
+        break;
+
+    case 1:
+        red = q;
+        green = v;
+        blue = p;
+        break;
+
+    case 2:
+        red = p;
+        green = v;
+        blue = t;
+        break;
+
+    case 3:
+        red = p;
+        green = q;
+        blue = v;
+        break;
+
+    case 4:
+        red = t;
+        green = p;
+        blue = v;
+        break;
+
+    default:
+        red = v;
+        green = p;
+        blue = q;
+        break;
+    }
+
+    rgb = CRgbaquad(static_cast<uint8_t>(ClampByte(red * RGB_MAX)),
+        static_cast<uint8_t>(ClampByte(green * RGB_MAX)),
+        static_cast<uint8_t>(ClampByte(blue * RGB_MAX)));
+
+    return 0;
 }
 
-CRgbaquad CColor::RGBtoYUV(const CRgbaquad& color)
-{
-	int32_t Y, U, V, R, G, B;
-	R = color.GetRed();
-	G = color.GetGreen();
-	B = color.GetBlue();
+int CColor::RGBToHSB(HSB& HSBValue, CRgbaquad& rgb) {
+    const float r = static_cast<float>(rgb.GetRed());
 
-	//	Y = (int32_t)( 0.257 * R + 0.504 * G + 0.098 * B);
-	//	U = (int32_t)( 0.439 * R - 0.368 * G - 0.071 * B + 128);
-	//	V = (int32_t)(-0.148 * R - 0.291 * G + 0.439 * B + 128);
-	Y = static_cast<int32_t>(0.299f * R + 0.587f * G + 0.114f * B);
-	U = static_cast<int32_t>((B - Y) * 0.565f + 128);
-	V = static_cast<int32_t>((R - Y) * 0.713f + 128);
+    const float g = static_cast<float>(rgb.GetGreen());
 
-	Y = min(255, max(0, Y));
-	U = min(255, max(0, U));
-	V = min(255, max(0, V));
-	auto yuv = CRgbaquad(static_cast<uint8_t>(Y), static_cast<uint8_t>(U), static_cast<uint8_t>(V), 0);
+    const float b = static_cast<float>(rgb.GetBlue());
 
-	return yuv;
-}
+    const float maxValue = std::max({ r, g, b });
 
-int CColor::HSBToRGB(HSB& HSBValue, CRgbaquad& rgb)
-{
-	if (HSBValue.Saturation > 0)
-	{
-		double nH = static_cast<double>(HSBValue.Hue % 360) / static_cast<double>(60);
-		double nL = static_cast<double>(HSBValue.Brightness) / static_cast<double>(100);
-		double nS = static_cast<double>(HSBValue.Saturation) / static_cast<double>(100);
+    const float minValue = std::min({ r, g, b });
 
-		int lH = static_cast<int>(nH);
-		double nF = nH - lH;
+    const float delta = maxValue - minValue;
 
-		double nP = nL * (1 - nS);
-		double nQ = nL * (1 - nS * nF);
-		double nT = nL * (1 - nS * (1 - nF));
+    HSBValue.Brightness = static_cast<long>((maxValue * 100.0f) / RGB_MAX);
 
-		switch (lH)
-		{
-		case 0:
-			{
-				rgb = CRgbaquad(nL * 255, nT * 255, nP * 255);
-			}
-			break;
+    if (maxValue <= 0.0f) {
+        HSBValue.Saturation = 0;
+        HSBValue.Hue = 0;
+        return 0;
+    }
 
-		case 1:
-			{
-				rgb = CRgbaquad(nQ * 255, nL * 255, nP * 255);
-			}
-			break;
+    HSBValue.Saturation = static_cast<long>((delta / maxValue) * 100.0f);
 
-		case 2:
-			{
-				rgb = CRgbaquad(nP * 255, nL * 255, nT * 255);
-			}
-			break;
+    if (delta <= 0.0f) {
+        HSBValue.Hue = 0;
+        return 0;
+    }
 
-		case 3:
-			{
-				rgb = CRgbaquad(nP * 255, nQ * 255, nL * 255);
-			}
-			break;
+    float hue;
 
-		case 4:
-			{
-				rgb = CRgbaquad(nT * 255, nP * 255, nL * 255);
-			}
-			break;
+    if (maxValue == r) {
+        hue = 60.0f * ((g - b) / delta);
 
-		case 5:
-			{
-				rgb = CRgbaquad(nL * 255, nP * 255, nQ * 255);
-			}
-			break;
-		default: ;
-		}
-	}
-	else
-	{
-		int iRed = ((static_cast<int>(HSBValue.Brightness) * 255) / 100);
-		rgb = CRgbaquad(iRed, iRed, iRed);
-	}
+        if (hue < 0.0f) hue += 360.0f;
+    }
+    else if (maxValue == g) {
+        hue = 60.0f * (2.0f + (b - r) / delta);
+    }
+    else {
+        hue = 60.0f * (4.0f + (r - g) / delta);
+    }
 
-	return 0;
-}
+    if (hue >= 360.0f) hue = 0.0f;
 
-int CColor::RGBToHSB(HSB& HSBValue, CRgbaquad& rgb)
-{
-	float r = rgb.GetFRed();
-	float G = rgb.GetFGreen();
-	float B = rgb.GetFBlue();
+    HSBValue.Hue = static_cast<long>(std::lround(hue));
 
-	const float lMax = (r > G) ? ((r > B) ? r : B) : ((G > B) ? G : B);
-	const float lMin = (r < G) ? ((r < B) ? r : B) : ((G < B) ? G : B);
-
-	const float lDelta = lMax - lMin;
-
-	HSBValue.Brightness = (lMax * 100) / 255;
-
-	if (lMax > 0)
-	{
-		float n_temp = 0;
-		HSBValue.Saturation = (lDelta / lMax) * 100;
-		if (lDelta > 0)
-		{
-			if (lMax == r)
-			{
-				n_temp = (G - B) / lDelta;
-			}
-			else if (lMax == G)
-			{
-				n_temp = 2 + (B - r) / lDelta;
-			}
-			else
-			{
-				n_temp = 4 + (r - G) / lDelta;
-			}
-		}
-		HSBValue.Hue = n_temp * 60;
-		if (HSBValue.Hue < 0)
-		{
-			HSBValue.Hue = HSBValue.Hue + 360;
-		}
-	}
-
-	return 0;
+    return 0;
 }

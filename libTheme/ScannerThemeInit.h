@@ -8,15 +8,13 @@ namespace Regards
 		class CMainThemeInit
 		{
 		public:
-			CMainThemeInit();
-			virtual ~CMainThemeInit();
-
 			static CMainTheme* getInstance();
-			static void Initialize(CMainTheme* param);
 			static void SaveTheme();
 
 		private:
-			static CMainTheme* _singleton;
+
+			static void Initialize();
+			static std::unique_ptr<CMainTheme> _singleton;
 			static wxString documentPath;
 		};
 	}

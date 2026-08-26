@@ -6,18 +6,20 @@ using namespace Regards::Window;
 class CFindPhotoCriteria;
 class CFolderCatalog;
 class CCategoryFolderWindowPimpl;
+class CThumbnailMessage;
 
 namespace Regards::Viewer
 {
 	class CCategoryWnd;
 	class CMainParam;
+	
 
 	class CCategoryFolderWindow : public CTreeWithScrollbar
 	{
 	public:
 		CCategoryFolderWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer,
 		                      const CThemeScrollBar& themeScroll, const CThemeTree& theme);
-		~CCategoryFolderWindow() override;
+		~CCategoryFolderWindow() = default;
 
 		void InitSaveParameter();
 		void init();
@@ -33,18 +35,22 @@ namespace Regards::Viewer
 		void OnRefreshFolder(wxCommandEvent& event);
 		void IdleFunction() override;
 		bool GetProcessEnd() override;
-
+		void ProcessPhotoQueue();
+		void ProcessGpsQueue();
+		void CleanupOldCatalogs();
+		void SendStatusMessage(CThumbnailMessage* thumbnailMessage);
 		static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		static void FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
 		void RefreshThreadFolder(CFolderCatalog* folder);
 		void OnTimerRefresh(wxTimerEvent& event);
 		void ProcessIdle() override;
+
 		time_t start;
 		int nbGpsRequest = 0;
 		int nbGpsFileByMinute = 60;
 		int nbPhotoToProcess = 0;
 		int nbPhotoGpsToProcess = 0;
-        CCategoryFolderWindowPimpl * pimpl;
+        std::unique_ptr<CCategoryFolderWindowPimpl> pimpl;
     
 	};
 }

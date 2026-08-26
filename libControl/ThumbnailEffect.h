@@ -43,7 +43,7 @@ namespace Regards::Control
 		wxString rotateEffect;
 		wxString hdrEffect;
 		wxString videoLabelEffect;
-		CImageLoadingFormat* imageLoading;
+		std::unique_ptr<CImageLoadingFormat> imageLoading;
 
 
 

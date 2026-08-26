@@ -31,12 +31,6 @@
     <ClCompile Include="InfosSeparationBarEffect.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="SplitterWithPanel.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ModificationManager.cpp">
-      <Filter>Datastructure</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailEffect.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
@@ -85,9 +79,6 @@
     <ClCompile Include="SlideToolbar.cpp">
       <Filter>Video\Core\Toolbar</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg_transcoding.cpp">
-      <Filter>Video\Core\Encoding</Filter>
-    </ClCompile>
     <ClCompile Include="BitmapFusionFilter.cpp">
       <Filter>Bitmap\PostEffect</Filter>
     </ClCompile>
@@ -100,14 +91,11 @@
     <ClCompile Include="ShowElement.cpp">
       <Filter>Display</Filter>
     </ClCompile>
-    <ClCompile Include="FFmpegTranscodingPimpl.cpp">
+    <ClCompile Include="FFmpegTranscoding.cpp">
       <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
-    </ClCompile>
-    <ClCompile Include="MFTEncoding.cpp">
-      <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailVerticalSeparator.cpp">
       <Filter>Thumbnail\source</Filter>
@@ -120,6 +108,9 @@
     </ClCompile>
     <ClCompile Include="AfterEffect.cpp">
       <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCriteriaUtility.cpp">
+      <Filter>ExifModification</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="ModificationManager.h">
-      <Filter>Datastructure</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailEffect.h">
       <Filter>Thumbnail\header</Filter>
@@ -219,16 +207,10 @@
     <ClInclude Include="SlideToolbar.h">
       <Filter>Video\Core\Toolbar</Filter>
     </ClInclude>
-    <ClInclude Include="ffmpeg_transcoding.h">
-      <Filter>Video\Core\Encoding</Filter>
-    </ClInclude>
     <ClInclude Include="VideoCompressOption.h">
       <Filter>Video</Filter>
     </ClInclude>
     <ClInclude Include="AfterEffect.h">
-      <Filter>Bitmap\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapFusionEffectParameter.h">
       <Filter>Bitmap\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="BitmapFusionFilter.h">
@@ -249,10 +231,7 @@
     <ClInclude Include="ShowElement.h">
       <Filter>Display</Filter>
     </ClInclude>
-    <ClInclude Include="FFmpegTranscodingPimpl.h">
-      <Filter>Video\Core\Encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="MFTEncoding.h">
+    <ClInclude Include="FFmpegTranscoding.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVerticalSeparator.h">
@@ -263,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="InfosSeparationBarFace.h">
       <Filter>SeparatorBar</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoCriteriaUtility.h">
+      <Filter>ExifModification</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -277,9 +259,6 @@
     </Filter>
     <Filter Include="header">
       <UniqueIdentifier>{4deebe3d-795c-4ab3-ab13-d0c086e405e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Datastructure">
-      <UniqueIdentifier>{0f6d7271-c723-44bd-bf34-e70edb676320}</UniqueIdentifier>
     </Filter>
     <Filter Include="Bitmap">
       <UniqueIdentifier>{ca4654b8-bd4a-4383-96a7-1a0e7dfff490}</UniqueIdentifier>
@@ -316,6 +295,9 @@
     </Filter>
     <Filter Include="SeparatorBar">
       <UniqueIdentifier>{060f7c46-b343-4e33-b03f-a3c9884340ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExifModification">
+      <UniqueIdentifier>{6e174e20-187b-4e78-aa59-f0ab1e1a69d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

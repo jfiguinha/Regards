@@ -406,7 +406,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;DXVA2;OPENCL;YUV;FFMPEG;SDL2;TURBOJPEG;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../libCudaEffect;../libVideoEffect;;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libSqlEngine;../libVideoEffect;;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -595,7 +595,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>OPENGL;DXVA2;_HAS_STD_BYTE=0;OPENCL;YUV;FFMPEG;SDL2;TURBOJPEG;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../libCudaEffect;../libVideoEffect;;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libSqlEngine;../libVideoEffect;;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -817,7 +817,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libVideoEffect;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libSqlEngine;..\libVideoEffect;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -862,7 +862,6 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="AfterEffect.h" />
-    <ClInclude Include="BitmapFusionEffectParameter.h" />
     <ClInclude Include="BitmapFusionFilter.h" />
     <ClInclude Include="BitmapPrintout.h" />
     <ClInclude Include="BitmapToolbar.h" />
@@ -873,8 +872,7 @@
     <ClInclude Include="effect.h" />
     <ClInclude Include="ffmfcpimpl.h" />
     <ClInclude Include="ffmpegToBitmap.h" />
-    <ClInclude Include="FFmpegTranscodingPimpl.h" />
-    <ClInclude Include="ffmpeg_transcoding.h" />
+    <ClInclude Include="FFmpegTranscoding.h" />
     <ClInclude Include="ffplaycore.h" />
     <ClInclude Include="FiltreEffect.h" />
     <ClInclude Include="FiltreEffectWnd.h" />
@@ -886,11 +884,10 @@
     <ClInclude Include="InfosSeparationBarEffect.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="InfosSeparationBarFace.h" />
-    <ClInclude Include="MFTEncoding.h" />
-    <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="MoveEffectTexture.h" />
     <ClInclude Include="NoneEffectTextureEffect.h" />
     <ClInclude Include="PageCurlFilter.h" />
+    <ClInclude Include="PhotoCriteriaUtility.h" />
     <ClInclude Include="PrintEngine.h" />
     <ClInclude Include="ShowElement.h" />
     <ClInclude Include="SliderVideo.h" />
@@ -928,8 +925,7 @@
     <ClCompile Include="CriteriaTreeWnd.cpp" />
     <ClCompile Include="ffmfcpimpl.cpp" />
     <ClCompile Include="ffmpegToBitmap.cpp" />
-    <ClCompile Include="FFmpegTranscodingPimpl.cpp" />
-    <ClCompile Include="ffmpeg_transcoding.cpp" />
+    <ClCompile Include="FFmpegTranscoding.cpp" />
     <ClCompile Include="ffplaycore.cpp" />
     <ClCompile Include="FiltreEffect.cpp" />
     <ClCompile Include="FiltreEffectWnd.cpp" />
@@ -941,15 +937,13 @@
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InfosSeparationBarFace.cpp" />
-    <ClCompile Include="MFTEncoding.cpp" />
-    <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="MoveEffectTexture.cpp" />
     <ClCompile Include="PageCurlFilter.cpp" />
+    <ClCompile Include="PhotoCriteriaUtility.cpp" />
     <ClCompile Include="PrintEngine.cpp" />
     <ClCompile Include="ShowElement.cpp" />
     <ClCompile Include="SliderVideo.cpp" />
     <ClCompile Include="SlideToolbar.cpp" />
-    <ClCompile Include="SplitterWithPanel.cpp" />
     <ClCompile Include="ThumbnailEffect.cpp" />
     <ClCompile Include="ThumbnailHorizontal.cpp" />
     <ClCompile Include="ThumbnailVertical.cpp" />

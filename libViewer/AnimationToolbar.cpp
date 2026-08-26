@@ -20,45 +20,16 @@ CAnimationToolbar::CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThe
 	imagePlayDiaporama = nullptr;
 	imageStopDiaporama = nullptr;
 
-	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS", 1);
-	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY", 1);
-	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP", 1);
-	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT", 1);
-
-
-	auto imagePrec = new CToolbarButton(themeToolbar.button);
-	imagePrec->SetButtonResourceId(L"IDB_ARROWLPNG");
-	imagePrec->SetLibelle(libellePrevious);
-	imagePrec->SetCommandId(WM_IMAGES_PRCDENTE);
+	imagePrec = CreateButton(L"IDB_ARROWLPNG", L"LBLPREVIOUS", WM_IMAGES_PRCDENTE);
 	imagePrec->SetRepeatable(true);
-	navElement.push_back(imagePrec);
-
-	imagePlayDiaporama = new CToolbarButton(themeToolbar.button);
-	imagePlayDiaporama->SetButtonResourceId(L"IDB_PLAY");
-	imagePlayDiaporama->SetCommandId(WM_DIAPORAMA_PLAY);
-	imagePlayDiaporama->SetLibelle(libellePlay);
-	navElement.push_back(imagePlayDiaporama);
-
-	imageStopDiaporama = new CToolbarButton(themeToolbar.button);
-	imageStopDiaporama->SetButtonResourceId(L"IDB_STOP");
-	imageStopDiaporama->SetCommandId(WM_DIAPORAMA_STOP);
-	imageStopDiaporama->SetLibelle(libelleStop);
+	imagePlayDiaporama = CreateButton(L"IDB_PLAY", L"LBLPLAY", WM_DIAPORAMA_PLAY);
+	imageStopDiaporama = CreateButton(L"IDB_STOP", L"LBLSTOP", WM_DIAPORAMA_STOP);
 	imageStopDiaporama->SetVisible(false);
-	navElement.push_back(imageStopDiaporama);
-
-	auto imageSuiv = new CToolbarButton(themeToolbar.button);
-	imageSuiv->SetButtonResourceId(L"IDB_ARROWRPNG");
-	imageSuiv->SetCommandId(WM_IMAGES_SUIVANTE);
+	imageSuiv = CreateButton(L"IDB_ARROWRPNG", L"LBLNEXT", WM_IMAGES_SUIVANTE);
 	imageSuiv->SetRepeatable(true);
-	imageSuiv->SetLibelle(libelleNext);
-	navElement.push_back(imageSuiv);
+
 
 	this->toolbarInterface = toolbarInterface;
-}
-
-
-CAnimationToolbar::~CAnimationToolbar()
-{
 }
 
 void CAnimationToolbar::NextPicture()

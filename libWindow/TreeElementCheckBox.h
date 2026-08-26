@@ -9,7 +9,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementCheckBox();
-		~CTreeElementCheckBox() override;
+		virtual ~CTreeElementCheckBox() = default;
 
 		void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
 		void ClickElement(wxWindow* window, const int& x, const int& y) override;

@@ -6,7 +6,6 @@
 using namespace Regards::OpenCV;
 using namespace cv;
 
-const int SMOOTHING_RADIUS = 50; // In frames. The larger the more stable the video, but less reactive to sudden panning
 
 
 
@@ -17,17 +16,13 @@ COpenCVStabilization::COpenCVStabilization(const int& nbFrame, const int& type)
 	switch (type)
 	{
 	case TYPE_CPU:
-		opencvStabilization = new COpenCVStabilizationCpu(nbFrame);
+		opencvStabilization = std::make_unique<COpenCVStabilizationCpu>(nbFrame);
 		break;
 	case TYPE_OPENCL:
-		opencvStabilization = new COpenCVStabilizationOpenCL(nbFrame);
+		opencvStabilization = std::make_unique<COpenCVStabilizationOpenCL>(nbFrame);
 		break;
-	}
-}
 
-COpenCVStabilization::~COpenCVStabilization()
-{
-    delete opencvStabilization;
+	}
 }
 
 void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)

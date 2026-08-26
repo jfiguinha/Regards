@@ -1,6 +1,7 @@
 #include <header.h>
 #include "SqlFaceRecognition.h"
 #include "SqlResult.h"
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 CSqlFaceRecognition::CSqlFaceRecognition()
@@ -9,43 +10,39 @@ CSqlFaceRecognition::CSqlFaceRecognition()
 }
 
 
-CSqlFaceRecognition::~CSqlFaceRecognition()
-{
-}
-
 int CSqlFaceRecognition::GetCompatibleFace(const int& numFace)
 {
 	type = 1;
 	faceCompatible = 0;
-	ExecuteRequest("SELECT NumFaceCompatible FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFace));
+	ExecuteSqlWithStatement("SELECT NumFaceCompatible FROM FACE_RECOGNITION WHERE NumFace = ?", parameter);
 	return faceCompatible;
 }
 
 bool CSqlFaceRecognition::MoveFaceRecognition(int numFace, int NewnumFaceCompatible)
 {
-	return (ExecuteRequestWithNoResult(
-		       "Update FACE_RECOGNITION Set NumFaceCompatible = " + to_string(NewnumFaceCompatible) +
-		       " WHERE NumFace = " + to_string(numFace)) != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFace));
+	parameter.push_back(std::make_unique<CSqlInt>(NewnumFaceCompatible));
+	return ExecuteSqlWithStatementNoResult("Update FACE_RECOGNITION Set NumFaceCompatible = ? WHERE NumFace = ?", parameter);
 }
 
 bool CSqlFaceRecognition::UpdateFaceRecognition(int OldnumFaceCompatible, int NewnumFaceCompatible)
 {
-	return (ExecuteRequestWithNoResult(
-		       "Update FACE_RECOGNITION Set NumFaceCompatible = " + to_string(NewnumFaceCompatible) +
-		       " WHERE NumFaceCompatible = " + to_string(OldnumFaceCompatible)) != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(NewnumFaceCompatible));
+	parameter.push_back(std::make_unique<CSqlInt>(OldnumFaceCompatible));
+	return ExecuteSqlWithStatementNoResult("Update FACE_RECOGNITION Set NumFaceCompatible = ? WHERE NumFaceCompatible = ?", parameter);
 }
 
 bool CSqlFaceRecognition::InsertFaceRecognition(int numFace, int numFaceCompatible)
 {
-	return (ExecuteRequestWithNoResult(
-		       "INSERT INTO FACE_RECOGNITION (NumFace, NumFaceCompatible) VALUES (" + to_string(numFace) + "," +
-		       to_string(numFaceCompatible) + ")") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFace));
+	parameter.push_back(std::make_unique<CSqlInt>(numFaceCompatible));
+
+	return ExecuteSqlWithStatementNoResult("INSERT INTO FACE_RECOGNITION (NumFace, NumFaceCompatible) VALUES (?,?)", parameter);
 }
 
 std::vector<int> CSqlFaceRecognition::GetUniqueFace()
@@ -63,7 +60,9 @@ bool CSqlFaceRecognition::DeleteFaceRecognitionDatabase()
 
 bool CSqlFaceRecognition::DeleteFaceRecognitionDatabase(int numFace)
 {
-	return (ExecuteRequest("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace)) != -1) ? true : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFace));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = ?", parameter);
 }
 
 int CSqlFaceRecognition::TraitementResult(CSqlResult* sqlResult)
@@ -71,27 +70,14 @@ int CSqlFaceRecognition::TraitementResult(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		switch (type)
 		{
-			if (type == 0)
-			{
-				switch (i)
-				{
-				case 0:
-					listFace.push_back(sqlResult->ColumnDataInt(i));
-					break;
-				default: ;
-				}
-			}
-			else if (type == 1)
-			{
-				switch (i)
-				{
-				case 0:
-					faceCompatible = sqlResult->ColumnDataInt(i);
-					break;
-				}
-			}
+		case 0:
+			listFace.push_back(sqlResult->ColumnDataInt(0));
+			break;
+		case 1:
+			faceCompatible = sqlResult->ColumnDataInt(0);
+			break;
 		}
 		nbResult++;
 	}

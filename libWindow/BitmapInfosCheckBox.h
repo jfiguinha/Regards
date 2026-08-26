@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme);
-		~CBitmapInfosCheckBox() override;
+		~CBitmapInfosCheckBox() = default;
 		void SetFilename(const wxString& filename);
 		void SetCheckboxVisible(const bool& checkboxVisibility);
 		int GetHeight() override;

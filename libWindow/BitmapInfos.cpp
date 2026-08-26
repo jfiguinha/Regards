@@ -11,15 +11,16 @@
 #include <GpsEngine.h>
 #include <wx/filename.h>
 #include <MetadataExiv2.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
+#define GPS_TIME 1000
+
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
 using namespace Regards::exiv2;
 using namespace std;
-
-#define GPS_TIME 1000
-#include <appcontext.h>
-extern AppContext application_context;
 
 struct InfosGps
 {
@@ -39,7 +40,7 @@ CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapIn
 	threadGps = nullptr;
 	fileGeolocalisation->AddWindow(this);
 	listProcessWindow.push_back(this);
-    gpsTimer = new wxTimer(this, wxTIMER_EXIT);
+    gpsTimer = std::make_unique<wxTimer>(this, wxTIMER_EXIT);
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfos::on_paint));
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CBitmapInfos::OnStartGps), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CBitmapInfos::OnUpdateGpsInfos));
@@ -52,7 +53,7 @@ bool CBitmapInfos::GetProcessEnd()
 	if (gpsTimer->IsRunning())
 		gpsTimer->Stop();
 
-	if (threadGps != nullptr)
+	if (!(threadGps == nullptr))
 		return false;
 
 	return true;
@@ -62,15 +63,18 @@ void CBitmapInfos::OnStartGps(wxTimerEvent& event)
 {
 	if (application_context.isGPsAvailable)
 	{
-		if (threadGps == nullptr)
+		if (!threadGps)
 		{
 			InfosGps* infos = new InfosGps();
 			infos->window = this;
 			infos->filename = filename;
-			threadGps = new thread(GetGpsInfos, infos);
+			threadGps = std::make_unique<thread>(GetGpsInfos, infos);
 		}
 		else
+		{
 			gpsTimer->StartOnce(GPS_TIME);
+		}
+			
 	}
 }
 
@@ -110,9 +114,11 @@ void CBitmapInfos::GetGpsInfos(void* data)
 void CBitmapInfos::UpdateGpsInfosLocal(wxCommandEvent& event)
 {
 	InfosGps* infosGps = (InfosGps *)event.GetClientData();
-	threadGps->join();
-	delete threadGps;
-	threadGps = nullptr;
+	if (threadGps && threadGps->joinable())
+	{
+		threadGps->join();
+	}
+	threadGps.reset();
 
 	if (infosGps->filename == filename)
 	{
@@ -218,11 +224,15 @@ void CBitmapInfos::UpdateData()
 		CriteriaVector criteriaList;
 		sqlPhotos.GetPhotoCriteria(&criteriaList, filename);
 
-		for (CCriteria criteria : criteriaList)
+		for (CCriteria& criteria : criteriaList)
 		{
 			if (criteria.GetCategorieId() == 1)
 			{
 				gpsInfos = criteria.GetLibelle();
+				if (gpsInfos.find(application_context.special_key) == 0)
+				{
+					gpsInfos = "";
+				}
 			}
 			else if (criteria.GetCategorieId() == 3)
 			{
@@ -277,23 +287,32 @@ void CBitmapInfos::SetDateInfos(const wxString& dataInfos, char seperator)
 	vector<wxString> vDateTime = CConvertUtility::split(dataInfos, seperator);
 	if (vDateTime.size() >= 3)
 	{
-		int year = atoi(vDateTime[0]);
-		int month = atoi(vDateTime[1]);
-		int day = atoi(vDateTime[2]);
+		int year = CConvertUtility::ToInt(vDateTime[0]);
+		int month = CConvertUtility::ToInt(vDateTime[1]);
+		int day = CConvertUtility::ToInt(vDateTime[2]);
 
 		if (year == 0 || month == 0 || day == 0)
 			dateInfos = "Invalid Date Infos";
 		else
 		{
 			int ijour = Dayofweek(day, month, year);
-			dateInfos = DayName.at(ijour) + L" " + to_string(day) + L" " + MonthName.at(month - 1) + L", " + to_string(year)
-				+ L" ";
+			dateInfos = wxString::Format(
+				"%s %d %s, %d",
+				DayName.at(ijour),
+				day,
+				MonthName.at(month - 1),
+				year);
 		}
 	}
 }
 
 CBitmapInfos::~CBitmapInfos()
 {
+	if (gpsTimer)
+		gpsTimer->Stop();
+
+	if (threadGps && threadGps->joinable())
+		threadGps->join();
 }
 
 int CBitmapInfos::GetHeight()
@@ -330,8 +349,12 @@ void CBitmapInfos::DrawInformations(wxDC* dc)
 		wchar_t seperator = '.';
 		vector<wxString> listGeo = CConvertUtility::split(gpsInfos, seperator);
 		message = dateInfos;
-		for (int i = listGeo.size() - 1;i >= 0 ; i--)
-			message += L"," + listGeo.at(i);
+		for (auto it = listGeo.rbegin();
+			it != listGeo.rend();
+			++it)
+		{
+			message += "," + *it;
+		}
 	}
 	else
 	{
@@ -341,13 +364,13 @@ void CBitmapInfos::DrawInformations(wxDC* dc)
 	size = GetSizeTexte(dc, message, font);
 	DrawTexte(dc, message, (GetWindowWidth() / scale_factor - size.x) / 2, (GetWindowHeight() / scale_factor) / 2,
 	          font);
+
 }
 
 void CBitmapInfos::on_paint(wxPaintEvent& event)
 {
-	int width = GetWindowWidth();
-	int height = GetWindowHeight();
-	if (width <= 0 || height <= 0)
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
 		return;
 
 	wxBufferedPaintDC dc(this);

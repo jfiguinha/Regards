@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementTriangle();
-		~CTreeElementTriangle() override;
+		~CTreeElementTriangle() = default;
 
 		void SetOpen(const bool& open);
 		bool GetOpen();

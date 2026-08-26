@@ -31,15 +31,13 @@
     <File Name="RegardsPDF.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="VideoThumbnail">
-    <VirtualDirectory Name="MovieDecoder">
-      <File Name="moviedecoder.h"/>
-      <File Name="moviedecoder.cpp"/>
-    </VirtualDirectory>
+    <File Name="VideoThumbPimpl.h"/>
+    <File Name="VideoThumbPimpl.cpp"/>
+    <File Name="MediaExtractor.h"/>
+    <File Name="MediaExtractor.cpp"/>
+    <File Name="FFmpegVideoThumb.h"/>
+    <File Name="FFmpegVideoThumb.cpp"/>
     <File Name="aspectratio.h"/>
-    <File Name="OpenCVVideoPlayer.h"/>
-    <File Name="OpenCVVideoPlayer.cpp"/>
-    <File Name="VideoPlayer.cpp"/>
-    <File Name="VideoPlayer.h"/>
     <File Name="videothumb.cpp"/>
     <File Name="videothumb.h"/>
   </VirtualDirectory>
@@ -66,8 +64,8 @@
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
-    <File Name="PictureMetadataExiv_new.h"/>
-    <File Name="PictureMetadataExiv_new.cpp"/>
+    <File Name="PictureMetadataExiv.h"/>
+    <File Name="PictureMetadataExiv.cpp"/>
     <File Name="ThumbnailData.h"/>
     <File Name="Metadata.h"/>
     <File Name="MediaInfo.h"/>
@@ -75,8 +73,6 @@
     <File Name="MediaInfo.cpp"/>
     <File Name="MetadataExiv2.h"/>
     <File Name="MetadataExiv2.cpp"/>
-    <File Name="PictureMetadataExiv.h"/>
-    <File Name="PictureMetadataExiv.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Dialog">
     <File Name="GifOption.h"/>
@@ -128,6 +124,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="picture_factory.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="jxl.cpp"/>
     <File Name="ascii.cpp"/>
@@ -139,6 +136,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="picture_factory.h"/>
     <File Name="avif.h"/>
     <File Name="imageinfo.hpp"/>
     <File Name="jxl.h"/>
@@ -157,7 +155,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++17;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libVideoThumbnail"/>
@@ -179,6 +177,7 @@
         <IncludePath Value="../Otherlib/libavif/include"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../Otherlib"/>
+        <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="__NEW_JXL__"/>
         <Preprocessor Value="AVIF_LIBYUV_ENABLED"/>

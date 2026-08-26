@@ -16,21 +16,21 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
 ;--------------------------------
 ;General
-!define MUI_PRODUCT "RegardsViewer 2.0"
+!define MUI_PRODUCT "RegardsViewer 3.0"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
-!define MUI_VERSION "2.85.3"
-!define UninstId "RegardsViewer2" ; You might want to use a GUID here
+!define MUI_VERSION "3.00.0"
+!define UninstId "RegardsViewer3" ; You might want to use a GUID here
 
   ;Name and file
-  Name "Regards Viewer 2.85.3"
-  OutFile "RegardsViewer2Setup.exe"
+  Name "Regards Viewer 3.00.0"
+  OutFile "RegardsViewer3Setup.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES64\RegardsViewer2"
+  InstallDir "$PROGRAMFILES64\RegardsViewer3"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\RegardsViewer2" ""
+  InstallDirRegKey HKCU "Software\RegardsViewer3" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
@@ -75,7 +75,7 @@ ${AndIf} ${Cmd} `MessageBox MB_YESNO|MB_ICONQUESTION "Uninstall previous version
 
   RMDIR /r "$INSTDIR"
 
-  DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
+  DeleteRegKey /ifempty HKCU "Software\RegardsViewer3"
 ${EndIf}
 file_not_found:
 	DetailPrint "Uninstall Regards Viewer"
@@ -141,17 +141,17 @@ Section "RegardsViewer" SecRegardsViewer
 
 
   ;ADD YOUR OWN FILES HERE...
-  DetailPrint "*** Installing Regards Viewer 2.85.3..."
-  File "Prerequisites\RegardsViewer2.zip"
-  ZipDLL::extractall "$INSTDIR\RegardsViewer2.zip" $INSTDIR
+  DetailPrint "*** Installing Regards Viewer 3.00.0..."
+  File "Prerequisites\RegardsViewer3.zip"
+  ZipDLL::extractall "$INSTDIR\RegardsViewer3.zip" $INSTDIR
   ;Store installation folder
-  WriteRegStr HKCU "Software\RegardsViewer2" "" $INSTDIR
+  WriteRegStr HKCU "Software\RegardsViewer3" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   DetailPrint "*** Remove zip installer ..."
-  Delete "$INSTDIR\RegardsViewer2.zip"
+  Delete "$INSTDIR\RegardsViewer3.zip"
 
   ;create desktop shortcut
   CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" ""
@@ -191,7 +191,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.85.3"
+  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 3.00.0"
   LangString DESC_SecVisualStudio ${LANG_ENGLISH} "Visual Studio 2017 Redistribuable x64"
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN

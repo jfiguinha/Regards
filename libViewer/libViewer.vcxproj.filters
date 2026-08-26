@@ -46,9 +46,6 @@
     <Filter Include="Panel\source">
       <UniqueIdentifier>{3dec332c-d93b-45ed-8eb5-1cb042bc7eb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CheckVersion">
-      <UniqueIdentifier>{add6f705-e73b-4a7d-ba64-2bfa4a4cc137}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
     </Filter>
@@ -117,9 +114,6 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="Toolbar.h">
-      <Filter>Toolbar\include</Filter>
-    </ClInclude>
     <ClInclude Include="ToolbarInfos.h">
       <Filter>Toolbar\include</Filter>
     </ClInclude>
@@ -137,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="FaceInfosUpdate.h">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckVersion.h">
-      <Filter>CheckVersion</Filter>
     </ClInclude>
     <ClInclude Include="WaitingWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -189,6 +180,78 @@
     <ClInclude Include="FolderProcess.h">
       <Filter>FolderProcess</Filter>
     </ClInclude>
+    <ClInclude Include="FileWatcherService.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="myFrame.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintService.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerLauncher.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerNavigationController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerTheme.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaLoader.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="SlideshowController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowModeController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderRefreshService.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MainViewerController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailScheduler.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryHierarchyIndex.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryQueryService.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryRepository.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategorySelectionController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryTreeStatePersistence.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystemValidator.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlBatchOps.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailProcess.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEventBatcher.h">
+      <Filter>FolderProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -236,9 +299,6 @@
     <ClCompile Include="PreviewWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="toolbar.cpp">
-      <Filter>Toolbar\source</Filter>
-    </ClCompile>
     <ClCompile Include="ToolbarInfos.cpp">
       <Filter>Toolbar\source</Filter>
     </ClCompile>
@@ -250,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="ThumbnailViewerPicture.cpp">
       <Filter>Thumbnail\source</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckVersion.cpp">
-      <Filter>CheckVersion</Filter>
     </ClCompile>
     <ClCompile Include="ToolbarPhoto.cpp">
       <Filter>Toolbar\source</Filter>
@@ -297,6 +354,69 @@
       <Filter>FolderProcess</Filter>
     </ClCompile>
     <ClCompile Include="FolderProcess.cpp">
+      <Filter>FolderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatcherService.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintService.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerLauncher.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerNavigationController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLoader.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SlideshowController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowModeController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MainViewerController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderRefreshService.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailScheduler.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryHierarchyIndex.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryQueryService.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryRepository.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategorySelectionController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryTreeStatePersistence.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystemValidator.cpp">
+      <Filter>FolderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="SqlBatchOps.cpp">
+      <Filter>FolderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailProcess.cpp">
       <Filter>FolderProcess</Filter>
     </ClCompile>
   </ItemGroup>

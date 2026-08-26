@@ -17,6 +17,6 @@ CVideoStream::~CVideoStream()
 
 vector<CStreamInfo> CVideoStream::GetVideoStream(const wxString& fileName)
 {
-	MovieStreamInfo movieStream(CConvertUtility::ConvertToStdString(fileName));
+	MovieStreamInfo movieStream(CConvertUtility::ConvertToStdString(fileName).c_str());
 	return movieStream.GetListStreamInfo();
 }

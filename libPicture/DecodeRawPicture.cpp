@@ -8,140 +8,170 @@
 #include <ximage.h>
 using namespace Regards::Filter;
 
-class CLocalData
+class CDecodeRawPicturePimpl
 {
 public:
-	libraw_output_params_t params;
+
+
+    CDecodeRawPicturePimpl(const std::string& fileName)
+        : rawProcessor(std::make_unique<LibRaw>())
+    {
+        result = rawProcessor->open_file(fileName.c_str());
+
+        if (result != LIBRAW_SUCCESS)
+            return;
+
+        result = rawProcessor->unpack();
+
+        if (result != LIBRAW_SUCCESS)
+            return;
+
+        // Keep the original LibRaw parameters.
+        originalParams = rawProcessor->imgdata.params;
+    }
+
+
+    ~CDecodeRawPicturePimpl()
+    {
+        if (rawProcessor)
+            rawProcessor->recycle();
+    }
+
+
+    CImageLoadingFormat* DecodePicture(
+        CDecodeRawParameter* decodeRawParameter)
+    {
+        if (rawProcessor == nullptr || result != LIBRAW_SUCCESS)
+            return nullptr;
+
+        // Always start from the original LibRaw parameters.
+        rawProcessor->imgdata.params = originalParams;
+
+        if (decodeRawParameter != nullptr)
+        {
+            auto& params = rawProcessor->imgdata.params;
+            const auto& source = *decodeRawParameter;
+
+            params.bright = source.bright;
+            params.highlight = source.highlight;
+            params.threshold = source.threshold;
+            params.use_auto_wb = source.use_auto_wb;
+            params.use_camera_wb = source.use_camera_wb;
+            params.half_size = source.half_size;
+            params.use_camera_matrix = source.use_camera_matrix;
+
+            if (source.aberRedEnable)
+                params.aber[0] = source.aberRed;
+
+            if (source.aberGreenEnable)
+                params.aber[2] = source.aberGreen;
+
+            params.user_mul[0] = source.multiRed;
+            params.user_mul[1] = source.multiGreen;
+            params.user_mul[2] = source.multiBlue;
+            params.user_mul[3] = source.multiOther;
+
+            params.user_flip = source.flip;
+            params.user_qual = source.interpolation;
+
+            params.user_black = source.black;
+
+            params.user_cblack[0] = source.blackchannelRed;
+            params.user_cblack[1] = source.blackchannelGreen;
+            params.user_cblack[2] = source.blackchannelBlue;
+            params.user_cblack[3] = source.blackchannelOther;
+
+            params.user_sat = source.saturation;
+            params.med_passes = source.medPasses;
+            params.no_auto_bright = source.noautobright;
+            params.auto_bright_thr = source.autobright;
+            params.adjust_maximum_thr = source.adjust_maximum_thr;
+            params.use_fuji_rotate = source.use_fuji_rotate;
+            params.green_matching = source.green_matching;
+
+            params.dcb_iterations = source.dcb_iterations;
+            params.dcb_enhance_fl = source.dcb_enhance_fl;
+            params.fbdd_noiserd = source.fbdd_noiserd;
+
+            params.exp_correc = source.exp_correc;
+            params.exp_shift = source.exp_shift;
+            params.exp_preser = source.exp_preser;
+        }
+
+        try
+        {
+            result = rawProcessor->dcraw_process();
+        }
+        catch (...)
+        {
+            return nullptr;
+        }
+
+        if (result != LIBRAW_SUCCESS)
+            return nullptr;
+
+        int width = 0;
+        int height = 0;
+        int rawColor = 0;
+        int rawBitsize = 0;
+
+        rawProcessor->get_mem_image_format(
+            &width,
+            &height,
+            &rawColor,
+            &rawBitsize);
+
+        if (width <= 0 || height <= 0 || rawColor <= 0 || rawBitsize <= 0)
+            return nullptr;
+
+        const int bytesPerPixel = rawColor * (rawBitsize / 8);
+
+        if (bytesPerPixel <= 0)
+            return nullptr;
+
+        const int stride =
+            ((bytesPerPixel * width + bytesPerPixel) & ~bytesPerPixel);
+
+
+        CxImage image;
+
+        if (!image.Create(width, height, rawBitsize * rawColor))
+        {
+            return nullptr;
+        }
+
+        result = rawProcessor->copy_mem_image(
+            image.GetBits(),
+            stride,
+            1);
+
+        if (result != LIBRAW_SUCCESS)
+        {
+            return nullptr;
+        }
+
+        auto* imageLoadingFormat = new CImageLoadingFormat();
+        imageLoadingFormat->SetPicture(image);
+        imageLoadingFormat->Flip();
+
+        return imageLoadingFormat;
+    }
+
+
+
+    std::unique_ptr<LibRaw> rawProcessor;
+    int result = LIBRAW_SUCCESS;
+    libraw_output_params_t originalParams{};
 };
 
-CDecodeRawPicture::CDecodeRawPicture(const string& fileName)
+CDecodeRawPicture::CDecodeRawPicture(const std::string& fileName)
+    : pimpl(std::make_unique<CDecodeRawPicturePimpl>(fileName))
+{}
+
+CDecodeRawPicture::~CDecodeRawPicture() = default;
+
+CImageLoadingFormat* CDecodeRawPicture::DecodePicture(
+    CDecodeRawParameter* decodeRawParameter)
 {
-	localData = new CLocalData();
-	rawProcessor = new LibRaw();
-	result = rawProcessor->open_file(fileName.c_str());
-	if (result == LIBRAW_SUCCESS)
-	{
-		// step two: positioning libraw_internal_data.unpacker_data.data_offset
-		result = rawProcessor->unpack();
-	}
-
-	memcpy(&localData->params, &rawProcessor->imgdata.params, sizeof(rawProcessor->imgdata.params));
-}
-
-
-CDecodeRawPicture::~CDecodeRawPicture()
-{
-	if (rawProcessor != nullptr)
-	{
-		rawProcessor->recycle();
-		delete rawProcessor;
-	}
-
-	if (localData != nullptr)
-		delete localData;
-}
-
-
-CImageLoadingFormat* CDecodeRawPicture::DecodePicture(CDecodeRawParameter* decodeRawParameter)
-{
-	if (decodeRawParameter != nullptr)
-	{
-		rawProcessor->imgdata.params.bright = decodeRawParameter->bright;
-		rawProcessor->imgdata.params.highlight = decodeRawParameter->highlight;
-		rawProcessor->imgdata.params.threshold = decodeRawParameter->threshold;
-		rawProcessor->imgdata.params.use_auto_wb = decodeRawParameter->use_auto_wb;
-		rawProcessor->imgdata.params.use_camera_wb = decodeRawParameter->use_camera_wb;
-		rawProcessor->imgdata.params.half_size = decodeRawParameter->half_size;
-		rawProcessor->imgdata.params.use_camera_matrix = decodeRawParameter->use_camera_matrix;
-		if (decodeRawParameter->aberRedEnable)
-			rawProcessor->imgdata.params.aber[0] = decodeRawParameter->aberRed;
-		if (decodeRawParameter->aberGreenEnable)
-			rawProcessor->imgdata.params.aber[2] = decodeRawParameter->aberGreen;
-
-		rawProcessor->imgdata.params.user_mul[0] = decodeRawParameter->multiRed;
-		rawProcessor->imgdata.params.user_mul[1] = decodeRawParameter->multiGreen;
-		rawProcessor->imgdata.params.user_mul[2] = decodeRawParameter->multiBlue;
-		rawProcessor->imgdata.params.user_mul[3] = decodeRawParameter->multiOther;
-
-		rawProcessor->imgdata.params.user_flip = decodeRawParameter->flip;
-		rawProcessor->imgdata.params.user_qual = decodeRawParameter->interpolation;
-
-		rawProcessor->imgdata.params.user_black = decodeRawParameter->black;
-		rawProcessor->imgdata.params.user_cblack[0] = decodeRawParameter->blackchannelRed;
-		rawProcessor->imgdata.params.user_cblack[1] = decodeRawParameter->blackchannelGreen;
-		rawProcessor->imgdata.params.user_cblack[2] = decodeRawParameter->blackchannelBlue;
-		rawProcessor->imgdata.params.user_cblack[3] = decodeRawParameter->blackchannelOther;
-		rawProcessor->imgdata.params.user_sat = decodeRawParameter->saturation;
-		rawProcessor->imgdata.params.med_passes = decodeRawParameter->medPasses;
-		rawProcessor->imgdata.params.no_auto_bright = decodeRawParameter->noautobright;
-		rawProcessor->imgdata.params.auto_bright_thr = decodeRawParameter->autobright;
-		rawProcessor->imgdata.params.adjust_maximum_thr = decodeRawParameter->adjust_maximum_thr;
-		rawProcessor->imgdata.params.use_fuji_rotate = decodeRawParameter->use_fuji_rotate;
-		rawProcessor->imgdata.params.green_matching = decodeRawParameter->green_matching;
-		rawProcessor->imgdata.params.dcb_iterations = decodeRawParameter->dcb_iterations;
-		rawProcessor->imgdata.params.dcb_enhance_fl = decodeRawParameter->dcb_enhance_fl;
-		rawProcessor->imgdata.params.fbdd_noiserd = decodeRawParameter->fbdd_noiserd;
-		/*
-		rawProcessor->imgdata.params.eeci_refine = decodeRawParameter->eeci_refine;
-		rawProcessor->imgdata.params.es_med_passes = decodeRawParameter->es_med_passes;
-		rawProcessor->imgdata.params.ca_correc = decodeRawParameter->ca_correc;
-		rawProcessor->imgdata.params.cared = decodeRawParameter->cared;
-		rawProcessor->imgdata.params.cablue = decodeRawParameter->cablue;
-		rawProcessor->imgdata.params.cfaline = decodeRawParameter->cfaline;
-		rawProcessor->imgdata.params.linenoise = decodeRawParameter->linenoise;
-		rawProcessor->imgdata.params.cfa_clean = decodeRawParameter->cfa_clean;
-		rawProcessor->imgdata.params.lclean = decodeRawParameter->lclean;
-		rawProcessor->imgdata.params.cclean = decodeRawParameter->cclean;
-		rawProcessor->imgdata.params.cfa_green = decodeRawParameter->cfa_green;
-		rawProcessor->imgdata.params.green_thresh = decodeRawParameter->green_thresh;
-		 * */
-		rawProcessor->imgdata.params.exp_correc = decodeRawParameter->exp_correc;
-		rawProcessor->imgdata.params.exp_shift = decodeRawParameter->exp_shift;
-		rawProcessor->imgdata.params.exp_preser = decodeRawParameter->exp_preser;
-		/*
-		rawProcessor->imgdata.params.wf_debanding = decodeRawParameter->wf_debanding;
-		rawProcessor->imgdata.params.wf_deband_treshold[0] = decodeRawParameter->wf_deband_tresholdRed;
-		rawProcessor->imgdata.params.wf_deband_treshold[1]  = decodeRawParameter->wf_deband_tresholdGreen;
-		rawProcessor->imgdata.params.wf_deband_treshold[2]  = decodeRawParameter->wf_deband_tresholdBlue;
-		rawProcessor->imgdata.params.wf_deband_treshold[3]  = decodeRawParameter->wf_deband_tresholdOther;
-		 * */
-	}
-	else
-	{
-		memcpy(&rawProcessor->imgdata.params, &localData->params, sizeof(rawProcessor->imgdata.params));
-	}
-	//rawProcessor->imgdata.params.user_flip = 2;
-	//rawProcessor->imgdata.params.use_rawspeed = 1;
-
-	try
-	{
-		result = rawProcessor->dcraw_process();
-	}
-	catch (...)
-	{
-	}
-
-	int width = 0;
-	int height = 0;
-
-
-	CImageLoadingFormat* imageLoadingFormat = nullptr;
-	auto image = new CxImage();
-	if (result == 0)
-	{
-		imageLoadingFormat = new CImageLoadingFormat();
-		int raw_color, raw_bitsize;
-		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
-		image->Create(width, height, raw_bitsize * raw_color);
-
-		int iTaille = raw_color * (raw_bitsize / 8);
-		int stride = ((iTaille * width + iTaille) & ~iTaille);
-		//rawProcessor->copy_mem_image(image->GetBits(), width * raw_color * (raw_bitsize/8), 1);
-		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		//image->Flip();
-		imageLoadingFormat->SetPicture(image);
-		imageLoadingFormat->Flip();
-	}
-
-	return imageLoadingFormat;
+    return pimpl->DecodePicture(decodeRawParameter);
 }

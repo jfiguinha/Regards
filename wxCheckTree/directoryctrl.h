@@ -132,6 +132,7 @@ public:
 	void OnItemActivated(wxTreeEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnMouseEnter(wxMouseEvent& event);
+	void OnMouseMove(wxMouseEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
 	// Try to expand as much of the given path as possible.
 	virtual bool ExpandPath(const wxString& path);
@@ -338,7 +339,7 @@ protected:
 	void Create(const wxSize& sz); // create on first use
 
     wxBitmap GetIcon(const wxArtID& id, const wxSize& sz);
-    wxBitmap LoadBitmap(const wxString &icon);
+    wxBitmap LoadBitmap(const wxString &icon, wxBitmapType type = wxBITMAP_TYPE_PNG);
     
 	wxImageList* m_smallImageList;
 	wxHashTable* m_HashTable;

@@ -1,9 +1,15 @@
 #include "header.h"
 #include "ToolbarWindow.h"
 #include <wx/dcbuffer.h>
+#include <LibResource.h>
 using namespace Regards::Window;
 
-#define TIMER_PUSHID 1
+namespace
+{
+	constexpr int TIMER_PUSHID = 1;
+	constexpr int TIMER_PUSH_DELAY = 500; // ms before repeat fires
+}
+
 
 
 CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical) :
@@ -18,6 +24,8 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 	navPush = nullptr;
 	pushButton = std::make_unique<wxTimer>(this, TIMER_PUSHID);
 	themeToolbar = theme;
+
+
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CToolbarWindow::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CToolbarWindow::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CToolbarWindow::OnLButtonDown));
@@ -66,11 +74,6 @@ void CToolbarWindow::OnTimerPushButton(wxTimerEvent& event)
 
 void CToolbarWindow::EmptyNavigator()
 {
-	for (CToolbarElement* nav : navElement)
-	{
-		delete(nav);
-	}
-
 	navElement.clear();
 }
 
@@ -125,109 +128,42 @@ int CToolbarWindow::GetNavigatorWidth()
 	return size;
 }
 
+
 void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 {
-   // printf("CToolbarWindow::OnMouseMove \n");
+	const int xPos = event.GetX();
+	const int yPos = event.GetY();
 	bool needToRedraw = false;
-	int xPos = event.GetX();
-	int yPos = event.GetY();
-	wxClientDC dc(this);
-	int i = 0;
+	int  i = 0;
 
-	for (CToolbarElement* nav : navElement)
+	for (auto& nav : navElement)
 	{
-		if (nav != nullptr)
+		if (!nav || !nav->IsVisible()) { ++i; continue; }
+
+		if (nav->FindElement(xPos, yPos))
 		{
-			if (nav->IsVisible())
+			// Only create DC when we actually need to draw
+			wxClientDC dc(this);
+			if (nav->MouseOver(&dc, xPos, yPos)) needToRedraw = true;
+			if (nav->SetActif())                 needToRedraw = true;
+
+			if (numButtonActif != i)
 			{
-				if (nav->FindElement(xPos, yPos))
-				{
-					if (nav->MouseOver(&dc, xPos, yPos))
-						needToRedraw = true;
-
-					if (nav->SetActif())
-						needToRedraw = true;
-
-					//findActif = true;
-					if (numButtonActif != i)
-					{
-						this->SetToolTip(nav->GetLibelleTooltip());
-						numButtonActif = i;
-					}
-				}
-				else
-				{
-					if (nav->SetInactif())
-						needToRedraw = true;
-				}
+				SetToolTip(nav->GetLibelleTooltip());
+				numButtonActif = i;
 			}
 		}
-		i++;
+		else
+		{
+			if (nav->SetInactif()) needToRedraw = true;
+		}
+		++i;
 	}
 
 	if (needToRedraw)
-    {
-        //printf("CToolbarWindow::OnMouseMove needToRedraw \n");
 		needToRefresh = true;
-    }
-    
-
 }
 
-void CToolbarWindow::DisablePush()
-{
-	for (CToolbarElement* nav : navElement)
-	{
-		nav->SetPush(false);
-	}
-}
-
-void CToolbarWindow::SetAllDisable()
-{
-	for (CToolbarElement* nav : navElement)
-	{
-		nav->SetInactif();
-	}
-
-}
-
-
-void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
-{
-	wxClientDC dc(this);
-	int xPos = event.GetX();
-	int yPos = event.GetY();
-
-	for (CToolbarElement* nav : navElement)
-	{
-		if (nav->IsVisible())
-		{
-			if (nav->FindElement(xPos, yPos))
-			{
-				nav->UnclickElement(this, xPos, yPos);
-				if (!saveLastPush)
-					nav->SetPush(false);
-				break;
-			}
-		}
-	}
-
-	if (pushButton != nullptr)
-	{
-		if (pushButton->IsRunning())
-			pushButton->Stop();
-	}
-	if (navPush != nullptr)
-	{
-		if (navPush->GetRepeatable())
-		{
-			EventManager(navPush->GetCommandId());
-			navPush = nullptr;
-		}
-	}
-
-	needToRefresh = true;
-}
 
 void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 {
@@ -236,10 +172,8 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	if (pictureBuffer.GetWidth() != nav->GetWidth() || pictureBuffer.GetHeight() != nav->GetHeight())
-	{
+	if(pictureBuffer.GetWidth() != nav->GetWidth() || pictureBuffer.GetHeight() != nav->GetHeight())
 		pictureBuffer.Create(nav->GetWidth(), nav->GetHeight());
-	}
 
 	wxMemoryDC memDC(pictureBuffer);
 
@@ -249,7 +183,6 @@ void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 	rc.width = nav->GetWidth();
 	rc.height = nav->GetHeight();
 	DrawBackground(&memDC, rc);
-
 	nav->DrawButton(&memDC, 0, 0);
 	memDC.SelectObject(wxNullBitmap);
 
@@ -261,61 +194,115 @@ void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 {
-	wxClientDC dc(this);
-	this->SetFocus();
-	int xPos = event.GetX();
-	int yPos = event.GetY();
+	SetFocus();
+	const int xPos = event.GetX();
+	const int yPos = event.GetY();
 	bool repeatable = false;
+	bool needToRedraw = false;
 
-	for (CToolbarElement* nav : navElement)
+	for (auto& nav : navElement)
 	{
-		if (nav->IsVisible())
+		if (!nav->IsVisible()) continue;
+
+		if (nav->FindElement(xPos, yPos))
 		{
-			if (nav->FindElement(xPos, yPos))
+			nav->ClickElement(this, xPos, yPos);
+			nav->SetPush(true);
+			needToRedraw = true;
+			navPush = nav;
+
+			if (navPush->GetRepeatable())
 			{
-				nav->ClickElement(this, xPos, yPos);
-				nav->SetPush(true);
-				RedrawElement(&dc, nav);
-				navPush = nav;
-
-				if (navPush->GetRepeatable())
-				{
-					if (pushButton->IsRunning())
-						pushButton->Stop();
-
-					pushButton->Start(500);
-
-					repeatable = true;
-				}
+				if (pushButton->IsRunning())
+					pushButton->Stop();
+				pushButton->Start(TIMER_PUSH_DELAY);
+				repeatable = true;
 			}
-			else
-			{
-				nav->SetPush(false);
-				RedrawElement(&dc, nav);
-			}
+		}
+		else
+		{
+			nav->SetPush(false);
+			needToRedraw = true;
 		}
 	}
 
-	if (!repeatable)
-		if (navPush != nullptr)
-			EventManager(navPush->GetCommandId());
+	if (!repeatable && navPush)
+		EventManager(navPush->GetCommandId());
 
-	//Refresh();
+	if (needToRedraw)
+		needToRefresh = true;
+}
+
+void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
+{
+	const int xPos = event.GetX();
+	const int yPos = event.GetY();
+
+	for (auto& nav : navElement)
+	{
+		if (!nav->IsVisible()) continue;
+
+		if (nav->FindElement(xPos, yPos))
+		{
+			nav->UnclickElement(this, xPos, yPos);
+			if (!saveLastPush)
+				nav->SetPush(false);
+			break;
+		}
+	}
+
+	if (pushButton && pushButton->IsRunning())
+		pushButton->Stop();
+
+	if (navPush && navPush->GetRepeatable())
+	{
+		EventManager(navPush->GetCommandId());
+		navPush = nullptr;
+	}
+
+	needToRefresh = true;
+}
+
+std::unique_ptr<CToolbarTexte> CToolbarWindow::CreateTexte(
+	const wxString& label,
+	int commandId)
+{
+	auto btn = std::make_unique<CToolbarTexte>(themeToolbar.texte);
+	const wxString libelle = CLibResource::LoadStringFromResource(label, 1);
+
+	btn->SetCommandId(commandId);
+	btn->SetLibelle(libelle);
+	btn->SetLibelleTooltip(libelle);
+	navElement.push_back(btn.get());
+	return btn;
+}
+
+std::unique_ptr<CToolbarButton> CToolbarWindow::CreateButton(
+	const wxString& icon,
+	const wxString& label,
+	int commandId,
+	bool showLibelle)
+{
+	auto btn = std::make_unique<CToolbarButton>(themeToolbar.button);
+	const wxString libelle = CLibResource::LoadStringFromResource(label, 1);
+	btn->SetButtonResourceId(icon);
+	if(showLibelle)
+		btn->SetLibelle(libelle);
+	btn->SetCommandId(commandId);
+	btn->SetLibelleTooltip(libelle);
+	navElement.push_back(btn.get());
+
+	return btn;
 }
 
 void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 {
-	wxClientDC dc(this);
-
-	//if (pushButton->IsRunning())
-	//	pushButton->Stop();
-
 	m_bMouseOver = false;
 	if (HasCapture())
 		ReleaseMouse();
 
-	for (CToolbarElement* nav : navElement)
-
+	wxClientDC dc(this);
+	for (auto& nav : navElement)
 	{
 		if (nav->SetInactif())
 			RedrawElement(&dc, nav);
@@ -328,51 +315,57 @@ void CToolbarWindow::OnMouseHover(wxMouseEvent& event)
 	m_bMouseOver = true;
 }
 
+
+
 bool CToolbarWindow::IsMouseOver()
 {
 	return m_bMouseOver;
 }
 
-void CToolbarWindow::DrawBackground(wxDC* deviceContext, const wxRect& rc)
+
+void CToolbarWindow::SetAllDisable()
 {
-	if (isVertical)
-		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom);
-	else
-		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom, wxNORTH);
-
-
-	if (showLine)
+	for (CToolbarElement* nav : navElement)
 	{
-		
-		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
-		deviceContext->SetPen(penTop);
-		deviceContext->DrawLine(0, GetWindowHeight(), GetWindowWidth(), GetWindowHeight());
-		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
-		deviceContext->SetPen(wxNullPen);
+		nav->SetPush(false);
+		nav->SetInactif();
 	}
 }
 
 
-void CToolbarWindow::DrawBackground(wxDC* deviceContext)
+void CToolbarWindow::DrawBackground(wxDC* dc, const wxRect& rc)
 {
-	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
+	const wxDirection dir = isVertical ? wxEAST : wxNORTH;
+	dc->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom, dir);
+
+	if (showLine)
 	{
-		if (background.GetWidth() != GetWindowWidth() || background.GetHeight() != GetWindowHeight())
-		{
-			background.Create(GetWindowWidth(), GetWindowHeight());
-		}
-		
-		wxMemoryDC memDC(background);
-		wxRect rc = GetWindowRect();
-		DrawBackground(&memDC, rc);
-		//CWindowMain::FillRect(&memDC, rc, themeToolbar.colorTop);
-		memDC.SelectObject(wxNullBitmap);
-
-
-
-		backPicture = background.ConvertToImage();
-		deviceContext->DrawBitmap(background, 0, 0);
+		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
+		dc->SetPen(penTop);
+		dc->DrawLine(0, GetWindowHeight(), GetWindowWidth(), GetWindowHeight());
+		dc->SetPen(wxNullPen);
 	}
+}
+
+
+void CToolbarWindow::DrawBackground(wxDC* dc)
+{
+	const int winW = GetWindowWidth();
+	const int winH = GetWindowHeight();
+	if (winW <= 0 || winH <= 0) return;
+
+	// Only reallocate the off-screen bitmap when the window is resized
+	if (background.GetWidth() != winW || background.GetHeight() != winH)
+		background.Create(winW, winH);
+
+	{
+		wxMemoryDC memDC(background);
+		DrawBackground(&memDC, GetWindowRect());
+		memDC.SelectObject(wxNullBitmap);
+	}
+
+	backPicture = background.ConvertToImage();
+	dc->DrawBitmap(background, 0, 0);
 }
 
 
@@ -388,75 +381,66 @@ void CToolbarWindow::GenerateNavigatorButton(wxDC* deviceContext)
 	}
 }
 
-void CToolbarWindow::on_paint(wxPaintEvent& event)
+
+// ---------------------------------------------------------------------------
+// Layout recalculation (separated from paint so it runs only when needed)
+// ---------------------------------------------------------------------------
+
+void CToolbarWindow::RecalcLayout()
 {
-	wxBufferedPaintDC dc(this);
-
-	DrawBackground(&dc);
-
-	int navigatorWidth = GetNavigatorWidth();
-	int navigatorHeight = GetNavigatorHeight();
+	const int navW = GetNavigatorWidth();   // also fills m_cachedNavHeight
+	const int navH = GetNavigatorHeight();
 
 	if (isVertical)
 	{
-		int xStart = (GetWindowWidth() - navigatorWidth) / 2;
+		int xStart = (GetWindowWidth() - navW) / 2;
 		int yStart = 0;
 
 		switch (themeToolbar.position)
 		{
-		case NAVIGATOR_LEFT:
-			yStart = 0;
-			break;
-		case NAVIGATOR_CENTER:
-			yStart = (GetWindowHeight() - navigatorHeight) / 2;
-			break;
-		case NAVIGATOR_RIGHT:
-			yStart = GetWindowHeight() - navigatorHeight;
-			break;
-		default: ;
+		case NAVIGATOR_CENTER: yStart = (GetWindowHeight() - navH) / 2; break;
+		case NAVIGATOR_RIGHT:  yStart = GetWindowHeight() - navH;        break;
+		default:               yStart = 0;                               break;
 		}
 
-		for (CToolbarElement* nav : navElement)
+		for (auto& nav : navElement)
 		{
-			if (nav->IsVisible())
-			{
-				//nav->Resize(navigatorWidth, nav->GetHeight());
-				// nav->SetBackgroundBitmap(backPicture);
-				nav->SetPosition(xStart, yStart);
-				yStart += themeToolbar.GetMargeY() + nav->GetHeight();
-			}
+			if (!nav->IsVisible()) continue;
+			nav->SetPosition(xStart, yStart);
+			yStart += themeToolbar.GetMargeY() + nav->GetHeight();
 		}
 	}
 	else
 	{
 		int xStart = 0;
-		int yStart = (GetWindowHeight() - navigatorHeight) / 2;
+		int yStart = (GetWindowHeight() - navH) / 2;
 
 		switch (themeToolbar.position)
 		{
-		case NAVIGATOR_LEFT:
-			xStart = 0;
-			break;
-		case NAVIGATOR_CENTER:
-			xStart = (GetWindowWidth() - navigatorWidth) / 2;
-			break;
-		case NAVIGATOR_RIGHT:
-			xStart = GetWindowWidth() - navigatorWidth;
-			break;
-		default: ;
+		case NAVIGATOR_CENTER: xStart = (GetWindowWidth() - navW) / 2; break;
+		case NAVIGATOR_RIGHT:  xStart = GetWindowWidth() - navW;        break;
+		default:               xStart = 0;                              break;
 		}
 
-		for (CToolbarElement* nav : navElement)
+		for (auto& nav : navElement)
 		{
-			if (nav->IsVisible())
-			{
-				//nav->Resize(nav->GetWidth(), navigatorHeight);
-				// nav->SetBackgroundBitmap(backPicture);
-				nav->SetPosition(xStart, yStart);
-				xStart += themeToolbar.GetMargeX() + nav->GetWidth();
-			}
+			if (!nav->IsVisible()) continue;
+			nav->SetPosition(xStart, yStart);
+			xStart += themeToolbar.GetMargeX() + nav->GetWidth();
 		}
 	}
+}
 
+
+void CToolbarWindow::on_paint(wxPaintEvent& event)
+{
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
+		return;
+
+	wxBufferedPaintDC dc(this);
+
+	DrawBackground(&dc);
+	RecalcLayout();
 	GenerateNavigatorButton(&dc);
 }

@@ -4,6 +4,7 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
+#include <wx/dcbuffer.h>
 using namespace Regards::Video;
 
 CSliderVideo::CSliderVideo(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
@@ -554,16 +555,10 @@ void CSliderVideo::OnLButtonUp(wxMouseEvent& event)
 
 void CSliderVideo::on_paint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
-	int width = GetWindowWidth();
-	int height = GetWindowHeight();
-	if (width <= 0 || height <= 0)
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
 		return;
 
-	wxBitmap memBitmap(width, height);
-	wxMemoryDC memDC(memBitmap);
-	//wxBufferedPaintDC dc(this);
-	Draw(&memDC);
-	memDC.SelectObject(wxNullBitmap);
-	dc.DrawBitmap(memBitmap, 0, 0);
+	wxBufferedPaintDC dc(this);
+	Draw(&dc);
 }

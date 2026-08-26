@@ -12,15 +12,28 @@ namespace Regards
 		class CFaceRecognitionData
 		{
 		public:
-			int numFace;
-			int numFaceCompatible;
+			CFaceRecognitionData() = default;
+
+			CFaceRecognitionData(
+				int numFace,
+				int numFaceCompatible,
+				const cv::Mat& feature)
+				: numFace(numFace),
+				numFaceCompatible(numFaceCompatible),
+				feature(feature.clone())
+			{}
+
+			int numFace = 0;
+			int numFaceCompatible = 0;
+
+			cv::Mat feature;
 		};
 
 		class CSqlFacePhoto : public CSqlExecuteRequest
 		{
 		public:
 			CSqlFacePhoto();
-			~CSqlFacePhoto() override;
+			~CSqlFacePhoto() = default;
 			int InsertFaceTreatment(const wxString& path);
 			int InsertFace(const wxString& path, const wxString& gender, const wxString& age, const int& numberface, const int& width, const int& height,
 			               const double& pertinence, const uint8_t* zBlob, const int& nBlob);
@@ -52,18 +65,15 @@ namespace Regards
 			void DeleteFaceNameAlone();
 
 			int TraitementResult(CSqlResult* sqlResult) override;
-			int64_t numFace;
-			int type;
-			//int width;
-			//int height;
+
 			wxString filename;
 			vector<wxString> listPhoto;
 			vector<int> listFace;
 			vector<CFaceRecognitionData> listFaceRecognition;
-			//vector<CPictureData *> listFace;
-			//CPictureData * facePicture;
-			vector<int> listFaceIndex;
-			//wxImage bitmap;
+			int videoPosition = 0;
+			int64_t numFace = 0;
+			int type = 0;
+
 		};
 	}
 }

@@ -402,7 +402,7 @@ void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 		textureSubtitle = std::make_unique<GLTexture>();
         
     Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(subtitle);
-	textureSubtitle->SetData(mat);
+	textureSubtitle->SetData(mat, nullptr);
 }
 
 void CRenderVideoOpenGL::ShowSubtitle()
@@ -437,7 +437,7 @@ void CRenderVideoOpenGL::SetVideoTexture(Regards::Picture::CPictureArray & pictu
 		textureVideo = std::make_unique<GLTexture>();
 	if (deleteTexture)
 		textureVideo->Delete();
-	textureVideo->SetData(pictureArray);
+	textureVideo->SetData(pictureArray, renderOpenGL->GetOpenCLContext(), deleteTexture);
 }
 
 GLTexture* CRenderVideoOpenGL::GetVideoTexturePt()

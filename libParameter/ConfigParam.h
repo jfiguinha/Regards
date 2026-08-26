@@ -24,7 +24,7 @@ protected:
 
 	const char* stralloc(const wxString& str);
 	xml_node<>* node(const wxString& name, const wxString& content = "");
-
+	vector<char> xmlBuffer;
 	xml_document<> doc;
 	wxString filename;
 };

@@ -1,5 +1,5 @@
 #pragma once
-class CRegardsBitmap;
+;
 struct avifDecoder;
 
 namespace Regards

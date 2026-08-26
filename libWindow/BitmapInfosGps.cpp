@@ -20,12 +20,6 @@ void CBitmapInfosGps::SetInfos(const wxString& localisation, const wxString& lat
 	this->longitude = longitude;
 }
 
-
-CBitmapInfosGps::~CBitmapInfosGps()
-{
-	//delete fileGeolocalisation;
-}
-
 int CBitmapInfosGps::GetHeight()
 {
 	return bitmapInfosTheme.GetHeight();
@@ -70,11 +64,11 @@ void CBitmapInfosGps::DrawInformations(wxDC* dc)
 
 void CBitmapInfosGps::on_paint(wxPaintEvent& event)
 {
-	int width = GetWindowWidth();
-	int height = GetWindowHeight();
-	if (width <= 0 || height <= 0)
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
 		return;
 
 	wxBufferedPaintDC dc(this);
+
 	DrawInformations(&dc);
 }

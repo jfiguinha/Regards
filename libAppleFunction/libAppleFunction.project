@@ -40,7 +40,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="$(shell ../libextern/wxconfig_cpp.sh --cflags);-Wall;-pthread;-fpermissive" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options="$(shell ../libextern/wxconfig_cpp.sh --cflags);-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libWindow"/>

@@ -41,18 +41,18 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="ThemeInit.cpp"/>
     <File Name="ThemeParam.cpp"/>
     <File Name="theme.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="ThemeInit.h"/>
     <File Name="ThemeParam.h"/>
     <File Name="theme.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libFiltreInterface"/>
@@ -142,6 +142,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

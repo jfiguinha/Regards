@@ -14,7 +14,7 @@ namespace Regards::Scanner
 	{
 	public:
 		CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename);
-		~CThumbnailSelection() override;
+		~CThumbnailSelection(){};
 		vector<int> GetSelectItem();
 		void UpdateScreenRatio() override;
 

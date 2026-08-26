@@ -30,10 +30,6 @@ void CToolbarButton::Resize(const int& tailleX, const int& tailleY)
 }
 
 
-CToolbarButton::~CToolbarButton()
-{
-}
-
 void CToolbarButton::SetLibelle(const wxString& libelle)
 {
 	libelleTooltip = libelle;

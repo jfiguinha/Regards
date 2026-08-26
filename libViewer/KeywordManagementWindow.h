@@ -16,7 +16,7 @@ namespace Regards::Viewer
 	public:
 		CKeywordManagementWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer,
 		                         const CThemeScrollBar& themeScroll, const CThemeTree& theme);
-		~CKeywordManagementWindow() override;
+		~CKeywordManagementWindow() = default;
 
 		void Init(const wxString& filename);
 

@@ -11,9 +11,6 @@ public:
 		algo = 0; //RECURS_FILTER 
 	};
 
-	~CInpaintFilterParameter() override
-	{
-	};
 
 	int algo;
 };

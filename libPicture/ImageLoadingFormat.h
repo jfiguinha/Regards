@@ -1,7 +1,7 @@
 #pragma once
 #include <PictureArray.h>
 class CxImage;
-class FIBITMAP;
+struct FIBITMAP;
 class CRgbaquad;
 
 class CImageLoadingFormat
@@ -30,7 +30,7 @@ public:
 	int GetResolution();
 	void SetOrientation(const int& orientation);
 	void SetFilename(const wxString& filename);
-	void SetPicture(CxImage* image);
+	void SetPicture(CxImage& image);
 	void SetPicture(wxImage& image);
 	void SetPicture(cv::Mat& image);
 	void SetPicture(cv::Mat& image, const int& orientation, const wxString& filename,
@@ -42,6 +42,7 @@ public:
 	std::vector<uchar> GetJpegData();
 	wxImage GetwxImage();
 	CxImage GetCxImage();
+	cv::Mat& GetMatImage();
 	cv::Mat GetFloatImage();
 	FIBITMAP* GetFreeImage();
 	void ReadFile(const wxString& filename);

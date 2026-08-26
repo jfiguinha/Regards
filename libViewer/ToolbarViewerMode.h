@@ -12,7 +12,7 @@ namespace Regards::Viewer
 	public:
 		CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface,
 			const bool& vertical);
-		~CToolbarViewerMode() override;
+		~CToolbarViewerMode() = default;
 		void SetFaceWindowPush();
 		void SetViewerWindowPush();
 		void SetExplorerWindowPush();
@@ -24,10 +24,10 @@ namespace Regards::Viewer
 		void EventManager(const int& id) override;
 		void DisableAll();
 		CToolbarInterface* toolbarInterface = nullptr;
-		CToolbarTexte* facemode = nullptr;
-		CToolbarTexte* viewermode = nullptr;
-		CToolbarTexte* explorermode = nullptr;
-		CToolbarTexte* picturemode = nullptr;
-        CToolbarTexte* imageNewVersion = nullptr;
+		std::unique_ptr<CToolbarTexte> facemode = nullptr;
+		std::unique_ptr<CToolbarTexte> viewermode = nullptr;
+		std::unique_ptr<CToolbarTexte> explorermode = nullptr;
+		std::unique_ptr<CToolbarTexte> picturemode = nullptr;
+        std::unique_ptr<CToolbarTexte> imageNewVersion = nullptr;
 	};
 }

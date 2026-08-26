@@ -2,6 +2,9 @@
 #include <header.h>
 #include "ThumbnailVertical.h"
 #include "ScrollbarWnd.h"
+#include "ThumbnailBuffer.h"
+#include <RegardsConfigParam.h>
+#include <wx/progdlg.h>
 using namespace Regards::Control;
 
 CThumbnailVertical::CThumbnailVertical(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
@@ -16,6 +19,60 @@ CThumbnailVertical::CThumbnailVertical(wxWindow* parent, const wxWindowID id, co
 CThumbnailVertical::~CThumbnailVertical(void)
 = default;
 
+void CThumbnailVertical::GenerateList(CIconeList* & newIconeList)
+{
+	int size = iconeList->GetNbElement();
+
+	/*
+	wxProgressDialog dlg
+	(
+		"Process in progress",
+		"Please wait, starting...",
+		size,
+		nullptr,
+		wxPD_ELAPSED_TIME |
+		wxPD_ESTIMATED_TIME |
+		wxPD_REMAINING_TIME |
+		wxPD_AUTO_HIDE |
+		wxPD_SMOOTH // - makes indeterminate mode bar on WinXP very small
+	);
+	const int updateInterval = std::max(1, size / 200); // ~100 mises à jour max
+	*/
+	for (int i = 0; i < size; i++)
+	{
+		CIcone* ico = iconeList->GetElement(i);
+		if (ico != nullptr)
+		{
+			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
+			if (!find)
+				iconeList->RemoveElement(i);
+			else
+				newIconeList->AddElement(ico);
+		}
+		/*
+		if (i % updateInterval == 0 || i == size - 1)
+		{
+			wxString message = "In progress : " + std::to_string(i) + "/" + std::to_string(size);
+			dlg.Update(i, message);
+		}*/
+		//wxString message = "In progress : " + to_string(i) + "/" + to_string(size);
+		//dlg.Update(i, message);
+	}
+
+	//dlg.Close();
+}
+
+void CThumbnailVertical::OnScrollBarH(wxCommandEvent& event)
+{
+	int isScrollBarH = event.GetInt();
+	long scrollBarHSize = event.GetExtraLong();
+	if (isScrollBarH)
+		themeThumbnail.themeIcone.SetHeight(themeIconeHeight);
+	else
+		themeThumbnail.themeIcone.SetHeight(themeIconeHeight + scrollBarHSize);
+
+	ResizeThumbnail();
+}
 
 CIcone * CThumbnailVertical::FindElementWithVScroll(const int& xPos, const int& yPos)
 {

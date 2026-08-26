@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementTexte();
-		~CTreeElementTexte() override;
+		~CTreeElementTexte() = default;
 
 		CTreeElementTexte& operator=(const CTreeElementTexte& other);
 
@@ -41,14 +41,16 @@ namespace Regards::Window
 		}
 
 	protected:
-		void DrawText(wxDC* dc, const int& xPos, const int& yPos);
+
 		wxSize GetSizeText();
 
-		static mutex muTexteSize;
+
+		wxSize textSize = {};
 		bool canUpdate;
 		bool isClick;
 		wxString libelle;
 		int position;
+
 		CThemeTreeTexte themeTexte;
 	};
 }

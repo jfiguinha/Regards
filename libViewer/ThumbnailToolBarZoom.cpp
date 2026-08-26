@@ -40,10 +40,6 @@ int CThumbnailToolBarZoom::GetHeight()
 }
 
 
-CThumbnailToolBarZoom::~CThumbnailToolBarZoom()
-{
-}
-
 void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 {
 	bool update = false;

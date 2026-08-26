@@ -1,7 +1,8 @@
 #include <header.h>
 #include "KeywordManagementWindow.h"
 #include "KeywordWnd.h"
-#include "TreeWindow.h"
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -16,9 +17,6 @@ CKeywordManagementWindow::CKeywordManagementWindow(wxWindow* parent, wxWindowID 
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CKeywordManagementWindow::UpdateKeyword));
 }
 
-CKeywordManagementWindow::~CKeywordManagementWindow()
-{
-}
 
 void CKeywordManagementWindow::UpdateKeyword(wxCommandEvent& event)
 {

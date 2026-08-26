@@ -8,7 +8,7 @@ namespace Regards::Viewer
 	{
 	public:
 		CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, const CThemeToolBarZoom& theme);
-		~CThumbnailToolBarZoom() override;
+		~CThumbnailToolBarZoom() = default;
 		int GetHeight() override;
 		void UpdateScreenRatio() override;
 

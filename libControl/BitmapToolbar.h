@@ -11,7 +11,7 @@ namespace Regards::Control
 	public:
 		CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar& theme,
 		               const bool& vertical, const bool& exportPicture);
-		~CBitmapToolbar() override;
+		~CBitmapToolbar() = default;
 		//void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
 		void SetTrackBarPosition(const int& iPos) override;
 		void SetTabValue(vector<int> value);
@@ -31,8 +31,14 @@ namespace Regards::Control
 
 	private:
 		void EventManager(const int& id) override;
-		CToolbarButton* email;
-		CToolbarSlide* slide;
+
+		std::unique_ptr<CToolbarButton> email;
+		std::unique_ptr<CToolbarButton> printer;
+		std::unique_ptr<CToolbarButton> shrink;
+		std::unique_ptr<CToolbarButton> moins;
+		std::unique_ptr<CToolbarButton> plus;
+		std::unique_ptr<CToolbarSlide> slide;
+
 		wxWindowID parentId;
 		bool exportPicture;
 	};

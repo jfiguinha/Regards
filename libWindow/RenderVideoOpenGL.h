@@ -8,7 +8,7 @@
 using namespace Regards::OpenGL;
 
 class CVideoEffectParameter;
-class CRegardsBitmap;
+;
 
 namespace Regards::OpenGL
 {

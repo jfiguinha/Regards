@@ -1,7 +1,7 @@
 #pragma once
 #include "WindowMain.h"
 
-class CRegardsBitmap;
+;
 
 namespace Regards::Window
 {
@@ -9,7 +9,7 @@ namespace Regards::Window
 	{
 	public:
 		CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme);
-		~CPicturePanel() override;
+		~CPicturePanel() = default;
 		void SetPictureToDisplay(cv::Mat& picture);
 		void on_paint(wxPaintEvent& event);
 		void UpdateScreenRatio() override;

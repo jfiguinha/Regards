@@ -234,12 +234,19 @@ void CompressVideo::SetBitmap(cv::Mat& bmp)
 
 bool CompressVideo::IsOk()
 {
+	isCancel = false;
 	return isOk;
 }
 
 
+bool CompressVideo::IsCancel()
+{
+	return isCancel;
+}
+
 void CompressVideo::OnbtnCancelClick(wxCommandEvent& event)
 {
 	isOk = false;
+	isCancel = true;
 	//this->Close();
 }

@@ -100,7 +100,3 @@ void KeywordDialogBox::OnBtnCancelClick(wxCommandEvent& event)
 	this->Close();
 	//this->EndDialog(0);
 }
-
-KeywordDialogBox::~KeywordDialogBox()
-{
-}

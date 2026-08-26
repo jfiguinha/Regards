@@ -18,54 +18,17 @@ CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 {
 	themeToolbar = theme;
 	slide = nullptr;
-	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1);
-	wxString speakerLibelle = CLibResource::LoadStringFromResource("LBLSPEAKER", 1);
-	wxString zoomLibelle = CLibResource::LoadStringFromResource("LBLZOOMON", 1);
-	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
-	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
-	wxString close = CLibResource::LoadStringFromResource("LBLClose", 1); // "Zoom Off";
 
-	speaker = new CToolbarButton(themeToolbar.button);
-	speaker->SetButtonResourceId("IDB_VOLUME_UP_VIDEO");
-	speaker->SetCommandId(IDM_NONE);
-	speaker->SetLibelleTooltip(speakerLibelle);
-	speaker->SetVisible(false);
-	navElement.push_back(speaker);
+	speaker = CreateButton("IDB_VOLUME_UP_VIDEO", "LBLSPEAKER", IDM_NONE, false);
+	zoom = CreateButton("IDB_ZOOMPLUS", "LBLZOOMON", IDM_NONE, false);
+	shrink = CreateButton("IDB_SHRINK", "LBLSHRINK", IDM_SETSHRINK, false);
+	moins = CreateButton("IDB_MINUS", "LBLZOOMOFF", WM_ZOOMOUT, false);
+	
+	slide = std::make_unique<CToolbarSlide>(themeToolbar.slider, this);
+	navElement.push_back(slide.get());
 
-	zoom = new CToolbarButton(themeToolbar.button);
-	zoom->SetButtonResourceId("IDB_ZOOMPLUS");
-	zoom->SetCommandId(IDM_NONE);
-	zoom->SetLibelleTooltip(zoomLibelle);
-	zoom->SetVisible(false);
-	navElement.push_back(zoom);
-
-	shrink = new CToolbarButton(themeToolbar.button);
-	shrink->SetButtonResourceId("IDB_SHRINK");
-	shrink->SetCommandId(IDM_SETSHRINK);
-	shrink->SetLibelleTooltip(shrinkLibelle);
-	shrink->SetVisible(false);
-	navElement.push_back(shrink);
-
-	auto moins = new CToolbarButton(themeToolbar.button);
-	moins->SetButtonResourceId("IDB_MINUS");
-	moins->SetCommandId(WM_ZOOMOUT);
-	moins->SetLibelleTooltip(zoomOff);
-	navElement.push_back(moins);
-
-	slide = new CToolbarSlide(themeToolbar.slider, this);
-	navElement.push_back(slide);
-
-	auto plus = new CToolbarButton(themeToolbar.button);
-	plus->SetButtonResourceId("IDB_PLUS");
-	plus->SetCommandId(WM_ZOOMON);
-	plus->SetLibelleTooltip(zoomOn);
-	navElement.push_back(plus);
-
-	auto cross = new CToolbarButton(themeToolbar.button);
-	cross->SetButtonResourceId("IDB_CANCEL");
-	cross->SetCommandId(WM_CLOSE);
-	cross->SetLibelleTooltip(close);
-	navElement.push_back(cross);
+	plus = CreateButton("IDB_PLUS", "LBLZOOMON", WM_ZOOMON, false);
+	cross = CreateButton("IDB_CANCEL", "LBLClose", WM_CLOSE, false);
 }
 
 void CSlideToolbar::SetSpeakerMode()
@@ -82,10 +45,6 @@ void CSlideToolbar::SetZoomMode()
 	speaker->SetVisible(false);
 	shrink->SetVisible(true);
 	zoom->SetVisible(true);
-}
-
-CSlideToolbar::~CSlideToolbar()
-{
 }
 
 int CSlideToolbar::GetMode()

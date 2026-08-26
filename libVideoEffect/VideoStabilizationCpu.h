@@ -1,7 +1,6 @@
 #pragma once
 #include "VideoStabilizationInterface.h"
-
-class COpenCVStabilizationCpuPimpl_;
+#include "VideoStabilizationPimpl.h"
 
 
 namespace Regards
@@ -12,7 +11,7 @@ namespace Regards
 		{
 		public:
 			COpenCVStabilizationCpu(const int& nbFrame);
-			~COpenCVStabilizationCpu();
+			~COpenCVStabilizationCpu() = default;
 
 			void AddFrame(Regards::Picture::CPictureArray& pictureData) override;
 			void BufferFrame(Regards::Picture::CPictureArray& pBitmap) override;
@@ -24,7 +23,7 @@ namespace Regards
 			void SetNbFrameBuffer(const int& nbFrame) override;
 
 		private:
-			COpenCVStabilizationCpuPimpl_* pimpl;
+			std::unique_ptr<CVideoStabilizationPimpl_<Mat>> pimpl;
 
 		};
 	}

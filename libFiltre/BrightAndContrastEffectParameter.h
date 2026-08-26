@@ -10,10 +10,6 @@ public:
 		brightness = 20;
 	};
 
-	~CBrightAndContrastEffectParameter() override
-	{
-	};
-
 	long contrast;
 	long brightness;
 };

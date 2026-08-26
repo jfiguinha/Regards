@@ -29,18 +29,20 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="email.cpp"/>
-    <File Name="mime.cpp"/>
+    <File Name="MyEmailImpl_linux.cpp"/>
+    <File Name="SendEmail.cpp"/>
     <File Name="LocalMapi.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="email.h"/>
-    <File Name="mime.h"/>
+    <File Name="MyEmailInterface.h"/>
+    <File Name="SendEmail.h"/>
     <File Name="LocalMapi.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libUtility"/>
@@ -127,6 +129,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -1,6 +1,7 @@
 #include <header.h>
 #include "SqlPhotos.h"
 #include "SqlResult.h"
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 CSqlPhotos::CSqlPhotos(CSqlLib* _sqlLibTransaction, const bool& useTransaction)
@@ -9,83 +10,71 @@ CSqlPhotos::CSqlPhotos(CSqlLib* _sqlLibTransaction, const bool& useTransaction)
 	photoId = -1;
 	criteriaVector = nullptr;
 	typeResult = 0;
-	this->_sqlLibTransaction = _sqlLibTransaction;
-	this->useTransaction = useTransaction;
-}
-
-
-CSqlPhotos::~CSqlPhotos()
-{
+	this->m_transaction = _sqlLibTransaction;
+	this->m_useTransaction = useTransaction;
 }
 
 bool CSqlPhotos::InsertPhoto(const wxString& filepath, const int64_t& idFolder)
 {
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	return (ExecuteRequestWithNoResult(
-		       "INSERT INTO PHOTOS (NumFolderCatalog, FullPath) VALUES (" + to_string(idFolder) + ", '" + fullpath +
-		       "')") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	return ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath) VALUES (? , ?)", parameter);
 }
 
 void CSqlPhotos::DeletePhotoExif(const wxString& filepath)
 {
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOS WHERE FullPath = ?", parameter);
 }
 
 int64_t CSqlPhotos::GetPhotoExif(const wxString& filepath)
 {
-	typeResult = 4;
+	typeResult = 0;
 	exif = -1;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT Exif FROM PHOTO_EXIF WHERE FullPath = '" + fullpath + "'");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	ExecuteSqlWithStatement("SELECT Exif FROM PHOTO_EXIF WHERE FullPath = ?", parameter);
 	return static_cast<int>(exif);
 }
 
 bool CSqlPhotos::UpdatePhotoExif(const wxString& filepath, const int64_t& exif)
 {
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
 	int numIndex = GetPhotoExif(filepath);
 	if (numIndex == -1)
 		return InsertPhotoExif(filepath, exif);
 
-	return (ExecuteRequestWithNoResult(
-		       "UPDATE PHOTO_EXIF SET Exif = " + to_string(exif) + " WHERE FullPath = '" + fullpath + "'") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(exif));
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	return ExecuteSqlWithStatementNoResult("UPDATE PHOTO_EXIF SET Exif = ? WHERE FullPath = ?", parameter);
 }
 
 bool CSqlPhotos::InsertPhotoExif(const wxString& filepath, const int64_t& exif)
 {
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	return (ExecuteRequestWithNoResult(
-		       "INSERT INTO PHOTO_EXIF (FullPath, Exif) VALUES ('" + fullpath + "', " + to_string(exif) + ")") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	parameter.push_back(std::make_unique<CSqlInt>(exif));
+
+	return ExecuteSqlWithStatementNoResult("INSERT INTO PHOTO_EXIF (FullPath, Exif) VALUES (?, ?)", parameter);
 }
 
 bool CSqlPhotos::UpdatePhotoCriteria(const int64_t& numPhoto)
 {
-	return (ExecuteRequestWithNoResult("UPDATE PHOTOS SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto))
-		       != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatementNoResult("UPDATE PHOTOS SET CriteriaInsert = 1 WHERE NumPhoto = ?", parameter);
 }
 
 int CSqlPhotos::GetCriteriaInsert(const wxString& filepath)
 {
-	typeResult = 0;
-	photoId = -1;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT CriteriaInsert FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
-	return static_cast<int>(photoId);
+	typeResult = 1;
+	criteriaInsert = -1;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	ExecuteSqlWithStatement("SELECT CriteriaInsert FROM PHOTOS WHERE FullPath = ?", parameter);
+	return static_cast<int>(criteriaInsert);
 }
 
 int64_t CSqlPhotos::GetOrInsertPhoto(const wxString& filepath, const int64_t& idFolder)
@@ -103,227 +92,95 @@ int64_t CSqlPhotos::GetOrInsertPhoto(const wxString& filepath, const int64_t& id
 
 void CSqlPhotos::GetPhotoCriteria(CriteriaVector* criteriaVector, const wxString& filepath)
 {
-	typeResult = 1;
+	typeResult = 2;
 	this->criteriaVector = criteriaVector;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest(
-		"SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND Libelle != 'Not Geolocalized' and FullPath = '"
-		+ fullpath + "'");
+	if (criteriaVector != nullptr)
+	{
+		criteriaVector->clear();
+		std::vector<std::unique_ptr<CSqlParameter>> parameter;
+		parameter.push_back(std::make_unique<CSqlString>(filepath));
+		ExecuteSqlWithStatement("SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND Libelle != 'Not Geolocalized' and FullPath = ?", parameter);
+	}
 }
 
 void CSqlPhotos::GetPhotoCriteriaByCategorie(CriteriaVector* criteriaVector, const wxString& filepath,
                                              const int& numCategorie)
 {
-	typeResult = 1;
+	typeResult = 2;
 	this->criteriaVector = criteriaVector;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest(
-		"SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND FullPath = '"
-		+ fullpath + "' WHERE NumCategorie = " + to_string(numCategorie));
-}
-
-int CSqlPhotos::GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV)
-{
-	if (angle == 0 && flipH == 0 && flipV == 0)
-		return 0;
-	if (angle == 0 && flipH == 1 && flipV == 0)
-		return 1;
-	if (angle == 0 && flipH == 0 && flipV == 1)
-		return 2;
-	if (angle == 0 && flipH == 1 && flipV == 1)
-		return 3;
-
-	if (angle == 90 && flipH == 0 && flipV == 0)
-		return 4;
-	if (angle == 90 && flipH == 1 && flipV == 0)
-		return 5;
-	if (angle == 90 && flipH == 0 && flipV == 1)
-		return 6;
-	if (angle == 90 && flipH == 1 && flipV == 1)
-		return 7;
-
-	if (angle == 180 && flipH == 0 && flipV == 0)
-		return 8;
-	if (angle == 180 && flipH == 1 && flipV == 0)
-		return 9;
-	if (angle == 180 && flipH == 0 && flipV == 1)
-		return 10;
-	if (angle == 180 && flipH == 1 && flipV == 1)
-		return 11;
-
-	if (angle == 270 && flipH == 0 && flipV == 0)
-		return 12;
-	if (angle == 270 && flipH == 1 && flipV == 0)
-		return 13;
-	if (angle == 270 && flipH == 0 && flipV == 1)
-		return 14;
-	if (angle == 270 && flipH == 1 && flipV == 1)
-		return 15;
-
-
-	return 0;
-}
-
-void CSqlPhotos::GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV)
-{
-	switch (exif)
+	if (criteriaVector != nullptr)
 	{
-	case 0:
-		angle = 0;
-		flipH = 0;
-		flipV = 0;
-		break;
-	case 1:
-		angle = 0;
-		flipH = 1;
-		flipV = 0;
-		break;
-	case 2:
-		angle = 0;
-		flipH = 0;
-		flipV = 1;
-		break;
-	case 3:
-		angle = 0;
-		flipH = 1;
-		flipV = 1;
-		break;
-	case 4:
-		angle = 90;
-		flipH = 0;
-		flipV = 0;
-		break;
-	case 5:
-		angle = 90;
-		flipH = 1;
-		flipV = 0;
-		break;
-	case 6:
-		angle = 90;
-		flipH = 0;
-		flipV = 1;
-		break;
-	case 7:
-		angle = 90;
-		flipH = 1;
-		flipV = 1;
-		break;
-	case 8:
-		angle = 180;
-		flipH = 0;
-		flipV = 0;
-		break;
-	case 9:
-		angle = 180;
-		flipH = 1;
-		flipV = 0;
-		break;
-	case 10:
-		angle = 180;
-		flipH = 0;
-		flipV = 1;
-		break;
-	case 11:
-		angle = 180;
-		flipH = 1;
-		flipV = 1;
-		break;
-	case 12:
-		angle = 270;
-		flipH = 0;
-		flipV = 0;
-		break;
-	case 13:
-		angle = 270;
-		flipH = 1;
-		flipV = 0;
-		break;
-	case 14:
-		angle = 270;
-		flipH = 0;
-		flipV = 1;
-		break;
-	case 15:
-		angle = 270;
-		flipH = 1;
-		flipV = 1;
-		break;
+		criteriaVector->clear();
+		std::vector<std::unique_ptr<CSqlParameter>> parameter;
+		parameter.push_back(std::make_unique<CSqlString>(filepath));
+		parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
+		ExecuteSqlWithStatement("SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND FullPath = ? WHERE NumCategorie = ?", parameter);
 	}
 }
+
 
 wxString CSqlPhotos::GetPhotoPath(const int64_t& numPhoto)
 {
 	typeResult = 3;
-	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto));
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	ExecuteSqlWithStatement("SELECT FullPath FROM PHOTOS WHERE NumPhoto = ?", parameter);
 	return photoPath;
 }
 
 int64_t CSqlPhotos::GetPhotoId(const wxString& filepath, const int64_t& idFolder)
 {
-	typeResult = 0;
+	typeResult = 4;
 	photoId = -1;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest(
-		"SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and FullPath = '" + fullpath +
-		"'");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = ? and FullPath = ?", parameter);
 	return photoId;
 }
 
 int64_t CSqlPhotos::GetPhotoId(const wxString& filepath)
 {
-	typeResult = 0;
+	typeResult = 4;
 	photoId = -1;
-	wxString fullpath = filepath;
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOS WHERE FullPath = ?", parameter);
 	return photoId;
-}
-
-void CSqlPhotos::DeletePhotoSearch()
-{
-	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA");
 }
 
 bool CSqlPhotos::DeletePhoto(const int64_t& numPhoto)
 {
-	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto = " + to_string(numPhoto));
-	ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto)
-		+ ")");
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto)) != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+
+	ExecuteSqlWithStatementNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = ?)", parameter);
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOS WHERE NumPhoto = ?", parameter);
 }
 
 bool CSqlPhotos::DeletePhotoFolder(const int64_t& idFolder)
 {
-	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
-	ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " +
-		to_string(idFolder) + ")");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(idFolder));
 
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder)) != -1)
-		       ? true
-		       : false;
+	ExecuteSqlWithStatementNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = ?)", parameter);
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOS WHERE NumFolderCatalog = ?", parameter);
 }
 
 bool CSqlPhotos::DeletePhotoCatalog(const int64_t& idCatalog)
 {
-	return (ExecuteRequestWithNoResult(
-		       "DELETE FROM PHOTOS WHERE NUMFOLDERCATALOG in (SELECT NUMFOLDERCATALOG FROM FOLDERCATALOG WHERE NumCatalog = "
-		       + to_string(idCatalog) + ")") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(idCatalog));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOS WHERE NUMFOLDERCATALOG in (SELECT NUMFOLDERCATALOG FROM FOLDERCATALOG WHERE NumCatalog = ?)", parameter);
 }
 
 vector<wxString> CSqlPhotos::GetPhotoFromFolder(const int64_t& idFolder)
 {
-	typeResult = 2;
+	typeResult = 5;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(idFolder));
 	listPhoto.clear();
-	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
+	ExecuteSqlWithStatement("SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = ?", parameter);
 	return listPhoto;
 }
 
@@ -333,79 +190,32 @@ int CSqlPhotos::TraitementResult(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		if (typeResult == 0)
+		switch (typeResult)
 		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		case 0:
+			exif = sqlResult->ColumnDataInt(0);
+			break;
+		case 1:
+			criteriaInsert = sqlResult->ColumnDataInt(0);
+			break;
+		case 2:
 			{
-				switch (i)
-				{
-				case 0:
-					photoId = sqlResult->ColumnDataInt(i);
-					break;
-				default: ;
-				}
+				CCriteria criteria;
+				criteria.SetId(sqlResult->ColumnDataInt(0));
+				criteria.SetCategorieId(sqlResult->ColumnDataInt(1));
+				criteria.SetLibelle(sqlResult->ColumnDataText(2));
+				criteriaVector->push_back(criteria);
 			}
-		}
-		else if (typeResult == 1)
-		{
-			CCriteria criteria;
-
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					criteria.SetId(sqlResult->ColumnDataInt(i));
-					break;
-				case 1:
-					criteria.SetCategorieId(sqlResult->ColumnDataInt(i));
-					break;
-				case 2:
-					criteria.SetLibelle(sqlResult->ColumnDataText(i));
-					break;
-				default: ;
-				}
-			}
-			criteriaVector->push_back(criteria);
-		}
-		else if (typeResult == 2)
-		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					listPhoto.push_back(sqlResult->ColumnDataText(i));
-					break;
-				default: ;
-				}
-			}
-		}
-		else if (typeResult == 3)
-		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					photoPath = sqlResult->ColumnDataText(i);
-					break;
-				default: ;
-				}
-			}
-		}
-		else if (typeResult == 4)
-		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					exif = sqlResult->ColumnDataInt(i);
-					break;
-				default: ;
-				}
-			}
+			break;
+		case 3:
+			photoPath = sqlResult->ColumnDataText(0);
+			break;
+		case 4:
+			photoId = sqlResult->ColumnDataInt(0);
+			break;
+		case 5:
+			listPhoto.push_back(sqlResult->ColumnDataText(0));
+			break;
 		}
 		nbResult++;
 	}

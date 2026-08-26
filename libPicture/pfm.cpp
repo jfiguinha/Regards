@@ -43,7 +43,7 @@ void CPfm::GetDimensions(const wxString& path, int& width, int& height)
 {
 	// create fstream object to read in pfm file
 	// open the file in binary
-	fstream file(CConvertUtility::ConvertToUTF8(path), ios::in | ios::binary);
+	fstream file(CConvertUtility::ConvertToStdString(path), ios::in | ios::binary);
 
 	// init variables
 	string bands; // what type is the image   "Pf" = grayscale    (1-band)
@@ -176,7 +176,7 @@ int CPfm::WriteFilePFM(const cv::Mat& image, const wxString& path, float scalef)
 	{
 		// create fstream object to write out pfm file
 		// open the file in binary
-		fstream file(CConvertUtility::ConvertToUTF8(path), ios::out | ios::binary);
+		fstream file(CConvertUtility::ConvertToStdString(path), ios::out | ios::binary);
 
 
 		string bands = "PF";

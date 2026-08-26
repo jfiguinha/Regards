@@ -132,8 +132,8 @@ END
 //Z
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,85,3,0
- PRODUCTVERSION 2,85,3,0
+ FILEVERSION 3,00,0,0
+ PRODUCTVERSION 3,00,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -149,13 +149,13 @@ BEGIN
         BLOCK "040c04b0"
         BEGIN
             VALUE "CompanyName", "Figuinha"
-            VALUE "FileDescription", "Regards Viewer 2"
-            VALUE "FileVersion", "2.85.3.0"
+            VALUE "FileDescription", "Regards Viewer 3"
+            VALUE "FileVersion", "3.00.0.0"
             VALUE "InternalName", "RegardsViewer.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2014 - 2026"
+            VALUE "LegalCopyright", "Copyright (C) 2026"
             VALUE "OriginalFilename", "RegardsViewer.exe"
-            VALUE "ProductName", "Regards Viewer 2"
-            VALUE "ProductVersion", "2.85.3.0"
+            VALUE "ProductName", "Regards Viewer 3"
+            VALUE "ProductVersion", "3.00.0.0"
         END
     END
     BLOCK "VarFileInfo"

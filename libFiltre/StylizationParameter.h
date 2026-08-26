@@ -10,10 +10,6 @@ public:
 		sigmaP = 45;
 	};
 
-	~CStylizationEffectParameter() override
-	{
-	};
-
 	int sigmaX;
 	int sigmaP;
 };

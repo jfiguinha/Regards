@@ -71,11 +71,11 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay*
 
 void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
 {
-	CImageLoadingFormat* temp = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+	auto temp = std::make_unique< CImageLoadingFormat>();
+	temp.reset(GenerateInterpolationBitmapTexture(nextPicture, bmpViewer));
 	if (temp != nullptr)
 	{
-		GenerateTexture(temp);
-		delete temp;
+		GenerateTexture(temp.get());
 	}
 }
 
@@ -110,11 +110,11 @@ void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat* bitmap)
 {
 	Regards::Picture::CPictureArray picture(cv::_InputArray::KindFlag::MAT);
 	cv::flip(bitmap->GetMatrix().getMat(), picture.getMat(), 0);
-	pictureNext->SetData(picture);
+	pictureNext->SetData(picture, nullptr);
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }
 
 GLTexture* CBitmapFusionFilter::GetTexture(const int& numTexture)
 {
-	return pictureNext;
+	return pictureNext.get();
 }

@@ -25,9 +25,6 @@ void CToolbarSlide::Resize(const int& tailleX, const int& tailleY)
 	themeSlider.SetHeight(tailleY);
 }
 
-CToolbarSlide::~CToolbarSlide()
-{
-}
 
 int CToolbarSlide::GetWidth()
 {

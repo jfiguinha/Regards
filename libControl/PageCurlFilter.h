@@ -1,7 +1,7 @@
 #pragma once
 #include "BitmapFusionFilter.h"
 
-class CRegardsBitmap;
+;
 class CImageLoadingFormat;
 class IBitmapDisplay;
 

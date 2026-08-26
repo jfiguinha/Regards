@@ -9,9 +9,5 @@ public:
 		threshold = 50;
 	};
 
-	~CSolarisationEffectParameter() override
-	{
-	};
-
 	long threshold;
 };

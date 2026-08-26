@@ -5,7 +5,7 @@
 #include "OcrLabelWnd.h"
 using namespace Regards::Window;
 
-class CRegardsBitmap;
+;
 
 namespace Regards::Scanner
 {

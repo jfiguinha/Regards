@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlPhotosWithoutThumbnail();
-			~CSqlPhotosWithoutThumbnail() override;
+			~CSqlPhotosWithoutThumbnail() = default;
 			void GetPhotoList(std::deque<wxString> * photoList, int nbElement = 20);
 			int GetPhotoElement();
 

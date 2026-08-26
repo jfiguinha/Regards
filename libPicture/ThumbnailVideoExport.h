@@ -1,6 +1,6 @@
 #pragma once
 
-class CRegardsBitmap;
+;
 
 class CThumbnailVideoExport
 {

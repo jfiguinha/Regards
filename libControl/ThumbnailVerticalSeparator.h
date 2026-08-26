@@ -22,7 +22,8 @@ namespace Regards::Control
 		void ResizeThumbnailWithVScroll();
 		void ResizeThumbnail() override;
 
-		InfosSeparationBarVector listSeparator;
+		std::vector<std::unique_ptr<CInfosSeparationBar>> listSeparator;
+		//InfosSeparationBarVector listSeparator;
 		int nbElement;
 		int barseparationHeight;
 		int widthThumbnail;

@@ -75,11 +75,15 @@ namespace Regards::Window
 		void DrawTopTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
 		void DrawBottomTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
 		void DrawRectangleElement(wxDC* dc, const wxColour& colorBar);
-		void MoveBar(const int& diffY, wxColour color);
+		void MoveBar(const int currentPos, wxColour color);
 		void SetIsMoving();
 		bool TestMaxY();
 		bool TestMinY();
 		void FillRect(wxDC* dc, const wxRect& rc, const wxColour& color);
+
+		double dragStartMouseY = 0.0;
+		int dragStartScrollY = 0;
+		int lastSentScrollY = -1;
 
 		int barSize;
 		int barPosY;
@@ -110,11 +114,11 @@ namespace Regards::Window
 
 		bool scrollMoving;
 
-		wxTimer* triangleTop;
-		wxTimer* triangleBottom;
-		wxTimer* pageTop;
-		wxTimer* pageBottom;
-		wxTimer* stopMoving;
+		std::unique_ptr<wxTimer> triangleTop;
+		std::unique_ptr<wxTimer> triangleBottom;
+		std::unique_ptr<wxTimer> pageTop;
+		std::unique_ptr<wxTimer> pageBottom;
+		std::unique_ptr<wxTimer> stopMoving;
 
 		CThemeScrollBar themeScroll;
 

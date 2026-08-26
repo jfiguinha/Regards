@@ -10,9 +10,6 @@ public:
 		sigmaP = 15;
 	};
 
-	~CDetailEnhanceParameter() override
-	{
-	};
 
 	int sigmaX;
 	int sigmaP;

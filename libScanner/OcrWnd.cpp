@@ -11,16 +11,11 @@
 #include "MainThemeInit.h"
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
-#include <directoryctrl.h>
 #include <FiltreEffet.h>
-#include <FilterData.h>
-#include <wx/progdlg.h>
 #include <ShowElement.h>
 #include <LibResource.h>
 #include <Draw.h>
-#include <wx/filefn.h>
 #include <ConvertUtility.h>
-
 
 //#include "ExportOdt.h"
 #ifdef __APPLE__
@@ -110,6 +105,17 @@ COcrWnd::~COcrWnd()
 	{
 		wndViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
+
+	if (pageInfo != nullptr)
+		delete pageInfo;
+
+	for (ChOcrElement* element : listRect)
+	{
+		if (element != nullptr)
+			delete element;
+	}
+
+	listRect.clear();
 
 	if (wndViewer != nullptr)
 	{
@@ -223,13 +229,7 @@ void COcrWnd::Resize()
 
 void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language)
 {
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-	resourcePath = resourcePath + "\\tessdata";
-#else
-	resourcePath = resourcePath + "/tessdata";
-#endif
-
+	wxFileName resourcePath = wxFileName(CFileUtility::GetResourcesFolderPath(),"tessdata");
 	wxFileName fullpath(outputFile);
 	wxString extension = fullpath.GetExt();
 
@@ -257,7 +257,7 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 		args[i] = new char[255];
 		strcpy(args[i++], "--tessdata-dir");
 		args[i] = new char[255];
-		strcpy(args[i++], resourcePath);
+		strcpy(args[i++], resourcePath.GetFullPath());
 		args[i] = new char[255];
 		strcpy(args[i++], extension);
 		wxString error = "";
@@ -513,18 +513,12 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	{
 		try
 		{
-			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-			resourcePath = resourcePath + "\\tessdata";
-#else
-	resourcePath = resourcePath + "/tessdata";
-#endif
-
-			CImageLoadingFormat* bitmapBackground = showBitmap->GetBitmap(true);
+			auto bitmapBackground = std::make_unique<CImageLoadingFormat>();
+			bitmapBackground.reset(showBitmap->GetBitmap(true));
 
 			CLibPicture libPicture;
 			wxString tempFile = CFileUtility::GetTempFile("temp.bmp");
-			libPicture.SavePicture(tempFile, bitmapBackground, 0, 0);
+			libPicture.SavePicture(tempFile, bitmapBackground.get(), 0, 0);
 
 			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
 			wxString outputFile = CFileUtility::GetTempFile("ocrfile.hocr");
@@ -539,13 +533,8 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			exportPdf->Enable(true);
 			ocrPdf->Enable(false);
-
-			//delete[] outText;
-
-			if (bitmapBackground != nullptr)
-				delete bitmapBackground;
 		}
-		catch (...)
+		catch (std::exception& e)
 		{
 		}
 	}
@@ -572,16 +561,11 @@ wxPanel* COcrWnd::CreateListTesseract(wxWindow* parent)
 	            wxGBPosition(row, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
 
 	choice = new wxChoice(panel, wxID_ANY);
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-	resourcePath = resourcePath + "\\tessdata";
-#else
-	resourcePath = resourcePath + "/tessdata";
-#endif
+	wxFileName resourcePath = wxFileName(CFileUtility::GetResourcesFolderPath(),"tessdata");
 
 	wxArrayString files;
 
-	wxDir::GetAllFiles(resourcePath, &files, _T("*.traineddata"), wxDIR_FILES);
+	wxDir::GetAllFiles(resourcePath.GetFullPath(), &files, _T("*.traineddata"), wxDIR_FILES);
 
 	for (wxString file : files)
 	{

@@ -12,52 +12,45 @@ using namespace Regards::Picture;
 CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	CImageLoadingFormat* picture = nullptr;
+	CImageLoadingFormat* picture = new CImageLoadingFormat();
 	int type = 0;
-	int orientation = CRegardsRaw::GetOrientation(CConvertUtility::ConvertToStdString(fileName));
-	DataStorage* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
-	if (memFile != nullptr)
+    bool isOk = false;
+	int orientation = CRegardsRaw::GetOrientation(CConvertUtility::ConvertToStdString(fileName).c_str());
+	std::vector<uint8_t> memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName).c_str(), type);
+	if (!memFile.empty())
 	{
 		if (type == JPEGOUTPUT)
 		{
-			wxMemoryInputStream cxMemFile(memFile->dataPt, memFile->size);
+			wxMemoryInputStream cxMemFile(&memFile[0], memFile.size());
 			isFromExif = true;
-			picture = new CImageLoadingFormat();
+			
 			wxImage jpegImage;
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_ANY);
 			picture->SetPicture(jpegImage);
 			picture->SetFilename(fileName);
-			//CPictureMetadataExiv metadata(fileName);
-			//orientation = metadata.GetOrientation();
 		}
-		else
+		else if(type == BITMAPOUTPUT)
 		{
+			cv::Mat rawData(1, memFile.size(), CV_8UC1, &memFile[0]);
             try
             {
-                picture = new CImageLoadingFormat();
-                cv::Mat rawData(1, memFile->size, CV_8UC1, memFile->dataPt);
-                cv::Mat matPicture = imdecode(rawData, cv::IMREAD_COLOR);
-                //cv::flip(matPicture, matPicture, 0);
-                picture->SetPicture(matPicture, 0, fileName);
-                picture->SetFilename(fileName);
+			    cv::Mat matPicture = imdecode(rawData, cv::IMREAD_COLOR);
+                if (!matPicture.empty())
+			    {
+				    picture->SetPicture(matPicture, 0, fileName);
+                    picture->SetFilename(fileName);
+			    }
             }
-            catch(...)
+            catch (const cv::Exception&)
             {
-                if(picture != nullptr)
-                    delete picture;
-                    
-                if(memFile != nullptr)
-                    delete memFile;
-                    
-                return nullptr;
+
             }
 		}
-        if(memFile != nullptr)
-            delete memFile;
 	}
-	else
+
+
+	if(!picture->IsOk())
 	{
-		picture = new CImageLoadingFormat();
 		LoadPicture(fileName, picture);
 		picture->SetFilename(fileName);
 	}
@@ -66,60 +59,115 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	return picture;
 }
 
-bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat* imageLoadingFormat)
+bool CRaw::LoadPicture(
+    const wxString& fileName,
+    CImageLoadingFormat* imageLoadingFormat)
 {
-	int result;
-	auto rawProcessor = new LibRaw();
-	result = rawProcessor->open_file(fileName.mb_str());
-	if (result == LIBRAW_SUCCESS)
-	{
-		// step two: positioning libraw_internal_data.unpacker_data.data_offset
-		result = rawProcessor->unpack();
-	}
+    if (imageLoadingFormat == nullptr)
+        return false;
 
-	//rawProcessor->imgdata.params.use_rawspeed = 1;
-	rawProcessor->imgdata.params.use_camera_wb = 1;
+    auto rawProcessor = std::make_unique<LibRaw>();
 
-	try
-	{
-		result = rawProcessor->dcraw_process();
-	}
-	catch (...)
-	{
-	}
+    // Open RAW file.
+    int result = rawProcessor->open_file(
+        fileName.mb_str().data());
 
-	int width = 0;
-	int height = 0;
-	bool isOk = false;
-	auto image = new CxImage();
-	if (result == 0)
-	{
-		int raw_color, raw_bitsize;
-		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
-		image->Create(width, height, raw_bitsize * raw_color);
+    if (result != LIBRAW_SUCCESS)
+        return false;
 
-		int iTaille = raw_color * (raw_bitsize / 8);
-		int stride = ((iTaille * width + iTaille) & ~iTaille);
-		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		//image->Flip();
-		imageLoadingFormat->SetPicture(image);
-		imageLoadingFormat->Flip();
-		isOk = true;
-	}
+    // Unpack RAW data.
+    result = rawProcessor->unpack();
 
-	if (rawProcessor != nullptr)
-	{
-		rawProcessor->recycle();
-		delete rawProcessor;
-	}
+    if (result != LIBRAW_SUCCESS)
+        return false;
 
-	delete image;
-	return isOk;
+    auto& params = rawProcessor->imgdata.params;
+
+    // Default RAW rendering.
+    params.use_camera_wb = 1;
+
+    /*
+     * Fast decoding.
+     *
+     * half_size = 1 reduces the output resolution by 2 in
+     * both dimensions and considerably reduces the amount
+     * of work performed by dcraw_process().
+     *
+     * Keep it disabled if LoadPicture() must return the
+     * full-resolution RAW image.
+     */
+     // params.half_size = 1;
+
+    try
+    {
+        result = rawProcessor->dcraw_process();
+    }
+    catch (...)
+    {
+        return false;
+    }
+
+    if (result != LIBRAW_SUCCESS)
+        return false;
+
+    int width = 0;
+    int height = 0;
+    int rawColor = 0;
+    int rawBitsize = 0;
+
+    rawProcessor->get_mem_image_format(
+        &width,
+        &height,
+        &rawColor,
+        &rawBitsize);
+
+    if (width <= 0 ||
+        height <= 0 ||
+        rawColor <= 0 ||
+        rawBitsize <= 0)
+    {
+        return false;
+    }
+
+    const int bytesPerPixel =
+        rawColor * (rawBitsize / 8);
+
+    if (bytesPerPixel <= 0)
+        return false;
+
+    const int stride =
+        ((bytesPerPixel * width + bytesPerPixel) &
+            ~bytesPerPixel);
+
+    CxImage image;
+
+    if (!image.Create(
+        width,
+        height,
+        rawBitsize * rawColor))
+    {
+        return false;
+    }
+
+    result = rawProcessor->copy_mem_image(
+        image.GetBits(),
+        stride,
+        1);
+
+    if (result != LIBRAW_SUCCESS)
+        return false;
+
+    imageLoadingFormat->SetPicture(image);
+    imageLoadingFormat->Flip();
+
+    return true;
 }
+
+
 
 
 void CRaw::GetDimensions(const wxString& fileName, int& width, int& height)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	CRegardsRaw::GetDimensions(CConvertUtility::ConvertToStdString(fileName), width, height);
+	CRegardsRaw::GetDimensions(CConvertUtility::ConvertToStdString(fileName).c_str(), width, height);
 }

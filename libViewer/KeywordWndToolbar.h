@@ -12,7 +12,7 @@ namespace Regards::Viewer
 	{
 	public:
 		CKeywordWndToolbar(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
-		~CKeywordWndToolbar() override;
+		~CKeywordWndToolbar() = default;
 
 		void UpdateScreenRatio() override;
 		void Init(const wxString& filename);

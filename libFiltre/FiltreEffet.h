@@ -2,12 +2,13 @@
 #include <RGBAQuad.h>
 #include <effect_id.h>
 #include <GLTexture.h>
+#include <IFiltreEffet.h>
 using namespace Regards::OpenGL;
 
 class Chqdn3d;
 class CImageLoadingFormat;
 class CRegardsFloatBitmap;
-class CRegardsBitmap;
+;
 class CEffectParameter;
 class IFiltreEffet;
 
@@ -20,8 +21,8 @@ namespace Regards::OpenCV
 class CFiltreEffet
 {
 public:
-	CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, const bool& useCuda, CImageLoadingFormat* bitmap);
-	virtual ~CFiltreEffet();
+	CFiltreEffet(const CRgbaquad& backColor, Regards::OpenCL::COpenCLContext* openCLContext, CImageLoadingFormat* bitmap);
+	virtual ~CFiltreEffet() = default;
 
 	void SetPreviewMode(const bool& value);
 	void SetBitmap(CImageLoadingFormat* bitmap);
@@ -98,7 +99,7 @@ public:
 
 	IFiltreEffet* GetInstance()
 	{
-		return filtreEffet;
+		return filtreEffet.get();
 	};
 
 	int GetWidth();
@@ -109,7 +110,7 @@ public:
 private:
 	void CalculNewSize(const int32_t& x, const int32_t& y, const double& angle, int& width, int& height);
 	//CRegardsBitmap * pBitmap;
-	IFiltreEffet* filtreEffet;
+	std::unique_ptr<IFiltreEffet> filtreEffet;
 	CRgbaquad backColor;
 	int numLib;
 	wxString filename;

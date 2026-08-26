@@ -16,10 +16,6 @@ public:
 		octave = 8;
 	};
 
-	~CCloudsEffectParameter() override
-	{
-	};
-
 	CRgbaquad colorFront;
 	CRgbaquad colorBack;
 

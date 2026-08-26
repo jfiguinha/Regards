@@ -1,197 +1,159 @@
 #pragma once
 #include <WindowMain.h>
 #include <ToolbarInterface.h>
-#include <unordered_set>
-using namespace Regards::Window;
-
-
-class CRegardsBitmap;
-class CImageLoadingFormat;
-class CPictureCategorieLoadData;
-class CPictureCategorie;
+#include "ThumbnailScheduler.h"
+#include "FolderRefreshService.h"
+#include "MainViewerController.h"
+#include <memory>
+#include <thread>
 class IStatusBarInterface;
-class CFFmpegTranscoding;
-class CompressionAudioVideoOption;
-class CThreadPhotoLoading;
 
 namespace Regards::Viewer
 {
-	class CMainWindow;
-	class CImageList;
-	class CExportDiaporama;
-	class CToolbar;
-	class CMainParam;
-	class CCentralWindow;
-	class CToolbarViewerMode;
-	class CFolderProcess;
-	class CThumbnailProcess;
+    class CToolbarViewerMode;
+    class CCentralWindow;
+    class CMainParam;
+    class CFolderProcess;
+    class CThumbnailProcess;
+    class CCategoryFolderWindow;
+    class CExportDiaporama;
+    class CToolbar;
 
+    class CMainWindow : public Regards::Window::CWindowMain, public Regards::Window::CToolbarInterface
+    {
+    public:
+        CMainWindow(wxWindow* parent, wxWindowID id,
+                    IStatusBarInterface* statusbar,
+                    const wxString& fileToOpen);
+        ~CMainWindow() override;
 
+        void UpdateScreenRatio() override;
+        void SaveParameter()     override;
+        bool GetProcessEnd()     override;
 
-	class CMainWindow : public CWindowMain, public CToolbarInterface
-	{
-	public:
-		CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* statusbar, const wxString& fileToOpen);
-		~CMainWindow() override;
-		void UpdateScreenRatio() override;
+        // ── API publique ─────────────────────────────────────────────
+        bool     SetFullscreen();
+        bool     SetFullscreenMode();
+        bool     SetScreen();
+        bool     OpenFolder(const wxString& path);
+        bool     IsFullscreen();
+        bool     IsVideo();
+        void     ShowToolbar();
+        void     TransitionEnd();
+        void     SetPictureMode();
+        void     SetViewerMode();
+        void     OpenFile(const wxString& fileToOpen);
+        wxString GetFilename();
 
-		bool SetFullscreen();
-		bool SetFullscreenMode();
-		bool SetScreen();
-		void TransitionEnd();
+        // Délégués à ViewerController (thread-safe via événements)
+        void SetText(const int& numPos, const wxString& libelle);
+        void SetRangeProgressBar(const int& range);
+        void SetPosProgressBar(const int& position);
 
-		bool OpenFolder(const wxString& path);
-		bool IsFullscreen();
-		void ShowToolbar();
-		bool IsVideo();
+        bool GetInit() const noexcept { return folderService->GetInit(); }
 
-		void SetText(const int& numPos, const wxString& libelle);
-		void SetRangeProgressBar(const int& range);
-		void SetPosProgressBar(const int& position);
-		void SetPictureMode();
-		void SetViewerMode();
-		void OpenFile(const wxString& fileToOpen);
+        void OnOpenFileOrFolder(wxCommandEvent& event);
 
-		bool GetProcessEnd() override;
-		void OnOpenFileOrFolder(wxCommandEvent& event);
-		wxString GetFilename();
+    private:
+        // ── Initialisation ────────────────────────────────────────────
+        void InitState();
+        void InitTheme();
+        void InitUI(IStatusBarInterface* statusbar);
+        void BindEvents();
+        void InitConfig(const wxString& fileToOpen);
+        void InitBackgroundTasks();
 
-		void SaveParameter() override;
+        // ── Idle / boucle principale ──────────────────────────────────
+        void ProcessIdle()  override;
+        void Resize()       override;
 
-		bool GetInit()
-		{
-			return init;
-		}
+        // ── Handlers d'événements ─────────────────────────────────────
+        void OnOpenFile(wxTimerEvent& event);
+        void OnExit(wxCommandEvent& event);
+        void OnUpdateInfos(wxCommandEvent& event);
+        void OnShowToolbar(wxCommandEvent& event);
+        void OnStatusSetText(wxCommandEvent& event);
+        void OnEndCheckFile(wxCommandEvent& event);
+        void OnSetRangeProgressBar(wxCommandEvent& event);
+        void OnSetValueProgressBar(wxCommandEvent& event);
+        void OnCriteriaUpdate(wxCommandEvent& event);
+        void OnRefreshPicture(wxCommandEvent& event);
+        void OnScanner(wxCommandEvent& event);
+        void OnFaceAdd(wxCommandEvent& event);
+        void OnVersionUpdate(wxCommandEvent& event);
+        void UpdateStatusBarMessage(wxCommandEvent& event);
+        void OnDeleteFace(wxCommandEvent& event);
+        void InitPictures(wxCommandEvent& event);
+        void PictureVideoClick(wxCommandEvent& event);
+        void CriteriaChange(wxCommandEvent& event);
+        void OnPrint(wxCommandEvent& event);
+        void OnPictureClick(wxCommandEvent& event);
+        void PrintPreview(wxCommandEvent& event);
+        void OnRemoveFileFromCheckIn(wxCommandEvent& event);
+        void OnCheckInUpdateStatus(wxCommandEvent& event);
+        void OnFaceInfosUpdate(wxCommandEvent& event);
+        void OnExportFile(wxCommandEvent& event);
+        void OnUpdateExifThumbnail(wxCommandEvent& event);
+        void SetScreenEvent(wxCommandEvent& event);
+        void OnExportDiaporama(wxCommandEvent& event);
+        void RefreshFolderList(wxCommandEvent& event);
+        void OnUpdateFolder(wxCommandEvent& event);
+        void OnRefreshThumbnail(wxCommandEvent& event);
+        void OnProcessThumbnail(wxCommandEvent& event);
+        void UpdateMessage(wxCommandEvent& event);
+        void UpdateThumbnailIcone(wxCommandEvent& event);
+        void ClickShowButton(const int& id, const int& refresh);
 
+        void OnEditFile(wxCommandEvent& event);
 
-private:
+        static void NewVersionAvailable(void* param);
 
-		void UpdateFolderStatic(const bool & isDeleteFolder, const bool& refreshPhotos = false);
+        void SetDataToStatusBar(void* thumbnailMessage, const wxString& message);
 
-		static void NewVersionAvailable(void* param);
+        // ── Widgets UI ────────────────────────────────────────────────
+        wxGauge *                           progressBar        = nullptr;
+        wxStatusBar *                       statusBar          = nullptr;
+        CCentralWindow *                    centralWnd         = nullptr;
+        CToolbarViewerMode *                toolbarViewerMode  = nullptr;
+        IStatusBarInterface*                statusBarViewer   = nullptr;
+        std::unique_ptr<wxTimer>            loadPictureStartTimer = nullptr;
 
-		void ClickShowButton(const int& id, const int& refresh);
+        // ── Services délégués ─────────────────────────────────────────
+        std::unique_ptr<ThumbnailScheduler>        scheduler;
+        std::unique_ptr<FolderRefreshService>      folderService;
+        std::unique_ptr<CMainViewerController>     viewerCtrl;
 
-		void SetDataToStatusBar(void* thumbnailMessage, const wxString& message);
+        // ── Processus de fond ─────────────────────────────────────────
+        std::unique_ptr<CFolderProcess>   folderProcess;
+        std::unique_ptr<CThumbnailProcess> thumbnailProcess;
+        std::thread versionUpdate;
 
-		bool FindNextValidFile();
-		bool FindPreviousValidFile();
-		bool FindNextValidFile(wxString filename);
-		void OnEditFile(wxCommandEvent& event);
+        // ── État général ──────────────────────────────────────────────
+        CMainParam* viewerParam     = nullptr;
+        bool        multithread     = true;
+        bool        needToReload    = false;
+        int         typeAffichage   = 0;
 
-		void OnUpdateInfos(wxCommandEvent& event);
-		void OnShowToolbar(wxCommandEvent& event);
-		void OnStatusSetText(wxCommandEvent& event);
-		void OnEndCheckFile(wxCommandEvent& event);
-		void OnSetRangeProgressBar(wxCommandEvent& event);
-		void OnSetValueProgressBar(wxCommandEvent& event);
-		void OnCriteriaUpdate(wxCommandEvent& event);
-		void OnRefreshPicture(wxCommandEvent& event);
-		void OnScanner(wxCommandEvent& event);
-		void OnFaceAdd(wxCommandEvent& event);
-		void OnVersionUpdate(wxCommandEvent& event);
-		void UpdateStatusBarMessage(wxCommandEvent& event);
-		void OnOpenFile(wxTimerEvent& event);
-		void OnDeleteFace(wxCommandEvent& event);
-		void OnExit(wxCommandEvent& event);
-		void InitPictures(wxCommandEvent& event);
-		void PictureVideoClick(wxCommandEvent& event);
-		void CriteriaChange(wxCommandEvent& event);
+        bool        updateCriteria  = true;
+        bool        updateFolder    = false;
+        bool        refreshFolder   = false;
 
-		void OnPrint(wxCommandEvent& event);
-		void OnPictureClick(wxCommandEvent& event);
+        bool        start           = true;
+        bool        criteriaSendMessage = false;
+        bool        checkVersion    = true;
+        bool        setViewerMode   = false;
+        bool        setPictureMode  = false;
+        bool        isCheckingFile  = false;
+        bool        isCheckNewVersion = false;
+        int         faceDetection   = 0;
+        bool        isThumbnailProcess = false;
+        int         nbElementInIconeList = 0;
+        int         nbPhotoElement  = 0;
+        int         nbElement       = 0;
+        wxString    tempVideoFile;
+        wxString    tempAudioVideoFile;
+        wxRect      posWindow;
+        std::chrono::steady_clock::time_point  lastClickTime[6];
+    };
 
-		void PrintPreview(wxCommandEvent& event);
-
-		void OnRemoveFileFromCheckIn(wxCommandEvent& event);
-		void OnCheckInUpdateStatus(wxCommandEvent& event);
-
-		void OnFaceInfosUpdate(wxCommandEvent& event);
-		void OnExportFile(wxCommandEvent& event);
-		void OnUpdateExifThumbnail(wxCommandEvent& event);
-
-		void SetScreenEvent(wxCommandEvent& event);
-		void OnExportDiaporama(wxCommandEvent& event);
-		void RefreshFolderList(wxCommandEvent& event);
-
-		void OnUpdateFolder(wxCommandEvent& event);
-		void OnRefreshThumbnail(wxCommandEvent& event);
-		void OnProcessThumbnail(wxCommandEvent& event);
-
-		void Resize() override;
-		//void ExportVideo(const wxString& filename);
-		void ProcessIdle() override;
-		void IdleFunction() override;
-
-		//------------------------------------------------------
-		void UpdateMessage(wxCommandEvent& event);
-
-		void UpdateThumbnailIcone(wxCommandEvent& event);
-
-		void PrioritizeFile(const wxString& filename);
-		void PrioritizeFiles(const std::vector<wxString>& files);
-		bool Tick(int nbProcesseur, int nbElementInIconeList);
-
-		struct WxStringHash
-		{
-			std::size_t operator()(const wxString& v) const
-			{
-				return std::hash<std::wstring>{}(v.ToStdWstring());
-			}
-		};
-
-		int nbElementInIconeList = 0;
-		int nbPhotoElement = 0;
-		int nbElement = 0;
-		std::atomic<int> nbProcess{0};
-		bool stopToGetNbElement = false;
-		int thumbnailPos = 0;
-		//std::map<wxString, bool> listFile;
-
-
-		bool isCheckNewVersion = false;
-		wxString tempVideoFile = "";
-		wxString tempAudioVideoFile = "";
-		bool fullscreen;
-		wxGauge* progressBar;
-		wxStatusBar* statusBar;
-		//CToolbar* toolbar;
-		CCentralWindow* centralWnd;
-		CToolbarViewerMode* toolbarViewerMode;
-		std::thread* versionUpdate = nullptr;
-		wxTimer * loadPictureStartTimer;
-		bool isCheckingFile = false;
-		IStatusBarInterface* statusBarViewer;
-		wxRect posWindow;
-
-		wxString localFilename;
-		
-		bool showToolbar;
-		CMainParam* viewerParam;
-		bool multithread;
-		bool needToReload;
-		int typeAffichage;
-		bool updateCriteria;
-		bool updateFolder = false;
-		bool refreshFolder;
-
-		bool start;
-		bool criteriaSendMessage;
-		bool checkVersion;
-		bool setViewerMode = false;
-		bool setPictureMode = false;
-		int faceDetection = 0;
-		bool isThumbnailProcess = false;
-
-		wxString firstFileToShow = "";
-		wxString oldRequest = "";
-		bool init = true;
-		CFolderProcess* folderProcess = nullptr;
-
-		mutable std::mutex photoListMutex;
-		std::deque<wxString>                              photoList;
-		std::unordered_set<wxString, WxStringHash>        listFile;
-
-		CThumbnailProcess* thumbnailProcess = nullptr;
-	};
-}
+} // namespace Regards::Viewer

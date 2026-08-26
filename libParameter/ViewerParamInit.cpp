@@ -1,45 +1,29 @@
 #include <header.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <wx/stdpaths.h>
+#include <FileUtility.h>
+#include <wx/filename.h>
 using namespace Regards::Viewer;
 
-CMainParam* CMainParamInit::_singleton = nullptr;
-
-CMainParamInit::CMainParamInit()
-{
-}
-
-
-CMainParamInit::~CMainParamInit()
-{
-}
+std::unique_ptr<CMainParam> CMainParamInit::_singleton = nullptr;
 
 
 CMainParam* CMainParamInit::getInstance()
 {
-	return _singleton;
+	if (nullptr == _singleton)
+	{
+		Initialize();
+		return _singleton.get();
+	}
+	return _singleton.get();
 }
 
-void CMainParamInit::Initialize(CMainParam* param)
+void CMainParamInit::Initialize()
 {
 	if (nullptr == _singleton)
 	{
-		wxStandardPathsBase& stdp = wxStandardPaths::Get();
-		wxString documentPath = stdp.GetDocumentsDir();
-
-
-#ifdef WIN32
-
-		documentPath.append("\\Regards\\Regards.viewer.config");
-		_singleton = param;
-		_singleton->OpenFile(documentPath);
-#else
-
-
-        documentPath.append("/Regards/Regards.viewer.config");
-        _singleton = param;
-        _singleton->OpenFile(documentPath);
-#endif
+		_singleton = std::make_unique<CMainParam>();
+		wxFileName configFile(CFileUtility::GetDocumentFolderPath(), "Regards.viewer.config");
+		_singleton->OpenFile(configFile.GetFullPath());
 	}
 }

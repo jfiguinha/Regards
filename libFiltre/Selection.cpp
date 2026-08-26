@@ -11,20 +11,12 @@ using namespace Regards::FiltreEffet;
 
 CSelection::CSelection()
 {
-	ptSelection = new CPenDrawInfo[1];
+	ptSelection.push_back(CPenDrawInfo());
 	ptSelection[0].x = 0;
 	ptSelection[0].y = 0;
 	iSelect = 0;
 	marge = 4;
 	ptScreen = wxPoint(0, 0);
-}
-
-CSelection::~CSelection()
-{
-	if (ptSelection != nullptr)
-		delete[] ptSelection;
-
-	ptSelection = nullptr;
 }
 
 

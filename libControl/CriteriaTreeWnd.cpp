@@ -27,22 +27,29 @@
 #include <CalendarSelect.h>
 #include <ParamInit.h>
 #include <GpsEngine.h>
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
+#include "PhotoCriteriaUtility.h"
 using namespace Regards::exiv2;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Internet;
 using namespace Regards::Control;
-#define TAILLEMAX 4096
 
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
-CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int& mainWindowID,
-                                   const CThemeTree& theme, const CThemeScrollBar& themeScroll)
-	: CTreeWithScrollbar("CCriteriaTreeWnd", parent, id, themeScroll, theme)
+CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent,
+	wxWindowID id,
+	wxWindowID mainWindowID,
+	const CThemeTree& theme,
+	const CThemeScrollBar& themeScroll)
+	: CTreeWithScrollbar("CCriteriaTreeWnd", parent, id, themeScroll, theme),
+	mainWindowID(mainWindowID)
 {
-	wxString urlServer = "";
-	wxString apiKey = "";
-	//Géolocalisation
+	wxString urlServer;
+	wxString apiKey;
+
+	// Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
@@ -50,192 +57,168 @@ CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int& m
 		apiKey = param->GetApiKey();
 	}
 
-	criteriaTree = nullptr;
-	oldCriteriaTree = nullptr;
-	numPhotoId = 0;
-	this->mainWindowID = mainWindowID;
-	fileGeolocalisation = new CFileGeolocation(urlServer, apiKey);
-
+	fileGeolocalisation = std::make_unique<CFileGeolocation>(urlServer, apiKey);
 
 	Connect(wxEVT_SHOWCALENDAR, wxCommandEventHandler(CCriteriaTreeWnd::ShowCalendar));
 	Connect(wxEVT_SHOWMAP, wxCommandEventHandler(CCriteriaTreeWnd::ShowMap));
 	Connect(wxEVT_SHOWKEYWORD, wxCommandEventHandler(CCriteriaTreeWnd::ShowKeyWord));
 }
 
-wxString CCriteriaTreeWnd::GenerateUrl()
+wxString CCriteriaTreeWnd::GenerateUrl() const
 {
-	if (fileGeolocalisation->HasGps())
+	if (fileGeolocalisation == nullptr || !fileGeolocalisation->HasGps())
+		return CLibResource::LoadStringFromResource("openstreetmapurl", 1);
+
+	const wxString latitude = fileGeolocalisation->GetLatitude();
+	const wxString longitude = fileGeolocalisation->GetLongitude();
+
+	return wxString::Format(
+		"https://www.openstreetmap.org/?mlat=%s&mlon=%s#map=15/%s/%s",
+		latitude,
+		longitude,
+		latitude,
+		longitude);
+}
+
+void CCriteriaTreeWnd::NotifyCriteriaChanged() const
+{
+	wxWindow* mainWnd = FindWindowById(mainWindowID);
+	if (mainWnd == nullptr)
+		return;
+
+	wxQueueEvent(mainWnd, new wxCommandEvent(wxEVT_CRITERIACHANGE));
+}
+
+void CCriteriaTreeWnd::NotifyUrlChanged() const
+{
+	wxWindow* parent = GetParent();
+	if (parent == nullptr)
+		return;
+
+	wxQueueEvent(parent, new wxCommandEvent(wxEVENT_UPDATEURL));
+}
+
+void CCriteriaTreeWnd::UpdateGpsWindow(const int messageId) const
+{
+	CListOfWindow* gpsEngine = CGpsEngine::getInstance();
+	if (gpsEngine != nullptr && !filename.IsEmpty())
+		gpsEngine->SendMessageToWindow(filename, messageId);
+}
+
+void CCriteriaTreeWnd::ReleasePhotoCriteria(wxCommandEvent& event) const
+{
+	auto* photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
+	if (photoCriteria != nullptr)
 	{
-		wxString url = L"http://www.openstreetmap.org/?mlat=";
-		url.append(fileGeolocalisation->GetLatitude());
-		url.append(L"&mlon=");
-		url.append(fileGeolocalisation->GetLongitude());
-		url.append(L"#map=15/");
-		url.append(fileGeolocalisation->GetLatitude());
-		url.append(L"/");
-		url.append(fileGeolocalisation->GetLongitude());
-		return url;
+		delete photoCriteria;
+		event.SetClientData(nullptr);
 	}
-	return CLibResource::LoadStringFromResource(L"openstreetmapurl", 1);
 }
 
 void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent& event)
 {
-	auto photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
+	auto* photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
 	CCalendarSelect calendarSelect;
 
-	if (calendarSelect.SelectNewDate(this, fileGeolocalisation->GetDateTimeInfos()))
+	bool modified = false;
+
+	if (calendarSelect.SelectNewDate(this,
+		fileGeolocalisation != nullptr
+		? fileGeolocalisation->GetDateTimeInfos()
+		: wxDateTime().Now().Format(wxT("%d-%m-%y__%H-%M-%S"), wxDateTime::CET)))
 	{
-		bool isNew = false;
-		CSqlCriteria sqlCriteria;
-		CSqlPhotoCriteria sqlPhotoCriteria;
-		int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 3, calendarSelect.GetSelectStringDate(), isNew);
-		sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
-		if (photoCriteria != nullptr && numCriteriaId != photoCriteria->GetCriteriaId())
-			sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, photoCriteria->GetCriteriaId());
-#if defined(LIBAPPLE)
-        CAppleReadExif appleReadExif;
-        appleReadExif.WriteDateTime(filename, calendarSelect.GetSelectDate());
-#else
-		CMetadataExiv2 metadata(filename);
-		metadata.SetDateTime(calendarSelect.GetSelectStringDate());
 
-#endif
+		CPhotoCriteriaUtility::ChangeDateFile(filename, calendarSelect.GetSelectDate(), calendarSelect.GetSelectStringDate(), photoCriteria->GetCriteriaId());
 
-		wxWindow* mainWnd = this->FindWindowById(mainWindowID);
-		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-		wxQueueEvent(mainWnd, eventChange);
+		NotifyCriteriaChanged();
+		modified = true;
 	}
 
-	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
-	fileGeolocalisation->SendMessageToWindow(filename, 2);
+	ReleasePhotoCriteria(event);
 
-	if (photoCriteria != nullptr)
-		delete photoCriteria;
-
-	needToRefresh = true;
+	if (modified)
+	{
+		UpdateGpsWindow(2);
+		needToRefresh = true;
+	}
 }
 
 void CCriteriaTreeWnd::ShowMap(wxCommandEvent& event)
 {
 	CMapSelect mapSelect;
-	wxString url = GenerateUrl();
-	auto photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
-	wxString infoGpsLocalisation = mapSelect.SelectNewMapLocalisation(this, url);
+	const wxString url = GenerateUrl();
+	auto* photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
 
-	if (infoGpsLocalisation != "")
+	const wxString infoGpsLocalisation = mapSelect.SelectNewMapLocalisation(this, url);
+	bool modified = false;
+
+	if (!infoGpsLocalisation.IsEmpty())
 	{
-		bool isNew = false;
-		CSqlCriteria sqlCriteria;
-		CSqlGps sqlGps;
-		CSqlPhotoCriteria sqlPhotoCriteria;
-		int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 1, infoGpsLocalisation, isNew);
-		sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
-		if (photoCriteria != nullptr && numCriteriaId != photoCriteria->GetCriteriaId())
-			sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, photoCriteria->GetCriteriaId());
+		const wxString latitude = mapSelect.GetLatitude();
+		const wxString longitude = mapSelect.GetLongitude();
 
+		CPhotoCriteriaUtility::GeolocalizeFile(filename, latitude, longitude, infoGpsLocalisation, photoCriteria->GetCriteriaId());
 
-		wxString latitude = mapSelect.GetLatitude();
-		wxString longitude = mapSelect.GetLongitude();
-
-		sqlGps.DeleteGps(filename);
-		sqlGps.InsertGps(filename, latitude, longitude);
-
-
-		double dlat = 0.0;
-		double dlong = 0.0;
-		latitude.ToDouble(&dlat);
-		longitude.ToDouble(&dlong);
-
-#if defined(LIBAPPLE)
-        {
-            CAppleReadExif appleReadExif;
-            appleReadExif.WriteGps(filename, dlat, dlong);
-        }
-#else
-		{
-			wxString wlatitudeRef = "";
-			wxString wlongitudeRef = "";
-			wxString wlongitude = to_string(abs(dlong));
-			wxString wlatitude = to_string(abs(dlat));
-
-			if (dlat < 0)
-				wlatitudeRef = "S";
-			else
-				wlatitudeRef = "N";
-
-			if (dlong < 0)
-				wlongitudeRef = "W";
-			else
-				wlongitudeRef = "E";
-
-			CMetadataExiv2 metadataExiv2(filename);
-			metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
-		}
-#endif
-
-		wxCommandEvent evt(wxEVENT_UPDATEURL);
-		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+		NotifyUrlChanged();
+		modified = true;
 	}
 
-	if (photoCriteria != nullptr)
-		delete photoCriteria;
+	ReleasePhotoCriteria(event);
 
-	//Update infos
-	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
-	fileGeolocalisation->SendMessageToWindow(filename, 1);
-
-	needToRefresh = true;
+	if (modified)
+	{
+		UpdateGpsWindow(1);
+		needToRefresh = true;
+	}
 }
-
 
 void CCriteriaTreeWnd::ShowKeyWord(wxCommandEvent& event)
 {
-	auto photoCriteria = static_cast<CPhotoCriteria*>(event.GetClientData());
 	KeywordDialogBox keywordDialog(this);
-	keywordDialog.ShowModal();
-	bool isOk = false;
+	const bool isOk = keywordDialog.ShowModal() == wxID_OK;
+
+	ReleasePhotoCriteria(event);
+
 	if (isOk)
 	{
-		wxWindow* mainWnd = this->FindWindowById(mainWindowID);
-		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-		wxQueueEvent(mainWnd, eventChange);
+		NotifyCriteriaChanged();
+		needToRefresh = true;
 	}
-
-	if (photoCriteria != nullptr)
-		delete photoCriteria;
-
-	needToRefresh = true;
-}
-
-CCriteriaTreeWnd::~CCriteriaTreeWnd(void)
-{
-	if (oldCriteriaTree != nullptr)
-		delete(oldCriteriaTree);
 }
 
 void CCriteriaTreeWnd::UpdateTreeData()
 {
-	auto criteriaTree = new CCriteriaTree(treeWindow->GetTheme(), treeWindow);
+	if (treeWindow == nullptr)
+		return;
+
+	auto criteriaTree = std::make_unique<CCriteriaTree>(
+		treeWindow->GetTheme(),
+		treeWindow);
+
 	criteriaTree->SetFile(filename, numPhotoId);
-	//criteriaTree->CreateElement();
-	treeWindow->SetTreeControl(criteriaTree);
-	if (oldCriteriaTree != nullptr)
-		delete(oldCriteriaTree);
-	oldCriteriaTree = criteriaTree;
+
+	// treeWindow ne devient pas propriétaire de criteriaTree.
+	// oldCriteriaTree conserve donc la propriété de l'objet.
+	treeWindow->SetTreeControl(criteriaTree.get());
+	oldCriteriaTree = std::move(criteriaTree);
 }
 
-void CCriteriaTreeWnd::SetFile(const wxString& filename)
+void CCriteriaTreeWnd::SetFile(const wxString& newFilename)
 {
-	if (this->filename != filename)
-	{
-		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-		fileGeolocalisation->SetFile(this->filename, notGeo);
-		CSqlPhotos sqlPhotos;
-		numPhotoId = sqlPhotos.GetPhotoId(filename);
-		this->filename = filename;
-		UpdateTreeData();
+	if (filename == newFilename)
+		return;
 
-		needToRefresh = true;
+	filename = newFilename;
+
+	if (fileGeolocalisation != nullptr)
+	{
+		const wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+		fileGeolocalisation->SetFile(filename, notGeo);
 	}
+
+	CSqlPhotos sqlPhotos;
+	numPhotoId = sqlPhotos.GetPhotoId(filename);
+
+	UpdateTreeData();
+	needToRefresh = true;
 }

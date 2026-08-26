@@ -16,9 +16,6 @@ namespace Regards::Window
 		{
 		};
 
-		~CTabWindowData()
-		{
-		};
 
 		void SetWindow(wxWindow* window)
 		{
@@ -84,7 +81,7 @@ namespace Regards::Window
 	{
 	public:
 		CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID id);
-		~CTabWindow() override;
+		~CTabWindow();
 		void UpdateScreenRatio() override;
 
 	private:
@@ -96,8 +93,8 @@ namespace Regards::Window
 		void ClickShowButton(const int& id, const int& refresh = 1) override;
 		void HideAllWindow();
 		virtual void LoadInfo() = 0;
-		CModificationManager* modificationManager;
-		vector<CTabWindowData*> listWindow;
+		std::unique_ptr<CModificationManager> modificationManager = nullptr;
+		vector<CTabWindowData *> listWindow;
 		CToolbarWindow* toolbarWindow = nullptr;
 		int windowVisible;
 		int width;

@@ -72,6 +72,7 @@
     <ClInclude Include="VideoStabilization.h" />
     <ClInclude Include="VideoStabilizationCpu.h" />
     <ClInclude Include="VideoStabilizationOpenCL.h" />
+    <ClInclude Include="VideoStabilizationPimpl.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

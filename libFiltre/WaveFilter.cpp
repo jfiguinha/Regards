@@ -119,7 +119,7 @@ void CWaveFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapD
 		cv::Mat matrixPreview = filtreEffet->GetBitmap(false);
 		CImageLoadingFormat image;
 		image.SetPicture(matrixPreview);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 
 		wxRect rc;
 		wxPoint pt;
@@ -140,14 +140,10 @@ void CWaveFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapD
 
 		filtre->WaveFilter(pt.x / scaleFactor, (pt.y / scaleFactor), image.GetHeight(), radius / ratio, scale / ratio);
 
-		imageLoad = new CImageLoadingFormat();
+		auto imageLoad = std::make_unique<CImageLoadingFormat>();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
-
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete imageLoad;
+		filtreEffet->SetBitmap(imageLoad.get());
 	}
 	
 }
@@ -162,7 +158,7 @@ CImageLoadingFormat* CWaveFilter::ApplyEffect(CEffectParameter* effectParameter,
 
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
@@ -176,7 +172,6 @@ CImageLoadingFormat* CWaveFilter::ApplyEffect(CEffectParameter* effectParameter,
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
 	}
 
 	return imageLoad;
@@ -224,7 +219,7 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 	{
 		CImageLoadingFormat image;
 		image.SetPicture(source);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);

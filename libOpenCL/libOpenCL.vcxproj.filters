@@ -16,6 +16,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="avir">
+      <UniqueIdentifier>{664f488e-1167-4656-89ba-118dd25e27d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -39,6 +42,12 @@
     <ClInclude Include="utility_opencl.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="OpenCLKernelBuilder.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="COpenCLAvirResizer.h">
+      <Filter>avir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideo.cpp">
@@ -58,6 +67,12 @@
     </ClCompile>
     <ClCompile Include="utility_opencl.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCLKernelBuilder.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="COpenCLAvirResizer.cpp">
+      <Filter>avir</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

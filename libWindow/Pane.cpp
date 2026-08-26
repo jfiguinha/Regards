@@ -14,12 +14,16 @@ CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface* paneInterface, con
 	hWndOther = nullptr;
 	hMainWndOther = nullptr;
 	titleBarVisible = true;
+
 	this->paneInterface = paneInterface;
-	titleBar = new CTitleBar(this, wxID_ANY, this);
-	titleBar->SetRefresh(refreshButton);
 	this->idPane = idPane;
 	this->themePane = theme;
-    titleBar->SetTheme((CThemeTitleBar*)&theme.themeTitle);
+
+	titleBar = std::make_unique<CTitleBar>(this, wxID_ANY, this);
+	titleBar->SetRefresh(refreshButton);
+	titleBar->SetTheme(const_cast<CThemeTitleBar*>(&theme.themeTitle));
+
+   
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPane::RefreshData));
@@ -35,15 +39,10 @@ void CPane::RefreshData(wxCommandEvent& event)
 	}
 }
 
-
-CPane::~CPane()
-{
-	delete(titleBar);
-}
-
 void CPane::UpdateScreenRatio()
 {
-	titleBar->UpdateScreenRatio();
+	if (titleBar)
+		titleBar->UpdateScreenRatio();
 	if (hMainWndOther != nullptr)
 		hMainWndOther->UpdateScreenRatio();
 	this->Resize();
@@ -59,7 +58,8 @@ void CPane::ShowOtherWindow()
 
 void CPane::SetClosable(const bool& value)
 {
-	titleBar->SetClosable(value);
+	if (titleBar)
+		titleBar->SetClosable(value);
 }
 
 int CPane::GetTitleHeight()
@@ -69,14 +69,6 @@ int CPane::GetTitleHeight()
 
 void CPane::Resize()
 {
-#ifdef _DEBUG
-#ifdef WIN32
-	TCHAR temp[255];
-	wsprintf(temp, L"CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
-	OutputDebugString(temp);
-#endif
-#endif
-
 	//printf("CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
 	if (titleBarVisible)
 	{
@@ -106,27 +98,35 @@ void CPane::OnMouseMove(wxMouseEvent& event)
 
 void CPane::SetTitleBarVisibility(const bool& visible)
 {
-	titleBarVisible = visible;
-	titleBar->Show(visible);
-	Resize();
+	if (titleBar)
+	{
+		titleBarVisible = visible;
+		titleBar->Show(visible);
+		Resize();
+	}
 }
 
 void CPane::ClosePane()
 {
-	paneInterface->ClosePane(idPane);
+	if(paneInterface)
+		paneInterface->ClosePane(idPane);
 }
 
 void CPane::RefreshPane()
 {
-	paneInterface->RefreshPane(idPane);
+	if (paneInterface)
+		paneInterface->RefreshPane(idPane);
 }
 
 void CPane::SetTitle(const wxString& title)
 {
-	titleBar->SetTitle(title);
+	if (titleBar)
+		titleBar->SetTitle(title);
 }
 
 int CPane::SetTooltipText(const wxString& tooltip)
 {
-	return titleBar->SetTooltipText(tooltip);
+	if (titleBar)
+		return titleBar->SetTooltipText(tooltip);
+	return 0;
 }

@@ -1,27 +1,16 @@
 #pragma once
 #include "IFiltreEffet.h"
+#include <hqdn3d.h>
 
-class CRegardsBitmap;
-class Chqdn3d;
 using namespace Regards::OpenGL;
 
-#define BOXFILTER 1001
-#define HERMITEFILTER 1002
-#define HANNINGFILTER 1003
-#define CATROMFILTER 1004
-#define MITCHELLFILTER 1005
-#define TRIANGLEFILTER 1006
-#define QUADRATICFILTER 1007
-#define BLACKMANFILTER 1008
-#define HAMMINGFILTER 1009
-#define GAUSSIANFILTER 1010
-#define BILINEARFILTER 1011
+
 
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
 	CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitmap);
-	~CFiltreEffetCPU() override;
+	~CFiltreEffetCPU() =default;
 
 	int GetType() 
 	{
@@ -103,11 +92,14 @@ public:
 	int Colorization() override;
     int Inpaint(const cv::Mat &mask, int algorithm) override;
 private:
-	void RotateMatrix(const int& angle, cv::Mat& src);
+	template<typename T, typename... Args>
+	void MakeAndCompute(cv::Mat& image, Args&&... args);
+	void ApplyKernel3x3(cv::Mat& image, const cv::Mat& kernel);
+	void FusionInternal(cv::Mat& image, const cv::Mat& bitmapSecond, float pourcentage);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat& mask);
-
-	Chqdn3d* hq3d = nullptr;
+	template<typename F> void ExecuteSafe(F&& func);
+	std::unique_ptr<Chqdn3d> hq3d = nullptr;
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;

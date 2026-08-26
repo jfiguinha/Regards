@@ -6,7 +6,7 @@
 #include "FilterWindowParam.h"
 using namespace Regards::Window;
 
-class CRegardsBitmap;
+;
 
 #define TYPE_SLIDE 1
 #define TYPE_CHECKBOX 2
@@ -14,12 +14,14 @@ class CRegardsBitmap;
 
 namespace Regards::Window
 {
+	class CTreeDataEffect;
+
 	class CFiltreEffect : public CTreeControl, public IFiltreEffectInterface
 	{
 	public:
 		CFiltreEffect(IFiltreUpdate* bitmapViewer, CTreeElementControlInterface* interfaceControl, bool isVideo,
 		              int bitmapWindowId);
-		~CFiltreEffect(void) override;
+		~CFiltreEffect(void) = default;
 		virtual void Init(CEffectParameter* effectParameter, cv::Mat source, const wxString& filename,
 		                  const int& filtre);
 		void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
@@ -37,14 +39,36 @@ namespace Regards::Window
 		                    const int& posLargeur, const int& posHauteur) override;
 		void UnclickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
 		                      const int& posLargeur, const int& posHauteur) override;
-
-		void UpdateElement();
-		void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
-		void CreateElement();
-		void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 		void AddTreeInfos(const wxString& exifKey, CTreeElementValue* position, void* value, int typeValue,
-		                  const int& index, tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child,
-		                  const int& type);
+			const int& index, tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child,
+			const int& type);
+		//void UpdateElement();
+		void UpdateBitmapToViewer(CImageLoadingFormat* bitmap);
+		void RenderElement(RenderMode mode);
+		void UpdateElement(tree<CTreeData*>::sibling_iterator& parent, RenderMode mode);
+		void UpdateElementChild(tree<CTreeData*>::sibling_iterator& it, CTreeDataEffect* data, int widthPosition, int profondeur, bool isVisible, RenderMode mode);
+		void CreateElementChild(tree<CTreeData*>::sibling_iterator& it, CTreeDataEffect* data, int widthPosition, int profondeur, bool isVisible, RenderMode mode);
+
+		CPositionElement* RenderSlide(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderCheckbox(
+			CTreeData* dataEffect,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderList(
+			CTreeData* dataEffect,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
 
 		int filtre;
 
@@ -57,7 +81,7 @@ namespace Regards::Window
 		int widthPosition;
 
 		CEffectParameter* effectParameter;
-		CFilterWindowParam* filterEffect;
+		std::unique_ptr<CFilterWindowParam> filterEffect;
 
 		cv::Mat source;
 		IFiltreUpdate* bitmapViewer;

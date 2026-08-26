@@ -39,7 +39,7 @@ namespace Regards
 		{
 		public:
 			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
-			~CPanelInfosWnd() override;
+			~CPanelInfosWnd() = default;
 			void OnFiltreOk(const int& numFiltre);
 			void OnFiltreCancel();
 			void SetBitmapFile(const wxString& filename, const bool& isThumbnail);
@@ -64,16 +64,16 @@ namespace Regards
 			void DisplayURL(const wxString& url);
 			void HistogramUpdate();
 
-			CInfosFileWnd* infosFileWnd;
-			CInfoEffectWnd* historyEffectWnd;
-			CThumbnailViewerEffectWnd* thumbnailEffectWnd;
-			CFiltreEffectScrollWnd* filtreEffectWnd;
-			CCriteriaWindow* criteriaTreeWnd;
-			CPicturePanel* picturePanel;
+			CInfosFileWnd * infosFileWnd;
+			CInfoEffectWnd * historyEffectWnd;
+			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
+			CFiltreEffectScrollWnd * filtreEffectWnd;
+			CCriteriaWindow * criteriaTreeWnd;
+			CPicturePanel * picturePanel;
 
-			wxWebView* webBrowser = nullptr;
-			CToolbarInfos* infosToolbar;
-			CModificationManager* modificationManager;
+			wxWebView * webBrowser = nullptr;
+			CToolbarInfos * infosToolbar;
+			std::unique_ptr<CModificationManager> modificationManager;
 
 			bool isThumbnail;
 			bool isVideo;

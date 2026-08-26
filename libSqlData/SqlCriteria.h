@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlCriteria(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
-			~CSqlCriteria() override;
+			~CSqlCriteria() = default;
 			bool DeleteCriteria(const int& numCriteria, const int& numCategory);
 			int64_t GetCriteriaId(const int& numCriteria, const int& numFolder);
 			int64_t GetCriteriaIdByCategorie(const int& numPhoto, const int& numCategorie);
@@ -28,10 +28,15 @@ namespace Regards
 			bool DeleteCriteriaAlone();
 			void RemoveUnusedCriteria();
 			int GetCriteriaId();
+			wxString GetCriteriaLibelle(const int& criteriaId);
+			deque<int> GetListCriteriaToGeolocalize();
 
 		private:
 			int TraitementResult(CSqlResult* sqlResult) override;
 			int64_t criteriaId;
+			int type = 0;
+			wxString libelle;
+			deque<int> listCriteriaToGeolocalize;
 		};
 	}
 }

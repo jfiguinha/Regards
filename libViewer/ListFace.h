@@ -67,12 +67,13 @@ namespace Regards
 			static void FacialRecognition(void* param);
 			static void LoadResource(void* param);
 			void OnFaceVideoAdd(wxCommandEvent& event);
+			void IntializeListFace();
 
-			CWindowManager* windowManager = nullptr;
-			CScrollbarWnd* thumbscrollbar = nullptr;
-			CThumbnailFaceToolBar* thumbFaceToolbar = nullptr;
-			CThumbnailFacePertinenceToolBar* thumbFacePertinenceToolbar = nullptr;
-			CThumbnailFace* thumbnailFace = nullptr;
+			CWindowManager * windowManager = nullptr;
+			CScrollbarWnd * thumbscrollbar = nullptr;
+			CThumbnailFaceToolBar * thumbFaceToolbar = nullptr;
+			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar = nullptr;
+			CThumbnailFace * thumbnailFace = nullptr;
 			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;
 			int nbProcessFaceRecognition = 0;
@@ -83,7 +84,8 @@ namespace Regards
 
 			mutex muListFace;
 			int nbNbFace;
-			
+			int nbTotalFace = 0;
+			int nbTotalFaceToRecognize = 0;	
 			//std::thread * threadResource = nullptr;
 		};
 	}

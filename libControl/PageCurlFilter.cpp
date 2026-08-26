@@ -55,7 +55,7 @@ void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const flo
 		}
 	}
 
-	renderOpenGL->ShowSecondBitmap(pictureNext, width, height, left, top, true);
+	renderOpenGL->ShowSecondBitmap(pictureNext.get(), width, height, left, top, true);
 
 	if (m_pShader != nullptr)
 		m_pShader->DisableShader();
@@ -97,6 +97,8 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
                                       IBitmapDisplay* bmpViewer)
 {
 	bool init = false;
+	std::unique_ptr<CImageLoadingFormat> bitmapOut;
+	std::unique_ptr<CImageLoadingFormat> bitmapFirst = std::make_unique<CImageLoadingFormat>();
 	if (initTexture || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
 	{
 		init = true;
@@ -104,48 +106,41 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 	}
 
 	{
-		CImageLoadingFormat bitmapNext;
-
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
 			auto mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4,
 			                   cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
-			bitmapNext.SetPicture(mat);
-			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+			bitmapFirst->SetPicture(mat);
+			bitmapOut.reset(GenerateInterpolationBitmapTexture(nextPicture, bmpViewer));
 			if (bitmapOut != nullptr)
 			{
-				bitmapNext.InsertBitmap(bitmapOut, out.x, out.y);
+				bitmapFirst->InsertBitmap(bitmapOut.get(), out.x, out.y);
 				//bitmapNext.Flip();
 			}
-			delete bitmapOut;
 
-			mat = bitmapNext.GetMatrix().getMat();
+			mat = bitmapFirst->GetMatrix().getMat();
 			cv::flip(mat, mat, 0);
             Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(mat); 
-			pictureNext->SetData(pictureArray);
+			pictureNext->SetData(pictureArray, nullptr);
 		}
 	}
 	{
-		CImageLoadingFormat bitmapFirst;
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
 			auto mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4,
 			                   cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
-			bitmapFirst.SetPicture(mat);
-			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
+			bitmapFirst->SetPicture(mat);
+			bitmapOut.reset(GenerateInterpolationBitmapTexture(source, bmpViewer));
 			if (bitmapOut != nullptr)
 			{
-				bitmapFirst.InsertBitmap(bitmapOut, out.x, out.y);
-				bitmapFirst.Flip();
+				bitmapFirst->InsertBitmap(bitmapOut.get(), out.x, out.y);
+				bitmapFirst->Flip();
 			}
-			delete bitmapOut;
 
-			//mat = bitmapFirst.GetMatrix().getMat();
-			Regards::Picture::CPictureArray pictureArray = bitmapFirst.GetMatrix(); 
-			pictureFirst->SetData(pictureArray);
+			pictureFirst->SetData(bitmapFirst->GetMatrix(), nullptr);
 		}
 	}
 
@@ -156,7 +151,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 GLTexture* CPageCurlFilter::GetTexture(const int& numTexture)
 {
 	if (numTexture == 0)
-		return pictureFirst;
+		return pictureFirst.get();
 
-	return pictureNext;
+	return pictureNext.get();
 }

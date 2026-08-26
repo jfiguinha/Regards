@@ -391,12 +391,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__NEW_JXL__;AVIF_LIBYUV_ENABLED;__NEW_EXIV2__;POINTERHOLDER_TRANSITION;HAVE_PID_T;FFMPEG;LIBRAW_NODLL;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;_CRT_SECURE_NO_WARNINGS;LIBRAW;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface;../Otherlib/OpenCV</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface;../Otherlib/OpenCV</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <OpenMP>GenerateParallelCode</OpenMP>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <StringPooling>true</StringPooling>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -580,7 +580,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__NEW_JXL__;AVIF_LIBYUV_ENABLED;__NEW_EXIV2__;POINTERHOLDER_TRANSITION;LIBRAW_NODLL;HAS_X265;HAVE_PID_T;LATEST_GREATEST_FFMPEG;FFMPEG;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;_CRT_SECURE_NO_WARNINGS;LIBRAW;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface;../libVideoThumbnail;../Otherlib/OpenCV</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../Otherlib/libheif;../Otherlib/libavif/include;../Otherlib/wxPDFDoc/include;../Otherlib;../libFiltreInterface;../libVideoThumbnail;../Otherlib/OpenCV</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -608,7 +608,7 @@
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ConformanceMode>false</ConformanceMode>
       <Optimization>Full</Optimization>
@@ -792,7 +792,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../libFiltreInterface;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../OtherLib/OpenCV</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libFiltreInterface;../libSqlEngine;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg;../OtherLib/OpenCV</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>AVIF_LIBYUV_ENABLED;LIBHEIF_STATIC_BUILD;__NEW_JXL__;__NEW_EXIV2__;__ARM64__;HAS_X265;LIBBPG;LIBHEIC;LIBRAW;WIN32;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -807,6 +807,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|ARM64'">
@@ -835,6 +836,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ascii.h" />
+    <ClInclude Include="aspectratio.h" />
     <ClInclude Include="avif.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
@@ -858,6 +860,7 @@
     <ClInclude Include="jxl.h" />
     <ClInclude Include="JxrOption.h" />
     <ClInclude Include="libPicture.h" />
+    <ClInclude Include="MediaExtractor.h" />
     <ClInclude Include="MediaInfo.h" />
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="MetadataExiv2.h" />
@@ -866,15 +869,13 @@
     <ClInclude Include="PictureArray.h" />
     <ClInclude Include="PictureData.h" />
     <ClInclude Include="PictureMetadataExiv.h" />
-    <ClInclude Include="PictureMetadataExiv_new.h" />
+    <ClInclude Include="picture_factory.h" />
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="raw.h" />
     <ClInclude Include="RegardsPDF.h" />
     <ClInclude Include="RegardsRaw.h" />
     <ClInclude Include="regards_webp.h" />
     <ClInclude Include="RGBAQuad.h" />
-    <ClInclude Include="RotateByShear.h" />
-    <ClInclude Include="RotateByShearRGB.h" />
     <ClInclude Include="ScaleThumbnail.h" />
     <ClInclude Include="StreamInfo.h" />
     <ClInclude Include="ThumbnailData.h" />
@@ -884,6 +885,7 @@
     <ClInclude Include="TiffOption.h" />
     <ClInclude Include="VideoPlayerInterface.h" />
     <ClInclude Include="videothumb.h" />
+    <ClInclude Include="VideoThumbPimpl.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="wic.h" />
     <ClInclude Include="yuv420.h" />
@@ -921,6 +923,7 @@
     <ClCompile Include="jxl.cpp" />
     <ClCompile Include="JxrOption.cpp" />
     <ClCompile Include="libPicture.cpp" />
+    <ClCompile Include="MediaExtractor.cpp" />
     <ClCompile Include="MediaInfo.cpp" />
     <ClCompile Include="MetadataExiv2.cpp" />
     <ClCompile Include="PDFOption.cpp" />
@@ -928,7 +931,7 @@
     <ClCompile Include="PictureArray.cpp" />
     <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="PictureMetadataExiv.cpp" />
-    <ClCompile Include="PictureMetadataExiv_new.cpp" />
+    <ClCompile Include="picture_factory.cpp" />
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="raw.cpp" />
     <ClCompile Include="RegardsPDF.cpp" />
@@ -942,6 +945,7 @@
     <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
     <ClCompile Include="videothumb.cpp" />
+    <ClCompile Include="VideoThumbPimpl.cpp" />
     <ClCompile Include="webpOption.cpp" />
     <ClCompile Include="wic.cpp" />
   </ItemGroup>

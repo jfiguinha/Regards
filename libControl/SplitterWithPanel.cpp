@@ -10,325 +10,283 @@
 using namespace Regards::Window;
 using namespace Regards::Control;
 
-
 wxDEFINE_EVENT(EVENT_HIDDENPANE, wxCommandEvent);
 
-CSplitterWithPanel::CSplitterWithPanel(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme,
-                                       const CThemeToolbar& themeInfosToolbar, const bool& horizontal)
-	: CSplitter(parent, id, theme)
+// ============================================================================
+// Constructor & Setup
+// ============================================================================
+
+CSplitterWithPanel::CSplitterWithPanel(wxWindow* parent, wxWindowID id, 
+									   const CThemeSplitter& theme,
+									   const CThemeToolbar& themeInfosToolbar, 
+									   bool horizontal)
+	: CSplitter(parent, id, theme),
+	  clickWindow1Toolbar(std::make_unique<CClickToolbar>(
+		  this, wxID_ANY, themeInfosToolbar, this, 
+		  static_cast<int>(PanelId::PANEL1), !horizontal)),
+	  clickWindow2Toolbar(std::make_unique<CClickToolbar>(
+		  this, wxID_ANY, themeInfosToolbar, this, 
+		  static_cast<int>(PanelId::PANEL2), !horizontal))
 {
-	posBarInfos = 0;
-	paneWindow1 = nullptr;
-	clickWindow1Toolbar = nullptr;
-
-	paneWindow2 = nullptr;
-	clickWindow2Toolbar = nullptr;
-
-	fullscreen = false;
-	lastWindow = ALL_WINDOW;
-	numWindow = 0;
-	size = 0;
-
-	showclickWindow1Toolbar = true;
-	showclickWindow2Toolbar = true;
-
-	clickWindow1Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL1_FILTER, !horizontal);
-	clickWindow2Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL2_FILTER, !horizontal);
-
-	this->horizontal = horizontal;
-	separationBar->SetHorizontal(horizontal);
+	SetHorizontalImpl(horizontal);
+	GetSeparationBar()->SetHorizontal(horizontal);
 }
 
-
-void CSplitterWithPanel::SetHorizontal(const bool& horizontal)
+void CSplitterWithPanel::SetHorizontal(bool horizontal)
 {
-	this->horizontal = horizontal;
-	separationBar->SetHorizontal(horizontal);
+	SetHorizontalImpl(horizontal);
+	GetSeparationBar()->SetHorizontal(horizontal);
 	clickWindow1Toolbar->SetVertical(!horizontal);
 	clickWindow2Toolbar->SetVertical(!horizontal);
 }
 
-
-CSplitterWithPanel::~CSplitterWithPanel()
-{
-	if (clickWindow1Toolbar != nullptr)
-		delete(clickWindow1Toolbar);
-	if (clickWindow2Toolbar != nullptr)
-		delete(clickWindow2Toolbar);
-	if (paneWindow1 != nullptr)
-		delete(paneWindow1);
-	if (paneWindow2 != nullptr)
-		delete(paneWindow2);
-}
-
+// ============================================================================
+// Screen & Display
+// ============================================================================
 
 void CSplitterWithPanel::UpdateScreenRatio()
 {
-	if (paneWindow1 != nullptr)
+	if (paneWindow1)
 		paneWindow1->UpdateScreenRatio();
 
-	if (paneWindow2 != nullptr)
+	if (paneWindow2)
 		paneWindow2->UpdateScreenRatio();
 }
 
 void CSplitterWithPanel::ShowWindow()
 {
-	if (lastWindow == ALL_WINDOW)
+	switch (lastWindow)
 	{
-		ShowWindow(PANEL1_FILTER, true);
-		ShowWindow(PANEL2_FILTER, true);
+	case PanelId::ALL_WINDOWS:
+		ShowWindow(static_cast<int>(PanelId::PANEL1), true);
+		ShowWindow(static_cast<int>(PanelId::PANEL2), true);
+		break;
+
+	case PanelId::PANEL2:
+		ShowWindow(static_cast<int>(PanelId::PANEL2), true);
+		break;
+
+	case PanelId::PANEL1:
+	default:
+		ShowWindow(static_cast<int>(PanelId::PANEL1), true);
+		break;
 	}
-	else if (lastWindow == PANEL2_FILTER)
-	{
-		ShowWindow(PANEL2_FILTER, true);
-	}
-	else
-		ShowWindow(PANEL1_FILTER, true);
-	this->Resize(this);
+	Resize(this);
 }
 
-void CSplitterWithPanel::ClickShowButton(const int& id)
+// ============================================================================
+// Panel Visibility Control
+// ============================================================================
+
+void CSplitterWithPanel::ClickShowButton(int id)
 {
 	switch (id)
 	{
-	case PANEL1_FILTER:
+	case static_cast<int>(PanelId::PANEL1):
+		if (paneWindow1 && !paneWindow1->IsShown())
 		{
-			if (!paneWindow1->IsShown())
-			{
-				ShowWindow(PANEL1_FILTER, true);
-				this->Resize(this);
-			}
+			ShowWindow(id, true);
+			Resize(this);
 		}
 		break;
 
-	case PANEL2_FILTER:
+	case static_cast<int>(PanelId::PANEL2):
+		if (paneWindow2 && !paneWindow2->IsShown())
 		{
-			if (!paneWindow2->IsShown())
-			{
-				ShowWindow(PANEL2_FILTER, true);
-				this->Resize(this);
-			}
+			ShowWindow(id, true);
+			Resize(this);
 		}
 		break;
-	default: ;
 	}
 }
 
-void CSplitterWithPanel::ClosePane(const int& id)
+void CSplitterWithPanel::ClosePane(int id)
 {
-	if (paneWindow1->IsShown() && paneWindow2->IsShown())
+	// Update last visible panel state
+	if (paneWindow1 && paneWindow2)
 	{
-		lastWindow = ALL_WINDOW;
-	}
-	else if (paneWindow2->IsShown())
-	{
-		lastWindow = PANEL2_FILTER;
-	}
-	else
-		lastWindow = PANEL1_FILTER;
-
-	switch (id)
-	{
-	case PANEL1_FILTER:
-		{
-			ShowWindow(PANEL1_FILTER, false);
-		}
-		break;
-
-	case PANEL2_FILTER:
-		{
-			ShowWindow(PANEL2_FILTER, false);
-		}
-		break;
-	default: ;
+		lastWindow = (paneWindow1->IsShown() && paneWindow2->IsShown())
+			? PanelId::ALL_WINDOWS
+			: (paneWindow2->IsShown() ? PanelId::PANEL2 : PanelId::PANEL1);
 	}
 
-	//Test si les deux panels sont fermés
-	if (!paneWindow1->IsShown() && !paneWindow2->IsShown())
+	// Hide the requested panel
+	ShowWindow(id, false);
+
+	// Check if both panels are closed
+	if (paneWindow1 && paneWindow2 && !paneWindow1->IsShown() && !paneWindow2->IsShown())
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ALLPANECLOSED);
-		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+		GetParent()->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	this->Resize(this);
+	Resize(this);
 }
 
+// ============================================================================
+// Positioning & Sizing
+// ============================================================================
 
-int CSplitterWithPanel::GetPosition(const int& panel)
+int CSplitterWithPanel::GetPosition(int panel) const
 {
-	int size;
-	if (panel == 1)
-	{
-		if (!horizontal)
-		{
-			size = clickWindow1Toolbar->GetNavigatorWidth();
-		}
-		else
-		{
-			size = clickWindow1Toolbar->GetNavigatorHeight();
-		}
-	}
-	else
-	{
-		if (!horizontal)
-		{
-			size = clickWindow2Toolbar->GetNavigatorWidth();
-		}
-		else
-		{
-			size = clickWindow2Toolbar->GetNavigatorHeight();
-		}
-	}
-	return size;
+	const bool isHorizontal = GetHorizontal();
+	CClickToolbar* toolbar = (panel == 1) ? clickWindow1Toolbar.get() : clickWindow2Toolbar.get();
+
+	if (!toolbar)
+		return 0;
+
+	return isHorizontal ? toolbar->GetNavigatorHeight() : toolbar->GetNavigatorWidth();
 }
 
-void CSplitterWithPanel::FixWindow(const int& numWindow, const int& size)
+void CSplitterWithPanel::FixWindow(int numWindow, int size)
 {
 	this->numWindow = numWindow;
 	this->size = size;
 }
 
-void CSplitterWithPanel::ShowWindow(const int& id, const bool& show)
+int CSplitterWithPanel::GetDefaultPositionForWindow1() const
 {
-	if (paneWindow1 != nullptr && clickWindow1Toolbar != nullptr && paneWindow2 != nullptr && clickWindow2Toolbar !=
-		nullptr)
+	return -1;
+}
+
+int CSplitterWithPanel::GetDefaultPositionForWindow2() const
+{
+	return -1;
+}
+
+// ============================================================================
+// Panel Display Logic
+// ============================================================================
+
+void CSplitterWithPanel::ShowWindow(int id, bool show)
+{
+	if (!paneWindow1 || !clickWindow1Toolbar || !paneWindow2 || !clickWindow2Toolbar)
+		return;
+
+	if (id == static_cast<int>(PanelId::PANEL1))
+		ShowPanel1(show);
+	else if (id == static_cast<int>(PanelId::PANEL2))
+		ShowPanel2(show);
+}
+
+void CSplitterWithPanel::ShowPanel1(bool show)
+{
+	if (show)
 	{
-		switch (id)
+		paneWindow1->Show(true);
+		clickWindow1Toolbar->Show(false);
+
+		if (paneWindow2->IsShown())
 		{
-		case PANEL1_FILTER:
+			SetWindow(paneWindow1.get(), paneWindow2.get());
+			if (numWindow == 1)
+				SetWindow1FixPosition(true, size);
+			else
 			{
-				if (show)
-				{
-					paneWindow1->Show(true);
-					clickWindow1Toolbar->Show(false);
-					if (paneWindow2->IsShown())
-					{
-						this->SetWindow(paneWindow1, paneWindow2);
-						if (numWindow == 1)
-							SetWindow1FixPosition(true, size);
-						else
-						{
-							const int defaultPosition = GetDefaultPositionForWindow1();
-							if (defaultPosition != -1)
-								posBarInfos = defaultPosition;
-
-							SetWindow1FixPosition(false, posBarInfos);
-						}
-					}
-					else
-					{
-						if (!clickWindow2Toolbar->IsShown())
-							clickWindow2Toolbar->Show(true);
-						this->SetWindow(paneWindow1, clickWindow2Toolbar);
-						SetWindow2FixPosition(true, GetPosition(2));
-					}
-					this->SetSeparationBarVisible(true);
-					posBar = posBarInfos;
-				}
-				else if (showclickWindow1Toolbar)
-				{
-					paneWindow1->Show(false);
-					clickWindow1Toolbar->Show(true);
-					if (paneWindow2->IsShown())
-					{
-						this->SetWindow(clickWindow1Toolbar, paneWindow2);
-						SetWindow1FixPosition(true, GetPosition(1));
-						posBarInfos = posBar;
-						const int taille = GetPosition(1);
-						posBar = taille;
-						this->SetSeparationBarVisible(false);
-					}
-				}
-				else
-				{
-					paneWindow1->Show(false);
-					clickWindow1Toolbar->Show(false);
-					if (paneWindow2->IsShown())
-					{
-						this->SetWindow(nullptr, paneWindow2);
-						SetWindow1FixPosition(true, GetPosition(1));
-						posBarInfos = posBar;
-						const int taille = GetPosition(1);
-						posBar = taille;
-						this->SetSeparationBarVisible(false);
-					}
-				}
+				const int defaultPosition = GetDefaultPositionForWindow1();
+				if (defaultPosition != -1)
+					posBarInfos = defaultPosition;
+				SetWindow1FixPosition(false, posBarInfos);
 			}
-			break;
+		}
+		else
+		{
+			if (!clickWindow2Toolbar->IsShown())
+				clickWindow2Toolbar->Show(true);
+			SetWindow(paneWindow1.get(), clickWindow2Toolbar.get());
+			SetWindow2FixPosition(true, GetPosition(2));
+		}
 
-		case PANEL2_FILTER:
-			{
-				if (show)
-				{
-					paneWindow2->Show(true);
-					clickWindow2Toolbar->Show(false);
-					if (paneWindow1->IsShown())
-					{
-						this->SetWindow(paneWindow1, paneWindow2);
-						if (numWindow == 2)
-							SetWindow2FixPosition(true, size);
-						else
-						{
-							const int defaultPosition = GetDefaultPositionForWindow2();
-							if (defaultPosition != -1)
-								posBarInfos = defaultPosition;
+		SetSeparationBarVisible(true);
+		GetPosBar() = posBarInfos;
+	}
+	else if (showclickWindow1Toolbar)
+	{
+		paneWindow1->Show(false);
+		clickWindow1Toolbar->Show(true);
 
-							SetWindow2FixPosition(false, posBarInfos);
-						}
-					}
-					else
-					{
-						if (!clickWindow1Toolbar->IsShown())
-							clickWindow1Toolbar->Show(true);
+		if (paneWindow2->IsShown())
+		{
+			SetWindow(clickWindow1Toolbar.get(), paneWindow2.get());
+			SetWindow1FixPosition(true, GetPosition(1));
+			posBarInfos = GetPosBar();
+			GetPosBar() = GetPosition(1);
+			SetSeparationBarVisible(false);
+		}
+	}
+	else
+	{
+		paneWindow1->Show(false);
+		clickWindow1Toolbar->Show(false);
 
-						this->SetWindow(clickWindow1Toolbar, paneWindow2);
-						SetWindow1FixPosition(true, GetPosition(1));
-					}
-
-					this->SetSeparationBarVisible(true);
-					posBar = posBarInfos;
-				}
-				else if (showclickWindow2Toolbar)
-				{
-					paneWindow2->Show(false);
-					clickWindow2Toolbar->Show(true);
-					if (paneWindow1->IsShown())
-					{
-						this->SetWindow(paneWindow1, clickWindow2Toolbar);
-						posBarInfos = posBar;
-						int taille = GetPosition(2);
-						posBar = taille;
-						SetWindow2FixPosition(true, GetPosition(2));
-						this->SetSeparationBarVisible(false);
-					}
-				}
-				else
-				{
-					paneWindow2->Show(false);
-					clickWindow2Toolbar->Show(false);
-					if (paneWindow1->IsShown())
-					{
-						this->SetWindow(paneWindow1, nullptr);
-						posBarInfos = posBar;
-						int taille = GetPosition(2);
-						posBar = taille;
-						SetWindow2FixPosition(true, GetPosition(2));
-						this->SetSeparationBarVisible(false);
-					}
-				}
-			}
-			break;
-		default: ;
+		if (paneWindow2->IsShown())
+		{
+			SetWindow(nullptr, paneWindow2.get());
+			SetWindow1FixPosition(true, GetPosition(1));
+			posBarInfos = GetPosBar();
+			GetPosBar() = GetPosition(1);
+			SetSeparationBarVisible(false);
 		}
 	}
 }
 
-int CSplitterWithPanel::GetDefaultPositionForWindow2()
+void CSplitterWithPanel::ShowPanel2(bool show)
 {
-	return -1;
-}
+	if (show)
+	{
+		paneWindow2->Show(true);
+		clickWindow2Toolbar->Show(false);
 
-int CSplitterWithPanel::GetDefaultPositionForWindow1()
-{
-	return -1;
+		if (paneWindow1->IsShown())
+		{
+			SetWindow(paneWindow1.get(), paneWindow2.get());
+			if (numWindow == 2)
+				SetWindow2FixPosition(true, size);
+			else
+			{
+				const int defaultPosition = GetDefaultPositionForWindow2();
+				if (defaultPosition != -1)
+					posBarInfos = defaultPosition;
+				SetWindow2FixPosition(false, posBarInfos);
+			}
+		}
+		else
+		{
+			if (!clickWindow1Toolbar->IsShown())
+				clickWindow1Toolbar->Show(true);
+			SetWindow(clickWindow1Toolbar.get(), paneWindow2.get());
+			SetWindow1FixPosition(true, GetPosition(1));
+		}
+
+		SetSeparationBarVisible(true);
+		GetPosBar() = posBarInfos;
+	}
+	else if (showclickWindow2Toolbar)
+	{
+		paneWindow2->Show(false);
+		clickWindow2Toolbar->Show(true);
+
+		if (paneWindow1->IsShown())
+		{
+			SetWindow(paneWindow1.get(), clickWindow2Toolbar.get());
+			posBarInfos = GetPosBar();
+			GetPosBar() = GetPosition(2);
+			SetWindow2FixPosition(true, GetPosition(2));
+			SetSeparationBarVisible(false);
+		}
+	}
+	else
+	{
+		paneWindow2->Show(false);
+		clickWindow2Toolbar->Show(false);
+
+		if (paneWindow1->IsShown())
+		{
+			SetWindow(paneWindow1.get(), nullptr);
+			posBarInfos = GetPosBar();
+			GetPosBar() = GetPosition(2);
+			SetWindow2FixPosition(true, GetPosition(2));
+			SetSeparationBarVisible(false);
+		}
+	}
 }

@@ -4,6 +4,9 @@
 #include <ThumbnailDataStorage.h>
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace Regards::Control;
 using namespace Regards::Scanner;
 using namespace Regards::Window;
@@ -13,32 +16,35 @@ using namespace Regards::Picture;
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                          const bool& testValidity)
-	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity),
+	parent(parent),
+	numItemSelected(-1),
+	process_end(true)
 {
-	this->parent = parent;
-	numItemSelected = -1;
-	process_end = true;
 	moveOnPaint = false;
 	threadDataProcess = true;
 }
 
-CThumbnailMultiPage::~CThumbnailMultiPage(void)
-{
-}
 
-void CThumbnailMultiPage::OnPictureClick(CThumbnailData* data)
+void CThumbnailMultiPage::OnPictureClick(const int& numPhotoId)
 {
-	int timePosition = 0;
-
-	if (parent != nullptr && data != nullptr)
+	if (parent != nullptr)
 	{
-		timePosition = data->GetTimePosition();
-		wxCommandEvent evt(wxEVT_ANIMATIONPOSITION);
-		evt.SetExtraLong(timePosition);
-		parent->GetEventHandler()->AddPendingEvent(evt);
+		CIcone* icone = GetIconeById(numPhotoId);
+		if (icone != nullptr)
+		{
+			if (icone->GetPtData() != nullptr)
+			{
+				int timePosition = icone->GetPtData()->GetTimePosition();
+				wxCommandEvent evt(wxEVT_ANIMATIONPOSITION);
+				evt.SetExtraLong(timePosition);
+				parent->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+
 	}
 
-	SetVideoPosition(timePosition);
+	SetVideoPosition(0);
 }
 
 int CThumbnailMultiPage::FindNumItem(const int& videoPos)
@@ -49,7 +55,7 @@ int CThumbnailMultiPage::FindNumItem(const int& videoPos)
 		CIcone *  icone = iconeList->GetElement(i);
 		if (icone != nullptr)
 		{
-			CThumbnailData* data = icone->GetData();
+			CThumbnailData* data = icone->GetPtData();
 			if (data != nullptr)
 			{
 				if (data->GetTimePosition() == videoPos)
@@ -127,7 +133,7 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t& videoPos)
 }
 
 void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
-                                                 vector<CImageVideoThumbnail*>& videoThumbnail)
+	std::vector<std::unique_ptr<CImageVideoThumbnail>>& videoThumbnail)
 {
 	int x = 0;
 	int y = 0;
@@ -138,10 +144,9 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 	if (videoThumbnail.size() > 0)
 	{
 		int size = videoThumbnail.size();
-		for (int i = 0; i < videoThumbnail.size(); i++)
+		int i = 0;
+		for (auto& thumbnail : videoThumbnail)
 		{
-			CImageVideoThumbnail* thumbnail = videoThumbnail.at(i);
-
 			float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 			auto thumbnailData = new CThumbnailDataStorage(filename);
 			//thumbnailData->SetStorage(nullptr);
@@ -159,9 +164,8 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 
 			thumbnailData->SetBitmap(thumbnail->image);
 
-			auto pBitmapIcone = new CIcone();
+			auto pBitmapIcone = new CIcone(thumbnailData);
 			pBitmapIcone->SetNumElement(i);
-			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			pBitmapIcone->SetWindowPos(x, y);
 
@@ -175,15 +179,17 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
-			if (thumbnail != nullptr)
-				delete thumbnail;
-
-			thumbnail = nullptr;
+			i++;
 		}
 		processIdle = false;
 	}
 
-	iconeList = iconeListLocal;
+	auto old = std::move(iconeList);
+	iconeList.reset(iconeListLocal);
+
+	nbElementInIconeList = iconeList->GetNbElement();
+
+	old->EraseThumbnailListWithIcon();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
@@ -194,7 +200,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString& filename,
 	needToRefresh = true;
 }
 
-void CThumbnailMultiPage::SetFile(const wxString& filename, vector<CImageVideoThumbnail*>& videoThumbnail)
+void CThumbnailMultiPage::SetFile(const wxString& filename, std::vector<std::unique_ptr<CImageVideoThumbnail>>& videoThumbnail)
 {
 	InitScrollingPos();
 	InitWithDefaultPicture(filename, videoThumbnail);

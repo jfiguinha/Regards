@@ -31,24 +31,20 @@
   <VirtualDirectory Name="src">
     <File Name="FileUtility.cpp"/>
     <File Name="ConvertUtility.cpp"/>
-    <File Name="base64.cpp"/>
-    <File Name="DateValidation.cpp"/>
     <File Name="utility.cpp"/>
     <File Name="picture_utility.cpp"/>
-    <File Name="wxmd5.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="base64.h"/>
-    <File Name="DateValidation.hpp"/>
     <File Name="utility.h"/>
     <File Name="picture_utility.h"/>
     <File Name="ConvertUtility.h"/>
     <File Name="FileUtility.h"/>
-    <File Name="wxmd5.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options="-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
       </Compiler>
@@ -134,6 +130,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

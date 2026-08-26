@@ -99,7 +99,7 @@ namespace Regards
             int                 orientation_= 0;
             int                 sar_num_    = 1;
             int                 sar_den_    = 1;
-
+            double              duration    = 0.0;
             // Position courante en frames (pour SkipFrame relatif)
             int64_t             current_frame_ = 0;
         };

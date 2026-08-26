@@ -7,7 +7,7 @@
 #include <wx/animate.h>
 #include <queue>
 #include "ThreadLoadingBitmap.h"
-using namespace std;
+
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
@@ -56,11 +56,11 @@ namespace Regards::Window
 			return this;
 		}
 
-		int GetIconeHeight();
-		int GetIconeWidth();
+		virtual int GetIconeHeight();
+		virtual int GetIconeWidth();
 
 		virtual void SetActifItem(const int& idPhoto, const bool& move);
-		virtual void GetSelectItem(vector<CThumbnailData*>& vectorData);
+		virtual void GetSelectItemFilename(vector<wxString>& vectorData);
 
 		void SetTheme(CThemeThumbnail* theme);
 
@@ -68,14 +68,14 @@ namespace Regards::Window
 
 		void Resize() override;
 		static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
-
+		static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 		void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 		int GetTabValue();
 		virtual void ProcessVideo() {};
+		CIcone* GetIconeByPath(const wxString& filepath);
 
 	protected:
 
-		void PaintNow();
 		void Render(wxDC& dc);
 		void RefreshIcone(const int& idPhoto);
 		CIcone* GetIconeById(const int& idPhoto);
@@ -125,9 +125,10 @@ namespace Regards::Window
 		void OnLeftPosition(wxCommandEvent& event);
 		void OnTopPosition(wxCommandEvent& event);
 		void OnRefreshThumbnail(wxCommandEvent& event);
-
+		virtual void OnScrollBarV(wxCommandEvent& event);
+		virtual void OnScrollBarH(wxCommandEvent& event);
 		void CalculControlSize();
-		virtual void OnPictureClick(CThumbnailData* data) = 0;
+		virtual void OnPictureClick(const int& numPhotoId) = 0;
 		void InitScrollingPos();
 		virtual void AfterSetList();
 		void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
@@ -142,13 +143,13 @@ namespace Regards::Window
 		void RefreshIconeVideo(const int& idPhoto);
 		static bool ItemFilenameCompFonct(wxString filename, CIcone* icone) /* Définit une fonction. */;
 
-		void ExecuteTimer(const int& numId, wxTimer* refresh);
-
+		void ExecuteTimer(const int& numId, std::unique_ptr<wxTimer> & refresh);
+        bool IsVisible(CIcone* icone);
 		void RefreshThumbnail(wxCommandEvent& event);
-
-
-		CIcone* GetIconeByPath(const wxString& filepath);
-
+        void SendMoveEvent(wxEventType type);
+        void RefreshAnimatedIcon(int photoId);
+		
+		static bool ItemCompFonctPath(wxString filepath, CIcone* icone);
 		bool UpdateThumbnail(CIcone* pBitmapIcone);
 		//------------------------------------------------------------
 		//Variable
@@ -162,9 +163,8 @@ namespace Regards::Window
 		bool enableTimer = true;
 		int nbElement = 0;
 		int nbPhotoElement = 0;
-		//Variable
-		//std::mutex lockIconeList;
-		CIconeList* iconeList;
+
+		
 
 		bool processThumbnailVideo = false;
 		wxString videoFilename = "";
@@ -191,13 +191,9 @@ namespace Regards::Window
 
 		//wxBitmap bitmapFolder;
 		wxBitmap bitmapPhoto;
-		vector<int> TabSize;
+		std::vector<int> TabSize;
 		int Max;
 
-		wxTimer* refreshMouseMove;
-		wxTimer* refreshActifTimer;
-		wxTimer* refreshSelectTimer;
-		wxTimer* timeClick;
 		CThemeThumbnail themeThumbnail;
 
 		int controlWidth;
@@ -208,7 +204,7 @@ namespace Regards::Window
 		int timeActif = 0;
 		int timeSelect = 0;
 
-		wxActivityIndicator* m_waitingAnimation;
+		
 		bool animationStart = false;
 		int numActifPhotoId = -1;
 		int numSelectPhotoId = -1;
@@ -220,8 +216,7 @@ namespace Regards::Window
 
 		int stepLoading;
 
-		wxAnimation* m_animation;
-		wxTimer* timerAnimation;
+
 		bool render;
 		bool check;
 		bool testValidity;
@@ -246,9 +241,24 @@ namespace Regards::Window
 		int nbElementInIconeList = 0;
 		bool firstRefresh = true;
 
+		int themeIconeHeight = 0;
+		int themeIconeWidth = 0;
+
 		bool stopToGetNbElement = false;
 		std::vector<wxString> listIconeToGenerate;
 		wxWindowID localid;
 
+        
+		std::unique_ptr<CIconeList> iconeList = nullptr;
+		static std::unique_ptr<wxAnimation> m_animation;
+		std::unique_ptr<wxTimer> timerAnimation;
+        
+		std::unique_ptr<wxTimer> refreshMouseMove;
+		std::unique_ptr<wxTimer> refreshActifTimer;
+		std::unique_ptr<wxTimer> refreshLoadingTimer;
+		std::unique_ptr<wxTimer> refreshSelectTimer;
+		std::unique_ptr<wxTimer> timeClick;
+        std::unique_ptr<wxActivityIndicator> m_waitingAnimation;
+		int pictureAnimationPos = 0;
 	};
 }

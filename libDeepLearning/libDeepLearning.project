@@ -34,9 +34,11 @@
     <File Name="DetectRotation.h"/>
     <File Name="DeepLearning.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;-pthread;" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++17;-Wall;-fpermissive;-pthread;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
@@ -47,6 +49,7 @@
         <IncludePath Value="../libextern/CvPlot/inc"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenCLEngine"/>
+        <IncludePath Value="../libSqlEngine"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="">
@@ -134,6 +137,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

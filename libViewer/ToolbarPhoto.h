@@ -12,7 +12,7 @@ namespace Regards::Viewer
 	public:
 		CToolbarPhoto(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface,
 		              const bool& vertical);
-		~CToolbarPhoto() override;
+		~CToolbarPhoto() = default;
 		void SetFolderPush();
 		void SetCriteriaPush();
 		void SetFaceListPush();
@@ -22,8 +22,8 @@ namespace Regards::Viewer
 		void EventManager(const int& id) override;
 
 		CToolbarInterface* toolbarInterface;
-		CToolbarTexte* folder;
-		CToolbarTexte* facelist;
-		CToolbarTexte* criteria;
+		std::unique_ptr<CToolbarTexte> folder;
+		std::unique_ptr<CToolbarTexte> facelist;
+		std::unique_ptr<CToolbarTexte> criteria;
 	};
 }

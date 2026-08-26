@@ -10,7 +10,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementSlide(CTreeElementSlideInterface* eventInterface);
-		~CTreeElementSlide() override;
+		~CTreeElementSlide() = default;
 
 		CTreeElementSlide& operator=(const CTreeElementSlide& other);
 

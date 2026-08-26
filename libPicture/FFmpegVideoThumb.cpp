@@ -67,6 +67,14 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
     fps_       = av_q2d(stream->avg_frame_rate);
     nb_frames_ = stream->nb_frames;
 
+
+ 
+
+    if (fmt_ctx_->duration != AV_NOPTS_VALUE)
+    {
+        duration = static_cast<double>(fmt_ctx_->duration) / AV_TIME_BASE;
+    }
+
     // Ratio d'aspect (SAR)
     AVRational sar = av_guess_sample_aspect_ratio(fmt_ctx_, stream, nullptr);
     sar_num_ = (sar.num > 0) ? sar.num : 1;
@@ -137,6 +145,8 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
     is_open_ = true;
 }
 
+
+
 // ---------------------------------------------------------------------------
 // Destructeur — libération complète et ordonnée de toutes les ressources
 // FIX [critique #3] : plus de raw pointer, chaque ressource FFmpeg est
@@ -194,8 +204,13 @@ int CFFmpegVideoThumb::GetDuration()
 {
     if (!is_open_)
         return 0;
+
+	if (duration > 0.0)
+		return static_cast<int>(duration);
+
     if (fps_ <= 0.0)
         return 0;
+
     return static_cast<int>(static_cast<double>(nb_frames_) / fps_);
 }
 

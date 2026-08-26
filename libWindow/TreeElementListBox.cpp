@@ -3,10 +3,12 @@
 #include <LibResource.h>
 using namespace Regards::Window;
 
-CTreeElementListBox::CTreeElementListBox(CTreeElementSlideInterface* eventInterface)
+CTreeElementListBox::CTreeElementListBox(
+	CTreeElementSlideInterface* eventInterface)
+	: eventInterface(eventInterface),
+	position(0)
 {
-	this->eventInterface = eventInterface;
-	position = 0;
+
 }
 
 wxBitmap CTreeElementListBox::CreateTriangle(const int& width, const int& height, const wxColor& color,
@@ -49,9 +51,6 @@ CTreeElementListBox& CTreeElementListBox::operator=(const CTreeElementListBox& o
 	return *this;
 }
 
-CTreeElementListBox::~CTreeElementListBox()
-{
-}
 
 void CTreeElementListBox::SetElementPos(const int& x, const int& y)
 {
@@ -61,17 +60,20 @@ void CTreeElementListBox::SetElementPos(const int& x, const int& y)
 
 wxString CTreeElementListBox::GetPositionValue()
 {
-	CMetadata metadata;
-	if (tabValue.size() > position)
-		metadata = tabValue.at(position);
+	if (position >= 0 &&
+		position < static_cast<int>(tabValue.size()))
+	{
+		return tabValue[position].value;
+	}
 
-	return metadata.value;
+	return {};
 }
 
 void CTreeElementListBox::SetTabValue(const vector<CMetadata>& value, const int& index)
 {
 	tabValue = value;
 	position = index;
+	changeValue = true;
 }
 
 void CTreeElementListBox::SetExifKey(const wxString& exifKey)
@@ -86,18 +88,26 @@ void CTreeElementListBox::SetTheme(CThemeTreeListBox* theme)
 
 void CTreeElementListBox::TestMaxMinValue()
 {
-	if (position >= tabValue.size())
+	if (tabValue.empty())
+	{
+		position = 0;
+		return;
+	}
+
+	if (position >= static_cast<int>(tabValue.size()))
 		position = static_cast<int>(tabValue.size()) - 1;
 
 	if (position < 0)
 		position = 0;
+
+	
 }
 
 void CTreeElementListBox::ClickElement(wxWindow* window, const int& x, const int& y)
 {
 	if (x >= moinsPos.x && x < (moinsPos.width + moinsPos.x))
 	{
-		//Click button moins
+		changeValue = true;
 		position--;
 		TestMaxMinValue();
 		CMetadata data = tabValue[position];
@@ -106,7 +116,7 @@ void CTreeElementListBox::ClickElement(wxWindow* window, const int& x, const int
 	}
 	else if (x >= plusPos.x && x < (plusPos.width + plusPos.x))
 	{
-		//Click button plus
+		changeValue = true;
 		position++;
 		TestMaxMinValue();
 		CMetadata data = tabValue[position];
@@ -115,12 +125,9 @@ void CTreeElementListBox::ClickElement(wxWindow* window, const int& x, const int
 	}
 }
 
-
-void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const int& y)
+void CTreeElementListBox::GenerateBitmap(wxDC* deviceContext)
 {
-	//bool oldRender = true;
-
-	auto bitmapBuffer = wxBitmap(themeTreeListBox.GetWidth(), themeTreeListBox.GetHeight());
+	bitmapBuffer = wxBitmap(themeTreeListBox.GetWidth(), themeTreeListBox.GetHeight());
 	wxMemoryDC memDC(bitmapBuffer);
 
 	wxRect rc;
@@ -134,12 +141,11 @@ void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const i
 
 	int yMedium = (themeTreeListBox.GetHeight() - renderElement.y) / 2;
 	CWindowMain::DrawTexte(&memDC, GetPositionValue(), 0, yMedium, themeTreeListBox.font);
-
 	if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeTreeListBox.GetButtonWidth() || buttonMoins.GetHeight()
 		!= themeTreeListBox.GetButtonHeight()))
 	{
 		buttonMoins = CLibResource::CreatePictureFromSVG("IDB_MINUS", themeTreeListBox.GetButtonWidth(),
-		                                                 themeTreeListBox.GetButtonHeight());
+			themeTreeListBox.GetButtonHeight());
 	}
 
 
@@ -147,9 +153,8 @@ void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const i
 		themeTreeListBox.GetButtonHeight()))
 	{
 		buttonPlus = CLibResource::CreatePictureFromSVG("IDB_PLUS", themeTreeListBox.GetButtonWidth(),
-		                                                themeTreeListBox.GetButtonHeight());
+			themeTreeListBox.GetButtonHeight());
 	}
-
 
 	moinsPos.x = themeTreeListBox.GetWidth() - (buttonMoins.GetWidth() + themeTreeListBox.GetMarge() + buttonPlus.
 		GetWidth() + themeTreeListBox.GetMarge());
@@ -164,10 +169,18 @@ void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const i
 	plusPos.height = themeTreeListBox.GetButtonHeight();
 	memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
 
-
-	//memDC.DrawBitmap(buttonPlus, plusPos.x, plusPos.y);
-
 	memDC.SelectObject(wxNullBitmap);
+	
+}
 
+
+void CTreeElementListBox::DrawElement(wxDC* deviceContext, const int& x, const int& y)
+{
+	if (changeValue || !bitmapBuffer.IsOk() || bitmapBuffer.GetWidth() != themeTreeListBox.GetWidth() || bitmapBuffer.GetHeight() != themeTreeListBox.GetHeight())
+	{
+		GenerateBitmap(deviceContext);
+		if(changeValue)
+			changeValue = false;
+	}
 	deviceContext->DrawBitmap(bitmapBuffer, x, y);
 }

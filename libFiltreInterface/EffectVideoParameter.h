@@ -98,9 +98,7 @@ public:
 
 	};
     
-	~CVideoEffectParameter() override
-	{
-	};
+	~CVideoEffectParameter() = default;
 
 	//Video Denoising Parameter
 	bool openglDenoise;

@@ -51,20 +51,37 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numSuperResolution = 0;
 	useSuperResolution = 0;
 	cudaSupport = 0;
+	isDetectRotation = 0;
     useCuda = 0;
     openGLOutputColor = "RGBA";
-    videoEffectParameter = new CVideoEffectParameter();
+    videoEffectParameter = std::make_unique<CVideoEffectParameter>();
 
+}
+
+int CRegardsConfigParam::GetDetectRotation()
+{
+	return isDetectRotation;
+}
+
+void CRegardsConfigParam::SetDetectRotation(const int& isDetectRotation)
+{
+	this->isDetectRotation = isDetectRotation;
 }
 
 CVideoEffectParameter * CRegardsConfigParam::GetVideoEffectParameter()
 {
-    return videoEffectParameter;
+    return videoEffectParameter.get();
 }
 
 void CRegardsConfigParam::SetVideoEffectParameter(const CVideoEffectParameter * videoEffect)
 {
-    *videoEffectParameter = *videoEffect;
+	if (videoEffect == nullptr)
+	{
+		videoEffectParameter.reset();
+		return;
+	}
+
+	videoEffectParameter = std::make_unique<CVideoEffectParameter>(*videoEffect);
 }
 
 wxString CRegardsConfigParam::GetOpenGLOutputColor()
@@ -523,6 +540,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("cudaSupport", to_string(cudaSupport)));
     sectionPosition->append_node(node("useCuda", to_string(useCuda)));
 	sectionPosition->append_node(node("inverseRotation", to_string(inverseRotation)));
+	sectionPosition->append_node(node("detectRotation", to_string(isDetectRotation)));
 }
 
 void CRegardsConfigParam::SetVideoEffectParameter(xml_node<>* sectionPosition)
@@ -912,6 +930,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		
 		isThumbnailOpenCV = atoi(child_node->value());
 	}
+	child_node = position_node->first_node("detectRotation");
+	if (child_node != nullptr)
+	{
+
+
+		isDetectRotation = atoi(child_node->value());
+	}
+	
 }
 
 
@@ -963,7 +989,7 @@ void CRegardsConfigParam::SaveParameter()
 	SetWindowParameter(windowMode);
 	root->append_node(windowMode);
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
+	std::ofstream file(CConvertUtility::ConvertToStdString(filename).c_str());
 	if (file.is_open())
 	{
 		file << doc;
@@ -998,16 +1024,19 @@ void CRegardsConfigParam::LoadParameter()
 	xml_node<>* root_node;
 	//long nodeSize = 0;
 	root_node = doc.first_node("Parameter");
+	if (root_node == nullptr)
+	{
+		wxMessageBox("Invalid configuration file : missing Parameter node");
+		return;
+	}
 
-	xml_node<>* child_node = root_node->first_node("ImageLibrary");
-	if (child_node != nullptr)
-		GetImageLibrary(child_node);
+	if (auto* child = root_node->first_node("ImageLibrary"))
+		GetImageLibrary(child);
 
-	child_node = root_node->first_node("VideoLibrary");
-	if (child_node != nullptr)
+	if (auto* child_node = root_node->first_node("VideoLibrary"))
 		GetVideoLibrary(child_node);
 
-	child_node = root_node->first_node("EffectLibrary");
+	auto * child_node = root_node->first_node("EffectLibrary");
 	if (child_node != nullptr)
 		GetEffectLibrary(child_node);
 

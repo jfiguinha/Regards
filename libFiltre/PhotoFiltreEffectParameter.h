@@ -12,10 +12,6 @@ public:
 		intensity = 0;
 	};
 
-	~CPhotoFiltreEffectParameter() override
-	{
-	};
-
 	int red;
 	int green;
 	int blue;

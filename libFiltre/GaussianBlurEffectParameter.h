@@ -10,10 +10,6 @@ public:
 		boxSize = 3;
 	};
 
-	~CGaussianBlurEffectParameter() override
-	{
-	};
-
 	int radius;
 	int boxSize;
 };

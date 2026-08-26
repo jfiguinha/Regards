@@ -3,116 +3,82 @@
 #include "ScannerTheme.h"
 #include <FileUtility.h>
 #include <ParamInit.h>
-#include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include <RegardsConfigParam.h>
 using namespace Regards::Scanner;
 
-CMainTheme* CMainThemeInit::_singleton = nullptr;
+std::unique_ptr<CMainTheme> CMainThemeInit::_singleton = nullptr;
 wxString CMainThemeInit::documentPath = "";
-
-CMainThemeInit::CMainThemeInit()
-{
-}
-
-
-CMainThemeInit::~CMainThemeInit()
-{
-}
-
 
 CMainTheme* CMainThemeInit::getInstance()
 {
 	if (nullptr == _singleton)
-	{
-		auto viewerTheme = new CMainTheme();
-		Initialize(viewerTheme);
-		return viewerTheme;
-	}
-	return _singleton;
+		Initialize();
+
+    if (_singleton == nullptr)
+        return nullptr;
+
+    return _singleton.get();
 }
 
-void CMainThemeInit::Initialize(CMainTheme* param)
+void CMainThemeInit::Initialize()
 {
-	if (nullptr == _singleton)
-	{
-		/*
-		wxString filename = wxStandardPaths::Get().GetExecutablePath();
-		filename.append(L".viewer.theme");
-		_singleton = param;
-		_singleton->OpenFile(filename);
-		*/
-        int skinMode = 0;
-        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-        if (regardsParam != nullptr)
-            skinMode = regardsParam->GetSkinWindowMode();
-        
-         wxSystemAppearance systemApp = wxSystemSettings::GetAppearance();
-		wxStandardPathsBase& stdp = wxStandardPaths::Get();
-		 documentPath = stdp.GetDocumentsDir();
-         bool isDarkTheme =  systemApp.IsDark();
-         wxString resourceTheme = CFileUtility::GetResourcesFolderPath();
-         
-#ifdef WIN32
+    if (_singleton != nullptr)
+        return;
 
-         if (skinMode == 0)
-         {
-             if (isDarkTheme)
-                 documentPath.append("\\Regards\\Regards.dark.theme");
-             else
-                 documentPath.append("\\Regards\\Regards.light.theme");
+    _singleton = std::make_unique<CMainTheme>();
 
-             if (isDarkTheme)
-                 resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
-             else
-                 resourceTheme.append("\\theme\\Regards.viewer.light.theme");
-         }
-         else if (skinMode == 1)
-         {
-             documentPath.append("\\Regards\\Regards.light.theme");
-             resourceTheme.append("\\theme\\Regards.viewer.light.theme");
-         }
-         else
-         {
-             documentPath.append("\\Regards\\Regards.dark.theme");
-             resourceTheme.append("\\theme\\Regards.viewer.dark.theme");
-         }
-            
+    int skinMode = 0;
 
-#else
+    if (auto* regardsParam = CParamInit::getInstance())
+        skinMode = regardsParam->GetSkinWindowMode();
 
-         if (skinMode == 0)
-         {
+    const bool isDarkTheme =
+        wxSystemSettings::GetAppearance().IsDark();
 
-             if (isDarkTheme)
-                 documentPath.append("/Regards/Regards.dark.theme");
-             else
-                 documentPath.append("/Regards/Regards.light.theme");
+    wxString themeFile;
+    wxString resourceFile;
 
-             if (isDarkTheme)
-                 resourceTheme.append("/theme/Regards.viewer.dark.theme");
-             else
-                 resourceTheme.append("/theme/Regards.viewer.light.theme");
-         }
-         else if (skinMode == 1)
-         {
-             documentPath.append("/Regards/Regards.light.theme");
-             resourceTheme.append("/theme/Regards.viewer.light.theme");
-         }
-         else
-         {
-             documentPath.append("/Regards/Regards.dark.theme");
-             resourceTheme.append("/theme/Regards.viewer.dark.theme");
-         }
+    if (skinMode == 0)
+    {
+        themeFile = isDarkTheme
+            ? "Regards.dark.theme"
+            : "Regards.light.theme";
 
-#endif
+        resourceFile = isDarkTheme
+            ? "Regards.viewer.dark.theme"
+            : "Regards.viewer.light.theme";
+    }
+    else if (skinMode == 1)
+    {
+        themeFile = "Regards.light.theme";
+        resourceFile = "Regards.viewer.light.theme";
+    }
+    else
+    {
+        themeFile = "Regards.dark.theme";
+        resourceFile = "Regards.viewer.dark.theme";
+    }
 
-        if(!wxFileExists(documentPath))
-            wxCopyFile(resourceTheme, documentPath);
+    wxFileName userTheme(
+        CFileUtility::GetDocumentFolderPath(),
+        themeFile);
 
-		_singleton = param;
-        _singleton->OpenFile(documentPath);
+    wxFileName resourceTheme(
+        CFileUtility::GetResourcesFolderPath() +
+        wxFILE_SEP_PATH +
+        "theme",
+        resourceFile);
 
-	}
+    documentPath = userTheme.GetFullPath();
+
+    if (!wxFileExists(documentPath))
+    {
+        wxCopyFile(
+            resourceTheme.GetFullPath(),
+            documentPath);
+    }
+    _singleton->OpenFile(documentPath);
 }
 
 void CMainThemeInit::SaveTheme()

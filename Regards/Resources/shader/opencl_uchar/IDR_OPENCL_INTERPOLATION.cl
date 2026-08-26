@@ -1,430 +1,835 @@
-//Implementation de l'interpolation bicubic en OpenCL
-#define FILTER_PI 3.1415926535f
-#define FILTER_2PI 2.0f * 3.1415926535f
-#define FILTER_4PI 4.0f * 3.1415926535f
+#pragma OPENCL EXTENSION cl_khr_fp64 : disable
 
-// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
-//*****************************************************************
-inline float4 rgbaUintToFloat4(uint c)
+// ============================================================================
+// Optimized OpenCL interpolation
+//
+// Input / output format:
+//   uint = 0xAABBGGRR
+//
+// Supported filters:
+//   1  BBox
+//   2  Hermite
+//   3  Hanning
+//   4  Catmull-Rom
+//   5  Mitchell
+//   6  Triangle
+//   7  Quadratic
+//   8  Blackman
+//   9  Hamming
+//   10 Gaussian
+//   11 Bilinear
+//   12 Nearest
+//   default = Cubic
+//
+// Bicubic filters use a 4x4 neighborhood.
+// ============================================================================
+
+#define FILTER_PI   3.14159265358979323846f
+#define FILTER_2PI  6.28318530717958647692f
+#define FILTER_4PI  12.56637061435917295384f
+
+#define FILTER_EPSILON 1.0e-6f
+
+// ============================================================================
+// RGBA packing / unpacking
+// ============================================================================
+
+inline float4 rgbaUintToFloat4(const uint c)
 {
-    float4 rgba;
-    rgba.x = c & 0xff;
-    rgba.y = (c >> 8) & 0xff;
-    rgba.z = (c >> 16) & 0xff;
-    rgba.w = (c >> 24) & 0xff;
-    return rgba;
+    return convert_float4((uint4)(
+        c & 0xFFu,
+        (c >> 8) & 0xFFu,
+        (c >> 16) & 0xFFu,
+        (c >> 24) & 0xFFu));
 }
 
-// Inline device function to convert floating point rgba color to 32-bit unsigned integer
-//*****************************************************************
-inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
+inline uint rgbaFloat4ToUint(float4 rgba)
 {
-    unsigned int uiPackedPix = 0U;
-    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
-    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
-    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
-    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
-    return uiPackedPix;
+    rgba = clamp(rgba, 0.0f, 255.0f);
+
+    const uint4 c = convert_uint4(rgba + 0.5f);
+
+    return (c.x & 0xFFu) |
+           ((c.y & 0xFFu) << 8) |
+           ((c.z & 0xFFu) << 16) |
+           ((c.w & 0xFFu) << 24);
 }
 
-// Pre-computed filter functions inline - avoid function call overhead
-inline float KernelFilter_selection(float x, int type)
+// ============================================================================
+// Source access
+//
+// Clamp coordinates to the image boundaries.
+//
+// This is preferable to returning black outside the image because it avoids
+// dark borders when a 4x4 interpolation kernel reaches the edge.
+// ============================================================================
+
+inline uint GetPixel(
+    const __global uint* input,
+    const int x,
+    const int y,
+    const int width,
+    const int height)
 {
-    switch(type)
+    const int px = clamp(x, 0, width - 1);
+    const int py = clamp(y, 0, height - 1);
+
+    return input[px + py * width];
+}
+
+inline float4 GetColorSrc(
+    const int x,
+    const int y,
+    const __global uint* input,
+    const int width,
+    const int height)
+{
+    return rgbaUintToFloat4(
+        GetPixel(input, x, y, width, height));
+}
+
+inline uint GetColorSrcShort(
+    const int x,
+    const int y,
+    const __global uint* input,
+    const int width,
+    const int height)
+{
+    return GetPixel(input, x, y, width, height);
+}
+
+// ============================================================================
+// Filter support
+// ============================================================================
+
+inline int GetFilterRadius(const int type)
+{
+    switch (type)
     {
-        case 1: // BboxFilter
-            return (x <= 0.5f ? 1.0f : 0.0f);
-            
-        case 2: // HermiteFilter
-            if (x > 1.5f) return 0.0f;
-            if (x < -1.0f) return 0.0f;
-            if (x < 0.0f) return (2.0f*(-x)-3.0f)*(-x)*(-x)+1.0f;
-            if (x < 1.0f) return (2.0f*x-3.0f)*x*x+1.0f;
-            return 0.0f;
-            
-        case 3: // HanningFilter
-            if (x > 1.0f) return 0.0f;
-            return 0.54f + 0.46f*cos(FILTER_PI*x);
-            
-        case 4: // CatromFilter
-            if (x > 2.0f) return 0.0f;
-            if (x < -2.0f) return 0.0f;
-            if (x < -1.0f) return 0.5f*(4.0f+x*(8.0f+x*(5.0f+x)));
-            if (x < 0.0f) return 0.5f*(2.0f+x*x*(-5.0f-3.0f*x));
-            if (x < 1.0f) return 0.5f*(2.0f+x*x*(-5.0f+3.0f*x));
-            if (x < 2.0f) return 0.5f*(4.0f+x*(-8.0f+x*(5.0f-x)));
-            return 0.0f;
-            
-        case 5: // MitchellFilter
-            if (x > 2.0f) return 0.0f;
-            #define B   (1.0f/3.0f)
-            #define C   (1.0f/3.0f)
-            #define P0  ((  6.0f- 2.0f*B       )/6.0f)
-            #define P2  ((-18.0f+12.0f*B+ 6.0f*C)/6.0f)
-            #define P3  (( 12.0f- 9.0f*B- 6.0f*C)/6.0f)
-            #define Q0  ((       8.0f*B+24.0f*C)/6.0f)
-            #define Q1  ((     -12.0f*B-48.0f*C)/6.0f)
-            #define Q2  ((       6.0f*B+30.0f*C)/6.0f)
-            #define Q3  ((     - 1.0f*B- 6.0f*C)/6.0f)
-            if (x < -2.0f) return 0.0f;
-            if (x < -1.0f) return Q0-x*(Q1-x*(Q2-x*Q3));
-            if (x < 0.0f) return P0+x*x*(P2-x*P3);
-            if (x < 1.0f) return P0+x*x*(P2+x*P3);
-            if (x < 2.0f) return Q0+x*(Q1+x*(Q2+x*Q3));
-            return 0.0f;
-            
-        case 6: // TriangleFilter
-            if (x > 1.0f) return 0.0f;
-            if (x < -1.0f) return 0.0f;
-            if (x < 0.0f) return 1.0f+x;
-            return 1.0f-x;
-            
-        case 7: // QuadraticFilter
-            if (x > 1.5f) return 0.0f;
-            if (x < -1.5f) return 0.0f;
-            if (x < -0.5f) return 0.5f*(x+1.5f)*(x+1.5f);
-            if (x < 0.5f) return 0.75f-x*x;
-            return 0.5f*(x-1.5f)*(x-1.5f);
-            
-        case 8: // BlackmanFilter
-            if (x > 1.0f) return 0.0f;
-            float dN = 3.0f;
-            return 0.42f + 0.5f * cos(FILTER_2PI * x / ( dN - 1.0f )) + 0.08f * cos (FILTER_4PI * x / ( dN - 1.0f ));
-            
-        case 9: // HammingFilter
-            if (x > 1.0f) return 0.0f;
-            float dWindow = 0.54f + 0.46f * cos (FILTER_2PI * x);
-            float dSinc = (x == 0) ? 1.0f : sin (FILTER_PI * x) / (FILTER_PI * x);
-            return dWindow * dSinc;
-            
-        case 10: // GaussianFilter
-            if (fabs(x) > 1.25f) return 0.0f;
-            return exp(-x * x / 2.0f) / sqrt (FILTER_2PI);
-            
-        case 11: // BilinearFilter
-            return (x < 1.0f ? 1.0f - x : 0.0f);
-            
-        default: // CubicFilter
-            if (x > 2.0f) return 0.0f;
-            if (x < -2.0f) return 0.0f;
-            if (x < -1.0f) return (2.0f+x)*(2.0f+x)*(2.0f+x)/6.0f;
-            if (x < 0.0f) return (4.0f+x*x*(-6.0f-3.0f*x))/6.0f;
-            if (x < 1.0f) return (4.0f+x*x*(-6.0f+3.0f*x))/6.0f;
-            if (x < 2.0f) return (2.0f-x)*(2.0f-x)*(2.0f-x)/6.0f;
-            return 0.0f;
+        case 1:     // BBox
+        case 3:     // Hanning
+        case 6:     // Triangle
+        case 9:     // Hamming
+        case 11:    // Bilinear
+            return 1;
+
+        case 2:     // Hermite
+        case 7:     // Quadratic
+            return 2;
+
+        case 4:     // Catmull-Rom
+        case 5:     // Mitchell
+        case 8:     // Blackman
+        case 10:    // Gaussian
+        default:    // Cubic
+            return 2;
     }
 }
 
+// ============================================================================
+// BBox
+// ============================================================================
 
-inline float4 GetColorSrc(int x, int y, const __global uint *input, int widthIn, int heightIn)
+inline float BBoxFilter(const float x)
 {
-	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
-	{
-		int position = x + y * widthIn;
-		return rgbaUintToFloat4(input[position]);
-	}
-	return (float4)0.0f;
+    return fabs(x) <= 0.5f ? 1.0f : 0.0f;
 }
 
-inline uint GetColorSrc_short(int x, int y, const __global uint *input, int widthIn, int heightIn)
+// ============================================================================
+// Hermite
+// ============================================================================
+
+inline float HermiteFilter(const float x)
 {
-	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
-	{
-		int position = x + y * widthIn;
-		return input[position];
-	}
-	return 0;
+    const float ax = fabs(x);
+
+    if (ax >= 2.0f)
+        return 0.0f;
+
+    if (ax >= 1.0f)
+        return 0.0f;
+
+    return (2.0f * ax - 3.0f) * ax * ax + 1.0f;
 }
 
+// ============================================================================
+// Hanning
+// ============================================================================
 
-//***********************************************************************************************************
-//Two Pass Filter
-//***********************************************************************************************************
-// Helper: Horizontal pass - interpolate across 3 pixels in X direction
-inline float4 FilterHorizontal(float x, int y, const __global uint *input, int widthIn, int heightIn, int type)
+inline float HanningFilter(const float x)
 {
-	int valueA = (int)x;
-	float realA = x - valueA;
+    const float ax = fabs(x);
 
-	float fx1 = KernelFilter_selection(-1.0f - realA, type);
-	float fx2 = KernelFilter_selection(-realA, type);
-	float fx3 = KernelFilter_selection(1.0f - realA, type);
+    if (ax >= 1.0f)
+        return 0.0f;
 
-	float fxSum = fx1 + fx2 + fx3;
-	float fxInv = 1.0f / fxSum;
-
-	float4 left = GetColorSrc(valueA - 1, y, input, widthIn, heightIn) * (fx1 * fxInv);
-	float4 center = GetColorSrc(valueA, y, input, widthIn, heightIn) * (fx2 * fxInv);
-	float4 right = GetColorSrc(valueA + 1, y, input, widthIn, heightIn) * (fx3 * fxInv);
-
-	return left + center + right;
+    return 0.54f + 0.46f * cos(FILTER_PI * x);
 }
 
-// Helper: Vertical pass - interpolate across 3 pixels in Y direction using mix
-inline float4 FilterVertical(float4 row1, float4 row2, float4 row3, float y, int type)
+// ============================================================================
+// Catmull-Rom
+//
+// Standard Catmull-Rom cubic spline.
+// Support = [-2, 2]
+// ============================================================================
+
+inline float CatmullRomFilter(const float x)
 {
-	int valueB = (int)y;
-	float realB = y - valueB;
+    const float ax = fabs(x);
 
-	float fy1 = KernelFilter_selection(-(-1.0f - realB), type);
-	float fy2 = KernelFilter_selection(realB, type);
-	float fy3 = KernelFilter_selection(-(1.0f - realB), type);
+    if (ax >= 2.0f)
+        return 0.0f;
 
-	float fySum = fy1 + fy2 + fy3;
-	float fyInv = 1.0f / fySum;
-
-	float wny1 = fy1 * fyInv;
-	float wny2 = fy2 * fyInv;
-	float wny3 = fy3 * fyInv;
-
-	return mix(mix(row1, row2, wny2), row3, wny3);
-}
-
-// Two-pass separable filter interpolation
-inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
-{
-	int valueB = (int)y;
-
-	// Pass 1: Horizontal filtering on 3 rows
-	float4 row1 = FilterHorizontal(x, valueB - 1, input, widthIn, heightIn, type);
-	float4 row2 = FilterHorizontal(x, valueB, input, widthIn, heightIn, type);
-	float4 row3 = FilterHorizontal(x, valueB + 1, input, widthIn, heightIn, type);
-
-	// Pass 2: Vertical filtering using mix
-	float4 result = FilterVertical(row1, row2, row3, y, type);
-
-	return rgbaFloat4ToUint(result, 1.0f);
-}
-
-
-/*
-//***********************************************************************************************************
-//Old Pass Filter
-//***********************************************************************************************************
-inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
-{
-	float4 nDenom = 0.0f;
-	int valueA = (int)x;
-	int valueB = (int)y;
-	float realA = x - valueA;
-	float realB = y - valueB;
-	
-	float4 fy1 = KernelFilter_selection(-(-1.0f - realB), type);
-	float4 fy2 = KernelFilter_selection(realB, type);
-	float4 fy3 = KernelFilter_selection(-(1.0f - realB), type);
-	
-	float4 fx1 = KernelFilter_selection(-1.0f - realA, type);
-	float4 fx2 = KernelFilter_selection(- realA, type);
-	float4 fx3 = KernelFilter_selection(1.0f - realA, type);
-	
-	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
-
-	
-	float4 sum = GetColorSrc(x - 1, y - 1, input, widthIn, heightIn) * (fy1 * fx1);
-	sum += GetColorSrc(x , y - 1, input, widthIn, heightIn) * (fy1 * fx2);
-	sum += GetColorSrc(x + 1, y - 1, input, widthIn, heightIn) * (fy1 * fx3);
-	
-	sum += GetColorSrc(x - 1, y, input, widthIn, heightIn) * (fy2 * fx1);
-	sum += GetColorSrc(x , y, input, widthIn, heightIn) * (fy2 * fx2);
-	sum += GetColorSrc(x + 1, y, input, widthIn, heightIn) * (fy2 * fx3);
-
-	sum += GetColorSrc(x - 1, y + 1, input, widthIn, heightIn) * (fy3 * fx1);
-	sum += GetColorSrc(x , y + 1, input, widthIn, heightIn) * (fy3 * fx2);
-	sum += GetColorSrc(x + 1, y + 1, input, widthIn, heightIn) * (fy3 * fx3);
-	
-    return rgbaFloat4ToUint((sum / nDenom),1.0f);
-}
-*/
-
-/*
-//***********************************************************************************************************
-//Optimize Pass Filter
-//***********************************************************************************************************
-inline uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
-{
-	int valueA = (int)x;
-	int valueB = (int)y;
-	float realA = x - valueA;
-	float realB = y - valueB;
-
-	float fy1 = KernelFilter_selection(-(-1.0f - realB), type);
-	float fy2 = KernelFilter_selection(realB, type);
-	float fy3 = KernelFilter_selection(-(1.0f - realB), type);
-
-	float fx1 = KernelFilter_selection(-1.0f - realA, type);
-	float fx2 = KernelFilter_selection(- realA, type);
-	float fx3 = KernelFilter_selection(1.0f - realA, type);
-
-	float fxSum = fx1 + fx2 + fx3;
-	float fDenom = fy1 * fxSum + fy2 * fxSum + fy3 * fxSum;
-	float fInvDenom = 1.0f / fDenom;
-
-	float wnx1 = fx1 * fInvDenom;
-	float wnx2 = fx2 * fInvDenom;
-	float wnx3 = fx3 * fInvDenom;
-
-	float4 row1 = GetColorSrc(valueA - 1, valueB - 1, input, widthIn, heightIn) * wnx1
-				+ GetColorSrc(valueA, valueB - 1, input, widthIn, heightIn) * wnx2
-				+ GetColorSrc(valueA + 1, valueB - 1, input, widthIn, heightIn) * wnx3;
-
-	float4 row2 = GetColorSrc(valueA - 1, valueB, input, widthIn, heightIn) * wnx1
-				+ GetColorSrc(valueA, valueB, input, widthIn, heightIn) * wnx2
-				+ GetColorSrc(valueA + 1, valueB, input, widthIn, heightIn) * wnx3;
-
-	float4 row3 = GetColorSrc(valueA - 1, valueB + 1, input, widthIn, heightIn) * wnx1
-				+ GetColorSrc(valueA, valueB + 1, input, widthIn, heightIn) * wnx2
-				+ GetColorSrc(valueA + 1, valueB + 1, input, widthIn, heightIn) * wnx3;
-
-	float wny1 = fy1 * fInvDenom / fxSum;
-	float wny2 = fy2 * fInvDenom / fxSum;
-	float wny3 = fy3 * fInvDenom / fxSum;
-
-	float4 sum = mix(mix(row1, row2, wny2), row3, wny3);
-
-	return rgbaFloat4ToUint(sum, 1.0f);
-}
-*/
-
-inline uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y, float left, float top)
-{
-	float posX = (float)x * ratioX + left * ratioX;
-	float posY = (float)y * ratioY + top * ratioY;
-
-	if (angle == 270)
-	{
-		int srcx = posY;
-		int srcy = posX;
-
-		posX = srcx;
-		posY = srcy;
-
-		posX = widthIn - posX - 1;
-	}
-	else if (angle == 180)
-	{
-		posX = widthIn - posX - 1;
-		posY = heightIn - posY - 1;
-	}
-	else if (angle == 90)
-	{
-		int srcx = posY;
-		int srcy = posX;
-
-		posX = srcx;
-		posY = srcy;
-
-		posY = heightIn - posY - 1;
-	}
-	
-	if(angle == 90 || angle == 270)
-	{
-		if (flipV == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
-
-		if (flipH == 1)
-		{
-			posY = heightIn - posY - 1;
-		}
-	
-	}
-	else
-	{
-		if (flipH == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
-
-		if (flipV == 1)
-		{
-			posY = heightIn - posY - 1;
-		}
-	}
-
-	
-	if(type == 12)
-		return GetColorSrc_short(posX, posY, input, widthIn, heightIn);
-	return KernelExecution(posX, posY, input, widthIn, heightIn, type);
-}
-
-//----------------------------------------------------------------------------
-//Interpolation
-//----------------------------------------------------------------------------
-__kernel void Interpolation(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type)
-{
-	int width = widthOut;
-	int height = heightOut;
-
-    int x = get_global_id(0);
-	int y = get_global_id(1);
-
-    if(x < width && y < height && y >= 0 && x >= 0)	
+    if (ax < 1.0f)
     {
-		float ratioX = (float)widthIn / (float)width;
-		float ratioY = (float)heightIn / (float)height;
-		if (angle == 90)
-		{
-			ratioX = (float)widthIn / (float)height;
-			ratioY = (float)heightIn / (float)width;
-		}
-		else if(angle == 270)
-		{
-			ratioX = (float)widthIn / (float)height;
-			ratioY = (float)heightIn / (float)width;	
-		}
+        return 1.5f * ax * ax * ax
+             - 2.5f * ax * ax
+             + 1.0f;
+    }
 
-		int position = x + y * widthOut;
-		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, 0, 0);
-	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
+    return -0.5f * ax * ax * ax
+         + 2.5f * ax * ax
+         - 4.0f * ax
+         + 2.0f;
 }
 
-__kernel void InterpolationZone(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
+// ============================================================================
+// Mitchell-Netravali
+//
+// B = 1/3
+// C = 1/3
+// ============================================================================
+
+inline float MitchellFilter(const float x)
 {
-    int x = get_global_id(0);
-	int y = get_global_id(1);
+    const float ax = fabs(x);
 
-    if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
+    if (ax >= 2.0f)
+        return 0.0f;
+
+    const float B = 1.0f / 3.0f;
+    const float C = 1.0f / 3.0f;
+
+    if (ax < 1.0f)
     {
-		float ratioX = (float)widthIn / bitmapWidth;
-		float ratioY = (float)heightIn / bitmapHeight;
-		if (angle == 90)
-		{
-			ratioX = (float)widthIn / (float)bitmapHeight;
-			ratioY = (float)heightIn / (float)bitmapWidth;
-		}
-		else if(angle == 270)
-		{
-			ratioX = (float)widthIn / (float)bitmapHeight;
-			ratioY = (float)heightIn / (float)bitmapWidth;	
-		}
+        return ((12.0f - 9.0f * B - 6.0f * C) * ax * ax * ax
+              + (-18.0f + 12.0f * B + 6.0f * C) * ax * ax
+              + (6.0f - 2.0f * B)) / 6.0f;
+    }
 
-		int position = x + y * widthOut;
-		output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
-	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
+    return ((-B - 6.0f * C) * ax * ax * ax
+          + (6.0f * B + 30.0f * C) * ax * ax
+          + (-12.0f * B - 48.0f * C) * ax
+          + (8.0f * B + 24.0f * C)) / 6.0f;
 }
 
+// ============================================================================
+// Triangle
+// ============================================================================
 
-__kernel void InterpolationDirect(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int type)
+inline float TriangleFilter(const float x)
 {
-    int x = get_global_id(0);
-	int y = get_global_id(1);
+    const float ax = fabs(x);
 
-    if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
-    {
-		float ratioX = (float)widthIn / widthOut;
-		float ratioY = (float)heightIn / heightOut;
-		int position = x + y * widthOut;
-		float posX = (float)x * ratioX;
-		float posY = (float)y * ratioY;
-		
-		if(type == 12)
-			output[position] = GetColorSrc_short(posX, posY, input, widthIn, heightIn);
-		else
-			output[position] = KernelExecution(posX, posY, input, widthIn, heightIn, type);
-	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
+    return ax < 1.0f ? 1.0f - ax : 0.0f;
 }
 
+// ============================================================================
+// Quadratic
+// ============================================================================
+
+inline float QuadraticFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    if (ax >= 1.5f)
+        return 0.0f;
+
+    if (ax < 0.5f)
+        return 0.75f - ax * ax;
+
+    const float t = 1.5f - ax;
+
+    return 0.5f * t * t;
+}
+
+// ============================================================================
+// Blackman
+// ============================================================================
+
+inline float BlackmanFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    if (ax >= 1.0f)
+        return 0.0f;
+
+    const float t = x;
+
+    return 0.42f
+         + 0.5f * cos(FILTER_2PI * t / 2.0f)
+         + 0.08f * cos(FILTER_4PI * t / 2.0f);
+}
+
+// ============================================================================
+// Hamming + sinc
+// ============================================================================
+
+inline float HammingFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    if (ax >= 1.0f)
+        return 0.0f;
+
+    const float window =
+        0.54f + 0.46f * cos(FILTER_2PI * x);
+
+    const float sinc =
+        ax < FILTER_EPSILON
+        ? 1.0f
+        : sin(FILTER_PI * x) / (FILTER_PI * x);
+
+    return window * sinc;
+}
+
+// ============================================================================
+// Gaussian
+// ============================================================================
+
+inline float GaussianFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    if (ax >= 1.25f)
+        return 0.0f;
+
+    return exp(-0.5f * x * x) * 0.3989422804014327f;
+}
+
+// ============================================================================
+// Bilinear
+// ============================================================================
+
+inline float BilinearFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    return ax < 1.0f ? 1.0f - ax : 0.0f;
+}
+
+// ============================================================================
+// Cubic
+//
+// B = 0
+// C = 1/3
+//
+// This corresponds to the classic cubic filter used by the original code.
+// ============================================================================
+
+inline float CubicFilter(const float x)
+{
+    const float ax = fabs(x);
+
+    if (ax >= 2.0f)
+        return 0.0f;
+
+    if (ax < 1.0f)
+    {
+        return
+            (4.0f
+            - 6.0f * ax * ax
+            + 3.0f * ax * ax * ax) / 6.0f;
+    }
+
+    const float t = 2.0f - ax;
+
+    return t * t * t / 6.0f;
+}
+
+// ============================================================================
+// Filter selection
+// ============================================================================
+
+inline float KernelFilterSelection(
+    const float x,
+    const int type)
+{
+    switch (type)
+    {
+        case 1:
+            return BBoxFilter(x);
+
+        case 2:
+            return HermiteFilter(x);
+
+        case 3:
+            return HanningFilter(x);
+
+        case 4:
+            return CatmullRomFilter(x);
+
+        case 5:
+            return MitchellFilter(x);
+
+        case 6:
+            return TriangleFilter(x);
+
+        case 7:
+            return QuadraticFilter(x);
+
+        case 8:
+            return BlackmanFilter(x);
+
+        case 9:
+            return HammingFilter(x);
+
+        case 10:
+            return GaussianFilter(x);
+
+        case 11:
+            return BilinearFilter(x);
+
+        default:
+            return CubicFilter(x);
+    }
+}
+
+// ============================================================================
+// Compute 4 horizontal weights
+// ============================================================================
+
+inline void ComputeWeights4(
+    const float fraction,
+    const int type,
+    __private float* w0,
+    __private float* w1,
+    __private float* w2,
+    __private float* w3)
+{
+    *w0 = KernelFilterSelection(-1.0f - fraction, type);
+    *w1 = KernelFilterSelection(-fraction, type);
+    *w2 = KernelFilterSelection(1.0f - fraction, type);
+    *w3 = KernelFilterSelection(2.0f - fraction, type);
+
+    const float sum =
+        *w0 + *w1 + *w2 + *w3;
+
+    if (fabs(sum) > FILTER_EPSILON)
+    {
+        const float inv = 1.0f / sum;
+
+        *w0 *= inv;
+        *w1 *= inv;
+        *w2 *= inv;
+        *w3 *= inv;
+    }
+    else
+    {
+        // Fallback to the center pixel.
+        *w0 = 0.0f;
+        *w1 = 1.0f;
+        *w2 = 0.0f;
+        *w3 = 0.0f;
+    }
+}
+
+// ============================================================================
+// 4x4 separable interpolation
+//
+// This is the main interpolation path.
+//
+// Horizontal pass:
+//   4 pixels x 4 rows
+//
+// Vertical pass:
+//   4 horizontal results
+// ============================================================================
+
+inline uint KernelExecution(
+    const float x,
+    const float y,
+    const __global uint* input,
+    const int widthIn,
+    const int heightIn,
+    const int type)
+{
+    // Nearest neighbour
+    if (type == 12)
+    {
+        const int ix = convert_int_rtn(x);
+        const int iy = convert_int_rtn(y);
+
+        return GetColorSrcShort(
+            ix,
+            iy,
+            input,
+            widthIn,
+            heightIn);
+    }
+
+    const int baseX = convert_int_rtn(floor(x));
+    const int baseY = convert_int_rtn(floor(y));
+
+    const float fx = x - (float)baseX;
+    const float fy = y - (float)baseY;
+
+    float wx0, wx1, wx2, wx3;
+    float wy0, wy1, wy2, wy3;
+
+    ComputeWeights4(
+        fx,
+        type,
+        &wx0,
+        &wx1,
+        &wx2,
+        &wx3);
+
+    ComputeWeights4(
+        fy,
+        type,
+        &wy0,
+        &wy1,
+        &wy2,
+        &wy3);
+
+    const int x0 = baseX - 1;
+    const int x1 = baseX;
+    const int x2 = baseX + 1;
+    const int x3 = baseX + 2;
+
+    const int y0 = baseY - 1;
+    const int y1 = baseY;
+    const int y2 = baseY + 1;
+    const int y3 = baseY + 2;
+
+    // ------------------------------------------------------------------------
+    // Horizontal interpolation
+    // ------------------------------------------------------------------------
+
+    const float4 row0 =
+        GetColorSrc(x0, y0, input, widthIn, heightIn) * wx0 +
+        GetColorSrc(x1, y0, input, widthIn, heightIn) * wx1 +
+        GetColorSrc(x2, y0, input, widthIn, heightIn) * wx2 +
+        GetColorSrc(x3, y0, input, widthIn, heightIn) * wx3;
+
+    const float4 row1 =
+        GetColorSrc(x0, y1, input, widthIn, heightIn) * wx0 +
+        GetColorSrc(x1, y1, input, widthIn, heightIn) * wx1 +
+        GetColorSrc(x2, y1, input, widthIn, heightIn) * wx2 +
+        GetColorSrc(x3, y1, input, widthIn, heightIn) * wx3;
+
+    const float4 row2 =
+        GetColorSrc(x0, y2, input, widthIn, heightIn) * wx0 +
+        GetColorSrc(x1, y2, input, widthIn, heightIn) * wx1 +
+        GetColorSrc(x2, y2, input, widthIn, heightIn) * wx2 +
+        GetColorSrc(x3, y2, input, widthIn, heightIn) * wx3;
+
+    const float4 row3 =
+        GetColorSrc(x0, y3, input, widthIn, heightIn) * wx0 +
+        GetColorSrc(x1, y3, input, widthIn, heightIn) * wx1 +
+        GetColorSrc(x2, y3, input, widthIn, heightIn) * wx2 +
+        GetColorSrc(x3, y3, input, widthIn, heightIn) * wx3;
+
+    // ------------------------------------------------------------------------
+    // Vertical interpolation
+    // ------------------------------------------------------------------------
+
+    const float4 result =
+        row0 * wy0 +
+        row1 * wy1 +
+        row2 * wy2 +
+        row3 * wy3;
+
+    return rgbaFloat4ToUint(result);
+}
+
+// ============================================================================
+// Coordinate transformation
+//
+// Handles:
+//   - scaling
+//   - rotation 90 / 180 / 270
+//   - horizontal flip
+//   - vertical flip
+// ============================================================================
+
+inline uint CalculateInterpolation(
+    const __global uint* input,
+    const int widthIn,
+    const int heightIn,
+    const int widthOut,
+    const int heightOut,
+    const int flipH,
+    const int flipV,
+    const int angle,
+    const int type,
+    const float ratioX,
+    const float ratioY,
+    const int x,
+    const int y,
+    const float left,
+    const float top)
+{
+    float posX =
+        ((float)x + left) * ratioX;
+
+    float posY =
+        ((float)y + top) * ratioY;
+
+    // ------------------------------------------------------------------------
+    // Rotation
+    // ------------------------------------------------------------------------
+
+    if (angle == 90)
+    {
+        const float tmp = posX;
+
+        posX = posY;
+        posY = (float)heightIn - tmp - 1.0f;
+    }
+    else if (angle == 180)
+    {
+        posX = (float)widthIn - posX - 1.0f;
+        posY = (float)heightIn - posY - 1.0f;
+    }
+    else if (angle == 270)
+    {
+        const float tmp = posX;
+
+        posX = (float)widthIn - posY - 1.0f;
+        posY = tmp;
+    }
+
+    // ------------------------------------------------------------------------
+    // Flip
+    //
+    // For 90 / 270 degrees the axes are exchanged.
+    // ------------------------------------------------------------------------
+
+    if (angle == 90 || angle == 270)
+    {
+        if (flipV)
+            posX = (float)widthIn - posX - 1.0f;
+
+        if (flipH)
+            posY = (float)heightIn - posY - 1.0f;
+    }
+    else
+    {
+        if (flipH)
+            posX = (float)widthIn - posX - 1.0f;
+
+        if (flipV)
+            posY = (float)heightIn - posY - 1.0f;
+    }
+
+    // ------------------------------------------------------------------------
+    // Nearest
+    // ------------------------------------------------------------------------
+
+    if (type == 12)
+    {
+        return GetColorSrcShort(
+            convert_int_rtn(posX),
+            convert_int_rtn(posY),
+            input,
+            widthIn,
+            heightIn);
+    }
+
+    return KernelExecution(
+        posX,
+        posY,
+        input,
+        widthIn,
+        heightIn,
+        type);
+}
+
+// ============================================================================
+// Interpolation
+// ============================================================================
+
+__kernel void Interpolation(
+    __global uint* output,
+    const __global uint* input,
+    const int widthIn,
+    const int heightIn,
+    const int widthOut,
+    const int heightOut,
+    const int flipH,
+    const int flipV,
+    const int angle,
+    const int type)
+{
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+
+    if (x >= widthOut || y >= heightOut)
+        return;
+
+    // ------------------------------------------------------------------------
+    // For rotations 90 / 270 the output dimensions are exchanged.
+    // ------------------------------------------------------------------------
+
+    float ratioX;
+    float ratioY;
+
+    if (angle == 90 || angle == 270)
+    {
+        ratioX = (float)widthIn / (float)heightOut;
+        ratioY = (float)heightIn / (float)widthOut;
+    }
+    else
+    {
+        ratioX = (float)widthIn / (float)widthOut;
+        ratioY = (float)heightIn / (float)heightOut;
+    }
+
+    const int position =
+        x + y * widthOut;
+
+    output[position] =
+        CalculateInterpolation(
+            input,
+            widthIn,
+            heightIn,
+            widthOut,
+            heightOut,
+            flipH,
+            flipV,
+            angle,
+            type,
+            ratioX,
+            ratioY,
+            x,
+            y,
+            0.0f,
+            0.0f);
+}
+
+// ============================================================================
+// InterpolationZone
+// ============================================================================
+
+__kernel void InterpolationZone(
+    __global uint* output,
+    const __global uint* input,
+    const int widthIn,
+    const int heightIn,
+    const int widthOut,
+    const int heightOut,
+    const float left,
+    const float top,
+    const float bitmapWidth,
+    const float bitmapHeight,
+    const int flipH,
+    const int flipV,
+    const int angle,
+    const int type)
+{
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+
+    if (x >= widthOut || y >= heightOut)
+        return;
+
+    float ratioX;
+    float ratioY;
+
+    if (angle == 90 || angle == 270)
+    {
+        ratioX =
+            (float)widthIn / bitmapHeight;
+
+        ratioY =
+            (float)heightIn / bitmapWidth;
+    }
+    else
+    {
+        ratioX =
+            (float)widthIn / bitmapWidth;
+
+        ratioY =
+            (float)heightIn / bitmapHeight;
+    }
+
+    const int position =
+        x + y * widthOut;
+
+    output[position] =
+        CalculateInterpolation(
+            input,
+            widthIn,
+            heightIn,
+            widthOut,
+            heightOut,
+            flipH,
+            flipV,
+            angle,
+            type,
+            ratioX,
+            ratioY,
+            x,
+            y,
+            left,
+            top);
+}
+
+// ============================================================================
+// InterpolationDirect
+// ============================================================================
+
+__kernel void InterpolationDirect(
+    __global uint* output,
+    const __global uint* input,
+    const int widthIn,
+    const int heightIn,
+    const int widthOut,
+    const int heightOut,
+    const int type)
+{
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+
+    if (x >= widthOut || y >= heightOut)
+        return;
+
+    const float ratioX =
+        (float)widthIn / (float)widthOut;
+
+    const float ratioY =
+        (float)heightIn / (float)heightOut;
+
+    const float posX =
+        (float)x * ratioX;
+
+    const float posY =
+        (float)y * ratioY;
+
+    const int position =
+        x + y * widthOut;
+
+    if (type == 12)
+    {
+        output[position] =
+            GetColorSrcShort(
+                convert_int_rtn(posX),
+                convert_int_rtn(posY),
+                input,
+                widthIn,
+                heightIn);
+    }
+    else
+    {
+        output[position] =
+            KernelExecution(
+                posX,
+                posY,
+                input,
+                widthIn,
+                heightIn,
+                type);
+    }
+}

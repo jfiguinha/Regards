@@ -14,7 +14,7 @@ namespace Regards::Window
 	{
 	public:
 		wxRect rect;
-		CSeparationBar* separationBar;
+		std::unique_ptr<CSeparationBar> separationBar;
 		int separationBarId;
 		bool isHorizontal;
 		int posBar;
@@ -37,6 +37,12 @@ namespace Regards::Window
 
 		wxSize GetSize();
 
+		template<typename T>
+		T* GetAs() const
+		{
+			return dynamic_cast<T*>(window);
+		}
+
 		wxRect rect;
 		wxRect rect_old;
 		Pos position;
@@ -51,10 +57,10 @@ namespace Regards::Window
 		int diffWidth = 0;
 		int diffHeight = 0;
 
-		CSeparationBarToAdd* separationBar;
+		std::unique_ptr<CSeparationBarToAdd> separationBar;
 
 	private:
-		CWindowMain* window;
-		CWindowOpenGLMain* windowOpengl;
+		CWindowMain* window = nullptr;
+		CWindowOpenGLMain* windowOpengl = nullptr;
 	};
 }

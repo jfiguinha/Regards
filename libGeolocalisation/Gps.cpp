@@ -1,83 +1,12 @@
 #include "header.h"
 #include "Gps.h"
-#include <curl/curl.h>
+#include "httprequest.h"
 #include <ConvertUtility.h>
-using namespace Regards::Internet;
 #include <appcontext.h>
 extern AppContext application_context;
 
-class CGpscurl
-{
-public:
-	CGpscurl()
-	{
-		curl = curl_easy_init();
-	}
+using namespace Regards::Internet;
 
-	~CGpscurl()
-	{
-		if (curl != nullptr)
-		{
-			curl_easy_cleanup(curl);
-		}
-	}
-
-
-	static size_t write_data(void* ptr, size_t size, size_t nmemb, struct url_data* data)
-	{
-		size_t index = data->size;
-		size_t n = (size * nmemb);
-		char* tmp;
-
-		data->size += (size * nmemb);
-
-#ifdef DEBUG
-		fprintf(stderr, "data at %p size=%ld nmemb=%ld\n", ptr, size, nmemb);
-#endif
-		tmp = static_cast<char*>(realloc(data->data, data->size + 1)); /* +1 for '\0' */
-
-		if (tmp != nullptr)
-		{
-			data->data = tmp;
-		}
-		else
-		{
-			if (data->data)
-			{
-				free(data->data);
-			}
-			fprintf(stderr, "Failed to allocate memory.\n");
-			return 0;
-		}
-
-		memcpy((data->data + index), ptr, n);
-		data->data[data->size] = '\0';
-
-		return size * nmemb;
-	}
-
-	void PerformHttpGet(url_data* data, const char* httpAdress)
-	{
-		if (curl != nullptr)
-		{
-			CURLcode res;
-			curl_easy_setopt(curl, CURLOPT_URL, httpAdress);
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, data);
-			//curl_share_setopt(curl, CURLSHOPT_LOCKFUNC);
-			res = curl_easy_perform(curl); /* ignores error */
-			if (res != CURLE_OK)
-			{
-				wxString error = curl_easy_strerror(res);
-				//wxMessageBox(error);
-				printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-			}
-			//curl_share_setopt(curl, CURLSHOPT_UNLOCKFUNC);
-		}
-	}
-
-	CURL* curl = nullptr;
-};
 
 
 //Test parameter /extras/location.gp?lat=48.896168&long=2.387500&format=xml wxString server = L"www.geoplugin.net";
@@ -85,7 +14,6 @@ public:
 CGps::CGps(const wxString& server, const wxString& apiKey)
 {
 	serverHttp = server;
-	gpsUrl = new CGpscurl();
 	this->apiKey = apiKey;
 
 }
@@ -93,7 +21,6 @@ CGps::CGps(const wxString& server, const wxString& apiKey)
 bool CGps::IsLocalisationAvailable(const wxString& server, const wxString& apiKey)
 {
 	//wxString result = GeolocalisationGPS("48.839996", "2.379706");
-	CGpscurl* gpsUrl = new CGpscurl();
 	wxString latitude = "48.839996";
 	wxString longitude = "2.379706";
 
@@ -106,39 +33,14 @@ bool CGps::IsLocalisationAvailable(const wxString& server, const wxString& apiKe
 	httpAdress.append(L"&type=postcode");
 	httpAdress.append(L"&apiKey=");
 	httpAdress.append(apiKey);
-	struct url_data data;
-	data.size = 0;
-	data.data = static_cast<char*>(malloc(4096)); /* reasonable size initial buffer */
-	if (nullptr == data.data)
-	{
-		printf("CGps GeolocalisationGPS Failed to allocate memory \n");
-		fprintf(stderr, "Failed to allocate memory.\n");
+	///wxString xml = Regards::Internet::CHttpRequest::ExecuteRequest(httpAdress);
+
+	HttpResponse response = Regards::Internet::CHttpRequest::Get(httpAdress);
+	wxString xml = "";
+	if (response.IsSuccess())
+		xml = response.body;
+	else
 		return false;
-	}
-
-	data.data[0] = '\0';
-	gpsUrl->PerformHttpGet(&data, CConvertUtility::ConvertToUTF8(httpAdress));
-
-	//wxString mystring2(chars, wxConvUTF8);
-	wxString xml(data.data, wxConvUTF8);
-
-	size_t pos_error = xml.find("error");
-	size_t pos_Unauthorized = xml.find("Unauthorized");
-
-	if(pos_error != -1 || pos_Unauthorized != -1)
-	{
-		free(data.data);
-		delete gpsUrl;
-		return false;
-	}
-
-
-	//printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
-	//printf("Data : %s \n", data.data);
-
-	free(data.data);
-
-	delete gpsUrl;
 
 	return true;
 }
@@ -146,9 +48,7 @@ bool CGps::IsLocalisationAvailable(const wxString& server, const wxString& apiKe
 
 CGps::~CGps()
 {
-	if (gpsUrl)
-		delete gpsUrl;
-	//CloseHttpRequest();
+
 }
 
 float CGps::GetGpsfValue(const wxString& gpsValue)
@@ -236,31 +136,17 @@ bool CGps::GeolocalisationGPS(const wxString& latitude, const wxString& longitud
 		httpAdress.append(L"&type=postcode");
 		httpAdress.append(L"&apiKey=");
 		httpAdress.append(apiKey);
-		struct url_data data;
-		data.size = 0;
-		data.data = static_cast<char*>(malloc(4096)); /* reasonable size initial buffer */
-		if (nullptr == data.data)
-		{
-			printf("CGps GeolocalisationGPS Failed to allocate memory \n");
-			fprintf(stderr, "Failed to allocate memory.\n");
-			return false;
-		}
-
-		data.data[0] = '\0';
-		gpsUrl->PerformHttpGet(&data, CConvertUtility::ConvertToUTF8(httpAdress));
-
 		//wxString mystring2(chars, wxConvUTF8);
-		wxString xml(data.data, wxConvUTF8);
 
-		//printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
-		//printf("Data : %s \n", data.data);
-
-		geoPluginVector.clear();
-		ImportationGeocodePlugin(xml);
-
-		free(data.data);
-
-		if(xml.size() == 0)
+		HttpResponse response = Regards::Internet::CHttpRequest::Get(httpAdress);
+		wxString xml = "";
+		if (response.IsSuccess())
+		{
+			xml = response.body;
+			geoPluginVector.clear();
+			ImportationGeocodePlugin(xml);
+		}
+		else
 			returnValue = false;
 	}
 	catch (...)
@@ -289,43 +175,6 @@ wxString CGps::FindElement(const wxString& xml, const wxString& baliseBegin, con
 	return xml.substr(i, j - i);
 }
 
-/*
-bool CGps::ImportationGeoPlugin(const wxString& xml)
-{
-	//int j = 0;
-	wxString data = L"";
-	wxString value = L"";
-	wxString xmlData = xml;
-	wxString baliseBegin = L"<geoPlugin>";
-	wxString baliseEnd = L"</geoPlugin>";
-	do
-	{
-		data = FindElement(xmlData, baliseBegin, baliseEnd);
-		if (data != L"")
-		{
-			CGeoPluginValue geoValue;
-			value = FindElement(data, L"<geoplugin_place>", L"</geoplugin_place>");
-			geoValue.SetPlace(value);
-			value = FindElement(data, L"<geoplugin_countryCode>", L"</geoplugin_countryCode>");
-			geoValue.SetCountryCode(value);
-			value = FindElement(data, L"<geoplugin_region>", L"</geoplugin_region>");
-			geoValue.SetRegion(value);
-
-			geoPluginVector.push_back(geoValue);
-
-			int i = static_cast<int>(xmlData.find(baliseEnd));
-			if (i != -1)
-			{
-				i += baliseEnd.length();
-			}
-			xmlData = xml.substr(i, xml.size() - i);
-		}
-	}
-	while (data != L"");
-
-	return true;
-}
-*/
 
 bool CGps::ImportationGeocodePlugin(const wxString& xml)
 {

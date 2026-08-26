@@ -5,7 +5,6 @@
 #include <LibResource.h>
 using namespace Regards::Window;
 
-
 std::atomic_bool CMasterWindow::endProgram = false;
 tbb::concurrent_vector<CMasterWindow*> CMasterWindow::listMainWindow;
 tbb::concurrent_vector<CMasterWindow*> CMasterWindow::listProcessWindow;
@@ -45,28 +44,11 @@ void CMasterWindow::StopAllProcess(const wxString& title, const wxString& messag
 
 }
 
-void CMasterWindow::ThreadIdle(void* data)
+void CMasterWindow::ProcessOnSizeEvent(wxWindow* window, wxSizeEvent& event)
 {
-	auto main = static_cast<CMasterWindow*>(data);
-	if (main != nullptr && !endProgram)
-    {
-        //printf("CMasterWindow::ThreadIdle %s \n", main->name.ToStdString().c_str());
-		main->ProcessIdle();
-        
-    }
-	main->PushThreadIdleEvent();
-}
-
-void CMasterWindow::ProcessOnIdleEndEvent(wxCommandEvent& event)
-{
-	windowMainPimpl->DeleteThread();
-	processEnd = true;
-}
-
-void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
-{
-	int _width = event.GetSize().GetX();
-	int _height = event.GetSize().GetY();
+	const wxSize clientSize = window->GetClientSize();
+	int _width = clientSize.GetWidth();
+	int _height = clientSize.GetHeight();
 	if (_width <= 20 && _height <= 20)
 	{
 		//not corrected size
@@ -74,8 +56,8 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 	}
 	else
 	{
-		windowMainPimpl->width = _width * scaleFactor;
-		windowMainPimpl->height = _height * scaleFactor;
+		width = _width * scaleFactor;
+		height = _height * scaleFactor;
 		Resize();
 	}
 
@@ -88,7 +70,6 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 CMasterWindow::CMasterWindow(void)
 {
 	processStop = false;
-	windowMainPimpl = std::make_unique<CWindowMainPimpl>();
 	processEnd = true;
 	processIdle = false;
 	id = listMainWindow.size();
@@ -97,8 +78,7 @@ CMasterWindow::CMasterWindow(void)
 
 CMasterWindow::~CMasterWindow(void)
 {
-	if (id < listMainWindow.size())
-		listMainWindow[id] = nullptr;
+	listMainWindow.clear();
 }
 
 void CMasterWindow::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
@@ -123,43 +103,38 @@ wxSize CMasterWindow::GetSizeTexte(wxDC* dc, const wxString& libelle, const CThe
 
 wxRect CMasterWindow::GetWindowRect()
 {
-	auto rc = wxRect(0, 0, windowMainPimpl->width, windowMainPimpl->height);
+	auto rc = wxRect(0, 0, width, height);
 	return rc;
 }
 
 void CMasterWindow::SetWindowHeight(const int& height)
 {
-	windowMainPimpl->height = height;
+	this->height = height;
 }
 
 int CMasterWindow::GetWindowHeight()
 {
-	return windowMainPimpl->height;
+	return height;
 }
 
 void CMasterWindow::SetWindowWidth(const int& width)
 {
-	windowMainPimpl->width = width;
+	this->width = width;
 }
 
 int CMasterWindow::GetWindowWidth()
 {
-	return windowMainPimpl->width;
-}
-
-void CMasterWindow::StartThread()
-{
-	if (processIdle && windowMainPimpl->threadIdle == nullptr && !endProgram && !stopProcess)
-	{
-		//ProcessIdle();
-		windowMainPimpl->threadIdle = new std::thread(ThreadIdle, this);
-		processEnd = false;
-	}
+	return width;
 }
 
 void CMasterWindow::SetEndProgram()
 {
 	endProgram = true;
+}
+
+bool CMasterWindow::GetEndProgram()
+{
+	return endProgram;
 }
 
 void CMasterWindow::SetStopProcess(const bool& state)

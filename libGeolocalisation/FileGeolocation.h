@@ -28,6 +28,7 @@ namespace Regards
 			}
 
 			void SetFile(const wxString& filename, const wxString& libNotGeo);
+			void SetInfosGPS(const wxString& libelle);
 			wxString GetLatitude();
 			wxString GetLongitude();
 			float GetFLatitude();
@@ -38,7 +39,7 @@ namespace Regards
 			wxString GetDateTimeInfos();
 			wxString GetFilename();
 			wxString Geolocalize();
-			bool Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto);
+			wxString Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto);
 			// void RefreshData();
 			wxString GenerateGeolocalisationString(const wxString& countryCode, const wxString& region,
 			                                       const wxString& place);

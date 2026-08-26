@@ -8,16 +8,15 @@ CSqlCountry::CSqlCountry()
 {
 }
 
-
-CSqlCountry::~CSqlCountry()
-{
-}
-
 /////////////////////////////////////////////////////////////////
 //Chargement des informations sur les attributs
 /////////////////////////////////////////////////////////////////
 bool CSqlCountry::GetCountry(CountryVector* countryVector)
 {
+	if (countryVector == nullptr)
+		return false;
+
+	countryVector->clear();
 	m_countryVector = countryVector;
 	return (ExecuteRequest("SELECT NumCountry, CodeCountry, LibelleContinent, LibelleCountry FROM COUNTRY") != -1)
 		       ? true
@@ -30,24 +29,10 @@ int CSqlCountry::TraitementResult(CSqlResult* sqlResult)
 	while (sqlResult->Next())
 	{
 		CCountry _cCountry;
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				_cCountry.SetId(sqlResult->ColumnDataInt(i));
-				break;
-			case 1:
-				_cCountry.SetCode(sqlResult->ColumnDataText(i));
-				break;
-			case 2:
-				_cCountry.SetContinent(sqlResult->ColumnDataText(i));
-				break;
-			case 3:
-				_cCountry.SetLibelle(sqlResult->ColumnDataText(i));
-				break;
-			}
-		}
+		_cCountry.SetId(sqlResult->ColumnDataInt(0));
+		_cCountry.SetCode(sqlResult->ColumnDataText(1));
+		_cCountry.SetContinent(sqlResult->ColumnDataText(2));
+		_cCountry.SetLibelle(sqlResult->ColumnDataText(3));
 		m_countryVector->push_back(_cCountry);
 		nbResult++;
 	}

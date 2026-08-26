@@ -800,6 +800,10 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="2PassScale.h" />
     <ClInclude Include="AudioVideoFilter.h" />
+    <ClInclude Include="avir.h" />
+    <ClInclude Include="avir_dil.h" />
+    <ClInclude Include="avir_float4_sse.h" />
+    <ClInclude Include="avir_float8_avx.h" />
     <ClInclude Include="BilateralEffectParameter.h" />
     <ClInclude Include="bilateralFilter.h" />
     <ClInclude Include="BitmapDisplay.h" />
@@ -905,7 +909,6 @@
     </ClCompile>
     <ClCompile Include="2PassScale.cpp" />
     <ClCompile Include="AudioVideoFilter.cpp" />
-    <ClCompile Include="avir_opencl.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="BokehFilter.cpp" />

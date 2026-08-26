@@ -13,40 +13,34 @@
 #include <wx/timectrl.h>
 #include <wx/spinctrl.h>
 #include <wx/dateevt.h>
+#include <videothumb.h>
+#include "ShowPreview.h"
 
-namespace Regards::Control
-{
-	class CShowPreview;
-}
+
 
 using namespace Regards::Control;
 
 //(*Headers(TiffOption)
-//*)
-class CPreviewDlg;
+
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
 
-namespace Regards::Video
-{
-	class CVideoThumb;
-}
 
 class CompressionAudioVideoOption : public wxDialog
 {
 public:
-	CompressionAudioVideoOption(wxWindow* parent);
-	~CompressionAudioVideoOption() override;
-	void GetCompressionOption(CVideoOptionCompress* videoOptionCompress);
+	CompressionAudioVideoOption();
+	~CompressionAudioVideoOption() = default;
+	void GetCompressionOption();
 	void SetFile(const wxString& videoFilename, const wxString& videoOutputFilename);
 	wxButton* btnCancel;
 	wxButton* btnOk;
 	wxButton* btnPreview;
 	//wxPanel * panel;
 	bool IsOk();
+	bool IsCancel();
 
 	wxCheckBox* ckAudioBitRate;
 	wxComboBox* cbAudioBitRate;
@@ -112,7 +106,7 @@ public:
 #endif
 	wxStaticBox* stPreviewPicture;
 	void ChangeLabelPicture(const wxString& label);
-
+	CVideoOptionCompress * GetVideoCompressionPt();
 protected:
 	//(*Identifiers(TiffOption)
 	//*)
@@ -144,17 +138,15 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	Regards::Video::CVideoThumb * ffmpegTranscoding = nullptr;
-#ifndef USE_PREVIEW_INTEGRATE
-		CPreviewDlg * previewDlg;
-#endif
-	CSliderVideoSelection* sliderVideoPosition;
-	CVideoEffectParameter* videoEffectParameter;
 	//int ret = 0;
 	wxImage scale;
 	wxString extension;
-	//bool skipEvent = false;
-	//bool previewShow = false;
-	CShowPreview* showBitmapWindow;
+	bool isCancel = false;
+
+	std::unique_ptr<Regards::Video::CVideoThumb>  ffmpegTranscoding = nullptr;
+	std::unique_ptr<CSliderVideoSelection> sliderVideoPosition = nullptr;
+	std::unique_ptr<CVideoEffectParameter> videoEffectParameter = nullptr;
+	std::unique_ptr<CShowPreview> showBitmapWindow = nullptr;
+	std::unique_ptr<CVideoOptionCompress> videoCompressOption;
 	DECLARE_EVENT_TABLE()
 };

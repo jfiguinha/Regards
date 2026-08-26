@@ -29,6 +29,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="COpenCLAvirResizer.cpp"/>
+    <File Name="OpenCLKernelBuilder.cpp"/>
     <File Name="utility_opencl.cpp"/>
     <File Name="OpenCLContext.cpp"/>
     <File Name="OpenCLParameter.cpp"/>
@@ -36,15 +38,19 @@
     <File Name="OpenCLEffectVideo.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="COpenCLAvirResizer.h"/>
+    <File Name="OpenCLKernelBuilder.h"/>
     <File Name="utility_opencl.h"/>
     <File Name="OpenCLContext.h"/>
     <File Name="OpenCLParameter.h"/>
     <File Name="OpenCLFilter.h"/>
     <File Name="OpenCLEffectVideo.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options="-Wall;" Assembler="">
+      <Compiler Options=";-std=gnu++17;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options="-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libFiltreInterface"/>
@@ -146,6 +152,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

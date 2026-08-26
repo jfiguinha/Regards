@@ -17,7 +17,7 @@
 #include <SqlPhotos.h>
 #include <RegardsConfigParam.h>
 #include <MediaInfo.h>
-#include <VideoStabilization.h>
+
 #include <FiltreEffetCPU.h>
 #include <aspectratio.h>
 #include <ParamInit.h>
@@ -25,8 +25,6 @@
 #include "DataAVFrame.h"
 #include <FaceDetector.h>
 #include <appcontext.h>
-extern AppContext application_context;
-
 using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
@@ -38,8 +36,10 @@ using namespace Regards::Sqlite;
 #define TIMER_PLAYSTOP 0x10003
 #define TIMER_SUBTITLE 0x10004
 
-
+extern AppContext application_context;
 AVFrame* copyFrameBuffer = nullptr;
+
+
 
 
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, IVideoInterface* eventPlayer)
@@ -70,6 +70,11 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, wxWindow* window, 
 	pause = false;
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
+
+	floatRect.left = 0.0f;
+	floatRect.right = 1.0f;
+	floatRect.top = 0.0f;
+	floatRect.bottom = 1.0f;
 
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
@@ -210,13 +215,20 @@ void CVideoControlSoft::OnPauseMovie(wxCommandEvent& event)
 
 void CVideoControlSoft::SetParent(wxWindow* parent)
 {
+	if (parent == nullptr)
+		return;
+
+	if (parentRender == parent && ffmfc != nullptr)
+		return;
+
 	parentRender = parent;
 
-	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
-	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
-	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
-	assSubtitleTimer = new wxTimer(parentRender, TIMER_SUBTITLE);
-	ffmfc = new CFFmfc(parentRender, wxID_ANY);
+	fpsTimer = std::make_unique<wxTimer>(parentRender, TIMER_FPS);
+	playStartTimer = std::make_unique<wxTimer>(parentRender, TIMER_PLAYSTART);
+	playStopTimer = std::make_unique<wxTimer>(parentRender, TIMER_PLAYSTOP);
+	assSubtitleTimer = std::make_unique<wxTimer>(parentRender, TIMER_SUBTITLE);
+
+	ffmfc = std::make_unique<CFFmfc>(parentRender, wxID_ANY);
 }
 
 
@@ -246,9 +258,16 @@ bool CVideoControlSoft::IsPause()
 
 float CVideoControlSoft::GetMovieRatio()
 {
-	return videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
-}
+	if (videoEffectParameter.tabRatio.empty())
+		return 1.0f;
 
+	const int index = std::clamp(
+		videoEffectParameter.ratioSelect,
+		0,
+		static_cast<int>(videoEffectParameter.tabRatio.size()) - 1);
+
+	return videoEffectParameter.tabRatio[index];
+}
 cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 {
 	cv::Mat bitmap;
@@ -611,27 +630,34 @@ void CVideoControlSoft::MoveRight()
 
 void CVideoControlSoft::ZoomOn()
 {
+	const int maxIndex =
+		static_cast<int>(videoEffectParameter.tabZoom.size()) - 1;
+
+	if (videoEffectParameter.zoomSelect >= maxIndex)
+		return;
+
 	CalculCenterPicture();
 
-	
-	videoEffectParameter.zoomSelect++;
-	
+	++videoEffectParameter.zoomSelect;
+
+	shrinkVideo = false;
 
 	CalculPositionPicture(centerX, centerY);
-
 	UpdateScrollBar();
 }
 
 void CVideoControlSoft::ZoomOut()
 {
+	if (videoEffectParameter.zoomSelect <= 0)
+		return;
+
 	CalculCenterPicture();
 
-	
-	videoEffectParameter.zoomSelect--;
-	
+	--videoEffectParameter.zoomSelect;
+
+	shrinkVideo = false;
 
 	CalculPositionPicture(centerX, centerY);
-
 	UpdateScrollBar();
 }
 
@@ -707,7 +733,7 @@ void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 	{
 		int _flipH = 0;
 		int _flipV = 0;
-		CSqlPhotos::GetAngleAndFlip(exif, angle, _flipH, _flipV);
+		application_context.GetAngleAndFlip(exif, angle, _flipH, _flipV);
 		if (_flipH)
 			flipH = true;
 		if (_flipV)
@@ -774,13 +800,18 @@ void CVideoControlSoft::OnUpdateFiltreEffect(wxCommandEvent& event)
 	{
 		config->SetVideoEffectParameter(videoParameter);
 	}
+
+	delete videoParameter;
 }
 
 void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 {
+	if (effectParameter == nullptr || parentRender == nullptr)
+		return;
+
 	wxCommandEvent event(wxEVENT_UPDATEEFFECTFILTER);
-	event.SetClientData(effectParameter);
-	wxPostEvent(parentRender, event);
+	event.SetClientData(new CEffectParameter(*effectParameter));
+	wxQueueEvent(parentRender, event.Clone());
 }
 
 bool CVideoControlSoft::GetPausedValue()
@@ -804,11 +835,7 @@ void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
 
 CEffectParameter* CVideoControlSoft::GetParameter()
 {
-	auto videoParameter = new CVideoEffectParameter();
-	
-	*videoParameter = videoEffectParameter;
-	
-	return videoParameter;
+	return new CVideoEffectParameter(videoEffectParameter);
 }
 
 
@@ -941,7 +968,7 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
-
+		videoStart = false;
 
 		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
 		{
@@ -959,48 +986,28 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 
 CVideoControlSoft::~CVideoControlSoft()
 {
-    /*
-	if (_threadVideo != nullptr)
-	{
-		_threadVideo->join();
-		delete _threadVideo;
-	}
-    */
+	if (fpsTimer)
+		fpsTimer->Stop();
 
-	if (assSubtitleTimer->IsRunning())
-		assSubtitleTimer->Stop();
-
-	if (playStartTimer->IsRunning())
+	if (playStartTimer)
 		playStartTimer->Stop();
 
-	if (playStopTimer->IsRunning())
+	if (playStopTimer)
 		playStopTimer->Stop();
 
-
-
-	if (hq3d != nullptr)
-		delete hq3d;
-
-	if (openCVStabilization != nullptr)
-		delete openCVStabilization;
-
-	delete playStartTimer;
-	delete assSubtitleTimer;
-	delete fpsTimer;
-
-	if (renderBitmapOpenGL != nullptr)
-	{
-		delete renderBitmapOpenGL;
-	}
-
-	if (openclEffectYUV != nullptr)
-		delete openclEffectYUV;
+	if (assSubtitleTimer)
+		assSubtitleTimer->Stop();
 
 	if (ffmfc)
-		delete ffmfc;
+	{
+		ffmfc->Quit();
+	}
 
-	if (pictureFrame != nullptr)
-		delete pictureFrame;
+	openclEffectYUV.reset();
+	openCVStabilization.reset();
+	hq3d.reset();
+	renderBitmapOpenGL.reset();
+	pictureFrame.reset();
 
 }
 
@@ -1012,6 +1019,13 @@ void CVideoControlSoft::OnSetSubtitle(wxCommandEvent& event)
 		int timing = event.GetInt();
 		subtitleText = *textSub;
 		std::vector<wxString> listString = CConvertUtility::split(subtitleText, ',');
+
+		if (listString.empty())
+		{
+			delete textSub;
+			return;
+		}
+
 		int timeShow = atoi(listString.at(0));
 		if (listString.size() > 9)
 		{
@@ -1098,10 +1112,7 @@ int CVideoControlSoft::Play(const wxString& movie)
 
 		if (movie != filename)
 		{
-			if (openCVStabilization != nullptr)
-				delete openCVStabilization;
-
-			openCVStabilization = nullptr;
+			openCVStabilization.reset();
 
 			if (playStartTimer->IsRunning())
 				playStartTimer->Stop();
@@ -1169,9 +1180,11 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		pause = false;
 		videoEnd = false;
 		videoStart = true;
+
+		Resize();
 		fpsTimer->Start(1000);
 		ShrinkVideo();
-
+		
 		wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
@@ -1212,339 +1225,462 @@ bool CVideoControlSoft::IsAvailable()
 
 bool CVideoControlSoft::ApplyVideoEffect()
 {
-	if(videoEffectParameter.interpolationQuality > 0)
+	if (videoEffectParameter.interpolationQuality > 0)
 		return true;
-	return (videoEffectParameter.autoConstrast || videoEffectParameter.stabilizeVideo || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation || videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast || videoEffectParameter.filmEnhance || videoEffectParameter.filmcolorisation) && videoEffectParameter.effectEnable;
+
+	return videoEffectParameter.effectEnable &&
+		(videoEffectParameter.autoConstrast ||
+			videoEffectParameter.stabilizeVideo ||
+			videoEffectParameter.filmEnhance ||
+			videoEffectParameter.filmcolorisation);
 }
+
+#ifdef _DEBUG
+
+void CVideoControlSoft::DebugRenderTime(
+	const std::chrono::high_resolution_clock::time_point& start,
+	const char* name)
+{
+	const auto end =
+		std::chrono::high_resolution_clock::now();
+
+	const auto ms =
+		std::chrono::duration_cast<std::chrono::milliseconds>(
+			end - start);
+
+#ifdef WIN32
+	std::wstring message =
+		L"Time taken by " +
+		std::wstring(name, name + strlen(name)) +
+		L" : " +
+		std::to_wstring(ms.count()) +
+		L" ms\n";
+
+	OutputDebugStringW(message.c_str());
+#else
+	std::cout
+		<< "Time taken by "
+		<< name
+		<< " : "
+		<< ms.count()
+		<< " ms\n";
+#endif
+}
+
+#endif
 
 void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
-	isAvailable = false;
-#ifdef _DEBUG
-    using std::chrono::high_resolution_clock;
-    using std::chrono::duration_cast;
-    using std::chrono::duration;
-    using std::chrono::milliseconds;
+	if (canvas == nullptr || renderOpenGL == nullptr)
+		return;
 
-    auto t1 = high_resolution_clock::now();
+	isAvailable = false;
+
+#ifdef _DEBUG
+	const auto renderStart = std::chrono::high_resolution_clock::now();
 #endif
-	if (renderBitmapOpenGL == nullptr)
+
+	// ---------------------------------------------------------------------
+	// Initialisation OpenGL
+	// ---------------------------------------------------------------------
+
+	if (!this->renderOpenGL)
 	{
 		this->renderOpenGL = renderOpenGL;
-		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
 	}
 
-   // printf("CVideoControlSoft::OnPaint3D 1 \n");
-
-	if (IsSupportOpenCL() && openclEffectYUV == nullptr)
+	if (!renderBitmapOpenGL)
 	{
-		if (openclEffectYUV == nullptr)
-		{
-			openclEffectYUV = new COpenCLEffectVideo();
-		}
+		renderBitmapOpenGL = std::make_unique<CRenderVideoOpenGL>(renderOpenGL);
 	}
+
+	// ---------------------------------------------------------------------
+	// OpenCL
+	// ---------------------------------------------------------------------
+
+	const bool useOpenCL = IsSupportOpenCL();
+
+	if (useOpenCL && !openclEffectYUV)
+	{
+		openclEffectYUV = std::make_unique<COpenCLEffectVideo>(renderOpenGL->GetOpenCLContext());
+	}
+
+	// ---------------------------------------------------------------------
+	// Paramètres
+	// ---------------------------------------------------------------------
 
 	isInit = true;
 	inverted = true;
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
-	if (regardsParam != nullptr)
-		videoEffectParameter.interpolation = regardsParam->GetInterpolationType();
+	if (regardsParam)
+	{
+		videoEffectParameter.interpolation =
+			regardsParam->GetInterpolationType();
+	}
 
-	// This is a dummy, to avoid an endless succession of paint messages.
-	// OnPaint handlers must always create a wxPaintDC.
-	//wxPaintDC dc(this);
-	//printf("CVideoControlSoft::OnPaint \n");
+	// ---------------------------------------------------------------------
+	// Taille du canvas
+	// ---------------------------------------------------------------------
 
 #ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
+	const double scaleFactor = parentRender
+		? parentRender->GetContentScaleFactor()
+		: 1.0;
 #else
-	double scale_factor = 1.0f;
+	constexpr double scaleFactor = 1.0;
 #endif
 
-	//std::clock_t start;
-	//start = std::clock();
-	
+	if (!parentRender)
+		return;
 
-	int width = parentRender->GetSize().GetWidth() * scale_factor;
-	int height = parentRender->GetSize().GetHeight() * scale_factor;
-	if (width == 0 || height == 0)
+	const wxSize clientSize = parentRender->GetSize();
+
+	const int width =
+		static_cast<int>(clientSize.GetWidth() * scaleFactor);
+
+	const int height =
+		static_cast<int>(clientSize.GetHeight() * scaleFactor);
+
+	if (width <= 0 || height <= 0)
 		return;
 
 	if (quitWindow)
 		return;
 
-	nbFrame++;
+	// ---------------------------------------------------------------------
+	// Frame counter / FPS
+	// ---------------------------------------------------------------------
+
+	++nbFrame;
 
 	if (videoRenderStart && initStart)
 	{
-		//nbFrame = 0;
-		if (!fpsTimer->IsRunning())
+		if (fpsTimer && !fpsTimer->IsRunning())
 			fpsTimer->Start(1000);
 	}
 
-
+	// ---------------------------------------------------------------------
+	// Position vidéo
+	// ---------------------------------------------------------------------
 
 	int widthOutput = 0;
 	int heightOutput = 0;
-	wxRect rc(0, 0, 0, 0);
+
+	wxRect rc;
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
+	// ---------------------------------------------------------------------
+	// Préparation du framebuffer
+	// ---------------------------------------------------------------------
 
-	if (videoRenderStart)
+	bool hasChanged = renderOpenGL->CreateScreenRender(
+		width,
+		height,
+		CRgbaquad(0, 0, 0, 0));
+
+	if (hasChanged && !reinititTexture)
+	{
+		reinititTexture = true;
+		renderBitmapOpenGL->Cleanup();
+	}
+
+	// ---------------------------------------------------------------------
+	// Rendu de la vidéo
+	// ---------------------------------------------------------------------
+
+	if (videoRenderStart && pictureFrame)
 	{
 #ifdef _DEBUG
+		const auto effectStart =
+			std::chrono::high_resolution_clock::now();
+#endif
+
+		// -------------------------------------------------------------
+		// Effets vidéo
+		// -------------------------------------------------------------
+
+		const bool hasAVFrame =
+			pictureFrame->dst != nullptr;
+
+		const bool applyEffects =
+			ApplyVideoEffect();
+
+		const bool useOpenCLEffect =
+			useOpenCL &&
+			openclEffectYUV &&
+			openclEffectYUV->IsOk();
+
+		// -------------------------------------------------------------
+		// Conversion YUV / OpenCL
+		// -------------------------------------------------------------
+
+		if (useOpenCLEffect)
 		{
-			using std::chrono::high_resolution_clock;
-			using std::chrono::duration_cast;
-			using std::chrono::duration;
-			using std::chrono::milliseconds;
-
-			auto t1 = high_resolution_clock::now();
-#endif	
-
-			if (IsSupportOpenCL() && openclEffectYUV != nullptr)
+			if (hasAVFrame)
 			{
-				if (pictureFrame->dst != nullptr)
-				{
-					int _colorSpace = 0;
-					int isLimited = 0;
-					if (colorRange == "Limited")
-						isLimited = 1;
+				int colorSpaceId = 0;
 
-					if (colorSpace == "BT.601")
-					{
-						_colorSpace = 1;
-					}
-					else if (colorSpace == "BT.709")
-					{
-						_colorSpace = 2;
-					}
-					else if (colorSpace == "BT.2020")
-					{
-						_colorSpace = 3;
-					}
-					openclEffectYUV->SetAVFrame(&videoEffectParameter, pictureFrame->dst, _colorSpace, isLimited, true);
-				}
-				else if (ApplyVideoEffect())
+				if (colorSpace == "BT.601")
+					colorSpaceId = 1;
+				else if (colorSpace == "BT.709")
+					colorSpaceId = 2;
+				else if (colorSpace == "BT.2020")
+					colorSpaceId = 3;
+
+				const int isLimited =
+					(colorRange == "Limited") ? 1 : 0;
+
+				openclEffectYUV->SetAVFrame(
+					&videoEffectParameter,
+					pictureFrame->dst,
+					colorSpaceId,
+					isLimited,
+					true);
+			}
+			else if (applyEffects)
+			{
+				Regards::Picture::CPictureArray mat(
+					pictureFrame->matFrame);
+
+				openclEffectYUV->SetMatrix(mat);
+			}
+		}
+
+#ifdef _DEBUG
+		DebugRenderTime(
+			effectStart,
+			"videoRenderStart part 1");
+#endif
+
+		// -------------------------------------------------------------
+		// Texture vidéo
+		// -------------------------------------------------------------
+
+		if (applyEffects || hasAVFrame)
+		{
+			const bool openclInterop =
+				regardsParam &&
+				regardsParam->GetIsOpenCLOpenGLInteropSupport();
+
+			bool deleteTexture = false;
+
+			if (openclInterop)
+			{
+				const bool textureParametersChanged =
+					applyStabilization !=
+					videoEffectParameter.stabilizeVideo ||
+					autoconstrast !=
+					videoEffectParameter.autoConstrast ||
+					filmEnhance !=
+					videoEffectParameter.filmEnhance ||
+					filmcolorisation !=
+					videoEffectParameter.filmcolorisation;
+
+				if (textureParametersChanged)
 				{
-					Regards::Picture::CPictureArray mat = Regards::Picture::CPictureArray(pictureFrame->matFrame);
-					openclEffectYUV->SetMatrix(mat);
+					autoconstrast =
+						videoEffectParameter.autoConstrast;
+
+					applyStabilization =
+						videoEffectParameter.stabilizeVideo;
+
+					filmEnhance =
+						videoEffectParameter.filmEnhance;
+
+					filmcolorisation =
+						videoEffectParameter.filmcolorisation;
+
+					deleteTexture = true;
 				}
 			}
 
-#ifdef _DEBUG
-			auto t2 = high_resolution_clock::now();
-
-			/* Getting number of milliseconds as an integer. */
-			auto ms_int = duration_cast<milliseconds>(t2 - t1);
-
-			/* Getting number of milliseconds as a double. */
-			duration<double, std::milli> ms_double = t2 - t1;
-
-
-#ifdef WIN32
-			OutputDebugString(L"Time taken by videoRenderStart is : ");
-			OutputDebugString(to_wstring(ms_int.count()).c_str());
-			OutputDebugString(L" ms \n");
-#else
-			std::cout << "Time taken by videoRenderStart is : " << ms_int.count() << "ms\n";
-#endif
-		}
-#endif
-
-#ifdef _DEBUG
-		{
-			using std::chrono::high_resolution_clock;
-			using std::chrono::duration_cast;
-			using std::chrono::duration;
-			using std::chrono::milliseconds;
-
-			auto t1 = high_resolution_clock::now();
-#endif	
-		if (ApplyVideoEffect() || pictureFrame->dst != nullptr)
-		{
-			if (IsSupportOpenCL() && openclEffectYUV != nullptr && openclEffectYUV->IsOk())
+			if (useOpenCLEffect)
 				RenderToTexture();
 			else
 				RenderFFmpegToTexture();
 
-			bool deleteTexture = false;
-			if((applyStabilization != videoEffectParameter.stabilizeVideo || 
-				autoconstrast != videoEffectParameter.autoConstrast || 
-				filmEnhance != videoEffectParameter.filmEnhance || 
-				filmcolorisation != videoEffectParameter.filmcolorisation) && application_context.openclOpenGLInterop)
-			{
-				autoconstrast = videoEffectParameter.autoConstrast;
-				applyStabilization = videoEffectParameter.stabilizeVideo;
-				filmEnhance = videoEffectParameter.filmEnhance;
-				filmcolorisation = videoEffectParameter.filmcolorisation;
+
+			if (reinititTexture && !deleteTexture)
 				deleteTexture = true;
-			}
-			renderBitmapOpenGL->SetVideoTexture(pictureArray, deleteTexture);
+
+			renderBitmapOpenGL->SetVideoTexture(
+				pictureArray,
+				deleteTexture);
 		}
 		else
 		{
-			Regards::Picture::CPictureArray pictureArray;
 			pictureArray.SetArray(pictureFrame->matFrame);
-			renderBitmapOpenGL->SetVideoTexture(pictureArray);
+
+			renderBitmapOpenGL->SetVideoTexture(
+				pictureArray, reinititTexture);
 		}
 
 #ifdef _DEBUG
-		auto t2 = high_resolution_clock::now();
-
-		/* Getting number of milliseconds as an integer. */
-		auto ms_int = duration_cast<milliseconds>(t2 - t1);
-
-		/* Getting number of milliseconds as a double. */
-		duration<double, std::milli> ms_double = t2 - t1;
-
-
-#ifdef WIN32
-		OutputDebugString(L"Time taken by videoRenderStart part 2 is : ");
-		OutputDebugString(to_wstring(ms_int.count()).c_str());
-		OutputDebugString(L" ms \n");
-#else
-		std::cout << "Time taken by videoRenderStart part 2 is : " << ms_int.count() << "ms\n";
+		DebugRenderTime(
+			effectStart,
+			"videoRenderStart part 2");
 #endif
+
+		// -------------------------------------------------------------
+		// Buffer CPU utilisé pour le rendu OpenGL
+		// -------------------------------------------------------------
+
+		const int renderWidth =
+			renderOpenGL->GetWidth();
+
+		const int renderHeight =
+			renderOpenGL->GetHeight();
+
+		if (renderWidth > 0 && renderHeight > 0)
+		{
+			if (render.empty() ||
+				render.rows != renderHeight ||
+				render.cols != renderWidth ||
+				render.type() != CV_8UC4 || reinititTexture)
+			{
+				render.create(
+					renderHeight,
+					renderWidth,
+					CV_8UC4);
+
+				render.setTo(cv::Scalar::all(0));
+				pictureArray.SetArray(render);
+				renderOpenGL->SetData(pictureArray, true);
+			}
+
+			
+
+
+			// ---------------------------------------------------------
+			// Rendu de la texture vidéo
+			// ---------------------------------------------------------
+
+
+
+			renderBitmapOpenGL->Render(
+				&videoEffectParameter,
+				floatRect,
+				videoPosition / 100,
+				widthOutput,
+				heightOutput,
+				flipH,
+				flipV,
+				angle,
+				rc,
+				inverted);
+
+			// ---------------------------------------------------------
+			// FPS
+			// ---------------------------------------------------------
+
+			if (videoEffectParameter.showFPS)
+			{
+				renderOpenGL->Print(
+					0,
+					1,
+					scaleFactor,
+					CConvertUtility::ConvertToStdString(
+						msgFrame).c_str());
+			}
+
+			reinititTexture = false;
 		}
-#endif
 
 #ifdef _DEBUG
-		{
-			using std::chrono::high_resolution_clock;
-			using std::chrono::duration_cast;
-			using std::chrono::duration;
-			using std::chrono::milliseconds;
-
-			auto t1 = high_resolution_clock::now();
-#endif	
-
-		//Render Direct to OpenGL 
-		wxFloatRect floatRect;
-		floatRect.left = 0;
-		floatRect.right = 1.0f;
-		floatRect.top = 0;
-		floatRect.bottom = 1.0f;
-
-		if (render.empty())
-		{
-			render = cv::Mat(renderOpenGL->GetHeight(), renderOpenGL->GetWidth(), CV_8UC4, cv::Scalar(0, 0, 0, 0));
-		}
-		else if (render.rows != renderOpenGL->GetHeight() || render.cols != renderOpenGL->GetWidth())
-		{
-			render = cv::Mat(renderOpenGL->GetHeight(), renderOpenGL->GetWidth(), CV_8UC4, cv::Scalar(0, 0, 0, 0));
-		}
-		pictureArray.SetArray(render);
-		renderOpenGL->SetData(pictureArray);
-		renderBitmapOpenGL->Render(&videoEffectParameter, floatRect, videoPosition / 100, widthOutput, heightOutput, flipH, flipV, angle, rc, inverted);
-
-	
-		if (videoEffectParameter.showFPS)
-		{
-        #ifndef WIN32
-            double scale_factor = parentRender->GetContentScaleFactor();
-        #else
-            double scale_factor = 1.0f;
-        #endif
-			renderOpenGL->Print(0, 1, scale_factor, CConvertUtility::ConvertToUTF8(msgFrame));
-		}
-
-#ifdef _DEBUG
-		auto t2 = high_resolution_clock::now();
-
-		/* Getting number of milliseconds as an integer. */
-		auto ms_int = duration_cast<milliseconds>(t2 - t1);
-
-		/* Getting number of milliseconds as a double. */
-		duration<double, std::milli> ms_double = t2 - t1;
-
-
-#ifdef WIN32
-		OutputDebugString(L"Time taken by videoRenderStart part 3 is : ");
-		OutputDebugString(to_wstring(ms_int.count()).c_str());
-		OutputDebugString(L" ms \n");
-#else
-		std::cout << "Time taken by videoRenderStart part 3 is : " << ms_int.count() << "ms\n";
+		DebugRenderTime(
+			effectStart,
+			"videoRenderStart part 3");
 #endif
-		}
-#endif
+
+		// -------------------------------------------------------------
+		// Sous-titres
+		// -------------------------------------------------------------
 
 		if (videoEffectParameter.enableSubtitle)
 		{
 			if (subtilteUpdate)
 			{
-				if (typeSubtitle == 0 && !pictureSubtitle.empty())
+				if (typeSubtitle == 0)
 				{
-					renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
-					subtilteUpdate = false;
-					renderBitmapOpenGL->ShowSubtitle();
+					if (!pictureSubtitle.empty())
+					{
+						renderBitmapOpenGL->SetSubtitle(
+							pictureSubtitle);
+
+						subtilteUpdate = false;
+
+						renderBitmapOpenGL->ShowSubtitle();
+					}
 				}
-				else if(typeSubtitle == 1)
+				else if (typeSubtitle == 1)
 				{
+#ifndef WIN32
+					const double subtitleScale =
+						scaleFactor *
+						static_cast<double>(
+							videoEffectParameter.subtitleSize);
+#else
+					const double subtitleScale =
+						static_cast<double>(
+							videoEffectParameter.subtitleSize);
+#endif
 
-	#ifndef WIN32
-					double scale_factor = parentRender->GetContentScaleFactor() * ((float)videoEffectParameter.subtitleSize);
-	#else
-					double scale_factor = 1.0f* ((float)videoEffectParameter.subtitleSize);
-	#endif
-
-					renderOpenGL->PrintSubtitle(width / 2, height / 4, scale_factor, videoEffectParameter.subtitleRedColor
-                        , videoEffectParameter.subtitleGreenColor, videoEffectParameter.subtitleBlueColor, subtitleText);
-
+					renderOpenGL->PrintSubtitle(
+						renderOpenGL->GetWidth() / 2,
+						renderOpenGL->GetHeight() / 4,
+						subtitleScale,
+						videoEffectParameter.subtitleRedColor,
+						videoEffectParameter.subtitleGreenColor,
+						videoEffectParameter.subtitleBlueColor,
+						subtitleText);
 				}
-			
 			}
-			else if (subtilteUpdate)
+			else
 			{
 				subtilteUpdate = false;
-			}			
+			}
 		}
-		
 	}
 
+	// ---------------------------------------------------------------------
+	// Swap buffers
+	// ---------------------------------------------------------------------
 
 	canvas->SwapBuffers();
 
+	// ---------------------------------------------------------------------
+	// Démarrage du timer
+	// ---------------------------------------------------------------------
+
 	if (!videoStartRender)
-    {
-        if(application_context.firstElementToShow)
-            playStartTimer->Start(1000, true);
-        else
-            playStartTimer->Start(100, true);
-    }
-		
-	videoStartRender = true;
-
-
-	if (errorDecoding)
 	{
-		ErrorDecodingFrame();
+		if (application_context.firstElementToShow)
+		{
+			playStartTimer->Start(1000, true);
+		}
+		else
+		{
+			playStartTimer->Start(100, true);
+		}
 	}
 
+	videoStartRender = true;
+
+	// ---------------------------------------------------------------------
+	// Erreur de décodage
+	// ---------------------------------------------------------------------
+
+	if (errorDecoding)
+		ErrorDecodingFrame();
+
 	isAvailable = true;
-    
+
 #ifdef _DEBUG
-    auto t2 = high_resolution_clock::now();
-
-    /* Getting number of milliseconds as an integer. */
-    auto ms_int = duration_cast<milliseconds>(t2 - t1);
-
-    /* Getting number of milliseconds as a double. */
-    duration<double, std::milli> ms_double = t2 - t1;
-
-
-#ifdef WIN32
-	OutputDebugString(L"Time taken by CVideoControlSoft::OnPaint3D is : ");
-	OutputDebugString(to_wstring(ms_int.count()).c_str());
-	OutputDebugString(L" ms \n");
-#else
-    std::cout << "Video Frame Render Time : " << ms_int.count() << "ms\n";
-#endif
-    //std::cout << ms_double.count() << "ms\n";
-
+	DebugRenderTime(
+		renderStart,
+		"CVideoControlSoft::OnPaint3D");
 #endif
 }
 
@@ -1716,35 +1852,29 @@ int CVideoControlSoft::GetBitmapHeight()
 
 int CVideoControlSoft::GetSrcBitmapWidth()
 {
-	int localAngle = angle;
-	float ratioSelect = GetMovieRatio();
-	float _widthVideo = widthVideo;
-	float _heightVideo = heightVideo;
-	if (ratioSelect != 1.0f)
-	{
-		_widthVideo = _heightVideo * ratioSelect;
-	}
+	const float ratio = GetMovieRatio();
 
-	if (localAngle == 90 || localAngle == 270)
-		return _heightVideo;
-	return _widthVideo;
-	return 0;
+	const float width =
+		ratio != 1.0f
+		? static_cast<float>(heightVideo) * ratio
+		: static_cast<float>(widthVideo);
+
+	return (angle == 90 || angle == 270)
+		? static_cast<int>(heightVideo)
+		: static_cast<int>(width);
 }
 
 int CVideoControlSoft::GetSrcBitmapHeight()
 {
-	float ratioSelect = GetMovieRatio();
-	float _widthVideo = widthVideo;
-	float _heightVideo = heightVideo;
-	if (ratioSelect != 1.0f)
-	{
-		_widthVideo = _heightVideo * ratioSelect;
-	}
-	int localAngle = angle;
-	if (localAngle == 90 || localAngle == 270)
-		return _widthVideo;
-	return _heightVideo;
-	return 0;
+	const float ratio = GetMovieRatio();
+
+	const float width = (ratio != 1.0f)
+		? static_cast<float>(heightVideo) * ratio
+		: static_cast<float>(widthVideo);
+
+	return (angle == 90 || angle == 270)
+		? static_cast<int>(width)
+		: static_cast<int>(heightVideo);
 }
 
 
@@ -1909,7 +2039,6 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 
 void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 {
-	CDataAVFrame* old = pictureFrame;
 	CDataAVFrame* dataFrame = static_cast<CDataAVFrame*>(event.GetClientData());
 	if (dataFrame != nullptr)
 	{
@@ -1919,10 +2048,7 @@ void CVideoControlSoft::OnSetData(wxCommandEvent& event)
 		heightVideo = dataFrame->height;
 		ratioVideo = static_cast<float>(dataFrame->width) / static_cast<float>(dataFrame->height);
 		video_aspect_ratio = dataFrame->sample_aspect_ratio;
-		pictureFrame = dataFrame;
-
-		if (old != nullptr)
-			delete old;
+		pictureFrame.reset(dataFrame);
 
 		needToRefresh = false;
 		parentRender->Refresh();
@@ -2011,17 +2137,18 @@ void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int 
 
 void CVideoControlSoft::SetZoomIndex(const int& pos)
 {
+	if (pos < 0 ||
+		pos >= static_cast<int>(videoEffectParameter.tabZoom.size()))
+		return;
+
 	CalculCenterPicture();
+
 	shrinkVideo = false;
-	float zoomRatio = 1.0f;
-	
-	zoomRatio = videoEffectParameter.tabZoom[pos];
 	videoEffectParameter.zoomSelect = pos;
-	
+
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
 }
-
 
 void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
                                                        int& heightInterpolationSize, int& left, int& top,
@@ -2127,8 +2254,8 @@ void CVideoControlSoft::RenderToTexture()
     if (videoEffectParameter.stabilizeVideo)
     {
         if (openCVStabilization == nullptr)
-            openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, openclEffectYUV->GetType());
-		openclEffectYUV->ApplyStabilization(&videoEffectParameter, openCVStabilization);
+            openCVStabilization = std::make_unique<Regards::OpenCV::COpenCVStabilization>(videoEffectParameter.stabilizeImageBuffere, openclEffectYUV->GetType());
+		openclEffectYUV->ApplyStabilization(&videoEffectParameter, openCVStabilization.get());
     }
 
 	if(videoEffectParameter.interpolationQuality == 1)
@@ -2168,7 +2295,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere, TYPE_CPU);
+			openCVStabilization = std::make_unique<Regards::OpenCV::COpenCVStabilization>(videoEffectParameter.stabilizeImageBuffere, TYPE_CPU);
 
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
 
@@ -2230,7 +2357,7 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 		{
 			if (hq3d == nullptr)
-				hq3d = new Chqdn3d(widthVideo, heightVideo, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
+				hq3d =  std::make_unique<Chqdn3d>(widthVideo, heightVideo, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 			else
 				hq3d->UpdateParameter(widthVideo, heightVideo, videoEffectParameter.denoisingLevel, videoEffectParameter.templateWindowSize, videoEffectParameter.searchWindowSize);
 			hq3d->ApplyDenoise3D(cvImage);
@@ -2290,7 +2417,7 @@ void CVideoControlSoft::Rotate90()
 	UpdateScrollBar();
 
 	CSqlPhotos sqlPhotos;
-	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	int exif = application_context.GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
 	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
@@ -2302,7 +2429,7 @@ void CVideoControlSoft::Rotate270()
 	UpdateScrollBar();
 
 	CSqlPhotos sqlPhotos;
-	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	int exif = application_context.GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
 	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
@@ -2317,7 +2444,7 @@ void CVideoControlSoft::FlipVertical()
 	}
 
 	CSqlPhotos sqlPhotos;
-	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	int exif = application_context.GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
 	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 
@@ -2332,7 +2459,7 @@ void CVideoControlSoft::FlipHorizontal()
 	}
 
 	CSqlPhotos sqlPhotos;
-	int exif = CSqlPhotos::GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
+	int exif = application_context.GetExifFromAngleAndFlip(angle, flipH ? 1 : 0, flipV ? 1 : 0);
 	sqlPhotos.UpdatePhotoExif(filename, exif);
 }
 

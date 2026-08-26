@@ -17,6 +17,8 @@
 #include <ShowElement.h>
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -40,7 +42,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	wxString folder = CFileUtility::GetDocumentFolderPath();
 
-	modificationManager = new CModificationManager(folder);
+	modificationManager = std::make_unique<CModificationManager>(folder);
 
 #ifdef __APPLE__
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
@@ -63,12 +65,12 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(infosFileWnd);
 		tabInfosFile->SetId(WM_INFOS);
-		listWindow.push_back(tabInfosFile);
+		listWindow.push_back(std::move(tabInfosFile));
 
 		auto tabOcr = new CTabWindowData();
 		tabOcr->SetWindow(ocrWnd);
 		tabOcr->SetId(WM_OCR);
-		listWindow.push_back(tabOcr);
+		listWindow.push_back(std::move(tabOcr));
 	}
 
 	if (viewerTheme != nullptr)
@@ -85,7 +87,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(filtreEffectWnd);
 		tabInfosFile->SetId(WM_EFFECTPARAMETER);
-		listWindow.push_back(tabInfosFile);
+		listWindow.push_back(std::move(tabInfosFile));
 	}
 
 	if (viewerTheme != nullptr)
@@ -101,7 +103,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(historyEffectWnd);
 		tabInfosFile->SetId(WM_HISTORY);
-		listWindow.push_back(tabInfosFile);
+		listWindow.push_back(std::move(tabInfosFile));
 	}
 
 	if (viewerTheme != nullptr)
@@ -129,7 +131,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		auto tabInfosFileEffect = new CTabWindowData();
 		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
 		tabInfosFileEffect->SetId(WM_EFFECT);
-		listWindow.push_back(tabInfosFileEffect);
+		listWindow.push_back(std::move(tabInfosFileEffect));
 	}
 
 	if (webBrowser == nullptr)
@@ -141,7 +143,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CTabWindowData * tabInfosFile = new CTabWindowData();
 		tabInfosFile->window = webBrowser;
 		tabInfosFile->windowName = WM_HTMLEDITOR;
-		listWindow.push_back(tabInfosFile);
+		listWindow.push_back(std::move(tabInfosFile);
 		*/
 	}
 
@@ -167,7 +169,7 @@ void CPanelInfosWnd::HistoryUpdate()
 		if (bitmap != nullptr)
 		{
 			wxString filename = bitmap->GetFilename();
-			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager.get());
 			delete bitmap;
 		}
 	}
@@ -246,17 +248,6 @@ wxString CPanelInfosWnd::GetFilename()
 	return _filename;
 }
 
-CPanelInfosWnd::~CPanelInfosWnd()
-{
-	delete(infosFileWnd);
-	delete(ocrWnd);
-	delete(infosToolbar);
-	delete(historyEffectWnd);
-	delete(filtreEffectWnd);
-	delete(thumbnailEffectWnd);
-	delete(modificationManager);
-	delete(webBrowser);
-}
 
 void CPanelInfosWnd::SetFile(wxString filename)
 {

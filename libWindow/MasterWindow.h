@@ -4,37 +4,7 @@ class CWindowMainPimpl;
 
 namespace Regards::Window
 {
-	class CWindowMainPimpl
-	{
-	public:
-		CWindowMainPimpl()
-		{
-			threadIdle = nullptr;
-			width = 0;
-			height = 0;
-			sleeptime = 50;
-		}
 
-		~CWindowMainPimpl()
-		{
-			DeleteThread();
-		}
-
-		void DeleteThread()
-		{
-			if (threadIdle != nullptr)
-			{
-				threadIdle->join();
-				delete(threadIdle);
-				threadIdle = nullptr;
-			}
-		}
-
-		thread* threadIdle;
-		int width;
-		int height;
-		unsigned long sleeptime;
-	};
 
 	class CMasterWindow
 	{
@@ -47,7 +17,7 @@ namespace Regards::Window
 		virtual int GetWindowHeight();
 		void SetWindowWidth(const int& width);
 		virtual int GetWindowWidth();
-
+		bool GetEndProgram();
 		virtual void IdleFunction() = 0;
 
 		virtual void UpdateScreenRatio() = 0;
@@ -57,8 +27,6 @@ namespace Regards::Window
 
 		virtual int GetWidth() { return this->GetWindowWidth(); };
 		virtual int GetHeight() { return this->GetWindowHeight(); };
-
-		void StartThread();
 
 		static void SetEndProgram();
 		static void SetStopProcess(const bool& state);
@@ -83,9 +51,8 @@ namespace Regards::Window
 		bool processEnd;
 
 	protected:
-		static void ThreadIdle(void* data);
-		virtual void ProcessOnIdleEndEvent(wxCommandEvent& event);
-		virtual void ProcessOnSizeEvent(wxSizeEvent& event);
+
+		virtual void ProcessOnSizeEvent(wxWindow* window, wxSizeEvent& event);
 
 		virtual void ProcessIdle()
 		{
@@ -96,13 +63,13 @@ namespace Regards::Window
 		};
 
 
-		std::unique_ptr<CWindowMainPimpl> windowMainPimpl;
 		wxString name;
 		
 		std::atomic_bool processStop;
 		std::atomic_bool processIdle;
 		int id;
-
+		int width;
+		int height;
 	public:
 		double scaleFactor;
 		static std::atomic_bool endProgram;

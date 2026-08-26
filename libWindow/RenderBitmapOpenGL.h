@@ -8,7 +8,7 @@ using namespace Regards::OpenGL;
 
 //#define RENDEROPENGL WM_USER+1
 
-class CRegardsBitmap;
+;
 
 namespace Regards::OpenGL
 {

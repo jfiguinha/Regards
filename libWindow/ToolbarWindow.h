@@ -1,5 +1,6 @@
 #pragma once
 #include "ToolbarButton.h"
+#include "ToolbarTexte.h"
 #include "WindowMain.h"
 
 namespace Regards::Window
@@ -36,12 +37,20 @@ namespace Regards::Window
 		{
 		};
 
+		void RecalcLayout();
 		void DrawBackground(wxDC* deviceContext);
 		void DrawBackground(wxDC* deviceContext, const wxRect& rc);
 		void GenerateNavigatorButton(wxDC* deviceContext);
 		void RedrawElement(wxDC* dc, CToolbarElement* nav);
-		void DisablePush();
 		void SetAllDisable();
+		std::unique_ptr<CToolbarButton> CreateButton(
+			const wxString& icon,
+			const wxString& label,
+			int commandId,
+			bool showLibelle = true);
+		std::unique_ptr<CToolbarTexte> CreateTexte(
+			const wxString& label,
+			int commandId);
 
 		wxBitmap hbmNavigator;
 
@@ -61,9 +70,9 @@ namespace Regards::Window
 		bool m_bMouseMove;
 		bool m_bMouseOver;
 
+		std::unique_ptr<wxTimer> pushButton;
 		wxBitmap pictureBuffer;
 		wxBitmap background;
 		wxImage backPicture;
-		std::unique_ptr<wxTimer> pushButton;
 	};
 }

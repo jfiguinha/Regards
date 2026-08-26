@@ -11,7 +11,7 @@ namespace Regards::Window
 	public:
 		CPane(wxWindow* parent, wxWindowID id, CPaneInterface* paneInterface, const int& idPane,
 		      const CThemePane& theme, const bool& refreshButton);
-		~CPane() override;
+		~CPane() = default;
 
 		int SetTooltipText(const wxString& tooltip);
 
@@ -30,7 +30,7 @@ namespace Regards::Window
 			hMainWndOther = window;
 			hWndOther = window;
 
-			if (needToResize)
+			if (needToResize && window)
 			{
 				window->SetSize(oldsize);
 				this->Resize();
@@ -50,7 +50,7 @@ namespace Regards::Window
 			hWndOther = window;
 			hMainWndOther = nullptr;
 
-			if (needToResize)
+			if (needToResize && window)
 			{
 				window->SetSize(oldsize);
 				this->Resize();
@@ -73,7 +73,7 @@ namespace Regards::Window
 		void RefreshData(wxCommandEvent& event);
 
 	private:
-		CTitleBar* titleBar;
+		std::unique_ptr<CTitleBar> titleBar;
 		wxWindow* hWndOther;
 		CWindowMain* hMainWndOther;
 		CPaneInterface* paneInterface;

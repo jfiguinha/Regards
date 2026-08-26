@@ -29,7 +29,15 @@ namespace Regards::Control
 
 	private:
 		void EventManager(const int& id) override;
-		CToolbarSlide* slide;
+		std::unique_ptr<CToolbarSlide> slide;
+		std::unique_ptr<CToolbarButton> newPicture;
+		std::unique_ptr<CToolbarButton> oldPicture;
+		std::unique_ptr<CToolbarButton> shrink;
+		std::unique_ptr<CToolbarButton> moins;
+		std::unique_ptr<CToolbarButton> plus;
+		std::unique_ptr<CToolbarButton> cross;
+		std::unique_ptr<CToolbarButton> editor;
+		std::unique_ptr<CToolbarButton> rotate90;
 		wxWindowID parentId;
 	};
 }

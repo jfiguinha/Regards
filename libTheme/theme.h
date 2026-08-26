@@ -272,7 +272,7 @@ public:
 
 	void SetElementHeight(const int& elementHeight)
 	{
-		this->elementHeight = height;
+		this->elementHeight = elementHeight;
 	}
 
 private:
@@ -314,7 +314,7 @@ public:
 
 	void SetCroixHeight(const int& elementHeight)
 	{
-		this->croixHeight = height;
+		this->croixHeight = elementHeight;
 	}
 
 	wxColour crossColor;
@@ -473,7 +473,7 @@ public:
 
 	void SetElementHeight(const int& elementHeight)
 	{
-		this->elementHeight = height;
+		this->elementHeight = elementHeight;
 	}
 
 private:
@@ -787,7 +787,7 @@ public:
 
 	void SetCroixHeight(const int& elementHeight)
 	{
-		this->croixHeight = height;
+		this->croixHeight = elementHeight;
 	}
 
 	int GetHeight()

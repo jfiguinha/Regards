@@ -14,31 +14,24 @@ namespace Regards::Control
 	class CThreadLoadInfos
 	{
 	public:
-		CThreadLoadInfos()
-		{
-			panelInfos = nullptr;
-			infosFileWnd = nullptr;
-			threadLoadInfos = nullptr;
-		}
-
-		CInfosFileWnd* panelInfos;
-		CInfosFile* infosFileWnd;
+		CInfosFileWnd* panelInfos = nullptr;
+		std::unique_ptr<CInfosFile> infosFileWnd;
 		wxString filename;
-		thread* threadLoadInfos;
+		std::thread threadLoadInfos;
 	};
 
 	class CInfosFileWnd : public CTreeWithScrollbar
 	{
 	public:
 		CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& theme);
-		~CInfosFileWnd(void) override;
+		~CInfosFileWnd(void) = default;
 		void InfosUpdate(const wxString& filename);
 
 	private:
 		void UpdateTreeInfosEvent(wxCommandEvent& event);
 		static void GenerateTreeInfos(CThreadLoadInfos* threadInfos);
 
-		CInfosFile* infosFile;
+		std::unique_ptr<CInfosFile> infosFile;
 		wxString filename;
 	};
 }

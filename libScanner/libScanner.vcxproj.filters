@@ -34,9 +34,6 @@
     <Filter Include="OCR\Export">
       <UniqueIdentifier>{ccc38a5a-8dcc-4284-8882-91c1c118bed0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="OCR\uuid">
-      <UniqueIdentifier>{7b0fa6e4-e494-4160-a693-a8bc3bfb43d7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ToolbarPDF.cpp">

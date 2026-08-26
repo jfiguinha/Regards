@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlFolderCatalog();
-			~CSqlFolderCatalog() override;
+			~CSqlFolderCatalog() = default;
 			bool InsertFolderCatalog(const int64_t& numCatalog, const wxString& folderPath);
 			int64_t GetFolderCatalogId(const int64_t& numCatalog, const wxString& folderPath);
 			int64_t GetOrInsertFolderCatalog(const int64_t& numCatalog, const wxString& folderPath);

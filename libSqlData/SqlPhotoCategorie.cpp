@@ -1,16 +1,12 @@
 #include <header.h>
 #include "SqlPhotoCategorie.h"
 #include "SqlResult.h"
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 
 CSqlPhotoCategorie::CSqlPhotoCategorie()
 	: CSqlExecuteRequest(L"RegardsDB")
-{
-}
-
-
-CSqlPhotoCategorie::~CSqlPhotoCategorie()
 {
 }
 
@@ -20,10 +16,14 @@ CSqlPhotoCategorie::~CSqlPhotoCategorie()
 bool CSqlPhotoCategorie::LoadPhotoCategorie(PhotoCategorieVector* photoCategorieVector, const int& numLangue)
 {
 	m_PhotoCategorieVector = photoCategorieVector;
-	return (ExecuteRequest("SELECT NumCategorie, Libelle FROM CATEGORIE WHERE NumLangue = " + to_string(numLangue)) != -
-		       1)
-		       ? true
-		       : false;
+	if (m_PhotoCategorieVector != nullptr)
+	{
+		m_PhotoCategorieVector->clear();
+		std::vector<std::unique_ptr<CSqlParameter>> parameter;
+		parameter.push_back(std::make_unique<CSqlInt>(numLangue));
+		return ExecuteSqlWithStatement("SELECT NumCategorie, Libelle FROM CATEGORIE WHERE NumLangue = ?", parameter);
+	}
+	return false;
 }
 
 int CSqlPhotoCategorie::TraitementResult(CSqlResult* sqlResult)
@@ -32,19 +32,8 @@ int CSqlPhotoCategorie::TraitementResult(CSqlResult* sqlResult)
 	while (sqlResult->Next())
 	{
 		CPhotoCategorie _photoCategorie;
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				_photoCategorie.SetId(sqlResult->ColumnDataInt(i));
-				break;
-			case 1:
-				_photoCategorie.SetLibelle(sqlResult->ColumnDataText(i));
-				break;
-			default: ;
-			}
-		}
+		_photoCategorie.SetId(sqlResult->ColumnDataInt(0));
+		_photoCategorie.SetLibelle(sqlResult->ColumnDataText(1));
 		m_PhotoCategorieVector->push_back(_photoCategorie);
 		nbResult++;
 	}

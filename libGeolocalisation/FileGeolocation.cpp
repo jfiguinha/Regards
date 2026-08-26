@@ -11,12 +11,14 @@
 #include <SqlGps.h>
 #include <window_id.h>
 #include <SqlPhotoCriteria.h>
-#include <LibResource.h>
+#include <appcontext.h>
+#include <ConvertUtility.h>
 #include <MediaInfo.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
+extern AppContext application_context;
 CountryVector CFileGeolocation::countryVector;
 
 CFileGeolocation::CFileGeolocation(const wxString& urlServer, const wxString& apiKey)
@@ -141,11 +143,11 @@ void CFileGeolocation::ImportCountry()
 }
 
 
-bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
+wxString CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 {
 	CSqlCriteria sqlCriteria;
 	CSqlPhotoCriteria sqlPhotoCriteria;
-
+	wxString value = "";
 	//printf("CFileGeolocation Geolocalisation \n");
 	//Execution de la requête de géolocalisation
 	if (hasGps)
@@ -161,22 +163,9 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 				for (auto it = geoPluginVector->begin(); it != geoPluginVector->end(); ++it)
 				{
 					CGeoPluginValue geoValue = *it;
-					wxString value = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),
-					                                               geoValue.GetCity());
-					if (value != "" && value != "not found")
-					{
-						auto insertCriteria = new CInsertCriteria();
-						insertCriteria->type = CATEGORIE_GEO;
-						insertCriteria->value = value;
-						listCriteriaPhoto->listCriteria.push_back(insertCriteria);
-					}
-					else
-					{
-						auto insertCriteria = new CInsertCriteria();
-						insertCriteria->type = CATEGORIE_GEO;
-						insertCriteria->value = CLibResource::LoadStringFromResource(L"LBLNOTGEO", 1);
-						listCriteriaPhoto->listCriteria.push_back(insertCriteria);
-					}
+					value = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),
+						geoValue.GetCity());
+					break;
 				}
 			}
 			//else
@@ -189,10 +178,9 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto)
 
 		delete gps;
 	}
-	else
-		return false;
 
-	return true;
+
+	return value;
 }
 
 wxString CFileGeolocation::GenerateGeolocalisationString(const wxString& countryCode, const wxString& region,
@@ -232,6 +220,24 @@ wxString CFileGeolocation::GenerateGeolocalisationString(const wxString& country
 	return "";
 }
 
+void CFileGeolocation::SetInfosGPS(const wxString& libelle)
+{
+
+	vector<wxString> gpsInfos = CConvertUtility::split(libelle, '/');
+	if (gpsInfos.size() == 3)
+	{
+		if (gpsInfos[0] == application_context.special_key)
+		{
+			hasGps = true;
+			latitudeGps = gpsInfos.at(1);
+			longitudeGps = gpsInfos.at(2);
+		}
+	}
+
+
+	
+
+}
 
 void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGeo)
 {
@@ -246,20 +252,31 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 	//exiv2::CMetadataExiv2 pictureMetadata(filename);
 	if (libPicture.TestIsVideo(filename))
 	{
-		tbb::concurrent_vector<CMetadata> vectorMeta = CMediaInfo::ReadMetadata(filename);
+		std::vector<CMetadata> vectorMeta = CMediaInfo::ReadMetadata(filename);
 		{
-			tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.creationdate"; });
+			std::vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.creationdate"; });
 			if (it != vectorMeta.end())
 			{
 				//Create Date
 				hasDataTime = true;
 				dateTimeInfos = it->value;
 			}
+			if (!hasDataTime)
+			{
+				std::vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.Recorded date"; });
+				if (it != vectorMeta.end())
+				{
+					//Create Date
+					hasDataTime = true;
+					dateTimeInfos = it->value;
+				}
+			}
+
 
 		}
 		{
-			tbb::concurrent_vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.location.ISO6709"; });
-			if (it != vectorMeta.end())
+			std::vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.location.ISO6709"; });
+			if(it != vectorMeta.end())
 			{
 				wxString exifinfos = it->value;
 				hasGps = true;
@@ -298,6 +315,35 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 
 				latitudeGps = to_string(flatitude);
 				longitudeGps = to_string(flongitude);
+			}
+			else
+			{
+				it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.Recorded location"; });
+				if (it != vectorMeta.end())
+				{
+					wxString exifinfos = it->value;
+					std::vector<wxString> gpsInfos = CConvertUtility::split(exifinfos, L' ');
+					if (gpsInfos.size() >= 2)
+					{
+						wxString latitude = gpsInfos[0];
+						std::vector<wxString> gpsInfosLat = CConvertUtility::split(latitude, L'°');
+						if (gpsInfosLat[1] == 'S')
+							latitudeGps = "-" + gpsInfosLat[0];
+						else
+							latitudeGps = gpsInfosLat[0];
+
+						wxString longitude = gpsInfos[1];
+						std::vector<wxString> gpsInfosLong = CConvertUtility::split(longitude, L'°');
+						if (gpsInfosLong[1] == 'W')
+							longitudeGps = "-" + gpsInfosLong[0];
+						else
+							longitudeGps = gpsInfosLong[0];
+
+						hasGps = true;
+					}
+					
+
+				}
 			}
 		}
 	}

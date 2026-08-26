@@ -13,6 +13,10 @@
 #include <ConvertUtility.h>
 #include <picture_utility.h>
 #include "colornet.h"
+#include <appcontext.h>
+#include <wx/filename.h>
+extern AppContext application_context;
+
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -20,14 +24,11 @@ using namespace cv;
 using namespace dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
-using namespace std;
 using namespace face;
 using namespace std;
 
 const double cosine_similar_thresh = 0.363;
 std::map<int, Mat> listScore;
-
-extern cv::ocl::OpenCLExecutionContext clExecCtx;
 
 struct FaceValueIntegration
 {
@@ -43,10 +44,10 @@ static Ptr<Facemark> facemark;
 static Ptr<FaceRecognizerSF> faceRecognizer;
 static Net ageNet;
 static Net genderNet;
-static RealESRGAN * real_net = nullptr;
-static GFPGAN* gfpgan = nullptr;
-static CColorisationNCNN* colorreal_net = nullptr;
-static CColorization * color_net = nullptr;
+static std::unique_ptr<RealESRGAN>  real_net = nullptr;
+static std::unique_ptr<GFPGAN> gfpgan = nullptr;
+static std::unique_ptr<CColorisationNCNN> colorreal_net = nullptr;
+static std::unique_ptr<CColorization> color_net = nullptr;
 
 static bool isRealESRGAN_load = false;
 static bool isGFPGAN_load = false;
@@ -64,108 +65,54 @@ void CFaceDetector::CleanBase()
 
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
-	detectFace = new CDetectFace();
-	detectFacePCN = new CDetectFacePCN();
+	detectFace = std::make_unique<CDetectFace>();
+	detectFacePCN = std::make_unique<CDetectFacePCN>();
 }
 
 CFaceDetector::~CFaceDetector()
 {
-	delete detectFace;
-	delete detectFacePCN;
 }
+
+
 
 static void LoadRealESRGAN()
 {
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString esrgan_param = documentPath + "\\model\\real_esrgan.param";
-	wxString esrgan_bin = documentPath + "\\model\\real_esrgan.bin";
-#else
-	wxString esrgan_param = documentPath + "/model/real_esrgan.param";
-	wxString esrgan_bin = documentPath + "/model/real_esrgan.bin";
-#endif
-
 	if (!isRealESRGAN_load)
 	{
-		real_net = new RealESRGAN();
-		real_net->load(esrgan_param.ToStdString(), esrgan_bin.ToStdString());
+		real_net = std::make_unique<RealESRGAN>();
+		real_net->load(CFileUtility::GetFullpathModel("real_esrgan.param"), CFileUtility::GetFullpathModel("real_esrgan.bin"));
 	}
 	isRealESRGAN_load = true;
 }
 
 static void LoadGFPGAN()
 {
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString age_net = documentPath + "\\model\\age_net.caffemodel";
-	wxString age_deploy = documentPath + "\\model\\age_deploy.prototxt";
-	wxString gender_net = documentPath + "\\model\\gender_net.caffemodel";
-	wxString gender_deploy = documentPath + "\\model\\gender_deploy.prototxt";
-	wxString gfpgan_param = documentPath + "\\model\\encoder.param";
-	wxString gfpgan_bin = documentPath + "\\model\\encoder.bin";
-	wxString gfpgan_stylebin = documentPath + "\\model\\style.bin";
-#else
-	wxString age_net = documentPath + "/model/age_net.caffemodel";
-	wxString age_deploy = documentPath + "/model/age_deploy.prototxt";
-	wxString gender_net = documentPath + "/model/gender_net.caffemodel";
-	wxString gender_deploy = documentPath + "/model/gender_deploy.prototxt";
-	wxString gfpgan_param = documentPath + "/model/encoder.param";
-	wxString gfpgan_bin = documentPath + "/model/encoder.bin";
-	wxString gfpgan_stylebin = documentPath + "/model/style.bin";
-#endif
-
 	if (!isGFPGAN_load)
 	{
-		gfpgan = new GFPGAN();
-		gfpgan->load(gfpgan_param.ToStdString(), gfpgan_bin.ToStdString(), gfpgan_stylebin.ToStdString());
-		ageNet = readNet(CConvertUtility::ConvertToStdString(age_net), CConvertUtility::ConvertToStdString(age_deploy));
-		genderNet = readNet(CConvertUtility::ConvertToStdString(gender_net), CConvertUtility::ConvertToStdString(gender_deploy));
+		gfpgan = std::make_unique<GFPGAN>();
+		gfpgan->load(CFileUtility::GetFullpathModel("encoder.param"), CFileUtility::GetFullpathModel("encoder.bin"), CFileUtility::GetFullpathModel("style.bin"));
+		ageNet = readNet(CFileUtility::GetFullpathModel("age_net.caffemodel"), CFileUtility::GetFullpathModel("age_deploy.prototxt"));
+		genderNet = readNet(CFileUtility::GetFullpathModel("gender_net.caffemodel"), CFileUtility::GetFullpathModel("gender_deploy.prototxt"));
 	}
 	isGFPGAN_load = true;
 }
 
 static void LoadColorisationNCNN()
 {
-    //printf("LoadColorisation() \n");
-    
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString siggraph17_param = documentPath + "\\model\\siggraph17_color_sim.param";
-	wxString siggraph17_bin = documentPath + "\\model\\siggraph17_color_sim.bin";
-#else
-	wxString siggraph17_param = documentPath + "/model/siggraph17_color_sim.param";
-	wxString siggraph17_bin = documentPath + "/model/siggraph17_color_sim.bin";
-#endif
-
 	if (!isColorisation_load)
 	{
-		colorreal_net = new CColorisationNCNN();
-		colorreal_net->load(siggraph17_param.ToStdString(), siggraph17_bin.ToStdString());
+		colorreal_net = std::make_unique<CColorisationNCNN>();
+		colorreal_net->load(CFileUtility::GetFullpathModel("siggraph17_color_sim.param"), CFileUtility::GetFullpathModel("siggraph17_color_sim.bin"));
 	}
 	isColorisation_load = true;
 }
 
 static void LoadColorisation()
 {
-    printf("LoadColorisation() \n");
-    
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString ncnn_param = documentPath + "\\model\\ncnn_v1.param";
-	wxString ncnn_bin = documentPath + "\\model\\ncnn_v1.bin";
-#else
-	wxString ncnn_param = documentPath + "/model/ncnn_v1.param";
-	wxString ncnn_bin = documentPath + "/model/ncnn_v1.bin";
-#endif
-
 	if (!isColorisation_load)
 	{
-		color_net = new CColorization();
-		color_net->load(ncnn_param.ToStdString(), ncnn_bin.ToStdString());
+		color_net = std::make_unique<CColorization>();
+		color_net->load(CFileUtility::GetFullpathModel("ncnn_v1.param"), CFileUtility::GetFullpathModel("ncnn_v1.bin"));
 	}
 	isColorisation_load = true;
 }
@@ -226,9 +173,16 @@ int CFaceDetector::DectectOrientationByFaceDetector(const Mat& pBitmap)
 	std::vector<Rect> pointOfFace;
 	bool faceFound = false;
 	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
+	try
+	{
+		std::lock_guard<std::mutex> lock(muLoading);
+		isLoading = isload;
+	}
+	catch(...)
+	{
+
+	}
+
 	int selectAngle = 0;
 	Mat Source;
 	pBitmap.copyTo(Source);
@@ -271,46 +225,14 @@ void CFaceDetector::LoadModel(const bool& openCLCompatible, const bool& cudaComp
 	{
 		CDetectFacePCN detectFacePCN;
 		CDetectFace detectFace;
-		wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
-#ifdef WIN32
-		wxString face_landmark = documentPath + "\\model\\face_landmark_model.dat";
-		wxString fr_modelPath = documentPath + "\\model\\face_recognition_sface_2021dec.onnx";
-		wxString fileEye = documentPath + "\\model\\haarcascade_eye.xml";
-		wxString age_net = documentPath + "\\model\\age_net.caffemodel";
-		wxString age_deploy = documentPath + "\\model\\age_deploy.prototxt";
-		wxString gender_net = documentPath + "\\model\\gender_net.caffemodel";
-		wxString gender_deploy = documentPath + "\\model\\gender_deploy.prototxt";
-		wxString esrgan_param = documentPath + "\\model\\real_esrgan.param";
-		wxString esrgan_bin = documentPath + "\\model\\real_esrgan.bin";
-		wxString siggraph17_param = documentPath + "\\model\\siggraph17_color_sim.param";
-		wxString siggraph17_bin = documentPath + "\\model\\siggraph17_color_sim.bin";
-		wxString gfpgan_param = documentPath + "\\model\\encoder.param";
-		wxString gfpgan_bin = documentPath + "\\model\\encoder.bin";
-		wxString gfpgan_stylebin = documentPath + "\\model\\style.bin";
-#else
-		wxString face_landmark = documentPath + "/model/face_landmark_model.dat";
-		wxString fr_modelPath = documentPath + "/model/face_recognition_sface_2021dec.onnx";
-        wxString fileEye = documentPath + "/model/haarcascade_eye.xml";
-		wxString age_net = documentPath + "/model/age_net.caffemodel";
-		wxString age_deploy = documentPath + "/model/age_deploy.prototxt";
-		wxString gender_net = documentPath + "/model/gender_net.caffemodel";
-		wxString gender_deploy = documentPath + "/model/gender_deploy.prototxt";
-		wxString esrgan_param = documentPath + "/model/real_esrgan.param";
-		wxString esrgan_bin = documentPath + "/model/real_esrgan.bin";
-		wxString siggraph17_param = documentPath + "/model/siggraph17_color_sim.param";
-		wxString siggraph17_bin = documentPath + "/model/siggraph17_color_sim.bin";
-		wxString gfpgan_param = documentPath + "/model/encoder.param";
-		wxString gfpgan_bin = documentPath + "/model/encoder.bin";
-		wxString gfpgan_stylebin = documentPath + "/model/style.bin";
-#endif
-
-
-
+		string model = CFileUtility::GetFullpathModel("face_landmark_model.dat");
 		facemark = createFacemarkKazemi();
-		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
-		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
-		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
+		facemark->loadModel(model);
+
+		model = CFileUtility::GetFullpathModel("face_recognition_sface_2021dec.onnx");
+		faceRecognizer = FaceRecognizerSF::create(model, "");
+		eye_cascade.load(CFileUtility::GetFullpathModel("haarcascade_eye.xml"));
 
        // printf("CFaceDetector::LoadModel \n");
 		detectFace.LoadModel(openCLCompatible, cudaCompatible);
@@ -487,6 +409,33 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, cons
 	return new_ratio;
 }
 
+static std::vector<cv::Point2f> GetSFaceLandmarks(
+	const std::vector<cv::Point2f>& landmarks)
+{
+	if (landmarks.size() < 68)
+		return {};
+
+	cv::Point2f leftEye(0.0f, 0.0f);
+	cv::Point2f rightEye(0.0f, 0.0f);
+
+	for (int i = 36; i <= 41; ++i)
+		leftEye += landmarks[i];
+
+	for (int i = 42; i <= 47; ++i)
+		rightEye += landmarks[i];
+
+	leftEye *= 1.0f / 6.0f;
+	rightEye *= 1.0f / 6.0f;
+
+	return
+	{
+		leftEye,
+		rightEye,
+		landmarks[30], // nez
+		landmarks[48], // bouche gauche
+		landmarks[54]  // bouche droite
+	};
+}
 
 std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& filename)
 {
@@ -538,15 +487,71 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 					face.myROI.width *= invertRatio;
 					face.myROI.height *= invertRatio;
 
+					resizedImage = RotateAndExtractFace(
+						face.angle,
+						face.myROI,
+						source);
+
+					if (resizedImage.empty())
+						continue;
+
+					/*
 					try
 					{
-						resizedImage = RotateAndExtractFace(face.angle, face.myROI, source);
-						
+
+
+						std::vector<cv::Rect> faces;
+						faces.emplace_back(
+							0,
+							0,
+							resizedImage.cols,
+							resizedImage.rows);
+
+						std::vector<std::vector<cv::Point2f>> landmarkList;
+
+						{
+							std::lock_guard<std::mutex> lock(muFaceMark);
+
+							if (!facemark->fit(
+								resizedImage,
+								faces,
+								landmarkList))
+							{
+								continue;
+							}
+						}
+
+						if (landmarkList.empty() ||
+							landmarkList[0].size() != 68)
+						{
+							continue;
+						}
+
+						const auto sfaceLandmarks =
+							GetSFaceLandmarks(landmarkList[0]);
+
+						if (sfaceLandmarks.size() != 5)
+							continue;
+
+						cv::Mat alignedFace;
+
+						faceRecognizer->alignCrop(
+							resizedImage,
+							sfaceLandmarks,
+							alignedFace);
+
+						if (alignedFace.empty())
+							continue;
+
+						resizedImage = alignedFace;
+
 					}
-					catch (Exception& e)
+					catch (cv::Exception& e)
 					{
+						printf("CFaceDetector::FindFace exception: %s\n", e.what());
 						source(face.myROI).copyTo(resizedImage);
 					}
+					*/
 
 					float bestConfidence = 0;
 					Mat resizedBgra;
@@ -565,13 +570,6 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
                         if(resizedImage.size().width < 200 && resizedImage.size().height < 200)
                         {
                             bg_upsample = CFaceDetector::SuperResolution(resizedImage);
-							/*
-                            ncnn::Mat gfpgan_result;
-                            gfpgan->process(bg_upsample, gfpgan_result);
-                            to_ocv(gfpgan_result, resizedImage);
-
-                            resize(resizedImage, localFace, size);
-							*/
                             ImageToJpegBuffer(bg_upsample, buff);
                         }
                         else
@@ -608,337 +606,595 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 }
 
 
-void CFaceDetector::DetectEyes(const Mat& pBitmap)
+void CFaceDetector::RemoveRedEyes(cv::Mat& pBitmap)
 {
-	std::vector<Rect> pointOfFace;
-	bool faceFound = false;
-	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
+	if (pBitmap.empty())
+		return;
 
-
-	Mat Source;
-	if (isLoading)
 	{
-		std::vector<CFace> listOfFace;
-		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
+		std::lock_guard<std::mutex> lock(muLoading);
 
-		if (listOfFace.size() > 0)
+		if (!isload)
+			return;
+	}
+
+	if (facemark.empty() || detectFacePCN == nullptr)
+		return;
+
+	cv::Mat source;
+
+	// On travaille sur une copie afin de ne pas modifier directement
+	// l'image fournie par l'appelant.
+	pBitmap.copyTo(source);
+
+	std::vector<CFace> listOfFace;
+	std::vector<cv::Rect> pointOfFace;
+
+	try
+	{
+		detectFacePCN->DetectFace(
+			source,
+			listOfFace,
+			pointOfFace);
+	}
+	catch (const cv::Exception& e)
+	{
+		std::cout << "PCN face detection error: "
+			<< e.what()
+			<< std::endl;
+		return;
+	}
+
+	for (auto& detectedFace : listOfFace)
+	{
+		if (detectedFace.confidence <= confidenceThreshold)
+			continue;
+
+		cv::Mat face = detectedFace.croppedImage;
+
+		if (face.empty())
+			continue;
+
+		try
 		{
-			for (int i = 0; i < listOfFace.size(); i++)
+			/*
+			 * ---------------------------------------------------------
+			 * 1. Rotation du visage suivant l'orientation détectée
+			 *    par PCN.
+			 * ---------------------------------------------------------
+			 */
+			cv::Mat faceColor;
+
+			const cv::Point2f center(
+				face.cols * 0.5f,
+				face.rows * 0.5f);
+
+			const double angle =
+				detectedFace.angle;
+
+			cv::Mat rotation =
+				cv::getRotationMatrix2D(
+					center,
+					angle,
+					1.0);
+
+			const cv::Rect bbox =
+				cv::RotatedRect(
+					center,
+					face.size(),
+					angle).boundingRect();
+
+			rotation.at<double>(0, 2) +=
+				bbox.width * 0.5 -
+				center.x;
+
+			rotation.at<double>(1, 2) +=
+				bbox.height * 0.5 -
+				center.y;
+
+			cv::warpAffine(
+				face,
+				faceColor,
+				rotation,
+				bbox.size(),
+				cv::INTER_LINEAR,
+				cv::BORDER_REPLICATE);
+
+			if (faceColor.empty())
+				continue;
+
+			/*
+			 * ---------------------------------------------------------
+			 * 2. Détection des 68 landmarks Kazemi.
+			 * ---------------------------------------------------------
+			 */
+			std::vector<cv::Rect> faceRects;
+			faceRects.emplace_back(
+				0,
+				0,
+				faceColor.cols,
+				faceColor.rows);
+
+			std::vector<std::vector<cv::Point2f>> shapes;
+
 			{
-				if (listOfFace[i].confidence > confidenceThreshold)
+				std::lock_guard<std::mutex> lock(muFaceMark);
+
+				if (!facemark->fit(
+					faceColor,
+					faceRects,
+					shapes))
 				{
-					try
-					{
-						Mat face = listOfFace[i].croppedImage;
-						vector<Rect> faces;
-						Mat faceColor;
-						Point2f center22(face.cols / 2.0, face.rows / 2.0);
-						Mat rot = getRotationMatrix2D(center22, listOfFace[i].angle, 1.0);
-						// determine bounding rectangle
-						Rect bbox = RotatedRect(center22, face.size(), listOfFace[i].angle).boundingRect();
-						// adjust transformation matrix
-						rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-						warpAffine(face, faceColor, rot, bbox.size());
-						Rect rc = {0, 0, faceColor.size().width, faceColor.size().height};
-						Mat gray;
-						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
-
-						//int radiusL = 40;
-						//int radiusR = 40;
-
-						faces.push_back(rc);
-
-						std::vector<Rect> eyes;
-						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);
-						// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-
-						for (int p = 0; p < eyes.size(); p++)
-						{
-							Rect rect = eyes[p];
-							if (rect.y > (face.size().height / 2))
-							{
-								eyes.erase(eyes.begin() + p);
-								p--;
-							}
-						}
-
-						for (int k = 0; k < eyes.size(); k++)
-						{
-							for (int j = 0; j < eyes.size(); j++)
-							{
-								if (k != j)
-								{
-									Rect interesect = eyes[k] & eyes[j];
-									if (interesect.area() > 0)
-									{
-										eyes.erase(eyes.begin() + j);
-										j--;
-									}
-								}
-							}
-						}
-
-						if (eyes.size() == 2)
-						{
-							vector<vector<Point2f>> shapes;
-
-							try
-							{
-								muFaceMark.lock();
-								facemark->fit(faceColor, faces, shapes);
-								muFaceMark.unlock();
-							}
-							catch (Exception& e)
-							{
-								const char* err_msg = e.what();
-								std::cout << "exception caught: " << err_msg << std::endl;
-								std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-							}
-
-							std::vector<Point2f> landmarks = shapes[0];
-
-							std::vector<Point2f> _veyeLeft;
-							for (int p = 37; p < 42; p++)
-								_veyeLeft.push_back(landmarks[p]);
-
-							Rect eyeLeft = boundingRect(_veyeLeft);
-
-							std::vector<Point2f> _veyeRight;
-							for (int p = 43; p < 48; p++)
-								_veyeRight.push_back(landmarks[p]);
-
-							Rect eyeRight = boundingRect(_veyeRight);
-
-							RemoveRedEye(faceColor, eyes[0], eyeLeft);
-							RemoveRedEye(faceColor, eyes[1], eyeRight);
-
-							{
-								Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
-								Mat rot = getRotationMatrix2D(center22, 360 - listOfFace[i].angle, 1.0);
-								// determine bounding rectangle
-								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - listOfFace[i].angle).
-									boundingRect();
-								// adjust transformation matrix
-								rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-								rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-								warpAffine(faceColor, faceColor, rot, bbox.size());
-
-								rc = {
-									(bbox.width - listOfFace[i].myROI.width) / 2,
-									(bbox.height - listOfFace[i].myROI.height) / 2, listOfFace[i].myROI.width,
-									listOfFace[i].myROI.height
-								};
-								rc.x += 1;
-								rc.y += 1;
-								rc.width -= 2;
-								rc.height -= 2;
-								CPictureUtility::VerifRectSize(rc, faceColor);
-								//bool is_inside = (rc & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == rc;
-
-								faceColor = faceColor(rc);
-							}
-
-							listOfFace[i].myROI.x += 1;
-							listOfFace[i].myROI.y += 1;
-							listOfFace[i].myROI.width -= 2;
-							listOfFace[i].myROI.height -= 2;
-							CPictureUtility::VerifRectSize(listOfFace[i].myROI, faceColor);
-							//bool is_inside = (listOfFace[i].myROI & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == listOfFace[i].myROI;
-
-							faceColor.copyTo(Source(listOfFace[i].myROI));
-							faceFound = true;
-						}
-					}
-					catch (Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
+					continue;
 				}
 			}
+
+			if (shapes.empty() ||
+				shapes[0].size() < 68)
+			{
+				continue;
+			}
+
+			const std::vector<cv::Point2f>& landmarks =
+				shapes[0];
+
+			/*
+			 * ---------------------------------------------------------
+			 * 3. Récupération des landmarks des yeux.
+			 *
+			 * Kazemi 68 points :
+			 *
+			 * œil gauche : 36 -> 41
+			 * œil droit  : 42 -> 47
+			 * ---------------------------------------------------------
+			 */
+			std::vector<cv::Point2f> leftEyePoints;
+			std::vector<cv::Point2f> rightEyePoints;
+
+			leftEyePoints.reserve(6);
+			rightEyePoints.reserve(6);
+
+			for (int i = 36; i <= 41; ++i)
+				leftEyePoints.push_back(landmarks[i]);
+
+			for (int i = 42; i <= 47; ++i)
+				rightEyePoints.push_back(landmarks[i]);
+
+			cv::Rect leftEye =
+				cv::boundingRect(leftEyePoints);
+
+			cv::Rect rightEye =
+				cv::boundingRect(rightEyePoints);
+
+			/*
+			 * On agrandit légèrement les rectangles afin de donner
+			 * suffisamment de matière à RemoveRedEye().
+			 */
+			constexpr int EYE_MARGIN = 5;
+
+			leftEye.x -= EYE_MARGIN;
+			leftEye.y -= EYE_MARGIN;
+			leftEye.width += EYE_MARGIN * 2;
+			leftEye.height += EYE_MARGIN * 2;
+
+			rightEye.x -= EYE_MARGIN;
+			rightEye.y -= EYE_MARGIN;
+			rightEye.width += EYE_MARGIN * 2;
+			rightEye.height += EYE_MARGIN * 2;
+
+			CPictureUtility::VerifRectSize(
+				leftEye,
+				faceColor);
+
+			CPictureUtility::VerifRectSize(
+				rightEye,
+				faceColor);
+
+			if (leftEye.empty() || rightEye.empty())
+				continue;
+
+			/*
+			 * ---------------------------------------------------------
+			 * 4. Suppression des yeux rouges.
+			 *
+			 * Le rectangle des landmarks sert également de zone
+			 * de correction.
+			 * ---------------------------------------------------------
+			 */
+			RemoveRedEye(
+				faceColor,
+				leftEye,
+				leftEye);
+
+			RemoveRedEye(
+				faceColor,
+				rightEye,
+				rightEye);
+
+			/*
+			 * ---------------------------------------------------------
+			 * 5. Remise du visage dans son orientation originale.
+			 * ---------------------------------------------------------
+			 */
+			cv::Mat restoredFace;
+
+			const cv::Point2f restoreCenter(
+				faceColor.cols * 0.5f,
+				faceColor.rows * 0.5f);
+
+			const double restoreAngle =
+				360.0 - detectedFace.angle;
+
+			cv::Mat restoreRotation =
+				cv::getRotationMatrix2D(
+					restoreCenter,
+					restoreAngle,
+					1.0);
+
+			const cv::Rect restoreBBox =
+				cv::RotatedRect(
+					restoreCenter,
+					faceColor.size(),
+					restoreAngle).boundingRect();
+
+			restoreRotation.at<double>(0, 2) +=
+				restoreBBox.width * 0.5 -
+				restoreCenter.x;
+
+			restoreRotation.at<double>(1, 2) +=
+				restoreBBox.height * 0.5 -
+				restoreCenter.y;
+
+			cv::warpAffine(
+				faceColor,
+				restoredFace,
+				restoreRotation,
+				restoreBBox.size(),
+				cv::INTER_LINEAR,
+				cv::BORDER_REPLICATE);
+
+			if (restoredFace.empty())
+				continue;
+
+			/*
+			 * ---------------------------------------------------------
+			 * 6. Repositionnement du visage dans l'image source.
+			 * ---------------------------------------------------------
+			 */
+			cv::Rect targetRect(
+				(restoreBBox.width -
+					detectedFace.myROI.width) / 2,
+
+				(restoreBBox.height -
+					detectedFace.myROI.height) / 2,
+
+				detectedFace.myROI.width,
+				detectedFace.myROI.height);
+
+			targetRect.x += 1;
+			targetRect.y += 1;
+			targetRect.width -= 2;
+			targetRect.height -= 2;
+
+			CPictureUtility::VerifRectSize(
+				targetRect,
+				restoredFace);
+
+			if (targetRect.empty())
+				continue;
+
+			cv::Mat finalFace =
+				restoredFace(targetRect);
+
+			/*
+			 * ---------------------------------------------------------
+			 * 7. Vérification de la ROI dans l'image originale.
+			 * ---------------------------------------------------------
+			 */
+			cv::Rect destinationRect =
+				detectedFace.myROI;
+
+			destinationRect.x += 1;
+			destinationRect.y += 1;
+			destinationRect.width -= 2;
+			destinationRect.height -= 2;
+
+			CPictureUtility::VerifRectSize(
+				destinationRect,
+				source);
+
+			if (destinationRect.empty())
+				continue;
+
+			/*
+			 * On évite de copier une image dont les dimensions
+			 * ne correspondent pas exactement à la destination.
+			 */
+			cv::Mat resizedFace;
+
+			if (finalFace.size() != destinationRect.size())
+			{
+				cv::resize(
+					finalFace,
+					resizedFace,
+					destinationRect.size(),
+					0.0,
+					0.0,
+					cv::INTER_LINEAR);
+			}
+			else
+			{
+				resizedFace = finalFace;
+			}
+
+			resizedFace.copyTo(
+				source(destinationRect));
+		}
+		catch (const cv::Exception& e)
+		{
+			std::cout << "DetectEyes error: "
+				<< e.what()
+				<< std::endl;
 		}
 	}
+
+	/*
+	 * Si pBitmap est destiné à être modifié par référence,
+	 * il faut recopier source dans le Mat original.
+	 *
+	 * Attention : cette ligne ne modifie pas les données du Mat
+	 * si pBitmap est passé en const.
+	 */
+	source.copyTo(pBitmap);
 }
+
+
 
 void CFaceDetector::ImageToJpegBuffer(const Mat& image, std::vector<uchar>& buff)
 {
 	//std::vector<uchar> buff;//buffer for coding
 	std::vector<int> param(2);
 	param[0] = IMWRITE_JPEG_QUALITY;
-	param[1] = 80; //default(95) 0-100
+	param[1] = 100;
 	imencode(".jpg", image, buff, param);
 }
 
-void CFaceDetector::RemoveRedEye(const Mat& image, const Rect& rSelectionBox, const Rect& radius)
+void CFaceDetector::RemoveRedEye(
+	const cv::Mat& image,
+	const cv::Rect& eyeRect,
+	const cv::Rect& radius)
 {
-	Mat eyeMat = image(rSelectionBox);
+	if (image.empty() ||
+		image.channels() != 3 ||
+		eyeRect.empty() ||
+		radius.empty())
+	{
+		return;
+	}
 
-	Mat eye;
-	cvtColor(eyeMat, eye, COLOR_BGR2GRAY);
-	GaussianBlur(eye, eye, Size(5, 5), 0);
-	////double min = 0;
-	//double max = 0;
-	Point minLoc;
-	double min_val, max_val;
-	Point maxLoc;
-	minMaxLoc(eye, &min_val, &max_val, &minLoc, &maxLoc);
+	const cv::Rect imageBounds(
+		0, 0,
+		image.cols,
+		image.rows);
 
-	Rect rc;
-	rc.x = maxLoc.x - radius.width / 2;
-	rc.y = maxLoc.y - radius.height / 2;
-	rc.width = radius.width;
-	rc.height = radius.height;
+	const cv::Rect selection =
+		eyeRect & imageBounds;
 
-	int xMax = eyeMat.size().width;
-	int yMax = eyeMat.size().height;
+	if (selection.empty())
+		return;
 
-	if (rc.x + rc.width > xMax)
-		rc.width = xMax - rc.x;
+	cv::Mat eye = image(selection);
 
-	if (rc.y + rc.height > yMax)
-		rc.height = yMax - rc.y;
+	/*
+	 * Recherche des pixels rouges.
+	 *
+	 * OpenCV utilise BGR :
+	 *   [0] = Bleu
+	 *   [1] = Vert
+	 *   [2] = Rouge
+	 */
+	std::vector<cv::Mat> channels;
+	cv::split(eye, channels);
 
-	if (rc.x < 0)
-		rc.x = 0;
+	cv::Mat maskRed;
+	cv::Mat maskGreen;
+	cv::Mat maskBlue;
 
-	if (rc.y < 0)
-		rc.y = 0;
+	// Rouge suffisamment intense
+	cv::threshold(
+		channels[2],
+		maskRed,
+		80,
+		255,
+		cv::THRESH_BINARY);
 
-	Mat iris2;
-	eyeMat(rc).copyTo(iris2);
-	Mat img_gray;
-	cvtColor(iris2, img_gray, COLOR_BGR2GRAY);
-	Mat thresh;
-	threshold(img_gray, thresh, 100, 255, THRESH_BINARY);
-	bitwise_not(thresh, thresh);
-	cvtColor(img_gray, img_gray, COLOR_GRAY2BGR);
-	iris2.copyTo(img_gray, thresh);
-	img_gray.copyTo(eyeMat(rc));
+	/*
+	 * R > G * 1.35
+	 * R > B * 1.35
+	 */
+	cv::Mat greenFloat;
+	cv::Mat redFloat;
+	cv::Mat blueFloat;
+
+	channels[1].convertTo(
+		greenFloat,
+		CV_32F);
+
+	channels[2].convertTo(
+		redFloat,
+		CV_32F);
+
+	channels[0].convertTo(
+		blueFloat,
+		CV_32F);
+
+	cv::Mat maskRG;
+	cv::Mat maskRB;
+
+	cv::compare(
+		redFloat,
+		greenFloat * 1.35,
+		maskRG,
+		cv::CMP_GT);
+
+	cv::compare(
+		redFloat,
+		blueFloat * 1.35,
+		maskRB,
+		cv::CMP_GT);
+
+	/*
+	 * Combinaison des trois conditions.
+	 */
+	cv::Mat mask;
+
+	cv::bitwise_and(
+		maskRed,
+		maskRG,
+		mask);
+
+	cv::bitwise_and(
+		mask,
+		maskRB,
+		mask);
+
+	/*
+	 * Nettoyage du masque.
+	 */
+	const cv::Mat kernel =
+		cv::getStructuringElement(
+			cv::MORPH_ELLIPSE,
+			cv::Size(3, 3));
+
+	cv::morphologyEx(
+		mask,
+		mask,
+		cv::MORPH_OPEN,
+		kernel);
+
+	cv::morphologyEx(
+		mask,
+		mask,
+		cv::MORPH_CLOSE,
+		kernel);
+
+	/*
+	 * Limite la correction à la zone radius
+	 * autour du centre de l'œil.
+	 */
+	cv::Point center(
+		eye.cols / 2,
+		eye.rows / 2);
+
+	cv::Rect correction(
+		center.x - radius.width / 2,
+		center.y - radius.height / 2,
+		radius.width,
+		radius.height);
+
+	correction &= cv::Rect(
+		0,
+		0,
+		eye.cols,
+		eye.rows);
+
+	if (correction.empty())
+		return;
+
+	cv::Mat localMask =
+		cv::Mat::zeros(
+			mask.size(),
+			CV_8UC1);
+
+	mask(correction).copyTo(
+		localMask(correction));
+
+	/*
+	 * Remplacement du rouge par une luminance neutre.
+	 */
+	cv::Mat gray;
+
+	cv::cvtColor(
+		eye,
+		gray,
+		cv::COLOR_BGR2GRAY);
+
+	cv::Mat corrected;
+
+	cv::cvtColor(
+		gray,
+		corrected,
+		cv::COLOR_GRAY2BGR);
+
+	corrected.copyTo(
+		eye,
+		localMask);
 }
 
-
-double GetNumFaceCompatibleScore(const int& numFace, vector<CFaceRecognitionData>& faceRecognitonVec, Mat& feature1)
+double GetNumFaceCompatibleScore(
+	int numFace,
+	const std::vector<CFaceRecognitionData>& faceRecognitionVec,
+	const cv::Mat& feature1)
 {
-	double score = 0.0;
-	int nbElement = 0;
+	std::vector<double> scores;
 
-	for (CFaceRecognitionData picture : faceRecognitonVec)
+	for (const auto& picture : faceRecognitionVec)
 	{
-		if (picture.numFaceCompatible == numFace)
+		if (picture.numFaceCompatible != numFace)
+			continue;
+
+		if (picture.feature.empty())
 		{
-			wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
+			const wxString fileSource =
+				CFileUtility::GetFaceThumbnailPath(picture.numFace);
 
 			if (!wxFileExists(fileSource))
-			{
-				continue;
-			}
-
-			Mat aligned_face2 = imread(CConvertUtility::ConvertToStdString(fileSource));
-			if (aligned_face2.empty())
 				continue;
 
-			Mat feature2;
-			faceRecognizer->feature(aligned_face2, feature2);
-			feature2 = feature2.clone();
+			cv::Mat alignedFace2 =
+				cv::imread(CConvertUtility::ConvertToStdString(fileSource));
 
-			double local_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
-			score += local_score;
-			nbElement++;
+			if (alignedFace2.empty())
+				continue;
+
+			faceRecognizer->feature(alignedFace2, picture.feature);
 		}
+
+		if (picture.feature.empty())
+			continue;
+
+		const double localScore =
+			faceRecognizer->match(
+				feature1,
+				picture.feature,
+				cv::FaceRecognizerSF::DisType::FR_COSINE);
+
+		scores.push_back(localScore);
 	}
-	return score / nbElement;
+
+	if (scores.empty())
+		return 0.0;
+
+	constexpr size_t MAX_SCORES = 5;
+
+	const size_t count = std::min(scores.size(), MAX_SCORES);
+
+	std::partial_sort(
+		scores.begin(),
+		scores.begin() + count,
+		scores.end(),
+		std::greater<double>());
+
+	double score = 0.0;
+
+	for (size_t i = 0; i < count; ++i)
+		score += scores[i];
+
+	return score / static_cast<double>(count);
 }
 
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
-	//int predictedLabel = -1;
-
-#ifdef OLD
-
-	double maxConfidence = 0.0;
-	Mat fc1;
-	bool findFaceCompatible = false;
-	CSqlFacePhoto facePhoto;
-	CSqlFaceRecognition sqlfaceRecognition;
-	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
-
-	if(!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace)))
-	{
-		return 0;
-	}
-
-	fc1 = GetFaceScore(numFace);
-	if (fc1.rows == 0 || fc1.cols == 0)
-		return false;
-
-	if (faceRecognitonVec.size() > 0)
-	{
-		
-		int predictedLabel = -1;
-		double confidence = 0.0; 
-
-		for (CFaceRecognitionData picture : faceRecognitonVec)
-		{
-			Mat face1;
-			if (listScore.find(picture.numFace) == listScore.end())
-			{
-				face1 = GetFaceScore(picture.numFace);
-				listScore.insert(std::pair<int,Mat>(picture.numFace, face1));
-			}
-			else
-			{
-				face1 = listScore[picture.numFace];
-			}
-			
-			if (face1.rows == 0 || face1.cols == 0)
-				return false;
-
-			cv::detail::tracking::tbm::CosDistance cosDistance(fc1.size());
-			float score = 1.0 - cosDistance.compute(fc1, face1);
-			//float score = CosineDistance(fc1, face1);
-			if (score > confidence)
-			{
-				confidence = score;
-				predictedLabel = picture.numFaceCompatible;
-			}
-		}
-
-		if (predictedLabel != -1 && confidence > 0.90)
-		{
-			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
-			findFaceCompatible = true;
-		}
-
-		if (!findFaceCompatible)
-		{
-			CSqlFaceLabel sqlfaceLabel;
-			wxString label = "Face number " + to_string(numFace);
-			sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
-			sqlfaceLabel.InsertFaceLabel(numFace, label, true);
-		}
-	}
-	else
-	{
-		CSqlFaceLabel sqlfaceLabel;
-		wxString label = "Face number " + to_string(numFace);
-		sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
-		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
-	}
-
-	return findFaceCompatible;
-#else
-
-
-	
-	//double l2norm_similar_thresh = 1.128;
-
 	double maxConfidence = 0.0;
 	Mat fc1;
 	bool findFaceCompatible = false;
@@ -978,23 +1234,14 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			}
 		}
 
-
-
 		if (predictedLabel != -1 && confidence > cosine_similar_thresh)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;
 		}
 
-		if (!findFaceCompatible)
-		{
-			CSqlFaceLabel sqlfaceLabel;
-			wxString label = "Face number " + to_string(numFace);
-			sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
-			sqlfaceLabel.InsertFaceLabel(numFace, label, true);
-		}
 	}
-	else
+	if (faceRecognitonVec.size() == 0 || !findFaceCompatible)
 	{
 		CSqlFaceLabel sqlfaceLabel;
 		wxString label = "Face number " + to_string(numFace);
@@ -1003,5 +1250,5 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	}
 
 	return findFaceCompatible;
-#endif
+
 }

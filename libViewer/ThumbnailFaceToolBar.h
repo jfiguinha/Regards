@@ -11,7 +11,7 @@ namespace Regards::Viewer
 	{
 	public:
 		CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
-		~CThumbnailFaceToolBar() override;
+		~CThumbnailFaceToolBar() = default;
 
 		void SetTrackBarPosition(const int& iPos) override;
 		void SetTabValue(vector<int> value);
@@ -32,7 +32,12 @@ namespace Regards::Viewer
 	private:
 		void EventManager(const int& id) override;
 
-		CToolbarSlide* slide;
+		std::unique_ptr<CToolbarSlide> slide;
+		std::unique_ptr<CToolbarButton> add = nullptr;
+		std::unique_ptr<CToolbarButton> copy = nullptr;
+		std::unique_ptr<CToolbarButton> moins = nullptr;
+		std::unique_ptr<CToolbarButton> plus = nullptr;
+		std::unique_ptr<CToolbarButton> refreshButton = nullptr;
 	};
 }
 #endif

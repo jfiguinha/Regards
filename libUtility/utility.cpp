@@ -109,8 +109,8 @@ void Error::CheckError(cl_int err)
 {
 	if (err != CL_SUCCESS)
 	{
-		printf("Error : %s happened in file %s at line %s /n", CConvertUtility::ConvertToUTF8(opencl_error_to_str(err)),
-		       CConvertUtility::ConvertToUTF8(to_str(__FILE__)), CConvertUtility::ConvertToUTF8(to_str(__LINE__)));
+		printf("Error : %s happened in file %s at line %s /n", CConvertUtility::ConvertToStdString(opencl_error_to_str(err)).c_str(),
+		       CConvertUtility::ConvertToStdString(to_str(__FILE__)).c_str(), CConvertUtility::ConvertToStdString(to_str(__LINE__)).c_str());
 		wxString message = "OpenCL error " +
 			opencl_error_to_str(err) +
 			" happened in file " + to_str(__FILE__) +

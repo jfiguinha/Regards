@@ -33,9 +33,6 @@
     <ClInclude Include="FileUtility.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="wxmd5.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -48,21 +45,12 @@
     <ClInclude Include="utility.h">
       <Filter>Error</Filter>
     </ClInclude>
-    <ClInclude Include="DateValidation.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="base64.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="FileUtility.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="wxmd5.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="RegistryAccess.cpp">
@@ -76,12 +64,6 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
-    </ClCompile>
-    <ClCompile Include="DateValidation.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

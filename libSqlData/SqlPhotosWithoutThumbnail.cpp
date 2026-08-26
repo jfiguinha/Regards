@@ -12,27 +12,27 @@ CSqlPhotosWithoutThumbnail::CSqlPhotosWithoutThumbnail()
 	photoList = nullptr;
 }
 
-CSqlPhotosWithoutThumbnail::~CSqlPhotosWithoutThumbnail()
-{
-}
 
 int CSqlPhotosWithoutThumbnail::GetPhotoElement()
 {
 	nbElement = 0;
-	typeResult = 1;
-	ExecuteRequest("SELECT count(*) from PHOTOSWIHOUTTHUMBNAIL_VIEW");
+	typeResult = 0;
+	ExecuteRequest("SELECT count(*) as nbResult from PHOTOSWIHOUTTHUMBNAIL_VIEW");
 	return nbElement;
 }
 
 void CSqlPhotosWithoutThumbnail::GetPhotoList(std::deque<wxString> * photoList, int nbElement)
 {
-	this->nbElement = nbElement;
+	photoList->clear();
 	this->photoList = photoList;
-	typeResult = 0;
-	if(nbElement > 0)
-		ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW LIMIT " + to_string(nbElement));
-	else
-		ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW");
+	if (photoList != nullptr)
+	{
+		typeResult = 1;
+		if (nbElement > 0)
+			ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW LIMIT " + to_string(nbElement));
+		else
+			ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL_VIEW");
+	}
 }
 
 int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
@@ -40,36 +40,18 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		if (typeResult == 0)
+		switch (typeResult)
 		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					photoList->push_back(sqlResult->ColumnDataText(i));
-					break;
-				default: ;
-				}
-			}
+		case 0:
+			nbElement = sqlResult->ColumnDataInt(0);
+			break;
 
-			nbResult++;
+		case 1:
+			photoList->push_back(sqlResult->ColumnDataText(0));
+			break;
+		default: ;
 		}
-		else if (typeResult == 1)
-		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					nbElement = priority = sqlResult->ColumnDataInt(i);
-					break;
-				default: ;
-				}
-			}
-
-			nbResult++;
-		}
+		nbResult++;
 	}
 	return nbResult;
 }

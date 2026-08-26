@@ -22,11 +22,8 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString&
 	//----------------------------------------------------------------------------------------
 	paneWindow = new CPane(this, wxID_ANY, this, PANE_WITHCLICKTOOLBAR, themePane, refreshButton);
 	paneWindow->SetTitle(paneLibelle);
-	//vertical = true;
 	clickWindow = new CClickToolbar(this, wxID_ANY, themeToolbar, this, PANE_WITHCLICKTOOLBAR, vertical);
 
-	//#define wxEVENT_SHOWPANE 214
-	//#define wxEVENT_CLOSEPANE 215
 	Connect(wxEVENT_SHOWPANE, wxCommandEventHandler(CPanelWithClickToolbar::ShowPane));
 	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePaneEvent));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelWithClickToolbar::RefreshData));
@@ -118,12 +115,6 @@ void CPanelWithClickToolbar::SetWindow(CWindowMain* windowMain)
 		windowMain->SetSize(oldsize);
 		this->Resize();
 	}
-}
-
-CPanelWithClickToolbar::~CPanelWithClickToolbar()
-{
-	delete(clickWindow);
-	delete(paneWindow);
 }
 
 void CPanelWithClickToolbar::UpdateScreenRatio()
@@ -238,13 +229,6 @@ void CPanelWithClickToolbar::HidePanel(const bool& refresh)
 	this->Show(false);
 	clickWindow->Show(false);
 	paneWindow->Show(false);
-	/*
-	if(refresh)
-	{
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-		wxQueueEvent(this->GetParent(), event);
-	}
-	*/
 }
 
 void CPanelWithClickToolbar::ShowPanel()

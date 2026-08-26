@@ -1,5 +1,7 @@
 #include <header.h>
 #include "MyCentralWindowIntro.h"
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
 using namespace Regards::Introduction;
 
 CMyCentralWindowIntro::CMyCentralWindowIntro(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,

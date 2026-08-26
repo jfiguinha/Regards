@@ -13,14 +13,14 @@ namespace Regards
 		{
 		public:
 			CSqlThumbnailVideo();
-			~CSqlThumbnailVideo() override;
+			~CSqlThumbnailVideo() = default;
 			int GetNbThumbnail(const wxString& path);
-			wxString InsertThumbnail(const wxString& path, const int& width, const int& height,
+			wxString InsertThumbnail(int photoId, const wxString& path, const int& width, const int& height,
 			                     const int& numPicture, const int& rotation, const int& percent,
 			                     const int& timePosition);
-			cv::Mat GetThumbnail(const wxString& path, const int& numVideo, bool& isDefault);
-			void GetPictureThumbnail(const wxString& path, const int& numVideo, CImageVideoThumbnail* & videoThumbnail);
-			bool DeleteThumbnail(const wxString& path);
+			cv::Mat GetThumbnail(int photoId, const wxString& path, const int& numVideo, bool& isDefault);
+			void GetPictureThumbnail(int photoId, const wxString& path, const int& numVideo, CImageVideoThumbnail* videoThumbnail);
+
 			bool DeleteThumbnail(const int& numPhoto);
 			bool EraseThumbnail();
 			bool EraseFolderThumbnail(const int& numFolder);
@@ -30,10 +30,9 @@ namespace Regards
 			int TraitementResult(CSqlResult* sqlResult) override;
 			CImageVideoThumbnail* videoThumbnail = nullptr;
 			vector<int> listPhoto;
+			vector<pair<int, int>> listVideo;
 			int type;
-			bool find;
 			int nbElement;
-			int numPhoto;
 		};
 	}
 }

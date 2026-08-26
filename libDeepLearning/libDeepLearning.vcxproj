@@ -408,7 +408,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData;../libSqlEngine;</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -578,7 +578,7 @@
       <PreprocessorDefinitions>USE_ACCELERATE;CPU_ONLY;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData;../libSqlEngine;</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <OpenMP>GenerateParallelCode</OpenMP>
       <StringPooling>true</StringPooling>
@@ -747,7 +747,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libUtility;../libSqlData;../libSqlEngine;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

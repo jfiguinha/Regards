@@ -20,7 +20,7 @@ namespace Regards::Viewer
 	public:
 		CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                        const CThemeThumbnail& themeThumbnail, const bool& testValidity);
-		~CThumbnailViewerPicture(void) override;
+		~CThumbnailViewerPicture(void) = default;
 		void ApplyListeFile(const bool& isDeleteFolder, const bool& isSqlUpdate);
 		vector<wxString> GetFileList();
 
@@ -37,12 +37,15 @@ namespace Regards::Viewer
 		void ResizeThumbnailWithoutVScroll();
 
 	private:
-		void OnPictureClick(CThumbnailData* data) override;
+		void OnPictureClick(const int& numPhotoId) override;
 		CIcone *  FindElement(const int& xPos, const int& yPos) override;
 		void RenderIconeWithoutVScroll(wxDC* deviceContext) override;
 
 		static std::mutex localmu;
 		int widthThumbnail;
 		int heightThumbnail;
+		bool isScrollBarH;
+		int scrollBarHSize;
+		int oldHeightIcone = 0;
 	};
 }

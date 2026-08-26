@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CBitmapInfosGps(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme);
-		~CBitmapInfosGps() override;
+		~CBitmapInfosGps() = default;
 		void SetInfos(const wxString& localisation, const wxString& latitude, const wxString& longitude);
 		int GetHeight() override;
 		void Redraw();

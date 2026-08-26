@@ -10,7 +10,7 @@ namespace Regards::Viewer
 	public:
 		CWaitingWindow(wxWindow* parent, wxWindowID id);
 
-		~CWaitingWindow() override;
+		~CWaitingWindow() = default;
 
 		void UpdateScreenRatio() override;
 
@@ -21,7 +21,7 @@ namespace Regards::Viewer
 	private:
 		void on_paint(wxPaintEvent& event);
 
-		wxAnimationCtrl* m_animationCtrl;
+		std::unique_ptr<wxAnimationCtrl> m_animationCtrl;
 		wxString textToShow;
 	};
 }

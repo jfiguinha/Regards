@@ -1,23 +1,19 @@
 #include "header.h"
 #include "ParamInit.h"
 #include "RegardsConfigParam.h"
-#include <wx/stdpaths.h>
-
-CRegardsConfigParam* CParamInit::_singleton = nullptr;
-
-CParamInit::CParamInit()
-{
-}
-
-
-CParamInit::~CParamInit()
-{
-}
-
+#include <FileUtility.h>
+#include <wx/filename.h>
+std::unique_ptr<CRegardsConfigParam> CParamInit::_singleton = nullptr;
 
 CRegardsConfigParam* CParamInit::getInstance()
 {
-	return _singleton;
+    if (nullptr == _singleton)
+    {
+        wxString documentPath = ConfigPath();
+        _singleton = std::make_unique<CRegardsConfigParam>();
+        _singleton->OpenFile(documentPath);
+    }
+	return _singleton.get();
 }
 
 bool CParamInit::IsConfigFileExist()
@@ -28,23 +24,6 @@ bool CParamInit::IsConfigFileExist()
 
 wxString CParamInit::ConfigPath()
 {
-    wxStandardPathsBase& stdp = wxStandardPaths::Get();
-    wxString documentPath = stdp.GetDocumentsDir();
-
-#ifdef WIN32
-    documentPath.append("\\Regards\\Regards.config");
-#else
-    documentPath.append("/Regards/Regards.config");   
-#endif
-    return documentPath;
+    return wxFileName(CFileUtility::GetDocumentFolderPath(), "Regards.config").GetFullPath();
 }
 
-void CParamInit::Initialize(CRegardsConfigParam* param)
-{
-	if (nullptr == _singleton)
-	{
-		wxString documentPath = ConfigPath();
-        _singleton = param;
-        _singleton->OpenFile(documentPath);
-	}
-}

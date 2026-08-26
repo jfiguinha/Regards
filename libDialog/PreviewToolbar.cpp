@@ -22,44 +22,17 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, wxWindowID vie
 	themeToolbar = theme;
 	slide = nullptr;
 	this->parentId = viewerId;
-	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
-	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
-	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1); //"Shrink Picture";
-	wxString oldPictureLable = CLibResource::LoadStringFromResource("LBLORIGINALLABEL", 1);
-	wxString newPictureLable = CLibResource::LoadStringFromResource("LBLNEWLABEL", 1);
 
-	auto newPicture = new CToolbarButton(themeToolbar.button);
-	newPicture->SetButtonResourceId("IDB_NEWPICTURE");
-	newPicture->SetCommandId(IDM_NEWPICTURE);
-	newPicture->SetLibelleTooltip(newPictureLable);
-	navElement.push_back(newPicture);
+	newPicture = CreateButton("IDB_NEWPICTURE", "LBLNEWLABEL", IDM_NEWPICTURE, false);
+	oldPicture = CreateButton("IDB_OLDPICTURE", "LBLORIGINALL", IDM_OLDPICTURE, false);
+	shrink = CreateButton("IDB_SHRINK", "LBLSHRINK", IDM_SETSHRINK, false);
+	moins = CreateButton("IDB_ZOOMMOINS", "LBLZOOMOFF", WM_ZOOMOUT, false);
 
-	auto oldPicture = new CToolbarButton(themeToolbar.button);
-	oldPicture->SetButtonResourceId("IDB_OLDPICTURE");
-	oldPicture->SetCommandId(IDM_OLDPICTURE);
-	oldPicture->SetLibelleTooltip(oldPictureLable);
-	navElement.push_back(oldPicture);
+	slide = std::make_unique<CToolbarSlide>(themeToolbar.slider, this);
+	navElement.push_back(std::move(slide).get());
 
-	auto shrink = new CToolbarButton(themeToolbar.button);
-	shrink->SetButtonResourceId("IDB_SHRINK");
-	shrink->SetCommandId(IDM_SETSHRINK);
-	shrink->SetLibelleTooltip(shrinkLibelle);
-	navElement.push_back(shrink);
+	plus = CreateButton("IDB_ZOOMPLUS", "LBLZOOMON", WM_ZOOMON, false);
 
-	auto moins = new CToolbarButton(themeToolbar.button);
-	moins->SetButtonResourceId("IDB_ZOOMMOINS");
-	moins->SetCommandId(WM_ZOOMOUT);
-	moins->SetLibelleTooltip(zoomOff);
-	navElement.push_back(moins);
-
-	slide = new CToolbarSlide(themeToolbar.slider, this);
-	navElement.push_back(slide);
-
-	auto plus = new CToolbarButton(themeToolbar.button);
-	plus->SetButtonResourceId("IDB_ZOOMPLUS");
-	plus->SetCommandId(WM_ZOOMON);
-	plus->SetLibelleTooltip(zoomOn);
-	navElement.push_back(plus);
 }
 
 CPreviewToolbar::~CPreviewToolbar()

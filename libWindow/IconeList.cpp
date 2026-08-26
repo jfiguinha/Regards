@@ -25,30 +25,6 @@ public:
 
 };
 
-//Class use for finding element in IconeList
-class CItemPhotoId
-{
-public:
-	CItemPhotoId(int photoId) : _photoId(photoId)
-	{
-	}
-
-	bool operator()(CIcone* icone)
-	{
-		int photoId = 0;
-		if (icone != nullptr)
-		{
-			CThumbnailData* data = icone->GetData();
-			if (data != nullptr)
-				photoId = data->GetNumPhotoId();
-		}
-		return _photoId == photoId;
-	}
-
-	int _photoId;
-	
-
-};
 
 class CItemFaceString
 {
@@ -67,24 +43,6 @@ public:
 	pItemCompFonctFace* _pf;
 
 };
-
-class CItemString
-{
-public:
-	CItemString(wxString filename, pItemStringCompFonct * pf) : _filename(filename), _pf(pf)
-	{
-	}
-
-	bool operator()(CIcone* icone)
-	{
-		return (*_pf)(_filename, icone);
-	}
-
-	wxString _filename;
-	pItemStringCompFonct * _pf;
-
-};
-
 
 int CIconeList::GetNbElement()
 {
@@ -106,7 +64,7 @@ int CIconeList::GetPhotoId(const int& numElement)
 
 	if (icone != nullptr)
 	{
-		CThumbnailData* data = icone->GetData();
+		CThumbnailData* data = icone->GetPtData();
 		if (data != nullptr)
 			photoId = data->GetNumPhotoId();
 	}
@@ -116,27 +74,30 @@ int CIconeList::GetPhotoId(const int& numElement)
 
 void CIconeList::RemoveElement(int numElement)
 {
-	CIcone* icone = nullptr;
-	if (numElement < pIconeList.size())
-		icone = pIconeList[numElement];
-	if (icone != nullptr)
-	{
-		if (CThumbnailData* data = icone->GetData();
+    if (numElement >= pIconeList.size())
+        return;
+
+    CIcone* icone = pIconeList[numElement];
+
+    if (icone != nullptr)
+    {
+		if (CThumbnailData* data = icone->GetPtData();
 			data != nullptr)
 		{
 			pIconeByPhotoId[data->GetNumPhotoId()] = nullptr;
 			pIconeByFilename[data->GetFilename()] = nullptr;
 		}
 
-		delete(icone);
-		icone = nullptr;
-	}
-	pIconeList[numElement] = nullptr;
+        delete icone;
+    }
 
+    pIconeList[numElement] = nullptr;
 }
 
 CIcone* CIconeList::GetElement(const int& numElement)
 {
+	std::unique_lock lock(mutexList);
+
 	CIcone* icone = nullptr;
 	if (numElement < pIconeList.size())
 		icone = pIconeList[numElement];
@@ -146,13 +107,19 @@ CIcone* CIconeList::GetElement(const int& numElement)
 
 void CIconeList::AddElement(CIcone* icone)
 {
-	pIconeList.push_back(icone);
-	if (CThumbnailData* data = icone->GetData();
-		data != nullptr)
-	{
-		pIconeByPhotoId[data->GetNumPhotoId()] = icone;
-		pIconeByFilename[data->GetFilename()] = icone;
-	}
+	std::unique_lock lock(mutexList);
+
+    if (icone == nullptr)
+        return;
+
+    pIconeList.push_back(icone);
+
+    if (CThumbnailData* data = icone->GetPtData();
+        data != nullptr)
+    {
+        pIconeByPhotoId[data->GetNumPhotoId()] = icone;
+        pIconeByFilename[data->GetFilename()] = icone;
+    }
 }
 
 wxString CIconeList::GetFilename(const int& numElement)
@@ -164,7 +131,7 @@ wxString CIconeList::GetFilename(const int& numElement)
 
 	if (icone != nullptr)
 	{
-		CThumbnailData* data = icone->GetData();
+		CThumbnailData* data = icone->GetPtData();
 		if (data != nullptr)
 			filename = data->GetFilename();
 	}
@@ -172,29 +139,35 @@ wxString CIconeList::GetFilename(const int& numElement)
 	return filename;
 }
 
-bool CIconeList::FindElement(wxString filename)
+ bool CIconeList::IfElementExistByFilename(const wxString& filename)
+ {
+     auto it = pIconeByFilename.find(filename);
+
+    if (it != pIconeByFilename.end())
+        return true;
+
+    return false;    
+ }
+
+CIcone* CIconeList::FindElementByFilename(const wxString& filename)
 {
-	auto it = pIconeByFilename.find(filename);
-	return it != pIconeByFilename.end() && it->second != nullptr;
+    auto it = pIconeByFilename.find(filename);
+
+    if (it != pIconeByFilename.end() && it->second != nullptr)
+        return it->second;
+
+    return nullptr;
 }
 
-CIcone * CIconeList::FindElementByFilename(wxString filename)
+
+CIcone* CIconeList::FindElementByPhotoId(const int& photoId)
 {
-	auto it = pIconeByFilename.find(filename);
+    auto it = pIconeByPhotoId.find(photoId);
 
-	if (it != pIconeByFilename.end() && it->second != nullptr)
-		return it->second;
+    if (it != pIconeByPhotoId.end() && it->second != nullptr)
+        return it->second;
 
-	return nullptr;
-}
-
-
-CIcone* CIconeList::FindElementPhotoId(const int& photoId)
-{
-	auto it = pIconeByPhotoId.find(photoId);
-	if (it != pIconeByPhotoId.end() && it->second != nullptr)
-		return it->second;
-	return nullptr;
+    return nullptr;
 }
 
 CIcone* CIconeList::FindFaceElement(wxString filepath, int numFace, pItemCompFonctFace* _pf)
@@ -210,7 +183,7 @@ CIcone* CIconeList::FindFaceElement(wxString filepath, int numFace, pItemCompFon
 	return element;
 }
 
-CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
+CIcone* CIconeList::FindElementByPosition(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
 {
 	IconeVector::iterator it;
 	CIcone* element = nullptr;
@@ -222,6 +195,7 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 	
 	return element;
 }
+
 
 CIcone* CIconeList::GetLastElement()
 {
@@ -245,43 +219,54 @@ void CIconeList::EraseThumbnailListWithIcon()
 			pIcone = nullptr;
 		}
 	}
-	pIconeList.clear();  
-	pIconeByPhotoId.clear();
-	pIconeByFilename.clear();
+    pIconeList.clear();
+    pIconeByPhotoId.clear();
+    pIconeByFilename.clear();
 }
 
 void CIconeList::EraseThumbnailList()
 {
-    printf("CIconeList::EraseThumbnailList() \n");
-	pIconeList.clear();
-	pIconeByFilename.clear();	
-	pIconeByPhotoId.clear();
+    pIconeList.clear();
+    pIconeByPhotoId.clear();
+    pIconeByFilename.clear();
 }
-
 
 // Compares two intervals
 // according to starting times.
-bool compareInterval(CIcone* i1, CIcone* i2)
+bool compareInterval(CIcone* lhs, CIcone* rhs)
 {
-	if (i1 != nullptr && i2 != nullptr)
-		return (i1->GetNumElement() < i2->GetNumElement());
-	return false;
-}
+	if (lhs == rhs)
+		return false;
 
+	if (lhs == nullptr)
+		return true;
+
+	if (rhs == nullptr)
+		return false;
+
+	return lhs->GetNumElement() < rhs->GetNumElement();
+}
 void CIconeList::SortById()
 {
+	std::unique_lock lock(mutexList);
 	tbb::parallel_sort(pIconeList.begin(), pIconeList.end(), compareInterval);
 }
 
 
-// Compares two intervals
-// according to starting times.
-bool compareFilename(CIcone* i1, CIcone* i2)
+bool compareFilename(CIcone* lhs, CIcone* rhs)
 {
-	if (i1 != nullptr && i2 != nullptr)
-		return (i1->GetFilename() < i2->GetFilename());
-	return false;
+	if (lhs == rhs)
+		return false;
+
+	if (lhs == nullptr)
+		return true;
+
+	if (rhs == nullptr)
+		return false;
+
+	return lhs->GetFilename() < rhs->GetFilename();
 }
+
 
 void CIconeList::SortByFilename()
 {

@@ -11,10 +11,6 @@ public:
 		sigmaP = 80;
 	};
 
-	~CBilateralEffectParameter() override
-	{
-	};
-
 	int fSize;
 	int sigmaX;
 	int sigmaP;

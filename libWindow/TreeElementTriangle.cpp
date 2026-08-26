@@ -7,11 +7,6 @@ CTreeElementTriangle::CTreeElementTriangle()
 	open = false;
 }
 
-
-CTreeElementTriangle::~CTreeElementTriangle()
-{
-}
-
 void CTreeElementTriangle::SetTheme(CThemeTreeTriangle* theme)
 {
 	themeTriangle = *theme;

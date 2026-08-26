@@ -2,7 +2,7 @@
 #include "Icone.h"
 //#include <ThumbnailData.h>
 //#include <Photos.h>
-class CRegardsBitmap;
+;
 class CThumbnailData;
 
 
@@ -91,5 +91,6 @@ namespace Regards::Window
 		int yPos;
 	};
 
-	using InfosSeparationBarVector = std::vector<CInfosSeparationBar*>;
+	//using InfosSeparationBarVector = std::vector<CInfosSeparationBar*>;
+	using InfosSeparationBarVector = std::vector<std::unique_ptr<CInfosSeparationBar>>;
 }

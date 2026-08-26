@@ -100,25 +100,20 @@ bool CVignetteFilter::IsSourcePreview()
 void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
                                                CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && !source.empty())
 	{
 		CImageLoadingFormat image;
 		image.SetPicture(source);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 
 
 		auto vignetteEffectParameter = static_cast<CVignetteEffectParameter*>(effectParameter);
 		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 
-		imageLoad = new CImageLoadingFormat();
+		auto imageLoad = std::make_unique<CImageLoadingFormat>();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
-
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete imageLoad;
+		filtreEffet->SetBitmap(imageLoad.get());
 	}
 }
 

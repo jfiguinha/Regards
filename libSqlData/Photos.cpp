@@ -1,7 +1,7 @@
 #include <header.h>
 #include "Photos.h"
 
-CPhotos::CPhotos(): day(0), month(0), year(0), dayofweek(0)
+CPhotos::CPhotos(): day(0), month(0), year(0)
 {
 	criteriaInsert = 0;
 	numId = -1;
@@ -27,6 +27,16 @@ wxString CPhotos::GetGpsInfos()
 void CPhotos::SetCreateDate(const wxString& createDate)
 {
 	this->createDate = createDate;
+
+	if (createDate.Length() < 10 ||
+		!createDate.Mid(0, 4).ToInt(&year) ||
+		!createDate.Mid(5, 2).ToInt(&month) ||
+		!createDate.Mid(8, 2).ToInt(&day))
+	{
+		return;
+	}
+
+	dayOfWeek = GetDayOfWeek();
 }
 
 wxString CPhotos::GetCreateDate()

@@ -14,10 +14,6 @@ CToolbarElement::CToolbarElement(): commandId(0), x(0), y(0)
 }
 
 
-CToolbarElement::~CToolbarElement()
-{
-}
-
 void CToolbarElement::SetBackgroundBitmap(wxImage bmBackground)
 {
 	this->bmBackground = bmBackground;

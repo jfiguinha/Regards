@@ -16,7 +16,7 @@ namespace Regards
 		{
 		public:
 			CSqlPhotos(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
-			~CSqlPhotos() override;
+			~CSqlPhotos() = default;
 			bool InsertPhoto(const wxString& filepath, const int64_t& idFolder);
 			int64_t GetPhotoId(const wxString& filepath, const int64_t& idFolder);
 			int64_t GetPhotoId(const wxString& filepath);
@@ -27,11 +27,7 @@ namespace Regards
 			bool UpdatePhotoExif(const wxString& filepath, const int64_t& exif);
 			wxString GetPhotoPath(const int64_t& numPhoto);
 
-			static void GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV);
-			static int GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV);
-
 			bool DeletePhoto(const int64_t& numPhoto);
-			void DeletePhotoSearch();
 			bool DeletePhotoFolder(const int64_t& idFolder);
 			bool DeletePhotoCatalog(const int64_t& idCatalog);
 			bool UpdatePhotoCriteria(const int64_t& numPhoto);
@@ -45,6 +41,7 @@ namespace Regards
 		private:
 			int TraitementResult(CSqlResult* sqlResult) override;
 			int64_t photoId;
+			int criteriaInsert = 0;
 			int64_t exif;
 			int typeResult;
 			CriteriaVector* criteriaVector;

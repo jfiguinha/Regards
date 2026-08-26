@@ -18,7 +18,7 @@ namespace Regards
 		{
 		public:
 			CSqlVersion(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
-			~CSqlVersion() override;
+			~CSqlVersion() = default;
 			bool InsertVersion(const wxString& version);
 			bool UpdateVersion(const wxString& version, const wxString& oldValue);
 			bool DeleteVersion();

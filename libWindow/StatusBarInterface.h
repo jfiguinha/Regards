@@ -1,6 +1,6 @@
 #pragma once
 class CImageLoadingFormat;
-class CRegardsBitmap;
+;
 
 class IStatusBarInterface
 {
@@ -20,11 +20,11 @@ public:
 	};
 	virtual int ShowScanner() { return -1; };
 
-	virtual void PrintPreview(CImageLoadingFormat* imageToPrint)
+	virtual void PrintPreview(const wxString& filename)
 	{
 	};
 
-	virtual void PrintImagePreview(CImageLoadingFormat* imageToPrint)
+	virtual void PrintImagePreview(cv::Mat &picture)
 	{
 	};
 	virtual void Exit() = 0;

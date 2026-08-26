@@ -15,101 +15,60 @@ CFileUtility::~CFileUtility(void)
 {
 }
 
+std::string CFileUtility::GetFullpathModel(const wxString& filename)
+{
+	wxFileName path(GetDocumentFolderPath(), "");
+	path.AppendDir("model");
+	path.SetFullName(filename);
+	return path.GetFullPath().utf8_string();
+}
+
+wxString CFileUtility::GetOrCreateSubFolder(const wxString& folderName)
+{
+	wxFileName path(GetDocumentFolderPath(), "");
+
+	path.AppendDir(folderName);
+
+	if (!wxDir::Exists(path.GetFullPath()))
+	{
+		wxDir::Make(path.GetFullPath(), wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+	}
+
+	return path.GetFullPath();
+}
+
 wxString CFileUtility::GetResourcesFolderFontPathWithExt(const wxString& szFile)
 {
-    wxString path = GetResourcesFolderPath();
-#ifdef WIN32
-	path.append("\\font\\");
-#else
-    path.append("/font/");
-#endif
+	wxString path = GetResourcesFolderPathWithExt("font");
+	path += wxFILE_SEP_PATH;
     path.append(szFile);
     return path;
 }
 
 wxString CFileUtility::GetResourcesFolderPathWithExt(const wxString & folder)
 {
-    wxString path = GetResourcesFolderPath();
-#ifdef WIN32
-	path.append("\\");
-#else
-    path.append("/");
-#endif
-    path.append(folder);
-    return path;
+	wxFileName file(GetResourcesFolderPath(),
+		folder);
+    return file.GetFullPath();
 }
 
 wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const bool& removeFile)
 {
-	wxString file;
-
-#ifdef WIN32
-	file = folder + "\\" + filename;
-#else
-	file = folder + "/" + filename;
-#endif
-
-	try
+	wxString local_folder = GetOrCreateSubFolder(folder);
+	wxFileName file(local_folder, filename);
+	if (removeFile && wxFileExists(file.GetFullPath()))
 	{
-		if (removeFile)
+		if (!wxRemoveFile(file.GetFullPath()))
 		{
-			if (wxFileExists(file))
-			{
-#ifdef WIN32
-				std::remove(file);
-#else
-				wxRemoveFile(file);
-#endif
-			}
+			wxLogWarning("Impossible de supprimer le fichier : %s", file.GetFullPath());
 		}
 	}
-	catch (...)
-	{
-	}
-
-	return file;
+	return file.GetFullPath();
 }
 
 wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 {
-	wxString file;
-	wxString documentPath = GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
-	if (!wxDir::Exists(tempFolder))
-	{
-		wxDir::Make(tempFolder);
-	}
-
-#ifdef WIN32
-	file = tempFolder + "\\" + filename;
-#else
-    file = tempFolder + "/" + filename;
-#endif
-
-	try
-	{
-		if (removeFile)
-		{
-			if (wxFileExists(file))
-			{
-#ifdef WIN32
-				std::remove(file);
-#else
-				wxRemoveFile(file);
-#endif
-			}
-		}
-	}
-	catch (...)
-	{
-	}
-
-
-	return file;
+	return GetTempFile(filename, "temp", removeFile);
 }
 
 
@@ -131,185 +90,113 @@ wxString CFileUtility::GetFolder(const wxString& szFilePath)
 	return filename.GetPath();
 }
 
+#if defined(__APPLE__)
+wxString CFileUtility::GetAppleExecFolderPath(const wxString& folder)
+{
+	wxString exeFolderMacOs = ".app/Contents/";
+	wxString path = wxStandardPaths::Get().GetExecutablePath();
+	int index = path.Find(exeFolderMacOs);
+	if (index == wxNOT_FOUND)
+		return GetFolder(path);
+
+	wxString realPath;
+	realPath.append(path.begin(), path.begin() + index + exeFolderMacOs.size());
+	realPath.append(folder + "/");
+
+	return realPath;
+}
+#endif
+
 wxString CFileUtility::GetResourcesFolderPath()
 {
-#if defined(__APPLE__) && not defined(__LLVM__)
-
-     //printf("toto 1 GetResourcesFolderPath \n");
-
-    wxString exeFolderMacOs = ".app/Contents/";
-    wxString path = wxStandardPaths::Get().GetExecutablePath();
-    int index = path.Find(exeFolderMacOs);
-    wxString realPath;
-    realPath.append(path.begin(),path.begin() + index + exeFolderMacOs.size());
-    realPath.append("Resources");
-
-    return realPath;
+#if defined(__APPLE__)
+    return GetAppleExecFolderPath("Resources");
 
 #else
 
-	wxString path = GetFolder(wxStandardPaths::Get().GetExecutablePath());
-#ifdef WIN32
-	path.append("\\Resources");
-#else
-		path.append("/Resources");
-#endif
-	return path;
+	wxFileName path(GetProgramFolderPath(), "");
+	path.AppendDir("Resources");
+	return path.GetFullPath();
 
 #endif
 }
 
 wxString CFileUtility::GetFaceZScorePath(const int& numFace)
 {
-	wxString documentPath = GetDocumentFolderPath();
-#ifdef WIN32
-	documentPath.append("\\Face");
-#else
-	documentPath.append("/Face");
-#endif
+	wxString local_folder = GetOrCreateSubFolder("Face");
+	wxFileName file(local_folder,
+		wxString::Format("%d.bin", numFace));
 
-	if (!wxDir::Exists(documentPath))
-	{
-		wxDir::Make(documentPath);
-	}
-
-#ifdef WIN32
-	documentPath.append("\\" + to_string(numFace) + ".bin");
-#else
-	documentPath.append("/" + to_string(numFace) + ".bin");
-#endif
-
-	return documentPath;
+	return file.GetFullPath();
 }
 
 wxString CFileUtility::GetFaceThumbnailPath(const int& numFace)
 {
-	wxString documentPath = GetDocumentFolderPath();
-#ifdef WIN32
-	documentPath.append("\\Face");
-#else
-	documentPath.append("/Face");
-#endif
+	wxString local_folder = GetOrCreateSubFolder("Face");
+	wxFileName file(local_folder,
+		wxString::Format("%d.jpg", numFace));
 
-	if (!wxDir::Exists(documentPath))
-	{
-		wxDir::Make(documentPath);
-	}
-
-#ifdef WIN32
-	documentPath.append("\\" + to_string(numFace) + ".jpg");
-#else
-	documentPath.append("/" + to_string(numFace) + ".jpg");
-#endif
-
-	return documentPath;
+	return file.GetFullPath();
 }
 
-wxString CFileUtility::GetVideoThumbnailPath(const wxString& path, const int& numFrame)
+wxString CFileUtility::GetVideoThumbnailPath(const wxString& videoPath, const int& numFrame)
 {
-	wxString ext;
-	wxString dirpath;
-	wxString name;
-	wxFileName::SplitPath(path, &dirpath, &name, &ext);
+	wxString local_folder = GetOrCreateSubFolder("ThumbnailVideo");
+	wxFileName sourceFile(videoPath);
 
-	wxString documentPath = GetDocumentFolderPath();
-#ifdef WIN32
-	documentPath.append("\\ThumbnailVideo");
-#else
-	documentPath.append("/ThumbnailVideo");
-#endif
+	wxString fileName = wxString::Format(
+		"%s_%d.jpg",
+		sourceFile.GetName(),
+		numFrame
+	);
 
-	if (!wxDir::Exists(documentPath))
-	{
-		wxDir::Make(documentPath);
-	}
+	wxFileName thumbnailFile(
+		local_folder,
+		fileName
+	);
 
-#ifdef WIN32
-	documentPath.append("\\" + name + "_" + to_string(numFrame) + ".jpg");
-#else
-	documentPath.append("/" + name + "_" + to_string(numFrame) + ".jpg");
-#endif
-
-	return documentPath;
+	return thumbnailFile.GetFullPath();
 }
 
 wxString CFileUtility::GetThumbnailPath(const wxString& path)
 {
-	wxString ext;
-	wxString dirpath;
-	wxString name;
-	wxFileName::SplitPath(path, &dirpath, &name, &ext);
+	wxFileName sourceFile(path);
+	wxString local_folder = GetOrCreateSubFolder("Thumbnail");
+	wxString fileName = wxString::Format(
+		"%s.jpg",
+		sourceFile.GetName());
 
-	wxString documentPath = GetDocumentFolderPath();
-#ifdef WIN32
-	documentPath.append("\\Thumbnail");
-#else
-	documentPath.append("/Thumbnail");
-#endif
+	wxFileName thumbnailFile(
+		local_folder,
+		fileName
+	);
 
-	if (!wxDir::Exists(documentPath))
-	{
-		wxDir::Make(documentPath);
-	}
-
-#ifdef WIN32
-	documentPath.append("\\" + name + ".jpg");
-#else
-	documentPath.append("/" + name + ".jpg");
-#endif
-
-	return documentPath;
+	return thumbnailFile.GetFullPath();
 }
 
 wxString CFileUtility::GetDocumentFolderPath()
 {
- 
-    wxString documentPath = wxStandardPaths::Get().GetDocumentsDir();
-
-#ifdef WIN32
-    //documentPath = "d:\\Regards";
-
-    documentPath.append("\\Regards");
-#else
-    documentPath.append("/Regards");
-#endif
-
-    if (!wxDir::Exists(documentPath))
-    {
-        wxDir::Make(documentPath);
-    }
+	wxString documentPath = wxStandardPaths::Get().GetDocumentsDir();
+	documentPath += wxFILE_SEP_PATH;
+	documentPath.append("Regards");
+	if (!wxDir::Exists(documentPath))
+	{
+		wxDir::Make(documentPath, wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+	}
 	return documentPath;
 }
 
- wxString CFileUtility::GetDocumentFolderPathWithExt(const wxString & folder)
- {
-     wxString documentFolder = GetDocumentFolderPath();
-#ifdef WIN32
-	documentFolder.append("\\");
-#else
-	documentFolder.append("/");
-#endif
-    documentFolder.append(folder);
-    
-    return documentFolder;
- }
+wxString CFileUtility::GetDocumentFolderPathWithFilename(const wxString & filename)
+{
+	wxFileName path(GetDocumentFolderPath(), filename);
+	return path.GetFullPath();
+}
 
 
 wxString CFileUtility::GetProgramFolderPath()
 {
-#ifdef WIN32
-	wxString path = wxStandardPaths::Get().GetExecutablePath();
-	return GetFolder(path);
-#elif defined(__APPLE__) && not defined(__LLVM__)
-
-    wxString exeFolderMacOs = ".app/Contents/";
-    wxString path = wxStandardPaths::Get().GetExecutablePath();
-    int index = path.Find(exeFolderMacOs);
-    wxString realPath;
-    realPath.append(path.begin(),path.begin() + index + exeFolderMacOs.size());
-    realPath.append("MacOS");
-
-    return realPath;
+#if defined(__APPLE__)
+	return GetAppleExecFolderPath("MacOS");
 #else
     wxString path = wxStandardPaths::Get().GetExecutablePath();
     return GetFolder(path);
@@ -322,7 +209,8 @@ wxString CFileUtility::GetProgramFolderPath()
 wxString CFileUtility::GetFileTime(const wxString& szFileName)
 {
 	wxStructStat strucStat;
-	wxStat(szFileName, &strucStat);
+	if (wxStat(szFileName, &strucStat) != 0)
+		return "";
 	//wxFileOffset filelen = strucStat.st_size;
 	wxDateTime last_modified_time(strucStat.st_mtime);
 	return last_modified_time.Format(wxT("%Y.%m.%d"));

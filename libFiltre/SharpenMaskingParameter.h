@@ -9,9 +9,5 @@ public:
 		sharpness = 1.0f;
 	};
 
-	~CSharpenMaskingEffectParameter() override
-	{
-	};
-
 	float sharpness;
 };

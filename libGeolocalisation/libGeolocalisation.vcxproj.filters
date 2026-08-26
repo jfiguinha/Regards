@@ -36,6 +36,9 @@
     <ClInclude Include="GeoPluginValue.h">
       <Filter>Datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="httprequest.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gps.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="httprequest.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

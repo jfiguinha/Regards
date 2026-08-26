@@ -10,7 +10,7 @@ namespace Regards::Sqlite
 	{
 	public:
 		CSqlFindFolderCatalog();
-		~CSqlFindFolderCatalog() override;
+		~CSqlFindFolderCatalog() = default;
 		bool GetFolderCatalog(FolderCatalogVector* catalogfolderVector, const int& numCatalog);
 		int GetNbFolderCatalog(const int& numCatalog);
 

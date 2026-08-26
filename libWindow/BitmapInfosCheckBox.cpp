@@ -31,12 +31,6 @@ void CBitmapInfosCheckBox::SetFilename(const wxString& libelle)
 	}
 }
 
-
-CBitmapInfosCheckBox::~CBitmapInfosCheckBox()
-{
-	//delete fileGeolocalisation;
-}
-
 int CBitmapInfosCheckBox::GetHeight()
 {
 	return bitmapInfosTheme.GetHeight();
@@ -137,11 +131,9 @@ void CBitmapInfosCheckBox::DrawInformations(wxDC* dc)
 
 void CBitmapInfosCheckBox::on_paint(wxPaintEvent& event)
 {
-	int width = GetWindowWidth();
-	int height = GetWindowHeight();
-	if (width <= 0 || height <= 0)
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
 		return;
-
 
 	wxBufferedPaintDC dc(this);
 	DrawInformations(&dc);

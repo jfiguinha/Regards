@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ToolbarViewerMode.h"
 #include "window_mode_id.h"
-#include <LibResource.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include "ViewerParam.h"
@@ -25,13 +24,7 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 	showLine = true;
 
 	this->toolbarInterface = toolbarInterface;
-	saveLastPush = true;
-	wxString facemode_label = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1); // L"Folder";
-	wxString viewermode_label = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1); //L"Criteria";
-	wxString explorermode_label = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1); //L"Criteria";
-	wxString picturemode_label = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1); //L"Criteria";
-    wxString lblNewVersion = CLibResource::LoadStringFromResource(L"LBLUPDATE", 1);
-    
+	saveLastPush = true;   
 	int height = this->themeToolbar.GetHeight();
 	int faceDetection = 1;
 
@@ -43,32 +36,13 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 
 	if (faceDetection)
 	{
-		facemode = new CToolbarTexte(themeToolbar.texte);
-		facemode->SetCommandId(WINDOW_FACE);
-		facemode->SetLibelle(facemode_label);
-		navElement.push_back(facemode);
+		facemode = CreateTexte(L"LBLFACELIST", WINDOW_FACE);
 	}
 
-	explorermode = new CToolbarTexte(themeToolbar.texte);
-	explorermode->SetCommandId(WINDOW_EXPLORER);
-	explorermode->SetLibelle(explorermode_label);
-	navElement.push_back(explorermode);
-
-	viewermode = new CToolbarTexte(themeToolbar.texte);
-	viewermode->SetCommandId(WINDOW_VIEWER);
-	viewermode->SetLibelle(viewermode_label);
-	navElement.push_back(viewermode);
-
-	picturemode = new CToolbarTexte(themeToolbar.texte);
-	picturemode->SetCommandId(WINDOW_PICTURE);
-	picturemode->SetLibelle(picturemode_label);
-	navElement.push_back(picturemode);
-    
-    imageNewVersion = new CToolbarTexte(themeToolbar.texte);
-	imageNewVersion->SetLibelle(lblNewVersion);
-	imageNewVersion->SetVisible(false);
-	imageNewVersion->SetCommandId(IDM_NEWVERSION);
-	navElement.push_back(imageNewVersion);
+	explorermode = CreateTexte(L"LBLEXPLORERMODE", WINDOW_EXPLORER);
+	viewermode = CreateTexte(L"LBLVIEWERMODE", WINDOW_VIEWER);
+	picturemode = CreateTexte(L"LBLPICTUREMODE", WINDOW_PICTURE);
+    imageNewVersion = CreateTexte(L"LBLUPDATE", IDM_NEWVERSION);
     
     if (!faceDetection && windowMode == WINDOW_FACE)
     {
@@ -90,10 +64,6 @@ CToolbarViewerMode::CToolbarViewerMode(wxWindow* parent, wxWindowID id, const CT
 		picturemode->SetPush(true);
 		break;
 	}
-}
-
-CToolbarViewerMode::~CToolbarViewerMode()
-{
 }
 
 void CToolbarViewerMode::SetUpdateVisible(const bool& isVisible)

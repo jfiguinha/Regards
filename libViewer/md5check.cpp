@@ -4,17 +4,8 @@
 #include <SqlThumbnailVideo.h>
 #include <window_id.h>
 #include <wx/filename.h>
+#include <SqlPhotos.h>
 using namespace Regards::Sqlite;
-
-CMd5Check::CMd5Check()
-{
-
-}
-
-CMd5Check::~CMd5Check()
-{
-
-}
 
 //---------------------------------------------------------------
 //
@@ -25,6 +16,7 @@ void CMd5Check::CheckMD5(void* param)
 	if (path != nullptr)
 	{
 		CSqlThumbnail sqlThumbnail;
+		CSqlPhotos SqlPhotos;
 		CSqlThumbnailVideo sqlThumbnailVideo;
 		wxFileName file(path->filename);
 		wxULongLong sizeFile = file.GetSize();
@@ -33,9 +25,12 @@ void CMd5Check::CheckMD5(void* param)
 		bool result = sqlThumbnail.TestThumbnail(path->filename, md5file);
 		if (!result)
 		{
+			
+			int photoId = SqlPhotos.GetPhotoId(path->filename);
+
 			//Remove thumbnail
 			sqlThumbnail.DeleteThumbnail(path->filename);
-			sqlThumbnailVideo.DeleteThumbnail(path->filename);
+			sqlThumbnailVideo.DeleteThumbnail(photoId);
 		}
 
 		wxCommandEvent evt(wxEVENT_MD5CHECKING);

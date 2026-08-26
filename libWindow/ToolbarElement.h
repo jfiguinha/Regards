@@ -9,7 +9,7 @@ namespace Regards::Window
 	{
 	public:
 		CToolbarElement();
-		virtual ~CToolbarElement();
+		~CToolbarElement() = default;
 
 		void SetRepeatable(const bool& repeat);
 		bool GetRepeatable();

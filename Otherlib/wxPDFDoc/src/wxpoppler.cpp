@@ -56,9 +56,6 @@ wxPoppler::~wxPoppler()
 	{
 		delete m_pPdfDocument;
 	}
-
-	if (_compressedImage != nullptr)
-		delete[] _compressedImage;
 }
 
 
@@ -66,19 +63,15 @@ wxPoppler::~wxPoppler()
 //
 bool wxPoppler::Open(const wxString& strFileName)
 {
-	if (_compressedImage != nullptr)
-		delete[] _compressedImage;
-
 	const std::wstring ws = strFileName.ToStdWstring();
 	const std::string s(ws.begin(), ws.end());
 	m_pPdfDocument = poppler::document::load_from_file(s);
 	if (!m_pPdfDocument)
 	{
-		size_t _jpegSize;
-		_compressedImage = CPictureUtility::readfile(strFileName, _jpegSize);
-		if (_compressedImage != nullptr)
+		std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(strFileName);
+		if (_compressedImage.size() > 0)
 		{
-			m_pPdfDocument = poppler::document::load_from_raw_data((char*)_compressedImage, _jpegSize);
+			m_pPdfDocument = poppler::document::load_from_raw_data((char*)&_compressedImage.at(0), _compressedImage.size());
 		}
 
 		if (!m_pPdfDocument)

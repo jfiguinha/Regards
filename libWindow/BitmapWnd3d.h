@@ -11,6 +11,10 @@ using namespace std;
 #define ZOOMPICTURE 3
 
 using namespace Regards::Window;
+namespace Regards::OpenCL
+{
+	class COpenCLContext;
+}
 
 namespace Regards::Window
 {
@@ -20,7 +24,7 @@ namespace Regards::Window
 	{
 	public:
 		CBitmapWnd3D(wxWindow* parent, wxWindowID id);
-		~CBitmapWnd3D(void) override;
+		~CBitmapWnd3D(void) = default;
 
 		void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
 
@@ -31,8 +35,8 @@ namespace Regards::Window
 		void UpdateScreenRatio() override;
 
 		void Resize() override;
-
 		bool GetProcessEnd() override;
+		COpenCLContext* GetOpenCLContext();
 
 	private:
 		//void OnLoading(wxTimerEvent& event);
@@ -62,6 +66,7 @@ namespace Regards::Window
 		IBitmapRenderInterface* bitmapWndRender = nullptr;
 		//cv::ocl::Context& initializeContextFromGL();
 		bool openclOpenGLInterop = false;
+
 
 	};
 }

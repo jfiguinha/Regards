@@ -37,13 +37,9 @@
     <File Name="ShowElement.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Video">
+    <File Name="FFmpegTranscoding.h"/>
+    <File Name="FFmpegTranscoding.cpp"/>
     <File Name="VideoCompressOption.h"/>
-    <VirtualDirectory Name="Encoder">
-      <File Name="FFmpegTranscodingPimpl.h"/>
-      <File Name="FFmpegTranscodingPimpl.cpp"/>
-      <File Name="ffmpeg_transcoding.h"/>
-      <File Name="ffmpeg_transcoding.cpp"/>
-    </VirtualDirectory>
     <VirtualDirectory Name="Core">
       <File Name="SlideToolbar.h"/>
       <File Name="SlideToolbar.cpp"/>
@@ -61,10 +57,6 @@
       <File Name="VideoControl_soft.cpp"/>
       <File Name="VideoInterface.h"/>
     </VirtualDirectory>
-  </VirtualDirectory>
-  <VirtualDirectory Name="Datastructure">
-    <File Name="ModificationManager.h"/>
-    <File Name="ModificationManager.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Criteria">
     <File Name="CriteriaTreeWnd.cpp"/>
@@ -149,10 +141,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="PhotoCriteriaUtility.cpp"/>
     <File Name="InfosSeparationBarEffect.cpp"/>
     <File Name="SplitterWithPanel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="PhotoCriteriaUtility.h"/>
+    <File Name="DataAVFrame.h"/>
     <File Name="effect.h"/>
     <File Name="EffectVideoWnd.h"/>
     <File Name="InfosSeparationBarEffect.h"/>
@@ -162,7 +157,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++17;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libCudaEffect"/>
@@ -197,6 +192,7 @@
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../Otherlib/libffmpeg"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="GLEW_STATIC"/>

@@ -23,7 +23,7 @@ public:
     CSendEmail ( void );
     ~CSendEmail( void );
     
-    void SendEmail(const wxString &to,const wxString &subject, const wxString & filePicture);
+    void SendEmail(const wxString &to,const wxString &subject, const wxString &body, const wxString & filePicture);
     
 private:
     MyEmailImpl * _impl;

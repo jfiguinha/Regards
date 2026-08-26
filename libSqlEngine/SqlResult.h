@@ -7,11 +7,18 @@ namespace Regards
 {
 	namespace Sqlite
 	{
+
+
 		class CSqlResult
 		{
 		public:
 			CSqlResult();
 			~CSqlResult();
+
+			int GetInt(const wxString& name);
+			wxString GetText(const wxString& name);
+			int GetInt(int index);
+			wxString GetText(int index);
 
 			void SetStatement(sqlite3_stmt* pRes);
 			/*Result Set Definations*/
@@ -26,6 +33,11 @@ namespace Regards
 			const void* ColumnDataBlob(const int& clmNum);
 
 		private:
+
+			int GetColumnIndex(const wxString& name);
+			wxString GetColumnName(int index);
+
+
 			sqlite3_stmt* pRes;
 			int m_iColumnCount;
 		};

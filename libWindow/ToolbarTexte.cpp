@@ -23,9 +23,6 @@ void CToolbarTexte::Resize(const int& tailleX, const int& tailleY)
 	themeTexte.SetTailleY(tailleY);
 }
 
-CToolbarTexte::~CToolbarTexte()
-{
-}
 
 void CToolbarTexte::SetLibelle(const wxString& libelle)
 {

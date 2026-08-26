@@ -8,7 +8,7 @@
 using namespace std;
 using namespace cv;
 
-class CRegardsBitmap;
+;
 #ifdef __APPLE__
 class MyDetectFaceImpl;
 #endif
