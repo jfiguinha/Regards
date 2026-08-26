@@ -20,7 +20,7 @@ namespace Regards
 		{
 		public:
 			CSqlGps(CSqlLib* _sqlLibTransaction = nullptr, const bool& useTransaction = false);
-			~CSqlGps() override;
+			~CSqlGps() = default;
 			bool InsertGps(const wxString& filepath, const wxString& latitude, const wxString& longitude);
 			bool UpdateGps(const wxString& filepath, const wxString& latitude, const wxString& longitude);
 			bool DeleteGps(const wxString& filepath);

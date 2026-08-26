@@ -53,7 +53,7 @@ void CWindowToAdd::SetWindow(CWindowOpenGLMain* window, bool isPanel)
 
 wxSize CWindowToAdd::GetSize()
 {
-	wxSize size;
+	wxSize size(0, 0);
 	if (this->window != nullptr)
 	{
 		size.x = this->window->GetWidth();

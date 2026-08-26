@@ -11,25 +11,8 @@ CValidationToolbar::CValidationToolbar(wxWindow* parent, wxWindowID id, const CT
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	this->parent = parent;
-	wxString libelleOk = CLibResource::LoadStringFromResource(L"IDS_LBLOK", 1);
-	wxString libelleCancel = CLibResource::LoadStringFromResource(L"IDS_LBLCANCEL", 1);
-
-	auto ok = new CToolbarButton(themeToolbar.button);
-	ok->SetButtonResourceId(L"IDB_OK");
-	ok->SetCommandId(WM_OK);
-	ok->SetLibelle(libelleOk);
-	navElement.push_back(ok);
-
-	auto cancel = new CToolbarButton(themeToolbar.button);
-	cancel->SetButtonResourceId(L"IDB_CANCEL");
-	cancel->SetCommandId(WM_CANCEL);
-	cancel->SetLibelle(libelleCancel);
-	navElement.push_back(cancel);
-}
-
-
-CValidationToolbar::~CValidationToolbar()
-{
+	ok = CreateButton("IDB_OK", "IDS_LBLOK", WM_OK);
+	cancel = CreateButton("IDB_CANCEL", "IDS_LBLCANCEL", WM_CANCEL);
 }
 
 void CValidationToolbar::EventManager(const int& id)

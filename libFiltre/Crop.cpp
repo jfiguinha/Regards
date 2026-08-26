@@ -1,422 +1,295 @@
 #include <header.h>
-// Crop.cpp: implementation of the CCrop class.
-//
-//////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
+#include <array>
+#include <cmath>
+
 #include "Crop.h"
+
 using namespace Regards::FiltreEffet;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+namespace {
+    constexpr int POINT_NORTH_WEST = 0;
+    constexpr int POINT_NORTH_EAST = 1;
+    constexpr int POINT_SOUTH_EAST = 2;
+    constexpr int POINT_SOUTH_WEST = 3;
+}  // namespace
 
-CCrop::CCrop()
-{
-	ptSelection = new CPenDrawInfo[4];
-	for (auto i = 0; i < 4; i++)
-	{
-		ptSelection[i].x = 0;
-		ptSelection[i].y = 0;
-		ptSelection[i].size = 0;
-	}
-	iSelect = 0;
-	marge = 4;
+CCrop::CCrop() {
+    for (auto& point : ptSelection) {
+        point.x = 0;
+        point.y = 0;
+        point.size = 0;
+    }
 }
 
-CCrop::~CCrop()
-{
-	if (ptSelection != nullptr)
-		delete[] ptSelection;
+wxRect CCrop::GetDrawingRect(const long& hScroll, const long& vScroll,
+    const float& ratio) {
+    wxRect rect;
 
-	ptSelection = nullptr;
+    rect.x = XDrawingPosition(ptSelection[POINT_NORTH_WEST].x, hScroll, ratio);
+
+    const int right =
+        XDrawingPosition(ptSelection[POINT_NORTH_EAST].x, hScroll, ratio);
+
+    rect.width = right - rect.x;
+
+    rect.y = YDrawingPosition(ptSelection[POINT_NORTH_WEST].y, vScroll, ratio);
+
+    const int bottom =
+        YDrawingPosition(ptSelection[POINT_SOUTH_WEST].y, vScroll, ratio);
+
+    rect.height = bottom - rect.y;
+
+    return rect;
 }
 
+void CCrop::DrawHandle(wxDC* deviceContext, const wxRect& rect, int x, int y,
+    const wxColour& colour) const {
+    wxRect handle(x - HANDLE_HALF_SIZE, y - HANDLE_HALF_SIZE, HANDLE_SIZE,
+        HANDLE_SIZE);
 
-void CCrop::Dessiner(wxDC* deviceContext, const long& m_lHScroll, const long& m_lVScroll, const float& ratio,
-                     const wxColour& rgb, const wxColour& rgbFirst, const wxColour& rgbSecond, const int32_t& style)
-{
-	//Ajout d'un wxRectangle pour tester le crop
-	//Trouver le wxPoint central
-
-	//wxPoint 0 : NO
-	//wxPoint 1 : NE
-	//wxPoint 2 : SE
-	//wxPoint 3 : SO
-
-
-	wxRect rcTemp;
-	rcTemp.x = XDrawingPosition(ptSelection[0].x, m_lHScroll, ratio);
-	rcTemp.width = (XDrawingPosition(ptSelection[1].x, m_lHScroll, ratio)) - rcTemp.x;
-	rcTemp.y = YDrawingPosition(ptSelection[0].y, m_lVScroll, ratio);
-	rcTemp.height = (YDrawingPosition(ptSelection[3].y, m_lVScroll, ratio)) - rcTemp.y;
-
-	switch (style)
-	{
-	case 0:
-		DessinerRectangleVide(deviceContext, 1, rcTemp, rgbFirst);
-		break;
-
-	case 1:
-		DessinerDashRectangle(deviceContext, 1, rcTemp, rgbFirst, rgbSecond);
-		break;
-
-	case 2:
-		DessinerDotDashRectangle(deviceContext, 1, rcTemp, rgbFirst, rgbSecond);
-		break;
-	default: ;
-	}
-
-
-	wxRect rcTemp2;
-
-	//Dessin de tous les petits wxRectangles
-	marge = 6;
-
-	int middlePoint = marge / 2;
-
-	rcTemp2.x = rcTemp.x - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = rcTemp.y - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = (rcTemp.x + rcTemp.width) - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = rcTemp.y - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = (rcTemp.x + rcTemp.width) - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = (rcTemp.y + rcTemp.height) - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = rcTemp.x - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = (rcTemp.y + rcTemp.height) - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = (rcTemp.x + (rcTemp.width / 2)) - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = (rcTemp.y + rcTemp.height) - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = (rcTemp.x + (rcTemp.width / 2)) - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = rcTemp.y - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = rcTemp.x - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = (rcTemp.y + (rcTemp.height / 2)) - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
-
-	//Dessin de tous les petits wxRectangles
-
-	rcTemp2.x = (rcTemp.x + rcTemp.width) - middlePoint;
-	rcTemp2.width = marge;
-	rcTemp2.y = (rcTemp.y + (rcTemp.height / 2)) - middlePoint;
-	rcTemp2.height = marge;
-
-	DessinerRectangleVide(deviceContext, 1, rcTemp2, rgb);
+    DessinerRectangleVide(deviceContext, 1, handle, colour);
 }
 
-void CCrop::Selection(const int32_t& xNewSize, const int32_t& yNewSize, const long& m_lHScroll, const long& m_lVScroll,
-                      const float& ratio)
-{
-	//Changement de souris
-	//Test par rapport au x et y
-	//Différent cas
-	//float x = 0, y = 0;
+void CCrop::Dessiner(wxDC* deviceContext, const long& m_lHScroll,
+    const long& m_lVScroll, const float& ratio,
+    const wxColour& rgb, const wxColour& rgbFirst,
+    const wxColour& rgbSecond, const int32_t& style) {
+    if (deviceContext == nullptr) return;
 
-	wxPoint pt;
-	pt.x = xNewSize;
-	pt.y = yNewSize;
+    const wxRect rect = GetDrawingRect(m_lHScroll, m_lVScroll, ratio);
 
-	iSelect = 0;
+    switch (style) {
+    case 0:
+        DessinerRectangleVide(deviceContext, 1, rect, rgbFirst);
+        break;
 
-	if (VerifierValiditerPoint(pt))
-	{
-		const int x = XRealPosition(xNewSize, m_lHScroll, ratio);
-		const int y = YRealPosition(yNewSize, m_lVScroll, ratio);
+    case 1:
+        DessinerDashRectangle(deviceContext, 1, rect, rgbFirst, rgbSecond);
+        break;
 
+    case 2:
+        DessinerDotDashRectangle(deviceContext, 1, rect, rgbFirst, rgbSecond);
+        break;
 
-#if defined(WIN32)
-		wchar_t message[255];
-		wsprintf(message, L"Pos : x : %d et y : %d \n", x, y);
-		OutputDebugString(message);
-#endif
+    default:
+        break;
+    }
 
-		if ((x > (ptSelection[0].x - marge) && x < (ptSelection[0].x + marge)))
-			iSelect = 1;
+    const int centerX = rect.x + rect.width / 2;
 
-		if ((x > (ptSelection[1].x - marge) && x < (ptSelection[1].x + marge)))
-			iSelect = 2;
+    const int centerY = rect.y + rect.height / 2;
 
-		if ((y > (ptSelection[0].y - marge) && y < (ptSelection[0].y + marge)))
-		{
-			switch (iSelect)
-			{
-			case 0:
-				iSelect = 3;
-				break;
-			case 1:
-				iSelect = 4;
-				break;
-			case 2:
-				iSelect = 5;
-				break;
-			default: ;
-			}
-		}
+    DrawHandle(deviceContext, rect, rect.x, rect.y, rgb);
 
+    DrawHandle(deviceContext, rect, rect.x + rect.width, rect.y, rgb);
 
-		if ((y > (ptSelection[2].y - marge) && y < (ptSelection[2].y + marge)))
-		{
-			switch (iSelect)
-			{
-			case 0:
-				iSelect = 6;
-				break;
-			case 1:
-				iSelect = 7;
-				break;
-			case 2:
-				iSelect = 8;
-				break;
-			default: ;
-			}
-		}
+    DrawHandle(deviceContext, rect, rect.x + rect.width, rect.y + rect.height,
+        rgb);
 
+    DrawHandle(deviceContext, rect, rect.x, rect.y + rect.height, rgb);
 
-		switch (iSelect)
-		{
-		case 2:
-		case 1:
-			wxSetCursor(wxCursor(wxCURSOR_SIZEWE));
-			break;
-		case 3:
-		case 6:
-			wxSetCursor(wxCursor(wxCURSOR_SIZENS));
-			break;
-		case 8:
-		case 4:
-			wxSetCursor(wxCursor(wxCURSOR_SIZENWSE));
-			break;
-		case 7:
-		case 5:
-			wxSetCursor(wxCursor(wxCURSOR_SIZENESW));
-			break;
-		default:
-			wxSetCursor(wxCursor(wxCURSOR_CROSS));
-			break;
-		}
-	}
+    DrawHandle(deviceContext, rect, centerX, rect.y, rgb);
+
+    DrawHandle(deviceContext, rect, centerX, rect.y + rect.height, rgb);
+
+    DrawHandle(deviceContext, rect, rect.x, centerY, rgb);
+
+    DrawHandle(deviceContext, rect, rect.x + rect.width, centerY, rgb);
 }
 
-void CCrop::MouseMove(const long& xNewSize, const long& yNewSize, const long& m_lHScroll, const long& m_lVScroll,
-                      const float& ratio)
-{
-	//Dessiner le wxRectangle
-	wxPoint pt;
-	pt.x = static_cast<int>(xNewSize);
-	pt.y = static_cast<int>(yNewSize);
+void CCrop::Selection(const int32_t& xNewSize, const int32_t& yNewSize,
+    const long& m_lHScroll, const long& m_lVScroll,
+    const float& ratio) {
+    const wxPoint point(xNewSize, yNewSize);
 
-	if (VerifierValiditerPoint(pt))
-	{
-		const float x = XRealPosition(xNewSize, m_lHScroll, ratio);
-		const float y = YRealPosition(yNewSize, m_lVScroll, ratio);
+    iSelect = SelectionType::Aucun;
 
-		switch (iSelect)
-		{
-		case 0:
-			{
-				ptSelection[1].x = x;
-				ptSelection[1].y = ptSelection[0].y;
+    if (!VerifierValiditerPoint(point)) {
+        UpdateCursor();
+        return;
+    }
 
-				ptSelection[2].x = x;
-				ptSelection[2].y = y;
+    const int x = XRealPosition(xNewSize, m_lHScroll, ratio);
 
-				ptSelection[3].x = ptSelection[0].x;
-				ptSelection[3].y = y;
+    const int y = YRealPosition(yNewSize, m_lVScroll, ratio);
 
-				wxSetCursor(wxCursor(wxCURSOR_CROSS));
-			}
-			break;
+    const auto& topLeft = ptSelection[POINT_NORTH_WEST];
 
-		case 1:
-			{
-				ptSelection[0].x = x;
-				ptSelection[3].x = x;
-				wxSetCursor(wxCursor(wxCURSOR_SIZEWE));
-			}
-			break;
+    const auto& topRight = ptSelection[POINT_NORTH_EAST];
 
-		case 2:
-			{
-				ptSelection[1].x = x;
-				ptSelection[2].x = x;
-				wxSetCursor(wxCursor(wxCURSOR_SIZEWE));
-			}
-			break;
+    const auto& bottomRight = ptSelection[POINT_SOUTH_EAST];
 
-		case 3:
-			{
-				ptSelection[0].y = y;
-				ptSelection[1].y = y;
-				wxSetCursor(wxCursor(wxCURSOR_SIZENS));
-			}
-			break;
+    const int margin = HANDLE_SIZE;
 
-		case 6:
-			{
-				ptSelection[2].y = y;
-				ptSelection[3].y = y;
-				wxSetCursor(wxCursor(wxCURSOR_SIZENS));
-			}
-			break;
+    const bool left = x > topLeft.x - margin && x < topLeft.x + margin;
 
-		case 4:
-			{
-				//NO - SE
-				//wxPoint bougean 0 NO
-				//wxPoint 1 bouge en x  NE
-				//wxPoint 2 ne bouge pas SE
-				//wxPoint 3 bouge en y SO
+    const bool right = x > topRight.x - margin && x < topRight.x + margin;
 
-				ptSelection[0].x = x;
-				ptSelection[0].y = y;
-				ptSelection[1].y = y;
-				ptSelection[3].x = x;
+    const bool top = y > topLeft.y - margin && y < topLeft.y + margin;
 
-				wxSetCursor(wxCursor(wxCURSOR_SIZENWSE));
-			}
-			break;
+    const bool bottom = y > bottomRight.y - margin && y < bottomRight.y + margin;
 
-		case 5:
-			{
-				//NE - SO
-				//wxPoint bougean 3 
-				//wxPoint 0 bouge en y et en x
-				//wxPoint 1 ne bouge pas
-				//wxPoint 2 bouge en x et en y
+    if (left && top)
+        iSelect = SelectionType::TopLeft;
+    else if (right && top)
+        iSelect = SelectionType::TopRight;
+    else if (left && bottom)
+        iSelect = SelectionType::BottomLeft;
+    else if (right && bottom)
+        iSelect = SelectionType::BottomRight;
+    else if (left)
+        iSelect = SelectionType::Left;
+    else if (right)
+        iSelect = SelectionType::Right;
+    else if (top)
+        iSelect = SelectionType::Top;
+    else if (bottom)
+        iSelect = SelectionType::Bottom;
 
-				ptSelection[0].y = y;
-				ptSelection[1].x = x;
-				ptSelection[1].y = y;
-				ptSelection[2].x = x;
-
-				wxSetCursor(wxCursor(wxCURSOR_SIZENESW));
-			}
-			break;
-
-		case 7:
-			{
-				//SO - NE
-				ptSelection[0].x = x;
-				ptSelection[3].x = x;
-				ptSelection[3].y = y;
-				ptSelection[2].y = y;
-
-				wxSetCursor(wxCursor(wxCURSOR_SIZENESW));
-			}
-			break;
-
-		case 8:
-			{
-				//SE - NO
-				ptSelection[1].x = x;
-				ptSelection[2].x = x;
-				ptSelection[2].y = y;
-				ptSelection[3].y = y;
-				wxSetCursor(wxCursor(wxCURSOR_SIZENWSE));
-			}
-			break;
-		default: ;
-		}
-	}
-	else
-	{
-		VerifierValiditerPoint(pt);
-	}
+    UpdateCursor();
 }
 
-void CCrop::InitPoint(const long& m_lx, const long& m_ly, const long& m_lHScroll, const long& m_lVScroll,
-                      const float& ratio)
-{
-	float x, y;
-	if (iSelect == 0)
-	{
-		wxPoint pt;
-		pt.x = static_cast<int>(m_lx);
-		pt.y = static_cast<int>(m_ly);
-		if (VerifierValiditerPoint(pt))
-		{
-			x = XRealPosition(m_lx , m_lHScroll, ratio);
-			y = YRealPosition(m_ly, m_lVScroll, ratio);
+void CCrop::UpdateCursor() const {
+    switch (iSelect) {
+    case SelectionType::Left:
+    case SelectionType::Right:
+        wxSetCursor(wxCursor(wxCURSOR_SIZEWE));
+        break;
 
-			for (auto i = 0; i < 4; i++)
-			{
-				ptSelection[i].x = x;
-				ptSelection[i].y = y;
-			}
-		}
-	}
+    case SelectionType::Top:
+    case SelectionType::Bottom:
+        wxSetCursor(wxCursor(wxCURSOR_SIZENS));
+        break;
+
+    case SelectionType::TopLeft:
+    case SelectionType::BottomRight:
+        wxSetCursor(wxCursor(wxCURSOR_SIZENWSE));
+        break;
+
+    case SelectionType::TopRight:
+    case SelectionType::BottomLeft:
+        wxSetCursor(wxCursor(wxCURSOR_SIZENESW));
+        break;
+
+    default:
+        wxSetCursor(wxCursor(wxCURSOR_CROSS));
+        break;
+    }
 }
 
-void CCrop::GetPos(wxRect& rc)
-{
-	rc.x = ptSelection[0].x;
-	rc.width = ptSelection[1].x - rc.x;
-	rc.y = ptSelection[0].y;
-	rc.height = ptSelection[3].y - rc.y;
+void CCrop::MouseMove(const long& xNewSize, const long& yNewSize,
+    const long& m_lHScroll, const long& m_lVScroll,
+    const float& ratio) {
+    const wxPoint point(static_cast<int>(xNewSize), static_cast<int>(yNewSize));
 
-	if (rc.width < 0)
-	{
-		rc.x = rc.x + rc.width;
-		rc.width = abs(rc.width);
-	}
+    if (!VerifierValiditerPoint(point)) return;
 
-	if (rc.height < 0)
-	{
-		rc.y = rc.y + rc.height;
-		rc.height = abs(rc.height);
-	}
+    const float x = XRealPosition(xNewSize, m_lHScroll, ratio);
 
-	/*
-	if ((rc.height + rc.y) > rc.y)
-	{
-		rc.y = rc.height + rc.y;
-		rc.height = 0;
-	}
+    const float y = YRealPosition(yNewSize, m_lVScroll, ratio);
 
-	if (rc.x > (rc.width + rc.x))
-	{
-		rc.x = rc.x + rc.width;
-		rc.width = 0;
-	}
-	 */
+    switch (iSelect) {
+    case SelectionType::Aucun:
+        ptSelection[POINT_NORTH_EAST].x = x;
+        ptSelection[POINT_NORTH_EAST].y = ptSelection[POINT_NORTH_WEST].y;
+
+        ptSelection[POINT_SOUTH_EAST].x = x;
+        ptSelection[POINT_SOUTH_EAST].y = y;
+
+        ptSelection[POINT_SOUTH_WEST].x = ptSelection[POINT_NORTH_WEST].x;
+
+        ptSelection[POINT_SOUTH_WEST].y = y;
+        break;
+
+    case SelectionType::Left:
+        ptSelection[POINT_NORTH_WEST].x = x;
+        ptSelection[POINT_SOUTH_WEST].x = x;
+        break;
+
+    case SelectionType::Right:
+        ptSelection[POINT_NORTH_EAST].x = x;
+        ptSelection[POINT_SOUTH_EAST].x = x;
+        break;
+
+    case SelectionType::Top:
+        ptSelection[POINT_NORTH_WEST].y = y;
+        ptSelection[POINT_NORTH_EAST].y = y;
+        break;
+
+    case SelectionType::Bottom:
+        ptSelection[POINT_SOUTH_EAST].y = y;
+        ptSelection[POINT_SOUTH_WEST].y = y;
+        break;
+
+    case SelectionType::TopLeft:
+        ptSelection[POINT_NORTH_WEST].x = x;
+        ptSelection[POINT_NORTH_WEST].y = y;
+
+        ptSelection[POINT_NORTH_EAST].y = y;
+        ptSelection[POINT_SOUTH_WEST].x = x;
+        break;
+
+    case SelectionType::TopRight:
+        ptSelection[POINT_NORTH_EAST].x = x;
+        ptSelection[POINT_NORTH_EAST].y = y;
+
+        ptSelection[POINT_NORTH_WEST].y = y;
+        ptSelection[POINT_SOUTH_EAST].x = x;
+        break;
+
+    case SelectionType::BottomLeft:
+        ptSelection[POINT_SOUTH_WEST].x = x;
+        ptSelection[POINT_SOUTH_WEST].y = y;
+
+        ptSelection[POINT_NORTH_WEST].x = x;
+        ptSelection[POINT_SOUTH_EAST].y = y;
+        break;
+
+    case SelectionType::BottomRight:
+        ptSelection[POINT_SOUTH_EAST].x = x;
+        ptSelection[POINT_SOUTH_EAST].y = y;
+
+        ptSelection[POINT_NORTH_EAST].x = x;
+        ptSelection[POINT_SOUTH_WEST].y = y;
+        break;
+    }
+
+    UpdateCursor();
+}
+
+void CCrop::InitPoint(const long& m_lx, const long& m_ly,
+    const long& m_lHScroll, const long& m_lVScroll,
+    const float& ratio) {
+    if (iSelect != SelectionType::Aucun) return;
+
+    const wxPoint point(static_cast<int>(m_lx), static_cast<int>(m_ly));
+
+    if (!VerifierValiditerPoint(point)) return;
+
+    const float x = XRealPosition(m_lx, m_lHScroll, ratio);
+
+    const float y = YRealPosition(m_ly, m_lVScroll, ratio);
+
+    for (auto& selectionPoint : ptSelection) {
+        selectionPoint.x = x;
+        selectionPoint.y = y;
+    }
+}
+
+void CCrop::GetPos(wxRect& rc) {
+    const int x1 = static_cast<int>(ptSelection[POINT_NORTH_WEST].x);
+
+    const int y1 = static_cast<int>(ptSelection[POINT_NORTH_WEST].y);
+
+    const int x2 = static_cast<int>(ptSelection[POINT_NORTH_EAST].x);
+
+    const int y2 = static_cast<int>(ptSelection[POINT_SOUTH_WEST].y);
+
+    rc.x = std::min(x1, x2);
+    rc.y = std::min(y1, y2);
+
+    rc.width = std::abs(x2 - x1);
+    rc.height = std::abs(y2 - y1);
 }

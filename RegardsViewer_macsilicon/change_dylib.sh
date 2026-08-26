@@ -1,0 +1,5 @@
+install_name_tool -change @rpath/libSPIRV-Tools.dylib  @executable_path/../Frameworks/libSPIRV-Tools.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libSPIRV-Tools-opt.dylib 
+install_name_tool -change 	/opt/homebrew/opt/spirv-tools/lib/libSPIRV-Tools-opt.dylib  @executable_path/../Frameworks/libSPIRV-Tools-opt.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libSPIRV.16.dylib 
+install_name_tool -change 	/opt/homebrew/opt/spirv-tools/lib/libSPIRV-Tools.dylib  @executable_path/../Frameworks/libSPIRV-Tools.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libSPIRV.16.dylib 
+install_name_tool -change 	/opt/homebrew/opt/spirv-tools/lib/libSPIRV-Tools-opt.dylib  @executable_path/../Frameworks/libSPIRV-Tools-opt.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libglslang.16.dylib 
+install_name_tool -change 	/opt/homebrew/opt/spirv-tools/lib/libSPIRV-Tools.dylib  @executable_path/../Frameworks/libSPIRV-Tools.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libglslang.16.dylib 

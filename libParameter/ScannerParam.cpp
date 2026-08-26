@@ -203,7 +203,7 @@ void CMainParam::SaveParameter()
 	root->append_node(sectionCriteria);
 
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
+	std::ofstream file(CConvertUtility::ConvertToStdString(filename).c_str());
 	if (file.is_open())
 	{
 		file << doc;
@@ -260,7 +260,7 @@ void CMainParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, c
 //////////////////////////////////////////////////////////////////////////////////////////
 void CMainParam::SetPositionParameter(xml_node<>* sectionPosition)
 {
-	xml_node<>* sectionWindowPosition = node("Window");
+	xml_node<>* sectionWindowPosition = node("window");
 	SetWindowPositionParameter(sectionWindowPosition, positionRegardsViewer);
 	sectionPosition->append_node(sectionWindowPosition);
 }
@@ -273,6 +273,11 @@ void CMainParam::LoadParameter()
 	xml_node<>* root_node;
 	//long nodeSize = 0;
 	root_node = doc.first_node("Parameter");
+	if (root_node == nullptr)
+	{
+		wxMessageBox("Invalid configuration file : missing Parameter node");
+		return;
+	}
 
 	xml_node<>* child_node = root_node->first_node("Diaporama");
 	if (child_node != nullptr)
@@ -305,8 +310,11 @@ void CMainParam::GetCriteriaParameter(xml_node<>* position_node)
 
 void CMainParam::GetPositionParameter(xml_node<>* position_node)
 {
-	xml_node<>* child_node = position_node->first_node("Window");
-	positionRegardsViewer = GetWindowPositionParameter(child_node);
+	xml_node<>* child_node = position_node->first_node("window");
+	if (child_node == nullptr)
+		child_node = position_node->first_node("Window");
+	if (child_node != nullptr)
+		positionRegardsViewer = GetWindowPositionParameter(child_node);
 }
 
 wxRect CMainParam::GetWindowPositionParameter(xml_node<>* position_node)

@@ -12,10 +12,6 @@ public:
 		angle = 20;
 	};
 
-	~CSwirlEffectParameter() override
-	{
-	};
-
 	int radius;
 	int angle;
 	int bitmapWidth;

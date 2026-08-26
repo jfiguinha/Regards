@@ -19,7 +19,7 @@ namespace Regards
 		public:
 			CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
 			                  CToolbarInterface* toolbarInterface, const bool& vertical);
-			~CAnimationToolbar() override;
+			~CAnimationToolbar() = default;
 			void AnimationStart();
 			void AnimationStop();
 
@@ -29,8 +29,10 @@ namespace Regards
 			void EventManager(const int& id) override;
 
 			CToolbarInterface* toolbarInterface;
-			CToolbarButton* imagePlayDiaporama;
-			CToolbarButton* imageStopDiaporama;
+			std::unique_ptr<CToolbarButton> imagePlayDiaporama;
+			std::unique_ptr<CToolbarButton> imageStopDiaporama;
+			std::unique_ptr<CToolbarButton> imagePrec;
+			std::unique_ptr<CToolbarButton> imageSuiv;
 			// CToolbarButton * fullscreen;
 		};
 	}

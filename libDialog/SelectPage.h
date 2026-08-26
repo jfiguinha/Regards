@@ -12,7 +12,7 @@ public:
 	               const wxPoint& pos = wxDefaultPosition,
 	               const wxSize& size = wxSize(500, 400),
 	               long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-	~CSelectFileDlg() override;
+	~CSelectFileDlg() {};
 	vector<int> GetSelectItem();
 
 protected:

@@ -14,7 +14,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree& theme);
-		~CTreeWindow() override;
+		~CTreeWindow() = default;
 
 		int GetWidth() override;
 		int GetHeight() override;
@@ -25,6 +25,8 @@ namespace Regards::Window
 		}
 
 		void UpdateScreenRatio() override;
+
+		void ClearTreeControl();
 
 		void SetTreeControl(CTreeControl* treeControl);
 
@@ -86,13 +88,13 @@ namespace Regards::Window
 
 		int controlWidth;
 		int controlHeight;
+		int oldcontrolWidth = 0;
+		int oldcontrolHeight = 0;
 
 		CThemeTree themeTree;
 		CTreeControl* treeControl;
+		wxBitmap backgroundBitmap;
 
-		//Buffer
-		wxBitmap backgroundBuffer;
-		// bool bufferUpdate;
 		int posHauteur;
 		int posLargeur;
 

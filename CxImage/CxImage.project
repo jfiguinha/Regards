@@ -66,9 +66,11 @@
     <File Name="xiofile.h"/>
     <File Name="xmemfile.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
+      <Compiler Options="-Wall;-pthread;;-std=gnu++17;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/jasper-2.0.14/build/src/libjasper/include"/>
         <IncludePath Value="../libextern/jasper-2.0.14/src/libjasper/include"/>
@@ -82,7 +84,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-ggdb;-O0;-msse4.1" C_Options="-ggdb;-O0;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0"/>
+      <Compiler Options="-ggdb;-O0;" C_Options="-ggdb;-O0;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0"/>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -158,6 +160,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

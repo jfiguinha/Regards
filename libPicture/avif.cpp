@@ -171,7 +171,7 @@ cv::Mat CAvif::GetPictureThumb(const char* filename, const int& width, const int
     cv::Mat out;
 
     avifDecoder* decoder = avifDecoderCreate();
-    decoder->maxThreads = std::thread::hardware_concurrency();
+    decoder->maxThreads = std::min(4u, std::thread::hardware_concurrency());
 #if defined(__APPLE_) || defined(__ARM64__) 
     decoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
 #else

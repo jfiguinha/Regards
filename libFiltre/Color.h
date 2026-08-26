@@ -5,7 +5,7 @@
 #pragma once
 
 class CRgbaquad;
-class CRegardsBitmap;
+;
 
 struct HSB
 {

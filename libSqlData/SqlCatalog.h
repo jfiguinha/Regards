@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlCatalog();
-			~CSqlCatalog() override;
+			~CSqlCatalog() = default;
 			bool InsertCatalog(const wxString& libelle);
 			bool UpdateCatalog(const int64_t& numCatalog, const wxString& libelle);
 			int64_t GetCatalogId(const wxString& libelle);
@@ -20,7 +20,7 @@ namespace Regards
 
 		private:
 			int TraitementResult(CSqlResult* sqlResult) override;
-
+			int type = 0;
 			wxString libelle;
 			int64_t numCatalogId;
 		};

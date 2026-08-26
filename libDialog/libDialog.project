@@ -43,8 +43,6 @@
     <File Name="CompressionAudioVideoOption.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Intro">
-    <File Name="DownloadFile.h"/>
-    <File Name="DownloadFile.cpp"/>
     <File Name="TitleIntro.h"/>
     <File Name="MyFrameIntro.h"/>
     <File Name="MyCentralWindowIntro.h"/>
@@ -90,9 +88,11 @@
     <File Name="PertinenceValue.h"/>
     <File Name="IndexGenerator.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../libVideoThumbnail"/>
@@ -110,6 +110,7 @@
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../Otherlib/libffmpeg"/>
@@ -201,6 +202,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

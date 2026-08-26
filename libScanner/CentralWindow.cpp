@@ -20,7 +20,7 @@ using namespace Regards::Picture;
 #define OPENFILE 0
 #define ADDFILE 1
 
-CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame* frame)
+CCentralWindow::CCentralWindow(wxWindow* parent, const wxString& openfile, wxWindowID id, CScannerFrame* frame)
 	: CWindowMain("CentralWindow", parent, id)
 {
 	//CMainTheme * viewerTheme = new CMainTheme();
@@ -45,6 +45,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame* f
 
 	previewWindow = new CViewerPDF(this, frame, PDFWINDOWID);
 	previewWindow->Show(true);
+
+	if (!openfile.empty())
+	{
+		LoadFile(openfile);
+	}
 
 	this->frame = frame;
 
@@ -75,10 +80,10 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
-		if (selectFile.ShowModal() == wxID_OK)
+		CSelectFileDlg * selectFile = new CSelectFileDlg(nullptr, -1, filename, _("Select Page To Extract"));
+		if (selectFile->ShowModal() == wxID_OK)
 		{
-			vector<int> listPage = selectFile.GetSelectItem();
+			vector<int> listPage = selectFile->GetSelectItem();
 			wxString fileExtract = CRegardsPDF::ExtractPage(filename, listPage);
 
 			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
@@ -93,6 +98,7 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 			wxString newfilename = saveFileDialog.GetPath();
 			wxCopyFile(fileExtract, newfilename);
 		}
+		delete selectFile;
 	}
 	else
 	{
@@ -107,10 +113,10 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
-		if (selectFile.ShowModal() == wxID_OK)
+		CSelectFileDlg* selectFile = new CSelectFileDlg(this, -1, filename, _("Select Page To Delete"));
+		if (selectFile->ShowModal() == wxID_OK)
 		{
-			vector<int> listPage = selectFile.GetSelectItem();
+			vector<int> listPage = selectFile->GetSelectItem();
 			CRegardsPDF::RemovePage(filename, listPage);
 			LoadFile(filename);
 		}
@@ -133,30 +139,13 @@ int CCentralWindow::OnOpen(const int& type)
 	//bool isOk = false;
 
 	//Check Temp Folder
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
+	//wxFileName tempFolder = wxFileName(CFileUtility::GetDocumentFolderPath());
+	//tempFolder.AppendDir("temp");
 
 
 	if (type != ADDFILE)
 	{
-#ifdef WIN32
-		filename = tempFolder + "\\local_pdf_file.pdf";
-#else
-		filename = tempFolder + "/local_pdf_file.pdf";
-#endif
-
-		if (wxFileExists(filename))
-		{
-#ifdef WIN32
-			std::remove(filename);
-#else
-			wxRemoveFile(filename);
-#endif
-		}
+		filename = CFileUtility::GetTempFile("local_pdf_file.pdf");
 	}
 
 	wxString file = "";
@@ -238,20 +227,7 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		wxString tempFolder = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-		tempFolder.append("\\temp");
-#else
-		tempFolder.append("/temp");
-#endif
-
-
-#ifdef WIN32
-		filename = tempFolder + "\\local_pdf_file.pdf";
-#else
-		filename = tempFolder + "/local_pdf_file.pdf";
-#endif
+		filename = CFileUtility::GetTempFile("local_pdf_file.pdf");
 
 		//wxString filenameTitle = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
@@ -314,10 +290,10 @@ int CCentralWindow::LoadPictureFile(wxArrayString& listFile, wxString filenameOu
 
 			if (libPicture.GetNbImage(filename) > 1)
 			{
-				CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Add"));
-				if (selectFile.ShowModal() == wxID_OK)
+				CSelectFileDlg* selectFile = new CSelectFileDlg(this, -1, filename, _("Select Page To Add"));
+				if (selectFile->ShowModal() == wxID_OK)
 				{
-					vector<int> listPage = selectFile.GetSelectItem();
+					vector<int> listPage = selectFile->GetSelectItem();
 					for (int numpage = 0; numpage < listPage.size(); numpage++)
 					{
 						CImageLoadingFormat* imageLoadingFormat = libPicture.LoadPicture(
@@ -345,29 +321,7 @@ int CCentralWindow::LoadPictureFile(wxArrayString& listFile, wxString filenameOu
 
 wxString CCentralWindow::ProcessLoadFiles(wxArrayString& listFile)
 {
-	wxString temporyFile = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
-
-#ifdef WIN32
-	temporyFile = tempFolder + "\\temporary_file.pdf";
-#else
-	temporyFile = tempFolder + "/temporary_file.pdf";
-#endif
-
-	if (wxFileExists(temporyFile))
-	{
-#ifdef WIN32
-		std::remove(temporyFile);
-#else
-		wxRemoveFile(temporyFile);
-#endif
-	}
-
+	wxString temporyFile = CFileUtility::GetTempFile("temporary_file.pdf");
 
 	CLibPicture libPicture;
 
@@ -378,12 +332,13 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString& listFile)
 			int oldAnimationPosition = -1;
 			for (int i = 0; i < listFile.size(); i++)
 			{
-				CSelectFileDlg selectFile(this, -1, listFile[i], _("Select Page To Add"));
-				if (selectFile.ShowModal() == wxID_OK)
+				CSelectFileDlg * selectFile = new CSelectFileDlg(this, -1, listFile[i], _("Select Page To Add"));
+				if (selectFile->ShowModal() == wxID_OK)
 				{
-					vector<int> listPage = selectFile.GetSelectItem();
+					vector<int> listPage = selectFile->GetSelectItem();
 					CRegardsPDF::AddPage(listFile[i], temporyFile, listPage, oldAnimationPosition);
 				}
+				delete selectFile;
 			}
 		}
 		else
@@ -405,7 +360,9 @@ void CCentralWindow::OnPrint(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		frame->PrintPreview(GetImage());
+		CImageLoadingFormat * picture = GetImage();
+		cv::Mat matrix = picture->GetMatrix().getMat();
+		frame->PrintPreview(matrix);
 	}
 	else
 	{
@@ -469,16 +426,6 @@ void CCentralWindow::RedrawBarPos()
 	{
 		previewWindow->SetSize(0, topHeight, width, height - topHeight);
 	}
-}
-
-
-CCentralWindow::~CCentralWindow()
-{
-	if (previewWindow != nullptr)
-		delete previewWindow;
-
-	if (toolbarPDF != nullptr)
-		delete(toolbarPDF);
 }
 
 void CCentralWindow::UpdateScreenRatio()

@@ -837,7 +837,6 @@
     <ClInclude Include="ScannerTheme.h" />
     <ClInclude Include="ScannerThemeInit.h" />
     <ClInclude Include="theme.h" />
-    <ClInclude Include="ThemeInit.h" />
     <ClInclude Include="ThemeParam.h" />
     <ClInclude Include="ViewerTheme.h" />
     <ClInclude Include="ViewerThemeInit.h" />
@@ -856,11 +855,6 @@
     <ClCompile Include="ScannerTheme.cpp" />
     <ClCompile Include="ScannerThemeInit.cpp" />
     <ClCompile Include="theme.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThemeInit.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Use</PrecompiledHeader>

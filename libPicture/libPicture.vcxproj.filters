@@ -82,6 +82,9 @@
     <ClCompile Include="pfm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailVideoExport.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
     <ClCompile Include="videothumb.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
@@ -118,12 +121,6 @@
     <ClCompile Include="convertmattowxbmp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PictureMetadataExiv_new.cpp">
-      <Filter>libexif</Filter>
-    </ClCompile>
-    <ClCompile Include="PictureMetadataExiv.cpp">
-      <Filter>libexif</Filter>
-    </ClCompile>
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,8 +130,17 @@
     <ClCompile Include="FFmpegVideoThumb.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailVideoExport.cpp">
+    <ClCompile Include="picture_factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoThumbPimpl.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaExtractor.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureMetadataExiv.cpp">
+      <Filter>libexif</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,21 +148,6 @@
       <Filter>libraw</Filter>
     </ClInclude>
     <ClInclude Include="..\include\header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Heic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libPicture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScaleThumbnail.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="yuv420.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="yuv422.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RegardsRaw.h">
@@ -222,32 +213,17 @@
     <ClInclude Include="Metadata.h">
       <Filter>libexif</Filter>
     </ClInclude>
-    <ClInclude Include="RotateByShear.h">
-      <Filter>Rotate</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateByShearRGB.h">
-      <Filter>Rotate</Filter>
-    </ClInclude>
     <ClInclude Include="hqdn3d.h">
       <Filter>hqdb3d</Filter>
-    </ClInclude>
-    <ClInclude Include="regards_webp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ascii.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pfm.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="videothumb.h">
+    <ClInclude Include="ThumbnailVideoExport.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="jxl.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="videothumb.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="wic.h">
       <Filter>wic</Filter>
@@ -279,29 +255,62 @@
     <ClInclude Include="VideoPlayerInterface.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="convertmattowxbmp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PictureMetadataExiv_new.h">
-      <Filter>libexif</Filter>
-    </ClInclude>
-    <ClInclude Include="PictureMetadataExiv.h">
-      <Filter>libexif</Filter>
-    </ClInclude>
-    <ClInclude Include="imageinfo.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="avif.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PictureArray.h">
       <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="aspectratio.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="FFmpegVideoThumb.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailVideoExport.h">
+    <ClInclude Include="ascii.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="avif.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="convertmattowxbmp.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Heic.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="imageinfo.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="jxl.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libPicture.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="pfm.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="picture_factory.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="regards_webp.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleThumbnail.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="yuv420.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="yuv422.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoThumbPimpl.h">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaExtractor.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureMetadataExiv.h">
+      <Filter>libexif</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -326,9 +335,6 @@
     <Filter Include="Dialog">
       <UniqueIdentifier>{bdc0c1a0-e7de-486c-a3af-db9eba76d898}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rotate">
-      <UniqueIdentifier>{1ff0607e-4525-432a-9d3d-5f1118e555a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hqdb3d">
       <UniqueIdentifier>{531a7516-7c4b-4759-ad3f-783dd329bc7c}</UniqueIdentifier>
     </Filter>
@@ -344,8 +350,11 @@
     <Filter Include="ThumbnailVideoGenerator\PostEffect">
       <UniqueIdentifier>{0de571a8-a667-4b06-aca9-424fb418f961}</UniqueIdentifier>
     </Filter>
-    <Filter Include="avif">
-      <UniqueIdentifier>{c1d69a5c-7064-4351-8906-7564d3a42ba7}</UniqueIdentifier>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{3ec446f1-e066-4abc-b215-ece3500fd077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video">
+      <UniqueIdentifier>{abae937f-e371-4d4a-95cd-bb39f5ea6092}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

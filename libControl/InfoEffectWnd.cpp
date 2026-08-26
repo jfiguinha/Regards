@@ -9,6 +9,8 @@
 #include "InfoEffectWnd.h"
 #include <TreeWindow.h>
 #include <ImageLoadingFormat.h>
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 
@@ -18,12 +20,6 @@ CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, const wxWindowID id, const CThe
 {
 	this->bitmapWindowId = bitmap_window_id;
 	historyEffectOld = nullptr;
-}
-
-CInfoEffectWnd::~CInfoEffectWnd(void)
-{
-	if (historyEffectOld != nullptr)
-		delete(historyEffectOld);
 }
 
 void CInfoEffectWnd::AddModification(CImageLoadingFormat* bitmap, const wxString& libelle)
@@ -41,7 +37,6 @@ void CInfoEffectWnd::HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& 
 		auto historyEffect = new CInfoEffect(treeWindow, modificationManager, bitmapWindowId);
 		historyEffect->Init(bitmap, filename, historyLibelle);
 		treeWindow->SetTreeControl(historyEffect);
-		delete(historyEffectOld);
-		historyEffectOld = historyEffect;
+		historyEffectOld.reset(historyEffect);
 	}
 }

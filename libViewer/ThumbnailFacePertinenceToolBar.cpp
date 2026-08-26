@@ -21,36 +21,22 @@ CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* paren
 {
 	themeToolbar = theme;
 	wxString pertinence = CLibResource::LoadStringFromResource(L"LBLPERTINENCELEVEL", 1); //L"History";
-	wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON", 1);
-	wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF", 1);
 
-
-	auto toolbarText = new CToolbarTexte(themeToolbar.texte);
+	toolbarText = std::make_unique<CToolbarTexte>(themeToolbar.texte);
 	toolbarText->SetLibelle(pertinence);
 	toolbarText->SetInactif();
 	toolbarText->SetLibelleTooltip(pertinence);
-	navElement.push_back(toolbarText);
+	navElement.push_back(toolbarText.get());
 
-	auto moins = new CToolbarButton(themeToolbar.button);
-	moins->SetButtonResourceId(L"IDB_MINUS");
-	moins->SetCommandId(WM_ZOOMOUT);
-	moins->SetLibelleTooltip(zoomoff);
-	navElement.push_back(moins);
+	moins = CreateButton(L"IDB_MINUS", L"LBLZOOMOFF", WM_ZOOMOUT, false);
 
 	//themeToolbar.slider.colorBack.Set(51, 54, 62);
-	slide = new CToolbarSlide(themeToolbar.slider, this);
-	navElement.push_back(slide);
+	slide = std::make_unique<CToolbarSlide>(themeToolbar.slider, this);
+	navElement.push_back(slide.get());
 
-	auto plus = new CToolbarButton(themeToolbar.button);
-	plus->SetButtonResourceId(L"IDB_PLUS");
-	plus->SetCommandId(WM_ZOOMON);
-	plus->SetLibelleTooltip(zoomon);
-	navElement.push_back(plus);
+	plus = CreateButton(L"IDB_PLUS", L"LBLZOOMON", WM_ZOOMON, false);
 }
 
-CThumbnailFacePertinenceToolBar::~CThumbnailFacePertinenceToolBar()
-{
-}
 
 void CThumbnailFacePertinenceToolBar::ZoomOn()
 {

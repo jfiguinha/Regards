@@ -1,7 +1,7 @@
 #pragma once
 #include <RGBAQuad.h>
 #include <PictureArray.h>
-class CRegardsBitmap;
+;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
 class Chqdn3d;

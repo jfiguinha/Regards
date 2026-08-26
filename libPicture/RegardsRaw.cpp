@@ -8,84 +8,108 @@
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
 using namespace Regards::Picture;
 
-CRegardsRaw::CRegardsRaw()
+
+void write_ppm(
+    const libraw_processed_image_t* image,
+    std::vector<uint8_t>& output)
 {
+    if (image == nullptr)
+        return;
+
+    // write_ppm only supports bitmap RGB images.
+    if (image->type != LIBRAW_IMAGE_BITMAP ||
+        image->colors != 3 ||
+        image->data == nullptr ||
+        image->data_size == 0)
+    {
+        return;
+    }
+
+    // PPM P6 header.
+    char header[64];
+
+    const int headerSize = std::snprintf(
+        header,
+        sizeof(header),
+        "P6\n%d %d\n%d\n",
+        image->width,
+        image->height,
+        (1 << image->bits) - 1);
+
+    if (headerSize <= 0 ||
+        static_cast<size_t>(headerSize) >= sizeof(header))
+    {
+        return;
+    }
+
+    output.reserve(
+        static_cast<size_t>(headerSize) +
+        image->data_size);
+
+    output.insert(
+        output.end(),
+        header,
+        header + headerSize);
+
+    // LibRaw stores 16-bit pixel data in host byte order.
+    // PPM expects the 16-bit values in network byte order.
+    if (image->bits == 16 &&
+        htons(0x55AA) != 0x55AA)
+    {
+        output.reserve(
+            output.size() + image->data_size);
+
+        for (size_t i = 0; i + 1 < image->data_size; i += 2)
+        {
+            output.push_back(image->data[i + 1]);
+            output.push_back(image->data[i]);
+        }
+
+        // Handle an unexpected odd byte count safely.
+        if ((image->data_size & 1U) != 0)
+            output.push_back(image->data[image->data_size - 1]);
+    }
+    else
+    {
+        output.insert(
+            output.end(),
+            image->data,
+            image->data + image->data_size);
+    }
 }
 
-
-CRegardsRaw::~CRegardsRaw()
+std::vector<uint8_t> CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
 {
-}
-
-// no error reporting, only params check
-void write_ppm(libraw_processed_image_t* img, std::vector<uint8_t>* p)
-{
-	if (!img)
-		return;
-	// type SHOULD be LIBRAW_IMAGE_BITMAP, but we'll check
-	if (img->type != LIBRAW_IMAGE_BITMAP)
-		return;
-	// only 3-color images supported...
-	if (img->colors != 3)
-		return;
-
-
-	char buffer[512];
-	int size = sprintf(buffer, "P6\n%d %d\n%d\n", img->width, img->height, (1 << img->bits) - 1);
-	p->insert(p->end(), buffer, buffer + size);
-
-	/*
-	 NOTE:
-	 data in img->data is not converted to network byte order.
-	 So, we should swap values on some architectures for dcraw compatibility
-	 (unfortunately, xv cannot display 16-bit PPMs with network byte order data
-	 */
-#define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
-	if (img->bits == 16 && htons(0x55aa) != 0x55aa)
-		for (unsigned i = 0; i < img->data_size; i += 2)
-			SWAP(img->data[i], img->data[i + 1]);
-#undef SWAP
-
-	p->insert(p->end(), img->data, img->data + img->data_size);
-}
-
-
-DataStorage* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
-{
-	auto memPicture = new DataStorage();
-	auto RawProcessor = new LibRaw;
+	std::vector<uint8_t> data;
+    auto rawProcessor = std::make_unique<LibRaw>();
 	int ret; //, output_thumbs = 0;
 	outputFormat = BITMAPOUTPUT;
-	if (RawProcessor->open_file(CConvertUtility::ConvertToUTF8(fileName)) == LIBRAW_SUCCESS)
+	if (rawProcessor->open_file(CConvertUtility::ConvertToStdString(fileName).c_str()) == LIBRAW_SUCCESS)
 	{
-		if (RawProcessor->unpack_thumb() == LIBRAW_SUCCESS)
+		if (rawProcessor->unpack_thumb() == LIBRAW_SUCCESS)
 		{
-			libraw_processed_image_t* thumb = RawProcessor->dcraw_make_mem_thumb(&ret);
+			libraw_processed_image_t* thumb = rawProcessor->dcraw_make_mem_thumb(&ret);
 			if (thumb)
 			{
 				if (thumb->type == LIBRAW_IMAGE_JPEG)
 				{
-					memPicture->dataPt = new uint8_t[thumb->data_size];
-					memcpy(memPicture->dataPt, thumb->data, thumb->data_size);
+					data.resize(thumb->data_size);
+					memcpy(&data[0], thumb->data, thumb->data_size);
 					outputFormat = JPEGOUTPUT;
-					memPicture->size = thumb->data_size;
 				}
 				else if (thumb->type == LIBRAW_IMAGE_BITMAP)
 				{
 					std::vector<uint8_t> data;
 					outputFormat = BITMAPOUTPUT;
-					write_ppm(thumb, &data);
-					memPicture->dataPt = new uint8_t[data.size()];
-					memPicture->size = data.size();
-					memcpy(memPicture->dataPt, &data[0], data.size());
+					write_ppm(thumb, data);
 				}
 			}
 			else
 				outputFormat = NOTHUMBNAIL;
 		}
 	}
-	delete RawProcessor;
-	return memPicture;
+
+	return data;
 }
 
 #undef SWAP
@@ -93,26 +117,24 @@ DataStorage* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat
 void CRegardsRaw::GetDimensions(const string& fileName, int& width, int& height)
 {
 	// step one: Open file
-	auto RawProcessor = new LibRaw;
-	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
+    auto rawProcessor = std::make_unique<LibRaw>();
+	if (rawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
-		width = RawProcessor->imgdata.sizes.iwidth;
-		height = RawProcessor->imgdata.sizes.iheight;
-		//RawProcessor.recycle();
+		width = rawProcessor->imgdata.sizes.iwidth;
+		height = rawProcessor->imgdata.sizes.iheight;
 	}
-	delete RawProcessor;
+
 }
 
 int CRegardsRaw::GetOrientation(const string& fileName)
 {
 	// step one: Open file
 	int flip = 0;
-	auto RawProcessor = new LibRaw;
-	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
+    auto rawProcessor = std::make_unique<LibRaw>();
+	if (rawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
-		flip = RawProcessor->imgdata.sizes.flip;
-		//RawProcessor.recycle();
+		flip = rawProcessor->imgdata.sizes.flip;
 	}
-	delete RawProcessor;
+
 	return flip;
 }

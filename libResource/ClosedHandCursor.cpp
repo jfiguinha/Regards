@@ -86,9 +86,8 @@ wxCursor CResourceCursor::GetClosedHand()
 	auto down_cursor = wxCursor(down_image);
 	return down_cursor;
 
-#else
-        
-        return wxCursor(wxCURSOR_CLOSED_HAND);
+#else  
+   return wxCursor(wxCURSOR_CLOSED_HAND);
         
 #endif
 }

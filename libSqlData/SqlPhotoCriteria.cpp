@@ -3,6 +3,8 @@
 #include "SqlCriteria.h"
 #include "SqlPhotos.h"
 #include <ConvertUtility.h>
+#include "SqlTransaction.h"
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 CSqlPhotoCriteria::CSqlPhotoCriteria()
@@ -10,40 +12,35 @@ CSqlPhotoCriteria::CSqlPhotoCriteria()
 {
 }
 
-
-CSqlPhotoCriteria::~CSqlPhotoCriteria()
-{
-}
-
 bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew,
-                                                bool criteriaUpdate, const int& numFolder)
+	bool criteriaUpdate, const int& numFolder)
 {
-	BeginTransaction();
-	CSqlPhotos sqlPhoto(this->_sqlLibTransaction, this->useTransaction);
-	CSqlCriteria sqlCriteria(this->_sqlLibTransaction, this->useTransaction);
+	CSqlTransaction sqlTransaction;
+	CSqlPhotos sqlPhoto(this->m_transaction, this->m_useTransaction);
+	CSqlCriteria sqlCriteria(this->m_transaction, this->m_useTransaction);
 
 	for (auto it = listPhotoCriteria.listCriteria.begin(); it != listPhotoCriteria.listCriteria.end(); ++it)
 	{
-		CInsertCriteria* insertCriteria = *it;
+		CInsertCriteria insertCriteria = *it;
 
 		//Old Criteria
-		int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(listPhotoCriteria.numPhotoId, insertCriteria->type);
+		int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(listPhotoCriteria.numPhotoId, insertCriteria.type);
 
-		//printf("insertCriteria value : %s \n", CConvertUtility::ConvertToUTF8(insertCriteria->value));
+		//printf("insertCriteria value : %s \n", CConvertUtility::ConvertToStdString(insertCriteria.value));
 
-		insertCriteria->id = sqlCriteria.GetOrInsertCriteriaId(listPhotoCriteria.numCatalog, insertCriteria->type,
-		                                                       insertCriteria->value, insertCriteria->isNew);
+		insertCriteria.id = sqlCriteria.GetOrInsertCriteriaId(listPhotoCriteria.numCatalog, insertCriteria.type,
+			insertCriteria.value, insertCriteria.isNew);
 
-		if (oldCriteriaId == insertCriteria->id)
+		if (oldCriteriaId == insertCriteria.id)
 			continue;
 
-		if (insertCriteria->isNew && isNew == false)
+		if (insertCriteria.isNew && isNew == false)
 			isNew = true;
 
 		if (!isNew && numFolder != 0)
 		{
-			int numCriteria = sqlCriteria.GetCriteriaId(insertCriteria->id, numFolder);
-			if (numCriteria != insertCriteria->id)
+			int numCriteria = sqlCriteria.GetCriteriaId(insertCriteria.id, numFolder);
+			if (numCriteria != insertCriteria.id)
 				isNew = true;
 		}
 
@@ -51,13 +48,13 @@ bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPh
 			DeletePhotoCriteria(listPhotoCriteria.numPhotoId, oldCriteriaId);
 
 
-		InsertPhotoCriteria(listPhotoCriteria.numPhotoId, insertCriteria->id);
+		InsertPhotoCriteria(listPhotoCriteria.numPhotoId, insertCriteria.id);
 	}
 
 	if (criteriaUpdate)
 		sqlPhoto.UpdatePhotoCriteria(listPhotoCriteria.numPhotoId);
 
-	CommitTransection();
+	sqlTransaction.commit();
 
 	return true;
 }
@@ -70,11 +67,11 @@ bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPh
 
 bool CSqlPhotoCriteria::InsertPhotoCriteria(const int64_t& numPhoto, const int64_t& numCriteria)
 {
-	return (ExecuteRequestWithNoResult(
-		       "INSERT INTO PHOTOSCRITERIA (NumCriteria, NumPhoto) VALUES (" + to_string(numCriteria) + "," +
-		       to_string(numPhoto) + ")") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCriteria));
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOSCRITERIA (NumCriteria, NumPhoto) VALUES (?,?)", parameter);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -82,47 +79,46 @@ bool CSqlPhotoCriteria::InsertPhotoCriteria(const int64_t& numPhoto, const int64
 /////////////////////////////////////////////////////////////////////////////
 bool CSqlPhotoCriteria::DeleteCriteria(const int64_t& numCriteria)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumCriteria = " + to_string(numCriteria)) != -
-		       1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCriteria));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumCriteria = ?", parameter);
+
 }
 
 bool CSqlPhotoCriteria::DeletePhoto(const int64_t& numPhoto)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumPhoto = " + to_string(numPhoto)) != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumPhoto = ?", parameter);
 }
 
 bool CSqlPhotoCriteria::DeletePhotoCriteria(const int64_t& numPhoto, const int64_t& numCriteria)
 {
-	int value = ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTOSCRITERIA WHERE NumCriteria = " + to_string(numCriteria) + " and NumPhoto = " +
-		to_string(numPhoto));
-	return (value != -1) ? true : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCriteria));
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumCriteria = ? and NumPhoto = ?", parameter);
+
 }
 
 bool CSqlPhotoCriteria::DeleteFolderCriteria(const int64_t& numFolder)
 {
-	return (ExecuteRequestWithNoResult(
-		       "DELETE FROM PHOTOSCRITERIA WHERE NumPhoto in (select NumPhoto from PHOTOS where NumFolderCatalog = " +
-		       to_string(numFolder) + ")") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFolder));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumPhoto in (select NumPhoto from PHOTOS where NumFolderCatalog = ?)", parameter);
+
 }
 
 bool CSqlPhotoCriteria::DeleteCatalogCriteria(const int64_t& numCatalog)
 {
-	return (ExecuteRequestWithNoResult(
-		       "DELETE FROM PHOTOSCRITERIA as PC INNER JOIN PHOTOS as PH ON PC.NumPhoto = PH.NumPhoto INNER JOIN FOLDERCATALOG FC on FC.NumFolderCatalog = PH.NumFolderCatalog WHERE FC.NumCatalog = "
-		       + to_string(numCatalog)) != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSCRITERIA as PC INNER JOIN PHOTOS as PH ON PC.NumPhoto = PH.NumPhoto INNER JOIN FOLDERCATALOG FC on FC.NumFolderCatalog = PH.NumFolderCatalog WHERE FC.NumCatalog = ?", parameter);
+
 }
 
 
-void CSqlPhotoCriteria::DeletePhotoCriteria()
+bool CSqlPhotoCriteria::DeletePhotoCriteria()
 {
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA");
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA") != -1) ? true : false;
 }

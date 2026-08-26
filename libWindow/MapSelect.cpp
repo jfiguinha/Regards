@@ -26,10 +26,6 @@ CMapSelect::CMapSelect()
 	longitude = "";
 }
 
-CMapSelect::~CMapSelect()
-{
-}
-
 double CMapSelect::GetLatitudeNumber()
 {
 	double dVal = 0.0;

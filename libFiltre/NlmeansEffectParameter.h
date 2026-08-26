@@ -12,10 +12,6 @@ public:
 		searchWindowSize = 15;
 	};
 
-	~CNlmeansEffectParameter() override
-	{
-	};
-
 	int h;
 	int templateWindowSize;
 	int searchWindowSize;

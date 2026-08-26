@@ -828,7 +828,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="email.h" />
     <ClInclude Include="LocalMapi.h" />
     <ClInclude Include="SendEmail.h" />
   </ItemGroup>
@@ -843,7 +842,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="email.cpp" />
     <ClCompile Include="LocalMapi.cpp" />
     <ClCompile Include="SendEmail.cpp" />
   </ItemGroup>

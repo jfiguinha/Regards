@@ -1,12 +1,8 @@
 //
-//  HelloInterface.h
+//  MyEmailInterface.h
 //  Regards
 //
-//  Created by figuinha jacques on 10/08/2015.
-//
-//
-
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__WXGTK__)
 #pragma once
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -16,13 +12,7 @@
 class MyEmailImpl
 {
 public:
-    MyEmailImpl ( void );
-    ~MyEmailImpl( void );
-
-    void SendEmail(const wxString &to, const wxString &subject, const wxString & filePicture);
-
-
+    void SendEmail(const wxString& to, const wxString& subject, const wxString& body,const wxString& filePicture);
 };
-
 
 #endif

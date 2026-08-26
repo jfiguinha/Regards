@@ -43,7 +43,7 @@ namespace Regards::Control
 		void ExportPicture();
 		void SavePicture();
 		void PrintPicture();
-		void SetTransitionBitmap(CImageLoadingFormat* bmpSecond);
+		
 		void FixArrowNavigation(const bool& fix);
 		void StopTransition();
 		void SetBitmapPreviewEffect(const int& effect);
@@ -56,8 +56,6 @@ namespace Regards::Control
 		CRgbaquad GetBackColor() override;
 		int GetOrientation() override;
 		CDraw* GetDessinPt() override;
-		void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) override;
-		void StopTransitionEffect(CImageLoadingFormat* bmpSecond) override;
 		wxPoint GetMousePosition();
 		void CalculCenterPositionPicture() override;
 
@@ -70,9 +68,15 @@ namespace Regards::Control
 		vector<int> GetListTimer() override;
 		void ApplyPicturePosition(const int& angle, const int& flipH, const int& flipV);
 
-		static IAfterEffect* AfterEffectPt(const int& numFilter);
+		static std::unique_ptr<IAfterEffect> AfterEffectPt(const int& numFilter);
 
 	private:
+
+		void SetTransitionBitmap(CImageLoadingFormat* bmpSecond) override;
+		void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) override;
+		void StopTransitionEffect(CImageLoadingFormat* bmpSecond) override;
+
+
 		bool IsOpenCLCompatible();
 		
 		void RenderTexture(const bool& invertPos) override;
@@ -103,13 +107,15 @@ namespace Regards::Control
 		void BeforeInterpolationBitmap() override;
 
 		wxCursor hCursorCross;
-		CDraw* m_cDessin;
+		std::unique_ptr<CDraw> m_cDessin;
 		CImageLoadingFormat* nextPicture;
+		CBitmapInterface* bitmapInterface;
+
+
 		bool startTransition;
 		int etape;
 		bool fixArrow;
-		CBitmapInterface* bitmapInterface;
-		IAfterEffect* afterEffect;
+
 		wxPoint oldMouse;
 
 		//Thread Parameter
@@ -123,7 +129,9 @@ namespace Regards::Control
 		int oldTransNumEffect = -1;
 		wxRect arrowPrevious;
 		wxRect arrowNext;
-		wxTimer* transitionTimer;
-		wxTimer* clickTimer;
+
+		std::unique_ptr<wxTimer> transitionTimer;
+		std::unique_ptr<wxTimer> clickTimer;
+		std::unique_ptr<IAfterEffect> afterEffect = nullptr;
 	};
 }

@@ -16,47 +16,51 @@ using namespace cv;
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString>& listOfFile, int delay,
                                                  int fps, int width, int height, int effect)
 {
-	CThumbnailVideoOpenCVExportImpl* thumbnailImpl = nullptr;
+    std::unique_ptr<CThumbnailVideoOpenCVExportImpl> thumbnailImpl;
 
+    switch (effect)
+    {
+    case IDM_DIAPORAMA_FUSION:
+        thumbnailImpl = std::make_unique<CDiaporamaFusion>();
+        break;
 
-	switch (effect)
-	{
-	case IDM_DIAPORAMA_FUSION:
-		thumbnailImpl = new CDiaporamaFusion();
-		break;
-	case IDM_DIAPORAMA_TRANSITION:
-		thumbnailImpl = new CDiaporamaTransition();
-		break;
-	case IDM_DIAPORAMA_MOVE:
-		thumbnailImpl = new CDiaporamaMove();
-		break;
-	default:
-		thumbnailImpl = new CThumbnailVideoOpenCVExportImpl();
-		break;
-	}
+    case IDM_DIAPORAMA_TRANSITION:
+        thumbnailImpl = std::make_unique<CDiaporamaTransition>();
+        break;
 
-	int movie_duration = 0;
-	int fourcc = VideoWriter::fourcc('H', '2', '6', '4');
-	Size S = Size((int)width, // Acquire input size
-	              (int)height);
+    case IDM_DIAPORAMA_MOVE:
+        thumbnailImpl = std::make_unique<CDiaporamaMove>();
+        break;
 
-	if (thumbnailImpl != nullptr)
-	{
-		// Open the output
-		thumbnailImpl->outputVideo.open(CConvertUtility::ConvertToStdString(outfile), fourcc, fps, S, true);
+    default:
+        thumbnailImpl = std::make_unique<CThumbnailVideoOpenCVExportImpl>();
+        break;
+    }
 
-		if (thumbnailImpl->outputVideo.isOpened())
-		{
-			movie_duration = thumbnailImpl->ExecuteProcess(outfile, listOfFile, delay, fps, width, height, effect);
+    const int fourcc = VideoWriter::fourcc('H', '2', '6', '4');
 
-			thumbnailImpl->outputVideo.release();
+    const Size videoSize(
+        static_cast<int>(width),
+        static_cast<int>(height));
 
-			if (thumbnailImpl->endProcess)
-				movie_duration = 0;
-		}
-	}
+    thumbnailImpl->outputVideo.open(
+        CConvertUtility::ConvertToStdString(outfile),
+        fourcc,
+        fps,
+        videoSize,
+        true);
 
+    if (!thumbnailImpl->outputVideo.isOpened())
+        return 0;
 
-	delete thumbnailImpl;
-	return movie_duration;
+    const int movieDuration = thumbnailImpl->ExecuteProcess(
+        outfile,
+        listOfFile,
+        delay,
+        fps,
+        width,
+        height,
+        effect);
+
+    return thumbnailImpl->endProcess ? 0 : movieDuration;
 }

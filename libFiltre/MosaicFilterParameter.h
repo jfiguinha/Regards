@@ -9,9 +9,5 @@ public:
 		size = 5;
 	};
 
-	~CMosaicEffectParameter() override
-	{
-	};
-
 	int size;
 };

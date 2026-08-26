@@ -8,8 +8,7 @@
 #include <ImageLoadingFormat.h>
 #include <config_id.h>
 #include <ParamInit.h>
-#include <appcontext.h>
-extern AppContext application_context;
+
 using namespace Regards::FiltreEffet;
 using namespace std;
 
@@ -154,7 +153,7 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, const bool& useCuda, CImageLoadingFormat* bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLContext, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
@@ -171,18 +170,18 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, co
 
 	local_useOpenCL = regardsParam->GetIsOpenCLSupport();	
 
-	if (local_useOpenCL && useOpenCL)
+	if (local_useOpenCL && openCLContext)
 	{
 		if (cv::ocl::haveOpenCL())
 		{
-			filtreEffet = new COpenCLEffect(backColor, bitmap);
+			filtreEffet = std::make_unique<COpenCLEffect>(backColor, bitmap, openCLContext);
 			this->numLib = LIBOPENCL;
 		}
 	}
 
 	if (this->numLib == LIBCPU)
 	{
-		filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
+		filtreEffet = std::make_unique<CFiltreEffetCPU>(backColor, bitmap);
 	}
 }
 
@@ -190,12 +189,6 @@ void CFiltreEffet::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (filtreEffet != nullptr)
 		filtreEffet->SetBitmap(bitmap);
-}
-
-CFiltreEffet::~CFiltreEffet()
-{
-	if (filtreEffet != nullptr)
-		delete(filtreEffet);
 }
 
 int CFiltreEffet::RedEye()

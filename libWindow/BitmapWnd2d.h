@@ -2,7 +2,7 @@
 #include "WindowMain.h"
 #include "IBitmapWnd.h"
 using namespace std;
-class CRegardsBitmap;
+;
 class CFiltreEffet;
 class CImageLoadingFormat;
 class CRegardsFloatBitmap;
@@ -22,7 +22,7 @@ namespace Regards::Window
 	{
 	public:
 		CBitmapWnd2D(wxWindow* parent, wxWindowID id);
-		~CBitmapWnd2D(void) override;
+		~CBitmapWnd2D(void) = default;
 
 		void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
 

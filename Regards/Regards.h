@@ -11,8 +11,8 @@
 // ReSharper disable All
 #pragma once
 #include <header.h>
-#include "wx/xrc/xmlres.h"
-#include "wx/url.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/url.h>
 #include <PrintEngine.h>
 #include <MainInterface.h>
 #include <RegardsConfigParam.h>
@@ -23,7 +23,6 @@
 #include <wx/display.h>
 #include <VideoConverterFrame.h>
 #include <ScannerFrame.h>
-#include "TestFrame.h"
 #include <ncnn/gpu.h>
 #include <signal.h>
 
@@ -42,6 +41,7 @@
 
 #ifdef SDL2
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
 #endif
 
 #ifdef __WXMSW__
@@ -59,7 +59,50 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef FFMPEG
+#define CONFIG_AVFILTER 1
+
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+
+#if CONFIG_AVFILTER
+#endif
+}
+
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavfilter/avfilter.h>
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
+#include <libavformat/avformat.h>
+#include <libavutil/display.h>
+}
+
+#define YUV       0
+#define YCBCR     1
+#define OPP       2
+#define RGB       3
+#define DCT       4
+#define BIOR      5
+#define HADAMARD  6
+#define NONE      7
+
+
+#endif
+
+using namespace std;
+using namespace Regards::Print;
+using namespace Regards::Introduction;
+using namespace Regards::Viewer;
+
+#ifndef __APPLE__
+#include <GL/glut.h>
+#endif
+
+
 #include <wx/glcanvas.h>
+
 
 int args[] = {
 	wx_GL_COMPAT_PROFILE,
@@ -69,11 +112,6 @@ int args[] = {
 	WX_GL_DEPTH_SIZE, 16,
 	0
 };
-
-using namespace std;
-using namespace Regards::Print;
-using namespace Regards::Introduction;
-using namespace Regards::Viewer;
 
 
 [[noreturn]] void onTerminate() noexcept
@@ -106,6 +144,7 @@ using namespace Regards::Viewer;
 
 
 
+//const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp
 class MyApp : public wxApp, public IMainInterface, public IVideoConverterInterface
@@ -113,35 +152,7 @@ class MyApp : public wxApp, public IMainInterface, public IVideoConverterInterfa
 public:
 	// override base class virtuals
 	// ----------------------------
-	MyApp(
-	)
-	{
-
-		logNo = new wxLogNull();
-		//Init x11
-		regardsParam = nullptr;
-		frameStart = nullptr;
-		//frameViewer = nullptr;
-#ifdef USECURL
-		curl_global_init(CURL_GLOBAL_ALL);
-#endif
-
-#ifdef __WXGTK__
-		int result = XInitThreads();
-#endif
-
-		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
-		//------SDL------------------------
-		//³õÊ¼»¯
-		if (SDL_Init(flags))
-		{
-			std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
-			wxMessageBox(_T("Could not initialize SDL Audio"));
-			//exit(1);
-		}
-	}
-
-
+	MyApp();
 
 	void OnInitCmdLine(wxCmdLineParser& parser) override;
 	bool OnCmdLineParsed(wxCmdLineParser& parser) override;
@@ -167,7 +178,7 @@ public:
 		wxDisplay display;
 		wxRect screen = display.GetClientArea();
 
-		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition,
+		frameViewer = std::make_unique<CViewerFrame>("Regards Viewer", wxDefaultPosition,
 		                               wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
@@ -183,7 +194,7 @@ public:
 		}
         else
         {
-            frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
+            frameStart = std::make_unique<MyFrameIntro>("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
             frameStart->Centre(wxBOTH);
             frameStart->Show(true);
         }
@@ -209,20 +220,27 @@ private:
 	void CheckGeolocalisationServiceAvailability();
 	void CheckOpenCLAvailability(bool configFileExist);
 
-	CRegardsConfigParam* regardsParam= nullptr;
+	bool InitializeLocale();
+	bool InitializeDirectories();
+	bool InitializeDatabase();
+	bool InitializeResources();
+	void LaunchApplication();
 
-	MyFrameIntro* frameStart= nullptr;
-	CViewerFrame* frameViewer= nullptr;
-	CScannerFrame* framePDF = nullptr;
-	CVideoConverterFrame* frameVideoConverter = nullptr;
-	CTestFrame* testFrame = nullptr;
+	CRegardsConfigParam* regardsParam= nullptr;
 
 	wxString fileToOpen;
 	wxString appName = "";
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
-	wxLogNull* logNo;
 
+	std::unique_ptr<CScannerFrame> framePDF;
+	std::unique_ptr<CVideoConverterFrame> frameVideoConverter;
+	std::unique_ptr<MyFrameIntro> frameStart;
+	std::unique_ptr<CViewerFrame> frameViewer;
+	
+#ifdef __WXMSW__
+	//ULONG_PTR m_gdiplusToken;   // class member
+#endif
 };
 
 // Create a new application object: this macro will allow wxWidgets to create

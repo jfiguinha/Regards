@@ -22,13 +22,13 @@ namespace Regards
 		public:
 			CCriteriaWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme,
 			                const bool& horizontal = true);
-			~CCriteriaWindow() override;
+			~CCriteriaWindow() = default;
 			void SetFile(const wxString& filename);
 			void UpdateScreenRatio() override;
 
 		private:
-			CCriteriaTreeWnd* criteriaTreeWnd;
-			CKeywordWndToolbar* keywordWnd = nullptr;
+			std::unique_ptr<CCriteriaTreeWnd> criteriaTreeWnd;
+			std::unique_ptr<CKeywordWndToolbar> keywordWnd = nullptr;
 			wxString url = "";
 			wxString filename = "";
 		};

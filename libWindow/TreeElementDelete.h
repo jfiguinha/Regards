@@ -8,10 +8,10 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementDelete();
-		~CTreeElementDelete() override;
+		~CTreeElementDelete() = default;
 
 		void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
-		void ClickElement(wxWindow* window, const int& x, const int& y) override;
+
 		void SetTheme(CThemeTreeDelete* theme);
 
 		CTreeElementDelete& operator=(const CTreeElementDelete& other);
@@ -40,6 +40,8 @@ namespace Regards::Window
 
 	private:
 		void DrawBitmap(wxDC* deviceContext, const int& xPos, const int& yPos);
+		void GenerateCrossBitmap();
 		CThemeTreeDelete themeTreeDelete;
+		wxBitmap m_croixOff;
 	};
 }

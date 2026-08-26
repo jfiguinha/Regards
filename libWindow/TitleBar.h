@@ -9,7 +9,7 @@ namespace Regards::Window
 	{
 	public:
 		CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleBarInterface);
-		~CTitleBar() override;
+		~CTitleBar() = default;
 
 		int SetTooltipText(const wxString& tooltip);
 		void SetTitle(const wxString& title);

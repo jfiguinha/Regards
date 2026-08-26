@@ -8,18 +8,15 @@
 #include <BitmapInterface.h>
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
-#include "wx/stdpaths.h"
 #include <FilterData.h>
 #include <ViewerParam.h>
-#include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>
 #include "PageCurlFilter.h"
 #include "MoveEffectTexture.h"
 #include "NoneEffectTextureEffect.h"
 #include "DiaporamaEffect.h"
-#include <wx/busyinfo.h>
-#include <wx/activityindicator.h>
+
 #include <MainParam.h>
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
@@ -31,7 +28,7 @@
 #elif defined(WIN32)
 #include <LocalMapi.h>
 #else
-    #include "email.h"
+    #include <SendEmail.h>
 #endif
 
 using namespace Regards::Filter;
@@ -53,26 +50,26 @@ enum
 #define TIMER_CLICK 32
 #define TIMER_CLICK_TIME 200
 
-IAfterEffect* CBitmapWndViewer::AfterEffectPt(const int& numFilter)
+std::unique_ptr<IAfterEffect> CBitmapWndViewer::AfterEffectPt(const int& numFilter)
 {
 	switch (numFilter)
 	{
 	case IDM_DIAPORAMA_TRANSITION:
-		return new CDiaporamaEffect();
+		return std::make_unique<CDiaporamaEffect>();
 
 	case IDM_DIAPORAMA_MOVE:
 	case IDM_AFTEREFFECT_MOVE:
-		return new CMoveEffectTextureEffect();
+		return std::make_unique<CMoveEffectTextureEffect>();
 
 	case IDM_AFTEREFFECT_PAGECURL:
-		return new CPageCurlFilter();
+		return std::make_unique<CPageCurlFilter>();
 
 	case IDM_DIAPORAMA_FUSION:
 	case IDM_AFTEREFFECT_FUSION:
-		return new CBitmapFusionFilter();
+		return std::make_unique<CBitmapFusionFilter>();
 
 	default:
-		return new CNoneEffectTextureEffect();
+		return std::make_unique<CNoneEffectTextureEffect>();
 	}
 }
 
@@ -87,23 +84,21 @@ void CBitmapWndViewer::SendEmail()
 	wxString subject = CLibResource::LoadStringFromResource(L"LBLEMAILSUBJECT", 1);
 	wxString body = CLibResource::LoadStringFromResource(L"lblemailbody", 1);
 
-#ifdef __APPLE__
+#ifdef WIN32
     
-    CSendEmail sendEmail;
-    sendEmail.SendEmail("", subject, CConvertUtility::ConvertToStdString(filename));
-    
-#elif defined(WIN32)
-
 	CMapi m_cMapi;
 	vector<string> attachment;
 
 
-	attachment.push_back(CConvertUtility::ConvertToStdString(filename));
+	attachment.push_back(CConvertUtility::ConvertToStdString(filename).c_str());
 	if (attachment.size() > 0)
 		m_cMapi.SendEmail("", attachment);
 
 #else
-    wxExecute("thunderbird -remote \"xfeDoCommand(composeMessage,subject='" + subject + "',body='" + body + "',attachment='" + filename + "')\"");    
+
+	CSendEmail sendEmail;
+	sendEmail.SendEmail("", subject, body, CConvertUtility::ConvertToStdString(filename).c_str());
+
 #endif
 }
 
@@ -186,7 +181,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 			wxBeginBusyCursor();
 
             filtreEffet->SetPreviewMode(false);
-            mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+            mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet.get(), m_cDessin.get());
             updateFilter = false;
             bitmapwidth = filtreEffet->GetWidth();
             bitmapheight = filtreEffet->GetHeight();
@@ -252,18 +247,17 @@ void CBitmapWndViewer::SetParent(wxWindow* parent)
 	const double scale_factor = 1.0f;
 #endif
 
-	transitionTimer = new wxTimer(parentRender, TIMER_TRANSITION);
-	clickTimer = new wxTimer(parentRender, TIMER_CLICK);
+	transitionTimer = std::make_unique<wxTimer>(parentRender, TIMER_TRANSITION);
+	clickTimer = std::make_unique<wxTimer>(parentRender, TIMER_CLICK);
+
 
 	arrowPrevious.x = 0;
 	arrowPrevious.y = 0;
 	arrowPrevious.width = 32 * scale_factor;
 	arrowPrevious.height = 32 * scale_factor;
 
-	arrowNext.x = 0;
-	arrowNext.y = 0;
-	arrowNext.width = 32 * scale_factor;
-	arrowNext.height = 32 * scale_factor;
+	arrowNext = arrowPrevious;
+
 }
 
 void CBitmapWndViewer::OnTimer(wxTimerEvent& event)
@@ -286,9 +280,6 @@ vector<int> CBitmapWndViewer::GetListTimer()
 	listTimer.push_back(TIMER_CLICK);
 	return listTimer;
 }
-
-//parentRender->Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, parentRender);
-//parentRender->Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnClick), nullptr, parentRender);
 
 void CBitmapWndViewer::OnClick(wxTimerEvent& event)
 {
@@ -345,17 +336,6 @@ CBitmapWndViewer::~CBitmapWndViewer()
 
 	if (clickTimer->IsRunning())
 		clickTimer->Stop();
-
-	if (afterEffect != nullptr)
-	{
-		delete(afterEffect);
-		afterEffect = nullptr;
-	}
-
-	//delete(openclEffectVideo);
-	delete(transitionTimer);
-	delete(clickTimer);
-	delete(m_cDessin);
 }
 
 void CBitmapWndViewer::AfterSetBitmap()
@@ -373,10 +353,9 @@ void CBitmapWndViewer::ExportPicture()
 
 void CBitmapWndViewer::SavePicture()
 {
-	CImageLoadingFormat* imageLoading = GetBitmap(true);
-	CSavePicture::SavePicture(nullptr, imageLoading, filename);
-	if (imageLoading != nullptr)
-		delete imageLoading;
+	std::unique_ptr<CImageLoadingFormat> imageLoading;
+	imageLoading.reset(GetBitmap(true));
+	CSavePicture::SavePicture(nullptr, imageLoading.get(), filename);
 }
 
 void CBitmapWndViewer::DeterminePos(wxRect& rc, const int& nTailleAffichageWidth, const int& nTailleAffichageHeight,
@@ -432,7 +411,7 @@ void CBitmapWndViewer::SetDessinRatio()
 	if (heightOutput < rc2.height)
 	{
 		rc.y = (rc2.height - heightOutput) / 2;
-		rc.height = widthOutput;
+		rc.height = heightOutput;
 	}
 	else
 	{
@@ -448,10 +427,8 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int& effect)
 {
 	preview = effect;
 	isInUse = true;
-	if (m_cDessin != nullptr)
-		delete(m_cDessin);
 
-	m_cDessin = CFiltreData::GetDrawingPt(effect);
+	m_cDessin.reset(CFiltreData::GetDrawingPt(effect));
 	if (m_cDessin != nullptr)
 	{
 		SetDessinRatio();
@@ -484,7 +461,7 @@ bool CBitmapWndViewer::ApplyPreviewEffect(int& widthOutput, int& heightOutput)
 {
 	if (preview > 1 && mouseUpdate != nullptr)
 	{
-		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet, m_cDessin, widthOutput, heightOutput);
+		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet.get(), m_cDessin.get(), widthOutput, heightOutput);
 
 		if (mouseUpdate->NeedToUpdateSource())
 			updateFilter = true;
@@ -537,14 +514,6 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
-	/*
-	if (isDiaporama)
-	{
-		SetBitmap(nextPicture, false);
-		nextPicture = nullptr;
-	}
-	*/
-
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
 }
@@ -586,12 +555,9 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat* bmpSecond)
 	if (oldTransNumEffect != numEffect)
 	{
 		if (afterEffect != nullptr)
-		{
-			delete(afterEffect);
-			afterEffect = nullptr;
-		}
-		afterEffect = AfterEffectPt(numEffect);
+			afterEffect.reset();
 
+		afterEffect = AfterEffectPt(numEffect);
 		oldTransNumEffect = numEffect;
 	}
 
@@ -604,10 +570,11 @@ void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, con
 	if (setPicture)
 	{
 		nextPicture = nullptr;
-		SetBitmap(bmpSecond, false);
+		SetBitmap(bmpSecond);
 	}
 	else
 		nextPicture = bmpSecond;
+
 	startTransition = true;
 	m_bTransition = true;
 	etape = 0;
@@ -625,7 +592,7 @@ void CBitmapWndViewer::StopTransitionEffect(CImageLoadingFormat* bmpSecond)
 {
 	etape = 0;
 	m_bTransition = false;
-	SetBitmap(bmpSecond, false);
+	SetBitmap(bmpSecond);
 	startTransition = false;
 	nextPicture = nullptr;
 	EndTransition();
@@ -720,7 +687,7 @@ int CBitmapWndViewer::GetOrientation()
 
 CDraw* CBitmapWndViewer::GetDessinPt()
 {
-	return m_cDessin;
+	return m_cDessin.get();
 }
 
 void CBitmapWndViewer::SetNextPictureMove(const bool& value)
@@ -749,7 +716,7 @@ void CBitmapWndViewer::AfterRender()
 
 		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)
 		{
-			afterEffect->AfterRender(nextPicture, renderBitmapOpenGL, this, etape, scale_factor, isNext, ratio);
+			afterEffect->AfterRender(nextPicture, renderBitmapOpenGL.get(), this, etape, scale_factor, isNext, ratio);
 		}
 	}
 
@@ -784,7 +751,7 @@ void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 
 		bool isValid = false;
 		if (afterEffect != nullptr)
-			isValid = afterEffect->RenderTexture(nextPicture, source, this, renderBitmapOpenGL, scale_factor, etape);
+			isValid = afterEffect->RenderTexture(nextPicture, source.get(), this, renderBitmapOpenGL.get(), scale_factor, etape);
 
 		if (!isValid)
 			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);

@@ -11,10 +11,6 @@ public:
 		sigmaP = 40;
 	};
 
-	~CEdgePreservingFilterParameter() override
-	{
-	};
-
 	int flags;
 	int sigmaX;
 	int sigmaP;

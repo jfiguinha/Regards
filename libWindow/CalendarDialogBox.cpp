@@ -54,53 +54,5 @@ wxCalendarCtrlBase* CCalendarDialogBox::DoCreateCalendar(const wxDateTime& dt, l
 	                              wxDefaultPosition,
 	                              wxDefaultSize,
 	                              style);
-
-	calendar->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CCalendarDialogBox::OnCalRClick));
-
 	return calendar;
-}
-
-void CCalendarDialogBox::OnCalRClick(wxMouseEvent& event)
-{
-	//wxDateTime::WeekDay wd;
-
-	const wxPoint pt = event.GetPosition();
-	wxString msg = wxString::Format("Point (%d, %d) is ", pt.x, pt.y);
-	/*
-	switch ( m_panel->GetCal()->HitTest(pt, &dt, &wd) )
-	{
-	    default:
-	        wxFAIL_MSG( "unexpected" );
-	        // fall through
-	        
-	    case wxCAL_HITTEST_NOWHERE:
-	        msg += "nowhere";
-	        break;
-	        
-	    case wxCAL_HITTEST_HEADER:
-	        msg += wxString::Format("over %s", wxDateTime::GetWeekDayName(wd));
-	        break;
-	        
-	    case wxCAL_HITTEST_DAY:
-	        msg += wxString::Format("over %s", dt.FormatISODate());
-	        break;
-	        
-	    case wxCAL_HITTEST_INCMONTH:
-	        msg += "over next month button";
-	        break;
-	        
-	    case wxCAL_HITTEST_DECMONTH:
-	        msg += "over previous month button";
-	        break;
-	        
-	    case wxCAL_HITTEST_SURROUNDING_WEEK:
-	        msg += "over a day from another month";
-	        break;
-	}
-	*/
-	wxLogMessage("%s", msg);
-}
-
-CCalendarDialogBox::~CCalendarDialogBox()
-{
 }

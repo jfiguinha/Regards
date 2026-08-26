@@ -6,7 +6,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElement();
-		virtual ~CTreeElement();
+		virtual ~CTreeElement() = default;
 
 		virtual int GetWidth() = 0;
 		virtual int GetHeight() = 0;

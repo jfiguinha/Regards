@@ -10,186 +10,130 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
-#include "SqlPhotoGPS.h"
 #include "SqlPhotoCategorieUsenet.h"
+#include "SqlTransaction.h"
+using namespace Regards::Sqlite;
 using namespace Regards::Sqlite;
 
-CSQLRemoveData::CSQLRemoveData()
+
+
+// ── Suppression face (factorisée) ───────────────────────────────────────────
+
+bool CSQLRemoveData::DeleteFaceData()
 {
+    bool ok = true;
+
+    CSqlFacePhoto sqlFacePhoto;
+    ok &= sqlFacePhoto.DeleteFaceDatabase();
+    ok &= sqlFacePhoto.DeleteFaceTreatmentDatabase();
+
+    CSqlFaceRecognition sqlFaceRecognition;
+    ok &= sqlFaceRecognition.DeleteFaceRecognitionDatabase();
+
+    CSqlFaceLabel sqlFaceLabel;
+    ok &= sqlFaceLabel.DeleteFaceLabelDatabase();
+
+    return ok;
 }
 
+// ── DeleteCatalog ───────────────────────────────────────────────────────────
 
-CSQLRemoveData::~CSQLRemoveData()
+bool CSQLRemoveData::DeleteCatalog(int numCatalog)
 {
+    bool ok = true;
+    CSqlTransaction sqlTransaction;
+
+    ok &= CSqlThumbnail().EraseThumbnail();
+    ok &= CSqlThumbnailVideo().EraseThumbnail();
+
+    ok &= CSqlCriteria().DeleteCriteriaCatalog(numCatalog);
+    ok &= CSqlPhotoCriteria().DeletePhotoCriteria();
+
+    CSqlPhotos sqlPhoto;
+    ok &= sqlPhoto.DeletePhotoCatalog(numCatalog);
+
+    ok &= CSqlFolderCatalog().DeleteCatalog(numCatalog);
+    ok &= DeleteFaceData();
+    ok &= CSqlPhotoCategorieUsenet().DeletePhotoProcessingDatabase();
+
+    sqlTransaction.commit();
+    return ok;
 }
 
-
-////////////////////////////////////////////////////////////////////
-//Suppression de toutes les données d'un catalog
-////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteCatalog(const int& numCatalog)
-{
-	CSqlThumbnail sqlThumbnail;
-	sqlThumbnail.EraseThumbnail();
-
-	//Suppression des critères des photos
-	CSqlCriteria sqlCriteria;
-	sqlCriteria.DeleteCriteriaCatalog(numCatalog);
-
-	//Suppression des critères des photos
-	CSqlPhotoCriteria sqlPhotoCriteria;
-	sqlPhotoCriteria.DeletePhotoCriteria();
-
-	//Suppression des photos du catalog
-	CSqlPhotos sqlPhoto;
-	sqlPhoto.DeletePhotoCatalog(numCatalog);
-	sqlPhoto.DeletePhotoSearch();
-
-	//Suppression des répertoires du catalog
-	CSqlFolderCatalog sqlFolderCatalog;
-	sqlFolderCatalog.DeleteCatalog(numCatalog);
-
-	CSqlFacePhoto sqlFacePhoto;
-	sqlFacePhoto.DeleteFaceDatabase();
-	sqlFacePhoto.DeleteFaceTreatmentDatabase();
-
-	CSqlFaceRecognition sqlFaceRecognition;
-	sqlFaceRecognition.DeleteFaceRecognitionDatabase();
-
-
-	CSqlThumbnailVideo sqlThumbnailVideo;
-	sqlThumbnailVideo.EraseThumbnail();
-
-	CSqlFaceLabel sqlFaceLabel;
-	sqlFaceLabel.DeleteFaceLabelDatabase();
-
-	CSqlPhotoCategorieUsenet photoCategorie;
-	photoCategorie.DeletePhotoProcessingDatabase();
-	return false;
-}
+// ── DeleteFaceDatabase ──────────────────────────────────────────────────────
 
 bool CSQLRemoveData::DeleteFaceDatabase()
 {
-	CSqlFacePhoto sqlFacePhoto;
-	sqlFacePhoto.DeleteFaceDatabase();
-	sqlFacePhoto.DeleteFaceTreatmentDatabase();
-
-	CSqlFaceRecognition sqlFaceRecognition;
-	sqlFaceRecognition.DeleteFaceRecognitionDatabase();
-
-	CSqlFaceLabel sqlFaceLabel;
-	sqlFaceLabel.DeleteFaceLabelDatabase();
-
-	return false;
+    CSqlTransaction sqlTransaction;
+    bool ok = DeleteFaceData();
+    sqlTransaction.commit();
+    return ok;
 }
 
+// ── DeleteFolder ────────────────────────────────────────────────────────────
 
-////////////////////////////////////////////////////////////////////
-//Suppression de toutes les données d'un répertoire
-////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteFolder(const int& numFolder)
+bool CSQLRemoveData::DeleteFolder(int numFolder)
 {
-	vector<wxString> listPhoto;
-	CSqlExecuteRequest::BeginTransaction();
+    CSqlTransaction sqlTransaction;
+    bool ok = true;
 
-	CSqlThumbnail sqlThumbnail;
-	sqlThumbnail.EraseFolderThumbnail(numFolder);
+    ok &= CSqlThumbnail().EraseFolderThumbnail(numFolder);
+    ok &= CSqlThumbnailVideo().EraseFolderThumbnail(numFolder);
+    ok &= CSqlPhotoCriteria().DeleteFolderCriteria(numFolder);
+    ok &= CSqlFolderCatalog().DeleteFolder(numFolder);
 
-	CSqlThumbnailVideo sqlThumbnailVideo;
-	sqlThumbnailVideo.EraseFolderThumbnail(numFolder);
+    CSqlPhotos sqlPhoto;
+    const std::vector<wxString> listPhoto = sqlPhoto.GetPhotoFromFolder(numFolder);
+    ok &= sqlPhoto.DeletePhotoFolder(numFolder);
 
-	CSqlPhotoCriteria sqlPhotoCriteria;
-	sqlPhotoCriteria.DeleteFolderCriteria(numFolder);
+    ok &= CSqlFacePhoto().DeleteListOfPhoto(listPhoto);
+    ok &= CSqlCriteria().DeleteCriteriaAlone();
 
-	//Suppression des répertoires du catalog
-	CSqlFolderCatalog sqlFolderCatalog;
-	sqlFolderCatalog.DeleteFolder(numFolder);
+    CSqlPhotoCategorieUsenet photoCategorie;
+    for (const wxString& photoPath : listPhoto)   // const& : pas de copie
+        ok &= photoCategorie.DeletePhotoProcessing(photoPath);
 
-	//Suppression des photos du catalog
-	CSqlPhotos sqlPhoto;
-	listPhoto = sqlPhoto.GetPhotoFromFolder(numFolder);
-	sqlPhoto.DeletePhotoFolder(numFolder);
-
-	CSqlFacePhoto sqlFacePhoto;
-	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
-
-	CSqlPhotoGPS sqlPhotoGps;
-	sqlPhotoGps.DeleteListOfPhoto(listPhoto);
-
-	//Suppression des critères des photos
-	CSqlCriteria sqlCriteria;
-	sqlCriteria.DeleteCriteriaAlone();
-
-
-	CSqlPhotoCategorieUsenet photoCategorie;
-	for (wxString photoPath : listPhoto)
-		photoCategorie.DeletePhotoProcessing(photoPath);
-
-	CSqlExecuteRequest::CommitTransection();
-	return false;
+    sqlTransaction.commit();
+    return ok;
 }
 
-////////////////////////////////////////////////////////////////////
-//Suppression de toutes les données d'un répertoire
-////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeleteListPhoto(const vector<int>& listPhoto, CriteriaVector* criteriaVector)
+// ── DeleteListPhoto ─────────────────────────────────────────────────────────
+
+bool CSQLRemoveData::DeleteListPhoto(const std::vector<int>& listPhoto,
+    CriteriaVector* criteriaVector)
 {
-	CSqlPhotoCriteria sqlPhotoCriteria;
-	CSqlPhotos sqlPhoto;
-	CSqlFindCriteria sqlFindCriteria;
-	CSqlCriteria sqlCriteria;
-	CSqlThumbnail sqlThumbnail;
-	CSqlThumbnailVideo sqlThumbnailVideo;
-	CSqlFacePhoto sqlFacePhoto;
-	CSqlPhotoGPS sqlPhotoGps;
+    CSqlTransaction sqlTransaction;
+    bool ok = true;
 
-	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
+    CSqlFacePhoto().DeleteListOfPhoto(listPhoto);
 
-	for (auto photo : listPhoto)
-	{
-		sqlThumbnail.DeleteThumbnail(photo);
-		sqlThumbnailVideo.DeleteThumbnail(photo);
+    CSqlThumbnail        sqlThumbnail;
+    CSqlThumbnailVideo   sqlThumbnailVideo;
+    CSqlPhotoCriteria    sqlPhotoCriteria;
+    CSqlPhotos           sqlPhoto;
 
-		//Suppression des critères des photos		
-		sqlPhotoCriteria.DeletePhoto(photo);
-		sqlPhotoGps.DeletePhoto(photo);
-		//Suppression des photos du catalog
-		sqlPhoto.DeletePhoto(photo);
-	}
+    for (int photoId : listPhoto)
+    {
+        ok &= sqlThumbnail.DeleteThumbnail(photoId);
+        ok &= sqlThumbnailVideo.DeleteThumbnail(photoId);
+        ok &= sqlPhotoCriteria.DeletePhoto(photoId);
+        ok &= sqlPhoto.DeletePhoto(photoId);
+    }
 
-	sqlFindCriteria.SearchCriteriaAlone(criteriaVector);
-	//Suppression des critères orphelins
-	sqlCriteria.DeleteCriteriaAlone();
+    // Instanciés une seule fois, hors boucle
+    if (criteriaVector)
+        CSqlFindCriteria().SearchCriteriaAlone(criteriaVector);
 
+    ok &= CSqlCriteria().DeleteCriteriaAlone();
 
-	return false;
+    sqlTransaction.commit();
+    return ok;
 }
 
+// ── DeletePhoto ─────────────────────────────────────────────────────────────
+// Délègue à DeleteListPhoto : plus de duplication de logique
 
-////////////////////////////////////////////////////////////////////
-//Suppression de toutes les données d'un répertoire
-////////////////////////////////////////////////////////////////////
-bool CSQLRemoveData::DeletePhoto(const int& idPhoto)
+bool CSQLRemoveData::DeletePhoto(int idPhoto)
 {
-	CSqlPhotoCriteria sqlPhotoCriteria;
-	CSqlPhotos sqlPhoto;
-	CSqlCriteria sqlCriteria;
-	CSqlThumbnail sqlThumbnail;
-
-	vector<int> listPhoto;
-	listPhoto.push_back(idPhoto);
-
-	CSqlFacePhoto sqlFacePhoto;
-	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
-
-	//Suppression des critères des photos		
-	sqlPhotoCriteria.DeletePhoto(idPhoto);
-	//Suppression des photos du catalog
-	sqlPhoto.DeletePhoto(idPhoto);
-	//Suppression des critères orphelins
-	sqlCriteria.DeleteCriteriaAlone();
-
-	sqlThumbnail.DeleteThumbnail(idPhoto);
-
-	return false;
+    return DeleteListPhoto({ idPhoto }, nullptr);
 }

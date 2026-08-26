@@ -3,19 +3,45 @@
 #include "OpenCLEffectVideo.h"
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
-#include "hqdn3d.h"
+#include "OpenCLKernelBuilder.h"
 #include "VideoStabilization.h"
 #include <FaceDetector.h>
 #include <appcontext.h>
+#include "OpenCLContext.h"
 extern AppContext application_context;
 
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
-
-COpenCLEffectVideo::COpenCLEffectVideo()
+template<typename F>
+void COpenCLEffectVideo::ExecuteSafe(F&& func)
 {
-	openclFilter = new COpenCLFilter();
+	try
+	{
+		cv::UMat convert;
+
+		if (interpolatePicture)
+		{
+			convert = paramOutput;
+		}
+		else
+		{
+			convert = paramSrc;
+		}
+		func(convert);
+	}
+	catch (const cv::Exception& e)
+	{
+		LogError(e.what());
+	}
+}
+
+
+
+COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext* openCLContext)
+{
+	this->openCLContext = openCLContext;
+	openclFilter = std::make_unique<COpenCLFilter>(openCLContext);
 	openclFilter->SetIsVideo(true);
 	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
@@ -58,14 +84,6 @@ Regards::Picture::CPictureArray COpenCLEffectVideo::GetMatrix(const bool& src)
 	
 }
 
-COpenCLEffectVideo::~COpenCLEffectVideo()
-{
-	if (openclFilter != nullptr)
-		delete openclFilter;
-
-	if (hq3d != nullptr)
-		delete hq3d;
-}
 
 void COpenCLEffectVideo::ConvertToBgr()
 {
@@ -135,28 +153,20 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 
 	if (videoEffectParameter->autoConstrast)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->BrightnessAndContrastAuto(paramOutput, 1.0);
-		}
-		else
-		{
-			openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				openclFilter->BrightnessAndContrastAuto(image, 1.0);
+			});
 	}
 
 	if (videoEffectParameter->filmEnhance || videoEffectParameter->filmcolorisation)
 	{
 		cv::Mat image;
 
-		if (interpolatePicture)
-		{
-			paramOutput.copyTo(image);
-		}
-		else
-		{
-			paramSrc.copyTo(image);
-		}
+		ExecuteSafe([&](cv::UMat& image_umat)
+			{
+				image_umat.copyTo(image);
+			});
 
 		if (videoEffectParameter->filmEnhance)
 		{
@@ -168,14 +178,10 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			image = CFaceDetector::Colorisation(image);
 		}
 
-		if (interpolatePicture)
-		{
-			image.copyTo(paramOutput);
-		}
-		else
-		{
-			image.copyTo(paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image_umat)
+			{
+				image.copyTo(image_umat);
+			});
 	}
 }
 
@@ -185,7 +191,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 	const int& flipH, const int& flipV, const int& angle,
 	const int& bicubic, int ratio, bool bgraOutput)
 {
-	if (!application_context.clExecCtx.empty() && !paramSrc.empty())
+	if (!openCLContext->GetExecutionContext().empty() && !paramSrc.empty())
 	{
 
 		
@@ -197,15 +203,11 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 
 void COpenCLEffectVideo::AutoContrast()
 {
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->BrightnessAndContrastAuto(image, 1.0);
+		});
 
-	if (interpolatePicture)
-	{
-		openclFilter->BrightnessAndContrastAuto(paramOutput, 1.0);
-	}
-	else
-	{
-		openclFilter->BrightnessAndContrastAuto(paramSrc, 1.0);
-	}
 }
 
 
@@ -215,86 +217,57 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter* videoEffectPara
 
 	if (videoEffectParameter->ColorBoostEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1],
-				videoEffectParameter->color_boost[2], paramOutput);
-		}
-		else
-		{
-			openclFilter->RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1],
-				videoEffectParameter->color_boost[2], paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				openclFilter->RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1],
+					videoEffectParameter->color_boost[2], image);
+			});
 	}
 	if (videoEffectParameter->bandcEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast,
-				paramOutput);
-		}
-		else
-		{
-			openclFilter->BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast,
-				paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				openclFilter->BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast,
+					image);
+			});
 	}
 	if (videoEffectParameter->SharpenEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->SharpenMasking(videoEffectParameter->sharpness, paramOutput);
-		}
-		else
-		{
-			openclFilter->SharpenMasking(videoEffectParameter->sharpness, paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				openclFilter->SharpenMasking(videoEffectParameter->sharpness, image);
+			});
+
 	}
 	if (videoEffectParameter->denoiseEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->NlMeans(paramOutput, videoEffectParameter->h, videoEffectParameter->hColor,
-				videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-		}
-		else
-		{
-			openclFilter->NlMeans(paramSrc, videoEffectParameter->h, videoEffectParameter->hColor,
-				videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				openclFilter->NlMeans(image, videoEffectParameter->h, videoEffectParameter->hColor,
+					videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+			});
+
 	}
 	if (videoEffectParameter->sepiaEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->ColorEffect("Sepia", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("Sepia", paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+			openclFilter->ColorEffect("Sepia", image);
+			});
 	}
 	if (videoEffectParameter->grayEnable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->ColorEffect("GrayLevel", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("GrayLevel", paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+			openclFilter->ColorEffect("GrayLevel", image);
+			});
 	}
 	if (videoEffectParameter->filmgrainenable)
 	{
-		if (interpolatePicture)
-		{
-			openclFilter->Noise(paramOutput);
-		}
-		else
-		{
-			openclFilter->Noise(paramSrc);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+			openclFilter->Noise(image);
+			});
 	}
 }
 
@@ -302,85 +275,45 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 	const int& height, const int& lineSize, const int& widthOut, const int& heightOut,
 	const int& colorRange, const int& colorSpace, bool bgraOutput)
 {
+	OpenCLKernelBuilder builder;
 
-	cv::UMat out;
-	vector<COpenCLParameter*> vecParam;
-	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
-	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
-	vecParam.push_back(inputY);
+	builder
+		.ByteArray("inputY", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferY, sizeY, flag)
+		.ByteArray("inputUV", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferUV, sizeUV, flag)
+		.Int("widthIn", width)
+		.Int("heightIn", height)
+		.Int("widthOut", widthOut)
+		.Int("heightOut", heightOut)
+		.Int("LineSize", lineSize)
+		.Int("ColorRange", colorRange)
+		.Int("ColorSpace", colorSpace);
+	auto params = builder.GetParameters();
 
-	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
-	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
-	vecParam.push_back(inputUV);
-
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("widthIn");
-	paramWidth->SetValue(width);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("heightIn");
-	paramHeight->SetValue(height);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt* paramSrcWidth = new COpenCLParameterInt();
-	paramSrcWidth->SetLibelle("widthOut");
-	paramSrcWidth->SetValue(widthOut);
-	vecParam.push_back(paramSrcWidth);
-
-	COpenCLParameterInt* paramSrcHeight = new COpenCLParameterInt();
-	paramSrcHeight->SetLibelle("heightOut");
-	paramSrcHeight->SetValue(heightOut);
-	vecParam.push_back(paramSrcHeight);
-
-	COpenCLParameterInt* paramLineSize = new COpenCLParameterInt();
-	paramLineSize->SetLibelle("LineSize");
-	paramLineSize->SetValue(lineSize);
-	vecParam.push_back(paramLineSize);
-
-	COpenCLParameterInt* paramColorRange = new COpenCLParameterInt();
-	paramColorRange->SetLibelle("ColorRange");
-	paramColorRange->SetValue(colorRange);
-	vecParam.push_back(paramColorRange);
-
-	COpenCLParameterInt* paramColorSpace = new COpenCLParameterInt();
-	paramColorSpace->SetLibelle("ColorSpace");
-	paramColorSpace->SetValue(colorSpace);
-	vecParam.push_back(paramColorSpace);
+	paramSrc = openclFilter->ExecuteOpenCLCode(
+		"IDR_OPENCL_FFMPEGNV12", "Convert",
+		params,
+		widthOut, heightOut);
 
 	if (!bgraOutput)
-		out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
-	else
-		paramSrc = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
+		TestBgraOutput();
+}
 
-	for (COpenCLParameter* parameter : vecParam)
+void COpenCLEffectVideo::TestBgraOutput()
+{
+	try
 	{
-		if (!parameter->GetNoDelete())
-		{
-			delete parameter;
-			parameter = nullptr;
-		}
+		cv::cvtColor(paramSrc, paramSrc, cv::COLOR_BGRA2BGR);
 	}
-
-	if (!bgraOutput)
+	catch (cv::Exception& e)
 	{
-		try
-		{
+		cv::Mat mat = paramSrc.getMat(cv::AccessFlag::ACCESS_READ);
+		cv::cvtColor(mat, paramSrc, cv::COLOR_BGRA2BGR);
 
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-		}
-		catch (cv::Exception& e)
-		{
-			cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-
-			const char* err_msg = e.what();
-			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
+		const char* err_msg = e.what();
+		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
+	
 }
 
 
@@ -389,90 +322,29 @@ void COpenCLEffectVideo::SetNV12(cv::UMat y, uint8_t* bufferUV, int sizeUV, cons
 	const int& colorRange, const int& colorSpace, bool bgraOutput)
 {
 
-	cv::UMat out;
-	vector<COpenCLParameter*> vecParam;
-
 	auto clBuffer = static_cast<cl_mem>(y.handle(cv::ACCESS_READ));
-	auto inputY = new COpenCLParameterClMem(true);
-	inputY->SetValue(clBuffer);
-	inputY->SetLibelle("inputY");
-	inputY->SetNoDelete(true);
-	vecParam.push_back(inputY);
 
-	//inputY->SetLibelle("inputY");
-	//inputY->SetValue((cl_context)local.getContext().ptr(), bufferY, sizeY, flag);
-	//vecParam.push_back(inputY);
+	OpenCLKernelBuilder builder;
 
-	COpenCLParameterByteArray* inputUV = new COpenCLParameterByteArray();
-	inputUV->SetLibelle("inputUV");
-	inputUV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferUV, sizeUV, flag);
-	vecParam.push_back(inputUV);
+	builder
+		.Image("inputY", clBuffer)
+		.ByteArray("inputUV", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferUV, sizeUV, flag)
+		.Int("widthIn", width)
+		.Int("heightIn", height)
+		.Int("widthOut", widthOut)
+		.Int("heightOut", heightOut)
+		.Int("LineSize", lineSize)
+		.Int("ColorRange", colorRange)
+		.Int("ColorSpace", colorSpace);
+	auto params = builder.GetParameters();
 
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("widthIn");
-	paramWidth->SetValue(width);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("heightIn");
-	paramHeight->SetValue(height);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt* paramSrcWidth = new COpenCLParameterInt();
-	paramSrcWidth->SetLibelle("widthOut");
-	paramSrcWidth->SetValue(widthOut);
-	vecParam.push_back(paramSrcWidth);
-
-	COpenCLParameterInt* paramSrcHeight = new COpenCLParameterInt();
-	paramSrcHeight->SetLibelle("heightOut");
-	paramSrcHeight->SetValue(heightOut);
-	vecParam.push_back(paramSrcHeight);
-
-	COpenCLParameterInt* paramLineSize = new COpenCLParameterInt();
-	paramLineSize->SetLibelle("LineSize");
-	paramLineSize->SetValue(lineSize);
-	vecParam.push_back(paramLineSize);
-
-	COpenCLParameterInt* paramColorRange = new COpenCLParameterInt();
-	paramColorRange->SetLibelle("ColorRange");
-	paramColorRange->SetValue(colorRange);
-	vecParam.push_back(paramColorRange);
-
-	COpenCLParameterInt* paramColorSpace = new COpenCLParameterInt();
-	paramColorSpace->SetLibelle("ColorSpace");
-	paramColorSpace->SetValue(colorSpace);
-	vecParam.push_back(paramColorSpace);
+	paramSrc = openclFilter->ExecuteOpenCLCode(
+		"IDR_OPENCL_FFMPEGNV12", "Convert",
+		params,
+		widthOut, heightOut);
 
 	if (!bgraOutput)
-		out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
-	else
-		paramSrc = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "ConvertBGRA", vecParam, widthOut, heightOut);
-
-	for (COpenCLParameter* parameter : vecParam)
-	{
-		if (!parameter->GetNoDelete())
-		{
-			delete parameter;
-			parameter = nullptr;
-		}
-	}
-
-	if (!bgraOutput)
-	{
-		try
-		{
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-		}
-		catch (cv::Exception& e)
-		{
-			cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-
-			const char* err_msg = e.what();
-			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
-	}
+		TestBgraOutput();
 }
 
 
@@ -481,90 +353,30 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 	const int& widthOut, const int& heightOut, const int& colorRange,
 	const int& colorSpace, bool bgraOutput)
 {
-	cv::UMat out;
+
+	OpenCLKernelBuilder builder;
+
+	builder
+		.ByteArray("inputY", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferY, sizeY, flag)
+		.ByteArray("inputU", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferU, sizeU, flag)
+		.ByteArray("inputV", (cl_context)openCLContext->GetExecutionContext().getContext().ptr(), bufferV, sizeV, flag)
+		.Int("widthIn", width)
+		.Int("heightIn", height)
+		.Int("widthOut", widthOut)
+		.Int("heightOut", heightOut)
+		.Int("LineSize", lineSize)
+		.Int("ColorRange", colorRange)
+		.Int("ColorSpace", colorSpace);
+	auto params = builder.GetParameters();
 
 
-	vector<COpenCLParameter*> vecParam;
-	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
-	inputY->SetLibelle("inputY");
-	inputY->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferY, sizeY, flag);
-	vecParam.push_back(inputY);
-
-	COpenCLParameterByteArray* inputU = new COpenCLParameterByteArray();
-	inputU->SetLibelle("inputU");
-	inputU->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferU, sizeU, flag);
-	vecParam.push_back(inputU);
-
-	COpenCLParameterByteArray* inputV = new COpenCLParameterByteArray();
-	inputV->SetLibelle("inputV");
-	inputV->SetValue((cl_context)application_context.clExecCtx.getContext().ptr(), bufferV, sizeV, flag);
-	vecParam.push_back(inputV);
-
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("widthIn");
-	paramWidth->SetValue(width);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("heightIn");
-	paramHeight->SetValue(height);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt* paramSrcWidth = new COpenCLParameterInt();
-	paramSrcWidth->SetLibelle("widthOut");
-	paramSrcWidth->SetValue(widthOut);
-	vecParam.push_back(paramSrcWidth);
-
-	COpenCLParameterInt* paramSrcHeight = new COpenCLParameterInt();
-	paramSrcHeight->SetLibelle("heightOut");
-	paramSrcHeight->SetValue(heightOut);
-	vecParam.push_back(paramSrcHeight);
-
-	COpenCLParameterInt* paramLineSize = new COpenCLParameterInt();
-	paramLineSize->SetLibelle("LineSize");
-	paramLineSize->SetValue(lineSize);
-	vecParam.push_back(paramLineSize);
-
-	COpenCLParameterInt* paramColorRange = new COpenCLParameterInt();
-	paramColorRange->SetLibelle("ColorRange");
-	paramColorRange->SetValue(colorRange);
-	vecParam.push_back(paramColorRange);
-
-	COpenCLParameterInt* paramColorSpace = new COpenCLParameterInt();
-	paramColorSpace->SetLibelle("ColorSpace");
-	paramColorSpace->SetValue(colorSpace);
-	vecParam.push_back(paramColorSpace);
+	paramSrc = openclFilter->ExecuteOpenCLCode(
+		"IDR_OPENCL_FFMPEGYUV420", "Convert",
+		params,
+		widthOut, heightOut);
 
 	if (!bgraOutput)
-		out = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
-	else
-		paramSrc = openclFilter->ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
-
-	for (COpenCLParameter* parameter : vecParam)
-	{
-		if (!parameter->GetNoDelete())
-		{
-			delete parameter;
-			parameter = nullptr;
-		}
-	}
-
-	if (!bgraOutput)
-	{
-		try
-		{
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-		}
-		catch (cv::Exception& e)
-		{
-			cv::Mat mat = out.getMat(cv::AccessFlag::ACCESS_READ);
-			cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-
-			const char* err_msg = e.what();
-			std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
-	}
+		TestBgraOutput();
 }
 
 
@@ -653,14 +465,10 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const
 	cv::Mat _v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, v);
 
 	cv::UMat src;
-	if (interpolatePicture)
-	{
-		src = paramOutput;
-	}
-	else
-	{
-		src = paramSrc;
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			src = image;
+		});
 
 	cv::UMat ycbcr;
 
@@ -677,27 +485,18 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const
 
 void COpenCLEffectVideo::FlipVertical()
 {
-
-	if (interpolatePicture)
-	{
-		openclFilter->Flip("FlipVertical", paramOutput);
-	}
-	else
-	{
-		openclFilter->Flip("FlipVertical", paramSrc);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->Flip("FlipVertical", image);
+		});
 }
 
 void COpenCLEffectVideo::NLMeansDenoise(const double& coeff, const double& templateWindowSize, const double& searchWindowSize)
 {
-	if (interpolatePicture)
-	{
-		openclFilter->NlMeans(paramOutput, coeff, 3, 7, 21);
-	}
-	else
-	{
-		openclFilter->NlMeans(paramSrc, coeff, 3, 7, 21);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->NlMeans(image, coeff, 3, 7, 21);
+		});
 }
 
 
@@ -709,7 +508,7 @@ uint8_t* COpenCLEffectVideo::HQDn3D(uint8_t* y, int width, int height, const dou
 	{
 
 		if (hq3d == nullptr)
-			hq3d = new Chqdn3d(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+			hq3d = std::make_unique<Chqdn3d>(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 		else if (hq3d != nullptr)
 		{
 			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
@@ -739,21 +538,15 @@ void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLum
 		int width = 0;
 		int height = 0;
 
-		if (interpolatePicture)
-		{
-			width = paramOutput.cols;
-			height = paramOutput.rows;
-			cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
-		}
-		else
-		{
-			width = paramSrc.cols;
-			height = paramSrc.rows;
-			cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
-		}
+		ExecuteSafe([&](cv::UMat& image)
+			{
+				width = image.cols;
+				height = image.rows;
+				cvtColor(image, ycbcr, cv::COLOR_BGR2YCrCb);
+			});
 
 		if (hq3d == nullptr)
-			hq3d = new Chqdn3d(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
+			hq3d = std::make_unique<Chqdn3d>(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
 		else if (hq3d != nullptr)
 		{
 			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
@@ -774,18 +567,10 @@ void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLum
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
 
-
-		if (interpolatePicture)
-		{
-			cv::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
-		}
-		else
-		{
-			cv::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
-		}
-
-		ycbcr.release();
-		yChannel.release();
+		ExecuteSafe([&](cv::UMat& image_umat)
+			{
+				cv::cvtColor(ycbcr, image_umat, cv::COLOR_YCrCb2BGR);
+			});
 	}
 	catch (cv::Exception& e)
 	{
@@ -797,7 +582,11 @@ void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLum
 
 bool COpenCLEffectVideo::IsOk()
 {
-	if (interpolatePicture)
-		return !paramOutput.empty();
-	return !paramSrc.empty();
+	bool isEmpty = false;
+	ExecuteSafe([&](cv::UMat& image_umat)
+		{
+			isEmpty = image_umat.empty();
+		});
+
+	return !isEmpty;
 }

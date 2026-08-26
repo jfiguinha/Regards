@@ -3,7 +3,7 @@
 class CPictureUtility
 {
 public:
-	static uint8_t* readfile(const wxString& fileName, size_t& _fileSize);
+	static std::vector<uint8_t> ReadFile(const wxString& fileName);
 	static void writefile(const wxString& fileName, uint8_t* data, const size_t& size);
 	static void VerifRectSize(cv::Rect& rect, cv::Mat& matSrc);
 	static void ApplyTransform(cv::Mat& image);

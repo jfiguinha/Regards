@@ -12,9 +12,6 @@ public:
 		color = 20;
 	};
 
-	~CLensFlareEffectParameter() override
-	{
-	};
 
 	int brightness;
 	int colorIntensity;

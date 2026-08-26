@@ -19,19 +19,31 @@ CTreeElementDelete& CTreeElementDelete::operator=(const CTreeElementDelete& othe
 	return *this;
 }
 
-CTreeElementDelete::~CTreeElementDelete()
+void CTreeElementDelete::GenerateCrossBitmap()
 {
+	wxRect rcBitmap;
+	rcBitmap.x = 0;
+	rcBitmap.y = 0;
+	rcBitmap.width = themeTreeDelete.GetCroixWidth();
+	rcBitmap.height = themeTreeDelete.GetCroixHeight();
+
+	m_croixOff = wxBitmap(themeTreeDelete.GetCroixWidth(), themeTreeDelete.GetCroixHeight(), 32);
+	wxMemoryDC memorydc(m_croixOff);
+	wxPen pen(themeTreeDelete.crossColor, 2);
+	CWindowMain::FillRect(&memorydc, rcBitmap, themeTreeDelete.color);
+	memorydc.SetPen(pen);
+	memorydc.DrawLine(3, 3, themeTreeDelete.GetCroixWidth() - 4, themeTreeDelete.GetCroixHeight() - 4);
+	memorydc.DrawLine(themeTreeDelete.GetCroixWidth() - 4, 3, 3, themeTreeDelete.GetCroixHeight() - 4);
+	memorydc.SelectObject(wxNullBitmap);
 }
 
 void CTreeElementDelete::SetTheme(CThemeTreeDelete* theme)
 {
 	themeTreeDelete = *theme;
+	GenerateCrossBitmap();
+
 }
 
-void CTreeElementDelete::ClickElement(wxWindow* window, const int& x, const int& y)
-{
-	//checked = !checked;
-}
 
 void CTreeElementDelete::DrawElement(wxDC* deviceContext, const int& x, const int& y)
 {
@@ -40,20 +52,8 @@ void CTreeElementDelete::DrawElement(wxDC* deviceContext, const int& x, const in
 
 void CTreeElementDelete::DrawBitmap(wxDC* deviceContext, const int& xPos, const int& yPos)
 {
-	wxRect rcBitmap;
-	rcBitmap.x = 0;
-	rcBitmap.y = 0;
-	rcBitmap.width = themeTreeDelete.GetCroixWidth();
-	rcBitmap.height = themeTreeDelete.GetCroixHeight();
-
-	auto m_croixOff = wxBitmap(themeTreeDelete.GetCroixWidth(), themeTreeDelete.GetCroixHeight(), 32);
-	wxMemoryDC memorydc(m_croixOff);
-	wxPen pen(themeTreeDelete.crossColor, 2);
-	CWindowMain::FillRect(&memorydc, rcBitmap, themeTreeDelete.color);
-	memorydc.SetPen(pen);
-	memorydc.DrawLine(3, 3, themeTreeDelete.GetCroixWidth() - 4, themeTreeDelete.GetCroixHeight() - 4);
-	memorydc.DrawLine(themeTreeDelete.GetCroixWidth() - 4, 3, 3, themeTreeDelete.GetCroixHeight() - 4);
-	memorydc.SelectObject(wxNullBitmap);
+	if(!m_croixOff.IsOk())
+		GenerateCrossBitmap();
 
 	int y = yPos + (themeTreeDelete.GetHeight() - m_croixOff.GetHeight()) / 2;
 	//int x = xPos + (themeTreeDelete.width - m_croixOff.GetWidth()) / 2;

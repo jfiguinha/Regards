@@ -2,7 +2,7 @@
 #include "RGBAQuad.h"
 using namespace std;
 
-class CRegardsBitmap;
+;
 
 namespace Regards::FiltreEffet
 {
@@ -10,13 +10,13 @@ namespace Regards::FiltreEffet
 	{
 	public:
 		CFiltre();
-		virtual ~CFiltre();
+		virtual ~CFiltre() = default;
 		void SetParameter(cv::Mat& pBitmap, CRgbaquad color);
 		void Compute();
 
-		virtual void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest)
-		{
-		};
+		virtual void ProcessOpenCV(cv::Mat& image)
+		{}
+
 
 	protected:
 		int bmWidth;
@@ -26,31 +26,48 @@ namespace Regards::FiltreEffet
 	};
 
 
+	class CLUTFilter : public CFiltre
+	{
+	public:
+
+		explicit CLUTFilter(cv::Mat lut)
+			: lut_(std::move(lut))
+		{}
+
+	protected:
+
+		void ProcessOpenCV(cv::Mat& image) override
+		{
+			cv::LUT(image, lut_, image);
+		}
+
+	private:
+
+		cv::Mat lut_;
+	};
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//Filtre Matrix Convolution 3x3
 	///////////////////////////////////////////////////////////////////////////////////////////
 	class CMatrixConvolution : public CFiltre
 	{
 	public:
-		CMatrixConvolution(short* kernel, short Ksize, short Kfactor, short Koffset)
-		{
-			this->kernel = kernel;
-			this->Ksize = Ksize;
-			this->Kfactor = Kfactor;
-			this->Koffset = Koffset;
-		};
 
-		~CMatrixConvolution(void) override
-		{
-		};
+		CMatrixConvolution(const short* kernel,
+			int kernelSize,
+			int kernelFactor = 0,
+			int kernelOffset = 0);
+
+		~CMatrixConvolution() override = default;
 
 	protected:
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
 
-		short* kernel;
-		short Ksize;
-		short Kfactor;
-		short Koffset;
+		void ProcessOpenCV(cv::Mat& image) override;
+
+	private:
+
+		cv::Mat kernelMat;
+		int offset = 0;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -59,17 +76,19 @@ namespace Regards::FiltreEffet
 	class CNoise : public CFiltre
 	{
 	public:
-		CNoise()
-		{
-		};
 
-		~CNoise(void) override
-		{
-		};
+		CNoise() = default;
+		~CNoise() override = default;
 
 	protected:
+
+		void ProcessOpenCV(cv::Mat& image) override;
+
+	private:
+
 		float Noise2d(int x, int y);
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
+
+		cv::Mat CreateNoise(const cv::Size& size);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -78,19 +97,20 @@ namespace Regards::FiltreEffet
 	class CMosaic : public CFiltre
 	{
 	public:
-		CMosaic(const int& size)
-		{
-			this->size = size;
-		};
 
-		~CMosaic(void) override
-		{
-		};
+		explicit CMosaic(int size)
+			: blockSize(std::max(1, size))
+		{}
+
+		~CMosaic() override = default;
 
 	protected:
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
 
-		int size;
+		void ProcessOpenCV(cv::Mat& image) override;
+
+	private:
+
+		int blockSize;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -99,86 +119,99 @@ namespace Regards::FiltreEffet
 	class CPosterize : public CFiltre
 	{
 	public:
-		explicit CPosterize(const int& level, const float& gamma = 0.6): gammaFactor(0)
-		{
-			long _levels = max(2, min(16, level));
-			_offset = 256 / _levels;
 
-			for (auto i = 0; i < 256; i++)
-				posterize[i] = static_cast<uint8_t>(i * _offset);
+		explicit CPosterize(int level)
+		{
+			BuildLUT(level);
 		}
-		;
-
-		~CPosterize(void) override
-		{
-		};
 
 	protected:
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
 
-		long _offset;
-		float posterize[256];
-		float gammaFactor;
+		void ProcessOpenCV(cv::Mat& image) override
+		{
+			cv::LUT(image, lut, image);
+		}
+
+	private:
+
+		cv::Mat lut;
+
+		void BuildLUT(int level)
+		{
+			level = std::clamp(level, 2, 16);
+
+			lut.create(1, 256, CV_8U);
+
+			uchar* p = lut.ptr<uchar>();
+
+			const double scale =
+				255.0 / (level - 1);
+
+			for (int i = 0; i < 256; i++)
+			{
+				p[i] = cv::saturate_cast<uchar>(
+					std::round(
+						std::round(i / scale) * scale
+					)
+				);
+			}
+		}
 	};
-
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//Filtre Solarize
 	///////////////////////////////////////////////////////////////////////////////////////////
 	class CSolarize : public CFiltre
 	{
 	public:
-		CSolarize(const int& threshold)
-		{
-			//long _threshold = max(0, min(255, threshold));
 
-			for (auto i = 0; i < 256; i++)
+		explicit CSolarize(int threshold)
+		{
+			lut.create(1, 256, CV_8U);
+
+			uchar* p = lut.ptr<uchar>();
+
+			for (int i = 0; i < 256; i++)
 			{
-				if (i > threshold)
-					solarize[i] = 255 - i;
-				else
-					solarize[i] = i;
+				p[i] =
+					(i > threshold)
+					? 255 - i
+					: i;
 			}
-		};
+		}
 
-		~CSolarize(void) override
-		{
-		};
 
 	protected:
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
 
-		uint8_t solarize[256];
+		void ProcessOpenCV(cv::Mat& image) override
+		{
+			cv::LUT(image, lut, image);
+		}
+
+	private:
+
+		cv::Mat lut;
 	};
-
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//Filtre Swirl
-	///////////////////////////////////////////////////////////////////////////////////////////
 	class CSwirl : public CFiltre
 	{
 	public:
-		struct FLOATPOINT
-		{
-			float x;
-			float y;
-		};
 
 		CSwirl(float angle, float radius)
-		{
-			this->angle = angle;
-			this->radius = radius;
-		};
-
-		~CSwirl(void) override
-		{
-		};
+			: angle(angle),
+			radius(radius)
+		{}
 
 	protected:
-		void PixelCompute(const int& x, const int& y, const cv::Mat& pBitsSrc, cv::Mat& pBitsDest) override;
-		float EuclideanDist(FLOATPOINT p);
-		float EuclideanDist(FLOATPOINT p, FLOATPOINT q);
-		float DotProduct(FLOATPOINT p, FLOATPOINT q);
-		wxPoint PostFX(int x, int y, int width, int height, float radius, float angleDegree);
+
+		void ProcessOpenCV(cv::Mat& image) override;
+
+	private:
+
+		void BuildMaps(const cv::Size& size,
+			cv::Mat& mapX,
+			cv::Mat& mapY);
 
 		float angle;
 		float radius;

@@ -12,7 +12,7 @@ namespace Regards::FiltreEffet
 	{
 	public:
 		CSelection();
-		~CSelection() override;
+		~CSelection() = default;
 		void GetPoint(wxPoint& pt) override;
 		void GetScreenPoint(wxPoint& pt) override;
 		void InitPoint(const long& m_lx, const long& m_ly, const long& m_lHScroll, const long& m_lVScroll,
@@ -26,7 +26,7 @@ namespace Regards::FiltreEffet
 		               const float& ratio) override;
 
 	private:
-		CPenDrawInfo* ptSelection;
+		vector<CPenDrawInfo> ptSelection;
 		int iSelect;
 		int marge;
 		wxPoint ptScreen;

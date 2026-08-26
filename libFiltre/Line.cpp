@@ -1,81 +1,127 @@
 #include <header.h>
-#include "Line.h"
 #include <RGBAQuad.h>
+#include <algorithm>
+#include <cmath>
+#include "Line.h"
 
 CLine::CLine(const int& heightMax, const int& widthMax)
-{
-	this->heightMax = heightMax;
-	this->widthMax = widthMax;
+    : heightMax(heightMax), widthMax(widthMax) {}
+
+CLine::~CLine() = default;
+
+void CLine::MidpointLine(cv::Mat* bitmap, const int& xFrom, const int& yFrom,
+    const int& xTo, const int& yTo, const CRgbaquad& color,
+    const float& alpha, const bool& antialiasing) {
+    if (bitmap == nullptr || bitmap->empty()) {
+        return;
+    }
+
+    if (widthMax <= 0 || heightMax <= 0) {
+        return;
+    }
+
+    const float clampedAlpha = std::clamp(alpha, 0.0f, 1.0f);
+
+    // Cas particulier : point unique.
+    if (xFrom == xTo && yFrom == yTo) {
+        SetAlphaColorValue(xFrom, yFrom, xFrom, yFrom, clampedAlpha, color, bitmap);
+
+        return;
+    }
+
+    // Bresenham.
+    int x0 = xFrom;
+    int y0 = yFrom;
+
+    const int x1 = xTo;
+    const int y1 = yTo;
+
+    const int dx = std::abs(x1 - x0);
+
+    const int dy = std::abs(y1 - y0);
+
+    const int sx = (x0 < x1) ? 1 : -1;
+
+    const int sy = (y0 < y1) ? 1 : -1;
+
+    int error = dx - dy;
+
+    while (true) {
+        SetAlphaColorValue(x0, y0, x0, y0, clampedAlpha, color, bitmap);
+
+        if (x0 == x1 && y0 == y1) {
+            break;
+        }
+
+        const int error2 = error * 2;
+
+        if (error2 > -dy) {
+            error -= dy;
+            x0 += sx;
+        }
+
+        if (error2 < dx) {
+            error += dx;
+            y0 += sy;
+        }
+    }
 }
 
+void CLine::SetAlphaColorValue(const int& xFrom, const int& yFrom, const int& x,
+    const int& y, const float& alpha,
+    const CRgbaquad& color, cv::Mat* bitmap) {
+    if (bitmap == nullptr || bitmap->empty()) {
+        return;
+    }
 
-CLine::~CLine()
-{
-}
+    const float clampedAlpha = std::clamp(alpha, 0.0f, 1.0f);
 
+    if (clampedAlpha <= 0.0f) return;
 
-///////////////////////////////////////////////////////////////////////////////////////
-//
-///////////////////////////////////////////////////////////////////////////////////////
-void CLine::MidpointLine(cv::Mat* bitmap, const int& xFrom, const int& yFrom, const int& xTo, const int& yTo,
-                         const CRgbaquad& m_color, const float& fAlpha, const bool& m_bAntialiasing)
-{
-	int x, y;
+    /*
+     * La zone utilisable est :
+     *
+     * [widthMax - bitmapWidth, widthMax[
+     * [heightMax - bitmapHeight, heightMax[
+     *
+     * On conserve ici la logique de l'ancien code.
+     */
 
-	auto a = (static_cast<float>(yTo - yFrom) / static_cast<float>(xTo - xFrom));
-	auto b = yFrom - (a * xFrom);
+    const int bitmapWidth = bitmap->cols;
 
-	x = xFrom;
-	y = yFrom;
+    const int bitmapHeight = bitmap->rows;
 
-	SetAlphaColorValue(x, y, x, y, fAlpha, m_color, bitmap);
+    const int minX = bitmapWidth - widthMax;
 
-	while (x < xTo)
-	{
-		x++;
+    const int minY = bitmapHeight - heightMax;
 
-		const float fValue = a * x + b;
+    if (xFrom < minX || xFrom >= widthMax || x < minX || x >= widthMax) {
+        return;
+    }
 
-		//Définition de l'antialiasing
+    if (yFrom < minY || yFrom >= heightMax || y < minY || y >= heightMax) {
+        return;
+    }
 
-		y = static_cast<int>(fValue);
+    // Protection supplémentaire contre les coordonnées
+    // situées hors de la matrice OpenCV.
+    if (xFrom < 0 || xFrom >= bitmapWidth || yFrom < 0 || yFrom >= bitmapHeight ||
+        x < 0 || x >= bitmapWidth || y < 0 || y >= bitmapHeight) {
+        return;
+    }
 
-		SetAlphaColorValue(x, y, x, y, fAlpha, m_color, bitmap);
-	}
-}
+    CRgbaquad* currentColor = CRgbaquad::GetPtColorValue(bitmap, xFrom, yFrom);
 
+    if (currentColor == nullptr) return;
 
-///////////////////////////////////////////////////////////////////////////////////////
-//
-///////////////////////////////////////////////////////////////////////////////////////
-void CLine::SetAlphaColorValue(const int& xFrom, const int& yFrom, const int& x, const int& y, const float& fAlpha,
-                               const CRgbaquad& m_color, cv::Mat* pBitmap)
-{
-	float fDifference = 1.0f - fAlpha;
+    const float inverseAlpha = 1.0f - clampedAlpha;
 
-	int iXMin = pBitmap->size().width - widthMax;
-	int iYMin = pBitmap->size().height - heightMax;
+    currentColor->SetRed(color.GetFRed() * inverseAlpha +
+        currentColor->GetFRed() * clampedAlpha);
 
-	if (xFrom >= widthMax || xFrom < iXMin || x < iXMin || x >= widthMax)
-		return;
+    currentColor->SetGreen(color.GetFGreen() * inverseAlpha +
+        currentColor->GetFGreen() * clampedAlpha);
 
-	if (yFrom >= heightMax || yFrom < iYMin || y < iYMin || y >= heightMax)
-		return;
-
-	if (iYMin < 0)
-	{
-		if (y >= heightMax + iYMin)
-			return;
-	}
-
-	if (iXMin < 0)
-	{
-		if (x >= widthMax + iXMin)
-			return;
-	}
-
-	CRgbaquad* m_color2 = CRgbaquad::GetPtColorValue(pBitmap, xFrom, yFrom);
-	m_color2->SetRed(m_color.GetFRed() * fDifference + m_color2->GetFRed() * fAlpha);
-	m_color2->SetGreen(m_color.GetFGreen() * fDifference + m_color2->GetFGreen() * fAlpha);
-	m_color2->SetBlue(m_color.GetFBlue() * fDifference + m_color2->GetFBlue() * fAlpha);
+    currentColor->SetBlue(color.GetFBlue() * inverseAlpha +
+        currentColor->GetFBlue() * clampedAlpha);
 }

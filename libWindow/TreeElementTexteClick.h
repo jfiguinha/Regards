@@ -6,8 +6,8 @@ namespace Regards::Window
 	class CTreeElementTexteClick : public CTreeElementTexte
 	{
 	public:
-		CTreeElementTexteClick();
-		~CTreeElementTexteClick() override;
+		CTreeElementTexteClick() = default;
+		~CTreeElementTexteClick() = default;
 
 		void SetTypeLink(const int& typeElement);
 		void SetLinkElement(const wxString& linkElement);

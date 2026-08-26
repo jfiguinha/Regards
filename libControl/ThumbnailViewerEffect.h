@@ -12,7 +12,7 @@ namespace Regards::Control
 		~CThumbnailViewerEffect(void) override;
 
 	private:
-		void OnPictureClick(CThumbnailData* data) override;
+		void OnPictureClick(const int& numPhotoId) override;
 		int panelInfosId;
 	};
 }

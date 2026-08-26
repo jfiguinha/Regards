@@ -7,12 +7,6 @@ namespace Regards
 {
 	namespace Internet
 	{
-		struct url_data
-		{
-			size_t size;
-			char* data;
-		};
-
 		class CGps
 		{
 		public:
@@ -35,7 +29,6 @@ namespace Regards
 			wxString latitude;
 			wxString apiKey;
 			wxString longitude;
-			CGpscurl* gpsUrl;
 		};
 	}
 }

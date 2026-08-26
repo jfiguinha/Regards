@@ -551,7 +551,7 @@ void* CJxl::DecodeJpegDim(FILE* file)
  * @param ysize height of the input image
  * @param compressed will be populated with the compressed bytes
  */
-bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
+bool CJxl::EncodeJxlOneshot(const cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 {
 	auto enc = JxlEncoderMake(/*memory_manager=*/nullptr);
 	auto runner = JxlThreadParallelRunnerMake(
@@ -624,7 +624,7 @@ bool CJxl::EncodeJxlOneshot(cv::Mat& matFloat, std::vector<uint8_t>* compressed)
 	return true;
 }
 
-void CJxl::WriteFile(cv::Mat& matFloat, const wxString& path)
+void CJxl::WriteFile(const cv::Mat& matFloat, const wxString& path)
 {
 	std::vector<uint8_t> compressed;
 	EncodeJxlOneshot(matFloat, &compressed);
@@ -633,10 +633,10 @@ void CJxl::WriteFile(cv::Mat& matFloat, const wxString& path)
 
 void CJxl::GetDimensions(const wxString& jxl_filename, int& width, int& height)
 {
-	FILE* file = fopen(CConvertUtility::ConvertToUTF8(jxl_filename), "rb");
+	FILE* file = fopen(CConvertUtility::ConvertToStdString(jxl_filename).c_str(), "rb");
 	if (!file)
 	{
-		fprintf(stderr, "Failed to read file %s\n", CConvertUtility::ConvertToUTF8(jxl_filename));
+		fprintf(stderr, "Failed to read file %s\n", CConvertUtility::ConvertToStdString(jxl_filename).c_str());
 		return;
 	}
 
@@ -658,9 +658,8 @@ cv::Mat CJxl::GetPicture(const wxString& path)
 	cv::Mat matFloat;
 	std::vector<uint8_t> icc_profile;
 	size_t xsize = 0, ysize = 0;
-	size_t _jpegSize;
-	uint8_t* _compressedImage = CPictureUtility::readfile(path, _jpegSize);
-	if (!DecodeJpegXlOneShot(_compressedImage, _jpegSize, matFloat, xsize, ysize,
+	std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(path);
+	if (!DecodeJpegXlOneShot(&_compressedImage.at(0), _compressedImage.size(), matFloat, xsize, ysize,
 	                         &icc_profile))
 		return matFloat;
 
@@ -670,5 +669,5 @@ cv::Mat CJxl::GetPicture(const wxString& path)
 void CJxl::GetMetadata(const wxString& filename, uint8_t*& data, unsigned int& size)
 {
 	// size_t _jpegSize;
-	//  uint8_t* _compressedImage = CPictureUtility::readfile(filename, _jpegSize);
+	//  uint8_t* _compressedImage = CPictureUtility::ReadFile(filename, _jpegSize);
 }

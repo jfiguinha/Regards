@@ -46,314 +46,118 @@
 #include <effect_id.h>
 using namespace Regards::Filter;
 
-map<int, CFilterWindowParam*> CFiltreData::filterList;
+// Macro utilitaire pour déclarer une entrée de la table de fabrication :
+// associe un identifiant de filtre à une factory créant le type donné.
+#define FILTER_ENTRY(id, type) { id, [] { return std::make_unique<type>(); } }
+
+std::unordered_map<int, std::unique_ptr<CFilterWindowParam>> CFiltreData::filterList;
+
+const std::unordered_map<int, CFiltreData::FilterFactory>& CFiltreData::GetFactoryMap()
+{
+	static const std::unordered_map<int, FilterFactory> factoryMap = {
+		FILTER_ENTRY(IDM_FILTRE_SOFTEN, CSoftenFilter),
+		FILTER_ENTRY(IDM_BRIGHTNESSCONTRAST_AUTO, CBrightnessAutoFilter),
+		FILTER_ENTRY(IDM_HISTOGRAMNORMALIZE, CHistogramNormalizeFilter),
+		FILTER_ENTRY(IDM_HISTOGRAMEQUALIZE, CHistogramEqualizeFilter),
+		FILTER_ENTRY(IDM_ROTATE90, CRotate90Filter),
+		FILTER_ENTRY(IDM_ROTATE270, CRotate270Filter),
+		FILTER_ENTRY(IDM_FLIPVERTICAL, CFlipVerticalFilter),
+		FILTER_ENTRY(IDM_FLIPHORIZONTAL, CFlipHorizontalFilter),
+		FILTER_ENTRY(IDM_FILTRE_FLOU, CBlurFilter),
+		FILTER_ENTRY(IDM_AJUSTEMENT_SOLARISATION, CSolarisationFilter),
+		FILTER_ENTRY(IDM_FILTRE_FLOUGAUSSIEN, CGaussianBlurFilter),
+		FILTER_ENTRY(IDM_FILTREANTIBRUIT, CMedianFilter),
+		FILTER_ENTRY(IDM_DECODE_RAW, CDecodeRaw),
+		FILTER_ENTRY(IDM_FILTRE_MOTIONBLUR, CMotionBlurFilter),
+		FILTER_ENTRY(IDM_ROTATE_FREE, CRotateFreeFilter),
+		FILTER_ENTRY(IDM_IMAGE_LIGHTCONTRAST, CBrightAndContrastFilter),
+		FILTER_ENTRY(IDM_FILTREHQDN3D, Chqdn3dFilter),
+		FILTER_ENTRY(IDM_FILTRE_VIGNETTE, CVignetteFilter),
+		FILTER_ENTRY(IDM_FILTER_CARTOON, CCartoonFilter),
+		FILTER_ENTRY(ID_AJUSTEMENT_PHOTOFILTRE, CPhotoFiltreFilter),
+		FILTER_ENTRY(ID_AJUSTEMENT_POSTERISATION, CPosterisationFilter),
+		FILTER_ENTRY(IDM_COLOR_BALANCE, CColorBalanceFilter),
+		FILTER_ENTRY(IDM_FILTRE_SWIRL, CSwirlFilter),
+		FILTER_ENTRY(IDM_FILTRE_CLOUDS, CCloudsFilter),
+		FILTER_ENTRY(IDM_FILTER_OILPAINTING, COilPaintingFilter),
+		FILTER_ENTRY(IDM_SHARPENMASKING, CSharpenMaskingFilter),
+		FILTER_ENTRY(IDM_FILTRE_BOKEH, CBokehFilter),
+		FILTER_ENTRY(IDM_FILTRE_BILATERAL, CBilateralFilter),
+		FILTER_ENTRY(IDM_FILTRE_STYLISATION, CStylizationEffect),
+		FILTER_ENTRY(IDM_FILTRE_PENCILSKETCH, CPencilSketchFilter),
+		FILTER_ENTRY(IDM_FILTRE_EDGEPRESERVING, CEdgePreservingFilter),
+		FILTER_ENTRY(IDM_FILTRE_DETAILENHANCE, CDetailEnhance),
+		FILTER_ENTRY(IDM_FILTRE_NLMEAN, CNlmeansFilter),
+		FILTER_ENTRY(IDM_FILTRE_ERODE, CErodeFilter),
+		FILTER_ENTRY(IDM_FILTRE_DILATE, CDilateFilter),
+		FILTER_ENTRY(IDM_FILTRE_SHARPEN, CSharpenFilter),
+		FILTER_ENTRY(IDM_FILTRE_SHARPENSTRONG, CSharpenStrongFilter),
+		FILTER_ENTRY(IDM_FILTRENOISE, CNoiseFilter),
+		FILTER_ENTRY(IDM_FILTRE_MOSAIQUE, CMosaicFilter),
+		FILTER_ENTRY(IDM_FILTRE_EMBOSS, CEmbossFilter),
+		FILTER_ENTRY(IDM_GREY_LEVEL, CGrayLevelFilter),
+		FILTER_ENTRY(IDM_IMAGE_SEPIA, CSepiaFilter),
+		FILTER_ENTRY(IDM_BLACKANDWHITE, CNoirEtBlancFilter),
+		FILTER_ENTRY(IDM_FILTRE_EDGE, CEdgeFilter),
+		FILTER_ENTRY(IDM_NEGATIF, CNegatifFilter),
+		FILTER_ENTRY(IDM_REDEYE, CRedEyeFilter),
+		FILTER_ENTRY(IDM_FILTRE_RESTORE, CRestoreFilter),
+		FILTER_ENTRY(IDM_FILTRE_COLORISATION, CColorisationFilter),
+		FILTER_ENTRY(IDM_WAVE_EFFECT, CWaveFilter),
+		FILTER_ENTRY(IDM_FILTRELENSFLARE, CLensFlareFilter),
+		FILTER_ENTRY(IDM_FILTRELENSCORRECTION, CLensDistortion),
+		FILTER_ENTRY(IDM_FILTRE_VIDEO, CVideoFilter),
+		FILTER_ENTRY(IDM_FILTRE_AUDIOVIDEO, CAudioVideoFilter),
+		FILTER_ENTRY(IDM_CROP, CCropFilter),
+		FILTER_ENTRY(IDM_INPAINT, CInpaintFilter),
+	};
+	return factoryMap;
+}
+
+std::unique_ptr<CFilterWindowParam> CFiltreData::CreateEffectPointer(const int& numFilter)
+{
+	const auto& factoryMap = GetFactoryMap();
+	auto it = factoryMap.find(numFilter);
+	if (it != factoryMap.end())
+		return it->second();
+	return nullptr;
+}
 
 void CFiltreData::CreateFilterList()
 {
 	for (int numEffect = FILTER_START; numEffect < FILTER_END; numEffect++)
 	{
-		filterList.insert(std::make_pair(numEffect, CreateEffectPointer(numEffect)));
+		filterList[numEffect] = CreateEffectPointer(numEffect);
 	}
 
 	//Add Raw Filter
-	filterList.insert(std::make_pair(IDM_DECODE_RAW, CreateEffectPointer(IDM_DECODE_RAW)));
-	filterList.insert(std::make_pair(IDM_FILTRE_VIDEO, CreateEffectPointer(IDM_FILTRE_VIDEO)));
-	filterList.insert(std::make_pair(IDM_FILTRE_AUDIOVIDEO, CreateEffectPointer(IDM_FILTRE_AUDIOVIDEO)));
+	filterList[IDM_DECODE_RAW] = CreateEffectPointer(IDM_DECODE_RAW);
+	filterList[IDM_FILTRE_VIDEO] = CreateEffectPointer(IDM_FILTRE_VIDEO);
+	filterList[IDM_FILTRE_AUDIOVIDEO] = CreateEffectPointer(IDM_FILTRE_AUDIOVIDEO);
 }
 
-CFiltreData::CFiltreData()
+// Fonction utilitaire centralisant l'accès au filtre par son identifiant.
+// Retourne nullptr si l'identifiant n'existe pas dans la table.
+CFilterWindowParam* CFiltreData::GetFilter(const int& numFilter)
 {
+	auto it = filterList.find(numFilter);
+	if (it != filterList.end())
+		return it->second.get();
+	return nullptr;
 }
-
-CFiltreData::~CFiltreData()
-{
-}
-
 
 int CFiltreData::RenderEffect(const int& numEffect, CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
-                              const bool& preview)
+	const bool& preview)
 {
-	CFilterWindowParam* filterEffect = filterList[numEffect];
+	CFilterWindowParam* filterEffect = GetFilter(numEffect);
 	if (filterEffect != nullptr)
 		filterEffect->RenderEffect(filtreEffet, effectParameter, preview);
 	return 0;
 }
 
-
-CFilterWindowParam* CFiltreData::CreateEffectPointer(const int& numFilter)
-{
-	CFilterWindowParam* filterEffect = nullptr;
-	switch (numFilter)
-	{
-	case IDM_FILTRE_SOFTEN:
-		filterEffect = new CSoftenFilter();
-		break;
-
-	case IDM_BRIGHTNESSCONTRAST_AUTO:
-		filterEffect = new CBrightnessAutoFilter();
-		break;
-
-	case IDM_HISTOGRAMNORMALIZE:
-		filterEffect = new CHistogramNormalizeFilter();
-		break;
-
-	case IDM_HISTOGRAMEQUALIZE:
-		filterEffect = new CHistogramEqualizeFilter();
-		break;
-
-	case IDM_ROTATE90:
-		filterEffect = new CRotate90Filter();
-		break;
-
-	case IDM_ROTATE270:
-		filterEffect = new CRotate270Filter();
-		break;
-
-	case IDM_FLIPVERTICAL:
-		filterEffect = new CFlipVerticalFilter();
-		break;
-
-	case IDM_FLIPHORIZONTAL:
-		filterEffect = new CFlipHorizontalFilter();
-		break;
-
-	case IDM_FILTRE_FLOU:
-		filterEffect = new CBlurFilter();
-		break;
-
-	case IDM_AJUSTEMENT_SOLARISATION:
-		filterEffect = new CSolarisationFilter();
-		break;
-
-	case IDM_FILTRE_FLOUGAUSSIEN:
-		filterEffect = new CGaussianBlurFilter();
-		break;
-
-	case IDM_FILTREANTIBRUIT:
-		filterEffect = new CMedianFilter();
-		break;
-
-	case IDM_DECODE_RAW:
-		filterEffect = new CDecodeRaw();
-		break;
-
-	case IDM_FILTRE_MOTIONBLUR:
-		{
-			filterEffect = new CMotionBlurFilter();
-			break;
-		}
-
-	case IDM_ROTATE_FREE:
-		{
-			filterEffect = new CRotateFreeFilter();
-			break;
-		}
-
-	case IDM_IMAGE_LIGHTCONTRAST:
-		{
-			filterEffect = new CBrightAndContrastFilter();
-			break;
-		}
-
-	case IDM_FILTREHQDN3D:
-		{
-			filterEffect = new Chqdn3dFilter();
-			break;
-		}
-
-	case IDM_FILTRE_VIGNETTE:
-		{
-			filterEffect = new CVignetteFilter();
-			break;
-		}
-
-	case IDM_FILTER_CARTOON:
-		{
-			filterEffect = new CCartoonFilter();
-			break;
-		}
-
-	case ID_AJUSTEMENT_PHOTOFILTRE:
-		{
-			filterEffect = new CPhotoFiltreFilter();
-			break;
-		}
-
-	case ID_AJUSTEMENT_POSTERISATION:
-		{
-			filterEffect = new CPosterisationFilter();
-			break;
-		}
-
-	case IDM_COLOR_BALANCE:
-		{
-			filterEffect = new CColorBalanceFilter();
-			break;
-		}
-
-	case IDM_FILTRE_SWIRL:
-		{
-			filterEffect = new CSwirlFilter();
-			break;
-		}
-
-	case IDM_FILTRE_CLOUDS:
-		{
-			filterEffect = new CCloudsFilter();
-			break;
-		}
-
-	case IDM_FILTER_OILPAINTING:
-		{
-			filterEffect = new COilPaintingFilter();
-			break;
-		}
-
-	case IDM_SHARPENMASKING:
-		{
-			filterEffect = new CSharpenMaskingFilter();
-			break;
-		}
-
-	case IDM_FILTRE_BOKEH:
-		{
-			filterEffect = new CBokehFilter();
-			break;
-		}
-
-	case IDM_FILTRE_BILATERAL:
-		{
-			filterEffect = new CBilateralFilter();
-			break;
-		}
-
-	case IDM_FILTRE_STYLISATION:
-	{
-		filterEffect = new CStylizationEffect();
-		break;
-	}
-
-	case IDM_FILTRE_PENCILSKETCH:
-	{
-		filterEffect = new CPencilSketchFilter();
-		break;
-	}
-
-	case IDM_FILTRE_EDGEPRESERVING:
-	{
-		filterEffect = new CEdgePreservingFilter();
-		break;
-	}
-
-	case IDM_FILTRE_DETAILENHANCE:
-	{
-		filterEffect = new CDetailEnhance();
-		break;
-	}
-
-	case IDM_FILTRE_NLMEAN:
-		{
-			filterEffect = new CNlmeansFilter();
-			break;
-		}
-
-	case IDM_FILTRE_ERODE:
-		filterEffect = new CErodeFilter();
-		break;
-
-	case IDM_FILTRE_DILATE:
-		filterEffect = new CDilateFilter();
-		break;
-
-	case IDM_FILTRE_SHARPEN:
-		filterEffect = new CSharpenFilter();
-		break;
-
-	case IDM_FILTRE_SHARPENSTRONG:
-		filterEffect = new CSharpenStrongFilter();
-		break;
-
-	case IDM_FILTRENOISE:
-		filterEffect = new CNoiseFilter();
-		break;
-
-	case IDM_FILTRE_MOSAIQUE:
-		filterEffect = new CMosaicFilter();
-		break;
-
-	case IDM_FILTRE_EMBOSS:
-		filterEffect = new CEmbossFilter();
-		break;
-
-	case IDM_GREY_LEVEL:
-		filterEffect = new CGrayLevelFilter();
-		break;
-
-	case IDM_IMAGE_SEPIA:
-		filterEffect = new CSepiaFilter();
-		break;
-
-	case IDM_BLACKANDWHITE:
-		filterEffect = new CNoirEtBlancFilter();
-		break;
-
-	case IDM_FILTRE_EDGE:
-		filterEffect = new CEdgeFilter();
-		break;
-
-	case IDM_NEGATIF:
-		filterEffect = new CNegatifFilter();
-		break;
-
-	case IDM_REDEYE:
-		filterEffect = new CRedEyeFilter();
-		break;
-
-	case IDM_FILTRE_RESTORE:
-		filterEffect = new CRestoreFilter();
-		break;
-
-	case IDM_FILTRE_COLORISATION:
-		filterEffect = new CColorisationFilter();
-		break;
-
-	case IDM_WAVE_EFFECT:
-		filterEffect = new CWaveFilter();
-		break;
-
-	case IDM_FILTRELENSFLARE:
-		filterEffect = new CLensFlareFilter();
-		break;
-
-	case IDM_FILTRELENSCORRECTION:
-		filterEffect = new CLensDistortion();
-		break;
-
-	case IDM_FILTRE_VIDEO:
-		filterEffect = new CVideoFilter();
-		break;
-
-
-	case IDM_FILTRE_AUDIOVIDEO:
-		filterEffect = new CAudioVideoFilter();
-		break;
-
-	case IDM_CROP:
-		filterEffect = new CCropFilter();
-		break;
-        
-	case IDM_INPAINT:
-		filterEffect = new CInpaintFilter();
-		break;
-	default: ;
-	}
-	return filterEffect;
-}
-
-
 CDraw* CFiltreData::GetDrawingPt(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->GetDrawingPt();
 	return nullptr;
@@ -362,7 +166,7 @@ CDraw* CFiltreData::GetDrawingPt(const int& numFilter)
 
 bool CFiltreData::IsOpenCLCompatible(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->IsOpenCLCompatible();
 
@@ -371,7 +175,7 @@ bool CFiltreData::IsOpenCLCompatible(const int& numFilter)
 
 bool CFiltreData::SupportMouseSelection(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->SupportMouseSelection();
 
@@ -380,14 +184,14 @@ bool CFiltreData::SupportMouseSelection(const int& numFilter)
 
 void CFiltreData::SetCursor(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
-		return filterEffect->SetCursor();
+		filterEffect->SetCursor();
 }
 
 bool CFiltreData::SupportMouseClick(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->SupportMouseClick();
 
@@ -396,7 +200,7 @@ bool CFiltreData::SupportMouseClick(const int& numFilter)
 
 bool CFiltreData::NeedPreview(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->NeedPreview();
 	return false;
@@ -404,7 +208,7 @@ bool CFiltreData::NeedPreview(const int& numFilter)
 
 int CFiltreData::GetTypeEffect(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->GetTypeFilter();
 
@@ -413,7 +217,7 @@ int CFiltreData::GetTypeEffect(const int& numFilter)
 
 CEffectParameter* CFiltreData::GetEffectParameter(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->GetEffectPointer();
 
@@ -422,7 +226,7 @@ CEffectParameter* CFiltreData::GetEffectParameter(const int& numFilter)
 
 CEffectParameter* CFiltreData::GetDefaultEffectParameter(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->GetDefaultEffectParameter();
 
@@ -432,7 +236,7 @@ CEffectParameter* CFiltreData::GetDefaultEffectParameter(const int& numFilter)
 
 int CFiltreData::TypeApplyFilter(const int& numItem)
 {
-	CFilterWindowParam* filterEffect = filterList[numItem];
+	CFilterWindowParam* filterEffect = GetFilter(numItem);
 	if (filterEffect != nullptr)
 		return filterEffect->TypeApplyFilter();
 	return 3;
@@ -440,7 +244,7 @@ int CFiltreData::TypeApplyFilter(const int& numItem)
 
 wxString CFiltreData::GetFilterLabel(const int& numFilter)
 {
-	CFilterWindowParam* filterEffect = filterList[numFilter];
+	CFilterWindowParam* filterEffect = GetFilter(numFilter);
 	if (filterEffect != nullptr)
 		return filterEffect->GetFilterLabel();
 	return "";

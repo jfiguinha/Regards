@@ -3,7 +3,7 @@
 class CThreadLoadingBitmap
 {
 public:
-	CThreadLoadingBitmap() : percent(0), typeElement(0), photoId(0), timePosition(0), _threadVideo(nullptr)
+	CThreadLoadingBitmap() : percent(0), typeElement(0), photoId(0), timePosition(0)
 	{
 		_thread = nullptr;
 		window = nullptr;
@@ -15,14 +15,6 @@ public:
 		if (_thread != nullptr)
 		{
 			_thread->join();
-			delete _thread;
-			_thread = nullptr;
-		}
-		if (_threadVideo != nullptr)
-		{
-			_threadVideo->join();
-			delete _threadVideo;
-			_threadVideo = nullptr;
 		}
 	};
 
@@ -35,7 +27,7 @@ public:
 	int timePosition;
 	bool isAnimationOrVideo = false;
 	cv::Mat bitmapIcone;
-	thread* _thread;
-	thread* _threadVideo;
+	std::unique_ptr<std::thread> _thread;
 	wxWindow * window;
+
 };

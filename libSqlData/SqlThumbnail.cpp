@@ -4,8 +4,10 @@
 #include <FileUtility.h>
 #include <wx/dir.h>
 #include "ThumbnailBuffer.h"
-#include <ConvertUtility.h>
+#include "SqlPhotos.h"
 #include <ImageLoadingFormat.h>
+#include <SqlParameter.h>
+#include <wx/filename.h>
 using namespace Regards::Sqlite;
 
 CSqlThumbnail::CSqlThumbnail()
@@ -13,39 +15,39 @@ CSqlThumbnail::CSqlThumbnail()
 {
 	//regardsBitmap = nullptr;
 	type = 0;
-	find = false;
 }
 
-
-CSqlThumbnail::~CSqlThumbnail()
+int CSqlThumbnail::GetThumbnailId(const wxString& path)
 {
+	type = 0;
+	numPhoto = -1;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(path));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = ?", parameter);
+	return numPhoto;
 }
 
 bool CSqlThumbnail::TestThumbnail(const wxString& path, const wxString& hash)
 {
-	type = 2;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest(
-		"SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
-	if (!find)
+	type = 0;
+	numPhoto = -1;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(path));
+	parameter.push_back(std::make_unique<CSqlString>(hash));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = ? and hash = ?", parameter);
+
+	if (numPhoto == -1)
 	{
 		DeleteThumbnail(path);
 	}
-	return find;
+	return numPhoto != -1 ? true : false;
 }
 
 bool CSqlThumbnail::TestThumbnail(const wxString& path)
 {
-	type = 2;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-	if (!find)
-	{
-		DeleteThumbnail(path);
-	}
-	return find;
+	type = 0;
+	int numPhotoId = GetThumbnailId(path);
+	return numPhotoId != -1 ? true : false;
 }
 
 
@@ -53,27 +55,24 @@ wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, 
                                     const wxString& hash)
 {
 	bool returnValue = true;
-	type = 6;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
-	if (numPhoto > 0)
+	CSqlPhotos SqlPhotos;
+	int photoId = SqlPhotos.GetPhotoId(path);
+
+	if (photoId != -1)
 	{
-		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(photoId));
 		if (wxFileExists(thumbnail))
-		{
-#ifdef WIN32
-			std::remove(thumbnail);
-#else
 			wxRemoveFile(thumbnail);
-#endif
-		}
 
 		if (!wxFileExists(thumbnail))
 		{
-			returnValue = ExecuteRequestWithNoResult(
-				"INSERT or IGNORE INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'"
-				+ fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
+			std::vector<std::unique_ptr<CSqlParameter>> parameter;
+			parameter.push_back(std::make_unique<CSqlInt>(photoId));
+			parameter.push_back(std::make_unique<CSqlString>(path));
+			parameter.push_back(std::make_unique<CSqlInt>(width));
+			parameter.push_back(std::make_unique<CSqlInt>(height));
+			parameter.push_back(std::make_unique<CSqlString>(hash));
+			ExecuteSqlWithStatementNoResult("INSERT or IGNORE INTO PHOTOSTHUMBNAIL(NumPhoto, FullPath, width, height, hash) VALUES (?, ?, ?, ?, ?)", parameter);
 		}
 		return thumbnail;
 	}
@@ -83,7 +82,7 @@ wxString CSqlThumbnail::InsertThumbnail(const wxString& path, const int& width, 
 
 vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 {
-	type = 7;
+	type = 1;
 	listPhoto.clear();
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL");
 	return listPhoto;
@@ -91,82 +90,58 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 
 cv::Mat CSqlThumbnail::GetThumbnail(const wxString& path, bool& isDefault)
 {
-	wxLogNull logNo;
-	type = 6;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-
-
 	cv::Mat image;
-	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-	
-	if (wxFileExists(thumbnail))
+	isDefault = true;
+	int photoId = GetThumbnailId(path);
+	if (photoId != -1)
 	{
-		image = CThumbnailBuffer::GetPicture(thumbnail);
-	}
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 
-	if (image.empty())
-		isDefault = true;
-	else
-		isDefault = false;
+		if (wxFileExists(thumbnail))
+			image = CThumbnailBuffer::GetPicture(thumbnail);
+		
+		if (!image.empty())
+			isDefault = false;
+	}
 
 	return image;
 }
 
 CImageLoadingFormat* CSqlThumbnail::GetPictureThumbnail(const wxString& path)
 {
-	type = 6;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	CImageLoadingFormat* picture = nullptr;
-	if (numPhoto > 0)
+	int photoId = GetThumbnailId(path);
+	if (photoId != -1)
 	{
-		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(photoId));
 		if (wxFileExists(thumbnail))
 		{
 			picture = new CImageLoadingFormat();
 			cv::Mat image = CThumbnailBuffer::GetPicture(thumbnail);
-			//CLibPicture libPicture;
-			//picture = libPicture.LoadPicture(thumbnail);
+
 			picture->SetPicture(image);
 			if (picture != nullptr)
 				picture->SetFilename(thumbnail);
 			else
-			{
-				//printf("error");
-				DeleteThumbnail(numPhoto);
-			}
+				DeleteThumbnail(photoId);
 		}
 	}
-
-	
-
 	return picture;
 }
 
 bool CSqlThumbnail::DeleteThumbnail(const wxString& path)
 {
-	type = 6;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+	int photoId = GetThumbnailId(path);
+	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(photoId));
 	if (wxFileExists(thumbnail))
 	{
-		{
-#ifdef WIN32
-			std::remove(thumbnail);
-#else
-			wxRemoveFile(thumbnail);
-#endif
-		}
+		wxRemoveFile(thumbnail);
 		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1)
-		       ? true
-		       : false;
+
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(path));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = ?", parameter);
 }
 
 bool CSqlThumbnail::DeleteThumbnail(const int& numPhoto)
@@ -174,97 +149,64 @@ bool CSqlThumbnail::DeleteThumbnail(const int& numPhoto)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
-		{
-#ifdef WIN32
-			std::remove(thumbnail);
-#else
-			wxRemoveFile(thumbnail);
-#endif
-		}
+		wxRemoveFile(thumbnail);
 		CThumbnailBuffer::RemovePicture(thumbnail);
 	}
 
-	return (ExecuteRequestWithNoResult(
-		       "DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " +
-		       to_string(numPhoto) + ")") != -1)
-		       ? true
-		       : false;
+
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = ?)", parameter);
 }
 
 void CSqlThumbnail::EraseThumbnail(const int& numPhoto)
 {
-	ExecuteRequestWithNoResult(
-		"INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = "
-		+ to_string(numPhoto) + ")");
-	ExecuteRequestWithNoResult(
-		"DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " +
-		to_string(numPhoto) + ")");
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = ?)", parameter);
+	ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = ?)", parameter);
 }
 
 bool CSqlThumbnail::EraseThumbnail()
 {
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	documentPath.append("\\Thumbnail");
-#else
-	documentPath.append("/Thumbnail");
-#endif
+	wxFileName documentPath = wxFileName(CFileUtility::GetDocumentFolderPath());
+	documentPath.AppendDir("ThumbnailVideo");
 
 	wxArrayString files;
-	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	wxDir::GetAllFiles(documentPath.GetFullPath(), &files, wxEmptyString, wxDIR_FILES);
 
-	//tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
-	//	{
 	for (int i = 0; i < files.size(); i++)
 	{
 		wxString filename = files[i];
 		if (wxFileExists(filename))
 		{
-			{
-#ifdef WIN32
-				std::remove(filename);
-#else
-				wxRemoveFile(filename);
-#endif
-			}
+			wxRemoveFile(filename);
 			CThumbnailBuffer::RemovePicture(filename);
 		}
 	}
-	//});
 
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
 
 bool CSqlThumbnail::EraseFolderThumbnail(const int& numFolder)
 {
-	type = 7;
+	type = 1;
 	listPhoto.clear();
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder));
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFolder));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = ? ", parameter);
 
-	//tbb::parallel_for(0, (int)listPhoto.size(), 1, [=](int i)
-	//{
-	for (int i = 0; i < listPhoto.size(); i++)
+	for (int idPhoto : listPhoto)
 	{
-		int idPhoto = listPhoto[i];
 		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
 		if (wxFileExists(thumbnail))
 		{
-			{
-#ifdef WIN32
-				std::remove(thumbnail);
-#else
-				wxRemoveFile(thumbnail);
-#endif
-			}
+			wxRemoveFile(thumbnail);
 			CThumbnailBuffer::RemovePicture(thumbnail);
 		}
 	}
-	//});
-	return (ExecuteRequestWithNoResult(
-		       "DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " +
-		       to_string(numFolder) + ")") != -1)
-		       ? true
-		       : false;
+
+	return ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = ?)", parameter);
 }
 
 int CSqlThumbnail::TraitementResult(CSqlResult* sqlResult)
@@ -274,45 +216,14 @@ int CSqlThumbnail::TraitementResult(CSqlResult* sqlResult)
 	{
 		switch (type)
 		{
-		case 2:
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					find = true;
-					break;
-				}
-			}
+		case 0:
+			numPhoto = sqlResult->ColumnDataInt(0);
 			break;
-
-		case 6:
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					numPhoto = sqlResult->ColumnDataInt(i);
-					break;
-				}
-			}
-			break;
-
-		case 7:
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					numPhoto = sqlResult->ColumnDataInt(i);
-					listPhoto.push_back(numPhoto);
-					break;
-				}
-			}
+		case 1:
+			listPhoto.push_back(sqlResult->ColumnDataInt(0));
 			break;
 		}
-
 		nbResult++;
 	}
 	return nbResult;
-};
+}

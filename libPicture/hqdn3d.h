@@ -1,5 +1,5 @@
 #pragma once
-class CRegardsBitmap;
+;
 
 class Chqdn3d
 {
@@ -36,17 +36,21 @@ private:
 	void hqdn3d_denoise(unsigned char* frame_src,
 	                    unsigned char* frame_dst,
 	                    unsigned short* line_ant,
-	                    unsigned short** frame_ant_ptr,
+	                    unsigned short* frame_ant_ptr,
 	                    int w,
 	                    int h,
 	                    short* spatial,
 	                    short* temporal);
+
+	void EnsureBuffers(int width, int height);
+	void ResetTemporalState();
+
 	short hqdn3d_coef[2][512 * 16];
 	int h, w;
-	unsigned short* Frame = nullptr;
-	uint8_t* y_out = nullptr;
-	unsigned short* Line = nullptr;
-	uint8_t* picture_y = nullptr;
+	vector<unsigned short> Frame;
+	vector <uint8_t> y_out;
+	vector<unsigned short> Line;
+	vector <uint8_t> picture_y;
 	double spatial_luma = 0;
 	double temporal_luma = 0;
 };

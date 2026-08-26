@@ -16,14 +16,13 @@ CThumbnailViewerEffect::~CThumbnailViewerEffect(void)
 }
 
 
-void CThumbnailViewerEffect::OnPictureClick(CThumbnailData* data)
+void CThumbnailViewerEffect::OnPictureClick(const int& numPhotoId)
 {
 	wxWindow* panelInfos = this->FindWindowById(panelInfosId);
-	int numItem = data->GetNumPhotoId();
 	if (panelInfos != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_APPLYEFFECT);
-		evt.SetInt(numItem);
+		evt.SetInt(numPhotoId);
 		panelInfos->GetEventHandler()->AddPendingEvent(evt);
 	}
 }

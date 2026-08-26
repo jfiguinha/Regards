@@ -27,9 +27,8 @@ public:
 		wxDefaultPosition, wxSize(800, 600),
 		wxDEFAULT_FRAME_STYLE)
 	{
-		CMainTheme * viewerTheme = new CMainTheme();
-		CMainThemeInit::Initialize(viewerTheme);
 		CThemeSplitter theme;
+		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 		viewerTheme->GetSplitterTheme(&theme);
 		windowManager = new CWindowManager(this, wxID_ANY, theme);
 

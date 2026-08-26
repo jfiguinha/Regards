@@ -45,22 +45,10 @@
     <ClInclude Include="SqlFindCriteria.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="SqlFindDay.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SqlFindFolderCatalog.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="SqlFindLocalisation.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="SqlFindMonth.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SqlFindPhotos.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="SqlFindYear.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="SqlFolderCatalog.h">
@@ -103,15 +91,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="SqlFindFacePhoto.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="SqlFaceThumbnail.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="SqlPhotoGPS.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="SqlOpenCLKernel.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="SqlThumbnailVideo.h">
@@ -174,6 +153,9 @@
     <ClInclude Include="ThumbnailBuffer.h">
       <Filter>Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailDataFace.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlCatalog.cpp">
@@ -191,22 +173,10 @@
     <ClCompile Include="SqlFindCriteria.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="SqlFindDay.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SqlFindFolderCatalog.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="SqlFindLocalisation.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SqlFindMonth.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SqlFindPhotos.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SqlFindYear.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SqlFolderCatalog.cpp">
@@ -251,15 +221,6 @@
     <ClCompile Include="SqlFindFacePhoto.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="SqlFaceThumbnail.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SqlPhotoGPS.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SqlOpenCLKernel.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SqlThumbnailVideo.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -284,9 +245,6 @@
     <ClCompile Include="PhotoGps.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="PhotoCriteria.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
     <ClCompile Include="PhotoCategorie.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
@@ -307,6 +265,12 @@
     </ClCompile>
     <ClCompile Include="ThumbnailBuffer.cpp">
       <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCriteria.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailDataFace.cpp">
+      <Filter>datastructure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementStar();
-		~CTreeElementStar() override;
+		~CTreeElementStar() = default;
 
 		void SetValue(const int& value);
 		int GetValue();

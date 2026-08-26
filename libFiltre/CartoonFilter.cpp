@@ -120,13 +120,11 @@ void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter,
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
-
 		filtreEffet->SetBitmap(imageLoad);
 
 		delete imageLoad;
@@ -150,12 +148,11 @@ CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParamet
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
-		imageLoad->SetPicture(mat);
-		delete filtre;
+		imageLoad->SetPicture(mat);;
 	}
 
 	return imageLoad;

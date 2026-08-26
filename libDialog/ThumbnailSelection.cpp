@@ -53,14 +53,6 @@ CThumbnailSelection::CThumbnailSelection(wxWindow* parent, wxWindowID id, wxStri
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CThumbnailSelection::OnSize));
 }
 
-
-CThumbnailSelection::~CThumbnailSelection()
-{
-	delete(validationToolbar);
-	delete(thumbnailFileSelection);
-	delete(thumbscrollbar);
-}
-
 vector<int> CThumbnailSelection::GetSelectItem()
 {
 	return thumbnailFileSelection->GetSelectItem();

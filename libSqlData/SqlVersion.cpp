@@ -10,35 +10,31 @@
 #include "SqlVersion.h"
 #include "SqlResult.h"
 #include <ConvertUtility.h>
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 CSqlVersion::CSqlVersion(CSqlLib* _sqlLibTransaction, const bool& useTransaction)
 	: CSqlExecuteRequest(L"RegardsDB")
 {
-	this->_sqlLibTransaction = _sqlLibTransaction;
-	this->useTransaction = useTransaction;
+	this->m_transaction = _sqlLibTransaction;
+	this->m_useTransaction = useTransaction;
 	typeResult = 0;
 	result = "";
 }
 
-
-CSqlVersion::~CSqlVersion()
-{
-}
-
 bool CSqlVersion::InsertVersion(const wxString& version)
 {
-	return (ExecuteRequestWithNoResult("INSERT INTO VERSION (libelle) VALUES ('" + version + "')") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(version));
+	return ExecuteSqlWithStatementNoResult("INSERT INTO VERSION (libelle) VALUES (?)", parameter);
 }
 
 bool CSqlVersion::UpdateVersion(const wxString& version, const wxString& oldValue)
 {
-	return (ExecuteRequestWithNoResult(
-		       "UPDATE VERSION SET libelle = '" + version + "' WHERE libelle = '" + oldValue + "'") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(version));
+	parameter.push_back(std::make_unique<CSqlString>(oldValue));
+	return ExecuteSqlWithStatementNoResult("UPDATE VERSION SET libelle = ? WHERE libelle = ?", parameter);
 }
 
 bool CSqlVersion::DeleteVersion()
@@ -50,7 +46,7 @@ wxString CSqlVersion::GetVersion()
 {
 	typeResult = 0;
 	ExecuteRequest("SELECT libelle FROM VERSION");
-	printf("Version : %s \n", CConvertUtility::ConvertToUTF8(result));
+	cout << "Version : " << CConvertUtility::ConvertToStdString(result) << endl;
 	return result;
 }
 
@@ -60,19 +56,14 @@ int CSqlVersion::TraitementResult(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		if (typeResult == 0)
+		switch (typeResult)
 		{
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					result = sqlResult->ColumnDataText(i);
-					break;
-				default: ;
-				}
-			}
+		case 0:
+			result = sqlResult->ColumnDataText(0);
+			break;
+		default: ;
 		}
+
 		nbResult++;
 	}
 	return nbResult;

@@ -10,7 +10,7 @@ using namespace Regards::Window;
 #define ZOOMBUTTONID 4
 #define SCREENFORMATID 5
 #define REPEATID 6
-class CRegardsBitmap;
+;
 
 namespace Regards::Video
 {

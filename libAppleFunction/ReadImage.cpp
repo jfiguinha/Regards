@@ -7,6 +7,13 @@
 //
 
 #ifdef __APPLE__
+
+#include <wx/wxprec.h>
+
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
 #include "ReadImage.h"
 #include "ReadImageImpl.h"
 

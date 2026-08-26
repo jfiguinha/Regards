@@ -15,14 +15,12 @@ public:
 cv::Mat CRegardsWebp::GetPicture(const wxString& filename)
 {
 	cv::Mat mat;
-	size_t data_size;
-	uint8_t* _compressedImage = CPictureUtility::readfile(filename, data_size);
-	if (_compressedImage != nullptr && data_size > 0)
+	std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(filename);
+	if (_compressedImage.size() > 0)
 	{
 		int width = 0, height = 0;
-		uint8_t* data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
+		uint8_t* data = WebPDecodeBGRA(&_compressedImage.at(0), _compressedImage.size(), &width, &height);
 		mat = cv::Mat(height, width, CV_8UC4, data);
-		delete[] _compressedImage;
 	}
 	return mat;
 }
@@ -43,13 +41,14 @@ vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay
 {
 	vector<cv::Mat> pictureList;
 	int prev_frame_timestamp = 0;
-	WebPAnimDecoder* dec;
+	WebPAnimDecoder* dec	= nullptr;
 	WebPAnimInfo anim_info;
 	WebPData webp_data;
 	WebPDataInit(&webp_data);
 	int nbFrame = 0;
 
-	webp_data.bytes = CPictureUtility::readfile(filename, webp_data.size);
+	std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(filename);
+	webp_data.bytes = &_compressedImage.at(0);
 
 	if (CRegardsWebpImpl::IsWebP(&webp_data))
 	{
@@ -92,13 +91,14 @@ vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay
 	}
 
 End:
-	WebPAnimDecoderDelete(dec);
+	if (dec)
+		WebPAnimDecoderDelete(dec);
 
 	/*
 	for (int i = 0; i < nbFrame; i++)
 	{
 		wxString filename = "d:\\toto" + to_string(i) + ".jpg";
-		cv::imwrite(filename.ToStdString(), pictureList[i]);
+		cv::imwrite(filename.utf8_string(), pictureList[i]);
 	}
 	*/
 	return pictureList;
@@ -106,13 +106,14 @@ End:
 
 int CRegardsWebp::GetNbFrame(const wxString& filename)
 {
-	WebPAnimDecoder* dec;
+	WebPAnimDecoder* dec = nullptr;
 	WebPAnimInfo anim_info;
 	WebPData webp_data;
 	WebPDataInit(&webp_data);
 	int nbFrame = 0;
 
-	webp_data.bytes = CPictureUtility::readfile(filename, webp_data.size);
+	std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(filename);
+	webp_data.bytes = &_compressedImage.at(0);
 
 	if (CRegardsWebpImpl::IsWebP(&webp_data))
 	{
@@ -132,7 +133,8 @@ int CRegardsWebp::GetNbFrame(const wxString& filename)
 	}
 
 End:
-	WebPAnimDecoderDelete(dec);
+	if(dec)
+		WebPAnimDecoderDelete(dec);
 	return nbFrame;
 }
 
@@ -157,12 +159,10 @@ void CRegardsWebp::SavePicture(const wxString& fileName, cv::Mat& source, const 
 
 void CRegardsWebp::GetPictureDimension(const wxString& filename, int& width, int& height)
 {
-	size_t data_size;
-	uint8_t* data = CPictureUtility::readfile(filename, data_size);
-	if (data != nullptr && data_size > 0)
+	std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(filename);
+	if (_compressedImage.size() > 0)
 	{
 		//int result = 0;
-		WebPGetInfo(data, data_size, &width, &height);
-		delete[] data;
+		WebPGetInfo(&_compressedImage.at(0), _compressedImage.size(), &width, &height);
 	}
 }

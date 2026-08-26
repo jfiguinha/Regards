@@ -4,13 +4,13 @@ using namespace std;
 class LibRaw;
 class CDecodeRawParameter;
 class CImageLoadingFormat;
-
-class CLocalData;
+class CDecodeRawPicturePimpl;
 
 namespace Regards
 {
 	namespace Filter
 	{
+		
 		class CDecodeRawPicture
 		{
 		public:
@@ -19,9 +19,7 @@ namespace Regards
 			CImageLoadingFormat* DecodePicture(CDecodeRawParameter* decodeRawParameter);
 
 		private:
-			LibRaw* rawProcessor;
-			int result;
-			CLocalData* localData = nullptr;
+			std::unique_ptr<CDecodeRawPicturePimpl> pimpl;
 		};
 	}
 }

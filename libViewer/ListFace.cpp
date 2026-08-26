@@ -100,7 +100,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
                 thumbnailFace->ChangeTabValue(valueZoom, positionTab);
                 thumbnailFace->init();
 
-                windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);    
+                windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
             }
             
             {
@@ -244,6 +244,8 @@ void CListFace::OnResourceLoad(wxCommandEvent& event)
 	processIdle = true;
 	isLoadingResource = false;
 	resourceLoaded = true;
+
+	IntializeListFace();
 }
 
 
@@ -362,10 +364,6 @@ void CListFace::LoadResource(void* param)
 
 void CListFace::FacialDetectionRecognition(void* param)
 {
-
-	if (!application_context.clExecCtx.empty())
-		application_context.clExecCtx.bind();
-
 	auto path = static_cast<CThreadFace*>(param);
 	wxString filename = path->filename;
 
@@ -563,8 +561,6 @@ void CListFace::IdleFunction()
 	{
 		processIdle = false;
 	}
-
-	StartThread();
 }
 
 bool CListFace::GetProcessEnd()
@@ -653,9 +649,9 @@ void CListFace::ProcessIdle()
 	if(processPhoto && sendMessageStatus)
 	{
 		auto thumbnailMessage = new CThumbnailMessage();
-		thumbnailMessage->nbPhoto = listPhotoSize;
-		thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
-		thumbnailMessage->nbElement = listPhotoSize;
+		thumbnailMessage->nbPhoto = nbTotalFace;
+		thumbnailMessage->thumbnailPos = nbTotalFace -listPhotoSize;
+		thumbnailMessage->nbElement = nbTotalFace;
 		thumbnailMessage->typeMessage = 4;
 		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
@@ -685,7 +681,7 @@ void CListFace::ProcessIdle()
 				cleanDatabase = false;
 				auto thumbnailMessage = new CThumbnailMessage();
 				thumbnailMessage->nbPhoto = nbFaceLocal;
-				thumbnailMessage->thumbnailPos = nbProcessFaceRecognition;
+				thumbnailMessage->thumbnailPos = 0;
 				thumbnailMessage->nbElement = nbFaceLocal;
 				thumbnailMessage->typeMessage = 5;
 				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
@@ -724,9 +720,7 @@ void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)
 {
-	vector<CThumbnailData*> listItem;
-	thumbnailFace->GetSelectItem(listItem);
-	if (listItem.size() > 0)
+	if (thumbnailFace->GetNbElement() > 0)
 	{
 		//Choix de la Face
 		MoveFaceDialog moveFaceDialog(this);
@@ -747,15 +741,6 @@ CListFace::~CListFace()
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		config->SetSlideFacePos(positionTab);
-
-    //printf("~CListFace() \n");
-    delete(thumbnailFace);
-    delete(thumbFaceToolbar);
-    delete(thumbscrollbar);
-    delete(thumbFacePertinenceToolbar);
-	delete(windowManager);
-    
-    //printf("~CListFace() end \n");
 }
 
 int CListFace::GetThumbnailHeight()
@@ -769,19 +754,26 @@ void CListFace::SetActifItem(const int& numItem, const bool& move)
 		thumbnailFace->SetActifItem(numItem, move);
 }
 
-void CListFace::OnRefreshFolder(wxCommandEvent& event)
+void CListFace::IntializeListFace()
 {
 	//Update Photo List
 	muListPhoto.lock();
 	CSqlFacePhoto facePhoto;
 	listPhoto = facePhoto.GetPhotoListTreatment();
+	nbTotalFace = listPhoto.size();
 	muListPhoto.unlock();
 
 	muListFace.lock();
 	CSqlFindFacePhoto faceRecognition;
 	nbNbFace = faceRecognition.GetNbListFaceToRecognize();
+	nbTotalFaceToRecognize = nbNbFace;
 	muListFace.unlock();
+}
 
+void CListFace::OnRefreshFolder(wxCommandEvent& event)
+{
+
+	IntializeListFace();
 
 }
 

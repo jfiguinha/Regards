@@ -45,7 +45,20 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 using namespace Regards::OpenCL;
 
 
-cl_command_queue COpenCLContext::s_queue = nullptr;;
+COpenCLContext::~COpenCLContext()
+{
+	if (commandQueue != nullptr)
+	{
+		clReleaseCommandQueue(commandQueue);
+		commandQueue = nullptr;
+	}
+}
+
+void COpenCLContext::Bind()
+{
+	if (!clExecCtx.empty())
+		clExecCtx.bind();
+}
 
 void COpenCLContext::AssociateToVulkan()
 {
@@ -136,24 +149,23 @@ wxString COpenCLContext::GetDeviceInfo(
 
 cv::ocl::Program COpenCLContext::GetProgram(const wxString& programName)
 {
-    auto it = application_context.openclBinaryMapping.find(programName);
+    auto it = COpenCLContext::openclBinaryMapping.find(programName);
 
-    if (it != application_context.openclBinaryMapping.end())
+    if (it != COpenCLContext::openclBinaryMapping.end())
     {
         return it->second;
     }
 
-    const wxString kernelSource =
-        CLibResource::GetOpenCLUcharProgram(programName);
+	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
 
-    cv::ocl::ProgramSource programSource(kernelSource);
+	cv::ocl::ProgramSource programSource(kernelSource.c_str());
 
-    cv::ocl::Context context = application_context.clExecCtx.getContext();
+    cv::ocl::Context context = clExecCtx.getContext();
 
     cv::String errmsg;
 
     auto [insertedIt, inserted] =
-        application_context.openclBinaryMapping.emplace(
+        COpenCLContext::openclBinaryMapping.emplace(
             programName,
             context.getProg(programSource, application_context.buildOption, errmsg));
 
@@ -207,7 +219,7 @@ cl_device_id COpenCLContext::GetListOfDevice(cl_platform_id platform, cl_device_
 			continue;
 
 		found = i;
-		//printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+		//printf("Device found : %s \n", CConvertUtility::ConvertToStdString(deviceName));
 		break;
 	}
 
@@ -427,14 +439,14 @@ void COpenCLContext::initializeContextFromGL()
 	cl_platform_id platform = platforms[found];
 	application_context.platformName = cv::ocl::PlatformInfo(&platform).name();
 
-	application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::create(
+	clExecCtx = cv::ocl::OpenCLExecutionContext::create(
 		application_context.platformName, platform, context, device);
 
 	cv::ocl::Device(cv::ocl::Device::fromHandle(device));
     
 	clReleaseDevice(device);
 	clReleaseContext(context);
-	application_context.clExecCtx.bind();
+	clExecCtx.bind();
 
 #endif
 }
@@ -529,7 +541,7 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 		cl_uint numPlatforms;
 		cl_platform_id firstPlatformId;
 		cl_context _context = NULL;
-		cl_device_id device;
+		//cl_device_id device;
 		//get Platform and choose first one
 		errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
 		if (errNum != CL_SUCCESS || numPlatforms <= 0) {
@@ -561,8 +573,8 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	if (application_context.isOpenCLInitialized)
 	{
 		//cv::ocl::Device(context.device(0));
-		application_context.clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
-		application_context.platformName = application_context.clExecCtx.getDevice().vendorName();
+		clExecCtx = cv::ocl::OpenCLExecutionContext::getCurrent();
+		application_context.platformName = clExecCtx.getDevice().vendorName();
 
 		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if(regardsParam != nullptr)
@@ -571,52 +583,51 @@ void COpenCLContext::CreateDefaultOpenCLContext()
 	}
 }
 
-cl_command_queue COpenCLContext::CreateCommandQueue(cl_command_queue_properties props)
+void COpenCLContext::CreateCommandQueue(
+	cl_command_queue_properties props)
 {
-    if (s_queue)
-        return s_queue;
+	if (commandQueue != nullptr)
+		return;
 
-    cl_int err = 0;
+	cl_int err = CL_SUCCESS;
 
-    s_queue = clCreateCommandQueue(
-            (cl_context)application_context.clExecCtx.getContext().ptr(),
-            (cl_device_id)application_context.clExecCtx.getDevice().ptr(),
-            props,
-            &err);
+	commandQueue = clCreateCommandQueue(
+		static_cast<cl_context>(clExecCtx.getContext().ptr()),
+		static_cast<cl_device_id>(clExecCtx.getDevice().ptr()),
+		props,
+		&err);
 
-    Error::CheckError(err);
-
-    return s_queue;
+	Error::CheckError(err);
 }
 
 
 void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void* dataOut, const int& sizeOutput, const int& flag)
 {
 	cl_int err = 0;
-	cl_command_queue queue = CreateCommandQueue();
+	CreateCommandQueue();
 
 	if (flag == CL_MEM_USE_HOST_PTR)
 	{
 		
 
-		void* tmp_ptr = clEnqueueMapBuffer(queue, cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
+		void* tmp_ptr = clEnqueueMapBuffer(commandQueue, cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
 		ErrorOpenCL::CheckError(err);
 		if (tmp_ptr != dataOut)
 		{// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
 			throw ErrorOpenCL("clEnqueueMapBuffer failed to return original pointer");
 		}
 
-		err = clFinish(queue);
+		err = clFinish(commandQueue);
 		ErrorOpenCL::CheckError(err);
 
-		err = clEnqueueUnmapMemObject(queue, cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+		err = clEnqueueUnmapMemObject(commandQueue, cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
 		ErrorOpenCL::CheckError(err);
 	}
 	else
 	{
-		err = clEnqueueReadBuffer(queue, cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
+		err = clEnqueueReadBuffer(commandQueue, cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
 		ErrorOpenCL::CheckError(err);
-		err = clFinish(queue);
+		err = clFinish(commandQueue);
 		ErrorOpenCL::CheckError(err);
 	}
 }

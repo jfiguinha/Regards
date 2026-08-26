@@ -26,111 +26,24 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
                                  CToolbarInterface* toolbarInterface, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
-	imagePlayDiaporama = nullptr;
-	imageStopDiaporama = nullptr;
-	fullscreen = nullptr;
-
-	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN", 1);
-	wxString libelleFirst = CLibResource::LoadStringFromResource(L"LBLFIRST", 1);
-	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS", 1);
-	wxString libelleRotate90 = CLibResource::LoadStringFromResource(L"LBLROTATE90", 1);
-	wxString libelleRotate270 = CLibResource::LoadStringFromResource(L"LBLROTATE270", 1);
-	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY", 1);
-	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP", 1);
-	wxString libelleFlipVertical = CLibResource::LoadStringFromResource(L"LBLFLIPV", 1);
-	wxString libelleFlipHorizontal = CLibResource::LoadStringFromResource(L"LBLFLIPH", 1);
-	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT", 1);
-	wxString libelleEnd = CLibResource::LoadStringFromResource(L"LBLEND", 1);
-	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE", 1); // "Save";
-    wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
-    wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
-    
-	fullscreen = new CToolbarButton(themeToolbar.button);
-	fullscreen->SetButtonResourceId(L"IDB_SCREENPNG");
-	fullscreen->SetCommandId(IDM_SETFULLSCREEN);
-	fullscreen->SetLibelle(libelleFullscreen);
-	navElement.push_back(fullscreen);
-
-	save = new CToolbarButton(themeToolbar.button);
-	save->SetButtonResourceId("IDB_SAVE");
-	save->SetCommandId(WM_SAVE);
-	save->SetLibelle(saveLibelle);
-	navElement.push_back(save);
-    
-	auto editor = new CToolbarButton(themeToolbar.button);
-	editor->SetButtonResourceId(L"IDB_OPEN");
-	editor->SetLibelle(lblEditor);
-	editor->SetCommandId(IDM_EDIT);
-	navElement.push_back(editor);
-    
-    exportFile= new CToolbarButton(themeToolbar.button);
-	exportFile->SetButtonResourceId("IDB_EXPORT");
-	exportFile->SetCommandId(IDM_EXPORT);
-	exportFile->SetLibelle(export_label);
-	navElement.push_back(exportFile);
-
-	imageFirst = new CToolbarButton(themeToolbar.button);
-	imageFirst->SetButtonResourceId(L"IDB_ARROWTRACKLPNG");
-	imageFirst->SetLibelle(libelleFirst);
-	imageFirst->SetCommandId(WM_IMAGES_FIRST);
-	navElement.push_back(imageFirst);
-
-	imagePrec = new CToolbarButton(themeToolbar.button);
-	imagePrec->SetButtonResourceId(L"IDB_ARROWLPNG");
-	imagePrec->SetLibelle(libellePrevious);
-	imagePrec->SetCommandId(WM_IMAGES_PRCDENTE);
+	fullscreen = CreateButton(L"IDB_SCREENPNG", L"LBLFULLSCREEN", IDM_SETFULLSCREEN);
+	save = CreateButton("IDB_SAVE", "LBLSAVE", WM_SAVE);
+	editor = CreateButton("IDB_OPEN", "LBLEDITORMODE", IDM_EDIT);
+	exportFile = CreateButton("IDB_EXPORT", "LBLEXPORT", IDM_EXPORT);
+	imageFirst = CreateButton(L"IDB_ARROWTRACKLPNG", L"LBLFIRST", WM_IMAGES_FIRST);
+	imagePrec = CreateButton(L"IDB_ARROWLPNG", L"LBLPREVIOUS", WM_IMAGES_PRCDENTE);
 	imagePrec->SetRepeatable(true);
-	navElement.push_back(imagePrec);
-
-	auto rotate90 = new CToolbarButton(themeToolbar.button);
-	rotate90->SetButtonResourceId(L"IDB_ROTATION90");
-	rotate90->SetCommandId(WM_ROTATE90);
-	rotate90->SetLibelle(libelleRotate90);
-	navElement.push_back(rotate90);
-
-	auto rotate180 = new CToolbarButton(themeToolbar.button);
-	rotate180->SetButtonResourceId(L"IDB_ROTATION270");
-	rotate180->SetCommandId(WM_ROTATE270);
-	rotate180->SetLibelle(libelleRotate270);
-	navElement.push_back(rotate180);
-
-	imagePlayDiaporama = new CToolbarButton(themeToolbar.button);
-	imagePlayDiaporama->SetButtonResourceId(L"IDB_PLAY");
-	imagePlayDiaporama->SetCommandId(WM_DIAPORAMA_PLAY);
-	imagePlayDiaporama->SetLibelle(libellePlay);
-	navElement.push_back(imagePlayDiaporama);
-
-	imageStopDiaporama = new CToolbarButton(themeToolbar.button);
-	imageStopDiaporama->SetButtonResourceId(L"IDB_STOP");
-	imageStopDiaporama->SetCommandId(WM_DIAPORAMA_STOP);
-	imageStopDiaporama->SetLibelle(libelleStop);
+	rotate90 = CreateButton(L"IDB_ROTATION90", L"LBLROTATE90", WM_ROTATE90);
+	rotate270 = CreateButton(L"IDB_ROTATION270", L"LBLROTATE270", WM_ROTATE270);
+	imagePlayDiaporama = CreateButton(L"IDB_PLAY", L"LBLPLAY", WM_DIAPORAMA_PLAY);
+	imageStopDiaporama = CreateButton(L"IDB_STOP", L"LBLSTOP", WM_DIAPORAMA_STOP);
 	imageStopDiaporama->SetVisible(false);
-	navElement.push_back(imageStopDiaporama);
-
-	auto flipVertical = new CToolbarButton(themeToolbar.button);
-	flipVertical->SetButtonResourceId(L"IDB_FLIPVERT");
-	flipVertical->SetCommandId(WM_FLIPVERTICAL);
-	flipVertical->SetLibelle(libelleFlipVertical);
-	navElement.push_back(flipVertical);
-
-	auto flipHorizontal = new CToolbarButton(themeToolbar.button);
-	flipHorizontal->SetButtonResourceId(L"IDB_FLIPHORZ");
-	flipHorizontal->SetCommandId(WM_FLIPHORIZONTAL);
-	flipHorizontal->SetLibelle(libelleFlipHorizontal);
-	navElement.push_back(flipHorizontal);
-
-	imageSuiv = new CToolbarButton(themeToolbar.button);
-	imageSuiv->SetButtonResourceId(L"IDB_ARROWRPNG");
-	imageSuiv->SetCommandId(WM_IMAGES_SUIVANTE);
+	flipVertical = CreateButton(L"IDB_FLIPVERT", L"LBLFLIPV", WM_FLIPVERTICAL);
+	flipHorizontal = CreateButton(L"IDB_FLIPHORZ", L"LBLFLIPH", WM_FLIPHORIZONTAL);
+	imageSuiv = CreateButton(L"IDB_ARROWRPNG", L"LBLNEXT", WM_IMAGES_SUIVANTE);
 	imageSuiv->SetRepeatable(true);
-	imageSuiv->SetLibelle(libelleNext);
-	navElement.push_back(imageSuiv);
+	imageEnd = CreateButton(L"IDB_ARROWTRACKRPNG", L"LBLEND", WM_IMAGES_END);
 
-	imageEnd = new CToolbarButton(themeToolbar.button);
-	imageEnd->SetButtonResourceId(L"IDB_ARROWTRACKRPNG");
-	imageEnd->SetCommandId(WM_IMAGES_END);
-	imageEnd->SetLibelle(libelleEnd);
-	navElement.push_back(imageEnd);
 	this->toolbarInterface = toolbarInterface;
 }
 
@@ -202,11 +115,6 @@ void CPreviewToolbar::EnableNavigationButton()
 		imagePrec->SetVisible(true);
 		needToRefresh = true;
 	}
-}
-
-
-CPreviewToolbar::~CPreviewToolbar()
-{
 }
 
 void CPreviewToolbar::SetFullscreen()

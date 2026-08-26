@@ -31,6 +31,8 @@
     <File Name="ThumbnailBuffer.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Datastructure">
+    <File Name="ThumbnailDataFace.h"/>
+    <File Name="ThumbnailDataFace.cpp"/>
     <File Name="Photos.h"/>
     <File Name="PhotoGps.h"/>
     <File Name="PhotoCriteria.h"/>
@@ -60,19 +62,14 @@
     <File Name="SqlResource.cpp"/>
     <File Name="SqlExecuteRequest.cpp"/>
     <File Name="SqlPhotoCategorieUsenet.cpp"/>
-    <File Name="SqlOpenCLKernel.cpp"/>
     <File Name="SqlThumbnailVideo.cpp"/>
     <File Name="SqlCatalog.cpp"/>
     <File Name="SqlCountry.cpp"/>
     <File Name="SqlCriteria.cpp"/>
     <File Name="SqlFindCatalog.cpp"/>
     <File Name="SqlFindCriteria.cpp"/>
-    <File Name="SqlFindDay.cpp"/>
     <File Name="SqlFindFolderCatalog.cpp"/>
-    <File Name="SqlFindLocalisation.cpp"/>
-    <File Name="SqlFindMonth.cpp"/>
     <File Name="SqlFindPhotos.cpp"/>
-    <File Name="SqlFindYear.cpp"/>
     <File Name="SqlFolderCatalog.cpp"/>
     <File Name="SqlInsertFile.cpp"/>
     <File Name="SqlLibExplorer.cpp"/>
@@ -87,16 +84,13 @@
     <File Name="SqlFaceLabel.cpp"/>
     <File Name="SqlFacePhoto.cpp"/>
     <File Name="SqlFaceRecognition.cpp"/>
-    <File Name="SqlFaceThumbnail.cpp"/>
     <File Name="SqlFindFacePhoto.cpp"/>
-    <File Name="SqlPhotoGPS.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="ThumbnailDataSQL.h"/>
     <File Name="SqlResource.h"/>
     <File Name="SqlExecuteRequest.h"/>
     <File Name="SqlPhotoCategorieUsenet.h"/>
-    <File Name="SqlOpenCLKernel.h"/>
     <File Name="header.h"/>
     <File Name="SqlThumbnailVideo.h"/>
     <File Name="SqlCatalog.h"/>
@@ -104,12 +98,8 @@
     <File Name="SqlCriteria.h"/>
     <File Name="SqlFindCatalog.h"/>
     <File Name="SqlFindCriteria.h"/>
-    <File Name="SqlFindDay.h"/>
     <File Name="SqlFindFolderCatalog.h"/>
-    <File Name="SqlFindLocalisation.h"/>
-    <File Name="SqlFindMonth.h"/>
     <File Name="SqlFindPhotos.h"/>
-    <File Name="SqlFindYear.h"/>
     <File Name="SqlFolderCatalog.h"/>
     <File Name="SqlInsertFile.h"/>
     <File Name="SqlLibExplorer.h"/>
@@ -124,13 +114,13 @@
     <File Name="SqlFaceLabel.h"/>
     <File Name="SqlFacePhoto.h"/>
     <File Name="SqlFaceRecognition.h"/>
-    <File Name="SqlFaceThumbnail.h"/>
     <File Name="SqlFindFacePhoto.h"/>
-    <File Name="SqlPhotoGPS.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libSqlite"/>
@@ -145,6 +135,7 @@
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libAppleFunction"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -228,6 +219,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

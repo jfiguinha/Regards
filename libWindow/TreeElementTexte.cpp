@@ -1,8 +1,8 @@
 #include "header.h"
 #include "TreeElementTexte.h"
+#include <WindowUtility.h>
 using namespace Regards::Window;
 
-mutex CTreeElementTexte::muTexteSize;
 
 
 CTreeElementTexte::CTreeElementTexte()
@@ -27,16 +27,10 @@ CTreeElementTexte& CTreeElementTexte::operator=(const CTreeElementTexte& other)
 	return *this;
 }
 
-/**
- * \brief
- */
-CTreeElementTexte::~CTreeElementTexte()
-{
-}
-
 void CTreeElementTexte::SetTheme(CThemeTreeTexte* theme)
 {
 	themeTexte = *theme;
+	textSize = GetSizeText();
 }
 
 void CTreeElementTexte::MouseOver(wxDC* deviceContext, const int& x, const int& y, bool& update)
@@ -53,33 +47,24 @@ void CTreeElementTexte::SetLibelle(const wxString& libelle)
 {
 	this->libelle = libelle;
 
-	wxSize size = GetSizeText();
-	if (themeTexte.GetWidth() < size.x)
-		themeTexte.SetWidth(size.x);
+	textSize = GetSizeText();
+	if (themeTexte.GetWidth() < textSize.x)
+		themeTexte.SetWidth(textSize.x);
 
-	if (themeTexte.GetHeight() < size.y)
-		themeTexte.SetHeight(size.y);
+	if (themeTexte.GetHeight() < textSize.y)
+		themeTexte.SetHeight(textSize.y);
 }
 
 wxSize CTreeElementTexte::GetSizeText()
 {
 	wxSize size;
-	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	wxBitmap bitmap(250, 250);
 	wxMemoryDC dc(bitmap);
-	dc.SetFont(font);
-	size = dc.GetTextExtent(libelle);
+	size = CWindowUtility::GetSizeTexte(&dc, libelle, themeTexte.font);
 	dc.SelectObject(wxNullBitmap);
 	return size;
 }
 
-void CTreeElementTexte::DrawText(wxDC* dc, const int& xPos, const int& yPos)
-{
-	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-	dc->SetFont(font);
-	dc->SetTextForeground(themeTexte.font.GetColorFont());
-	dc->DrawText(libelle, xPos, yPos);
-}
 
 void CTreeElementTexte::SetPosition(const int& position)
 {
@@ -88,11 +73,12 @@ void CTreeElementTexte::SetPosition(const int& position)
 
 void CTreeElementTexte::DrawElement(wxDC* deviceContext, const int& x, const int& y)
 {
-	wxSize size = GetSizeText();
-
+	//wxSize size = GetSizeText();
+	if(textSize.IsEmpty())
+		textSize = GetSizeText();
 
 	int xPos = 0;
-	int yPos = y + (themeTexte.GetHeight() - size.y) / 2;
+	int yPos = y + (themeTexte.GetHeight() - textSize.y) / 2;
 	switch (position)
 	{
 	case RENDERFONT_LEFT:
@@ -100,17 +86,17 @@ void CTreeElementTexte::DrawElement(wxDC* deviceContext, const int& x, const int
 		break;
 
 	case RENDERFONT_CENTER:
-		xPos = x + (themeTexte.GetWidth() - size.x) / 2;
+		xPos = x + (themeTexte.GetWidth() - textSize.x) / 2;
 		break;
 
 	case RENDERFONT_RIGHT:
-		xPos = x + themeTexte.GetWidth() - size.x;
+		xPos = x + themeTexte.GetWidth() - textSize.x;
 		break;
 	default: ;
 	}
 
 
-	DrawText(deviceContext, xPos, yPos);
+	CWindowUtility::DrawTexte(deviceContext, libelle, xPos, yPos, themeTexte.font);
 }
 
 void CTreeElementTexte::SetClick(const bool& value)

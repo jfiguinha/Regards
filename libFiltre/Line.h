@@ -1,5 +1,5 @@
 #pragma once
-class CRegardsBitmap;
+;
 class CRgbaquad;
 
 class CLine

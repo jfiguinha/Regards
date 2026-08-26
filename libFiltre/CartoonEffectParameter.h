@@ -9,9 +9,6 @@ public:
 		mode = 0;
 	};
 
-	~CCartoonEffectParameter() override
-	{
-	};
 
 	int mode = 0;
 };

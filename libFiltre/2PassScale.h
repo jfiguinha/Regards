@@ -1,17 +1,20 @@
 #pragma once
 
-typedef struct
-{
-    double* Weights;  // Normalized weights of neighboring pixels
-    int Left, Right;   // Bounds of source pixels window
-} ContributionType;  // Contirbution information for a single pixel
+#include <vector>
+#include <memory>
 
-typedef struct
+struct ContributionType
 {
-    ContributionType* ContribRow; // Row (or column) of contribution weights 
-    unsigned int WindowSize,              // Filter window size (of affecting source pixels) 
-        LineLength;              // Length of line (no. or rows / cols) 
-} LineContribType;               // Contribution information for an entire line (row or column)
+	std::vector<double> Weights;  // Normalized weights of neighboring pixels
+	int Left = 0, Right = 0;      // Bounds of source pixels window
+};  // Contribution information for a single pixel
+
+struct LineContribType
+{
+	std::vector<ContributionType> ContribRow; // Row (or column) of contribution weights
+	unsigned int WindowSize = 0,              // Filter window size (of affecting source pixels)
+		LineLength = 0;                       // Length of line (no. or rows / cols)
+};               // Contribution information for an entire line (row or column)
 
 
 class C2PassScale
@@ -32,7 +35,7 @@ public:
 		m_dWidth = dWidth;
 	};
 
-    virtual ~C2PassScale() 
+	virtual ~C2PassScale()
 	{
 
 	}
@@ -42,52 +45,66 @@ public:
 
 protected:
 
-    double m_dWidth;
+	double m_dWidth;
 
-    virtual double Filter(const double& dVal);
+	virtual double Filter(const double& dVal);
 
 private:
 
-    void Scale(
-        unsigned char* pOrigImage,
-        unsigned int        uOrigWidth,
-        unsigned int        uOrigHeight,
-        unsigned char* pDstImage,
-        unsigned int        uNewWidth,
-        unsigned int        uNewHeight);
+	void Scale(
+		unsigned char* pOrigImage,
+		unsigned int        uOrigWidth,
+		unsigned int        uOrigHeight,
+		unsigned char* pDstImage,
+		unsigned int        uNewWidth,
+		unsigned int        uNewHeight);
 
-    LineContribType* AllocContributions(unsigned int uLineLength,
-        unsigned int uWindowSize);
+	std::unique_ptr<LineContribType> AllocContributions(unsigned int uLineLength,
+		unsigned int uWindowSize);
 
-    void FreeContributions(LineContribType* p);
+	std::unique_ptr<LineContribType> CalcContributions(unsigned int    uLineSize,
+		unsigned int    uSrcSize,
+		double  dScale);
 
-    LineContribType* CalcContributions(unsigned int    uLineSize,
-        unsigned int    uSrcSize,
-        double  dScale);
+	void HorizScale(unsigned char* pSrc,
+		unsigned int                uSrcWidth,
+		unsigned int                uSrcHeight,
+		unsigned char* pDst,
+		unsigned int                uResWidth,
+		unsigned int                uResHeight);
 
-    void HorizScale(unsigned char* pSrc,
-        unsigned int                uSrcWidth,
-        unsigned int                uSrcHeight,
-        unsigned char* pDst,
-        unsigned int                uResWidth,
-        unsigned int                uResHeight);
+	void VertScale(unsigned char* pSrc,
+		unsigned int                uSrcWidth,
+		unsigned int                uSrcHeight,
+		unsigned char* pDst,
+		unsigned int                uResWidth,
+		unsigned int                uResHeight);
 
-    void VertScale(unsigned char* pSrc,
-        unsigned int                uSrcWidth,
-        unsigned int                uSrcHeight,
-        unsigned char* pDst,
-        unsigned int                uResWidth,
-        unsigned int                uResHeight);
+	// NOTE: these were previously `static`, meaning every instance of
+	// C2PassScale (and every filter subclass) shared a single cache.
+	// That caused two bugs:
+	//   1. The cache key did not include the filter width (m_dWidth), so
+	//      switching filters between calls of the same dimensions could
+	//      silently reuse stale/wrong contribution weights.
+	//   2. Concurrent use of C2PassScale from multiple threads (e.g. two
+	//      threads generating thumbnails at the same time) could race on
+	//      these shared pointers and cause use-after-free / OOB access.
+	// Making them instance members fixes both: each C2PassScale object
+	// now owns its own cache, safe as long as a single instance isn't
+	// shared across threads without external synchronization.
+	std::unique_ptr<LineContribType> m_ContribV;
+	unsigned int m_uOldResHeight = 0;
+	unsigned int m_uOldSrcHeight = 0;
+	double       m_dOldWidthV = -1.0;   // filter width used to build m_ContribV
 
-	static LineContribType* ContribV;
-	static int olduResHeight;
-	static int olduSrcHeight;
-	static LineContribType* ContribH;
-	static int olduResWidth;
-	static int olduSrcWidth;
-    static unsigned char* pTemp;
-    static int olduNewWidth;
-    static int olduOrigHeight;
+	std::unique_ptr<LineContribType> m_ContribH;
+	unsigned int m_uOldResWidth = 0;
+	unsigned int m_uOldSrcWidth = 0;
+	double       m_dOldWidthH = -1.0;   // filter width used to build m_ContribH
+
+	std::vector<unsigned char> m_Temp;
+	unsigned int m_uOldNewWidth = 0;
+	unsigned int m_uOldOrigHeight = 0;
 };
 
 

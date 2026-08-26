@@ -10,10 +10,6 @@ public:
 		gamma = 0.6;
 	};
 
-	~CPosterisationEffectParameter() override
-	{
-	};
-
 	long level;
 	float gamma;
 };

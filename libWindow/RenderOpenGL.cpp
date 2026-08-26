@@ -65,6 +65,7 @@ CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 {
 	width = 0;
 	height = 0;
+	openCLContext = std::make_unique<COpenCLContext>();
 }
 
 
@@ -87,80 +88,126 @@ bool CRenderOpenGL::GetOpenGLInterop()
 
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
-	if (!isInit)
+	if (isInit || canvas == nullptr)
+		return;
+
+	// Le contexte OpenGL doit être courant sur ce thread avant
+	// toute tentative d'initialisation de l'interop OpenGL/OpenCL.
+	SetCurrent(*canvas);
+
+	application_context.isOpenCLInitialized = false;
+	application_context.openclOpenGLInterop = false;
+
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+	if (regardsParam != nullptr && openCLContext != nullptr)
 	{
-		SetCurrent(*canvas);
+		// Association Vulkan éventuelle.
+		openCLContext->AssociateToVulkan();
 
-		int epoxyversion = epoxy_gl_version();
-		bool pboSupported = epoxy_has_gl_extension("GL_ARB_pixel_buffer_object");
+		const bool openCLAvailable =
+			cv::ocl::haveOpenCL() &&
+			regardsParam->GetIsOpenCLSupport();
 
-       // printf("CRenderOpenGL::Init \n");
-
-		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-		if (regardsParam != nullptr)
+		if (openCLAvailable)
 		{
-			 COpenCLContext::AssociateToVulkan();
-			 if (regardsParam->GetIsOpenCLSupport())
-			{
-                
-#ifdef TOTO
-                
-                isOpenCLInitialized = true;
-                openclOpenGLInterop = false;
-                COpenCLContext::CreateDefaultOpenCLContext();
+			const bool wantOpenGLOpenCLInterop =
+				regardsParam->GetIsOpenCLOpenGLInteropSupport();
 
-				if (!isOpenCLInitialized)
+			if (wantOpenGLOpenCLInterop)
+			{
+				// Le contexte OpenGL étant courant, on peut tenter
+				// de créer le contexte OpenCL interopérable avec OpenGL.
+				try
 				{
-					regardsParam->SetIsOpenCLSupport(false);
+					openCLContext->initializeContextFromGL();
+
+					application_context.isOpenCLInitialized = true;
+					application_context.openclOpenGLInterop = true;
 				}
-				regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
-#else
-				if (cv::ocl::haveOpenCL() && !application_context.isOpenCLInitialized && regardsParam->GetIsOpenCLOpenGLInteropSupport())
+				catch (const cv::Exception& e)
 				{
-                   //  printf("CRenderOpenGL::Init 2 \n");
+					std::cout
+						<< "OpenCL/OpenGL interop initialization failed: "
+						<< e.what()
+						<< std::endl;
+
+					application_context.isOpenCLInitialized = false;
+					application_context.openclOpenGLInterop = false;
+
+					// L'interopération n'est pas disponible.
+					// On tente néanmoins un contexte OpenCL classique.
 					try
 					{
-						COpenCLContext::initializeContextFromGL();
+						openCLContext->CreateDefaultOpenCLContext();
+
 						application_context.isOpenCLInitialized = true;
-						application_context.openclOpenGLInterop = true;
-						//cv::ocl::Device(application_context.clExecCtx.getContext().device(0));
+						application_context.openclOpenGLInterop = false;
 					}
-					catch (cv::Exception& e)
+					catch (const cv::Exception& fallbackException)
 					{
-                        application_context.openclOpenGLInterop = false;
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-						COpenCLContext::CreateDefaultOpenCLContext();
+						std::cout
+							<< "OpenCL fallback initialization failed: "
+							<< fallbackException.what()
+							<< std::endl;
+
+						application_context.isOpenCLInitialized = false;
+						application_context.openclOpenGLInterop = false;
 					}
-
 				}
-
-				if (!application_context.isOpenCLInitialized)
+			}
+			else
+			{
+				// OpenCL classique, sans partage avec OpenGL.
+				try
 				{
-					regardsParam->SetIsOpenCLSupport(false);
+					openCLContext->CreateDefaultOpenCLContext();
+
+					application_context.isOpenCLInitialized = true;
+					application_context.openclOpenGLInterop = false;
 				}
-				regardsParam->SetIsOpenCLOpenGLInteropSupport(application_context.openclOpenGLInterop);
-#endif
+				catch (const cv::Exception& e)
+				{
+					std::cout
+						<< "OpenCL initialization failed: "
+						<< e.what()
+						<< std::endl;
+
+					application_context.isOpenCLInitialized = false;
+					application_context.openclOpenGLInterop = false;
+				}
 			}
 		}
-		
-		myGLVersion = 0;
-		version = glGetString(GL_VERSION);
-		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
-		isInit = true;
 
+		// Mémorise l'état réel obtenu, et pas seulement la préférence utilisateur.
+		regardsParam->SetIsOpenCLSupport(
+			application_context.isOpenCLInitialized);
 
-		textureDisplay = std::make_unique<GLTexture>();
-        
+		regardsParam->SetIsOpenCLOpenGLInteropSupport(
+			application_context.openclOpenGLInterop);
+	}
+
+	// Récupération de la version OpenGL.
+	myGLVersion = 0.0f;
+
+	const GLubyte* versionString = glGetString(GL_VERSION);
+
+	if (versionString != nullptr)
+	{
+		const std::string version =
+			CConvertUtility::ConvertToStdString(versionString);
+
+		sscanf(version.c_str(), "%f", &myGLVersion);
+	}
+
+	isInit = true;
+
+	textureDisplay = std::make_unique<GLTexture>();
 
 #ifndef USE_GLUT
-        LoadFont("Antonio-Bold.ttf");
+	LoadFont("Antonio-Bold.ttf");
 #endif
-
-	}
 }
-
 
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
 {
@@ -502,9 +549,9 @@ GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And
 }
 
 
-bool CRenderOpenGL::SetData(Regards::Picture::CPictureArray& bitmap)
+bool CRenderOpenGL::SetData(Regards::Picture::CPictureArray& bitmap, const bool& deleteOldData)
 {
-	return textureDisplay->SetData(bitmap);
+	return textureDisplay->SetData(bitmap, openCLContext.get(), deleteOldData);
 }
 
 
@@ -523,28 +570,44 @@ int CRenderOpenGL::GetHeight()
 	return height;
 }
 
-void CRenderOpenGL::CreateScreenRender(const int& width, const int& height, const CRgbaquad& color)
+bool CRenderOpenGL::CreateScreenRender(
+	const int& width, const int& height, const CRgbaquad& color)
 {
-	if (this->width != width || this->height != height)
+	const bool sizeChanged =
+		this->width != width ||
+		this->height != height;
+
+	if (sizeChanged)
 	{
 		this->width = width;
 		this->height = height;
-		ReSizeGLScene(width, height);
-        
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_TEXTURE_2D);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluOrtho2D(0, width, 0, height);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+		ReSizeGLScene(width, height);
+
+		glEnable(GL_TEXTURE_2D);
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		gluOrtho2D(
+			0,
+			width,
+			0,
+			height);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 	}
 
-    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
+	glClearColor(
+		color.GetFRed() / 255.0f,
+		color.GetFGreen() / 255.0f,
+		color.GetFBlue() / 255.0f,
+		color.GetFAlpha() / 255.0f);
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	return sizeChanged;
 }
 
 void CRenderOpenGL::RenderQuad(GLTexture* texture, int left, int top, bool inverted)

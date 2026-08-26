@@ -3,7 +3,7 @@
 #include "WindowMain.h"
 using namespace Regards::Window;
 
-class CRegardsBitmap;
+;
 
 class CSliderVideoSelection : public CWindowMain
 {

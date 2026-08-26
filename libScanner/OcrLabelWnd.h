@@ -17,12 +17,12 @@ namespace Regards::Scanner
 	public:
 		COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& themeTree,
 		             int idWindow);
-		~COcrLabelWnd(void) override;
+		~COcrLabelWnd(void) = default;
 		void Init();
 		void Update(vector<ChOcrElement*>& labelList);
 
 	private:
 		int idWindow;
-		COcrLabel* ocrLabelOld;
+		std::unique_ptr<COcrLabel> ocrLabelOld;
 	};
 }

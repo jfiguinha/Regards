@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlFaceLabel();
-			~CSqlFaceLabel() override;
+			~CSqlFaceLabel() = default;
 			bool InsertFaceLabel(const int& numFace, const wxString& faceName, const int& isSelectable);
 			bool UpdateFaceLabel(const int& numFace, const wxString& faceName);
 			bool UpdateNumFaceLabel(const int& numFace, const int& NewNumName);

@@ -4,8 +4,7 @@
 #include <appcontext.h>
 extern AppContext application_context;
 
-
-class CRegardsBitmap;
+;
 
 #define TYPEPHOTO 1
 #define TYPECATALOG 2
@@ -16,7 +15,6 @@ class CRegardsBitmap;
 #define TYPEFACE 7
 #define TYPEMULTIPAGE 8
 #define SQLITE 1
-
 
 class CImageLoadingFormat;
 

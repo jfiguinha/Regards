@@ -21,7 +21,7 @@
 using namespace std;
 
 class CImageLoadingFormat;
-class CRegardsBitmap;
+;
 
 namespace Regards
 {
@@ -31,24 +31,8 @@ namespace Regards
 		class CBitmapPrintout : public wxPrintout
 		{
 		public:
-			CBitmapPrintout(CImageLoadingFormat* image, const wxString& title = wxT("My picture"))
-				: wxPrintout(title)
-			{
-				m_picture = image;
-				typeImage = 1;
-			}
-
-			CBitmapPrintout(cv::Mat image, const wxString& title = wxT("My picture"))
-				: wxPrintout(title)
-			{
-				image.copyTo(m_bitmap);
-				typeImage = 2;
-				m_picture = nullptr;
-			}
-
-			CBitmapPrintout();
-			~CBitmapPrintout() override;
-
+			CBitmapPrintout(const wxString& filename, const wxString& title = wxT("My picture"));
+			CBitmapPrintout(cv::Mat& picture, const wxString& title = wxT("My picture"));
 			bool OnPrintPage(int page) override;
 			bool HasPage(int page) override;
 			bool OnBeginDocument(int startPage, int endPage) override;
@@ -56,13 +40,11 @@ namespace Regards
 
 			void DrawPicture(const int& pageNum);
 
-			// Writes a header on a page. Margin units are in millimetres.
-			bool WritePageHeader(wxPrintout* printout, wxDC* dc, const wxString& text, float mmToLogical);
-
 		private:
-			int typeImage;
-			cv::Mat m_bitmap;
-			CImageLoadingFormat* m_picture;
+
+			enum Type_Picture{picture,matrix};
+			std::unique_ptr<CImageLoadingFormat> m_picture;
+			Type_Picture typePicture = Type_Picture::picture;
 		};
 	}
 }

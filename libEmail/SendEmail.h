@@ -1,14 +1,10 @@
 //
-//  Hello.h
+//  SendEmail.h
 //  Regards
 //
 //  Created by figuinha jacques on 10/08/2015.
 //
-//
-
-
-#pragma once
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__WXGTK__)
 #pragma once
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -20,13 +16,13 @@ class MyEmailImpl;
 class CSendEmail
 {
 public:
-    CSendEmail ( void );
-    ~CSendEmail( void );
-    
-    void SendEmail(const wxString &to,const wxString &subject, const wxString & filePicture);
-    
+    CSendEmail(void);
+    ~CSendEmail(void);
+
+    void SendEmail(const wxString& to, const wxString& subject, const wxString& body,const wxString& filePicture);
+
 private:
-    MyEmailImpl * _impl;
+    MyEmailImpl* _impl;
 };
 
 #endif

@@ -8,10 +8,9 @@
 #include <CL/cl.h>
 #endif
 #include <hqdn3d.h>
+#include "OpenCLContext.h"
+#include "COpenCLAvirResizer.h"
 
-
-
-class CAvirFilterParam;
 class CSuperSampling;
 
 namespace Regards
@@ -30,7 +29,7 @@ namespace Regards
 		class COpenCLFilter
 		{
 		public:
-			COpenCLFilter();
+			COpenCLFilter(COpenCLContext* openCLContext);
 
 			virtual ~COpenCLFilter();
 
@@ -98,8 +97,6 @@ namespace Regards
 			                              vector<COpenCLParameter*>& vecParam, const int& width, const int& height,
 			                              cl_mem& outBuffer);
 
-			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
-
 			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, int width, int height, const int& method, bool bgraOutput);
 			cv::UMat Interpolation(const int& widthOut, const int& heightOut, cv::UMat& inputData, const int& method, int width, int height, int flipH, int flipV, int angle, bool bgraOutput);
 			cv::UMat Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int width, int height, int flipH, int flipV, int angle, bool bgraOutput);
@@ -109,14 +106,15 @@ namespace Regards
 			                    float ratioX, float ratioY, int x, int y, float left, float top);
 
 			cl_mem_flags flag;
-			Chqdn3d* hq3d = nullptr;
+			std::unique_ptr<Chqdn3d> hq3d = nullptr;
+			COpenCLContext* openCLContext = nullptr;
 			double oldLevelDenoise = 0;
 			int oldwidthDenoise = 0;
 			int oldheightDenoise = 0;
-			CAvirFilterParam* param = nullptr;
+			std::unique_ptr<COpenCLAvirResizer> resizer = nullptr;
 			bool isVideo = false;
-			std::map<wxString, OpenCLMemoryTemp *> openclMemTempMap;
-            CSuperSampling * superSampling;
+			std::map<wxString,std::unique_ptr<OpenCLMemoryTemp>> openclMemTempMap;
+			std::unique_ptr<CSuperSampling> superSampling;
 
 		};
 	}

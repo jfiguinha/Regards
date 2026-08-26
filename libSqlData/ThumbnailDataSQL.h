@@ -51,7 +51,7 @@ private:
 	int videoFramePos = 0;
 	bool mouseOn = false;
 	bool generateVideoPlayer = false;
-
+	int photoId = -1;
 	// FIX [critique #2] : unique_ptr garantit la destruction et évite le delete
 	// manuel tout en restant compatible avec le polymorphisme IVideoPlayer.
 	std::unique_ptr<Regards::Video::IVideoPlayer> videoCaptureCV;

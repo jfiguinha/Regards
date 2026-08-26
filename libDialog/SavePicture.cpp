@@ -1,237 +1,256 @@
 #include <header.h>
-#include "SavePicture.h"
-#include <libPicture.h>
-#ifdef __APPLE__
-#include <wx/sysopt.h>
-//#include <SaveFileFormat.h>
-//#include <SaveFromCFunction.h>
-//#include <Picture_id.h>
-//#include <ConvertUtility.h>
-#endif
 #include <FileUtility.h>
-#include <wx/filename.h>
-#include "SelectPage.h"
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
+#include <header.h>
+#include <libPicture.h>
 #include <wx/busyinfo.h>
-using namespace Regards::Picture;
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
 
-CSavePicture::CSavePicture()
-{
-}
-
-
-CSavePicture::~CSavePicture()
-{
-}
-
-const wxString GetPictureFilter()
-{
-	vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
-	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
-
-	int i = 0;
-	/*
-	wxString listPictureFilter = "";
-	for (wxString format : listFormat)
-	{
-		if (i < listFormat.size() - 1)
-			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++) + "|");
-		else
-			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++));
-	}
-	return listPictureFilter;
-	
-	*/
-	return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
-}
-
-wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
-{
-	wxString file = "";
-	if (filename != "")
-	{
-		wxString szFilter = "";
-
+#include "SavePicture.h"
+#include "SelectPage.h"
 
 #ifdef __APPLE__
-		wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
+#include <wx/sysopt.h>
 #endif
 
-		wxString _filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-		vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
-		/*
-		std::vector<wxString> v = {
-			".pdf", ".bmp", ".bpg", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".ppm",
-			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".nfo"
-		};
-		*/
+using namespace Regards::Picture;
 
-		wxFileName bmpFilename(filename);
-		wxFileDialog saveFileDialog(nullptr, bmpFilename.GetName(), "", bmpFilename.GetName(),
-		                            GetPictureFilter(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+namespace {
+    wxString GetPictureFilter() {
+        const std::vector<wxString> listExtension =
+            CLibResource::GetSavePictureExtension();
 
+        const std::vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
 
-        wxString documentPath = CFileUtility::GetDocumentFolderPath();
-        saveFileDialog.SetDirectory(documentPath);
+        wxString filter;
 
-		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return "";
+        const size_t count = std::min(listExtension.size(), listFormat.size());
 
-		int filterIndex = saveFileDialog.GetFilterIndex();
-		file = saveFileDialog.GetPath();
-		wxFileName outputName(file);
-		wxString extension = listExtension[filterIndex];
-#ifdef WIN32
-		file = outputName.GetPath() + "\\" + outputName.GetName() + extension;
-#else
-        file = outputName.GetPath() + "/" + outputName.GetName() + extension;
+        for (size_t i = 0; i < count; ++i) {
+            if (!filter.empty()) filter += "|";
+
+            filter += listFormat[i];
+            filter += " (*.";
+            filter += listExtension[i].StartsWith(".") ? listExtension[i].Mid(1)
+                : listExtension[i];
+            filter += ")|*.";
+            filter += listExtension[i].StartsWith(".") ? listExtension[i].Mid(1)
+                : listExtension[i];
+        }
+
+        return filter;
+    }
+
+    wxString BuildOutputFilename(const wxString& filename,
+        const wxString& extension) {
+        wxFileName outputName(filename);
+
+        wxString cleanExtension = extension;
+
+        if (cleanExtension.StartsWith(".")) cleanExtension = cleanExtension.Mid(1);
+
+        outputName.SetExt(cleanExtension);
+
+        return outputName.GetFullPath();
+    }
+}  // namespace
+
+CSavePicture::CSavePicture() = default;
+
+CSavePicture::~CSavePicture() = default;
+
+wxString CSavePicture::SelectExternalFormat(wxWindow* window,
+    const wxString& filename) {
+    if (filename.empty()) return {};
+
+#ifdef __APPLE__
+    wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
-	}
-	return file;
+
+    const std::vector<wxString> listExtension =
+        CLibResource::GetSavePictureExtension();
+
+    if (listExtension.empty()) return {};
+
+    wxFileName inputFilename(filename);
+
+    wxFileDialog saveFileDialog(window, inputFilename.GetName(), wxEmptyString,
+        inputFilename.GetName(), GetPictureFilter(),
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    const wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+    if (!documentPath.empty()) saveFileDialog.SetDirectory(documentPath);
+
+    if (saveFileDialog.ShowModal() != wxID_OK) return {};
+
+    const int filterIndex = saveFileDialog.GetFilterIndex();
+
+    if (filterIndex < 0 ||
+        static_cast<size_t>(filterIndex) >= listExtension.size()) {
+        return {};
+    }
+
+    const wxString extension = listExtension[filterIndex];
+
+    return BuildOutputFilename(saveFileDialog.GetPath(), extension);
 }
 
+std::vector<int> CSavePicture::SelectPage(wxWindow* window,
+    const wxString& filename) {
+    std::vector<int> listPage;
 
-vector<int> CSavePicture::SelectPage(wxWindow* window, const wxString& filename)
-{
-	vector<int> listPage;
-	if (filename != "")
-	{
-		CSelectFileDlg selectFile(window, -1, filename, _("Select Page To Extract"));
-		if (selectFile.ShowModal() == wxID_OK)
-		{
-			listPage = selectFile.GetSelectItem();
-		}
-	}
-	return listPage;
+    if (filename.empty()) return listPage;
+
+    CSelectFileDlg* selectFile = new CSelectFileDlg(window, wxID_ANY, filename,
+        _("Select Page To Extract"));
+
+    if (selectFile->ShowModal() == wxID_OK) {
+        listPage = selectFile->GetSelectItem();
+    }
+
+    selectFile->Destroy();
+
+    return listPage;
 }
 
-wxString CSavePicture::LoadPicture()
-{
-	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
+wxString CSavePicture::LoadPicture() {
+    const wxString openPicture =
+        CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
 
-	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
-	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-                                
+    wxFileDialog openFileDialog(nullptr, openPicture, wxEmptyString,
+        wxEmptyString, GetPictureFilter(),
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    openFileDialog.SetDirectory(documentPath);
-                                
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return ""; // the user changed idea..
+    const wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
+    if (!documentPath.empty()) openFileDialog.SetDirectory(documentPath);
 
-	//int filterIndex = openFileDialog.GetFilterIndex();
-	return openFileDialog.GetPath();
+    if (openFileDialog.ShowModal() != wxID_OK) return {};
+
+    return openFileDialog.GetPath();
 }
 
+wxArrayString CSavePicture::LoadMultiplePicture() {
+    wxArrayString listFile;
 
-wxArrayString CSavePicture::LoadMultiplePicture()
-{
-	wxArrayString listFile;
+    const wxString openPicture =
+        CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
 
-	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
+    wxFileDialog openFileDialog(nullptr, openPicture, wxEmptyString,
+        wxEmptyString, GetPictureFilter(),
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
-	                            GetPictureFilter(), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-                                
+    const wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    openFileDialog.SetDirectory(documentPath);
-                                
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return listFile; // the user changed idea..
+    if (!documentPath.empty()) openFileDialog.SetDirectory(documentPath);
 
+    if (openFileDialog.ShowModal() != wxID_OK) return listFile;
 
-	//int filterIndex = openFileDialog.GetFilterIndex();
-	openFileDialog.GetPaths(listFile);
+    openFileDialog.GetPaths(listFile);
 
-	//int filterIndex = openFileDialog.GetFilterIndex();
-	return listFile;
+    return listFile;
 }
 
-void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename)
-{
-	bool multipage = false;
-	CLibPicture libPicture;
-	wxString file = "";
-	if (filename != "")
-	{
-		file = SelectExternalFormat(window, filename);
-	}
+void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename) {
+    if (filename.empty()) return;
 
-	//Select page if multipage
-	if (libPicture.TestIsAnimation(filename))
-		multipage = true;
+    CLibPicture libPicture;
 
-	if (file != "")
-	{
-		if (multipage)
-		{
-			wxString wxfileName;
-			int iFormat = 0;
-			int option = 0;
-			int quality = 0;
+    const wxString file = SelectExternalFormat(window, filename);
 
-			iFormat = libPicture.TestImageFormat(file);
+    if (file.empty()) return;
 
-			if (libPicture.SavePictureOption(iFormat, option, quality) == 1)
-			{
-				vector<int> listPage = SelectPage(window, filename);
-				if (listPage.size() > 0)
-				{
-					wxString libelle = CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
-					wxBusyInfo wait(libelle);
+    const bool multipage = libPicture.TestIsAnimation(filename);
 
-					for (int i = 0; i < listPage.size(); i++)
-					{
-						int numPage = listPage[i];
-						CImageLoadingFormat* imageFormat = libPicture.LoadPicture(filename, false, numPage);
-						if (imageFormat != nullptr)
-						{
-							wxFileName fileName(file);
-							wxString extension = ".";
-							extension.append(fileName.GetExt());
+    if (!multipage) {
+        libPicture.SavePicture(filename, file);
 
-							wxString fileoutput = fileName.GetPath() + "\\" + fileName.GetName() + "_" +
-								to_string(numPage) + extension;
+        const wxString savecompleted =
+            CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
 
-							libPicture.SavePicture(fileoutput, imageFormat, option, quality);
-						}
-					}
-				}
-			}
-		}
-		else
-			libPicture.SavePicture(filename, file);
+        const wxString infos =
+            CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
 
-		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
-		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-		wxMessageBox(savecompleted, infos);
-	}
+        wxMessageBox(savecompleted, infos, wxOK | wxICON_INFORMATION, window);
+
+        return;
+    }
+
+    int iFormat = libPicture.TestImageFormat(file);
+
+    int option = 0;
+    int quality = 0;
+
+    if (libPicture.SavePictureOption(iFormat, option, quality) != 1) {
+        return;
+    }
+
+    const std::vector<int> listPage = SelectPage(window, filename);
+
+    if (listPage.empty()) return;
+
+    const wxString libelle =
+        CLibResource::LoadStringFromResource(L"LBLBUSYINFO", 1);
+
+    wxBusyInfo wait(libelle, window);
+
+    const wxFileName outputFilename(file);
+
+    const wxString extension = outputFilename.GetExt();
+
+    for (const int numPage : listPage) {
+        CImageLoadingFormat* imageFormat =
+            libPicture.LoadPicture(filename, false, numPage);
+
+        if (imageFormat == nullptr) continue;
+
+        wxFileName pageFilename(
+            outputFilename.GetPath(),
+            outputFilename.GetName() + "_" + wxString::Format("%d", numPage),
+            extension);
+
+        const wxString fileOutput = pageFilename.GetFullPath();
+
+        libPicture.SavePicture(fileOutput, imageFormat, option, quality);
+
+        delete imageFormat;
+    }
+
+    const wxString savecompleted =
+        CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
+
+    const wxString infos =
+        CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+
+    wxMessageBox(savecompleted, infos, wxOK | wxICON_INFORMATION, window);
 }
 
-void CSavePicture::SavePicture(wxWindow* window, CImageLoadingFormat* bitmap, const wxString& filename)
-{
-	CLibPicture libPicture;
-	wxString file = "";
-	if (filename != "")
-	{
-		file = SelectExternalFormat(window, filename);
-	}
+void CSavePicture::SavePicture(wxWindow* window, CImageLoadingFormat* bitmap,
+    const wxString& filename) {
+    if (filename.empty()) return;
 
-	if (file != "")
-	{
-		if (bitmap != nullptr)
-		{
-			libPicture.SavePicture(file, bitmap);
-		}
-		else
-		{
-			libPicture.SavePicture(filename, file);
-		}
-		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
-		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-		wxMessageBox(savecompleted, infos);
-	}
+    CLibPicture libPicture;
+
+    const wxString file = SelectExternalFormat(window, filename);
+
+    if (file.empty()) return;
+
+    if (bitmap != nullptr) {
+        libPicture.SavePicture(file, bitmap);
+    }
+    else {
+        libPicture.SavePicture(filename, file);
+    }
+
+    const wxString savecompleted =
+        CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
+
+    const wxString infos =
+        CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+
+    wxMessageBox(savecompleted, infos, wxOK | wxICON_INFORMATION, window);
 }

@@ -61,10 +61,6 @@ void CThumbnailHorizontal::RenderIcone(wxDC* deviceContext)
 
 void CThumbnailHorizontal::UpdateScroll()
 {
-	//bool update = false;
-	if (GetWindowWidth() <= 0)
-		return;
-
 	int nbElement = nbElementInIconeList;
 	if (nbElement > 0)
 	{

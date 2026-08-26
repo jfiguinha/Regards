@@ -9,7 +9,7 @@ namespace Regards::Viewer
 	public:
 		CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
 		                      const bool& testValidity);
-		~CThumbnailViewerVideo(void) override;
+		~CThumbnailViewerVideo(void) = default;
 
 		wxString GetFilename()
 		{
@@ -23,7 +23,9 @@ namespace Regards::Viewer
 		}
 
 	private:
-		void OnPictureClick(CThumbnailData* data) override;
+
+		void OnScrollBarH(wxCommandEvent& event);
+		void OnPictureClick(const int& numPhotoId) override;
 		
 	};
 }

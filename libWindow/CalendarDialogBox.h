@@ -44,9 +44,6 @@ namespace Regards::Window
 		CCalendarDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Select new date"),
 		                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300, 200),
 		                   long style = wxDEFAULT_DIALOG_STYLE);
-		~CCalendarDialogBox() override;
-
-		void OnCalRClick(wxMouseEvent& event);
 		wxDateTime GetDate() const { return m_calendar->GetDate(); }
 		void SetDate(const wxDateTime& dt) { m_calendar->SetDate(dt); }
 	};

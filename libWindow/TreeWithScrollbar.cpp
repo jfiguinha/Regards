@@ -1,8 +1,7 @@
 #include <header.h>
 #include "TreeWithScrollbar.h"
-#include "ScrollbarWnd.h"
-#include "TreeWindow.h"
-#include "TitleBar.h"
+
+
 using namespace Regards::Window;
 
 CTreeWithScrollbar::CTreeWithScrollbar(const wxString& windowName, wxWindow* parent, wxWindowID id,
@@ -16,7 +15,7 @@ CTreeWithScrollbar::CTreeWithScrollbar(const wxString& windowName, wxWindow* par
 	treeWindow = new CTreeWindow(this, wxID_ANY, theme);
 	if (showTitle)
 	{
-		titleBar = new CTitleBar(this, wxID_ANY, this);
+		titleBar = new CTitleBar(this, wxID_ANY, (CTitleBarInterface*)this);
 		titleBar->SetTitle(label);
 		titleBar->SetClosable(false);
 		titleBar->SetRefresh(false);
@@ -33,18 +32,6 @@ void CTreeWithScrollbar::SetLabel(const wxString& label)
 		titleBar->SetTitle(label);
 }
 
-CTreeWithScrollbar::~CTreeWithScrollbar(void)
-{
-	if (treeWindow != nullptr)
-		delete(treeWindow);
-
-	if (scrollWindow != nullptr)
-		delete(scrollWindow);
-
-	if (titleBar != nullptr)
-		delete(titleBar);
-}
-
 void CTreeWithScrollbar::UpdateScreenRatio()
 {
 	if (scrollWindow != nullptr)
@@ -53,10 +40,24 @@ void CTreeWithScrollbar::UpdateScreenRatio()
 
 void CTreeWithScrollbar::Resize()
 {
+	if (titleBar == nullptr)
+	{
+		scrollWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		return;
+	}
+
+	if (showTitle && !titleBar->IsShown())
+		titleBar->Show(true);
+	else if (!showTitle && titleBar->IsShown())
+		titleBar->Show(false);
+
+
 	if (scrollWindow != nullptr)
 	{
 		if (!showTitle)
+		{		
 			scrollWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		}
 		else
 		{
 			titleBar->SetSize(0, 0, GetWindowWidth(), titleBar->GetHeight());

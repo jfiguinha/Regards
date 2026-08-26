@@ -24,10 +24,17 @@ public:
 	void SetIsCriteriaInsert(const int& criteriaInsert);
 	int GetIsCriteriaInsert();
 
+	int GetDayOfWeek()
+	{
+		wxDateTime date(day, static_cast<wxDateTime::Month>(month - 1), year);
+		return date.GetWeekDay();
+	}
+
 	int day;
 	int month;
 	int year;
-	int dayofweek;
+	int dayOfWeek;
+
 	wxString monthName;
 	wxString dayName;
 	wxString gpsInfos;
@@ -43,4 +50,4 @@ private:
 };
 
 
-using PhotosVector = std::vector<CPhotos>;
+using PhotosVector = std::deque<CPhotos>;

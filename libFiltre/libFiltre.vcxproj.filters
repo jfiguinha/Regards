@@ -67,6 +67,9 @@
     <Filter Include="Filter\Interpolation">
       <UniqueIdentifier>{398416f1-c42d-490d-bf14-e6ec32d22ba9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Filter\Interpolation\AVIR">
+      <UniqueIdentifier>{91a4a7ac-fd65-44f4-b3ab-9fe02f7ab7e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -339,14 +342,23 @@
     <ClInclude Include="InpaintFilterParam.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="CudaEffect.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="InterpolationFilters.h">
       <Filter>Filter\Interpolation</Filter>
     </ClInclude>
     <ClInclude Include="2PassScale.h">
       <Filter>Filter\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="avir.h">
+      <Filter>Filter\Interpolation\AVIR</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_dil.h">
+      <Filter>Filter\Interpolation\AVIR</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_float4_sse.h">
+      <Filter>Filter\Interpolation\AVIR</Filter>
+    </ClInclude>
+    <ClInclude Include="avir_float8_avx.h">
+      <Filter>Filter\Interpolation\AVIR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -508,12 +520,6 @@
     </ClCompile>
     <ClCompile Include="InpaintFIlter.cpp">
       <Filter>window\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="CudaEffect.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="avir_opencl.cpp">
-      <Filter>Filter\Interpolation</Filter>
     </ClCompile>
     <ClCompile Include="2PassScale.cpp">
       <Filter>Filter\Interpolation</Filter>

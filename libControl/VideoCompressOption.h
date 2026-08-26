@@ -12,9 +12,7 @@ public:
 	{
 	}
 
-	~CVideoOptionCompress()
-	{
-	}
+	~CVideoOptionCompress() = default;
 
 	//Audio
 	int audioBitRate;

@@ -12,7 +12,7 @@ namespace Regards::Viewer
 	public:
 		CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, CToolbarInterface* toolbarInterface,
 		              const bool& vertical);
-		~CToolbarInfos() override;
+		~CToolbarInfos() = default;
 		void SetVideoToolbar();
 		void SetPictureToolbar();
 		void SetPictureThumbnailToolbar();
@@ -40,16 +40,16 @@ namespace Regards::Viewer
 		void Resize() override;
 		void EventManager(const int& id) override;
 
-		CToolbarInterface* toolbarInterface;
-		bool isVideo;
-		CToolbarTexte* infos;
-		CToolbarTexte* history;
-		CToolbarTexte* effect;
-		CToolbarTexte* audiovideo;
-		CToolbarTexte* videoeffect;
-		CToolbarTexte* map;
-		CToolbarTexte* effectParameter;
-		CToolbarTexte* criteria;
-		CToolbarTexte* histogramParameter;
+		CToolbarInterface* toolbarInterface = nullptr;
+
+		std::unique_ptr<CToolbarTexte> infos = nullptr;
+		std::unique_ptr<CToolbarTexte> history = nullptr;
+		std::unique_ptr<CToolbarTexte> effect = nullptr;
+		std::unique_ptr<CToolbarTexte> audiovideo = nullptr;
+		std::unique_ptr<CToolbarTexte> videoeffect = nullptr;
+		std::unique_ptr<CToolbarTexte> map = nullptr;
+		std::unique_ptr<CToolbarTexte> effectParameter = nullptr;
+		std::unique_ptr<CToolbarTexte> criteria = nullptr;
+		std::unique_ptr<CToolbarTexte> histogramParameter = nullptr;
 	};
 }

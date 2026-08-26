@@ -13,11 +13,6 @@ CTreeElementStar::CTreeElementStar()
 	CreateStar();
 }
 
-
-CTreeElementStar::~CTreeElementStar()
-{
-}
-
 void CTreeElementStar::CreateStar()
 {
 	starEmpty = CLibResource::CreatePictureFromSVG(L"IDB_STAREMPTY", themeTriangle.GetWidth() * 2,

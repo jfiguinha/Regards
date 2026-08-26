@@ -68,10 +68,6 @@ void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
 	CreateBitmapRefreshOn();
 }
 
-CTitleBar::~CTitleBar()
-{
-}
-
 int CTitleBar::SetTooltipText(const wxString& tooltip)
 {
 	this->tooltip = tooltip;

@@ -16,11 +16,16 @@
 #include <SqlPhotos.h>
 #include <FolderCatalog.h>
 #include "CategoryWnd.h"
-#include <SqlPhotoGPS.h>
+#include "CategoryTreeStatePersistence.h"
+#include "CategorySelectionController.h"
+#include "CategoryQueryService.h"
+#include "CategoryRepository.h"
+#include "CategoryHierarchyIndex.h"
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
 #include <Photos.h>
+#include <ScrollbarWnd.h>
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -29,6 +34,7 @@ using namespace Regards::Internet;
 
 #include <appcontext.h>
 extern AppContext application_context;
+
 
 #define NUMCATALOGID 1
 
@@ -40,8 +46,8 @@ wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 class CListToClean
 {
 public:
-	CCategoryWnd * catalogWndOld;
-	std::time_t timeToAdd;
+	std::unique_ptr<CCategoryWnd> catalogWndOld;
+	std::time_t timeToAdd{};
 };
 
 class CCategoryFolderWindowPimpl
@@ -50,59 +56,51 @@ public:
     
     CCategoryFolderWindowPimpl()
     {
-        catalogWndOld = nullptr;
+        catalogWnd = nullptr;
         explorerconfig = nullptr;
         oldPos = 0;
         update = false;
-        traitementEnd = true;
         numProcess = 0;
 		numProcessGps = 0;
         nbProcesseur = 1;
-        refreshFolder = false;
         needToSendMessage = false;
-        gpsLocalisationFinish = true;
         refreshTimer = nullptr;
-
+		startUpdateCriteria = false;
     };
     
     ~CCategoryFolderWindowPimpl()
     {
-    	if (refreshTimer->IsRunning())
-            refreshTimer->Stop();
-
-        delete(refreshTimer);
-        delete(catalogWndOld);
-
+		if (refreshTimer)
+    		if (refreshTimer->IsRunning())
+				refreshTimer->Stop();
+		listToErase.clear();
     }
     
-    CCategoryWnd* catalogWndOld;
+    CCategoryWnd* catalogWnd;
     CMainParam* explorerconfig;
+	std::atomic<bool> traitementEnd;
+	std::atomic<bool> startUpdateCriteria;
+
     int oldPos;
     bool update;
-    //int numImageFace;
-    bool traitementEnd;
-    int numProcess;
-	int numProcessGps;
+
+	std::atomic<int> numProcess;
+	std::atomic<int> numProcessGps;
     int nbProcesseur;
-    bool refreshFolder;
     bool needToSendMessage;
     bool noCategoryMessage;
     bool categoryMessage;
-    bool startUpdateCriteria = false;
     int nbPhotos = 0;
 
-	
+	deque<int> listCriteriaToGeolocalize;
     PhotosVector m_photosVector;
     wxString urlServer;
 	wxString apiKey = "";
-    bool gpsLocalisationFinish;
-    int nbGpsFile;
-    wxTimer* refreshTimer;
+	std::unique_ptr<wxTimer> refreshTimer;
     std::mutex muVector;
-	GpsPhoto fileToGetGps;
-	int nbPhotoGps = 0;
-    std::vector<CListToClean *> listToErrase;
+	std::vector<std::unique_ptr<CListToClean>> listToErase;
 };
+
 
 class CFindPhotoCriteria
 {
@@ -115,20 +113,17 @@ public:
 	bool criteriaNew;
 	int numPhoto{};
 	int numFolderId{};
+	bool fromGps = false;
+	int numCriteria = 0;
 	wxString photoPath;
-	thread* phthread;
-	bool hasGps;
-	bool fromGps;
+	std::unique_ptr<thread> phthread;
 	bool isOk = true;
-	GpsPhoto _photoGPS;
 };
 
 CFindPhotoCriteria::CFindPhotoCriteria()
 {
 	mainWindow = nullptr;
 	criteriaNew = false;
-	hasGps = false;
-	fromGps = false;
 	phthread = nullptr;
 }
 
@@ -139,7 +134,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->AddWindow(this);
     
-    pimpl = new CCategoryFolderWindowPimpl();
+    pimpl = std::make_unique<CCategoryFolderWindowPimpl>();
 
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -157,7 +152,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 		else
 			application_context.isGPsAvailable = true;
 	}
-	pimpl->refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
+	pimpl->refreshTimer = std::make_unique<wxTimer>(this, wxTIMER_REFRESH);
 	Connect(EVENT_CRITERIAPHOTOUPDATE, wxCommandEventHandler(CCategoryFolderWindow::CriteriaPhotoUpdate));
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CCategoryFolderWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
@@ -168,13 +163,9 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, const wxWindowID 
 	pimpl->categoryMessage = false;
 	processIdle = true;
 
-	pimpl->nbGpsFile = 0;
-	//Refresh all 1 minute
-	pimpl->refreshTimer->Start(60000, wxTIMER_CONTINUOUS);
-	pimpl->refreshTimer->Start();
-
+	if (application_context.isGPsAvailable)
+		pimpl->refreshTimer->Start(60000, wxTIMER_CONTINUOUS);
 	
-	//printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
 	if (param != nullptr)
 		nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
 
@@ -190,15 +181,14 @@ void CCategoryFolderWindow::OnRefreshFolder(wxCommandEvent& event)
 
 void CCategoryFolderWindow::OnTimerRefresh(wxTimerEvent& event)
 {
-	//printf(" CCategoryFolderWindow::OnTimerRefresh %d \n", pimpl->nbGpsFile);
 	nbGpsRequest = 0;
 	processIdle = true;
 }
 
 void CCategoryFolderWindow::RefreshCriteriaSearch()
 {
-	if (pimpl->catalogWndOld != nullptr)
-		pimpl->catalogWndOld->RefreshCriteriaSearch();
+	if (pimpl->catalogWnd != nullptr)
+		pimpl->catalogWnd->RefreshCriteriaSearch();
 
 	init();
 }
@@ -214,13 +204,8 @@ void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 
 void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
 {
-	if (pimpl->catalogWndOld != nullptr)
-		pimpl->catalogWndOld->RefreshCriteriaSearch();
-}
-
-CCategoryFolderWindow::~CCategoryFolderWindow()
-{
-    delete(pimpl);
+	if (pimpl->catalogWnd != nullptr)
+		pimpl->catalogWnd->RefreshCriteriaSearch();
 }
 
 void CCategoryFolderWindow::InitSaveParameter()
@@ -239,20 +224,23 @@ void CCategoryFolderWindow::init()
 	pimpl->update = true;
 	processIdle = true;
 
-	pimpl->muVector.lock();
-	//Get List of Photo to process
-	CSqlInsertFile sql_insert_file;
-	pimpl->m_photosVector.clear();
-	sql_insert_file.GetPhotoToProcessList(&pimpl->m_photosVector);
+	{
+		std::lock_guard<std::mutex> lock(pimpl->muVector);
+		//Get List of Photo to process
+		CSqlInsertFile sql_insert_file;
+		pimpl->m_photosVector.clear();
+		sql_insert_file.GetPhotoToProcessList(&pimpl->m_photosVector);
 
-	nbPhotoToProcess = pimpl->m_photosVector.size();
+		nbPhotoToProcess = pimpl->m_photosVector.size();
 
-	CSqlPhotoGPS photoGPS;
-	pimpl->nbPhotoGps = photoGPS.GetFirstPhoto(pimpl->fileToGetGps.numPhoto, pimpl->fileToGetGps.filepath, pimpl->fileToGetGps.numFolderId);
+		if (application_context.isGPsAvailable)
+		{
+			CSqlCriteria sqlCriteria;
+			pimpl->listCriteriaToGeolocalize = sqlCriteria.GetListCriteriaToGeolocalize();
+		}
+	}
 
-	nbPhotoGpsToProcess = 1;
 
-	pimpl->muVector.unlock();
 }
 
 void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
@@ -266,16 +254,16 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& need_to_send_message)
 		catalogWnd->Init();
 		treeWindow->SetTreeControl(catalogWnd);
         
-        CListToClean* listToAdd = new CListToClean();
-        listToAdd->catalogWndOld = pimpl->catalogWndOld;
+		auto listToAdd = std::make_unique<CListToClean>();
+		listToAdd->catalogWndOld.reset(pimpl->catalogWnd);
 
-		pimpl->catalogWndOld = catalogWnd;
+		pimpl->catalogWnd = catalogWnd;
 		pimpl->update = true;
         
        
 		time(&listToAdd->timeToAdd);
 		
-		pimpl->listToErrase.push_back(listToAdd);
+		pimpl->listToErase.push_back(std::move(listToAdd));
 
 
 	}
@@ -298,70 +286,111 @@ wxString CCategoryFolderWindow::GetWaitingMessage()
 		to_string(pimpl->numProcess);
 }
 
+void CCategoryFolderWindow::ProcessPhotoQueue()
+{
+
+	std::lock_guard<std::mutex> lock(pimpl->muVector);
+	pimpl->startUpdateCriteria = true;
+	auto findPhotoCriteria = new CFindPhotoCriteria();
+	CPhotos photo = pimpl->m_photosVector[0];
+
+	if (photo.GetId() != -1)
+	{
+		findPhotoCriteria->numPhoto = photo.GetId();
+		findPhotoCriteria->photoPath = photo.GetPath();
+		findPhotoCriteria->numFolderId = photo.GetFolderId();
+		findPhotoCriteria->urlServer = pimpl->urlServer;
+		findPhotoCriteria->apiKey = pimpl->apiKey;
+		findPhotoCriteria->mainWindow = this;
+		//findPhotoCriteria->numFolder = photo.GetFolderId();
+
+		findPhotoCriteria->phthread = std::make_unique<thread>(FindPhotoCriteria, findPhotoCriteria);
+		pimpl->numProcess++;
+		CSqlInsertFile sql_insert_file;
+		sql_insert_file.UpdatePhotoProcess(photo.GetId());
+		pimpl->traitementEnd = false;
+		pimpl->m_photosVector.erase(pimpl->m_photosVector.begin());
+
+		{
+			auto thumbnailMessage = new CThumbnailMessage();
+			thumbnailMessage->thumbnailPos = nbPhotoToProcess - pimpl->m_photosVector.size();
+			thumbnailMessage->nbElement = nbPhotoToProcess;
+			thumbnailMessage->nbPhoto = pimpl->m_photosVector.size();
+			thumbnailMessage->typeMessage = 0;
+			SendStatusMessage(thumbnailMessage);
+		}
+	}
+}
+
+void CCategoryFolderWindow::ProcessGpsQueue()
+{
+	auto findPhotoCriteria = new CFindPhotoCriteria();
+	findPhotoCriteria->urlServer = pimpl->urlServer;
+	findPhotoCriteria->mainWindow = this;
+	findPhotoCriteria->numCriteria = pimpl->listCriteriaToGeolocalize[0];
+	findPhotoCriteria->phthread = std::make_unique<thread>(FindGPSPhotoCriteria, findPhotoCriteria);
+
+	pimpl->listCriteriaToGeolocalize.pop_front();
+	pimpl->numProcessGps++;
+	nbGpsRequest++;
+	processIdle = true;
+	time(&start);
+
+	{
+		auto thumbnailMessage = new CThumbnailMessage();
+		thumbnailMessage->thumbnailPos = 1;
+		thumbnailMessage->nbPhoto = nbPhotoGpsToProcess;
+		thumbnailMessage->nbElement = nbPhotoGpsToProcess;
+		thumbnailMessage->typeMessage = 6;
+		SendStatusMessage(thumbnailMessage);
+
+	}
+}
+
+void CCategoryFolderWindow::SendStatusMessage(CThumbnailMessage * thumbnailMessage)
+{
+	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWnd != nullptr)
+	{
+		wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+		eventChange.SetClientData(thumbnailMessage);
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	}
+	else
+		delete thumbnailMessage;
+}
+
+
+void CCategoryFolderWindow::CleanupOldCatalogs()
+{
+	if (!pimpl->listToErase.empty())
+	{
+		time_t ending;
+		time(&ending);
+		for (auto it = pimpl->listToErase.begin();
+			it != pimpl->listToErase.end(); )
+		{
+			if (difftime(ending, (*it)->timeToAdd) > 5)
+				it = pimpl->listToErase.erase(it);
+			else
+				++it;
+		}
+	}
+}
+
 void CCategoryFolderWindow::ProcessIdle()
 {
-    pimpl->muVector.lock();
 	bool hasSomethingTodo = true;
-	//printf("CCategoryFolderWindow::ProcessIdle() \n");
-    int nbPhotos = pimpl->m_photosVector.size();
-	pimpl->muVector.unlock();
+	int nbPhotos = 0;
+
+	{
+		std::lock_guard<std::mutex> lock(pimpl->muVector);
+		nbPhotos = pimpl->m_photosVector.size();
+	}
 
 	if (nbPhotos > 0 && pimpl->numProcess < pimpl->nbProcesseur)
 	{
-
-		pimpl->muVector.lock();
-        
-		pimpl->startUpdateCriteria = true;
-		//Put in a thread
-		//CSqlInsertFile sql_insert_file;
-		auto findPhotoCriteria = new CFindPhotoCriteria();
-		//CPhotos photo = sql_insert_file.GetPhotoToProcess();
-        CPhotos photo = pimpl->m_photosVector[0];
-        
-		//printf("CCategoryFolderWindow::ProcessIdle : Nb Photo : %d Path : %s \n", nbPhotos,
-		 //printf("error CImageVideoThumbnail creation\n");      CConvertUtility::ConvertToUTF8(photo.GetPath()));
-
-		if (photo.GetId() != -1)
-		{
-			findPhotoCriteria->numPhoto = photo.GetId();
-			findPhotoCriteria->photoPath = photo.GetPath();
-			findPhotoCriteria->numFolderId = photo.GetFolderId();
-			findPhotoCriteria->urlServer = pimpl->urlServer;
-			findPhotoCriteria->apiKey = pimpl->apiKey;
-			findPhotoCriteria->mainWindow = this;
-			//findPhotoCriteria->numFolder = photo.GetFolderId();
-
-			findPhotoCriteria->phthread = new thread(FindPhotoCriteria, findPhotoCriteria);
-			pimpl->numProcess++;
-            CSqlInsertFile sql_insert_file;
-			sql_insert_file.UpdatePhotoProcess(photo.GetId());
-			pimpl->traitementEnd = false;
-            pimpl->m_photosVector.erase(pimpl->m_photosVector.begin());
-
-			{
-				auto thumbnailMessage = new CThumbnailMessage();
-				thumbnailMessage->thumbnailPos = nbPhotoToProcess - pimpl->m_photosVector.size();
-				thumbnailMessage->nbElement = nbPhotoToProcess;
-				thumbnailMessage->nbPhoto = pimpl->m_photosVector.size();
-				thumbnailMessage->typeMessage = 0;
-				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-				if (mainWnd != nullptr)
-				{
-					wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-					eventChange.SetClientData(thumbnailMessage);
-					mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-				}
-				else
-					delete thumbnailMessage;
-			}
-
-
-		}
-
-        
-		pimpl->muVector.unlock();
-        
-        
+		ProcessPhotoQueue();
 	}
 	else if (!pimpl->traitementEnd)
 	{
@@ -370,54 +399,6 @@ void CCategoryFolderWindow::ProcessIdle()
 		criteria.DeleteCriteriaAlone();
 		pimpl->traitementEnd = true;
 	}
-	else if (pimpl->refreshFolder)
-	{
-		wxString message;
-		int counter = 0;
-		CSqlFindFolderCatalog folder;
-		FolderCatalogVector catalogfolderVector;
-		folder.GetFolderCatalog(&catalogfolderVector, 1);
-
-		{
-			auto thumbnailMessage = new CThumbnailMessage();
-			thumbnailMessage->nbElement = catalogfolderVector.size();
-			thumbnailMessage->typeMessage = 1;
-
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			if (mainWnd != nullptr)
-			{
-				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-				eventChange.SetClientData(thumbnailMessage);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
-			else
-				delete thumbnailMessage;
-		}
-
-		for (CFolderCatalog folder_catalog : catalogfolderVector)
-		{
-			counter++;
-			auto thumbnailMessage = new CThumbnailMessage();
-			thumbnailMessage->thumbnailPos = counter;
-			thumbnailMessage->nbElement = catalogfolderVector.size();
-			thumbnailMessage->typeMessage = 2;
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			if (mainWnd != nullptr)
-			{
-				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-				eventChange.SetClientData(thumbnailMessage);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
-			else
-				delete thumbnailMessage;
-
-			RefreshThreadFolder(&folder_catalog);
-		}
-
-		pimpl->update = true;
-		pimpl->refreshFolder = false;
-
-	}
 	else if (nbPhotos == 0)
 	{
 		hasSomethingTodo = false;
@@ -425,117 +406,23 @@ void CCategoryFolderWindow::ProcessIdle()
 	if (!hasSomethingTodo)
 		processIdle = false;
 
-	//---------------------------------------------------------------------------------------------------------------
-	//GPS Traitement
-	//Thread by Thread
-	//---------------------------------------------------------------------------------------------------------------
-
-	/*
-	int numPhoto = 0;
-	int numFolderId = 0;
-	wxString photoPath = "";
-	CSqlPhotoGPS photoGPS;
-
-	time_t ending;
-	time(&ending);
-
-	int diff = difftime(ending, start);
-
-	if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0 && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= 3)
+	if (application_context.isGPsAvailable)
 	{
-		int nbGpsFileByMinute = 60;
-		printf("Geolocalize File photoGPS.GetFirstPhoto nbGPSFile : %d \n", pimpl->nbGpsFile);
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-			nbGpsFileByMinute = param->GetNbGpsIterationByMinute();
-
-		if (pimpl->gpsLocalisationFinish && pimpl->nbGpsFile < nbGpsFileByMinute)
-		{
-			auto findPhotoCriteria = new CFindPhotoCriteria();
-			findPhotoCriteria->urlServer = pimpl->urlServer;
-			findPhotoCriteria->mainWindow = this;
-			findPhotoCriteria->numPhoto = numPhoto;
-			findPhotoCriteria->photoPath = photoPath;
-			findPhotoCriteria->numFolderId = numFolderId;
-			findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
-			pimpl->gpsLocalisationFinish = false;
-			pimpl->nbGpsFile++;
-			pimpl->numProcessGps++;
-			processIdle = true;
-			time(&start);
-
-		}
-		
-		//
-	}
-	else if (diff < 3)
-	{
-		processIdle = true;
-	}
-	*/
-
-	time_t ending;
-	time(&ending);
-
-	int diff = difftime(ending, start);
-
-	if (pimpl->nbGpsFile > 0 && pimpl->gpsLocalisationFinish && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET && application_context.isGPsAvailable)
-	{
-		auto findPhotoCriteria = new CFindPhotoCriteria();
-		findPhotoCriteria->urlServer = pimpl->urlServer;
-		findPhotoCriteria->mainWindow = this;
-		findPhotoCriteria->numPhoto = pimpl->fileToGetGps.numPhoto;
-		findPhotoCriteria->photoPath = pimpl->fileToGetGps.filepath;
-		findPhotoCriteria->numFolderId = pimpl->fileToGetGps.numFolderId;
-		findPhotoCriteria->phthread = new thread(FindGPSPhotoCriteria, findPhotoCriteria);
-		pimpl->gpsLocalisationFinish = false;
-		pimpl->numProcessGps++;
-		nbGpsRequest++;
-		processIdle = true;
-		time(&start);
-
-		{
-			auto thumbnailMessage = new CThumbnailMessage();
-			thumbnailMessage->thumbnailPos = 1;
-			thumbnailMessage->nbPhoto = nbPhotoGpsToProcess;
-			thumbnailMessage->nbElement = nbPhotoGpsToProcess;
-			thumbnailMessage->typeMessage = 6;
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			if (mainWnd != nullptr)
-			{
-				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
-				eventChange.SetClientData(thumbnailMessage);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
-			else
-				delete thumbnailMessage;
-		}
-	}
-
-	if(pimpl->nbGpsFile > 0)
-		processIdle = true;
-
-
-	if (!pimpl->listToErrase.empty())
-	{
-		// printf("CCategoryFolderWindow::listToErrase Nb Element : %i \n", pimpl->listToErrase.size());
-		int i = 0;
 		time_t ending;
 		time(&ending);
-		for (int i = 0; i < pimpl->listToErrase.size(); i++)
+
+		int diff = difftime(ending, start);
+
+		if (pimpl->listCriteriaToGeolocalize.size() > 0 && nbGpsRequest < nbGpsFileByMinute && pimpl->numProcessGps < pimpl->nbProcesseur && diff >= TIMETOWAITINTERNET)
 		{
-			CListToClean* element = pimpl->listToErrase[i];
-			int diff = difftime(ending, element->timeToAdd);
-			if (diff > 5)
-			{
-				//printf("CCategoryFolderWindow::listToErrase %i \n", i);
-				delete element->catalogWndOld;
-				element->catalogWndOld = nullptr;
-				pimpl->listToErrase.erase(pimpl->listToErrase.begin() + i);
-				i--;
-			}
+			ProcessGpsQueue();
 		}
+
+		if (pimpl->listCriteriaToGeolocalize.size() > 0)
+			processIdle = true;
 	}
+
+	CleanupOldCatalogs();
 
 	if (pimpl->startUpdateCriteria && pimpl->numProcess <= 0 && nbPhotos == 0)
 	{
@@ -556,9 +443,6 @@ void CCategoryFolderWindow::IdleFunction()
 		if (pimpl->refreshTimer->IsRunning())
 			pimpl->refreshTimer->Stop();
 	}
-    
- 
-	StartThread();
 }
 
 
@@ -587,13 +471,13 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 }
 
 
-void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
+void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria)
 {
 	CListOfWindow* geoloc = CGpsEngine::getInstance();
-	CSqlPhotoCriteria photoCriteria;
-
+	CSqlCriteria criteria;
 	wxString urlServer = "";
 	wxString apiKey = "";
+	int numCriteria = findPhotoCriteria->numCriteria;
 	//Géolocalisation
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
@@ -602,40 +486,32 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 		apiKey = param->GetApiKey();
 	}
 
-	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-	CListCriteriaPhoto listCriteriaPhoto;
-	CFileGeolocation fileGeolocalisation(urlServer, apiKey);
-	listCriteriaPhoto.numCatalog = NUMCATALOGID;
-	listCriteriaPhoto.numPhotoId = findPhotoCriteria->numPhoto;
-	listCriteriaPhoto.photoPath = findPhotoCriteria->photoPath;
-
-	//printf("FindGPSPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath));
-
-	fileGeolocalisation.SetFile(listCriteriaPhoto.photoPath, notGeo);
-
-
-	if (fileGeolocalisation.HasGps())
+	CFileGeolocation fileGeoloc(findPhotoCriteria->urlServer, findPhotoCriteria->apiKey);
+	wxString geoinfo = criteria.GetCriteriaLibelle(numCriteria);
+	if (geoinfo != "")
 	{
-		//printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
-		fileGeolocalisation.Geolocalisation(&listCriteriaPhoto);
-		if (listCriteriaPhoto.listCriteria.size() > 0)
+		fileGeoloc.SetInfosGPS(geoinfo);
+
+
+		if (fileGeoloc.HasGps())
 		{
-			photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew,
-				fileGeolocalisation.HasGps(),
-				findPhotoCriteria->numFolderId);
-		}
-		else
-		{
-			findPhotoCriteria->isOk = false;
-			//printf("Error gps informations \n");
+			wxString geolocalisation = fileGeoloc.Geolocalize();
+			if (geolocalisation != "")
+			{
+				criteria.UpdateCriteria(1, numCriteria, geolocalisation);
+				findPhotoCriteria->isOk = true;
+				findPhotoCriteria->criteriaNew = true;
+			}
+			else
+			{
+				findPhotoCriteria->isOk = false;
+				//printf("Error gps informations \n");
+			}
 		}
 	}
-
-	findPhotoCriteria->hasGps = fileGeolocalisation.HasGps();
 	findPhotoCriteria->fromGps = true;
-
-	if (geoloc != nullptr)
-		geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 1);
+	//if (geoloc != nullptr)
+	//	geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 1);
 
 	if (findPhotoCriteria->mainWindow != nullptr)
 	{
@@ -653,39 +529,34 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	CFileGeolocation geoloc(findPhotoCriteria->urlServer, findPhotoCriteria->apiKey);
 	CSqlPhotoCriteria photoCriteria;
 
+	wxString urlServer = "";
+	wxString apiKey = "";
+	//Géolocalisation
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetGeoLocUrlServer();
+		apiKey = param->GetApiKey();
+	}
+
 	CListCriteriaPhoto listCriteriaPhoto;
 	listCriteriaPhoto.numCatalog = NUMCATALOGID;
 	listCriteriaPhoto.numPhotoId = findPhotoCriteria->numPhoto;
 	listCriteriaPhoto.photoPath = findPhotoCriteria->photoPath;
 
-	//printf("FindPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
-
 	geoloc.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
-	if (!geoloc.HasGps() || !application_context.isGPsAvailable)
-	{
-		//printf("Has not GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
-		auto insertCriteria = new CInsertCriteria();
-		insertCriteria->type = CATEGORIE_GEO;
-		insertCriteria->value = CLibResource::LoadStringFromResource(L"LBLNOTGEO", 1);
-		listCriteriaPhoto.listCriteria.push_back(insertCriteria);
-	}
+
+	CInsertCriteria insertCriteria;
+	insertCriteria.type = CATEGORIE_GEO;
+	if (!geoloc.HasGps())
+		insertCriteria.value = notGeo;
 	else
-	{
-		//Insert GPS info into GPS table
-		CSqlPhotoGPS photoGPS;
-		photoGPS.InsertPhoto(listCriteriaPhoto.numPhotoId, listCriteriaPhoto.photoPath, findPhotoCriteria->numFolderId);
-		findPhotoCriteria->_photoGPS.numPhoto = listCriteriaPhoto.numPhotoId;
-		findPhotoCriteria->_photoGPS.filepath = listCriteriaPhoto.photoPath;
-		findPhotoCriteria->_photoGPS.numFolderId = findPhotoCriteria->numFolderId;
-	}
-	findPhotoCriteria->hasGps = geoloc.HasGps();
-	findPhotoCriteria->fromGps = false;
+		insertCriteria.value = application_context.special_key + "/" + geoloc.GetLatitude() + "/" + geoloc.GetLongitude();
+	listCriteriaPhoto.listCriteria.push_back(insertCriteria);
+
 
 	wxString datetime = geoloc.GetDateTimeInfos();
-
-	//printf("FindPhotoCriteria %s datetime %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath),
-	 //      CConvertUtility::ConvertToUTF8(datetime));
 
 	if (datetime.Length() >= 10)
 	{
@@ -706,9 +577,9 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 					datetime.append(".");
 			}
 
-			auto insertCriteria = new CInsertCriteria();
-			insertCriteria->type = CATEGORIE_DATE;
-			insertCriteria->value = datetime;
+			CInsertCriteria insertCriteria;
+			insertCriteria.type = CATEGORIE_DATE;
+			insertCriteria.value = datetime;
 			listCriteriaPhoto.listCriteria.push_back(insertCriteria);
 			CListOfWindow* list_of_window = CGpsEngine::getInstance();
 			if (list_of_window != nullptr)
@@ -720,14 +591,6 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, geoloc.HasGps(),
 	                                      findPhotoCriteria->numFolderId);
 
-	for (CInsertCriteria* criteria : listCriteriaPhoto.listCriteria)
-	{
-		if (criteria != nullptr)
-		{
-			delete criteria;
-			criteria = nullptr;
-		}
-	}
 
 	listCriteriaPhoto.listCriteria.clear();
 
@@ -742,19 +605,13 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 wxString CCategoryFolderWindow::GetSqlRequest()
 {
 	wxString sqlRequest = "";
-	//auto viewerParam = CMainParamInit::getInstance();
-	//if(viewerParam != nullptr)
-	//	sqlRequest = viewerParam->GetLastSqlRequest();
-
-	if (pimpl->catalogWndOld != nullptr)
-		return pimpl->catalogWndOld->GetSqlRequest();
+	if (pimpl->catalogWnd != nullptr)
+		return pimpl->catalogWnd->GetSqlRequest();
 	return sqlRequest;
 }
 
-
 void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 {
-    
 	auto findPhotoCriteria = static_cast<CFindPhotoCriteria*>(event.GetClientData());
 
 	if (findPhotoCriteria->isOk)
@@ -763,90 +620,33 @@ void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 		{
 			UpdateCriteria(true);
 		}
-
-		if (findPhotoCriteria->hasGps && findPhotoCriteria->fromGps)
-		{
-
-			int numPhoto = 0;
-			int numFolderId = 0;
-			wxString photoPath = "";
-			CSqlPhotos sqlPhoto;
-			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
-			CSqlPhotoGPS photoGPS;
-			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
-
-			nbPhotoGpsToProcess = photoGPS.GetNbPhoto();
-			
-			if (photoGPS.GetFirstPhoto(numPhoto, photoPath, numFolderId) > 0)
-			{
-				GpsPhoto firstPhoto;
-				firstPhoto.numPhoto = numPhoto;
-				firstPhoto.filepath = photoPath;
-				firstPhoto.numFolderId = numFolderId;
-				pimpl->gpsLocalisationFinish = true;
-				pimpl->fileToGetGps = firstPhoto;
-				pimpl->nbGpsFile = 1;
-			}
-			else
-			{
-				pimpl->nbGpsFile = 0;
-			}
-
-		}
-		else if (!findPhotoCriteria->hasGps)
-		{
-			CSqlPhotos sqlPhoto;
-			sqlPhoto.UpdatePhotoCriteria(findPhotoCriteria->numPhoto);
-			CSqlPhotoGPS photoGPS;
-			photoGPS.DeletePhoto(findPhotoCriteria->numPhoto);
-		}
-		else if (findPhotoCriteria->hasGps && pimpl->nbGpsFile == 0)
-		{
-			pimpl->gpsLocalisationFinish = true;
-			pimpl->fileToGetGps = findPhotoCriteria->_photoGPS;
-			pimpl->nbGpsFile = 1;
-		}
-		
-	}
-	else
-	{
-		if (findPhotoCriteria->fromGps)
-		{
-			pimpl->gpsLocalisationFinish = true;
-			//pimpl->fileToGetGps = findPhotoCriteria->_photoGPS;
-			pimpl->nbGpsFile = 1;
-		}
 	}
 
 	if (findPhotoCriteria->phthread != nullptr)
 		findPhotoCriteria->phthread->join();
 
-	if (findPhotoCriteria->phthread != nullptr)
-		delete findPhotoCriteria->phthread;
-
-    
 	if (findPhotoCriteria->fromGps)
 	{
 		pimpl->numProcessGps--;
-		pimpl->numProcessGps = max(pimpl->numProcessGps, 0);
+		if (pimpl->numProcessGps < 0)
+			pimpl->numProcessGps = 0;
 		time(&start);
 	}
 	else
 	{
 		pimpl->numProcess--;
-		pimpl->numProcess = max(pimpl->numProcess, 0);
+		if (pimpl->numProcess < 0)
+			pimpl->numProcess = 0;
+
+		if (application_context.isGPsAvailable)
+		{
+			CSqlCriteria sqlCriteria;
+			pimpl->listCriteriaToGeolocalize = sqlCriteria.GetListCriteriaToGeolocalize();
+		}
 	}
 
 	delete findPhotoCriteria;
 
-	/*
-	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWnd != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_CRITERIAPHOTOUPDATE);
-		evt.SetExtraLong(-1);
-		this->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
 	processIdle = true;
+	
 }

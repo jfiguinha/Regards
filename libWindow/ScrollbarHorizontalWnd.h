@@ -80,6 +80,10 @@ namespace Regards::Window
 		bool TestMaxX();
 		bool TestMinX();
 
+		double dragStartMouseX = 0.0;
+		int dragStartScrollX = 0;
+		int lastSentScrollX = -1;
+
 		int xPositionStartMove;
 
 		wxRect rcPosTriangleLeft;
@@ -103,11 +107,11 @@ namespace Regards::Window
 		bool m_bTracking;
 
 
-		wxTimer* triangleLeft;
-		wxTimer* triangleRight;
-		wxTimer* pageLeft;
-		wxTimer* pageRight;
-		wxTimer* stopMoving;
+		std::unique_ptr<wxTimer> triangleLeft;
+		std::unique_ptr<wxTimer> triangleRight;
+		std::unique_ptr<wxTimer> pageLeft;
+		std::unique_ptr<wxTimer> pageRight;
+		std::unique_ptr<wxTimer> stopMoving;
 
 		CThemeScrollBar themeScroll;
 

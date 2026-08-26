@@ -9,9 +9,5 @@ public:
 		strength = 10;
 	};
 
-	~CLensDistortionEffectParameter() override
-	{
-	};
-
 	int strength;
 };

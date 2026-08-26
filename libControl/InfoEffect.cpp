@@ -9,12 +9,13 @@
 #include "MainThemeInit.h"
 #include "BitmapWnd3d.h"
 #include "BitmapWndViewer.h"
+#include <libPicture.h>
 #include <TreeData.h>
 #include <TreeElementControlInterface.h>
 #include <ConvertUtility.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
-
+using namespace Regards::Picture;
 
 CInfoEffect::CInfoEffect(CTreeElementControlInterface* interfaceControl, CModificationManager* modificationManager,
                          int bitmapWindowId): numEvent(0), yPos(0), index(0)
@@ -35,12 +36,6 @@ CInfoEffect::CInfoEffect(CTreeElementControlInterface* interfaceControl, CModifi
 	themeTree.SetMargeX(5);
 	this->modificationManager = modificationManager;
 	rowWidth.push_back(0);
-}
-;
-
-
-CInfoEffect::~CInfoEffect()
-{
 }
 
 
@@ -87,12 +82,20 @@ void CInfoEffect::InitTree(const wxString& libelle, const wxString& key)
 	AddEvent("Source." + localLibelle, key);
 	//childStart = child;
 	index++;
-	CreateElement();
+	CreateElement(RenderMode::Create);
 }
 
 wxString CInfoEffect::GetNumModification()
 {
 	return to_string(modificationManager->GetNumModification());
+}
+
+void CInfoEffect::SetBitmapToViewer(CImageLoadingFormat* bitmap)
+{
+	auto bitmapWindow =wxWindow::FindWindowById(bitmapWindowId);
+	auto event = new wxCommandEvent(wxEVENT_SETBITMAP);
+	event->SetClientData(bitmap);
+	wxQueueEvent(bitmapWindow, event);
 }
 
 void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
@@ -102,30 +105,27 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 	auto treeData = element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
-		CBitmapWndViewer* bitmapViewer = nullptr;
-		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
-		if (bitmapWindow != nullptr)
+		wxString key = treeData->GetExifKey();
+		if (key != "History")
 		{
-			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+			const int modif = CConvertUtility::StringToInt(key);
+			SetBitmapToViewer(modificationManager->GetModification(modif));
 		}
-		if (bitmapViewer != nullptr)
+		else
 		{
-			wxString key = treeData->GetExifKey();
-			if (key != "-1")
-			{
-				const int modif = atoi(CConvertUtility::ConvertToUTF8(key));
-				bitmapViewer->SetBitmap(modificationManager->GetModification(modif));
-				//bitmapViewer->Refresh();
-				SetActifElement(key);
-			}
+			CLibPicture libPicture;
+			CImageLoadingFormat* bitmap = libPicture.LoadPicture(treeData->GetKey());
+			SetBitmapToViewer(bitmap);
+
 		}
+		SetActifElement(key);
 	}
 	else if (element->GetType() == ELEMENT_TRIANGLE)
 	{
 		auto treeElementTriangle = dynamic_cast<CTreeElementTriangle*>(treeElement);
 		treeElementTriangle->ClickElement(window, (x + posLargeur) - element->GetX(),
 		                                  (y + posHauteur) - element->GetY());
-		UpdateElement();
+		CreateElement(RenderMode::Update);
 		eventControl->UpdateTreeControl();
 	}
 }
@@ -166,109 +166,95 @@ void CInfoEffect::SetActifElement(const wxString& key)
 	}
 	eventControl->UpdateTreeControl();
 }
-
 void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 {
-	//Récupération des catégories principales
 	numEvent += 2;
+
 	wxString localLibelle = libelle;
 	localLibelle.Replace("@99", ".");
-	auto treeData = new CTreeData();
-	treeData->SetIsParent(true);
-	treeData->SetKey(localLibelle);
-	treeData->SetExifKey(key);
 
-	//FindKey(const wxString & key)
-	//child = tr.insert_after(child, treeData);
+	int level = 0;
 
-	wchar_t seps[] = L".";
-	int item = 0;
-	wchar_t* next_token1 = nullptr;
-	wchar_t informations[1024];
-	wcscpy(informations, libelle.c_str());
+	wxStringTokenizer tokenizer(libelle, ".");
 
-	// Establish string and get the first token:
-#if defined(WIN32) && _MSC_VER < 1900
-	wchar_t * token = wcstok(informations, seps); // C4996
-#else
-	wchar_t* token = wcstok(informations, seps, &next_token1); // C4996
-#endif
-
-	// Note: strtok is deprecated; consider using strtok_s instead
-	while (token != nullptr)
+	while (tokenizer.HasMoreTokens())
 	{
-		auto tree_data = new CTreeData();
-		wxString value = token;
+		wxString value = tokenizer.GetNextToken();
 		value.Replace("@99", ".");
-		tree_data->SetKey(value);
-#if defined(WIN32) && _MSC_VER < 1900
-		token = wcstok(nullptr, seps); // C4996
-#else
-		token = wcstok(nullptr, seps, &next_token1); // C4996
-#endif
 
-		if (token != nullptr)
+		const bool hasChildren = tokenizer.HasMoreTokens();
+
+		auto* treeData = new CTreeData();
+		treeData->SetKey(value);
+
+		if (hasChildren)
 		{
-			tree_data->SetIsParent(true);
+			treeData->SetIsParent(true);
 
 			if (index > 0)
 			{
-				if (item == 0)
-				{
-					tree<CTreeData*>::iterator it;
-					//Recherche de la clé
-					it = FindKey(tree_data->GetKey());
-					if (it != nullptr)
-					{
-						child = it;
-						item++;
-						delete(tree_data);
-						continue;
-					}
-				}
+				tree<CTreeData*>::iterator it;
+
+				if (level == 0)
+					it = FindKey(treeData->GetKey());
 				else
+					it = FindKey(treeData->GetKey(), child);
+
+				if (it != nullptr) // maybe tr.end()
 				{
-					tree<CTreeData*>::iterator it;
-					//Recherche de la clé
-					it = FindKey(tree_data->GetKey(), child);
-					if (it != nullptr)
-					{
-						child = it;
-						item++;
-						delete(tree_data);
-						continue;
-					}
+					child = it;
+					++level;
+					delete treeData;
+					continue;
 				}
 			}
 
-			if (item > 0)
+			if (level > 0)
 			{
-				child = tr.append_child(child, tree_data);
+				child = tr.append_child(child, treeData);
 			}
 			else
 			{
-				tree_data->SetExifKey("-1");
-				child = tr.insert(top, tree_data);
+				treeData->SetExifKey("-1");
+				child = tr.insert(top, treeData);
 			}
 		}
 		else
 		{
-			tree_data->SetIsParent(false);
-			tree_data->SetValue(localLibelle);
-			tree_data->SetExifKey(key);
-			tr.append_child(child, tree_data);
+			treeData->SetIsParent(false);
+			treeData->SetValue(localLibelle);
+			treeData->SetExifKey(key);
+
+			tr.append_child(child, treeData);
 		}
-		item++;
+
+		++level;
 	}
 
-	UpdateElement();
+	CreateElement(RenderMode::Update);
 	eventControl->UpdateTreeControl();
 }
 
-void CInfoEffect::CreateElement()
+void CInfoEffect::CreateElement(RenderMode mode)
 {
-	vectorPosElement.clear();
-	vectorPosElementDynamic.clear();
+	if (mode == RenderMode::Create)
+	{
+		vectorPosElement.clear();
+		vectorPosElementDynamic.clear();
+	}
+	else
+	{
+		for (CPositionElement* value : vectorPosElement)
+		{
+			if (value != nullptr)
+			{
+				CTreeElement* treeElement = value->GetTreeElement();
+				if (treeElement != nullptr)
+					treeElement->SetVisible(false);
+			}
+		}
+	}
+
 	tree<CTreeData*>::sibling_iterator it = tr.begin();
 	auto itend = tr.end();
 	yPos = 0;
@@ -282,118 +268,51 @@ void CInfoEffect::CreateElement()
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementTexte* treeElementTexte = nullptr;
+			bool isVisible = true;
+			CTreeElementTriangle* tree_element_triangle = nullptr;
 			CPositionElement* posElement = nullptr;
 
-			auto treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                                 true);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
-			                                   data);
+			posElement = RenderTriangle(data,
+				xPos,
+				yPos,
+				isVisible,
+				RenderMode::Create);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 			widthPosition = posElement->GetWidth() + themeTree.GetMargeX();
+			tree_element_triangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
-
-			widthElement += xPos + posElement->GetWidth() + themeTree.GetMargeX();
-			yPos += themeTree.GetRowHeight();
-			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
-		}
-		++it;
-	}
-}
-
-
-void CInfoEffect::UpdateElement()
-{
-	for (CPositionElement* value : vectorPosElement)
-
-
-	{
-		if (value != nullptr)
-		{
-			CTreeElement* treeElement = value->GetTreeElement();
-			if (treeElement != nullptr)
-				treeElement->SetVisible(false);
-		}
-	}
-	tree<CTreeData*>::sibling_iterator it = tr.begin();
-	auto itend = tr.end();
-	yPos = 0;
-	nbRow = 0;
-
-	while (it != itend)
-	{
-		CTreeData* data = *it;
-		const int profondeur = tr.depth(it);
-		if (profondeur == 0)
-		{
-			bool isVisible = true;
-			int xPos = themeTree.GetMargeX();
-			int widthElement = 0;
-			CTreeElementTriangle* tree_element_triangle;
-			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
-			if (posElement == nullptr)
-			{
-				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_triangle->GetWidth(),
-				                                   tree_element_triangle->GetHeight(), ELEMENT_TRIANGLE,
-				                                   tree_element_triangle, data);
-			}
-			else
-			{
-				tree_element_triangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-				tree_element_triangle->SetVisible(isVisible);
-				posElement->SetX(xPos);
-				posElement->SetY(yPos);
-			}
-			widthPosition = xPos + posElement->GetWidth() + themeTree.GetMargeX();
-			xPos += posElement->GetWidth() + themeTree.GetMargeX();
-
-
-			posElement = GetElement(data, ELEMENT_TEXTE);
-			if (posElement == nullptr)
-			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(
-					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-					data->GetKey());
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte,
-				                                   data);
-			}
-			else
-			{
-				auto treeElementTexte = dynamic_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-				treeElementTexte->SetVisible(isVisible);
-				posElement->SetX(xPos);
-				posElement->SetY(yPos);
-			}
-
+			posElement = RenderText(data,
+				xPos,
+				yPos,
+				isVisible,
+				RenderMode::Create);
 			widthElement += xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
 
-			bool isOpen = false;
-			if (tree_element_triangle != nullptr)
-				isOpen = tree_element_triangle->GetOpen();
+			if (mode == RenderMode::Update)
+			{
+				 
+				bool isOpen = false;
+				if (tree_element_triangle != nullptr)
+					isOpen = tree_element_triangle->GetOpen();
 
-			if (isOpen)
-				UpdateChildTree(it);
+				if (isOpen)
+					UpdateChildTree(it);
+			}
+
 		}
 		++it;
 	}
 }
+
 
 void CInfoEffect::UpdateScreenRatio()
 {
-	UpdateElement();
+	CreateElement(RenderMode::Update);
 }
 
 void CInfoEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
@@ -406,22 +325,12 @@ void CInfoEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		const int profondeur = tr.depth(it);
 		CTreeData* data = *it;
 		int xPos = widthPosition * (profondeur);
-		CPositionElement* posElement = GetElement(data, ELEMENT_TEXTE);
-		if (posElement == nullptr)
-		{
-			CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                                         data->GetKey());
-			treeElementTexte->SetVisible(isVisible);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
-		}
-		else
-		{
-			auto treeElementTexte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-			treeElementTexte->SetVisible(isVisible);
-			posElement->SetX(xPos);
-			posElement->SetY(yPos);
-		}
+
+		CPositionElement*  posElement = RenderText(data,
+			xPos,
+			yPos,
+			isVisible,
+			RenderMode::Update, true);
 
 		const int widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 		yPos += themeTree.GetRowHeight();

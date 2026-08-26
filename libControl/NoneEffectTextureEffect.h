@@ -24,7 +24,8 @@ namespace Regards::Filter
 		void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
 		                         CImageLoadingFormat* bmpSecond) override
 		{
-			bmpViewer->StopTransitionEffect(bmpSecond);
+			if(bmpViewer != nullptr)
+				bmpViewer->StopTransitionEffect(bmpSecond);
 		}
 	};
 }

@@ -7,16 +7,11 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <RegardsConfigParam.h>
-#include <videothumb.h>
-#include "ShowPreview.h"
 #include <LibResource.h>
 #include <picture_utility.h>
 #include <WindowUtility.h>
-#include <ffmpeg_application.h>
 #include <ParamInit.h>
-extern "C" {
-#include <libavutil/error.h>
-}
+#include <MediaExtractor.h>
 
 
 #ifndef WX_PRECOMP
@@ -50,12 +45,13 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
+CompressionAudioVideoOption::CompressionAudioVideoOption()
 {
 	isOk = false;
-	videoEffectParameter = new CVideoEffectParameter();
+	videoEffectParameter = std::make_unique<CVideoEffectParameter>();
+	
 	//(*Initialize(CompressionAudioVideoOption)
-	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
+	wxXmlResource::Get()->LoadObject(this, nullptr,_T("CompressionAudioVideoOption"),_T("wxDialog"));
 	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
 	btnOk = static_cast<wxButton*>(FindWindow(XRCID("ID_BTOK")));
 	btnPreview = static_cast<wxButton*>(FindWindow(XRCID("ID_BTPREVIEW")));
@@ -111,7 +107,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	ckenablefilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKENABLEFILTER")));
 	rbAudioDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUDIOCOMPRESSION")));
 	rbVideoDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBVIDEOCOMPRESSION")));
-
+	videoCompressOption = std::make_unique<CVideoOptionCompress>();
 	//bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
 #ifdef USE_PREVIEW_INTEGRATE
 	panel = static_cast<wxPanel*>(FindWindow(XRCID("IDPANEL")));
@@ -191,7 +187,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 		theme.font.SetColorFont(*wxBLACK);
 	}
 	wxColour bgColor = labelTimeStart->GetParent()->GetBackgroundColour();
-	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
+	sliderVideoPosition = std::make_unique<CSliderVideoSelection>(labelTimeStart->GetParent(), wxID_ANY, this, theme);
 	auto size = wxSize(slVideo->GetSize().x, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
 	sliderVideoPosition->SetPosition(slVideo->GetPosition());
@@ -221,7 +217,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 		encoderHardware = config->GetHardwareEncoder();
 
 	bool findEncoder = false;
-	std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
+	std::vector<wxString> listHard = Regards::Media::GetHardwareList();
 	if (listHard.size() > 0)
 	{
 		for (wxString hardware : listHard)
@@ -247,11 +243,11 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 #endif
 
 #ifdef __APPLE__
-	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, viewerTheme);
+	showBitmapWindow = std::make_unique<CShowPreview>(this, SHOWBITMAPVIEWERDLGID, viewerTheme, videoCompressOption.get());
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 #else
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, viewerTheme);
+	showBitmapWindow = std::make_unique<CShowPreview>(panel, SHOWBITMAPVIEWERDLGID, viewerTheme, videoCompressOption.get());
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
@@ -259,41 +255,53 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	panel->Show(true);
 
 #endif
+
+	showBitmapWindow->SetErrorCompressionHandler([this](int errorCode) {
+		wxCommandEvent evt(wxEVENT_ERRORCOMPRESSION);
+		evt.SetInt(errorCode);
+		OnErrorCompression(evt);
+		});
 }
 
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
-	int orientation = ffmpegTranscoding->GetOrientation();
-	cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
-	if (!bitmap_local.empty())
+	if (ffmpegTranscoding != nullptr)
 	{
-		CPictureUtility::RotateExif(bitmap_local, orientation);
-		wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
-		int x = 0;
-		int y = 0;
-		x = (340 - picture.GetWidth()) / 2;
-		y = (240 - picture.GetHeight()) / 2;
+		int orientation = ffmpegTranscoding->GetOrientation();
+		cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
+		if (!bitmap_local.empty())
+		{
+			CPictureUtility::RotateExif(bitmap_local, orientation);
+			wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
+			int x = 0;
+			int y = 0;
+			x = (340 - picture.GetWidth()) / 2;
+			y = (240 - picture.GetHeight()) / 2;
 
-		wxBitmap test_bitmap(340, 240);
-		wxMemoryDC temp_dc;
-		temp_dc.SelectObject(test_bitmap);
-		CWindowUtility winUtility;
-		winUtility.FillRect(&temp_dc, wxRect(0, 0, 340, 240), *wxBLACK);
-		temp_dc.DrawBitmap(picture, x, y);
-		temp_dc.SelectObject(wxNullBitmap);
-		bitmap->SetBitmap(test_bitmap);
+			wxBitmap test_bitmap(340, 240);
+			wxMemoryDC temp_dc;
+			temp_dc.SelectObject(test_bitmap);
+			CWindowUtility winUtility;
+			winUtility.FillRect(&temp_dc, wxRect(0, 0, 340, 240), *wxBLACK);
+			temp_dc.DrawBitmap(picture, x, y);
+			temp_dc.SelectObject(wxNullBitmap);
+			bitmap->SetBitmap(test_bitmap);
+		}
 	}
+
 }
 
 
 void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
                                           const wxString& videoOutputFilename)
 {
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	showBitmapWindow->SetParameter(videoFilename, &videoOptionCompress);
-	//showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 
+	CVideoThumb* videoThumb = new CVideoThumb(videoFilename);
+
+	ffmpegTranscoding.reset(videoThumb);
+
+	GetCompressionOption();
+	showBitmapWindow->SetParameter(videoFilename);
 
 	wxFileName filepath(videoOutputFilename);
 	extension = filepath.GetExt();
@@ -345,11 +353,8 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-	if (ffmpegTranscoding != nullptr)
-		delete ffmpegTranscoding;
 
-	ffmpegTranscoding = new CVideoThumb(videoFilename, true, true);
-	//ffmpegTranscoding->SetFilename(videoFilename);
+
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 
@@ -523,23 +528,22 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
 #ifdef USE_PREVIEW_INTEGRATE
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+	GetCompressionOption();
+	showBitmapWindow->UpdateBitmap(extension);
 #else
 
 	if (previewDlg->IsShown())
 	{
-		CVideoOptionCompress videoOptionCompress;
-		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress, extension);
+		CVideoOptionCompress videoCompressOption;
+		GetCompressionOption(&videoCompressOption);
+		previewDlg->UpdatePreview(&videoCompressOption, extension);
 	}
 	else
 	{
 
-		CVideoOptionCompress videoOptionCompress;
-		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress, extension);
+		CVideoOptionCompress videoCompressOption;
+		GetCompressionOption(&videoCompressOption);
+		previewDlg->UpdatePreview(&videoCompressOption, extension);
 		previewDlg->Show();
 		wxPoint pt = this->GetPosition();
 		wxSize size = this->GetSize();
@@ -548,6 +552,11 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 		btnPreview->SetLabelText("Refresh");
 	}
 #endif
+}
+
+CVideoOptionCompress* CompressionAudioVideoOption::GetVideoCompressionPt()
+{
+	return videoCompressOption.get();
 }
 
 void CompressionAudioVideoOption::ChangeLabelPicture(const wxString& label)
@@ -627,27 +636,6 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 	}
 }
 
-CompressionAudioVideoOption::~CompressionAudioVideoOption()
-{
-	if (ffmpegTranscoding)
-	{
-		delete ffmpegTranscoding;
-		ffmpegTranscoding = nullptr;
-	}
-
-	if (sliderVideoPosition)
-	{
-		delete sliderVideoPosition;
-		sliderVideoPosition = nullptr;
-	}
-
-	if (showBitmapWindow != nullptr)
-		delete showBitmapWindow;
-
-	if (videoEffectParameter != nullptr)
-		delete videoEffectParameter;
-}
-
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)
 {
 	int h = (sec / 3600);
@@ -695,91 +683,96 @@ bool CompressionAudioVideoOption::IsOk()
 	return isOk;
 }
 
-void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress* videoOptionCompress)
+void CompressionAudioVideoOption::GetCompressionOption()
 {
-	if (videoOptionCompress != nullptr)
+	if (videoCompressOption != nullptr)
 	{
 		//bufferStabilization
-		//videoOptionCompress->videoEffectParameter.stabilizeImageBuffere = bufferStabilization->GetValue();
-		videoOptionCompress->videoEffectParameter.autoConstrast = ckVideoAutocontrast->GetValue();
-		videoOptionCompress->videoEffectParameter.stabilizeVideo = ckVideoStabilization->GetValue();
-		videoOptionCompress->videoEffectParameter.effectEnable = ckenablefilter->GetValue();
-		videoOptionCompress->videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.SharpenEnable = cksharpenFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.grayEnable = ckgrey->GetValue();
-		videoOptionCompress->videoEffectParameter.sepiaEnable = cksepia->GetValue();
-		videoOptionCompress->videoEffectParameter.filmgrainenable = cknoise->GetValue();
-		videoOptionCompress->videoEffectParameter.contrast = contrastFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.brightness = lightFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.ColorBoostEnable = ckcolorBoost->GetValue();
-		videoOptionCompress->videoEffectParameter.filmcolorisation = ckenableColorisation->GetValue();
-		videoOptionCompress->videoEffectParameter.filmEnhance = ckenableRestore->GetValue();
-		videoOptionCompress->videoEffectParameter.color_boost[0] = redFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.color_boost[1] = greenFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.color_boost[2] = blueFilter->GetValue();
-		videoOptionCompress->videoEffectParameter.bandcEnable = cklightandcontrast->GetValue();
+		//videoCompressOption->videoEffectParameter.stabilizeImageBuffere = bufferStabilization->GetValue();
+		videoCompressOption->videoEffectParameter.autoConstrast = ckVideoAutocontrast->GetValue();
+		videoCompressOption->videoEffectParameter.stabilizeVideo = ckVideoStabilization->GetValue();
+		videoCompressOption->videoEffectParameter.effectEnable = ckenablefilter->GetValue();
+		videoCompressOption->videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
+		videoCompressOption->videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();
+		videoCompressOption->videoEffectParameter.SharpenEnable = cksharpenFilter->GetValue();
+		videoCompressOption->videoEffectParameter.grayEnable = ckgrey->GetValue();
+		videoCompressOption->videoEffectParameter.sepiaEnable = cksepia->GetValue();
+		videoCompressOption->videoEffectParameter.filmgrainenable = cknoise->GetValue();
+		videoCompressOption->videoEffectParameter.contrast = contrastFilter->GetValue();
+		videoCompressOption->videoEffectParameter.brightness = lightFilter->GetValue();
+		videoCompressOption->videoEffectParameter.ColorBoostEnable = ckcolorBoost->GetValue();
+		videoCompressOption->videoEffectParameter.filmcolorisation = ckenableColorisation->GetValue();
+		videoCompressOption->videoEffectParameter.filmEnhance = ckenableRestore->GetValue();
+		videoCompressOption->videoEffectParameter.color_boost[0] = redFilter->GetValue();
+		videoCompressOption->videoEffectParameter.color_boost[1] = greenFilter->GetValue();
+		videoCompressOption->videoEffectParameter.color_boost[2] = blueFilter->GetValue();
+		videoCompressOption->videoEffectParameter.bandcEnable = cklightandcontrast->GetValue();
 
-		videoOptionCompress->videoEffectParameter.sharpness = sharpenFilter->GetValue() / 10.0f;
-		videoOptionCompress->videoTime = timeTotal;
+		videoCompressOption->videoEffectParameter.sharpness = sharpenFilter->GetValue() / 10.0f;
+		videoCompressOption->videoTime = timeTotal;
 		//Audio
-		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
+		videoCompressOption->audioQualityOrBitRate = ckAudioQuality->IsChecked();
 		if (cbAudioQuality->GetStringSelection() != "")
-			videoOptionCompress->audioQuality = atoi(cbAudioQuality->GetStringSelection());
+			videoCompressOption->audioQuality = atoi(cbAudioQuality->GetStringSelection());
 		else
-			videoOptionCompress->audioQuality = 5;
+			videoCompressOption->audioQuality = 5;
 
 		if (cbAudioBitRate->GetStringSelection() != "")
-			videoOptionCompress->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
+			videoCompressOption->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
 		else
-			videoOptionCompress->audioBitRate = 128;
-		videoOptionCompress->audioCodec = cbAudioCodec->GetStringSelection();
+			videoCompressOption->audioBitRate = 128;
+		videoCompressOption->audioCodec = cbAudioCodec->GetStringSelection();
 
-		if (videoOptionCompress->audioCodec == "")
-			videoOptionCompress->audioCodec = "AAC";
-		if (videoOptionCompress->audioQualityOrBitRate && videoOptionCompress->audioQuality == 0)
-			videoOptionCompress->audioQuality = 5;
-		else if (videoOptionCompress->audioBitRate == 0)
-			videoOptionCompress->audioBitRate = 128;
+		if (videoCompressOption->audioCodec == "")
+			videoCompressOption->audioCodec = "AAC";
+		if (videoCompressOption->audioQualityOrBitRate && videoCompressOption->audioQuality == 0)
+			videoCompressOption->audioQuality = 5;
+		else if (videoCompressOption->audioBitRate == 0)
+			videoCompressOption->audioBitRate = 128;
 		//Video
-		videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
+		videoCompressOption->videoCodec = cbVideoCodec->GetStringSelection();
 
 
 		if (cbVideoProfile != nullptr)
-			videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
+			videoCompressOption->encoder_profile = cbVideoProfile->GetStringSelection();
 
-		if (videoOptionCompress->encoder_profile == "")
-			videoOptionCompress->encoder_profile = "main";
+		if (videoCompressOption->encoder_profile == "")
+			videoCompressOption->encoder_profile = "main";
 
-		if (videoOptionCompress->videoCodec == "")
-			videoOptionCompress->videoCodec = "H264";
+		if (videoCompressOption->videoCodec == "")
+			videoCompressOption->videoCodec = "H264";
 
-		videoOptionCompress->videoPreset = cbVideoPreset->GetStringSelection();
-		if (videoOptionCompress->videoPreset == "")
-			videoOptionCompress->videoPreset = "Medium";
-		videoOptionCompress->constantOrVbrOption = rbQuality->GetSelection();
-		videoOptionCompress->videoQualityOrBitRate = ckVideoQuality->IsChecked();
-		videoOptionCompress->videoCompressionValue = slCompression->GetValue();
-		videoOptionCompress->videoBitRate = atoi(txtBitRate->GetValue());
-		videoOptionCompress->videoHardware = ckVideoHardware->IsChecked();
-		videoOptionCompress->startTime = sliderVideoPosition->GetTimeStart();
-		videoOptionCompress->audioDirectCopy = rbAudioDirectCopy->GetSelection();
-		videoOptionCompress->videoDirectCopy = rbVideoDirectCopy->GetSelection();
+		videoCompressOption->videoPreset = cbVideoPreset->GetStringSelection();
+		if (videoCompressOption->videoPreset == "")
+			videoCompressOption->videoPreset = "Medium";
+		videoCompressOption->constantOrVbrOption = rbQuality->GetSelection();
+		videoCompressOption->videoQualityOrBitRate = ckVideoQuality->IsChecked();
+		videoCompressOption->videoCompressionValue = slCompression->GetValue();
+		videoCompressOption->videoBitRate = atoi(txtBitRate->GetValue());
+		videoCompressOption->videoHardware = ckVideoHardware->IsChecked();
+		videoCompressOption->startTime = sliderVideoPosition->GetTimeStart();
+		videoCompressOption->audioDirectCopy = rbAudioDirectCopy->GetSelection();
+		videoCompressOption->videoDirectCopy = rbVideoDirectCopy->GetSelection();
 
 
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
 			config->SetHardwareEncoder(cbVideoHardware->GetStringSelection());
 
-		if (videoOptionCompress->videoDirectCopy)
-			videoOptionCompress->videoEffectParameter.effectEnable = false;
+		if (videoCompressOption->videoDirectCopy)
+			videoCompressOption->videoEffectParameter.effectEnable = false;
 
 		int endTime = timeTotal;
-		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->
+		videoCompressOption->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->
 			                               GetTimeStart() != 0)
 			                               ? sliderVideoPosition->GetTimeEnd()
 			                               : 0;
 	}
+}
+
+bool CompressionAudioVideoOption::IsCancel()
+{
+	return isCancel;
 }
 
 void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
@@ -800,5 +793,6 @@ void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
 void CompressionAudioVideoOption::OnbtnCancelClick(wxCommandEvent& event)
 {
 	isOk = false;
+	isCancel = true;
 	this->Close();
 }

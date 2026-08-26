@@ -24,7 +24,9 @@
 #include <wx/filename.h>
 #include <wx/busyinfo.h>
 #include "ParamInit.h"
-
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
+#include <ModificationManager.h>
 using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;
@@ -106,7 +108,14 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	height = 0;
 	url = "http://www.google.fr";
 
-	windowVisible = -1;
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		windowVisible = config->GetVisibleWindowPanelInfos();
+	else
+		windowVisible = WM_INFOS;
+
+	if (windowVisible == WM_HISTOGRAM)
+		windowVisible = WM_INFOS;
 
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
@@ -114,7 +123,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	wxString folder = CFileUtility::GetDocumentFolderPath();
 
-	modificationManager = new CModificationManager(folder);
+	modificationManager = std::make_unique<CModificationManager>(folder);
 
 	if (viewerTheme != nullptr)
 	{
@@ -269,7 +278,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	}
 
 	toolbarWindow = infosToolbar;
-
+	windowVisible = -1;
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
 }
@@ -289,19 +298,6 @@ wxString CPanelInfosWnd::GetFilename()
 	return filename;
 }
 
-CPanelInfosWnd::~CPanelInfosWnd()
-{
-	delete(infosFileWnd);
-	delete(historyEffectWnd);
-	delete(filtreEffectWnd);
-	delete(thumbnailEffectWnd);
-	delete(infosToolbar);
-	delete(webBrowser);
-	delete(criteriaTreeWnd);
-	delete(picturePanel);
-	delete(modificationManager);
-}
-
 void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
 {
 	if (this->filename != filename)
@@ -309,18 +305,14 @@ void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 		infosToolbar->SetPictureThumbnailToolbar();
-
 		infosToolbar->SetMapInactif();
+
 		if (windowVisible != WM_INFOS)
 		{
 			windowVisible = WM_INFOS;
-			infosToolbar->SetInfosActif();
+			this->ClickShowButton(WM_INFOS);
 		}
-		else
-		{
-			LoadInfo();
-		}
-		
+		LoadInfo();
 		this->isVideo = false;
 	}
 }
@@ -332,14 +324,17 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
-		CFileGeolocation fileGeo("", "");
-		fileGeo.SetFile(filename, "");
-		bool hasGps = fileGeo.HasGps();
+		//CFileGeolocation fileGeo("", "");
+		//fileGeo.SetFile(filename, "");
+		//bool hasGps = fileGeo.HasGps();
+
 		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
+		bool hasGps = fileGeolocalisation->HasGps();
 
 		if (!this->isVideo)
 		{
 			infosToolbar->SetVideoToolbar();
+			infosToolbar->SetInfosActif();
 			GeolocHelper::UpdateGpsStatus(infosToolbar, fileGeolocalisation);
 		}
 		else
@@ -349,16 +344,13 @@ void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 
 		delete fileGeolocalisation;
 
+
 		if (windowVisible != WM_INFOS)
 		{
 			windowVisible = WM_INFOS;
-			infosToolbar->SetInfosActif();
+			this->ClickShowButton(WM_INFOS);
 		}
-		else
-		{
-			LoadInfo();
-		}
-
+		LoadInfo();
 		this->isVideo = true;
 		firstTime = false;
 	}
@@ -376,9 +368,9 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
-		CFileGeolocation fileGeo("","");
-		fileGeo.SetFile(filename, "");
-		bool hasGps = fileGeo.HasGps();
+		//CFileGeolocation fileGeo("","");
+		//fileGeo.SetFile(filename, "");
+		//bool hasGps = fileGeo.HasGps();
 
 		auto fileGeolocalisation = GeolocHelper::CreateAndSetFile(filename);
 
@@ -388,16 +380,13 @@ void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumb
 
 		this->isVideo = false;
 
+
 		if (windowVisible != WM_INFOS)
 		{
 			windowVisible = WM_INFOS;
-			infosToolbar->SetInfosActif();
+			this->ClickShowButton(WM_INFOS);
 		}
-		else
-		{
-			LoadInfo();
-		}
-
+		LoadInfo();
 
 		firstTime = false;
 	}
@@ -421,9 +410,28 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 
 void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 {
-	wxBusyInfo wait("Please wait, working...");
-	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
-	ClickShowButton(WM_EFFECT);
+	CBitmapWndViewer* bitmapViewer = nullptr;
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(BITMAPWINDOWVIEWERID));
+	if (bitmapWindow != nullptr)
+	{
+		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
+	}
+
+	if (bitmapViewer != nullptr)
+	{
+		wxBusyInfo wait("Please wait, working...");
+		filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
+		bitmapViewer->SetBitmapPreviewEffect(0);
+	}
+
+	infosToolbar->SetEffectParameterInactif();
+
+	if (windowVisible != WM_INFOS)
+	{
+		windowVisible = WM_INFOS;
+		this->ClickShowButton(WM_INFOS);
+	}
+	LoadInfo();
 }
 
 void CPanelInfosWnd::OnFiltreCancel()
@@ -448,7 +456,7 @@ void CPanelInfosWnd::OnFiltreCancel()
 		wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	ClickShowButton(WM_EFFECT);
+
 }
 
 void CPanelInfosWnd::EffectUpdate()
@@ -496,7 +504,7 @@ void CPanelInfosWnd::HistoryUpdate()
 		if (bitmapViewer != nullptr)
 		{
 			CImageLoadingFormat* bitmap = bitmapViewer->GetBitmap(true);
-			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager.get());
 		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "header.h"
 #include "ConvertUtility.h"
-#include "base64.h"
+#include <wx/base64.h>
+#include <wx/filename.h>
 using namespace std;
 
 CConvertUtility::CConvertUtility(void)
@@ -12,36 +13,52 @@ CConvertUtility::~CConvertUtility(void)
 {
 }
 
+
+
 wxString CConvertUtility::ConvertToBase64(const wxString& s)
 {
-    return base64_encode(s);
+	wxCharBuffer utf8 = s.ToUTF8();
+
+	return wxBase64Encode(
+		utf8.data(),
+		strlen(utf8.data())
+	);
 }
 
 wxString CConvertUtility::ConvertFromBase64(const wxString& s)
 {
-    return base64_decode(s);
+	wxMemoryBuffer buffer = wxBase64Decode(s);
+
+	wxString decoded(
+		static_cast<const char*>(buffer.GetData()),
+		wxConvUTF8,
+		buffer.GetDataLen()
+	);
+
+	return decoded;
 }
 
-wxString CConvertUtility::GeneratePath(const wxString& firstPart, const wxString& secondPart)
+wxString CConvertUtility::GeneratePath(
+	const wxString& firstPart,
+	const wxString& secondPart)
 {
-#if defined(WIN32)
-	return firstPart + "\\" + secondPart;
-
-#else
-	return firstPart + "/" + secondPart;
-#endif
+	wxFileName file(firstPart, secondPart);
+	return file.GetFullPath();
 }
 
-const std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
+std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
 {
-#ifdef __WXGTK__
-    std::string chaine = ConvertToStdString(s);
-    std::wstring ws;
-    ws.assign(chaine.begin(), chaine.end());
-    return ws;
-#else
 	return s.ToStdWstring();
-#endif
+}
+
+int CConvertUtility::StringToInt(const wxString& s)
+{
+	long value;
+
+	if (!s.ToLong(&value))
+		throw std::invalid_argument("Invalid integer");
+
+	return static_cast<int>(value);
 }
 
 wxString CConvertUtility::GenerateValue(const int& value, const size_t & n)
@@ -52,58 +69,21 @@ wxString CConvertUtility::GenerateValue(const int& value, const size_t & n)
 	return s;
 }
 
-const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
+std::string CConvertUtility::ConvertToStdString(const wxString& s)
 {
-#ifdef __APPLE__
-    return fileName.ToStdString();
-#elif defined(WIN32)
-	const std::wstring ws = fileName.ToStdWstring();
-	const std::string s(ws.begin(), ws.end());
-	return s;
-#else
-    return std::string(ConvertToUTF8(fileName)); 
-#endif
+	return s.utf8_string();
 }
-
-const char* CConvertUtility::ConvertToUTF8(const wxString& s)
-{
-	/*
-#ifdef __WXGTK__    
-	const char* str = (const char*)s.mb_str(wxConvUTF8);
-	return s.ToUTF8();
-#else
-	return s.mb_str(wxConvUTF8);
-#endif
- * */
-
-
-	return s.ToUTF8();
-}
-
 
 wxString CConvertUtility::GetTimeLibelle(const int& secs)
 {
-	char timestring[9];
-	//printf("GetTimeLibelle %d secs \n", secs);
-	if(secs > 0)
-	{
-		uint32_t hh = secs / 3600;
-		uint32_t mm = (secs % 3600) / 60;
-		uint32_t ss = (secs % 3600) % 60;
-		if(hh > 100)
-			hh = 99;
-		if(mm > 100)
-			mm = 99;
-		if(ss > 100)
-			ss = 99;
-		sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
-	}
-	else
-	{
-		strcpy(timestring, "00:00:00");
-	}
+	if (secs <= 0)
+		return "00:00:00";
 
-	return wxString(timestring);
+	uint32_t hh = std::min<uint32_t>(secs / 3600, 99);
+	uint32_t mm = std::min<uint32_t>((secs % 3600) / 60, 99);
+	uint32_t ss = std::min<uint32_t>((secs % 60), 99);
+
+	return wxString::Format("%02u:%02u:%02u", hh, mm, ss);
 }
 
 std::vector<wxString> CConvertUtility::split(const wxString& s, char seperator)

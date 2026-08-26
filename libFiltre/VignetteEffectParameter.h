@@ -12,10 +12,6 @@ public:
 		power = 50;
 	};
 
-	~CVignetteEffectParameter() override
-	{
-	};
-
 	float radius;
 	float power;
 	int bitmapWidth;

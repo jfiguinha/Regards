@@ -3,15 +3,6 @@
 #include <FileUtility.h>
 using namespace Regards::Window;
 
-CTreeElementTexteClick::CTreeElementTexteClick()
-{
-}
-
-
-CTreeElementTexteClick::~CTreeElementTexteClick()
-{
-}
-
 int CTreeElementTexteClick::GetTypeLink()
 {
 	return typeElement;

@@ -20,9 +20,6 @@ CTreeElementCheckBox& CTreeElementCheckBox::operator=(const CTreeElementCheckBox
 	return *this;
 }
 
-CTreeElementCheckBox::~CTreeElementCheckBox()
-{
-}
 
 void CTreeElementCheckBox::SetTheme(CThemeTreeCheckBox* theme)
 {
@@ -53,20 +50,8 @@ void CTreeElementCheckBox::DrawBitmap(wxDC* deviceContext, const int& xPos, cons
 {
 	int checkWidth = themeTreeCheckBox.GetCheckBoxWidth();
 	int checkHeight = themeTreeCheckBox.GetCheckBoxHeight();
-	wxImage imageScale;
-
-	if (checked)
-	{
-		imageScale = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", checkWidth, checkHeight);
-		int y = yPos + (themeTreeCheckBox.GetHeight() - imageScale.GetHeight()) / 2;
-		int x = xPos + (themeTreeCheckBox.GetWidth() - imageScale.GetWidth()) / 2;
-		deviceContext->DrawBitmap(imageScale, x, y);
-	}
-	else
-	{
-		imageScale = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", checkWidth, checkHeight);
-		int y = yPos + (themeTreeCheckBox.GetHeight() - imageScale.GetHeight()) / 2;
-		int x = xPos + (themeTreeCheckBox.GetWidth() - imageScale.GetWidth()) / 2;
-		deviceContext->DrawBitmap(imageScale, x, y);
-	}
+	wxImage imageScale = CLibResource::CreatePictureFromSVG(checked ? "IDB_CHECKBOX_ON" : "IDB_CHECKBOX_OFF", checkWidth, checkHeight);
+	int y = yPos + (themeTreeCheckBox.GetHeight() - imageScale.GetHeight()) / 2;
+	int x = xPos + (themeTreeCheckBox.GetWidth() - imageScale.GetWidth()) / 2;
+	deviceContext->DrawBitmap(imageScale, x, y);
 }

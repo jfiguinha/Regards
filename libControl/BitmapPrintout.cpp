@@ -2,26 +2,30 @@
 #include "BitmapPrintout.h"
 #include <ImageLoadingFormat.h>
 #include "PrintEngine.h"
+#include <libPicture.h>
 using namespace Regards::Control;
 using namespace Regards::Print;
 
 // ----------------------------------------------------------------------------
 // MyPrintout
 // ----------------------------------------------------------------------------
-
-CBitmapPrintout::~CBitmapPrintout()
+CBitmapPrintout::CBitmapPrintout(const wxString& filename, const wxString& title)
+	: wxPrintout(title)
 {
-	if (m_picture != nullptr)
-		delete(m_picture);
-
-	m_picture = nullptr;
+	//m_picture = image;
+	Regards::Picture::CLibPicture libPicture;
+	m_picture = std::unique_ptr<CImageLoadingFormat>(libPicture.LoadPicture(filename));
+	typePicture = Type_Picture::picture;
 }
 
-CBitmapPrintout::CBitmapPrintout(): typeImage(0)
+CBitmapPrintout::CBitmapPrintout(cv::Mat& picture, const wxString& title)
+	: wxPrintout(title)
 {
-	m_picture = nullptr;
+	Regards::Picture::CLibPicture libPicture;
+	m_picture = std::make_unique<CImageLoadingFormat>();
+	m_picture->SetPicture(picture);
+	typePicture = Type_Picture::matrix;
 }
-
 
 bool CBitmapPrintout::OnPrintPage(int page)
 {
@@ -51,118 +55,98 @@ bool CBitmapPrintout::OnBeginDocument(int startPage, int endPage)
 
 void CBitmapPrintout::GetPageInfo(int* minPage, int* maxPage, int* selPageFrom, int* selPageTo)
 {
-	if (typeImage == 1)
+	switch(typePicture)
 	{
+	case  Type_Picture::picture:
 		*minPage = 1;
 		*maxPage = m_picture->GetNbPage();
 		*selPageFrom = 1;
 		*selPageTo = m_picture->GetNbPage();
-	}
-	else if (typeImage == 2)
-	{
+		break;
+	case Type_Picture::matrix:
 		*minPage = 1;
 		*maxPage = 1;
 		*selPageFrom = 1;
 		*selPageTo = 1;
+		break;
 	}
 }
 
 bool CBitmapPrintout::HasPage(int pageNum)
 {
-	if (typeImage == 1)
+	switch (typePicture)
 	{
+	case  Type_Picture::picture:
 		if (pageNum <= m_picture->GetNbPage())
 			return true;
-	}
-	else if (typeImage == 2)
-	{
+		break;
+	case Type_Picture::matrix:
 		if (pageNum <= 1)
 			return true;
+		break;
 	}
 	return false;
 }
-
 void CBitmapPrintout::DrawPicture(const int& pageNum)
 {
-	// You might use THIS code if you were scaling graphics of known size to fit
-	// on the page. The commented-out code illustrates different ways of scaling
-	// the graphics.
+	std::unique_ptr<CImageLoadingFormat> page;
 
-	// We know the graphic is 230x350. If we didn't know this, we'd need to
-	// calculate it.
 	CImageLoadingFormat* image = nullptr;
 
-	if (typeImage == 1)
+	if (typePicture == Type_Picture::picture)
 	{
-		image = m_picture->GetPage(pageNum - 1);
+		page.reset(m_picture->GetPage(pageNum - 1));
+		image = page.get();
 	}
-	else if (typeImage == 2)
+	else
 	{
-		image = new CImageLoadingFormat();
-		image->SetPicture(m_bitmap);
+		image = m_picture.get();
 	}
 
-	wxCoord maxX = image->GetWidth();
-	wxCoord maxY = image->GetHeight();
-	wxPageSetupDialogData* g_pageSetupData = CPrintEngine::GetPageSetupDialogData();
-
-	// This sets the user scale and origin of the DC so that the image fits
-	// within the page margins as specified by g_PageSetupData, which you can
-	// change (on some platforms, at least) in the Page Setup dialog. Note that
-	// on Mac, the native Page Setup dialog doesn't let you change the margins
-	// of a wxPageSetupDialogData object, so you'll have to write your own dialog or
-	// use the Mac-only wxMacPageMarginsDialog, as we do in this program.
-	FitThisSizeToPageMargins(wxSize(maxX, maxY), *g_pageSetupData);
-	wxRect fitRect = GetLogicalPageMarginsRect(*g_pageSetupData);
-
-	// This offsets the image so that it is centered within the reference
-	// rectangle defined above.
-	wxCoord xoff = (fitRect.width - maxX) / 2;
-	wxCoord yoff = (fitRect.height - maxY) / 2;
-	OffsetLogicalOrigin(xoff, yoff);
+	if (!image)
+		return;
 
 	wxDC* dc = GetDC();
-	wxImage _local = image->GetwxImage();
-	dc->DrawBitmap(_local, 0, 0);
-	delete image;
+	if (!dc)
+		return;
+
+	wxPageSetupDialogData* pageSetupData =
+		CPrintEngine::GetPageSetupDialogData();
+
+	wxRect printableRect =
+		GetLogicalPageMarginsRect(*pageSetupData);
+
+	wxImage img = image->GetwxImage();
+
+	if (!img.IsOk())
+		return;
+
+	const double sx =
+		static_cast<double>(printableRect.width) /
+		img.GetWidth();
+
+	const double sy =
+		static_cast<double>(printableRect.height) /
+		img.GetHeight();
+
+	const double scale = std::min(sx, sy);
+
+	const int w =
+		static_cast<int>(img.GetWidth() * scale);
+
+	const int h =
+		static_cast<int>(img.GetHeight() * scale);
+
+	img.Rescale(w, h, wxIMAGE_QUALITY_HIGH);
+
+	const int x =
+		printableRect.x +
+		(printableRect.width - w) / 2;
+
+	const int y =
+		printableRect.y +
+		(printableRect.height - h) / 2;
+
+	dc->DrawBitmap(wxBitmap(img), x, y, false);
 }
 
-
-// Writes a header on a page. Margin units are in millimetres.
-bool CBitmapPrintout::WritePageHeader(wxPrintout* printout, wxDC* dc, const wxString& text, float mmToLogical)
-{
-	/*
-#if 0
-	static wxFont *headerFont = (wxFont *)nullptr;
-	if (!headerFont)
-	{
-		headerFont = wxTheFontList->FindOrCreateFont(16, wxSWISS, wxNORMAL, wxBOLD);
-	}
-	dc->SetFont(headerFont);
-#endif
-
-	int pageWidthMM, pageHeightMM;
-
-	printout->GetPageSizeMM(&pageWidthMM, &pageHeightMM);
-	wxUnusedVar(pageHeightMM);
-
-	int leftMargin = 10;
-	int topMargin = 10;
-	int rightMargin = 10;
-
-	float leftMarginLogical = (float)(mmToLogical*leftMargin);
-	float topMarginLogical = (float)(mmToLogical*topMargin);
-	float rightMarginLogical = (float)(mmToLogical*(pageWidthMM - rightMargin));
-
-	wxCoord xExtent, yExtent;
-	dc->GetTextExtent(text, &xExtent, &yExtent);
-
-	float xPos = (float)(((((pageWidthMM - leftMargin - rightMargin) / 2.0) + leftMargin)*mmToLogical) - (xExtent / 2.0));
-	dc->DrawText(text, (long)xPos, (long)topMarginLogical);
-
-	dc->SetPen(*wxBLACK_PEN);
-	dc->DrawLine((long)leftMarginLogical, (long)(topMarginLogical + yExtent),
-		(long)rightMarginLogical, (long)topMarginLogical + yExtent);
-		*/
-	return true;
-}

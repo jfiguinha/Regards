@@ -19,7 +19,7 @@ cv::Mat CLoadingResource::LoadResourceCV(const wxString& resourceName)
     wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
     if (wxFileExists(resourcePath))
     {
-        out = cv::imread(resourcePath.ToStdString());
+        out = cv::imread(resourcePath.utf8_string());
     }
     return out;
 }

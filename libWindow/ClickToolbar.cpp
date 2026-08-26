@@ -13,7 +13,7 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	idObject = idMessage;
 	isVertical = vertical;
 
-	screen = new CToolbarButton(themeToolbar.button);
+	screen = std::make_unique<CToolbarButton>(themeToolbar.button);
 	screen->ReplaceColor(wxColor(0, 0, 0), wxColor(0, 0, 0), themeToolbar.replaceColor);
 	if (vertical)
 	{
@@ -29,7 +29,7 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	screen->SetLibelle("");
 	screen->SetBorder(0);
 	screen->IsPushActif(false);
-	navElement.push_back(screen);
+	navElement.push_back(screen.get());
 }
 
 void CClickToolbar::SetVertical(const bool& vertical)
@@ -52,9 +52,7 @@ void CClickToolbar::SetVertical(const bool& vertical)
 	needToRefresh = true;
 }
 
-CClickToolbar::~CClickToolbar()
-{
-}
+
 
 int CClickToolbar::GetWidth()
 {

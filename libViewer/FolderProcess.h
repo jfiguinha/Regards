@@ -11,25 +11,6 @@ namespace Regards::Viewer
 	class CMainWindow;
 
 
-	class CThreadCheckFile
-	{
-	public:
-		CThreadCheckFile()
-		{
-			mainWindow = nullptr;
-		}
-
-		~CThreadCheckFile()
-		{
-		};
-
-		static void CheckFile(void* param);
-
-		std::thread* checkFile = nullptr;
-		CMainWindow* mainWindow;
-
-	};
-
 	class CFolderFiles
 	{
 	public:
@@ -45,13 +26,34 @@ namespace Regards::Viewer
 			mainWindow = nullptr;
 		}
 
-		~CThreadVideoData()
-		{
-		};
+		~CThreadVideoData();
 
 		CMainWindow* mainWindow;
 		wxString video;
 	};
+
+	class CThreadCheckFile
+	{
+	public:
+		CThreadCheckFile()
+		{
+			mainWindow = nullptr;
+		}
+
+		~CThreadCheckFile()
+		{
+		};
+
+		static void CheckFile(void* param);
+
+
+		std::unique_ptr<std::thread> checkFile = nullptr;
+		CMainWindow* mainWindow;
+		int pictureSize;
+		int numFile;
+	};
+
+
 
 	class CThreadPhotoLoading
 	{
@@ -63,7 +65,6 @@ namespace Regards::Viewer
 		}
 
 		~CThreadPhotoLoading() {};
-		
 
 		Regards::Viewer::CMainWindow* mainWindow;
 		CIconeList* iconeListLocal;
@@ -77,9 +78,10 @@ namespace Regards::Viewer
 	{
 	public:
 		CFolderProcess(CMainWindow* mainWindow);
-		~CFolderProcess();
-		void UpdateCriteria(bool criteriaSendMessage);
+		~CFolderProcess() = default;
 		void RefreshFolder(bool& folderChange, int& nbFile);
+		//void UpdateFolderStatic();
+
 
 	private:
 		CMainWindow* mainWindow;
@@ -88,22 +90,6 @@ namespace Regards::Viewer
 		wxString oldRequest = "";
 	};
 
-	class CThumbnailProcess
-	{
-	public:
-		CThumbnailProcess(CMainWindow* parent)
-		{
-			this->parent = parent;
-		}
-		~CThumbnailProcess()
-		{
-		};
 
-
-		void ProcessThumbnail(wxString filename, int type, long longWindow, int& nbProcess);
-
-	private:
-		static void LoadPicture(void* param);
-		CMainWindow* parent = nullptr;
-	};
+	
 }

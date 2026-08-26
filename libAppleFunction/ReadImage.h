@@ -9,12 +9,6 @@
 
 
 #ifdef __APPLE__
-#pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 
 class ReadImageImpl;
 

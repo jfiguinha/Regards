@@ -277,7 +277,7 @@ bool CThemeParam::OpenFile(const wxString& configFile)
 	doc.clear();
 	try
 	{
-		ifstream theFile(CConvertUtility::ConvertToStdString(filename));
+		ifstream theFile(CConvertUtility::ConvertToStdString(filename).c_str());
 		vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 		if (buffer.size() > 0)
 		{

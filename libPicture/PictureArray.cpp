@@ -15,14 +15,14 @@ CPictureArray::CPictureArray(cv::Mat& m)
 
 void CPictureArray::SetArray(cv::Mat& m)
 {
-  	mat = m;
-	kind = cv::_InputArray::KindFlag::MAT;  
+	mat = m;
+	kind = cv::_InputArray::KindFlag::MAT;
 }
 
 void CPictureArray::SetArray(cv::UMat& m)
 {
-  	umat = m;
-	kind = cv::_InputArray::KindFlag::UMAT;  
+	umat = m;
+	kind = cv::_InputArray::KindFlag::UMAT;
 }
 
 
@@ -34,7 +34,7 @@ CPictureArray::CPictureArray(cv::UMat& m)
 
 int CPictureArray::getWidth()
 {
-    if (kind == cv::_InputArray::KindFlag::MAT)
+	if (kind == cv::_InputArray::KindFlag::MAT)
 	{
 		return mat.size().width;
 	}
@@ -43,7 +43,7 @@ int CPictureArray::getWidth()
 
 int CPictureArray::getHeight()
 {
-    if (kind == cv::_InputArray::KindFlag::MAT)
+	if (kind == cv::_InputArray::KindFlag::MAT)
 	{
 		return mat.size().height;
 	}
@@ -57,7 +57,7 @@ cv::_InputArray::KindFlag CPictureArray::Kind()
 
 cv::UMat& CPictureArray::getUMat()
 {
-    if(kind == cv::_InputArray::KindFlag::MAT)
+	if (kind == cv::_InputArray::KindFlag::MAT)
 	{
 		mat.copyTo(umat);
 		return umat;
@@ -67,7 +67,7 @@ cv::UMat& CPictureArray::getUMat()
 
 cv::Mat& CPictureArray::getMat()
 {
-    if (kind == cv::_InputArray::KindFlag::UMAT)
+	if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
 		umat.copyTo(mat);
 		return mat;
@@ -89,7 +89,7 @@ void CPictureArray::copyTo(cv::UMat& m)
 
 bool CPictureArray::empty()
 {
-    if (kind == cv::_InputArray::KindFlag::UMAT)
+	if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
 		return umat.empty();
 	}
@@ -99,7 +99,7 @@ bool CPictureArray::empty()
 
 void CPictureArray::Release()
 {
-    if (kind == cv::_InputArray::KindFlag::UMAT)
+	if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
 		umat.release();
 	}

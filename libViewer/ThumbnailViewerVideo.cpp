@@ -14,19 +14,29 @@ CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, co
 }
 
 
-CThumbnailViewerVideo::~CThumbnailViewerVideo(void)
+void CThumbnailViewerVideo::OnScrollBarH(wxCommandEvent& event)
 {
+	int isScrollBarH = event.GetInt();
+	long scrollBarHSize = event.GetExtraLong();
+	if (isScrollBarH)
+		themeThumbnail.themeIcone.SetHeight(themeIconeHeight);
+	else
+		themeThumbnail.themeIcone.SetHeight(themeIconeHeight + scrollBarHSize);
+
+	ResizeThumbnail();
 }
 
-void CThumbnailViewerVideo::OnPictureClick(CThumbnailData* data)
+
+void CThumbnailViewerVideo::OnPictureClick(const int& numPhotoId)
 {
 	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
-	if (mainWindow != nullptr && data != nullptr)
+	if (mainWindow != nullptr)
 	{
+		CIcone* icone = GetIconeById(numPhotoId);
 #ifdef FFMPEG
-		int timePosition = data->GetTimePosition();
+		int timePosition = icone->GetPtData()->GetTimePosition();
 #else
-		int timePosition = data->GetTimePosition() * 1000;
+		int timePosition = icone->GetPtData()->GetTimePosition() * 1000;
 #endif
 		wxCommandEvent evt(wxEVENT_PICTUREVIDEOCLICK);
 		evt.SetExtraLong(timePosition);

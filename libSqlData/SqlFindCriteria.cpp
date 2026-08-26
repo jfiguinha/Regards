@@ -1,6 +1,7 @@
 #include <header.h>
 #include "SqlFindCriteria.h"
 #include "SqlResult.h"
+#include <SqlParameter.h>
 using namespace Regards::Sqlite;
 
 CSqlFindCriteria::CSqlFindCriteria()
@@ -9,29 +10,14 @@ CSqlFindCriteria::CSqlFindCriteria()
 }
 
 
-CSqlFindCriteria::~CSqlFindCriteria()
-{
-}
-
-bool CSqlFindCriteria::SearchUniqueCriteria(CriteriaVector* criteriaVector, const int64_t& numFolder,
-                                            const int64_t& numCatalog)
-{
-	wxString sql;
-	m_criteriaVector = criteriaVector;
-	sql = "SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE NumCriteria in (";
-	sql.append(
-		"SELECT DISTINCT NumCriteria FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as CR ON CR.NumPHOTO = PH.NumPHOTO WHERE PH.NumFolderCatalog = "
-		+ to_string(numFolder) + " AND NumCriteria NOT IN(");
-	sql.append(
-		"SELECT DISTINCT NumCriteria FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as CR ON CR.NumPHOTO = PH.NumPHOTO WHERE PH.NumFolderCatalog != "
-		+ to_string(numFolder) + "))");
-	return (ExecuteRequest(sql) != -1) ? true : false;
-}
-
 bool CSqlFindCriteria::SearchCriteriaAlone(CriteriaVector* criteriaVector)
 {
 	m_criteriaVector = criteriaVector;
-	return (ExecuteRequest("SELECT * from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA)")
+	if (m_criteriaVector == nullptr)
+		return false;
+
+	m_criteriaVector->clear();
+	return (ExecuteRequest("SELECT NumCriteria, NumCategorie, Libelle from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA)")
 		       != -1)
 		       ? true
 		       : false;
@@ -41,45 +27,57 @@ bool CSqlFindCriteria::SearchCriteria(CriteriaVector* criteriaVector, const int6
                                       const int64_t& numCatalog)
 {
 	m_criteriaVector = criteriaVector;
-	return (ExecuteRequest(
-		       "SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = " + to_string(numCatalog) +
-		       " and NumCategorie = " + to_string(numCategorie) + " order by libelle") != -1)
-		       ? true
-		       : false;
+	if (m_criteriaVector == nullptr)
+		return false;
+
+	m_criteriaVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
+	parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
+	return ExecuteSqlWithStatement("SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = ? and NumCategorie = ? order by libelle", parameter);
 }
 
 bool CSqlFindCriteria::SearchCriteria(CriteriaVector* criteriaVector, const int64_t& numCategorie,
                                       const int64_t& numCatalog, const int64_t& numFolder)
 {
 	m_criteriaVector = criteriaVector;
-	return (ExecuteRequest(
-		       "SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = " + to_string(numCatalog) +
-		       " and NumCategorie = " + to_string(numCategorie) +
-		       " and NumCriteria in (select distinct NumCriteria From PHOTOSCRITERIA inner join PHOTOS on PHOTOSCRITERIA.NumPhoto = PHOTOS.NumPhoto  where PHOTOS.NumFolderCatalog = "
-		       + to_string(numFolder) + ") order by libelle") != -1)
-		       ? true
-		       : false;
+	if (m_criteriaVector == nullptr)
+		return false;
+
+	m_criteriaVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
+	parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
+	parameter.push_back(std::make_unique<CSqlInt>(numFolder));
+	return ExecuteSqlWithStatement("SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = ? and NumCategorie = ? and NumCriteria in (select distinct NumCriteria From PHOTOSCRITERIA inner join PHOTOS on PHOTOSCRITERIA.NumPhoto = PHOTOS.NumPhoto where PHOTOS.NumFolderCatalog = ?) order by libelle", parameter);
 }
 
 bool CSqlFindCriteria::SearchCriteria(CriteriaVector* criteriaVector, const wxString& key, const int64_t& numCategorie,
                                       const int64_t& numCatalog)
 {
 	m_criteriaVector = criteriaVector;
-	return (ExecuteRequest(
-		       "SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = " + to_string(numCatalog) +
-		       " and NumCategorie = " + to_string(numCategorie) + " and libelle like '" + key + "%'") != -1)
-		       ? true
-		       : false;
+	if (m_criteriaVector == nullptr)
+		return false;
+
+	m_criteriaVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
+	parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
+	parameter.push_back(std::make_unique<CSqlString>(key + "%"));
+	return ExecuteSqlWithStatement("SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = ? and NumCategorie = ? and libelle like ?", parameter);
+
 }
 
 bool CSqlFindCriteria::SearchCriteria(CriteriaVector* criteriaVector, const int64_t& numPhoto)
 {
 	m_criteriaVector = criteriaVector;
-	return (ExecuteRequest(
-		       "SELECT CR.NumCriteria, CR.NumCategorie, CR.Libelle FROM CRITERIA as CR INNER JOIN PHOTOSCRITERIA as PHCR ON CR.NumCriteria = PHCR.NumCriteria WHERE NumPhoto = "
-		       + to_string(numPhoto)) != -1)
-		       ? true
-		       : false;
+	if (m_criteriaVector == nullptr)
+		return false;
+
+	m_criteriaVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	return ExecuteSqlWithStatement("SELECT CR.NumCriteria, CR.NumCategorie, CR.Libelle FROM CRITERIA as CR INNER JOIN PHOTOSCRITERIA as PHCR ON CR.NumCriteria = PHCR.NumCriteria WHERE NumPhoto = ?", parameter);
 }
 
 int CSqlFindCriteria::TraitementResult(CSqlResult* sqlResult)
@@ -88,22 +86,9 @@ int CSqlFindCriteria::TraitementResult(CSqlResult* sqlResult)
 	while (sqlResult->Next())
 	{
 		CCriteria _cCriteria;
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				_cCriteria.SetId(sqlResult->ColumnDataInt(i));
-				break;
-			case 1:
-				_cCriteria.SetCategorieId(sqlResult->ColumnDataInt(i));
-				break;
-			case 2:
-				_cCriteria.SetLibelle(sqlResult->ColumnDataText(i));
-				break;
-			default: ;
-			}
-		}
+		_cCriteria.SetId(sqlResult->ColumnDataInt(0));
+		_cCriteria.SetCategorieId(sqlResult->ColumnDataInt(1));
+		_cCriteria.SetLibelle(sqlResult->ColumnDataText(2));
 		m_criteriaVector->push_back(_cCriteria);
 		nbResult++;
 	}

@@ -29,11 +29,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../Regards/TestFrame.cpp"/>
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="../Regards/TestFrame.h"/>
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
@@ -126,7 +124,6 @@
     <Project Name="libVideoEffect"/>
     <Project Name="libPicture"/>
     <Project Name="libAppleFunction"/>
-    <Project Name="OpenCV"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -208,7 +205,6 @@
         <Library Value="Theme"/>
         <Library Value="Parameter"/>
         <Library Value="CxImage"/>
-        <Library Value="OpenCV"/>
         <Library Value="wx_osx_cocoau_gl-3.3"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
@@ -283,7 +279,6 @@
         <Library Value="webpdecoder"/>
         <Library Value="webpdemux"/>
         <Library Value="webpmux"/>
-        <Library Value="ffmpeg"/>
         <Library Value="dav1d"/>
         <Library Value="wx_osx_cocoau_webview-3.3"/>
         <Library Value="archive"/>
@@ -439,10 +434,8 @@
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../libAppleFunction/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
-        <LibraryPath Value="../Otherlib/OpenCV/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
-        <LibraryPath Value="../Otherlib/libffmpeg/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -466,7 +459,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.85.3/" \
+	-e "s/VERSION/3.00.0/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -524,9 +517,6 @@
         <LibraryPath Value="../libAppleFunction/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
-        <LibraryPath Value="../Otherlib/OpenCV/Release"/>
-        <LibraryPath Value="../Otherlib/libheif/Release"/>
-        <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -550,7 +540,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.85.3/" \
+	-e "s/VERSION/3.00.0/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>

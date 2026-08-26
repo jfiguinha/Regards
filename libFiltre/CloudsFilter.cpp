@@ -182,24 +182,20 @@ bool CCloudsFilter::IsSourcePreview()
 void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer,
                                              CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	CImageLoadingFormat* imageLoad = nullptr;
+
 	if (effectParameter != nullptr && !source.empty())
 	{
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 		auto cloudsParameter = static_cast<CCloudsEffectParameter*>(effectParameter);
 		filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude,
 		                     cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
-		imageLoad = new CImageLoadingFormat();
+		auto imageLoad = std::make_unique<CImageLoadingFormat>();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
-
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete imageLoad;
+		filtreEffet->SetBitmap(imageLoad.get());
 	}
 }
 
@@ -220,13 +216,12 @@ CImageLoadingFormat* CCloudsFilter::ApplyEffect(CEffectParameter* effectParamete
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		image.RotateExif(orientation);
-		auto filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, false, &image);
+		auto filtre = std::make_unique<CFiltreEffet>(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude,
 		                     cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
 		imageLoad = new CImageLoadingFormat();
 		cv::Mat mat = filtre->GetBitmap(true);
 		imageLoad->SetPicture(mat);
-		delete filtre;
 	}
 
 	return imageLoad;

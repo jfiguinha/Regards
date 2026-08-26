@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlPhotoCriteria();
-			~CSqlPhotoCriteria() override;
+			~CSqlPhotoCriteria() = default;
 
 			bool InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew,
 			                             bool criteriaUpdate = true);
@@ -24,7 +24,7 @@ namespace Regards
 			bool DeletePhotoCriteria(const int64_t& numPhoto, const int64_t& numCriteria);
 			bool DeleteFolderCriteria(const int64_t& numFolder);
 			bool DeleteCatalogCriteria(const int64_t& numCatalog);
-			void DeletePhotoCriteria();
+			bool DeletePhotoCriteria();
 
 		private:
 			int TraitementResult(CSqlResult* sqlResult) override { return false; };

@@ -44,10 +44,6 @@
     <File Name="KeywordWnd.h"/>
     <File Name="KeywordManagementWindow.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="CheckVersion">
-    <File Name="CheckVersion.h"/>
-    <File Name="CheckVersion.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Tab Window">
     <File Name="ToolbarViewerMode.h"/>
     <File Name="ToolbarViewerMode.cpp"/>
@@ -70,20 +66,36 @@
       <File Name="PanelInfosWnd.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <VirtualDirectory Name="DataStructure">
-    <File Name="ImageList.h"/>
-    <File Name="ImageList.cpp"/>
-  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ThumbnailScheduler.cpp"/>
+    <File Name="ThumbnailProcess.cpp"/>
+    <File Name="SqlBatchOps.cpp"/>
+    <File Name="MainViewerController.cpp"/>
+    <File Name="FolderRefreshService.cpp"/>
+    <File Name="FileSystemValidator.cpp"/>
+    <File Name="CategoryTreeStatePersistence.cpp"/>
+    <File Name="CategorySelectionController.cpp"/>
+    <File Name="CategoryRepository.cpp"/>
+    <File Name="CategoryQueryService.cpp"/>
+    <File Name="CategoryHierarchyIndex.cpp"/>
+    <File Name="WindowModeController.cpp"/>
+    <File Name="ViewerController.cpp"/>
+    <File Name="SlideshowController.cpp"/>
+    <File Name="MusicController.cpp"/>
+    <File Name="MediaLoader.cpp"/>
+    <File Name="ViewerNavigationController.cpp"/>
+    <File Name="ScannerLauncher.cpp"/>
+    <File Name="PrintService.cpp"/>
+    <File Name="ModelManager.cpp"/>
+    <File Name="FileWatcherService.cpp"/>
     <File Name="PicturePanel.cpp"/>
     <File Name="WaitingWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
     <File Name="MainWindow.cpp"/>
     <File Name="PreviewToolbar.cpp"/>
     <File Name="PreviewWnd.cpp"/>
-    <File Name="toolbar.cpp"/>
     <File Name="ViewerFrame.cpp"/>
     <File Name="CategoryFolderWindow.cpp"/>
     <File Name="CategoryWnd.cpp"/>
@@ -92,6 +104,28 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="UIEventBatcher.h"/>
+    <File Name="ThumbnailScheduler.h"/>
+    <File Name="ThumbnailProcess.h"/>
+    <File Name="SqlBatchOps.h"/>
+    <File Name="MainViewerController.h"/>
+    <File Name="FolderRefreshService.h"/>
+    <File Name="FileSystemValidator.h"/>
+    <File Name="CategoryTreeStatePersistence.h"/>
+    <File Name="CategorySelectionController.h"/>
+    <File Name="CategoryRepository.h"/>
+    <File Name="CategoryQueryService.h"/>
+    <File Name="CategoryHierarchyIndex.h"/>
+    <File Name="WindowModeController.h"/>
+    <File Name="ViewerController.h"/>
+    <File Name="SlideshowController.h"/>
+    <File Name="MusicController.h"/>
+    <File Name="MediaLoader.h"/>
+    <File Name="ViewerNavigationController.h"/>
+    <File Name="ScannerLauncher.h"/>
+    <File Name="PrintService.h"/>
+    <File Name="ModelManager.h"/>
+    <File Name="FileWatcherService.h"/>
     <File Name="window_mode_id.h"/>
     <File Name="TreatmentData.h"/>
     <File Name="StatusText.h"/>
@@ -105,7 +139,6 @@
     <File Name="MainWindow.h"/>
     <File Name="PreviewToolbar.h"/>
     <File Name="PreviewWnd.h"/>
-    <File Name="Toolbar.h"/>
     <File Name="CategoryFolderWindow.h"/>
     <File Name="CategoryWnd.h"/>
     <File Name="ListPicture.h"/>
@@ -135,9 +168,11 @@
       <File Name="ThumbnailViewerVideo.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++17;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libVideoThumbnail"/>
@@ -171,6 +206,8 @@
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libVideoEffect"/>
         <IncludePath Value="../Otherlib/libffmpeg"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
@@ -258,6 +295,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

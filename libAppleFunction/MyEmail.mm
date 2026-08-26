@@ -65,12 +65,11 @@ MyEmailImpl::~MyEmailImpl( void )
 }
 
 
-void MyEmailImpl::SendEmail(const wxString &to, const wxString &subject, const wxString & filePicture)
+void MyEmailImpl::SendEmail(const wxString &to, const wxString &subject, const wxString &body, const wxString & filePicture)
 {
     NSString * toAddress = wxNSStringWithWxString(to);
     NSString * subjectEmail = wxNSStringWithWxString(subject);
-    //NSString * photo = wxNSStringWithWxString(filePicture);
-    NSString *bodyText = @"Your body text \n\r";
+    NSString * bodyText = wxNSStringWithWxString(body);
     
     wxURI photo = wxURI(wxString( wxT("file://") ) + filePicture);
     wxCFStringRef uri(photo.BuildURI());

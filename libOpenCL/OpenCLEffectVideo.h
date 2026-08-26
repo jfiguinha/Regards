@@ -1,10 +1,10 @@
 #pragma once
 #include <IEffectVideo.h>
-
-class CRegardsBitmap;
+#include "hqdn3d.h"
+#include "OpenCLFilter.h"
 class CRegardsFloatBitmap;
 class CVideoEffectParameter;
-class Chqdn3d;
+
 
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCV;
@@ -19,13 +19,14 @@ namespace Regards
 		class COpenCLParameterByteArray;
 		class COpenCLParameterClMem;
 		class COpenCLFilter;
+		class COpenCLContext;
 
 		class COpenCLEffectVideo : public Regards::OpenCV::IEffectVideo
 		{
 		public:
-			COpenCLEffectVideo();
+			COpenCLEffectVideo(COpenCLContext * openCLContext);
 
-			virtual ~COpenCLEffectVideo();
+			virtual ~COpenCLEffectVideo() = default;
 
 			int GetType()
 			{
@@ -76,15 +77,17 @@ namespace Regards
 			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize,
 				const int& nWidth, const int& nHeight, bool bgraOutput);
 
+			template<typename F> void ExecuteSafe(F&& func);
+			void TestBgraOutput();
 
-			COpenCLFilter* openclFilter = nullptr;
+			std::unique_ptr<COpenCLFilter> openclFilter = nullptr;
 			wxString filename;
 			cv::Mat convertSrc;
 			cv::UMat paramSrc;
 			cv::UMat paramOutput;
-
+			COpenCLContext* openCLContext = nullptr;
 			cl_mem_flags flag;
-			Chqdn3d* hq3d = nullptr;
+			std::unique_ptr<Chqdn3d> hq3d = nullptr;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
 			bool isOk = false;

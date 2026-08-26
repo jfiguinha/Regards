@@ -5,7 +5,7 @@
 #else
 #include <CL/cl.h>
 #endif
-class CRegardsBitmap;
+;
 class CRegardsFloatBitmap;
 
 namespace Regards::OpenCL
@@ -26,7 +26,7 @@ namespace Regards::FiltreEffet
 	class COpenCLEffect : public IFiltreEffet
 	{
 	public:
-		COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap);
+		COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap, COpenCLContext* openCLContext);
 
 		void SetFlag(const bool& useMemory)
 		{
@@ -124,9 +124,11 @@ namespace Regards::FiltreEffet
 		int Stylization(const double& sigma_s, const double& sigma_r) override;
         
 	protected:
-		COpenCLFilter* openclFilter;
+
+		template<typename F> void ExecuteSafe(F&& func);
+		std::unique_ptr<COpenCLFilter> openclFilter;
 		wxImage GetwxImage(cv::UMat& input);
-		int GetSizeData() const;
+
 		cl_mem_flags flag;
 		wxString filename;
 		cv::Mat alphaChannel;

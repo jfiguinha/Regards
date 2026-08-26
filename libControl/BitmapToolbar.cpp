@@ -16,68 +16,19 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
-	slide = nullptr;
 	this->parentId = viewerId;
 	this->exportPicture = exportPicture;
 
-	const wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1); // "Save";
-	const wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL", 1); //"Emai";
-	const wxString printLibelle = CLibResource::LoadStringFromResource("LBLPRINT", 1); //"Print";
-	const wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1); //"Shrink Picture";
-	const wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
-	const wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
+	email = CreateButton("IDB_EMAIL", "LBLEMAIL", WM_EMAIL, false);
+	printer = CreateButton("IDB_PRINTERPNG", "LBLPRINT", WM_IMPRIMER, false);
+	shrink = CreateButton("IDB_SHRINK", "LBLSHRINK", IDM_SETSHRINK, false);
+	moins = CreateButton("IDB_ZOOMMOINS", "LBLZOOMOFF", WM_ZOOMOUT, false);
 
-	/*
-	export_button = new CToolbarButton(themeToolbar.button);
-	export_button->SetButtonResourceId("IDB_SAVE");
-	export_button->SetCommandId(WM_EXPORT);
-	export_button->SetLibelleTooltip(exportLibelle);
-	navElement.push_back(export_button);
-	*/
-	email = new CToolbarButton(themeToolbar.button);
-	email->SetButtonResourceId("IDB_EMAIL");
-	email->SetCommandId(WM_EMAIL);
-	email->SetLibelleTooltip(emailLibelle);
-	navElement.push_back(email);
+	slide = std::make_unique<CToolbarSlide>(themeToolbar.slider, this);
+	navElement.push_back(slide.get());
 
-	auto printer = new CToolbarButton(themeToolbar.button);
-	printer->SetButtonResourceId("IDB_PRINTERPNG");
-	printer->SetCommandId(WM_IMPRIMER);
-	printer->SetLibelleTooltip(printLibelle);
-	navElement.push_back(printer);
+	plus = CreateButton("IDB_ZOOMPLUS", "LBLZOOMON", WM_ZOOMON, false);
 
-	/*
-	crop = new CToolbarButton(themeToolbar.button);
-	crop->SetButtonResourceId("IDB_CROP");
-	crop->SetCommandId(WM_CROP);
-	crop->SetLibelleTooltip(cropLibelle);
-	navElement.push_back(crop);
-	*/
-
-	auto shrink = new CToolbarButton(themeToolbar.button);
-	shrink->SetButtonResourceId("IDB_SHRINK");
-	shrink->SetCommandId(IDM_SETSHRINK);
-	shrink->SetLibelleTooltip(shrinkLibelle);
-	navElement.push_back(shrink);
-
-	auto moins = new CToolbarButton(themeToolbar.button);
-	moins->SetButtonResourceId("IDB_ZOOMMOINS");
-	moins->SetCommandId(WM_ZOOMOUT);
-	moins->SetLibelleTooltip(zoomOff);
-	navElement.push_back(moins);
-
-	slide = new CToolbarSlide(themeToolbar.slider, this);
-	navElement.push_back(slide);
-
-	auto plus = new CToolbarButton(themeToolbar.button);
-	plus->SetButtonResourceId("IDB_ZOOMPLUS");
-	plus->SetCommandId(WM_ZOOMON);
-	plus->SetLibelleTooltip(zoomOn);
-	navElement.push_back(plus);
-}
-
-CBitmapToolbar::~CBitmapToolbar()
-{
 }
 
 void CBitmapToolbar::ZoomPos(const int& position)

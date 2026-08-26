@@ -17,7 +17,7 @@ class KeywordDialogBox : public wxDialog
 {
 public:
 	KeywordDialogBox(wxWindow* parent);
-	~KeywordDialogBox() override;
+	~KeywordDialogBox() = default;
 
 	//(*Declarations(ConfigRegards)
 	wxButton* btOk;

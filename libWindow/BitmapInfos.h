@@ -40,9 +40,9 @@ namespace Regards
 			wxString dateInfos;
 			bool gpsInfosUpdate;
             
-            std::thread* threadGps = nullptr;
+			std::unique_ptr<std::thread> threadGps = nullptr;
 			CThemeBitmapInfos bitmapInfosTheme;
-            wxTimer * gpsTimer;
+			std::unique_ptr<wxTimer> gpsTimer;
 		};
 	}
 }

@@ -5,7 +5,7 @@
 //
 //  Created by figuinha jacques on 02/10/2015.
 //  Copyright © 2015 figuinha jacques. All rights reserved.
-//
+
 #include "ThumbnailViewerEffectWnd.h"
 #include <libPicture.h>
 using namespace Regards::Control;
@@ -20,14 +20,8 @@ CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowI
 	thumbnailEffectScroll = nullptr;
 	thumbnailEffect = nullptr;
 
-	thumbnailEffect = new CThumbnailViewerEffect(this, wxID_ANY, themeThumbnail, checkValidity, panelInfosId);
-	thumbnailEffectScroll = new CScrollbarWnd(this, thumbnailEffect, wxID_ANY);
-}
-
-CThumbnailViewerEffectWnd::~CThumbnailViewerEffectWnd(void)
-{
-	delete(thumbnailEffect);
-	delete(thumbnailEffectScroll);
+	thumbnailEffect = std::make_unique<CThumbnailViewerEffect>(this, wxID_ANY, themeThumbnail, checkValidity, panelInfosId);
+	thumbnailEffectScroll = std::make_unique<CScrollbarWnd>(this, thumbnailEffect.get(), wxID_ANY);
 }
 
 void CThumbnailViewerEffectWnd::UpdateScreenRatio()

@@ -17,9 +17,7 @@ using namespace Regards::Window;
 class IFiltreEffectInterface
 {
 public:
-	virtual ~IFiltreEffectInterface()
-	{
-	};
+
 	virtual void AddTreeInfos(const wxString& exifKey, CTreeElementValue* position, void* value,
 	                          const int& typeValue = 1, const int& type = 1) = 0;
 };

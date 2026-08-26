@@ -19,7 +19,7 @@ namespace Regards::Control
 		CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
 		                          const CThemeScrollBar& themeScroll, const CThemeThumbnail& themeThumbnail,
 		                          int panelInfosId, bool checkValidity);
-		~CThumbnailViewerEffectWnd(void) override;
+		~CThumbnailViewerEffectWnd(void) = default;
 
 		void UpdateScreenRatio() override;
 		void Resize() override;
@@ -27,7 +27,7 @@ namespace Regards::Control
 		void SetFile(const wxString& filename);
 
 	private:
-		CScrollbarWnd* thumbnailEffectScroll;
-		CThumbnailViewerEffect* thumbnailEffect;
+		std::unique_ptr<CScrollbarWnd> thumbnailEffectScroll;
+		std::unique_ptr<CThumbnailViewerEffect> thumbnailEffect;
 	};
 }

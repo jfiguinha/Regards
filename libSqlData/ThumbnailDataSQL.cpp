@@ -3,13 +3,14 @@
 #include "SqlThumbnail.h"
 #include "SqlThumbnailVideo.h"
 #include <libPicture.h>
-using namespace Regards::Sqlite;
 #include <wx/filename.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <FFmpegVideoThumb.h>
+#include <SqlPhotos.h>
 using namespace Regards::Video;
 using namespace Regards::Picture;
+using namespace Regards::Sqlite;
 
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity, const bool& generateVideoPlayer)
 	: CThumbnailData(filename)
@@ -34,6 +35,9 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 
 	if (isVideo)
 	{
+		CSqlPhotos SqlPhotos;
+		photoId = SqlPhotos.GetPhotoId(filename);
+
 		if (libPicture.TestIsVideoValid(filename))
 		{
 			nbFrame = 20;
@@ -123,6 +127,8 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 	}
 	else if (isVideo && generateVideoPlayer)
 	{
+
+
 		isDefault = false;
 
 		// FIX [critique #1] : création du lecteur vidéo si nécessaire.
@@ -168,7 +174,7 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 
 			if (!grabbed)
 			{
-				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+				frameOut = sqlThumbnailVideo.GetThumbnail(photoId, filename, numFrame, isDefault);
 			}
 		}
 	}
@@ -177,19 +183,19 @@ cv::Mat CThumbnailDataSQL::GetImage(bool& isDefault)
 		// FIX [critique #3] : suppression du double appel SQL inutile.
 		// Si numFrame est absent, on essaie directement la frame 0.
 		// Dans tous les cas, le fallback final sur GetDefaultPicture() suffit.
-		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+		frameOut = sqlThumbnailVideo.GetThumbnail(photoId, filename, numFrame, isDefault);
 		if (isDefault && numFrame != 0)
 		{
-			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
+			frameOut = sqlThumbnailVideo.GetThumbnail(photoId, filename, 0, isDefault);
 		}
 	}
 	else if (isAnimation)
 	{
 		// FIX [critique #3] : même correction que ci-dessus.
-		frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame, isDefault);
+		frameOut = sqlThumbnailVideo.GetThumbnail(photoId, filename, numFrame, isDefault);
 		if (isDefault && numFrame != 0)
 		{
-			frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0, isDefault);
+			frameOut = sqlThumbnailVideo.GetThumbnail(photoId, filename, 0, isDefault);
 		}
 	}
 

@@ -91,44 +91,22 @@ bool GLSLShader::CreateShaderProgram(const wxString& nProgramID_i)
 
 	if (0 == m_hShaderHandle)
 	{
-		// Set Error messages.
-		//AppError::SetError( CString(L"0 == m_hShaderHandle GL_FRAGMENT_PROGRAM_ARB shader creation failed") );
 		return false;
 	}
 
 	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
+	const char* src = dataProgram.c_str();
 
-	int length = static_cast<int>(dataProgram.size()) + 1;
-	auto src = new char[length];
-	strcpy(src, CConvertUtility::ConvertToUTF8(dataProgram));
-	//printf("Opengl shader : \n");
-	//printf(src);
-	//printf("Opengl end shader : \n");
-	//printf(src);
-
-	glShaderSource(m_hShaderHandle, 1, (const GLcharARB**)&src, &length);
+	glShaderSource(m_hShaderHandle, 1, &src, nullptr);
 
 	//glShaderSourceARB( m_hShaderHandle, strlen( pBufferResData ), (const GLcharARB**)&pbyShaderData, &nLENGTH );
 	glCompileShader(m_hShaderHandle);
 
 	if (!check_shader_compile_status(m_hShaderHandle))
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(m_hShaderHandle, GL_INFO_LOG_LENGTH, &maxLength);
-
-		// The maxLength includes the NULL character
-		std::vector<GLchar> errorLog(maxLength);
-		glGetShaderInfoLog(m_hShaderHandle, maxLength, &maxLength, &errorLog[0]);
-		std::string s(begin(errorLog), end(errorLog));
-		cout << s.c_str() << endl;
-		// Provide the infolog in whatever manor you deem best.
-		// Exit with failure.
-		glDeleteShader(m_hShaderHandle); // Don't leak the shader.
-        delete[] src;
 		return false;
-	}
+	
+
 	glAttachShader(m_hProgramObject, m_hShaderHandle);
-	delete[] src;
 	return true;
 }
 
@@ -142,23 +120,17 @@ bool GLSLShader::CreateComputeProgram(const wxString& nProgramID_i)
 	}
 
 	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
+	const char* src = dataProgram.c_str();
 
-	int length = static_cast<int>(dataProgram.size()) + 1;
-	auto data = new char[length];
-	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
-	glShaderSource(m_hComputeHandle, 1, (const GLcharARB**)&data, &length);
+	glShaderSource(m_hComputeHandle, 1, &src, nullptr);
 
 	glCompileShader(m_hComputeHandle);
 
-	if (!check_shader_compile_status(m_hComputeHandle))
-    {
-        delete[] data;
-        return false;
-    }
-		
+	if (!check_program_link_status(m_hComputeHandle))
+		return false;
+	
 
 	glAttachShader(m_hProgramObject, m_hComputeHandle);
-	delete[] data;
 	return true;
 }
 
@@ -172,24 +144,19 @@ bool GLSLShader::CreateVertexProgram(const wxString& nProgramID_i)
 		return false;
 	}
 
-	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
-
-	int length = static_cast<int>(dataProgram.size()) + 1;
-	auto data = new char[length];
-	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
-	glShaderSource(m_hVertexHandle, 1, (const GLcharARB**)&data, &length);
+	wxString kernelSource = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
+    const char* src = kernelSource.c_str();
+	int length = static_cast<int>(kernelSource.size()) + 1;
+	glShaderSource(m_hVertexHandle, 1, &src, &length);
 
 	glCompileShader(m_hVertexHandle);
 
 	if (!check_shader_compile_status(m_hVertexHandle))
-    {
-        delete[] data;
         return false;
-    }
+    
 		
 
 	glAttachShader(m_hProgramObject, m_hVertexHandle);
-	delete[] data;
 	return true;
 }
 

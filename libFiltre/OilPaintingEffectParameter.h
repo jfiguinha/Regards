@@ -10,10 +10,6 @@ public:
 		dynRatio = 1;
 	};
 
-	~COilPaintingEffectParameter() override
-	{
-	};
-
 	int size;
 	int dynRatio;
 };

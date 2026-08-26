@@ -18,6 +18,8 @@ namespace Regards::Introduction
 		void on_size(wxSizeEvent& event);
 		void OnTimeShowViewer(wxTimerEvent& event);
 
+		int barWidth = 0;
+		int barHeight = 0;
 		CTitleIntro* titleIntro;
 		CMyCentralWindowIntro* myCentralWindow;
 		ISCannerInterface* mainInterface;

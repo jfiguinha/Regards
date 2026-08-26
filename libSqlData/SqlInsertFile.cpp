@@ -5,6 +5,8 @@
 #include "SqlResult.h"
 #include <algorithm>
 #include <mutex>
+#include "SqlTransaction.h"
+#include <SqlParameter.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
@@ -12,41 +14,38 @@ using namespace Regards::Sqlite;
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB"), m_photosVector(nullptr), listPathFile(nullptr), listPhoto(nullptr)
 {
-	numPhoto = 0;
 	type = 0;
-}
-
-
-CSqlInsertFile::~CSqlInsertFile()
-{
 }
 
 void CSqlInsertFile::UpdatePhotoProcess(const int& numPhoto)
 {
-	ExecuteRequestWithNoResult("Update PHOTOS Set Process = 1 where NumPhoto = " + to_string(numPhoto));
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
+	ExecuteSqlWithStatementNoResult("Update PHOTOS Set Process = 1 where NumPhoto = ? ", parameter);
 }
 
 CPhotos CSqlInsertFile::GetPhotoToProcess()
 {
-	type = 4;
-	this->numPhoto = 0;
-	photoLocal.SetId(-1);
+	type = 0;
+	photoLocal = {};
 	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0 LIMIT 1");
 	return photoLocal;
 }
 
 void CSqlInsertFile::GetPhotoToProcessList(PhotosVector* photosVector)
 {
- 	type = 0;
+ 	type = 1;
+	if (photosVector == nullptr)
+		return;
+	photosVector->clear();
     m_photosVector = photosVector;
 	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0"); 
 }
 
 CPhotos CSqlInsertFile::GetPhoto(const int& numPhoto)
 {
-	type = 4;
-	this->numPhoto = numPhoto;
-	photoLocal.SetId(-1);
+	type = 0;
+	photoLocal = {};
 	ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0");
 	return photoLocal;
 }
@@ -54,14 +53,13 @@ CPhotos CSqlInsertFile::GetPhoto(const int& numPhoto)
 int CSqlInsertFile::GetNbPhotosToProcess()
 {
 	type = 3;
-	numPhoto = 0;
+	nbPhoto = 0;
 	ExecuteRequest("SELECT count(*) as nbphoto FROM PHOTOS where CriteriaInsert = 0 and Process = 0");
-	return numPhoto;
+	return nbPhoto;
 }
 
 int CSqlInsertFile::ReinitPhotosToProcess()
 {
-	numPhoto = 0;
 	ExecuteRequest("Update PHOTOS SET CriteriaInsert = 0, Process = 0;");
 	return 0;
 }
@@ -69,15 +67,15 @@ int CSqlInsertFile::ReinitPhotosToProcess()
 
 int CSqlInsertFile::GetNbPhotos()
 {
-	type = 3;
-	numPhoto = 0;
+	type = 2;
+	nbPhoto = 0;
 	ExecuteRequest("SELECT count(*) as nbphoto FROM PHOTOS where CriteriaInsert = 0");
-	return numPhoto;
+	return nbPhoto;
 }
 
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, const int& idFolder)
 {
-	BeginTransaction();
+	CSqlTransaction sqlTransaction;
 	CLibPicture libPicture;
 
 	for (wxString filename : listFile)
@@ -87,39 +85,27 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, cons
 			bool isValid = true;
             int multifile = 0;
 			int extensionId = libPicture.TestImageFormat(filename);
-			filename.Replace("'", "''");
 
-            /*
-			if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
-				TestIsAnimation(filename))
-			{
-				multifile = 1;
-			}
-
-			if (libPicture.TestIsVideo(filename))
-			{
-				isValid = libPicture.TestIsVideoValid(filename);
-			}
-            */
 			if (extensionId > 0)
 			{
-				ExecuteRequestWithNoResult(
-					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId, Multifiles) VALUES ("
-					+ to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + "," +
-					to_string(multifile) + ")");
+				std::vector<std::unique_ptr<CSqlParameter>> parameter;
+				parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+				parameter.push_back(std::make_unique<CSqlString>(filename));
+				parameter.push_back(std::make_unique<CSqlInt>(extensionId));
+				parameter.push_back(std::make_unique<CSqlInt>(multifile));
+				ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId, Multifiles) VALUES (?, ?, 0, 0, ?, ?)", parameter);
 			}
 		}
 	}
-	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
-	CommitTransection();
+	sqlTransaction.commit();
 }
 
 
 void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString& folder)
 {
 	CLibPicture libPicture;
-	BeginTransaction();
+	CSqlTransaction sqlTransaction;
 
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOFOLDER");
 
@@ -133,16 +119,20 @@ void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString& folder)
 	{
 		if (libPicture.TestImageFormat(file) != 0)
 		{
-			file.Replace("'", "''");
-			ExecuteRequestWithNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES ('" + file + "')");
+			std::vector<std::unique_ptr<CSqlParameter>> parameter;
+			parameter.push_back(std::make_unique<CSqlString>(file));
+			ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES (?)", parameter);
 		}
 	}
-	CommitTransection();
+	sqlTransaction.commit();
 }
 
 bool CSqlInsertFile::GetPhotoToAdd(vector<wxString>* listFile)
 {
 	type = 1;
+	if (listFile == nullptr)
+		return false;
+
 	listPathFile = listFile;
 	return (ExecuteRequest("SELECT FullPath FROM PHOTOFOLDER WHERE FullPath not in (Select FullPath From PHOTOS)") != -
 		       1)
@@ -152,24 +142,26 @@ bool CSqlInsertFile::GetPhotoToAdd(vector<wxString>* listFile)
 
 int CSqlInsertFile::GetNumPhoto(const wxString& filepath)
 {
-	numPhoto = 0;
-	type = 3;
-	wxString filename = filepath;
-	filename.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + filename + "'");
-	return numPhoto;
+	type = 2;
+	nbPhoto = 0;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(filepath));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOS WHERE FullPath = ?", parameter);
+	return nbPhoto;
 }
 
 
 bool CSqlInsertFile::GetPhotoToRemove(vector<int>* listFile, const int& idFolder)
 {
-	type = 2;
+	type = 3;
+	if (listFile == nullptr)
+		return false;
 	listPhoto = listFile;
-	return (ExecuteRequest(
-		       "SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) +
-		       " and FullPath not in(Select FullPath From PHOTOFOLDER)") != -1)
-		       ? true
-		       : false;
+	listPhoto->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+	ExecuteSqlWithStatement("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = ? and FullPath not in (Select FullPath From PHOTOFOLDER)", parameter);
+	return listPhoto->size() > 0 ? true : false;
 }
 
 int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog, wxArrayString& files,
@@ -177,33 +169,34 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog
 {
 	if (files.size() > 0)
 	{
-		BeginTransaction();
-		auto s_mutex = new std::mutex();
 
-		tbb::parallel_for(0, static_cast<int>(files.size()), 1, [=](int i)
+
+
+
+		CSqlTransaction sqlTransaction;
+		int i = 0;
+		for(wxString file : files)
 		{
-			wxString file = files[i];
 			CLibPicture libPicture;
             int extensionId = libPicture.TestImageFormat(file);
 			if (extensionId != 0 && GetNumPhoto(file) == 0)
 			{
-				ExecuteRequestWithNoResult(
-					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" +
-						to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+				std::vector<std::unique_ptr<CSqlParameter>> parameter;
+				parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+				parameter.push_back(std::make_unique<CSqlString>(file));
+				parameter.push_back(std::make_unique<CSqlInt>(extensionId));
+				ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (?, ?, 0, 0, ?)", parameter);
 			}
 
 			if (dialog != nullptr)
 			{
-				s_mutex->lock();
-				wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+				wxString message = "In progress : " + to_string(++i) + "/" + to_string(files.Count());
 				dialog->Update(i, message);
-				s_mutex->unlock();
 			}
-		});
+		}
 
-		CommitTransection();
+		sqlTransaction.commit();
 
-		delete s_mutex;
 
 		CLibPicture libPicture;
 		bool first = true;
@@ -227,7 +220,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog
 int CSqlInsertFile::ImportFileFromFolder(const wxString& folder, const int& idFolder, wxString& firstFile)
 {
 	CLibPicture libPicture;
-	BeginTransaction();
+	CSqlTransaction sqlTransaction;
 
 	int i = 0;
 	wxArrayString files;
@@ -237,7 +230,6 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString& folder, const int& idFo
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	//
 	for (wxString file : files)
 	{
 		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
@@ -246,29 +238,27 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString& folder, const int& idFo
 			int extensionId = libPicture.TestImageFormat(file);
 			if (i == 0)
 				firstFile = file;
-			file.Replace("'", "''");
-            /*
-			if (libPicture.TestIsVideo(file))
-			{
-				isValid = libPicture.TestIsVideoValid(file);
-			}
-            */
+
 			if (extensionId > 0)
 			{
-				ExecuteRequestWithNoResult(
-					"INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" +
-					to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+				std::vector<std::unique_ptr<CSqlParameter>> parameter;
+				parameter.push_back(std::make_unique<CSqlInt>(idFolder));
+				parameter.push_back(std::make_unique<CSqlString>(file));
+				parameter.push_back(std::make_unique<CSqlInt>(extensionId));
+				ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (? , ?, 0, 0, ?)", parameter);
 			}
 
 			i++;
 		}
 	}
-	CommitTransection();
+	sqlTransaction.commit();
 	return i;
 }
 
+
 bool CSqlInsertFile::GetPhotos(PhotosVector* photosVector)
 {
+	type = 1;
 	m_photosVector = photosVector;
 	return (ExecuteRequest(
 			       "SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0")
@@ -280,6 +270,7 @@ bool CSqlInsertFile::GetPhotos(PhotosVector* photosVector)
 
 bool CSqlInsertFile::GetAllPhotos(PhotosVector* photosVector)
 {
+	type = 1;
 	m_photosVector = photosVector;
 	return (ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS") != -1)
 		       ? true
@@ -288,12 +279,11 @@ bool CSqlInsertFile::GetAllPhotos(PhotosVector* photosVector)
 
 bool CSqlInsertFile::GetPhotos(PhotosVector* photosVector, const int64_t& numFolder)
 {
+	type = 1;
 	m_photosVector = photosVector;
-	return (ExecuteRequest(
-		       "SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0 and NumFolderCatalog = "
-		       + to_string(numFolder) + "") != -1)
-		       ? true
-		       : false;
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numFolder));
+	return  ExecuteSqlWithStatement("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0 and NumFolderCatalog = ?", parameter);
 }
 
 int CSqlInsertFile::TraitementResult(CSqlResult* sqlResult)
@@ -303,109 +293,28 @@ int CSqlInsertFile::TraitementResult(CSqlResult* sqlResult)
 	{
 		switch (type)
 		{
-		case 4:
-			{
-				if (nbResult == numPhoto)
-				{
-					for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-					{
-						switch (i)
-						{
-						case 0:
-							photoLocal.SetId(sqlResult->ColumnDataInt(i));
-							break;
-						case 1:
-							photoLocal.SetPath(sqlResult->ColumnDataText(i));
-							break;
-						case 2:
-							photoLocal.SetFolderId(sqlResult->ColumnDataInt(i));
-							break;
-						case 3:
-							photoLocal.SetIsCriteriaInsert(sqlResult->ColumnDataInt(i));
-							break;
-						default: ;
-						}
-					}
-					return nbResult;
-				}
-			}
-			break;
-
 		case 0:
-			{
-				CPhotos _cPhoto;
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-				{
-					switch (i)
-					{
-					case 0:
-						_cPhoto.SetId(sqlResult->ColumnDataInt(i));
-						break;
-					case 1:
-						_cPhoto.SetPath(sqlResult->ColumnDataText(i));
-						break;
-					case 2:
-						_cPhoto.SetFolderId(sqlResult->ColumnDataInt(i));
-						break;
-					case 3:
-						_cPhoto.SetIsCriteriaInsert(sqlResult->ColumnDataInt(i));
-						break;
-					default: ;
-					}
-				}
-				m_photosVector->push_back(_cPhoto);
-			}
+			photoLocal.SetId(sqlResult->ColumnDataInt(0));
+			photoLocal.SetPath(sqlResult->ColumnDataText(1));
+			photoLocal.SetFolderId(sqlResult->ColumnDataInt(2));
+			photoLocal.SetIsCriteriaInsert(sqlResult->ColumnDataInt(3));
 			break;
-
 		case 1:
-			{
-				wxString path;
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-				{
-					switch (i)
-					{
-					case 0:
-						path = sqlResult->ColumnDataText(i);
-						break;
-					default: ;
-					}
-				}
-				listPathFile->push_back(path);
-			}
-			break;
-
+		{
+			CPhotos _cPhoto;
+			_cPhoto.SetId(sqlResult->ColumnDataInt(0));
+			_cPhoto.SetPath(sqlResult->ColumnDataText(1));
+			_cPhoto.SetFolderId(sqlResult->ColumnDataInt(2));
+			_cPhoto.SetIsCriteriaInsert(sqlResult->ColumnDataInt(3));
+			m_photosVector->push_back(_cPhoto);
+		}
+		break;
 		case 2:
-			{
-				int id;
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-				{
-					switch (i)
-					{
-					case 0:
-						id = sqlResult->ColumnDataInt(i);
-						break;
-					default: ;
-					}
-				}
-				listPhoto->push_back(id);
-			}
+			nbPhoto = sqlResult->ColumnDataInt(0);
 			break;
-
 		case 3:
-			{
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-				{
-					switch (i)
-					{
-					case 0:
-						numPhoto = sqlResult->ColumnDataInt(i);
-						break;
-					default: ;
-					}
-				}
-			}
+			listPhoto->push_back(sqlResult->ColumnDataInt(0));
 			break;
-		default: ;
 		}
 		nbResult++;
 	}

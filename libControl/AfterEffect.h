@@ -1,6 +1,6 @@
 #pragma once
 #include "RenderBitmapOpenGL.h"
-class CRegardsBitmap;
+;
 class CImageLoadingFormat;
 class CEffectParameter;
 class IBitmapDisplay;
@@ -50,7 +50,7 @@ public:
 	}
 
 protected:
-
-	static GLTexture* pictureNext;
-	static GLTexture* pictureFirst;
+	
+	static std::unique_ptr<GLTexture> pictureNext;
+	static std::unique_ptr<GLTexture> pictureFirst;
 };

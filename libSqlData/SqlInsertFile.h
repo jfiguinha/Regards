@@ -13,7 +13,7 @@ namespace Regards
 		{
 		public:
 			CSqlInsertFile();
-			~CSqlInsertFile() override;
+			~CSqlInsertFile() = default;
 
 			void InsertPhotoFolderToRefresh(const wxString& folder);
 			bool GetPhotoToAdd(vector<wxString>* listFile);
@@ -40,8 +40,8 @@ namespace Regards
 			CPhotos photoLocal;
 			vector<wxString>* listPathFile;
 			vector<int>* listPhoto;
-			int numPhoto;
 			int type;
+			int nbPhoto = 0;
 		};
 	}
 }

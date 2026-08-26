@@ -12,10 +12,6 @@ CTreeElement::CTreeElement()
 }
 
 
-CTreeElement::~CTreeElement()
-{
-}
-
 void CTreeElement::SetElementPos(const int& x, const int& y)
 {
 	xPos = x;

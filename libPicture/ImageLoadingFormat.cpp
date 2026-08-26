@@ -19,6 +19,7 @@ using namespace Regards::exiv2;
 using namespace Regards::Picture;
 
 
+
 int CImageLoadingFormat::GetPosition(const int& x, const int& y)
 {
 	return (x << 2) + (y * (_image.cols << 2));
@@ -106,7 +107,7 @@ CImageLoadingFormat::~CImageLoadingFormat()
 
 void CImageLoadingFormat::ReadFile(const wxString& filename)
 {
-	_image = cv::imread(CConvertUtility::ConvertToStdString(filename));
+	_image = cv::imread(CConvertUtility::ConvertToStdString(filename).c_str());
 	if (!_image.empty())
 		cv::cvtColor(_image, _image, cv::COLOR_BGR2BGRA);
 }
@@ -114,7 +115,7 @@ void CImageLoadingFormat::ReadFile(const wxString& filename)
 void CImageLoadingFormat::WriteFile(const wxString& filename)
 {
 	if (!_image.empty())
-		cv::imwrite(CConvertUtility::ConvertToStdString(filename), _image);
+		cv::imwrite(CConvertUtility::ConvertToStdString(filename).c_str(), _image);
 }
 
 int CImageLoadingFormat::GetFormat()
@@ -347,6 +348,11 @@ wxImage CImageLoadingFormat::GetwxImage()
 	return wx;
 }
 
+cv::Mat& CImageLoadingFormat::GetMatImage()
+{
+	return _image;
+}
+
 CxImage CImageLoadingFormat::GetCxImage()
 {
 	if (!IsOk())
@@ -377,10 +383,10 @@ void CImageLoadingFormat::UpdatePicture(cv::Mat& image)
 	image.copyTo(_image);
 }
 
-void CImageLoadingFormat::SetPicture(CxImage* image)
+void CImageLoadingFormat::SetPicture(CxImage& image)
 {
-	_image.create(image->GetHeight(), image->GetWidth(), CV_8UC4);
-	image->Encode2BGRA(_image.data, image->GetHeight() * image->GetWidth() * 4, false);
+	_image.create(image.GetHeight(), image.GetWidth(), CV_8UC4);
+	image.Encode2BGRA(_image.data, image.GetHeight() * image.GetWidth() * 4, false);
 	cv::flip(_image, _image, 0);
 }
 

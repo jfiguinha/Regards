@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlCountry();
-			~CSqlCountry() override;
+			~CSqlCountry() = default;;
 			bool GetCountry(CountryVector* countryVector);
 
 		private:

@@ -9,9 +9,5 @@ public:
 		size = 3;
 	};
 
-	~CBlurEffectParameter() override
-	{
-	};
-
 	int size;
 };

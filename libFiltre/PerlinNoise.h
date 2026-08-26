@@ -1,6 +1,6 @@
 #pragma once
 #include "RGBAQuad.h"
-class CRegardsBitmap;
+;
 
 namespace Regards::FiltreEffet
 {

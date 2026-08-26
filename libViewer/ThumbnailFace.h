@@ -16,6 +16,27 @@ namespace Regards::Viewer
 {
 	class CMainFrame;
 
+	struct FaceKey
+	{
+		wxString filename;
+		int numFace;
+
+		bool operator==(const FaceKey& other) const
+		{
+			return filename == other.filename &&
+				numFace == other.numFace;
+		}
+	};
+
+	struct FaceKeyHash
+	{
+		size_t operator()(const FaceKey& key) const
+		{
+			return std::hash<std::wstring>()(key.filename.ToStdWstring()) ^
+				(std::hash<int>()(key.numFace) << 1);
+		}
+	};
+
 	class CThumbnailFace : public CThumbnailVerticalSeparator
 	{
 	public:
@@ -40,10 +61,15 @@ namespace Regards::Viewer
 		static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 		static bool ItemCompFonct(int xPos, int yPos, CIcone *  icone, CWindowMain* parent);
 		static bool ItemCompFonctFindFaceElement(wxString filepath, int numFace, CIcone* icone);
-		void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
-		                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement);
+		void AddSeparatorBar(
+			CIconeList* iconeListLocal,
+			const wxString& libelle,
+			const CFaceName& faceName,
+			const std::vector<CFaceFilePath>& listPhotoFace,
+			int& nbElement,
+			const std::unordered_map<FaceKey, CIcone*, FaceKeyHash>& iconIndex);
 		CIcone *  FindElementWithVScroll(const int& xPos, const int& yPos) override;
-		void OnPictureClick(CThumbnailData* data) override;
+		void OnPictureClick(const int& numPhotoId) override;
 		void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
 
 		CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);

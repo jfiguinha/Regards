@@ -4,13 +4,6 @@
 class IBitmapWnd
 {
 public:
-	IBitmapWnd()
-	{
-	};
-
-	~IBitmapWnd()
-	{
-	};
 
 	virtual void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) = 0;
 

@@ -407,6 +407,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -610,6 +611,7 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ConformanceMode>false</ConformanceMode>
       <Optimization>Full</Optimization>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -832,7 +834,9 @@
     <ClInclude Include="sqlite3recover.h" />
     <ClInclude Include="SqlLib.h" />
     <ClInclude Include="SqlLibResource.h" />
+    <ClInclude Include="SqlParameter.h" />
     <ClInclude Include="SqlResult.h" />
+    <ClInclude Include="SqlTransaction.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -869,6 +873,7 @@
     <ClCompile Include="SqlLib.cpp" />
     <ClCompile Include="SqlLibResource.cpp" />
     <ClCompile Include="SqlResult.cpp" />
+    <ClCompile Include="SqlTransaction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

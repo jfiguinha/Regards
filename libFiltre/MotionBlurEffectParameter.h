@@ -12,9 +12,6 @@ public:
 		bitmapWidth = 0;
 	};
 
-	~CMotionBlurEffectParameter() override
-	{
-	};
 
 	int radius;
 	int sigma;

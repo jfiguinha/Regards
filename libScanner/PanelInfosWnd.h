@@ -31,7 +31,7 @@ namespace Regards
 		{
 		public:
 			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
-			~CPanelInfosWnd() override;
+			~CPanelInfosWnd() = default;
 			void OnFiltreOk(const int& numFiltre);
 			void OnFiltreCancel();
 			void SetFile(wxString filename);
@@ -49,13 +49,13 @@ namespace Regards
 			void EffectUpdate();
 			void HistoryUpdate();
 
-			CInfoEffectWnd* historyEffectWnd;
-			CThumbnailViewerEffectWnd* thumbnailEffectWnd;
-			CFiltreEffectScrollWnd* filtreEffectWnd;
+			CInfoEffectWnd * historyEffectWnd;
+			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
+			CFiltreEffectScrollWnd * filtreEffectWnd;
 
-			CInfosFileWnd* infosFileWnd;
-			CToolbarInfos* infosToolbar;
-			COcrWnd* ocrWnd;
+			CInfosFileWnd * infosFileWnd;
+			CToolbarInfos * infosToolbar;
+			COcrWnd * ocrWnd;
 			wxString _filename;
 			wxString url;
 			wxWebView* webBrowser = nullptr;

@@ -7,53 +7,60 @@ namespace Regards
 {
 	namespace Sqlite
 	{
-		class CSqlResult;
+        class CSqlResult;
+        class CSqlParameter;
 
-		class CSqlLib
-		{
-		public:
-			CSqlLib();
-			virtual ~CSqlLib();
+        // Callback pour les erreurs, évite wxMessageBox dans la logique métier
+        using ErrorCallback = std::function<void(const std::string& message)>;
 
-			bool OpenConnection(const wxString& databasePath, const bool& readonly, const bool& load_inmemory);
-			void CloseConnection();
+        class CSqlLib
+        {
+        public:
+            explicit CSqlLib(ErrorCallback onError = nullptr);
+            virtual ~CSqlLib();
 
-			virtual bool InitDatabase(const wxString& lpFilename) = 0;
+            // Non-copiable
+            CSqlLib(const CSqlLib&) = delete;
+            CSqlLib& operator=(const CSqlLib&) = delete;
 
-			virtual bool CheckVersion(const wxString& lpFilename)
-			{
-				return false;
-			}
+            bool OpenConnection(const wxString& path, bool readonly, bool load_inmemory);
+            void CloseConnection();
 
-			int ExecuteSQLWithNoResult(const wxString& query);
-			bool ExecuteSQLSelect(const wxString& query, CSqlResult* sqlResult);
-			bool ExecuteSQLBlobInsert(const wxString& query, const int& numCol, const void* zBlob, const int& nBlob,
-			                          CSqlResult* sqlResult);
-			void BeginTransaction();
-			void CommitTransection();
-			void lock();
-			void unlock();
-			void Release();
+            virtual bool InitDatabase(const wxString& filename) = 0;
+            virtual bool CheckVersion(const wxString& filename) { return false; }
 
-			int64_t GetLastId();
+            bool RecoverDatabaseFile(const wxString& filename);
+            bool ExecuteSqlWithStatement(const wxString& query, std::vector<std::unique_ptr<CSqlParameter>>& parameter, CSqlResult* result = nullptr);
+            int  ExecuteSQLWithNoResult(const wxString& query);
+            int  ExecuteSQLSelect(const wxString& query, CSqlResult* result);
+            bool ExecuteSQLBlobInsert(const wxString& query, int numCol,
+                const void* blob, int blobSize, CSqlResult* result);
 
-			sqlite3* GetDB()
-			{
-				return pCon;
-			}
+            void BeginTransaction();
+            void CommitTransaction(); // Faute d'orthographe corrigée
+            void lock();
+            void unlock();
+            void Release();
 
-		protected:
-			int LoadOrSaveDb(sqlite3* pInMemory, const char* zFilename, int isSave);
-			bool isConnected();
-            int recoverDatabase(sqlite3 *db);
-			mutex sync;
-			wxString sqLiteDBPath; //Databse File Dir
-			sqlite3* pCon; //SQLite Connection Object
-			sqlite3_stmt* pRes;
-			bool m_bConnected;
-			bool readonly;
-			bool load_inmemory;
-			wxString m_strLastError; /*Last Error String*/
-		};
+            int64_t  GetLastId();
+            sqlite3* GetDB() { return pCon; }
+            bool     isConnected() const { return m_bConnected; }
+
+        protected:
+            int  LoadOrSaveDb(sqlite3* pInMemory, const char* zFilename, int isSave);
+            int  recoverDatabase(sqlite3* db);
+            void reportError(const std::string& msg);
+            wxString escapeSqlite(const wxString& str);
+
+            ErrorCallback  m_onError;
+            wxString       m_dbPath;
+            sqlite3* pCon = nullptr;
+            bool           m_bConnected = false;
+            bool           m_readonly = false;
+            bool           m_loadInMemory = false;
+            wxString       m_lastError;
+            std::mutex     m_sync;
+            // pRes retiré des membres → déclaré localement dans chaque méthode
+        };
 	}
 }

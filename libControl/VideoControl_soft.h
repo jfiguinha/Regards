@@ -13,6 +13,7 @@ extern "C" {
 #include "RenderVideoOpenGL.h"
 #include <wx/glcanvas.h>
 #include <IBitmapRenderInterface.h>
+#include <VideoStabilization.h>
 
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -28,11 +29,6 @@ namespace Regards
 	namespace Video
 	{
 		class CThumbnailVideo;
-	}
-
-	namespace OpenCV
-	{
-		class COpenCVStabilization;
 	}
 }
 
@@ -182,9 +178,17 @@ protected:
 	int GetSrcBitmapWidth();
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();
-	Chqdn3d* hq3d = nullptr;
+
+#ifdef _DEBUG
+
+	void DebugRenderTime(
+		const std::chrono::high_resolution_clock::time_point& start,
+		const char* name);
+#endif
+	
 
     int Play(const wxString& movie);
+	wxFloatRect floatRect;
 
 
 	CPictureArray pictureArray;
@@ -198,8 +202,7 @@ protected:
 	int old_height;
 	bool pause;
 	wxString filename;
-	IVideoInterface* eventPlayer;
-	CRegardsConfigParam* config;
+	bool reinititTexture = false;
 	bool newVideo;
 	bool videoEnd;
 	bool stopVideo;
@@ -209,13 +212,11 @@ protected:
 	bool videoStart;
 	wxString msgFrame = "";
 	CWindowMain* windowMain;
-	wxTimer* fpsTimer;
-	wxTimer* playStartTimer;
-	wxTimer* assSubtitleTimer;
+
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;
-	CFFmfc* ffmfc;
+
 	wxCursor hCursorHand;
     
     bool isHardwareDecoder = true;
@@ -223,11 +224,6 @@ protected:
 	bool videoRender = false;;
 	bool videoStartRender = false;
 
-	IEffectVideo * openclEffectYUV = nullptr;
-	CRenderVideoOpenGL* renderBitmapOpenGL;
-	CRenderOpenGL* renderOpenGL = nullptr;
-	wxWindow * window;
-	CVideoEffectParameter videoEffectParameter;
     
     
 	cv::Mat matScreen;
@@ -248,7 +244,7 @@ protected:
 	int nbFrame;
 	wxString message;
 	cv::Mat pictureSubtitle;
-	CDataAVFrame * pictureFrame = nullptr;
+	
 	//cv::Mat pictureVideo;
 	int64_t videoPosition = 0;
 	int64_t oldvideoPosition = 0;
@@ -272,13 +268,13 @@ protected:
 	int oldheightDenoise = 0;
 	bool isInit = false;
 	bool firstMovie = true;
-	wxTimer* playStopTimer;
+	
 	
     std::atomic<bool> needToRefresh{ false };
 
 	bool inverted = true;
 
-	COpenCVStabilization* openCVStabilization = nullptr;
+	
 	cv::Mat render;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
@@ -301,4 +297,24 @@ protected:
 	int applyStabilization = 0;
 	int filmEnhance = 0;
 	int filmcolorisation = 0;
+
+
+	IVideoInterface* eventPlayer;
+	CRegardsConfigParam* config;
+	
+	
+	CRenderOpenGL* renderOpenGL = nullptr;
+	wxWindow* window;
+	CVideoEffectParameter videoEffectParameter;
+
+	std::unique_ptr<IEffectVideo> openclEffectYUV = nullptr;
+	std::unique_ptr<CRenderVideoOpenGL> renderBitmapOpenGL;
+	std::unique_ptr<CDataAVFrame> pictureFrame = nullptr;
+	std::unique_ptr<Regards::OpenCV::COpenCVStabilization> openCVStabilization;
+	std::unique_ptr<Chqdn3d> hq3d = nullptr;
+	std::unique_ptr<wxTimer> fpsTimer;
+	std::unique_ptr<wxTimer> playStartTimer;
+	std::unique_ptr<wxTimer> assSubtitleTimer;
+	std::unique_ptr<CFFmfc> ffmfc;
+	std::unique_ptr<wxTimer> playStopTimer;
 };

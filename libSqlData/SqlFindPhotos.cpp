@@ -4,6 +4,8 @@
 #include <libPicture.h>
 #include <SqlResource.h>
 #include <ConvertUtility.h>
+#include <SQLRemoveData.h>
+#include <SqlParameter.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
@@ -13,18 +15,26 @@ CSqlFindPhotos::CSqlFindPhotos()
 	typeResult = 0;
 }
 
-
-CSqlFindPhotos::~CSqlFindPhotos()
-{
-}
-
-
 bool CSqlFindPhotos::SearchPhotosByCriteriaFolder(PhotosVector* photosVector)
 {
 	typeResult = 2;
 	m_photosVector = photosVector;
-	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW";//  Order By Year, Month asc, Day asc, DayOfWeek asc, FullPath";
-	return (ExecuteRequest(sqlRequest) != -1) ? true : false;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
+	wxString sqlRequest = "SELECT NumPhoto, FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA  Order By CreateDate";//  Order By Year, Month asc, Day asc, DayOfWeek asc, FullPath";
+	bool result = (ExecuteRequest(sqlRequest) != -1) ? 1 : 0;
+
+	if (result)
+	{
+		if (m_idlistPhotoToDelete.size() > 0)
+		{
+			CSQLRemoveData::DeleteListPhoto(m_idlistPhotoToDelete, nullptr);
+		}
+	}
+
+	return result;
 }
 
 
@@ -32,6 +42,10 @@ bool CSqlFindPhotos::GetAllPhotos(PhotosVector* photosVector)
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
 	return (ExecuteRequest("SELECT NumPhoto,FullPath FROM PHOTOS") != -1) ? true : false;
 }
 
@@ -45,9 +59,11 @@ void CSqlFindPhotos::UpdatePhotosExtension()
 	for (CPhotos photo : photosVector)
 	{
 		int indexId = libPicture.TestImageFormat(photo.GetPath());
-		ExecuteRequestWithNoResult(
-			"UPDATE PHOTOS SET ExtensionId = " + to_string(indexId) + " WHERE NumPhoto = " + to_string(photo.GetId()));
-		//printf("CSqlFindPhotos::UpdatePhotosExtension \n");
+
+		std::vector<std::unique_ptr<CSqlParameter>> parameter;
+		parameter.push_back(std::make_unique<CSqlInt>(indexId));
+		parameter.push_back(std::make_unique<CSqlInt>(photo.GetId()));
+		ExecuteSqlWithStatementNoResult("UPDATE PHOTOS SET ExtensionId =  ? WHERE NumPhoto = ? ", parameter);
 	}
 }
 
@@ -55,6 +71,10 @@ bool CSqlFindPhotos::GetAllVideo(PhotosVector* photosVector)
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
 	return (ExecuteRequest(
 			       "SELECT NumPhoto,FullPath FROM PHOTOS WHERE FullPath not in (SELECT FullPath FROM VIDEOTHUMBNAIL)")
 		       != -
@@ -68,28 +88,37 @@ bool CSqlFindPhotos::SearchPhotos(PhotosVector* photosVector, const wxString& li
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
-	return (ExecuteRequest(
-		       "SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA WHERE CreateDate like '" +
-		       libelleCriteria + "%'") != -1)
-		       ? true
-		       : false;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(libelleCriteria + "%"));
+	return ExecuteSqlWithStatement("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA WHERE CreateDate like ?", parameter);
 }
 
 bool CSqlFindPhotos::SearchPhotos(PhotosVector* photosVector, const wxString& localisation,
                                   const wxString& libelleCriteria)
 {
 	m_photosVector = photosVector;
-	return (ExecuteRequest(
-		       "Select NumPhoto,FullPath, CreateDate, GeoGps from PHOTOSSEARCHCRITERIA WHERE GeoGps = '" + localisation
-		       + "' and CreateDate = '" + libelleCriteria + "')") != -1)
-		       ? true
-		       : false;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(localisation));
+	parameter.push_back(std::make_unique<CSqlString>(libelleCriteria));
+	return ExecuteSqlWithStatement("Select NumPhoto,FullPath, CreateDate, GeoGps from PHOTOSSEARCHCRITERIA WHERE GeoGps = ? and CreateDate = ?", parameter);
 }
 
 bool CSqlFindPhotos::SearchPhotos(PhotosVector* photosVector)
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
+	if (m_photosVector == nullptr)
+		return false;
+
+	m_photosVector->clear();
 	return (ExecuteRequest(
 			       "SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps")
 		       != -1)
@@ -101,6 +130,10 @@ bool CSqlFindPhotos::SearchPhotos(vector<wxString> * fileList)
 {
 	typeResult = 3;
 	this->fileList = fileList;
+	if (fileList == nullptr)
+		return false;
+
+	fileList->clear();
 	return (ExecuteRequest(
 		"SELECT FullPath FROM PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps")
 		!= -1)
@@ -113,6 +146,10 @@ bool CSqlFindPhotos::SearchPhotos(vector<int>* listPhoto)
 {
 	typeResult = 1;
 	m_listPhoto = listPhoto;
+	if (listPhoto == nullptr)
+		return false;
+
+	listPhoto->clear();
 	return (ExecuteRequest("SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA") != -1) ? true : false;
 }
 
@@ -122,7 +159,10 @@ bool CSqlFindPhotos::SearchPhotosByTypeAffichage(PhotosVector* photosVector, con
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
-	//return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM  PHOTOSSEARCHCRITERIA ORDER BY CreateDate desc, GeoGps") != -1) ? true : false;
+	if (m_photosVector == nullptr)
+		return false;
+
+	photosVector->clear();
 	return (ExecuteRequest(
 			       "SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM  PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps")
 		       != -1)
@@ -151,6 +191,239 @@ bool CSqlFindPhotos::FindIfViewExist()
 	ExecuteRequest(testview);
 	return (table_name != "") ? true : false;
 }
+
+
+
+wxString CSqlFindPhotos::GenerateSqlRequest(
+	const int& numCatalog,
+	vector<int>& listFolder,
+	vector<int>& listCriteriaNotIn,
+	vector<int>& listFaceNotIn,
+	vector<int>& listFaceSelected,
+	vector<int>& listStarSelected,
+	vector<int>& listStarNotSelected,
+	vector<int>& listKeywordSelected,
+	vector<int>& listKeywordNotSelected,
+	const wxString& libelleNotGeo,
+	const double& pertinence)
+{
+	if (listFolder.empty())
+		return "";
+
+	// ---------------------------------------------------------------------
+	// Date courante au format YYYY.MM.DD
+	// ---------------------------------------------------------------------
+	const wxDateTime now = wxDateTime::Now();
+
+	const wxString createDate = wxString::Format(
+		"%04d.%02d.%02d",
+		now.GetYear(),
+		static_cast<int>(now.GetMonth()) + 1,
+		now.GetDay());
+
+	wxString reqSQIn;
+
+	// ---------------------------------------------------------------------
+	// Création de la vue
+	// ---------------------------------------------------------------------
+	reqSQIn =
+		"CREATE VIEW PHOTOSSEARCHCRITERIA "
+		"(NumPhoto, NumFolder, FullPath, CreateDate, GeoGps) AS ";
+
+	reqSQIn += "SELECT * FROM (";
+
+	// =====================================================================
+	// 1. Photos sans critères
+	// =====================================================================
+
+	reqSQIn +=
+		"SELECT "
+		"NumPhoto, "
+		"NumFolderCatalog, "
+		"FullPath, "
+		"'" + createDate + "' AS CreateDate, "
+		"'" + libelleNotGeo + "' AS GeoGps "
+		"FROM PHOTOS "
+		"WHERE CriteriaInsert = 0 "
+		"AND NumFolderCatalog IN (";
+
+	// GetSearchSQL() ferme déjà la parenthèse
+	reqSQIn += GetSearchSQL(listFolder);
+
+	// =====================================================================
+	// 2. Photos avec critères
+	// =====================================================================
+
+	reqSQIn +=
+		" UNION "
+		"SELECT "
+		"PH.NumPhoto, "
+		"PH.NumFolderCatalog, "
+		"PH.FullPath, "
+		"MAX(CASE "
+		"WHEN CR.NumCategorie = 3 THEN CR.Libelle "
+		"END) AS CreateDate, "
+		"MAX(CASE "
+		"WHEN CR.NumCategorie = 1 THEN CR.Libelle "
+		"END) AS GeoGps "
+		"FROM PHOTOS AS PH "
+		"INNER JOIN FOLDERCATALOG AS FC "
+		"ON PH.NumFolderCatalog = FC.NumFolderCatalog "
+		"INNER JOIN PHOTOSCRITERIA AS PHCR "
+		"ON PH.NumPhoto = PHCR.NumPhoto "
+		"INNER JOIN CRITERIA AS CR "
+		"ON CR.NumCriteria = PHCR.NumCriteria "
+		"WHERE FC.NumCatalog = ";
+
+	reqSQIn += to_string(numCatalog);
+
+	reqSQIn +=
+		" AND PH.NumFolderCatalog IN (";
+
+	// GetSearchSQL() ferme déjà la parenthèse
+	reqSQIn += GetSearchSQL(listFolder);
+
+	// =====================================================================
+	// 3. Critères exclus
+	// =====================================================================
+
+	if (!listCriteriaNotIn.empty())
+	{
+		reqSQIn +=
+			" AND PH.NumPhoto NOT IN ("
+			"SELECT DISTINCT PH.NumPhoto "
+			"FROM PHOTOS AS PH "
+			"INNER JOIN FOLDERCATALOG AS FC "
+			"ON PH.NumFolderCatalog = FC.NumFolderCatalog "
+			"INNER JOIN PHOTOSCRITERIA AS PHCR "
+			"ON PH.NumPhoto = PHCR.NumPhoto "
+			"INNER JOIN CRITERIA AS CR "
+			"ON CR.NumCriteria = PHCR.NumCriteria "
+			"WHERE FC.NumCatalog = ";
+
+		reqSQIn += to_string(numCatalog);
+
+		reqSQIn +=
+			" AND PH.NumFolderCatalog IN (";
+
+		reqSQIn += GetSearchSQL(listFolder);
+
+		reqSQIn +=
+			" AND CR.NumCriteria IN (";
+
+		reqSQIn += GetSearchSQL(listCriteriaNotIn);
+
+		reqSQIn += ")";
+	}
+
+	// =====================================================================
+	// 4. Reconnaissance faciale
+	//
+	// On conserve exactement la logique originale :
+	// test sur listFaceNotIn mais utilisation de listFaceSelected.
+	// =====================================================================
+
+	if (!listFaceNotIn.empty())
+	{
+		const wxString value =
+			wxString::Format("%.6f", pertinence / 100.0);
+
+		reqSQIn +=
+			" AND PH.NumPhoto IN ("
+			"SELECT NumPhoto "
+			"FROM PHOTOS "
+			"WHERE FullPath IN ("
+			"SELECT DISTINCT FullPath "
+			"FROM FACE_RECOGNITION "
+			"INNER JOIN FACEPHOTO "
+			"ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace "
+			"WHERE FACEPHOTO.Pertinence > ";
+
+		reqSQIn += value;
+
+		reqSQIn +=
+			" AND NumFaceCompatible IN (";
+
+		reqSQIn += GetSearchSQL(listFaceSelected);
+
+		reqSQIn += "))";
+	}
+
+	// =====================================================================
+	// 5. Etoiles + mots-clés
+	// =====================================================================
+
+	if (!listStarSelected.empty() &&
+		!listKeywordSelected.empty())
+	{
+		reqSQIn +=
+			" AND PH.NumPhoto IN ("
+			"SELECT DISTINCT PH.NumPhoto "
+			"FROM PHOTOS AS PH "
+			"INNER JOIN PHOTOSCRITERIA AS PHCR "
+			"ON PH.NumPhoto = PHCR.NumPhoto "
+			"INNER JOIN CRITERIA AS CR "
+			"ON CR.NumCriteria = PHCR.NumCriteria "
+			"WHERE CR.NumCriteria IN (";
+
+		reqSQIn += GetSearchSQL(listStarSelected);
+
+		reqSQIn +=
+			" INTERSECT "
+			"SELECT DISTINCT PH.NumPhoto "
+			"FROM PHOTOS AS PH "
+			"INNER JOIN PHOTOSCRITERIA AS PHCR "
+			"ON PH.NumPhoto = PHCR.NumPhoto "
+			"INNER JOIN CRITERIA AS CR "
+			"ON CR.NumCriteria = PHCR.NumCriteria "
+			"WHERE CR.NumCriteria IN (";
+
+		reqSQIn += GetSearchSQL(listKeywordSelected);
+
+		reqSQIn += ")";
+	}
+	else if (!listStarSelected.empty() ||
+		!listKeywordSelected.empty())
+	{
+		reqSQIn +=
+			" AND PH.NumPhoto IN ("
+			"SELECT DISTINCT PH.NumPhoto "
+			"FROM PHOTOS AS PH "
+			"INNER JOIN PHOTOSCRITERIA AS PHCR "
+			"ON PH.NumPhoto = PHCR.NumPhoto "
+			"INNER JOIN CRITERIA AS CR "
+			"ON CR.NumCriteria = PHCR.NumCriteria "
+			"WHERE CR.NumCriteria IN (";
+
+		if (!listStarSelected.empty())
+			reqSQIn += GetSearchSQL(listStarSelected);
+		else
+			reqSQIn += GetSearchSQL(listKeywordSelected);
+
+		reqSQIn += ")";
+	}
+
+	// =====================================================================
+	// Une ligne par photo dans la deuxième branche
+	// =====================================================================
+
+	reqSQIn +=
+		" GROUP BY "
+		"PH.NumPhoto, "
+		"PH.NumFolderCatalog, "
+		"PH.FullPath";
+
+	// =====================================================================
+	// Fermeture du SELECT *
+	// =====================================================================
+
+	reqSQIn += ") GROUP BY NumPhoto";
+
+	return reqSQIn;
+}
+
+/*
+
 
 wxString CSqlFindPhotos::GenerateSqlRequest(const int& numCatalog, vector<int>& listFolder,
                                             vector<int>& listCriteriaNotIn, vector<int>& listFaceNotIn,
@@ -249,14 +522,14 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int& numCatalog, vector<int>& 
 		}
 
 		reqSQIn += ") Group By NumPhoto";
-		//printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
-		//ExecuteRequest(reqSQIn);
+
 		return reqSQIn;
 	}
 
 
 	return "";
 }
+*/
 
 bool CSqlFindPhotos::SearchPhotos(const wxString& sqlRequest)
 {
@@ -285,19 +558,17 @@ bool CSqlFindPhotos::SearchPhotos(const wxString& sqlRequest)
 	return false;
 }
 
-bool CSqlFindPhotos::DeleteAllInSearchPhotos()
-{
-	return true; // return (ExecuteRequestWithNoResult("Delete From PHOTOSSEARCHCRITERIA") != -1) ? true : false;
-}
-
 bool CSqlFindPhotos::SearchPhotos(PhotosVector* photosVector, const int& numCategorie, const int& numCatalog)
 {
 	m_photosVector = photosVector;
-	return (ExecuteRequest(
-		       "SELECT distinct PH.NumPhoto, PH.FullPath FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE FC.NumCatalog = "
-		       + to_string(numCatalog) + " AND CR.NumCategorie = " + to_string(numCategorie)) != -1)
-		       ? true
-		       : false;
+	if (photosVector == nullptr)
+		return false;
+
+	photosVector->clear();
+	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
+	parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
+	return ExecuteSqlWithStatement("SELECT distinct PH.NumPhoto, PH.FullPath FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE FC.NumCatalog = ? AND CR.NumCategorie = ?", parameter);
 }
 
 int CSqlFindPhotos::TraitementResult(CSqlResult* sqlResult)
@@ -321,16 +592,7 @@ int CSqlFindPhotos::TraitementResult(CSqlResult* sqlResult)
 		{
 			while (sqlResult->Next())
 			{
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-				{
-					switch (i)
-					{
-					case 0:
-						table_name = sqlResult->ColumnDataText(i);
-						break;
-					default: ;
-					}
-				}
+				table_name = sqlResult->ColumnDataText(0);
 				nbResult++;
 			}
 		}
@@ -346,20 +608,12 @@ int CSqlFindPhotos::TraitementResultFilename(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				fileList->push_back(sqlResult->ColumnDataText(i));
-				break;
-			}
-		}
-		
+		fileList->push_back(sqlResult->ColumnDataText(0));	
 		nbResult++;
 	}
 	return nbResult;
 }
+
 
 int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
 {
@@ -369,46 +623,29 @@ int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
 	wxString listDay = sqlResource.GetLibelle(L"LBLDAYNAME", 1);
 	vector<wxString> DayName = CConvertUtility::split(listDay, ',');
 
+	m_idlistPhotoToDelete.clear();
+
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		CPhotos _cPhoto;
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		wxString filePath = sqlResult->ColumnDataText(1);
+		if (!wxFileExists(filePath))
 		{
-			switch (i)
-			{
-			case 0:
-				_cPhoto.SetId(sqlResult->ColumnDataInt(i));
-				break;
-			case 1:
-				_cPhoto.SetPath(sqlResult->ColumnDataText(i));
-				break;
-			case 2:
-				_cPhoto.SetCreateDate(sqlResult->ColumnDataText(i));
-				break;
-			case 3:
-				_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(i));
-				break;
-			case 4:
-				_cPhoto.year = sqlResult->ColumnDataInt(i);
-				break;
-			case 5:
-				_cPhoto.month = sqlResult->ColumnDataInt(i);
-				if (_cPhoto.month > 0)
-					_cPhoto.monthName = MonthName[_cPhoto.month - 1];
-				else
-					_cPhoto.monthName = "";
-				break;
-			case 6:
-				_cPhoto.day = sqlResult->ColumnDataInt(i);
-				break;
-			case 7:
-				_cPhoto.dayofweek = sqlResult->ColumnDataInt(i);
-				_cPhoto.dayName = DayName[_cPhoto.dayofweek];
-				break;
-			default: ;
-			}
+			m_idlistPhotoToDelete.push_back(sqlResult->ColumnDataInt(0));
+			continue;
 		}
+			
+
+		CPhotos _cPhoto;
+		_cPhoto.SetId(sqlResult->ColumnDataInt(0));
+		_cPhoto.SetPath(sqlResult->ColumnDataText(1));
+		_cPhoto.SetCreateDate(sqlResult->ColumnDataText(2));
+		_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(3));
+		if (_cPhoto.month > 0)
+			_cPhoto.monthName = MonthName[_cPhoto.month - 1];
+		else
+			_cPhoto.monthName = "";
+		_cPhoto.dayName = DayName[_cPhoto.GetDayOfWeek()];
 		m_photosVector->push_back(_cPhoto);
 		nbResult++;
 	}
@@ -421,25 +658,10 @@ int CSqlFindPhotos::TraitementResultPhoto(CSqlResult* sqlResult)
 	while (sqlResult->Next())
 	{
 		CPhotos _cPhoto;
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				_cPhoto.SetId(sqlResult->ColumnDataInt(i));
-				break;
-			case 1:
-				_cPhoto.SetPath(sqlResult->ColumnDataText(i));
-				break;
-			case 2:
-				_cPhoto.SetCreateDate(sqlResult->ColumnDataText(i));
-				break;
-			case 3:
-				_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(i));
-				break;
-			default: ;
-			}
-		}
+		_cPhoto.SetId(sqlResult->ColumnDataInt(0));
+		_cPhoto.SetPath(sqlResult->ColumnDataText(1));
+		_cPhoto.SetCreateDate(sqlResult->ColumnDataText(2));
+		_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(3));
 		m_photosVector->push_back(_cPhoto);
 		nbResult++;
 	}
@@ -451,16 +673,7 @@ int CSqlFindPhotos::TraitementResultNumPhoto(CSqlResult* sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-		{
-			switch (i)
-			{
-			case 0:
-				m_listPhoto->push_back(sqlResult->ColumnDataInt(i));
-				break;
-			default: ;
-			}
-		}
+		m_listPhoto->push_back(sqlResult->ColumnDataInt(0));
 		nbResult++;
 	}
 	return nbResult;

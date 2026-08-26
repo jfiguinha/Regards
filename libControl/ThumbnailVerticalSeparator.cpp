@@ -42,7 +42,7 @@ void CThumbnailVerticalSeparator::ResizeThumbnail()
 
 	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	for (auto& infosSeparationBar : listSeparator)
 	{
 		int nbElementEnY = 0;
 		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
@@ -118,7 +118,7 @@ void CThumbnailVerticalSeparator::ResizeThumbnailWithVScroll()
 
 	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	for (auto& infosSeparationBar : listSeparator)
 	{
 		int nbElementEnY = 0;
 		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
@@ -167,9 +167,9 @@ void CThumbnailVerticalSeparator::ResizeThumbnailWithVScroll()
 
 void CThumbnailVerticalSeparator::RenderIconeWithVScroll(wxDC* deviceContext)
 {
-	for (auto i = 0; i < listSeparator.size(); i++)
+	for (auto& infosSeparationBar : listSeparator)
 	{
-		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
+		
 		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 		bool isStart = false;
 
@@ -207,7 +207,7 @@ void CThumbnailVerticalSeparator::UpdateScrollWithVScroll()
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
 
-	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
+	for (auto& infosSeparationBar : listSeparator)
 	{
 		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 

@@ -11,10 +11,6 @@ public:
 		blue = 120;
 	};
 
-	~CRgbEffectParameter() override
-	{
-	};
-
 	int red;
 	int green;
 	int blue;

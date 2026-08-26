@@ -6,9 +6,10 @@
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <ffmpeg_application.h>
 #include <opencv2/core/ocl.hpp>
 #include <Gps.h>
+#include <MediaExtractor.h>
+
 using namespace Regards::Viewer;
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
@@ -74,36 +75,30 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 
 	txtAPIKey = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTAPIKEY")));
 
-	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
-	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
+	Bind(wxEVT_BUTTON, &ConfigRegards::OnbtnOkClick, this, XRCID("ID_OK"));
+	Bind(wxEVT_BUTTON, &ConfigRegards::OnBtnCancelClick, this, XRCID("ID_CANCEL"));
 	//*)
-	//Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&ConfigRegards::OnInit);
-	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
-	        (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
-	Connect(XRCID("ID_PICTUREPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
-	        (wxObjectEventFunction)&ConfigRegards::OnBtnPathPictureClick);
-	Connect(XRCID("ID_MUSICDIAPORAMAPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
-	        (wxObjectEventFunction)&ConfigRegards::OnBtnMusicDiaporamaClick);
-
-
-	
+	Bind(wxEVT_BUTTON, &ConfigRegards::OnbtnPathVideoClick, this, XRCID("ID_VIDEOPATH"));
+	Bind(wxEVT_BUTTON, &ConfigRegards::OnBtnPathPictureClick, this, XRCID("ID_PICTUREPATH"));
+	Bind(wxEVT_BUTTON, &ConfigRegards::OnBtnMusicDiaporamaClick, this, XRCID("ID_MUSICDIAPORAMAPATH"));
 
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
+	{
 		txtVideoPath->SetValue(config->GetPathForVideoEdit());
-	if (config != nullptr)
 		txtPicturePath->SetValue(config->GetPathForPictureEdit());
+	}
 
 #ifndef __APPLE__
 	rbVideoEncoderHard->Clear();
 	{
 		wxString encoderHardware = "";
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-			encoderHardware = config->GetHardwareEncoder();
+		CRegardsConfigParam* configParam = CParamInit::getInstance();
+		if (configParam != nullptr)
+			encoderHardware = configParam->GetHardwareEncoder();
 
 		bool findEncoder = false;
-		std::vector<wxString> listHard = CFFmpegApp::GetHardwareList();
+		std::vector<wxString> listHard = Regards::Media::GetHardwareList();
 		if (listHard.size() > 0)
 		{
 			for (wxString hardware : listHard)
@@ -134,58 +129,48 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	if (cv::ocl::haveOpenCL())
 		cbHardwareAccelerator->AppendString("OpenCL");
 
-
 	init();
 
 	SetAutoLayout(TRUE);
+}
+
+
+
+void ConfigRegards::SelectFile(const wxString& label, const wxString& wildcard, wxTextCtrl* target,
+                                const wxString& defaultFilename)
+{
+	wxFileDialog openFileDialog(nullptr, label, "", defaultFilename,
+	                             wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+	openFileDialog.SetDirectory(documentPath);
+
+	if (openFileDialog.ShowModal() == wxID_OK)
+		target->SetValue(openFileDialog.GetPath());
 }
 
 void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
 {
 	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTVIDEOEDITOR", 1);
 	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
-
-	wxFileDialog openFileDialog(nullptr, label, "", "",
-	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-                                
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    openFileDialog.SetDirectory(documentPath);
-                                
-	if (openFileDialog.ShowModal() == wxID_OK)
-		txtVideoPath->SetValue(openFileDialog.GetPath());
+	SelectFile(label, allfiles, txtVideoPath);
 }
 
 void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
 {
 	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTPICTUREEDITOR", 1);
 	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
-
-	wxFileDialog openFileDialog(nullptr, label, "", "",
-	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-                                
-                                
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    openFileDialog.SetDirectory(documentPath);
-                                
-	if (openFileDialog.ShowModal() == wxID_OK)
-		txtPicturePath->SetValue(openFileDialog.GetPath());
+	SelectFile(label, allfiles, txtPicturePath);
 }
 
 void ConfigRegards::OnBtnMusicDiaporamaClick(wxCommandEvent& event)
 {
+	// NOTE: label volontairement laisse a l'identique (LBLSELECTPICTUREEDITOR) - point non modifie a la demande.
 	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTPICTUREEDITOR", 1);
-	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-
-	wxFileDialog openFileDialog(nullptr, label, "", filename,
-	                            "mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename
-	                            + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    openFileDialog.SetDirectory(documentPath);
-
-	if (openFileDialog.ShowModal() == wxID_OK)
-		txtMusicDiaporamaPath->SetValue(openFileDialog.GetPath());
+	wxString wildcard = "mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename
+	                     + " (*.wav)|*.wav";
+	SelectFile(label, wildcard, txtMusicDiaporamaPath, filename);
 }
 
 ConfigRegards::~ConfigRegards()
@@ -194,10 +179,27 @@ ConfigRegards::~ConfigRegards()
 	//*)
 }
 
+int ConfigRegards::InvertBinary(int value)
+{
+	return (value == 0) ? 1 : 0;
+}
+
+void ConfigRegards::SetInvertedRadioSelection(wxRadioBox* radio, int paramValue)
+{
+	radio->SetSelection(InvertBinary(paramValue));
+}
+
+int ConfigRegards::GetInvertedRadioValue(wxRadioBox* radio)
+{
+	return InvertBinary(radio->GetSelection());
+}
+
 void ConfigRegards::init()
 {
 	this->SetTitle("Configuration");
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam == nullptr)
+		return;
 
 	int transition = max((regardsParam->GetEffect() - 300), 0);
 	if (transition == 0)
@@ -211,35 +213,12 @@ void ConfigRegards::init()
 	else
 		rbTransitionDiaporamaEffect->SetSelection(transitionDiaporama);
 
-	int autoRotate = regardsParam->GetDetectOrientation();
-	if (autoRotate == 0)
-		rbAutoRotate->SetSelection(1);
-	else
-		rbAutoRotate->SetSelection(0);
+	SetInvertedRadioSelection(rbAutoRotate, regardsParam->GetDetectOrientation());
+	SetInvertedRadioSelection(rbContrastCorrection, regardsParam->GetAutoConstrast());
+	SetInvertedRadioSelection(rbVideoFaceDetection, regardsParam->GetFaceVideoDetection());
+	SetInvertedRadioSelection(rbUSESUPERDNN, regardsParam->GetUseSuperResolution());
 
-	int autoContrast = regardsParam->GetAutoConstrast();
-	if (autoContrast == 0)
-		rbContrastCorrection->SetSelection(1);
-	else
-		rbContrastCorrection->SetSelection(0);
-
-	int videoFaceDetection = regardsParam->GetFaceVideoDetection();
-	if (videoFaceDetection == 0)
-		rbVideoFaceDetection->SetSelection(1);
-	else
-		rbVideoFaceDetection->SetSelection(0);
-
-	int useSuperResolution = regardsParam->GetUseSuperResolution();
-	if (useSuperResolution == 0)
-		rbUSESUPERDNN->SetSelection(1);
-	else
-		rbUSESUPERDNN->SetSelection(0);
-
-	int faceDetection = regardsParam->GetFaceDetection();
-	if (faceDetection == 0)
-		rbFaceDetection->SetSelection(1);
-	else
-		rbFaceDetection->SetSelection(0);
+	SetInvertedRadioSelection(rbFaceDetection, regardsParam->GetFaceDetection());
 
 	txtMusicDiaporamaPath->SetValue(regardsParam->GetMusicDiaporama());
 
@@ -255,11 +234,7 @@ void ConfigRegards::init()
 	int faceProcess = regardsParam->GetFaceProcess();
 	scProcessFace->SetValue(faceProcess);
 
-	int dataInMemory = regardsParam->GetDatabaseInMemory();
-	if (dataInMemory == 0)
-		rbDatabaseInMemory->SetSelection(1);
-	else
-		rbDatabaseInMemory->SetSelection(0);
+	SetInvertedRadioSelection(rbDatabaseInMemory, regardsParam->GetDatabaseInMemory());
 
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
@@ -268,11 +243,7 @@ void ConfigRegards::init()
 	cbUSESUPERDNNFILTER->SetSelection(superDnn);
 
 
-	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
-	if (openclOpenGLInterop == 0)
-		rbOpenCLOpenGLInterop->SetSelection(1);
-	else
-		rbOpenCLOpenGLInterop->SetSelection(0);
+	SetInvertedRadioSelection(rbOpenCLOpenGLInterop, regardsParam->GetIsOpenCLOpenGLInteropSupport());
 
 
 	int numItem = 0;
@@ -322,9 +293,13 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	isOk = true;
 	bool showInfosRestart = false;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam == nullptr)
+		return;
+
 	CMainParam* mainparam = CMainParamInit::getInstance();
-	int _faceDetection = regardsParam->GetFaceDetection();
-	int nbProcesseur = thread::hardware_concurrency();
+	int oldFaceDetection = regardsParam->GetFaceDetection();
+	wxString oldApiKey = regardsParam->GetApiKey();
+	int nbProcesseur = std::thread::hardware_concurrency();
 
 	if (mainparam != nullptr)
 	{
@@ -343,38 +318,16 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	int transitionDiaporama = rbTransitionDiaporamaEffect->GetSelection();
 	regardsParam->SetDiaporamaTransitionEffect(transitionDiaporama + 400);
 
-	int autoRotate = rbAutoRotate->GetSelection();
-	if (autoRotate == 0)
-		regardsParam->SetDectectOrientation(1);
-	else
-		regardsParam->SetDectectOrientation(0);
+	regardsParam->SetDectectOrientation(GetInvertedRadioValue(rbAutoRotate));
+	regardsParam->SetFaceVideoDetection(GetInvertedRadioValue(rbVideoFaceDetection));
 
-	int videoFaceDetection = rbVideoFaceDetection->GetSelection();
-	if (videoFaceDetection == 0)
-		regardsParam->SetFaceVideoDetection(1);
-	else
-		regardsParam->SetFaceVideoDetection(0);
-
-	int faceDetection = rbFaceDetection->GetSelection();
-	if (faceDetection == 0)
-		regardsParam->SetFaceDetection(1);
-	else
-		regardsParam->SetFaceDetection(0);
-
-	if (_faceDetection == faceDetection)
+	int newFaceDetection = GetInvertedRadioValue(rbFaceDetection);
+	regardsParam->SetFaceDetection(newFaceDetection);
+	if (oldFaceDetection != newFaceDetection)
 		showInfosRestart = true;
 
-	int autoContrast = rbContrastCorrection->GetSelection();
-	if (autoContrast == 0)
-		regardsParam->SetAutoConstrast(1);
-	else
-		regardsParam->SetAutoConstrast(0);
-
-	int useDnn = rbUSESUPERDNN->GetSelection();
-	if (useDnn == 0)
-		regardsParam->SetUseSuperResolution(1);
-	else
-		regardsParam->SetUseSuperResolution(0);
+	regardsParam->SetAutoConstrast(GetInvertedRadioValue(rbContrastCorrection));
+	regardsParam->SetUseSuperResolution(GetInvertedRadioValue(rbUSESUPERDNN));
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
@@ -392,11 +345,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	int faceProcess = scProcessFace->GetValue();
 	int exifProcess = scProcessExif->GetValue();
 
-	int openclOpenGLInterop = rbOpenCLOpenGLInterop->GetSelection();
-	if (openclOpenGLInterop == 0)
-		regardsParam->SetIsOpenCLOpenGLInteropSupport(1);
-	else
-		regardsParam->SetIsOpenCLOpenGLInteropSupport(0);
+	regardsParam->SetIsOpenCLOpenGLInteropSupport(GetInvertedRadioValue(rbOpenCLOpenGLInterop));
 
 	wxString oldencoder = regardsParam->GetHardwareEncoder();
 	wxString olddecoder = regardsParam->GetHardwareDecoder();
@@ -443,23 +392,21 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	
 
-	wxString urlServer = "";
+	//GÃ©olocalisation
 	wxString apiKey = txtAPIKey->GetValue();
-	//Géolocalisation
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
+	if (apiKey != oldApiKey)
 	{
-		urlServer = param->GetGeoLocUrlServer();
-	}
-	bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
-	if (!result)
-	{
-		wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key."));
-	}
-	else
-	{
-		showInfosRestart = true;
-		regardsParam->SetApiKey(apiKey);
+		wxString urlServer = regardsParam->GetGeoLocUrlServer();
+		bool result = Regards::Internet::CGps::IsLocalisationAvailable(urlServer, apiKey);
+		if (!result)
+		{
+			wxMessageBox(_("Geolocalisation service is not available. Please check your geoplugin.net API key."));
+		}
+		else
+		{
+			showInfosRestart = true;
+			regardsParam->SetApiKey(apiKey);
+		}
 	}
 
 	if (thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
@@ -481,11 +428,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetExifProcess(exifProcess);
 		regardsParam->SetThumbnailProcess(thumbnailProcess);
 
-		int dataInMemory = rbDatabaseInMemory->GetSelection();
-		if (dataInMemory == 0)
-			regardsParam->SetDatabaseInMemory(1);
-		else
-			regardsParam->SetDatabaseInMemory(0);
+		regardsParam->SetDatabaseInMemory(GetInvertedRadioValue(rbDatabaseInMemory));
 
 		if (showInfosRestart)
 		{

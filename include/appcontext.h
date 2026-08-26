@@ -1,5 +1,15 @@
 #pragma once
 
+// Simple logging helpers to unify output (uses std::cout / std::cerr as requested)
+static void LogInfo(const wxString& msg)
+{
+	std::cout << msg.utf8_string() << std::endl;
+}
+
+static void LogError(const wxString& msg)
+{
+	std::cerr << msg.utf8_string() << std::endl;
+}
 
 class AppContext
 {
@@ -9,9 +19,140 @@ public:
 	{
 		for (auto i = 0; i < 256; i++)
 			value[i] = static_cast<float>(i);
-		
 
 
+		//Loading animation 
+
+	}
+
+
+	int GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV)
+	{
+		if (angle == 0 && flipH == 0 && flipV == 0)
+			return 0;
+		if (angle == 0 && flipH == 1 && flipV == 0)
+			return 1;
+		if (angle == 0 && flipH == 0 && flipV == 1)
+			return 2;
+		if (angle == 0 && flipH == 1 && flipV == 1)
+			return 3;
+
+		if (angle == 90 && flipH == 0 && flipV == 0)
+			return 4;
+		if (angle == 90 && flipH == 1 && flipV == 0)
+			return 5;
+		if (angle == 90 && flipH == 0 && flipV == 1)
+			return 6;
+		if (angle == 90 && flipH == 1 && flipV == 1)
+			return 7;
+
+		if (angle == 180 && flipH == 0 && flipV == 0)
+			return 8;
+		if (angle == 180 && flipH == 1 && flipV == 0)
+			return 9;
+		if (angle == 180 && flipH == 0 && flipV == 1)
+			return 10;
+		if (angle == 180 && flipH == 1 && flipV == 1)
+			return 11;
+
+		if (angle == 270 && flipH == 0 && flipV == 0)
+			return 12;
+		if (angle == 270 && flipH == 1 && flipV == 0)
+			return 13;
+		if (angle == 270 && flipH == 0 && flipV == 1)
+			return 14;
+		if (angle == 270 && flipH == 1 && flipV == 1)
+			return 15;
+
+
+		return 0;
+	}
+
+	void GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV)
+	{
+		switch (exif)
+		{
+		case 0:
+			angle = 0;
+			flipH = 0;
+			flipV = 0;
+			break;
+		case 1:
+			angle = 0;
+			flipH = 1;
+			flipV = 0;
+			break;
+		case 2:
+			angle = 0;
+			flipH = 0;
+			flipV = 1;
+			break;
+		case 3:
+			angle = 0;
+			flipH = 1;
+			flipV = 1;
+			break;
+		case 4:
+			angle = 90;
+			flipH = 0;
+			flipV = 0;
+			break;
+		case 5:
+			angle = 90;
+			flipH = 1;
+			flipV = 0;
+			break;
+		case 6:
+			angle = 90;
+			flipH = 0;
+			flipV = 1;
+			break;
+		case 7:
+			angle = 90;
+			flipH = 1;
+			flipV = 1;
+			break;
+		case 8:
+			angle = 180;
+			flipH = 0;
+			flipV = 0;
+			break;
+		case 9:
+			angle = 180;
+			flipH = 1;
+			flipV = 0;
+			break;
+		case 10:
+			angle = 180;
+			flipH = 0;
+			flipV = 1;
+			break;
+		case 11:
+			angle = 180;
+			flipH = 1;
+			flipV = 1;
+			break;
+		case 12:
+			angle = 270;
+			flipH = 0;
+			flipV = 0;
+			break;
+		case 13:
+			angle = 270;
+			flipH = 1;
+			flipV = 0;
+			break;
+		case 14:
+			angle = 270;
+			flipH = 0;
+			flipV = 1;
+			break;
+		case 15:
+			angle = 270;
+			flipH = 1;
+			flipV = 1;
+			break;
+		}
 	}
 
 
@@ -40,13 +181,13 @@ public:
 		defaultPictureMat = WxToCvMat(defaultPicture);
 	}
 
-	void SetWxDefaultPictureThumbnail(wxImage& picture)
+	void SetWxDefaultPictureThumbnail(wxImage picture)
 	{
 		defaultPictureThumbnailPicture = picture;
 		defaultPictureMatThumbnailPicture = WxToCvMat(defaultPictureThumbnailPicture);
 	}
 
-	void SetWxDefaultPictureThumbnailVideo(wxImage& picture)
+	void SetWxDefaultPictureThumbnailVideo(wxImage picture)
 	{
 		defaultPictureThumbnailVideo = picture;
 		defaultPictureMatThumbnailVideo = WxToCvMat(defaultPictureThumbnailVideo);
@@ -87,7 +228,7 @@ public:
 
 	cv::Mat GetDefaultPictureThumbnail()
 	{
-		if(defaultPictureMatThumbnailPicture.empty())
+		if (defaultPictureMatThumbnailPicture.empty())
 			defaultPictureMatThumbnailPicture = WxToCvMat(defaultPictureThumbnailPicture);
 
 		if (defaultPictureMatThumbnailPicture.empty())
@@ -109,7 +250,7 @@ public:
 
 	cv::Mat GetDefaultVideoThumbnail()
 	{
-		if(defaultPictureMatThumbnailVideo.empty())
+		if (defaultPictureMatThumbnailVideo.empty())
 			defaultPictureMatThumbnailVideo = WxToCvMat(defaultPictureThumbnailVideo);
 
 		if (defaultPictureMatThumbnailVideo.empty())
@@ -129,12 +270,12 @@ public:
 	bool isOpenCLInitialized = false;
 	bool firstElementToShow = true;
 	int numElementToLoad = 5;
-	string buildOption = "";//"-cl-mad-enable -cl-unsafe-math-optimizations";
-	cv::ocl::OpenCLExecutionContext clExecCtx;
-	std::map<wxString, cv::ocl::Program> openclBinaryMapping;
+	string buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
+
+	
 	bool isGPsAvailable = false;
 	double value[256];
-
+	wxString special_key = "map=6";
 private:
 
 	cv::Mat defaultPictureMat;
@@ -144,8 +285,8 @@ private:
 	wxImage defaultPictureThumbnailPicture;
 	wxImage defaultPictureThumbnailVideo;
 
-	
 
-	
+
+
 
 };

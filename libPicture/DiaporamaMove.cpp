@@ -84,10 +84,9 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 	cv::Mat src_bitmap;
 	for (int i = 0; i < picturefile.size(); i++)
 	{
-		//int position;
+		src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 		if (i == 0)
 		{
-			src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 			src_bitmap.copyTo(old_bitmap);
 			CopyPicture(src_bitmap, nbFrameByPicture, width, height);
 			if (endProcess)
@@ -95,8 +94,6 @@ int CDiaporamaMove::ExecuteProcess(const wxString& outfile, vector<wxString>& li
 		}
 		else
 		{
-			src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
-
 			int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
 			ExecuteEffect(old_bitmap, src_bitmap, nbFrameEffect, width, height, effect);
 			iStart += nbFrameEffect;

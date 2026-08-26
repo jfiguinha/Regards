@@ -8,7 +8,7 @@ namespace Regards::Window
 	{
 	public:
 		CToolbarTexte(const CThemeToolbarTexte& theme);
-		~CToolbarTexte() override;
+		~CToolbarTexte() = default;
 		int GetWidth() override;
 		int GetHeight() override;
 		void SetLibelle(const wxString& libelle);

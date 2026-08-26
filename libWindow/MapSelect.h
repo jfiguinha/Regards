@@ -16,7 +16,7 @@ namespace Regards::Window
 	{
 	public:
 		CMapSelect();
-		~CMapSelect();
+		~CMapSelect() = default;
 
 		wxString SelectNewMapLocalisation(wxWindow* window, const wxString& url);
 		wxString GetLatitude();

@@ -5,16 +5,6 @@ extern AppContext application_context;
 
 #define BYTE unsigned char
 
-LineContribType* C2PassScale::ContribV = nullptr;
-int C2PassScale::olduResHeight = 0;
-int C2PassScale::olduSrcHeight = 0;
-LineContribType* C2PassScale::ContribH = nullptr;
-int C2PassScale::olduResWidth = 0;
-int C2PassScale::olduSrcWidth = 0;
-unsigned char* C2PassScale::pTemp  = nullptr;
-int C2PassScale::olduNewWidth= 0;
-int C2PassScale::olduOrigHeight= 0;
-    
 void C2PassScale::Execute(const cv::Mat& in, cv::Mat& Out)
 {
     if (in.empty() || in.channels() != 3)
@@ -33,18 +23,18 @@ void C2PassScale::Execute(const cv::Mat& in, cv::Mat& Out)
         Out.rows);
 }
 
-LineContribType* C2PassScale::AllocContributions(unsigned int uLineLength, unsigned int uWindowSize)
+std::unique_ptr<LineContribType> C2PassScale::AllocContributions(unsigned int uLineLength, unsigned int uWindowSize)
 {
-    LineContribType* res = new LineContribType;
+    auto res = std::make_unique<LineContribType>();
     // Init structure header 
     res->WindowSize = uWindowSize;
     res->LineLength = uLineLength;
     // Allocate list of contributions 
-    res->ContribRow = new ContributionType[uLineLength];
+    res->ContribRow.resize(uLineLength);
     for (unsigned int u = 0; u < uLineLength; u++)
     {
         // Allocate contributions for every pixel
-        res->ContribRow[u].Weights = new double[uWindowSize];
+        res->ContribRow[u].Weights.resize(uWindowSize);
     }
     return res;
 }
@@ -58,24 +48,7 @@ double C2PassScale::Filter(const double& dVal)
     return (m_dLocalVal < m_dWidth ? m_dWidth - m_dLocalVal : 0.0);
 }
 
-void C2PassScale::FreeContributions(LineContribType* p)
-{
-    if (p != nullptr)
-    {
-        for (unsigned int u = 0; u < p->LineLength; u++)
-        {
-            // Free contribs for every pixel
-            delete[] p->ContribRow[u].Weights;
-        }
-        delete[] p->ContribRow;    // Free list of pixels contribs
-        delete p;                   // Free contribs header
-        p = nullptr;
-    }
-
-}
-
-
-LineContribType* C2PassScale::CalcContributions(unsigned int uLineSize, unsigned int uSrcSize, double dScale)
+std::unique_ptr<LineContribType> C2PassScale::CalcContributions(unsigned int uLineSize, unsigned int uSrcSize, double dScale)
 {
     double dWidth;
     double dFScale = 1.0;
@@ -96,7 +69,7 @@ LineContribType* C2PassScale::CalcContributions(unsigned int uLineSize, unsigned
     int iWindowSize = 2 * (int)ceil((double)dWidth) + 1;
 
     // Allocate a new line contributions strucutre
-    LineContribType* res = AllocContributions(uLineSize, iWindowSize);
+    std::unique_ptr<LineContribType> res = AllocContributions(uLineSize, iWindowSize);
 
     for (unsigned int u = 0; u < uLineSize; u++)
     {   // Scan through line of contributions
@@ -108,7 +81,12 @@ LineContribType* C2PassScale::CalcContributions(unsigned int uLineSize, unsigned
         // Cut edge points to fit in filter window in case of spill-off
         if (iRight - iLeft + 1 > iWindowSize)
         {
-            if (iLeft < (int(uSrcSize) - 1 / 2))
+            // BUGFIX: this was `iLeft < (int(uSrcSize) - 1 / 2)`. Integer
+            // division made `1 / 2` evaluate to 0, so the condition was
+            // effectively always true and iRight was never trimmed,
+            // producing asymmetric edge artifacts on the right/bottom
+            // border whenever the filter window spilled off the source.
+            if (iLeft < (int(uSrcSize) - 1) / 2)
             {
                 iLeft++;
             }
@@ -152,16 +130,18 @@ void C2PassScale::HorizScale(unsigned char* pSrc,
         memcpy(pDst, pSrc, 3 * uSrcHeight * uSrcWidth);
         return;
     }
-    // Allocate and calculate the contributions
-    //LineContribType* Contrib = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
-       
-    // Allocate and calculate the contributions
-    if (uResWidth != olduResWidth || olduSrcWidth != uSrcWidth)
+    // Allocate and calculate the contributions.
+    // Cache key now also includes m_dWidth: previously a cached ContribH
+    // computed for one filter (e.g. Box, m_dWidth=0.5) could be silently
+    // reused by a different filter (e.g. Lanczos, m_dWidth=3.0) called on
+    // an image of the same dimensions, producing wrong output with no
+    // visible error.
+    if (uResWidth != m_uOldResWidth || m_uOldSrcWidth != uSrcWidth || m_dOldWidthH != m_dWidth)
     {
-        FreeContributions(ContribH);
-        ContribH = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
-        olduResWidth = uResWidth;
-        olduSrcWidth = uSrcWidth;
+        m_ContribH = CalcContributions(uResWidth, uSrcWidth, double(uResWidth) / double(uSrcWidth));
+        m_uOldResWidth = uResWidth;
+        m_uOldSrcWidth = uSrcWidth;
+        m_dOldWidthH = m_dWidth;
     }
 
     const unsigned int uSrcRowBytes = uSrcWidth * 3;
@@ -178,9 +158,9 @@ void C2PassScale::HorizScale(unsigned char* pSrc,
             double g = 0.0;
             double b = 0.0;
 
-            const int iLeft = ContribH->ContribRow[x].Left;
-            const int iRight = ContribH->ContribRow[x].Right;
-            double* pWeights = ContribH->ContribRow[x].Weights;
+            const int iLeft = m_ContribH->ContribRow[x].Left;
+            const int iRight = m_ContribH->ContribRow[x].Right;
+            const double* pWeights = m_ContribH->ContribRow[x].Weights.data();
 
             for (int i = iLeft; i <= iRight; i++)
             {
@@ -207,22 +187,23 @@ void C2PassScale::VertScale(unsigned char* pSrc,
     unsigned int                uResWidth,
     unsigned int                uResHeight)
 {
-    
+
 
     if (uSrcHeight == uResHeight)
     {   // No scaling required, just copy
         memcpy(pDst, pSrc, 3 * uSrcHeight * uSrcWidth);
         return;
     }
-    // Allocate and calculate the contributions
-    if (uResHeight != olduResHeight || olduSrcHeight != uSrcHeight)
+    // Allocate and calculate the contributions (see HorizScale for why
+    // m_dWidth is part of the cache key).
+    if (uResHeight != m_uOldResHeight || m_uOldSrcHeight != uSrcHeight || m_dOldWidthV != m_dWidth)
     {
-        FreeContributions(ContribV);
-        ContribV = CalcContributions(uResHeight, uSrcHeight, double(uResHeight) / double(uSrcHeight));
-		olduResHeight = uResHeight;
-		olduSrcHeight = uSrcHeight;
+        m_ContribV = CalcContributions(uResHeight, uSrcHeight, double(uResHeight) / double(uSrcHeight));
+        m_uOldResHeight = uResHeight;
+        m_uOldSrcHeight = uSrcHeight;
+        m_dOldWidthV = m_dWidth;
     }
-   
+
 
     const unsigned int uSrcRowBytes = uSrcWidth * 3;
     const unsigned int uResRowBytes = uResWidth * 3;
@@ -230,9 +211,9 @@ void C2PassScale::VertScale(unsigned char* pSrc,
     // Improved loop order for better cache locality
     for (unsigned int y = 0; y < uResHeight; y++)
     {
-        const int iLeft = ContribV->ContribRow[y].Left;
-        const int iRight = ContribV->ContribRow[y].Right;
-        double* pWeights = ContribV->ContribRow[y].Weights;
+        const int iLeft = m_ContribV->ContribRow[y].Left;
+        const int iRight = m_ContribV->ContribRow[y].Right;
+        const double* pWeights = m_ContribV->ContribRow[y].Weights.data();
 
         unsigned char* pDstRow = pDst + y * uResRowBytes;
 
@@ -258,7 +239,6 @@ void C2PassScale::VertScale(unsigned char* pSrc,
             pDstPixel[2] = static_cast<BYTE>(min(255.0, max(0.0, b + 0.5)));
         }
     }
-        // Free contributions structure
 }
 
 void C2PassScale::Scale(
@@ -269,31 +249,28 @@ void C2PassScale::Scale(
     unsigned int        uNewWidth,
     unsigned int        uNewHeight)
 {
-    if(olduNewWidth != uNewWidth || olduOrigHeight != uOrigHeight)
+    if (m_uOldNewWidth != uNewWidth || m_uOldOrigHeight != uOrigHeight)
     {
-        if(pTemp != nullptr)
-            free(pTemp);
-        pTemp = (unsigned char*)malloc(uNewWidth * uOrigHeight * 3);
-        olduNewWidth = uNewWidth;
-        olduOrigHeight = uOrigHeight;
+        // std::vector handles (re)allocation; no manual malloc/free, no
+        // leak, and it stays consistent with the RAII style used
+        // elsewhere (ContribH/ContribV are now unique_ptr-owned too).
+        m_Temp.resize(static_cast<size_t>(uNewWidth) * uOrigHeight * 3);
+        m_uOldNewWidth = uNewWidth;
+        m_uOldOrigHeight = uOrigHeight;
     }
 
     HorizScale(pOrigImage,
         uOrigWidth,
         uOrigHeight,
-        pTemp,
+        m_Temp.data(),
         uNewWidth,
         uOrigHeight);
 
     // Scale temporary image vertically into result image    
-    VertScale(pTemp,
+    VertScale(m_Temp.data(),
         uNewWidth,
         uOrigHeight,
         pDstImage,
         uNewWidth,
         uNewHeight);
-    
-
 }
-
-

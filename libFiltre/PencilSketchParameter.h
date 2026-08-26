@@ -11,10 +11,6 @@ public:
 		sigmaP = 2;
 	};
 
-	~CPencilSketchFilterParameter() override
-	{
-	};
-
 	int shade_factor;
 	int sigmaX;
 	int sigmaP;

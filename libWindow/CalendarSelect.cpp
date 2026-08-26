@@ -13,14 +13,6 @@
 using namespace Regards::Window;
 
 
-CCalendarSelect::CCalendarSelect()
-{
-}
-
-CCalendarSelect::~CCalendarSelect()
-{
-}
-
 bool CCalendarSelect::SelectNewDate(wxWindow* window, const wxString& dataInfos)
 {
 	CCalendarDialogBox calendarBox(window);
@@ -38,44 +30,30 @@ bool CCalendarSelect::SelectNewDate(wxWindow* window, const wxString& dataInfos)
 
 	if (calendarBox.ShowModal() == wxID_OK)
 	{
-		dt = calendarBox.GetDate();
-		int month = dt.GetMonth() + 1;
-		int day = dt.GetDay();
-		updateDate = to_string(dt.GetYear()) + ".";
-		if (month < 10)
-			updateDate.Append("0");
-		updateDate.Append(to_string(month) + ".");
-		if (day < 10)
-			updateDate.Append("0");
-		updateDate.Append(to_string(day));
-
+		SetSelectDate(calendarBox.GetDate());
 		return true;
 	}
 
 	return false;
 }
 
+void CCalendarSelect::SetSelectDate(const wxDateTime& dateSelect)
+{
+	dt = dateSelect;
+	updateDate = dt.Format("%Y.%m.%d");
+}
+
 bool CCalendarSelect::SelectNewDate(wxWindow* window, const wxDateTime& dateSelect)
 {
 	CCalendarDialogBox calendarBox(window);
-
 	calendarBox.SetDate(dateSelect);
 
 	if (calendarBox.ShowModal() == wxID_OK)
 	{
-		dt = calendarBox.GetDate();
-		int month = dt.GetMonth() + 1;
-		int day = dt.GetDay();
-		updateDate = to_string(dt.GetYear()) + ".";
-		if (month < 10)
-			updateDate.Append("0");
-		updateDate.Append(to_string(month) + ".");
-		if (day < 10)
-			updateDate.Append("0");
-		updateDate.Append(to_string(day));
-
+		SetSelectDate(calendarBox.GetDate());
 		return true;
 	}
+
 
 	return false;
 }

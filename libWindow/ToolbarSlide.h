@@ -11,7 +11,7 @@ namespace Regards::Window
 	{
 	public:
 		CToolbarSlide(const CThemeSlider& themeSlider, CSliderInterface* eventInterface);
-		~CToolbarSlide() override;
+		~CToolbarSlide() = default;
 		void Resize(const int& tailleX, const int& tailleY) override;
 		void SetPosition(const int& iPos);
 		void SetTabValue(vector<int> value);

@@ -93,7 +93,6 @@ protected:
 	poppler::page* m_pPdfPage; ///< A pointer to the current PDF page.
 	poppler::document* m_pPdfDocument; ///< A pointer to the current PDF document.
 	std::vector<unsigned char> binFile;
-	uint8_t* _compressedImage = nullptr;
 };
 
 

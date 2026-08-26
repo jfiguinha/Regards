@@ -2,7 +2,6 @@
 #include <header.h>
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
-#include <mutex>
 #include "DataAVFrame.h"
 #include <ConvertUtility.h>
 #include <RGBAQuad.h>
@@ -24,8 +23,7 @@ wxString listHardware[] = { "vdpau", "cuda", "vaapi", "opencl", "qsv" };
 int sizeList = 5;
 #endif
 
-bool exit_video = false;
-std::mutex abortMutex;
+std::atomic_bool CFFmfcPimpl::exit_video{ false };
 
 #define HW_DEFAULT_SW_FORMAT    AV_PIX_FMT_NV12
 
@@ -235,9 +233,7 @@ void CFFmfcPimpl::free_subpicture(SubPicture* sp)
 
 void CFFmfcPimpl::StopStream()
 {
-	abortMutex.lock();
-	exit_video = true;
-	abortMutex.unlock();
+	exit_video.store(true, std::memory_order_release);
 }
 
 void CFFmfcPimpl::stream_close(VideoState* is)
@@ -280,22 +276,25 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	sws_freeContext(is->img_convert_ctx);
 	sws_freeContext(is->sub_convert_ctx);
 
-	if (localContext != nullptr)
-		sws_freeContext(localContext);
+	sws_freeContext(localContext);
 	localContext = nullptr;
+	localWidth = 0;
+	localHeight = 0;
+	localFormat = AV_PIX_FMT_NONE;
 
 	av_free(is->filename);
 
 	av_free(is);
 
 
-	wxCommandEvent evt(FF_QUIT_EVENT);
-	parent->GetEventHandler()->AddPendingEvent(evt);
+	if (parent)
+	{
+		wxCommandEvent evt(FF_QUIT_EVENT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 
 
-	abortMutex.lock();
-	exit_video = false;
-	abortMutex.unlock();
+	exit_video.store(false, std::memory_order_release);
 }
 
 //ÍË³ö
@@ -338,26 +337,100 @@ int CFFmfcPimpl::IsSupportOpenCL()
 
 AVFrame* CFFmfcPimpl::CopyFrame(AVFrame* src)
 {
-
-	int ret = 0;
+	if (!src)
+		return nullptr;
 
 	AVFrame* dst = av_frame_alloc();
+	if (!dst)
+		return nullptr;
 
-	memcpy(dst, src, sizeof(AVFrame));
-
-	dst->format = src->format;
-	dst->width = src->width;
-	dst->height = src->height;
-
-	memcpy(dst->data, src->data, sizeof(src->data));
-
-	if (ret < 0)
+	if (av_frame_ref(dst, src) < 0)
 	{
-		av_frame_unref(dst);
-		dst = nullptr;
+		av_frame_free(&dst);
+		return nullptr;
 	}
 
 	return dst;
+}
+
+bool CFFmfcPimpl::EnsureVideoConversionContext(const AVFrame* frame)
+{
+	if (!frame || frame->width <= 0 || frame->height <= 0)
+		return false;
+
+	const auto format = static_cast<AVPixelFormat>(frame->format);
+
+	if (localContext &&
+		localWidth == frame->width &&
+		localHeight == frame->height &&
+		localFormat == format)
+	{
+		return true;
+	}
+
+	sws_freeContext(localContext);
+	localContext = sws_getContext(
+		frame->width, frame->height, format,
+		frame->width, frame->height, AV_PIX_FMT_BGRA,
+		SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+
+	if (!localContext)
+	{
+		localWidth = 0;
+		localHeight = 0;
+		localFormat = AV_PIX_FMT_NONE;
+		return false;
+	}
+
+	localWidth = frame->width;
+	localHeight = frame->height;
+	localFormat = format;
+	return true;
+}
+
+void CFFmfcPimpl::ConvertSubtitleBitmap(const AVSubtitleRect* rect, cv::Mat& bitmap)
+{
+	if (!rect || rect->w <= 0 || rect->h <= 0 || !rect->data[0] || !rect->data[1])
+		return;
+
+	bitmap.create(rect->h, rect->w, CV_8UC4);
+
+	for (int y = 0; y < rect->h; ++y)
+	{
+		const uint8_t* src = rect->data[0] + y * rect->linesize[0];
+		auto* dst = bitmap.ptr<CRgbaquad>(y);
+
+		for (int x = 0; x < rect->w; ++x)
+		{
+			int r, g, b, a;
+			const int index = src[x];
+			RGBA_IN(r, g, b, a, reinterpret_cast<const uint32_t*>(rect->data[1]) + index);
+			dst[x] = CRgbaquad(r, g, b, a);
+		}
+	}
+}
+
+void CFFmfcPimpl::PostSubtitleImage(const cv::Mat& bitmap)
+{
+	if (!dlg)
+		return;
+
+	auto* image = new cv::Mat(bitmap.clone());
+	wxCommandEvent event(wxEVENT_SETSUBTITLEIMAGE);
+	event.SetClientData(image);
+	wxPostEvent(dlg->GetMainWindow(), event);
+}
+
+void CFFmfcPimpl::PostSubtitleText(const wxString& text, int endDisplayTime)
+{
+	if (!dlg)
+		return;
+
+	auto* subtitle = new wxString(text);
+	wxCommandEvent event(wxEVENT_SETSUBTITLETEXT);
+	event.SetClientData(subtitle);
+	event.SetInt(endDisplayTime);
+	wxPostEvent(dlg->GetMainWindow(), event);
 }
 
 /* display the current picture, if any */
@@ -414,28 +487,8 @@ void CFFmfcPimpl::video_display(VideoState* is)
 				dataFrame->matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 
-				if (localContext == nullptr)
+				if (EnsureVideoConversionContext(tmp_frame))
 				{
-					localContext = sws_alloc_context();
-
-					av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
-					av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
-					av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
-					av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
-					av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
-					av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-					av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-					if (sws_init_context(localContext, nullptr, nullptr) < 0)
-					{
-						sws_freeContext(localContext);
-						localContext = nullptr;
-					}
-				}
-
-				if (localContext != nullptr)
-				{
-					int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
 					uint8_t* convertedFrameBuffer = dataFrame->matFrame.data;
 					int linesize = tmp_frame->width * 4;
 
@@ -466,31 +519,9 @@ void CFFmfcPimpl::video_display(VideoState* is)
 						{
 							AVSubtitleRect* rect = sp->sub.rects[i];
 							//AVPicture picture = rect->pict;
-							cv::Mat* bitmap = new cv::Mat(rect->h, rect->w, CV_8UC4);
-							uint8_t* data = rect->data[0];
-
-							for (int y = 0; y < rect->h; y++)
-							{
-								for (int x = 0; x < rect->w; x++)
-								{
-									int r, g, b, a;
-									int j = *data++;
-									RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
-									CRgbaquad color(r, g, b, a);
-									int i = (x << 2) + (y * (bitmap->cols << 2));
-									memcpy(bitmap->data + i, &color, sizeof(CRgbaquad));
-								}
-							}
-							if (dlg != nullptr)
-							{
-								wxCommandEvent event(wxEVENT_SETSUBTITLEIMAGE);
-								event.SetClientData(bitmap);
-								wxPostEvent(dlg->GetMainWindow(), event);
-							}
-							else
-							{
-								delete bitmap;
-							}
+							cv::Mat bitmap;
+							ConvertSubtitleBitmap(rect, bitmap);
+							PostSubtitleImage(bitmap);
 						}
 					}
 					else if (sp->sub.format == 1 && (vp->pts >= sp->pts - (static_cast<float>(sp->sub.end_display_time))))
@@ -814,8 +845,8 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 							for (i = 0; i < sp->sub.num_rects; i++)
 							{
 								AVSubtitleRect* sub_rect = sp->sub.rects[i];
-								uint8_t* pixels;
-								int pitch, j;
+								//uint8_t* pixels;
+								//int pitch;// , j;
 
 								AVSubtitleRect* rect = sp->sub.rects[i];
 								cv::Mat* bitmap = new cv::Mat(rect->h, rect->w, CV_8UC4);
@@ -839,6 +870,9 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 									event.SetClientData(bitmap);
 									wxPostEvent(dlg->GetMainWindow(), event);
 								}
+								else {
+									delete bitmap;
+								}
 							}
 
 						}
@@ -854,16 +888,10 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 							for (int i = 0; i < sp->sub.num_rects; i++)
 							{
 								AVSubtitleRect* rect = sp->sub.rects[i];
-								text += rect->ass;
+								if (rect != nullptr)
+									text += rect->ass;
 							}
-							if (dlg != nullptr)
-							{
-								wxString* _textSub = new wxString(text);
-								wxCommandEvent event(wxEVENT_SETSUBTITLETEXT);
-								event.SetClientData(_textSub);
-								event.SetInt(sp->sub.end_display_time);
-								wxPostEvent(dlg->GetMainWindow(), event);
-							}
+							PostSubtitleText(text, sp->sub.end_display_time);
 
 						}
 						frame_queue_next(&is->subpq);
@@ -1199,11 +1227,7 @@ int CFFmfcPimpl::subtitle_thread(void* arg)
 
 	for (;;)
 	{
-		bool abort = false;
-		abortMutex.lock();
-		abort = exit_video;
-		abortMutex.unlock();
-		if (abort)
+		if (exit_video.load(std::memory_order_acquire))
 			break;
 
 		if (!(sp = is->_pimpl->frame_queue_peek_writable(&is->subpq)))
@@ -1875,6 +1899,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 		{
 			if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN))
 			{
+				av_packet_unref(d->pkt);
 				av_log(d->avctx, AV_LOG_ERROR,
 					"Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n");
 				d->packet_pending = 1;
@@ -1988,6 +2013,8 @@ int CFFmfcPimpl::configure_audio_filters(VideoState* is, const char* afilters, i
 	if (ret < 0)
 		goto end;
 
+
+	// 1. Allouer SANS initialiser
 	filt_asink = avfilter_graph_alloc_filter(is->agraph,
 		avfilter_get_by_name("abuffersink"), "ffplay_abuffersink");
 	if (!filt_asink) {
@@ -2051,7 +2078,7 @@ int CFFmfcPimpl::audio_thread(void* arg)
 	int last_serial = -1;
 	int reconfigure;
 	int got_frame = 0;
-	AVRational tb;
+	//AVRational tb;
 	int ret = 0;
 
 	if (!frame)
@@ -2177,7 +2204,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	type = av_hwdevice_find_type_by_name(acceleratorHardware);
 	if (type == AV_HWDEVICE_TYPE_NONE)
 	{
-		fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
+		fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 		fprintf(stderr, "Available device types:");
 		while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 			fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
@@ -2220,7 +2247,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	is->avctx->opaque = is;
 	is->codec = codec;
 	is->hwaccel_id = HWACCEL_AUTO;
-	printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
+	printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 
 	if (!error)
 	{
@@ -2239,7 +2266,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 
 	if (isSuccess)
 	{
-		printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
+		printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 	}
 	return isSuccess;
 }
@@ -2248,7 +2275,7 @@ double CFFmfcPimpl::get_rotation(AVStream* st)
 {
 
 
-	int32_t * displaymatrix = 0;
+	int32_t* displaymatrix = 0;
 	const AVPacketSideData* psd = av_packet_side_data_get(st->codecpar->coded_side_data,
 		st->codecpar->nb_coded_side_data,
 		AV_PKT_DATA_DISPLAYMATRIX);
@@ -2280,9 +2307,9 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 	const char* forced_codec_name = NULL;
 	AVDictionary* opts = NULL;
 	AVDictionaryEntry* t = NULL;
-	int sample_rate, nb_channels;
+	int sample_rate;// , nb_channels;
 	AVChannelLayout ch_layout;
-	AVChannelLayout* channel_layout;
+	//AVChannelLayout* channel_layout;
 	int ret = 0;
 	int stream_lowres = lowres;
 	enum AVHWDeviceType type;
@@ -2369,7 +2396,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		{
 			if (acceleratorHardware != "" && acceleratorHardware != "none")
 			{
-				printf("Test hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+				printf("Test hardware decoding : %s ! \n", acceleratorHardware.utf8_string().c_str());
 				AVStream* video = ic->streams[stream_index];
 				isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
 			}
@@ -2626,12 +2653,8 @@ void CFFmfcPimpl::init_clock(Clock* c, int* queue_serial)
 
 int CFFmfcPimpl::decode_interrupt_cb(void* ctx)
 {
-	auto is = static_cast<VideoState*>(ctx);
-	bool abort = false;
-	abortMutex.lock();
-	abort = is->abort_request;
-	abortMutex.unlock();
-	return abort;
+	const auto* is = static_cast<const VideoState*>(ctx);
+	return !is || is->abort_request != 0;
 }
 
 int CFFmfcPimpl::is_realtime(AVFormatContext* s, char* filename)
@@ -3070,9 +3093,11 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	is->ytop = 0;
 	is->xleft = 0;
 
-	if (localContext != nullptr)
-		sws_freeContext(localContext);
+	sws_freeContext(localContext);
 	localContext = nullptr;
+	localWidth = 0;
+	localHeight = 0;
+	localFormat = AV_PIX_FMT_NONE;
 
 
 	colorRange = CMediaInfo::GetColorRange(filename);
@@ -3100,6 +3125,7 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	init_clock(&is->vidclk, &is->videoq.serial);
 	init_clock(&is->audclk, &is->audioq.serial);
 	init_clock(&is->extclk, &is->extclk.serial);
+
 	is->audio_clock_serial = -1;
 	/*
 	if (percentVolume < 0)
@@ -3240,28 +3266,29 @@ void CFFmfcPimpl::step_to_next_frame(VideoState* is)
 
 int CFFmfcPimpl::refresh_thread(void* opaque)
 {
-	auto is = static_cast<VideoState*>(opaque);
-	double remaining_time = 0.0;
-	while (true)
-	{
-		bool abort = false;
-		abortMutex.lock();
-		abort = exit_video;
-		abortMutex.unlock();
-		if (abort)
-			break;
+	auto* is = static_cast<VideoState*>(opaque);
+	if (!is || !is->_pimpl)
+		return 0;
 
+	double remaining_time = 0.0;
+
+	while (!exit_video.load(std::memory_order_acquire))
+	{
 		if (remaining_time > 0.0)
-			av_usleep((int64_t)(remaining_time * 1000000.0));
+			av_usleep(static_cast<unsigned>(remaining_time * 1000000.0));
 
 		remaining_time = REFRESH_RATE;
 
-		if (is->show_mode != SHOW_MODE_NONE && (!is->paused || is->force_refresh))
+		if (is->show_mode != SHOW_MODE_NONE &&
+			(!is->paused || is->force_refresh))
+		{
 			is->_pimpl->video_refresh(is, &remaining_time);
+		}
 
 		if (CMasterWindow::endProgram)
-			return 0;
+			break;
 	}
+
 	return 0;
 }
 
@@ -3286,7 +3313,10 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 		goto fail;
 	}
 
-	output->pts = input->pkt_dts;
+	//output->pts = input->pkt_dts;
+
+	av_frame_copy_props(output, input);
+	output->pts = input->pts;
 	ist->hwaccel_retrieved_pix_fmt = (AVPixelFormat)output->format;
 	/*
 	err = av_frame_copy_props(output, input);

@@ -5,7 +5,7 @@
 #include <Metadata.h>
 #include "PositionElement.h"
 #include "TreeElementDelete.h"
-
+#include <wx/tokenzr.h>
 namespace Regards::Window
 {
 	class CTreeData;
@@ -25,7 +25,7 @@ namespace Regards::Window
 	public:
 		CTreeControl() : eventControl(nullptr) { nbRow = 0; };
 		CTreeControl(CThemeTree* theme, CTreeElementControlInterface* interfaceControl);
-		~CTreeControl() override;
+		virtual ~CTreeControl();
 
 		CTreeControl& operator=(const CTreeControl& other);
 
@@ -47,6 +47,66 @@ namespace Regards::Window
 				CTreeElement* treeElement = element->GetTreeElement();
 				if (treeElement != nullptr)
 					treeElement->MouseOver(deviceContext, x, y, update);
+			}
+		}
+
+		template<typename TreeDataT, typename LeafInitializer>
+		void AddTreeInfosImpl(const wxString& exifKey,
+			int index,
+			tree<CTreeData*>::iterator& top,
+			tree<CTreeData*>::iterator& child,
+			LeafInitializer initLeaf)
+		{
+			wxStringTokenizer tokenizer(exifKey, ".");
+
+			int level = 0;
+
+			while (tokenizer.HasMoreTokens())
+			{
+				const wxString key = tokenizer.GetNextToken();
+				const bool hasChildren = tokenizer.HasMoreTokens();
+
+				auto* treeData = new TreeDataT();
+				treeData->SetKey(key);
+
+				if (hasChildren)
+				{
+					treeData->SetIsParent(true);
+
+					if (index > 0)
+					{
+						tree<CTreeData*>::iterator it;
+
+						if (level == 0)
+							it = FindKey(key);
+						else
+							it = FindKey(key, child);
+
+						if (it != nullptr) // replace with tr.end() if appropriate
+						{
+							child = it;
+							++level;
+							delete treeData;
+							continue;
+						}
+					}
+
+					if (level > 0)
+						child = tr.append_child(child, treeData);
+					else
+						child = tr.insert(top, treeData);
+				}
+				else
+				{
+					treeData->SetIsParent(false);
+
+					// Let caller initialize leaf-specific data
+					initLeaf(treeData);
+
+					tr.append_child(child, treeData);
+				}
+
+				++level;
 			}
 		}
 
@@ -76,11 +136,75 @@ namespace Regards::Window
 		virtual void UpdateScreenRatio() = 0;
 
 	protected:
+
+		void HideAll();
+
+		virtual bool GetCheckState(CTreeData* data)
+		{
+			return true;
+		}
+
+		virtual bool GetTriangleState(CTreeData* data)
+		{
+			return true;
+		}
+
+		enum class RenderMode
+		{
+			Create,
+			Update
+		};
+
+		CPositionElement* RenderStar(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderText(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode,
+			bool addDynamic = false);
+
+		CPositionElement* RenderCheckBox(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool check,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderTriangle(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderTextValue(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
+		CPositionElement* RenderTextLink(
+			CTreeData* data,
+			int& xPos,
+			int& yPos,
+			bool visible,
+			RenderMode mode);
+
 		wxColour GetBackgroundColour(const int& yPos);
 
 		//Tree Window
 		tree<CTreeData*>::iterator FindKey(const wxString& key, tree<CTreeData*>::iterator& parent);
 		tree<CTreeData*>::iterator FindKey(const wxString& key);
+
 		void EraseChildTree(tree<CTreeData*>::sibling_iterator& parent);
 		void ClearData();
 

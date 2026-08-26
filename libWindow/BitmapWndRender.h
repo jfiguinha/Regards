@@ -8,7 +8,7 @@
 #include <BitmapDisplay.h>
 using namespace std;
 using namespace std::chrono;
-class CRegardsBitmap;
+;
 class CFiltreEffet;
 class CImageLoadingFormat;
 class CRegardsFloatBitmap;
@@ -34,7 +34,7 @@ namespace Regards::Window
 	{
 	public:
 		CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
-		~CBitmapWndRender(void) override;
+		~CBitmapWndRender(void) = default;
 
 		void SetParent(wxWindow* parent) override;
 		int GetWidth() override;
@@ -52,8 +52,7 @@ namespace Regards::Window
 
 		void UpdateScreenRatio() override;
 		void SetIsBitmapThumbnail(const bool& isThumbnail);
-		void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll) override;
-		void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
+
 		void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
 		void GetInfosBitmap(wxString& filename, int& widthPicture, int& heightPicture);
 
@@ -125,17 +124,7 @@ namespace Regards::Window
 
 		void SetEndProgram(const bool& endProgram) override;
 
-		void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
-		void OnPaint2D(wxWindow* gdi) override;
-		void OnMouseMove(wxMouseEvent& event) override;
-		void OnLButtonDown(wxMouseEvent& event) override;
-		void OnRButtonDown(wxMouseEvent& event) override;
-		void OnLButtonUp(wxMouseEvent& event) override;
-		void OnLDoubleClick(wxMouseEvent& event) override;
-		void OnMouseWheel(wxMouseEvent& event) override;
-		void OnKeyDown(wxKeyEvent& event) override;
-		void OnKeyUp(wxKeyEvent& event) override;
-		void OnIdle(wxIdleEvent& evt) override;
+
 		
 		bool UpdateExifInfos();
 
@@ -161,7 +150,23 @@ namespace Regards::Window
 		void SetTabValue(const std::vector<int>& value);
 
 	protected:
+
+		void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
+		void OnPaint2D(wxWindow* gdi) override;
+		void OnMouseMove(wxMouseEvent& event) override;
+		void OnLButtonDown(wxMouseEvent& event) override;
+		void OnRButtonDown(wxMouseEvent& event) override;
+		void OnLButtonUp(wxMouseEvent& event) override;
+		void OnLDoubleClick(wxMouseEvent& event) override;
+		void OnMouseWheel(wxMouseEvent& event) override;
+		void OnKeyDown(wxKeyEvent& event) override;
+		void OnKeyUp(wxKeyEvent& event) override;
+		void OnIdle(wxIdleEvent& evt) override;
+
+
+		virtual void OnTransitionBitmap(wxCommandEvent& event);
 		virtual void OnUpdateBitmap(wxCommandEvent& event);
+		virtual void OnSetBitmap(wxCommandEvent& event);
 		virtual void OnLeftPosition(wxCommandEvent& event);
 		virtual void OnTopPosition(wxCommandEvent& event);
 		virtual void OnMoveLeft(wxCommandEvent& event);
@@ -171,6 +176,8 @@ namespace Regards::Window
 		virtual void OnScrollMove(wxCommandEvent& event);
 		virtual void OnUpdateFiltre(wxCommandEvent& event);
 		int IsSupportCuda();
+
+		virtual void SetTransitionBitmap(CImageLoadingFormat* bmpSecond) {};
 		//int GetExifOrientation(const int& angle);
 		virtual bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) { return false; };
 
@@ -180,7 +187,8 @@ namespace Regards::Window
 
 		virtual void SetDessinRatio() {};
 
-
+		void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll) override;
+		void SetBitmap(CImageLoadingFormat* bitmap);
 		int IsSupportOpenCL();
 		virtual bool NeedAfterRenderBitmap() { return false; };
 		void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
@@ -291,16 +299,17 @@ namespace Regards::Window
 		CThemeBitmapWindow themeBitmap;
 		CRegardsConfigParam* config;
 
-		bool copyBitmap = false;
-		CFiltreEffet* filtreEffet = nullptr;
-		//CRegardsBitmap* copyBmpSrc = nullptr;
-		bool needUpdate = false;
-		CRenderBitmapOpenGL* renderBitmapOpenGL = nullptr;
-		//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
+		IMouseUpdate* mouseUpdate;
+		CEffectParameter* effectParameter;
+		
+		
+		
 		GLTexture* glTexture = nullptr;
-		//GLTexture* glTextureSrc = nullptr;
-
 		CRenderOpenGL* renderOpenGL = nullptr;
+
+		std::unique_ptr<CRenderBitmapOpenGL> renderBitmapOpenGL = nullptr;
+		std::unique_ptr<CFiltreEffet> filtreEffet = nullptr;
+		std::unique_ptr<CImageLoadingFormat> source = nullptr;
 		//Preview Parameter
 		int preview = 0;
 
@@ -311,9 +320,8 @@ namespace Regards::Window
 		int bitmapwidth;
 		int bitmapheight;
 		bool bitmapUpdate;
-		CImageLoadingFormat* source;
+		
 		bool bitmapLoad;
-		mutex muBitmap;
 		bool updateFilter = false;
 		int xPosImage = 0;
 		int yPosImage = 0;
@@ -321,13 +329,13 @@ namespace Regards::Window
 
 		int posLargeur = 0;
 		int posHauteur = 0;
-
+		bool needUpdate = false;
+		bool copyBitmap = false;
 		bool isOpenGLShow = true;
 		bool loadBitmap = false;
 		int isMoving;
 		bool destroyOpenGLRender = false;
-		IMouseUpdate* mouseUpdate;
-		CEffectParameter* effectParameter;
+
 		bool openGLRenderBitmap = true;
 		bool endProgram = false;
 		wxWindow* parentRender = nullptr;

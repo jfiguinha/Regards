@@ -12,6 +12,8 @@ CSqlResult::CSqlResult(): pRes(nullptr), m_iColumnCount(0)
 
 CSqlResult::~CSqlResult()
 {
+	if(pRes != nullptr)
+		sqlite3_finalize(pRes);
 }
 
 void CSqlResult::SetStatement(sqlite3_stmt* pRes)
@@ -43,6 +45,43 @@ void fix_utf8_string(std::string& str)
 	std::string temp;
 	utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
 	str = temp;
+}
+
+
+int CSqlResult::GetColumnIndex(const wxString& name)
+{
+	for (int i = 0; i < GetColumnCount(); i++)
+	{
+		if (name == GetColumnName(i))
+			return i;
+	}
+
+	return -1;
+}
+
+int CSqlResult::GetInt(const wxString& name)
+{
+	return ColumnDataInt(GetColumnIndex(name));
+}
+
+wxString CSqlResult::GetText(const wxString& name)
+{
+	return ColumnDataText(GetColumnIndex(name));
+}
+
+wxString CSqlResult::GetColumnName(int index)
+{
+	return sqlite3_column_name(pRes, index);
+}
+
+int CSqlResult::GetInt(int index)
+{
+	return ColumnDataInt(index);
+}
+
+wxString CSqlResult::GetText(int index)
+{
+	return ColumnDataText(index);
 }
 
 wxString CSqlResult::ColumnDataText(const int& clmNum)

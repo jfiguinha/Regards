@@ -15,7 +15,7 @@ namespace Regards::Window
 	{
 	public:
 		CTreeElementListBox(CTreeElementSlideInterface* eventInterface);
-		~CTreeElementListBox() override;
+		~CTreeElementListBox() = default;
 
 		void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
 		void ClickElement(wxWindow* window, const int& x, const int& y) override;
@@ -52,9 +52,11 @@ namespace Regards::Window
 	private:
 		wxBitmap CreateTriangle(const int& width, const int& height, const wxColor& color, const wxColor& colorBack);
 		wxString GetPositionValue();
+		void GenerateBitmap(wxDC* deviceContext);
 		void TestMaxMinValue();
+		wxBitmap bitmapBuffer;
 
-
+		bool changeValue = false;
 		CTreeElementSlideInterface* eventInterface;
 		vector<CMetadata> tabValue;
 		wxString exifKey;

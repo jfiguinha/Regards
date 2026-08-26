@@ -7,8 +7,10 @@
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #endif
+
 #include <appcontext.h>
 extern AppContext application_context;
+
 
 //-----------------------------------------------------------------------------
 //
@@ -60,6 +62,14 @@ void CBitmapWnd3D::UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender
 	this->bitmapWndRender = bitmapWndRender;
 }
 
+COpenCLContext* CBitmapWnd3D::GetOpenCLContext()
+{
+	if (renderOpenGL)
+		return renderOpenGL->GetOpenCLContext();
+	else
+		return nullptr;
+}
+
 bool CBitmapWnd3D::GetProcessEnd()
 {
 	return bitmapWndRender->GetProcessEnd();
@@ -96,13 +106,6 @@ void CBitmapWnd3D::OnCommand(wxCommandEvent& event)
 void CBitmapWnd3D::OnTimer(wxTimerEvent& event)
 {
 	bitmapWndRender->OnTimer(event);
-}
-
-//-----------------------------------------------------------------
-//Destructeur
-//-----------------------------------------------------------------
-CBitmapWnd3D::~CBitmapWnd3D(void)
-{
 }
 
 void CBitmapWnd3D::OnRButtonDown(wxMouseEvent& event)
@@ -166,8 +169,6 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 {
-	
-
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
@@ -176,36 +177,11 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 
 		renderOpenGL = new CRenderOpenGL(this);
 		renderOpenGL->Init(this);
-
 	}
 
-
-	/* clock_t clock(void) returns the number of clock ticks
-   elapsed since the program was launched.To get the number
-   of seconds used by the CPU, you will need to divide by
-   CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical
-   32 bit system.  */
-   
-
-	//clock_t start, end;
-
-	// Recording the starting clock tick.
-	//start = clock();
-
-	if (!application_context.clExecCtx.empty())
-		application_context.clExecCtx.bind();
+	if (GetOpenCLContext() != nullptr)
+		GetOpenCLContext()->Bind();
 	renderOpenGL->SetCurrent(*this);
-
-    /*
-	// Recording the end clock tick.
-	end = clock();
-
-	// Calculating total time taken by the program.
-	double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-	cout << "Time taken by program is : " << fixed
-		<< time_taken << setprecision(5);
-	cout << " sec " << endl;
-    */
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
 }

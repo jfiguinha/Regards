@@ -53,13 +53,13 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor& c
 		textureArrowRight = std::make_unique<GLTexture>();
 
 	Regards::Picture::CPictureArray mat = arrowRight.GetMatrix();
-	textureArrowRight->SetData(mat);
+	textureArrowRight->SetData(mat, nullptr);
 
 	if (textureArrowLeft == nullptr)
 		textureArrowLeft = std::make_unique<GLTexture>();
 
 	mat = arrowLeft.GetMatrix();
-	textureArrowLeft->SetData(mat);
+	textureArrowLeft->SetData(mat, nullptr);
 }
 
 

@@ -4,23 +4,44 @@
 #include <MotionBlur.h>
 #include <ImageLoadingFormat.h>
 #include <appcontext.h>
-extern AppContext application_context;
-
 #define minmax
 
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
-
 #define NONE_FILTER 12
 
-COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
+template<typename F>
+void COpenCLEffect::ExecuteSafe(F&& func)
+{
+	try
+	{
+		cv::UMat convert;
+
+		if (preview && !paramOutput.empty())
+		{
+			convert = paramOutput;
+		}
+		else
+		{
+			convert = input;
+		}
+		func(convert);
+	}
+	catch (const cv::Exception& e)
+	{
+		LogError(e.what());
+	}
+}
+
+
+COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap, COpenCLContext* openCLContext)
 	: IFiltreEffet(backColor)
 {
 	this->backColor = backColor;
 	flag = CL_MEM_COPY_HOST_PTR;
 	SetBitmap(bitmap);
-	openclFilter = new COpenCLFilter();
+	openclFilter = std::make_unique<COpenCLFilter>(openCLContext);
 }
 
 bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
@@ -31,55 +52,44 @@ bool COpenCLEffect::StabilizeVideo(OpenCV::COpenCVStabilization* stabilization)
 
 Regards::Picture::CPictureArray COpenCLEffect::GetMatrix()
 {
-	cv::UMat convert;
+	Regards::Picture::CPictureArray pictureArray;
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			pictureArray.SetArray(image);
+		});
 
-	if (preview && !paramOutput.empty())
-	{
-		convert = paramOutput;
-	}
-	else
-	{
-		convert = input;
-	}
-
-	return Regards::Picture::CPictureArray(convert);
-}
-
-int COpenCLEffect::GetSizeData() const
-{
-	return sizeof(cl_uint) * 4;
+	return pictureArray;
 }
 
 int COpenCLEffect::GetWidth()
 {
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput.cols;
-	}
-	return input.cols;
+	int width = 0;
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			width = image.size().width;
+		});
+
+	return width;
 }
 
 int COpenCLEffect::GetHeight()
 {
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput.rows;
-	}
-	return input.rows;
+	int height = 0;
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			height = image.size().height;
+		});
+
+	return height;
 }
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& temporalLumaDefault, const double& temporalSpatialLumaDefault)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, paramOutput);
-		}
-		else
-		{
-			openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, input);
-		}
-	}
+			openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, image);
+		});
+
 	return 0;
 }
 
@@ -112,7 +122,6 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 
 COpenCLEffect::~COpenCLEffect()
 {
-	delete openclFilter;
 	input.release();
 	paramOutput.release();
 }
@@ -163,24 +172,22 @@ wxImage COpenCLEffect::GetwxImage(cv::UMat& input)
 
 wxImage COpenCLEffect::GetwxImage()
 {
-	if (preview && !paramOutput.empty())
-	{
-		return GetwxImage(paramOutput);
-	}
-	return GetwxImage(input);
+	wxImage img;
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			img = GetwxImage(image);
+		});
+
+	return img;
 }
 
 
 int COpenCLEffect::LensDistortionFilter(const int& size)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->LensDistortion(size, paramOutput);
-	}
-	else
-	{
-		openclFilter->LensDistortion(size, input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->LensDistortion(size, image);
+		});
 	return 0;
 }
 
@@ -189,134 +196,83 @@ int COpenCLEffect::LensDistortionFilter(const int& size)
 
 int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
-	}
-	else
-	{
-		openclFilter->BilateralEffect(input, fSize, sigmaX, sigmaP);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->BilateralEffect(image, fSize, sigmaX, sigmaP);
+		});
 	return 0;
 }
 
 int COpenCLEffect::DetailEnhance(const double& sigma_s, const double& sigma_r)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->DetailEnhance(paramOutput, sigma_s, sigma_r);
-		}
-		else
-		{
-			openclFilter->DetailEnhance(input, sigma_s, sigma_r);
-		}
-	}
+			openclFilter->DetailEnhance(image, sigma_s, sigma_r);
+		});
 	return 0;
 }
 
 int COpenCLEffect::EdgePreservingFilter(const int& flags, const double& sigma_s, const double& sigma_r)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->EdgePreservingFilter(paramOutput, flags, sigma_s, sigma_r);
-		}
-		else
-		{
-			openclFilter->EdgePreservingFilter(input, flags, sigma_s, sigma_r);
-		}
-	}
+			openclFilter->EdgePreservingFilter(image, flags, sigma_s, sigma_r);
+		});
 	return 0;
 }
 
 int COpenCLEffect::PencilSketch(const double& sigma_s, const double& sigma_r, const double& shade_factor)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->PencilSketch(paramOutput, sigma_s, sigma_r, shade_factor);
-		}
-		else
-		{
-			openclFilter->PencilSketch(input, sigma_s, sigma_r, shade_factor);
-		}
-	}
+			openclFilter->PencilSketch(image, sigma_s, sigma_r, shade_factor);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Stylization(const double& sigma_s, const double& sigma_r)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Stylization(paramOutput, sigma_s, sigma_r);
-		}
-		else
-		{
-			openclFilter->Stylization(input, sigma_s, sigma_r);
-		}
-	}
+			openclFilter->Stylization(image, sigma_s, sigma_r);
+		});
 	return 0;
 }
 
 int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->BrightnessAndContrast(brightness, contrast, paramOutput);
-		}
-		else
-		{
-			openclFilter->BrightnessAndContrast(brightness, contrast, input);
-		}
-	}
+			openclFilter->BrightnessAndContrast(brightness, contrast, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Swirl(const float& radius, const float& angle)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Swirl(radius, angle, paramOutput);
-		}
-		else
-		{
-			openclFilter->Swirl(radius, angle, input);
-		}
-	}
+			openclFilter->Swirl(radius, angle, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize,
-                                 const int& searchWindowSize)
+	const int& searchWindowSize)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->NlMeans(paramOutput, h, hColor, templateWindowSize, searchWindowSize);
-	}
-	else
-	{
-		openclFilter->NlMeans(input, h, hColor, templateWindowSize, searchWindowSize);
-	}
-
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->NlMeans(image, h, hColor, templateWindowSize, searchWindowSize);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Posterize(const float& level, const float& gamma)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Posterize(level, gamma, paramOutput);
-		}
-		else
-		{
-			openclFilter->Posterize(level, gamma, input);
-		}
-	}
+			openclFilter->Posterize(level, gamma, image);
+		});
 	return 0;
 }
 
@@ -340,14 +296,10 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 		{
 			offsets = CMotionBlur::GetOffsetKernel(kernel.size(), angle);
 
-			if (preview && !paramOutput.empty())
-			{
-				openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), paramOutput);
-			}
-			else
-			{
-				openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), input);
-			}
+			ExecuteSafe([&](cv::UMat& image)
+				{
+					openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), image);
+				});
 		}
 	}
 	//delete bitmapOut;
@@ -357,56 +309,29 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 
 int COpenCLEffect::Median()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
 			openclFilter->Median(paramOutput);
-		}
-		else
-		{
-			openclFilter->Median(input);
-		}
-	}
+		});
 	return 0;
 }
 
 int COpenCLEffect::Negatif()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->ColorEffect("Negatif", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("Negatif", input);
-		}
-	}
+			openclFilter->ColorEffect("Negatif", image);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
-	try
-	{
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			if (preview && !paramOutput.empty())
-			{
-				openclFilter->BrightnessAndContrastAuto(paramOutput, clipHistPercent);
-			}
-			else
-			{
-				openclFilter->BrightnessAndContrastAuto(input, clipHistPercent);
-			}
-		}
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+			openclFilter->BrightnessAndContrastAuto(image, clipHistPercent);
+		});
 
 	return 0;
 }
@@ -414,206 +339,135 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 
 int COpenCLEffect::Sepia()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->ColorEffect("Sepia", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("Sepia", input);
-		}
-	}
+			openclFilter->ColorEffect("Sepia", image);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::NoirEtBlanc()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->ColorEffect("NoirEtBlanc", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("NoirEtBlanc", input);
-		}
-	}
+			openclFilter->ColorEffect("NoirEtBlanc", image);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::NiveauDeGris()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->ColorEffect("GrayLevel", paramOutput);
-		}
-		else
-		{
-			openclFilter->ColorEffect("GrayLevel", input);
-		}
-	}
+			openclFilter->ColorEffect("GrayLevel", image);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::FlipVertical()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			flip(paramOutput, paramOutput, 0);
-		}
-		else
-		{
-			flip(input, input, 0);
-		}
-	}
+			flip(image, image, 0);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::FlipHorizontal()
 {
-	if (preview && !paramOutput.empty())
-	{
-		flip(paramOutput, paramOutput, 1);
-	}
-	else
-	{
-		flip(input, input, 1);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		flip(image, image, 1);
+		});
 
 	return 0;
 }
 
 int COpenCLEffect::Rotate90()
 {
-	if (preview && !paramOutput.empty())
-	{
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
-	}
-	else
-	{
-		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Rotate180()
 {
-	if (preview && !paramOutput.empty())
-	{
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_180);
-	}
-	else
-	{
-		cv::rotate(input, input, cv::ROTATE_180);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			cv::rotate(image, image, cv::ROTATE_180);
+		});
+
 	return 0;
 }
 
 int COpenCLEffect::Rotate270()
 {
-	if (preview && !paramOutput.empty())
-	{
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
-	}
-	else
-	{
-		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
+		});
+
 	return 0;
 }
 
 
 int COpenCLEffect::RotateFree(const double& angle, const int& widthOut, const int& heightOut)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->Rotate("RotateFree", widthOut, heightOut, angle, paramOutput);
-	}
-	else
-	{
-		openclFilter->Rotate("RotateFree", widthOut, heightOut, angle, input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+			openclFilter->Rotate("RotateFree", widthOut, heightOut, angle, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::SharpenMasking(const float& sharpness)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->SharpenMasking(sharpness, paramOutput);
-		}
-		else
-		{
-			openclFilter->SharpenMasking(sharpness, input);
-		}
-	}
-
+			openclFilter->SharpenMasking(sharpness, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->PhotoFiltre(clValue, intensity, paramOutput);
-		}
-		else
-		{
-			openclFilter->PhotoFiltre(clValue, intensity, input);
-		}
-	}
-
+			openclFilter->PhotoFiltre(clValue, intensity, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Solarize(const long& threshold)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Solarize(threshold, paramOutput);
-		}
-		else
-		{
-			openclFilter->Solarize(threshold, input);
-		}
-	}
-
+			openclFilter->Solarize(threshold, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::RGBFilter(const int& red, const int& green, const int& blue)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->RGBFilter(red, green, blue, paramOutput);
-	}
-	else
-	{
-		openclFilter->RGBFilter(red, green, blue, input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->RGBFilter(red, green, blue, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::FiltreMosaic(const int& size)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->FiltreMosaic(paramOutput, size);
-	}
-	else
-	{
-		openclFilter->FiltreMosaic(input, size);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->FiltreMosaic(image, size);
+		});
 	return 0;
 }
 
@@ -626,156 +480,101 @@ int COpenCLEffect::Fusion(cv::Mat& bitmapSecond, const float& pourcentage)
 	cv::UMat second;
 	bitmapSecond.copyTo(second);
 
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->Fusion(paramOutput, second, pourcentage);
-	}
-	else
-	{
-		openclFilter->Fusion(input, second, pourcentage);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->Fusion(image, second, pourcentage);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Soften()
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", paramOutput);
-	}
-	else
-	{
-		openclFilter->FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Noise()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Noise(paramOutput);
-		}
-		else
-		{
-			openclFilter->Noise(input);
-		}
-	}
-
+			openclFilter->Noise(image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Blur(const int& radius)
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->Blur(radius, paramOutput);
-		}
-		else
-		{
-			openclFilter->Blur(radius, input);
-		}
-	}
-
+			openclFilter->Blur(radius, image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Emboss()
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->Emboss(paramOutput);
-	}
-	else
-	{
-		openclFilter->Emboss(input);
-	}
-
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->Emboss(image);
+		});
 	return 0;
 }
 
 
 int COpenCLEffect::SharpenStrong()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->SharpenStrong(paramOutput);
-		}
-		else
-		{
-			openclFilter->SharpenStrong(input);
-		}
-	}
+			openclFilter->SharpenStrong(image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Sharpen()
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->Sharpen(paramOutput);
-	}
-	else
-	{
-		openclFilter->Sharpen(input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->Sharpen(image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::FiltreEdge()
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->Edge(paramOutput);
-	}
-	else
-	{
-		openclFilter->Edge(input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->Edge(image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Erode()
 {
-	{
-		if (preview && !paramOutput.empty())
+	ExecuteSafe([&](cv::UMat& image)
 		{
-			openclFilter->ErodeDilate("Erode", paramOutput);
-		}
-		else
-		{
-			openclFilter->ErodeDilate("Erode", input);
-		}
-	}
+			openclFilter->ErodeDilate("Erode", image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::Dilate()
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->ErodeDilate("Dilate", paramOutput);
-	}
-	else
-	{
-		openclFilter->ErodeDilate("Dilate", input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->ErodeDilate("Dilate", image);
+		});
 	return 0;
 }
 
 int COpenCLEffect::GaussianBlur(const int& radius, const int& boxSize)
 {
-	if (preview && !paramOutput.empty())
-	{
-		openclFilter->GaussianBlur(radius, boxSize, paramOutput);
-	}
-	else
-	{
-		openclFilter->GaussianBlur(radius, boxSize, input);
-	}
+	ExecuteSafe([&](cv::UMat& image)
+		{
+		openclFilter->GaussianBlur(radius, boxSize, image);
+		});
 	return 0;
 }
 

@@ -5,6 +5,7 @@
 #include <ScrollbarWnd.h>
 #include "ThumbnailBuffer.h"
 #include <SqlFindPhotos.h>
+#include <wx/progdlg.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -20,19 +21,17 @@ CThumbnailViewerPicture::CThumbnailViewerPicture(wxWindow* parent, wxWindowID id
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	preprocess_thumbnail = true;
+	
 }
 
 
-CThumbnailViewerPicture::~CThumbnailViewerPicture(void)
-{}
-
-void CThumbnailViewerPicture::OnPictureClick(CThumbnailData* data)
+void CThumbnailViewerPicture::OnPictureClick(const int& numPhotoId)
 {
 	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
-		evt.SetExtraLong(data->GetNumPhotoId());
+		evt.SetExtraLong(numPhotoId);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -65,9 +64,8 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 				thumbnailData->SetNumPhotoId(photo.GetId());
 				thumbnailData->SetNumElement(i);
 
-				auto pBitmapIcone = new CIcone();
+				auto pBitmapIcone = new CIcone(thumbnailData);
 				pBitmapIcone->SetNumElement(i);
-				pBitmapIcone->SetData(thumbnailData);
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 				pBitmapIcone->SetWindowPos(i * iconWidth, 0);
 				pBitmapIcone->SetFilename(filename);
@@ -87,7 +85,7 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 		if (icone != nullptr)
 		{
 			icone->SetNumElement(i);
-			auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+			auto data = static_cast<CThumbnailDataSQL*>(icone->GetPtData());
 			if (data != nullptr)
 			{
 				data->SetNumElement(i);
@@ -112,23 +110,16 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 			{
 				CIconeList* newIconeList = new CIconeList();
 
-				tbb::parallel_for(0, size, 1, [=](int i)
-					{
-						CIcone* ico = iconeList->GetElement(i);
-						if (ico != nullptr)
-						{
-							bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
-							if (!find)
-								iconeList->RemoveElement(i);
-							else
-								newIconeList->AddElement(ico);
-						}
-					});
+				GenerateList(newIconeList);
 
 				if (newIconeList->GetNbElement() > 0)
 				{
-					delete iconeList;
-					iconeList = newIconeList;
+					auto old = std::move(iconeList);
+					iconeList.reset(newIconeList);
+
+					nbElementInIconeList = iconeList->GetNbElement();
+
+					//old->EraseThumbnailListWithIcon();
 				}
 				else
 				{
@@ -154,16 +145,15 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 
 						wxString filename = photo.GetPath();
 
-						bool find = iconeList->FindElement(photo.GetPath());
+						bool find = iconeList->IfElementExistByFilename(photo.GetPath());
 						if (!find)
 						{
 							auto thumbnailData = new CThumbnailDataSQL(filename, false, false);
 							thumbnailData->SetNumPhotoId(photo.GetId());
 							thumbnailData->SetNumElement(i);
 
-							auto pBitmapIcone = new CIcone();
+							auto pBitmapIcone = new CIcone(thumbnailData);
 							pBitmapIcone->SetNumElement(i);
-							pBitmapIcone->SetData(thumbnailData);
 							pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 							pBitmapIcone->SetWindowPos(i * iconWidth, 0);
 							pBitmapIcone->SetFilename(filename);
@@ -187,7 +177,7 @@ void CThumbnailViewerPicture::PregenerateList(const bool& isDeleteFolder, const 
 				if (icone != nullptr)
 				{
 					icone->SetNumElement(i);
-					auto data = static_cast<CThumbnailDataSQL*>(icone->GetData());
+					auto data = static_cast<CThumbnailDataSQL*>(icone->GetPtData());
 					if (data != nullptr)
 					{
 						data->SetNumElement(i);
@@ -289,5 +279,5 @@ bool CThumbnailViewerPicture::ItemCompFonct(int xPos, int yPos, CIcone* icone, C
 CIcone* CThumbnailViewerPicture::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
-	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	return iconeList->FindElementByPosition(xPos, yPos, &_pf, this);
 }

@@ -2,7 +2,6 @@
 #include <header.h>
 #include "gfpgan.h"
 #include <fstream>
-
 extern ncnn::VulkanDevice* vkdev;
 
 GFPGAN::GFPGAN()

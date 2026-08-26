@@ -9,14 +9,11 @@ namespace Regards
 		class CMainParamInit
 		{
 		public:
-			CMainParamInit();
-			~CMainParamInit();
-
 			static CMainParam* getInstance();
-			static void Initialize(CMainParam* param);
 
 		private:
-			static CMainParam* _singleton;
+			static void Initialize();
+			static std::unique_ptr<CMainParam> _singleton;
 		};
 	}
 }

@@ -17,7 +17,9 @@
 #include "ScannerFrame.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
-
+#include <TreeWindow.h>
+#include <ScrollbarWnd.h>
+#include <wx/filename.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -32,7 +34,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame* frame, wxWindowID id)
 	this->frame = frame;
 	showBitmapWindow = nullptr;
 	isFullscreen = false;
-	filename = L"";
+	filename = "";
 	wxRect rect;
 	showToolbar = true;
 	checkValidity = false;
@@ -209,7 +211,6 @@ CImageLoadingFormat* CViewerPDF::GetImage()
 CViewerPDF::~CViewerPDF()
 {
 	pageThumbnail.clear();
-	delete(windowManager);
 }
 
 
@@ -291,33 +292,9 @@ void CViewerPDF::ImagePrecedente()
 
 wxString CViewerPDF::SetImage(wxImage imageFile)
 {
-	wxString file;
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
-
-#ifdef WIN32
-	file = tempFolder + "\\temp.pdf";
-#else
-	file = tempFolder + "/temp.pdf";
-#endif
-
-	if (wxFileExists(file))
-	{
-#ifdef WIN32
-		std::remove(file);
-#else
-		wxRemoveFile(file);
-#endif
-	}
-
-	//wxImage * imageTemp = new wxImage(imageFile);
-	imageFile.SaveFile(file);
-
-	return file;
+	wxString temporyFile = CFileUtility::GetTempFile("temp.pdf");
+	imageFile.SaveFile(temporyFile);
+	return temporyFile;
 }
 
 void CViewerPDF::LoadFile(const wxString& filename)
@@ -331,13 +308,7 @@ void CViewerPDF::LoadFile(const wxString& filename)
 
 	if (libPicture.TestIsPDF(this->filename))
 	{
-        
-        for(CImageVideoThumbnail * image : pageThumbnail)
-        {
-            delete image;
-            image = nullptr;
-        }
-    
+   
 		pageThumbnail.clear();
 
 		pageThumbnail = libPicture.LoadAllVideoThumbnail(filename, true, true);

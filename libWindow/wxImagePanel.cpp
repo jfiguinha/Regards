@@ -1,6 +1,7 @@
 // ReSharper disable All
 #include <header.h>
 #include "wxImagePanel.h"
+#include <wx/dcbuffer.h>
 // some useful events
 /*
  void wxImagePanel::mouseMoved(wxMouseEvent& event) {}
@@ -27,8 +28,11 @@ wxImagePanel::wxImagePanel(wxWindow* parent) :
 
 void wxImagePanel::paintEvent(wxPaintEvent& evt)
 {
-	// depending on your system you may need to look at double-buffered dcs
-	wxPaintDC dc(this);
+	wxSize size = GetClientSize();
+	if (size.x <= 0 || size.y <= 0)
+		return;
+
+	wxBufferedPaintDC dc(this);
 	render(dc);
 }
 
@@ -70,10 +74,10 @@ void wxImagePanel::render(wxDC& dc)
 	//  Clear the window
 	//
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.SetBrush(wxBrush(GetBackgroundColour(), wxSOLID));
-	dc.SetBackground(wxBrush(GetBackgroundColour(), wxSOLID));
+	dc.SetBrush(wxBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
+	dc.SetBackground(wxBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
 	dc.DrawRectangle(0, 0, w, h);
-	dc.SetBrush(wxBrush(GetForegroundColour(), wxCROSSDIAG_HATCH));
+	dc.SetBrush(wxBrush(GetForegroundColour(), wxBRUSHSTYLE_CROSSDIAG_HATCH));
 	dc.DrawRectangle(0, 0, w, h);
 
 	if (image.Ok())

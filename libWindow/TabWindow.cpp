@@ -1,6 +1,7 @@
 #include <header.h>
 #include "ToolbarWindow.h"
 #include "TabWindow.h"
+#include "ModificationManager.h"
 using namespace Regards::Window;
 
 CTabWindow::CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID id)
@@ -10,22 +11,18 @@ CTabWindow::CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID 
 
 }
 
-
 CTabWindow::~CTabWindow()
 {
-	for (CTabWindowData* window : listWindow)
-	{
-		if (window != nullptr)
-		{
-			delete window;
-			window = nullptr;
-		}
-	}
+	for (CTabWindowData* element : listWindow)
+		delete element;
+
+	listWindow.clear();
 }
+
 
 void CTabWindow::UpdateScreenRatio()
 {
-	for (CTabWindowData* window : listWindow)
+	for (auto& window : listWindow)
 	{
 		if (window != nullptr)
 			window->UpdateScreenRatio();
@@ -40,7 +37,7 @@ void CTabWindow::UpdateScreenRatio()
 void CTabWindow::ClickShowButton(const int& id, const int& refresh)
 {
 	HideAllWindow();
-	for (CTabWindowData* window : listWindow)
+	for (auto& window : listWindow)
 	{
 		if (window->GetId() == id)
 		{
@@ -69,7 +66,7 @@ void CTabWindow::OnSize(wxSizeEvent& event)
 
 void CTabWindow::HideAllWindow()
 {
-	for (CTabWindowData* window : listWindow)
+	for (auto& window : listWindow)
 	{
 		if (window != nullptr)
 		{
@@ -94,7 +91,7 @@ void CTabWindow::Resize()
 
 	wxWindow* windowToShow = nullptr;
 
-	for (CTabWindowData* window : listWindow)
+	for (auto& window : listWindow)
 	{
 		if (window != nullptr)
 		{

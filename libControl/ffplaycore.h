@@ -1,96 +1,84 @@
-/* 
- * FFplay for MFC
- *
- * À×Ïöæè Lei Xiaohua
- * leixiaohua1020@126.com
- * ÖÐ¹ú´«Ã½´óÑ§/Êý×ÖµçÊÓ¼¼Êõ
- * Communication University of China / Digital TV Technology
- *
- * http://blog.csdn.net/leixiaohua1020
- * 
- * ±¾¹¤³Ì½«ffmpegÏîÄ¿ÖÐµÄffplay²¥·ÅÆ÷£¨ffplay.c£©ÒÆÖ²µ½ÁËVCµÄ»·¾³ÏÂ¡£
- * ²¢ÇÒÊ¹ÓÃMFC×öÁËÒ»Ì×¼òµ¥µÄ½çÃæ¡£
- * This software transplant ffplay to Microsoft VC++ environment. 
- * And use MFC to build a simple Graphical User Interface. 
- */
-
 #pragma once
-#include "VideoControlInterface.h"
+
+#include <wx/wx.h>
+#include <memory>
 #include "ffmfcpimpl.h"
 
-class CBitmapToShow
-{
-public:
-	CBitmapToShow(): width(0), height(0), aspect_ratio(0)
-	{
-		data = nullptr;
-	}
-
-	uint8_t* data;
-	int width;
-	int height;
-	float aspect_ratio;
-	//SDL_Rect displayRect;
-};
+class CVideoControlInterface;
 
 class CFFmfc : public wxWindow
 {
 public:
-	CFFmfc(wxWindow* parent, wxWindowID id);
-	~CFFmfc() override;
+    CFFmfc(wxWindow* parent, wxWindowID id);
+    ~CFFmfc() override;
 
-	//Send Command "Pause"
-	void Pause();
-	//Send Command "Step"
-	void Seek_step();
-	//Send Command "Seek"
-	void Seek(int time);
-	//Send Command "AspectRatio"
-	void Aspectratio(int num, int den);
-	//Send Command "WindowSize"
-	void Size(int percentage);
+    CFFmfc(const CFFmfc&) = delete;
+    CFFmfc& operator=(const CFFmfc&) = delete;
 
-	void Change_audio_stream(int newStreamIndex);
-	void Change_subtitle_stream(int newStreamIndex);
-	//Send Command "Quit"
-	bool Quit();
-	void VolumeUp();
-	void VolumeDown();
-	int GetVolume();
-	void SetVolume(const int& pos);
-	void SetTimePosition(int64_t time);
-	int64_t GetTimePosition();
-	//Main function
-	int SetFile(CVideoControlInterface* control, const wxString& filename, const wxString& acceleratorHardware,
-	            const bool& isOpenGLDecoding, const int& volume);
-	void Play();
-	//Reset
-	int Reset_index();
-	//Seek Bar
-	void Seek_bar(int pos);
-	//Video display Size
-	void VideoDisplaySize(int width, int height);
-	void SetOutputMode(int outputMode);
-	void SetVideoParameter(int angle, int flipV, int flipH);
-	wxString Getfilename();
+    CFFmfc(CFFmfc&&) = delete;
+    CFFmfc& operator=(CFFmfc&&) = delete;
+
+    void RefreshEvent(wxCommandEvent& event);
+    void SeekBarEvent(wxCommandEvent& event);
+    void PositionSeekEvent(wxCommandEvent& event);
+    void PositionEvent(wxCommandEvent& event);
+
+    void ChangeVolumeEvent(wxCommandEvent& event);
+    void ChangeAudioEvent(wxCommandEvent& event);
+    void ChangeSubtitleEvent(wxCommandEvent& event);
+
+    void AspectEvent(wxCommandEvent& event);
+
+    void ExitEvent(wxCommandEvent& event);
+    void QuitEvent(wxCommandEvent& event);
+    void StopEvent(wxCommandEvent& event);
+    void StepEvent(wxCommandEvent& event);
+    void PauseEvent(wxCommandEvent& event);
+    void PlayEvent(wxCommandEvent& event);
+
+    void SetOutputMode(int outputMode);
+    int Reset_index();
+
+    void VideoDisplaySize(int width, int height);
+    void SetVideoParameter(int angle, int flipV, int flipH);
+
+    bool Quit();
+
+    void Seek_step();
+    void Pause();
+    void Play();
+
+    void Aspectratio(int num, int den);
+    void Size(int percentage);
+
+    void Change_audio_stream(int newStreamIndex);
+    void Change_subtitle_stream(int newStreamIndex);
+
+    void VolumeUp();
+    void VolumeDown();
+
+    void SetVolume(const int& pos);
+    int GetVolume();
+
+    int64_t GetTimePosition();
+    void SetTimePosition(int64_t time);
+
+    void Seek(int time);
+    void Seek_bar(int pos);
+
+    wxString Getfilename();
+
+    int SetFile(CVideoControlInterface* control,
+        const wxString& filename,
+        const wxString& acceleratorHardware,
+        const bool& isOpenGLDecoding,
+        const int& volume);
 
 private:
-	void StopEvent(wxCommandEvent& event);
-	void ExitEvent(wxCommandEvent& event);
-	void RefreshEvent(wxCommandEvent& event);
-	void SeekBarEvent(wxCommandEvent& event);
-	void PositionSeekEvent(wxCommandEvent& event);
-	void PositionEvent(wxCommandEvent& event);
-	void ChangeVolumeEvent(wxCommandEvent& event);
-	void AspectEvent(wxCommandEvent& event);
-	void PauseEvent(wxCommandEvent& event);
-	void PlayEvent(wxCommandEvent& event);
-	void StepEvent(wxCommandEvent& event);
-	void QuitEvent(wxCommandEvent& event);
-	void ChangeAudioEvent(wxCommandEvent& event);
-	void ChangeSubtitleEvent(wxCommandEvent& event);
+    bool IsReady() const noexcept;
 
-	wxString filename;
-	CFFmfcPimpl::VideoState* cur_stream = nullptr;
-	CFFmfcPimpl* _pimpl = nullptr;
+private:
+    std::unique_ptr<CFFmfcPimpl> _pimpl;
+    CFFmfcPimpl::VideoState* cur_stream = nullptr;
+    wxString filename;
 };

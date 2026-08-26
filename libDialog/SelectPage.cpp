@@ -21,12 +21,6 @@ vector<int> CSelectFileDlg::GetSelectItem()
 	return thumbnailFileSelection->GetSelectItem();
 }
 
-
-CSelectFileDlg::~CSelectFileDlg()
-{
-	delete(thumbnailFileSelection);
-}
-
 void CSelectFileDlg::OnOk(wxCommandEvent& event)
 {
 	EndModal(wxID_OK);

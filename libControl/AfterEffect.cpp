@@ -2,13 +2,13 @@
 #include "AfterEffect.h"
 
 
-GLTexture* IAfterEffect::pictureFirst = nullptr;
-GLTexture* IAfterEffect::pictureNext = nullptr;
+std::unique_ptr<GLTexture> IAfterEffect::pictureFirst = nullptr;
+std::unique_ptr<GLTexture> IAfterEffect::pictureNext = nullptr;
 
 IAfterEffect::IAfterEffect()
 {
 	if (pictureFirst == nullptr)
-		pictureFirst = new GLTexture();
+		pictureFirst = std::make_unique<GLTexture>();
 	if (pictureNext == nullptr)
-		pictureNext = new GLTexture();
+		pictureNext = std::make_unique<GLTexture>();
 }

@@ -2,20 +2,31 @@
 #include "picture_utility.h"
 #include <wx/wfstream.h>
 
-uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
+std::vector<uint8_t> CPictureUtility::ReadFile(const wxString& fileName)
 {
-	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	uint8_t* _compressedImage = nullptr;
-	if (wxFile::Exists(fileName))
+	std::vector<uint8_t> buffer;
+
+	if (!wxFile::Exists(fileName))
+		return buffer;
+
+	wxFile file(fileName);
+
+	if (!file.IsOpened())
+		return buffer;
+
+	const wxFileOffset length = file.Length();
+
+	if (length <= 0)
+		return buffer;
+
+	buffer.resize(static_cast<size_t>(length));
+
+	if (file.Read(buffer.data(), buffer.size()) != buffer.size())
 	{
-		wxFile file(fileName);
-		_fileSize = file.Length();
-		_compressedImage = new uint8_t[_fileSize];
-		if (file.IsOpened())
-			file.Read(_compressedImage, _fileSize);
-		file.Close();
+		buffer.clear();
 	}
-	return _compressedImage;
+
+	return buffer;
 }
 
 
@@ -24,7 +35,7 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 float CPictureUtility::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& screenWidth,
                                           const int& screenHeight)
 {
-	if (pictureWidth == 0 && pictureHeight == 0)
+	if (pictureWidth <= 0 || pictureHeight <= 0)
 		return 1.0f;
 
 	float new_ratio;
@@ -175,11 +186,10 @@ void CPictureUtility::ApplyTransform(cv::Mat& image)
 
 void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t& size)
 {
-	uint8_t* _compressedImage = nullptr;
 	wxFile file;
+
 	if (file.Create(fileName, true, wxFile::write))
 		file.Write(data, size);
-	file.Close();
 }
 
 void CPictureUtility::VerifRectSize(cv::Rect& rect, cv::Mat& matSrc)

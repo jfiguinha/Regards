@@ -8,7 +8,7 @@ namespace Regards::Control
 	public:
 		CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
 		                const bool& testValidity);
-		~CThumbnailVideo(void) override;
+		~CThumbnailVideo(void) = default;
 		void SetFile(const wxString& videoFile, const int& size);
 		void SetVideoPosition(const int64_t& videoPos);
 		void EraseThumbnail(long value);
@@ -20,7 +20,7 @@ namespace Regards::Control
 		static bool ItemCompFonct(int x, int y, CIcone * icone, CWindowMain* parent);
 		void EraseThumbnail(wxCommandEvent& event) override;
 		void UpdateVideoThumbnail(wxCommandEvent& event);
-		
+
 
 		int FindNumItem(const int& videoPos);
 		virtual void InitWithDefaultPicture(const wxString& szFileName, const int& size);

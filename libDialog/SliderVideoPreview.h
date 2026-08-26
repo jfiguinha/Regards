@@ -11,7 +11,7 @@ using namespace Regards::Window;
 #define ZOOMBUTTONID 4
 #define SCREENFORMATID 5
 
-class CRegardsBitmap;
+;
 
 namespace Regards::Control
 {

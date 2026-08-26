@@ -18,7 +18,7 @@ namespace Regards::Scanner
 		vector<int> GetSelectItem();
 
 	protected:
-		void OnPictureClick(CThumbnailData* data) override;
+		void OnPictureClick(const int& numPhotoId) {};
 		void ResizeThumbnail() override;
 
 	private:
@@ -35,7 +35,7 @@ namespace Regards::Scanner
 		void InitTypeAffichage(const int& typeAffichage);
 
 		InfosSeparationBarVector listSeparator;
-		vector<CImageVideoThumbnail*> photoVector;
+		std::vector<std::unique_ptr<CImageVideoThumbnail>> photoVector;
 		int barseparationHeight;
 		int widthThumbnail;
 		int heightThumbnail;

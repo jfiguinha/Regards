@@ -4,7 +4,7 @@
 #include <TreeElementValue.h>
 #include <EffectParameter.h>
 
-class CRegardsBitmap;
+;
 class CImageLoadingFormat;
 class CFiltreEffet;
 class IBitmapDisplay;

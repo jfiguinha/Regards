@@ -205,11 +205,6 @@ void CPicturePanel::OnChannelSelect(wxCommandEvent& event)
 	needToRefresh = true;
 }
 
-CPicturePanel::~CPicturePanel()
-{
-	delete choice_control;
-}
-
 void CPicturePanel::SetPictureToDisplay(cv::Mat& picture)
 {
 	picture.copyTo(pictureOriginal);

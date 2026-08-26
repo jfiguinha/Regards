@@ -11,10 +11,6 @@ public:
 		scale = 2;
 	};
 
-	~CWaveEffectParameter() override
-	{
-	};
-
 	short height;
 	int radius;
 	int scale;

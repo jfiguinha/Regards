@@ -14,31 +14,45 @@ CConfigParam::~CConfigParam()
 {
 	doc.clear();
 }
-
 bool CConfigParam::OpenFile(const wxString& configFile)
 {
-	filename = configFile;
+    filename = configFile;
 
-	doc.clear();
+    doc.clear();
+    xmlBuffer.clear();
 
-	try
-	{
-		// Read the xml file into a vector
-		ifstream theFile(CConvertUtility::ConvertToStdString(filename));
-		vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
-		if (buffer.size() > 0)
-		{
-			buffer.push_back('\0');
-			// Parse the buffer using the xml file parsing library into doc 
-			doc.parse<0>(&buffer[0]);
-			LoadParameter();
-		}
-	}
-	catch (...)
-	{
-		wxMessageBox("Unable to open config file : " + filename);
-	}
-	return true;
+    try
+    {
+        std::ifstream file(CConvertUtility::ConvertToStdString(filename), std::ios::binary);
+
+        if (!file.is_open())
+            return false;
+
+        xmlBuffer.assign(std::istreambuf_iterator<char>(file),std::istreambuf_iterator<char>());
+
+        if (xmlBuffer.empty())
+            return false;
+
+        xmlBuffer.push_back('\0');
+
+        doc.parse<0>(xmlBuffer.data());
+
+        LoadParameter();
+
+        return true;
+    }
+    catch (const rapidxml::parse_error& e)
+    {
+        wxMessageBox("XML Parse Error : " + wxString(e.what()));
+
+        return false;
+    }
+    catch (...)
+    {
+        wxMessageBox("Unable to open config file : " + filename);
+
+        return false;
+    }
 }
 
 bool CConfigParam::SaveFile()

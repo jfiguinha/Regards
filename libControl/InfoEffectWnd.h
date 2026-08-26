@@ -20,14 +20,14 @@ namespace Regards::Control
 	public:
 		CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
 		               const CThemeTree& themeTree, int bitmap_window_id);
-		~CInfoEffectWnd(void) override;
+		~CInfoEffectWnd(void) = default;
 
 		void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
 		void HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
 		                   CModificationManager* modificationManager);
 
 	private:
-		CInfoEffect* historyEffectOld;
+		std::unique_ptr<CInfoEffect> historyEffectOld;
 		int bitmapWindowId;
 		//const wxWindowID id_;
 		//const CThemeScrollBar& theme_scroll_;
