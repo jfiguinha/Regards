@@ -841,7 +841,6 @@
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
-    <ClInclude Include="convertmattowxbmp.h" />
     <ClInclude Include="DecodeRawParameter.h" />
     <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="DiaporamaFusion.h" />
@@ -876,7 +875,6 @@
     <ClInclude Include="RegardsRaw.h" />
     <ClInclude Include="regards_webp.h" />
     <ClInclude Include="RGBAQuad.h" />
-    <ClInclude Include="ScaleThumbnail.h" />
     <ClInclude Include="StreamInfo.h" />
     <ClInclude Include="ThumbnailData.h" />
     <ClInclude Include="ThumbnailDataStorage.h" />
@@ -888,8 +886,6 @@
     <ClInclude Include="VideoThumbPimpl.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="wic.h" />
-    <ClInclude Include="yuv420.h" />
-    <ClInclude Include="yuv422.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -907,7 +903,6 @@
     <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
-    <ClCompile Include="convertmattowxbmp.cpp" />
     <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="DiaporamaFusion.cpp" />
     <ClCompile Include="DiaporamaMove.cpp" />
@@ -938,7 +933,6 @@
     <ClCompile Include="RegardsRaw.cpp" />
     <ClCompile Include="regards_webp.cpp" />
     <ClCompile Include="RGBAQuad.cpp" />
-    <ClCompile Include="ScaleThumbnail.cpp" />
     <ClCompile Include="ThumbnailData.cpp" />
     <ClCompile Include="ThumbnailDataStorage.cpp" />
     <ClCompile Include="ThumbnailDiaporama.cpp" />

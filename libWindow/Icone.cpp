@@ -602,7 +602,7 @@ void CIcone::GetBitmapIcone(
 		Invalidate();
 
 	// -------------------------------------------------------------------------
-	// Impossible de construire l'icône sans ThumbnailData.
+	// Impossible de construire l'icï¿½ne sans ThumbnailData.
 	// -------------------------------------------------------------------------
 	if (pThumbnailData == nullptr)
 	{
@@ -611,8 +611,8 @@ void CIcone::GetBitmapIcone(
 	}
 
 	// -------------------------------------------------------------------------
-	// Récupération de l'image.
-	// IMPORTANT : on conserve exactement la sémantique actuelle de
+	// Rï¿½cupï¿½ration de l'image.
+	// IMPORTANT : on conserve exactement la sï¿½mantique actuelle de
 	// photoDefault avec GetImage().
 	// -------------------------------------------------------------------------
 	wxImage image(20, 20);
@@ -633,7 +633,7 @@ void CIcone::GetBitmapIcone(
 	}
 
 	// -------------------------------------------------------------------------
-	// Si aucune image n'est disponible, utiliser l'image par défaut.
+	// Si aucune image n'est disponible, utiliser l'image par dï¿½faut.
 	// -------------------------------------------------------------------------
 	if (!image.IsOk())
 	{
@@ -652,11 +652,11 @@ void CIcone::GetBitmapIcone(
 	}
 
 	// -------------------------------------------------------------------------
-	// Vérification du cache du bitmap final.
+	// Vï¿½rification du cache du bitmap final.
 	// -------------------------------------------------------------------------
-	const bool bitmapSizeChanged =
+	const bool bitmapSizeChanged = localmemBitmap_backup.IsOk() ? (
 		localmemBitmap_backup.GetWidth() != themeIcone.GetWidth() ||
-		localmemBitmap_backup.GetHeight() != themeIcone.GetHeight();
+		localmemBitmap_backup.GetHeight() != themeIcone.GetHeight()) : true;
 
 	if (!redraw && !bitmapSizeChanged)
 		return;
@@ -687,7 +687,7 @@ void CIcone::GetBitmapIcone(
 			ratio);
 
 		// ---------------------------------------------------------------------
-		// Le cache de l'image redimensionnée peut être réutilisé uniquement
+		// Le cache de l'image redimensionnï¿½e peut ï¿½tre rï¿½utilisï¿½ uniquement
 		// si ses dimensions correspondent.
 		// ---------------------------------------------------------------------
 		const bool rebuildScale =
@@ -790,7 +790,7 @@ void CIcone::GetBitmapIcone(
 		}
 
 		// ---------------------------------------------------------------------
-		// Rendu à partir du cache.
+		// Rendu ï¿½ partir du cache.
 		// ---------------------------------------------------------------------
 		RenderBitmap(
 			&memDC,
@@ -800,7 +800,7 @@ void CIcone::GetBitmapIcone(
 		memDC.SelectObject(wxNullBitmap);
 
 		// ---------------------------------------------------------------------
-		// Mise à jour du bitmap final.
+		// Mise ï¿½ jour du bitmap final.
 		// ---------------------------------------------------------------------
 		localmemBitmap_backup = localmemBitmap;
 
@@ -808,7 +808,7 @@ void CIcone::GetBitmapIcone(
 	}
 	catch (...)
 	{
-		// Toujours désélectionner le bitmap de la wxMemoryDC.
+		// Toujours dï¿½sï¿½lectionner le bitmap de la wxMemoryDC.
 		memDC.SelectObject(wxNullBitmap);
 	}
 

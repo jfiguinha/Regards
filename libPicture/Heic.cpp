@@ -66,6 +66,8 @@ namespace
 		}
 
 		cv::cvtColor(outPicture, outPicture, cv::COLOR_BGR2RGBA);
+		// il faut donc convertir RGB->RGBA (et non BGR->RGBA, qui inversait R et B).
+		//cv::cvtColor(outPicture, outPicture, cv::COLOR_RGB2RGBA);
 
 		heif_image_release(img);
 		return true;
@@ -103,6 +105,9 @@ namespace
 vector<cv::Mat> CHeic::GetAllPicture(const char* filename, int& delay)
 {
 	vector<cv::Mat> listPicture;
+
+	// Le parametre de sortie "delay" n'etait auparavant jamais renseigne.
+	delay = static_cast<int>(GetDelay(filename));
 
 	heif_context* ctx = heif_context_alloc();
 	if (ctx == nullptr)
@@ -161,7 +166,7 @@ vector<cv::Mat> CHeic::GetAllPicture(const char* filename, int& delay)
 #define AVIF 35
 */
 
-void CHeic::SavePicture(const char* filenameOut, const int& format, cv::Mat& source, std::vector<uint8_t> & exifBuffer,
+void CHeic::SavePicture(const char* filenameOut, const int& format, cv::Mat& source, std::vector<uint8_t>& exifBuffer,
 	const int& compression, const bool& hasExif)
 {
 	if (source.empty())
@@ -212,7 +217,8 @@ void CHeic::SavePicture(const char* filenameOut, const int& format, cv::Mat& sou
 		return;
 	}
 
-	err = heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height, 32);
+	// bit_depth = 8 bits PAR COMPOSANTE (RGBA 8-bit standard), pas 32 (taille totale du pixel).
+	err = heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height, 8);
 	if (err.code != heif_error_Ok)
 	{
 		std::cerr << "heif_image_add_plane: " << err.message << "\n";
@@ -224,7 +230,7 @@ void CHeic::SavePicture(const char* filenameOut, const int& format, cv::Mat& sou
 
 	// conversion BGRA -> RGBA dans une copie locale, sans modifier le buffer de l'appelant
 	cv::Mat rgba;
-	if(source.channels() == 3)
+	if (source.channels() == 3)
 		cv::cvtColor(source, rgba, cv::COLOR_BGR2RGBA);
 	else
 		cv::cvtColor(source, rgba, cv::COLOR_BGRA2RGBA);
@@ -275,6 +281,9 @@ void CHeic::SavePicture(const char* filenameOut, const int& format, cv::Mat& sou
 cv::Mat CHeic::GetPicture(const char* filename, int& delay, const int& numPicture)
 {
 	cv::Mat picture;
+
+	// Le parametre de sortie "delay" n'etait auparavant jamais renseigne.
+	delay = static_cast<int>(GetDelay(filename));
 
 	heif_context* ctx = heif_context_alloc();
 	if (ctx == nullptr)
@@ -538,14 +547,26 @@ void CHeicExif::GetMetadataHeic(const char* filename, uint8_t*& data, unsigned i
 
 	// Get item size from parsed information. For simplicity, assume it is the first and only
 	// non-image item in the file.
-	uint64_t itemSize = 1024 * 1024;
+	uint64_t itemSize = 0;
+	bool itemSizeFound = false;
 	for (const ItemInformation& itemInfo : fileInfo.rootMetaBoxInformation.itemInformations)
 	{
 		if (itemInfo.itemId == exifItemId)
 		{
 			itemSize = itemInfo.size;
+			itemSizeFound = true;
 			break;
 		}
+	}
+
+	if (!itemSizeFound)
+	{
+		// Item Exif introuvable dans les infos de metadonnees : on ne devine plus une
+		// taille arbitraire (l'ancien fallback de 1 Mo pouvait produire un buffer/une
+		// taille requise totalement incoherente avec les donnees reelles).
+		size = 0;
+		Reader::Destroy(reader);
+		return;
 	}
 
 	/* raw EXIF header data */
@@ -586,6 +607,14 @@ void CHeicExif::GetMetadataHeic(const char* filename, uint8_t*& data, unsigned i
 
 	// Deuxieme passe : "data" est suppose avoir ete alloue par l'appelant
 	// avec au moins "requiredSize" octets.
+	if (data == nullptr)
+	{
+		// Garde-fou : evite une ecriture dans un pointeur nul si l'appelant
+		// n'a pas respecte le protocole (size>0 mais data non alloue).
+		Reader::Destroy(reader);
+		return;
+	}
+
 	std::vector<uint8_t> memoryBuffer(itemSize);
 	reader->getItemData(exifItemId, memoryBuffer.data(), itemSize);
 
@@ -625,15 +654,22 @@ uint32_t CHeic::GetDelay(const char* filename)
 		{
 			if (info.trackInformation.size > 0)
 			{
-				// Print information for every track read
+				// On ne garde que le PREMIER timestamp trouve (premiere piste, premiere frame) :
+				// avant ce correctif la boucle continuait sur toutes les pistes et "delay"
+				// finissait par contenir celui de la derniere piste traitee.
+				bool found = false;
 				for (const auto& trackProperties : info.trackInformation)
 				{
+					if (found)
+						break;
+
 					const auto sequenceId = trackProperties.trackId;
 					Array<TimestampIDPair> timestamps;
 					reader->getItemTimestamps(sequenceId, timestamps);
 					for (const auto& timestamp : timestamps)
 					{
 						delay = timestamp.timeStamp;
+						found = true;
 						break;
 					}
 				}

@@ -172,7 +172,7 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	if(pictureBuffer.GetWidth() != nav->GetWidth() || pictureBuffer.GetHeight() != nav->GetHeight())
+	if(!pictureBuffer.IsOk() || pictureBuffer.GetWidth() != nav->GetWidth() || pictureBuffer.GetHeight() != nav->GetHeight())
 		pictureBuffer.Create(nav->GetWidth(), nav->GetHeight());
 
 	wxMemoryDC memDC(pictureBuffer);
@@ -355,7 +355,7 @@ void CToolbarWindow::DrawBackground(wxDC* dc)
 	if (winW <= 0 || winH <= 0) return;
 
 	// Only reallocate the off-screen bitmap when the window is resized
-	if (background.GetWidth() != winW || background.GetHeight() != winH)
+	if (!background.IsOk() || background.GetWidth() != winW || background.GetHeight() != winH)
 		background.Create(winW, winH);
 
 	{

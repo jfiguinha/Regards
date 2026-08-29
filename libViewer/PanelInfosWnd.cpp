@@ -426,11 +426,8 @@ void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 
 	infosToolbar->SetEffectParameterInactif();
 
-	if (windowVisible != WM_INFOS)
-	{
-		windowVisible = WM_INFOS;
-		this->ClickShowButton(WM_INFOS);
-	}
+	windowVisible = WM_EFFECT;
+	this->ClickShowButton(WM_EFFECT);
 	LoadInfo();
 }
 
@@ -456,6 +453,11 @@ void CPanelInfosWnd::OnFiltreCancel()
 		wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	infosToolbar->SetEffectParameterInactif();
+	windowVisible = WM_EFFECT;
+	this->ClickShowButton(WM_EFFECT);
+	LoadInfo();
 
 }
 

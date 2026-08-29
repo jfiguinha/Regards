@@ -2015,38 +2015,53 @@ int CFFmfcPimpl::configure_audio_filters(VideoState* is, const char* afilters, i
 
 
 	// 1. Allouer SANS initialiser
-	filt_asink = avfilter_graph_alloc_filter(is->agraph,
-		avfilter_get_by_name("abuffersink"), "ffplay_abuffersink");
+	filt_asink = avfilter_graph_alloc_filter(
+		is->agraph,
+		avfilter_get_by_name("abuffersink"),
+		"ffplay_abuffersink");
+
 	if (!filt_asink) {
 		ret = AVERROR(ENOMEM);
 		goto end;
 	}
 
-	if ((ret = av_opt_set_int(filt_asink, "all_channel_counts", 0, AV_OPT_SEARCH_CHILDREN)) < 0)
+	if ((ret = av_opt_set(
+			filt_asink,
+			"sample_formats",
+			"s16",
+			AV_OPT_SEARCH_CHILDREN)) < 0)
 		goto end;
 
 	if (force_output_format) {
-		av_bprint_clear(&bp);
-		av_channel_layout_describe_bprint(&is->audio_tgt.ch_layout, &bp);
-		sample_rates[0] = is->audio_tgt.freq;
+		if ((ret = av_opt_set_array(
+				filt_asink,
+				"channel_layouts",
+				AV_OPT_SEARCH_CHILDREN,
+				0,
+				1,
+				AV_OPT_TYPE_CHLAYOUT,
+				&is->audio_tgt.ch_layout)) < 0)
+			goto end;
 
-		if ((ret = av_opt_set_int(filt_asink, "all_channel_counts", 0, AV_OPT_SEARCH_CHILDREN)) < 0)
-			goto end;
-		if ((ret = av_opt_set(filt_asink, "ch_layouts", bp.str, AV_OPT_SEARCH_CHILDREN)) < 0)
-			goto end;
-		if ((ret = av_opt_set_int_list(filt_asink, "sample_rates", sample_rates, -1, AV_OPT_SEARCH_CHILDREN)) < 0)
+		if ((ret = av_opt_set_array(
+				filt_asink,
+				"samplerates",
+				AV_OPT_SEARCH_CHILDREN,
+				0,
+				1,
+				AV_OPT_TYPE_INT,
+				&is->audio_tgt.freq)) < 0)
 			goto end;
 	}
-
-	if ((ret = av_opt_set_int_list(filt_asink, "sample_fmts", sample_fmts,
-		AV_SAMPLE_FMT_NONE, AV_OPT_SEARCH_CHILDREN)) < 0)
-		goto end;
 
 	if ((ret = avfilter_init_str(filt_asink, NULL)) < 0)
 		goto end;
 
-
-	if ((ret = configure_filtergraph(is->agraph, afilters, filt_asrc, filt_asink)) < 0)
+	if ((ret = configure_filtergraph(
+			is->agraph,
+			afilters,
+			filt_asrc,
+			filt_asink)) < 0)
 		goto end;
 
 	is->in_audio_filter = filt_asrc;

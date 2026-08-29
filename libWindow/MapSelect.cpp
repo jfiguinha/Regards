@@ -78,7 +78,7 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 				apiKey = param->GetApiKey();
 			}
 			CFileGeolocation fileGeo(urlServer, apiKey);
-			auto gps = new CGps(urlServer, apiKey);
+			auto gps = std::make_unique<CGps>(urlServer, apiKey);
 
 			//Execution de la requÍte de gÈolocalisation
 			if (gps->GeolocalisationGPS(latitude, longitude))
@@ -88,12 +88,9 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow* window, const wxString& 
 				for (CGeoPluginValue geoValue : *geoPluginVector)
 				{
 					infoGpsLocalisation = fileGeo.GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetCity());
-
 					break;
 				}
 			}
-
-			delete gps;
 		}
 	}
 	return infoGpsLocalisation;

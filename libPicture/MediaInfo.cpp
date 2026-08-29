@@ -153,6 +153,7 @@ public:
 
     void OpenFile(const wxString& fileName)
     {
+        isOk = true;
         try
         {
             if (wxFile::Exists(fileName))
@@ -196,12 +197,6 @@ public:
                     MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
 
                     file.Close();
-
-                    isOk = true;
-                }
-                else
-                {
-                    isOk = true;
                 }
             }
         }

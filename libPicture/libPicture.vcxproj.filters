@@ -10,9 +10,6 @@
     <ClCompile Include="libPicture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScaleThumbnail.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RegardsRaw.cpp">
       <Filter>libraw</Filter>
     </ClCompile>
@@ -117,9 +114,6 @@
     </ClCompile>
     <ClCompile Include="DecodeRawPicture.cpp">
       <Filter>libraw</Filter>
-    </ClCompile>
-    <ClCompile Include="convertmattowxbmp.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
@@ -270,9 +264,6 @@
     <ClInclude Include="avif.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="convertmattowxbmp.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Heic.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -292,15 +283,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="regards_webp.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ScaleThumbnail.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="yuv420.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="yuv422.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="VideoThumbPimpl.h">

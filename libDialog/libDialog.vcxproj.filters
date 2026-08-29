@@ -43,9 +43,6 @@
     <Filter Include="SelectPage\Thumbnail">
       <UniqueIdentifier>{1238d3f9-fe9b-47b9-bcd7-2eae4676522a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Association">
-      <UniqueIdentifier>{5f38767f-bec3-4d4b-854c-19ecd32b88ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Intro">
       <UniqueIdentifier>{b8ab152f-3298-4557-94e2-596ff5da631f}</UniqueIdentifier>
     </Filter>
@@ -95,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="ThumbnailSelection.cpp">
       <Filter>SelectPage\Thumbnail</Filter>
-    </ClCompile>
-    <ClCompile Include="Association.cpp">
-      <Filter>Association</Filter>
     </ClCompile>
     <ClCompile Include="infoAbout.cpp">
       <Filter>Intro</Filter>
@@ -172,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="ThumbnailSelection.h">
       <Filter>SelectPage\Thumbnail</Filter>
-    </ClInclude>
-    <ClInclude Include="Association.h">
-      <Filter>Association</Filter>
     </ClInclude>
     <ClInclude Include="infoAbout.h">
       <Filter>Intro</Filter>

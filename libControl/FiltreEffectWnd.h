@@ -9,8 +9,9 @@
 #pragma once
 #include "FiltreEffect.h"
 #include <TreeWithScrollbar.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Window;
-class CImageLoadingFormat;
+
 
 namespace Regards::Control
 {
@@ -21,7 +22,7 @@ namespace Regards::Control
 	public:
 		CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
 		                       const CThemeTree& themeTree, int bitmapWindowId);
-		~CFiltreEffectScrollWnd(void);
+		~CFiltreEffectScrollWnd(void) = default;
 
 		void ApplyEffect(const int& numItem, CInfoEffectWnd* historyEffectWnd, const wxString& filename,
 		                 const int& isVideo, int panelId, int previewId);
@@ -34,7 +35,7 @@ namespace Regards::Control
 		void OnUpdateFilter(wxCommandEvent& event);
 		void SetBitmapToViewer(CImageLoadingFormat* bitmap);
 		//CImageLoadingFormat * SetBitmapEffect(const int &effect, CEffectParameter * effectParameter, CRegardsBitmap * bitmap);
-		CImageLoadingFormat * bitmap;
+		std::unique_ptr<CImageLoadingFormat> bitmap;
 		std::unique_ptr<CEffectParameter> effectParameter;
 		std::unique_ptr<CFiltreEffect> filtreEffectOld;
 		int numFiltre;
