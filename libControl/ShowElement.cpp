@@ -161,6 +161,8 @@ CShowElement::CShowElement(wxWindow* parent,
     Connect(wxEVENT_ZOOMPOS,      wxCommandEventHandler(CShowElement::OnValueChange));
     Connect(wxEVENT_SHRINK,       wxCommandEventHandler(CShowElement::OnShrink));
     Connect(wxEVENT_CLOSE,        wxCommandEventHandler(CShowElement::OnClose));
+
+    tempImage = std::make_unique<CImageLoadingFormat>();
 }
 
 // ============================================================================
@@ -435,11 +437,9 @@ void CShowElement::TransitionEnd()
     transitionEnd = true;
     if (tempImage)
     {
-        SetBitmapToViewer(tempImage, wxEVENT_SETBITMAP);
+        SetBitmapToViewer(tempImage.release(), wxEVENT_SETBITMAP);
         if (pictureToolbar)
             pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
-
-        tempImage = nullptr;
     }
 }
 
@@ -475,14 +475,6 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
     slideToolbar->Show(false);
     videoSlider->Show(false);
     bitmapWindowRender->UpdateRenderInterface(bitmapWindow.get());
-
-    // On ne garde plus l'ancienne tempImage si ce n'est pas une miniature
-    if (!isThumbnail)
-    {
-        if(tempImage != nullptr)
-            delete tempImage;
-        tempImage = nullptr;
-    }
 
     SendPreviewButtonEvents(this,
         isThumbnail ? wxEVENT_HIDESAVEBUTTON   : wxEVENT_SHOWSAVEBUTTON,
@@ -546,19 +538,10 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
         }
         if (needReload)
         {
-            if (tempImage != nullptr)
-                delete tempImage;
-            tempImage = nullptr;
-
-            tempImage = new CImageLoadingFormat();
-            tempImage->SetPicture(bitmap->GetMatImage());
+            CImageLoadingFormat * picture = new CImageLoadingFormat();
+            picture->SetPicture(bitmap->GetMatImage());
+            tempImage.reset(picture);
         }
-    }
-    else
-    {
-        if (tempImage != nullptr)
-            delete tempImage;
-        tempImage = nullptr;
     }
 
     if (pictureToolbar)

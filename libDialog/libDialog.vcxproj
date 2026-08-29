@@ -856,7 +856,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Association.cpp" />
     <ClCompile Include="ChangeLabel.cpp" />
     <ClCompile Include="CompressionAudioVideoOption.cpp" />
     <ClCompile Include="CompressVideo.cpp" />
@@ -882,7 +881,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="Association.h" />
     <ClInclude Include="ChangeLabel.h" />
     <ClInclude Include="CompressionAudioVideoOption.h" />
     <ClInclude Include="CompressVideo.h" />

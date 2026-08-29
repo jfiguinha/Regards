@@ -5,23 +5,26 @@ class CRegardsFloatBitmap;
 class CJxl
 {
 public:
-	CJxl()
-	{
-	};
+    CJxl() = default;
+    virtual ~CJxl() = default;
 
-	virtual ~CJxl()
-	{
-	};
-	static void GetDimensions(const wxString& path, int& width, int& height);
-	static cv::Mat GetPicture(const wxString& path);
-	static void GetMetadata(const wxString& filename, uint8_t*& data, unsigned int& size);
-	static void WriteFile(const cv::Mat& matFloat, const wxString& path);
+    static void GetDimensions(const wxString& path, int& width, int& height);
+    static cv::Mat GetPicture(const wxString& path);
+    //static void GetMetadata(const wxString& filename, uint8_t*& data, unsigned int& size);
+    static void WriteFile(const cv::Mat& matFloat, const wxString& path);
 
 private:
-	static bool DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
-	                                cv::Mat& matFloat, size_t& xsize,
-	                                size_t& ysize, std::vector<uint8_t>* icc_profile);
-	static void* DecodeJpegDim(FILE* file);
+    static bool DecodeJpegXlOneShot(
+        const uint8_t* jxl,
+        size_t size,
+        cv::Mat& matFloat,
+        size_t& xsize,
+        size_t& ysize,
+        std::vector<uint8_t>* icc_profile);
 
-	static bool EncodeJxlOneshot(const cv::Mat& matFloat, std::vector<uint8_t>* compressed);
+    static void* DecodeJpegDim(FILE* file);
+
+    static bool EncodeJxlOneshot(
+        const cv::Mat& matFloat,
+        std::vector<uint8_t>* compressed);
 };

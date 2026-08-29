@@ -1,0 +1,5 @@
+#! /bin/sh
+cd ${SNAP}/opt/RegardsViewer
+export GTK_PATH=/usr/lib/x86_64-linux-gnu/gtk-3.0
+export FONTCONFIG_PATH=/etc/fonts
+./RegardsViewer "$@"

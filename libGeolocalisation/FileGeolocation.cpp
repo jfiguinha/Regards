@@ -14,6 +14,7 @@
 #include <appcontext.h>
 #include <ConvertUtility.h>
 #include <MediaInfo.h>
+#include <memory>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -51,6 +52,7 @@ CFileGeolocation::CFileGeolocation(const CFileGeolocation& filegeo)
 	isThumbnail = filegeo.isThumbnail;
 	//gpsInfos = filegeo.gpsInfos;
 	urlServer = filegeo.urlServer;
+	apiKey = filegeo.apiKey; // BUGFIX: apiKey n'était pas copié
 }
 
 wxString CFileGeolocation::GetUrlServer()
@@ -113,21 +115,27 @@ wxString CFileGeolocation::Geolocalize()
 	wxString geolocalisationString = "";
 	if (hasGps)
 	{
-		auto gps = new CGps(urlServer, apiKey);
+		// BUGFIX: unique_ptr pour être exception-safe (GeolocalisationGPS peut lever)
+		auto gps = std::make_unique<CGps>(urlServer, apiKey);
 		infoGpsLocalisation = L"";
-		//Execution de la requÍte de gÈolocalisation
-		if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
+		try
 		{
-			GeoPluginVector* geoPluginVector = gps->GetGpsList();
-
-			for (CGeoPluginValue geoValue : *geoPluginVector)
+			//Execution de la requête de géolocalisation
+			if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
 			{
-				geolocalisationString = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(),geoValue.GetCity());
-				break;
+				GeoPluginVector* geoPluginVector = gps->GetGpsList();
+
+				for (CGeoPluginValue geoValue : *geoPluginVector)
+				{
+					geolocalisationString = GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetCity());
+					break;
+				}
 			}
 		}
-
-		delete gps;
+		catch (...)
+		{
+			//printf("Geolocalize CGps Error \n");
+		}
 	}
 	return geolocalisationString;
 }
@@ -148,11 +156,11 @@ wxString CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto
 	CSqlCriteria sqlCriteria;
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	wxString value = "";
-	//printf("CFileGeolocation Geolocalisation \n");
 	//Execution de la requête de géolocalisation
 	if (hasGps)
 	{
-		auto gps = new CGps(urlServer, apiKey);
+		// BUGFIX: unique_ptr pour être exception-safe (idem)
+		auto gps = std::make_unique<CGps>(urlServer, apiKey);
 		try
 		{
 			if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
@@ -175,16 +183,13 @@ wxString CFileGeolocation::Geolocalisation(CListCriteriaPhoto* listCriteriaPhoto
 		{
 			//printf("GeolocalisationGPS CGps * Error \n");
 		}
-
-		delete gps;
 	}
-
 
 	return value;
 }
 
 wxString CFileGeolocation::GenerateGeolocalisationString(const wxString& countryCode, const wxString& region,
-                                                         const wxString& place)
+	const wxString& place)
 {
 	ImportCountry();
 	wxString value;
@@ -235,7 +240,7 @@ void CFileGeolocation::SetInfosGPS(const wxString& libelle)
 	}
 
 
-	
+
 
 }
 
@@ -276,45 +281,58 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 		}
 		{
 			std::vector<CMetadata>::iterator it = std::find_if(vectorMeta.begin(), vectorMeta.end(), [&](CMetadata val) -> bool {return val.key == "General.com.apple.quicktime.location.ISO6709"; });
-			if(it != vectorMeta.end())
+			if (it != vectorMeta.end())
 			{
 				wxString exifinfos = it->value;
-				hasGps = true;
-				wxString listValue[3];
-				wchar_t listRef[3];
-				int iStart = -1;
 
-				for (auto i = 0; i < exifinfos.size(); i++)
+				// BUGFIX: parsing sécurisé du format ISO6709.
+				// - iStart démarre à -1 : on ignore tout caractère avant le premier '+'/'-'
+				//   au lieu d'écrire en listValue[-1].
+				// - bornes vérifiées (max 3 composantes : latitude / longitude / altitude).
+				// - listRef initialisé à 0 pour éviter une lecture de mémoire non initialisée.
+				// - conversion via wxString::ToDouble() plutôt que atof(wxString) (fragile en Unicode/UTF-8).
+				// - hasGps n'est positionné à true qu'après un parsing valide (latitude ET longitude trouvées).
+				wxString listValue[3];
+				wchar_t listRef[3] = { 0, 0, 0 };
+				int iStart = -1;
+				bool parseError = false;
+
+				for (size_t i = 0; i < exifinfos.size(); i++)
 				{
-					char charValue = exifinfos.at(i);
-					if (charValue == '+')
+					wxUniChar charValue = exifinfos.at(i);
+					if (charValue == '+' || charValue == '-')
 					{
 						iStart++;
-						listRef[iStart] = '+';
+						if (iStart >= 3)
+						{
+							parseError = true;
+							break;
+						}
+						listRef[iStart] = (charValue == '-') ? L'-' : L'+';
 					}
-					else if (charValue == '-')
-					{
-						iStart++;
-						listRef[iStart] = '-';
-					}
-					else
+					else if (iStart >= 0)
 					{
 						listValue[iStart] += charValue;
 					}
+					// caractères avant le premier signe : ignorés (ne devrait pas arriver
+					// avec un ISO6709 valide, mais on évite ainsi l'accès hors bornes)
 				}
 
-				if (listRef[0] == '-')
-					flatitude = -atof(listValue[0]);
-				else
-					flatitude = atof(listValue[0]);
+				if (!parseError && iStart >= 1)
+				{
+					double latVal = 0.0;
+					double lonVal = 0.0;
+					listValue[0].ToDouble(&latVal);
+					listValue[1].ToDouble(&lonVal);
 
-				if (listRef[1] == '-')
-					flongitude = -atof(listValue[1]);
-				else
-					flongitude = atof(listValue[1]);
+					flatitude = (listRef[0] == L'-') ? -static_cast<float>(latVal) : static_cast<float>(latVal);
+					flongitude = (listRef[1] == L'-') ? -static_cast<float>(lonVal) : static_cast<float>(lonVal);
 
-				latitudeGps = to_string(flatitude);
-				longitudeGps = to_string(flongitude);
+					latitudeGps = to_string(flatitude);
+					longitudeGps = to_string(flongitude);
+
+					hasGps = true;
+				}
 			}
 			else
 			{
@@ -322,26 +340,35 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 				if (it != vectorMeta.end())
 				{
 					wxString exifinfos = it->value;
-					std::vector<wxString> gpsInfos = CConvertUtility::split(exifinfos, L' ');
+					std::vector<wxString> gpsInfos = CConvertUtility::split(exifinfos, ' ');
 					if (gpsInfos.size() >= 2)
 					{
+						const wxUniChar degreeSign(0x00B0); // '°' — portable Linux/Windows/macOS
 						wxString latitude = gpsInfos[0];
-						std::vector<wxString> gpsInfosLat = CConvertUtility::split(latitude, L'°');
-						if (gpsInfosLat[1] == 'S')
-							latitudeGps = "-" + gpsInfosLat[0];
-						else
-							latitudeGps = gpsInfosLat[0];
+						std::vector<wxString> gpsInfosLat = CConvertUtility::split(latitude, degreeSign);
+						if (gpsInfosLat.size() > 1)
+						{
+							if (gpsInfosLat[1] == 'S')
+								latitudeGps = "-" + gpsInfosLat[0];
+							else
+								latitudeGps = gpsInfosLat[0];
+						}
+
 
 						wxString longitude = gpsInfos[1];
-						std::vector<wxString> gpsInfosLong = CConvertUtility::split(longitude, L'°');
-						if (gpsInfosLong[1] == 'W')
-							longitudeGps = "-" + gpsInfosLong[0];
-						else
-							longitudeGps = gpsInfosLong[0];
+						std::vector<wxString> gpsInfosLong = CConvertUtility::split(longitude, degreeSign);
+						if (gpsInfosLong.size() > 1)
+						{
+							if (gpsInfosLong[1] == 'W')
+								longitudeGps = "-" + gpsInfosLong[0];
+							else
+								longitudeGps = gpsInfosLong[0];
+						}
+
 
 						hasGps = true;
 					}
-					
+
 
 				}
 			}

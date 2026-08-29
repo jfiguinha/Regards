@@ -455,7 +455,7 @@ void CTreeWindow::GenerateScreenBuffer()
 	}
 
 	//printf("CTreeWindow::OnPaint bufferUpdate \n");
-	if (backgroundBitmap.GetWidth() != width || backgroundBitmap.GetHeight() != height)
+	if (!backgroundBitmap.IsOk() || backgroundBitmap.GetWidth() != width || backgroundBitmap.GetHeight() != height)
 		backgroundBitmap.Create(width, height);
 
 	wxMemoryDC memDC(backgroundBitmap);

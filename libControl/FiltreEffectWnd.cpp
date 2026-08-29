@@ -30,14 +30,11 @@ CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, 
 	bitmap = nullptr;
 	effectParameter = nullptr;
 	filtreEffectOld = nullptr;
+	bitmap = std::make_unique<CImageLoadingFormat>();
 	Connect(wxEVENT_UPDATEFILTER, wxCommandEventHandler(CFiltreEffectScrollWnd::OnUpdateFilter));
 }
 
-CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
-{
-	if (bitmap != nullptr)
-		delete bitmap;
-};
+
 
 void CFiltreEffectScrollWnd::SetBitmapToViewer(CImageLoadingFormat* bitmap)
 {
@@ -56,21 +53,7 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 		bitmapViewer = static_cast<CBitmapWndViewer*>(bitmapWindow->GetWndPt());
 	}
 
-
-	/*
-	// Create a copy of the original bitmap to restore it in the viewer
-	CImageLoadingFormat * copybitmap = new CImageLoadingFormat();
-	cv::Mat mat = bitmap->GetMatrix().getMat();
-	copybitmap->SetPicture(mat);
-	copybitmap->SetOrientation(bitmap->GetOrientation());
-	copybitmap->SetFilename(bitmap->GetFilename());
-
-	SetBitmapToViewer(copybitmap);
-	*/
-
-
-	SetBitmapToViewer(bitmap);
-	bitmap = nullptr;
+	SetBitmapToViewer(bitmap.release());
 
 	if (bitmapViewer != nullptr && CFiltreData::NeedPreview(numFiltre))
 		bitmapViewer->RemoveListener();
@@ -141,6 +124,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	numFiltre = numItem;
 	if (!isVideo)
 	{
+		CFiltreEffect* filtreEffect = nullptr;
 		CBitmapWndViewer* bitmapViewer = nullptr;
 		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(FindWindowById(bitmapWindowId));
 		if (bitmapWindow != nullptr)
@@ -152,7 +136,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 		{
 			if (bitmapViewer != nullptr)
 			{
-				auto filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow, isVideo, bitmapWindowId);
+				//auto filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow, isVideo, bitmapWindowId);
 				int typeData = CFiltreData::TypeApplyFilter(numItem);
 
 				switch (typeData)
@@ -182,10 +166,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 						bitmapViewer->SetBitmapPreviewEffect(numItem);
 
-						if (bitmap != nullptr)
-							delete bitmap;
+						bitmap.reset(bitmapViewer->GetBitmap(true));
 
-						bitmap = bitmapViewer->GetBitmap(true);
+						if(filtreEffect == nullptr)
+							filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow, isVideo, bitmapWindowId);
 
 						filtreEffect->Init(effectParameter.get(), bitmap->GetMatrix().getMat(), filename, numItem);
 
@@ -230,11 +214,13 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	else
 	{
 		auto showVideo = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
-		auto filtreEffect = new CFiltreEffect(showVideo, treeWindow, isVideo, bitmapWindowId);
+		
 		switch (numItem)
 		{
 		case IDM_FILTRE_VIDEO:
 			{
+				auto filtreEffect = new CFiltreEffect(showVideo, treeWindow, isVideo, bitmapWindowId);
+
 				effectParameter.reset(showVideo->GetParameter());
 				showVideo->SetVideoPreviewEffect(effectParameter.get());
 				cv::Mat bitmap;
@@ -254,6 +240,8 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 		case IDM_FILTRE_AUDIOVIDEO:
 			{
+				auto filtreEffect = new CFiltreEffect(showVideo, treeWindow, isVideo, bitmapWindowId);
+
 				effectParameter.reset(showVideo->GetParameter());
 				showVideo->SetVideoPreviewEffect(effectParameter.get());
 				cv::Mat bitmap;

@@ -246,11 +246,12 @@ b3f7f1e5de736deb3a399a7fde8c1b18  opt/RegardsViewer/Resources/shader/opengl/new_
 5acce4be492dac79b8de6465c737ef98  opt/RegardsViewer/Resources/shader/opengl/new_shader/IDR_GLSL_SHADER_VIDEO.gl
 9aff499fdccf2a80a0bec5e5e2b51eee  opt/RegardsViewer/Resources/shader/opengl/new_shader/IDR_GLSL_INTERPOLATION.gl
 624be6b6a9d35efc5e31deea470bf879  opt/RegardsViewer/Resources/viewer.ico
-f2bc3569d0f9c7ee169e0fd6b5baaf7a  opt/RegardsViewer/RegardsViewer
+805f242d8b8cf4b34db5ef13cc29f364  opt/RegardsViewer/RegardsViewer
 a4bbdd9324c6d29fbc278fbaca07540f  opt/RegardsViewer/ffmpeg
 08154501deaec7ea36c35d1c2571e190  opt/RegardsViewer/libswscale.so.9
 5a38cd413ea90ac746252d1eef9d05c3  opt/RegardsViewer/libswresample.so.6
 4e7c74c8f1a7f07ee4db918778125ef1  opt/RegardsViewer/libavutil.so.60
+68b329da9893e34099c7d8ad5cb9c940  opt/RegardsViewer/.d
 12b558cbb95172a1fbef0f1c8f285fd9  opt/RegardsViewer/libavfilter.so.11
 6012af5c1f41f876459d828a59b114a8  opt/RegardsViewer/libavcodec.so.62
 3888d65d905a5f6b41d938f58f704dd9  opt/RegardsViewer/libtbbmalloc.so.2

@@ -69,7 +69,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="Association.cpp"/>
     <File Name="ConfigRegards.cpp"/>
     <File Name="ExportFile.cpp"/>
     <File Name="ChangeLabel.cpp"/>
@@ -80,7 +79,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="SavePicture.h"/>
-    <File Name="Association.h"/>
     <File Name="ConfigRegards.h"/>
     <File Name="ExportFile.h"/>
     <File Name="ChangeLabel.h"/>
