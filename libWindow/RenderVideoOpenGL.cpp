@@ -52,7 +52,7 @@ void CRenderVideoOpenGL::RenderShader(GLSLShader* shader, GLTexture* glTexture, 
 	srand(static_cast<unsigned>(time(nullptr)));
 	float timer = static_cast<float>(rand() % 1000 + 1);
 
-	shader->SetTexture("texUnit", glTexture->GetTextureID());
+	shader->SetTexture("texUnit", glTexture->GetTextureID(),0);
 	shader->SetParam("fWidth", static_cast<float>(glTexture->GetWidth()));
 	shader->SetParam("fHeight", static_cast<float>(glTexture->GetHeight()));
 	shader->SetParam("top", rect.top);
@@ -93,7 +93,7 @@ bool CRenderVideoOpenGL::RenderShaderInterpolation(const wxRect& rc, const bool&
 	if (!shader || !shader->IsOk()) return false;
 	if (!shader->EnableShader() || !shader->IsOk()) return false;
 
-	shader->SetTexture("ImageTexture", textureVideo->GetTextureID());
+	shader->SetTexture("ImageTexture", textureVideo->GetTextureID(),0);
 	shader->SetParam("widthTex", static_cast<float>(textureVideo->GetWidth()));
 	shader->SetParam("heightTex", static_cast<float>(textureVideo->GetHeight()));
 	shader->SetIntegerParam("widthIn", widthBuffer);

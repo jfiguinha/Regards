@@ -495,6 +495,8 @@ void wxCheckTree::On_Left_Up(wxMouseEvent& event)
 
 void wxCheckTree::On_Mouse_Motion(wxMouseEvent& event)
 {
+	SetCursor(wxCursor(wxCURSOR_HAND));
+
 	if (mouse_entered_tree_with_left_down)
 	{
 		//just ignore everything until the left button is released

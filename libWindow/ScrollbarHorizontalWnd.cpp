@@ -2,6 +2,7 @@
 #include "ScrollbarHorizontalWnd.h"
 #include <window_id.h>
 #include <wx/dcbuffer.h>
+#include <algorithm>
 using namespace Regards::Window;
 
 #define BARSIZEMIN 20
@@ -126,7 +127,7 @@ bool CScrollbarHorizontalWnd::SetPosition(const int& left)
 	if (left != currentXPos)
 	{
 		currentXPos = left;
-		MoveBar(currentXPos, themeScroll.colorBarActif);
+		MoveBar(currentXPos);
 	}
 	else
 		value = false;
@@ -166,26 +167,42 @@ bool CScrollbarHorizontalWnd::UpdateScrollBar(const int& posLargeur, const int& 
 	return needToShow;
 }
 
+// [CORRECTIF] Garde contre lineSize <= 0 : sans cela, une division par zéro (ou un
+// lineSize retombé à 0 après un rétrécissement extrême de la fenêtre) produit un
+// float infini/NaN dont la conversion en int est un comportement indéfini.
 void CScrollbarHorizontalWnd::CalculBarSize()
 {
-	if (showTriangle)
-		barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	else
-		barStartX = 0;
+	barStartX = showTriangle
+		            ? themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize()
+		            : 0;
 	barEndX = GetWindowWidth() - barStartX;
 
-	int diff = pictureWidth - screenWidth;
-	float nbPos = static_cast<float>(diff) / static_cast<float>(lineSize);
+	if (lineSize <= 0)
+		lineSize = 1;
+
+	const int diff = pictureWidth - screenWidth;
+	const float nbPos = static_cast<float>(diff) / static_cast<float>(lineSize);
 
 	barPosX = barStartX + currentXPos / lineSize;
-	barSize = (barEndX - barStartX) - nbPos;
+	barSize = static_cast<int>((barEndX - barStartX) - nbPos);
 
 	if (barSize < BARSIZEMIN)
 	{
 		barSize = BARSIZEMIN;
-		nbPos = (barEndX - barStartX) - barSize;
-		lineSize = static_cast<float>(diff) / nbPos;
-		pageSize = lineSize * 10;
+		const int freeSpace = (barEndX - barStartX) - barSize;
+
+		if (diff > 0 && freeSpace > 0)
+		{
+			lineSize = std::max(1, static_cast<int>(static_cast<float>(diff) / static_cast<float>(freeSpace)));
+			pageSize = lineSize * 10;
+		}
+		else
+		{
+			// [CORRECTIF] Repli sûr si freeSpace <= 0 (fenêtre trop étroite) :
+			// évite la division par zéro qui existait dans la version précédente.
+			lineSize = 1;
+			pageSize = 10;
+		}
 	}
 }
 
@@ -208,6 +225,7 @@ bool CScrollbarHorizontalWnd::DefineSize(const int& screenWidth, const int& pict
 		rcPosBar.width = barPosX + barSize;
 		rcPosBar.y = themeScroll.GetMarge();
 		rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
+		ClampBarRect();
 	}
 	return true;
 }
@@ -277,25 +295,15 @@ void CScrollbarHorizontalWnd::DrawRightTriangleElement(wxDC* dc, const wxRect& r
 	dc->SetBrush(wxNullBrush);
 }
 
+// [CORRECTIF] Cette fonction ne mute plus rcPosBar (état persistant) pendant le
+// rendu : le clamp est désormais garanti en amont par ClampBarRect(), appelée après
+// chaque recalcul de position (MoveBar, DefineSize, Resize). Un Draw ne doit que lire.
 void CScrollbarHorizontalWnd::DrawRectangleElement(wxDC* dc, const wxColour& colorBar)
 {
 	auto brush = wxBrush(colorBar);
 	dc->SetBrush(brush);
+
 	wxRect rc = rcPosBar;
-
-
-	if (rcPosBar.width > barEndX)
-	{
-		rcPosBar.x = barEndX - barSize;
-		rcPosBar.width = barEndX;
-	}
-
-	if (rcPosBar.x < barStartX)
-	{
-		rcPosBar.x = barStartX;
-		rcPosBar.width = barStartX + barSize;
-	}
-
 	rc.width = rcPosBar.width - rcPosBar.x;
 	rc.height = GetWindowHeight() - (themeScroll.GetMarge() * 2);
 	dc->DrawRoundedRectangle(rc, (GetWindowHeight() / 2) - themeScroll.GetMarge());
@@ -331,13 +339,15 @@ void CScrollbarHorizontalWnd::OnMouseHover(wxMouseEvent& event)
 
 void CScrollbarHorizontalWnd::Resize()
 {
-	if (showTriangle)
-		barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	else
-		barStartX = 0;
+	// [QUALITE] Mise en cache locale : évite des appels répétés à GetWindowWidth()
+	// dans la même fonction (WindowMain::GetWindowWidth() n'est pas garanti trivial).
+	const int windowWidth = GetWindowWidth();
 
-	barEndX = GetWindowWidth() - barStartX;
-	//int tailleY = height;
+	barStartX = showTriangle
+		            ? themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize()
+		            : 0;
+
+	barEndX = windowWidth - barStartX;
 
 	if (barPosX == 0)
 		barPosX = barStartX;
@@ -347,8 +357,8 @@ void CScrollbarHorizontalWnd::Resize()
 	rcPosTriangleLeft.y = themeScroll.GetMarge();
 	rcPosTriangleLeft.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
 
-	rcPosTriangleRight.x = (GetWindowWidth() - barStartX) + themeScroll.GetMarge();
-	rcPosTriangleRight.width = GetWindowWidth() - themeScroll.GetMarge();
+	rcPosTriangleRight.x = (windowWidth - barStartX) + themeScroll.GetMarge();
+	rcPosTriangleRight.width = windowWidth - themeScroll.GetMarge();
 	rcPosTriangleRight.y = themeScroll.GetMarge();
 	rcPosTriangleRight.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
 
@@ -362,6 +372,7 @@ void CScrollbarHorizontalWnd::Resize()
 		rcPosBar.width = barPosX + barSize;
 		rcPosBar.y = themeScroll.GetMarge();
 		rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
+		ClampBarRect();
 	}
 
 	needToRefresh = true;
@@ -400,7 +411,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 	TestMinX();
 	TestMaxX();
 
-	MoveBar(currentXPos, themeScroll.colorBarActif);
+	MoveBar(currentXPos);
 
 	if (currentXPos != lastSentScrollX)
 	{
@@ -465,8 +476,26 @@ bool CScrollbarHorizontalWnd::FindRectangleBar(const int& yPosition, const int& 
 	return false;
 }
 
+// [CORRECTIF] Nouvelle fonction : clamp de rcPosBar dans [barStartX, barEndX].
+// Auparavant dupliqué (et exécuté à des moments différents) dans MoveBar() ET
+// DrawRectangleElement(), avec le risque que le rendu affiche un état non clampé
+// si l'ordre d'appel changeait. Point unique de vérité.
+void CScrollbarHorizontalWnd::ClampBarRect()
+{
+	if (rcPosBar.width > barEndX)
+	{
+		rcPosBar.width = barEndX;
+		rcPosBar.x = barEndX - barSize;
+	}
 
-void CScrollbarHorizontalWnd::MoveBar(const int& currentPos, wxColour color)
+	if (rcPosBar.x < barStartX)
+	{
+		rcPosBar.x = barStartX;
+		rcPosBar.width = barStartX + barSize;
+	}
+}
+
+void CScrollbarHorizontalWnd::MoveBar(const int& currentPos)
 {
 	const int diff = pictureWidth - screenWidth;
 
@@ -490,23 +519,17 @@ void CScrollbarHorizontalWnd::MoveBar(const int& currentPos, wxColour color)
 	rcPosBar.x = barStartX + posX;
 	rcPosBar.width = rcPosBar.x + barSize;
 
-	if (rcPosBar.width > barEndX)
-	{
-		rcPosBar.width = barEndX;
-		rcPosBar.x = barEndX - barSize;
-	}
-
-	if (rcPosBar.x < barStartX)
-	{
-		rcPosBar.x = barStartX;
-		rcPosBar.width = barStartX + barSize;
-	}
+	ClampBarRect();
 
 	Refresh(false);
 }
 
 void CScrollbarHorizontalWnd::OnLButtonDown(wxMouseEvent& event)
 {
+	// [CORRECTIF] Garde défensive : ignore un clic si la barre n'est pas affichée.
+	if (!this->IsShown())
+		return;
+
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -633,7 +656,7 @@ void CScrollbarHorizontalWnd::ClickLeftTriangle()
 {
 	currentXPos -= lineSize;
 	TestMinX();
-	MoveBar(currentXPos, themeScroll.colorBar);
+	MoveBar(currentXPos);
 	SendLeftPosition(currentXPos);
 }
 
@@ -641,7 +664,7 @@ void CScrollbarHorizontalWnd::ClickRightTriangle()
 {
 	currentXPos += lineSize;
 	TestMaxX();
-	MoveBar(currentXPos, themeScroll.colorBar);
+	MoveBar(currentXPos);
 	SendLeftPosition(currentXPos);
 }
 
@@ -649,7 +672,7 @@ void CScrollbarHorizontalWnd::ClickLeftPage()
 {
 	currentXPos -= pageSize;
 	TestMinX();
-	MoveBar(currentXPos, themeScroll.colorBar);
+	MoveBar(currentXPos);
 	SendLeftPosition(currentXPos);
 }
 
@@ -657,7 +680,7 @@ void CScrollbarHorizontalWnd::ClickRightPage()
 {
 	currentXPos += pageSize;
 	TestMaxX();
-	MoveBar(currentXPos, themeScroll.colorBar);
+	MoveBar(currentXPos);
 	SendLeftPosition(currentXPos);
 }
 

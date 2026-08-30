@@ -801,7 +801,7 @@ void CVideoControlSoft::OnUpdateFiltreEffect(wxCommandEvent& event)
 		config->SetVideoEffectParameter(videoParameter);
 	}
 
-	delete videoParameter;
+
 }
 
 void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
@@ -810,7 +810,7 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 		return;
 
 	wxCommandEvent event(wxEVENT_UPDATEEFFECTFILTER);
-	event.SetClientData(new CEffectParameter(*effectParameter));
+	event.SetClientData(effectParameter);
 	wxQueueEvent(parentRender, event.Clone());
 }
 
@@ -835,7 +835,7 @@ void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
 
 CEffectParameter* CVideoControlSoft::GetParameter()
 {
-	return new CVideoEffectParameter(videoEffectParameter);
+	return &videoEffectParameter;
 }
 
 
@@ -1401,22 +1401,21 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		// Effets vidéo
 		// -------------------------------------------------------------
 
-		const bool hasAVFrame =
-			pictureFrame->dst != nullptr;
+		const bool hasAVFrame =	pictureFrame->dst != nullptr;
 
-		const bool applyEffects =
-			ApplyVideoEffect();
+		const bool applyEffects = ApplyVideoEffect();
 
+		/*
 		const bool useOpenCLEffect =
 			useOpenCL &&
 			openclEffectYUV &&
 			openclEffectYUV->IsOk();
-
+		*/
 		// -------------------------------------------------------------
 		// Conversion YUV / OpenCL
 		// -------------------------------------------------------------
 
-		if (useOpenCLEffect)
+		if (useOpenCL && openclEffectYUV)
 		{
 			if (hasAVFrame)
 			{
@@ -1496,7 +1495,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 				}
 			}
 
-			if (useOpenCLEffect)
+			if (useOpenCL && openclEffectYUV && openclEffectYUV->IsOk())
 				RenderToTexture();
 			else
 				RenderFFmpegToTexture();

@@ -16,9 +16,6 @@
     <Filter Include="header">
       <UniqueIdentifier>{e8bbb968-b276-407b-84ef-efbae7a0fc6c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Registry">
-      <UniqueIdentifier>{653de218-ae50-4e95-a2c8-1f7752e7e7fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Error">
       <UniqueIdentifier>{7cd8bed5-7040-40d5-94ba-8ec0c8c4f06c}</UniqueIdentifier>
     </Filter>
@@ -36,9 +33,6 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="RegistryAccess.h">
-      <Filter>Registry</Filter>
-    </ClInclude>
     <ClInclude Include="picture_utility.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -52,9 +46,6 @@
     </ClCompile>
     <ClCompile Include="FileUtility.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RegistryAccess.cpp">
-      <Filter>Registry</Filter>
     </ClCompile>
     <ClCompile Include="picture_utility.cpp">
       <Filter>Fichiers sources</Filter>

@@ -783,7 +783,6 @@
     <ClInclude Include="ConvertUtility.h" />
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="picture_utility.h" />
-    <ClInclude Include="RegistryAccess.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -815,7 +814,6 @@
     </ClCompile>
     <ClCompile Include="FileUtility.cpp" />
     <ClCompile Include="picture_utility.cpp" />
-    <ClCompile Include="RegistryAccess.cpp" />
     <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

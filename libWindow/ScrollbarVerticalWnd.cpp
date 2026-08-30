@@ -3,6 +3,7 @@
 
 #include <window_id.h>
 #include <wx/dcbuffer.h>
+#include <algorithm>
 using namespace Regards::Window;
 
 #define BARSIZEMIN 20
@@ -24,11 +25,6 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString& windowName, wxWindo
 {
 	scrollMoving = false;
 	showTriangle = true;
-	triangleTop = nullptr;
-	triangleBottom = nullptr;
-	pageTop = nullptr;
-	pageBottom = nullptr;
-	stopMoving = nullptr;
 	m_bTracking = false;
 	barSize = 40;
 	barPosY = 0;
@@ -86,12 +82,14 @@ int CScrollbarVerticalWnd::GetWidthSize()
 	return themeScroll.GetRectangleSize() + (themeScroll.GetMarge() * 2);
 }
 
+// [CORRECTIF] Garde contre lineSize <= 0 (division par zéro / UB au cast en int) —
+// même correctif que côté Horizontal. [CORRECTIF #barStartY] barStartY = 0 dans le cas
+// !showTriangle, déjà correct ici et désormais aligné avec Resize() (voir plus bas).
 void CScrollbarVerticalWnd::CalculBarSize()
 {
-	if (showTriangle)
-		barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	else
-		barStartY = 0; //themeScroll.GetRectangleSize();
+	barStartY = showTriangle
+		            ? themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize()
+		            : 0;
 
 	barEndY = GetWindowHeight() - barStartY;
 
@@ -100,8 +98,11 @@ void CScrollbarVerticalWnd::CalculBarSize()
 		barEndY -= heightSize;
 	}
 
-	int diff = pictureHeight - screenHeight;
-	float nbPos = static_cast<float>(diff) / static_cast<float>(lineSize);
+	if (lineSize <= 0)
+		lineSize = 1;
+
+	const int diff = pictureHeight - screenHeight;
+	const float nbPos = static_cast<float>(diff) / static_cast<float>(lineSize);
 
 	barPosY = barStartY + currentYPos / lineSize;
 	barSize = (barEndY - barStartY) - static_cast<int>(nbPos);
@@ -109,8 +110,18 @@ void CScrollbarVerticalWnd::CalculBarSize()
 	if (barSize < BARSIZEMIN)
 	{
 		barSize = BARSIZEMIN;
-		nbPos = static_cast<float>((barEndY - barStartY) - barSize);
-		lineSize = static_cast<int>(static_cast<float>(diff) / nbPos);
+		const int freeSpace = (barEndY - barStartY) - barSize;
+
+		if (diff > 0 && freeSpace > 0)
+		{
+			lineSize = std::max(1, static_cast<int>(static_cast<float>(diff) / static_cast<float>(freeSpace)));
+		}
+		else
+		{
+			// [CORRECTIF] Repli sûr si freeSpace <= 0 : évite la division par zéro
+			// qui existait dans la version précédente.
+			lineSize = 1;
+		}
 	}
 
 	pageSize = lineSize * 10;
@@ -137,6 +148,7 @@ bool CScrollbarVerticalWnd::DefineSize(const int& screenHeight, const int& pictu
 		rcPosBar.width = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 		rcPosBar.y = barPosY;
 		rcPosBar.height = barPosY + barSize;
+		ClampBarRect();
 	}
 	return true;
 }
@@ -197,7 +209,7 @@ bool CScrollbarVerticalWnd::SetPosition(const int& top)
 	if (top != currentYPos)
 	{
 		currentYPos = top;
-		MoveBar(currentYPos, themeScroll.colorBarActif);
+		MoveBar(currentYPos);
 	}
 	else
 		value = false;
@@ -301,23 +313,15 @@ void CScrollbarVerticalWnd::DrawBottomTriangleElement(wxDC* dc, const wxRect& rc
 	dc->DrawPolygon(WXSIZEOF(star), star, 0, 0);
 }
 
+// [CORRECTIF] Cette fonction ne mute plus rcPosBar (état persistant) pendant le
+// rendu : le clamp est désormais garanti en amont par ClampBarRect(), appelée après
+// chaque recalcul de position (MoveBar, DefineSize, Resize). Un Draw ne doit que lire.
 void CScrollbarVerticalWnd::DrawRectangleElement(wxDC* dc, const wxColour& colorBar)
 {
 	auto brush = wxBrush(colorBar);
 	dc->SetBrush(brush);
+
 	wxRect rc = rcPosBar;
-	if (rcPosBar.height > barEndY)
-	{
-		rcPosBar.y = barEndY - barSize;
-		rcPosBar.height = barEndY;
-	}
-
-	if (rcPosBar.y < barStartY)
-	{
-		rcPosBar.y = barStartY;
-		rcPosBar.height = barStartY + barSize;
-	}
-
 	rc.height = rcPosBar.height - rcPosBar.y;
 	rc.width = GetWindowWidth() - (themeScroll.GetMarge() * 2);
 	dc->DrawRoundedRectangle(rc, (GetWindowWidth() / 2) - themeScroll.GetMarge());
@@ -353,7 +357,7 @@ bool CScrollbarVerticalWnd::IsMoving()
 
 void CScrollbarVerticalWnd::OnMouseLeave(wxMouseEvent& event)
 {
-	m_bTracking = FALSE;
+	m_bTracking = false;
 
 	if (triangleTop->IsRunning())
 		triangleTop->Stop();
@@ -388,12 +392,19 @@ void CScrollbarVerticalWnd::OnMouseHover(wxMouseEvent& events)
 
 void CScrollbarVerticalWnd::Resize()
 {
-	if (showTriangle)
-		barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	else
-		barStartY = themeScroll.GetRectangleSize();
-	barEndY = GetWindowHeight() - barStartY;
-	int tailleY = GetWindowHeight();
+	// [QUALITE] Mise en cache locale : évite des appels répétés à GetWindowHeight().
+	const int windowHeight = GetWindowHeight();
+
+	// [CORRECTIF #barStartY] Bug corrigé : la version précédente utilisait
+	// themeScroll.GetRectangleSize() au lieu de 0 dans le cas !showTriangle, ce qui
+	// était incohérent avec CalculBarSize()/DefineSize() (qui utilisent bien 0) et
+	// provoquait un décalage de la barre selon la dernière fonction exécutée.
+	barStartY = showTriangle
+		            ? themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize()
+		            : 0;
+
+	barEndY = windowHeight - barStartY;
+	int tailleY = windowHeight;
 
 	if (showEmptyRectangle)
 	{
@@ -427,6 +438,7 @@ void CScrollbarVerticalWnd::Resize()
 		rcPosBar.width = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 		rcPosBar.y = barPosY;
 		rcPosBar.height = barPosY + barSize;
+		ClampBarRect();
 	}
 
 	needToRefresh = true;
@@ -461,7 +473,27 @@ bool CScrollbarVerticalWnd::FindRectangleBar(const int& yPosition, const int& xP
 	}
 	return false;
 }
-void CScrollbarVerticalWnd::MoveBar(const int currentPos, wxColour color)
+
+// [CORRECTIF] Nouvelle fonction : clamp de rcPosBar dans [barStartY, barEndY].
+// Auparavant dupliqué (et exécuté à des moments différents) dans MoveBar() ET
+// DrawRectangleElement(), avec le risque que le rendu affiche un état non clampé
+// si l'ordre d'appel changeait. Point unique de vérité.
+void CScrollbarVerticalWnd::ClampBarRect()
+{
+	if (rcPosBar.height > barEndY)
+	{
+		rcPosBar.height = barEndY;
+		rcPosBar.y = barEndY - barSize;
+	}
+
+	if (rcPosBar.y < barStartY)
+	{
+		rcPosBar.y = barStartY;
+		rcPosBar.height = barStartY + barSize;
+	}
+}
+
+void CScrollbarVerticalWnd::MoveBar(const int currentPos)
 {
 	const int diff = pictureHeight - screenHeight;
 
@@ -484,17 +516,7 @@ void CScrollbarVerticalWnd::MoveBar(const int currentPos, wxColour color)
 	rcPosBar.y = barStartY + posY;
 	rcPosBar.height = rcPosBar.y + barSize;
 
-	if (rcPosBar.height > barEndY)
-	{
-		rcPosBar.height = barEndY;
-		rcPosBar.y = barEndY - barSize;
-	}
-
-	if (rcPosBar.y < barStartY)
-	{
-		rcPosBar.y = barStartY;
-		rcPosBar.height = barStartY + barSize;
-	}
+	ClampBarRect();
 
 	Refresh(false);
 }
@@ -531,7 +553,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 	TestMinY();
 	TestMaxY();
 
-	MoveBar(currentYPos, themeScroll.colorBarActif);
+	MoveBar(currentYPos);
 
 	// Un seul événement uniquement lorsque la position a réellement changé.
 	if (currentYPos != lastSentScrollY)
@@ -590,7 +612,7 @@ void CScrollbarVerticalWnd::ClickTopTriangle()
 {
 	currentYPos -= lineSize;
 	TestMinY();
-	MoveBar(currentYPos, themeScroll.colorBar);
+	MoveBar(currentYPos);
 	SendTopPosition(currentYPos);
 }
 
@@ -598,7 +620,7 @@ void CScrollbarVerticalWnd::ClickBottomTriangle()
 {
 	currentYPos += lineSize;
 	TestMaxY();
-	MoveBar(currentYPos, themeScroll.colorBar);
+	MoveBar(currentYPos);
 	SendTopPosition(currentYPos);
 }
 
@@ -606,7 +628,7 @@ void CScrollbarVerticalWnd::ClickTopPage()
 {
 	currentYPos -= pageSize;
 	TestMinY();
-	MoveBar(currentYPos, themeScroll.colorBar);
+	MoveBar(currentYPos);
 	SendTopPosition(currentYPos);
 }
 
@@ -614,12 +636,16 @@ void CScrollbarVerticalWnd::ClickBottomPage()
 {
 	currentYPos += pageSize;
 	TestMaxY();
-	MoveBar(currentYPos, themeScroll.colorBar);
+	MoveBar(currentYPos);
 	SendTopPosition(currentYPos);
 }
 
 void CScrollbarVerticalWnd::OnLButtonDown(wxMouseEvent& event)
 {
+	// [CORRECTIF] Garde défensive : ignore un clic si la barre n'est pas affichée.
+	if (!this->IsShown())
+		return;
+
 	const int xPos = event.GetX();
 	const int yPos = event.GetY();
 

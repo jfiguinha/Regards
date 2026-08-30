@@ -71,7 +71,17 @@ namespace Regards::Window
 		void DrawLeftTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
 		void DrawRightTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
 		void DrawRectangleElement(wxDC* dc, const wxColour& colorBar);
-		void MoveBar(const int& diffX, wxColour color);
+
+		// [CORRECTIF] MoveBar ne prend plus de wxColour : le paramètre n'était jamais
+		// utilisé dans le corps de la fonction (code mort/trompeur). La couleur du
+		// bandeau est déterminée exclusivement dans DrawElement() via captureBar.
+		void MoveBar(const int& diffX);
+
+		// [CORRECTIF] Nouvelle fonction : centralise le clamp de rcPosBar dans
+		// [barStartX, barEndX], auparavant dupliqué dans MoveBar() ET DrawRectangleElement().
+		// DrawRectangleElement() ne mute plus l'état pendant le rendu.
+		void ClampBarRect();
+
 		void SetIsMoving();
 		void CalculBarSize();
 

@@ -36,9 +36,8 @@ bool GLSLShader::check_shader_compile_status(GLuint obj)
 		glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &length);
 		// The maxLength includes the NULL character
 		std::vector<GLchar> errorLog(length);
-		glGetShaderInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
-		std::string s(begin(errorLog), end(errorLog));
-		cout << s.c_str() << endl;
+		glGetShaderInfoLog(m_hShaderHandle, length, &length,  errorLog.data());
+		std::cout << errorLog.data() << std::endl;
 		return false;
 	}
 	//printf("check_shader_compile_status is OK \n");
@@ -57,9 +56,8 @@ bool GLSLShader::check_program_link_status(GLuint obj)
 		glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &length);
 		// The maxLength includes the NULL character
 		std::vector<GLchar> errorLog(length);
-		glGetProgramInfoLog(m_hShaderHandle, length, &length, &errorLog[0]);
-		std::string s(begin(errorLog), end(errorLog));
-		cout << s.c_str() << endl;
+		glGetProgramInfoLog(m_hShaderHandle, length, &length, errorLog.data());
+        std::cout << errorLog.data() << std::endl;
 		return false;
 	}
 	return true;
@@ -126,7 +124,7 @@ bool GLSLShader::CreateComputeProgram(const wxString& nProgramID_i)
 
 	glCompileShader(m_hComputeHandle);
 
-	if (!check_program_link_status(m_hComputeHandle))
+	if (!check_shader_compile_status(m_hComputeHandle))
 		return false;
 	
 
@@ -213,22 +211,33 @@ bool GLSLShader::DisableShader()
 	return true;
 }
 
-
-bool GLSLShader::SetTexture(const char* pParamName_i, const int nTextureID_i)
+bool GLSLShader::SetTexture(
+    const char* name,
+    GLuint textureID,
+    GLuint textureUnit)
 {
-	GLint nParamObj = glGetUniformLocation(m_hProgramObject, pParamName_i);
-	if (-1 == nParamObj)
-	{
-		return false;
-	}
+    if (m_hProgramObject == 0)
+        return false;
 
-	glActiveTexture(GL_TEXTURE0 + nTextureID_i);
-	glBindTexture(GL_TEXTURE_2D, nTextureID_i);
-	glUniform1i(nParamObj, nTextureID_i);
-	GLenum glErr = glGetError();
-    if(glErr != GL_NO_ERROR)
-        printf("SetTexture glError %s \n", gluErrorString(glErr));
-	return (GL_NO_ERROR == glErr);
+    const GLint location =
+        glGetUniformLocation(
+            m_hProgramObject,
+            name);
+
+    if (location < 0)
+        return false;
+
+    glActiveTexture(GL_TEXTURE0 + textureUnit);
+
+    glBindTexture(
+        GL_TEXTURE_2D,
+        textureID);
+
+    glUniform1i(
+        location,
+        static_cast<GLint>(textureUnit));
+
+    return glGetError() == GL_NO_ERROR;
 }
 
 bool GLSLShader::SetParam(const char* pParamName_i, const float fValue_i)
@@ -299,17 +308,27 @@ bool GLSLShader::SetVec3Param(const char* pParamName_i, vec3f iValue_i)
 	return (GL_NO_ERROR == glGetError());
 }
 
-bool GLSLShader::SetMatrixParam(const char* pParamName_i, float* tabVecs)
+bool GLSLShader::SetMatrixParam(const char* pParamName_i, const float* tabVecs)
 {
-	GLint nParamObj = glGetUniformLocation(m_hProgramObject, pParamName_i);
-	if (-1 == nParamObj)
-	{
-		return false;
-	}
+    if (m_hProgramObject == 0 ||
+        tabVecs == nullptr)
+        return false;
 
-	// send our projection matrix to the shader
-	if (tabVecs != nullptr)
-		glUniformMatrix4fv(nParamObj, 1, GL_FALSE, tabVecs);
+    const GLint location =
+        glGetUniformLocation(
+            m_hProgramObject,
+            pParamName_i);
 
-	return (GL_NO_ERROR == glGetError());
+    if (location < 0)
+        return false;
+
+    glUniformMatrix4fv(
+        location,
+        1,
+        GL_FALSE,
+        tabVecs);
+
+    return glGetError() == GL_NO_ERROR;
 }
+
+

@@ -36,7 +36,7 @@ namespace Regards::Control
 		void SetBitmapToViewer(CImageLoadingFormat* bitmap);
 		//CImageLoadingFormat * SetBitmapEffect(const int &effect, CEffectParameter * effectParameter, CRegardsBitmap * bitmap);
 		std::unique_ptr<CImageLoadingFormat> bitmap;
-		std::unique_ptr<CEffectParameter> effectParameter;
+		CEffectParameter * effectParameter;
 		std::unique_ptr<CFiltreEffect> filtreEffectOld;
 		int numFiltre;
 		int bitmapWindowId;

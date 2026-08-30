@@ -80,7 +80,7 @@ namespace Regards::Window
 		int xMinPos;
 		int widthPosition;
 
-		CEffectParameter* effectParameter;
+		CEffectParameter* effectParameter = nullptr;
 		std::unique_ptr<CFilterWindowParam> filterEffect;
 
 		cv::Mat source;

@@ -37,11 +37,11 @@ void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const flo
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("sourceTex", pictureFirst->GetTextureID()))
+		if (!m_pShader->SetTexture("sourceTex", pictureFirst->GetTextureID(),0))
 		{
 			printf("SetTexture sourceTex failed \n ");
 		}
-		if (!m_pShader->SetTexture("targetTex", pictureNext->GetTextureID()))
+		if (!m_pShader->SetTexture("targetTex", pictureNext->GetTextureID(),1))
 		{
 			printf("SetTexture sourceTex failed \n ");
 		}

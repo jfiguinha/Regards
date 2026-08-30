@@ -161,7 +161,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 				case 2:
 					{
-						effectParameter.reset(CFiltreData::GetEffectParameter(numItem));
+						effectParameter = CFiltreData::GetEffectParameter(numItem);
 
 
 						bitmapViewer->SetBitmapPreviewEffect(numItem);
@@ -171,7 +171,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						if(filtreEffect == nullptr)
 							filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow, isVideo, bitmapWindowId);
 
-						filtreEffect->Init(effectParameter.get(), bitmap->GetMatrix().getMat(), filename, numItem);
+						filtreEffect->Init(effectParameter, bitmap->GetMatrix().getMat(), filename, numItem);
 
 						if (previewWindow != nullptr)
 						{
@@ -201,7 +201,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 				default:
 					{
 						CImageLoadingFormat* imageLoad = CFilterWindowParam::RenderEffect(
-							effectParameter.get(), bitmapViewer, numItem);
+							effectParameter, bitmapViewer, numItem);
 						historyEffectWnd->AddModification(imageLoad, CFiltreData::GetFilterLabel(numItem));
 						if (imageLoad != nullptr)
 							SetBitmapToViewer(imageLoad);
@@ -221,10 +221,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 			{
 				auto filtreEffect = new CFiltreEffect(showVideo, treeWindow, isVideo, bitmapWindowId);
 
-				effectParameter.reset(showVideo->GetParameter());
-				showVideo->SetVideoPreviewEffect(effectParameter.get());
+				effectParameter = showVideo->GetParameter();
+				showVideo->SetVideoPreviewEffect(effectParameter);
 				cv::Mat bitmap;
-				filtreEffect->Init(effectParameter.get(), bitmap, filename, numItem);
+				filtreEffect->Init(effectParameter, bitmap, filename, numItem);
 
 				if (panelInfos != nullptr)
 				{
@@ -242,10 +242,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 			{
 				auto filtreEffect = new CFiltreEffect(showVideo, treeWindow, isVideo, bitmapWindowId);
 
-				effectParameter.reset(showVideo->GetParameter());
-				showVideo->SetVideoPreviewEffect(effectParameter.get());
+				effectParameter = showVideo->GetParameter();
+				showVideo->SetVideoPreviewEffect(effectParameter);
 				cv::Mat bitmap;
-				filtreEffect->Init(effectParameter.get(), bitmap, filename, numItem);
+				filtreEffect->Init(effectParameter, bitmap, filename, numItem);
 
 				if (panelInfos != nullptr)
 				{

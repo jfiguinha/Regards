@@ -21,15 +21,14 @@ namespace Regards
             bool IsOk();
 			// This function attach a texture to shader parameter.
 			// pParamName_i is parameter name given in shader.
-			bool SetTexture(const char* pParamName_i, int nTextureID_i);
+			bool SetTexture(const char* name, GLuint textureID, GLuint textureUnit);
 			// This function passes a float value to Shader float parameter.
 			bool SetParam(const char* pParamName_i, float fValue_i);
 			bool SetFloatVectorParam(const char* pParamName_i, int size, float* tabVecs);
 			bool SetIntVectorParam(const char* pParamName_i, int size, int* tabVecs);
 			bool SetIntegerParam(const char* pParamName_i, int iValue_i);
             bool SetVec3Param(const char* pParamName_i, vec3f iValue_i);
-			bool SetMatrixParam(const char* pParamName_i, float* tabVecs);
-
+            bool SetMatrixParam(const char* pParamName_i, const float* tabVecs);
 			GLuint GetProgramId()
 			{
 				return m_hProgramObject;

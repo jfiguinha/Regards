@@ -828,7 +828,7 @@ void CRenderOpenGL::RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture,
 {
 	if (m_pShader != nullptr)
 	{
-		if (!m_pShader->SetTexture("text", glTexture->GetTextureID()))
+		if (!m_pShader->SetTexture("text", glTexture->GetTextureID(),0))
 		{
 			printf("SetTexture textureScreen failed \n ");
 		}

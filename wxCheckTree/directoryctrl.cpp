@@ -379,8 +379,6 @@ bool wxGenericDirCtrl::Create(wxWindow* parent,
     Connect(wxEVT_SIZE, wxSizeEventHandler( wxGenericDirCtrl::OnSize));
 #endif
 
-	Connect(wxEVT_MOTION, wxMouseEventHandler(wxGenericDirCtrl::OnMouseMove));
-	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(wxGenericDirCtrl::OnMouseEnter));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(wxGenericDirCtrl::OnEraseBackground));
 
 	// treeStyle |= wxTR_HIDE_ROOT;
@@ -457,19 +455,9 @@ void wxGenericDirCtrl::OnEraseBackground(wxEraseEvent& event)
 {
 }
 
-void wxGenericDirCtrl::OnMouseMove(wxMouseEvent& event)
-{
-	wxSetCursor(*wxSTANDARD_CURSOR);
-}
 
 wxGenericDirCtrl::~ wxGenericDirCtrl()
 {
-}
-
-void wxGenericDirCtrl::OnMouseEnter(wxMouseEvent& event)
-{
-	wxSetCursor(*wxSTANDARD_CURSOR);
-	//wxSetCursor(wxCursor(wxCURSOR_HAND));
 }
 
 void wxGenericDirCtrl::Init()

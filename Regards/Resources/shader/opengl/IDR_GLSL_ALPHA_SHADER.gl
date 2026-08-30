@@ -1,3 +1,7 @@
+//
+//To Optimize : https://zz85.github.io/glsl-optimizer/
+//
+
 uniform sampler2D textureScreen;
 uniform float intensity;
 void main(void)

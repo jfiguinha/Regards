@@ -78,7 +78,7 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int
 	if (shader)
 	{
 		shader->EnableShader();
-		shader->SetTexture("textureScreen", glTexture->GetTextureID());
+		shader->SetTexture("textureScreen", glTexture->GetTextureID(),0);
 		shader->SetParam("intensity", alpha);
 	}
 
@@ -158,7 +158,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition
 	if (shader)
 	{
 		shader->EnableShader();
-		shader->SetTexture("textureScreen", textureTransition->GetTextureID());
+		shader->SetTexture("textureScreen", textureTransition->GetTextureID(),0);
 		shader->SetParam("intensity", alpha);
 	}
 

@@ -195,6 +195,8 @@ namespace Regards
 				this->nTextureID_i = value;
 			};
 
+			void Add(GLint progHandle, GLint textureUnit);
+
 			void Add(GLint progHandle) override;
 
 		protected:

@@ -36,6 +36,7 @@ public:
 	void   DeleteTextureInterop();
 
 	cl_mem clImage = nullptr;
+	bool isAcquired = false;
 	bool   isOpenCLCompatible = true;
 	bool   isBGRATexture = false;
 	Regards::OpenCL::COpenCLContext* openCLContext = nullptr;
@@ -48,8 +49,6 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 		return CL_SUCCESS;
 
 	cl_context       context = openCLContext->GetContext();
-	cl_command_queue q = openCLContext->GetCommandQueue();
-
 	cl_int status = 0;
 	clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D,
 		0, glTexture->GetTextureID(), &status);
@@ -60,17 +59,8 @@ cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 		return status;
 	}
 
-	status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
-	if (status != CL_SUCCESS)
-	{
-		DeleteTextureInterop();
-		isOpenCLCompatible = false;
-	}
-	else
-	{
-		isOpenCLCompatible = true;
-	}
-	return status;
+	isOpenCLCompatible = true;
+	return CL_SUCCESS;
 }
 
 
@@ -82,34 +72,12 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 
 	if (isOpenCLCompatible)
 	{
-        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-        wxString color = regardsParam->GetOpenGLOutputColor();
-
-#ifndef __APPLE__
-		try
-		{
-			GLint type;
-			glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_TYPE, 1, &type);
-			if (type == GL_UNSIGNED_INT_8_8_8_8_REV)
-				color = "BGRA";
-			else
-				color = "RGBA";
-        }
-        catch(...)
-        {
-			//printf("glGetInternalformativ is not available \n"); 
-            color = "RGBA"; 
-        }
-#else
-            color = "RGBA";      
-#endif 
-    
         try
         {
 			cv::UMat bitmapMatrix;
 			if (u.channels() == 3)
 			{
-				cvtColor(u, bitmapMatrix, color == "BGRA" ? cv::COLOR_BGR2BGRA : cv::COLOR_BGR2RGBA);
+				cvtColor(u, bitmapMatrix, cv::COLOR_BGR2RGBA);
 			}
 			else if (u.channels() == 1)
 			{
@@ -117,41 +85,52 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			}
 			else
 			{
-				if (color == "BGRA" && !isBGRATexture)
-				{
-					cvtColor(u, bitmapMatrix, cv::COLOR_BGRA2RGBA);
-				}
-                else
-                    bitmapMatrix = u;
+				cvtColor(u, bitmapMatrix, cv::COLOR_BGRA2RGBA);
 			}
+
+			if (!bitmapMatrix.isContinuous())
+				bitmapMatrix = bitmapMatrix.clone();
             
-			cl_context       context = openCLContext->GetContext();
 			cl_command_queue q = openCLContext->GetCommandQueue();
             
-			cv::Size srcSize = u.size();
 			status = CreateTextureInterop(glTexture);
 
 			if (status != CL_SUCCESS)
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
+			status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
+			if (status != CL_SUCCESS)
+				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+			isAcquired = true;
+
 			auto clBuffer = static_cast<cl_mem>(bitmapMatrix.handle(cv::ACCESS_READ));
-			size_t offset = 0; // TODO
+			size_t offset = 0;
 			size_t dst_origin[3] = {0, 0, 0};
 			size_t region[3] = {static_cast<size_t>(bitmapMatrix.cols), static_cast<size_t>(bitmapMatrix.rows), 1};
 			status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, nullptr, nullptr);
 
-			if (status == CL_SUCCESS)
-			{
-				status = clFinish(q); // TODO Use events
-			}
-			else
-			{
+			if (status != CL_SUCCESS)
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-				isOk = false;
-			}
+
+			status = clFinish(q);
+			if (status != CL_SUCCESS)
+				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish after copy failed");
+
+			status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
+			if (status != CL_SUCCESS)
+				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+			// Mark as released as soon as the release command has been successfully enqueued,
+			// to avoid double-release if clFinish later fails.
+			isAcquired = false;
+
+			status = clFinish(q);
+			if (status != CL_SUCCESS)
+				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish after release failed");
 		}
 		catch (cv::Exception& e)
 		{
+			if (isAcquired)
+				DeleteTextureInterop();
 			const char* err_msg = e.what();
 			std::cout << "exception caught: " << err_msg << std::endl;
 			std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
@@ -172,11 +151,20 @@ void CTextureGLPriv::DeleteTextureInterop()
 
 	cl_command_queue q = openCLContext->GetCommandQueue();
 
-	cl_int status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
-	if (status != CL_SUCCESS)
-		std::cerr << "OpenCL: clEnqueueReleaseGLObjects failed (" << status << ")\n";
-
-	clFinish(q);
+	cl_int status = CL_SUCCESS;
+	if (isAcquired)
+	{
+		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, nullptr, nullptr);
+		if (status != CL_SUCCESS)
+			std::cerr << "OpenCL: clEnqueueReleaseGLObjects failed (" << status << ")\n";
+		else
+		{
+			status = clFinish(q);
+			if (status != CL_SUCCESS)
+				std::cerr << "OpenCL: clFinish after release failed (" << status << ")\n";
+		}
+		isAcquired = false;
+	}
 
 	status = clReleaseMemObject(clImage);
 	if (status != CL_SUCCESS)
@@ -226,7 +214,7 @@ int GLTexture::GetHeight()
 
 void GLTexture::DeleteInteropTexture()
 {
-	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && application_context.openclOpenGLInterop)
+	if (pimpl_ != nullptr)
 	{
 		pimpl_->DeleteTextureInterop();
 	}
@@ -249,6 +237,12 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap, Regards::OpenCL
 
 	if(kind == cv::_InputArray::KindFlag::UMAT && application_context.openclOpenGLInterop && openCLContext != nullptr)
 	{
+		if (pimpl_ != nullptr && pimpl_->openCLContext != openCLContext)
+		{
+			pimpl_->DeleteTextureInterop();
+			pimpl_.reset();
+		}
+
 		if (pimpl_ == nullptr && application_context.openclOpenGLInterop)
 			pimpl_ = std::make_unique<CTextureGLPriv>(openCLContext);
 
@@ -287,7 +281,7 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap, Regards::OpenCL
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				glTexImage2D(GL_TEXTURE_2D, 0, dataformat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
             
@@ -407,9 +401,9 @@ void GLTexture::checkErrors(std::string desc)
 	GLenum e = glGetError();
 	if (e != GL_NO_ERROR)
 	{
-		char message[512];
-		sprintf(message, "OpenGL error in \"%s\": %p (%d)\n", desc.c_str(), gluErrorString(e), e);
-		string data = message;
+		std::cerr << "OpenGL error in \"" << desc << "\": "
+			<< reinterpret_cast<const char*>(gluErrorString(e))
+			<< " (" << e << ")\n";
 	}
 }
 
@@ -422,11 +416,13 @@ void GLTexture::Delete()
 	{
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 
-		if (pimpl_ && application_context.openclOpenGLInterop)
+		if (pimpl_)
 			pimpl_->DeleteTextureInterop();
 
 		glDeleteTextures(1, &m_nTextureID);
 		m_nTextureID = static_cast<GLuint>(-1);
+		width = 0;
+		height = 0;
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		checkErrors("GLTexture::Delete() glDeleteTextures");

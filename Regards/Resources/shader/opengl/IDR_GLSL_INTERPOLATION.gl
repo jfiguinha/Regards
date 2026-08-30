@@ -1,3 +1,7 @@
+//
+//To Optimize : https://zz85.github.io/glsl-optimizer/
+//
+
 uniform sampler2D ImageTexture;
 uniform float widthTex;
 uniform float heightTex;

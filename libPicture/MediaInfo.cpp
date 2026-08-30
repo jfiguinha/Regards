@@ -41,10 +41,12 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
+#include <mutex>
+#include <utility>
 #include <algorithm>
 #include <cctype>
 #include <locale>
-#include <regex>
 #include <ConvertUtility.h>
 using namespace std;
 using namespace MediaInfoNameSpace;
@@ -118,10 +120,15 @@ public:
             {
                 position = data.find(L"\n");
                 if (position == std::wstring::npos)
-                    break;
-
-                lineLen = position;
-                advance = position + 1; // saute "\n"
+                {
+                    lineLen = data.size();
+                    advance = data.size();
+                }
+                else
+                {
+                    lineLen = position;
+                    advance = position + 1; // saute "\n"
+                }
             }
 
             wstring line = data.substr(0, lineLen);
@@ -144,6 +151,9 @@ public:
                 }
             }
 
+            if (advance >= data.size())
+                break;
+
             data = data.substr(advance);
 
         } while (true);
@@ -153,7 +163,7 @@ public:
 
     void OpenFile(const wxString& fileName)
     {
-        isOk = true;
+        isOk = false;
         try
         {
             if (wxFile::Exists(fileName))
@@ -161,15 +171,22 @@ public:
                 size_t taille = MI.Open(CConvertUtility::ConvertToStdWstring(fileName));
                 if (taille == 0)
                 {
+                    MI.Close();
+
                     //From: preparing an example file for reading
                     wxFile file(fileName);
+                    if (!file.IsOpened())
+                        return;
 
                     //From: preparing a memory buffer for reading
                     uchar From_Buffer[4096]; //Note: you can do your own buffer
-                    size_t From_Buffer_Size; //The size of the read file buffer
 
                     int64 F_Size = file.Length();
+                    if (F_Size < 0)
+                        return;
+
                     int64 posSeek = 0;
+                    bool readError = false;
                     //Preparing to fill MediaInfo with a buffer
                     MI.Open_Buffer_Init(F_Size, 0);
 
@@ -177,26 +194,52 @@ public:
                     do
                     {
                         //Reading data somewhere, do what you want for this.
-                        From_Buffer_Size = file.Read(From_Buffer, 4096);
+                        auto bytesRead = file.Read(From_Buffer, 4096);
+                        if (bytesRead < 0)
+                        {
+                            readError = true;
+                            break;
+                        }
 
                         //Sending the buffer to MediaInfo
-                        size_t Status = MI.Open_Buffer_Continue(From_Buffer, From_Buffer_Size);
+                        size_t Status = MI.Open_Buffer_Continue(From_Buffer, static_cast<size_t>(bytesRead));
                         if (Status & 0x08) //Bit3=Finished
                             break;
 
                         //Testing if there is a MediaInfo request to go elsewhere
-                        if (MI.Open_Buffer_Continue_GoTo_Get() != -1)
+                        const int64 goTo = MI.Open_Buffer_Continue_GoTo_Get();
+                        if (goTo != -1)
                         {
-                            posSeek = MI.Open_Buffer_Continue_GoTo_Get();
-                            file.Seek(posSeek);   //Position the file
-                            MI.Open_Buffer_Init(F_Size, file.Tell()); //Informing MediaInfo we have seek
+                            posSeek = goTo;
+                            if (file.Seek(posSeek) < 0)   //Position the file
+                            {
+                                readError = true;
+                                break;
+                            }
+
+                            const int64 currentPosition = file.Tell();
+                            if (currentPosition < 0)
+                            {
+                                readError = true;
+                                break;
+                            }
+
+                            MI.Open_Buffer_Init(F_Size, currentPosition); //Informing MediaInfo we have seek
                         }
-                    } while (From_Buffer_Size > 0);
+
+                        if (bytesRead == 0)
+                            break;
+                    } while (true);
 
                     //Finalizing
-                    MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
+                    const size_t finalizeStatus = MI.Open_Buffer_Finalize(); //This is the end of the stream, MediaInfo must finnish some work
+                    isOk = !readError && finalizeStatus != 0;
 
                     file.Close();
+                }
+                else
+                {
+                    isOk = true;
                 }
             }
         }

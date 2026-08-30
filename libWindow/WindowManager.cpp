@@ -58,13 +58,26 @@ void CWindowManager::OnRefreshData(wxCommandEvent& event)
 
 void CWindowManager::ChangeWindow(CWindowMain* window, Pos position, bool isPanel)
 {
+	if (window == nullptr)
+		return;
 
+	CWindowToAdd* windowToAdd = FindWindow(position);
+	if (windowToAdd == nullptr)
+		return;
 
-	CWindowToAdd* windowToadd = FindWindow(position);
-	if (windowToadd != nullptr)
+	window->Reparent(this);
+	windowToAdd->SetWindow(window, isPanel);
+	windowToAdd->isPanel = isPanel;
+
+	// Appliquer immédiatement la géométrie de l'emplacement.
+	if (!windowToAdd->isHide)
 	{
-		window->Reparent(this);
-		windowToadd->SetWindow(window, isPanel);
+		window->SetSize(windowToAdd->rect);
+		window->Show(true);
+	}
+	else
+	{
+		window->Show(false);
 	}
 }
 
@@ -950,23 +963,25 @@ void CWindowManager::Init()
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
 	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
 
-	if (left != nullptr)
-		if (left->isTop)
+	// LEFT / RIGHT occupant toute la hauteur.
+	if (left != nullptr && left->isTop && !left->isHide)
 			Init_left();
-	if (right != nullptr)
-		if (right->isTop)
-			Init_right();
 
+	if (right != nullptr && right->isTop && !right->isHide)
+		Init_right();
+
+	// TOP / BOTTOM.
 	Init_top();
 	Init_bottom();
 
-	if (left != nullptr)
-		if (!left->isTop)
-			Init_left();
-	if (right != nullptr)
-		if (!right->isTop)
-			Init_right();
+	// LEFT / RIGHT occupant uniquement l'espace restant.
+	if (left != nullptr && !left->isTop && !left->isHide)
+		Init_left();
 
+	if (right != nullptr && !right->isTop && !right->isHide)
+		Init_right();
+
+	// Zone centrale.
 	Init_Central();
 }
 
@@ -1009,13 +1024,22 @@ void CWindowManager::GenerateRenderBitmap()
 
 void CWindowManager::SetSeparationBarVisible(const bool& visible)
 {
+	showSeparationBar = visible;
+
 	for (CWindowToAdd* windowToAdd : listWindow)
 	{
+		if (windowToAdd == nullptr)
+			continue;
+
 		CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
+
 		if (separationBar != nullptr)
-			separationBar->Show(visible);
+		{
+			separationBar->Show(
+				showSeparationBar &&
+				!windowToAdd->isHide);
+		}
 	}
-	showSeparationBar = visible;
 }
 
 bool CWindowManager::GetSeparationVisibility()
@@ -1464,63 +1488,103 @@ void CWindowManager::AddDifference(const int& diffWidth, const int& diffHeight, 
 
 void CWindowManager::Resize()
 {
-	int width = GetSize().GetX();
-	int height = GetSize().GetY();
+	const int width = GetSize().GetX();
+	const int height = GetSize().GetY();
 
 	if (width <= 0 || height <= 0)
-		return;
-
+			return;
 
 	int diffWidth = width - oldWidth;
 	int diffHeight = height - oldHeight;
 
+	/*
+	 * Premier calcul du layout.
+	 *
+	 * Init() initialise les rectangles des panneaux avant que
+	 * ceux-ci soient appliqués aux wxWindow.
+	 */
 	if (!init)
 	{
-		init = true;
 		Init();
+		init = true;
+
 		diffWidth = 0;
 		diffHeight = 0;
 	}
-
-
-	AddDifference(diffWidth, diffHeight, Pos::wxCENTRAL);
-	AddDifference(diffWidth, diffHeight, Pos::wxLEFT);
-	AddDifference(diffWidth, diffHeight, Pos::wxRIGHT);
-	AddDifference(diffWidth, diffHeight, Pos::wxTOP);
-	AddDifference(diffWidth, diffHeight, Pos::wxBOTTOM);
-	//Calcul central size if window change size
-	for (CWindowToAdd* windowToAdd : listWindow)
+	else if (diffWidth != 0 || diffHeight != 0)
 	{
-		if (windowToAdd != nullptr)
+		/*
+		 * Le layout existe déjà : on applique uniquement la
+		 * différence de taille du CWindowManager.
+		 */
+		AddDifference(diffWidth, diffHeight, Pos::wxCENTRAL);
+		AddDifference(diffWidth, diffHeight, Pos::wxLEFT);
+		AddDifference(diffWidth, diffHeight, Pos::wxRIGHT);
+		AddDifference(diffWidth, diffHeight, Pos::wxTOP);
+		AddDifference(diffWidth, diffHeight, Pos::wxBOTTOM);
+
+		for (CWindowToAdd* windowToAdd : listWindow)
 		{
-			windowToAdd->diffHeight += diffHeight;
-			windowToAdd->diffWidth += diffWidth;
+			if (windowToAdd != nullptr)
+			{
+				windowToAdd->diffHeight += diffHeight;
+				windowToAdd->diffWidth += diffWidth;
+			}
 		}
 	}
 
-	wxRect rc;
+	const wxRect emptyRect(0, 0, 0, 0);
+
+	/*
+	 * Application du layout.
+	 *
+	 * IMPORTANT :
+	 * On ne teste plus IsShown() pour décider de la taille.
+	 * IsShown() est l'état wxWidgets actuel et peut être false
+	 * lors du premier affichage.
+	 *
+	 * isHide est l'état logique du CWindowManager.
+	 */
 	for (CWindowToAdd* windowToAdd : listWindow)
 	{
-		if (windowToAdd != nullptr)
+		if (windowToAdd == nullptr)
+			continue;
+
+		wxWindow* window = windowToAdd->GetWindow();
+
+		if (window != nullptr)
 		{
-			wxWindow* _wnd = windowToAdd->GetWindow();
-			if (_wnd != nullptr)
+			if (windowToAdd->isHide)
 			{
-				if (_wnd->IsShown())
-					_wnd->SetSize(windowToAdd->rect);
-				else
-					_wnd->SetSize(rc);
+				window->Show(false);
+				window->SetSize(emptyRect);
 			}
-
-
-			CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
-
-			if (separationBar != nullptr)
+			else
 			{
-				if (separationBar->IsShown())
-					separationBar->SetSize(windowToAdd->separationBar->rect);
-				else
-					separationBar->SetSize(rc);
+				window->SetSize(windowToAdd->rect);
+				window->Show(true);
+			}
+		}
+
+		CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
+
+		if (separationBar != nullptr)
+		{
+			const bool visible =
+				showSeparationBar &&
+				!windowToAdd->isHide;
+
+			if (visible)
+			{
+				separationBar->SetSize(
+					windowToAdd->separationBar->rect);
+
+				separationBar->Show(true);
+			}
+			else
+			{
+				separationBar->Show(false);
+				separationBar->SetSize(emptyRect);
 			}
 		}
 	}
