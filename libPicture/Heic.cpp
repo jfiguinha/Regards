@@ -59,9 +59,11 @@ namespace
 #pragma omp parallel for
 			for (int y = 0; y < height; y++)
 			{
-				memcpy(outPicture.data + static_cast<size_t>(y) * width * 3,
-					data + static_cast<size_t>(y) * stride,
-					static_cast<size_t>(width) * 3);
+				size_t currentY = static_cast<size_t>(y);
+				size_t w3 = static_cast<size_t>(width) * 3;
+				size_t s = static_cast<size_t>(stride);
+
+				memcpy(outPicture.data + currentY * w3, data + currentY * s, w3);
 			}
 		}
 

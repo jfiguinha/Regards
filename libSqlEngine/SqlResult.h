@@ -31,10 +31,11 @@ namespace Regards
 			int ColumnDataBlob(const int& clmNum, void* & pzBlob, const int& pnBlob);
 			int ColumnDataBlobSize(const int& clmNum);
 			const void* ColumnDataBlob(const int& clmNum);
+			int GetColumnIndex(const wxString& name);
 
 		private:
 
-			int GetColumnIndex(const wxString& name);
+			
 			wxString GetColumnName(int index);
 
 

@@ -28,11 +28,11 @@ using namespace dnn_superres;
 #define FSRCNN 2
 #define LapSRN 3
 
-bool isUsed = false;
+std::atomic<bool> isDnnUsed{ false };
 std::mutex muDnnSuperResImpl;
 int numTexture = -1;
 
-bool COpenCLFilter::isUsed = false;
+
 int COpenCLFilter::numTexture = -1;
 
 class ParameterReleaseGuard
@@ -182,7 +182,7 @@ bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 {
 	
-	isUsed = true;
+	isDnnUsed = true;
 	UMat outputImage;
 
 	if (oldscale != scale || oldmethod != method)
@@ -250,7 +250,7 @@ UMat CSuperSampling::upscaleImage(UMat img, int method, int scale)
 
 	oldscale = scale;
 	oldmethod = method;
-	isUsed = false;
+	isDnnUsed = false;
 	return outputImage;
 }
 
@@ -378,28 +378,22 @@ void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, co
 {
 	ExecuteSafe([&]
 		{
-		UMat ycbcr;
-		UMat yChannel;
-		UMat yChannelOut;
+			UMat ycbcr;
+			UMat yChannel;
+			UMat yChannelOut;
 
-		cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+			cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
 
-		// Extract the Y channel
-		extractChannel(ycbcr, yChannel, 0);
-		extractChannel(ycbcr, yChannel, 0);
+			// Extract the Y channel (UNE SEULE FOIS)
+			extractChannel(ycbcr, yChannel, 0);
 
-		fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
+			fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
 
-		// Merge the the color planes back into an Lab image
-		insertChannel(yChannelOut, ycbcr, 0);
+			// Merge back
+			insertChannel(yChannelOut, ycbcr, 0);
 
-		// convert back to RGB
-		cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
-
-		// Temporary Mat not reused, so release from memory.
-		yChannel.release();
-		ycbcr.release();
-		yChannelOut.release();
+			// convert back to RGB
+			cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
 		});
 }
 
@@ -1237,46 +1231,32 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 	vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
-	OpenCLMemoryTemp * memInfo = nullptr;
+	// Une seule recherche dans la map grâce à l'insertion automatique si absent
+	auto& memInfoPtr = openclMemTempMap[functionName];
+	if (!memInfoPtr)
+	{
+		memInfoPtr = std::make_unique<OpenCLMemoryTemp>();
+	}
 
-	if (openclMemTempMap.find(functionName) != openclMemTempMap.end())
-	{
-		memInfo = openclMemTempMap[functionName].get();
-	}
-	else
-	{
-		memInfo = new OpenCLMemoryTemp();
-	}
-	
-	// Crée un UMat avec le type CV_8UC4
-	if(memInfo->openclMem.empty())
+	OpenCLMemoryTemp* memInfo = memInfoPtr.get();
+
+	// Crée ou redimensionne le UMat uniquement si nécessaire
+	if (memInfo->openclMem.empty() ||
+		memInfo->openclMem.cols != width ||
+		memInfo->openclMem.rows != height)
 	{
 		memInfo->openclMem.create(height, width, CV_8UC4);
 		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
 	}
-	else if (memInfo->openclMem.size().width != width || memInfo->openclMem.size().height != height)
-	{
-		memInfo->openclMem.create(height, width, CV_8UC4);
-		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
-	}
-	//UMat paramSrc(height, width, CV_8UC4);
 
-	// Récupère le buffer OpenCL associé
+	// Récupère le handle si perdu
 	if (memInfo->cl_image == nullptr)
 	{
-		memInfo->openclMem.create(height, width, CV_8UC4);
 		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
 	}
-		
 
 	// Exécute le code OpenCL
 	ExecuteOpenCLCode(programName, functionName, vecParam, width, height, memInfo->cl_image);
-
-
-	if (openclMemTempMap.find(functionName) == openclMemTempMap.end())
-	{
-		openclMemTempMap[functionName].reset(memInfo);
-	}
 
 	return memInfo->openclMem;
 }
@@ -1290,7 +1270,7 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
     CRegardsConfigParam* regardsParam = CParamInit::getInstance();
     int superDnn = regardsParam->GetSuperResolutionType();
     int useSuperResolution = regardsParam->GetUseSuperResolution();
-    if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
+    if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isDnnUsed)
         _useSuperResolution = true;
 
 	

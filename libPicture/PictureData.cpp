@@ -46,11 +46,13 @@ std::vector<char> CPictureData::CopyData()
 	return _data;
 }
 */
-void CPictureData::SetData(const int& width, const int& height, uint8_t* & extdata, const int& size)
+void CPictureData::SetData(const int& width, const int& height, uint8_t*& extdata, const int& size)
 {
 	if (extdata != nullptr && size > 0)
 	{
-		bitmapMatrix = cv::Mat(height, width, CV_8UC4, extdata);
+		// On crée une matrice temporaire sur le pointeur externe, puis on la clone pour s'en approprier la mémoire
+		cv::Mat header(height, width, CV_8UC4, extdata);
+		bitmapMatrix = header.clone();
 		this->size = size;
 	}
 }

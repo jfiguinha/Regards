@@ -5,18 +5,19 @@
 
 using namespace Regards::Sqlite;
 
-// Initialisation du singleton à nullptr
 std::unordered_map<wxString, std::unique_ptr<CSqlLib>> CSqlEngine::_bases;
+std::mutex CSqlEngine::_engineMutex; // Instanciation du verrou
 
 CSqlLib* CSqlEngine::getInstance(const wxString& baseName)
 {
+	std::lock_guard<std::mutex> lock(_engineMutex); // Sécurisation lecture
 	auto it = _bases.find(baseName);
 	return (it != _bases.end()) ? it->second.get() : nullptr;
 }
 
-
 bool CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib)
 {
+	std::lock_guard<std::mutex> lock(_engineMutex); // Sécurisation écriture
 	auto i = _bases.find(baseName);
 	if (i != _bases.end())
 		return false;
@@ -29,7 +30,6 @@ bool CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, 
 		return true;
 	}
 
-	// Tentative de récupération
 	if (!lib->RecoverDatabaseFile(filename))
 		return false;
 
@@ -42,10 +42,11 @@ bool CSqlEngine::Initialize(const wxString& filename, const wxString& baseName, 
 
 void CSqlEngine::kill(const wxString& baseName)
 {
+	std::lock_guard<std::mutex> lock(_engineMutex); // Sécurisation suppression
 	auto it = _bases.find(baseName);
 	if (it == _bases.end())
 		return;
 
 	it->second->CloseConnection();
-	_bases.erase(it); // unique_ptr détruit automatiquement l'objet
+	_bases.erase(it);
 }

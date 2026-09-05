@@ -117,7 +117,7 @@ cv::Mat GetPictureThumbnail(const char* filename, const int& width, const int& h
             dstRGB.depth = 8; // [8, 10, 12, 16]; Does not need to match image->depth.
             avifRGBImageAllocatePixels(&dstRGB);
 
-            if (result == AVIF_TRUE)
+            if (decodeResult == AVIF_RESULT_OK)
             {
                 if (avifImageYUVToRGB(decoded, &dstRGB) == AVIF_RESULT_OK)
                 {
@@ -126,7 +126,6 @@ cv::Mat GetPictureThumbnail(const char* filename, const int& width, const int& h
 
                     out.create(image_height, image_width, CV_8UC4);
                     memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
-                    //cv::flip(out, out, 0);
                 }
             }
             avifRGBImageFreePixels(&dstRGB);

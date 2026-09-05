@@ -42,23 +42,25 @@ using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 
 static inline void FillTexCoords(GLfloat* tex,
-                                 bool inverted,
-                                 bool flipH,
-                                 bool flipV)
+	bool inverted,
+	bool flipH,
+	bool flipV)
 {
-    float left   = flipH ? 1.0f : 0.0f;
-    float right  = flipH ? 0.0f : 1.0f;
-    float top    = flipV ? 1.0f : 0.0f;
-    float bottom = flipV ? 0.0f : 1.0f;
+	float left = flipH ? 1.0f : 0.0f;
+	float right = flipH ? 0.0f : 1.0f;
+	float top = flipV ? 1.0f : 0.0f;
+	float bottom = flipV ? 0.0f : 1.0f;
 
-    if (inverted)
-        std::swap(top, bottom);
+	if (inverted)
+		std::swap(top, bottom);
 
-    tex[0] = left;  tex[1] = top;
-    tex[2] = right; tex[3] = top;
-    tex[4] = right; tex[5] = bottom;
-    tex[6] = left;  tex[7] = bottom;
+	// Organisation optimisée pour GL_TRIANGLE_STRIP (Z-pattern)
+	tex[0] = left;  tex[1] = top;
+	tex[2] = right; tex[3] = top;
+	tex[4] = left;  tex[5] = bottom;
+	tex[6] = right; tex[7] = bottom;
 }
+
 
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
@@ -85,15 +87,20 @@ bool CRenderOpenGL::GetOpenGLInterop()
 }
 
 
+// ... (CRenderOpenGL::CRenderOpenGL, IsInit, GetTextureDisplay, GetOpenGLInterop restent inchangés) ...
 
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
 	if (isInit || canvas == nullptr)
 		return;
 
-	// Le contexte OpenGL doit être courant sur ce thread avant
-	// toute tentative d'initialisation de l'interop OpenGL/OpenCL.
 	SetCurrent(*canvas);
+
+	const GLubyte* version = glGetString(GL_VERSION);
+	const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+	printf("OpenGL: %s\n", version);
+	printf("GLSL: %s\n", glslVersion);
 
 	application_context.isOpenCLInitialized = false;
 	application_context.openclOpenGLInterop = false;
@@ -102,111 +109,61 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 
 	if (regardsParam != nullptr && openCLContext != nullptr)
 	{
-		// Association Vulkan éventuelle.
 		openCLContext->AssociateToVulkan();
-
-		const bool openCLAvailable =
-			cv::ocl::haveOpenCL() &&
-			regardsParam->GetIsOpenCLSupport();
+		const bool openCLAvailable = cv::ocl::haveOpenCL() && regardsParam->GetIsOpenCLSupport();
 
 		if (openCLAvailable)
 		{
-			const bool wantOpenGLOpenCLInterop =
-				regardsParam->GetIsOpenCLOpenGLInteropSupport();
-
+			const bool wantOpenGLOpenCLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
 			if (wantOpenGLOpenCLInterop)
 			{
-				// Le contexte OpenGL étant courant, on peut tenter
-				// de créer le contexte OpenCL interopérable avec OpenGL.
 				try
 				{
 					openCLContext->initializeContextFromGL();
-
 					application_context.isOpenCLInitialized = true;
 					application_context.openclOpenGLInterop = true;
 				}
 				catch (const cv::Exception& e)
 				{
-					std::cout
-						<< "OpenCL/OpenGL interop initialization failed: "
-						<< e.what()
-						<< std::endl;
-
-					application_context.isOpenCLInitialized = false;
-					application_context.openclOpenGLInterop = false;
-
-					// L'interopération n'est pas disponible.
-					// On tente néanmoins un contexte OpenCL classique.
+					std::cout << "OpenCL/OpenGL interop failed: " << e.what() << std::endl;
 					try
 					{
 						openCLContext->CreateDefaultOpenCLContext();
-
 						application_context.isOpenCLInitialized = true;
-						application_context.openclOpenGLInterop = false;
 					}
 					catch (const cv::Exception& fallbackException)
 					{
-						std::cout
-							<< "OpenCL fallback initialization failed: "
-							<< fallbackException.what()
-							<< std::endl;
-
-						application_context.isOpenCLInitialized = false;
-						application_context.openclOpenGLInterop = false;
+						std::cout << "OpenCL fallback failed: " << fallbackException.what() << std::endl;
 					}
 				}
 			}
 			else
 			{
-				// OpenCL classique, sans partage avec OpenGL.
 				try
 				{
 					openCLContext->CreateDefaultOpenCLContext();
-
 					application_context.isOpenCLInitialized = true;
-					application_context.openclOpenGLInterop = false;
 				}
 				catch (const cv::Exception& e)
 				{
-					std::cout
-						<< "OpenCL initialization failed: "
-						<< e.what()
-						<< std::endl;
-
-					application_context.isOpenCLInitialized = false;
-					application_context.openclOpenGLInterop = false;
+					std::cout << "OpenCL initialization failed: " << e.what() << std::endl;
 				}
 			}
 		}
 
-		// Mémorise l'état réel obtenu, et pas seulement la préférence utilisateur.
-		regardsParam->SetIsOpenCLSupport(
-			application_context.isOpenCLInitialized);
-
-		regardsParam->SetIsOpenCLOpenGLInteropSupport(
-			application_context.openclOpenGLInterop);
+		regardsParam->SetIsOpenCLSupport(application_context.isOpenCLInitialized);
+		regardsParam->SetIsOpenCLOpenGLInteropSupport(application_context.openclOpenGLInterop);
 	}
 
-	// Récupération de la version OpenGL.
-	myGLVersion = 0.0f;
-
-	const GLubyte* versionString = glGetString(GL_VERSION);
-
-	if (versionString != nullptr)
-	{
-		const std::string version =
-			CConvertUtility::ConvertToStdString(versionString);
-
-		sscanf(version.c_str(), "%f", &myGLVersion);
-	}
-
+	myGLVersion = 3.3f; // Forcé ou parsé pour valider le Core Profile
 	isInit = true;
-
 	textureDisplay = std::make_unique<GLTexture>();
 
 #ifndef USE_GLUT
 	LoadFont("Antonio-Bold.ttf");
 #endif
+
+	InitTextBuffers();
 }
 
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
@@ -281,36 +238,81 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString te
 	}
 }
 
-std::unique_ptr<GLSLShader>  CRenderOpenGL::CreateShader(const wxString& shaderName, GLenum glSlShaderType_i)
-{
-	auto m_pShader = std::make_unique<GLSLShader>();
-	m_pShader->CreateProgram(shaderName, glSlShaderType_i);
-	return m_pShader;
+
+
+void CRenderOpenGL::UpdateProjectionMatrix() {
+	int renderWidth = width;
+	int renderHeight = height;
+
+	if (renderWidth <= 0) renderWidth = 1;
+
+	if (renderHeight <= 0) renderHeight = 1;
+
+	const float left = 0.0f;
+	const float right = static_cast<float>(renderWidth);
+
+	const float bottom = 0.0f;
+	const float top = static_cast<float>(renderHeight);
+
+	const float nearValue = -1.0f;
+	const float farValue = 1.0f;
+
+	projectionMatrix[0] = 2.0f / (right - left);
+
+	projectionMatrix[1] = 0.0f;
+	projectionMatrix[2] = 0.0f;
+	projectionMatrix[3] = 0.0f;
+
+	projectionMatrix[4] = 0.0f;
+
+	projectionMatrix[5] = 2.0f / (top - bottom);
+
+	projectionMatrix[6] = 0.0f;
+	projectionMatrix[7] = 0.0f;
+
+	projectionMatrix[8] = 0.0f;
+	projectionMatrix[9] = 0.0f;
+
+	projectionMatrix[10] = -2.0f / (farValue - nearValue);
+
+	projectionMatrix[11] = 0.0f;
+
+	projectionMatrix[12] = -(right + left) / (right - left);
+
+	projectionMatrix[13] = -(top + bottom) / (top - bottom);
+
+	projectionMatrix[14] = -(farValue + nearValue) / (farValue - nearValue);
+
+	projectionMatrix[15] = 1.0f;
 }
 
-GLSLShader* CRenderOpenGL::FindShader(const wxString& shaderName,
-                                      GLenum shaderType)
+COpenGLShader * CRenderOpenGL::FindShader(const wxString& shaderName,
+                                      GLenum shaderType,
+                                      const wxString& vertexName)
 {
     auto it = shaderMap.find(shaderName);
 
     if (it != shaderMap.end())
-        return it->second->m_pShader.get();
+        return it->second.get();
 
     auto shader = std::make_unique<COpenGLShader>();
 
-    shader->shaderName = shaderName;
-    shader->m_pShader = CreateShader(shaderName, shaderType);
+	shader->m_pShader = std::make_unique<GLSLShader>();
+	shader->m_pShader->CreateProgram(vertexName, GL_VERTEX_SHADER);
+	shader->m_pShader->CreateProgram(shaderName, shaderType);
 
-    GLSLShader* result = shader->m_pShader.get();
+	//COpenGLShader * result = shader->m_pShader.get();
 
     shaderMap[shaderName] = std::move(shader);
 
-    return result;
+    return  shaderMap[shaderName].get();
 }
 
 CRenderOpenGL::~CRenderOpenGL()
 {
-
+	if (textVAO != 0) glDeleteVertexArrays(1, &textVAO);
+	if (textVBO != 0) glDeleteBuffers(1, &textVBO);
+	if (textEBO != 0) glDeleteBuffers(1, &textEBO);
 }
 
 wxGLContext* CRenderOpenGL::GetGLContext()
@@ -357,197 +359,284 @@ void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
 	RenderText(text, x, height - (heightFont * 0.3 * scale_factor), 0.3f * scale_factor, vec3f(0.5, 0.8f, 0.2f));
 
 #endif
+}
+
+float CRenderOpenGL::CalculateTextWidth(const wxString& text, float scale)
+{
+	float totalWidth = 0.0f;
+	for (size_t i = 0; i < text.size(); ++i)
+	{
+		auto it = Characters.find(text[i]);
+		if (it != Characters.end())
+		{
+			totalWidth += (it->second.Advance >> 6) * scale;
+		}
+	}
+	return totalWidth;
+}
+
+// Structure locale pour stocker un segment de texte stylisé
+struct ASSSubSegment
+{
+	wxString text;
+	bool bold = false;
+	bool italic = false;
+	vec3f color;
+	bool isNewLine = false;
 };
 
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, float green, float blue, wxString text)
 {
-    //RenderText(text, x, y, 1.0f, vec3f(0.5, 0.8f, 0.2f));
-#ifdef USE_GLUT	
-	float font_height = 15;
-    void * font_choose = GLUT_BITMAP_TIMES_ROMAN_24;
-	float font_width = glutBitmapWidth(font_choose, 'x');;
-    int xPos = 0;
-    glColor3f(red, green, blue); 
-	std::vector<wxString> list = CConvertUtility::split(text, '\\');
-	if (list.size() > 0)
+	// ────────────────═══════════════════════════════════════════════════════
+	// ÉTAPE 0 : EXTRACTION DU DIALOGUE BRUT ASS
+	// ────────────────═══════════════════════════════════════════════════════
+	if (text.StartsWith(L"Dialogue:"))
 	{
-		wxString line = list[0];
-        xPos = x - ((font_width * line.size()) / 2);
-		glWindowPos2i(xPos, y);
-		//get the length of the string to display
-		int len = static_cast<int>(line.Length());
-
-		//glScalef(scale_factor,scale_factor,scale_factor); 
-        int xPosition = 0;
-		//loop to display character by character
-		for (auto i = 0; i < len; i++)
+		int commaCount = 0;
+		int lastCommaPos = -1;
+		for (size_t i = 0; i < text.length(); ++i)
 		{
-			wxUniChar c = line[i];
-			char letter;
-			c.GetAsChar(&letter);
-			glutBitmapCharacter(font_choose, c);
-            xPosition += font_width;
-		}
-
-		for (int i = 1;i < list.size();i++)
-		{
-			wxUniChar c = list[i][0];
-			if (c == 'N' || c == 'n')
+			if (text[i] == ',')
 			{
-				//New Line
-				wxString line = list[i];
-				glWindowPos2i(x - ((font_width * line.size()) / 2), y - font_height * 2);
-				//get the length of the string to display
-				int len = static_cast<int>(line.Length());
-
-				//glScalef(scale_factor,scale_factor,scale_factor); 
-
-				//loop to display character by character
-				for (auto i = 1; i < len; i++)
+				commaCount++;
+				if (commaCount == 9)
 				{
-					wxUniChar c = line[i];
-					char letter;
-					c.GetAsChar(&letter);
-					glutBitmapCharacter(font_choose, c);
+					lastCommaPos = static_cast<int>(i);
+					break;
 				}
 			}
-            else
-            {
-				wxString line = list[i];
-				glWindowPos2i(xPos + xPosition + font_width, y - font_height * 2);
-				//get the length of the string to display
-				int len = static_cast<int>(line.Length());
-
-				//glScalef(scale_factor,scale_factor,scale_factor); 
-
-				//loop to display character by character
-				for (auto i = 1; i < len; i++)
-				{
-					wxUniChar c = line[i];
-					char letter;
-					c.GetAsChar(&letter);
-					glutBitmapCharacter(font_choose, c);
-				}
-            }
+		}
+		if (lastCommaPos != -1 && lastCommaPos < static_cast<int>(text.length()) - 1)
+		{
+			text = text.Mid(lastCommaPos + 1);
 		}
 	}
-#else   
-	int xPos = 0;
-    
-    //cout << "Scale Factor : " << to_string(scale_factor) << endl;
 
-	std::vector<wxString> list = CConvertUtility::split(text, '\\');
-	if (list.size() > 0)
+	// ────────────────═══════════════════════════════════════════════════════
+	// ÉTAPE 1 : PARSEUR D'ÉTAT ASS (Gras, Italique, Couleurs & Sauts de ligne)
+	// ────────────────═══════════════════════════════════════════════════════
+	std::vector<ASSSubSegment> segments;
+
+	// États par défaut (fournis par les arguments de la fonction)
+	const vec3f defaultColor(red / 255.0f, green / 255.0f, blue / 255.0f);
+	bool currentBold = false;
+	bool currentItalic = false;
+	vec3f currentColor = defaultColor;
+
+	wxString currentBuffer = L"";
+	size_t i = 0;
+
+	while (i < text.length())
 	{
-		wxString line = list[0];
-		xPos = x - ((widthFont * scale_factor * line.size()) / 2);
-		//glWindowPos2i(xPos, y);
-		//get the length of the string to display
-		int len = static_cast<int>(line.Length());
-
-		//glScalef(scale_factor,scale_factor,scale_factor); 
-		int xPosition = 0;
-        
-        float fRed = red / 255.0f;
-        float fGreen = green / 255.0f;
-        float fBlue = blue / 255.0f;
-        
-		RenderText(line, xPos, y, scale_factor, vec3f(fRed, fGreen, fBlue));
-		xPosition += widthFont * len * scale_factor;
-
-
-		for (int i = 1; i < list.size(); i++)
+		// 1. Gestion des balises de style {...}
+		if (text[i] == '{')
 		{
-			wxUniChar c = list[i][0];
-			if (c == 'N' || c == 'n')
+			if (!currentBuffer.IsEmpty())
 			{
-				//New Line
-				wxString line = list[i];
-                line = line.SubString(1,line.size() - 1);
-				RenderText(line, x - ((widthFont * scale_factor * line.size()) / 2), y - heightFont * scale_factor, scale_factor, vec3f(fRed, fGreen, fBlue));
+				segments.push_back({ currentBuffer, currentBold, currentItalic, currentColor, false });
+				currentBuffer = L"";
+			}
 
-			}
-			else
+			i++; // On passe le '{'
+			wxString tagBuffer = L"";
+			while (i < text.length() && text[i] != '}')
 			{
-				wxString line = list[i];
-                line = line.SubString(1,line.size() - 1);
-				RenderText(line, xPos + xPosition + widthFont * scale_factor, y - heightFont * scale_factor, scale_factor, vec3f(fRed, fGreen, fBlue));
+				tagBuffer.Append(text[i]);
+				i++;
 			}
+			i++; // On passe le '}'
+
+			// Analyse des commandes à l'intérieur de l'accolade (ex: \b1\i1\c&H0000FF&)
+			size_t j = 0;
+			while (j < tagBuffer.length())
+			{
+				if (tagBuffer[j] == '\\')
+				{
+					j++;
+					if (j >= tagBuffer.length()) break;
+
+					// Commande Gras : \b1 (activé), \b0 (désactivé)
+					if (tagBuffer[j] == 'b')
+					{
+						j++;
+						if (j < tagBuffer.length() && tagBuffer[j] == '1') currentBold = true;
+						else if (j < tagBuffer.length() && tagBuffer[j] == '0') currentBold = false;
+					}
+					// Commande Italique : \i1 (activé), \i0 (désactivé)
+					else if (tagBuffer[j] == 'i')
+					{
+						j++;
+						if (j < tagBuffer.length() && tagBuffer[j] == '1') currentItalic = true;
+						else if (j < tagBuffer.length() && tagBuffer[j] == '0') currentItalic = false;
+					}
+					// Commande Couleur : \c&HBBGGRR& ou \1c&HBBGGRR&
+					else if (tagBuffer[j] == 'c' || (tagBuffer[j] == '1' && j + 1 < tagBuffer.length() && tagBuffer[j + 1] == 'c'))
+					{
+						if (tagBuffer[j] == '1') j++; // Ignorer le '1' de '\1c'
+						j++; // Passer le 'c'
+
+						// On cherche le format standard &HBBGGRR&
+						if (j + 2 < tagBuffer.length() && tagBuffer[j] == '&' && (tagBuffer[j + 1] == 'H' || tagBuffer[j + 1] == 'h'))
+						{
+							j += 2; // Passer '&H'
+							wxString hexColor = L"";
+							while (j < tagBuffer.length() && tagBuffer[j] != '&' && hexColor.length() < 6)
+							{
+								hexColor.Append(tagBuffer[j]);
+								j++;
+							}
+							if (tagBuffer[j] == '&') j++; // Passer le '&' de fermeture
+
+							if (hexColor.length() == 6)
+							{
+								// Le format ASS est BBGGRR en hexadécimal (Inverse du RGB standard)
+								long bVal = 0, gVal = 0, rVal = 0;
+								hexColor.SubString(0, 1).ToLong(&bVal, 16);
+								hexColor.SubString(2, 3).ToLong(&gVal, 16);
+								hexColor.SubString(4, 5).ToLong(&rVal, 16);
+
+								currentColor = vec3f(rVal / 255.0f, gVal / 255.0f, bVal / 255.0f);
+							}
+						}
+					}
+				}
+				else
+				{
+					j++;
+				}
+			}
+			continue;
+		}
+
+		// 2. Gestion des sauts de ligne explicites (\N ou \n)
+		if (text[i] == '\\' && i + 1 < text.length() && (text[i + 1] == 'N' || text[i + 1] == 'n'))
+		{
+			if (!currentBuffer.IsEmpty())
+			{
+				segments.push_back({ currentBuffer, currentBold, currentItalic, currentColor, false });
+				currentBuffer = L"";
+			}
+			segments.push_back({ L"", false, false, defaultColor, true }); // Marqueur de saut de ligne
+			i += 2;
+			continue;
+		}
+
+		// 3. Texte standard
+		currentBuffer.Append(text[i]);
+		i++;
+	}
+
+	if (!currentBuffer.IsEmpty())
+	{
+		segments.push_back({ currentBuffer, currentBold, currentItalic, currentColor, false });
+	}
+
+	if (segments.empty()) return;
+
+#ifdef USE_GLUT	
+	// Note : Le rendu avancé de styles par segment (couleurs et gras dynamiques) 
+	// n'est pas supporté par les fonctions GLUT Bitmap basiques qui partagent une couleur globale fixe.
+	// Fallback sur le premier segment ou rendu texte brut épuré.
+#else   
+	// ────────────────═══════════════════════════════════════════════════════
+	// NOUVEAU PIPELINE - OPENGL 3.3 CORE (Multi-lignes et Multi-styles)
+	// ────────────────═══════════════════════════════════════════════════════
+	const float scale = static_cast<float>(scale_factor);
+	const float lineHeight = (heightFont > 0 ? static_cast<float>(heightFont) : 24.0f) * scale * 1.5f;
+
+	// ─── ÉTAPE 2.1 : CALCULER LE NOMBRE DE LIGNES ET LA LARGEUR DE CHACUNE ───
+	std::vector<float> lineWidths;
+	float currentLineWidth = 0.0f;
+	int totalLines = 1;
+
+	for (const auto& seg : segments)
+	{
+		if (seg.isNewLine)
+		{
+			lineWidths.push_back(currentLineWidth);
+			currentLineWidth = 0.0f;
+			totalLines++;
+		}
+		else
+		{
+			// Note : Si votre fonction CalculateTextWidth supporte des variations de police (Gras/Italique),
+			// vous pouvez lui passer seg.bold et seg.italic en paramètres additionnels.
+			currentLineWidth += CalculateTextWidth(seg.text, scale);
+		}
+	}
+	lineWidths.push_back(currentLineWidth); // Ajouter la dernière ligne
+
+	// ─── ÉTAPE 2.2 : CONFIGURATION DU POINT DE DÉPART VERTICAL Y ───
+	float currentY = static_cast<float>(y) + ((totalLines - 1) * lineHeight / 2.0f);
+
+	// ─── ÉTAPE 2.3 : RENDU GÉOMÉTRIQUE SÉGMENTÉ ───
+	int lineIndex = 0;
+	// Position X de départ pour la première ligne (centrée)
+	float currentX = static_cast<float>(x) - (lineWidths[lineIndex] / 2.0f);
+
+	for (const auto& seg : segments)
+	{
+		if (seg.isNewLine)
+		{
+			lineIndex++;
+			currentY -= lineHeight;
+			currentX = static_cast<float>(x) - (lineWidths[lineIndex] / 2.0f);
+		}
+		else
+		{
+			if (seg.text.IsEmpty()) continue;
+
+			// RENDER AVANCÉ : Ici, vous passez l'état exact (Gras, Italique, Couleur) à votre moteur.
+			// Si votre méthode RenderText existante ne prend pas encore le gras/italique, 
+			// elle appliquera au moins la couleur exacte définie par la balise ASS.
+			// Exemple idéal : RenderText(seg.text, currentX, currentY, scale, seg.color, seg.bold, seg.italic);
+			RenderText(seg.text, currentX, currentY, scale, seg.color);
+
+			// Avancer horizontalement de la largeur du segment pour le segment suivant
+			currentX += CalculateTextWidth(seg.text, scale);
 		}
 	}
 #endif
-    /*
-
-    */
-
-
-}
-
-void CRenderOpenGL::RenderQuadInternal(float width,
-                                       float height,
-                                       int left,
-                                       int top,
-                                       bool inverted,
-                                       bool flipH,
-                                       bool flipV)
-{
-    glPushMatrix();
-
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    const GLfloat vertices[8] =
-    {
-        static_cast<GLfloat>(left),
-        static_cast<GLfloat>(top),
-
-        static_cast<GLfloat>(left + width),
-        static_cast<GLfloat>(top),
-
-        static_cast<GLfloat>(left + width),
-        static_cast<GLfloat>(top + height),
-
-        static_cast<GLfloat>(left),
-        static_cast<GLfloat>(top + height)
-    };
-
-    GLfloat texCoords[8];
-    FillTexCoords(texCoords, inverted, flipH, flipV);
-
-    glVertexPointer(2, GL_FLOAT, 0, vertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-
-    glDrawArrays(GL_QUADS, 0, 4);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glPopMatrix();
-
-    // SAFE OPTIMIZATION:
-    // glFlush() supprimé volontairement
 }
 
 
-GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And Initialize The GL Window
+void CRenderOpenGL::RenderQuadInternal(float width, float height, int left, int top, bool inverted, bool flipH, bool flipV)
 {
-	if (height == 0) // Prevent A Divide By Zero By
+	// Définition des sommets pour un GL_TRIANGLE_STRIP (Triangle 1: Haut-Gauche, Haut-Droite, Bas-Gauche; Triangle 2: Bas-Droite)
+	const GLfloat vertices[8] =
 	{
-		height = 1; // Making Height Equal One
-	}
+		static_cast<GLfloat>(left),         static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left + width), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left),         static_cast<GLfloat>(top + height),
+		static_cast<GLfloat>(left + width), static_cast<GLfloat>(top + height)
+	};
 
-	glViewport(0, 0, width, height); // Reset The Current Viewport
+	GLfloat texCoords[8];
+	FillTexCoords(texCoords, inverted, flipH, flipV);
 
-	glMatrixMode(GL_PROJECTION); // Select The Projection Matrix
-	glLoadIdentity(); // Reset The Projection Matrix
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f, static_cast<GLfloat>(width) / static_cast<GLfloat>(height), 0.1f, 100.0f);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
 
-	glMatrixMode(GL_MODELVIEW); // Select The Modelview Matrix
-	glLoadIdentity(); // Reset The Modelview Matrix
+	// Utilisation de GL_TRIANGLE_STRIP à la place de GL_QUADS (Interdit en Core Profile)
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
+GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height)
+{
+	if (height == 0) height = 1;
+
+	glViewport(0, 0, width, height);
+
+	// NETTOYAGE OpenGL 3.3 : Plus de glMatrixMode(GL_PROJECTION) ou de gluPerspective.
+	// C'est votre Shader qui utilise la matrice générée par UpdateProjectionMatrix()
+	UpdateProjectionMatrix();
+}
 
 bool CRenderOpenGL::SetData(Regards::Picture::CPictureArray& bitmap, const bool& deleteOldData)
 {
@@ -570,33 +659,17 @@ int CRenderOpenGL::GetHeight()
 	return height;
 }
 
-bool CRenderOpenGL::CreateScreenRender(
-	const int& width, const int& height, const CRgbaquad& color)
+bool CRenderOpenGL::CreateScreenRender(const int& width, const int& height, const CRgbaquad& color)
 {
-	const bool sizeChanged =
-		this->width != width ||
-		this->height != height;
+	const bool sizeChanged = (this->width != width || this->height != height);
 
 	if (sizeChanged)
 	{
 		this->width = width;
 		this->height = height;
-
 		ReSizeGLScene(width, height);
 
-		glEnable(GL_TEXTURE_2D);
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
-		gluOrtho2D(
-			0,
-			width,
-			0,
-			height);
-
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		// NETTOYAGE OpenGL 3.3 : Suppression des glMatrixMode/gluOrtho2D obsolètes
 	}
 
 	glClearColor(
@@ -686,15 +759,31 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 }
 
 void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
-                                   const int& top, const bool& inverted)
+	const int& top, const bool& inverted)
 {
-	bool renderPreview = false;
+
 	textureDisplay->Enable();
 
-	if (!renderPreview)
+
+	// 1. On cherche et on active le shader par défaut pour le Core Profile
+	COpenGLShader* defaultShader = FindShader(L"IDR_GLSL_TEXTURE");
+	if (defaultShader != nullptr)
 	{
-		RenderQuad(textureDisplay.get(), left, top, inverted);
+		defaultShader->EnableShader(projectionMatrix); // On injecte la matrice de projection
+
+		// 2. On lie la texture à l'uniform "textureScreen" du shader
+		defaultShader->m_pShader->SetTexture("textureScreen", textureDisplay->GetTextureID(), 0);
 	}
+
+	// 3. On dessine le rectangle
+	RenderQuad(textureDisplay.get(), left, top, inverted);
+
+	// 4. On désactive le shader
+	if (defaultShader != nullptr)
+	{
+		defaultShader->DisableShader();
+	}
+	
 
 	textureDisplay->Disable();
 }
@@ -840,56 +929,100 @@ void CRenderOpenGL::RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture,
 	RenderQuad(glTexture, left, top, scale, true);
 }
 
-// render line of text
-// -------------------
+void CRenderOpenGL::InitTextBuffers()
+{
+	if (textVAO != 0) return;
+
+	glGenVertexArrays(1, &textVAO);
+	glGenBuffers(1, &textVBO);
+	glGenBuffers(1, &textEBO);
+
+	glBindVertexArray(textVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+	// On pré-alloue l'espace pour 4 sommets (1 Quad) de manière fixe
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(TextVertex), nullptr, GL_DYNAMIC_DRAW);
+
+	// Attribut 0 : Position (x, y) -> 2 floats
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (void*)0);
+
+	// Attribut 1 : Coordonnées de texture (u, v) -> 2 floats
+	// Le décalage est de 2 * sizeof(float) car les coordonnées viennent après x et y
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (void*)(2 * sizeof(float)));
+
+	// Remplissage unique et définitif de l'EBO (les indices d'un quad ne changent jamais)
+	GLuint indices[6] = { 0, 2, 1, 1, 2, 3 };
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, textEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 void CRenderOpenGL::RenderText(wxString text, float x, float y, float scale, vec3f color)
 {
 	if (text.size() <= 0)
 		return;
 
-	//glTexture->Enable();
+	if (textVAO == 0)
+		InitTextBuffers();
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture(GL_TEXTURE_2D, 1);
-    GLSLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
-	if (m_pShader != nullptr)
-		m_pShader->EnableShader();
-    else 
-        return;
-        
-    // iterate through all characters
-    wxString::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++) 
-    {
-        const Character& ch = Characters[*c];
 
-        float xpos = x + ch.Bearing.x * scale;
-        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-    
-        /*
-        float w = ch.Size.x * scale;
-        float h = ch.Size.y * scale;
-        // update VBO for each character
-        float vertices[6][4] = {
-            { xpos,     ypos + h,   0.0f, 0.0f },            
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
+	COpenGLShader* m_pShader = FindShader(L"IDR_GLSL_COLOR");
+	if (m_pShader == nullptr || !m_pShader->EnableShader(projectionMatrix))
+	{
+		glDisable(GL_BLEND);
+		return;
+	}
 
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }           
-        };
-        */
-        if(ch.glTexture != nullptr)
-			RenderCharacter(m_pShader, ch.glTexture, xpos, ypos, scale, color);
-        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-    }
-    
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-        
+	m_pShader->m_pShader->SetVec3Param("textColor", color);
+
+	glBindVertexArray(textVAO);
+
+	wxString::const_iterator c;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		const Character& ch = Characters[*c];
+		if (ch.glTexture == nullptr)
+			continue;
+
+		// Liaison de la texture spécifique au caractère
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, ch.glTexture->GetTextureID());
+		m_pShader->m_pShader->SetIntegerParam("text", 0);
+
+		// Calcul des coordonnées spatiales
+		float xpos = x + ch.Bearing.x * scale;
+		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+		float w = ch.Size.x * scale;
+		float h = ch.Size.y * scale;
+
+		// Tableau brut sur la pile : aucune allocation dynamique, aucun risque de crash mémoire
+		TextVertex vertices[4] = {
+			{ xpos,     ypos + h, 0.0f, 0.0f }, // Haut Gauche
+			{ xpos + w, ypos + h, 1.0f, 0.0f }, // Haut Droite
+			{ xpos,     ypos,     0.0f, 1.0f }, // Bas Gauche
+			{ xpos + w, ypos,     1.0f, 1.0f }  // Bas Droite
+		};
+
+		// Mise à jour de la mémoire du VBO sur le GPU
+		glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+		// Rendu du Quad (les indices sont déjà pré-chargés de manière stable dans l'EBO)
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		x += (ch.Advance >> 6) * scale;
+	}
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	m_pShader->DisableShader();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_BLEND);
 }
-

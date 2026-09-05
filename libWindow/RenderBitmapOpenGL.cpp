@@ -23,9 +23,9 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL)
 	this->renderOpenGL = renderOpenGL;
 }
 
-GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
+COpenGLShader * CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i, const wxString& vertexName)
 {
-	return renderOpenGL->FindShader(shaderName, glSlShaderType_i);
+	return renderOpenGL->FindShader(shaderName, glSlShaderType_i, vertexName);
 }
 
 void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor& colorActifReplacement)
@@ -64,87 +64,34 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor, wxColor& c
 
 
 
-void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left,
-	const int& top, const bool& flipH, const bool& flipV,
-	const bool& inverted)
+void CRenderBitmapOpenGL::RenderTexture(GLTexture* pictureNext, const int& width, const int& height, const int& left, const int& top)
 {
-	if (!glTexture) return;
+	if (!pictureNext) return;
 
-	glTexture->Enable();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	pictureNext->Enable();
 
-	GLSLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
-	if (shader)
+	COpenGLShader* defaultShader = renderOpenGL->FindShader(L"IDR_GLSL_TEXTURE", GL_FRAGMENT_SHADER);
+	if (defaultShader != nullptr)
 	{
-		shader->EnableShader();
-		shader->SetTexture("textureScreen", glTexture->GetTextureID(),0);
-		shader->SetParam("intensity", alpha);
+		defaultShader->EnableShader(renderOpenGL->projectionMatrix);
+		defaultShader->m_pShader->SetTexture("sourceTex", pictureNext->GetTextureID(), 0);
 	}
 
-	renderOpenGL->RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+	renderOpenGL->RenderQuad(pictureNext, width, height, false, false, left, top, false);
 
-	if (shader) shader->DisableShader();
-	glDisable(GL_BLEND);
-	glTexture->Disable();
-}
+	if (defaultShader != nullptr)
+		defaultShader->DisableShader();
 
-void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height,
-	const int& left, const int& top, const bool& blend)
-{
-	textureTransition->Enable();
-	if (blend)
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	glPushMatrix();
-
-#if defined(__APPLE__)
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-#else
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-#endif
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	GLfloat vertices[] = {
-		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(width) + static_cast<GLfloat>(left),
-		static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top)
-	};
-
-	GLfloat texVertices[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
-	};
-
-
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-#if defined(__APPLE__)
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#else
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-#endif
-
-	glPopMatrix();
-
-	if (blend)
-		glDisable(GL_BLEND);
-
-	textureTransition->Disable();
+	pictureNext->Disable();
 }
 
 
-void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
+float* CRenderBitmapOpenGL::GetProjectionMatrix()
+{
+	return renderOpenGL->projectionMatrix;
+}
+
+void CRenderBitmapOpenGL::RenderTextureWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
 	const int& height, const int& left, const int& top)
 {
 	if (!textureTransition) return;
@@ -154,27 +101,25 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition
 
 	textureTransition->Enable();
 
-	GLSLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	COpenGLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER", GL_FRAGMENT_SHADER);
 	if (shader)
 	{
-		shader->EnableShader();
-		shader->SetTexture("textureScreen", textureTransition->GetTextureID(),0);
-		shader->SetParam("intensity", alpha);
+		shader->EnableShader(renderOpenGL->projectionMatrix);
+		shader->m_pShader->SetTexture("textureScreen", textureTransition->GetTextureID(), 0);
+		shader->m_pShader->SetParam("intensity", static_cast<float>(alpha));
 	}
 
-	ShowSecondBitmap(textureTransition, width, height, left, top);
+	// CORRECTION CONFORME À VOS SIGNATURES :
+	// Arguments : (texture, width, height, flipH=false, flipV=false, left, top, inverted=false)
+	renderOpenGL->RenderQuad(textureTransition, width, height, false, false, left, top, false);
 
 	textureTransition->Disable();
-	if (shader) shader->DisableShader();
+	if (shader)
+		shader->DisableShader();
 
 	glDisable(GL_BLEND);
 }
 
-
-CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
-{
-
-}
 void CRenderBitmapOpenGL::ShowArrowNext()
 {
 	if (!textureArrowRight) return;
@@ -186,9 +131,19 @@ void CRenderBitmapOpenGL::ShowArrowNext()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowRight->Enable();
-	renderOpenGL->RenderQuad(textureArrowRight.get(), left, top);
-	textureArrowRight->Disable();
 
+	// Activer le shader par défaut pour dessiner la texture en Core Profile
+	COpenGLShader* defaultShader = renderOpenGL->FindShader(L"IDR_GLSL_TEXTURE", GL_FRAGMENT_SHADER);
+	if (defaultShader != nullptr)
+	{
+		defaultShader->EnableShader(renderOpenGL->projectionMatrix);
+		defaultShader->m_pShader->SetTexture("sourceTex", textureArrowRight->GetTextureID(), 0);
+	}
+
+	renderOpenGL->RenderQuad(textureArrowRight.get(), left, top);
+
+	if (defaultShader != nullptr) defaultShader->DisableShader();
+	textureArrowRight->Disable();
 	glDisable(GL_BLEND);
 }
 
@@ -199,12 +154,23 @@ void CRenderBitmapOpenGL::ShowArrowPrevious()
 	const int left = 0;
 	const int top = (renderOpenGL->GetHeight() - textureArrowLeft->GetHeight()) / 2;
 
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowLeft->Enable();
-	renderOpenGL->RenderQuad(textureArrowLeft.get(), left, top);
-	textureArrowLeft->Disable();
 
+	// Activer le shader par défaut pour dessiner la texture en Core Profile
+	COpenGLShader* defaultShader = renderOpenGL->FindShader(L"IDR_GLSL_TEXTURE", GL_FRAGMENT_SHADER);
+	if (defaultShader != nullptr)
+	{
+		defaultShader->EnableShader(renderOpenGL->projectionMatrix);
+		defaultShader->m_pShader->SetTexture("sourceTex", textureArrowLeft->GetTextureID(), 0);
+	}
+
+	renderOpenGL->RenderQuad(textureArrowLeft.get(), left, top);
+
+	if (defaultShader != nullptr) defaultShader->DisableShader();
+	textureArrowLeft->Disable();
 	glDisable(GL_BLEND);
 }

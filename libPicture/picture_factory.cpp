@@ -244,7 +244,6 @@ cv::Mat ImageConverter::WxToCvMat(const wxImage& wx)
 
 wxImage ImageConverter::CvMatToWx(cv::Mat& img)
 {
-    wxImage wx;
     cv::Mat im2, alpha;
 
     if (img.channels() == 1)
@@ -260,20 +259,20 @@ wxImage ImageConverter::CvMatToWx(cv::Mat& img)
         cvtColor(img, im2, cv::COLOR_BGR2RGB);
 
     const long imsize = im2.rows * im2.cols * im2.channels();
+    // Laissez wxImage allouer sa propre mémoire proprement en interne, pas de malloc manuel !
+    wxImage wx(im2.cols, im2.rows, false);
+
+    // Recopier les données directement dans le buffer géré par wxImage
+    memcpy(wx.GetData(), im2.data, imsize);
 
     if (img.channels() == 4)
     {
-        wx = wxImage(im2.cols, im2.rows, static_cast<unsigned char*>(malloc(imsize)), false);
-        memcpy(wx.GetData(), im2.data, imsize);
+        // wxImage utilise 'new[]' pour l'alpha, il s'en occupera à la destruction
         unsigned char* wxalpha = new unsigned char[im2.rows * im2.cols];
         memcpy(wxalpha, alpha.data, im2.rows * im2.cols);
         wx.SetAlpha(wxalpha);
     }
-    else
-    {
-        wx = wxImage(im2.cols, im2.rows, static_cast<unsigned char*>(malloc(imsize)), false);
-        memcpy(wx.GetData(), im2.data, imsize);
-    }
+
     return wx;
 }
 
@@ -1110,21 +1109,26 @@ void ImageLoader::Load(const wxString& fileName, bool isThumbnail,
                     std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(fileName);
                     if (_compressedImage.size() > 0)
                     {
+                        cv::Mat picture;
                         int jpegSubsamp, w = 0, h = 0;
+                        // Déplacer les méthodes à risque à l'intérieur du try
                         tjhandle dec = tjInitDecompress();
-                        tjDecompressHeader2(dec, &_compressedImage.at(0), _compressedImage.size(),
-                                            &w, &h, &jpegSubsamp);
-                        ImageConverter::AdjustSizeToJpegScalingFactors(w, h);
+                        if (dec) {
+                            try {
+                                tjDecompressHeader2(dec, &_compressedImage.at(0), _compressedImage.size(), &w, &h, &jpegSubsamp);
+                                ImageConverter::AdjustSizeToJpegScalingFactors(w, h); // Sécurisé par le catch
 
-                        cv::Mat picture(h, w, CV_8UC4);
-                        try
-                        {
-                            tjDecompress2(dec, &_compressedImage.at(0), _compressedImage.size(),
-                                          picture.data, w, 0, h,
-                                          TJPF_BGRX, TJFLAG_FASTDCT);
+                                picture.create(h, w, CV_8UC4);
+                                tjDecompress2(dec, &_compressedImage.at(0), _compressedImage.size(), picture.data, w, 0, h, TJPF_BGRX, TJFLAG_FASTDCT);
+
+                                bitmap->SetPicture(picture);
+                                bitmap->SetFilename(fileName);
+                            }
+                            catch (...) {
+                                std::cout << "Erreur de décompression TurboJPEG" << std::endl;
+                            }
+                            tjDestroy(dec); // Toujours exécuté
                         }
-                        catch (...) {}
-                        tjDestroy(dec);
 
                         bitmap->SetPicture(picture);
                         bitmap->SetFilename(fileName);

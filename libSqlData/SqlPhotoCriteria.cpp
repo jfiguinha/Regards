@@ -15,7 +15,7 @@ CSqlPhotoCriteria::CSqlPhotoCriteria()
 bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew,
 	bool criteriaUpdate, const int& numFolder)
 {
-	CSqlTransaction sqlTransaction;
+	CSqlTransaction sqlTransaction(m_databaseName);
 	CSqlPhotos sqlPhoto(this->m_transaction, this->m_useTransaction);
 	CSqlCriteria sqlCriteria(this->m_transaction, this->m_useTransaction);
 

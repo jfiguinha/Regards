@@ -112,6 +112,15 @@
     <ClCompile Include="PhotoCriteriaUtility.cpp">
       <Filter>ExifModification</Filter>
     </ClCompile>
+    <ClCompile Include="ZoomEffectTexture.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveTextureFilter.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="GlassLensFilter.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -245,6 +254,15 @@
     </ClInclude>
     <ClInclude Include="PhotoCriteriaUtility.h">
       <Filter>ExifModification</Filter>
+    </ClInclude>
+    <ClInclude Include="ZoomEffectTexture.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveTextureFilter.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="GlassLensFilter.h">
+      <Filter>Bitmap\PostEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

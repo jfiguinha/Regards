@@ -215,7 +215,7 @@ wxString CSqlLib::escapeSqlite(const wxString& str)
     return result;
 }
 
-bool CSqlLib::ExecuteSqlWithStatement(
+int CSqlLib::ExecuteSqlWithStatement(
     const wxString& query,
     std::vector<std::unique_ptr<CSqlParameter>>& parameters, CSqlResult* result)
 {

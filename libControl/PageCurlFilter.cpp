@@ -29,40 +29,62 @@ CPageCurlFilter::~CPageCurlFilter()
 }
 
 void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
-                                    const int& width, const int& height, const int& left, const int& top)
+	const int& width, const int& height, const int& left, const int& top)
 {
-	pictureFirst->Enable();
-	pictureNext->Enable();
-	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_PAGECURL");
-	if (m_pShader != nullptr)
+	// 1. Configuration des unités de texture (Multi-texturing Core Profile)
+	glActiveTexture(GL_TEXTURE0);
+	pictureFirst->Enable(); // Lié à l'unité 0
+
+	glActiveTexture(GL_TEXTURE1);
+	pictureNext->Enable();  // Lié à l'unité 1
+
+	// Activation du blending pour gérer les ombres transparentes de la page cornée
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// 2. Récupération et configuration du shader
+	COpenGLShader* shader = renderOpenGL->FindShader(L"IDR_GLSL_PAGECURL", GL_FRAGMENT_SHADER);
+	if (shader != nullptr)
 	{
-		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("sourceTex", pictureFirst->GetTextureID(),0))
+		// Envoi de la matrice de projection via votre accesseur
+		shader->EnableShader(renderOpenGL->GetProjectionMatrix());
+
+		// Liaison explicite des échantillonneurs aux unités correspondantes (0 et 1)
+		if (!shader->m_pShader->SetTexture("sourceTex", pictureFirst->GetTextureID(), 0))
 		{
-			printf("SetTexture sourceTex failed \n ");
+			printf("SetTexture sourceTex failed \n");
 		}
-		if (!m_pShader->SetTexture("targetTex", pictureNext->GetTextureID(),1))
+		if (!shader->m_pShader->SetTexture("targetTex", pictureNext->GetTextureID(), 1))
 		{
-			printf("SetTexture sourceTex failed \n ");
+			printf("SetTexture targetTex failed \n");
 		}
-		if (!m_pShader->SetParam("time", time))
+		if (!shader->m_pShader->SetParam("time", time))
 		{
-			printf("SetParam intensity failed \n ");
+			printf("SetParam time failed \n");
 		}
-		if (!m_pShader->SetParam("invertTex", invert))
+		if (!shader->m_pShader->SetParam("invertTex", invert))
 		{
-			printf("SetParam intensity failed \n ");
+			printf("SetParam invertTex failed \n");
 		}
 	}
 
-	renderOpenGL->ShowSecondBitmap(pictureNext.get(), width, height, left, top, true);
+	// 3. CORRECTION : Utilisation du pipeline moderne RenderQuad au lieu de ShowSecondBitmap
+	// Signature à 8 arguments issue de votre classe : 
+	// RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH, const bool& flipV, int left, int top, bool inverted)
+	renderOpenGL->GetRenderOpengl()->RenderQuad(pictureFirst.get(), width, height, false, false, left, top, false);
 
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
+	// 4. Nettoyage des états OpenGL
+	if (shader != nullptr)
+		shader->DisableShader();
 
-	//glDisable(GL_BLEND);
-	pictureFirst->Disable();
-	pictureNext->Disable();
+	glDisable(GL_BLEND);
+
+	// Désactivation propre des unités de texture
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 int CPageCurlFilter::GetTypeFilter()

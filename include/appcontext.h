@@ -276,8 +276,25 @@ public:
 	bool isGPsAvailable = false;
 	double value[256];
 	wxString special_key = "map=6";
+
+	void SetInterpolationMethod(int method)
+	{
+		if (method > 10)
+			videoInterpolationMethod = 10;
+		else
+			videoInterpolationMethod = method;
+	}
+
+	int GetInterpolationMethod()
+	{
+		return videoInterpolationMethod;
+	}
+
+	//int videoInterpolationMethod = SWS_BILINEAR; //SWS_FAST_BILINEAR
+
 private:
 
+	int videoInterpolationMethod = 0;
 	cv::Mat defaultPictureMat;
 	cv::Mat defaultPictureMatThumbnailPicture;
 	cv::Mat defaultPictureMatThumbnailVideo;

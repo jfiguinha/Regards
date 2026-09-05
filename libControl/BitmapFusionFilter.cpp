@@ -102,7 +102,7 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 	
 
 	if (renderOpenGL != nullptr)
-		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor,
+		renderOpenGL->RenderTextureWithAlpha(GetTexture(0), etape, out.width * scale_factor,
 		                                        out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 }
 

@@ -99,13 +99,15 @@ std::vector<uint8_t> CRegardsRaw::GetThumbnail(const string& fileName, int& outp
 				}
 				else if (thumb->type == LIBRAW_IMAGE_BITMAP)
 				{
-					std::vector<uint8_t> data;
 					outputFormat = BITMAPOUTPUT;
 					write_ppm(thumb, data);
 				}
+                rawProcessor->dcraw_clear_mem(thumb);
 			}
 			else
 				outputFormat = NOTHUMBNAIL;
+
+           
 		}
 	}
 

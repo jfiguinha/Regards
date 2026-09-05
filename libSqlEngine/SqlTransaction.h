@@ -1,40 +1,49 @@
 #pragma once
+#include <wx/string.h>
+
 namespace Regards
 {
     namespace Sqlite
     {
-        class CSqlExecuteRequest;
+        class CSqlLib;
 
         class CSqlTransaction
         {
         public:
-
-
-
-            CSqlTransaction()
+            // CORRECTION CRITIQUE : Le constructeur requiert désormais explicitement la base cible
+            explicit CSqlTransaction(const wxString& databaseName)
+                : m_databaseName(databaseName)
+                , m_transaction(nullptr)
+                , m_useTransaction(false)
+                , m_committed(false)
             {
                 BeginTransaction();
             }
 
             ~CSqlTransaction()
             {
-                if (!committed)
+                if (!m_committed && m_useTransaction)
                     RollbackTransaction();
             }
+
             void commit()
             {
-                CommitTransaction();
-                committed = true;
+                if (!m_committed && m_useTransaction)
+                {
+                    CommitTransaction();
+                    m_committed = true;
+                }
             }
 
         private:
-
-
-            void BeginTransaction();   // non-static, cohérent avec l'état membre
-            void CommitTransaction();  // faute corrigée
+            void BeginTransaction();
+            void CommitTransaction();
             void RollbackTransaction();
 
-            bool committed = false;
+            wxString m_databaseName;
+            CSqlLib* m_transaction;
+            bool m_useTransaction;
+            bool m_committed;
         };
     }
 }

@@ -30,7 +30,7 @@ namespace Regards
             virtual bool CheckVersion(const wxString& filename) { return false; }
 
             bool RecoverDatabaseFile(const wxString& filename);
-            bool ExecuteSqlWithStatement(const wxString& query, std::vector<std::unique_ptr<CSqlParameter>>& parameter, CSqlResult* result = nullptr);
+            int  ExecuteSqlWithStatement(const wxString& query, std::vector<std::unique_ptr<CSqlParameter>>& parameter, CSqlResult* result = nullptr);
             int  ExecuteSQLWithNoResult(const wxString& query);
             int  ExecuteSQLSelect(const wxString& query, CSqlResult* result);
             bool ExecuteSQLBlobInsert(const wxString& query, int numCol,

@@ -15,6 +15,8 @@ using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
+const wxString REGARDS_DB_INS_NAME = L"RegardsDB";
+
 #define SQL_CREATE_VERSION_TABLE "CREATE TABLE VERSION (libelle NVARCHAR(255) PRIMARY KEY)"
 #define SQL_DROP_VERSION	"DROP TABLE VERSION"
 
@@ -526,7 +528,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString& databasePath, const bool& m
 	if (!OpenConnection(databasePath, false, m_loadInMemory))
 		return false;
 
-	CSqlTransaction sqlTransaction;
+	CSqlTransaction	sqlTransaction(REGARDS_DB_INS_NAME);
 
 	int hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOFOLDER_TABLE);
 	if (hr == -1)

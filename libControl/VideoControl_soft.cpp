@@ -879,11 +879,12 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	}
 
 	
-	if (needToRefresh && pause)
+	// Capture atomique de l'état pour éviter les entrelacements
+	if (pause && needToRefresh.exchange(false))
 	{
 		parentRender->Refresh();
-		needToRefresh = false;
 	}
+
     needToRefresh = false;
 }
 

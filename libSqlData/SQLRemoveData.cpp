@@ -14,7 +14,7 @@
 #include "SqlTransaction.h"
 using namespace Regards::Sqlite;
 using namespace Regards::Sqlite;
-
+const wxString REGARDS_DB_INS_NAME = L"RegardsDB";
 
 
 // ── Suppression face (factorisée) ───────────────────────────────────────────
@@ -41,7 +41,7 @@ bool CSQLRemoveData::DeleteFaceData()
 bool CSQLRemoveData::DeleteCatalog(int numCatalog)
 {
     bool ok = true;
-    CSqlTransaction sqlTransaction;
+    CSqlTransaction sqlTransaction(REGARDS_DB_INS_NAME);
 
     ok &= CSqlThumbnail().EraseThumbnail();
     ok &= CSqlThumbnailVideo().EraseThumbnail();
@@ -64,7 +64,7 @@ bool CSQLRemoveData::DeleteCatalog(int numCatalog)
 
 bool CSQLRemoveData::DeleteFaceDatabase()
 {
-    CSqlTransaction sqlTransaction;
+    CSqlTransaction sqlTransaction(REGARDS_DB_INS_NAME);
     bool ok = DeleteFaceData();
     sqlTransaction.commit();
     return ok;
@@ -74,7 +74,7 @@ bool CSQLRemoveData::DeleteFaceDatabase()
 
 bool CSQLRemoveData::DeleteFolder(int numFolder)
 {
-    CSqlTransaction sqlTransaction;
+    CSqlTransaction sqlTransaction(REGARDS_DB_INS_NAME);
     bool ok = true;
 
     ok &= CSqlThumbnail().EraseFolderThumbnail(numFolder);
@@ -102,7 +102,7 @@ bool CSQLRemoveData::DeleteFolder(int numFolder)
 bool CSQLRemoveData::DeleteListPhoto(const std::vector<int>& listPhoto,
     CriteriaVector* criteriaVector)
 {
-    CSqlTransaction sqlTransaction;
+    CSqlTransaction sqlTransaction(REGARDS_DB_INS_NAME);
     bool ok = true;
 
     CSqlFacePhoto().DeleteListOfPhoto(listPhoto);

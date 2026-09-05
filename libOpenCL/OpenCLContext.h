@@ -53,6 +53,7 @@ namespace Regards
             cl_command_queue commandQueue = nullptr;
             std::map<wxString, cv::ocl::Program> openclBinaryMapping;
             cv::ocl::OpenCLExecutionContext clExecCtx;
+            std::mutex programMutex;
 
             void CreateCommandQueue(
                 cl_command_queue_properties queue_properties = 0);

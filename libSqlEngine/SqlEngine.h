@@ -1,4 +1,8 @@
 #pragma once
+#include <unordered_map>
+#include <memory>
+#include <mutex> // <-- Ajout du support de synchronisation
+#include <wx/string.h>
 
 namespace Regards
 {
@@ -9,12 +13,6 @@ namespace Regards
 		class CSqlEngine
 		{
 		public:
-			struct DataBase
-			{
-				CSqlLib* _singleton;
-				wxString baseName;
-			};
-
 			CSqlEngine() = delete;
 			virtual ~CSqlEngine() = default;
 
@@ -22,9 +20,9 @@ namespace Regards
 			static bool Initialize(const wxString& filename, const wxString& baseName, CSqlLib* sqlLib);
 			static void kill(const wxString& baseName);
 
-
 		private:
 			static std::unordered_map<wxString, std::unique_ptr<CSqlLib>> _bases;
+			static std::mutex _engineMutex; // <-- Mutex global pour sécuriser la map
 		};
 	}
 }

@@ -495,64 +495,6 @@ std::vector<int> CFaceDetector::FindFace(const Mat& pBitmap, const wxString& fil
 					if (resizedImage.empty())
 						continue;
 
-					/*
-					try
-					{
-
-
-						std::vector<cv::Rect> faces;
-						faces.emplace_back(
-							0,
-							0,
-							resizedImage.cols,
-							resizedImage.rows);
-
-						std::vector<std::vector<cv::Point2f>> landmarkList;
-
-						{
-							std::lock_guard<std::mutex> lock(muFaceMark);
-
-							if (!facemark->fit(
-								resizedImage,
-								faces,
-								landmarkList))
-							{
-								continue;
-							}
-						}
-
-						if (landmarkList.empty() ||
-							landmarkList[0].size() != 68)
-						{
-							continue;
-						}
-
-						const auto sfaceLandmarks =
-							GetSFaceLandmarks(landmarkList[0]);
-
-						if (sfaceLandmarks.size() != 5)
-							continue;
-
-						cv::Mat alignedFace;
-
-						faceRecognizer->alignCrop(
-							resizedImage,
-							sfaceLandmarks,
-							alignedFace);
-
-						if (alignedFace.empty())
-							continue;
-
-						resizedImage = alignedFace;
-
-					}
-					catch (cv::Exception& e)
-					{
-						printf("CFaceDetector::FindFace exception: %s\n", e.what());
-						source(face.myROI).copyTo(resizedImage);
-					}
-					*/
-
 					float bestConfidence = 0;
 					Mat resizedBgra;
 					cvtColor(resizedImage, resizedBgra, COLOR_BGR2BGRA);

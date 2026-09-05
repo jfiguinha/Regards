@@ -89,7 +89,7 @@ namespace Regards
 			                                  vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 
 
-			static bool isUsed;
+			
 			static int numTexture;
 
 		protected:

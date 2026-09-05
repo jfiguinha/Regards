@@ -1,138 +1,82 @@
 //
 //To Optimize : https://zz85.github.io/glsl-optimizer/
 //
+#version 330 core // Passage au mode moderne Core
 
-#version 150 compatibility
 uniform sampler2D sourceTex;
 uniform sampler2D targetTex;
 
 uniform float time;  // 0.0 -> 100.0
 uniform float invertTex;
 
-// -----------------------------------------------------------------------------
-// Constants
-// -----------------------------------------------------------------------------
-
 const float PI = 3.14159265358979323846;
-
 const float MIN_AMOUNT = -0.16;
 const float MAX_AMOUNT = 1.30;
-
 const float SCALE = 512.0;
 const float SHARPNESS = 3.0;
-
 const float CYLINDER_RADIUS = 1.0 / (PI * 2.0);
 
-// -----------------------------------------------------------------------------
-// Animation
-// -----------------------------------------------------------------------------
-
 float amount = (time / 100.0) * (MAX_AMOUNT - MIN_AMOUNT) + MIN_AMOUNT;
-
-// Position of the cylinder
 float cylinderCenter = amount;
-
-// Rotation of the cylinder
 float cylinderAngle = 2.0 * PI * amount;
 
-// -----------------------------------------------------------------------------
-// Texture coordinates
-// -----------------------------------------------------------------------------
+in vec2 TexCoord; // Reu du Vertex Shader gnrique
+out vec4 FragColor;
 
 vec2 TextureCoordonnee() {
-  vec2 coord = gl_TexCoord[0].xy;
-
+  vec2 coord = TexCoord.xy;
   if (invertTex == 1.0) coord.y = 1.0 - coord.y;
-
   return coord;
 }
 
-vec2 TextureTargetCoordonnee() { return gl_TexCoord[0].xy; }
-
-// -----------------------------------------------------------------------------
-// Convert an angle into a position on the curled page
-// -----------------------------------------------------------------------------
+vec2 TextureTargetCoordonnee() { return TexCoord.xy; }
 
 vec3 hitPoint(float hitAngle, float yc, vec3 point, mat3 rrotation) {
   point.y = hitAngle / (2.0 * PI);
-
   return rrotation * point;
 }
 
-// -----------------------------------------------------------------------------
-// Anti-aliasing
-// -----------------------------------------------------------------------------
-
 vec4 antiAlias(vec4 color1, vec4 color2, float distance) {
   distance *= SCALE;
-
   if (distance < 0.0) return color2;
-
   if (distance > 2.0) return color1;
-
   float dd = pow(1.0 - distance / 2.0, SHARPNESS);
-
   return color1 + (color2 - color1) * dd;
 }
 
-// -----------------------------------------------------------------------------
-// Distance from a point to the page edge
-// -----------------------------------------------------------------------------
-
 float distanceToEdge(vec3 point) {
   float dx = abs(point.x > 0.5 ? 1.0 - point.x : point.x);
-
   float dy = abs(point.y > 0.5 ? 1.0 - point.y : point.y);
 
   if (point.x < 0.0) dx = -point.x;
-
   if (point.x > 1.0) dx = point.x - 1.0;
-
   if (point.y < 0.0) dy = -point.y;
-
   if (point.y > 1.0) dy = point.y - 1.0;
 
   if ((point.x < 0.0 || point.x > 1.0) && (point.y < 0.0 || point.y > 1.0)) {
     return sqrt(dx * dx + dy * dy);
   }
-
   return min(dx, dy);
 }
 
-// -----------------------------------------------------------------------------
-// Page visible through the curled surface
-// -----------------------------------------------------------------------------
-
 vec4 seeThrough(float yc, vec2 p, mat3 rotation, mat3 rrotation) {
   float hitAngle = PI - (acos(yc / CYLINDER_RADIUS) - cylinderAngle);
-
   vec3 point = hitPoint(hitAngle, yc, rotation * vec3(p, 1.0), rrotation);
 
-  // The target page is visible outside the source page.
-  if (yc <= 0.0 &&
-      (point.x < 0.0 || point.y < 0.0 || point.x > 1.0 || point.y > 1.0)) {
-    return texture2D(targetTex, TextureTargetCoordonnee());
+  if (yc <= 0.0 && (point.x < 0.0 || point.y < 0.0 || point.x > 1.0 || point.y > 1.0)) {
+    return texture(targetTex, TextureTargetCoordonnee());
   }
 
-  // Front side of the page.
   if (yc > 0.0) {
-    return texture2D(sourceTex, p);
+    return texture(sourceTex, p);
   }
 
-  // Back edge of the source page.
-  vec4 color = texture2D(sourceTex, point.xy);
-
+  vec4 color = texture(sourceTex, point.xy);
   return antiAlias(color, vec4(0.0), distanceToEdge(point));
 }
 
-// -----------------------------------------------------------------------------
-// Page visible through the curled surface with shadow
-// -----------------------------------------------------------------------------
-
-vec4 seeThroughWithShadow(float yc, vec2 p, vec3 point, mat3 rotation,
-                          mat3 rrotation) {
+vec4 seeThroughWithShadow(float yc, vec2 p, vec3 point, mat3 rotation, mat3 rrotation) {
   float shadow = distanceToEdge(point) * 30.0;
-
   shadow = (1.0 - shadow) / 3.0;
 
   if (shadow < 0.0) {
@@ -142,191 +86,93 @@ vec4 seeThroughWithShadow(float yc, vec2 p, vec3 point, mat3 rotation,
   }
 
   vec4 color = seeThrough(yc, p, rotation, rrotation);
-
   color.rgb -= vec3(shadow);
-
   return color;
 }
-
-// -----------------------------------------------------------------------------
-// Back side of the page
-// -----------------------------------------------------------------------------
 
 vec4 backside(float yc, vec3 point) {
-  vec4 color = texture2D(sourceTex, point.xy);
-
+  vec4 color = texture(sourceTex, point.xy);
   float gray = (color.r + color.g + color.b) / 15.0;
-
   gray += 0.8 * (pow(1.0 - abs(yc / CYLINDER_RADIUS), 0.2) / 2.0 + 0.5);
-
   color.rgb = vec3(gray);
-
   return color;
 }
-
-// -----------------------------------------------------------------------------
-// Surface behind the curled page
-// -----------------------------------------------------------------------------
 
 vec4 behindSurface(float yc, vec3 point, mat3 rrotation) {
   float shadow = (1.0 - ((-CYLINDER_RADIUS - yc) / amount * 7.0)) / 6.0;
-
   shadow *= 1.0 - abs(point.x - 0.5);
-
   yc = -CYLINDER_RADIUS - CYLINDER_RADIUS - yc;
 
   float hitAngle = (acos(yc / CYLINDER_RADIUS) + cylinderAngle) - PI;
-
   point = hitPoint(hitAngle, yc, point, rrotation);
 
   if (yc < 0.0 && point.x >= 0.0 && point.y >= 0.0 && point.x <= 1.0 &&
       point.y <= 1.0 && (hitAngle < PI || amount > 0.5)) {
-    shadow = 1.0 - (sqrt((point.x - 0.5) * (point.x - 0.5) +
-                         (point.y - 0.5) * (point.y - 0.5)) /
-                    0.71);
-
+    shadow = 1.0 - (sqrt((point.x - 0.5) * (point.x - 0.5) + (point.y - 0.5) * (point.y - 0.5)) / 0.71);
     shadow *= pow(-yc / CYLINDER_RADIUS, 3.0);
-
     shadow *= 0.5;
   } else {
     shadow = 0.0;
   }
 
-  return vec4(texture2D(targetTex, TextureTargetCoordonnee()).rgb - shadow,
-              1.0);
+  return vec4(texture(targetTex, TextureTargetCoordonnee()).rgb - shadow, 1.0);
 }
 
-// -----------------------------------------------------------------------------
-// Main
-// -----------------------------------------------------------------------------
-
 void main(void) {
-  // -------------------------------------------------------------------------
-  // Fixed page inclination
-  // -------------------------------------------------------------------------
-
   const float angle = 30.0 * PI / 180.0;
 
   float c = cos(-angle);
   float s = sin(-angle);
-
   mat3 rotation = mat3(c, s, 0.0, -s, c, 0.0, 0.12, 0.258, 1.0);
 
   c = cos(angle);
   s = sin(angle);
-
   mat3 rrotation = mat3(c, s, 0.0, -s, c, 0.0, 0.15, -0.5, 1.0);
 
-  // -------------------------------------------------------------------------
-  // Transform current texture coordinate
-  // -------------------------------------------------------------------------
-
   vec2 targetCoord = TextureTargetCoordonnee();
-
   vec3 point = rotation * vec3(targetCoord, 1.0);
-
   float yc = point.y - cylinderCenter;
 
-  // -------------------------------------------------------------------------
-  // Behind the curled surface
-  // -------------------------------------------------------------------------
-
   if (yc < -CYLINDER_RADIUS) {
-    gl_FragColor = behindSurface(yc, point, rrotation);
-
+    FragColor = behindSurface(yc, point, rrotation);
     return;
   }
-
-  // -------------------------------------------------------------------------
-  // Page is still flat
-  // -------------------------------------------------------------------------
 
   if (yc > CYLINDER_RADIUS) {
-    gl_FragColor = texture2D(sourceTex, TextureCoordonnee());
-
+    FragColor = texture(sourceTex, TextureCoordonnee());
     return;
   }
-
-  // -------------------------------------------------------------------------
-  // Position on the cylinder
-  // -------------------------------------------------------------------------
 
   float hitAngle = (acos(yc / CYLINDER_RADIUS) + cylinderAngle) - PI;
-
   float hitAngleMod = mod(hitAngle, 2.0 * PI);
 
-  // -------------------------------------------------------------------------
-  // Target page / transparent part
-  // -------------------------------------------------------------------------
-
-  if ((hitAngleMod > PI && amount < 0.5) ||
-      (hitAngleMod > PI / 2.0 && amount < 0.0)) {
-    gl_FragColor = seeThrough(yc, TextureCoordonnee(), rotation, rrotation);
-
+  if ((hitAngleMod > PI && amount < 0.5) || (hitAngleMod > PI / 2.0 && amount < 0.0)) {
+    FragColor = seeThrough(yc, TextureCoordonnee(), rotation, rrotation);
     return;
   }
-
-  // -------------------------------------------------------------------------
-  // Project the point onto the curled page
-  // -------------------------------------------------------------------------
 
   point = hitPoint(hitAngle, yc, point, rrotation);
 
-  // -------------------------------------------------------------------------
-  // Outside the page
-  // -------------------------------------------------------------------------
-
   if (point.x < 0.0 || point.y < 0.0 || point.x > 1.0 || point.y > 1.0) {
-    gl_FragColor = seeThroughWithShadow(yc, TextureCoordonnee(), point,
-                                        rotation, rrotation);
-
+    FragColor = seeThroughWithShadow(yc, TextureCoordonnee(), point, rotation, rrotation);
     return;
   }
 
-  // -------------------------------------------------------------------------
-  // Back side of the page
-  // -------------------------------------------------------------------------
-
   vec4 color = backside(yc, point);
-
-  // -------------------------------------------------------------------------
-  // Shadow on the page
-  // -------------------------------------------------------------------------
-
   vec4 otherColor;
 
   if (yc < 0.0) {
-    float shadow = 1.0 - (sqrt((point.x - 0.5) * (point.x - 0.5) +
-                               (point.y - 0.5) * (point.y - 0.5)) /
-                          0.71);
-
+    float shadow = 1.0 - (sqrt((point.x - 0.5) * (point.x - 0.5) + (point.y - 0.5) * (point.y - 0.5)) / 0.71);
     shadow *= pow(-yc / CYLINDER_RADIUS, 3.0);
-
     shadow *= 0.5;
-
     otherColor = vec4(0.0, 0.0, 0.0, shadow);
   } else {
-    otherColor = texture2D(sourceTex, TextureCoordonnee());
+    otherColor = texture(sourceTex, TextureCoordonnee());
   }
 
-  // -------------------------------------------------------------------------
-  // Cylinder edge anti-aliasing
-  // -------------------------------------------------------------------------
-
   color = antiAlias(color, otherColor, CYLINDER_RADIUS - abs(yc));
-
-  // -------------------------------------------------------------------------
-  // Surface visible through the page
-  // -------------------------------------------------------------------------
-
-  vec4 throughColor =
-      seeThroughWithShadow(yc, TextureCoordonnee(), point, rotation, rrotation);
-
+  vec4 throughColor = seeThroughWithShadow(yc, TextureCoordonnee(), point, rotation, rrotation);
   float edgeDistance = distanceToEdge(point);
 
-  // -------------------------------------------------------------------------
-  // Final result
-  // -------------------------------------------------------------------------
-
-  gl_FragColor = antiAlias(color, throughColor, edgeDistance);
+  FragColor = antiAlias(color, throughColor, edgeDistance);
 }

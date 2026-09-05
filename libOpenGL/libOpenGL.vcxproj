@@ -583,6 +583,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="GLCharacter.h" />
     <ClInclude Include="GLSLParameter.h" />
     <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="GLTexture.h" />

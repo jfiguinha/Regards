@@ -78,6 +78,12 @@
   </VirtualDirectory>
   <VirtualDirectory Name="ShowBitmap">
     <VirtualDirectory Name="PostEffect">
+      <File Name="GlassLensFilter.h"/>
+      <File Name="WaveTextureFilter.h"/>
+      <File Name="ZoomEffectTexture.h"/>
+      <File Name="ZoomEffectTexture.cpp"/>
+      <File Name="WaveTextureFilter.cpp"/>
+      <File Name="GlassLensFilter.cpp"/>
       <File Name="AfterEffect.cpp"/>
       <File Name="NoneEffectTextureEffect.h"/>
       <File Name="MoveEffectTexture.h"/>

@@ -65,10 +65,8 @@ namespace Regards
 
 			virtual void OnIdle(wxIdleEvent& evt)
 			{
-				if (endProgram)
+				if (endProgram || GetProcessStop())
 					return;
-
-
 
 				IdleFunction();
 

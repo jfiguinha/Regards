@@ -2,7 +2,8 @@
 #include "FFmpegVideoThumb.h"
 #include <ConvertUtility.h>
 #include <opencv2/imgproc.hpp>
-
+#include <appcontext.h>
+extern AppContext application_context;
 using namespace Regards::Video;
 
 // ---------------------------------------------------------------------------
@@ -130,7 +131,7 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
     // --- Contexte de conversion de format de pixel ---
     sws_ctx_ = sws_getContext(width_, height_, codec_ctx_->pix_fmt,
                                width_, height_, AV_PIX_FMT_BGR24,
-                               SWS_BILINEAR, nullptr, nullptr, nullptr);
+                               application_context.GetInterpolationMethod(), nullptr, nullptr, nullptr);
     if (!sws_ctx_)
     {
         av_freep(&buf); // buf est géré manuellement ici

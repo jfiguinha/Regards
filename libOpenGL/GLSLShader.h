@@ -6,35 +6,30 @@ namespace Regards
 {
 	namespace OpenGL
 	{
-		// Shader class handles creating of a Shader, and parameter setting to the 
-		// GLSL Shader. This class uses GLExtension for calling opengl extension functions.
 		class GLSLShader
 		{
 		public:
 			GLSLShader(void);
-			// nProgramID_i is the resource ID of Shader.
-			// glSlShaderType_i should be GL_FRAGMENT_PROGRAM_ARB, GL_VERTEX_PROGRAM_ARB
+			~GLSLShader(void);
+
 			bool CreateProgram(const wxString& nProgramID_i, GLenum glSlShaderType_i);
 			bool DeleteShader();
 			bool EnableShader();
 			bool DisableShader();
-            bool IsOk();
-			// This function attach a texture to shader parameter.
-			// pParamName_i is parameter name given in shader.
+			bool IsOk();
+
 			bool SetTexture(const char* name, GLuint textureID, GLuint textureUnit);
-			// This function passes a float value to Shader float parameter.
 			bool SetParam(const char* pParamName_i, float fValue_i);
 			bool SetFloatVectorParam(const char* pParamName_i, int size, float* tabVecs);
 			bool SetIntVectorParam(const char* pParamName_i, int size, int* tabVecs);
 			bool SetIntegerParam(const char* pParamName_i, int iValue_i);
-            bool SetVec3Param(const char* pParamName_i, vec3f iValue_i);
-            bool SetMatrixParam(const char* pParamName_i, const float* tabVecs);
+			bool SetVec3Param(const char* pParamName_i, vec3f iValue_i);
+			bool SetMatrixParam(const char* pParamName_i, const float* tabVecs);
+
 			GLuint GetProgramId()
 			{
 				return m_hProgramObject;
 			}
-
-			~GLSLShader(void);
 
 		private:
 			bool CreateComputeProgram(const wxString& nProgramID_i);
@@ -48,7 +43,7 @@ namespace Regards
 			GLuint m_hVertexHandle;
 			GLuint m_hComputeHandle;
 
-            bool isOk = false;
+			bool isOk = false;
 			bool isLink = false;
 		};
 	}

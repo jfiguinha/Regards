@@ -15,6 +15,18 @@ using namespace Regards::OpenGL;
 class IAfterEffect
 {
 public:
+    
+    static void CheckGLError(const char* where)
+    {
+        GLenum error;
+
+        while ((error = glGetError()) != GL_NO_ERROR)
+        {
+            printf("%s : OpenGL error = 0x%04X\n",
+                   where,
+                   static_cast<unsigned int>(error));
+        }
+    }
 
 	IAfterEffect();
 
@@ -51,6 +63,6 @@ public:
 
 protected:
 	
-	static std::unique_ptr<GLTexture> pictureNext;
-	static std::unique_ptr<GLTexture> pictureFirst;
+	std::unique_ptr<GLTexture> pictureNext;
+	std::unique_ptr<GLTexture> pictureFirst;
 };

@@ -1,0 +1,18 @@
+//
+//To Optimize : https://zz85.github.io/glsl-optimizer/
+//
+
+#version 330 core
+
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texCoord;
+
+uniform mat4 projection;
+
+out vec2 TexCoord;
+
+void main()
+{
+    TexCoord = texCoord;
+    gl_Position = projection * vec4(position.xy, 0.0, 1.0);
+}

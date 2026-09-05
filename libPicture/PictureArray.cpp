@@ -59,8 +59,9 @@ cv::UMat& CPictureArray::getUMat()
 {
 	if (kind == cv::_InputArray::KindFlag::MAT)
 	{
-		mat.copyTo(umat);
-		return umat;
+		// getUMat de OpenCV crée un pont d'accès direct sans copie synchrone forcée si possible
+		umat = mat.getUMat(cv::ACCESS_RW);
+		kind = cv::_InputArray::KindFlag::UMAT;
 	}
 	return umat;
 }
@@ -69,8 +70,8 @@ cv::Mat& CPictureArray::getMat()
 {
 	if (kind == cv::_InputArray::KindFlag::UMAT)
 	{
-		umat.copyTo(mat);
-		return mat;
+		mat = umat.getMat(cv::ACCESS_RW);
+		kind = cv::_InputArray::KindFlag::MAT;
 	}
 	return mat;
 }

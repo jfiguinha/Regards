@@ -11,6 +11,7 @@ using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
 
+
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB"), m_photosVector(nullptr), listPathFile(nullptr), listPhoto(nullptr)
 {
@@ -75,7 +76,7 @@ int CSqlInsertFile::GetNbPhotos()
 
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, const int& idFolder)
 {
-	CSqlTransaction sqlTransaction;
+	CSqlTransaction sqlTransaction(m_databaseName);
 	CLibPicture libPicture;
 
 	for (wxString filename : listFile)
@@ -105,7 +106,7 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString>& listFile, cons
 void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString& folder)
 {
 	CLibPicture libPicture;
-	CSqlTransaction sqlTransaction;
+	CSqlTransaction sqlTransaction(m_databaseName);
 
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOFOLDER");
 
@@ -173,7 +174,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog
 
 
 
-		CSqlTransaction sqlTransaction;
+		CSqlTransaction sqlTransaction(m_databaseName);
 		int i = 0;
 		for(wxString file : files)
 		{
@@ -220,8 +221,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow* parent, wxProgressDialog* dialog
 int CSqlInsertFile::ImportFileFromFolder(const wxString& folder, const int& idFolder, wxString& firstFile)
 {
 	CLibPicture libPicture;
-	CSqlTransaction sqlTransaction;
-
+	CSqlTransaction sqlTransaction(m_databaseName);
 	int i = 0;
 	wxArrayString files;
 

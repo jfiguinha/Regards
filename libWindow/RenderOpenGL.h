@@ -25,8 +25,35 @@ namespace Regards::OpenGL
 	class COpenGLShader
 	{
 	public:
+
+		bool EnableShader(const float* projectionMatrix)
+		{
+			bool isOk = true;
+
+			if (m_pShader)
+				isOk = m_pShader->EnableShader();
+
+			// Envoi automatique de la projection si elle est fournie
+			if (isOk && m_pShader && projectionMatrix != nullptr)
+			{
+				m_pShader->SetMatrixParam("projection", projectionMatrix);
+			}
+
+			return isOk;
+		}
+
+		bool DisableShader()
+		{
+			bool isOk = true;
+
+			if (m_pShader)
+				isOk = m_pShader->DisableShader();
+
+			return isOk;
+		}
 		wxString shaderName;
 		std::unique_ptr<GLSLShader> m_pShader = nullptr;
+
 	};
 
 	class CRenderOpenGL : public wxGLContext
@@ -53,8 +80,7 @@ namespace Regards::OpenGL
         int LoadFont(const wxString & fontName);
 		int GetWidth();
 		int GetHeight();
-		std::unique_ptr<GLSLShader> CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
-		GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
+		COpenGLShader * FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB, const wxString& vertexName = "IDR_GLSL_VERTEX");
 
 		//void RenderToTexture();
         void RenderText(wxString text, float x, float y, float scale, vec3f color);
@@ -71,9 +97,19 @@ namespace Regards::OpenGL
 
 		GLTexture* GetTextureDisplay();
 		COpenCLContext* GetOpenCLContext(){ return openCLContext.get(); };
+
+		// ============================================================
+		// MATRICES
+		//
+		// Matrice orthographique utilisée par les shaders modernes.
+		// ============================================================
+
+		float projectionMatrix[16] = { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+									  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
        
 	protected:
         
+		void UpdateProjectionMatrix();
 		void LoadCharacter(unsigned char c, CFreeTypeFace & face);
         void RenderCharacter(GLSLShader* m_pShader, GLTexture* glTexture, const float & left, const float & top, const float & scale, const vec3f & color);
 
@@ -100,5 +136,21 @@ namespace Regards::OpenGL
 		int widthFont = 0;
 		int heightFont = 0;
         std::map<GLchar, Character> Characters;
+
+		// À insérer dans la section protected ou private de CRenderOpenGL dans RenderOpenGL.h
+	protected:
+
+		float CalculateTextWidth(const wxString& text, float scale);
+
+		struct TextVertex {
+			float x, y;   // Position (Attribut 0)
+			float u, v;   // Coordonnées de texture (Attribut 1)
+		};
+
+		GLuint textVAO = 0;
+		GLuint textVBO = 0;
+		GLuint textEBO = 0;
+
+		void InitTextBuffers();
 	};
 }

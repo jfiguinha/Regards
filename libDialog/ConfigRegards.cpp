@@ -9,7 +9,8 @@
 #include <opencv2/core/ocl.hpp>
 #include <Gps.h>
 #include <MediaExtractor.h>
-
+#include <appcontext.h>
+extern AppContext application_context;
 using namespace Regards::Viewer;
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
@@ -331,6 +332,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
+	application_context.SetInterpolationMethod(interpolation);
 
 	int superDnn = cbUSESUPERDNNFILTER->GetSelection();
 	regardsParam->SetSuperResolutionType(superDnn);

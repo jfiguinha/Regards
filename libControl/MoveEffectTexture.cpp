@@ -7,7 +7,6 @@
 using namespace Regards::Filter;
 
 
-
 void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL,
                                            IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
                                            const bool& isNext, float& ratio)
@@ -34,16 +33,16 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 		int posMin = (bmpViewer->GetWidth() - out.width) / 2;
 		pos = (posMin * scale_factor) + bmpViewer->GetWidth() * (static_cast<float>(100 - etape) / 100.0f);
 		if (renderOpenGL != nullptr)
-			renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos,
-			                               out.y * scale_factor, false);
+			renderOpenGL->RenderTexture(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos,
+			                               out.y * scale_factor);
 	}
 	else
 	{
 		int xtexture = static_cast<float>(out.width) * scale_factor;
 		pos = (((out.x + xtexture) * scale_factor) * (static_cast<float>(etape) / 100.0f)) - xtexture;
 		if (renderOpenGL != nullptr)
-			renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos,
-			                               out.y * scale_factor, false);
+			renderOpenGL->RenderTexture(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos,
+			                               out.y * scale_factor);
 	}
 }
 

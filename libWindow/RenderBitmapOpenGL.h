@@ -16,19 +16,21 @@ namespace Regards::OpenGL
 	{
 	public:
 		CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL);
-		~CRenderBitmapOpenGL();
+		~CRenderBitmapOpenGL() = default;
 		void LoadingResource(const double& scale_factor, wxColor& colorActifReplacement);
 		void ShowArrowNext();
 		void ShowArrowPrevious();
-		void ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height, const int& left,
-			const int& top, const bool& blend = true);
-		void RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left, const int& top,
-			const bool& flipH, const bool& flipV, const bool& inverted);
-		void ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
+
+		void RenderTexture(GLTexture* textureTransition, const int& width, const int& height, const int& left, const int& top);
+		void RenderTextureWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
 			const int& height, const int& left, const int& top);
 
-		GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
-
+		COpenGLShader * FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB, const wxString& vertexName = "IDR_GLSL_VERTEX");
+		float* GetProjectionMatrix();
+		CRenderOpenGL* GetRenderOpengl()
+		{
+			return renderOpenGL;
+		}
 	private:
 		std::unique_ptr<GLTexture> textureArrowRight;
 		std::unique_ptr<GLTexture> textureArrowLeft;

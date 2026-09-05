@@ -23,7 +23,7 @@ namespace Regards::Window
 		virtual void UpdateScreenRatio() = 0;
 
 		static void StopAllProcess(const wxString& title, const wxString& message, wxWindow* parentWindow,
-		                           const int& nbTry = 10);
+		                           const int& nbTry = 50);
 
 		virtual int GetWidth() { return this->GetWindowWidth(); };
 		virtual int GetHeight() { return this->GetWindowHeight(); };
@@ -64,8 +64,6 @@ namespace Regards::Window
 
 
 		wxString name;
-		
-		std::atomic_bool processStop;
 		std::atomic_bool processIdle;
 		int id;
 		int width;

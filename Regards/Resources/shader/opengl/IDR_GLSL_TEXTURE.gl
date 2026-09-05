@@ -1,0 +1,16 @@
+//
+//To Optimize : https://zz85.github.io/glsl-optimizer/
+//
+
+#version 330 core
+
+in vec2 TexCoord;
+
+uniform sampler2D sourceTex;
+
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = texture(sourceTex, TexCoord);
+}

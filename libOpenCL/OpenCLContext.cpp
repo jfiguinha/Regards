@@ -149,6 +149,8 @@ wxString COpenCLContext::GetDeviceInfo(
 
 cv::ocl::Program COpenCLContext::GetProgram(const wxString& programName)
 {
+    std::lock_guard<std::mutex> lock(programMutex);
+
     auto it = COpenCLContext::openclBinaryMapping.find(programName);
 
     if (it != COpenCLContext::openclBinaryMapping.end())
@@ -363,49 +365,57 @@ void COpenCLContext::initializeContextFromGL()
 			0
 		};
 
-		/*
-		// create context properties listing the platform and current OpenGL display
-		cl_context_properties properties[] = {
-			CL_CONTEXT_PLATFORM, (cl_context_properties)platform.id(),
-		#if defined(__linux__)
-			CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(),
-			CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(),
-		#elif defined(_WIN32)
-			CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(),
-			CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(),
-		#endif
-			0
-		};
-		*/
 
 #elif defined(__WXGTK__)
-       
-#if wxUSE_GLCANVAS_EGL == 1
+		// ─── DÉTECTION DYNAMIQUE DES CONTEXTES SENS LES MACROS RIGIDES ───
+		cl_context_properties properties[7] = { 0 };
+		bool propertiesSet = false;
 
-        printf("initializeContextFromGL wayland\n");
-
+		// Tentative 1 : Est-ce qu'un contexte EGL est actif (Recommandé pour le confinement Snap) ?
+#if defined(epoxy_has_egl) || defined(EGL_VERSION)
 		EGLContext eglContext = eglGetCurrentContext();
 		EGLDisplay eglDisplay = eglGetCurrentDisplay();
 
-		cl_context_properties properties[] = { CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
-		CL_GL_CONTEXT_KHR, (cl_context_properties)eglContext,
-		CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0 };
-
-#else
-
-        printf("initializeContextFromGL x11\n");
-    
-		// Create CL context properties, add GLX context & handle to DC
-		GLXContext glxcontext = glXGetCurrentContext();
-		Display* display = glXGetCurrentDisplay();
-
-		cl_context_properties properties[] = {
-		 CL_GL_CONTEXT_KHR, (cl_context_properties)glxcontext, // GLX Context
-		 CL_GLX_DISPLAY_KHR, (cl_context_properties)display, // GLX Display
-		 CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
-		 0
-		};
+		if (eglContext != EGL_NO_CONTEXT && eglDisplay != EGL_NO_DISPLAY)
+		{
+			printf("OpenCL Interop: Contexte EGL détecté en cours d'exécution.\n");
+			properties[0] = CL_CONTEXT_PLATFORM;
+			properties[1] = (cl_context_properties)platforms[i];
+			properties[2] = CL_GL_CONTEXT_KHR;
+			properties[3] = (cl_context_properties)eglContext;
+			properties[4] = CL_EGL_DISPLAY_KHR;
+			properties[5] = (cl_context_properties)eglDisplay;
+			properties[6] = 0;
+			propertiesSet = true;
+		}
 #endif
+
+		// Tentative 2 : Fallback vers GLX (Si EGL est absent ou non initialisé, ex: Mint X11 local)
+		if (!propertiesSet)
+		{
+			GLXContext glxcontext = glXGetCurrentContext();
+			Display* display = glXGetCurrentDisplay();
+
+			if (glxcontext && display)
+			{
+				printf("OpenCL Interop: Contexte GLX (X11) détecté en cours d'exécution.\n");
+				properties[0] = CL_GL_CONTEXT_KHR;
+				properties[1] = (cl_context_properties)glxcontext;
+				properties[2] = CL_GLX_DISPLAY_KHR;
+				properties[3] = (cl_context_properties)display;
+				properties[4] = CL_CONTEXT_PLATFORM;
+				properties[5] = (cl_context_properties)platforms[i];
+				properties[6] = 0;
+				propertiesSet = true;
+			}
+		}
+
+		if (!propertiesSet)
+		{
+			std::cerr << "OpenCL Interop Erreur: Aucun contexte GL valide (EGL ou GLX) n'est actif sur ce thread.\n";
+			continue;
+		}
+
 #endif
 
        // printf("initializeContextFromGL 4\n");

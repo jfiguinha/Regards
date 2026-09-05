@@ -9,6 +9,9 @@
 #include <OpenCLEffectVideo.h>
 #include <ParamInit.h>
 #include <MediaInfo.h>
+#include <appcontext.h>
+extern AppContext application_context;
+
 using namespace std;
 using namespace Regards::OpenCL;
 
@@ -26,6 +29,7 @@ int sizeList = 5;
 std::atomic_bool CFFmfcPimpl::exit_video{ false };
 
 #define HW_DEFAULT_SW_FORMAT    AV_PIX_FMT_NV12
+//#define INTERPOLATION_METHOD SWS_FAST_BILINEAR
 
 //Calcul du pourcentage
 using namespace Regards::Window;
@@ -35,6 +39,8 @@ AVPixelFormat CFFmfcPimpl::hw_pix_fmt;
 #define REFRESH_RATE 0.01
 static int filter_nbthreads = 0;
 static char* afilters = NULL;
+static int interpolation_method = SWS_BICUBIC; //SWS_FAST_BILINEAR
+
 //-----------------------------------------------------------------------------------------
 //Code
 //-----------------------------------------------------------------------------------------
@@ -238,7 +244,36 @@ void CFFmfcPimpl::StopStream()
 
 void CFFmfcPimpl::stream_close(VideoState* is)
 {
-	/* XXX: use a special url_shutdown call to abort parse cleanly */
+
+	is->abort_request = 1;
+
+	// 1. Avorter immédiatement toutes les files pour débloquer les threads en attente (Condition Variables)
+	packet_queue_abort(&is->videoq);
+	packet_queue_abort(&is->audioq);
+	packet_queue_abort(&is->subtitleq);
+
+	// Réveiller explicitement les files d'attente de frames
+	frame_queue_signal(&is->pictq);
+	frame_queue_signal(&is->sampq);
+	frame_queue_signal(&is->subpq);
+
+	if (is->continue_read_thread)
+		SDL_CondSignal(is->continue_read_thread);
+
+	// 2. Maintenant, on peut attendre les threads de lecture en toute sécurité
+	SDL_WaitThread(is->read_tid, NULL);
+
+	if (is->refresh_tid != nullptr)
+	{
+		if (is->refresh_tid->joinable())
+			is->refresh_tid->join();
+
+		delete is->refresh_tid;
+		is->refresh_tid = nullptr;
+	}
+
+	/*
+	// use a special url_shutdown call to abort parse cleanly 
 	is->abort_request = 1;
 	SDL_WaitThread(is->read_tid, NULL);
 
@@ -250,6 +285,7 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 		delete is->refresh_tid;
 		is->refresh_tid = nullptr;
 	}
+	*/
 
 	/* close each stream */
 	if (is->audio_stream >= 0)
@@ -372,7 +408,7 @@ bool CFFmfcPimpl::EnsureVideoConversionContext(const AVFrame* frame)
 	localContext = sws_getContext(
 		frame->width, frame->height, format,
 		frame->width, frame->height, AV_PIX_FMT_BGRA,
-		SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+		application_context.GetInterpolationMethod(), nullptr, nullptr, nullptr);
 
 	if (!localContext)
 	{
@@ -470,6 +506,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 		{
 			auto tmp_frame = static_cast<AVFrame*>(vp->frame);
 
+			/*
 			CDataAVFrame* dataFrame = new CDataAVFrame();
 			dataFrame->width = tmp_frame->width;
 			dataFrame->height = tmp_frame->height;
@@ -486,6 +523,35 @@ void CFFmfcPimpl::video_display(VideoState* is)
 
 				dataFrame->matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
+
+				if (EnsureVideoConversionContext(tmp_frame))
+				{
+					uint8_t* convertedFrameBuffer = dataFrame->matFrame.data;
+					int linesize = tmp_frame->width * 4;
+
+					sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+						&convertedFrameBuffer, &linesize);
+				}
+			}
+			*/
+
+			// Remplacer la logique d'allocation par une affectation exclusive :
+			CDataAVFrame* dataFrame = new CDataAVFrame();
+			dataFrame->width = tmp_frame->width;
+			dataFrame->height = tmp_frame->height;
+			dataFrame->ratioVideo = static_cast<float>(tmp_frame->width) / static_cast<float>(tmp_frame->height);
+			dataFrame->sample_aspect_ratio = video_aspect_ratio;
+			dataFrame->isHardwareDecoding = isHardwareDecoding;
+
+			if (IsSupportOpenCL() && !isHardwareDecoding && dlg->ApplyVideoEffect() &&
+				(tmp_frame->format == AV_PIX_FMT_NV12 || tmp_frame->format == AV_PIX_FMT_YUV420P))
+			{
+				dataFrame->dst = CopyFrame(vp->frame);
+			}
+			else
+			{
+				dataFrame->dst = nullptr; // Évite les pointeurs sauvages
+				dataFrame->matFrame = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 				if (EnsureVideoConversionContext(tmp_frame))
 				{

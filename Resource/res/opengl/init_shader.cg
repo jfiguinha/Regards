@@ -1,8 +1,0 @@
-uniform float red;
-uniform float green;
-uniform float blue;
-
-void main(void)
-{			
-	gl_FragColor = vec4(red / 255.0, green / 255.0, blue / 255.0, 1.0);
-}

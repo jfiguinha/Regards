@@ -34,7 +34,7 @@ void CMasterWindow::StopAllProcess(const wxString& title, const wxString& messag
 			if (!window->GetProcessEnd())
 			{
 				all_stop = false;
-				wxMilliSleep(500);
+				wxMilliSleep(20);
 				i++;
 				break;
 			}
@@ -69,7 +69,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxWindow* window, wxSizeEvent& event)
 
 CMasterWindow::CMasterWindow(void)
 {
-	processStop = false;
+
 	processEnd = true;
 	processIdle = false;
 	id = listMainWindow.size();
@@ -145,7 +145,7 @@ void CMasterWindow::SetStopProcess(const bool& state)
 
 void CMasterWindow::SetStartProcess()
 {
-	processStop = false;
+	stopProcess = false;
 }
 
 bool CMasterWindow::GetProcessEnd()
@@ -155,5 +155,5 @@ bool CMasterWindow::GetProcessEnd()
 
 bool CMasterWindow::GetProcessStop()
 {
-	return processStop;
+	return stopProcess;
 }

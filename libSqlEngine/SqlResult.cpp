@@ -1,18 +1,15 @@
 #include "header.h"
 #include "SqlResult.h"
-#include <utf8.h>
+#include <algorithm>
+
 using namespace std;
 using namespace Regards::Sqlite;
 
-CSqlResult::CSqlResult(): pRes(nullptr), m_iColumnCount(0)
-{
-	//this->pRes = pRes;
-}
-
+CSqlResult::CSqlResult() : pRes(nullptr), m_iColumnCount(0) {}
 
 CSqlResult::~CSqlResult()
 {
-	if(pRes != nullptr)
+	if (pRes != nullptr)
 		sqlite3_finalize(pRes);
 }
 
@@ -22,126 +19,77 @@ void CSqlResult::SetStatement(sqlite3_stmt* pRes)
 	m_iColumnCount = sqlite3_column_count(pRes);
 }
 
-/*Result Set Definations*/
-int CSqlResult::GetColumnCount()
-{
-	return m_iColumnCount;
-}
+int CSqlResult::GetColumnCount() { return m_iColumnCount; }
 
 wxString CSqlResult::NextColumnName(const int& iClmnCount)
 {
-	if (iClmnCount > m_iColumnCount)
-		return "";
-	return sqlite3_column_name(pRes, iClmnCount);
+	if (iClmnCount >= m_iColumnCount) return "";
+	return wxString::FromUTF8(sqlite3_column_name(pRes, iClmnCount));
 }
 
 bool CSqlResult::Next()
 {
-	return (sqlite3_step(pRes) == SQLITE_ROW) ? true : false;
+	return (sqlite3_step(pRes) == SQLITE_ROW);
 }
-
-void fix_utf8_string(std::string& str)
-{
-	std::string temp;
-	utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
-	str = temp;
-}
-
 
 int CSqlResult::GetColumnIndex(const wxString& name)
 {
 	for (int i = 0; i < GetColumnCount(); i++)
 	{
-		if (name == GetColumnName(i))
-			return i;
+		if (name == GetColumnName(i)) return i;
 	}
-
 	return -1;
 }
 
-int CSqlResult::GetInt(const wxString& name)
-{
-	return ColumnDataInt(GetColumnIndex(name));
-}
-
-wxString CSqlResult::GetText(const wxString& name)
-{
-	return ColumnDataText(GetColumnIndex(name));
-}
-
-wxString CSqlResult::GetColumnName(int index)
-{
-	return sqlite3_column_name(pRes, index);
-}
-
-int CSqlResult::GetInt(int index)
-{
-	return ColumnDataInt(index);
-}
-
-wxString CSqlResult::GetText(int index)
-{
-	return ColumnDataText(index);
-}
+int CSqlResult::GetInt(const wxString& name) { return ColumnDataInt(GetColumnIndex(name)); }
+wxString CSqlResult::GetText(const wxString& name) { return ColumnDataText(GetColumnIndex(name)); }
+wxString CSqlResult::GetColumnName(int index) { return wxString::FromUTF8(sqlite3_column_name(pRes, index)); }
+int CSqlResult::GetInt(int index) { return ColumnDataInt(index); }
+wxString CSqlResult::GetText(int index) { return ColumnDataText(index); }
 
 wxString CSqlResult::ColumnDataText(const int& clmNum)
 {
-	if (clmNum > m_iColumnCount)
+	if (clmNum < 0 || clmNum >= m_iColumnCount)
 		return "";
 
-	char buf[4096];
-	/*
-	const unsigned char * textValue = sqlite3_column_text(pRes, clmNum);
-	wxString utf8 =  wxString::FromUTF8(reinterpret_cast<const char*>(textValue));
-	return utf8;
-	*/
-	int32_t num_bytes = sqlite3_column_bytes(pRes, clmNum);
-	memcpy(buf, sqlite3_column_text(pRes, clmNum), num_bytes);
-	buf[num_bytes] = '\0';
-	//cout << "ColumnDataText buf " << buf << endl;
-	wxString utf8 = wxString::FromUTF8(buf);
-	/*
-	string data = string(buf);
-	fix_utf8_string(data);
-	
-	wxString utf8 =  wxString::FromUTF8(data);
-	cout << "ColumnDataText utf8 wxString " << utf8 << endl;
-	
-	cout << "ColumnDataText utf8 wxCharBuffer " <<  utf8.ToUTF8()  << endl;
-	
-	string local =  string(utf8.ToUTF8());
-	cout << "ColumnDataText utf8 string " <<  local.c_str()  << endl;
-	 **/
-	return utf8;
+	const unsigned char* textValue = sqlite3_column_text(pRes, clmNum);
+	if (textValue == nullptr)
+		return "";
+
+	int num_bytes = sqlite3_column_bytes(pRes, clmNum);
+	// CORRECTION CRITIQUE : Plus de copie de tampon fixe, élimination de 100% des risques d'overflows
+	return wxString::FromUTF8(reinterpret_cast<const char*>(textValue), num_bytes);
 }
 
 int CSqlResult::ColumnDataInt(const int& clmNum)
 {
-	if (clmNum > m_iColumnCount)
-		return -1;
+	if (clmNum < 0 || clmNum >= m_iColumnCount) return -1;
 	return sqlite3_column_int(pRes, clmNum);
 }
 
 int CSqlResult::ColumnDataBlobSize(const int& clmNum)
 {
-	if (clmNum > m_iColumnCount)
-		return -1;
-
+	if (clmNum < 0 || clmNum >= m_iColumnCount) return -1;
 	return sqlite3_column_bytes(pRes, clmNum);
 }
 
-int CSqlResult::ColumnDataBlob(const int& clmNum, void* & pzBlob, const int& pnBlob)
+int CSqlResult::ColumnDataBlob(const int& clmNum, void*& pzBlob, const int& pnBlob)
 {
-	if (clmNum > m_iColumnCount)
+	if (clmNum < 0 || clmNum >= m_iColumnCount || pzBlob == nullptr)
 		return -1;
-	memcpy(pzBlob, sqlite3_column_blob(pRes, clmNum), pnBlob);
 
+	const void* sqliteBlob = sqlite3_column_blob(pRes, clmNum);
+	if (!sqliteBlob) return -1;
+
+	int realSize = sqlite3_column_bytes(pRes, clmNum);
+	int bytesToCopy = std::min(realSize, pnBlob); // CORRECTION CRITIQUE : Empêche l'écriture hors-bornes
+
+	std::memcpy(pzBlob, sqliteBlob, bytesToCopy);
 	return 0;
 }
 
 const void* CSqlResult::ColumnDataBlob(const int& clmNum)
 {
-	if (clmNum > m_iColumnCount)
-		return nullptr;
+	if (clmNum < 0 || clmNum >= m_iColumnCount) return nullptr;
 	return sqlite3_column_blob(pRes, clmNum);
 }
