@@ -208,7 +208,7 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libVideoEffect"/>
-        <IncludePath Value="../Otherlib/libffmpeg"/>
+        <IncludePath Value="../libVideoConverter"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>

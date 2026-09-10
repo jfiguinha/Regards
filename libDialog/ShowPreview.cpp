@@ -166,7 +166,7 @@ void CShowPreview::ShowPicture(cv::Mat& bitmap, const wxString& label) {
 
     auto* imageLoadingFormat = new CImageLoadingFormat();
     imageLoadingFormat->SetPicture(bitmap);
-    imageLoadingFormat->SetOrientation(orientation);
+    imageLoadingFormat->SetRotation(360 - orientation);
 
     SetBitmapToViewer(imageLoadingFormat, !isFirstPicture);
 

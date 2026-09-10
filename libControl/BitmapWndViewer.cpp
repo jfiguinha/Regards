@@ -14,11 +14,11 @@
 #include <RenderBitmapOpenGL.h>
 #include "PageCurlFilter.h"
 #include "MoveEffectTexture.h"
-#include "ZoomEffectTexture.h"
 #include "NoneEffectTextureEffect.h"
 #include "DiaporamaEffect.h"
 #include "GlassLensFilter.h"
 #include "WaveTextureFilter.h"
+#include "ZoomEffectTexture.h"
 #include <MainParam.h>
 #include <ParamInit.h>
 #include "ViewerParamInit.h"

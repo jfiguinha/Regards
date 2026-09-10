@@ -1,11 +1,6 @@
 ﻿#include <header.h>
 #include "RenderVideoOpenGL.h"
 #include <GLSLShader.h>
-
-#ifdef __APPLE__
-#include <OpenCL/OpenCL.h>
-#include <GLUT/glut.h>
-#endif
 #include <EffectVideoParameter.h>
 
 using namespace Regards::OpenGL;

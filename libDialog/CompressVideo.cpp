@@ -44,6 +44,16 @@ CompressVideo::CompressVideo(wxWindow* parent, int rotation)
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CompressVideo::OnSetText));
 
 	Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CompressVideo::OnSetBitmap));
+
+	// FORCE le double-buffering natif de l'OS sur la fenêtre pour éliminer le scintillement
+	this->SetExtraStyle(wxWS_EX_PROCESS_UI_UPDATES);
+	//this->SetBackgroundStyle(wxBG_STYLE_PAINT);
+
+	// Si vous utilisez Windows, cette ligne empêche l'OS d'effacer le fond de manière agressive
+#ifdef __WXMSW__
+	this->SetWindowStyle(this->GetWindowStyle() | wxNO_FULL_REPAINT_ON_RESIZE);
+#endif
+
 #ifndef __APPLE__
 	bitmap->Show(false);
 #endif
@@ -196,12 +206,21 @@ void CompressVideo::OnSetText(wxCommandEvent& event)
 
 void CompressVideo::SetTextProgression(const wxString& texte, const int& type)
 {
-	//labelProgression->SetLabel(texte);
-	auto event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
-	auto statusText = new wxString(texte);
-	event->SetClientData(statusText);
-	event->SetInt(type);
-	wxQueueEvent(this, event);
+
+
+	if (labelProgression) {
+		// CORRECTION : On ne réécrit dans le composant QUE si le texte a changé
+		if (labelProgression->GetLabel() != texte) {
+			//labelProgression->SetLabel(texte);
+			auto event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
+			auto statusText = new wxString(texte);
+			event->SetClientData(statusText);
+			event->SetInt(type);
+			wxQueueEvent(this, event);
+		}
+	}
+
+
 }
 
 void CompressVideo::SetPos(const int& max, const int& pos)

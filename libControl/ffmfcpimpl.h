@@ -5,11 +5,7 @@
 #include <atomic>
 #include <cstdint>
 #include <thread>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_thread.h>
-#include <SDL2/SDL_mutex.h>
-
+#include <condition_variable>
 #include "VideoControlInterface.h"
 
 extern "C"
@@ -45,6 +41,8 @@ extern "C"
 #endif
 }
 
+#include <AL/al.h>
+#include <AL/alc.h>
 
 // -----------------------------------------------------------------------------
 // Configuration
@@ -120,7 +118,7 @@ extern "C"
 // -----------------------------------------------------------------------------
 // Events
 // -----------------------------------------------------------------------------
-
+#define SDL_USEREVENT               0x8000
 #define FF_ALLOC_EVENT              SDL_USEREVENT
 #define FF_REFRESH_EVENT            (SDL_USEREVENT + 1)
 
@@ -193,8 +191,8 @@ public:
         int abort_request = 0;
         int serial = 0;
 
-        SDL_mutex* mutex = nullptr;
-        SDL_cond* cond = nullptr;
+        std::mutex mutex;
+        std::condition_variable cond;
     };
 
 
@@ -266,7 +264,7 @@ public:
         int finished = 0;
         int packet_pending = 0;
 
-        SDL_cond* empty_queue_cond = nullptr;
+        std::condition_variable* empty_queue_cond = nullptr;
 
         int64_t start_pts = AV_NOPTS_VALUE;
 
@@ -276,7 +274,7 @@ public:
 
         AVRational next_pts_tb{ 0, 1 };
 
-        SDL_Thread* decoder_tid = nullptr;
+        std::thread decoder_thread;
     };
 
 
@@ -346,8 +344,8 @@ public:
 
         int rindex_shown = 0;
 
-        SDL_mutex* mutex = nullptr;
-        SDL_cond* cond = nullptr;
+        std::mutex mutex;
+        std::condition_variable cond;
 
         PacketQueue* pktq = nullptr;
     };
@@ -367,9 +365,12 @@ public:
     {
         int refresh = 0;
 
-        std::thread* refresh_tid = nullptr;
+        std::thread * refresh_tid = nullptr;
 
-        SDL_Thread* read_tid = nullptr;
+        std::thread read_tid;
+
+        // Thread de sortie audio OpenAL.
+        std::thread audio_tid;
 
         AVInputFormat* iformat = nullptr;
 
@@ -435,7 +436,7 @@ public:
 
         int audio_write_buf_size = 0;
 
-        int audio_volume = 100;
+        float audio_volume = 1.0f;
 
         int muted = 0;
 
@@ -506,7 +507,7 @@ public:
         int last_audio_stream = -1;
         int last_subtitle_stream = -1;
 
-        SDL_cond* continue_read_thread = nullptr;
+        std::condition_variable continue_read_thread;
 
         CFFmfcPimpl* _pimpl = nullptr;
 
@@ -552,6 +553,12 @@ public:
         AVFilterContext* out_audio_filter = nullptr;
 
         AVFilterGraph* agraph = nullptr;
+
+
+        ALCdevice* al_device = nullptr;
+        ALCcontext* al_context = nullptr;
+        ALuint al_source = 0;
+        ALuint al_buffers[4] = { 0 };
     };
 
 
@@ -645,7 +652,7 @@ public:
     void frame_queue_push(FrameQueue* f);
     void frame_queue_next(FrameQueue* f);
 
-    int frame_queue_nb_remaining(FrameQueue* f);
+    static int frame_queue_nb_remaining(FrameQueue* f);
 
     int64_t frame_queue_last_pos(FrameQueue* f);
 
@@ -700,7 +707,7 @@ public:
         Decoder* d,
         AVCodecContext* avctx,
         PacketQueue* queue,
-        SDL_cond* empty_queue_cond);
+        std::condition_variable * empty_queue_cond);
 
     void decoder_destroy(Decoder* d);
 
@@ -715,12 +722,12 @@ public:
     // Audio
     // -------------------------------------------------------------------------
 
+    // Décodage : audioq -> sampq
+    static int audio_decoder_thread(void* arg);
+
+    // Lecture OpenAL : sampq -> périphérique audio
     static int audio_thread(void* arg);
 
-    static void sdl_audio_callback(
-        void* opaque,
-        Uint8* stream,
-        int len);
 
     void update_sample_display(
         VideoState* is,
@@ -1062,9 +1069,6 @@ private:
 
     int muted = 0;
 
-
-
-    SDL_AudioDeviceID audio_dev = 0;
 
 
 

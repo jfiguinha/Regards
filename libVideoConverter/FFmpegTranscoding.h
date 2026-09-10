@@ -24,7 +24,6 @@ using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 class CompressVideo;
 class CFiltreEffet;
-class CffmpegToBitmap;
 
 namespace cv
 {

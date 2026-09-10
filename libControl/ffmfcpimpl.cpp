@@ -1,5 +1,6 @@
 // ReSharper disable All
 #include <header.h>
+#include <new>
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
 #include "DataAVFrame.h"
@@ -99,31 +100,28 @@ int CFFmfcPimpl::packet_queue_put_private(PacketQueue* q, AVPacket* pkt)
 	q->size += pkt1.pkt->size + sizeof(pkt1);
 	q->duration += pkt1.pkt->duration;
 	/* XXX: should duplicate packet data in DV case */
-	SDL_CondSignal(q->cond);
+	q->cond.notify_one();
 	return 0;
 }
 
 //Íù¶ÓÁÐÀïÌí¼ÓPacket
 int CFFmfcPimpl::packet_queue_put(PacketQueue* q, AVPacket* pkt)
 {
-	AVPacket* pkt1;
-	int ret;
-
-	pkt1 = av_packet_alloc();
+	AVPacket* pkt1 = av_packet_alloc();
 	if (!pkt1) {
 		av_packet_unref(pkt);
 		return -1;
 	}
 	av_packet_move_ref(pkt1, pkt);
 
-	SDL_LockMutex(q->mutex);
-	ret = packet_queue_put_private(q, pkt1);
-	SDL_UnlockMutex(q->mutex);
+	{
+		std::lock_guard<std::mutex> lock(q->mutex); // Remplacé : SDL_LockMutex / SDL_UnlockMutex
+		int ret = packet_queue_put_private(q, pkt1);
+		if (ret >= 0) return ret;
+	}
 
-	if (ret < 0)
-		av_packet_free(&pkt1);
-
-	return ret;
+	av_packet_free(&pkt1);
+	return -1;
 }
 
 int CFFmfcPimpl::packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index)
@@ -136,20 +134,22 @@ int CFFmfcPimpl::packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int 
 /* packet queue handling */
 int CFFmfcPimpl::packet_queue_init(PacketQueue* q)
 {
-	memset(q, 0, sizeof(PacketQueue));
+	if (!q)
+		return AVERROR(EINVAL);
+
+	// PacketQueue contient mutex/condition_variable : pas de memset().
+	q->pkt_list = nullptr;
+	q->nb_packets = 0;
+	q->size = 0;
+	q->duration = 0;
+	q->abort_request = 1;
+	q->serial = 0;
+
 	q->pkt_list = av_fifo_alloc2(1, sizeof(MyAVPacketList), AV_FIFO_FLAG_AUTO_GROW);
 	if (!q->pkt_list)
 		return AVERROR(ENOMEM);
-	q->mutex = SDL_CreateMutex();
-	if (!q->mutex) {
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-		return AVERROR(ENOMEM);
-	}
-	q->cond = SDL_CreateCond();
-	if (!q->cond) {
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-		return AVERROR(ENOMEM);
-	}
+
+	// Plus besoin de SDL_CreateMutex() ni de SDL_CreateCond()
 	q->abort_request = 1;
 	return 0;
 }
@@ -157,51 +157,42 @@ int CFFmfcPimpl::packet_queue_init(PacketQueue* q)
 void CFFmfcPimpl::packet_queue_flush(PacketQueue* q)
 {
 	MyAVPacketList pkt1;
-
-	SDL_LockMutex(q->mutex);
+	std::lock_guard<std::mutex> lock(q->mutex);
 	while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0)
 		av_packet_free(&pkt1.pkt);
 	q->nb_packets = 0;
 	q->size = 0;
 	q->duration = 0;
 	q->serial++;
-	SDL_UnlockMutex(q->mutex);
 }
 
 void CFFmfcPimpl::packet_queue_destroy(PacketQueue* q)
 {
 	packet_queue_flush(q);
 	av_fifo_freep2(&q->pkt_list);
-	SDL_DestroyMutex(q->mutex);
-	SDL_DestroyCond(q->cond);
+	// Plus besoin de SDL_DestroyMutex et SDL_DestroyCond
 }
 
 void CFFmfcPimpl::packet_queue_abort(PacketQueue* q)
 {
-	SDL_LockMutex(q->mutex);
-
+	std::lock_guard<std::mutex> lock(q->mutex);
 	q->abort_request = 1;
-
-	SDL_CondSignal(q->cond);
-
-	SDL_UnlockMutex(q->mutex);
+	q->cond.notify_all(); // Remplacé : SDL_CondSignal(q->cond);
 }
 
 void CFFmfcPimpl::packet_queue_start(PacketQueue* q)
 {
-	SDL_LockMutex(q->mutex);
+	std::lock_guard<std::mutex> lock(q->mutex);
 	q->abort_request = 0;
 	q->serial++;
-	SDL_UnlockMutex(q->mutex);
 }
 
-/* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
 int CFFmfcPimpl::packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int* serial)
 {
 	MyAVPacketList pkt1;
 	int ret;
 
-	SDL_LockMutex(q->mutex);
+	std::unique_lock<std::mutex> lock(q->mutex); // Nécessaire pour condition_variable.wait
 
 	for (;;) {
 		if (q->abort_request) {
@@ -225,10 +216,9 @@ int CFFmfcPimpl::packet_queue_get(PacketQueue* q, AVPacket* pkt, int block, int*
 			break;
 		}
 		else {
-			SDL_CondWait(q->cond, q->mutex);
+			q->cond.wait(lock); // Remplacé : SDL_CondWait(q->cond, q->mutex);
 		}
 	}
-	SDL_UnlockMutex(q->mutex);
 	return ret;
 }
 
@@ -244,7 +234,6 @@ void CFFmfcPimpl::StopStream()
 
 void CFFmfcPimpl::stream_close(VideoState* is)
 {
-
 	is->abort_request = 1;
 
 	// 1. Avorter immédiatement toutes les files pour débloquer les threads en attente (Condition Variables)
@@ -257,25 +246,12 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	frame_queue_signal(&is->sampq);
 	frame_queue_signal(&is->subpq);
 
-	if (is->continue_read_thread)
-		SDL_CondSignal(is->continue_read_thread);
+	// Réveiller le thread de lecture (is->continue_read_thread n'est plus un pointeur mais une instance C++ standard)
+	is->continue_read_thread.notify_all();
 
-	// 2. Maintenant, on peut attendre les threads de lecture en toute sécurité
-	SDL_WaitThread(is->read_tid, NULL);
-
-	if (is->refresh_tid != nullptr)
-	{
-		if (is->refresh_tid->joinable())
-			is->refresh_tid->join();
-
-		delete is->refresh_tid;
-		is->refresh_tid = nullptr;
-	}
-
-	/*
-	// use a special url_shutdown call to abort parse cleanly 
-	is->abort_request = 1;
-	SDL_WaitThread(is->read_tid, NULL);
+	// 2. Maintenant, on peut attendre le thread de lecture en toute sécurité avec la méthode join standard
+	if (is->read_tid.joinable())
+		is->read_tid.join();
 
 	if (is->refresh_tid != nullptr)
 	{
@@ -285,7 +261,6 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 		delete is->refresh_tid;
 		is->refresh_tid = nullptr;
 	}
-	*/
 
 	/* close each stream */
 	if (is->audio_stream >= 0)
@@ -294,9 +269,6 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 		stream_component_close(is, is->video_stream);
 	if (is->subtitle_stream >= 0)
 		stream_component_close(is, is->subtitle_stream);
-
-	//if (is->viddec.avctx->hw_device_ctx != nullptr)
-	//	av_buffer_unref(&is->viddec.avctx->hw_device_ctx);
 
 	avformat_close_input(&is->ic);
 
@@ -308,7 +280,9 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	frame_queue_destory(&is->pictq);
 	frame_queue_destory(&is->sampq);
 	frame_queue_destory(&is->subpq);
-	SDL_DestroyCond(is->continue_read_thread);
+
+	// L'instruction SDL_DestroyCond a été supprimée (géré automatiquement par le destructeur C++ standard)
+
 	sws_freeContext(is->img_convert_ctx);
 	sws_freeContext(is->sub_convert_ctx);
 
@@ -319,9 +293,7 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	localFormat = AV_PIX_FMT_NONE;
 
 	av_free(is->filename);
-
-	av_free(is);
-
+	delete is;
 
 	if (parent)
 	{
@@ -329,9 +301,9 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-
 	exit_video.store(false, std::memory_order_release);
 }
+
 
 //ÍË³ö
 void CFFmfcPimpl::do_exit(VideoState* is)
@@ -353,9 +325,11 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 		av_freep(&subtitle_codec_name);
 		av_log(nullptr, AV_LOG_QUIET, "%s", "");
 
-		SDL_CloseAudioDevice(audio_dev);
+		// CORRECTION : L'appel SDL_CloseAudioDevice a été retiré. 
+		// Le périphérique et le contexte OpenAL sont déjà correctement libérés dans stream_close().
 	}
 }
+
 
 int CFFmfcPimpl::IsSupportOpenCL()
 {
@@ -804,7 +778,6 @@ double CFFmfcPimpl::vp_duration(VideoState* is, Frame* vp, Frame* nextvp)
 	}
 }
 
-
 /* called to display each frame */
 void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 {
@@ -870,10 +843,12 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 			if (delay > 0 && time - is->frame_timer > AV_SYNC_THRESHOLD_MAX)
 				is->frame_timer = time;
 
-			SDL_LockMutex(is->pictq.mutex);
-			if (!isnan(vp->pts))
-				update_video_pts(is, vp->pts, vp->pos, vp->serial);
-			SDL_UnlockMutex(is->pictq.mutex);
+			// CORRECTION ICI : Remplacement des primitives SDL par std::unique_lock (RAII)
+			{
+				std::unique_lock<std::mutex> lock(is->pictq.mutex);
+				if (!isnan(vp->pts))
+					update_video_pts(is, vp->pts, vp->pos, vp->serial);
+			}
 
 			if (frame_queue_nb_remaining(&is->pictq) > 1)
 			{
@@ -887,7 +862,6 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 					goto retry;
 				}
 			}
-
 
 			//Subtitle
 			if (is->subtitle_st)
@@ -911,8 +885,6 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 							for (i = 0; i < sp->sub.num_rects; i++)
 							{
 								AVSubtitleRect* sub_rect = sp->sub.rects[i];
-								//uint8_t* pixels;
-								//int pitch;// , j;
 
 								AVSubtitleRect* rect = sp->sub.rects[i];
 								cv::Mat* bitmap = new cv::Mat(rect->h, rect->w, CV_8UC4);
@@ -927,7 +899,6 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 										CRgbaquad color(r, g, b, a);
 										int i = (x << 2) + (y * (bitmap->cols << 2));
 										memcpy(bitmap->data + i, &color, sizeof(CRgbaquad));
-										//bitmap->SetColorValue(x, y, color);
 									}
 								}
 								if (dlg != nullptr)
@@ -983,6 +954,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 	is->force_refresh = 0;
 	is->refresh = 0;
 }
+
 
 int CFFmfcPimpl::GetPosition(VideoState* is)
 {
@@ -1144,20 +1116,19 @@ void CFFmfcPimpl::frame_queue_unref_item(Frame* vp)
 int CFFmfcPimpl::frame_queue_init(FrameQueue* f, PacketQueue* pktq, int max_size, int keep_last)
 {
 	int i;
-	memset(f, 0, sizeof(FrameQueue));
-	if (!(f->mutex = SDL_CreateMutex()))
-	{
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-		return AVERROR(ENOMEM);
-	}
-	if (!(f->cond = SDL_CreateCond()))
-	{
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-		return AVERROR(ENOMEM);
-	}
-	f->pktq = pktq;
+	if (!f || !pktq)
+		return AVERROR(EINVAL);
+
+	// FrameQueue contient mutex/condition_variable : pas de memset().
+	f->rindex = 0;
+	f->windex = 0;
+	f->size = 0;
 	f->max_size = FFMIN(max_size, FRAME_QUEUE_SIZE);
 	f->keep_last = !!keep_last;
+	f->rindex_shown = 0;
+	f->pktq = pktq;
+
+	// Supprimé : SDL_CreateMutex et SDL_CreateCond
 	for (i = 0; i < f->max_size; i++)
 		if (!(f->queue[i].frame = av_frame_alloc()))
 			return AVERROR(ENOMEM);
@@ -1167,21 +1138,18 @@ int CFFmfcPimpl::frame_queue_init(FrameQueue* f, PacketQueue* pktq, int max_size
 void CFFmfcPimpl::frame_queue_destory(FrameQueue* f)
 {
 	int i;
-	for (i = 0; i < f->max_size; i++)
-	{
+	for (i = 0; i < f->max_size; i++) {
 		Frame* vp = &f->queue[i];
 		frame_queue_unref_item(vp);
 		av_frame_free(&vp->frame);
 	}
-	SDL_DestroyMutex(f->mutex);
-	SDL_DestroyCond(f->cond);
+	// Supprimé : SDL_DestroyMutex et SDL_DestroyCond
 }
 
 void CFFmfcPimpl::frame_queue_signal(FrameQueue* f)
 {
-	SDL_LockMutex(f->mutex);
-	SDL_CondSignal(f->cond);
-	SDL_UnlockMutex(f->mutex);
+	std::lock_guard<std::mutex> lock(f->mutex);
+	f->cond.notify_one(); // Remplacé : SDL_CondSignal(f->cond);
 }
 
 CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek(FrameQueue* f)
@@ -1202,13 +1170,13 @@ CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek_last(FrameQueue* f)
 CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek_writable(FrameQueue* f)
 {
 	/* wait until we have space to put a new frame */
-	SDL_LockMutex(f->mutex);
+	std::unique_lock<std::mutex> lock(f->mutex);
 	while (f->size >= f->max_size &&
 		!f->pktq->abort_request)
 	{
-		SDL_CondWait(f->cond, f->mutex);
+		f->cond.wait(lock);
 	}
-	SDL_UnlockMutex(f->mutex);
+	lock.unlock();
 
 	if (f->pktq->abort_request)
 		return NULL;
@@ -1219,13 +1187,13 @@ CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek_writable(FrameQueue* f)
 CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek_readable(FrameQueue* f)
 {
 	/* wait until we have a readable a new frame */
-	SDL_LockMutex(f->mutex);
+	std::unique_lock<std::mutex> lock(f->mutex);
 	while (f->size - f->rindex_shown <= 0 &&
 		!f->pktq->abort_request)
 	{
-		SDL_CondWait(f->cond, f->mutex);
+		f->cond.wait(lock);
 	}
-	SDL_UnlockMutex(f->mutex);
+	lock.unlock();
 
 	if (f->pktq->abort_request)
 		return NULL;
@@ -1235,28 +1203,26 @@ CFFmfcPimpl::Frame* CFFmfcPimpl::frame_queue_peek_readable(FrameQueue* f)
 
 void CFFmfcPimpl::frame_queue_push(FrameQueue* f)
 {
+	std::unique_lock<std::mutex> lock(f->mutex);
 	if (++f->windex == f->max_size)
 		f->windex = 0;
-	SDL_LockMutex(f->mutex);
 	f->size++;
-	SDL_CondSignal(f->cond);
-	SDL_UnlockMutex(f->mutex);
+	f->cond.notify_one();
 }
 
 void CFFmfcPimpl::frame_queue_next(FrameQueue* f)
 {
-	if (f->keep_last && !f->rindex_shown)
-	{
+	if (f->keep_last && !f->rindex_shown) {
 		f->rindex_shown = 1;
 		return;
 	}
 	frame_queue_unref_item(&f->queue[f->rindex]);
 	if (++f->rindex == f->max_size)
 		f->rindex = 0;
-	SDL_LockMutex(f->mutex);
+	std::lock_guard<std::mutex> lock(f->mutex);
 	f->size--;
-	SDL_CondSignal(f->cond);
-	SDL_UnlockMutex(f->mutex);
+	f->cond.notify_one(); // Remplacé : SDL_CondSignal
+
 }
 
 /* return the number of undisplayed frames in the queue */
@@ -1279,8 +1245,10 @@ void CFFmfcPimpl::decoder_abort(Decoder* d, FrameQueue* fq)
 {
 	packet_queue_abort(d->queue);
 	frame_queue_signal(fq);
-	SDL_WaitThread(d->decoder_tid, NULL);
-	d->decoder_tid = NULL;
+
+	if (d->decoder_thread.joinable()) {
+		d->decoder_thread.join(); // Remplacé : SDL_WaitThread
+	}
 	packet_queue_flush(d->queue);
 }
 
@@ -1541,127 +1509,65 @@ int  CFFmfcPimpl::audio_decode_frame(VideoState* is)
 	return resampled_data_size;
 }
 
-/* prepare a new audio buffer */
-void  CFFmfcPimpl::sdl_audio_callback(void* opaque, Uint8* stream, int len)
-{
-	VideoState* is = (VideoState*)opaque;
-	int audio_size, len1;
-
-	is->_pimpl->audio_callback_time = av_gettime_relative();
-
-	while (len > 0) {
-		if (is->audio_buf_index >= is->audio_buf_size) {
-			audio_size = is->_pimpl->audio_decode_frame(is);
-			if (audio_size < 0) {
-				/* if error, just output silence */
-				is->audio_buf = NULL;
-				is->audio_buf_size = SDL_AUDIO_MIN_BUFFER_SIZE / is->audio_tgt.frame_size * is->audio_tgt.frame_size;
-			}
-			else {
-				if (is->show_mode != SHOW_MODE_VIDEO)
-					is->_pimpl->update_sample_display(is, (int16_t*)is->audio_buf, audio_size);
-				is->audio_buf_size = audio_size;
-			}
-			is->audio_buf_index = 0;
-		}
-		is->audio_volume = ((static_cast<float>(is->_pimpl->percentVolume) / 100.0f) * SDL_MIX_MAXVOLUME);
-		len1 = is->audio_buf_size - is->audio_buf_index;
-		if (len1 > len)
-			len1 = len;
-		if (!is->muted && is->audio_buf && is->audio_volume == SDL_MIX_MAXVOLUME)
-			memcpy(stream, (uint8_t*)is->audio_buf + is->audio_buf_index, len1);
-		else {
-			memset(stream, 0, len1);
-			if (!is->muted && is->audio_buf)
-				SDL_MixAudioFormat(stream, (uint8_t*)is->audio_buf + is->audio_buf_index, AUDIO_S16SYS, len1, is->audio_volume);
-		}
-		len -= len1;
-		stream += len1;
-		is->audio_buf_index += len1;
-	}
-	is->audio_write_buf_size = is->audio_buf_size - is->audio_buf_index;
-	/* Let's assume the audio driver that is used by SDL has two periods. */
-	if (!isnan(is->audio_clock)) {
-		is->_pimpl->set_clock_at(&is->audclk, is->audio_clock - (double)(2 * is->audio_hw_buf_size + is->audio_write_buf_size) / is->audio_tgt.bytes_per_sec, is->audio_clock_serial, is->_pimpl->audio_callback_time / 1000000.0);
-		is->_pimpl->sync_clock_to_slave(&is->extclk, &is->audclk);
-	}
-}
 
 int CFFmfcPimpl::audio_open(void* opaque, AVChannelLayout* wanted_channel_layout, int wanted_sample_rate, AudioParams* audio_hw_params)
 {
 	VideoState* is = (VideoState*)opaque;
-	SDL_AudioSpec wanted_spec, spec;
-	const char* env;
-	static const int next_nb_channels[] = { 0, 0, 1, 6, 2, 6, 4, 6 };
-	static const int next_sample_rates[] = { 0, 44100, 48000, 96000, 192000 };
-	int next_sample_rate_idx = FF_ARRAY_ELEMS(next_sample_rates) - 1;
-	is->wanted_nb_channels = wanted_channel_layout->nb_channels;
 
-	env = SDL_getenv("SDL_AUDIO_CHANNELS");
-	if (env) {
-		is->wanted_nb_channels = atoi(env);
-		av_channel_layout_uninit(wanted_channel_layout);
-		av_channel_layout_default(wanted_channel_layout, is->wanted_nb_channels);
-	}
-	if (wanted_channel_layout->order != AV_CHANNEL_ORDER_NATIVE) {
-		av_channel_layout_uninit(wanted_channel_layout);
-		av_channel_layout_default(wanted_channel_layout, is->wanted_nb_channels);
-	}
-	is->wanted_nb_channels = wanted_channel_layout->nb_channels;
-	wanted_spec.channels = is->wanted_nb_channels;
-	wanted_spec.freq = wanted_sample_rate;
-	if (wanted_spec.freq <= 0 || wanted_spec.channels <= 0) {
-		av_log(NULL, AV_LOG_ERROR, "Invalid sample rate or channel count!\n");
+	// 1. Initialisation du périphérique OpenAL
+	is->al_device = alcOpenDevice(NULL); // Périphérique par défaut
+	if (!is->al_device) {
+		av_log(NULL, AV_LOG_ERROR, "OpenAL : Impossible d'ouvrir le périphérique par défaut.\n");
 		return -1;
 	}
-	while (next_sample_rate_idx && next_sample_rates[next_sample_rate_idx] >= wanted_spec.freq)
-		next_sample_rate_idx--;
-	wanted_spec.format = AUDIO_S16SYS;
-	wanted_spec.silence = 0;
-	wanted_spec.samples = FFMAX(SDL_AUDIO_MIN_BUFFER_SIZE, 2 << av_log2(wanted_spec.freq / SDL_AUDIO_MAX_CALLBACKS_PER_SEC));
-	wanted_spec.callback = sdl_audio_callback;
-	wanted_spec.userdata = opaque;
-	while (!(audio_dev = SDL_OpenAudioDevice(NULL, 0, &wanted_spec, &spec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | SDL_AUDIO_ALLOW_CHANNELS_CHANGE))) {
-		av_log(NULL, AV_LOG_WARNING, "SDL_OpenAudio (%d channels, %d Hz): %s\n",
-			wanted_spec.channels, wanted_spec.freq, SDL_GetError());
-		wanted_spec.channels = next_nb_channels[FFMIN(7, wanted_spec.channels)];
-		if (!wanted_spec.channels) {
-			wanted_spec.freq = next_sample_rates[next_sample_rate_idx--];
-			wanted_spec.channels = is->wanted_nb_channels;
-			if (!wanted_spec.freq) {
-				av_log(NULL, AV_LOG_ERROR,
-					"No more combinations to try, audio open failed\n");
-				return -1;
-			}
-		}
-		av_channel_layout_default(wanted_channel_layout, wanted_spec.channels);
-	}
-	if (spec.format != AUDIO_S16SYS) {
-		av_log(NULL, AV_LOG_ERROR,
-			"SDL advised audio format %d is not supported!\n", spec.format);
+
+	is->al_context = alcCreateContext(is->al_device, NULL);
+	if (!is->al_context) {
+		alcCloseDevice(is->al_device);
 		return -1;
 	}
-	if (spec.channels != wanted_spec.channels) {
-		av_channel_layout_uninit(wanted_channel_layout);
-		av_channel_layout_default(wanted_channel_layout, spec.channels);
-		if (wanted_channel_layout->order != AV_CHANNEL_ORDER_NATIVE) {
-			av_log(NULL, AV_LOG_ERROR,
-				"SDL advised channel count %d is not supported!\n", spec.channels);
-			return -1;
-		}
+	alcMakeContextCurrent(is->al_context);
+
+	// 2. Génération de la source audio.
+	alGenSources(1, &is->al_source);
+	if (alGetError() != AL_NO_ERROR)
+	{
+		av_log(nullptr, AV_LOG_ERROR, "OpenAL : alGenSources() a échoué.\n");
+		return -1;
 	}
 
+	alGenBuffers(4, is->al_buffers);
+	if (alGetError() != AL_NO_ERROR)
+	{
+		av_log(nullptr, AV_LOG_ERROR, "OpenAL : alGenBuffers() a échoué.\n");
+		return -1;
+	}
+
+	// 3. Sortie PCM S16 interleavée.
+	// OpenAL ici est limité au mono/stéréo.
 	audio_hw_params->fmt = AV_SAMPLE_FMT_S16;
-	audio_hw_params->freq = spec.freq;
-	if (av_channel_layout_copy(&audio_hw_params->ch_layout, wanted_channel_layout) < 0)
+	audio_hw_params->freq = wanted_sample_rate;
+
+	av_channel_layout_uninit(&audio_hw_params->ch_layout);
+
+	if (wanted_channel_layout->nb_channels <= 1)
+		av_channel_layout_default(&audio_hw_params->ch_layout, 1);
+	else
+		av_channel_layout_default(&audio_hw_params->ch_layout, 2);
+
+	if (audio_hw_params->ch_layout.nb_channels <= 0)
 		return -1;
+
 	audio_hw_params->frame_size = av_samples_get_buffer_size(NULL, audio_hw_params->ch_layout.nb_channels, 1, audio_hw_params->fmt, 1);
 	audio_hw_params->bytes_per_sec = av_samples_get_buffer_size(NULL, audio_hw_params->ch_layout.nb_channels, audio_hw_params->freq, audio_hw_params->fmt, 1);
+
 	if (audio_hw_params->bytes_per_sec <= 0 || audio_hw_params->frame_size <= 0) {
 		av_log(NULL, AV_LOG_ERROR, "av_samples_get_buffer_size failed\n");
 		return -1;
 	}
-	return spec.size;
+
+	// Retourne une taille de tampon cible simulée (ex: 2048 échantillons)
+	return 2048 * audio_hw_params->frame_size;
 }
 
 
@@ -1827,17 +1733,27 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 }
 
 
-int CFFmfcPimpl::decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond)
+int CFFmfcPimpl::decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, std::condition_variable * empty_queue_cond)
 {
-	memset(d, 0, sizeof(Decoder));
+	if (!d || !avctx || !queue)
+		return AVERROR(EINVAL);
+
+	// Decoder contient std::thread : pas de memset().
+	d->pkt = nullptr;
+	d->queue = queue;
+	d->avctx = avctx;
+	d->pkt_serial = -1;
+	d->finished = 0;
+	d->packet_pending = 0;
+	d->empty_queue_cond = empty_queue_cond;
+	d->start_pts = AV_NOPTS_VALUE;
+	d->start_pts_tb = AVRational{ 0, 1 };
+	d->next_pts = AV_NOPTS_VALUE;
+	d->next_pts_tb = AVRational{ 0, 1 };
+
 	d->pkt = av_packet_alloc();
 	if (!d->pkt)
 		return AVERROR(ENOMEM);
-	d->avctx = avctx;
-	d->queue = queue;
-	d->empty_queue_cond = empty_queue_cond;
-	d->start_pts = AV_NOPTS_VALUE;
-	d->pkt_serial = -1;
 	return 0;
 }
 
@@ -1919,8 +1835,8 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 
 		do
 		{
-			if (d->queue->nb_packets == 0)
-				SDL_CondSignal(d->empty_queue_cond);
+			if (d->queue->nb_packets == 0 && d->empty_queue_cond != nullptr)
+				d->empty_queue_cond->notify_one();
 			if (d->packet_pending)
 			{
 				d->packet_pending = 0;
@@ -1987,10 +1903,10 @@ void CFFmfcPimpl::decoder_destroy(Decoder* d)
 int CFFmfcPimpl::decoder_start(Decoder* d, int (*fn)(void*), const char* thread_name, void* arg)
 {
 	packet_queue_start(d->queue);
-	d->decoder_tid = SDL_CreateThread(fn, thread_name, arg);
-	if (!d->decoder_tid)
+	d->decoder_thread = std::thread(fn, arg);
+	if (!d->decoder_thread.joinable())
 	{
-		av_log(NULL, AV_LOG_ERROR, "SDL_CreateThread(): %s\n", SDL_GetError());
+		av_log(NULL, AV_LOG_ERROR, "std::thread(): %s\n", "Failed to create thread");
 		return AVERROR(ENOMEM);
 	}
 	return 0;
@@ -2151,129 +2067,258 @@ static inline int cmp_audio_fmts(enum AVSampleFormat fmt1, int64_t channel_count
 		return channel_count1 != channel_count2 || fmt1 != fmt2;
 }
 
-int CFFmfcPimpl::audio_thread(void* arg)
+// -----------------------------------------------------------------------------
+// Thread de décodage audio : audioq -> sampq.
+// Il ne touche jamais au contexte OpenAL.
+// -----------------------------------------------------------------------------
+int CFFmfcPimpl::audio_decoder_thread(void* arg)
 {
-	VideoState* is = (VideoState*)arg;
-	AVFrame* frame = av_frame_alloc();
-	Frame* af;
-	int last_serial = -1;
-	int reconfigure;
-	int got_frame = 0;
-	//AVRational tb;
-	int ret = 0;
+	VideoState* is = static_cast<VideoState*>(arg);
+	if (!is)
+		return AVERROR(EINVAL);
 
+	AVFrame* frame = av_frame_alloc();
 	if (!frame)
 		return AVERROR(ENOMEM);
 
-	do {
-		if ((got_frame = is->_pimpl->decoder_decode_frame(is, &is->auddec, frame, NULL)) < 0)
-			goto the_end;
-
-		if (got_frame) {
-			AVRational tb = { 1, frame->sample_rate };
-
-			reconfigure =
-				cmp_audio_fmts(is->audio_filter_src.fmt, is->audio_filter_src.ch_layout.nb_channels,
-					(AVSampleFormat)frame->format, frame->ch_layout.nb_channels) ||
-				av_channel_layout_compare(&is->audio_filter_src.ch_layout, &frame->ch_layout) ||
-				is->audio_filter_src.freq != frame->sample_rate ||
-				is->auddec.pkt_serial != last_serial;
-
-			if (reconfigure) {
-				char buf1[1024], buf2[1024];
-				av_channel_layout_describe(&is->audio_filter_src.ch_layout, buf1, sizeof(buf1));
-				av_channel_layout_describe(&frame->ch_layout, buf2, sizeof(buf2));
-				av_log(NULL, AV_LOG_DEBUG,
-					"Audio frame changed from rate:%d ch:%d fmt:%s layout:%s serial:%d to rate:%d ch:%d fmt:%s layout:%s serial:%d\n",
-					is->audio_filter_src.freq, is->audio_filter_src.ch_layout.nb_channels, av_get_sample_fmt_name(is->audio_filter_src.fmt), buf1, last_serial,
-					frame->sample_rate, frame->ch_layout.nb_channels, av_get_sample_fmt_name((AVSampleFormat)frame->format), buf2, is->auddec.pkt_serial);
-
-				is->audio_filter_src.fmt = (AVSampleFormat)frame->format;
-				ret = av_channel_layout_copy(&is->audio_filter_src.ch_layout, &frame->ch_layout);
-				if (ret < 0)
-					goto the_end;
-				is->audio_filter_src.freq = frame->sample_rate;
-				last_serial = is->auddec.pkt_serial;
-
-				if ((ret = is->_pimpl->configure_audio_filters(is, afilters, 1)) < 0)
-					goto the_end;
-			}
-
-			if ((ret = av_buffersrc_add_frame(is->in_audio_filter, frame)) < 0)
-				goto the_end;
-
-			while ((ret = av_buffersink_get_frame_flags(is->out_audio_filter, frame, 0)) >= 0) {
-				FrameData* fd = frame->opaque_ref ? (FrameData*)frame->opaque_ref->data : NULL;
-				tb = av_buffersink_get_time_base(is->out_audio_filter);
-				if (!(af = is->_pimpl->frame_queue_peek_writable(&is->sampq)))
-					goto the_end;
-
-				AVRational tb_duration = { frame->nb_samples, frame->sample_rate };
-				af->pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-				af->pos = fd ? fd->pkt_pos : -1;
-				af->serial = is->auddec.pkt_serial;
-				af->duration = av_q2d(tb_duration);
-
-				av_frame_move_ref(af->frame, frame);
-				is->_pimpl->frame_queue_push(&is->sampq);
-
-				if (is->audioq.serial != is->auddec.pkt_serial)
-					break;
-			}
-			if (ret == AVERROR_EOF)
-				is->auddec.finished = is->auddec.pkt_serial;
-		}
-	} while (ret >= 0 || ret == AVERROR(EAGAIN) || ret == AVERROR_EOF);
-the_end:
-	avfilter_graph_free(&is->agraph);
-	av_frame_free(&frame);
-	return ret;
-}
-
-/*
-
-int CFFmfcPimpl::audio_thread(void* arg)
-{
-	auto is = static_cast<VideoState*>(arg);
-	AVFrame* frame = av_frame_alloc();
-	Frame* af;
-
-	int got_frame = 0;
-
-	int ret = 0;
-
-	if (!frame)
-		return AVERROR(ENOMEM);
-
-	do
+	for (;;)
 	{
-		if ((got_frame = is->_pimpl->decoder_decode_frame(is, &is->auddec, frame, NULL)) < 0)
-			goto the_end;
+		if (is->abort_request || exit_video.load(std::memory_order_acquire))
+			break;
 
-		if (got_frame)
-		{
-			AVRational tb = {1, frame->sample_rate};
-			AVRational tb_duration = {frame->nb_samples, frame->sample_rate};
+		Frame* af = is->_pimpl->frame_queue_peek_writable(&is->sampq);
+		if (!af)
+			break;
 
-			if (!(af = is->_pimpl->frame_queue_peek_writable(&is->sampq)))
-				goto the_end;
+		const int ret = is->_pimpl->decoder_decode_frame(
+			is, &is->auddec, frame, nullptr);
 
-			af->pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-			af->pos = frame->pkt_pos;
-			af->serial = is->auddec.pkt_serial;
-			af->duration = av_q2d(tb_duration);
+		if (ret < 0)
+			break;
 
-			av_frame_move_ref(af->frame, frame);
-			is->_pimpl->frame_queue_push(&is->sampq);
-		}
+		if (!ret)
+			continue;
+
+		af->pts = (frame->pts != AV_NOPTS_VALUE && frame->sample_rate > 0)
+			? static_cast<double>(frame->pts) /
+			static_cast<double>(frame->sample_rate)
+			: NAN;
+
+		af->duration = (frame->sample_rate > 0)
+			? static_cast<double>(frame->nb_samples) /
+			static_cast<double>(frame->sample_rate)
+			: 0.0;
+
+		af->serial = is->auddec.pkt_serial;
+
+		av_frame_move_ref(af->frame, frame);
+		is->_pimpl->frame_queue_push(&is->sampq);
+
 	}
-	while (ret >= 0 || ret == AVERROR(EAGAIN) || ret == AVERROR_EOF);
-the_end:
 
 	av_frame_free(&frame);
-	return ret;
+	return 0;
 }
-*/
+
+int CFFmfcPimpl::audio_thread(void* arg)
+{
+    VideoState* is = static_cast<VideoState*>(arg);
+    if (!is || !is->_pimpl)
+        return AVERROR(EINVAL);
+
+    // 1. OpenAL est thread-local : le contexte DOIT être rendu courant 
+    // dans le thread exact qui effectue les opérations OpenAL.
+    if (!is->al_context || !alcMakeContextCurrent(is->al_context))
+    {
+        av_log(nullptr, AV_LOG_ERROR, "OpenAL : Impossible d'activer le contexte audio dans ce thread.\n");
+        return -1;
+    }
+
+    const int channels = is->audio_tgt.ch_layout.nb_channels;
+    const ALenum al_format = (channels == 1) ? AL_FORMAT_MONO16 :
+                             (channels == 2) ? AL_FORMAT_STEREO16 : 0;
+
+    if (al_format == 0)
+    {
+        av_log(nullptr, AV_LOG_ERROR, "OpenAL : Nombre de canaux non supporté : %d\n", channels);
+        alcMakeContextCurrent(nullptr);
+        return -1;
+    }
+
+    if (is->audio_tgt.fmt != AV_SAMPLE_FMT_S16)
+    {
+        av_log(nullptr, AV_LOG_ERROR, "OpenAL : Format cible attendu invalide (S16 requis).\n");
+        alcMakeContextCurrent(nullptr);
+        return -1;
+    }
+
+    // Gestion initiale du volume
+    is->audio_volume = static_cast<float>(av_clip(is->_pimpl->percentVolume, 0, 100)) / 100.0f;
+    if (is->muted)
+        is->audio_volume = 0.0f;
+    alSourcef(is->al_source, AL_GAIN, is->audio_volume);
+
+    int queued_count = 0;
+    int retry_attempts = 0;
+
+    // 2. Remplissage initial de la file d'attente OpenAL (4 tampons)
+    for (int i = 0; i < 4 && !is->abort_request;)
+    {
+        const int audio_size = is->_pimpl->audio_decode_frame(is);
+
+        if (audio_size <= 0 || !is->audio_buf)
+        {
+            // PROTECTION ANTI-UNDERFLOW : Si la sampq est momentanément vide au démarrage,
+            // on attend quelques millisecondes que le décodeur audio produise du PCM.
+            if (frame_queue_nb_remaining(&is->sampq) == 0 && retry_attempts < 100)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                retry_attempts++;
+                continue; // On réessaye pour le même index de tampon 'i'
+            }
+            break;
+        }
+
+        // Réinitialisation du compteur si un décodage a réussi
+        retry_attempts = 0;
+
+        alBufferData(is->al_buffers[i], al_format, is->audio_buf, audio_size, is->audio_tgt.freq);
+        ALenum error = alGetError();
+        if (error != AL_NO_ERROR)
+        {
+            av_log(nullptr, AV_LOG_ERROR, "OpenAL : alBufferData() initial a échoué (0x%04X)\n", error);
+            break;
+        }
+
+        alSourceQueueBuffers(is->al_source, 1, &is->al_buffers[i]);
+        error = alGetError();
+        if (error != AL_NO_ERROR)
+        {
+            av_log(nullptr, AV_LOG_ERROR, "OpenAL : alSourceQueueBuffers() initial a échoué (0x%04X)\n", error);
+            break;
+        }
+
+        ++queued_count;
+        ++i; // On passe au tampon OpenAL suivant
+    }
+
+    if (queued_count == 0)
+    {
+        av_log(nullptr, AV_LOG_ERROR, "OpenAL : Aucun buffer audio disponible au démarrage.\n");
+        alcMakeContextCurrent(nullptr);
+        return -1;
+    }
+
+    // Lancement de la lecture audio
+    alSourcePlay(is->al_source);
+    ALenum error = alGetError();
+    if (error != AL_NO_ERROR)
+    {
+        av_log(nullptr, AV_LOG_ERROR, "OpenAL : alSourcePlay() a échoué (0x%04X)\n", error);
+        alcMakeContextCurrent(nullptr);
+        return -1;
+    }
+
+    // 3. Boucle principale de streaming
+    while (!is->abort_request && !exit_video.load(std::memory_order_acquire))
+    {
+        if (is->paused)
+        {
+            ALint state = AL_INITIAL;
+            alGetSourcei(is->al_source, AL_SOURCE_STATE, &state);
+
+            if (state == AL_PLAYING)
+                alSourcePause(is->al_source);
+
+            av_usleep(10000); // 10ms d'attente passive si en pause
+            continue;
+        }
+
+        // Mise à jour dynamique du volume
+        is->audio_volume = static_cast<float>(av_clip(is->_pimpl->percentVolume, 0, 100)) / 100.0f;
+        if (is->muted)
+            is->audio_volume = 0.0f;
+        alSourcef(is->al_source, AL_GAIN, is->audio_volume);
+
+        // Vérification des buffers OpenAL déjà consommés par la carte son
+        ALint processed = 0;
+        alGetSourcei(is->al_source, AL_BUFFERS_PROCESSED, &processed);
+
+        while (processed > 0 && !is->abort_request)
+        {
+            ALuint buffer = 0;
+            alSourceUnqueueBuffers(is->al_source, 1, &buffer);
+            error = alGetError();
+            if (error != AL_NO_ERROR)
+            {
+                av_log(nullptr, AV_LOG_ERROR, "OpenAL : alSourceUnqueueBuffers() a échoué (0x%04X)\n", error);
+                break;
+            }
+
+            // Décode la frame suivante
+            const int audio_size = is->_pimpl->audio_decode_frame(is);
+
+            if (audio_size > 0 && is->audio_buf)
+            {
+                alBufferData(buffer, al_format, is->audio_buf, audio_size, is->audio_tgt.freq);
+                error = alGetError();
+                if (error != AL_NO_ERROR)
+                {
+                    av_log(nullptr, AV_LOG_ERROR, "OpenAL : alBufferData() en flux a échoué (0x%04X)\n", error);
+                    break;
+                }
+
+                // Ré-injection du buffer rempli dans la file OpenAL
+                alSourceQueueBuffers(is->al_source, 1, &buffer);
+                error = alGetError();
+                if (error != AL_NO_ERROR)
+                {
+                    av_log(nullptr, AV_LOG_ERROR, "OpenAL : alSourceQueueBuffers() en flux a échoué (0x%04X)\n", error);
+                    break;
+                }
+            }
+
+            --processed;
+        }
+
+        // Sécurité en cas d'underflow critique (si la carte son a consommé plus vite que le décodeur)
+        ALint state = AL_STOPPED;
+        ALint queued = 0;
+        alGetSourcei(is->al_source, AL_SOURCE_STATE, &state);
+        alGetSourcei(is->al_source, AL_BUFFERS_QUEUED, &queued);
+
+        if (state != AL_PLAYING && queued > 0 && !is->paused)
+        {
+            alSourcePlay(is->al_source);
+        }
+
+        // 4. Gestion de la synchronisation temporelle (Master Clock)
+        is->_pimpl->audio_callback_time = av_gettime_relative();
+
+        if (!isnan(is->audio_clock))
+        {
+            // On met à jour l'horloge audio de référence basée sur la progression d'OpenAL
+            is->_pimpl->set_clock_at(
+                &is->audclk,
+                is->audio_clock,
+                is->audio_clock_serial,
+                is->_pimpl->audio_callback_time / 1000000.0
+            );
+
+            // Synchronisation de l'horloge externe globale
+            is->_pimpl->sync_clock_to_slave(&is->extclk, &is->audclk);
+        }
+
+        av_usleep(5000); // Latence de boucle de 5ms pour libérer le processeur
+    }
+
+    // 5. Nettoyage du thread
+    alSourceStop(is->al_source);
+    alcMakeContextCurrent(nullptr);
+
+    return 0;
+}
+
 
 bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceType& type, AVCodecContext* avctx,
 	AVCodec* codec, AVDictionary*& opts, VideoState* is, AVStream* video)
@@ -2548,15 +2593,29 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			is->audio_stream = stream_index;
 			is->audio_st = ic->streams[stream_index];
 
-			if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, is->continue_read_thread)) < 0)
+			if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, &is->continue_read_thread)) < 0)
 				goto fail;
 			if (is->ic->iformat->flags & AVFMT_NOTIMESTAMPS) {
 				is->auddec.start_pts = is->audio_st->start_time;
 				is->auddec.start_pts_tb = is->audio_st->time_base;
 			}
-			if ((ret = decoder_start(&is->auddec, audio_thread, "audio_decoder", is)) < 0)
+			// Thread 1 : décodage FFmpeg audioq -> sampq.
+			if ((ret = decoder_start(&is->auddec, audio_decoder_thread, "audio_decoder", is)) < 0)
 				goto out;
-			SDL_PauseAudioDevice(audio_dev, 0);
+
+			// Thread 2 : lecture OpenAL sampq -> périphérique audio.
+		try
+		{
+			is->audio_tid = std::thread(audio_thread, is);
+		}
+		catch (const std::system_error& e)
+		{
+			av_log(nullptr, AV_LOG_ERROR,
+				"Impossible de créer le thread audio OpenAL : %s\n", e.what());
+			decoder_abort(&is->auddec, &is->sampq);
+			ret = AVERROR(ENOMEM);
+			goto out;
+		}
 		}
 		break;
 
@@ -2586,7 +2645,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			}
 			*/
 
-			if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
+			if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, &is->continue_read_thread)) < 0)
 				goto fail;
 
 			if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
@@ -2600,7 +2659,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			is->subtitle_stream = stream_index;
 			is->subtitle_st = ic->streams[stream_index];
 
-			if ((ret = decoder_init(&is->subdec, avctx, &is->subtitleq, is->continue_read_thread)) < 0)
+			if ((ret = decoder_init(&is->subdec, avctx, &is->subtitleq, &is->continue_read_thread)) < 0)
 				goto fail;
 			if ((ret = decoder_start(&is->subdec, subtitle_thread, "subtitle_decoder", is)) < 0)
 				goto out;
@@ -2620,7 +2679,6 @@ out:
 
 	return ret;
 }
-
 void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 {
 	AVFormatContext* ic = is->ic;
@@ -2633,24 +2691,50 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 	switch (codecpar->codec_type)
 	{
 	case AVMEDIA_TYPE_AUDIO:
+		// 1. Arrêt du décodage : abort_request réveille sampq et stoppe le thread de décodage FFmpeg.
 		decoder_abort(&is->auddec, &is->sampq);
-		SDL_CloseAudioDevice(audio_dev);
+
+		// 2. Le thread OpenAL peut maintenant sortir de sa boucle et de audio_decode_frame().
+		if (is->audio_tid.joinable())
+			is->audio_tid.join();
+
+		// NETTOYAGE OPENAL SÉCURISÉ
+		if (is->al_source) {
+			alSourceStop(is->al_source);
+			
+			// CORRECTION : Détacher impérativement tous les buffers de la source 
+			// avant de tenter de les supprimer, sinon OpenAL ignorera alDeleteBuffers.
+			alSourcei(is->al_source, AL_BUFFER, 0);
+			
+			alDeleteSources(1, &is->al_source);
+			is->al_source = 0;
+		}
+		
+		if (is->al_buffers[0] != 0) {
+			alDeleteBuffers(4, is->al_buffers);
+			memset(is->al_buffers, 0, sizeof(is->al_buffers));
+		}
+		
+		if (is->al_context) {
+			alcMakeContextCurrent(NULL);
+			alcDestroyContext(is->al_context);
+			is->al_context = nullptr;
+		}
+		
+		if (is->al_device) {
+			alcCloseDevice(is->al_device);
+			is->al_device = nullptr;
+		}
+
+		// Nettoyage FFmpeg Audio
 		decoder_destroy(&is->auddec);
 		swr_free(&is->swr_ctx);
 		av_freep(&is->audio_buf1);
 		is->audio_buf1_size = 0;
 		is->audio_buf = NULL;
-		/*
-		if (is->rdft)
-		{
-			av_rdft_end(is->rdft);
-			av_freep(&is->rdft_data);
-			is->rdft = NULL;
-			is->rdft_bits = 0;
-		}*/
 		break;
-	case AVMEDIA_TYPE_VIDEO:
 
+	case AVMEDIA_TYPE_VIDEO:
 		if (is->hwaccel_uninit)
 			is->hwaccel_uninit(is->viddec.avctx);
 
@@ -2659,13 +2743,13 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 
 		decoder_abort(&is->viddec, &is->pictq);
 		decoder_destroy(&is->viddec);
-
-
 		break;
+
 	case AVMEDIA_TYPE_SUBTITLE:
 		decoder_abort(&is->subdec, &is->subpq);
 		decoder_destroy(&is->subdec);
 		break;
+		
 	default:
 		break;
 	}
@@ -2777,16 +2861,9 @@ int CFFmfcPimpl::read_thread(void* arg)
 	int64_t stream_start_time;
 	int pkt_in_play_range = 0;
 	AVDictionaryEntry* t;
-	SDL_mutex* wait_mutex = SDL_CreateMutex();
+	std::mutex wait_mutex;
 	int scan_all_pmts_set = 0;
 	int64_t pkt_ts;
-
-	if (!wait_mutex)
-	{
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-		ret = AVERROR(ENOMEM);
-		goto fail;
-	}
 
 	memset(st_index, -1, sizeof(st_index));
 	is->eof = 0;
@@ -3058,13 +3135,13 @@ int CFFmfcPimpl::read_thread(void* arg)
 			(is->audioq.size + is->videoq.size + is->subtitleq.size > MAX_QUEUE_SIZE
 				|| (is->_pimpl->stream_has_enough_packets(is->audio_st, is->audio_stream, &is->audioq) &&
 					is->_pimpl->stream_has_enough_packets(is->video_st, is->video_stream, &is->videoq) &&
-					is->_pimpl->
-					stream_has_enough_packets(is->subtitle_st, is->subtitle_stream, &is->subtitleq))))
+					is->_pimpl->stream_has_enough_packets(is->subtitle_st, is->subtitle_stream, &is->subtitleq))))
 		{
-			/* wait 10 ms */
-			SDL_LockMutex(wait_mutex);
-			SDL_CondWaitTimeout(is->continue_read_thread, wait_mutex, 10);
-			SDL_UnlockMutex(wait_mutex);
+
+			/* wait 10 ms avec unique_lock au lieu de lock_guard */
+			std::unique_lock<std::mutex> lock(wait_mutex);
+			is->continue_read_thread.wait_for(lock, std::chrono::milliseconds(10));
+
 			continue;
 		}
 		if (!is->paused &&
@@ -3106,9 +3183,8 @@ int CFFmfcPimpl::read_thread(void* arg)
 				else
 					break;
 			}
-			SDL_LockMutex(wait_mutex);
-			SDL_CondWaitTimeout(is->continue_read_thread, wait_mutex, 10);
-			SDL_UnlockMutex(wait_mutex);
+			std::unique_lock<std::mutex> lock(wait_mutex);
+			is->continue_read_thread.wait_for(lock, std::chrono::milliseconds(10));
 			continue;
 		}
 		else
@@ -3150,17 +3226,16 @@ fail:
 	av_packet_free(&pkt);
 	wxCommandEvent evt(FF_STOP_EVENT);
 	is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
-	SDL_DestroyMutex(wait_mutex);
+
 	return 0;
 }
 
 
-//ÉèÖÃ¸÷ÖÖSDLÐÅºÅ£¬¿ªÊ¼½âÂëÏß³Ì
 CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputFormat* iformat)
 {
 	VideoState* is;
 
-	is = (VideoState*)av_mallocz(sizeof(VideoState));
+	is = new (std::nothrow) VideoState();
 	if (!is)
 		return NULL;
 	is->last_video_stream = is->video_stream = -1;
@@ -3169,7 +3244,8 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	is->filename = av_strdup(filename);
 	is->_pimpl = this;
 	if (!is->filename)
-		goto fail;
+		return NULL;
+
 	is->iformat = iformat;
 	is->ytop = 0;
 	is->xleft = 0;
@@ -3180,55 +3256,64 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	localHeight = 0;
 	localFormat = AV_PIX_FMT_NONE;
 
-
 	colorRange = CMediaInfo::GetColorRange(filename);
 	colorSpace = CMediaInfo::GetColorSpace(filename);
 
 	/* start video display */
 	if (frame_queue_init(&is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1) < 0)
-		goto fail;
+	{
+		stream_close(is);
+		return NULL;
+	}
 	if (frame_queue_init(&is->subpq, &is->subtitleq, SUBPICTURE_QUEUE_SIZE, 0) < 0)
-		goto fail;
+	{
+		stream_close(is);
+		return NULL;
+	}
 	if (frame_queue_init(&is->sampq, &is->audioq, SAMPLE_QUEUE_SIZE, 1) < 0)
-		goto fail;
+	{
+		stream_close(is);
+		return NULL;
+	}
 
 	if (packet_queue_init(&is->videoq) < 0 ||
 		packet_queue_init(&is->audioq) < 0 ||
 		packet_queue_init(&is->subtitleq) < 0)
-		goto fail;
-
-	if (!(is->continue_read_thread = SDL_CreateCond()))
 	{
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateCond(): %s\n", SDL_GetError());
-		goto fail;
+		stream_close(is);
+		return NULL;
 	}
+
+	// Note : is->continue_read_thread étant un objet std::condition_variable standard,
+	// elle s'initialise automatiquement sans allocation manuelle (plus besoin de SDL_CreateCond).
 
 	init_clock(&is->vidclk, &is->videoq.serial);
 	init_clock(&is->audclk, &is->audioq.serial);
 	init_clock(&is->extclk, &is->extclk.serial);
 
 	is->audio_clock_serial = -1;
-	/*
-	if (percentVolume < 0)
-		av_log(NULL, AV_LOG_WARNING, "-volume=%d < 0, setting to 0\n", percentVolume);
-	if (percentVolume > 100)
-		av_log(NULL, AV_LOG_WARNING, "-volume=%d > 100, setting to 100\n", percentVolume);
-	percentVolume = av_clip(percentVolume, 0, 100);
-	percentVolume = av_clip(SDL_MIX_MAXVOLUME * percentVolume / 100, 0, SDL_MIX_MAXVOLUME);
-	*/
-	is->audio_volume = av_clip(SDL_MIX_MAXVOLUME * percentVolume / 100, 0, SDL_MIX_MAXVOLUME);
+
+	// CORRECTION ICI : Conversion du pourcentage (0-100) en gain OpenAL (0.0f - 1.0f)
+	int clamped_percent = av_clip(percentVolume, 0, 100);
+	is->audio_volume = static_cast<float>(clamped_percent) / 100.0f;
+
 	is->muted = 0;
 	is->av_sync_type = av_sync_type;
-	is->read_tid = SDL_CreateThread(read_thread, "read_thread", is);
-	if (!is->read_tid)
+
+	// Démarrage du thread de lecture avec std::thread à la place de SDL_CreateThread
+	try
 	{
-		av_log(NULL, AV_LOG_FATAL, "SDL_CreateThread(): %s\n", SDL_GetError());
-	fail:
+		is->read_tid = std::thread(read_thread, is);
+	}
+	catch (const std::system_error& e)
+	{
+		av_log(NULL, AV_LOG_FATAL, "std::thread execution failed: %s\n", e.what());
 		stream_close(is);
 		return NULL;
 	}
 	return is;
 }
+
 
 //ÒÔÏÂ¼¸¸öº¯Êý¶¼ÊÇ´¦Àíevent_loop()ÖÐµÄ¸÷ÖÖ²Ù×÷µÄ
 void CFFmfcPimpl::stream_cycle_channel(VideoState* is, int codec_type)

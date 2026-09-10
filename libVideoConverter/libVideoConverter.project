@@ -29,9 +29,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="MediaExtractor.cpp"/>
+    <File Name="FFmpegTranscoding.cpp"/>
+    <File Name="AudioEncoder.cpp"/>
     <File Name="VideoConverterFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="MediaExtractor.h"/>
+    <File Name="FFmpegTranscoding.h"/>
+    <File Name="AudioEncoder.h"/>
     <File Name="VideoConverterFrame.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>

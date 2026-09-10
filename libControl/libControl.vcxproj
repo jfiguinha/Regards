@@ -783,7 +783,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libVideoEffect;..\libEmail;..\include;..\libDeepLearning;..\libPicture;..\libOpenCL;..\libWindowMain;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libSqlEngine;..\libVideoEffect;..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;_HAS_STD_BYTE=0;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Disabled</Optimization>
@@ -871,8 +871,6 @@
     <ClInclude Include="DiaporamaEffect.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="ffmfcpimpl.h" />
-    <ClInclude Include="ffmpegToBitmap.h" />
-    <ClInclude Include="FFmpegTranscoding.h" />
     <ClInclude Include="ffplaycore.h" />
     <ClInclude Include="FiltreEffect.h" />
     <ClInclude Include="FiltreEffectWnd.h" />
@@ -927,8 +925,6 @@
     <ClCompile Include="CriteriaTree.cpp" />
     <ClCompile Include="CriteriaTreeWnd.cpp" />
     <ClCompile Include="ffmfcpimpl.cpp" />
-    <ClCompile Include="ffmpegToBitmap.cpp" />
-    <ClCompile Include="FFmpegTranscoding.cpp" />
     <ClCompile Include="ffplaycore.cpp" />
     <ClCompile Include="FiltreEffect.cpp" />
     <ClCompile Include="FiltreEffectWnd.cpp" />

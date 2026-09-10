@@ -93,6 +93,8 @@ using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
 
 
+#define LUNASVG
+
 
 // ── Définitions des membres statiques ────────────────────────────────────────
 std::map<wxString, int64_t> MetadataService::videoDurationCache_;
@@ -244,6 +246,7 @@ cv::Mat ImageConverter::WxToCvMat(const wxImage& wx)
 
 wxImage ImageConverter::CvMatToWx(cv::Mat& img)
 {
+    wxImage wx;
     cv::Mat im2, alpha;
 
     if (img.channels() == 1)
@@ -259,20 +262,20 @@ wxImage ImageConverter::CvMatToWx(cv::Mat& img)
         cvtColor(img, im2, cv::COLOR_BGR2RGB);
 
     const long imsize = im2.rows * im2.cols * im2.channels();
-    // Laissez wxImage allouer sa propre mémoire proprement en interne, pas de malloc manuel !
-    wxImage wx(im2.cols, im2.rows, false);
-
-    // Recopier les données directement dans le buffer géré par wxImage
-    memcpy(wx.GetData(), im2.data, imsize);
 
     if (img.channels() == 4)
     {
-        // wxImage utilise 'new[]' pour l'alpha, il s'en occupera à la destruction
+        wx = wxImage(im2.cols, im2.rows, static_cast<unsigned char*>(malloc(imsize)), false);
+        memcpy(wx.GetData(), im2.data, imsize);
         unsigned char* wxalpha = new unsigned char[im2.rows * im2.cols];
         memcpy(wxalpha, alpha.data, im2.rows * im2.cols);
         wx.SetAlpha(wxalpha);
     }
-
+    else
+    {
+        wx = wxImage(im2.cols, im2.rows, static_cast<unsigned char*>(malloc(imsize)), false);
+        memcpy(wx.GetData(), im2.data, imsize);
+    }
     return wx;
 }
 
@@ -756,48 +759,159 @@ int ImageLoader::GetDimensions(const wxString& fileName,
     return 0;
 }
 
+#ifdef LUNASVG
+
+#include <lunasvg/lunasvg.h> // Assurez-vous d'inclure l'en-tête de LunaSVG
 
 wxImage ImageLoader::CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight)
 {
-    int w = 0, h = 0;
+    // LunaSVG est conforme à la norme C++ et n'est pas sujet au bug de locale de strtod() 
+    // présent dans NanoSVG, mais nous laissons le scope par sécurité pour le reste de votre chaîne.
+    //ScopedLocaleFix localeContext;
+
+    wxImage img;
     int width = buttonWidth;
     int height = buttonHeight;
 
+    // Ajustement carré si les dimensions diffèrent
     if (width != height)
     {
-        if (width > height)
+        if (width > height) width = height;
+        else height = width;
+    }
+
+    // 1. CHARGEMENT ET PARSING SÉCURISÉ DU SVG
+    // Si le fichier est invalide ou corrompu, loadFromFile renvoie un pointeur nul sans jamais freezer.
+    auto document = lunasvg::Document::loadFromFile(CConvertUtility::ConvertToStdString(filename));
+    if (!document)
+    {
+        printf("Could not open or parse SVG image (LunaSVG): %s\n", (const char*)filename.mb_str());
+        return img; // Retourne l'image vide proprement
+    }
+
+    // 2. CALCUL DU RATIO À PARTIR DES DIMENSIONS DU DOCUMENT SVG
+    double w = document->width();
+    double h = document->height();
+
+    if (w != h && w > 0 && h > 0)
+    {
+        if (w > h)
         {
-            width = height;
+            float ratio = static_cast<float>(h) / static_cast<float>(w);
+            height = width * ratio;
         }
         else
         {
-            height = width;
+            float ratio = static_cast<float>(w) / static_cast<float>(h);
+            width = height * ratio;
         }
     }
 
-    //Calcul Ratio picture
-    bool isError = false;
-
+    // 3. RASTÉRISATION INTERNE AVEC LUNASVG
+    // renderToBitmap s'occupe de mettre automatiquement le SVG à l'échelle demandée
+    lunasvg::Bitmap bitmap = document->renderToBitmap(width, height);
+    if (!bitmap.valid())
     {
-        NSVGimage* image = nullptr;
-        image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, 0, 0);
-        if (image == nullptr)
-        {
-            isError = true;
-            printf("Could not open SVG image.\n");
-        }
-
-        if (!isError)
-        {
-            w = static_cast<int>(image->width);
-            h = static_cast<int>(image->height);
-        }
-
-        nsvgDelete(image);
+        printf("Could not rasterize SVG image.\n");
+        return img;
     }
+
+    // LunaSVG renvoie un buffer au format RGBA (ou BGRA selon la config, généralement RGBA 8-bit par défaut)
+    uint8_t* data = bitmap.data();
+    int renderW = static_cast<int>(bitmap.width());
+    int renderH = static_cast<int>(bitmap.height());
+
+    // 4. TRANSFERT PARALLÈLE DES PIXELS VERS WXIMAGE (TBB)
+    if (data != nullptr && renderW > 0 && renderH > 0)
+    {
+        wxImage anImage(renderW, renderH, true);
+        anImage.InitAlpha();
+
+        unsigned char* dataOut = anImage.GetData();
+        unsigned char* dataAlpha = anImage.GetAlpha();
+
+        // Le stride représente la taille en octets d'une ligne horizontale (généralement renderW * 4)
+        int stride = static_cast<int>(bitmap.stride());
+
+        tbb::parallel_for(0, renderH, 1, [=](int y)
+            {
+                int pos_data = y * stride;
+                int posDataOut = y * (renderW * 3);
+                int posAlpha = y * renderW;
+
+                for (int x = 0; x < renderW; x++)
+                {
+                    // Ajustez l'ordre des canaux (R, G, B) si votre version de LunaSVG 
+                    // est configurée en BGRA ou RGBA. Par défaut LunaSVG utilise du RGBA direct :
+                    dataOut[posDataOut]     = data[pos_data];     // R
+                    dataOut[posDataOut + 1] = data[pos_data + 1]; // G
+                    dataOut[posDataOut + 2] = data[pos_data + 2]; // B
+                    dataAlpha[posAlpha++]   = data[pos_data + 3]; // Alpha
+                    
+                    pos_data += 4;
+                    posDataOut += 3;
+                }
+            });
+
+        // Note : On ne fait pas de "delete[] data" car le buffer appartient à l'objet 'bitmap' de LunaSVG
+        // et sera nettoyé automatiquement à la sortie de la fonction (RAII).
+
+        // 5. CENTRAGE DE L'IMAGE DANS LE BOUTON FINAL
+        int posX = (buttonWidth - renderW) / 2;
+        int posY = (buttonHeight - renderH) / 2;
+        
+        wxImage final(buttonWidth, buttonHeight, true);
+        final.InitAlpha();
+        unsigned char* finalAlpha = final.GetAlpha();
+        
+        if (finalAlpha != nullptr)
+        {
+            tbb::parallel_for(0, buttonHeight, 1, [=](int y)
+                {
+                    int posAlpha = y * buttonWidth;
+                    for (int x = 0; x < buttonWidth; x++)
+                        finalAlpha[posAlpha++] = 0; // Fond transparent
+                });
+        }
+        
+        final.Paste(anImage, posX, posY);
+        return final;
+    }
+
+    return img;
+}
+
+#else
+
+wxImage ImageLoader::CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight)
+{
+    ScopedLocaleFix localeContext;
+
+    wxImage img;
+    int width = buttonWidth;
+    int height = buttonHeight;
+
+    // Ajustement carré si les dimensions diffèrent
+    if (width != height)
+    {
+        if (width > height) width = height;
+        else height = width;
+    }
+
+    // 1. UNIQUE ANALYSE DU FICHIER (Évite de lire le disque et de parser deux fois)
+    NSVGimage* image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, 0, 0);
+    if (image == nullptr)
+    {
+        printf("Could not open SVG image: %s\n", (const char*)filename.mb_str());
+        return img; // Retourne l'image vide proprement au lieu de freeze
+    }
+
+    // 2. CALCUL DU RATIO À PARTIR DE L'IMAGE DÉJÀ EN MÉMOIRE
+    int w = static_cast<int>(image->width);
+    int h = static_cast<int>(image->height);
 
     float ratio = 1.0f;
-    if (w != h)
+    if (w != h && w > 0 && h > 0)
     {
         if (w > h)
         {
@@ -811,33 +925,19 @@ wxImage ImageLoader::CreatePictureFromSVGFilename(const wxString& filename, cons
         }
     }
 
-    wxImage img;
-    NSVGimage* image = nullptr;
-    NSVGrasterizer* rast = nullptr;
+    // 3. INITIALISATION DU RASTERIZER
+    NSVGrasterizer* rast = nsvgCreateRasterizer();
     uint8_t* data = nullptr;
-    image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, width, height);
-    if (image == nullptr)
-    {
-        isError = true;
-        printf("Could not open SVG image.\n");
-    }
+    bool isError = (rast == nullptr);
 
-    if (!isError)
+    if (isError)
     {
-        w = static_cast<int>(image->width);
-        h = static_cast<int>(image->height);
-        rast = nsvgCreateRasterizer();
-    }
-
-    if (rast == nullptr)
-    {
-        isError = true;
         printf("Could not init rasterizer.\n");
     }
-
-    if (!isError)
+    else
     {
-        data = new uint8_t[w * h * 4];
+        // Allocation du buffer final basé sur les dimensions cibles du bouton
+        data = new (std::nothrow) uint8_t[width * height * 4];
         if (data == nullptr)
         {
             printf("Could not alloc image buffer.\n");
@@ -845,18 +945,21 @@ wxImage ImageLoader::CreatePictureFromSVGFilename(const wxString& filename, cons
         }
     }
 
-    if (!isError)
-        nsvgRasterize(rast, image, 0, 0, 1, data, w, h, w * 4);
-
-    nsvgDeleteRasterizer(rast);
-    nsvgDelete(image);
-
-    bool flip = false;
-
+    // 4. RASTÉRISATION AVEC ÉCHELLE (Scale) AUTOMATIQUE
     if (!isError)
     {
-        const int width = w;
-        const int height = h;
+        // Calcul du facteur d'échelle pour que le SVG fit dans notre 'width'/'height' cible
+        float scaleX = static_cast<float>(width) / image->width;
+        nsvgRasterize(rast, image, 0, 0, scaleX, data, width, height, width * 4);
+    }
+
+    // Nettoyage immédiat des structures NanoSVG
+    if (rast) nsvgDeleteRasterizer(rast);
+    if (image) nsvgDelete(image);
+
+    // 5. TRAITEMENT DES PIXELS (TBB)
+    if (!isError && data != nullptr)
+    {
         const int widthSrcSize = width * 4;
 
         wxImage anImage(width, height, true);
@@ -865,53 +968,52 @@ wxImage ImageLoader::CreatePictureFromSVGFilename(const wxString& filename, cons
         unsigned char* dataOut = anImage.GetData();
         unsigned char* dataAlpha = anImage.GetAlpha();
 
-        {
-            if (data != nullptr)
+        tbb::parallel_for(0, height, 1, [=](int y)
             {
-                tbb::parallel_for(0, height, 1, [=](int y)
-                    {
-                        //changed line
-                        int pos_data = y * widthSrcSize;
-                        int posDataOut = y * (width * 3);
-                        int posAlpha = y * width;
+                int pos_data = y * widthSrcSize;
+                int posDataOut = y * (width * 3);
+                int posAlpha = y * width;
 
-                        for (auto x = 0; x < width; x++)
-                        {
-                            dataOut[posDataOut] = data[pos_data + 2];
-                            dataOut[posDataOut + 1] = data[pos_data + 1];
-                            dataOut[posDataOut + 2] = data[pos_data];
-                            dataAlpha[posAlpha++] = data[pos_data + 3];
-                            pos_data += 4;
-                            posDataOut += 3;
-                        }
-                    }); //added ); at the end
-            }
-            delete[] data;
-        }
+                for (auto x = 0; x < width; x++)
+                {
+                    dataOut[posDataOut]     = data[pos_data + 2]; // R
+                    dataOut[posDataOut + 1] = data[pos_data + 1]; // G
+                    dataOut[posDataOut + 2] = data[pos_data];     // B
+                    dataAlpha[posAlpha++]   = data[pos_data + 3]; // Alpha
+                    pos_data += 4;
+                    posDataOut += 3;
+                }
+            });
 
+        delete[] data; // Libération du buffer de pixels temporaire
 
+        // 6. CENTRAGE DE L'IMAGE DANS LE BOUTON FINAL
+        int posX = (buttonWidth - width) / 2;
+        int posY = (buttonHeight - height) / 2;
+        
+        wxImage final(buttonWidth, buttonHeight, true);
+        final.InitAlpha();
+        unsigned char* finalAlpha = final.GetAlpha();
+        
+        if (finalAlpha != nullptr)
         {
-            int posX = (buttonWidth - w) / 2;
-            int posY = (buttonHeight - h) / 2;
-            wxImage final(buttonWidth, buttonHeight, true);
-            final.InitAlpha();
-            unsigned char* dataAlpha = final.GetAlpha();
-            if (dataAlpha != nullptr)
-            {
-                tbb::parallel_for(0, buttonHeight, 1, [=](int y)
-                    {
-                        int posAlpha = y * buttonWidth;
-                        for (auto x = 0; x < buttonWidth; x++)
-                            dataAlpha[posAlpha++] = 0;
-                    });
-            }
-            final.Paste(anImage, posX, posY);
-            return final;
+            tbb::parallel_for(0, buttonHeight, 1, [=](int y)
+                {
+                    int posAlpha = y * buttonWidth;
+                    for (auto x = 0; x < buttonWidth; x++)
+                        finalAlpha[posAlpha++] = 0; // Fond transparent
+                });
         }
+        
+        final.Paste(anImage, posX, posY);
+        return final;
     }
+
+    if (data != nullptr) delete[] data;
     return img;
 }
 
+#endif
 
 // -----------------------------------------------------------------------------
 // Load  (void version – cœur du chargement)
@@ -1109,26 +1211,21 @@ void ImageLoader::Load(const wxString& fileName, bool isThumbnail,
                     std::vector<uint8_t> _compressedImage = CPictureUtility::ReadFile(fileName);
                     if (_compressedImage.size() > 0)
                     {
-                        cv::Mat picture;
                         int jpegSubsamp, w = 0, h = 0;
-                        // Déplacer les méthodes à risque à l'intérieur du try
                         tjhandle dec = tjInitDecompress();
-                        if (dec) {
-                            try {
-                                tjDecompressHeader2(dec, &_compressedImage.at(0), _compressedImage.size(), &w, &h, &jpegSubsamp);
-                                ImageConverter::AdjustSizeToJpegScalingFactors(w, h); // Sécurisé par le catch
+                        tjDecompressHeader2(dec, &_compressedImage.at(0), _compressedImage.size(),
+                                            &w, &h, &jpegSubsamp);
+                        ImageConverter::AdjustSizeToJpegScalingFactors(w, h);
 
-                                picture.create(h, w, CV_8UC4);
-                                tjDecompress2(dec, &_compressedImage.at(0), _compressedImage.size(), picture.data, w, 0, h, TJPF_BGRX, TJFLAG_FASTDCT);
-
-                                bitmap->SetPicture(picture);
-                                bitmap->SetFilename(fileName);
-                            }
-                            catch (...) {
-                                std::cout << "Erreur de décompression TurboJPEG" << std::endl;
-                            }
-                            tjDestroy(dec); // Toujours exécuté
+                        cv::Mat picture(h, w, CV_8UC4);
+                        try
+                        {
+                            tjDecompress2(dec, &_compressedImage.at(0), _compressedImage.size(),
+                                          picture.data, w, 0, h,
+                                          TJPF_BGRX, TJFLAG_FASTDCT);
                         }
+                        catch (...) {}
+                        tjDestroy(dec);
 
                         bitmap->SetPicture(picture);
                         bitmap->SetFilename(fileName);

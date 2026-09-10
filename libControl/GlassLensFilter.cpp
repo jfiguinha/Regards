@@ -6,6 +6,8 @@
 #include <GLTexture.h>
 #include "effect_id.h"
 
+
+
 using namespace Regards::Filter;
 using namespace Regards::OpenGL;
 
@@ -16,6 +18,63 @@ CGlassLensFilter::CGlassLensFilter()
 
 CGlassLensFilter::~CGlassLensFilter()
 {}
+
+
+#ifdef __OLD_OPENGL__
+
+void CGlassLensFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
+                                    const int& width, const int& height, const int& left, const int& top)
+{
+	// 1. Configuration des unités de texture (Multi-texturing Core Profile)
+	glActiveTexture(GL_TEXTURE0);
+	pictureFirst->Enable(); // Lié à l'unité 0
+
+	glActiveTexture(GL_TEXTURE1);
+	pictureNext->Enable();  // Lié à l'unité 1
+
+	// Activation du blending pour gérer les ombres transparentes de la page cornée
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_GLASSLENS");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("sourceTex", pictureFirst->GetTextureID(),0))
+		{
+			printf("SetTexture sourceTex failed \n ");
+		}
+		if (!m_pShader->SetTexture("targetTex", pictureNext->GetTextureID(),1))
+		{
+			printf("SetTexture sourceTex failed \n ");
+		}
+		if (!m_pShader->SetParam("time", time))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+		if (!m_pShader->SetParam("invertTex", invert))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+
+	renderOpenGL->RenderTexture(pictureNext.get(), width, height, left, top, true);
+
+	// 4. Nettoyage des états OpenGL
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+
+	glDisable(GL_BLEND);
+
+	// Désactivation propre des unités de texture
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+#else
 
 void CGlassLensFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
 	const int& width, const int& height, const int& left, const int& top)
@@ -66,6 +125,8 @@ void CGlassLensFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const fl
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+#endif
 
 int CGlassLensFilter::GetTypeFilter()
 {
@@ -148,3 +209,4 @@ GLTexture* CGlassLensFilter::GetTexture(const int& numTexture)
 
 	return pictureNext.get();
 }
+

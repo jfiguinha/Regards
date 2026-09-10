@@ -12,6 +12,7 @@ public:
 	};
 	static wxString GetTimeLibelle(const int& timePosition);
 	static std::vector<wxString> split(const wxString& s, char seperator);
+	static std::vector<wxString> split(const wxString& s, wxUniChar seperator);
     static wxString ConvertToBase64(const wxString& s);
     static wxString ConvertFromBase64(const wxString& s);
 	static wxString GenerateValue(const int& value, const size_t & n);

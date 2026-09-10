@@ -449,7 +449,7 @@
 										<object class="sizeritem">
 											<flag>wxEXPAND|wxALL</flag>
 											<border>5</border>
-											<option>1</option>
+											<option>0</option>
 											<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
 												<size>320,240</size>
 											</object>
@@ -463,6 +463,12 @@
 												<size>300,-1</size>
 											</object>
 										</object>
+										
+										<!-- ESPACE ACCRU : Pousse significativement les éléments temporels vers le bas -->
+										<object class="spacer">
+											<size>0,35</size>
+										</object>
+
 										<!-- Start Time -->
 										<object class="sizeritem">
 											<flag>wxEXPAND|wxALL</flag>
@@ -486,6 +492,12 @@
 												</object>
 											</object>
 										</object>
+
+										<!-- ESPACE INTERMÉDIAIRE : Sépare le bloc From du bloc To -->
+										<object class="spacer">
+											<size>0,10</size>
+										</object>
+
 										<!-- End Time -->
 										<object class="sizeritem">
 											<flag>wxEXPAND|wxALL</flag>
@@ -509,11 +521,11 @@
 												</object>
 											</object>
 										</object>
-										<object class="sizeritem">
+										<!-- Spacer dynamique final -->
+										<object class="spacer">
+											<size>0,0</size>
+											<option>1</option>
 											<flag>wxEXPAND</flag>
-											<object class="wxBoxSizer">
-												<orient>wxVERTICAL</orient>
-											</object>
 										</object>
 									</object>
 								</object>

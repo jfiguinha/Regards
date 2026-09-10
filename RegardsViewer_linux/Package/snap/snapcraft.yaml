@@ -5,7 +5,7 @@ donation: https://fr.tipeee.com/regardsviewer
 website: https://regardsviewerlite.tiiny.site
 
 base: core24
-version: '3.00.0.0'
+version: '3.05.0.0'
 
 summary: Regards is a modern photo viewer.
 description: |
@@ -84,7 +84,7 @@ environment:
 parts:
   regardsviewer:
     plugin: dump
-    source: RegardsViewer_3.00.0.0-linux-x86_64.tar.gz
+    source: RegardsViewer_3.05.0.0-linux-x86_64.tar.gz
 
     stage-packages:
       # Graphics / OpenGL
@@ -99,7 +99,6 @@ parts:
       - ocl-icd-libopencl1
 
       # Multimedia
-      - libsdl2-2.0-0
       - libva-drm2
       - libva-glx2
       - libva-wayland2

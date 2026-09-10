@@ -17,6 +17,45 @@ class CReadMacOSImage;
 namespace Regards {
 namespace Picture {
 
+class ScopedLocaleFix
+{
+    public:
+    
+        bool needsFix;
+        std::string saved_locale;
+
+        ScopedLocaleFix()
+        {
+            needsFix = !SystemUsesDotDecimal();
+            if (needsFix) {
+                const char* current = std::setlocale(LC_NUMERIC, nullptr);
+                saved_locale = current ? current : "C";
+                std::setlocale(LC_NUMERIC, "C");
+            }
+        }
+
+        ~ScopedLocaleFix()
+        {
+            if (needsFix) {
+                std::setlocale(LC_NUMERIC, saved_locale.c_str());
+            }
+        }
+
+        bool SystemUsesDotDecimal()
+        {
+            // Récupère les informations de formatage de la locale numérique actuelle
+            struct lconv* lc = std::localeconv();
+            
+            if (lc && lc->decimal_point) {
+                // Renvoie true si le premier caractère est un point '.'
+                return (lc->decimal_point[0] == '.');
+            }
+            
+            // Par sécurité, si la structure est nulle, on suppose que ce n'est pas un point
+            return false;
+        }
+};
+
 // =============================================================================
 // FormatDetector
 // Responsabilité : détecter et identifier le format d'un fichier image/vidéo
@@ -114,6 +153,9 @@ class ImageLoader
 public:
     ImageLoader();
     ~ImageLoader();
+
+    	// Structure RAII pour gérer automatiquement la locale dans cette fonction
+
 
     // Charge l'image fileName dans bitmap (frame numPicture, mode thumbnail ou full)
     void              Load(const wxString& fileName, bool isThumbnail,

@@ -32,7 +32,8 @@ cd vcpkg
 ./vcpkg install libepoxy
 ./vcpkg install ncnn[vulkan]
 ./vcpkg install boost-lexical-cast
-./vcpkg install freeglut
+./vcpkg install lunasvg
+./vcpkg install openal-soft
 cd ..
 
 #Compile heif-master

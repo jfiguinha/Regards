@@ -218,6 +218,8 @@
         <Library Value="xml2"/>
         <Library Value="raw_r"/>
         <Library Value="jasper"/>
+        <Library Value="lunasvg"/>
+        <Library Value="plutovg"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>
         <Library Value="avcodec"/>
@@ -387,7 +389,8 @@
         <Library Value="z"/>
         <Library Value="tiff"/>
         <Library Value="lzma"/>
-        <Library Value="SDL2"/>
+        <Library Value="openal"/>
+        <Library Value="fmt"/>
         <Library Value="decor-0"/>
         <Library Value="sharpyuv"/>
         <Library Value="pangoft2-1.0"/>
@@ -530,7 +533,6 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.60 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.6 ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.9 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/ffmpeg ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/opencl_dll/*.so.* ./Debug</Command>
         <Command Enabled="yes">sh patch_debug.sh</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
@@ -626,7 +628,6 @@
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libavutil.so.60 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswresample.so.6 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/lib/libswscale.so.9 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/ffmpeg ./Release</Command>
         <Command Enabled="yes">cp ../libextern/opencl_dll/*.so.* ./Release</Command>
         <Command Enabled="yes">sh patch_release.sh</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>

@@ -334,8 +334,6 @@ namespace Regards::Media
     [[nodiscard]]
     bool ExecuteFFmpegExtractVideo(
         const std::string& fileIn,
-        const std::string& timestart,
-        const std::string& timestop,
         const std::string& fileOut);
 
 
@@ -346,8 +344,6 @@ namespace Regards::Media
     [[nodiscard]]
     bool ExecuteFFmpegExtractAudio(
         const std::string& fileIn,
-        const std::string& timestart,
-        const std::string& timestop,
         const std::string& fileOut);
 
 

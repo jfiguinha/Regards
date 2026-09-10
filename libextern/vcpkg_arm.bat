@@ -22,3 +22,4 @@ vcpkg install libepoxy:arm64-windows
 vcpkg install boost-lexical-cast:arm64-windows
 vcpkg install freeglut:arm64-windows
 vcpkg install libxml2:arm64-windows
+vcpkg install lunasvg:arm64-windows

@@ -17,7 +17,7 @@ namespace Regards
 
             void initializeContextFromGL();
             void AssociateToVulkan();
-            void CreateDefaultOpenCLContext();
+            bool CreateDefaultOpenCLContext();
 
             void GetOutputData(
                 cl_mem cl_output_buffer,

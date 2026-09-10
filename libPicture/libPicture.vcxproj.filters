@@ -130,9 +130,6 @@
     <ClCompile Include="VideoThumbPimpl.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="MediaExtractor.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
     <ClCompile Include="PictureMetadataExiv.cpp">
       <Filter>libexif</Filter>
     </ClCompile>
@@ -288,9 +285,6 @@
     <ClInclude Include="VideoThumbPimpl.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="MediaExtractor.h">
-      <Filter>video</Filter>
-    </ClInclude>
     <ClInclude Include="PictureMetadataExiv.h">
       <Filter>libexif</Filter>
     </ClInclude>
@@ -334,9 +328,6 @@
     </Filter>
     <Filter Include="Fichiers d%27en-tête">
       <UniqueIdentifier>{3ec446f1-e066-4abc-b215-ece3500fd077}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="video">
-      <UniqueIdentifier>{abae937f-e371-4d4a-95cd-bb39f5ea6092}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

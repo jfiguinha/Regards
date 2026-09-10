@@ -4,7 +4,7 @@
 #include <CompressVideo.h>
 #include <functional>
 #include <thread>
-
+#include <wx/progdlg.h>
 class CFFmpegTranscoding;
 class CVideoOptionCompress;
 class CompressionAudioVideoOption;
@@ -21,6 +21,12 @@ public:
 
 private:
 
+	// Permet de gérer la progression audio asynchrone de manière thread-safe
+	std::thread m_audioThread;
+	std::atomic<bool> m_audioCancelRequested{ false };
+	wxProgressDialog* m_dlgAudioProgress = nullptr;
+
+	int EncodeAudioSample(CVideoOptionCompress* videoCompressOption, const wxString& input, const wxString& output);
 	void OnCloseWindow(wxCloseEvent& event);
 	wxString SelectOutputFile(wxString& filename);
 	void ExitApplication();
@@ -37,6 +43,11 @@ private:
 	wxString fileOutAudio = "";
 	wxString fileOutVideo = "";
 	wxString fileOutputPath = "";
+
+	wxString fileOut_cut = "";
+	wxString fileOutAudio_encode = "";
+	wxString fileOutVideo_encode = "";
+	wxString filename = "";
 	bool needToRemux = false;
 	bool isAudio = false;
 	bool init = false;

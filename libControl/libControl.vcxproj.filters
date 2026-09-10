@@ -61,9 +61,6 @@
     <ClCompile Include="ffmfcpimpl.cpp">
       <Filter>Video\Core</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpegToBitmap.cpp">
-      <Filter>Video\Core</Filter>
-    </ClCompile>
     <ClCompile Include="ffplaycore.cpp">
       <Filter>Video\Core</Filter>
     </ClCompile>
@@ -90,9 +87,6 @@
     </ClCompile>
     <ClCompile Include="ShowElement.cpp">
       <Filter>Display</Filter>
-    </ClCompile>
-    <ClCompile Include="FFmpegTranscoding.cpp">
-      <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
@@ -195,9 +189,6 @@
     <ClInclude Include="ffmfcpimpl.h">
       <Filter>Video\Core</Filter>
     </ClInclude>
-    <ClInclude Include="ffmpegToBitmap.h">
-      <Filter>Video\Core</Filter>
-    </ClInclude>
     <ClInclude Include="ffplaycore.h">
       <Filter>Video\Core</Filter>
     </ClInclude>
@@ -239,9 +230,6 @@
     </ClInclude>
     <ClInclude Include="ShowElement.h">
       <Filter>Display</Filter>
-    </ClInclude>
-    <ClInclude Include="FFmpegTranscoding.h">
-      <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVerticalSeparator.h">
       <Filter>Thumbnail\header</Filter>
@@ -301,9 +289,6 @@
     </Filter>
     <Filter Include="Video\Core\Toolbar">
       <UniqueIdentifier>{30e1353a-0406-4166-852a-626720695f48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Video\Core\Encoding">
-      <UniqueIdentifier>{21d0ca21-54e3-46c7-bb55-45df9af45d9d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Bitmap\PostEffect">
       <UniqueIdentifier>{d2ded3d8-c62a-4d3f-baf6-98f01aabb7b8}</UniqueIdentifier>

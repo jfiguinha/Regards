@@ -105,3 +105,20 @@ std::vector<wxString> CConvertUtility::split(const wxString& s, char seperator)
 
 	return output;
 }
+
+std::vector<wxString> CConvertUtility::split(const wxString& s, wxUniChar seperator)
+{
+    std::vector<wxString> output;
+    wxString::size_type prev_pos = 0, pos = 0;
+
+    // wxString::find gère nativement le type wxUniChar
+    while ((pos = s.find(seperator, pos)) != wxString::npos)
+    {
+        wxString substring(s.substr(prev_pos, pos - prev_pos));
+        output.push_back(substring);
+        prev_pos = ++pos;
+    }
+
+    output.push_back(s.substr(prev_pos, pos - prev_pos));
+    return output;
+}

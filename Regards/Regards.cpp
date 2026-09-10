@@ -29,6 +29,11 @@
 #include <ncnn/gpu.h>
 #include <exiv2/image.hpp>
 AppContext application_context;
+
+#ifdef __APPLE__
+#include <appglcontext.h>
+AppGLContext application_glcontext;
+#endif
 ncnn::VulkanDevice* vkdev = nullptr;
 
 using namespace cv;
@@ -53,15 +58,6 @@ MyApp::MyApp()
 	int result = XInitThreads();
 #endif
 
-	int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
-	//------SDL------------------------
-	//³õÊ¼»¯
-	if (SDL_Init(flags))
-	{
-		std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
-		wxMessageBox(_T("Could not initialize SDL Audio"));
-		//exit(1);
-	}
 }
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -381,26 +377,6 @@ bool MyApp::InitializeResources()
 	CPrintEngine::Initialize();
 
 
-#ifdef GLUT
-#ifndef __APPLE__
-
-	if (argc > 1)
-	{
-		if (argc == 3)
-		{
-			wxString parameter = wxTheApp->argv[1];
-			if (parameter == "-p")
-				appName = wxTheApp->argv[argc - 1];
-		}
-	}
-
-
-	int _argc = 1;
-	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
-	glutInit(&_argc, argv);
-#endif
-#endif
-
 #ifndef NDEBUG
 	::wxMessageBox("toto");
 #endif
@@ -521,11 +497,6 @@ bool MyApp::OnInit()
 
 	LaunchApplication();
 
-	return true;
-
-	// success: wxApp::OnRun() will be called which will enter the main message
-	// loop and the application will run. If we returned false here, the
-	// application would exit immediately.
 	return true;
 }
 

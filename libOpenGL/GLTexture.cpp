@@ -6,11 +6,6 @@
 #include <OpenCL/cl_gl.h>
 #include <OpenCL/cl_gl_ext.h>
 #endif
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 #include <OpenCLContext.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
@@ -19,6 +14,7 @@
 extern AppContext application_context;
 using namespace Regards::OpenGL;
 using namespace cv::ocl;
+
 
 // ===========================================================================
 // CTextureGLPriv — interop OpenCL / OpenGL
@@ -271,6 +267,88 @@ bool GLTexture::SetData(Regards::Picture::CPictureArray& bitmap,
     return isOk;
 }
 
+#ifdef __APPLE__
+
+bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap) {
+    cv::Mat mat = bitmap.getMat();
+    if (mat.empty()) {
+        std::cerr << "GLTexture::SetTextureData: bitmap is empty\n";
+        return false;
+    }
+
+    cv::Mat rgba;
+    const int ch = mat.channels();
+    
+    if (ch == 3) {
+        cv::cvtColor(mat, rgba, cv::COLOR_BGR2RGBA); 
+    }
+    else if (ch == 1) {
+        cv::cvtColor(mat, rgba, cv::COLOR_GRAY2RGBA); 
+    }
+    else if (ch == 4) {
+        cv::cvtColor(mat, rgba, cv::COLOR_BGRA2RGBA);
+    }
+    else {
+        std::cerr << "GLTexture::SetTextureData: unsupported channel count " << ch << "\n";
+        return false;
+    }
+
+    if (!rgba.isContinuous()) rgba = rgba.clone();
+
+    const int newW = rgba.cols;
+    const int newH = rgba.rows;
+
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0); 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, rgba.step / rgba.elemSize());
+
+    GLenum currentDataformat = GL_RGBA; 
+
+    if (m_nTextureID == 0) {
+        glGenTextures(1, &m_nTextureID);
+        glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, newW, newH, 0, currentDataformat,
+            GL_UNSIGNED_BYTE, rgba.data);
+        checkErrors("SetTextureData glTexImage2D");
+    }
+    else if (newW != width || newH != height) {
+        // Obligatoire sur macOS Silicon pour réallouer la mémoire Metal sous-jacente
+        glDeleteTextures(1, &m_nTextureID);
+        glGenTextures(1, &m_nTextureID);
+        
+        glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, newW, newH, 0, currentDataformat,
+            GL_UNSIGNED_BYTE, rgba.data);
+        checkErrors("SetTextureData glTexImage2D resize");
+    }
+    else {
+        glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, newW, newH, currentDataformat,
+            GL_UNSIGNED_BYTE, rgba.data);
+        checkErrors("SetTextureData glTexSubImage2D");
+    }
+    
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    width = newW;
+    height = newH;
+
+    return true;
+}
+
+
+#else
+
 bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap) {
     cv::Mat mat = bitmap.getMat();
     if (mat.empty()) {
@@ -330,6 +408,8 @@ bool GLTexture::SetTextureData(Regards::Picture::CPictureArray& bitmap) {
     height = newH;
     return true;
 }
+
+#endif
 void GLTexture::SetFilterType(const GLint FilterType_i,
     const GLint FilterValue_i) {
     glBindTexture(GL_TEXTURE_2D, m_nTextureID);
@@ -375,3 +455,4 @@ void GLTexture::Delete() {
     }
 }
 void GLTexture::Enable() { glBindTexture(GL_TEXTURE_2D, m_nTextureID); }
+

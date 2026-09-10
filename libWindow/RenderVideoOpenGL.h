@@ -8,7 +8,6 @@
 using namespace Regards::OpenGL;
 
 class CVideoEffectParameter;
-;
 
 namespace Regards::OpenGL
 {
@@ -52,3 +51,4 @@ namespace Regards::OpenGL
         bool frameBufferSupport = false;
 	};
 }
+

@@ -1,16 +1,6 @@
 #include "header.h"
-
-// stdafx.h : fichier Include pour les fichiers Include système standard,
-// ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
-// et sont rarement modifiés
-//
 #include "RenderBitmapOpenGL.h"
-//#include <ConfigParam.h>
 #include <GLSLShader.h>
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#include <GLUT/glut.h>
-#endif
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
 using namespace Regards::OpenGL;
@@ -174,3 +164,4 @@ void CRenderBitmapOpenGL::ShowArrowPrevious()
 	textureArrowLeft->Disable();
 	glDisable(GL_BLEND);
 }
+

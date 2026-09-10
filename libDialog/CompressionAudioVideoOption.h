@@ -67,8 +67,19 @@ public:
 	wxComboBox* cbVideoProfile;
 
 	wxStaticBitmap* bitmap;
+
+#ifdef __APPLE__
+	wxTextCtrl* labelTimeStart;
+	wxTextCtrl* labelTimeEnd;
+
+	void OnSpinTimeStartChange(wxSpinEvent& event);
+	void OnSpinTimeToChange(wxSpinEvent& event);
+
+#else
 	wxTimePickerCtrl* labelTimeStart;
 	wxTimePickerCtrl* labelTimeEnd;
+#endif
+
 	wxSlider* slVideo;
 
 	//Filter event

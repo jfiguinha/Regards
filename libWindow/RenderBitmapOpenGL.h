@@ -6,10 +6,6 @@
 #include <RenderOpenGL.h>
 using namespace Regards::OpenGL;
 
-//#define RENDEROPENGL WM_USER+1
-
-;
-
 namespace Regards::OpenGL
 {
 	class CRenderBitmapOpenGL

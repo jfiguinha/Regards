@@ -9,6 +9,7 @@
 
 class CTextureGLPriv;
 class CTextureCudaPriv;
+
 namespace cv
 {
 	namespace ogl

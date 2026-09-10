@@ -33,8 +33,6 @@
   <VirtualDirectory Name="VideoThumbnail">
     <File Name="VideoThumbPimpl.h"/>
     <File Name="VideoThumbPimpl.cpp"/>
-    <File Name="MediaExtractor.h"/>
-    <File Name="MediaExtractor.cpp"/>
     <File Name="FFmpegVideoThumb.h"/>
     <File Name="FFmpegVideoThumb.cpp"/>
     <File Name="aspectratio.h"/>

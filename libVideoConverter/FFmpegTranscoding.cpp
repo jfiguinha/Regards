@@ -3,7 +3,6 @@
 #include "FFmpegTranscoding.h"
 #include <CompressVideo.h>
 #include <ImageLoadingFormat.h>
-#include "ffmpegToBitmap.h"
 #include "VideoCompressOption.h"
 #include <wx/progdlg.h>
 #include <wx/filename.h>
@@ -310,6 +309,7 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 {
 	EndTreatment();
 
+
 	if (dst_hardware != nullptr)
 	{
 		av_frame_free(&dst_hardware);
@@ -320,6 +320,7 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 
 	if (convert_dst_hardware != nullptr)
 	{
+		av_freep(&convert_dst_hardware->data[0]); // Libère le buffer de pixels
 		av_frame_free(&convert_dst_hardware);
 	}
 
@@ -332,6 +333,8 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 
 	if (convertContext != nullptr)
 		sws_freeContext(convertContext);
+
+
 
 }
 
@@ -465,214 +468,126 @@ int CFFmpegTranscoding::open_input_file(const wxString& filename)
 		av_log(nullptr, AV_LOG_ERROR, "Cannot open input file\n");
 		return ret;
 	}
-
 	if ((ret = avformat_find_stream_info(ifmt_ctx, nullptr)) < 0)
 	{
 		av_log(nullptr, AV_LOG_ERROR, "Cannot find stream information\n");
 		return ret;
 	}
-
 	stream_ctx = static_cast<StreamContext*>(av_calloc(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
-	if (!stream_ctx)
-		return AVERROR(ENOMEM);
+	if (!stream_ctx) return AVERROR(ENOMEM);
 
 	for (i = 0; i < ifmt_ctx->nb_streams; i++)
 	{
 		AVStream* stream = ifmt_ctx->streams[i];
-		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE ||
+			stream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
 			continue;
+
 		const AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
-		AVCodecContext* codec_ctx;
-		if (!dec)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", i);
-			return AVERROR_DECODER_NOT_FOUND;
-		}
-		codec_ctx = avcodec_alloc_context3(dec);
-		if (!codec_ctx)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
-			return AVERROR(ENOMEM);
-		}
+		if (!dec) return AVERROR_DECODER_NOT_FOUND;
+		AVCodecContext* codec_ctx = avcodec_alloc_context3(dec);
+		if (!codec_ctx) return AVERROR(ENOMEM);
+
 		ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
-		if (ret < 0)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
-			       "for stream #%u\n", i);
-			return ret;
-		}
-		/* Reencode video & audio and remux subtitles etc. */
-		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
-			|| codec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-		{
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-				codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
+		if (ret < 0) { avcodec_free_context(&codec_ctx); return ret; }
+		codec_ctx->thread_count = 0;
+		codec_ctx->thread_type = FF_THREAD_FRAME;
+		codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
 
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				videoStreamIndex = i;
-			}
+		ret = avcodec_open2(codec_ctx, dec, nullptr);
+		if (ret < 0) { avcodec_free_context(&codec_ctx); return ret; }
 
-
-			ret = avcodec_open2(codec_ctx, dec, nullptr);
-			if (ret < 0)
-			{
-				av_log(nullptr, AV_LOG_ERROR, "Failed to open decoder for stream #%u\n", i);
-				return ret;
-			}
-
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				startTime = ifmt_ctx->start_time;
-
-				rotation = get_rotation(stream);
-			}
-		}
+		videoStreamIndex = static_cast<int>(i);
+		startTime = ifmt_ctx->start_time;
+		rotation = get_rotation(stream);
 		stream_ctx[i].dec_ctx = codec_ctx;
-
 		stream_ctx[i].dec_frame = av_frame_alloc();
-		if (!stream_ctx[i].dec_frame)
-			return AVERROR(ENOMEM);
+		if (!stream_ctx[i].dec_frame) return AVERROR(ENOMEM);
 	}
-
 	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToStdString(filename).c_str(), 0);
 	return 0;
 }
 
-
 int CFFmpegTranscoding::open_input_file(const wxString& filename, const wxString& decodeHardware)
 {
-	//if(decodeHardware == "")
-	//{
 	int ret;
 	unsigned int i;
-
 	enum AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
 	this->decodeHardware = decodeHardware;
-	if (decodeHardware != "" || decodeHardware != "none")
+
+	if (decodeHardware != "" && decodeHardware != "none")
 	{
 		type = av_hwdevice_find_type_by_name(CConvertUtility::ConvertToStdString(decodeHardware).c_str());
 		if (type == AV_HWDEVICE_TYPE_NONE)
 		{
 			fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(decodeHardware).c_str());
-			fprintf(stderr, "Available device types:");
-			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-			fprintf(stderr, "\n");
+			return AVERROR_UNKNOWN;
 		}
 	}
 
 	ifmt_ctx = nullptr;
 	if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToStdString(filename).c_str(), nullptr, nullptr)) < 0)
-	{
-		av_log(nullptr, AV_LOG_ERROR, "Cannot open input file\n");
 		return ret;
-	}
-
 	if ((ret = avformat_find_stream_info(ifmt_ctx, nullptr)) < 0)
-	{
-		av_log(nullptr, AV_LOG_ERROR, "Cannot find stream information\n");
 		return ret;
-	}
 
 	stream_ctx = static_cast<StreamContext*>(av_calloc(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
-	if (!stream_ctx)
-		return AVERROR(ENOMEM);
+	if (!stream_ctx) return AVERROR(ENOMEM);
 
 	for (i = 0; i < ifmt_ctx->nb_streams; i++)
 	{
 		AVStream* stream = ifmt_ctx->streams[i];
-		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE ||
+			stream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
 			continue;
+
 		const AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
-		AVCodecContext* codec_ctx;
-		if (!dec)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", i);
-			return AVERROR_DECODER_NOT_FOUND;
-		}
-		codec_ctx = avcodec_alloc_context3(dec);
-		if (!codec_ctx)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
-			return AVERROR(ENOMEM);
-		}
+		if (!dec) return AVERROR_DECODER_NOT_FOUND;
+		AVCodecContext* codec_ctx = avcodec_alloc_context3(dec);
+		if (!codec_ctx) return AVERROR(ENOMEM);
+
 		ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
-		if (ret < 0)
+		if (ret < 0) { avcodec_free_context(&codec_ctx); return ret; }
+		codec_ctx->thread_count = 0;
+		codec_ctx->thread_type = FF_THREAD_FRAME;
+		codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
+		videoStreamIndex = static_cast<int>(i);
+
+		if (decodeHardware != "" && decodeHardware != "none")
 		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
-			       "for stream #%u\n", i);
-			return ret;
-		}
-		/* Reencode video & audio and remux subtitles etc. */
-		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
-			|| codec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-		{
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+			for (int j = 0;; ++j)
 			{
-				if (decodeHardware != "" || decodeHardware != "none")
+				const AVCodecHWConfig* config = avcodec_get_hw_config(dec, j);
+				if (!config)
 				{
-					for (int j = 0;; j++)
-					{
-						const AVCodecHWConfig* config = avcodec_get_hw_config(dec, j);
-						if (!config)
-						{
-							fprintf(stderr, "Decoder %s does not support device type %s.\n",
-							        dec->name, av_hwdevice_get_type_name(type));
-
-							return -1;
-						}
-						if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-							config->device_type == type)
-						{
-							hw_pix_fmt = config->pix_fmt;
-							pixelFormatInput = AV_PIX_FMT_NV12;
-							break;
-						}
-					}
+					avcodec_free_context(&codec_ctx);
+					return AVERROR(ENOSYS);
 				}
-				else
-					pixelFormatInput = AV_PIX_FMT_YUV420P;
-
-				codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
-				videoStreamIndex = i;
-
-				if (decodeHardware != "" || decodeHardware != "none")
+				if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) && config->device_type == type)
 				{
-					codec_ctx->get_format = get_hw_format;
-
-					ret = hw_decoder_init(codec_ctx, type);
-					if (ret < 0)
-						return ret;
+					hw_pix_fmt = config->pix_fmt;
+					pixelFormatInput = AV_PIX_FMT_NV12;
+					break;
 				}
 			}
-
-
-			ret = avcodec_open2(codec_ctx, dec, nullptr);
-			if (ret < 0)
-			{
-				av_log(nullptr, AV_LOG_ERROR, "Failed to open decoder for stream #%u\n", i);
-				return ret;
-			}
-
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				startTime = ifmt_ctx->start_time;
-
-				rotation = get_rotation(stream);
-			}
+			codec_ctx->get_format = get_hw_format;
+			ret = hw_decoder_init(codec_ctx, type);
+			if (ret < 0) { avcodec_free_context(&codec_ctx); return ret; }
 		}
+		else
+			pixelFormatInput = AV_PIX_FMT_YUV420P;
+
+		ret = avcodec_open2(codec_ctx, dec, nullptr);
+		if (ret < 0) { avcodec_free_context(&codec_ctx); return ret; }
+		startTime = ifmt_ctx->start_time;
+		rotation = get_rotation(stream);
 		stream_ctx[i].dec_ctx = codec_ctx;
-
 		stream_ctx[i].dec_frame = av_frame_alloc();
-		if (!stream_ctx[i].dec_frame)
-			return AVERROR(ENOMEM);
+		if (!stream_ctx[i].dec_frame) return AVERROR(ENOMEM);
 	}
-
 	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToStdString(filename).c_str(), 0);
 	return 0;
 }
-
 
 int CFFmpegTranscoding::EncodeFrame(const int& stream_index, int& positionMovie, const bool& isVideo,
                                          const bool& write)
@@ -726,8 +641,12 @@ int CFFmpegTranscoding::EncodeFrame(const int& stream_index, int& positionMovie,
 		}
 
 		ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
-		if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-			break;
+		// CORRECTIF : Si la boucle s'est arrêtée parce que le décodeur a besoin de plus de paquets (EAGAIN),
+		// ou si on a atteint la fin (EOF), ce n'est pas une erreur. On retourne 0 pour continuer.
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+		{
+			return 0;
+		}
 		if (ret < 0)
 			goto fail;
 
@@ -1272,61 +1191,16 @@ wxString CFFmpegTranscoding::GetCodecName(AVCodecID codec_type, const wxString& 
 
 AVCodecID CFFmpegTranscoding::GetCodecID(AVMediaType codec_type) const
 {
-	if (codec_type == AVMEDIA_TYPE_AUDIO)
-	{
-		if (videoCompressOption->audioCodec == "AAC")
-		{
-			return AV_CODEC_ID_AAC;
-		}
-		if (videoCompressOption->audioCodec == "MP3")
-		{
-			return AV_CODEC_ID_MP3;
-		}
-		if (videoCompressOption->audioCodec == "WAV")
-		{
-			return AV_CODEC_ID_PCM_S16LE;
-		}
-		if (videoCompressOption->audioCodec == "FLAC")
-		{
-			return AV_CODEC_ID_FLAC;
-		}
-		if (videoCompressOption->audioCodec == "VORBIS")
-		{
-			return AV_CODEC_ID_VORBIS;
-		}
-	}
-	else
-	{
-		if (videoCompressOption->videoCodec == "H264")
-		{
-			return AV_CODEC_ID_H264;
-		}
-		if (videoCompressOption->videoCodec == "H265")
-		{
-			return AV_CODEC_ID_H265;
-		}
-		if (videoCompressOption->videoCodec == "VP8")
-		{
-			return AV_CODEC_ID_VP8;
-		}
-		if (videoCompressOption->videoCodec == "VP9")
-		{
-			return AV_CODEC_ID_VP9;
-		}
-		if (videoCompressOption->videoCodec == "MPEG4")
-		{
-			return AV_CODEC_ID_MPEG4;
-		}
-		if (videoCompressOption->videoCodec == "AV1")
-		{
-			return AV_CODEC_ID_AV1;
-		}
-		if (videoCompressOption->videoCodec == "MPEG2")
-		{
-			return AV_CODEC_ID_MPEG2VIDEO;
-		}
-	}
-
+	// Audio is intentionally not part of the transcoding pipeline.
+	if (codec_type != AVMEDIA_TYPE_VIDEO || videoCompressOption == nullptr)
+		return AV_CODEC_ID_NONE;
+	if (videoCompressOption->videoCodec == "H264") return AV_CODEC_ID_H264;
+	if (videoCompressOption->videoCodec == "H265") return AV_CODEC_ID_H265;
+	if (videoCompressOption->videoCodec == "VP8") return AV_CODEC_ID_VP8;
+	if (videoCompressOption->videoCodec == "VP9") return AV_CODEC_ID_VP9;
+	if (videoCompressOption->videoCodec == "MPEG4") return AV_CODEC_ID_MPEG4;
+	if (videoCompressOption->videoCodec == "AV1") return AV_CODEC_ID_AV1;
+	if (videoCompressOption->videoCodec == "MPEG2") return AV_CODEC_ID_MPEG2VIDEO;
 	return AV_CODEC_ID_NONE;
 }
 
@@ -1382,229 +1256,137 @@ void CFFmpegTranscoding::SetParamFromVideoCodec(AVCodecContext* c, AVCodecContex
 
 int CFFmpegTranscoding::open_output_file(const wxString& filename)
 {
-	AVStream* out_stream;
-	AVStream* in_stream;
-	AVCodecContext *dec_ctx, *enc_ctx;
-	const AVCodec* encoder;
+	AVStream* out_stream = nullptr;
+	AVStream* in_stream = nullptr;
+	AVCodecContext* dec_ctx = nullptr;
+	AVCodecContext* enc_ctx = nullptr;
 	int ret;
 	wxString encoderHardware = "";
-	unsigned int i;
-	AVDictionary* av_opts = nullptr;
-	AVCodecID VIDEO_CODEC = GetCodecID(AVMEDIA_TYPE_VIDEO);
-	AVCodecID AUDIO_CODEC = GetCodecID(AVMEDIA_TYPE_AUDIO);
+
+	const AVCodecID VIDEO_CODEC = GetCodecID(AVMEDIA_TYPE_VIDEO);
 	ofmt_ctx = nullptr;
-
-	//wxString filepath = filename;
 	wxFileName filepath(filename);
-
 	wxString extension = filepath.GetExt();
 
-
 	if (extension == "mkv")
-		avformat_alloc_output_context2(
-			&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "mkv",
-			CConvertUtility::ConvertToStdString(filename).c_str());
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "mkv", CConvertUtility::ConvertToStdString(filename).c_str());
 	else if (extension == "webm")
-		avformat_alloc_output_context2(
-			&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "webm",
-			CConvertUtility::ConvertToStdString(filename).c_str());
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "webm", CConvertUtility::ConvertToStdString(filename).c_str());
 	else if (extension == "mpeg")
-		avformat_alloc_output_context2(
-			&ofmt_ctx, av_guess_format("mpeg", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "mpeg",
-			CConvertUtility::ConvertToStdString(filename).c_str());
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("mpeg", CConvertUtility::ConvertToStdString(filename).c_str(), nullptr), "mpeg", CConvertUtility::ConvertToStdString(filename).c_str());
 	else
 		avformat_alloc_output_context2(&ofmt_ctx, nullptr, nullptr, CConvertUtility::ConvertToStdString(filename).c_str());
-	if (!ofmt_ctx)
+
+	if (!ofmt_ctx) return AVERROR_UNKNOWN;
+	if (videoStreamIndex < 0 || videoStreamIndex >= static_cast<int>(ifmt_ctx->nb_streams)) return AVERROR_STREAM_NOT_FOUND;
+
+	in_stream = ifmt_ctx->streams[videoStreamIndex];
+	dec_ctx = stream_ctx[videoStreamIndex].dec_ctx;
+	if (!dec_ctx || dec_ctx->codec_type != AVMEDIA_TYPE_VIDEO) return AVERROR_STREAM_NOT_FOUND;
+
+	out_stream = avformat_new_stream(ofmt_ctx, nullptr);
+	if (!out_stream) return AVERROR_UNKNOWN;
+
+	// Exactly one stream is written: video. No audio stream is created.
+	streamCorrespondant.clear();
+	streamInNumberInOut.clear();
+	streamCorrespondant[videoStreamIndex] = 0;
+	streamInNumberInOut[videoStreamIndex] = 0;
+
+	if (videoCompressOption->videoDirectCopy)
 	{
-		av_log(nullptr, AV_LOG_ERROR, "Could not create output context\n");
-		return AVERROR_UNKNOWN;
+		ret = avcodec_parameters_copy(out_stream->codecpar, in_stream->codecpar);
+		if (ret < 0) return ret;
+		out_stream->time_base = in_stream->time_base;
+		stream_ctx[videoStreamIndex].enc_ctx = nullptr;
 	}
-
-	//
-	AVStream* streamAudio = nullptr;
-	AVStream* streamVideo = nullptr;
-	int nbStream = 0;
-	int outStream = 0;
-	for (i = 0; i < ifmt_ctx->nb_streams; i++)
+	else
 	{
-		AVStream* stream = ifmt_ctx->streams[i];
-		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
-			continue;
+		width = dec_ctx->width;
+		height = dec_ctx->height;
 
-		streamCorrespondant.insert(std::make_pair(i, nbStream++));
-
-		dec_ctx = stream_ctx[i].dec_ctx;
-
-		out_stream = avformat_new_stream(ofmt_ctx, nullptr);
-		if (!out_stream)
+		if (videoCompressOption->videoHardware)
 		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed allocating output stream\n");
-			return AVERROR_UNKNOWN;
-		}
-
-
-		streamInNumberInOut[i] = outStream++;
-
-		in_stream = ifmt_ctx->streams[i];
-
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
-			|| dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-		{
-			/* in this example, we choose transcoding to same codec */
-
-			if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+			CRegardsConfigParam* config = CParamInit::getInstance();
+			if (config != nullptr)
 			{
-				streamVideo = out_stream;
-				enc_ctx = nullptr;
-
-				width = dec_ctx->width;
-				height = dec_ctx->height;
-
-
-				if (videoCompressOption->videoHardware)
-				{
-					CRegardsConfigParam* config = CParamInit::getInstance();
-					if (config != nullptr)
-					{
-						wxString encoderHardware = config->GetHardwareEncoder();
-						if (encoderHardware != "")
-							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
-					}
-					if (!enc_ctx)
-					{
-						wxMessageBox(wxT("Hardware Encoder not found for this codec. Cpu compression only."), wxT("Hardware Encoder Error"), wxICON_ERROR);
-						encoderHardware = ""; //MediaFoundation
-						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
-
-					}
-				}
-				else 
-				{
-					encoderHardware = ""; //MediaFoundation
-					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, in_stream, encoderHardware);
-				}
-			}
-			else
-			{
-				encoder = avcodec_find_encoder(AUDIO_CODEC);
-				enc_ctx = avcodec_alloc_context3(encoder);
-				if (!enc_ctx)
-				{
-					av_log(nullptr, AV_LOG_FATAL, "Failed to allocate the encoder context\n");
-					return AVERROR(ENOMEM);
-				}
+				encoderHardware = config->GetHardwareEncoder();
+				if (encoderHardware != "")
+					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, out_stream, in_stream, encoderHardware);
 			}
 			if (!enc_ctx)
 			{
-				av_log(nullptr, AV_LOG_FATAL, "Necessary encoder not found\n");
-				return AVERROR_INVALIDDATA;
+				wxMessageBox(wxT("Hardware Encoder not found for this codec. Cpu compression only."), wxT("Hardware Encoder Error"), wxICON_ERROR);
+				enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, out_stream, in_stream, "");
 			}
-
-			if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-			{
-				streamAudio = out_stream;
-				//enc_ctx->bit_rate = dst_abit_rate;
-				enc_ctx->sample_rate = dec_ctx->sample_rate;
-				enc_ctx->ch_layout = dec_ctx->ch_layout;
-				//enc_ctx->channels = av_get_channel_layout_nb_channels(enc_ctx->ch_layout);
-				/* take first format from list of supported formats */
-				enc_ctx->sample_fmt = encoder->sample_fmts[0];
-				enc_ctx->time_base = {1, enc_ctx->sample_rate};
-				//enc_ctx->thread_count = FFMIN(8, std::thread::hardware_concurrency());
-				if (videoCompressOption->audioQualityOrBitRate == 0)
-				{
-					enc_ctx->bit_rate = videoCompressOption->audioBitRate * 1000;
-				}
-				else if (videoCompressOption->audioQuality >= 0)
-				{
-					enc_ctx->global_quality = videoCompressOption->audioQuality * FF_QP2LAMBDA;
-					enc_ctx->flags |= AV_CODEC_FLAG_QSCALE;
-					if (AUDIO_CODEC == AV_CODEC_ID_AAC)
-					{
-						char vbr[8];
-						snprintf(vbr, 8, "%.1g", videoCompressOption->audioQuality);
-						av_dict_set(&av_opts, "vbr", vbr, 0);
-					}
-				}
-				/*
-					if (videoCompressOption-> >= 0)
-					{
-						context->compression_level = audio->config.out.compression_level;
-					}
-					*/
-				// For some codecs, libav requires the following flag to be set
-				// so that it fills extradata with global header information.
-				// If this flag is not set, it inserts the data into each
-				// packet instead.
-				//enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-				/* Third parameter can be used to pass settings to encoder */
-				ret = avcodec_open2(enc_ctx, encoder, &av_opts);
-				if (ret < 0)
-				{
-					av_log(nullptr, AV_LOG_ERROR, "Cannot open video encoder for stream #%u\n", i);
-					return ret;
-				}
-			}
-
-			ret = avcodec_parameters_from_context(out_stream->codecpar, enc_ctx);
-			if (ret < 0)
-			{
-				av_log(nullptr, AV_LOG_ERROR, "Failed to copy encoder parameters to output stream #%u\n", i);
-				return ret;
-			}
-
-			//out_stream->time_base = enc_ctx->time_base;
-			stream_ctx[i].enc_ctx = enc_ctx;
-		}
-		else if (dec_ctx->codec_type == AVMEDIA_TYPE_UNKNOWN)
-		{
-			av_log(nullptr, AV_LOG_FATAL, "Elementary stream #%d is of unknown type, cannot proceed\n", i);
-			return AVERROR_INVALIDDATA;
 		}
 		else
 		{
-			/* if this stream must be remuxed */
-			ret = avcodec_parameters_copy(out_stream->codecpar, in_stream->codecpar);
-			if (ret < 0)
-			{
-				av_log(nullptr, AV_LOG_ERROR, "Copying parameters for stream #%u failed\n", i);
-				return ret;
-			}
-			//out_stream->time_base = in_stream->time_base;
+			enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, out_stream, in_stream, "");
 		}
+
+		if (!enc_ctx)
+		{
+			av_log(nullptr, AV_LOG_ERROR,
+			       "Unable to create/open video encoder\n");
+			return AVERROR_ENCODER_NOT_FOUND;
+		}
+
+		// avformat_new_stream() normally allocates codecpar, but validate
+		// both pointers before passing them to FFmpeg.  A crash here is a
+		// memory corruption/use-after-free, not a normal FFmpeg error.
+		if (out_stream == nullptr || out_stream->codecpar == nullptr)
+		{
+			av_log(nullptr, AV_LOG_ERROR,
+			       "Invalid output video stream/codecpar\n");
+			avcodec_free_context(&enc_ctx);
+			return AVERROR(EINVAL);
+		}
+
+		if (enc_ctx->codec_type != AVMEDIA_TYPE_VIDEO ||
+			enc_ctx->codec_id == AV_CODEC_ID_NONE ||
+			enc_ctx->width <= 0 || enc_ctx->height <= 0)
+		{
+			av_log(nullptr, AV_LOG_ERROR,
+			       "Invalid video encoder context: type=%d codec=%d size=%dx%d\n",
+			       enc_ctx->codec_type, enc_ctx->codec_id,
+			       enc_ctx->width, enc_ctx->height);
+			avcodec_free_context(&enc_ctx);
+			return AVERROR(EINVAL);
+		}
+
+		ret = avcodec_parameters_from_context(out_stream->codecpar, enc_ctx);
+		if (ret < 0)
+		{
+			char errbuf[AV_ERROR_MAX_STRING_SIZE] = {0};
+			av_strerror(ret, errbuf, sizeof(errbuf));
+			av_log(nullptr, AV_LOG_ERROR,
+			       "Cannot copy video encoder parameters: %s\n", errbuf);
+			avcodec_free_context(&enc_ctx);
+			return ret;
+		}
+
+		// The encoder has already been opened by OpenFFmpegEncoder().
+		// Keep its context for ProcessEncodeFile().
+		out_stream->time_base = enc_ctx->time_base;
+		if (out_stream->time_base.num <= 0 || out_stream->time_base.den <= 0)
+			out_stream->time_base = in_stream->time_base;
+
+		stream_ctx[videoStreamIndex].enc_ctx = enc_ctx;
 	}
 
-
-	//AVDictionaryEntry* rotate_tag = av_dict_get(ifmt_ctx->metadata, "rotate", NULL, 0);
-	//if (rotate_tag != nullptr)
-	//	av_dict_set(&ofmt_ctx->metadata, rotate_tag->key, rotate_tag->value, 0);
-
 	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToStdString(filename).c_str(), 1);
-
 	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
 	{
 		ret = avio_open(&ofmt_ctx->pb, CConvertUtility::ConvertToStdString(filename).c_str(), AVIO_FLAG_WRITE);
-		if (ret < 0)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Could not open output file '%s'",
-			       CConvertUtility::ConvertToStdString(filename).c_str());
-			return ret;
-		}
+		if (ret < 0) return ret;
 	}
 
 	av_dict_copy(&ofmt_ctx->metadata, ifmt_ctx->metadata, AV_DICT_DONT_OVERWRITE);
-	set_rotation(ofmt_ctx, ifmt_ctx->streams[videoStreamIndex], streamAudio);
+	set_rotation(ofmt_ctx, in_stream, nullptr);
 
-	/* init muxer, write output file header */
 	ret = avformat_write_header(ofmt_ctx, nullptr);
-	if (ret < 0)
-	{
-		av_log(nullptr, AV_LOG_ERROR, "Error occurred when opening output file\n");
-		return ret;
-	}
-
-
+	if (ret < 0) return ret;
 	return 0;
 }
 
@@ -1651,76 +1433,38 @@ int CFFmpegTranscoding::encode_write_frame(AVFrame* filt_frame, unsigned int str
 {
 	StreamContext* stream = &stream_ctx[stream_index];
 	int ret;
-	AVPacket enc_pkt;
-   
-   /*
-    if (stream->codecpar->codec_id == AV_CODEC_ID_H265)
-    {
-        filt_frame->pict_type = X265_TYPE_AUTO;
-    }
-     * */
 
-	//av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
-	/* encode filtered frame */
-	enc_pkt.data = nullptr;
-	enc_pkt.size = 0;
-	av_init_packet(&enc_pkt);
-
+	// Allocation dynamique moderne propre à FFmpeg 8
+	AVPacket* enc_pkt = av_packet_alloc();
+	if (!enc_pkt) return AVERROR(ENOMEM);
 
 	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
-
 	if (ret >= 0)
 	{
 		while (ret >= 0)
 		{
-			ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
-
+			ret = avcodec_receive_packet(stream->enc_ctx, enc_pkt);
 			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 			{
 				ret = 0;
 				break;
 			}
-			/* prepare packet for muxing */
-			enc_pkt.stream_index = stream_index;
 
 			int outputIndex = streamCorrespondant[stream_index];
+			enc_pkt->stream_index = outputIndex;
 
-			/*
-			if (ofmt_ctx->streams[outputIndex]->time_base.den != ifmt_ctx->streams[outputIndex]->time_base.den)
-				ofmt_ctx->streams[outputIndex]->time_base.den = ifmt_ctx->streams[outputIndex]->time_base.den;
-			if (ofmt_ctx->streams[outputIndex]->time_base.num != ifmt_ctx->streams[outputIndex]->time_base.num)
-				ofmt_ctx->streams[outputIndex]->time_base.num = ifmt_ctx->streams[outputIndex]->time_base.num;
-			*/
+			// Rescale des timestamps avec le pointeur
+			av_packet_rescale_ts(enc_pkt, stream->enc_ctx->time_base, ofmt_ctx->streams[outputIndex]->time_base);
 
-			if (ofmt_ctx->streams[outputIndex]->time_base.den == ifmt_ctx->streams[outputIndex]->time_base.den
-				&& ofmt_ctx->streams[outputIndex]->time_base.num == ifmt_ctx->streams[outputIndex]->time_base.num)
-			{
-				av_packet_rescale_ts(&enc_pkt,
-				                     ifmt_ctx->streams[outputIndex]->time_base,
-				                     ofmt_ctx->streams[outputIndex]->time_base);
-			}
-			else
-			{
-				av_packet_rescale_ts(&enc_pkt,
-				                     stream->enc_ctx->time_base,
-				                     ofmt_ctx->streams[outputIndex]->time_base);
-			}
-
-			if (enc_pkt.duration > 0)
-				enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base,
-				                                stream->enc_ctx->time_base);
-
-			av_log(nullptr, AV_LOG_DEBUG, "Muxing frame\n");
-			/* mux encoded frame */
-			av_write_frame(ofmt_ctx, &enc_pkt);
-			//av_packet_unref(&enc_pkt);
+			av_write_frame(ofmt_ctx, enc_pkt);
+			av_packet_unref(enc_pkt); // Vide le contenu sans détruire le conteneur
 		}
 	}
 
-	av_packet_unref(&enc_pkt);
-
+	av_packet_free(&enc_pkt); // Libération finale
 	return ret;
 }
+
 
 int CFFmpegTranscoding::filter_encode_write_frame(AVFrame* frame, unsigned int stream_index,
                                                        CompressVideo* m_dlgProgress, const int& isvideo,
@@ -1747,25 +1491,33 @@ int CFFmpegTranscoding::filter_encode_write_frame(AVFrame* frame, unsigned int s
 				convert_dst_hardware->width = in_width;
 				convert_dst_hardware->height = in_height;
 				convert_dst_hardware->format = AV_PIX_FMT_NV12;
-				//frame_buffer_nv12 = (uint8_t*)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_NV12, in_width, in_height, 1));
-				//av_image_fill_arrays(convert_dst_hardware->data, convert_dst_hardware->linesize, frame_buffer_nv12, AV_PIX_FMT_NV12, in_width, in_height, 1);
-                av_image_alloc(convert_dst_hardware->data, convert_dst_hardware->linesize, frame->width, frame->height,
-                               AV_PIX_FMT_NV12, 1);
 
-				convertContext = sws_alloc_context();
-
-				av_opt_set_int(convertContext, "srcw", frame->width, 0);
-				av_opt_set_int(convertContext, "srch", frame->height, 0);
-				av_opt_set_int(convertContext, "src_format", frame->format, 0);
-				av_opt_set_int(convertContext, "dstw", frame->width, 0);
-				av_opt_set_int(convertContext, "dsth", frame->height, 0);
-				av_opt_set_int(convertContext, "dst_format", outputFormat, 0);
-				av_opt_set_int(convertContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-				if (sws_init_context(convertContext, nullptr, nullptr) < 0)
+				if (convert_dst_hardware == nullptr)
 				{
-					sws_freeContext(convertContext);
-					throw std::logic_error("Failed to initialise scale context");
+					convert_dst_hardware = av_frame_alloc();
+					convert_dst_hardware->width = frame->width;
+					convert_dst_hardware->height = frame->height;
+					convert_dst_hardware->format = AV_PIX_FMT_NV12;
+
+					// ALLOCATION UNIQUE ICI
+					av_image_alloc(convert_dst_hardware->data, convert_dst_hardware->linesize,
+						frame->width, frame->height, AV_PIX_FMT_NV12, 1);
+
+					convertContext = sws_alloc_context();
+
+					av_opt_set_int(convertContext, "srcw", frame->width, 0);
+					av_opt_set_int(convertContext, "srch", frame->height, 0);
+					av_opt_set_int(convertContext, "src_format", frame->format, 0);
+					av_opt_set_int(convertContext, "dstw", frame->width, 0);
+					av_opt_set_int(convertContext, "dsth", frame->height, 0);
+					av_opt_set_int(convertContext, "dst_format", outputFormat, 0);
+					av_opt_set_int(convertContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+					if (sws_init_context(convertContext, nullptr, nullptr) < 0)
+					{
+						sws_freeContext(convertContext);
+						throw std::logic_error("Failed to initialise scale context");
+					}
 				}
 			}
 
@@ -2081,7 +1833,7 @@ cv::Mat CFFmpegTranscoding::ApplyProcess(cv::Mat& src)
 
 		openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
-		mat = openclEffectVideo.GetMatrix().getMat();
+		mat = openclEffectVideo.GetMatrix().getMat().clone();
 	}
 	else
 	{
@@ -2311,122 +2063,92 @@ int CFFmpegTranscoding::ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& t
 
 int CFFmpegTranscoding::ProcessEncodeFile(AVFrame* dst)
 {
+	(void)dst;
 	int ret = 0;
-	int stream_index = 0;
 	int positionMovie = 0;
 
-	/* read all packets */
+	/* Video only: audio and all other streams are discarded. */
 	while (m_dlgProgress->IsOk())
 	{
 		wxMilliSleep(50);
+		ret = av_read_frame(ifmt_ctx, &packet);
+		if (ret < 0) break;
 
-		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
-			break;
-
-		bool isVideo = false;
-		stream_index = packet.stream_index;
-
-
-		av_log(nullptr, AV_LOG_DEBUG, "Demuxer gave frame of stream_index %u\n",
-		       stream_index);
-
-		AVStream* st = ifmt_ctx->streams[packet.stream_index];
-		switch (st->codecpar->codec_type)
+		const int stream_index = packet.stream_index;
+		if (stream_index < 0 || stream_index >= static_cast<int>(ifmt_ctx->nb_streams))
 		{
-		case AVMEDIA_TYPE_AUDIO:
-			break;
-
-		case AVMEDIA_TYPE_VIDEO:
-			//printf("video \n");
-			isVideo = true;
-
-			break;
+			av_packet_unref(&packet);
+			continue;
 		}
 
-		if (st->codecpar->codec_id != AV_CODEC_ID_NONE)
+		AVStream* st = ifmt_ctx->streams[stream_index];
+		if (!st || st->codecpar->codec_type != AVMEDIA_TYPE_VIDEO || stream_index != videoStreamIndex)
 		{
-			bool copyDirectPacket = false;
-			bool showPreviewFrame = false;
-			if (videoCompressOption->audioDirectCopy && !isVideo)
-			{
-				copyDirectPacket = true;
-			}
-			if (videoCompressOption->videoDirectCopy && isVideo)
-			{
-				copyDirectPacket = true;
+			av_packet_unref(&packet);
+			continue;
+		}
 
-				bool threadEnd = false;
-				muEnding.lock();
-				threadEnd = isend;
-				muEnding.unlock();
+		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
+		{
+			av_packet_unref(&packet);
+			continue;
+		}
 
-				nbFrameEncoded++;
-				end = std::chrono::steady_clock::now();
+		const bool copyDirectPacket = videoCompressOption->videoDirectCopy;
+		bool showPreviewFrame = false;
 
-				if (threadEnd)
-					showPreviewFrame = true;
-			}
+		if (copyDirectPacket)
+		{
+			bool threadEnd = false;
+			muEnding.lock();
+			threadEnd = isend;
+			muEnding.unlock();
+			nbFrameEncoded++;
+			end = std::chrono::steady_clock::now();
+			if (threadEnd) showPreviewFrame = true;
+		}
 
-			if (showPreviewFrame)
-			{
-				ret = EncodeFrame(stream_index, positionMovie, isVideo, false);
-			}
+		if (showPreviewFrame)
+			ret = EncodeFrame(stream_index, positionMovie, true, false);
 
-			if (!showPreviewFrame && !copyDirectPacket)
-			{
-				ret = EncodeFrame(stream_index, positionMovie, isVideo, true);
-			}
-			else
-			{
-				/* remux this frame without reencoding */
-				int outStreamIndex = streamInNumberInOut[stream_index];
-				av_packet_rescale_ts(&packet,
-				                     ifmt_ctx->streams[stream_index]->time_base,
-				                     ofmt_ctx->streams[outStreamIndex]->time_base);
-
-				ret = av_interleaved_write_frame(ofmt_ctx, &packet);
-				if (ret < 0)
-					return ret;
-			}
-			int outStreamIndex = streamInNumberInOut[stream_index];
-            
-            //ShowInfo(&packet, ifmt_ctx, ofmt_ctx, stream_index, outStreamIndex);
+		if (!showPreviewFrame && !copyDirectPacket)
+		{
+			ret = EncodeFrame(stream_index, positionMovie, true, true);
+		}
+		else if (!showPreviewFrame && copyDirectPacket)
+		{
+			const int outStreamIndex = streamInNumberInOut[stream_index];
+			av_packet_rescale_ts(&packet,
+				ifmt_ctx->streams[stream_index]->time_base,
+				ofmt_ctx->streams[outStreamIndex]->time_base);
+			packet.stream_index = outStreamIndex;
+			ret = av_interleaved_write_frame(ofmt_ctx, &packet);
 		}
 
 		av_packet_unref(&packet);
+		if (ret < 0) return ret;
 	}
 
-	/* flush filters and encoders */
-	for (int i = 0; i < ifmt_ctx->nb_streams; i++)
-	{
-		/* flush filter */
-		AVStream* st = ifmt_ctx->streams[packet.stream_index];
-		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
-			continue;
-
+	/* Flush video filter/encoder only. */
+	const int stream_index = videoStreamIndex;
 #ifdef USE_FILTER
-		if (!filter_ctx[i].filter_graph)
-			continue;
-
-		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
-		if (ret < 0) {
-			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
-			return ret;
-		}
+	if (stream_index >= 0 && stream_index < static_cast<int>(ifmt_ctx->nb_streams) && filter_ctx[stream_index].filter_graph)
+	{
+		ret = filter_encode_write_frame(nullptr, stream_index, m_dlgProgress, 1, true);
+		if (ret < 0) return ret;
+	}
 #endif
-		// flush encoder
+
+	if (stream_index >= 0 && stream_index < static_cast<int>(ifmt_ctx->nb_streams) && stream_ctx[stream_index].enc_ctx != nullptr)
+	{
 		while (true)
 		{
-			ret = flush_encoder(i);
-			if (ret < 0)
-			{
-				break;
-			}
+			ret = flush_encoder(stream_index);
+			if (ret < 0) break;
 		}
 	}
 
-	ret = av_write_trailer(ofmt_ctx);
-	return ret;
+	return av_write_trailer(ofmt_ctx);
 }
 
 int CFFmpegTranscoding::EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input,
@@ -2530,13 +2252,10 @@ void CFFmpegTranscoding::Release()
 		{
 			if (stream_ctx[i].dec_ctx != nullptr)
 				avcodec_free_context(&stream_ctx[i].dec_ctx);
-			if (ofmt_ctx && ofmt_ctx->nb_streams > i && ofmt_ctx->streams[i] && stream_ctx[i].enc_ctx)
-			{
-				if (stream_ctx[i].enc_ctx != nullptr)
-				{
-					avcodec_free_context(&stream_ctx[i].enc_ctx);
-				}
-			}
+			// The output contains only the video stream, so the input and
+			// output stream indexes are not necessarily identical.
+			if (stream_ctx[i].enc_ctx != nullptr)
+				avcodec_free_context(&stream_ctx[i].enc_ctx);
 
 			if (stream_ctx[i].dec_frame != nullptr)
 			{
@@ -2661,10 +2380,14 @@ AVCodecContext* CFFmpegTranscoding::OpenFFmpegEncoder(AVCodecID codec_id, AVCode
 			c->time_base.den = c->framerate.num;
 
 
-			streamVideo->codecpar->framerate = streamVideoToEncode->codecpar->framerate;
-			streamVideo->r_frame_rate = streamVideoToEncode->r_frame_rate;
-			streamVideo->time_base = streamVideoToEncode->time_base;
-			streamVideo->avg_frame_rate = streamVideoToEncode->avg_frame_rate;
+			// Stream timing is copied after the encoder context has been
+			// created. Do not write into codecpar here: FFmpeg will populate
+			// it with avcodec_parameters_from_context().
+			if (streamVideo != nullptr && streamVideoToEncode != nullptr)
+			{
+				streamVideo->r_frame_rate = streamVideoToEncode->r_frame_rate;
+				streamVideo->avg_frame_rate = streamVideoToEncode->avg_frame_rate;
+			}
             
             //printf("streamVideoToEncode FrameRate : %d %d \n",  streamVideoToEncode->codecpar->framerate.num, streamVideoToEncode->codecpar->framerate.den);
             //printf("streamVideoToEncode r_frame_rate : %d %d \n",  streamVideoToEncode->r_frame_rate.num, streamVideoToEncode->r_frame_rate.den);
@@ -2701,7 +2424,7 @@ AVCodecContext* CFFmpegTranscoding::OpenFFmpegEncoder(AVCodecID codec_id, AVCode
         
 		AVDictionary* param = setEncoderParam(codec_id, c, encoderHardName);
 
-		if (rotate != 0 && streamVideo != nullptr)
+		if (rotate != 0 && streamVideo != nullptr && streamVideo->codecpar != nullptr)
 		{
 			int32_t display_matrix[9];
 
@@ -2735,6 +2458,7 @@ AVCodecContext* CFFmpegTranscoding::OpenFFmpegEncoder(AVCodecID codec_id, AVCode
         //printf("ffmpeg Time Base : %d %d \n",  c->time_base.num, c->time_base.den);
 
 		const int ret = avcodec_open2(c, p_codec, &param);
+		av_dict_free(&param);
 		if (ret < 0)
 		{
 			char str_err[256];
@@ -2751,12 +2475,12 @@ AVCodecContext* CFFmpegTranscoding::OpenFFmpegEncoder(AVCodecID codec_id, AVCode
 
 cv::Mat CFFmpegTranscoding::GetFrameOutput()
 {
-	return frameOutput.clone();
+	return frameOutput;
 }
 
 cv::Mat CFFmpegTranscoding::GetFrameOutputWithOutEffect()
 {
-	return frameOutputWithoutEffect.clone();
+	return frameOutputWithoutEffect;
 }
 
 int CFFmpegTranscoding::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)

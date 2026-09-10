@@ -27,13 +27,34 @@
 //(*IdInit(CompressionAudioVideoOption)
 //*)
 
+
+#ifdef __APPLE__
 BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
 		//(*EventTable(CompressionAudioVideoOption)
 		//*)
+		//EVT_TEXT(XRCID("ID_TXTSTARTMOVIE"), MyFrame::OnStartTimeChange)
+		//EVT_TEXT(XRCID("ID_TXTENDMOVIE"), MyFrame::OnEndTimeChange)
+		EVT_SPIN(XRCID("ID_SPINSTARTMOVIE"), CompressionAudioVideoOption::OnSpinTimeStartChange)
+		EVT_SPIN(XRCID("ID_SPINENDMOVIE"), CompressionAudioVideoOption::OnSpinTimeToChange)
 END_EVENT_TABLE()
+
+#else
+
+BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
+		//(*EventTable(CompressionAudioVideoOption)
+		//*)
+		//EVT_TEXT(XRCID("ID_TXTSTARTMOVIE"), MyFrame::OnStartTimeChange)
+		//EVT_TEXT(XRCID("ID_TXTENDMOVIE"), MyFrame::OnEndTimeChange)
+END_EVENT_TABLE()
+
+#endif
 
 using namespace Regards::Picture;
 using namespace Regards::Video;
+
+
+
+#ifndef __APPLE__
 
 static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& minute, int& second)
 {
@@ -44,6 +65,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 	timeToSplitlocal = timeToSplitlocal - (minute * 60);
 	second = timeToSplitlocal;
 }
+#endif
 
 CompressionAudioVideoOption::CompressionAudioVideoOption()
 {
@@ -85,8 +107,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption()
 #endif
 
 	stPreviewPicture = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_STPREVIEWPICTURE")));
+#ifdef __APPLE__
+	labelTimeStart = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTSTARTMOVIE")));
+	labelTimeEnd = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTENDMOVIE")));
+#else
 	labelTimeStart = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STSTARTMOVIE")));
 	labelTimeEnd = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STENDMOVIE")));
+#endif
 	slVideo = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLVIDEO")));
 
 	//Filter
@@ -271,7 +298,12 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 		cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
 		if (!bitmap_local.empty())
 		{
-			CPictureUtility::RotateExif(bitmap_local, orientation);
+			//bitmap_local = CPictureUtility::ApplyRotationVideo(bitmap_local, orientation);
+			if (orientation == 90 || orientation == 270)
+			{
+				flip(bitmap_local, bitmap_local, 1);
+				flip(bitmap_local, bitmap_local, 0);
+			}
 			wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
 			int x = 0;
 			int y = 0;
@@ -353,20 +385,25 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-
-
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 
 	//labelTimeEnd->SetRange(0, timeTotal);
-	labelTimeStart->SetTime(0, 0, 0);
+	
 
 	int hour = 0;
 	int minute = 0;
 	int second = 0;
+
+#ifdef __APPLE__
+    labelTimeStart->SetValue(ConvertSecondToTime(0));
+	labelTimeEnd->SetValue(ConvertSecondToTime(timeTotal));
+
+#else
 	GetTimeToHourMinuteSecond(timeTotal, hour, minute, second);
 	labelTimeEnd->SetTime(hour, minute, second);
-
+    labelTimeStart->SetTime(0, 0, 0);
+#endif
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 
 
@@ -421,7 +458,6 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoProfile->AppendString("Main");
 		cbVideoProfile->AppendString("Main Still Picture");
 
-		cbVideoPreset->AppendString("UltraFast");
 		cbVideoPreset->AppendString("SuperFast");
 		cbVideoPreset->AppendString("VeryFast");
 		cbVideoPreset->AppendString("Faster");
@@ -438,7 +474,6 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 	else if (codec == "AV1")
 	{
 		cbVideoProfile->AppendString("Main");
-		cbVideoProfile->AppendString("High");
 
 		cbVideoPreset->AppendString("0");
 		cbVideoPreset->AppendString("1");
@@ -556,6 +591,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 
 CVideoOptionCompress* CompressionAudioVideoOption::GetVideoCompressionPt()
 {
+	GetCompressionOption();
 	return videoCompressOption.get();
 }
 
@@ -581,11 +617,41 @@ void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 		int hour1 = 0;
 		int min = 0;
 		int sec = 0;
+
+
+#ifdef __APPLE__
+
+		labelTimeStart->SetValue(ConvertSecondToTime(_timeTotal));
+#else
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeStart->SetTime(hour1, min, sec);
+#endif
+
+
 	}
 	SetBitmap(_timeTotal);
 }
+
+
+#ifdef __APPLE__
+
+// Déclarations dans vos événements de classe
+void CompressionAudioVideoOption::OnSpinTimeStartChange(wxSpinEvent& event) {
+    long secondesTotales = event.GetPosition();
+    
+    labelTimeStart->SetValue(ConvertSecondToTime(secondesTotales));
+    sliderVideoPosition->SetStartTime(secondesTotales);
+}
+
+// Déclarations dans vos événements de classe
+void CompressionAudioVideoOption::OnSpinTimeToChange(wxSpinEvent& event) {
+    long secondesTotales = event.GetPosition();
+    labelTimeEnd->SetValue(ConvertSecondToTime(secondesTotales));
+	sliderVideoPosition->SetEndTime(secondesTotales);
+
+}
+
+#endif
 
 void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 {
@@ -604,8 +670,15 @@ void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 		int hour1 = 0;
 		int min = 0;
 		int sec = 0;
+
+#ifdef __APPLE__
+
+		labelTimeEnd->SetValue(ConvertSecondToTime(_timeTotal));
+#else
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeEnd->SetTime(hour1, min, sec);
+#endif
+
 	}
 	SetBitmap(_timeTotal);
 }
@@ -622,8 +695,15 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 		int hour = 0;
 		int minute = 0;
 		int second = 0;
+
+#ifdef __APPLE__
+	
+		labelTimeStart->SetValue(ConvertSecondToTime(value));
+#else
 		GetTimeToHourMinuteSecond(value, hour, minute, second);
 		labelTimeStart->SetTime(hour, minute, second);
+#endif
+
 	}
 
 	if (type == 2)
@@ -631,8 +711,14 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 		int hour = 0;
 		int minute = 0;
 		int second = 0;
+
+#ifdef __APPLE__
+
+		labelTimeEnd->SetValue(ConvertSecondToTime(value));
+#else
 		GetTimeToHourMinuteSecond(value, hour, minute, second);
 		labelTimeEnd->SetTime(hour, minute, second);
+#endif
 	}
 }
 
@@ -644,14 +730,22 @@ wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)
 	return wxString::Format("%02d:%02d:%02d\n", h, m, s);
 }
 
+
+
 void CompressionAudioVideoOption::OnSetVideoDuration(wxCommandEvent& event)
 {
 	int64_t duration = event.GetExtraLong();
 	int hour = 0;
 	int minute = 0;
 	int second = 0;
+#ifdef __APPLE__
+	// 1. Création d'une date d'hiver neutre pour macOS
+
+	labelTimeEnd->SetValue(ConvertSecondToTime(duration));
+#else
 	GetTimeToHourMinuteSecond(duration, hour, minute, second);
 	labelTimeEnd->SetTime(hour, minute, second);
+#endif
 }
 
 void CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick(wxCommandEvent& event)

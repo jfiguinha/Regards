@@ -34,13 +34,14 @@
 											<flag>wxEXPAND|wxALL</flag>
 											<border>5</border>
 											<object class="wxRadioBox" name="ID_RBVIDEOCOMPRESSION">
-												<label>Video Conversion</label>
-												<style>wxRA_SPECIFY_ROWS</style>
-												<content>
-													<item>Conversion</item>
-													<item>Direct Copy</item>
-												</content>
-												<default>-1</default>
+        										<label>Video Conversion</label>
+        										<style>wxRA_SPECIFY_COLS</style>
+        										<content>
+            										<item>Conversion</item>
+            										<item>Direct Copy</item>
+        										</content>
+        										<dimension>2</dimension>
+		 									   <size>-1,60</size>
 											</object>
 										</object>
 										<!-- Video Option Group -->
@@ -306,12 +307,13 @@
 											<border>5</border>
 											<object class="wxRadioBox" name="ID_RBAUDIOCOMPRESSION">
 												<label>Audio Conversion</label>
-												<style>wxRA_SPECIFY_ROWS</style>
-												<content>
-													<item>Conversion</item>
-													<item>Direct Copy</item>
-												</content>
-												<default>-1</default>
+        										<style>wxRA_SPECIFY_COLS</style>
+        										<content>
+            										<item>Conversion</item>
+            										<item>Direct Copy</item>
+        										</content>
+        										<dimension>2</dimension>
+		 									   <size>-1,60</size>
 											</object>
 										</object>
 										<!-- Audio Option Group -->
@@ -440,6 +442,7 @@
 								</object>
 							</object>
 							<!-- Page 3: Position -->
+							<!-- Page 3: Position -->
 							<object class="notebookpage">
 								<label>Position</label>
 								<object class="wxPanel" name="page_3">
@@ -477,11 +480,19 @@
 													</object>
 												</object>
 												<object class="sizeritem">
-													<flag>wxEXPAND|wxALL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 													<border>5</border>
-													<option>1</option>
-													<object class="wxTimePickerCtrl" name="ID_STSTARTMOVIE">
-														<label>00:00:00</label>
+													<object class="wxTextCtrl" name="ID_TXTSTARTMOVIE">
+														<value>00:00:00</value>
+														<size>80,-1</size>
+														<style>wxTE_CENTRE</style>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
+													<object class="wxSpinButton" name="ID_SPINSTARTMOVIE">
+														<style>wxSP_VERTICAL|wxSP_ARROW_KEYS</style>
+														<range>0,86400</range>
 													</object>
 												</object>
 											</object>
@@ -500,11 +511,19 @@
 													</object>
 												</object>
 												<object class="sizeritem">
-													<flag>wxEXPAND|wxALL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 													<border>5</border>
-													<option>1</option>
-													<object class="wxTimePickerCtrl" name="ID_STENDMOVIE">
-														<label>00:00:00</label>
+													<object class="wxTextCtrl" name="ID_TXTENDMOVIE">
+														<value>00:00:00</value>
+														<size>80,-1</size>
+														<style>wxTE_CENTRE</style>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
+													<object class="wxSpinButton" name="ID_SPINENDMOVIE">
+														<style>wxSP_VERTICAL|wxSP_ARROW_KEYS</style>
+														<range>0,86400</range>
 													</object>
 												</object>
 											</object>

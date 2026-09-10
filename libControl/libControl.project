@@ -37,16 +37,12 @@
     <File Name="ShowElement.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Video">
-    <File Name="FFmpegTranscoding.h"/>
-    <File Name="FFmpegTranscoding.cpp"/>
     <File Name="VideoCompressOption.h"/>
     <VirtualDirectory Name="Core">
       <File Name="SlideToolbar.h"/>
       <File Name="SlideToolbar.cpp"/>
       <File Name="ffmfcpimpl.cpp"/>
       <File Name="ffplaycore.cpp"/>
-      <File Name="ffmpegToBitmap.h"/>
-      <File Name="ffmpegToBitmap.cpp"/>
       <File Name="ffmpeg.h"/>
       <File Name="ffmfcpimpl.h"/>
       <File Name="ffplaycore.h"/>
@@ -78,16 +74,16 @@
   </VirtualDirectory>
   <VirtualDirectory Name="ShowBitmap">
     <VirtualDirectory Name="PostEffect">
-      <File Name="GlassLensFilter.h"/>
-      <File Name="WaveTextureFilter.h"/>
-      <File Name="ZoomEffectTexture.h"/>
-      <File Name="ZoomEffectTexture.cpp"/>
-      <File Name="WaveTextureFilter.cpp"/>
-      <File Name="GlassLensFilter.cpp"/>
+      <File Name="GlassLensFilter.h" ExcludeProjConfig=""/>
+      <File Name="WaveTextureFilter.h" ExcludeProjConfig=""/>
+      <File Name="ZoomEffectTexture.h" ExcludeProjConfig=""/>
+      <File Name="ZoomEffectTexture.cpp" ExcludeProjConfig=""/>
+      <File Name="WaveTextureFilter.cpp" ExcludeProjConfig=""/>
+      <File Name="GlassLensFilter.cpp" ExcludeProjConfig=""/>
       <File Name="AfterEffect.cpp"/>
       <File Name="NoneEffectTextureEffect.h"/>
-      <File Name="MoveEffectTexture.h"/>
-      <File Name="MoveEffectTexture.cpp"/>
+      <File Name="MoveEffectTexture.h" ExcludeProjConfig=""/>
+      <File Name="MoveEffectTexture.cpp" ExcludeProjConfig=""/>
       <File Name="DiaporamaEffect.h"/>
       <File Name="PageCurlFilter.h"/>
       <File Name="PageCurlFilter.cpp"/>

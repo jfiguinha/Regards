@@ -6,11 +6,6 @@
 //
 #include "RenderOpenGL.h"
 #include <OpenCLContext.h>
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 #include <FileUtility.h>
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
@@ -25,7 +20,8 @@
 #include FT_FREETYPE_H
 
 #ifdef __APPLE__
-#define USE_GLUT
+#include <appglcontext.h>
+extern AppGLContext application_glcontext;
 #endif
 
 class CFreeTypeFace
@@ -63,7 +59,11 @@ static inline void FillTexCoords(GLfloat* tex,
 
 
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
+#ifdef __APPLE__
+	: wxGLContext(canvas, nullptr, &application_glcontext.ctxAttrs), base(0), myGLVersion(0), mouseUpdate(nullptr)
+#else
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
+#endif
 {
 	width = 0;
 	height = 0;
@@ -159,13 +159,12 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 	isInit = true;
 	textureDisplay = std::make_unique<GLTexture>();
 
-#ifndef USE_GLUT
 	LoadFont("Antonio-Bold.ttf");
-#endif
 
 	InitTextBuffers();
 }
 
+/*
 void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString text)
 {
 	float font_height = 15;
@@ -237,7 +236,7 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, wxString te
 		}
 	}
 }
-
+*/
 
 
 void CRenderOpenGL::UpdateProjectionMatrix() {
@@ -313,6 +312,14 @@ CRenderOpenGL::~CRenderOpenGL()
 	if (textVAO != 0) glDeleteVertexArrays(1, &textVAO);
 	if (textVBO != 0) glDeleteBuffers(1, &textVBO);
 	if (textEBO != 0) glDeleteBuffers(1, &textEBO);
+
+#ifdef __APPLE__
+
+    // Nettoyage de notre nouveau Quad optimisé
+    if (quadVAO != 0) glDeleteVertexArrays(1, &quadVAO);
+    if (quadVBO != 0) glDeleteBuffers(1, &quadVBO);
+
+#endif
 }
 
 wxGLContext* CRenderOpenGL::GetGLContext()
@@ -322,43 +329,7 @@ wxGLContext* CRenderOpenGL::GetGLContext()
 
 void CRenderOpenGL::Print(int x, int y, double scale_factor, const char* text)
 {
-
-#ifdef USE_GLUT	
-
-    float font_height = 15;
-    
-    if(scale_factor > 1.0f)
-        font_height = font_height * 2;
-
-    //glPushMatrix();
-	//glRasterPos2f(x, height - font_height);
-    //glLoadIdentity();
-	glWindowPos2i(x, height - font_height);
-    
-    
-    //glColor4f(0.5, 0.8f, 0.2f, 1.0f);   
-	//get the length of the string to display
-	int len = static_cast<int>(strlen(text));
-        
-    //glScalef(scale_factor,scale_factor,scale_factor); 
-
-	//loop to display character by character
-	for (auto i = 0; i < len; i++)
-	{
-        if(scale_factor > 1.0f)
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
-        else
-            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
-	}
-    
-    //glPopMatrix();
-    //glColor4f(1,1,1,1);
-
-#else
-
 	RenderText(text, x, height - (heightFont * 0.3 * scale_factor), 0.3f * scale_factor, vec3f(0.5, 0.8f, 0.2f));
-
-#endif
 }
 
 float CRenderOpenGL::CalculateTextWidth(const wxString& text, float scale)
@@ -532,12 +503,7 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, 
 	}
 
 	if (segments.empty()) return;
-
-#ifdef USE_GLUT	
-	// Note : Le rendu avancé de styles par segment (couleurs et gras dynamiques) 
-	// n'est pas supporté par les fonctions GLUT Bitmap basiques qui partagent une couleur globale fixe.
-	// Fallback sur le premier segment ou rendu texte brut épuré.
-#else   
+ 
 	// ────────────────═══════════════════════════════════════════════════════
 	// NOUVEAU PIPELINE - OPENGL 3.3 CORE (Multi-lignes et Multi-styles)
 	// ────────────────═══════════════════════════════════════════════════════
@@ -596,36 +562,70 @@ void CRenderOpenGL::PrintSubtitle(int x, int y, double scale_factor, float red, 
 			currentX += CalculateTextWidth(seg.text, scale);
 		}
 	}
-#endif
+
 }
 
+void CRenderOpenGL::InitQuadBuffers()
+{
+    if (quadVAO != 0) return; // Déjà initialisé
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    
+    // On alloue la mémoire statiquement pour 4 sommets (1 Quad). 
+    // Le pointeur initial est nullptr car on enverra les coordonnées à la volée.
+    glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW);
+
+    // Attribut 0 : Position (x, y) -> 2 floats
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)0);
+
+    // Attribut 1 : Coordonnées de texture (u, v) -> 2 floats
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)(2 * sizeof(float)));
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 void CRenderOpenGL::RenderQuadInternal(float width, float height, int left, int top, bool inverted, bool flipH, bool flipV)
 {
-	// Définition des sommets pour un GL_TRIANGLE_STRIP (Triangle 1: Haut-Gauche, Haut-Droite, Bas-Gauche; Triangle 2: Bas-Droite)
-	const GLfloat vertices[8] =
-	{
-		static_cast<GLfloat>(left),         static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left + width), static_cast<GLfloat>(top),
-		static_cast<GLfloat>(left),         static_cast<GLfloat>(top + height),
-		static_cast<GLfloat>(left + width), static_cast<GLfloat>(top + height)
-	};
+    // Sécurité au cas où l'initialisation n'aurait pas été appelée
+    if (quadVAO == 0) {
+        InitQuadBuffers();
+    }
 
-	GLfloat texCoords[8];
-	FillTexCoords(texCoords, inverted, flipH, flipV);
+    // Récupération des coordonnées de texture transformées
+    GLfloat texCoords[8];
+    FillTexCoords(texCoords, inverted, flipH, flipV);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    // Organisation en tableau continu sur la pile CPU (très rapide)
+    // Conforme à la disposition GL_TRIANGLE_STRIP définie dans votre FillTexCoords (Z-pattern)
+    QuadVertex vertices[4] = {
+        { static_cast<float>(left),         static_cast<float>(top),          texCoords[0], texCoords[1] }, // Haut Gauche
+        { static_cast<float>(left + width), static_cast<float>(top),          texCoords[2], texCoords[3] }, // Haut Droite
+        { static_cast<float>(left),         static_cast<float>(top + height), texCoords[4], texCoords[5] }, // Bas Gauche
+        { static_cast<float>(left + width), static_cast<float>(top + height), texCoords[6], texCoords[7] }  // Bas Droite
+    };
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
+    // Liaison du VAO global unique
+    glBindVertexArray(quadVAO);
 
-	// Utilisation de GL_TRIANGLE_STRIP à la place de GL_QUADS (Interdit en Core Profile)
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    // Mise à jour de la mémoire VBO sur le GPU (Pas de réallocation, juste écriture)
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+    // Rendu immédiat géré efficacement par le pilote Apple Silicon
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    // Nettoyage des liaisons
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
 
 GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height)
 {
@@ -719,8 +719,6 @@ void CRenderOpenGL::RenderQuad(int width, int height, int left, int top, bool in
 	
 }
 
-
-
 void CRenderOpenGL::RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH,
                                const bool& flipV, int left, int top, bool inverted)
 {
@@ -728,8 +726,10 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const int& width, const int& 
         return;
 
     RenderQuadInternal(
-        static_cast<float>(texture->GetWidth()),
-        static_cast<float>(texture->GetHeight()),
+        //static_cast<float>(texture->GetWidth()),
+        //static_cast<float>(texture->GetHeight()),
+        static_cast<float>(width),
+        static_cast<float>(height),
         left,
         top,
         inverted,

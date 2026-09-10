@@ -31,17 +31,8 @@
  #include <X11/Xlib.h>   
 #endif
 
-#ifdef TEST_WINDOWMANAGER
-#include <myFrame.h>
-#endif
 #ifdef USECURL
 #include <curl/curl.h>
-#endif
-
-
-#ifdef SDL2
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
 #endif
 
 #ifdef __WXMSW__
@@ -95,11 +86,6 @@ using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Viewer;
-
-#ifndef __APPLE__
-#include <GL/glut.h>
-#endif
-
 
 #include <wx/glcanvas.h>
 

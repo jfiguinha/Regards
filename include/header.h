@@ -29,10 +29,6 @@
 #define USECURL
 #endif
 
-#ifndef GLUT
-#define GLUT
-#endif
-
 #ifndef USE_TBB
 #define USE_TBB
 #endif
