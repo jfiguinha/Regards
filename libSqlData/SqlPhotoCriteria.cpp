@@ -12,9 +12,9 @@ CSqlPhotoCriteria::CSqlPhotoCriteria()
 {
 }
 
-bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew,
-	bool criteriaUpdate, const int& numFolder)
+bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew, const int& numFolder)
 {
+	bool criteriaUpdate = false;
 	CSqlTransaction sqlTransaction(m_databaseName);
 	CSqlPhotos sqlPhoto(this->m_transaction, this->m_useTransaction);
 	CSqlCriteria sqlCriteria(this->m_transaction, this->m_useTransaction);
@@ -49,6 +49,8 @@ bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPh
 
 
 		InsertPhotoCriteria(listPhotoCriteria.numPhotoId, insertCriteria.id);
+
+		criteriaUpdate = true;
 	}
 
 	if (criteriaUpdate)
@@ -59,11 +61,6 @@ bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPh
 	return true;
 }
 
-bool CSqlPhotoCriteria::InsertPhotoListCriteria(const CListCriteriaPhoto& listPhotoCriteria, bool& isNew,
-                                                bool criteriaUpdate)
-{
-	return InsertPhotoListCriteria(listPhotoCriteria, isNew, criteriaUpdate, 0);
-}
 
 bool CSqlPhotoCriteria::InsertPhotoCriteria(const int64_t& numPhoto, const int64_t& numCriteria)
 {

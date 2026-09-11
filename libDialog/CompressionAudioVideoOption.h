@@ -71,9 +71,12 @@ public:
 #ifdef __APPLE__
 	wxTextCtrl* labelTimeStart;
 	wxTextCtrl* labelTimeEnd;
-
+	wxSpinButton* spinStartTime;
+	wxSpinButton* spinEndTime;
 	void OnSpinTimeStartChange(wxSpinEvent& event);
 	void OnSpinTimeToChange(wxSpinEvent& event);
+	void OnStartTimeChange(wxCommandEvent& event);
+	void OnEndTimeChange(wxCommandEvent& event);
 
 #else
 	wxTimePickerCtrl* labelTimeStart;

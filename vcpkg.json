@@ -1,0 +1,57 @@
+{
+  "name": "RegardsViewer3",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "boost-lexical-cast",
+    "dav1d",
+    "freeglut",
+    "freeimage",
+    "jasper",
+    {
+      "name": "exiv2",
+      "features": ["nls", "xmp", "png", "bmff"]
+    },
+    "libavif",
+    "libde265",
+    "libepoxy",
+    "libexif",
+    {
+      "name": "libheif",
+      "features": ["aom", "hevc"]
+    },
+    "libjxl",
+    "libmediainfo",
+    "libxml2",
+    "lunasvg",
+    {
+      "name": "ncnn",
+      "features": ["vulkan"]
+    },
+    "opencl",
+    {
+      "name": "opencv4",
+      "features": [
+        "contrib",
+        "dnn",
+        "ffmpeg",
+        "ipp",
+        "jpeg",
+        "tbb",
+        "png",
+        "tiff",
+        "webp",
+        "openexr",
+        "opencl"
+      ]
+    },
+    "poppler",
+    "sdl2",
+    "sqlite3",
+    "tesseract",
+    {
+      "name": "wxwidgets",
+      "features": ["webview"]
+    },
+    "x265"
+  ]
+}

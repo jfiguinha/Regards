@@ -32,8 +32,8 @@
 BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
 		//(*EventTable(CompressionAudioVideoOption)
 		//*)
-		//EVT_TEXT(XRCID("ID_TXTSTARTMOVIE"), MyFrame::OnStartTimeChange)
-		//EVT_TEXT(XRCID("ID_TXTENDMOVIE"), MyFrame::OnEndTimeChange)
+		EVT_TEXT(XRCID("ID_TXTSTARTMOVIE"), CompressionAudioVideoOption::OnStartTimeChange)
+		EVT_TEXT(XRCID("ID_TXTENDMOVIE"), CompressionAudioVideoOption::OnEndTimeChange)
 		EVT_SPIN(XRCID("ID_SPINSTARTMOVIE"), CompressionAudioVideoOption::OnSpinTimeStartChange)
 		EVT_SPIN(XRCID("ID_SPINENDMOVIE"), CompressionAudioVideoOption::OnSpinTimeToChange)
 END_EVENT_TABLE()
@@ -110,6 +110,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption()
 #ifdef __APPLE__
 	labelTimeStart = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTSTARTMOVIE")));
 	labelTimeEnd = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTENDMOVIE")));
+	spinStartTime= static_cast<wxSpinButton*>(FindWindow(XRCID("ID_SPINSTARTMOVIE")));
+	spinEndTime= static_cast<wxSpinButton*>(FindWindow(XRCID("ID_SPINENDMOVIE")));
 #else
 	labelTimeStart = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STSTARTMOVIE")));
 	labelTimeEnd = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STENDMOVIE")));
@@ -649,6 +651,30 @@ void CompressionAudioVideoOption::OnSpinTimeToChange(wxSpinEvent& event) {
     labelTimeEnd->SetValue(ConvertSecondToTime(secondesTotales));
 	sliderVideoPosition->SetEndTime(secondesTotales);
 
+}
+
+void CompressionAudioVideoOption::OnStartTimeChange(wxCommandEvent& event)
+{
+	wxString val = labelTimeStart->GetValue();
+	long h, m, s;
+	// On valide la saisie manuelle de l'utilisateur au format HH:MM:SS
+	if (sscanf(val.c_str(), "%ld:%ld:%ld", &h, &m, &s) == 3) {
+		long total = (h * 3600) + (m * 60) + s;
+		// Bloque le déclenchement d'un événement en boucle
+		spinStartTime->SetValue(total); 
+	}
+}
+
+void CompressionAudioVideoOption::OnEndTimeChange(wxCommandEvent& event)
+{
+	wxString val = labelTimeEnd->GetValue();
+	long h, m, s;
+	// On valide la saisie manuelle de l'utilisateur au format HH:MM:SS
+	if (sscanf(val.c_str(), "%ld:%ld:%ld", &h, &m, &s) == 3) {
+		long total = (h * 3600) + (m * 60) + s;
+		// Bloque le déclenchement d'un événement en boucle
+		spinEndTime->SetValue(total); 
+	}	
 }
 
 #endif

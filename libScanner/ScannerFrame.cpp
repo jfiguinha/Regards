@@ -38,13 +38,7 @@ using namespace Regards::Scanner;
 wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
 
-#ifndef wxHAS_IMAGES_IN_RESOURCES
-#ifdef __WXGTK__
-#include "../Resource/sample.xpm"
-#else
-#include "../../Resource/sample.xpm"
-#endif
-#endif
+
 
 //Connect(wxEVT_MOVE, wxMoveEventHandler(Move::OnMove));
 BEGIN_EVENT_TABLE(CScannerFrame, wxFrame)
@@ -64,7 +58,7 @@ CScannerFrame::CScannerFrame(const wxString& title, const wxString& openfile, IS
                              long style) :
 	wxFrame(nullptr, FRAMESCANNER_ID, title, pos, size, style)
 {
-	SetIcon(wxICON(sample));
+
 	Maximize();
 	this->mainInterface = mainInterface;
 

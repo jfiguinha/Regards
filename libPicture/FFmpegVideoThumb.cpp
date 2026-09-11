@@ -113,10 +113,13 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
         return;
     }
 
-    // --- Allocation du buffer BGR pour OpenCV ---
-    int buf_size = av_image_get_buffer_size(AV_PIX_FMT_BGR24, width_, height_, 1);
-    uint8_t* buf = static_cast<uint8_t*>(av_malloc(buf_size));
-    if (!buf)
+    frame_bgr_->format = AV_PIX_FMT_BGR24;
+    frame_bgr_->width  = width_;
+    frame_bgr_->height = height_;
+
+    // FFmpeg va lui-même calculer la taille, faire l'av_malloc interne 
+    // et configurer frame_bgr_->data et linesize automatiquement.
+    if (av_frame_get_buffer(frame_bgr_, 1) < 0)
     {
         av_packet_free(&packet_);
         av_frame_free(&frame_av_);
@@ -125,8 +128,6 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
         avformat_close_input(&fmt_ctx_);
         return;
     }
-    av_image_fill_arrays(frame_bgr_->data, frame_bgr_->linesize,
-                         buf, AV_PIX_FMT_BGR24, width_, height_, 1);
 
     // --- Contexte de conversion de format de pixel ---
     sws_ctx_ = sws_getContext(width_, height_, codec_ctx_->pix_fmt,
@@ -134,7 +135,6 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
                                application_context.GetInterpolationMethod(), nullptr, nullptr, nullptr);
     if (!sws_ctx_)
     {
-        av_freep(&buf); // buf est géré manuellement ici
         av_packet_free(&packet_);
         av_frame_free(&frame_av_);
         av_frame_free(&frame_bgr_);
@@ -169,7 +169,7 @@ void CFFmpegVideoThumb::Release()
     // Le buffer BGR a été alloué avec av_malloc et rattaché à frame_bgr_->data[0]
     if (frame_bgr_)
     {
-        av_freep(&frame_bgr_->data[0]);
+           // 4. Désormais, FFmpeg peut détruire la structure vide en toute sécurité
         av_frame_free(&frame_bgr_);
     }
 

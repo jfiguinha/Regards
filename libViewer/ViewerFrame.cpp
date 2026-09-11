@@ -26,16 +26,6 @@
 #include <ToggleFullscreen.h>
 #endif
 
-#ifndef wxHAS_IMAGES_IN_RESOURCES
-#ifdef __WXGTK__
-#include "../Resource/sample.xpm"
-#elif defined(__APPLE__)
-#include "../Resource/sample.xpm"
-#else
-#include "../../Resource/sample.xpm"
-#endif
-#endif
-
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -66,8 +56,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     , mainInterface_(mainInterface)
     , fileToOpen_(openfile)
 {
-    SetIcon(wxICON(sample));
-
     mainInterface_->parent = this;
 
     // 1. Paramètres et thème

@@ -804,7 +804,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libWindow;../libSqlEngine;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg;../libVideoConverter</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>
@@ -838,7 +838,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libWindow;../libSqlEngine;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg;../libVideoConverter</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>

@@ -588,8 +588,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	}
 
 
-	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, geoloc.HasGps(),
-	                                      findPhotoCriteria->numFolderId);
+	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, findPhotoCriteria->numFolderId);
 
 
 	listCriteriaPhoto.listCriteria.clear();

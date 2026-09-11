@@ -7,10 +7,6 @@
 using namespace Regards::Introduction;
 
 
-#ifndef wxHAS_IMAGES_IN_RESOURCES
-#include "../Resource/sample.xpm"
-#endif
-
 MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size,
 	ISCannerInterface * mainInterface)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
@@ -19,8 +15,6 @@ MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, cons
 	CThemeTree theme;
 	CThemeIntroLogo themeIntro;
 
-
-	SetIcon(wxICON(sample));
 	this->mainInterface = mainInterface;
 	auto introTheme = new CIntroTheme();
 

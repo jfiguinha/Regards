@@ -102,7 +102,7 @@ void CategoryQueryService::UpdateAndNotify(PositionElementVector& elements,
 
     auto* viewerParam = CMainParamInit::getInstance();
     if (viewerParam) viewerParam->SetLastSqlRequest(newSql);
-
+    
     if (windowMain_)
     {
         const wxCommandEvent evt(wxEVENT_REFRESHFOLDERLIST);
