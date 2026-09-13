@@ -332,7 +332,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
-	application_context.SetInterpolationMethod(interpolation);
 
 	int superDnn = cbUSESUPERDNNFILTER->GetSelection();
 	regardsParam->SetSuperResolutionType(superDnn);

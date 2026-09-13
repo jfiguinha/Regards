@@ -382,7 +382,7 @@ bool CFFmfcPimpl::EnsureVideoConversionContext(const AVFrame* frame)
 	localContext = sws_getContext(
 		frame->width, frame->height, format,
 		frame->width, frame->height, AV_PIX_FMT_BGRA,
-		application_context.GetInterpolationMethod(), nullptr, nullptr, nullptr);
+		SWS_BICUBIC, nullptr, nullptr, nullptr);
 
 	if (!localContext)
 	{

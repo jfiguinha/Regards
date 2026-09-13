@@ -132,7 +132,7 @@ CFFmpegVideoThumb::CFFmpegVideoThumb(const wxString& fileName)
     // --- Contexte de conversion de format de pixel ---
     sws_ctx_ = sws_getContext(width_, height_, codec_ctx_->pix_fmt,
                                width_, height_, AV_PIX_FMT_BGR24,
-                               application_context.GetInterpolationMethod(), nullptr, nullptr, nullptr);
+                                SWS_BICUBIC, nullptr, nullptr, nullptr);
     if (!sws_ctx_)
     {
         av_packet_free(&packet_);

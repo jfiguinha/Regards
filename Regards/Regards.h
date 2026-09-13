@@ -25,7 +25,7 @@
 #include <ScannerFrame.h>
 #include <ncnn/gpu.h>
 #include <signal.h>
-
+#include <wx/snglinst.h> // Required header for wxSingleInstanceChecker
 //#define TEST_WINDOWMANAGER
 #ifdef __WXGTK__
  #include <X11/Xlib.h>   
@@ -223,7 +223,7 @@ private:
 	std::unique_ptr<CVideoConverterFrame> frameVideoConverter;
 	std::unique_ptr<MyFrameIntro> frameStart;
 	std::unique_ptr<CViewerFrame> frameViewer;
-	
+	wxSingleInstanceChecker* m_checker;
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member
 #endif

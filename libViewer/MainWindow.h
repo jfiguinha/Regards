@@ -62,7 +62,7 @@ namespace Regards::Viewer
         void BindEvents();
         void InitConfig(const wxString& fileToOpen);
         void InitBackgroundTasks();
-
+        static void CheckFolder(CMainWindow* main);
         // ── Idle / boucle principale ──────────────────────────────────
         void ProcessIdle()  override;
         void Resize()       override;
@@ -103,7 +103,7 @@ namespace Regards::Viewer
         void UpdateMessage(wxCommandEvent& event);
         void UpdateThumbnailIcone(wxCommandEvent& event);
         void ClickShowButton(const int& id, const int& refresh);
-
+		void OnFolderCheck(wxCommandEvent& event);
         void OnEditFile(wxCommandEvent& event);
 
         static void NewVersionAvailable(void* param);
@@ -154,6 +154,7 @@ namespace Regards::Viewer
         wxString    tempAudioVideoFile;
         wxRect      posWindow;
         std::chrono::steady_clock::time_point  lastClickTime[6];
+		std::thread checkFolderThread;
     };
 
 } // namespace Regards::Viewer

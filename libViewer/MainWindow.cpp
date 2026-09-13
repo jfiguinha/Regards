@@ -35,6 +35,7 @@
 #include <httprequest.h>
 #include "ThumbnailProcess.h"
 #include <MediaInfo.h>
+#include <SqlInsertFile.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -62,6 +63,8 @@ CMainWindow::CMainWindow(wxWindow* parent,
     InitConfig(fileToOpen);
     InitBackgroundTasks();
 
+
+	checkFolderThread = std::thread(CheckFolder,this);
 
     bool startTimer = false;
 
@@ -95,6 +98,34 @@ CMainWindow::~CMainWindow()
 // ═════════════════════════════════════════════════════════════════════════════
 // Initialisation
 // ═════════════════════════════════════════════════════════════════════════════
+void CMainWindow::CheckFolder(CMainWindow * main)
+{
+    FolderCatalogVector folderList_;
+
+    CSqlFindFolderCatalog folderCatalog;
+    folderCatalog.GetFolderCatalog(&folderList_, NUMCATALOGID);
+
+    CSqlInsertFile sqlInsertFile;
+    int nbNewFiles = sqlInsertFile.CheckFolderToRefresh(folderList_);
+
+    wxCommandEvent evt(wxEVENT_FOLDERCHECK);
+    evt.SetInt(nbNewFiles);
+    wxPostEvent(main, evt);
+}
+
+void CMainWindow::OnFolderCheck(wxCommandEvent& event)
+{
+    int nbNewFiles = event.GetInt();
+    if (nbNewFiles > 0)
+    {
+        refreshFolder = true;
+		processIdle = true;
+    }
+
+    if (checkFolderThread.joinable())
+        checkFolderThread.detach();
+
+}
 
 void CMainWindow::InitState()
 {
@@ -216,13 +247,14 @@ void CMainWindow::BindEvents()
     Connect(wxEVENT_ICONETHUMBNAILGENERATION, wxCommandEventHandler(CMainWindow::OnProcessThumbnail));
     Connect(wxEVENT_UPDATECHECKINSTATUS, wxCommandEventHandler(CMainWindow::OnCheckInUpdateStatus));
     Connect(wxEVENT_UPDATECHECKINFOLDER, wxCommandEventHandler(CMainWindow::OnRemoveFileFromCheckIn));
-
+    Connect(wxEVENT_FOLDERCHECK, wxCommandEventHandler(CMainWindow::OnFolderCheck));
 
 
     auto start_time = std::chrono::steady_clock::now();
     for (int i = 0; i < 6; i++)
         lastClickTime[i] = start_time;
 }
+
 
 void CMainWindow::InitConfig(const wxString& fileToOpen)
 {
@@ -250,17 +282,6 @@ void CMainWindow::InitConfig(const wxString& fileToOpen)
 void CMainWindow::InitBackgroundTasks()
 {
     CThumbnailBuffer::GetVectorSize(); // pré-chauffe le buffer
-
-    /*
-    auto* checkFile = new CThreadCheckFile();
-    checkFile->mainWindow = this;
-    checkFile->checkFile = std::make_unique<std::thread>(
-        CThreadCheckFile::CheckFile, checkFile);
-    isCheckingFile = true;
-
-    std::this_thread::sleep_for(100ms);*/
-
-    //scheduler->ReloadFromDatabase();
 
     versionUpdate = std::thread(
         NewVersionAvailable,
@@ -348,7 +369,7 @@ void CMainWindow::ProcessIdle()
 
 bool CMainWindow::GetProcessEnd()
 {
-    if (scheduler->GetNbProcess() > 0 || isCheckingFile)
+    if (scheduler->GetNbProcess() > 0 || isCheckingFile || checkFolderThread.joinable())
         return false;
     return true;
 }
