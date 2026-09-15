@@ -35,7 +35,7 @@ namespace Regards
 			virtual void SetMatrix(Regards::Picture::CPictureArray& frame) = 0;
 			virtual void SetMatrix(cv::Mat * frame) = 0;
 			virtual Regards::Picture::CPictureArray GetMatrix(const bool& src = true) = 0;
-
+			virtual cv::UMat GetUMat(const bool& src = true) = 0;
 			virtual void AutoContrast() = 0;
 			virtual void GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const int& widthOut,
 				const int& heightOut) = 0;
@@ -45,7 +45,7 @@ namespace Regards
 				const int& flipH, const int& flipV, const int& angle,
 				const int& bicubic, int ratio, bool bgraOutput = false) = 0;
 
-
+			virtual void ClearCache() = 0;
 			virtual void SetAVFrame(CVideoEffectParameter* videoEffectParameter, AVFrame*& tmp_frame, int colorSpace, int isLimited, bool bgraOutput = false) = 0;
 
 

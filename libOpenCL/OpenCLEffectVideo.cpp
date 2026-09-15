@@ -28,13 +28,26 @@ void COpenCLEffectVideo::ExecuteSafe(F&& func)
 		{
 			convert = paramSrc;
 		}
+
+		// Exécution du filtre OpenCL sur la matrice locale
 		func(convert);
+
+		// CORRECTION : Réassignation obligatoire pour mettre à jour l'en-tête de la classe
+		if (interpolatePicture)
+		{
+			paramOutput = convert;
+		}
+		else
+		{
+			paramSrc = convert;
+		}
 	}
 	catch (const cv::Exception& e)
 	{
 		LogError(e.what());
 	}
 }
+
 
 
 
@@ -80,10 +93,20 @@ Regards::Picture::CPictureArray COpenCLEffectVideo::GetMatrix(const bool& src)
 	}
 	return paramSrc;
 
-
-	
 }
 
+
+
+cv::UMat COpenCLEffectVideo::GetUMat(const bool& src)
+{
+
+	if (interpolatePicture)
+	{
+		return paramOutput;
+	}
+	return paramSrc;
+
+}
 
 void COpenCLEffectVideo::ConvertToBgr()
 {
@@ -120,11 +143,8 @@ void COpenCLEffectVideo::ApplyStabilization(CVideoEffectParameter* videoEffectPa
 	bool frameStabilized = false;
 	Regards::Picture::CPictureArray pictureArray(paramSrc);
 
-	if (videoEffectParameter->stabilizeVideo)
+	if (videoEffectParameter->stabilizeVideo && openCVStabilization)
 	{
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere, TYPE_OPENCL);
-
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter->stabilizeImageBuffere);
 
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
@@ -167,14 +187,22 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter* videoEffectPar
 			{
 				image_umat.copyTo(image);
 			});
-
+		/*
+		if (interpolatePicture)
+		{
+			paramOutput.copyTo(image);
+		}
+		else
+		{
+			paramSrc.copyTo(image);
+		}*/
 		if (videoEffectParameter->filmEnhance)
 		{
 			image = CFaceDetector::SuperResolution(image);
+
 		}
 		if (videoEffectParameter->filmcolorisation)
 		{
-
 			image = CFaceDetector::Colorisation(image);
 		}
 
@@ -208,6 +236,11 @@ void COpenCLEffectVideo::AutoContrast()
 			openclFilter->BrightnessAndContrastAuto(image, 1.0);
 		});
 
+}
+
+void COpenCLEffectVideo::ClearCache()
+{
+	openclFilter->ClearCache();
 }
 
 
@@ -506,18 +539,14 @@ uint8_t* COpenCLEffectVideo::HQDn3D(uint8_t* y, int width, int height, const dou
 	uint8_t* dataOut = nullptr;
 	try
 	{
+		// CORRECTION : Renommer la variable en 'matIn' pour éviter le conflit avec le paramètre 'y'
+		// On passe également 'y' (le pointeur) en dernier argument pour encapsuler les données existantes sans copie
+		cv::Mat matIn(height, width, CV_8UC1, y);
 
-		if (hq3d == nullptr)
-			hq3d = std::make_unique<Chqdn3d>(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
-		else if (hq3d != nullptr)
-		{
-			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
-		}
-
-		dataOut = hq3d->ApplyDenoise3D(y, width, height);
-
+		// Passer 'matIn' au filtre
+		dataOut = openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, matIn);
 	}
-	catch (cv::Exception& e)
+	catch (const cv::Exception& e) // Bonne pratique : passage par référence constante
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
@@ -533,44 +562,13 @@ void COpenCLEffectVideo::HQDn3D(const double& LumSpac, const double& temporalLum
 
 	try
 	{
-		cv::UMat ycbcr;
-		cv::Mat yChannel;
-		int width = 0;
-		int height = 0;
 
 		ExecuteSafe([&](cv::UMat& image)
 			{
-				width = image.cols;
-				height = image.rows;
-				cvtColor(image, ycbcr, cv::COLOR_BGR2YCrCb);
+				openclFilter->HQDn3D(LumSpac, temporalLumaDefault, temporalSpatialLumaDefault, image);
 			});
 
-		if (hq3d == nullptr)
-			hq3d = std::make_unique<Chqdn3d>(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
-		else if (hq3d != nullptr)
-		{
-			hq3d->UpdateParameter(width, height, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault);
-		}
 
-		std::vector<cv::Mat> planes(3);
-		cv::split(ycbcr, planes);
-
-		// Extract the Y channel
-		//cv::extractChannel(ycbcr, yChannel, 0);
-
-		uint8_t* dataOut = hq3d->ApplyDenoise3D(planes[0].data, width, height);
-
-		memcpy(planes[0].data, dataOut, width * height);
-
-		// Merge the the color planes back into an Lab image
-		//cv::insertChannel(yChannel, ycbcr, 0);
-		cv::merge(planes, ycbcr);
-		// convert back to RGB
-
-		ExecuteSafe([&](cv::UMat& image_umat)
-			{
-				cv::cvtColor(ycbcr, image_umat, cv::COLOR_YCrCb2BGR);
-			});
 	}
 	catch (cv::Exception& e)
 	{

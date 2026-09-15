@@ -65,8 +65,12 @@ float CGps::GetGpsfValue(const wxString& gpsValue)
 	for (auto it = latValue.begin(); it != latValue.end(); ++it)
 	{
 		vector<wxString> intValue = CConvertUtility::split(*it, '/');
+		if (intValue.size() < 2)
+			continue;
 		int valeur = atoi(intValue.at(0));
 		int diviseur = atoi(intValue.at(1));
+		if (diviseur == 0)
+			continue;
 
 		float value = static_cast<float>(valeur) / static_cast<float>(diviseur);
 		if (i == 1)
@@ -93,15 +97,17 @@ wxString CGps::GetGpsValue(const float& gpsValue)
 
 float CGps::GetFLatitude()
 {
-	double val;
-	latitude.ToDouble(&val);
+	double val = 0.0;
+	if (!latitude.ToDouble(&val))
+		return 0.0f;
 	return val;
 }
 
 float CGps::GetFLongitude()
 {
-	double val;
-	longitude.ToDouble(&val);
+	double val = 0.0;
+	if (!longitude.ToDouble(&val))
+		return 0.0f;
 	return val;
 }
 
@@ -171,6 +177,8 @@ wxString CGps::FindElement(const wxString& xml, const wxString& baliseBegin, con
 
 	i += baliseBegin.size();
 	size_t j = xml.find(baliseEnd, i);
+	if (j == wxString::npos)
+		return L"";
 
 	return xml.substr(i, j - i);
 }
@@ -216,12 +224,10 @@ bool CGps::ImportationGeocodePlugin(const wxString& xml)
 				geoValue.SetRegion(value);
 				geoPluginVector.push_back(geoValue);
 
-				int i = static_cast<int>(xmlData.find(baliseEnd));
-				if (i != -1)
-				{
-					i += baliseEnd.length();
-				}
-				xmlData = xml.substr(i, xml.size() - i);
+				const size_t end = xmlData.find(baliseEnd);
+				if (end == wxString::npos)
+					break;
+				xmlData = xmlData.substr(end + baliseEnd.length());
 			}
 		} while (data != L"");
 	}

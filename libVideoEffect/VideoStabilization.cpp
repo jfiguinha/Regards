@@ -23,11 +23,17 @@ COpenCVStabilization::COpenCVStabilization(const int& nbFrame, const int& type)
 		break;
 
 	}
+
+	oldNbFrameBuffer = nbFrame;
 }
 
 void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
 {
-    opencvStabilization->SetNbFrameBuffer(nbFrame);
+	if (nbFrame != oldNbFrameBuffer)
+	{
+		oldNbFrameBuffer = nbFrame;
+		opencvStabilization->SetNbFrameBuffer(nbFrame);
+	}
 }
 
 int COpenCVStabilization::GetNbFrame()

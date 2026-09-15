@@ -23,21 +23,6 @@ void CThumbnailVertical::GenerateList(CIconeList* & newIconeList)
 {
 	int size = iconeList->GetNbElement();
 
-	/*
-	wxProgressDialog dlg
-	(
-		"Process in progress",
-		"Please wait, starting...",
-		size,
-		nullptr,
-		wxPD_ELAPSED_TIME |
-		wxPD_ESTIMATED_TIME |
-		wxPD_REMAINING_TIME |
-		wxPD_AUTO_HIDE |
-		wxPD_SMOOTH // - makes indeterminate mode bar on WinXP very small
-	);
-	const int updateInterval = std::max(1, size / 200); // ~100 mises à jour max
-	*/
 	for (int i = 0; i < size; i++)
 	{
 		CIcone* ico = iconeList->GetElement(i);
@@ -45,21 +30,14 @@ void CThumbnailVertical::GenerateList(CIconeList* & newIconeList)
 		{
 			bool find = CThumbnailBuffer::FindValidFile(ico->GetFilename());
 			if (!find)
+			{
 				iconeList->RemoveElement(i);
+				--i;
+			}
 			else
 				newIconeList->AddElement(ico);
 		}
-		/*
-		if (i % updateInterval == 0 || i == size - 1)
-		{
-			wxString message = "In progress : " + std::to_string(i) + "/" + std::to_string(size);
-			dlg.Update(i, message);
-		}*/
-		//wxString message = "In progress : " + to_string(i) + "/" + to_string(size);
-		//dlg.Update(i, message);
 	}
-
-	//dlg.Close();
 }
 
 void CThumbnailVertical::OnScrollBarH(wxCommandEvent& event)

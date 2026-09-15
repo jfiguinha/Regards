@@ -38,7 +38,7 @@ namespace Regards
 			cv::Mat AlignFace(
 				cv::Mat& face,
 				std::vector<cv::Point2f> & landmarks);
-			void RemoveRedEye(const cv::Mat& image, const cv::Rect& rSelectionBox, const cv::Rect& radius);
+			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox, const cv::Rect& radius);
 			void ImageToJpegBuffer(const cv::Mat& image, std::vector<uchar>& buff);
 			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, const cv::Mat& image);
 			cv::Mat FaceDesriptor(const cv::Mat& face);

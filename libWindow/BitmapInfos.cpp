@@ -313,6 +313,10 @@ CBitmapInfos::~CBitmapInfos()
 
 	if (threadGps && threadGps->joinable())
 		threadGps->join();
+
+	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
+	if(fileGeolocalisation)
+		fileGeolocalisation->RemoveWindow(this);
 }
 
 int CBitmapInfos::GetHeight()

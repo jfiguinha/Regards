@@ -123,6 +123,11 @@ namespace Regards
 			void SetValue(GLfloat* value, int size)
 			{
 				Safe_Delete();
+			if (value == nullptr || size <= 0)
+			{
+				this->size = 0;
+				return;
+			}
 				this->value = new GLfloat[size];
 				std::memcpy(this->value, value, size * sizeof(GLfloat));
 
@@ -161,6 +166,11 @@ namespace Regards
 			void SetValue(GLint* value, int size)
 			{
 				Safe_Delete();
+			if (value == nullptr || size <= 0)
+			{
+				this->size = 0;
+				return;
+			}
 				this->value = new GLint[size];
 				memcpy(this->value, value, size * sizeof(GLint));
 				this->size = size;

@@ -62,11 +62,13 @@ size_t CxMemFile::Read(void* buffer, size_t size, size_t count)
 		return 0;
 	}
 
+	if (size == 0 || count > static_cast<size_t>(INT32_MAX) / size)
+		return 0;
 	int32_t nCount = static_cast<int32_t>(count * size);
 	if (nCount == 0) return 0;
 
 	int32_t nRead;
-	if (m_Position + nCount > static_cast<int32_t>(m_Size))
+	if (m_Position > INT32_MAX - nCount || m_Position + nCount > static_cast<int32_t>(m_Size))
 	{
 		m_bEOF = true;
 		nRead = (m_Size - m_Position);
@@ -87,9 +89,13 @@ size_t CxMemFile::Write(const void* buffer, size_t size, size_t count)
 	if (m_pBuffer == nullptr) return 0;
 	if (buffer == nullptr) return 0;
 
+	if (size == 0 || count > static_cast<size_t>(INT32_MAX) / size)
+		return 0;
 	int32_t nCount = static_cast<int32_t>(count * size);
 	if (nCount == 0) return 0;
 
+	if (m_Position > INT32_MAX - nCount)
+		return 0;
 	if (m_Position + nCount > m_Edge)
 	{
 		if (!Alloc(m_Position + nCount))

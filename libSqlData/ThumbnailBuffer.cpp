@@ -126,7 +126,7 @@ void CThumbnailBuffer::RemovePicture(const wxString& filename)
 
 void CThumbnailBuffer::InitVectorList(PhotosVector* newVector)
 {
-    std::unique_ptr<PhotosVector> incoming(newVector);
+    std::shared_ptr<PhotosVector> incoming(newVector);
     std::unique_lock write(s_store.mutex);
 
     std::unordered_set<wxString> newIndex;
@@ -139,10 +139,10 @@ void CThumbnailBuffer::InitVectorList(PhotosVector* newVector)
     s_store.pathIndex = std::move(newIndex);
 }
 
-PhotosVector* CThumbnailBuffer::GetVectorList()
+std::shared_ptr<const PhotosVector> CThumbnailBuffer::GetVectorList()
 {
     std::shared_lock read(s_store.mutex);
-    return s_store.data.get();
+    return s_store.data;
 }
 
 int CThumbnailBuffer::GetVectorSize()

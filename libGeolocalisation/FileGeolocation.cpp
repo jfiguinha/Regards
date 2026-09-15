@@ -73,15 +73,17 @@ wxString CFileGeolocation::GetLongitude()
 
 float CFileGeolocation::GetFLatitude()
 {
-	double val;
-	latitudeGps.ToDouble(&val);
+	double val = 0.0;
+	if (!latitudeGps.ToDouble(&val))
+		return 0.0f;
 	return val;
 }
 
 float CFileGeolocation::GetFLongitude()
 {
-	double val;
-	longitudeGps.ToDouble(&val);
+	double val = 0.0;
+	if (!longitudeGps.ToDouble(&val))
+		return 0.0f;
 	return val;
 }
 

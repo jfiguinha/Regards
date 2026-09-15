@@ -105,6 +105,6 @@ namespace Regards
 			Connect(wxEVT_IDLE, wxIdleEventHandler(CWindowMain::OnIdle));
 		}
 
-		using WindowMainVector = std::vector<CWindowMain*>;
+		using WindowMainVector = std::map<int, CWindowMain*>;
 	}
 }

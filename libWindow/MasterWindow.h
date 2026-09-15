@@ -65,9 +65,9 @@ namespace Regards::Window
 
 		wxString name;
 		std::atomic_bool processIdle;
-		int id;
-		int width;
-		int height;
+		int id = 0;
+		int width = 0;
+		int height = 0;
 	public:
 		double scaleFactor;
 		static std::atomic_bool endProgram;

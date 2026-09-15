@@ -52,7 +52,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxWindow* window, wxSizeEvent& event)
 	if (_width <= 20 && _height <= 20)
 	{
 		//not corrected size
-		//Resize();
+		width = height = 0;
 	}
 	else
 	{

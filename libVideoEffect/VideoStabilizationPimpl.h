@@ -187,9 +187,19 @@ public:
 			}
 		}
 
+		if (prev_pts.size() < 2 || curr_pts.size() < 2)
+		{
+			curr_gray.copyTo(prev_gray);
+			return;
+		}
 
 		// Find transformation matrix
 		Mat T = estimateAffinePartial2D(prev_pts, curr_pts);
+		if (T.empty() || T.rows != 2 || T.cols != 3)
+		{
+			curr_gray.copyTo(prev_gray);
+			return;
+		}
 
 		// In rare cases no transform is found. 
 		// We'll just use the last known good transform.

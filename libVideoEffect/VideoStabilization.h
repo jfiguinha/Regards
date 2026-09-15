@@ -32,6 +32,7 @@ namespace Regards
 
 		private:
 			
+			int oldNbFrameBuffer = 0;
 			std::unique_ptr<COpenCVStabilizationInterface> opencvStabilization = nullptr;
 			int type = 0;
 		};

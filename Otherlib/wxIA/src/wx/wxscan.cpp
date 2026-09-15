@@ -517,8 +517,13 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 
     do
     {
-
-        m_SaneStatus= ::sane_read( hSaneHandle, pScanBufferPtr, nImageBufferSize, &nScannedBytes );
+        const SANE_Int remaining = nImageBufferSize - total_bytes;
+        if (remaining <= 0)
+        {
+            m_SaneStatus = SANE_STATUS_INVAL;
+            break;
+        }
+        m_SaneStatus= ::sane_read( hSaneHandle, pScanBufferPtr, remaining, &nScannedBytes );
         pScanBufferPtr += nScannedBytes * sizeof( SANE_Byte );
 		total_bytes += (SANE_Word)nScannedBytes;
 		if (false == dialog.Update(total_bytes, "Receive data"))

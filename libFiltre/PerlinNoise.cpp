@@ -105,9 +105,11 @@ void CPerlinNoise::Clouds(cv::Mat& pBitmap, const CRgbaquad& color1, const CRgba
 {
 	if (!pBitmap.empty())
 	{
+		if (pBitmap.type() != CV_8UC4 || octaves <= 0)
+			return;
+
 		int bmWidth = pBitmap.size().width;
 		int bmHeight = pBitmap.size().height;
-		uint8_t* pBitsSrc = pBitmap.data;
 
 		//long k = 0;
 		//long m;
@@ -116,8 +118,8 @@ void CPerlinNoise::Clouds(cv::Mat& pBitmap, const CRgbaquad& color1, const CRgba
 
 		//int i, j,k;
 
-		auto tabFrequence = new float[octaves];
-		auto tabAmplitude = new float[octaves];
+		std::vector<float> tabFrequence(octaves);
+		std::vector<float> tabAmplitude(octaves);
 
 		tabFrequence[0] = freq;
 		tabAmplitude[0] = 1;
@@ -133,17 +135,12 @@ void CPerlinNoise::Clouds(cv::Mat& pBitmap, const CRgbaquad& color1, const CRgba
 		{
 			for (auto j = 0; j < bmWidth; j++)
 			{
-				int l = ((i * bmWidth) << 2) + (j << 2);
+				uint8_t* pBitsSrc = pBitmap.ptr<uint8_t>(i);
+				int l = j << 2;
 
 				float total = 0.0f;
-				total += GetValue(j * (*(tabFrequence)), i * (*(tabFrequence))) * (*(tabAmplitude));
-				total += GetValue(j * (*(tabFrequence + 1)), i * (*(tabFrequence + 1))) * (*(tabAmplitude + 1));
-				total += GetValue(j * (*(tabFrequence + 2)), i * (*(tabFrequence + 2))) * (*(tabAmplitude + 2));
-				total += GetValue(j * (*(tabFrequence + 3)), i * (*(tabFrequence + 3))) * (*(tabAmplitude + 3));
-				total += GetValue(j * (*(tabFrequence + 4)), i * (*(tabFrequence + 4))) * (*(tabAmplitude + 4));
-				total += GetValue(j * (*(tabFrequence + 5)), i * (*(tabFrequence + 5))) * (*(tabAmplitude + 5));
-				total += GetValue(j * (*(tabFrequence + 6)), i * (*(tabFrequence + 6))) * (*(tabAmplitude + 6));
-				total += GetValue(j * (*(tabFrequence + 7)), i * (*(tabFrequence + 7))) * (*(tabAmplitude + 7));
+				for (int k = 0; k < octaves; k++)
+					total += GetValue(j * tabFrequence[k], i * tabFrequence[k]) * tabAmplitude[k];
 				total = total * 0.5f + 0.5f;
 
 				if (total < 0.0f)
@@ -161,7 +158,5 @@ void CPerlinNoise::Clouds(cv::Mat& pBitmap, const CRgbaquad& color1, const CRgba
 		//pBitmap->SetBitmap(pBitsSrc, bmWidth, bmHeight);
 
 		//delete[] pBitsSrc;
-		delete[] tabFrequence;
-		delete[] tabAmplitude;
 	}
 }

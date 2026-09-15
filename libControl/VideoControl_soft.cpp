@@ -1682,6 +1682,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 		renderStart,
 		"CVideoControlSoft::OnPaint3D");
 #endif
+
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -2255,6 +2256,8 @@ void CVideoControlSoft::RenderToTexture()
     {
         if (openCVStabilization == nullptr)
             openCVStabilization = std::make_unique<Regards::OpenCV::COpenCVStabilization>(videoEffectParameter.stabilizeImageBuffere, openclEffectYUV->GetType());
+
+		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
 		openclEffectYUV->ApplyStabilization(&videoEffectParameter, openCVStabilization.get());
     }
 
@@ -2281,10 +2284,13 @@ void CVideoControlSoft::RenderToTexture()
 		openclEffectYUV->ApplyOpenCVEffect(&videoEffectParameter);
 	}
 
+		// === AJOUT DE SÉCURITÉ POUR LINUX ===
+	pictureArray.Release(); 
+
 	if (videoEffectParameter.interpolationQuality == 1)
-		pictureArray = openclEffectYUV->GetMatrix(false);
+		pictureArray.SetArray(openclEffectYUV->GetUMat(false));
 	else
-		pictureArray = openclEffectYUV->GetMatrix();
+		pictureArray.SetArray(openclEffectYUV->GetUMat());
 
 }
 

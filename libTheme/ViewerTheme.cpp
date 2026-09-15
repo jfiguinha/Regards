@@ -510,6 +510,8 @@ void CMainTheme::LoadTheme()
 	xml_node<>* root_node;
 	//long nodeSize = 0;
 	root_node = doc.first_node("Theme");
+	if (root_node == nullptr)
+		return;
 
 	xml_node<>* child_node = root_node->first_node("Main");
 	if (child_node != nullptr)

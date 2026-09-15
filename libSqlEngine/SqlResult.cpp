@@ -15,8 +15,10 @@ CSqlResult::~CSqlResult()
 
 void CSqlResult::SetStatement(sqlite3_stmt* pRes)
 {
+	if (this->pRes != nullptr && this->pRes != pRes)
+		sqlite3_finalize(this->pRes);
 	this->pRes = pRes;
-	m_iColumnCount = sqlite3_column_count(pRes);
+	m_iColumnCount = pRes != nullptr ? sqlite3_column_count(pRes) : 0;
 }
 
 int CSqlResult::GetColumnCount() { return m_iColumnCount; }
@@ -75,7 +77,7 @@ int CSqlResult::ColumnDataBlobSize(const int& clmNum)
 
 int CSqlResult::ColumnDataBlob(const int& clmNum, void*& pzBlob, const int& pnBlob)
 {
-	if (clmNum < 0 || clmNum >= m_iColumnCount || pzBlob == nullptr)
+	if (clmNum < 0 || clmNum >= m_iColumnCount || pzBlob == nullptr || pnBlob < 0)
 		return -1;
 
 	const void* sqliteBlob = sqlite3_column_blob(pRes, clmNum);

@@ -39,7 +39,8 @@ wxString CLibResource::ReadFile(const wxString& fileName)
 	//Read data from filepath
 	// open the file
 	wxTextFile tfile;
-	tfile.Open(fileName);
+	if (!tfile.Open(fileName))
+		return text;
 
 	// read the first line
 	text.append(tfile.GetFirstLine());

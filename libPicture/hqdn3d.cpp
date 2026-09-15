@@ -342,6 +342,113 @@ void Chqdn3d::ResetTemporalState()
     std::fill(Line.begin(), Line.end(), 0);
 }
 
+cv::UMat Chqdn3d::ApplyDenoise3D(cv::UMat& bitmapIn)
+{
+    cv::UMat dest;
+
+    if (bitmapIn.empty())
+        return dest;
+
+    // Vérification du type (3 canaux, ex: BGR)
+    if (bitmapIn.type() != CV_8UC3)
+        return dest;
+
+    const int width = bitmapIn.cols;
+    const int height = bitmapIn.rows;
+
+    if (width <= 0 || height <= 0)
+        return dest;
+
+    // Réconfiguration des buffers CPU si la taille change
+    if (width != w || height != h)
+    {
+        EnsureBuffers(width, height);
+        ResetTemporalState();
+    }
+
+    // 1. Déclarations des UMat pour le traitement GPU
+    cv::UMat ycbcr;
+    cv::UMat yChannel;
+
+    // 2. Conversion de couleur exécutée sur le GPU (si OpenCL actif)
+    cv::cvtColor(bitmapIn, ycbcr, cv::COLOR_BGR2YCrCb);
+    cv::extractChannel(ycbcr, yChannel, 0);
+
+    if (yChannel.empty() || yChannel.type() != CV_8UC1)
+    {
+        return dest;
+    }
+
+    // 3. Rapatriement ciblé et sécurisé du canal Y vers le CPU pour l'algorithme hqdn3d
+    // L'utilisation de yChannel.getMat(cv::ACCESS_READ) permet un accès direct 
+    // et ultra-rapide à la mémoire CPU mappée de l'UMat.
+    cv::Mat yChannelHost = yChannel.getMat(cv::ACCESS_READ);
+
+    const size_t rowBytes = static_cast<size_t>(width);
+
+    if (yChannelHost.isContinuous())
+    {
+        std::memcpy(
+            picture_y.data(),
+            yChannelHost.data,
+            rowBytes * static_cast<size_t>(height));
+    }
+    else
+    {
+        for (int y = 0; y < height; ++y)
+        {
+            std::memcpy(
+                picture_y.data() + static_cast<size_t>(y) * rowBytes,
+                yChannelHost.ptr<unsigned char>(y),
+                rowBytes);
+        }
+    }
+    // Libération explicite du verrou d'accès en lecture
+    yChannelHost.release();
+
+    // 4. Exécution de l'algorithme séquentiel hqdn3d sur le CPU
+    hqdn3d_denoise(
+        picture_y.data(),
+        y_out.data(),
+        Line.data(),
+        Frame.data(),
+        width,
+        height,
+        hqdn3d_coef[0],
+        hqdn3d_coef[1]);
+
+    // 5. Réinjection du résultat CPU vers le GPU
+    // On ouvre le yChannel en mode Écriture (ACCESS_WRITE)
+    cv::Mat yChannelHostOut = yChannel.getMat(cv::ACCESS_WRITE);
+
+    if (yChannelHostOut.isContinuous())
+    {
+        std::memcpy(
+            yChannelHostOut.data,
+            y_out.data(),
+            rowBytes * static_cast<size_t>(height));
+    }
+    else
+    {
+        for (int y = 0; y < height; ++y)
+        {
+            std::memcpy(
+                yChannelHostOut.ptr<unsigned char>(y),
+                y_out.data() + static_cast<size_t>(y) * rowBytes,
+                rowBytes);
+        }
+    }
+    // Libération du verrou pour valider les modifications sur le GPU
+    yChannelHostOut.release();
+
+    // 6. Finalisation des opérations sur le GPU
+    cv::insertChannel(yChannel, ycbcr, 0);
+    cv::cvtColor(ycbcr, dest, cv::COLOR_YCrCb2BGR);
+
+    return dest;
+}
+
+
 void Chqdn3d::UpdateParameter(
     const int& width,
     const int& height,

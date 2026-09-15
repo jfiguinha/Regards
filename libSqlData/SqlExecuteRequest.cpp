@@ -70,16 +70,16 @@ int CSqlExecuteRequest::ExecuteRequest(const wxString& sql)
 
 bool CSqlExecuteRequest::ExecuteSqlWithStatementBool(const wxString& query, std::vector<std::unique_ptr<CSqlParameter>>& parameter)
 {
-    int nbResult = 0;
+    bool success = false;
 
     withLib([&](CSqlLib& lib)
         {
             CSqlResult sqlResult;
             if (lib.ExecuteSqlWithStatement(query, parameter, &sqlResult) != -1)
-                nbResult = TraitementResult(&sqlResult);
+                success = TraitementResult(&sqlResult) != -1;
         });
 
-    return nbResult != -1 ? true : false;
+    return success;
 }
 
 

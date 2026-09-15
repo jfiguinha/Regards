@@ -14,7 +14,7 @@ public:
     static bool       FindValidFile(const wxString& localFilename);
     static wxString   FindPhotoById(int id);
     static wxString   FindPhotoByPath(const wxString& path);
-    static PhotosVector* GetVectorList();
+    static std::shared_ptr<const PhotosVector> GetVectorList();
 
 private:
     // ── LRU cache ──────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ private:
     // ── PhotosVector ───────────────────────────────────────────────────────
     struct VectorStore
     {
-        std::unique_ptr<PhotosVector> data;
+        std::shared_ptr<PhotosVector> data;
         mutable std::shared_mutex     mutex;
         std::atomic<int>              size{ 0 };
         std::unordered_set<wxString> pathIndex; // nouveau : lookup O(1)

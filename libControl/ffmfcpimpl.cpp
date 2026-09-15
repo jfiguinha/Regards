@@ -563,8 +563,9 @@ void CFFmfcPimpl::video_display(VideoState* is)
 						);
 
 						// Ajout d'une vérification de sécurité dans vos logs de debug
+#ifdef _DEBUG
 						printf("[DEBUG CORRIGÉ] FFmpeg Plan 0 Linesize: %d, OpenCV Step: %d\n", dst_linesize[0], (int)wrappedMat.step);
-
+#endif
 						// 4. Copie profonde (Deep Copy) pour le thread UI
 						dataFrame->matFrame = wrappedMat.clone();
 
@@ -3300,8 +3301,11 @@ CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputF
 	localHeight = 0;
 	localFormat = AV_PIX_FMT_NONE;
 
-	colorRange = CMediaInfo::GetColorRange(filename);
-	colorSpace = CMediaInfo::GetColorSpace(filename);
+    // CORRECTION 2 : Conversion sécurisée explicite en UTF-8 pour wxWidgets
+    wxString safeFilename = wxString::FromUTF8(is->filename);
+
+    colorRange = CMediaInfo::GetColorRange(safeFilename);
+    colorSpace = CMediaInfo::GetColorSpace(safeFilename);
 
 	/* start video display */
 	if (frame_queue_init(&is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1) < 0)

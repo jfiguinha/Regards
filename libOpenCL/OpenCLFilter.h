@@ -89,7 +89,7 @@ namespace Regards
 			                                  vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 
 
-			
+			void ClearCache();
 			static int numTexture;
 
 		protected:
@@ -104,6 +104,8 @@ namespace Regards
 	
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle,
 			                    float ratioX, float ratioY, int x, int y, float left, float top);
+
+			
 
 			cl_mem_flags flag;
 			std::unique_ptr<Chqdn3d> hq3d = nullptr;

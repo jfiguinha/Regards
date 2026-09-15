@@ -10,21 +10,40 @@ CListOfWindow::CListOfWindow()
 
 void CListOfWindow::AddWindow(CWindowMain* windowMain)
 {
+	
 	if (windowMain != nullptr)
-		listOfWinListener.push_back(windowMain);
+	{
+		if (!listOfWinListener[windowMain->GetId()])
+		{
+			listOfWinListener[windowMain->GetId()] = windowMain;
+		}	
+	}
+		
+}
+
+void CListOfWindow::RemoveWindow(CWindowMain* windowMain)
+{
+	if (windowMain != nullptr)
+	{
+		auto it = listOfWinListener.find(windowMain->GetId());
+		if (it != listOfWinListener.end())
+		{
+			listOfWinListener.erase(it);
+		}
+	}
 }
 
 void CListOfWindow::SendMessageToWindow(const wxString& filename, const int& typeData)
 {
-	for (CWindowMain* window : listOfWinListener)
+	for (const auto& pair : listOfWinListener)
 	{
-		if (window != nullptr)
+		if (pair.second != nullptr)
 		{
 			auto gpsInfos = new wxString(filename);
 			auto event = new wxCommandEvent(wxEVENT_UPDATEGPSINFOS);
 			event->SetInt(typeData);
 			event->SetClientData(gpsInfos);
-			wxQueueEvent(window, event);
+			wxQueueEvent(pair.second, event);
 		}
 	}
 }

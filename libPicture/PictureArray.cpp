@@ -9,26 +9,27 @@ CPictureArray::CPictureArray(const cv::_InputArray::KindFlag& type)
 
 CPictureArray::CPictureArray(cv::Mat& m)
 {
-	mat = m;
+	m.copyTo(mat);
 	kind = cv::_InputArray::KindFlag::MAT;
 }
 
-void CPictureArray::SetArray(cv::Mat& m)
+void CPictureArray::SetArray(cv::Mat m)
 {
-	mat = m;
+	m.copyTo(mat);
 	kind = cv::_InputArray::KindFlag::MAT;
 }
 
-void CPictureArray::SetArray(cv::UMat& m)
+void CPictureArray::SetArray(cv::UMat m)
 {
-	umat = m;
+	// On nettoie d'abord les anciens verrous CPU/GPU de l'instance courante
+	this->Release(); 
+	this->umat = m; 
 	kind = cv::_InputArray::KindFlag::UMAT;
 }
 
-
 CPictureArray::CPictureArray(cv::UMat& m)
 {
-	umat = m;
+	m.copyTo(umat);
 	kind = cv::_InputArray::KindFlag::UMAT;
 }
 

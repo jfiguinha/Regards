@@ -14,7 +14,7 @@ public:
 	void UpdateParameter(const int& w, const int& h, const double& LumSpac = 4, const double& temporalLumaDefault = 6.0, const double& temporalSpatialLumaDefault = 4.0);
 	int ApplyDenoise3D(cv::Mat& bitmapIn);
 	uint8_t* ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h);
-
+	cv::UMat ApplyDenoise3D(cv::UMat& bitmapIn);
 private:
 	//unsigned int hqdn3d_lowpass_mul(int prev_mul,
 	//                                int curr_mul,

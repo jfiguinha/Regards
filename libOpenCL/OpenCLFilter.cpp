@@ -75,21 +75,22 @@ void ExecuteSafeOpenCL(cv::UMat& inputData, F&& func)
 {
 	try
 	{
-		cv::UMat source;
-
 		const bool convert = inputData.channels() == 3;
 
 		if (convert)
+		{
+			cv::UMat source;
 			cv::cvtColor(inputData, source, cv::COLOR_BGR2BGRA);
-		else
-			source = inputData;
-
-		cv::UMat result = func(source);
-
-		if (convert)
+			cv::UMat result = func(source);
 			cv::cvtColor(result, inputData, cv::COLOR_BGRA2BGR);
+		}
 		else
-			inputData = std::move(result);
+		{
+			// CORRECTION : On réaffecte directement le retour de func à inputData
+			cv::UMat resultBGR = func(inputData);
+			resultBGR.copyTo(inputData);
+			inputData = resultBGR; // Force la mise à jour de l'en-tête de référence
+		}
 	}
 	catch (const cv::Exception& e)
 	{
@@ -97,28 +98,79 @@ void ExecuteSafeOpenCL(cv::UMat& inputData, F&& func)
 	}
 }
 
+
+
+template<typename F>
+void ExecuteSafeOpenCL3Channels(cv::UMat& inputData, F&& func)
+{
+	try
+	{
+		if (inputData.empty())
+			return;
+
+		const bool wasBGRA = inputData.channels() == 4;
+
+		if (wasBGRA)
+		{
+			cv::UMat alpha;
+			cv::UMat bgr;
+			cv::UMat restoredAlpha;
+
+			cv::extractChannel(inputData, alpha, 3);
+			cv::cvtColor(inputData, bgr, cv::COLOR_BGRA2BGR);
+			cv::UMat resultBGR = func(bgr);
+
+			if (resultBGR.empty())
+				return;
+
+			if (alpha.size() == resultBGR.size())
+				restoredAlpha = alpha;
+			else
+				cv::resize(alpha, restoredAlpha, resultBGR.size(), 0.0, 0.0, cv::INTER_LINEAR);
+
+			cv::UMat resultBGRA;
+			cv::cvtColor(resultBGR, resultBGRA, cv::COLOR_BGR2BGRA);
+			cv::insertChannel(restoredAlpha, resultBGRA, 3);
+
+			// CORRECTION : Sécurisation de la mise à jour de la référence
+			resultBGRA.copyTo(inputData);
+			inputData = resultBGRA;
+		}
+		else
+		{
+			cv::UMat resultBGR = func(inputData);
+			// CORRECTION : Même chose pour le canal unique / 3 canaux directs
+			resultBGR.copyTo(inputData);
+			inputData = resultBGR;
+		}
+	}
+	catch (const cv::Exception& e)
+	{
+		LogError(e.what());
+	}
+}
+
+
 template<typename F>
 cv::UMat ExecuteSafeOpenCLWithUMatOutput(cv::UMat& inputData, bool bgraOutput, F&& func)
 {
 	cv::UMat dest;
 	try
 	{
-		cv::UMat source;
-
 		const bool convert = inputData.channels() == 3;
 
 		if (convert)
+		{
+			
+			cv::UMat source;
 			cv::cvtColor(inputData, source, cv::COLOR_BGR2BGRA);
-		else
-			source = inputData;
-
-		cv::UMat result = func(source);
-
-
-		if (!bgraOutput)
+			cv::UMat result = func(source);
 			cv::cvtColor(result, dest, COLOR_BGRA2BGR);
+		}
 		else
-			dest = std::move(result);
+		{
+			dest = func(inputData);
+		}
 
 	}
 	catch (const cv::Exception& e)
@@ -273,102 +325,60 @@ COpenCLFilter::~COpenCLFilter()
 
 void COpenCLFilter::DetailEnhance(UMat& inputData, const double& sigma_s, const double& sigma_r)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 	{
 		UMat dest;
 
-		if (inputData.channels() == 4)
-		{
-			cvtColor(inputData, dest, COLOR_BGRA2BGR);
-		}
+		cv::detailEnhance(image, dest, sigma_s, sigma_r);
 
-		cv::detailEnhance(inputData, dest, sigma_s, sigma_r);
-
-		if (inputData.channels() == 4)
-		{
-			cvtColor(dest, inputData, COLOR_BGR2BGRA);
-		}
-		else
-			dest.copyTo(inputData);
+		return dest;
 	});
 }
 
 void COpenCLFilter::EdgePreservingFilter(UMat& inputData, const int& flags, const double& sigma_s, const double& sigma_r)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat dest;
-
-			if (inputData.channels() == 4)
-			{
-				cvtColor(inputData, dest, COLOR_BGRA2BGR);
-			}
-
-			edgePreservingFilter(inputData, dest, flags, sigma_s, sigma_r);
-
-			if (inputData.channels() == 4)
-			{
-				cvtColor(dest, inputData, COLOR_BGR2BGRA);
-			}
-			else
-				dest.copyTo(inputData);
-
+			edgePreservingFilter(image, dest, flags, sigma_s, sigma_r);
+			return dest;
 		});
 }
 
 void COpenCLFilter::PencilSketch(UMat& inputData, const double& sigma_s, const double& sigma_r, const double& shade_factor)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 
-		UMat img1;
-		UMat dest;
-
-		if (inputData.channels() == 4)
-			cvtColor(inputData, dest, COLOR_BGRA2BGR);
-
-		pencilSketch(inputData, img1, dest, sigma_s, sigma_r, shade_factor);
-
-		if (inputData.channels() == 4)
-			cvtColor(dest, inputData, COLOR_BGR2BGRA);
-		else
-			dest.copyTo(inputData);
-
+			UMat img1;
+			UMat dest;
+			pencilSketch(image, img1, dest, sigma_s, sigma_r, shade_factor);
+			return dest;
 		});
 }
 
 void COpenCLFilter::Stylization(UMat& inputData, const double& sigma_s, const double& sigma_r)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 	{
 		UMat dest;
-		if (inputData.channels() == 4)
-			cvtColor(inputData, dest, COLOR_BGRA2BGR);
-
-		stylization(inputData, dest, sigma_s, sigma_r);
-
-		if (inputData.channels() == 4)
-			cvtColor(dest, inputData, COLOR_BGR2BGRA);
-		else
-			dest.copyTo(inputData);
+		stylization(image, dest, sigma_s, sigma_r);
+		return dest;
 	});
 }
 
 void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 		UMat dest;
-		if (inputData.channels() == 4)
-			cvtColor(inputData, dest, COLOR_BGRA2BGR);
-
-		bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
-
-		if (inputData.channels() == 4)
-			cvtColor(dest, inputData, COLOR_BGR2BGRA);
-		else
-			dest.copyTo(inputData);
-
+		bilateralFilter(image, dest, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
+		return dest;
 		});
 }
 
@@ -376,13 +386,15 @@ void COpenCLFilter::BilateralEffect(UMat& inputData, const int& fSize, const int
 void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, const int& templateWindowSize,
                             const int& searchWindowSize)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat ycbcr;
 			UMat yChannel;
 			UMat yChannelOut;
+			UMat dest;
 
-			cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
+			cvtColor(image, ycbcr, COLOR_BGR2YCrCb);
 
 			// Extract the Y channel (UNE SEULE FOIS)
 			extractChannel(ycbcr, yChannel, 0);
@@ -393,20 +405,24 @@ void COpenCLFilter::NlMeans(UMat& inputData, const int& h, const int& hColor, co
 			insertChannel(yChannelOut, ycbcr, 0);
 
 			// convert back to RGB
-			cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
+			cvtColor(ycbcr, dest, COLOR_YCrCb2BGR);
+
+			return dest;
 		});
 }
 
 
 void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat ycbcr;
 			UMat yChannel;
 			UMat yChannelOut;
+			UMat dest;
 
-			cvtColor(inputData, ycbcr, COLOR_BGR2YUV);
+			cvtColor(image, ycbcr, COLOR_BGR2YUV);
 
 			// Extract the Y channel
 			extractChannel(ycbcr, yChannel, 0);
@@ -417,12 +433,14 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 			insertChannel(yChannelOut, ycbcr, 0);
 
 			// convert back to RGB
-			cvtColor(ycbcr, inputData, COLOR_YUV2BGR);
+			cvtColor(ycbcr, dest, COLOR_YUV2BGR);
 
 			// Temporary Mat not reused, so release from memory.
 			yChannel.release();
 			ycbcr.release();
 			yChannelOut.release();
+
+			return dest;
 		});
 }
 
@@ -431,15 +449,18 @@ void COpenCLFilter::Bm3d(UMat& inputData, const float& fSigma)
 
 void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPercent)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
+
+			cv::UMat dest;
         int histSize = 256;
 		float alpha, beta;
 		double minGray = 0, maxGray = 0;
 		
 		std::vector<cv::UMat> yuv_planes(3);
-		cv::UMat gpuframe_3channel(inputData.size(), CV_8UC3);
-		cv::cvtColor(inputData, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::UMat gpuframe_3channel(image.size(), CV_8UC3);
+		cv::cvtColor(image, gpuframe_3channel, COLOR_BGR2YUV, 3);
 		cv::split(gpuframe_3channel, yuv_planes);
 
 		if (clipHistPercent == 0)
@@ -495,8 +516,9 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
 		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
 
-		convertScaleAbs(inputData, inputData, alpha, beta);
+		convertScaleAbs(image, dest, alpha, beta);
 
+		return dest;
 		});
 }
 
@@ -506,119 +528,115 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 //----------------------------------------------------------------------------
 void COpenCLFilter::Fusion(UMat& inputData, const UMat& secondPictureData, const float& pourcentage)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat dst;
 			float beta = (1.0 - pourcentage);
-			addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
-			dst.copyTo(inputData);
+			addWeighted(image, pourcentage, secondPictureData, beta, 0.0, dst);
+			return dst;
 		});
 }
 
 
 void COpenCLFilter::SharpenMasking(const float& sharpness, UMat& inputData)
 {
-
-	UMat cvDestBgra;
-	double sigma = 1;
-	cv::GaussianBlur(inputData, cvDestBgra, Size(), sigma, sigma);
-
-	ExecuteSafeOpenCL(inputData,
+	ExecuteSafeOpenCL3Channels(inputData,
 		[&](cv::UMat& image)
 		{
-			OpenCLKernelBuilder builder;
+			cv::UMat dest;
+			UMat cvDestBgra;
+			double sigma = 1;
+			cv::GaussianBlur(image, cvDestBgra, Size(), sigma, sigma);
 
-			auto clBuffer = static_cast<cl_mem>(image.handle(ACCESS_READ));
-			auto clBuffer_out = static_cast<cl_mem>(cvDestBgra.handle(ACCESS_READ));
+			double poids = sharpness; // Ajustez cette valeur pour augmenter/diminuer la netteté
+			double alpha = 1.0 + poids;
+			double beta = -poids;
 
-			builder
-				.Image("input", clBuffer)
-				.Image("gaussian", clBuffer_out)
-				.Int("width", inputData.cols)
-				.Int("height", inputData.rows)
-				.Float("sharpness", sharpness);
-
-			auto params = builder.GetParameters();
-
-			return ExecuteOpenCLCode(
-				"IDR_OPENCL_SHARPENMASKING",
-				"SharpenMasking",
-				params,
-				inputData.cols,
-				inputData.rows);
+			cv::addWeighted(image, alpha, cvDestBgra, beta, 0, dest);
+			return dest;
 		});
 
+	
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad& clValue, const int& intensity, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			float coeff = static_cast<float>(intensity) / 100.0f;
 			float diff = 1.0f - coeff;
 			UMat out;
 			UMat out_one;
-			out_one = inputData.mul(diff);
+			out_one = image.mul(diff);
 
 			auto color = Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
 			Scalar out_two = color * coeff;
 
 			add(out_one, out_two, out);
-			out.copyTo(inputData);
+
+			return out;
 		});
 }
 
 void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
-		UMat out;
-		auto color = Scalar(blue, green, red);
-		add(inputData, color, out);
-		out.copyTo(inputData);
+			UMat out;
+			auto color = Scalar(blue, green, red);
+			add(image, color, out);
+			return out;
 		});
 }
 
-void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& size)
+void COpenCLFilter::FiltreMosaic(UMat& inputData, const int& tailleBloc)
 {
-
-	ExecuteSafeOpenCL(inputData,
+	ExecuteSafeOpenCL3Channels(inputData,
 		[&](cv::UMat& image)
 		{
-			OpenCLKernelBuilder builder;
 
-			auto clBuffer = static_cast<cl_mem>(image.handle(ACCESS_READ));
+			// 3. Calculer les dimensions de la version réduite
+			int largeurReduite = std::max(1, image.cols / tailleBloc);
+			int hauteurReduite = std::max(1, image.rows / tailleBloc);
 
-			builder
-				.Image("input", clBuffer)
-				.Int("width", inputData.cols)
-				.Int("height", inputData.rows)
-				.Int("fTileSize", size);
+			cv::UMat petiteImage;
+			cv::UMat mosaique;
 
-			auto params = builder.GetParameters();
+			// 4. Étape de réduction (downscaling)
+			// On utilise INTER_LINEAR pour faire une moyenne propre des blocs de pixels
+			cv::resize(image, petiteImage, cv::Size(largeurReduite, hauteurReduite), 0, 0, cv::INTER_LINEAR);
 
-			return ExecuteOpenCLCode(
-				"IDR_OPENCL_MOSAIC",
-				"Mosaic",
-				params,
-				inputData.cols,
-				inputData.rows);
+			// 5. Étape d'agrandissement (upscaling) à la taille d'origine
+			// ATTENTION : INTER_NEAREST est crucial ici pour garder l'effet de gros blocs nets
+			cv::resize(petiteImage, mosaique, image.size(), 0, 0, cv::INTER_NEAREST);
+
+			return mosaique;
+
 		});
 }
 
 void COpenCLFilter::Blur(const int& radius, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
-			blur(inputData, inputData, Size(radius, radius));
+			cv::UMat dest;
+			blur(image, dest, Size(radius, radius));
+			return dest;
 		});
 }
 
 void COpenCLFilter::GaussianBlur(const int& radius, const int& boxSize, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
-		cv::GaussianBlur(inputData, inputData, Size(boxSize, boxSize), radius);
+			cv::UMat dest;
+			cv::GaussianBlur(image, dest, Size(boxSize, boxSize), radius);
+			return dest;
 		});
 }
 
@@ -670,21 +688,23 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 
 void COpenCLFilter::Emboss(UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			// Construct kernel (all entries initialized to 0)
 			Mat kernel(3, 3, CV_32F, Scalar(0));
 			kernel.at<float>(0, 0) = -1.0;
 			kernel.at<float>(2, 2) = 1.0;
 			UMat dest;
-			filter2D(inputData, dest, inputData.depth(), kernel);
-			dest.copyTo(inputData);
+			filter2D(image, dest, image.depth(), kernel);
+			return dest;
 		});
 }
 
 void COpenCLFilter::Sharpen(UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			// Construct kernel (all entries initialized to 0)
 			// Construct kernel (all entries initialized to 0)
@@ -695,16 +715,16 @@ void COpenCLFilter::Sharpen(UMat& inputData)
 			kernel.at<float>(2, 1) = -1.0;
 			kernel.at<float>(1, 0) = -1.0;
 			kernel.at<float>(1, 2) = -1.0;
-
 			UMat dest;
-			filter2D(inputData, dest, inputData.depth(), kernel);
-			dest.copyTo(inputData);
+			filter2D(image, dest, image.depth(), kernel);
+			return dest;
 		});
 }
 
 void COpenCLFilter::SharpenStrong(UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 
 			Mat kernel(3, 3, CV_32F, Scalar(0));
@@ -718,24 +738,26 @@ void COpenCLFilter::SharpenStrong(UMat& inputData)
 			kernel.at<float>(2, 1) = -1.0;
 			kernel.at<float>(2, 2) = -1.0;
 			UMat dest;
-			filter2D(inputData, dest, inputData.depth(), kernel);
-			dest.copyTo(inputData);
+			filter2D(image, dest, image.depth(), kernel);
+			return dest;
 		});
 }
 
 void COpenCLFilter::Edge(UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat dest;
-			cvtColor(inputData, dest, COLOR_BGR2GRAY);
+			cvtColor(image, dest, COLOR_BGR2GRAY);
 
 			Mat img_blur;
 			cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
 			UMat edges;
 			Canny(img_blur, edges, 100, 200, 3, false);
 
-			cvtColor(edges, inputData, COLOR_GRAY2BGR);
+			cvtColor(edges, dest, COLOR_GRAY2BGR);
+			return dest;
 		});
 }
 
@@ -769,12 +791,15 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 
 void COpenCLFilter::ErodeDilate(const wxString& functionName, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
+			UMat dest;
 			if (functionName == "Erode")
-				erode(inputData, inputData, Mat());
+				erode(image, dest, Mat());
 			else if (functionName == "Dilate")
-				dilate(inputData, inputData, Mat());
+				dilate(image, dest, Mat());
+			return dest;
 		});
 }
 
@@ -867,9 +892,12 @@ void COpenCLFilter::Solarize(const long& threshold, UMat& inputData)
 
 void COpenCLFilter::Median(UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
-			medianBlur(inputData, inputData, 3);
+			cv::UMat dest;
+			medianBlur(image, dest, 3);
+			return dest;
 		});
 }
 
@@ -1031,21 +1059,26 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 
 void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, UMat& inputData)
 {
-	ExecuteSafe([&]
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
 			UMat cvDest;
-			convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
-			cvDest.copyTo(inputData);
+			convertScaleAbs(image, cvDest, contrast / 100.0f, brightness);
+			return cvDest;	
 		});
 }
 
 
 void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 {
-	
-	UMat cvDest;
-	ExecuteSafe([&]
+
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
+
+			UMat cvDest;
+			cv::UMat dest;
+
 			if (functionName == "Sepia")
 			{
 				Mat kernel =
@@ -1055,23 +1088,24 @@ void COpenCLFilter::ColorEffect(const wxString& functionName, UMat& inputData)
 						0.349, 0.686, 0.168,
 						0.393, 0.769, 0.189);
 
-				cv::transform(inputData, inputData, kernel);
+				cv::transform(image, dest, kernel);
 			}
 			else if (functionName == "Negatif")
 			{
-				bitwise_not(inputData, inputData);
+				bitwise_not(image, dest);
 			}
 			else if (functionName == "NoirEtBlanc")
 			{
-				cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
+				cvtColor(image, cvDest, COLOR_BGR2GRAY);
 				threshold(cvDest, cvDest, 127, 255, THRESH_BINARY);
-				cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+				cvtColor(cvDest, dest, COLOR_GRAY2BGR);
 			}
 			else if (functionName == "GrayLevel")
 			{
-				cvtColor(inputData, cvDest, COLOR_BGR2GRAY);
-				cvtColor(cvDest, inputData, COLOR_GRAY2BGR);
+				cvtColor(image, cvDest, COLOR_BGR2GRAY);
+				cvtColor(cvDest, dest, COLOR_GRAY2BGR);
 			}
+			return dest;
 		});
 }
 
@@ -1105,31 +1139,13 @@ void COpenCLFilter::HQDn3D(const double& LumSpac, const double& temporalLumaDefa
 	{
 		hq3d.reset(new Chqdn3d(inputData.cols, inputData.rows, LumSpac, temporalLumaDefault, temporalSpatialLumaDefault));
 	}
-	ExecuteSafe([&]
+
+	ExecuteSafeOpenCL3Channels(inputData,
+		[&](cv::UMat& image)
 		{
-			UMat ycbcr;
-			Mat yChannel;
-			Mat yChannelOut;
-
-			cvtColor(inputData, ycbcr, COLOR_BGR2YCrCb);
-
-			std::vector<Mat> planes(3);
-			split(ycbcr, planes);
-
-			// Extract the Y channel
-			//cv::extractChannel(ycbcr, yChannel, 0);
-
-			uint8_t* dataOut = hq3d->ApplyDenoise3D(planes[0].data, inputData.cols, inputData.rows);
-
-			memcpy(planes[0].data, dataOut, inputData.cols * inputData.rows);
-
-			// Merge the the color planes back into an Lab image
-			//cv::insertChannel(yChannel, ycbcr, 0);
-			cv::merge(planes, ycbcr);
-			// convert back to RGB
-			cvtColor(ycbcr, inputData, COLOR_YCrCb2BGR);
-
+			return hq3d->ApplyDenoise3D(image);
 		});
+
 }
 
 void COpenCLFilter::Rotate(const wxString& functionName, const int& widthOut, const int& heightOut, const double& angle,
@@ -1228,10 +1244,24 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 		});
 }
 
+void COpenCLFilter::ClearCache()
+{
+	// Parcourir chaque élément du cache pour libérer physiquement les buffers GPU
+	for (auto& pair : openclMemTempMap)
+	{
+		if (pair.second)
+		{
+			pair.second->cl_image = nullptr;
+			pair.second->openclMem.release();
+		}
+	}
+	// Vider complètement la map
+	openclMemTempMap.clear();
+}
+
 UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName,
 	vector<COpenCLParameter*>& vecParam, const int& width, const int& height)
 {
-	// Une seule recherche dans la map grâce à l'insertion automatique si absent
 	auto& memInfoPtr = openclMemTempMap[functionName];
 	if (!memInfoPtr)
 	{
@@ -1240,16 +1270,20 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 
 	OpenCLMemoryTemp* memInfo = memInfoPtr.get();
 
-	// Crée ou redimensionne le UMat uniquement si nécessaire
+	// === OPTIMISATION SÉCURISÉE DE LA MÉMOIRE GPU ===
 	if (memInfo->openclMem.empty() ||
 		memInfo->openclMem.cols != width ||
 		memInfo->openclMem.rows != height)
 	{
+		// Sous Linux, forcer la libération de l'ancienne UMat et de son handle cl_mem
+		// AVANT de faire le .create() évite la fragmentation de la VRAM.
+		memInfo->cl_image = nullptr;
+		memInfo->openclMem.release(); 
+
 		memInfo->openclMem.create(height, width, CV_8UC4);
 		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
 	}
 
-	// Récupère le handle si perdu
 	if (memInfo->cl_image == nullptr)
 	{
 		memInfo->cl_image = static_cast<cl_mem>(memInfo->openclMem.handle(ACCESS_WRITE));
@@ -1260,6 +1294,7 @@ UMat COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 
 	return memInfo->openclMem;
 }
+
 
 UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	UMat& inputData, int flipH, int flipV, int angle, int ratio, bool bgraOutput)
@@ -1381,7 +1416,15 @@ UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, con
 		*/
 		if (_useSuperResolution)
 		{
-			cvDestBgra = superSampling->upscaleImage(cvDestBgra, superDnn, (ratio / 100));
+			cv::UMat picture;
+			if (cvDestBgra.channels() == 4)
+			{
+				cvtColor(cvDestBgra, picture, cv::COLOR_BGRA2BGR);
+				picture = superSampling->upscaleImage(picture, superDnn, (ratio / 100));
+				cvtColor(picture, cvDestBgra, cv::COLOR_BGR2BGRA);
+			}
+			else
+				cvDestBgra = superSampling->upscaleImage(cvDestBgra, superDnn, (ratio / 100));
 		}
 		else if (method == 7) //AVIR INTERPOLATION NOT SUPPORTED BY OPENCL
 		{

@@ -110,12 +110,12 @@ void FolderRefreshService::ResolveCurrentFilename()
 
 bool FolderRefreshService::HasPictureListChanged(const PhotosVector* newPictures) const
 {
-    const auto* oldPictures = CThumbnailBuffer::GetVectorList();
+    const auto oldPictures = CThumbnailBuffer::GetVectorList();
 
     if (oldPictures == nullptr)
         return true;
 
-    if (newPictures->size() != oldPictures->size())
+    if (newPictures == nullptr || newPictures->size() != oldPictures->size())
         return true;
 
     return !std::equal(

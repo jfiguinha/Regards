@@ -11,7 +11,7 @@ namespace Regards::Window
 
 		void AddWindow(CWindowMain* windowMain);
 		void SendMessageToWindow(const wxString& filename, const int& typeData);
-
+		void RemoveWindow(CWindowMain* windowMain);
 	private:
 		WindowMainVector listOfWinListener;
 	};

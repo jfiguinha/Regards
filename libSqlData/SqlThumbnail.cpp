@@ -163,7 +163,7 @@ void CSqlThumbnail::EraseThumbnail(const int& numPhoto)
 {
 	std::vector<std::unique_ptr<CSqlParameter>> parameter;
 	parameter.push_back(std::make_unique<CSqlInt>(numPhoto));
-	ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = ?)", parameter);
+	ExecuteSqlWithStatementNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = ?", parameter);
 	ExecuteSqlWithStatementNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = ?)", parameter);
 }
 

@@ -243,29 +243,24 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 	}
 	else
 	{
-		int i = 0;
-		char* args[8];
-		args[i++] = new char[255];
-		args[i] = new char[255];
-		strcpy(args[i++], bitmapFile);
-		args[i] = new char[255];
-		strcpy(args[i++], outputFile);
-		args[i] = new char[255];
-		strcpy(args[i++], "-l");
-		args[i] = new char[255];
-		strcpy(args[i++], language);
-		args[i] = new char[255];
-		strcpy(args[i++], "--tessdata-dir");
-		args[i] = new char[255];
-		strcpy(args[i++], resourcePath.GetFullPath());
-		args[i] = new char[255];
-		strcpy(args[i++], extension);
+		std::vector<std::string> argValues =
+		{
+			"",
+			CConvertUtility::ConvertToStdString(bitmapFile),
+			CConvertUtility::ConvertToStdString(outputFile),
+			"-l",
+			CConvertUtility::ConvertToStdString(language),
+			"--tessdata-dir",
+			CConvertUtility::ConvertToStdString(resourcePath.GetFullPath()),
+			CConvertUtility::ConvertToStdString(extension)
+		};
+		std::vector<char*> args;
+		args.reserve(argValues.size());
+		for (auto& arg : argValues)
+			args.push_back(arg.data());
+
 		wxString error = "";
-		CExportOcr::ExportOcr(8, args, error);
-
-		for (int i1 = 0; i1 < 8; i1++)
-			delete[] args[i1];
-
+		CExportOcr::ExportOcr(static_cast<int>(args.size()), args.data(), error);
 
 		wxRename(outputFile + "." + extension, outputFile);
 	}

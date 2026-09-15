@@ -160,17 +160,17 @@ CategoryHierarchyIndex::AddCategorie(int numCatalog, int numCategorie,
 {
     wchar_t seps[]        = L".";
     wxString exifKey;
-    wchar_t  libelle[1024];
+    std::vector<wchar_t> libelle(catlibelle.length() + 1);
     wchar_t* next_token   = nullptr;
     auto     child        = parent;
     int      numParentElt = numParent;
     int      level        = 2;
 
-    wcscpy(libelle, catlibelle.c_str());
+    wcscpy(libelle.data(), catlibelle.c_str());
 #if defined(WIN32) && _MSC_VER < 1900
-    wchar_t* token = wcstok(libelle, seps);
+    wchar_t* token = wcstok(libelle.data(), seps);
 #else
-    wchar_t* token = wcstok(libelle, seps, &next_token);
+    wchar_t* token = wcstok(libelle.data(), seps, &next_token);
 #endif
 
     while (token)

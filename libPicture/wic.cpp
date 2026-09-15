@@ -78,18 +78,18 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
 		{
 			const UINT stride = cx * sizeof(DWORD);
 			const UINT buf_size = cy * stride;
-			auto buf = new BYTE[buf_size];
+			auto buf = std::make_unique<BYTE[]>(buf_size);
 
 			hr = m_pConvertedSourceBitmap->CopyPixels(
 				nullptr,
 				stride,
 				buf_size,
-				buf
+				buf.get()
 			);
 
 			if (SUCCEEDED(hr))
 			{
-				mat = cv::Mat(cy, cx, CV_8UC4, buf);
+				mat = cv::Mat(cy, cx, CV_8UC4, buf.get()).clone();
 				//cv::flip(mat, mat, 0);
 			}
 		}
@@ -216,18 +216,18 @@ cv::Mat CWic::GetPicture(const string& filename, const int& numPicture)
 		{
 			const UINT stride = cx * sizeof(DWORD);
 			const UINT buf_size = cy * stride;
-			auto buf = new BYTE[buf_size];
+			auto buf = std::make_unique<BYTE[]>(buf_size);
 
 			hr = m_pConvertedSourceBitmap->CopyPixels(
 				nullptr,
 				stride,
 				buf_size,
-				buf
+				buf.get()
 			);
 
 			if (SUCCEEDED(hr))
 			{
-				mat = cv::Mat(cy, cx, CV_8UC4, buf);
+				mat = cv::Mat(cy, cx, CV_8UC4, buf.get()).clone();
 				// cv::flip(mat, mat, 0);
 			}
 		}

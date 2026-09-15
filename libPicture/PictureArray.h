@@ -14,8 +14,8 @@ namespace Regards
 			virtual ~CPictureArray() {};
 			CPictureArray(cv::Mat& m);
 			CPictureArray(cv::UMat& m);
-            void SetArray(cv::Mat& m);
-              void SetArray(cv::UMat& m);
+            void SetArray(cv::Mat m);
+            void SetArray(cv::UMat m);
 			cv::_InputArray::KindFlag Kind();
 			cv::UMat& getUMat();
 			cv::Mat& getMat();

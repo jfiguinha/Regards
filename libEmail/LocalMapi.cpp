@@ -33,6 +33,7 @@ HRESULT CMapi::SendEmail(const string& m_szBody, const vector<string>& attachmen
 	lpfnMAPISendMail = (MAPISENDMAIL*)GetProcAddress(hModule, "MAPISendMail");
 	if (lpfnMAPISendMail == nullptr)
 	{
+		FreeLibrary(hModule);
 		free(mapiAttachment);
 		printf("ERROR: Unable to locate MAPISendMail entry point\n");
 		return false;
@@ -52,12 +53,12 @@ HRESULT CMapi::SendEmail(const string& m_szBody, const vector<string>& attachmen
 	message.nFileCount = attachment.size();
 	message.lpFiles = mapiAttachment;
 
-	lpfnMAPISendMail(0, 0, &message, MAPI_DIALOG, 0);
+	const HRESULT result = lpfnMAPISendMail(0, 0, &message, MAPI_DIALOG, 0);
 
 	FreeLibrary(hModule);
 
 	free(mapiAttachment);
 
-	return true;
+	return result;
 }
 #endif
