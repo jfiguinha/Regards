@@ -179,8 +179,7 @@ void CGlassLensFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageL
 			bitmapFirst->InsertBitmap(bitmapOut.get(), out.x, out.y);
 		}
 
-		mat = bitmapFirst->GetMatrix().getMat();
-		cv::flip(mat, mat, 0);
+		cv::flip(bitmapFirst->GetMatImage(), mat, 0);
 		Regards::Picture::CPictureArray pictureArray = Regards::Picture::CPictureArray(mat);
 		pictureNext->SetData(pictureArray, nullptr);
 	}

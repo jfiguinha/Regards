@@ -840,7 +840,6 @@
     <ClInclude Include="aspectratio.h" />
     <ClInclude Include="avif.h" />
     <ClInclude Include="BmpOption.h" />
-    <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="DecodeRawParameter.h" />
     <ClInclude Include="DecodeRawPicture.h" />
@@ -901,7 +900,6 @@
     <ClCompile Include="ascii.cpp" />
     <ClCompile Include="avif.cpp" />
     <ClCompile Include="BmpOption.cpp" />
-    <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
     <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="DiaporamaFusion.cpp" />

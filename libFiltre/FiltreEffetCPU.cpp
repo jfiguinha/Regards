@@ -275,17 +275,6 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 	}
 }
 
-Regards::Picture::CPictureArray CFiltreEffetCPU::GetMatrix()
-{
-	Regards::Picture::CPictureArray out;
-	ExecuteSafe([&](cv::Mat& image)
-		{
-			out.SetArray(image);
-		});
-
-	return out;
-}
-
 
 static const float a(0.073235f);
 static const float b(0.176765f);
@@ -416,9 +405,17 @@ void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercen
 	float alpha, beta;
 	double minGray = 0, maxGray = 0;
 
+	Mat dst;
+	if (image.channels() == 4)
+		cvtColor(image, dst, COLOR_BGRA2BGR);
+	else if (image.channels() == 3)
+		dst = image;
+	else
+		return;
+
 	std::vector<cv::Mat> yuv_planes(3);
-	cv::Mat gpuframe_3channel(image.size(), CV_8UC3);
-	cv::cvtColor(image, gpuframe_3channel, COLOR_BGR2YUV, 3);
+	cv::Mat gpuframe_3channel(dst.size(), CV_8UC3);
+	cv::cvtColor(dst, gpuframe_3channel, COLOR_BGR2YUV, 3);
 	cv::split(gpuframe_3channel, yuv_planes);
 
 
@@ -1962,6 +1959,44 @@ int CFiltreEffetCPU::Fusion(Mat& bitmapSecond, const float& pourcentage)
 	return 0;
 }
 
+
+Regards::Picture::CPictureArray CFiltreEffetCPU::GetMatrix()
+{
+	Regards::Picture::CPictureArray out;
+
+	Mat output;
+	const Mat & image = preview ? paramOutput : input;
+	if (image.empty())
+		return output;
+
+	image.copyTo(output);
+	if (output.channels() == 3)
+		cvtColor(output, output, COLOR_BGR2BGRA);
+	else
+	{
+		cv::Mat restoredAlpha;
+
+		if (alphaChannel.size() == output.size())
+			restoredAlpha = alphaChannel;
+		else
+			cv::resize(
+				alphaChannel,
+				restoredAlpha,
+				output.size(),
+				0.0,
+				0.0,
+				cv::INTER_LINEAR);
+
+		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		cv::insertChannel(restoredAlpha, output, 3);
+	}
+			
+	out.SetArray(output);
+
+	return out;
+}
+
+
 Mat CFiltreEffetCPU::GetBitmap(const bool& source)
 {
 	Mat output;
@@ -1972,6 +2007,24 @@ Mat CFiltreEffetCPU::GetBitmap(const bool& source)
 	selected->copyTo(output);
 	if (output.channels() == 3)
 		cvtColor(output, output, COLOR_BGR2BGRA);
+	else
+	{
+		cv::Mat restoredAlpha;
+
+		if (alphaChannel.size() == output.size())
+			restoredAlpha = alphaChannel;
+		else
+			cv::resize(
+				alphaChannel,
+				restoredAlpha,
+				output.size(),
+				0.0,
+				0.0,
+				cv::INTER_LINEAR);
+
+		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		cv::insertChannel(restoredAlpha, output, 3);
+	}
 
 	return output;
 }

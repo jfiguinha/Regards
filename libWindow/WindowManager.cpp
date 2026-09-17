@@ -8,13 +8,8 @@ using namespace Regards::Window;
 
 #define WINDOW_MINSIZE 100
 
-// Base utilisée pour générer des IDs de separation bar uniques.
-// Renommé (ex-WM_USER) pour ne pas être confondu avec la macro Windows du même nom :
-// la valeur reste la vraie WM_USER sous Windows, et 0x4000 ailleurs, comme avant.
-#ifdef WIN32
-#define SEPARATION_BAR_ID_BASE WM_USER
-#else
-#define SEPARATION_BAR_ID_BASE 0x4000
+#ifndef WIN32
+#define WM_USER 0x4000
 #endif
 
 
@@ -24,14 +19,18 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	moving = false;
 	showSeparationBar = true;
 	this->themeSplitter = theme;
-	moving = false;
 	oldWidth = 0;
 	oldHeight = 0;
 	init = false;
 	separationBarSize = themeSplitter.themeSeparation.size;
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowManager::OnResize));
+
+	//#ifdef WIN32
+	//    fastRender = true;
+	//#else
 	fastRender = false;
+	//#endif
 }
 
 
@@ -58,26 +57,11 @@ void CWindowManager::OnRefreshData(wxCommandEvent& event)
 
 void CWindowManager::ChangeWindow(CWindowMain* window, Pos position, bool isPanel)
 {
-	if (window == nullptr)
-		return;
-
-	CWindowToAdd* windowToAdd = FindWindow(position);
-	if (windowToAdd == nullptr)
-		return;
-
-	window->Reparent(this);
-	windowToAdd->SetWindow(window, isPanel);
-	windowToAdd->isPanel = isPanel;
-
-	// Appliquer immédiatement la géométrie de l'emplacement.
-	if (!windowToAdd->isHide)
+	CWindowToAdd* windowToadd = FindWindow(position);
+	if (windowToadd != nullptr)
 	{
-		window->SetSize(windowToAdd->rect);
-		window->Show(true);
-	}
-	else
-	{
-		window->Show(false);
+		window->Reparent(this);
+		windowToadd->SetWindow(window, isPanel);
 	}
 }
 
@@ -90,11 +74,11 @@ void CWindowManager::UpdateScreenRatio()
 			if (windowToAdd->GetMasterWindowPt() != nullptr)
 				windowToAdd->GetMasterWindowPt()->UpdateScreenRatio();
 
-
-			CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
-
-			if (separationBar != nullptr)
-				separationBar->UpdateScreenRatio();
+			if (windowToAdd->separationBar != nullptr)
+			{
+				if (windowToAdd->separationBar->separationBar != nullptr)
+					windowToAdd->separationBar->separationBar->UpdateScreenRatio();
+			}
 		}
 	}
 }
@@ -113,11 +97,9 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 			{
 				if (value == 1) //Show
 				{
-					CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
+					//windowToAdd->fixe = false;
 
-					if (separationBar != nullptr)
-						separationBar->Show(true);
-
+					ShowSeparationBar(windowToAdd, true);
 
 					windowToAdd->rect = windowToAdd->rect_old;
 					windowToAdd->fixe = windowToAdd->fixe_old;
@@ -132,15 +114,11 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 					windowToAdd->diffWidth = 0;
 					windowToAdd->diffHeight = 0;
 					windowToAdd->size_old = windowToAdd->size;
-
-					CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
-					if (separationBar != nullptr)
-						separationBar->Show(false);
-
+					ShowSeparationBar(windowToAdd, false);
 
 					windowToAdd->rect_old = windowToAdd->rect;
 
-					if (windowToAdd->fixe && windowToAdd->GetMasterWindowPt() != nullptr)
+					if (windowToAdd->fixe)
 					{
 						if (windowToAdd->position == Pos::wxLEFT || windowToAdd->position == Pos::wxRIGHT)
 						{
@@ -153,6 +131,9 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 					}
 				}
 
+				/*
+
+				*/
 				Init();
 				break;
 			}
@@ -174,21 +155,34 @@ bool CWindowManager::IsWindowVisible(Pos position)
 }
 
 CPanelWithClickToolbar* CWindowManager::AddPanel(CWindowMain* window, const Pos& pos, bool fixe, int size, wxRect rect,
-	const wxString& panelLabel, const wxString& windowName,
-	const bool& isVisible, const int& idPanel, const bool& refreshButton,
-	const bool& isTop)
+                                                 const wxString& panelLabel, const wxString& windowName,
+                                                 const bool& isVisible, const int& idPanel, const bool& refreshButton,
+                                                 const bool& isTop)
 {
 	CPanelWithClickToolbar* panel;
 	if (pos == Pos::wxLEFT || pos == Pos::wxRIGHT)
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, true,
-			refreshButton);
+		                                            refreshButton);
 	else
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false,
-			refreshButton);
+		                                            refreshButton);
 
+	//wxWindow * parent = panel->GetPaneWindow();
+	//window->Reparent(parent);
 	panel->SetWindow(window);
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true, isTop);
 	return panel;
+}
+
+void CWindowManager::ShowSeparationBar(CWindowToAdd* window, const bool show)
+{
+	if (window == nullptr || window->separationBar == nullptr ||
+		window->separationBar->separationBar == nullptr)
+	{
+		return;
+	}
+
+	window->separationBar->separationBar->Show(show);
 }
 
 void CWindowManager::HideWindow(Pos position, const bool& refresh)
@@ -205,11 +199,7 @@ void CWindowManager::HideWindow(Pos position, const bool& refresh)
 			{
 				window->isHide = true;
 				_wnd->Show(false);
-
-				CSeparationBar* separationBar = GetSeparationBar(window);
-				if (separationBar != nullptr)
-					separationBar->Show(false);
-
+				ShowSeparationBar(window, false);
 				if (window->isPanel)
 				{
 					window->GetPanel()->Show(false);
@@ -294,6 +284,8 @@ void CWindowManager::ShowPaneWindow(Pos position, const int& refresh)
 			{
 				if (!panel->IsPanelVisible())
 				{
+					//if (window->fixe)
+					//	panel->SetSize(window->rect_old);
 					panel->ClickShowButton(PANE_WITHCLICKTOOLBAR, refresh);
 				}
 			}
@@ -310,21 +302,14 @@ void CWindowManager::ShowWindow(Pos position, const bool& refresh)
 	{
 		if (window->isHide)
 		{
-			wxWindow* _wnd = window->GetWindow();
-			if (_wnd != nullptr)
+			needTorefresh = true;
+			window->isHide = false;
+			window->GetWindow()->Show(true);
+			if (!window->fixe)
+				ShowSeparationBar(window, true);
+			if (window->isPanel)
 			{
-				needTorefresh = true;
-				window->isHide = false;
-				_wnd->Show(true);
-
-				CSeparationBar* separationBar = GetSeparationBar(window);
-				if (separationBar != nullptr)
-					separationBar->Show(true);
-
-				if (window->isPanel)
-				{
-					window->GetPanel()->Show(true);
-				}
+				window->GetPanel()->Show(true);
 			}
 		}
 	}
@@ -336,10 +321,8 @@ void CWindowManager::ShowWindow(Pos position, const bool& refresh)
 	}
 }
 
-
-
-CWindowToAdd* CWindowManager::AddWindow(CWindowOpenGLMain* window, Pos position, bool fixe, int size, wxRect rect, int id,
-	bool isPanel, const bool& isTop)
+CWindowToAdd * CWindowManager::AddWindow(CWindowOpenGLMain* window, Pos position, bool fixe, int size, wxRect rect, int id,
+                               bool isPanel, const bool& isTop)
 {
 	auto windowToAdd = new CWindowToAdd();
 	if (window != nullptr)
@@ -352,7 +335,7 @@ CWindowToAdd* CWindowManager::AddWindow(CWindowOpenGLMain* window, Pos position,
 }
 
 void CWindowManager::AddWindow(CWindowToAdd* windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id,
-	bool isPanel, const bool& isTop)
+                               bool isPanel, const bool& isTop)
 {
 	if (windowToAdd != nullptr)
 	{
@@ -367,7 +350,7 @@ void CWindowManager::AddWindow(CWindowToAdd* windowToAdd, Pos position, bool fix
 		if (!fixe && position != Pos::wxCENTRAL)
 		{
 			windowToAdd->separationBar = std::make_unique<CSeparationBarToAdd>();
-			windowToAdd->separationBar->separationBarId = listWindow.size() + SEPARATION_BAR_ID_BASE + 1200;
+			windowToAdd->separationBar->separationBarId = listWindow.size() + WM_USER + 1200;
 			windowToAdd->separationBar->separationBar = std::make_unique<CSeparationBar>(
 				this, this, windowToAdd->separationBar->separationBarId, themeSplitter.themeSeparation);
 			windowToAdd->separationBar->size = themeSplitter.themeSeparation.size;
@@ -385,25 +368,12 @@ void CWindowManager::AddWindow(CWindowToAdd* windowToAdd, Pos position, bool fix
 		else
 			windowToAdd->separationBar = nullptr;
 
-		auto it = windows.find(position);
-		if (it != windows.end() && it->second != nullptr && it->second != windowToAdd)
-		{
-			CWindowToAdd* old = it->second;
-			auto vecIt = std::find(listWindow.begin(), listWindow.end(), old);
-			if (vecIt != listWindow.end())
-				listWindow.erase(vecIt);
-			delete old;
-		}
-
-		windows[position] = windowToAdd;
 		listWindow.push_back(windowToAdd);
-		
 	}
 }
 
-
-CWindowToAdd* CWindowManager::AddWindow(CWindowMain* window, Pos position, bool fixe, int size, wxRect rect, int id,
-	bool isPanel, const bool& isTop)
+CWindowToAdd * CWindowManager::AddWindow(CWindowMain* window, Pos position, bool fixe, int size, wxRect rect, int id,
+                               bool isPanel, const bool& isTop)
 {
 	auto windowToAdd = new CWindowToAdd();
 	if (window != nullptr)
@@ -416,7 +386,8 @@ CWindowToAdd* CWindowManager::AddWindow(CWindowMain* window, Pos position, bool 
 }
 
 void CWindowManager::UnInit()
-{}
+{
+}
 
 void CWindowManager::SetWindowSize(Pos position, bool fixe, int size)
 {
@@ -434,8 +405,8 @@ void CWindowManager::Init_bottom()
 	int height = GetSize().y;
 	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
-	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
 
+	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
 	if (bottom != nullptr)
 	{
 		int x = 0;
@@ -471,7 +442,7 @@ void CWindowManager::Init_bottom()
 			{
 				if (right->fixe)
 				{
-					//x = right->size;
+					x = right->size;
 					bottom_width -= right->size;
 				}
 				else
@@ -487,6 +458,7 @@ void CWindowManager::Init_bottom()
 
 		if (bottom->fixe)
 		{
+			wxSize size = bottom->GetSize();
 			default_height = bottom->size;
 		}
 
@@ -531,7 +503,6 @@ void CWindowManager::Init_top()
 {
 	int width = GetSize().x;
 	int height = GetSize().y;
-
 	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
 	CWindowToAdd* top = FindWindow(Pos::wxTOP);
@@ -687,10 +658,10 @@ void CWindowManager::Init_left()
 
 void CWindowManager::SetWindowLeftSize(CWindowToAdd* left, int width, int y, int left_height)
 {
-	if (width <= 0 || left_height <= 0)
-		return;
-
-
+    if(width <= 0 || left_height <= 0)
+        return;
+    
+    
 	if (!left->fixe)
 	{
 		wxRect rect = left->rect;
@@ -728,12 +699,16 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd* left, int width, int y, int
 
 void CWindowManager::SetWindowRightSize(CWindowToAdd* right, int width, int y, int right_height)
 {
-	if (width <= 0 || right_height <= 0)
-		return;
+    if(width <= 0 || right_height <= 0)
+        return;
+        
+	//printf("SetWindowRightSize width : %d y : %d right_height : %d  \n", width, y, right_height);
 
 	if (!right->fixe)
 	{
 		wxRect rect = right->rect;
+		//printf("SetWindowRightSize rect.x : %d rect.y : %d rect.width : %d rect.height : %d \n", rect.x, rect.y,
+		 //      rect.width, rect.height);
 		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
 		{
 			//Initialize value 25%
@@ -771,10 +746,11 @@ void CWindowManager::Init_right()
 {
 	int width = GetSize().x;
 	int height = GetSize().y;
-
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+
 	CWindowToAdd* top = FindWindow(Pos::wxTOP);
 	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
+
 
 	if (right != nullptr)
 	{
@@ -832,7 +808,7 @@ void CWindowManager::Init_right()
 
 wxRect CWindowManager::GetWindowSize(Pos position)
 {
-	wxRect pos = { 0, 0, 0, 0 };
+	wxRect pos = {0, 0, 0, 0};
 	CWindowToAdd* window = FindWindow(position);
 	if (window != nullptr)
 	{
@@ -843,22 +819,23 @@ wxRect CWindowManager::GetWindowSize(Pos position)
 
 void CWindowManager::ResetPosition()
 {
+	int width = GetSize().x;
+	int height = GetSize().y;
+
+	//printf("ResetPosition() width : %d height : %d \n", width, height);
+
+
 	wxRect rect;
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
-	if (right != nullptr)
-		right->rect = rect;
+	right->rect = rect;
 	CWindowToAdd* top = FindWindow(Pos::wxTOP);
-	if (top != nullptr)
-		top->rect = rect;
+	top->rect = rect;
 	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
-	if (bottom != nullptr)
-		bottom->rect = rect;
+	bottom->rect = rect;
 	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
-	if (central != nullptr)
-		central->rect = rect;
+	central->rect = rect;
 	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
-	if (left != nullptr)
-		left->rect = rect;
+	left->rect = rect;
 
 	init = false;
 }
@@ -955,33 +932,40 @@ void CWindowManager::Init_Central()
 		central->rect.y = y;
 		central->rect.width = width;
 		central->rect.height = height;
+
+		//printf("central x %d \n", central->rect.x);
+		//printf("central width %d \n", central->rect.width);
 	}
 }
 
 void CWindowManager::Init()
 {
 	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+	//CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	//CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
+	//CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
 	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
 
-	// LEFT / RIGHT occupant toute la hauteur.
-	if (left != nullptr && left->isTop && !left->isHide)
+	int width = GetSize().x;
+	int height = GetSize().y;
+
+	//printf("Init() width : %d height : %d \n", width, height);
+
+	if (left != nullptr)
+		if (left->isTop)
 			Init_left();
+	if (right != nullptr)
+		if (right->isTop)
+			Init_right();
 
-	if (right != nullptr && right->isTop && !right->isHide)
-		Init_right();
-
-	// TOP / BOTTOM.
 	Init_top();
 	Init_bottom();
-
-	// LEFT / RIGHT occupant uniquement l'espace restant.
-	if (left != nullptr && !left->isTop && !left->isHide)
-		Init_left();
-
-	if (right != nullptr && !right->isTop && !right->isHide)
-		Init_right();
-
-	// Zone centrale.
+	if (left != nullptr)
+		if (!left->isTop)
+			Init_left();
+	if (right != nullptr)
+		if (!right->isTop)
+			Init_right();
 	Init_Central();
 }
 
@@ -1002,7 +986,7 @@ void CWindowManager::GenerateRenderBitmap()
 				{
 					wxWindowDC dc(_wnd);
 					dCWindowManager.Blit(windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width,
-						windowToAdd->rect.height, &dc, 0, 0);
+					                     windowToAdd->rect.height, &dc, 0, 0);
 				}
 			}
 			if (showSeparationBar)
@@ -1011,8 +995,8 @@ void CWindowManager::GenerateRenderBitmap()
 				{
 					wxWindowDC dc(windowToAdd->separationBar->separationBar.get());
 					dCWindowManager.Blit(windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y,
-						windowToAdd->separationBar->rect.width,
-						windowToAdd->separationBar->rect.height, &dc, 0, 0);
+					                     windowToAdd->separationBar->rect.width,
+					                     windowToAdd->separationBar->rect.height, &dc, 0, 0);
 				}
 			}
 		}
@@ -1024,22 +1008,12 @@ void CWindowManager::GenerateRenderBitmap()
 
 void CWindowManager::SetSeparationBarVisible(const bool& visible)
 {
-	showSeparationBar = visible;
-
 	for (CWindowToAdd* windowToAdd : listWindow)
 	{
-		if (windowToAdd == nullptr)
-			continue;
-
-		CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
-
-		if (separationBar != nullptr)
-		{
-			separationBar->Show(
-				showSeparationBar &&
-				!windowToAdd->isHide);
-		}
+		if (windowToAdd->separationBar != nullptr)
+			windowToAdd->separationBar->separationBar->Show(visible);
 	}
+	showSeparationBar = visible;
 }
 
 bool CWindowManager::GetSeparationVisibility()
@@ -1068,179 +1042,168 @@ void CWindowManager::OnLButtonUp()
 
 CWindowManager::~CWindowManager()
 {
-	
-	for (CWindowToAdd* windowToAdd : listWindow)
-	{
-		delete windowToAdd;
-	}
-	listWindow.clear();
 }
 
 CWindowToAdd* CWindowManager::FindWindow(Pos position)
 {
-	auto it = windows.find(position);
-	if (it != windows.end())
-		return it->second;
-
-	return nullptr;
-}
-
-void CWindowManager::MoveVertical(int difference, Pos position)
-{
-	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
-	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
-	CWindowToAdd* window = FindWindow(position);
-	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
-
-	if (window != nullptr && central != nullptr)
+	CWindowToAdd* central = nullptr;
+	for (CWindowToAdd* windowToAdd : listWindow)
 	{
-		central->rect.y -= difference;
-		central->rect.height += difference;
-		window->rect.height -= difference;
-		if (window->separationBar != nullptr)
-			window->separationBar->rect.y -= difference;
-	}
-
-	if (position == Pos::wxTOP)
-	{
-		if (left != nullptr)
+		if (windowToAdd != nullptr)
 		{
-			left->rect.y -= difference;
-			left->rect.height += difference;
-			if (left->separationBar != nullptr)
-			{
-				left->separationBar->rect.y -= difference;
-				left->separationBar->rect.height += difference;
-			}
-		}
-
-		if (right != nullptr)
-		{
-			right->rect.y -= difference;
-			right->rect.height += difference;
-			if (right->separationBar != nullptr)
-			{
-				right->separationBar->rect.y -= difference;
-				right->separationBar->rect.height += difference;
-			}
+			if (windowToAdd->position == position)
+				return windowToAdd;
 		}
 	}
-	else
-	{
-		if (left != nullptr)
-		{
-			left->rect.height -= difference;
-			if (left->separationBar != nullptr)
-				left->separationBar->rect.height -= difference;
-		}
-
-		if (right != nullptr)
-		{
-			right->rect.height -= difference;
-			if (right->separationBar != nullptr)
-				right->separationBar->rect.height -= difference;
-		}
-	}
+	return central;
 }
 
 void CWindowManager::MoveTop(int difference)
 {
-	MoveVertical(difference, Pos::wxTOP);
+	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
+	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+	CWindowToAdd* top = FindWindow(Pos::wxTOP);
+	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
+	if (top != nullptr && central != nullptr)
+	{
+		central->rect.y -= difference;
+		central->rect.height += difference;
+		top->rect.height -= difference;
+		if (top->separationBar != nullptr)
+			top->separationBar->rect.y -= difference;
+	}
+
+
+	if (left != nullptr)
+	{
+		left->rect.y -= difference;
+		left->rect.height += difference;
+		if (left->separationBar != nullptr)
+		{
+			left->separationBar->rect.y -= difference;
+			left->separationBar->rect.height += difference;
+		}
+	}
+
+	if (right != nullptr)
+	{
+		right->rect.y -= difference;
+		right->rect.height += difference;
+		if (right->separationBar != nullptr)
+		{
+			right->separationBar->rect.y -= difference;
+			right->separationBar->rect.height += difference;
+		}
+	}
 }
 
 void CWindowManager::MoveBottom(int difference)
 {
-	MoveVertical(difference, Pos::wxBOTTOM);
-}
-
-
-void CWindowManager::MoveHorizontal(int difference, Pos position)
-{
 	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
-	CWindowToAdd* top = FindWindow(Pos::wxTOP);
-	CWindowToAdd* window = FindWindow(position);
 	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
-
-	if (position == Pos::wxRIGHT)
+	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
+	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+	if (bottom != nullptr && central != nullptr)
 	{
-		if (window != nullptr && central != nullptr)
-		{
-			central->rect.width += difference;
-			window->rect.width -= difference;
-			window->rect.x += difference;
-			if (window->separationBar != nullptr)
-				window->separationBar->rect.x += difference;
-
-			if (window->isTop)
-			{
-				if (bottom != nullptr)
-				{
-					bottom->rect.width += difference;
-
-					if (bottom->separationBar != nullptr)
-						bottom->separationBar->rect.width += difference;
-				}
-
-				if (top != nullptr)
-				{
-					top->rect.width += difference;
-
-					if (top->separationBar != nullptr)
-						top->separationBar->rect.width += difference;
-				}
-			}
-		}
-	}
-	else
-	{
-		if (window != nullptr && central != nullptr)
-		{
-			central->rect.x += difference;
-			central->rect.width -= difference;
-			window->rect.width += difference;
-			if (window->separationBar != nullptr)
-				window->separationBar->rect.x += difference;
-
-			if (window->isTop)
-			{
-				if (bottom != nullptr)
-				{
-					bottom->rect.x += difference;
-					bottom->rect.width -= difference;
-
-					if (bottom->separationBar != nullptr)
-					{
-						bottom->separationBar->rect.x += difference;
-						bottom->separationBar->rect.width += difference;
-					}
-				}
-
-				if (top != nullptr)
-				{
-					top->rect.width -= difference;
-					top->rect.x += difference;
-
-					if (top->separationBar != nullptr)
-					{
-						top->separationBar->rect.x += difference;
-						top->separationBar->rect.width += difference;
-					}
-				}
-			}
-		}
+		central->rect.height -= difference;
+		bottom->rect.height += difference;
+		bottom->rect.y -= difference;
+		if (bottom->separationBar != nullptr)
+			bottom->separationBar->rect.y -= difference;
 	}
 
+	if (left != nullptr)
+	{
+		left->rect.height -= difference;
+		if (left->separationBar != nullptr)
+			left->separationBar->rect.height -= difference;
+	}
+
+	if (right != nullptr)
+	{
+		right->rect.height -= difference;
+		if (right->separationBar != nullptr)
+			right->separationBar->rect.height -= difference;
+	}
 }
 
 void CWindowManager::MoveRight(int difference)
 {
-	MoveHorizontal(difference, Pos::wxRIGHT);
+	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
+	CWindowToAdd* top = FindWindow(Pos::wxTOP);
+	CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
+	if (right != nullptr && central != nullptr)
+	{
+		central->rect.width += difference;
+		right->rect.width -= difference;
+		right->rect.x += difference;
+		if (right->separationBar != nullptr)
+			right->separationBar->rect.x += difference;
+
+		if (right->isTop)
+		{
+			if (bottom != nullptr)
+			{
+				bottom->rect.width += difference;
+
+				if (bottom->separationBar != nullptr)
+					bottom->separationBar->rect.width += difference;
+			}
+
+			if (top != nullptr)
+			{
+				top->rect.width += difference;
+
+				if (top->separationBar != nullptr)
+					top->separationBar->rect.width += difference;
+			}
+		}
+	}
 }
 
 
 void CWindowManager::MoveLeft(int difference)
 {
-	MoveHorizontal(difference, Pos::wxLEFT);
+	CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
+	CWindowToAdd* top = FindWindow(Pos::wxTOP);
+	CWindowToAdd* left = FindWindow(Pos::wxLEFT);
+	CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
+	if (left != nullptr && central != nullptr)
+	{
+		central->rect.x += difference;
+		central->rect.width -= difference;
+		left->rect.width += difference;
+		if (left->separationBar != nullptr)
+			left->separationBar->rect.x += difference;
+
+		if (left->isTop)
+		{
+			if (bottom != nullptr)
+			{
+				bottom->rect.x += difference;
+				bottom->rect.width -= difference;
+
+				if (bottom->separationBar != nullptr)
+				{
+					bottom->separationBar->rect.x += difference;
+					bottom->separationBar->rect.width += difference;
+				}
+			}
+
+			if (top != nullptr)
+			{
+				top->rect.width -= difference;
+				top->rect.x += difference;
+
+				if (top->separationBar != nullptr)
+				{
+					top->separationBar->rect.x += difference;
+					top->separationBar->rect.width += difference;
+				}
+			}
+		}
+	}
 }
 
 void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
@@ -1255,7 +1218,6 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 	{
 		if (windowToAdd != nullptr)
 		{
-
 			if (windowToAdd->separationBar != nullptr)
 			{
 				if (windowToAdd->separationBar->separationBarId == separationBar->GetId())
@@ -1282,7 +1244,7 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 
 						if (windowToAdd->position == Pos::wxBOTTOM)
 						{
-							if (central != nullptr && position.y < (central->rect.y + WINDOW_MINSIZE))
+							if (position.y < (central->rect.y + WINDOW_MINSIZE))
 								position.y = central->rect.y + WINDOW_MINSIZE;
 						}
 
@@ -1308,7 +1270,7 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 
 						if (windowToAdd->position == Pos::wxRIGHT)
 						{
-							if (central != nullptr && position.x < (central->rect.x + WINDOW_MINSIZE))
+							if (position.x < (central->rect.x + WINDOW_MINSIZE))
 								position.x = central->rect.x + WINDOW_MINSIZE;
 						}
 
@@ -1333,7 +1295,7 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 						case Pos::wxLEFT:
 							MoveLeft(difference);
 							break;
-						default:;
+						default: ;
 						}
 					}
 
@@ -1343,14 +1305,14 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 						if (windowToAdd->separationBar->isHorizontal)
 						{
 							DrawSeparationBar(windowToAdd->separationBar->rect.x, position.y,
-								windowToAdd->separationBar->rect.width, themeSplitter.themeFast.size,
-								windowToAdd->separationBar->isHorizontal);
+							                  windowToAdd->separationBar->rect.width, themeSplitter.themeFast.size,
+							                  windowToAdd->separationBar->isHorizontal);
 						}
 						else
 						{
 							DrawSeparationBar(position.x, windowToAdd->separationBar->rect.y,
-								themeSplitter.themeFast.size, windowToAdd->separationBar->rect.height,
-								windowToAdd->separationBar->isHorizontal);
+							                  themeSplitter.themeFast.size, windowToAdd->separationBar->rect.height,
+							                  windowToAdd->separationBar->isHorizontal);
 						}
 					}
 
@@ -1360,12 +1322,15 @@ void CWindowManager::SetNewPosition(CSeparationBar* separationBar)
 			}
 		}
 	}
+
+	// if (!fastRender)
+	//     this->ForceRefresh();
 	this->Resize();
 }
 
 
 void CWindowManager::DrawSeparationBar(const int& x, const int& y, const int& width, const int& height,
-	const bool& horizontal)
+                                       const bool& horizontal)
 {
 	wxWindowDC dc(this);
 	dc.DrawBitmap(renderBitmap, 0, 0);
@@ -1378,7 +1343,7 @@ void CWindowManager::DrawSeparationBar(const int& x, const int& y, const int& wi
 		rc.width = width;
 		rc.height = height;
 		dc.GradientFillLinear(rc, themeSplitter.themeSeparation.secondColor, themeSplitter.themeSeparation.firstColor,
-			wxSOUTH);
+		                      wxSOUTH);
 	}
 	else
 	{
@@ -1388,20 +1353,8 @@ void CWindowManager::DrawSeparationBar(const int& x, const int& y, const int& wi
 		rc.width = width;
 		rc.height = height;
 		dc.GradientFillLinear(rc, themeSplitter.themeSeparation.secondColor, themeSplitter.themeSeparation.firstColor,
-			wxEAST);
+		                      wxEAST);
 	}
-}
-
-CSeparationBar* CWindowManager::GetSeparationBar(CWindowToAdd* window)
-{
-	if (window->separationBar != nullptr)
-	{
-		if (window->separationBar->separationBar != nullptr)
-		{
-			return window->separationBar->separationBar.get();
-		}
-	}
-	return nullptr;
 }
 
 
@@ -1412,179 +1365,193 @@ void CWindowManager::AddDifference(const int& diffWidth, const int& diffHeight, 
 		switch (position)
 		{
 		case Pos::wxCENTRAL:
-		{
-			CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
-			if (central != nullptr)
 			{
-				central->rect.width += diffWidth;
-				central->rect.height += diffHeight;
+				CWindowToAdd* central = FindWindow(Pos::wxCENTRAL);
+				if (central != nullptr)
+				{
+					central->rect.width += diffWidth;
+					central->rect.height += diffHeight;
+				}
 			}
-		}
-		break;
+			break;
 
 		case Pos::wxRIGHT:
-		{
-			CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
-			if (right != nullptr)
 			{
-				right->rect.x += diffWidth;
-				right->rect.height += diffHeight;
-
-				if (right->separationBar != nullptr)
+				CWindowToAdd* right = FindWindow(Pos::wxRIGHT);
+				if (right != nullptr)
 				{
-					right->separationBar->posBar += diffWidth;
-					right->separationBar->rect.x += diffWidth;
-					right->separationBar->rect.height += diffHeight;
+					right->rect.x += diffWidth;
+					right->rect.height += diffHeight;
+
+					if (right->separationBar != nullptr)
+					{
+						if (right->separationBar->separationBar != nullptr)
+						{
+							right->separationBar->posBar += diffWidth;
+							right->separationBar->rect.x += diffWidth;
+							right->separationBar->rect.height += diffHeight;
+						}
+					}
 				}
 			}
-		}
-		break;
+			break;
 
 		case Pos::wxLEFT:
-		{
-			CWindowToAdd* left = FindWindow(Pos::wxLEFT);
-			if (left != nullptr)
 			{
-				left->rect.height += diffHeight;
-
-				if (left->separationBar != nullptr)
-					left->separationBar->rect.height += diffHeight;
-			}
-		}
-		break;
-
-		case Pos::wxTOP:
-		{
-			CWindowToAdd* top = FindWindow(Pos::wxTOP);
-			if (top != nullptr)
-			{
-				top->rect.width += diffWidth;
-				if (top->separationBar != nullptr)
-					top->separationBar->rect.width += diffWidth;
-			}
-		}
-		break;
-
-		case Pos::wxBOTTOM:
-		{
-			CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
-			if (bottom != nullptr)
-			{
-				bottom->rect.width += diffWidth;
-				bottom->rect.y += diffHeight;
-				if (bottom->separationBar != nullptr)
+				CWindowToAdd* left = FindWindow(Pos::wxLEFT);
+				if (left != nullptr)
 				{
-					bottom->separationBar->posBar += diffHeight;
-					bottom->separationBar->rect.y += diffHeight;
-					bottom->separationBar->rect.width += diffWidth;
+					left->rect.height += diffHeight;
 
+					if (left->separationBar != nullptr)
+					{
+						if (left->separationBar->separationBar != nullptr)
+						{
+							left->separationBar->rect.height += diffHeight;
+						}
+					}
 				}
 			}
-		}
-		break;
+			break;
+
+		case Pos::wxTOP:
+			{
+				CWindowToAdd* top = FindWindow(Pos::wxTOP);
+				if (top != nullptr)
+				{
+					top->rect.width += diffWidth;
+					if (top->separationBar != nullptr)
+					{
+						if (top->separationBar->separationBar != nullptr)
+						{
+							top->separationBar->rect.width += diffWidth;
+						}
+					}
+				}
+			}
+			break;
+
+		case Pos::wxBOTTOM:
+			{
+				CWindowToAdd* bottom = FindWindow(Pos::wxBOTTOM);
+				if (bottom != nullptr)
+				{
+					bottom->rect.width += diffWidth;
+					bottom->rect.y += diffHeight;
+					if (bottom->separationBar != nullptr)
+					{
+						if (bottom->separationBar->separationBar != nullptr)
+						{
+							bottom->separationBar->posBar += diffHeight;
+							bottom->separationBar->rect.y += diffHeight;
+							bottom->separationBar->rect.width += diffWidth;
+						}
+					}
+				}
+			}
+			break;
 		}
 	}
 }
 
 void CWindowManager::Resize()
 {
-	const int width = GetSize().GetX();
-	const int height = GetSize().GetY();
+	int width = GetSize().GetX();
+	int height = GetSize().GetY();
 
 	if (width <= 0 || height <= 0)
-			return;
+		return;
+
 
 	int diffWidth = width - oldWidth;
 	int diffHeight = height - oldHeight;
 
-	/*
-	 * Premier calcul du layout.
-	 *
-	 * Init() initialise les rectangles des panneaux avant que
-	 * ceux-ci soient appliqués aux wxWindow.
-	 */
 	if (!init)
 	{
-		Init();
 		init = true;
-
+		Init();
 		diffWidth = 0;
 		diffHeight = 0;
 	}
-	else if (diffWidth != 0 || diffHeight != 0)
-	{
-		/*
-		 * Le layout existe déjà : on applique uniquement la
-		 * différence de taille du CWindowManager.
-		 */
-		AddDifference(diffWidth, diffHeight, Pos::wxCENTRAL);
-		AddDifference(diffWidth, diffHeight, Pos::wxLEFT);
-		AddDifference(diffWidth, diffHeight, Pos::wxRIGHT);
-		AddDifference(diffWidth, diffHeight, Pos::wxTOP);
-		AddDifference(diffWidth, diffHeight, Pos::wxBOTTOM);
 
-		for (CWindowToAdd* windowToAdd : listWindow)
+
+	AddDifference(diffWidth, diffHeight, Pos::wxCENTRAL);
+	AddDifference(diffWidth, diffHeight, Pos::wxLEFT);
+	AddDifference(diffWidth, diffHeight, Pos::wxRIGHT);
+	AddDifference(diffWidth, diffHeight, Pos::wxTOP);
+	AddDifference(diffWidth, diffHeight, Pos::wxBOTTOM);
+	//Calcul central size if window change size
+	for (CWindowToAdd* windowToAdd : listWindow)
+	{
+		if (windowToAdd != nullptr)
 		{
-			if (windowToAdd != nullptr)
-			{
-				windowToAdd->diffHeight += diffHeight;
-				windowToAdd->diffWidth += diffWidth;
-			}
+			windowToAdd->diffHeight += diffHeight;
+			windowToAdd->diffWidth += diffWidth;
 		}
 	}
 
-	const wxRect emptyRect(0, 0, 0, 0);
-
-	/*
-	 * Application du layout.
-	 *
-	 * IMPORTANT :
-	 * On ne teste plus IsShown() pour décider de la taille.
-	 * IsShown() est l'état wxWidgets actuel et peut être false
-	 * lors du premier affichage.
-	 *
-	 * isHide est l'état logique du CWindowManager.
-	 */
+	wxRect rc;
 	for (CWindowToAdd* windowToAdd : listWindow)
 	{
-		if (windowToAdd == nullptr)
-			continue;
-
-		wxWindow* window = windowToAdd->GetWindow();
-
-		if (window != nullptr)
+		if (windowToAdd != nullptr)
 		{
-			if (windowToAdd->isHide)
+			wxWindow* _wnd = windowToAdd->GetWindow();
+			if (_wnd != nullptr)
 			{
-				window->Show(false);
-				window->SetSize(emptyRect);
+#ifdef _DEBUG
+#ifdef WIN32
+				//TCHAR temp[255];
+#endif
+#endif
+				if (_wnd->IsShown())
+				{
+					_wnd->SetSize(windowToAdd->rect);
+
+#ifdef _DEBUG
+#ifdef WIN32
+					//ws//printf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
+					//OutputDebugString(temp);
+#endif
+#endif
+				}
+				else
+					_wnd->SetSize(rc);
+
+				//_wnd->Refresh();
+				//_wnd->Refresh();
+				//_wnd->Update();
 			}
-			else
+
+
+			if (windowToAdd->separationBar != nullptr)
 			{
-				window->SetSize(windowToAdd->rect);
-				window->Show(true);
-			}
-		}
+				if (windowToAdd->separationBar->separationBar != nullptr)
+				{
+					if (windowToAdd->separationBar->separationBar->IsShown())
+					{
+#ifdef _DEBUG
+#ifdef WIN32
+						//TCHAR temp[255];
+#endif
+#endif
+						if (windowToAdd->separationBar->separationBar->IsShown())
+						{
+							windowToAdd->separationBar->separationBar->SetSize(windowToAdd->separationBar->rect);
+#ifdef _DEBUG
+#ifdef WIN32
+							//ws//printf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
+							//OutputDebugString(temp);
+#endif
+#endif
+						}
+						else
+							windowToAdd->separationBar->separationBar->SetSize(rc);
 
-		CSeparationBar* separationBar = GetSeparationBar(windowToAdd);
-
-		if (separationBar != nullptr)
-		{
-			const bool visible =
-				showSeparationBar &&
-				!windowToAdd->isHide;
-
-			if (visible)
-			{
-				separationBar->SetSize(
-					windowToAdd->separationBar->rect);
-
-				separationBar->Show(true);
-			}
-			else
-			{
-				separationBar->Show(false);
-				separationBar->SetSize(emptyRect);
+						//windowToAdd->separationBar->separationBar->Refresh();
+						//windowToAdd->separationBar->separationBar->Refresh();
+						//windowToAdd->separationBar->separationBar->Update();
+					}
+				}
 			}
 		}
 	}

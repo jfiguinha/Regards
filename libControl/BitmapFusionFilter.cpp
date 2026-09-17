@@ -46,7 +46,7 @@ CImageLoadingFormat* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CIm
 	const int heightOutput = nextPicture->GetHeight() * newRatio;
 
 	cv::Mat _out;
-	resize(nextPicture->GetMatrix().getMat(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
+	resize(nextPicture->GetMatImage(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
 	picture->SetPicture(_out);
 	out.width = widthOutput;
 	out.height = heightOutput;
@@ -83,7 +83,7 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
                                       IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
                                       const bool& isNext, float& ratio)
 {
-	cv::Mat mat = nextPicture->GetMatrix().getMat();
+	cv::Mat mat = nextPicture->GetMatImage().clone();
 	const int orientation = nextPicture->GetOrientation();
 	CImageLoadingFormat bitmapTemp;
 	bitmapTemp.SetPicture(mat);
@@ -109,7 +109,7 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat* bitmap)
 {
 	Regards::Picture::CPictureArray picture(cv::_InputArray::KindFlag::MAT);
-	cv::flip(bitmap->GetMatrix().getMat(), picture.getMat(), 0);
+	cv::flip(bitmap->GetMatImage(), picture.getMat(), 0);
 	pictureNext->SetData(picture, nullptr);
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }

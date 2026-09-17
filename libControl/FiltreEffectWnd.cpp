@@ -171,7 +171,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						if(filtreEffect == nullptr)
 							filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow, isVideo, bitmapWindowId);
 
-						filtreEffect->Init(effectParameter, bitmap->GetMatrix().getMat(), filename, numItem);
+						filtreEffect->Init(effectParameter, bitmap->GetMatImage().clone(), filename, numItem);
 
 						if (previewWindow != nullptr)
 						{

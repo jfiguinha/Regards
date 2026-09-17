@@ -66,18 +66,24 @@ void COpenCLEffectVideo::SetMatrix(Regards::Picture::CPictureArray& bitmap)
 	cv::UMat frame = bitmap.getUMat();
 
 	if (frame.channels() == 4)
+	{
 		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::ocl::finish();
+	}	
 	else
-		paramSrc = frame;
+		frame.copyTo(paramSrc);
 
 	needToTranscode = false;
 	isOk = true;
 }
 
-void COpenCLEffectVideo::SetMatrix(cv::Mat* frame)
+void COpenCLEffectVideo::SetMatrix(cv::Mat * frame)
 {
 	if (frame->channels() == 4)
+	{
 		cv::cvtColor(*frame, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::ocl::finish();
+	}	
 	else
 		frame->copyTo(paramSrc);
 	needToTranscode = false;
@@ -336,12 +342,14 @@ void COpenCLEffectVideo::TestBgraOutput()
 	try
 	{
 		cv::cvtColor(paramSrc, paramSrc, cv::COLOR_BGRA2BGR);
+		cv::ocl::finish();
 	}
 	catch (cv::Exception& e)
 	{
 		cv::Mat mat = paramSrc.getMat(cv::AccessFlag::ACCESS_READ);
 		cv::cvtColor(mat, paramSrc, cv::COLOR_BGRA2BGR);
-
+		cv::ocl::finish();
+	
 		const char* err_msg = e.what();
 		std::cout << "CSuperSampling::exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
@@ -481,11 +489,13 @@ void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv
 	if (nWidth != linesize)
 	{
 		cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR);
+		cv::ocl::finish();
 		out(cv::Rect(0, 0, nWidth, nHeight)).copyTo(paramSrc);
 	}
 	else
 	{
 		cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR);
+		cv::ocl::finish();
 		out.copyTo(paramSrc);
 	}
 };

@@ -61,7 +61,7 @@ void CThumbnailProcess::LoadPicture(void* param)
     CImageLoadingFormat* imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
     if (imageLoad != nullptr)
     {
-        threadLoadingBitmap->bitmapIcone = imageLoad->GetMatrix().getMat();
+        threadLoadingBitmap->bitmapIcone = imageLoad->GetMatImage().clone();
         delete imageLoad;
     }
 

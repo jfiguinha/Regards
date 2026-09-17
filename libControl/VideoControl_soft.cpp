@@ -2352,12 +2352,13 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 	if (pictureFrame->matFrame.empty())
 		return;
 
+
+	pictureFrame->matFrame.copyTo(cvImage);
+
 	Regards::Picture::CPictureArray pictureArrayLocal;
 	if (videoEffectParameter.stabilizeVideo)
 	{
-		if (cvImage.empty())
-			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
-		else if (cvImage.channels() == 4)
+		if (cvImage.channels() == 4)
 			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
 
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2372,9 +2373,7 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 
 	if (videoEffectParameter.interpolationQuality == 1)
 	{
-		if(cvImage.empty())
-			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
-		else if (cvImage.channels() == 4)
+		if (cvImage.channels() == 4)
 			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
 
 		int filterInterpolation = 0;
@@ -2394,11 +2393,8 @@ void CVideoControlSoft::RenderFFmpegToTexture()
 
 	if (videoEffectParameter.autoConstrast || videoEffectParameter.filmcolorisation || videoEffectParameter.filmEnhance)
 	{
-		if (cvImage.empty())
-			cv::cvtColor(pictureFrame->matFrame, cvImage, cv::COLOR_BGRA2BGR);
-		else if (cvImage.channels() == 4)
+		if (cvImage.channels() == 4)
 			cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
-
 		ApplyOpenCVEffect(cvImage);
 	}
 

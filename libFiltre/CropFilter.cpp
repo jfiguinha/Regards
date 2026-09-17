@@ -91,7 +91,7 @@ CImageLoadingFormat* CCropFilter::ApplyEffect(CEffectParameter* effectParameter,
 
 		try
 		{
-			cv::Mat matrix = imageLoad->GetMatrix().getMat();
+			cv::Mat& matrix = imageLoad->GetMatImage();
 			cv::Rect rect;
 			rect.x = rcZoom.x;
 			rect.y = rcZoom.y;

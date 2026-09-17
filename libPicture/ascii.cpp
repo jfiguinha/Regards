@@ -30,8 +30,7 @@ void CBitmapToAscii::SaveToAscii(CImageLoadingFormat* source, const string& file
     }
 
     cv::Mat resizedImg;
-    auto srcMat = source->GetMatrix().getMat();
-    resize(srcMat, resizedImg, cv::Size(), new_ratio, new_ratio, cv::INTER_CUBIC);
+    resize( source->GetMatImage(), resizedImg, cv::Size(), new_ratio, new_ratio, cv::INTER_CUBIC);
 
     cv::Mat grayImg;
     cvtColor(resizedImg, grayImg, cv::COLOR_BGRA2GRAY);

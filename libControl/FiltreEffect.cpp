@@ -144,7 +144,9 @@ CImageLoadingFormat* CFiltreEffect::ApplyEffect()
 
 	if (filterEffect != nullptr)
 	{
-		return filterEffect->ApplyEffect(effectParameter, bitmapViewer);
+		CImageLoadingFormat *picture = filterEffect->ApplyEffect(effectParameter, bitmapViewer);
+		picture->SetFilename(bitmapViewer->GetFilename());
+		return picture;
 	}
 	return nullptr;
 }

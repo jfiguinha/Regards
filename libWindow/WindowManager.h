@@ -20,9 +20,9 @@ namespace Regards::Window
 		CPanelWithClickToolbar* AddPanel(CWindowMain* window, const Pos& pos, bool fixe, int size, wxRect rect,
 		                                 const wxString& panelLabel, const wxString& windowName, const bool& isVisible,
 		                                 const int& idPanel, const bool& refreshButton, const bool& isTop = false);
-		CWindowToAdd* AddWindow(CWindowMain* window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel,
+		CWindowToAdd * AddWindow(CWindowMain* window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel,
 		               const bool& isTop = false);
-		CWindowToAdd* AddWindow(CWindowOpenGLMain* window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel,
+		CWindowToAdd * AddWindow(CWindowOpenGLMain* window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel,
 		               const bool& isTop = false);
 		void SetSeparationBarVisible(const bool& visible);
 		bool GetSeparationVisibility();
@@ -50,10 +50,6 @@ namespace Regards::Window
 		vector<CWindowToAdd*> listWindow;
 
 	private:
-
-		CSeparationBar* GetSeparationBar(CWindowToAdd* window);
-		void MoveVertical(int difference, Pos position);
-		void MoveHorizontal(int difference, Pos position);
 		void AddWindow(CWindowToAdd* windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel,
 		               const bool& isTop);
 		void OnRefreshData(wxCommandEvent& event);
@@ -78,6 +74,7 @@ namespace Regards::Window
 		void SetWindowBottomSize(CWindowToAdd* bottom, int height, int x, int y, int width);
 
 		void DrawSeparationBar(const int& x, const int& y, const int& width, const int& height, const bool& horizontal);
+		void ShowSeparationBar(CWindowToAdd* window, bool show);
 
 		bool fastRender;
 		bool init;
@@ -88,6 +85,5 @@ namespace Regards::Window
 		bool showSeparationBar;
 		CThemeSplitter themeSplitter;
 		int separationBarSize = 0;
-		std::unordered_map<Pos, CWindowToAdd*> windows;
 	};
 }

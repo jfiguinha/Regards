@@ -25,9 +25,6 @@
     <ClCompile Include="BmpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="bpgoption.cpp">
-      <Filter>Dialog</Filter>
-    </ClCompile>
     <ClCompile Include="ExrOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -154,9 +151,6 @@
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="BmpOption.h">
-      <Filter>Dialog</Filter>
-    </ClInclude>
-    <ClInclude Include="bpgoption.h">
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="ExrOption.h">

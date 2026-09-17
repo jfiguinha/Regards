@@ -1716,7 +1716,7 @@ int ImageSaver::Save(const wxString& fileName, CImageLoadingFormat* bitmap,
         case 2: _opt = WEBP_LOSSLESS;  break;
         default: _opt = 100 - quality; break;
         }
-        CRegardsWebp::SavePicture(fileName, bitmap->GetMatrix().getMat(), _opt);
+        CRegardsWebp::SavePicture(fileName, bitmap->GetMatImage(), _opt);
         break;
     }
     case TGA:
@@ -1779,7 +1779,7 @@ int ImageSaver::Save(const wxString& fileName, CImageLoadingFormat* bitmap,
         std::vector<uint8_t> buffer;
         wxLogNull logNo;
         bool         hasExif = false;
-        cv::Mat      img     = bitmap->GetMatrix().getMat();
+        cv::Mat&      img     = bitmap->GetMatImage();
 
         CMetadataExiv2 srcMeta(bitmap->GetFilename());
         if (srcMeta.HasExif())
@@ -1818,9 +1818,18 @@ int ImageSaver::Save(const wxString& fileName, CImageLoadingFormat* bitmap,
     }
     case PPM:
     {
-        cv::Mat dest = bitmap->GetMatrix().getMat();
-        cv::cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
-        cv::imwrite(CConvertUtility::ConvertToStdString(fileName).c_str(), dest);
+        
+        const bool wasBGRA = bitmap->GetMatImage().channels() == 4;
+        if(wasBGRA)
+        {
+            cv::Mat dest;
+            cv::cvtColor(bitmap->GetMatImage(), dest, cv::COLOR_BGRA2BGR);
+            cv::imwrite(CConvertUtility::ConvertToStdString(fileName).c_str(), dest);
+        }
+        else if(bitmap->GetMatImage().channels() == 3)
+        {
+            cv::imwrite(CConvertUtility::ConvertToStdString(fileName).c_str(), bitmap->GetMatImage());
+        }
         break;
     }
     case PDF:
@@ -2253,7 +2262,7 @@ CImageLoadingFormat* VideoThumbnailService::LoadVideoFrame(
                     img.SetPicture(*frame);
 
                     e->filename     = fileName;
-                    e->image        = img.GetMatrix().getMat();
+                    e->image        = img.GetMatImage().clone();
                     e->rotation     = 0;
                     e->delay        = cx->GetFrameDelay();
                     e->percent      = (static_cast<float>(i) /
@@ -2269,7 +2278,7 @@ CImageLoadingFormat* VideoThumbnailService::LoadVideoFrame(
                 fallback.reset(ImageLoader::GetCancelPhoto(fileName, tw, th));
                 //auto fallback = std::make_unique<CImageLoadingFormat>();
                 e->filename     = fileName;
-                e->image        = fallback->GetMatrix().getMat();
+                e->image        = fallback->GetMatImage().clone();
                 e->rotation     = 0;
                 e->delay        = cx->GetFrameDelay();
                 e->percent      = 0.f;
@@ -2297,7 +2306,7 @@ CImageLoadingFormat* VideoThumbnailService::LoadVideoFrame(
             auto e = std::make_unique<CImageVideoThumbnail>();
             std::unique_ptr<CImageLoadingFormat> img;
             img.reset(svc.LoadThumbnail(fileName));
-            e->image        = img->GetMatrix().getMat();
+            e->image        = img->GetMatImage().clone();
             e->filename     = fileName;
             e->rotation     = 0;
             e->delay        = 0;

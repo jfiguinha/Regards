@@ -4,7 +4,7 @@
 //  Regards.libViewer
 //
 //  Created by figuinha jacques on 12/04/2016.
-//  Copyright © 2016 figuinha jacques. All rights reserved.
+//  Copyright ï¿½ 2016 figuinha jacques. All rights reserved.
 //
 
 #include "BokehFilter.h"
@@ -59,9 +59,6 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, cv::Mat& source, co
 	//source->VertFlipBuf();
 
 	//Find Face on source
-	//cv::Mat dst;
-	//cv::Mat image_local(source.size().height, source.size().width, CV_8UC4, source->GetPtBitmap());
-	//cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
 
 	//Extract Face and Get Rectangle
 	CFaceDetector face_detector(true);

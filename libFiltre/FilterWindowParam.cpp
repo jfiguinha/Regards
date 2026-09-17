@@ -241,6 +241,8 @@ CImageLoadingFormat* CFilterWindowParam::RenderEffect(CEffectParameter* effectPa
 		}
 	}
 
+
+	imageLoad->SetFilename(bitmapViewer->GetFilename());
 	return imageLoad;
 }
 

@@ -73,81 +73,118 @@ void ExecuteSafe(F&& func)
 template<typename F>
 void ExecuteSafeOpenCL(cv::UMat& inputData, F&& func)
 {
-	try
-	{
-		const bool convert = inputData.channels() == 3;
+    try
+    {
+        const bool convert = inputData.channels() == 3;
 
-		if (convert)
-		{
-			cv::UMat source;
-			cv::cvtColor(inputData, source, cv::COLOR_BGR2BGRA);
-			cv::UMat result = func(source);
-			cv::cvtColor(result, inputData, cv::COLOR_BGRA2BGR);
-		}
-		else
-		{
-			// CORRECTION : On réaffecte directement le retour de func à inputData
-			cv::UMat resultBGR = func(inputData);
-			resultBGR.copyTo(inputData);
-			inputData = resultBGR; // Force la mise à jour de l'en-tête de référence
-		}
-	}
-	catch (const cv::Exception& e)
-	{
-		LogError(e.what());
-	}
+        if (convert)
+        {
+            cv::UMat source;
+
+            cv::cvtColor(
+                inputData,
+                source,
+                cv::COLOR_BGR2BGRA);
+
+            // Synchronise la queue OpenCL d'OpenCV avant que
+            // notre propre queue OpenCL n'utilise le cl_mem.
+            cv::ocl::finish();
+
+            cv::UMat result = func(source);
+
+            // Synchronise le kernel OpenCL avant de repasser
+            // dans les opérations OpenCV.
+            cv::ocl::finish();
+
+            cv::cvtColor(
+                result,
+                inputData,
+                cv::COLOR_BGRA2BGR);
+
+            cv::ocl::finish();
+        }
+        else
+        {
+            cv::UMat result = func(inputData);
+
+            cv::ocl::finish();
+
+            result.copyTo(inputData);
+
+        }
+    }
+    catch (const cv::Exception& e)
+    {
+        LogError(e.what());
+    }
 }
-
-
 
 template<typename F>
 void ExecuteSafeOpenCL3Channels(cv::UMat& inputData, F&& func)
 {
-	try
-	{
-		if (inputData.empty())
-			return;
+    try
+    {
+        if (inputData.empty())
+            return;
 
-		const bool wasBGRA = inputData.channels() == 4;
+        const bool wasBGRA = inputData.channels() == 4;
 
-		if (wasBGRA)
-		{
-			cv::UMat alpha;
-			cv::UMat bgr;
-			cv::UMat restoredAlpha;
+        if (wasBGRA)
+        {
+            cv::UMat alpha;
+            cv::UMat bgr;
+            cv::UMat restoredAlpha;
 
-			cv::extractChannel(inputData, alpha, 3);
-			cv::cvtColor(inputData, bgr, cv::COLOR_BGRA2BGR);
-			cv::UMat resultBGR = func(bgr);
+            cv::extractChannel(inputData, alpha, 3);
+            cv::cvtColor(inputData, bgr, cv::COLOR_BGRA2BGR);
 
-			if (resultBGR.empty())
-				return;
+            // Important :
+            // les opérations OpenCV sur UMat peuvent être exécutées
+            // de manière asynchrone sur la queue OpenCL d'OpenCV.
+            cv::ocl::finish();
 
-			if (alpha.size() == resultBGR.size())
-				restoredAlpha = alpha;
-			else
-				cv::resize(alpha, restoredAlpha, resultBGR.size(), 0.0, 0.0, cv::INTER_LINEAR);
+            cv::UMat resultBGR = func(bgr);
 
-			cv::UMat resultBGRA;
-			cv::cvtColor(resultBGR, resultBGRA, cv::COLOR_BGR2BGRA);
-			cv::insertChannel(restoredAlpha, resultBGRA, 3);
+            if (resultBGR.empty())
+                return;
 
-			// CORRECTION : Sécurisation de la mise à jour de la référence
-			resultBGRA.copyTo(inputData);
-			inputData = resultBGRA;
-		}
-		else
-		{
-			cv::UMat resultBGR = func(inputData);
-			// CORRECTION : Même chose pour le canal unique / 3 canaux directs
-			resultBGR.copyTo(inputData);
-			inputData = resultBGR;
-		}
-	}
-	catch (const cv::Exception& e)
-	{
-		LogError(e.what());
-	}
+            // Le traitement utilisateur peut avoir utilisé notre propre
+            // queue OpenCL. On synchronise avant de réutiliser le résultat
+            // avec une opération OpenCV.
+            cv::ocl::finish();
+
+            if (alpha.size() == resultBGR.size())
+                restoredAlpha = alpha;
+            else
+                cv::resize(
+                    alpha,
+                    restoredAlpha,
+                    resultBGR.size(),
+                    0.0,
+                    0.0,
+                    cv::INTER_LINEAR);
+
+            cv::UMat resultBGRA;
+            cv::cvtColor(resultBGR, resultBGRA, cv::COLOR_BGR2BGRA);
+
+			cv::ocl::finish();
+
+            cv::insertChannel(restoredAlpha, resultBGRA, 3);
+
+            resultBGRA.copyTo(inputData);
+
+        }
+        else
+        {
+            cv::UMat resultBGR = func(inputData);
+            cv::ocl::finish();
+            resultBGR.copyTo(inputData);
+        }
+    }
+    catch (const cv::Exception& e)
+    {
+        LogError(e.what());
+    }
 }
 
 
@@ -165,11 +202,14 @@ cv::UMat ExecuteSafeOpenCLWithUMatOutput(cv::UMat& inputData, bool bgraOutput, F
 			cv::UMat source;
 			cv::cvtColor(inputData, source, cv::COLOR_BGR2BGRA);
 			cv::UMat result = func(source);
+			cv::ocl::finish();
 			cv::cvtColor(result, dest, COLOR_BGRA2BGR);
+			cv::ocl::finish();
 		}
 		else
 		{
 			dest = func(inputData);
+			cv::ocl::finish();
 		}
 
 	}
@@ -461,6 +501,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(UMat& inputData, float clipHistPer
 		std::vector<cv::UMat> yuv_planes(3);
 		cv::UMat gpuframe_3channel(image.size(), CV_8UC3);
 		cv::cvtColor(image, gpuframe_3channel, COLOR_BGR2YUV, 3);
+		cv::ocl::finish();
 		cv::split(gpuframe_3channel, yuv_planes);
 
 		if (clipHistPercent == 0)

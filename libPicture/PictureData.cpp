@@ -60,7 +60,7 @@ void CPictureData::SetData(const int& width, const int& height, uint8_t*& extdat
 void CPictureData::CopyData(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr)
-		bitmapMatrix = bitmap->GetMatrix().getMat();
+		bitmapMatrix = bitmap->GetMatImage().clone();
 }
 
 

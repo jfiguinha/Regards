@@ -30,16 +30,25 @@ int CDiaporamaMove::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, cons
 			int x2 = -(alpha * 1920);
 
 			CImageLoadingFormat imageLoad;
-			cv::Mat dest;
+			
 			pBitmap = cv::Mat::zeros(pictureOne.size(), CV_8UC4);
 			imageLoad.SetPicture(pBitmap);
 
 			imageLoad.InsertBitmap(&img1, x2, 0, false);
 			imageLoad.InsertBitmap(&img2, x, 0, false);
 
-			cvtColor(imageLoad.GetMatrix().getMat(), dest, COLOR_BGRA2BGR);
 
-			WritePicture(dest);
+			cv::Mat& source = imageLoad.GetMatImage();
+			const bool wasBGRA = source.channels() == 4;
+			if(wasBGRA)
+			{
+				cv::Mat dest;
+				cvtColor(source, dest, COLOR_BGRA2BGR);
+				WritePicture(dest);
+			}
+			else
+				WritePicture(source);
+
 			SendMessageProgress();
 			if (endProcess)
 				break;

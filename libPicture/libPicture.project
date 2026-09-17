@@ -79,8 +79,6 @@
     <File Name="ExrOption.cpp"/>
     <File Name="CompressionOption.h"/>
     <File Name="CompressionOption.cpp"/>
-    <File Name="bpgoption.h"/>
-    <File Name="bpgoption.cpp"/>
     <File Name="BmpOption.h"/>
     <File Name="BmpOption.cpp"/>
     <File Name="JxrOption.h"/>

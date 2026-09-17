@@ -537,7 +537,7 @@ void CListFace::FacialRecognition(void* param)
 		{
 			pictureData->SetFilename(path->filename);
 
-			listFace = CDeepLearning::FindFace(pictureData->GetMatrix().getMat(), path->filename, fastDetection);
+			listFace = CDeepLearning::FindFace(pictureData->GetMatImage().clone(), path->filename, fastDetection);
 			path->nbFace = listFace.size();
 		}
 
