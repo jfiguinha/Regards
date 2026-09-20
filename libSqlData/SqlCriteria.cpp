@@ -72,9 +72,9 @@ int64_t CSqlCriteria::GetCriteriaIdByCategorie(const int& numPhoto, const int& n
 bool CSqlCriteria::UpdateCriteria(const int64_t& numCatalog, const int64_t& numCategorie, const wxString& libelle)
 {
 	std::vector<std::unique_ptr<CSqlParameter>> parameter;
+	parameter.push_back(std::make_unique<CSqlString>(libelle));
 	parameter.push_back(std::make_unique<CSqlInt>(numCatalog));
 	parameter.push_back(std::make_unique<CSqlInt>(numCategorie));
-	parameter.push_back(std::make_unique<CSqlString>(libelle));
 	return ExecuteSqlWithStatementNoResult("UPDATE CRITERIA SET Libelle = ? WHERE NumCatalog = ? and NumCriteria = ? ", parameter);
 }
 

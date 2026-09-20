@@ -326,6 +326,7 @@ void CCategoryFolderWindow::ProcessGpsQueue()
 {
 	auto findPhotoCriteria = new CFindPhotoCriteria();
 	findPhotoCriteria->urlServer = pimpl->urlServer;
+	findPhotoCriteria->apiKey = pimpl->apiKey;
 	findPhotoCriteria->mainWindow = this;
 	findPhotoCriteria->numCriteria = pimpl->listCriteriaToGeolocalize[0];
 	findPhotoCriteria->phthread = std::make_unique<thread>(FindGPSPhotoCriteria, findPhotoCriteria);
